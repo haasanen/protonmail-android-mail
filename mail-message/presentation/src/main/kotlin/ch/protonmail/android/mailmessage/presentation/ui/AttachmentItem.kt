@@ -47,7 +47,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentWorkerStatus
 import ch.protonmail.android.mailmessage.presentation.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -59,6 +58,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailcommon.presentation.model.string
+import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 
@@ -172,7 +172,7 @@ fun AttachmentItem(
 
         if (attachmentUiModel.deletable) {
             Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
-            if (attachmentUiModel.status == AttachmentWorkerStatus.Running) {
+            if (attachmentUiModel.status == AttachmentState.Uploading) {
                 CircularProgressIndicator(
                     modifier = Modifier
                         .size(ProtonDimens.IconSize.Default)

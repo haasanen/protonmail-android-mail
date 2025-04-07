@@ -220,7 +220,13 @@ class ComposerReducer @Inject constructor(
     ) = currentState.copy(
         attachments = AttachmentGroupUiModel(
             limit = NO_ATTACHMENT_LIMIT,
-            attachments = attachments.map { attachmentUiModelMapper.toUiModel(it.attachmentMetadata, true) }
+            attachments = attachments.map {
+                attachmentUiModelMapper.toUiModel(
+                    attachmentMetadata = it.attachmentMetadata,
+                    isDeletable = true,
+                    status = it.attachmentState
+                )
+            }
         )
     )
 

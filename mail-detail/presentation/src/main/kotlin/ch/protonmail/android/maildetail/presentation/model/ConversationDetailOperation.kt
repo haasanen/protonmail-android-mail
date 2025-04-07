@@ -39,7 +39,7 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentWorkerStatus
+import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
@@ -139,7 +139,7 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
     data class AttachmentStatusChanged(
         val messageId: MessageIdUiModel,
         val attachmentId: AttachmentId,
-        val status: AttachmentWorkerStatus
+        val status: AttachmentState
     ) : ConversationDetailEvent, AffectingMessages
 
     data class AttachmentListExpandCollapseModeChanged(

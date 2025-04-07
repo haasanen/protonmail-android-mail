@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmessage.presentation.mapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
 import ch.protonmail.android.mailmessage.domain.model.isCalendarAttachment
 import ch.protonmail.android.mailmessage.presentation.R
@@ -29,7 +30,11 @@ import javax.inject.Inject
 
 class AttachmentMetadataUiModelMapper @Inject constructor() {
 
-    fun toUiModel(attachmentMetadata: AttachmentMetadata, isDeletable: Boolean = false): AttachmentMetadataUiModel {
+    fun toUiModel(
+        attachmentMetadata: AttachmentMetadata,
+        isDeletable: Boolean = false,
+        status: AttachmentState? = null
+    ): AttachmentMetadataUiModel {
         return AttachmentMetadataUiModel(
             id = AttachmentIdUiModel(attachmentMetadata.attachmentId.id),
             name = TextUiModel(attachmentMetadata.name),
@@ -37,7 +42,8 @@ class AttachmentMetadataUiModelMapper @Inject constructor() {
             size = attachmentMetadata.size,
             isCalendar = attachmentMetadata.isCalendarAttachment(),
             contentDescription = getContentDescription(attachmentMetadata.mimeType.category),
-            deletable = isDeletable
+            deletable = isDeletable,
+            status = status
         )
     }
 

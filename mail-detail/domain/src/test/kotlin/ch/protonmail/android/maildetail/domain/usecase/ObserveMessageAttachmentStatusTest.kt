@@ -21,7 +21,7 @@ package ch.protonmail.android.maildetail.domain.usecase
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentWorkerStatus
+import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -55,7 +55,7 @@ class ObserveMessageAttachmentStatusTest {
             messageId = messageId,
             attachmentId = attachmentId,
             uri = null,
-            status = AttachmentWorkerStatus.Running
+            status = AttachmentState.Uploading
         )
 
         // When

@@ -26,5 +26,5 @@ data class MessageAttachmentMetadata(
     val messageId: MessageId,
     val attachmentId: AttachmentId,
     val uri: Uri?,
-    val status: AttachmentWorkerStatus
+    val status: AttachmentState
 )

@@ -21,7 +21,7 @@ package ch.protonmail.android.testdata.message
 import android.net.Uri
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentWorkerStatus
+import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -34,7 +34,7 @@ object MessageAttachmentMetadataTestData {
         messageId: MessageId = MessageIdSample.Invoice,
         attachmentId: AttachmentId = AttachmentId("attachmentId"),
         uri: Uri = Uri.parse("uri"),
-        status: AttachmentWorkerStatus = AttachmentWorkerStatus.Running
+        status: AttachmentState = AttachmentState.Uploading
     ) = MessageAttachmentMetadata(
         userId = userId,
         messageId = messageId,

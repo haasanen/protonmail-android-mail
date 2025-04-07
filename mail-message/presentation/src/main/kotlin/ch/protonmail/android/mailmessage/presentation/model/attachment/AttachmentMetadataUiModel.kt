@@ -22,7 +22,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailmessage.domain.model.AttachmentWorkerStatus
+import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 
 @Immutable
 data class AttachmentMetadataUiModel(
@@ -31,7 +31,7 @@ data class AttachmentMetadataUiModel(
     @DrawableRes val icon: Int,
     @StringRes val contentDescription: Int,
     val size: Long,
-    val status: AttachmentWorkerStatus? = null,
+    val status: AttachmentState? = null,
     val deletable: Boolean = false,
     val isCalendar: Boolean = false
 )

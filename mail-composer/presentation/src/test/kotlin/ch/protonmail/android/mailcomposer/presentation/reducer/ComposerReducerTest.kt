@@ -692,7 +692,11 @@ class ComposerReducerTest(
             expectedState = ComposerDraftState.initial(messageId).copy(
                 attachments = AttachmentGroupUiModel(
                     limit = NO_ATTACHMENT_LIMIT,
-                    attachments = listOf(AttachmentMetadataUiModelSamples.DeletableInvoice)
+                    attachments = listOf(
+                        AttachmentMetadataUiModelSamples.DeletableInvoice.copy(
+                            status = AttachmentState.Uploaded
+                        )
+                    )
                 )
             )
         )
