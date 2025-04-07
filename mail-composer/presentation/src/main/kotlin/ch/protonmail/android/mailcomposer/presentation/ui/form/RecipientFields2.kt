@@ -147,20 +147,6 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
         }
     }
 
-    LaunchedEffect(suggestions, suggestionField) {
-        onToggleSuggestions(suggestionField == null || suggestions.isEmpty())
-    }
-
-    LaunchedEffect(readContactsPermission.status.isGranted) {
-        if (!readContactsPermission.status.isGranted) {
-            if (readContactsPermission.status.shouldShowRationale) {
-                showContactsPermissionDialog = true
-            } else {
-                readContactsPermission.launchPermissionRequest()
-            }
-        }
-    }
-
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
