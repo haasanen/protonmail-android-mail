@@ -229,14 +229,6 @@ fun MailboxScreen(
         moveToInbox = { viewModel.submit(MailboxViewAction.MoveToInbox) },
         deleteConfirmed = { viewModel.submit(MailboxViewAction.DeleteConfirmed) },
         deleteDialogDismissed = { viewModel.submit(MailboxViewAction.DeleteDialogDismissed) },
-        deleteAll = { viewModel.submit(MailboxViewAction.DeleteAll) },
-        deleteAllConfirmed = {
-            // We will show missing feature snackbar and dissmiss the dialog for now
-            actions.deleteAllConfirmed()
-            viewModel.submit(MailboxViewAction.DeleteAllDialogDismissed)
-            // viewModel.submit(MailboxViewAction.DeleteAllConfirmed)
-        },
-        deleteAllDismissed = { viewModel.submit(MailboxViewAction.DeleteAllDialogDismissed) },
         onLabelAsClicked = { viewModel.submit(MailboxViewAction.RequestLabelAsBottomSheet) },
         onMoveToClicked = { viewModel.submit(MailboxViewAction.RequestMoveToBottomSheet) },
         onMoreClicked = { viewModel.submit(MailboxViewAction.RequestMoreActionsBottomSheet) },
@@ -287,14 +279,6 @@ fun MailboxScreen(
             }
         }
     }
-
-    StorageLimitDialogs(
-        storageLimitState = mailboxState.storageLimitState,
-        actions = StorageLimitDialogs.Actions(
-            dialogConfirmed = { viewModel.submit(MailboxViewAction.StorageLimitConfirmed) },
-            doNotRemindClicked = { viewModel.submit(MailboxViewAction.StorageLimitDoNotRemind) }
-        )
-    )
 
     ProtonModalBottomSheetLayout(
         showBottomSheet = showBottomSheet,
@@ -419,7 +403,6 @@ fun MailboxScreen(
     }
 
     DeleteDialog(state = mailboxState.deleteDialogState, actions.deleteConfirmed, actions.deleteDialogDismissed)
-    DeleteDialog(state = mailboxState.deleteAllDialogState, actions.deleteAllConfirmed, actions.deleteAllDismissed)
 
     Scaffold(
         modifier = modifier.testTag(MailboxScreenTestTags.Root),
@@ -443,7 +426,6 @@ fun MailboxScreen(
             ) {
                 MailboxTopAppBar(
                     state = mailboxState.topAppBarState,
-                    upgradeStorageState = mailboxState.upgradeStorageState,
                     actions = MailboxTopAppBar.Actions(
                         onOpenMenu = actions.openDrawerMenu,
                         onExitSelectionMode = { actions.onExitSelectionMode() },
@@ -934,7 +916,7 @@ private fun ClearBannerWithButton(
         bannerText = clearBannerState.bannerText.string(),
         buttonText = clearBannerState.buttonText.string(),
         icon = clearBannerState.icon,
-        onButtonClicked = actions.deleteAll
+        onButtonClicked = {}
     )
 }
 
@@ -1173,9 +1155,6 @@ object MailboxScreen {
         val moveToInbox: () -> Unit,
         val deleteConfirmed: () -> Unit,
         val deleteDialogDismissed: () -> Unit,
-        val deleteAll: () -> Unit,
-        val deleteAllConfirmed: () -> Unit,
-        val deleteAllDismissed: () -> Unit,
         val onLabelAsClicked: () -> Unit,
         val onMoveToClicked: () -> Unit,
         val onMoreClicked: () -> Unit,
@@ -1229,9 +1208,6 @@ object MailboxScreen {
                 moveToInbox = {},
                 deleteConfirmed = {},
                 deleteDialogDismissed = {},
-                deleteAll = {},
-                deleteAllConfirmed = {},
-                deleteAllDismissed = {},
                 onLabelAsClicked = {},
                 onMoveToClicked = {},
                 onMoreClicked = {},

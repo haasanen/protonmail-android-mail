@@ -23,16 +23,12 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
-import ch.protonmail.android.mailmailbox.domain.model.StorageLimitPreference
-import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingActionMessage
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingBottomAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingBottomSheet
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingClearDialog
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingDeleteDialog
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingErrorBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingMailboxList
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingStorageLimit
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingTopAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingUnreadFilter
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
@@ -45,18 +41,13 @@ internal sealed interface MailboxOperation {
     sealed interface AffectingUnreadFilter
     sealed interface AffectingMailboxList
     sealed interface AffectingBottomAppBar
-    sealed interface AffectingStorageLimit
     sealed interface AffectingActionMessage
     sealed interface AffectingDeleteDialog
-    sealed interface AffectingClearDialog
     sealed interface AffectingBottomSheet
     sealed interface AffectingErrorBar
-    sealed interface AffectingUpgradeStorage
 }
 
 internal sealed interface MailboxViewAction : MailboxOperation {
-    object StorageLimitDoNotRemind : MailboxViewAction, AffectingStorageLimit
-    object StorageLimitConfirmed : MailboxViewAction, AffectingStorageLimit
 
     data class OnItemLongClicked(
         val item: MailboxItemUiModel
@@ -143,9 +134,6 @@ internal sealed interface MailboxViewAction : MailboxOperation {
      */
     object OnOfflineWithData : MailboxViewAction, AffectingMailboxList
     object OnErrorWithData : MailboxViewAction, AffectingMailboxList
-    object DeleteAll : MailboxViewAction
-    object DeleteAllConfirmed : MailboxViewAction
-    object DeleteAllDialogDismissed : MailboxViewAction, AffectingClearDialog
     object NavigateToInboxLabel : MailboxViewAction
     object RequestUpsellingBottomSheet : MailboxViewAction, AffectingBottomSheet
     data class SelectAll(val allItems: List<MailboxItemUiModel>) : MailboxViewAction
@@ -165,15 +153,6 @@ internal sealed interface MailboxEvent : MailboxOperation {
     data class AvatarImageStatesUpdated(
         val avatarImageStates: AvatarImageStates
     ) : MailboxEvent, AffectingMailboxList
-
-    data class UpgradeStorageStatusChanged(
-        val notificationDotVisible: Boolean
-    ) : MailboxEvent, MailboxOperation.AffectingUpgradeStorage
-
-    data class StorageLimitStatusChanged(
-        val userAccountStorageStatus: UserAccountStorageStatus,
-        val storageLimitPreference: StorageLimitPreference
-    ) : MailboxEvent, AffectingStorageLimit
 
     data class NewLabelSelected(
         val selectedLabel: MailLabel,
@@ -214,9 +193,6 @@ internal sealed interface MailboxEvent : MailboxOperation {
         AffectingDeleteDialog,
         AffectingBottomSheet
 
-    data class DeleteAll(val viewMode: ViewMode, val location: LabelId) : MailboxEvent, AffectingClearDialog
-    data class DeleteAllConfirmed(val viewMode: ViewMode) : MailboxEvent, AffectingClearDialog
-    data class ClearAllOperationStatus(val state: ClearAllState) : MailboxEvent, AffectingMailboxList
     data class PrimaryAccountAvatarChanged(val item: CoreAccountAvatarItem?) : MailboxEvent, AffectingTopAppBar
 
     sealed interface ItemClicked : MailboxEvent {

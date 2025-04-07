@@ -23,11 +23,11 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -38,17 +38,16 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxTopAppBarTestTags.NavigationButton
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingMailButton
 import ch.protonmail.android.uicomponents.SearchView
-import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountAvatar
 import me.proton.core.util.kotlin.EMPTY_STRING
@@ -57,7 +56,6 @@ import me.proton.core.util.kotlin.EMPTY_STRING
 fun MailboxTopAppBar(
     modifier: Modifier = Modifier,
     state: MailboxTopAppBarState,
-    upgradeStorageState: UpgradeStorageState,
     actions: MailboxTopAppBar.Actions
 ) {
     val uiModel = when (state) {
@@ -69,7 +67,6 @@ fun MailboxTopAppBar(
                 id = R.string.mailbox_toolbar_menu_button_content_description
             ),
             shouldShowActions = true,
-            notificationDotVisible = upgradeStorageState.notificationDotVisible,
             accountAvatarItem = state.primaryAvatarItem
         )
 
@@ -270,11 +267,9 @@ private data class UiModel(
 @Preview
 fun LoadingMailboxTopAppBarPreview() {
     val state = MailboxTopAppBarState.Loading
-    val upgradeStorageState = UpgradeStorageState(notificationDotVisible = false)
 
     MailboxTopAppBar(
         state = state,
-        upgradeStorageState = upgradeStorageState,
         actions = MailboxTopAppBar.Actions(
             onOpenMenu = {},
             onExitSelectionMode = {},

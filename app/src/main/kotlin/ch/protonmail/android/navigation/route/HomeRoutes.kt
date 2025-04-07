@@ -99,7 +99,6 @@ internal fun NavGraphBuilder.addMailbox(
                 onAccountAvatarClicked = {
                     navController.navigate(Destination.Screen.AccountsManager.route)
                 },
-                deleteAllConfirmed = { showFeatureMissingSnackbar() },
                 showMissingFeature = showFeatureMissingSnackbar
             ),
             onEvent = onEvent

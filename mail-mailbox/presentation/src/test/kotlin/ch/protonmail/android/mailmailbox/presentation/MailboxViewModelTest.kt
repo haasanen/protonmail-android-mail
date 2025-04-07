@@ -32,14 +32,12 @@ import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsUnread
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
-import ch.protonmail.android.mailconversation.domain.usecase.ObserveClearConversationOperation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
@@ -58,19 +56,13 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType.Conversation
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType.Message
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
-import ch.protonmail.android.mailmailbox.domain.model.StorageLimitPreference
-import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
-import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
-import ch.protonmail.android.mailmailbox.domain.usecase.ObserveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
-import ch.protonmail.android.mailmailbox.domain.usecase.SaveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.presentation.helper.MailboxAsyncPagingDataDiffer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxViewModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.SwipeActionsMapper
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
@@ -78,10 +70,8 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.StorageLimitState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActionsUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.SwipeUiModelSampleData
@@ -97,7 +87,6 @@ import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsUnread
 import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
-import ch.protonmail.android.mailmessage.domain.usecase.ObserveClearMessageOperation
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
@@ -106,7 +95,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.Upsellin
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
-import ch.protonmail.android.mailsettings.domain.usecase.IsAutoDeleteSpamAndTrashEnabled
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
@@ -137,7 +125,6 @@ import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.unmockkStatic
 import io.mockk.verify
-import io.mockk.verifyOrder
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -155,7 +142,6 @@ import me.proton.core.mailsettings.domain.entity.SwipeAction
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import me.proton.core.mailsettings.domain.entity.ViewMode.ConversationGrouping
 import me.proton.core.mailsettings.domain.entity.ViewMode.NoConversationGrouping
-import me.proton.core.plan.presentation.compose.usecase.ShouldUpgradeStorage
 import me.proton.core.test.kotlin.TestDispatcherProvider
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -188,14 +174,6 @@ class MailboxViewModelTest {
     private val observeSwipeActionsPreference = mockk<ObserveSwipeActionsPreference> {
         every { this@mockk(userId) } returns flowOf(SwipeActionsPreference(SwipeAction.MarkRead, SwipeAction.Archive))
         every { this@mockk(userId1) } returns flowOf(SwipeActionsPreference(SwipeAction.MarkRead, SwipeAction.Archive))
-    }
-    private val observeConversationClearOperation = mockk<ObserveClearConversationOperation> {
-        every { this@mockk(userId, any()) } returns flowOf(false)
-        every { this@mockk(userId1, any()) } returns flowOf(false)
-    }
-    private val observeMessageClearOperation = mockk<ObserveClearMessageOperation> {
-        every { this@mockk(userId, any()) } returns flowOf(false)
-        every { this@mockk(userId1, any()) } returns flowOf(false)
     }
 
     private val observeCurrentViewMode = mockk<ObserveCurrentViewMode> {
@@ -237,19 +215,6 @@ class MailboxViewModelTest {
     private val observePrimaryAccountAvatarItem = mockk<ObservePrimaryAccountAvatarItem> {
         every { this@mockk() } returns flowOf()
     }
-    private val observePrimaryUserAccountStorageStatus = mockk<ObservePrimaryUserAccountStorageStatus> {
-        every { this@mockk() } returns flowOf()
-    }
-    private val observeStorageLimitPreference = mockk<ObserveStorageLimitPreference> {
-        every { this@mockk() } returns flowOf()
-    }
-    private val saveStorageLimitPreference = mockk<SaveStorageLimitPreference> {
-        coEvery { saveFirstLimitWarningPreference(any()) } returns Unit.right()
-        coEvery { saveSecondLimitWarningPreference(any()) } returns Unit.right()
-    }
-    private val shouldUpgradeStorage = mockk<ShouldUpgradeStorage> {
-        every { this@mockk() } returns flowOf()
-    }
 
     private val observeFolderColorSettings = mockk<ObserveFolderColorSettings> {
         every { this@mockk(userId) } returns flowOf(
@@ -278,11 +243,6 @@ class MailboxViewModelTest {
         every { this@mockk() } returns flowOf()
     }
 
-    private val isAutoDeleteTrashAndSpamEnabled = mockk<IsAutoDeleteSpamAndTrashEnabled> {
-        coEvery { this@mockk(userId) } returns true
-        coEvery { this@mockk(userId1) } returns true
-    }
-
     private val mailboxViewModel by lazy {
         MailboxViewModel(
             mailboxPagerFactory = pagerFactory,
@@ -290,8 +250,6 @@ class MailboxViewModelTest {
             observePrimaryUserId = observePrimaryUserId,
             observeMailLabels = observeMailLabels,
             observeSwipeActionsPreference = observeSwipeActionsPreference,
-            observeClearMessageOperation = observeMessageClearOperation,
-            observeClearConversationOperation = observeConversationClearOperation,
             selectedMailLabelId = selectedMailLabelId,
             observeUnreadCounters = observeUnreadCounters,
             observeFolderColorSettings = observeFolderColorSettings,
@@ -315,16 +273,11 @@ class MailboxViewModelTest {
             mailboxReducer = mailboxReducer,
             dispatchersProvider = TestDispatcherProvider(),
             deleteSearchResults = deleteSearchResults,
-            observePrimaryUserAccountStorageStatus = observePrimaryUserAccountStorageStatus,
-            observeStorageLimitPreference = observeStorageLimitPreference,
-            saveStorageLimitPreference = saveStorageLimitPreference,
-            shouldUpgradeStorage = shouldUpgradeStorage,
             findLocalSystemLabelId = findLocalSystemLabelId,
             loadAvatarImage = loadAvatarImage,
             handleAvatarImageLoadingFailure = handleAvatarImageLoadingFailure,
             observeAvatarImageStates = observeAvatarImageStates,
             observePrimaryAccountAvatarItem = observePrimaryAccountAvatarItem,
-            isAutoDeleteTrashAndSpamEnabled = isAutoDeleteTrashAndSpamEnabled,
             isComposerEnabled = flowOf(true)
         )
     }
@@ -357,12 +310,9 @@ class MailboxViewModelTest {
             val expected = MailboxState(
                 mailboxListState = MailboxListState.Loading,
                 topAppBarState = MailboxTopAppBarState.Loading,
-                upgradeStorageState = UpgradeStorageState(false),
                 unreadFilterState = UnreadFilterState.Loading,
                 bottomAppBarState = BottomBarState.Data.Hidden(emptyList<ActionUiModel>().toImmutableList()),
                 deleteDialogState = DeleteDialogState.Hidden,
-                deleteAllDialogState = DeleteDialogState.Hidden,
-                storageLimitState = StorageLimitState.None,
                 bottomSheetState = null,
                 actionResult = Effect.empty(),
                 error = Effect.empty()
@@ -371,221 +321,6 @@ class MailboxViewModelTest {
             assertEquals(expected, actual)
 
             verify { pagerFactory wasNot Called }
-        }
-    }
-
-    @Test
-    fun `emits storage limit state when storage status and limit preferences are read`() = runTest {
-        // Given
-        val expectedStorageLimitState = MailboxStateSampleData.Loading.storageLimitState
-        val userAccountStorageStatus = UserAccountStorageStatus(5_000L, 10_000L)
-        val storageLimitPreference = StorageLimitPreference(
-            firstLimitWarningConfirmed = false,
-            secondLimitWarningConfirmed = false
-        )
-        coEvery { observePrimaryUserAccountStorageStatus() } returns flowOf(userAccountStorageStatus)
-        coEvery { observeStorageLimitPreference() } returns flowOf(storageLimitPreference.right())
-
-        // When
-        mailboxViewModel.state.test {
-            // Then
-            val actual = awaitItem()
-            assertEquals(expectedStorageLimitState, actual.storageLimitState)
-        }
-    }
-
-    @Test
-    fun `emits new storage limit state when user confirms first limit with do not remind again`() = runTest {
-        // Given
-        val initialState = MailboxStateSampleData.Loading.copy(
-            storageLimitState = StorageLimitState.Notifiable.FirstLimitOver(false)
-        )
-        val expectedState = MailboxStateSampleData.Loading.copy(
-            storageLimitState = StorageLimitState.Notifiable.FirstLimitOver(true)
-        )
-        val userAccountStorageStatus = UserAccountStorageStatus(8_001L, 10_000L)
-        val storageLimitPreference = StorageLimitPreference(
-            firstLimitWarningConfirmed = false,
-            secondLimitWarningConfirmed = false
-        )
-        coEvery { observePrimaryUserAccountStorageStatus() } returns flowOf(userAccountStorageStatus)
-        coEvery { observeStorageLimitPreference() } returns flowOf(storageLimitPreference.right())
-        coEvery { saveStorageLimitPreference.saveFirstLimitWarningPreference(true) } returns Unit.right()
-        coEvery { saveStorageLimitPreference.saveSecondLimitWarningPreference(any()) } returns Unit.right()
-
-        every {
-            mailboxReducer.newStateFrom(
-                any(),
-                MailboxEvent.StorageLimitStatusChanged(userAccountStorageStatus, storageLimitPreference)
-            )
-        } returns initialState
-        every {
-            mailboxReducer.newStateFrom(
-                any(),
-                MailboxViewAction.StorageLimitDoNotRemind
-            )
-        } returns expectedState
-        // When
-        mailboxViewModel.state.test {
-            // Then
-            assertEquals(initialState, awaitItem())
-
-            // When
-            mailboxViewModel.submit(MailboxViewAction.StorageLimitDoNotRemind)
-
-            // Then
-            assertEquals(expectedState, awaitItem())
-            coVerify { saveStorageLimitPreference.saveFirstLimitWarningPreference(true) }
-            coVerify(exactly = 0) { saveStorageLimitPreference.saveSecondLimitWarningPreference(any()) }
-        }
-    }
-
-    @Test
-    fun `emits new storage limit state when user confirms second limit with do not remind again`() = runTest {
-        // Given
-        val initialState = MailboxStateSampleData.Loading.copy(
-            storageLimitState = StorageLimitState.Notifiable.SecondLimitOver(false)
-        )
-        val expectedState = MailboxStateSampleData.Loading.copy(
-            storageLimitState = StorageLimitState.Notifiable.SecondLimitOver(true)
-        )
-        val userAccountStorageStatus = UserAccountStorageStatus(9_001L, 10_000L)
-        val storageLimitPreference = StorageLimitPreference(
-            firstLimitWarningConfirmed = false,
-            secondLimitWarningConfirmed = false
-        )
-        coEvery { observePrimaryUserAccountStorageStatus() } returns flowOf(userAccountStorageStatus)
-        coEvery { observeStorageLimitPreference() } returns flowOf(storageLimitPreference.right())
-        coEvery { saveStorageLimitPreference.saveFirstLimitWarningPreference(any()) } returns Unit.right()
-        coEvery { saveStorageLimitPreference.saveSecondLimitWarningPreference(true) } returns Unit.right()
-
-        every {
-            mailboxReducer.newStateFrom(
-                any(),
-                MailboxEvent.StorageLimitStatusChanged(userAccountStorageStatus, storageLimitPreference)
-            )
-        } returns initialState
-        every {
-            mailboxReducer.newStateFrom(
-                any(),
-                MailboxViewAction.StorageLimitDoNotRemind
-            )
-        } returns expectedState
-        // When
-        mailboxViewModel.state.test {
-            // Then
-            assertEquals(initialState, awaitItem())
-
-            // When
-            mailboxViewModel.submit(MailboxViewAction.StorageLimitDoNotRemind)
-
-            // Then
-            assertEquals(expectedState, awaitItem())
-            coVerify { saveStorageLimitPreference.saveSecondLimitWarningPreference(true) }
-            coVerify(exactly = 0) { saveStorageLimitPreference.saveFirstLimitWarningPreference(any()) }
-        }
-    }
-
-    @Test
-    fun `emits new storage limit state when user confirms with ok button`() = runTest {
-        // Given
-        val initialState = MailboxStateSampleData.Loading.copy(
-            storageLimitState = StorageLimitState.Notifiable.QuotaOver(false)
-        )
-        val expectedState = MailboxStateSampleData.Loading.copy(
-            storageLimitState = StorageLimitState.Notifiable.QuotaOver(true)
-        )
-        val userAccountStorageStatus = UserAccountStorageStatus(10_001L, 10_000L)
-        val storageLimitPreference = StorageLimitPreference(
-            firstLimitWarningConfirmed = false,
-            secondLimitWarningConfirmed = false
-        )
-        coEvery { observePrimaryUserAccountStorageStatus() } returns flowOf(userAccountStorageStatus)
-        coEvery { observeStorageLimitPreference() } returns flowOf(storageLimitPreference.right())
-        every {
-            mailboxReducer.newStateFrom(
-                any(),
-                MailboxEvent.StorageLimitStatusChanged(userAccountStorageStatus, storageLimitPreference)
-            )
-        } returns initialState
-        every {
-            mailboxReducer.newStateFrom(
-                any(),
-                MailboxViewAction.StorageLimitConfirmed
-            )
-        } returns expectedState
-        // When
-        mailboxViewModel.state.test {
-            // Then
-            assertEquals(initialState, awaitItem())
-
-            // When
-            mailboxViewModel.submit(MailboxViewAction.StorageLimitConfirmed)
-
-            // Then
-            assertEquals(expectedState, awaitItem())
-        }
-    }
-
-
-    @Test
-    fun `revokes first storage limit confirmation when storage status is below first limit`() = runTest {
-        // Given
-        val initialState = MailboxStateSampleData.Loading.copy(
-            storageLimitState = StorageLimitState.Notifiable.FirstLimitOver(true)
-        )
-        val userAccountStorageStatus = UserAccountStorageStatus(5_000L, 10_000L)
-        val storageLimitPreference = StorageLimitPreference(
-            firstLimitWarningConfirmed = true,
-            secondLimitWarningConfirmed = false
-        )
-        coEvery { observePrimaryUserAccountStorageStatus() } returns flowOf(userAccountStorageStatus)
-        coEvery { observeStorageLimitPreference() } returns flowOf(storageLimitPreference.right())
-        coEvery { saveStorageLimitPreference.saveFirstLimitWarningPreference(false) } returns Unit.right()
-
-        every {
-            mailboxReducer.newStateFrom(
-                any(),
-                MailboxEvent.StorageLimitStatusChanged(userAccountStorageStatus, storageLimitPreference)
-            )
-        } returns initialState
-
-        // When
-        mailboxViewModel.state.test {
-            // Then
-            assertEquals(initialState, awaitItem())
-            coVerify { saveStorageLimitPreference.saveFirstLimitWarningPreference(false) }
-        }
-    }
-
-
-    @Test
-    fun `revokes second storage limit confirmation when storage status is below second limit`() = runTest {
-        // Given
-        val initialState = MailboxStateSampleData.Loading.copy(
-            storageLimitState = StorageLimitState.Notifiable.SecondLimitOver(true)
-        )
-        val userAccountStorageStatus = UserAccountStorageStatus(5_000L, 10_000L)
-        val storageLimitPreference = StorageLimitPreference(
-            firstLimitWarningConfirmed = true,
-            secondLimitWarningConfirmed = true
-        )
-        coEvery { observePrimaryUserAccountStorageStatus() } returns flowOf(userAccountStorageStatus)
-        coEvery { observeStorageLimitPreference() } returns flowOf(storageLimitPreference.right())
-        coEvery { saveStorageLimitPreference.saveSecondLimitWarningPreference(false) } returns Unit.right()
-
-        every {
-            mailboxReducer.newStateFrom(
-                any(),
-                MailboxEvent.StorageLimitStatusChanged(userAccountStorageStatus, storageLimitPreference)
-            )
-        } returns initialState
-
-        // When
-        mailboxViewModel.state.test {
-            // Then
-            assertEquals(initialState, awaitItem())
-            coVerify { saveStorageLimitPreference.saveSecondLimitWarningPreference(false) }
         }
     }
 
@@ -656,21 +391,6 @@ class MailboxViewModelTest {
             // Then
             assertEquals(intermediateState, awaitItem())
             assertEquals(expectedState, awaitItem())
-
-            awaitItem() // swipe gestures
-
-            verifyOrder {
-                mailboxReducer.newStateFrom(any(), MailboxEvent.NewLabelSelected(expectedMailLabel, expectedCount))
-                mailboxReducer.newStateFrom(
-                    currentState = intermediateState,
-                    operation = MailboxEvent.MessageBottomBarEvent(
-                        BottomBarEvent.ActionsData(
-                            listOf(ActionUiModelSample.Archive, ActionUiModelSample.Trash)
-                                .toImmutableList()
-                        )
-                    )
-                )
-            }
         }
     }
 
@@ -689,7 +409,6 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden,
                 shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
@@ -708,22 +427,6 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = expectedSwipeActions,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
-            )
-        )
-        val expectedStateAfterClearAllStatus = expectedStateWithSwipeGestures.copy(
-            mailboxListState = MailboxListState.Data.ViewMode(
-                currentMailLabel = modifiedMailLabel,
-                openItemEffect = Effect.empty(),
-                scrollToMailboxTop = Effect.of(initialMailLabel.id),
-                offlineEffect = Effect.empty(),
-                refreshErrorEffect = Effect.empty(),
-                refreshRequested = false,
-                swipeActions = expectedSwipeActions,
-                searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Visible.InfoBanner(TextUiModel("Clear Info")),
                 shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
@@ -748,14 +451,6 @@ class MailboxViewModelTest {
         every {
             mailboxReducer.newStateFrom(expectedState, MailboxEvent.SwipeActionsChanged(expectedSwipeActions))
         } returns expectedStateWithSwipeGestures
-        every {
-            mailboxReducer.newStateFrom(
-                expectedStateWithSwipeGestures,
-                MailboxEvent.ClearAllOperationStatus(
-                    ClearAllState.ClearAllActionBanner
-                )
-            )
-        } returns expectedStateAfterClearAllStatus
 
         mailboxViewModel.state.test {
             awaitItem()
@@ -766,7 +461,6 @@ class MailboxViewModelTest {
             // Then
             assertEquals(expectedState, awaitItem())
             assertEquals(expectedStateWithSwipeGestures, awaitItem())
-            assertEquals(expectedStateAfterClearAllStatus, awaitItem())
         }
     }
 
@@ -784,7 +478,6 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden,
                 shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
@@ -803,22 +496,6 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = expectedSwipeActions,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
-            )
-        )
-        val expectedStateAfterClearAllStatus = expectedStateWithSwipeGestures.copy(
-            mailboxListState = MailboxListState.Data.ViewMode(
-                currentMailLabel = initialMailLabel,
-                openItemEffect = Effect.empty(),
-                scrollToMailboxTop = Effect.of(initialMailLabel.id),
-                offlineEffect = Effect.empty(),
-                refreshErrorEffect = Effect.empty(),
-                refreshRequested = false,
-                swipeActions = expectedSwipeActions,
-                searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Visible.InfoBanner(TextUiModel("Clear Info")),
                 shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
@@ -846,14 +523,6 @@ class MailboxViewModelTest {
         every {
             mailboxReducer.newStateFrom(any(), MailboxEvent.SwipeActionsChanged(expectedSwipeActions))
         } returns expectedStateWithSwipeGestures
-        every {
-            mailboxReducer.newStateFrom(
-                any(),
-                MailboxEvent.ClearAllOperationStatus(
-                    ClearAllState.ClearAllActionBanner
-                )
-            )
-        } returns expectedStateAfterClearAllStatus
 
         mailboxViewModel.state.test {
             awaitItem()
@@ -866,7 +535,6 @@ class MailboxViewModelTest {
             assertEquals(MailboxStateSampleData.Loading, awaitItem())
             assertEquals(expectedState, awaitItem())
             assertEquals(expectedStateWithSwipeGestures, awaitItem())
-            assertEquals(expectedStateAfterClearAllStatus, awaitItem())
         }
     }
 
@@ -884,7 +552,6 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden,
                 shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
@@ -1444,7 +1111,6 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden,
                 shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
@@ -1477,7 +1143,6 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden,
                 shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
@@ -1510,7 +1175,6 @@ class MailboxViewModelTest {
                 refreshRequested = true,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden,
                 shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
@@ -2099,161 +1763,6 @@ class MailboxViewModelTest {
                 )
             }
             coVerify { deleteConversations wasNot Called }
-        }
-    }
-
-    @Test
-    fun `when delete all is triggered from trash for no conversation grouping, then reducer is called`() = runTest {
-        // Given
-        val currentMailLabel = MailLabelTestData.trashSystemLabel.id
-        val initialState = createMailboxDataState(selectedMailLabelId = currentMailLabel)
-        every { selectedMailLabelId.flow } returns MutableStateFlow(currentMailLabel)
-        expectedSelectedLabelCountStateChange(initialState)
-        expectViewModeForCurrentLocation(NoConversationGrouping)
-
-        mailboxViewModel.state.test {
-            awaitItem() // First emission for selected user
-
-            // When
-            mailboxViewModel.submit(MailboxViewAction.DeleteAll)
-
-            // Then
-            coVerify {
-                mailboxReducer.newStateFrom(
-                    any(),
-                    MailboxEvent.DeleteAll(NoConversationGrouping, currentMailLabel.labelId)
-                )
-                deleteMessages wasNot Called
-                deleteConversations wasNot Called
-            }
-        }
-    }
-
-    @Test
-    fun `when delete all is triggered from spam for no conversation grouping, then reducer is called`() = runTest {
-        // Given
-        val currentMailLabel = MailLabelTestData.spamSystemLabel.id
-        val initialState = createMailboxDataState(selectedMailLabelId = currentMailLabel)
-        every { selectedMailLabelId.flow } returns MutableStateFlow(currentMailLabel)
-        expectedSelectedLabelCountStateChange(initialState)
-        expectViewModeForCurrentLocation(NoConversationGrouping)
-
-        mailboxViewModel.state.test {
-            awaitItem() // First emission for selected user
-
-            // When
-            mailboxViewModel.submit(MailboxViewAction.DeleteAll)
-
-            // Then
-            coVerify {
-                mailboxReducer.newStateFrom(
-                    any(),
-                    MailboxEvent.DeleteAll(NoConversationGrouping, currentMailLabel.labelId)
-                )
-                deleteMessages wasNot Called
-                deleteConversations wasNot Called
-            }
-        }
-    }
-
-    @Test
-    fun `when delete all is triggered from non spam or trash location, then no new state is emitted`() = runTest {
-        // Given
-        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
-        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.inboxSystemLabel.id)
-        expectedSelectedLabelCountStateChange(initialState)
-
-        mailboxViewModel.state.test {
-            awaitItem() // First emission for selected user
-
-            // When
-            mailboxViewModel.submit(MailboxViewAction.DeleteAll)
-
-            // Then
-            coVerify(exactly = 0) { mailboxReducer.newStateFrom(any(), MailboxViewAction.DeleteAll) }
-            coVerify {
-                deleteMessages wasNot Called
-                deleteConversations wasNot Called
-            }
-        }
-    }
-
-    @Test
-    fun `when delete all is triggered for no conversation grouping then delete messages is called with label`() =
-        runTest {
-            // Given
-            val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.trashSystemLabel.id)
-            every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.trashSystemLabel.id)
-            expectedSelectedLabelCountStateChange(initialState)
-            expectDeleteMessagesSucceeds(userId, SystemLabelId.Trash.labelId)
-            expectViewModeForCurrentLocation(NoConversationGrouping)
-            returnExpectedStateForDeleteAllConfirmed(initialState, NoConversationGrouping)
-            expectPagerMock()
-
-            mailboxViewModel.state.test {
-                awaitItem() // First emission for selected user
-
-                // When
-                mailboxViewModel.submit(MailboxViewAction.DeleteAllConfirmed)
-
-                // Then
-                assertEquals(initialState, awaitItem())
-                coVerify(exactly = 1) {
-                    deleteMessages(userId, SystemLabelId.Trash.labelId)
-                }
-                coVerify { deleteConversations wasNot Called }
-            }
-        }
-
-    @Test
-    fun `when delete all is triggered for conversation grouping then delete conversation is called with label`() =
-        runTest {
-            // Given
-            val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.trashSystemLabel.id)
-            every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.trashSystemLabel.id)
-            expectedSelectedLabelCountStateChange(initialState)
-            expectDeleteConversationsSucceeds(userId, SystemLabelId.Trash.labelId)
-            expectViewModeForCurrentLocation(ConversationGrouping)
-            returnExpectedStateForDeleteAllConfirmed(initialState, ConversationGrouping)
-            expectPagerMock()
-
-            mailboxViewModel.state.test {
-                awaitItem() // First emission for selected user
-
-                // When
-                mailboxViewModel.submit(MailboxViewAction.DeleteAllConfirmed)
-
-                // Then
-                assertEquals(initialState, awaitItem())
-                coVerify(exactly = 1) {
-                    deleteConversations(userId, SystemLabelId.Trash.labelId)
-                }
-                coVerify { deleteMessages wasNot Called }
-            }
-        }
-
-    @Test
-    fun `when delete all is triggered from non spam and trash location no action is performed`() = runTest {
-        // Given
-        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
-        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.inboxSystemLabel.id)
-        expectedSelectedLabelCountStateChange(initialState)
-        returnExpectedStateForDeleteAllDismissed(initialState)
-        expectPagerMock()
-
-        mailboxViewModel.state.test {
-            awaitItem() // First emission for selected user
-
-            // When
-            mailboxViewModel.submit(MailboxViewAction.DeleteAllConfirmed)
-
-            // Then
-            assertEquals(initialState, awaitItem())
-            coVerify {
-                mailboxReducer.newStateFrom(any(), MailboxViewAction.DeleteAllDialogDismissed)
-                deleteMessages wasNot Called
-                deleteConversations wasNot Called
-            }
         }
     }
 
@@ -3078,7 +2587,6 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden,
                 shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             ),
@@ -3102,7 +2610,6 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NewSearch,
-                clearState = MailboxListState.Data.ClearState.Hidden,
                 shouldShowFab = false,
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
@@ -3137,7 +2644,6 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden,
                 shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
@@ -3175,7 +2681,6 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.SearchLoading,
-                clearState = MailboxListState.Data.ClearState.Hidden,
                 shouldShowFab = false,
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
@@ -3209,7 +2714,6 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.SearchData,
-                clearState = MailboxListState.Data.ClearState.Hidden,
                 shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
@@ -3471,16 +2975,6 @@ class MailboxViewModelTest {
         } returns expectedState
     }
 
-    private fun returnExpectedStateForDeleteAllConfirmed(expectedState: MailboxState, viewMode: ViewMode) {
-        every {
-            mailboxReducer.newStateFrom(any(), MailboxEvent.DeleteAllConfirmed(viewMode))
-        } returns expectedState
-    }
-
-    private fun returnExpectedStateForDeleteAllDismissed(expectedState: MailboxState) {
-        every { mailboxReducer.newStateFrom(any(), MailboxViewAction.DeleteAllDialogDismissed) } returns expectedState
-    }
-
     private fun returnExpectedStateForDeleteDismissed(intermediateState: MailboxState, expectedState: MailboxState) {
         every {
             mailboxReducer.newStateFrom(intermediateState, MailboxViewAction.DeleteDialogDismissed)
@@ -3539,20 +3033,12 @@ class MailboxViewModelTest {
         coEvery { deleteConversations(userId, items.map { ConversationId(it.id) }) } returns Unit.right()
     }
 
-    private fun expectDeleteConversationsSucceeds(userId: UserId, labelId: LabelId) {
-        coJustRun { deleteConversations(userId, labelId) }
-    }
-
     private fun expectDeleteMessagesSucceeds(
         userId: UserId,
         items: List<MailboxItemUiModel>,
         labelId: LabelId
     ) {
         coEvery { deleteMessages(userId, items.map { MessageId(it.id) }, labelId) } returns Unit.right()
-    }
-
-    private fun expectDeleteMessagesSucceeds(userId: UserId, labelId: LabelId) {
-        coJustRun { deleteMessages(userId, labelId) }
     }
 
     private fun expectedStarMessagesSucceeds(userId: UserId, items: List<MailboxItemUiModel>) {

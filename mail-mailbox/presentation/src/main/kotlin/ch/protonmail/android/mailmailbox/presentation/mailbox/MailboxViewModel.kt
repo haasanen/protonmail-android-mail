@@ -46,7 +46,6 @@ import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsUnread
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
-import ch.protonmail.android.mailconversation.domain.usecase.ObserveClearConversationOperation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
@@ -54,9 +53,7 @@ import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.model.isTrashOrSpam
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
@@ -68,20 +65,12 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
-import ch.protonmail.android.mailmailbox.domain.model.StorageLimitPreference
-import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
-import ch.protonmail.android.mailmailbox.domain.model.isBelowFirstLimit
-import ch.protonmail.android.mailmailbox.domain.model.isBelowSecondLimit
 import ch.protonmail.android.mailmailbox.domain.model.toMailboxItemType
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
-import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
-import ch.protonmail.android.mailmailbox.domain.usecase.ObserveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
-import ch.protonmail.android.mailmailbox.domain.usecase.SaveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.SwipeActionsMapper
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
@@ -89,9 +78,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.StorageLimitState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -104,7 +91,6 @@ import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsUnread
 import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
-import ch.protonmail.android.mailmessage.domain.usecase.ObserveClearMessageOperation
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
@@ -113,7 +99,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAc
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.mailsettings.domain.usecase.IsAutoDeleteSpamAndTrashEnabled
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -128,18 +113,15 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.proton.android.core.accountmanager.domain.usecase.ObservePrimaryAccountAvatarItem
 import me.proton.core.domain.entity.UserId
 import me.proton.core.mailsettings.domain.entity.ViewMode
-import me.proton.core.plan.presentation.compose.usecase.ShouldUpgradeStorage
 import me.proton.core.util.kotlin.DispatcherProvider
 import me.proton.core.util.kotlin.exhaustive
 import timber.log.Timber
@@ -153,8 +135,6 @@ class MailboxViewModel @Inject constructor(
     observePrimaryUserId: ObservePrimaryUserId,
     private val observeMailLabels: ObserveMailLabels,
     private val observeSwipeActionsPreference: ObserveSwipeActionsPreference,
-    private val observeClearMessageOperation: ObserveClearMessageOperation,
-    private val observeClearConversationOperation: ObserveClearConversationOperation,
     private val selectedMailLabelId: SelectedMailLabelId,
     private val observeUnreadCounters: ObserveUnreadCounters,
     private val observeFolderColorSettings: ObserveFolderColorSettings,
@@ -178,16 +158,11 @@ class MailboxViewModel @Inject constructor(
     private val mailboxReducer: MailboxReducer,
     private val dispatchersProvider: DispatcherProvider,
     private val deleteSearchResults: DeleteSearchResults,
-    private val observePrimaryUserAccountStorageStatus: ObservePrimaryUserAccountStorageStatus,
-    private val observeStorageLimitPreference: ObserveStorageLimitPreference,
-    private val saveStorageLimitPreference: SaveStorageLimitPreference,
-    private val shouldUpgradeStorage: ShouldUpgradeStorage,
     private val findLocalSystemLabelId: FindLocalSystemLabelId,
     private val loadAvatarImage: LoadAvatarImage,
     private val handleAvatarImageLoadingFailure: HandleAvatarImageLoadingFailure,
     private val observeAvatarImageStates: ObserveAvatarImageStates,
     private val observePrimaryAccountAvatarItem: ObservePrimaryAccountAvatarItem,
-    private val isAutoDeleteTrashAndSpamEnabled: IsAutoDeleteSpamAndTrashEnabled,
     @ComposerEnabled val isComposerEnabled: Flow<Boolean>
 ) : ViewModel() {
 
@@ -229,10 +204,7 @@ class MailboxViewModel @Inject constructor(
                 emitNewStateFrom(MailboxEvent.NewLabelSelected(currentMailLabel, currentLabelCount))
             }
             .flatMapLatest { (currentMailLabel, _, userId) ->
-                merge(
-                    handleSwipeActionPreferences(userId, currentMailLabel),
-                    observeClearAllOperation(userId, currentMailLabel.id)
-                )
+                handleSwipeActionPreferences(userId, currentMailLabel)
             }
             .onEach {
                 emitNewStateFrom(it)
@@ -270,38 +242,6 @@ class MailboxViewModel @Inject constructor(
             }
             .launchIn(viewModelScope)
 
-        combine(
-            observePrimaryUserAccountStorageStatus(),
-            observeStorageLimitPreference()
-        ) { storageStatus, storageLimitPreference ->
-
-            storageLimitPreference.fold(
-                ifLeft = { null },
-                ifRight = { preference ->
-                    revokeStorageConfirmationsIfNeeded(storageStatus, preference)
-
-                    MailboxEvent.StorageLimitStatusChanged(
-                        userAccountStorageStatus = storageStatus,
-                        storageLimitPreference = preference
-                    )
-                }
-            )
-        }
-            .filterNotNull()
-            .distinctUntilChanged()
-            .onEach { emitNewStateFrom(it) }
-            .launchIn(viewModelScope)
-
-        shouldUpgradeStorage()
-            .onEach {
-                emitNewStateFrom(
-                    MailboxEvent.UpgradeStorageStatusChanged(
-                        notificationDotVisible = it != ShouldUpgradeStorage.Result.NoUpgrade
-                    )
-                )
-            }
-            .launchIn(viewModelScope)
-
         observeAvatarImageStates()
             .onEach { avatarImageStates ->
                 emitNewStateFrom(MailboxEvent.AvatarImageStatesUpdated(avatarImageStates))
@@ -322,34 +262,10 @@ class MailboxViewModel @Inject constructor(
             .distinctUntilChanged()
     }
 
-    private fun observeClearAllOperation(userId: UserId, currentMailLabel: MailLabelId): Flow<MailboxEvent> {
-        return combine(
-            observeClearMessageOperation(userId, currentMailLabel.labelId),
-            observeClearConversationOperation(userId, currentMailLabel.labelId)
-        ) { messageOperation, conversationOperation ->
-
-            val clearAllState = when {
-                isAutoDeleteTrashAndSpamEnabled(userId) ->
-                    if (messageOperation || conversationOperation) {
-                        ClearAllState.ClearAllInProgress
-                    } else {
-                        ClearAllState.ClearAllActionBanner
-                    }
-
-                else -> ClearAllState.UpsellBanner
-            }
-
-            MailboxEvent.ClearAllOperationStatus(clearAllState)
-        }.distinctUntilChanged()
-    }
-
     @SuppressWarnings("ComplexMethod", "LongMethod")
     internal fun submit(viewAction: MailboxViewAction) {
         viewModelScope.launch {
             when (viewAction) {
-                is MailboxViewAction.StorageLimitDoNotRemind -> handleStorageLimitDoNotRemind(viewAction)
-                is MailboxViewAction.StorageLimitConfirmed -> emitNewStateFrom(viewAction)
-
                 is MailboxViewAction.ExitSelectionMode,
                 is MailboxViewAction.DisableUnreadFilter,
                 is MailboxViewAction.EnableUnreadFilter -> emitNewStateFrom(viewAction)
@@ -392,9 +308,6 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.ExitSearchMode -> handleExitSearchMode(viewAction)
                 is MailboxViewAction.SearchQuery -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.SearchResult -> emitNewStateFrom(viewAction)
-                is MailboxViewAction.DeleteAll -> handleClearAllAction()
-                is MailboxViewAction.DeleteAllConfirmed -> handleClearAllConfirmedAction()
-                is MailboxViewAction.DeleteAllDialogDismissed -> handleClearAllDialogDismissed(viewAction)
                 is MailboxViewAction.RequestUpsellingBottomSheet -> showUpsellingBottomSheet(viewAction)
                 is MailboxViewAction.NavigateToInboxLabel ->
                     selectedMailLabelId.set(MailLabelId.System(SystemLabelId.Inbox.labelId))
@@ -416,46 +329,6 @@ class MailboxViewModel @Inject constructor(
 
     private fun handleDeselectAllAction() {
         emitNewStateFrom(MailboxEvent.AllItemsDeselected)
-    }
-
-    private fun revokeStorageConfirmationsIfNeeded(
-        storageStatus: UserAccountStorageStatus,
-        storageQuotaPreference: StorageLimitPreference
-    ) {
-        if (storageStatus.isBelowSecondLimit() && storageQuotaPreference.secondLimitWarningConfirmed) {
-            viewModelScope.launch {
-                saveStorageLimitPreference.saveSecondLimitWarningPreference(false)
-            }
-        }
-
-        if (storageStatus.isBelowFirstLimit() && storageQuotaPreference.firstLimitWarningConfirmed) {
-            viewModelScope.launch {
-                saveStorageLimitPreference.saveFirstLimitWarningPreference(false)
-            }
-        }
-    }
-
-    private fun handleStorageLimitDoNotRemind(viewAction: MailboxViewAction) {
-        emitNewStateFrom(viewAction)
-
-        when (state.value.storageLimitState) {
-            is StorageLimitState.Notifiable.FirstLimitOver -> {
-                viewModelScope.launch {
-                    saveStorageLimitPreference.saveFirstLimitWarningPreference(true)
-                }
-            }
-
-            is StorageLimitState.Notifiable.SecondLimitOver -> {
-                viewModelScope.launch {
-                    saveStorageLimitPreference.saveSecondLimitWarningPreference(true)
-                }
-            }
-
-            else -> {
-                Timber.w("StorageLimitDoNotRemind not supported in state: ${state.value.storageLimitState}")
-            }
-        }
-
     }
 
     private suspend fun handleExitSearchMode(viewAction: MailboxViewAction) {
@@ -1025,44 +898,6 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
-    private fun handleClearAllDialogDismissed(viewAction: MailboxViewAction) {
-        emitNewStateFrom(viewAction)
-    }
-
-    private suspend fun handleClearAllAction() {
-        val currentLabel = observeCurrentMailLabel().first() as? MailLabel.System
-        if (currentLabel?.isTrashOrSpam() != true) {
-            Timber.e("Clear all action is only supported for Trash and Spam")
-            return
-        }
-
-        emitNewStateFrom(
-            MailboxEvent.DeleteAll(
-                getViewModeForCurrentLocation(selectedMailLabelId.flow.value),
-                currentLabel.systemLabelId.labelId
-            )
-        )
-    }
-
-    private suspend fun handleClearAllConfirmedAction() {
-        val currentLabel = observeCurrentMailLabel().first() as? MailLabel.System
-        if (currentLabel?.isTrashOrSpam() != true) {
-            Timber.e("Clear all action is only supported for Trash and Spam")
-            emitNewStateFrom(MailboxViewAction.DeleteAllDialogDismissed)
-            return
-        }
-
-        val userId = primaryUserId.filterNotNull().first()
-        val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
-
-        emitNewStateFrom(MailboxEvent.DeleteAllConfirmed(viewMode))
-
-        when (viewMode) {
-            ViewMode.ConversationGrouping -> deleteConversations(userId, currentLabel.id.labelId)
-            ViewMode.NoConversationGrouping -> deleteMessages(userId, currentLabel.id.labelId)
-        }
-    }
-
     private suspend fun handleStarAction(viewAction: MailboxViewAction) {
         val selectionModeDataState = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
         if (selectionModeDataState == null) {
@@ -1130,19 +965,11 @@ class MailboxViewModel @Inject constructor(
     }.filterNotNull()
 
     private fun observeUnreadCounters(): Flow<List<UnreadCounter>> = primaryUserId.flatMapLatest { userId ->
-        if (userId == null) {
-            flowOf(emptyList())
-        } else {
-            observeUnreadCounters(userId)
-        }
+        observeUnreadCounters(userId)
     }
 
     private fun observeMailLabels() = primaryUserId.flatMapLatest { userId ->
-        if (userId == null) {
-            flowOf(MailLabels.Initial)
-        } else {
-            observeMailLabels(userId)
-        }
+        observeMailLabels(userId)
     }
 
     private suspend fun getPreferredViewMode(): ViewMode {
@@ -1233,12 +1060,9 @@ class MailboxViewModel @Inject constructor(
         val initialState = MailboxState(
             mailboxListState = MailboxListState.Loading,
             topAppBarState = MailboxTopAppBarState.Loading,
-            upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
             unreadFilterState = UnreadFilterState.Loading,
             bottomAppBarState = BottomBarState.Data.Hidden(emptyList<ActionUiModel>().toImmutableList()),
             deleteDialogState = DeleteDialogState.Hidden,
-            deleteAllDialogState = DeleteDialogState.Hidden,
-            storageLimitState = StorageLimitState.None,
             bottomSheetState = null,
             actionResult = Effect.empty(),
             error = Effect.empty()

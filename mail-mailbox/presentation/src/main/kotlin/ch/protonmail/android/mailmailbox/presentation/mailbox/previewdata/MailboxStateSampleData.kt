@@ -35,13 +35,11 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListS
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearchState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.StorageLimitState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActionsUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
+import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import kotlinx.collections.immutable.toImmutableList
-import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
 
 object MailboxStateSampleData {
 
@@ -66,14 +64,11 @@ object MailboxStateSampleData {
     val Loading = MailboxState(
         mailboxListState = MailboxListState.Loading,
         topAppBarState = MailboxTopAppBarState.Loading,
-        upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
         unreadFilterState = UnreadFilterState.Loading,
         bottomAppBarState = BottomBarState.Loading,
         actionResult = Effect.empty(),
         deleteDialogState = DeleteDialogState.Hidden,
-        deleteAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
-        storageLimitState = StorageLimitState.HasEnoughSpace,
         error = Effect.empty()
     )
 
@@ -98,7 +93,6 @@ object MailboxStateSampleData {
             currentLabelName = inboxDynamicLabel.text(),
             primaryAvatarItem = null
         ),
-        upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
         unreadFilterState = UnreadFilterState.Data(
             isFilterEnabled = false,
             numUnread = 1
@@ -108,9 +102,7 @@ object MailboxStateSampleData {
         ),
         actionResult = Effect.empty(),
         deleteDialogState = DeleteDialogState.Hidden,
-        deleteAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
-        storageLimitState = StorageLimitState.HasEnoughSpace,
         error = Effect.empty()
     )
 
@@ -135,7 +127,6 @@ object MailboxStateSampleData {
             currentLabelName = allMailDynamicLabel.text(),
             primaryAvatarItem = null
         ),
-        upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
         unreadFilterState = UnreadFilterState.Data(
             isFilterEnabled = false,
             numUnread = 1
@@ -145,9 +136,7 @@ object MailboxStateSampleData {
         ),
         actionResult = Effect.empty(),
         deleteDialogState = DeleteDialogState.Hidden,
-        deleteAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
-        storageLimitState = StorageLimitState.HasEnoughSpace,
         error = Effect.empty()
     )
 
@@ -184,7 +173,6 @@ object MailboxStateSampleData {
             selectedCount = selectedMailboxItemUiModels.size,
             primaryAvatarItem = null
         ),
-        upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
         unreadFilterState = UnreadFilterState.Data(
             isFilterEnabled = false,
             numUnread = 1
@@ -194,9 +182,7 @@ object MailboxStateSampleData {
         ),
         actionResult = Effect.empty(),
         deleteDialogState = DeleteDialogState.Hidden,
-        deleteAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = bottomSheetState,
-        storageLimitState = StorageLimitState.HasEnoughSpace,
         error = error
     )
 }

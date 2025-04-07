@@ -25,7 +25,6 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
@@ -33,9 +32,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.StorageLimitState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
@@ -46,8 +43,6 @@ class MailboxReducer @Inject constructor(
     private val topAppBarReducer: MailboxTopAppBarReducer,
     private val unreadFilterReducer: MailboxUnreadFilterReducer,
     private val bottomAppBarReducer: BottomBarReducer,
-    private val storageLimitReducer: StorageLimitReducer,
-    private val upgradeStorageReducer: UpgradeStorageReducer,
     private val actionMessageReducer: MailboxActionMessageReducer,
     private val deleteDialogReducer: MailboxDeleteDialogReducer,
     private val bottomSheetReducer: BottomSheetReducer
@@ -57,12 +52,9 @@ class MailboxReducer @Inject constructor(
         currentState.copy(
             mailboxListState = currentState.toNewMailboxListStateFrom(operation),
             topAppBarState = currentState.toNewTopAppBarStateFrom(operation),
-            upgradeStorageState = currentState.toNewStorageSplitStateFrom(operation),
             unreadFilterState = currentState.toNewUnreadFilterStateFrom(operation),
             bottomAppBarState = currentState.toNewBottomAppBarStateFrom(operation),
-            storageLimitState = currentState.toNewStorageLimitStateFrom(operation),
             deleteDialogState = currentState.toNewDeleteActionStateFrom(operation),
-            deleteAllDialogState = currentState.toNewDeleteAllActionStateFrom(operation),
             bottomSheetState = currentState.toNewBottomSheetState(operation),
             actionResult = currentState.toNewActionMessageStateFrom(operation),
             error = currentState.toNewErrorBarState(operation)
@@ -112,22 +104,6 @@ class MailboxReducer @Inject constructor(
         }
     }
 
-    private fun MailboxState.toNewStorageLimitStateFrom(operation: MailboxOperation): StorageLimitState {
-        return if (operation is MailboxOperation.AffectingStorageLimit) {
-            storageLimitReducer.newStateFrom(this.storageLimitState, operation)
-        } else {
-            storageLimitState
-        }
-    }
-
-    private fun MailboxState.toNewStorageSplitStateFrom(operation: MailboxOperation): UpgradeStorageState {
-        return if (operation is MailboxOperation.AffectingUpgradeStorage) {
-            upgradeStorageReducer.newStateFrom(operation)
-        } else {
-            upgradeStorageState
-        }
-    }
-
     private fun MailboxState.toNewActionMessageStateFrom(operation: MailboxOperation): Effect<ActionResult> {
         return if (operation is MailboxOperation.AffectingActionMessage) {
             actionMessageReducer.newStateFrom(operation)
@@ -141,32 +117,6 @@ class MailboxReducer @Inject constructor(
             deleteDialogReducer.newStateFrom(operation)
         } else {
             deleteDialogState
-        }
-    }
-
-    private fun MailboxState.toNewDeleteAllActionStateFrom(operation: MailboxOperation): DeleteDialogState {
-        return if (operation is MailboxOperation.AffectingClearDialog) {
-            when (operation) {
-                is MailboxEvent.DeleteAll ->
-                    when (operation.location) {
-                        SystemLabelId.Trash.labelId -> DeleteDialogState.Shown(
-                            title = TextUiModel(R.string.mailbox_action_clear_trash_dialog_title),
-                            message = TextUiModel(R.string.mailbox_action_clear_trash_dialog_body_message)
-                        )
-
-                        SystemLabelId.Spam.labelId -> DeleteDialogState.Shown(
-                            title = TextUiModel(R.string.mailbox_action_clear_spam_dialog_title),
-                            message = TextUiModel(R.string.mailbox_action_clear_spam_dialog_body_message)
-                        )
-
-                        else -> DeleteDialogState.Hidden
-                    }
-
-                is MailboxEvent.DeleteAllConfirmed,
-                MailboxViewAction.DeleteAllDialogDismissed -> DeleteDialogState.Hidden
-            }
-        } else {
-            deleteAllDialogState
         }
     }
 

@@ -28,17 +28,16 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import ch.protonmail.android.R
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxTopAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState.Data
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import ch.protonmail.android.uitest.util.InstrumentationHolder
 import dagger.hilt.android.testing.HiltAndroidTest
-import ch.protonmail.android.design.compose.theme.ProtonTheme
 import org.junit.Test
 
 @Suppress("SameParameterValue") // We want test parameters to be explicit
@@ -213,7 +212,6 @@ internal class MailboxTopAppBarTest : HiltInstrumentedTest() {
             ProtonTheme {
                 MailboxTopAppBar(
                     state = state,
-                    upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
                     actions = MailboxTopAppBar.Actions(
                         onOpenMenu = {},
                         onExitSelectionMode = {},

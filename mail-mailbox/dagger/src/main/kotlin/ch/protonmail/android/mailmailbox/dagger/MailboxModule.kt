@@ -18,11 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.dagger
 
-import ch.protonmail.android.mailmailbox.data.local.StorageLimitLocalDataSource
-import ch.protonmail.android.mailmailbox.data.local.StorageLimitLocalDataSourceImpl
-import ch.protonmail.android.mailmailbox.data.repository.StorageLimitRepositoryImpl
 import ch.protonmail.android.mailmailbox.data.repository.UnreadCountersRepositoryImpl
-import ch.protonmail.android.mailmailbox.domain.repository.StorageLimitRepository
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxItems
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxItemPagingSourceFactory
@@ -54,13 +50,5 @@ object MailboxModule {
         @Binds
         @Reusable
         fun bindsUnreadCountRepository(impl: UnreadCountersRepositoryImpl): UnreadCountersRepository
-
-        @Binds
-        @Reusable
-        fun bindsStorageQuotaLocalDataSource(impl: StorageLimitLocalDataSourceImpl): StorageLimitLocalDataSource
-
-        @Binds
-        @Reusable
-        fun bindsStorageQuotaRepository(impl: StorageLimitRepositoryImpl): StorageLimitRepository
     }
 }

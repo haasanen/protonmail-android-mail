@@ -35,9 +35,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemU
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.StorageLimitState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
@@ -223,13 +221,10 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
                     currentLabelName = systemLabel.text(),
                     primaryAvatarItem = null
                 ),
-                upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
                 unreadFilterState = UnreadFilterState.Loading,
                 bottomAppBarState = BottomBarState.Data.Hidden(emptyList<ActionUiModel>().toImmutableList()),
                 actionResult = Effect.empty(),
                 deleteDialogState = DeleteDialogState.Hidden,
-                deleteAllDialogState = DeleteDialogState.Hidden,
-                storageLimitState = StorageLimitState.HasEnoughSpace,
                 bottomSheetState = null,
                 error = Effect.empty()
             )

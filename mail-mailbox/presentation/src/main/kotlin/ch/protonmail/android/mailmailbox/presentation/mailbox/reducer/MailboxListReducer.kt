@@ -19,15 +19,9 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
-import ch.protonmail.android.mailmailbox.presentation.R
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
@@ -37,6 +31,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearc
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearchState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
+import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
 import javax.inject.Inject
 
@@ -86,7 +81,6 @@ class MailboxListReducer @Inject constructor(
             is MailboxViewAction.SearchQuery -> reduceSearchQuery(operation, currentState)
             is MailboxViewAction.SearchResult -> reduceSearchResult(currentState)
             is MailboxViewAction.ExitSearchMode -> reduceExitSearchMode(currentState)
-            is MailboxEvent.ClearAllOperationStatus -> reduceClearState(operation, currentState)
             is MailboxEvent.AvatarImageStatesUpdated -> reduceAvatarImageStatesUpdated(operation, currentState)
         }
     }
@@ -484,50 +478,4 @@ class MailboxListReducer @Inject constructor(
 
         else -> currentState
     }
-
-    private fun reduceClearState(
-        operation: MailboxEvent.ClearAllOperationStatus,
-        currentState: MailboxListState
-    ): MailboxListState {
-        return when (currentState) {
-            is MailboxListState.Data.ViewMode -> {
-                if (currentState.currentMailLabel.isClearableLocation()) {
-                    val clearState = when (operation.state) {
-                        ClearAllState.ClearAllInProgress -> MailboxListState.Data.ClearState.Visible.InfoBanner(
-                            TextUiModel(R.string.mailbox_action_clear_operation_scheduled)
-                        )
-
-                        ClearAllState.ClearAllActionBanner ->
-                            MailboxListState.Data.ClearState.Visible.ClearBannerWithButton(
-                                bannerText = TextUiModel(R.string.mailbox_action_clear_trash_spam_banner_text),
-                                buttonText = when (currentState.currentMailLabel) {
-                                    is MailLabel.System -> when (currentState.currentMailLabel.systemLabelId) {
-                                        SystemLabelId.Trash -> TextUiModel(R.string.mailbox_action_button_clear_trash)
-                                        SystemLabelId.Spam -> TextUiModel(R.string.mailbox_action_button_clear_spam)
-                                        else -> TextUiModel.Text("")
-                                    }
-                                    else -> TextUiModel.Text("")
-                                },
-                                icon = R.drawable.ic_proton_trash_clock
-                            )
-
-                        ClearAllState.UpsellBanner -> MailboxListState.Data.ClearState.Visible.UpsellBannerWithLink(
-                            bannerText = TextUiModel(R.string.mailbox_action_clear_trash_spam_upsell_banner_text),
-                            linkText = TextUiModel(R.string.mailbox_action_clear_trash_spam_upsell_banner_link_title),
-                            icon = R.drawable.ic_upsell_mail_plus
-                        )
-                    }
-
-                    currentState.copy(clearState = clearState)
-                } else {
-                    currentState
-                }
-            }
-
-            else -> currentState
-        }
-    }
-
-    private fun MailLabel.isClearableLocation() = this is MailLabel.System &&
-        (this.systemLabelId == SystemLabelId.Trash || this.systemLabelId == SystemLabelId.Spam)
 }
