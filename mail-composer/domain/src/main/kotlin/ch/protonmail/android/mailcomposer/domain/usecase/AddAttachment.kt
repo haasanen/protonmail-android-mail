@@ -16,27 +16,18 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.repository
+package ch.protonmail.android.mailcomposer.domain.usecase
 
 import android.net.Uri
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import kotlinx.coroutines.flow.Flow
-import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
+import javax.inject.Inject
 
-interface AttachmentRepository {
+class AddAttachment @Inject constructor(
+    private val attachmentRepository: AttachmentRepository
+) {
 
-    suspend fun observeAttachments(): Flow<Either<DataError, List<AttachmentMetadata>>>
-
-    suspend fun deleteAttachment(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId
-    ): Either<DataError, Unit>
-
-    suspend fun addAttachment(fileUri: Uri): Either<DataError, Unit>
+    suspend operator fun invoke(fileUri: Uri): Either<DataError, Unit> = attachmentRepository.addAttachment(fileUri)
 
 }

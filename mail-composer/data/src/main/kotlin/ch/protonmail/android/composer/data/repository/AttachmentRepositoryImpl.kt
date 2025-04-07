@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.composer.data.repository
 
+import android.net.Uri
 import arrow.core.Either
-import arrow.core.left
 import arrow.core.raise.either
 import ch.protonmail.android.composer.data.local.RustAttachmentDataSource
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
@@ -49,17 +49,7 @@ class AttachmentRepositoryImpl @Inject constructor(
         Timber.w("rust-attachment: missing implementation!")
     }
 
-    override suspend fun createAttachment(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId,
-        fileName: String,
-        mimeType: String,
-        content: ByteArray
-    ): Either<DataError, Unit> = either {
-
-        Timber.w("rust-attachment: missing implementation!")
-        return DataError.Local.Unknown.left()
-    }
+    override suspend fun addAttachment(fileUri: Uri): Either<DataError, Unit> =
+        rustAttachmentDataSource.addAttachment(fileUri)
 
 }
