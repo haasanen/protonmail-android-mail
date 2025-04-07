@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcommon.data.file
 
+import java.io.File
 import java.io.InputStream
 import android.content.Context
 import android.net.Uri
@@ -36,17 +37,22 @@ class UriHelper @Inject constructor(
         runCatching { contentResolverHelper.openInputStream(uri) }.getOrNull()
     }
 
-    suspend fun getFileInformationFromUri(uri: Uri): FileInformation? {
+    suspend fun resolveFileInformation(uri: Uri, file: File): FileInformation? {
         val name = getFileNameFromUri(uri)
         val size = getFileSizeFromUri(uri)
         val mimeType = getFileMimeTypeFromUri(uri)
 
         if (name.isNullOrEmpty() || size == null || mimeType.isNullOrEmpty()) return null
 
-        return FileInformation(name, size, mimeType)
+        return FileInformation(
+            name = name,
+            path = file.path,
+            size = size,
+            mimeType = mimeType
+        )
     }
 
-    private suspend fun getFileNameFromUri(uri: Uri) = withContext(dispatcherProvider.Io) {
+    suspend fun getFileNameFromUri(uri: Uri) = withContext(dispatcherProvider.Io) {
         contentResolverHelper.query(uri)
             ?.use { cursor ->
                 val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
@@ -82,6 +88,7 @@ class ContentResolverHelper @Inject constructor(
 
 data class FileInformation(
     val name: String,
+    val path: String,
     val size: Long,
     val mimeType: String
 )

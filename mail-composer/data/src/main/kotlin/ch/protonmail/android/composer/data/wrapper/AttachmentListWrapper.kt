@@ -22,7 +22,8 @@ import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
 import uniffi.proton_mail_uniffi.AttachmentList
 
 class AttachmentListWrapper(private val rustAttachmentList: AttachmentList) {
-
+    suspend fun attachmentUploadDirectory() = rustAttachmentList.attachmentUploadDirectory()
+    suspend fun addAttachment(filePath: String) = rustAttachmentList.add(filePath)
     suspend fun attachments() = rustAttachmentList.attachments()
     suspend fun createWatcher(callback: AsyncLiveQueryCallback) = rustAttachmentList.watcher(callback)
 }

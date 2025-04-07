@@ -20,10 +20,12 @@ package ch.protonmail.android.mailmessage.data.local
 
 import java.io.File
 import java.io.InputStream
+import java.util.UUID
 import android.net.Uri
 import ch.protonmail.android.mailcommon.data.file.FileInformation
 import ch.protonmail.android.mailcommon.data.file.InternalFileStorage
 import ch.protonmail.android.mailcommon.data.file.UriHelper
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.domain.entity.UserId
@@ -48,15 +50,17 @@ class AttachmentFileStorage @Inject constructor(
         )
     }
 
-    suspend fun saveAttachment(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId,
-        uri: Uri
-    ): FileInformation? {
+    @MissingRustApi
+    suspend fun saveAttachment(attachmentFolder: String, uri: Uri): FileInformation? {
         return uriHelper.readFromUri(uri)?.let {
-            saveAttachmentAsStream(userId, messageId, attachmentId, it)?.let {
-                uriHelper.getFileInformationFromUri(uri)
+
+            // Rust uses file path to get the file name. This does not solve duplicate file name issue.
+            // We need to use a unique file name for each attachment.
+            // The following is a workaround for now to user name as the file path (instead of UUID)
+            val filename = uriHelper.getFileNameFromUri(uri) ?: UUID.randomUUID().toString()
+
+            saveAttachmentAsStream(attachmentFolder, filename, it)?.let { file ->
+                uriHelper.resolveFileInformation(uri, file)
             }
         }
     }
@@ -76,15 +80,13 @@ class AttachmentFileStorage @Inject constructor(
     }
 
     suspend fun saveAttachmentAsStream(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId,
+        attachmentFolder: String,
+        filename: String,
         inputStream: InputStream
     ): File? {
         return internalFileStorage.writeFileAsStream(
-            userId,
-            InternalFileStorage.Folder.MessageAttachments(messageId.id),
-            InternalFileStorage.FileIdentifier(attachmentId.id),
+            InternalFileStorage.Folder.UploadFolder(attachmentFolder),
+            InternalFileStorage.FileIdentifier(filename),
             inputStream
         )
     }

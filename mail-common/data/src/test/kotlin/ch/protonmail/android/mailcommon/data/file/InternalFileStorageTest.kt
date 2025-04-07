@@ -437,15 +437,14 @@ class InternalFileStorageTest {
         val fileMock = mockk<File>()
         coEvery {
             fileHelperMock.writeToFileAsStream(
-                folder = FileHelper.Folder(CompleteFolderPath),
-                filename = FileHelper.Filename(MessageId.EncodedDigest),
+                folder = any(),
+                filename = any(),
                 inputStream = inputStream
             )
         } returns fileMock
 
         // When
         val actual = internalFileStorage.writeFileAsStream(
-            userId = UserId.Object,
             folder = InternalFileStorage.Folder.MessageBodies,
             fileIdentifier = InternalFileStorage.FileIdentifier(MessageId.Raw),
             inputStream = inputStream
@@ -461,15 +460,14 @@ class InternalFileStorageTest {
         val inputStream = ByteArrayInputStream(MessageBody.toByteArray())
         coEvery {
             fileHelperMock.writeToFileAsStream(
-                folder = FileHelper.Folder(CompleteFolderPath),
-                filename = FileHelper.Filename(MessageId.EncodedDigest),
+                folder = any(),
+                filename = any(),
                 inputStream = inputStream
             )
         } returns null
 
         // When
         val actual = internalFileStorage.writeFileAsStream(
-            userId = UserId.Object,
             folder = InternalFileStorage.Folder.MessageBodies,
             fileIdentifier = InternalFileStorage.FileIdentifier(MessageId.Raw),
             inputStream = inputStream

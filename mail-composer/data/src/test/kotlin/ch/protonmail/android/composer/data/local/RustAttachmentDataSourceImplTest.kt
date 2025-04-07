@@ -18,10 +18,15 @@
 
 package ch.protonmail.android.composer.data.local
 
+import android.net.Uri
 import app.cash.turbine.test
+import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.composer.data.wrapper.AttachmentListWrapper
+import ch.protonmail.android.mailcommon.data.file.FileInformation
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.data.local.AttachmentFileStorage
 import ch.protonmail.android.mailmessage.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
 import io.mockk.coEvery
@@ -32,6 +37,7 @@ import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.slot
 import org.junit.Before
 import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
+import uniffi.proton_mail_uniffi.AttachmentListAddResult
 import uniffi.proton_mail_uniffi.AttachmentListAttachmentsResult
 import uniffi.proton_mail_uniffi.AttachmentListWatcherResult
 import uniffi.proton_mail_uniffi.DraftAttachment
@@ -49,11 +55,12 @@ class RustAttachmentDataSourceImplTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val rustDraftDataSource = mockk<RustDraftDataSource>()
+    private val attachmentFileStorage = mockk<AttachmentFileStorage>()
     private lateinit var dataSource: RustAttachmentDataSourceImpl
 
     @Before
     fun setUp() {
-        dataSource = RustAttachmentDataSourceImpl(rustDraftDataSource)
+        dataSource = RustAttachmentDataSourceImpl(rustDraftDataSource, attachmentFileStorage)
     }
 
     @Test
@@ -121,4 +128,87 @@ class RustAttachmentDataSourceImplTest {
         }
     }
 
+    @Test
+    fun `add attachment successfully when storage and Rust add succeeds`() = runTest {
+        // Given
+        val uri = mockk<Uri>()
+        val fileInfo = FileInformation(
+            name = "test.pdf",
+            path = "/fake/path/test.pdf",
+            size = 1024L,
+            mimeType = "application/pdf"
+        )
+        val wrapper = mockk<AttachmentListWrapper>()
+
+        coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
+        coEvery { wrapper.attachmentUploadDirectory() } returns "/fake/path"
+        coEvery { attachmentFileStorage.saveAttachment(any(), eq(uri)) } returns fileInfo
+        coEvery { wrapper.addAttachment(fileInfo.path) } returns AttachmentListAddResult.Ok
+
+        // When
+        val result = dataSource.addAttachment(uri)
+
+        // Then
+        assertTrue(result.isRight())
+    }
+
+    @Test
+    fun `addAttachment fails when accessing attachmentList fails`() = runTest {
+        // Given
+        val error = DataError.Local.Unknown
+        coEvery { rustDraftDataSource.attachmentList() } returns error.left()
+
+        // When
+        val result = dataSource.addAttachment(mockk())
+
+        // Then
+        assertTrue(result.isLeft())
+        assertEquals(error, result.swap().getOrNull())
+    }
+
+    @Test
+    fun `addAttachment fails when saving attachment fails`() = runTest {
+        // Given
+        val uri = mockk<Uri>()
+        val wrapper = mockk<AttachmentListWrapper>()
+
+        coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
+        coEvery { wrapper.attachmentUploadDirectory() } returns "/fake/path"
+        coEvery { attachmentFileStorage.saveAttachment(any(), eq(uri)) } returns null
+
+        // When
+        val result = dataSource.addAttachment(uri)
+
+        // Then
+        assertTrue(result.isLeft())
+        assertEquals(DataError.Local.FailedToStoreFile, result.swap().getOrNull())
+    }
+
+    @Test
+    fun `addAttachment returns left when addAttachment fails`() = runTest {
+        // Given
+        val uri = mockk<Uri>()
+        val fileInfo = FileInformation(
+            name = "error.pdf",
+            path = "/fake/path/error.pdf",
+            size = 2048L,
+            mimeType = "application/pdf"
+        )
+        val wrapper = mockk<AttachmentListWrapper>()
+        val rustError = uniffi.proton_mail_uniffi.DraftAttachmentError.Other(
+            LocalProtonError.OtherReason(OtherErrorReason.Other("internal"))
+        )
+
+        coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
+        coEvery { wrapper.attachmentUploadDirectory() } returns "/fake/path"
+        coEvery { attachmentFileStorage.saveAttachment(any(), eq(uri)) } returns fileInfo
+        coEvery { wrapper.addAttachment(fileInfo.path) } returns AttachmentListAddResult.Error(rustError)
+
+        // When
+        val result = dataSource.addAttachment(uri)
+
+        // Then
+        assertTrue(result.isLeft())
+        assertEquals(rustError.toDataError(), result.swap().orNull())
+    }
 }

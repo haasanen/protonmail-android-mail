@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcommon.data.file
 
 import java.io.ByteArrayInputStream
+import java.io.File
 import java.io.FileNotFoundException
 import android.database.Cursor
 import android.net.Uri
@@ -34,6 +35,9 @@ import kotlin.test.assertNull
 class UriHelperTest {
 
     private val uri = mockk<Uri>()
+    private val file = mockk<File>(relaxed = true) {
+        every { path } returns TestData.FilePath
+    }
     private val cursor = mockk<Cursor>(relaxUnitFun = true) {
         every { getColumnIndex(any()) } returns 0
         every { moveToFirst() } returns true
@@ -74,10 +78,10 @@ class UriHelperTest {
     @Test
     fun `should get file information from uri`() = runTest(testDispatcherProvider.Main) {
         // Given
-        val expected = FileInformation(TestData.FileName, TestData.FileSize, TestData.FileMimeType)
+        val expected = FileInformation(TestData.FileName, TestData.FilePath, TestData.FileSize, TestData.FileMimeType)
 
         // When
-        val actual = uriHelper.getFileInformationFromUri(uri)
+        val actual = uriHelper.resolveFileInformation(uri, file)
 
         // Then
         assertEquals(expected, actual)
@@ -89,7 +93,7 @@ class UriHelperTest {
         every { cursor.getString(any()) } returns null
 
         // When
-        val actual = uriHelper.getFileInformationFromUri(uri)
+        val actual = uriHelper.resolveFileInformation(uri, file)
 
         // Then
         assertNull(actual)
@@ -99,6 +103,7 @@ class UriHelperTest {
 
         val FileContent = "I am a file content".toByteArray()
         const val FileName = "image.jpg"
+        const val FilePath = "/tmp/filepath"
         const val FileSize = 123L
         const val FileMimeType = "image/jpeg"
     }

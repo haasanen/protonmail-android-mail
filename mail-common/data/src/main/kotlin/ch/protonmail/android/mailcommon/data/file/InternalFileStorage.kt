@@ -140,13 +140,12 @@ class InternalFileStorage @Inject constructor(
     )
 
     suspend fun writeFileAsStream(
-        userId: UserId,
         folder: Folder,
         fileIdentifier: FileIdentifier,
         inputStream: InputStream
     ): File? = fileHelper.writeToFileAsStream(
-        folder = FileHelper.Folder("${userId.asRootDirectory()}${folder.path}"),
-        filename = FileHelper.Filename(fileIdentifier.value.asSanitisedPath()),
+        folder = FileHelper.Folder(folder.path),
+        filename = FileHelper.Filename(fileIdentifier.value),
         inputStream = inputStream
     )
 
@@ -203,6 +202,7 @@ class InternalFileStorage @Inject constructor(
     value class FileIdentifier(val value: String)
 
     sealed class Folder(open val path: String) {
+        data class UploadFolder(val uploadFolderPath: String) : Folder(uploadFolderPath)
         object MessageBodies : Folder("message_bodies/")
         object MessageAttachmentsRoot : Folder("attachments/")
         data class MessageAttachments(val messageId: String) : Folder("${MessageAttachmentsRoot.path}$messageId/")

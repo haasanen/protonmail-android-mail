@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.composer.data.local
 
+import android.net.Uri
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
@@ -25,6 +26,7 @@ import ch.protonmail.android.composer.data.mapper.toAttachmentMetaData
 import ch.protonmail.android.composer.data.wrapper.AttachmentListWrapper
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.data.local.AttachmentFileStorage
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -34,10 +36,12 @@ import uniffi.proton_mail_uniffi.AttachmentListAttachmentsResult
 import uniffi.proton_mail_uniffi.AttachmentListWatcherResult
 import javax.inject.Inject
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.AttachmentListAddResult
 import uniffi.proton_mail_uniffi.DraftAttachmentWatcher
 
 class RustAttachmentDataSourceImpl @Inject constructor(
-    private val rustDraftDataSource: RustDraftDataSource
+    private val rustDraftDataSource: RustDraftDataSource,
+    private val attachmentFileStorage: AttachmentFileStorage
 ) : RustAttachmentDataSource {
 
     override suspend fun observeAttachments(): Flow<Either<DataError, List<AttachmentMetadata>>> = callbackFlow {
@@ -85,6 +89,35 @@ class RustAttachmentDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun addAttachment(fileUri: Uri): Either<DataError, Unit> {
+        val listResult = rustDraftDataSource.attachmentList()
+
+        return listResult.fold(
+            ifLeft = { error ->
+                Timber.e("rust-draft-attachments: Failed to get attachment list: $error")
+                error.left()
+            },
+            ifRight = { attachmentListWrapper ->
+                // Save attachment to local storage
+                val fileInfo = attachmentFileStorage.saveAttachment(
+                    attachmentListWrapper.attachmentUploadDirectory(),
+                    fileUri
+                ) ?: return DataError.Local.FailedToStoreFile.left()
+
+                when (val addResult = attachmentListWrapper.addAttachment(fileInfo.path)) {
+                    is AttachmentListAddResult.Ok -> {
+                        Timber.d("rust-draft-attachments: Added attachment: ${fileInfo.path}")
+                        Unit.right()
+                    }
+
+                    is AttachmentListAddResult.Error -> {
+                        Timber.e("rust-draft-attachments: Failed to add attachment: ${addResult.v1}")
+                        addResult.v1.toDataError().left()
+                    }
+                }
+            }
+        )
+    }
 
     private suspend fun AttachmentListWrapper.getAttachments(): Either<DataError, List<AttachmentMetadata>> {
         return when (val result = this.attachments()) {
