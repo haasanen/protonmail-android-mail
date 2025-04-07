@@ -28,6 +28,8 @@ import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.local.AttachmentFileStorage
 import kotlinx.coroutines.channels.awaitClose
+import ch.protonmail.android.mailmessage.data.mapper.toLocalAttachmentId
+import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -37,6 +39,7 @@ import uniffi.proton_mail_uniffi.AttachmentListWatcherResult
 import javax.inject.Inject
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AttachmentListAddResult
+import uniffi.proton_mail_uniffi.AttachmentListRemoveResult
 import uniffi.proton_mail_uniffi.DraftAttachmentWatcher
 
 class RustAttachmentDataSourceImpl @Inject constructor(
@@ -115,6 +118,31 @@ class RustAttachmentDataSourceImpl @Inject constructor(
                     is AttachmentListAddResult.Error -> {
                         Timber.e("rust-draft-attachments: Failed to add attachment: ${addResult.v1}")
                         addResult.v1.toDataError().left()
+                    }
+                }
+            }
+        )
+    }
+
+    override suspend fun removeAttachment(attachmentId: AttachmentId): Either<DataError, Unit> {
+        val listResult = rustDraftDataSource.attachmentList()
+
+        return listResult.fold(
+            ifLeft = { error ->
+                Timber.e("rust-draft-attachments: Failed to get attachment list: $error")
+                error.left()
+            },
+            ifRight = { attachmentListWrapper ->
+
+                when (val removeResult = attachmentListWrapper.removeAttachment(attachmentId.toLocalAttachmentId())) {
+                    is AttachmentListRemoveResult.Ok -> {
+                        Timber.d("rust-draft-attachments: Removed attachment: $attachmentId")
+                        Unit.right()
+                    }
+
+                    is AttachmentListRemoveResult.Error -> {
+                        Timber.e("rust-draft-attachments: Failed to remove attachment: ${removeResult.v1}")
+                        removeResult.v1.toDataError().left()
                     }
                 }
             }

@@ -28,7 +28,9 @@ import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.local.AttachmentFileStorage
 import ch.protonmail.android.mailmessage.data.mapper.toAttachmentMetadata
+import ch.protonmail.android.mailmessage.data.mapper.toLocalAttachmentId
 import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
+import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import io.mockk.coEvery
@@ -41,6 +43,7 @@ import org.junit.Before
 import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
 import uniffi.proton_mail_uniffi.AttachmentListAddResult
 import uniffi.proton_mail_uniffi.AttachmentListAttachmentsResult
+import uniffi.proton_mail_uniffi.AttachmentListRemoveResult
 import uniffi.proton_mail_uniffi.AttachmentListWatcherResult
 import uniffi.proton_mail_uniffi.DraftAttachment
 import uniffi.proton_mail_uniffi.DraftAttachmentState
@@ -95,7 +98,7 @@ class RustAttachmentDataSourceImplTest {
             // Then
             val emission = awaitItem()
             assertTrue(emission.isRight())
-            assertEquals(listOf(expectedMetadataWithState), emission.orNull())
+            assertEquals(listOf(expectedMetadataWithState), emission.getOrNull())
             cancelAndIgnoreRemainingEvents()
         }
 
@@ -128,7 +131,7 @@ class RustAttachmentDataSourceImplTest {
             // Then
             val emission = awaitItem()
             assertTrue(emission.isLeft())
-            assertEquals(expected, emission.swap().orNull())
+            assertEquals(expected, emission.swap().getOrNull())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -214,6 +217,61 @@ class RustAttachmentDataSourceImplTest {
 
         // Then
         assertTrue(result.isLeft())
-        assertEquals(rustError.toDataError(), result.swap().orNull())
+        assertEquals(rustError.toDataError(), result.swap().getOrNull())
     }
+
+    @Test
+    fun `attachment deletion succeeds when rust removes the attachment`() = runTest {
+        // Given
+        val attachmentId = AttachmentId("123")
+        val wrapper = mockk<AttachmentsWrapper>()
+
+        coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
+        coEvery { wrapper.removeAttachment(attachmentId.toLocalAttachmentId()) } returns AttachmentListRemoveResult.Ok
+
+        // When
+        val result = dataSource.removeAttachment(attachmentId)
+
+        // Then
+        assertTrue(result.isRight())
+    }
+
+    @Test
+    fun `attachment deletion fails when attachmentList call returns error`() = runTest {
+        // Given
+        val attachmentId = AttachmentId("123")
+        val error = DataError.Local.Unknown
+
+        coEvery { rustDraftDataSource.attachmentList() } returns error.left()
+
+        // When
+        val result = dataSource.removeAttachment(attachmentId)
+
+        // Then
+        assertTrue(result.isLeft())
+        assertEquals(error, result.swap().getOrNull())
+    }
+
+    @Test
+    fun `attachment deletion fails when rust fails to remove`() = runTest {
+        // Given
+        val attachmentId = AttachmentId("456")
+        val wrapper = mockk<AttachmentsWrapper>()
+        val rustError = uniffi.proton_mail_uniffi.DraftAttachmentError.Other(
+            LocalProtonError.OtherReason(OtherErrorReason.Other("internal failure"))
+        )
+
+        coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
+        coEvery {
+            wrapper.removeAttachment(attachmentId.toLocalAttachmentId())
+        } returns AttachmentListRemoveResult.Error(rustError)
+
+        // When
+        val result = dataSource.removeAttachment(attachmentId)
+
+        // Then
+        assertTrue(result.isLeft())
+        assertEquals(rustError.toDataError(), result.swap().getOrNull())
+    }
+
 }

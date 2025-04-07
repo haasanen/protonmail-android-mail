@@ -18,12 +18,14 @@
 
 package ch.protonmail.android.composer.data.wrapper
 
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
 import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
 import uniffi.proton_mail_uniffi.AttachmentList
 
 class AttachmentsWrapper(private val rustAttachmentList: AttachmentList) {
     fun attachmentUploadDirectory() = rustAttachmentList.attachmentUploadDirectory()
     suspend fun addAttachment(filePath: String) = rustAttachmentList.add(filePath)
+    suspend fun removeAttachment(attachmentId: LocalAttachmentId) = rustAttachmentList.remove(attachmentId)
     suspend fun attachments() = rustAttachmentList.attachments()
     suspend fun createWatcher(callback: AsyncLiveQueryCallback) = rustAttachmentList.watcher(callback)
 }
