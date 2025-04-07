@@ -34,7 +34,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
@@ -214,13 +214,15 @@ class ComposerReducer @Inject constructor(
         )
     }
 
-    private fun updateAttachmentsState(currentState: ComposerDraftState, attachments: List<AttachmentMetadata>) =
-        currentState.copy(
-            attachments = AttachmentGroupUiModel(
-                limit = NO_ATTACHMENT_LIMIT,
-                attachments = attachments.map { attachmentUiModelMapper.toUiModel(it, true) }
-            )
+    private fun updateAttachmentsState(
+        currentState: ComposerDraftState,
+        attachments: List<AttachmentMetadataWithState>
+    ) = currentState.copy(
+        attachments = AttachmentGroupUiModel(
+            limit = NO_ATTACHMENT_LIMIT,
+            attachments = attachments.map { attachmentUiModelMapper.toUiModel(it.attachmentMetadata, true) }
         )
+    )
 
     private fun updateSendingErrorState(currentState: ComposerDraftState, sendingError: TextUiModel) =
         currentState.copy(sendingErrorEffect = Effect.of(sendingError))

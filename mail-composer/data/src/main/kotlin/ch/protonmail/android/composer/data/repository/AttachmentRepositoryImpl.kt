@@ -26,7 +26,7 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
@@ -38,7 +38,7 @@ class AttachmentRepositoryImpl @Inject constructor(
     private val rustAttachmentDataSource: RustAttachmentDataSource
 ) : AttachmentRepository {
 
-    override suspend fun observeAttachments(): Flow<Either<DataError, List<AttachmentMetadata>>> =
+    override suspend fun observeAttachments(): Flow<Either<DataError, List<AttachmentMetadataWithState>>> =
         rustAttachmentDataSource.observeAttachments()
 
     override suspend fun deleteAttachment(

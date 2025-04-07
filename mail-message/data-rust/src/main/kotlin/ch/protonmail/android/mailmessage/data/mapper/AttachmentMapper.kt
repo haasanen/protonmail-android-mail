@@ -23,11 +23,14 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMimeType
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeTypeCategory
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMimeType
+import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
+import uniffi.proton_mail_uniffi.DraftAttachmentState
 
 fun LocalAttachmentId.toAttachmentId(): AttachmentId = AttachmentId(this.value.toString())
 fun AttachmentId.toLocalAttachmentId(): LocalAttachmentId = LocalAttachmentId(this.id.toULong())
@@ -80,3 +83,10 @@ fun LocalMimeTypeCategory.toMimeTypeCategory(): MimeTypeCategory = when (this) {
     LocalMimeTypeCategory.UNKNOWN -> MimeTypeCategory.Unknown
 }
 
+fun DraftAttachmentState.toAttachmentState(): AttachmentState = when (this) {
+    DraftAttachmentState.Uploaded -> AttachmentState.Uploaded
+    DraftAttachmentState.Uploading -> AttachmentState.Uploading
+    DraftAttachmentState.Pending -> AttachmentState.Pending
+    DraftAttachmentState.Offline -> AttachmentState.Pending
+    is DraftAttachmentState.Error -> AttachmentState.Error(this.v1.toDataError())
+}

@@ -25,7 +25,7 @@ import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
@@ -82,7 +82,7 @@ sealed interface ComposerEvent : ComposerOperation {
     ) : ComposerEvent
     data class PrefillDataReceivedViaShare(val draftUiModel: DraftUiModel) : ComposerEvent
     data class ReplaceDraftBody(val draftBody: DraftBody) : ComposerEvent
-    data class OnAttachmentsUpdated(val attachments: List<AttachmentMetadata>) : ComposerEvent
+    data class OnAttachmentsUpdated(val attachments: List<AttachmentMetadataWithState>) : ComposerEvent
     data class OnSendingError(val sendingError: TextUiModel) : ComposerEvent
     data class OnIsDeviceContactsSuggestionsPromptEnabled(val enabled: Boolean) : ComposerEvent
     data class OnMessagePasswordUpdated(val messagePassword: MessagePassword?) : ComposerEvent

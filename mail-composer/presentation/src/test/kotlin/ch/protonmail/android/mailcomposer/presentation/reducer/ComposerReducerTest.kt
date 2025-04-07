@@ -50,6 +50,8 @@ import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel.Invalid
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel.Valid
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
+import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
@@ -682,7 +684,11 @@ class ComposerReducerTest(
         private val EmptyToAttachmentsUpdated = TestTransition(
             name = "Should emit attachments when they are updated",
             currentState = ComposerDraftState.initial(messageId),
-            operation = ComposerEvent.OnAttachmentsUpdated(listOf(AttachmentMetadataSamples.Invoice)),
+            operation = ComposerEvent.OnAttachmentsUpdated(
+                listOf(
+                    AttachmentMetadataWithState(AttachmentMetadataSamples.Invoice, AttachmentState.Uploaded)
+                )
+            ),
             expectedState = ComposerDraftState.initial(messageId).copy(
                 attachments = AttachmentGroupUiModel(
                     limit = NO_ATTACHMENT_LIMIT,

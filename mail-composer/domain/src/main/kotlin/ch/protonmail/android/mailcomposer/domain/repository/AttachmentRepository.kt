@@ -22,14 +22,14 @@ import android.net.Uri
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 
 interface AttachmentRepository {
 
-    suspend fun observeAttachments(): Flow<Either<DataError, List<AttachmentMetadata>>>
+    suspend fun observeAttachments(): Flow<Either<DataError, List<AttachmentMetadataWithState>>>
 
     suspend fun deleteAttachment(
         userId: UserId,

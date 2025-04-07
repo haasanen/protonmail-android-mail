@@ -22,13 +22,13 @@ import android.net.Uri
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.composer.data.mapper.toAttachmentMetaData
+import ch.protonmail.android.composer.data.mapper.toAttachmentMetaDataWithState
 import ch.protonmail.android.composer.data.wrapper.AttachmentListWrapper
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.local.AttachmentFileStorage
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import kotlinx.coroutines.channels.awaitClose
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
@@ -44,50 +44,52 @@ class RustAttachmentDataSourceImpl @Inject constructor(
     private val attachmentFileStorage: AttachmentFileStorage
 ) : RustAttachmentDataSource {
 
-    override suspend fun observeAttachments(): Flow<Either<DataError, List<AttachmentMetadata>>> = callbackFlow {
-        Timber.d("rust-draft-attachments: Starting attachment observation")
+    override suspend fun observeAttachments(): Flow<Either<DataError, List<AttachmentMetadataWithState>>> =
+        callbackFlow {
+            Timber.d("rust-draft-attachments: Starting attachment observation")
 
-        val result = rustDraftDataSource.attachmentList()
-        var watcher: DraftAttachmentWatcher? = null
-        val updateCallback = object : AsyncLiveQueryCallback {
-            override suspend fun onUpdate() {
-                Timber.d("rust-draft-attachments: Attachment list updated")
-                rustDraftDataSource.attachmentList().onLeft { error ->
-                    send(error.left())
-                }.onRight { attachmentListWrapper ->
-                    send(attachmentListWrapper.getAttachments())
+            val result = rustDraftDataSource.attachmentList()
+            var watcher: DraftAttachmentWatcher? = null
+            val updateCallback = object : AsyncLiveQueryCallback {
+                override suspend fun onUpdate() {
+                    Timber.d("rust-draft-attachments: Attachment list updated")
+                    rustDraftDataSource.attachmentList().onLeft { error ->
+                        send(error.left())
+                    }.onRight { attachmentListWrapper ->
+                        send(attachmentListWrapper.getAttachments())
+                    }
                 }
             }
-        }
-        result.onLeft { error ->
-            Timber.e("rust-draft-attachments: Failed to get attachment list: $error")
-            send(error.left())
-            close()
-            return@callbackFlow
-        }.onRight { attachmentListWrapper ->
-            send(attachmentListWrapper.getAttachments())
+            result.onLeft { error ->
+                Timber.e("rust-draft-attachments: Failed to get attachment list: $error")
+                send(error.left())
+                close()
+                return@callbackFlow
 
-            Timber.d("rust-draft-attachments: Got attachment list, creating watcher")
-            when (val watcherResult = attachmentListWrapper.createWatcher(updateCallback)) {
-                is AttachmentListWatcherResult.Error -> {
-                    Timber.e("rust-draft-attachments: Failed to create attachment list watcher: ${watcherResult.v1}")
-                    send(watcherResult.v1.toDataError().left())
-                    close()
-                    return@callbackFlow
-                }
+            }.onRight { attachmentListWrapper ->
+                send(attachmentListWrapper.getAttachments())
 
-                is AttachmentListWatcherResult.Ok -> {
-                    Timber.d("rust-draft-attachments: Created attachment list watcher")
-                    watcher = watcherResult.v1
+                Timber.d("rust-draft-attachments: Got attachment list, creating watcher")
+                when (val watcherResult = attachmentListWrapper.createWatcher(updateCallback)) {
+                    is AttachmentListWatcherResult.Error -> {
+                        Timber.e("rust-draft-attachments: Failed to create watcher: ${watcherResult.v1}")
+                        send(watcherResult.v1.toDataError().left())
+                        close()
+                        return@callbackFlow
+                    }
+
+                    is AttachmentListWatcherResult.Ok -> {
+                        Timber.d("rust-draft-attachments: Created attachment list watcher")
+                        watcher = watcherResult.v1
+                    }
                 }
             }
-        }
 
-        awaitClose {
-            Timber.d("rust-draft-attachments: Closing watcher")
-            watcher?.disconnect()
+            awaitClose {
+                Timber.d("rust-draft-attachments: Closing watcher")
+                watcher?.disconnect()
+            }
         }
-    }
 
     override suspend fun addAttachment(fileUri: Uri): Either<DataError, Unit> {
         val listResult = rustDraftDataSource.attachmentList()
@@ -119,10 +121,10 @@ class RustAttachmentDataSourceImpl @Inject constructor(
         )
     }
 
-    private suspend fun AttachmentListWrapper.getAttachments(): Either<DataError, List<AttachmentMetadata>> {
+    private suspend fun AttachmentListWrapper.getAttachments(): Either<DataError, List<AttachmentMetadataWithState>> {
         return when (val result = this.attachments()) {
             is AttachmentListAttachmentsResult.Ok -> {
-                val attachments = result.v1.map { it.toAttachmentMetaData() }
+                val attachments = result.v1.map { it.toAttachmentMetaDataWithState() }
                 attachments.right()
             }
 

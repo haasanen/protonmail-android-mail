@@ -81,6 +81,8 @@ import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
 import ch.protonmail.android.mailcontact.domain.usecase.GetContactSuggestions
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
+import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
@@ -2010,7 +2012,14 @@ class ComposerViewModelTest {
     private fun expectObservedMessageAttachments(userId: UserId, messageId: MessageId) {
         coEvery {
             observeMessageAttachments()
-        } returns flowOf(listOf(AttachmentMetadataSamples.Invoice).right())
+        } returns flowOf(
+            listOf(
+                AttachmentMetadataWithState(
+                    AttachmentMetadataSamples.Invoice,
+                    AttachmentState.Uploaded
+                )
+            ).right()
+        )
     }
 
     private fun expectAttachmentDeleteSucceeds(

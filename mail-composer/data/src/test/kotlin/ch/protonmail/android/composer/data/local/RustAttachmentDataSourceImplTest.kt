@@ -29,6 +29,8 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.local.AttachmentFileStorage
 import ch.protonmail.android.mailmessage.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
+import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -73,7 +75,10 @@ class RustAttachmentDataSourceImplTest {
             stateModifiedTimestamp = 0L
         )
 
-        val expectedMetadata = attachment.toAttachmentMetadata()
+        val expectedMetadataWithState = AttachmentMetadataWithState(
+            attachmentMetadata = attachment.toAttachmentMetadata(),
+            attachmentState = AttachmentState.Uploaded
+        )
 
         val wrapper = mockk<AttachmentListWrapper>()
         val watcher = mockk<DraftAttachmentWatcher>()
@@ -90,7 +95,7 @@ class RustAttachmentDataSourceImplTest {
             // Then
             val emission = awaitItem()
             assertTrue(emission.isRight())
-            assertEquals(listOf(expectedMetadata), emission.orNull())
+            assertEquals(listOf(expectedMetadataWithState), emission.orNull())
             cancelAndIgnoreRemainingEvents()
         }
 

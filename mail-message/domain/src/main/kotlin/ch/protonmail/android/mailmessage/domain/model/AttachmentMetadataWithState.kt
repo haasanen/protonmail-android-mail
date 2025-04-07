@@ -16,14 +16,9 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.composer.data.mapper
+package ch.protonmail.android.mailmessage.domain.model
 
-import ch.protonmail.android.mailmessage.data.mapper.toAttachmentMetadata
-import ch.protonmail.android.mailmessage.data.mapper.toAttachmentState
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
-import uniffi.proton_mail_uniffi.DraftAttachment
-
-fun DraftAttachment.toAttachmentMetaDataWithState(): AttachmentMetadataWithState = AttachmentMetadataWithState(
-    attachmentState = this.state.toAttachmentState(),
-    attachmentMetadata = this.attachment.toAttachmentMetadata()
+data class AttachmentMetadataWithState(
+    val attachmentMetadata: AttachmentMetadata,
+    val attachmentState: AttachmentState
 )
