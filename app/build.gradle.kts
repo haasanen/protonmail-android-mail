@@ -306,6 +306,12 @@ dependencies {
     kspAndroidTest(project(":test:robot:ksp:processor"))
 }
 
+sentry {
+    autoInstallation {
+        sentryVersion = libs.versions.sentry.asProvider()
+    }
+}
+
 fun String?.toBuildConfigValue() = if (this != null) "\"$this\"" else "null"
 
 fun VariantDimension.setAssetLinksResValue(host: String) {
