@@ -35,7 +35,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,7 +50,6 @@ import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.labelLargeInverted
 
 @Composable
 fun ComposerBottomBar(
@@ -59,7 +57,6 @@ fun ComposerBottomBar(
     senderEmail: SenderEmail,
     isMessagePasswordSet: Boolean,
     isMessageExpirationTimeSet: Boolean,
-    attachmentsCount: Int,
     actions: ComposerBottomBar.Actions,
     modifier: Modifier = Modifier
 ) {
@@ -72,7 +69,7 @@ fun ComposerBottomBar(
                 .padding(horizontal = ProtonDimens.Spacing.Small),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AttachmentsButton(attachmentsCount = attachmentsCount, onClick = actions.onAddAttachmentsClick)
+            AttachmentsButton(onClick = actions.onAddAttachmentsClick)
             AddPasswordButton(draftId, senderEmail, isMessagePasswordSet, actions.onSetMessagePasswordClick)
             SetExpirationButton(isMessageExpirationTimeSet, actions.onSetExpirationTimeClick)
             Spacer(modifier = Modifier.weight(1f))
@@ -83,19 +80,12 @@ fun ComposerBottomBar(
 
 
 @Composable
-private fun AttachmentsButton(
-    attachmentsCount: Int,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+private fun AttachmentsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy((-ProtonDimens.Spacing.Standard.value).dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (attachmentsCount > 0) {
-            AttachmentsNumber(attachmentsCount)
-        }
         IconButton(
             modifier = Modifier
                 .testTag(ComposerTestTags.AttachmentsButton),
@@ -107,22 +97,6 @@ private fun AttachmentsButton(
                 tint = ProtonTheme.colors.iconHint
             )
         }
-    }
-}
-
-@Composable
-private fun AttachmentsNumber(attachmentsCount: Int, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .background(ProtonTheme.colors.interactionBrandDefaultNorm, CircleShape)
-            .border(Dp.Hairline, ProtonTheme.colors.backgroundNorm, CircleShape)
-            .padding(vertical = ProtonDimens.Spacing.Small, horizontal = ProtonDimens.Spacing.Standard),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = attachmentsCount.toString(),
-            style = ProtonTheme.typography.labelLargeInverted
-        )
     }
 }
 
