@@ -13,7 +13,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,7 +44,6 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
-import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItem
 import ch.protonmail.android.uicomponents.thenIf
 import kotlinx.coroutines.launch
 
@@ -152,12 +150,6 @@ fun ChipsListTextField(
         )
     }
 }
-
-@Stable
-data class ContactSuggestionState(
-    val areSuggestionsExpanded: Boolean,
-    val contactSuggestionItems: List<ContactSuggestionItem>
-)
 
 object ChipsListTextField {
     data class Actions(

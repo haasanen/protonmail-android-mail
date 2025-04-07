@@ -37,25 +37,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.graphics.toColorInt
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
-import ch.protonmail.android.uicomponents.R
-import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionsColor.ContactGroupsBackground
-import ch.protonmail.android.uicomponents.text.HighlightedText
-import me.proton.core.util.kotlin.takeIfNotBlank
-import androidx.core.graphics.toColorInt
 import ch.protonmail.android.design.compose.theme.titleSmallNorm
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.compose.AvatarTestTags
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
+import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionsColor.ContactGroupsBackground
+import ch.protonmail.android.uicomponents.R
+import ch.protonmail.android.uicomponents.text.HighlightedText
+import me.proton.core.util.kotlin.takeIfNotBlank
 
 @Composable
 fun ContactSuggestionItemElement(
@@ -159,7 +156,7 @@ private fun ContactGroupAvatar() {
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_proton_users),
             tint = ProtonTheme.colors.iconInverted,
-            contentDescription = NO_CONTENT_DESCRIPTION,
+            contentDescription = null,
             modifier = Modifier.size(MailDimens.AvatarIconSize)
         )
     }
@@ -180,8 +177,7 @@ fun ContactAvatar(contact: ContactSuggestionUiModel.Contact) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            modifier = Modifier
-                .testTag(AvatarTestTags.AvatarText),
+            modifier = Modifier,
             textAlign = TextAlign.Center,
             style = ProtonTheme.typography.titleSmallNorm,
             color = Color.White,
@@ -245,7 +241,8 @@ fun PreviewContactGroupSuggestionItemLight() {
             currentText = "team",
             item = ContactSuggestionUiModel.ContactGroup(
                 name = "Design Team",
-                emails = listOf("team@company.com", "design@company.com")
+                emails = listOf("team@company.com", "design@company.com"),
+                color = Color.Blue.toString()
             ),
             onClick = {}
         )
@@ -263,7 +260,8 @@ fun PreviewContactGroupSuggestionItemDark() {
             currentText = "team",
             item = ContactSuggestionUiModel.ContactGroup(
                 name = "Design Team",
-                emails = listOf("team@company.com", "design@company.com")
+                emails = listOf("team@company.com", "design@company.com"),
+                color = Color.Blue.toString()
             ),
             onClick = {}
         )

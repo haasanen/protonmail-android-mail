@@ -42,12 +42,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
@@ -55,27 +53,22 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableFormScope
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.mailcomposer.presentation.R
-import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.toImmutableChipList
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerTestTags
 import ch.protonmail.android.mailcomposer.presentation.ui.chips.ComposerChipsListField
+import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionState
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.RecipientsViewModel
-import ch.protonmail.android.uicomponents.chips.ContactSuggestionState
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
-import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItem
 import ch.protonmail.android.uicomponents.thenIf
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
-import timber.log.Timber
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -173,7 +166,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
             ),
             contactSuggestionState = ContactSuggestionState(
                 areSuggestionsExpanded = isShowingToSuggestions,
-                contactSuggestionItems = suggestions.map { it.toSuggestionContactItem2() }
+                contactSuggestionItems = suggestions
             ),
             chevronIconContent = {
                 if (!hasCcBccContent) {
@@ -234,7 +227,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                 ),
                 contactSuggestionState = ContactSuggestionState(
                     areSuggestionsExpanded = isShowingCcSuggestions,
-                    contactSuggestionItems = suggestions.map { it.toSuggestionContactItem2() }
+                    contactSuggestionItems = suggestions
                 )
             )
 
@@ -260,7 +253,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                     ),
                     contactSuggestionState = ContactSuggestionState(
                         areSuggestionsExpanded = isShowingBccSuggestions,
-                        contactSuggestionItems = suggestions.map { it.toSuggestionContactItem2() }
+                        contactSuggestionItems = suggestions
                     )
                 )
             }
@@ -286,32 +279,5 @@ private fun List<ChipItem>.toUiModel() = mapNotNull { it ->
         is ChipItem.Counter -> null
         is ChipItem.Invalid -> RecipientUiModel.Invalid(it.value)
         is ChipItem.Valid -> RecipientUiModel.Valid(it.value)
-    }
-}
-
-@Composable
-private fun ContactSuggestionUiModel.toSuggestionContactItem2(): ContactSuggestionItem = when (this) {
-    is ContactSuggestionUiModel.Contact -> ContactSuggestionItem.Contact(
-        initials = this.initial,
-        header = this.name,
-        subheader = this.email,
-        email = this.email
-    )
-
-    is ContactSuggestionUiModel.ContactGroup -> {
-        val backgroundColor = runCatching { Color(this.color.toColorInt()) }.getOrElse {
-            Timber.tag("getContactGroupColor").w("Failed to convert raw string color from $color")
-            ProtonTheme.colors.backgroundSecondary
-        }
-
-        ContactSuggestionItem.Group(
-            header = this.name,
-            subheader = TextUiModel.PluralisedText(
-                value = R.plurals.composer_recipient_suggestion_contacts,
-                count = this.emails.size
-            ).string(),
-            emails = this.emails,
-            backgroundColor = backgroundColor
-        )
     }
 }

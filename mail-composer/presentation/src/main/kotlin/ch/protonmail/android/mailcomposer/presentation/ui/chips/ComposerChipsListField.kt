@@ -47,10 +47,10 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionItemElement
+import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionState
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerChipsListViewModel
 import ch.protonmail.android.uicomponents.chips.ChipsListTextField
 import ch.protonmail.android.uicomponents.chips.ChipsTestTags
-import ch.protonmail.android.uicomponents.chips.ContactSuggestionState
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.thenIf
 
@@ -149,8 +149,8 @@ fun ComposerChipsListField(
         ) {
             HorizontalDivider(modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Large))
 
-            contactSuggestionState.contactSuggestionItems.forEach { selectionOption ->
-                ContactSuggestionItemElement(textFieldState.text.toString(), selectionOption, onClick = {
+            contactSuggestionState.contactSuggestionItems.forEach { suggestionItem ->
+                ContactSuggestionItemElement(textFieldState.text.toString(), suggestionItem, onClick = {
                     actions.onSuggestionsDismissed()
                     listState.typeWord(it)
                     textFieldState.edit { delete(0, length) }
