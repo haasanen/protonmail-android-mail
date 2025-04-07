@@ -168,7 +168,7 @@ internal fun ComposerForm(
                                 onShowAllAttachments = { Timber.d("On show all attachments clicked") },
                                 onAttachmentClicked = { Timber.d("On attachment clicked: $it") },
                                 onAttachmentDeleteClicked = {
-                                    Timber.d("On attachment clicked: $it")
+                                    actions.onAttachmentRemoveRequested(it)
                                 }
                             )
                         )

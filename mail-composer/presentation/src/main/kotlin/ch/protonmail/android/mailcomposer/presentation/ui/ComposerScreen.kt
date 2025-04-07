@@ -530,7 +530,8 @@ private fun buildActions(
     },
     onWebViewMeasuresChanged = onWebViewMeasuresChanged,
     onHeaderPositioned = onHeaderPositioned,
-    onWebViewPositioned = onWebViewPositioned
+    onWebViewPositioned = onWebViewPositioned,
+    onAttachmentRemoveRequested = { viewModel.submit(ComposerAction.RemoveAttachment(it)) }
 )
 
 object ComposerScreen {

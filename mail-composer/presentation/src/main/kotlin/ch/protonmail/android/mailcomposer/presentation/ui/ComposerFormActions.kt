@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsF
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
+import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 
 internal data class ComposerFormActions(
     val onToggleRecipients: (Boolean) -> Unit,
@@ -43,5 +44,6 @@ internal data class ComposerFormActions(
     val onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
     val onChangeSender: () -> Unit,
     val onHeaderPositioned: (boundsInWindow: Rect, height: Float) -> Unit,
-    val onWebViewPositioned: (boundsInWindow: Rect) -> Unit
+    val onWebViewPositioned: (boundsInWindow: Rect) -> Unit,
+    val onAttachmentRemoveRequested: (AttachmentId) -> Unit
 )
