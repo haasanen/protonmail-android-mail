@@ -24,23 +24,18 @@ import androidx.activity.compose.setContent
 import androidx.core.content.IntentCompat
 import dagger.hilt.android.AndroidEntryPoint
 import me.proton.android.core.auth.presentation.AuthOrchestrator
+import me.proton.android.core.auth.presentation.ProtonSecureActivity
 import me.proton.android.core.auth.presentation.R
 import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.presentation.ui.ProtonActivity
-import me.proton.core.presentation.utils.ProtectScreenConfiguration
 import me.proton.core.presentation.utils.addOnBackPressedCallback
 import me.proton.core.presentation.utils.errorToast
-import me.proton.core.presentation.utils.protectScreen
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LoginActivity : ProtonActivity() {
+class LoginActivity : ProtonSecureActivity() {
 
     @Inject
     lateinit var authOrchestrator: AuthOrchestrator
-
-    private val configuration = ProtectScreenConfiguration(true)
-    private val screenProtector by protectScreen(configuration)
 
     private val input: LoginInput
         get() = requireNotNull(IntentCompat.getParcelableExtra(intent, ARG_INPUT, LoginInput::class.java))

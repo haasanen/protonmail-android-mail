@@ -30,6 +30,7 @@ import me.proton.android.core.auth.presentation.login.LoginOutput
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorActivity
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg
 import me.proton.android.core.auth.presentation.signup.SignUpActivity
+import me.proton.android.core.auth.presentation.signup.SignupOutput
 import me.proton.android.core.auth.presentation.twopass.TwoPassActivity
 import me.proton.android.core.auth.presentation.twopass.TwoPassArg
 
@@ -100,14 +101,17 @@ object StartTwoPassMode : ActivityResultContract<String, Boolean>() {
     }
 }
 
-object StartSignUp : ActivityResultContract<Unit, Boolean>() {
+object StartSignUp : ActivityResultContract<Unit, SignupOutput?>() {
 
     override fun createIntent(context: Context, input: Unit) = Intent(context, SignUpActivity::class.java).apply {
         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): Boolean = when (resultCode) {
-        Activity.RESULT_OK -> true
-        else -> false
+    override fun parseResult(resultCode: Int, intent: Intent?): SignupOutput? = when (resultCode) {
+        Activity.RESULT_OK -> intent?.let {
+            IntentCompat.getParcelableExtra(it, SignUpActivity.ARG_OUTPUT, SignupOutput::class.java)
+        }
+
+        else -> null
     }
 }

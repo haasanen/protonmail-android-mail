@@ -20,5 +20,6 @@ package me.proton.android.core.auth.presentation
 object LogTag {
     const val DEFAULT = "core.auth.presentation.default"
     const val LOGIN = "core.auth.presentation.login"
+    const val SIGNUP = "core.auth.presentation.signup"
     const val SESSION = "core.auth.presentation.session"
 }

@@ -45,6 +45,7 @@ fun Launcher(activityActions: MainActivity.Actions, viewModel: LauncherViewModel
                 onRecoveryEmail = { viewModel.submit(LauncherViewModel.Action.OpenRecoveryEmail) },
                 onReportBug = { viewModel.submit(LauncherViewModel.Action.OpenReport) },
                 onSignIn = { viewModel.submit(LauncherViewModel.Action.SignIn(it)) },
+                onSignUp = { viewModel.submit(LauncherViewModel.Action.SignUp) },
                 onSubscription = { viewModel.submit(LauncherViewModel.Action.OpenSubscription) },
                 onSwitchToAccount = { viewModel.submit(LauncherViewModel.Action.SwitchToAccount(it)) },
                 onRequestNotificationPermission = {
@@ -69,6 +70,7 @@ object Launcher {
 
     data class Actions(
         val onSignIn: (UserId?) -> Unit,
+        val onSignUp: () -> Unit,
         val onSubscription: () -> Unit,
         val onReportBug: () -> Unit,
         val onPasswordManagement: () -> Unit,

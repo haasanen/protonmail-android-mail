@@ -18,17 +18,22 @@
 
 package me.proton.android.core.auth.presentation.signup
 
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
+import me.proton.android.core.auth.presentation.signup.ui.CountryPickerScreen
+import me.proton.android.core.auth.presentation.signup.ui.CreatePasswordScreen
+import me.proton.android.core.auth.presentation.signup.ui.CreateRecoveryScreen
+import me.proton.android.core.auth.presentation.signup.ui.CreateRecoverySkipDialog
+import me.proton.android.core.auth.presentation.signup.ui.CreateUsernameScreen
+import me.proton.android.core.auth.presentation.signup.ui.SignUpCongratsScreen
+import me.proton.android.core.auth.presentation.signup.ui.SignUpLoadingScreen
+import me.proton.android.core.auth.presentation.signup.viewmodel.SignUpViewModel
 
 object SignUpRoutes {
     sealed class Route(val route: String) {
-        data object SignUp : Route("auth/signup") {
-
-            operator fun invoke() = route
-        }
-
         data object CreateUsername : Route("auth/signup/create/username") {
 
             operator fun invoke() = route
@@ -43,77 +48,171 @@ object SignUpRoutes {
 
             operator fun invoke() = route
         }
-    }
 
-    @Suppress("ForbiddenComment")
-    fun NavGraphBuilder.addMainScreen(
-        onErrorMessage: (String?) -> Unit,
-        onSuccess: () -> Unit // todo: add user id
-    ) {
-        composable(
-            route = Route.SignUp.route
-        ) {
-            SignUpScreen(
-                onSuccess = { onSuccess() },
-                onErrorMessage = { onErrorMessage(it) }
-            )
+        data object CountryPicker : Route("auth/signup/create/recovery/countrypicker") {
+
+            operator fun invoke() = route
+        }
+
+        data object SkipRecovery : Route("auth/signup/create/recovery/skip") {
+
+            operator fun invoke() = route
+        }
+
+        data object SignUpCreateUser : Route("auth/signup/user/create") {
+
+            operator fun invoke() = route
+        }
+
+        data object SignUpCongrats : Route("auth/signup/congrats") {
+
+            operator fun invoke() = route
         }
     }
 
     fun NavGraphBuilder.addCreateUsernameScreen(
         navController: NavHostController,
         onClose: () -> Unit,
-        onErrorMessage: (String?) -> Unit
+        onErrorMessage: (String?) -> Unit,
+        navGraphViewModel: SignUpViewModel
     ) {
         composable(
             route = Route.CreateUsername.route
         ) {
             CreateUsernameScreen(
                 onCloseClicked = { onClose() },
+                onBackClicked = { onClose() },
                 onErrorMessage = { onErrorMessage(it) },
-                onSuccess = {
-                    val password = it
-                    navController.navigate(Route.CreatePassword())
-                }
+                onSuccess = { route ->
+                    navController.navigate(route) {
+                        launchSingleTop = true
+                    }
+                },
+                viewModel = navGraphViewModel
             )
         }
     }
 
     fun NavGraphBuilder.addCreatePasswordScreen(
         navController: NavHostController,
-        onClose: () -> Unit,
-        onErrorMessage: (String?) -> Unit
+        onErrorMessage: (String?) -> Unit,
+        navGraphViewModel: SignUpViewModel
     ) {
         composable(
             route = Route.CreatePassword.route
         ) {
             CreatePasswordScreen(
-                onBackClicked = { navController.popBackStack() },
+                onBackClicked = {
+                    navController.popBackStack()
+                },
                 onErrorMessage = { onErrorMessage(it) },
-                onSuccess = {
-                    val password = it
-                    navController.navigate(Route.CreateRecovery())
-                }
+                onSuccess = { route ->
+                    navController.navigate(route) {
+                        launchSingleTop = true
+                    }
+                },
+                viewModel = navGraphViewModel
             )
         }
     }
 
     fun NavGraphBuilder.addCreateRecoveryScreen(
         navController: NavHostController,
-        onClose: () -> Unit,
-        onErrorMessage: (String?) -> Unit
+        onErrorMessage: (String?) -> Unit,
+        navGraphViewModel: SignUpViewModel
     ) {
         composable(
             route = Route.CreateRecovery.route
         ) {
             CreateRecoveryScreen(
-                onBackClicked = { onClose() },
-                onSkipClicked = { onClose() },
+                onBackClicked = { navController.popBackStack() },
+                onWantSkip = {
+                    navController.navigate(Route.SkipRecovery.route) {
+                        launchSingleTop = true
+                    }
+                },
+                onCountryPickerClicked = {
+                    navController.navigate(Route.CountryPicker.route) {
+                        launchSingleTop = true
+                    }
+                },
                 onErrorMessage = { onErrorMessage(it) },
-                onSuccess = { method, value ->
-                    val recovery = it // add to viewmodel
-                    navController.navigate(Route.SignUp())
-                }
+                onSuccess = { route ->
+                    navController.navigate(route) {
+                        launchSingleTop = true
+                    }
+                },
+                viewModel = navGraphViewModel
+            )
+        }
+    }
+
+    fun NavGraphBuilder.addCountryPickerDialog(navController: NavHostController, navGraphViewModel: SignUpViewModel) {
+        dialog(
+            route = Route.CountryPicker.route,
+            dialogProperties = DialogProperties(
+                usePlatformDefaultWidth = false
+            )
+        ) {
+            CountryPickerScreen(
+                viewModel = navGraphViewModel,
+                onCloseClick = { navController.popBackStack() }
+            )
+        }
+    }
+
+    fun NavGraphBuilder.addSkipRecoveryDialog(navController: NavHostController, navGraphViewModel: SignUpViewModel) {
+        dialog(route = Route.SkipRecovery.route) {
+            CreateRecoverySkipDialog(
+                onCloseClicked = { navController.popBackStack() },
+                onSkip = { route ->
+                    navController.navigate(route) {
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                viewModel = navGraphViewModel
+            )
+        }
+    }
+
+    fun NavGraphBuilder.addSignUpCreateUserScreen(
+        navController: NavHostController,
+        onErrorMessage: (String?) -> Unit,
+        navGraphViewModel: SignUpViewModel
+    ) {
+        composable(
+            route = Route.SignUpCreateUser.route
+        ) {
+            SignUpLoadingScreen(
+                onErrorMessage = {
+                    onErrorMessage(it)
+                    navController.popBackStack()
+                },
+                onSuccess = {
+                    navController.navigate(Route.SignUpCongrats.route) {
+                        launchSingleTop = true
+                    }
+                },
+                viewModel = navGraphViewModel
+            )
+        }
+    }
+
+    fun NavGraphBuilder.addSignUpCongratsScreen(
+        onSuccess: (String) -> Unit,
+        onError: (String?) -> Unit,
+        navGraphViewModel: SignUpViewModel
+    ) {
+        composable(
+            route = Route.SignUpCongrats.route
+        ) {
+            SignUpCongratsScreen(
+                onStartUsingApp = { onSuccess(it) },
+                onErrorMessage = {
+                    onError(it)
+                },
+                viewModel = navGraphViewModel
             )
         }
     }

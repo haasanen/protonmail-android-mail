@@ -18,33 +18,36 @@
 package me.proton.android.core.auth.presentation.signup
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import me.proton.android.core.auth.presentation.AuthOrchestrator
+import me.proton.android.core.auth.presentation.ProtonSecureActivity
 import me.proton.android.core.auth.presentation.R
+import me.proton.android.core.auth.presentation.signup.SignUpRoutes.addCountryPickerDialog
 import me.proton.android.core.auth.presentation.signup.SignUpRoutes.addCreatePasswordScreen
 import me.proton.android.core.auth.presentation.signup.SignUpRoutes.addCreateRecoveryScreen
 import me.proton.android.core.auth.presentation.signup.SignUpRoutes.addCreateUsernameScreen
-import me.proton.android.core.auth.presentation.signup.SignUpRoutes.addMainScreen
+import me.proton.android.core.auth.presentation.signup.SignUpRoutes.addSignUpCongratsScreen
+import me.proton.android.core.auth.presentation.signup.SignUpRoutes.addSignUpCreateUserScreen
+import me.proton.android.core.auth.presentation.signup.SignUpRoutes.addSkipRecoveryDialog
+import me.proton.android.core.auth.presentation.signup.viewmodel.SignUpViewModel
 import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.presentation.ui.ProtonActivity
-import me.proton.core.presentation.utils.ProtectScreenConfiguration
 import me.proton.core.presentation.utils.addOnBackPressedCallback
 import me.proton.core.presentation.utils.errorToast
-import me.proton.core.presentation.utils.protectScreen
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SignUpActivity : ProtonActivity() {
+class SignUpActivity : ProtonSecureActivity() {
 
     @Inject
     lateinit var authOrchestrator: AuthOrchestrator
 
-    private val configuration = ProtectScreenConfiguration(true)
-    private val screenProtector by protectScreen(configuration)
+    private val signUpViewModel: SignUpViewModel by viewModels()
 
     override fun onDestroy() {
         authOrchestrator.unregister()
@@ -61,28 +64,48 @@ class SignUpActivity : ProtonActivity() {
         setContent {
             ProtonTheme {
                 val navController = rememberNavController()
+
                 NavHost(
+                    route = "sign_up",
                     navController = navController,
                     startDestination = SignUpRoutes.Route.CreateUsername()
                 ) {
                     addCreateUsernameScreen(
                         navController = navController,
-                        onClose = { navController.popBackStack() },
-                        onErrorMessage = { onErrorMessage(it) }
+                        onClose = { onClose() },
+                        onErrorMessage = { onErrorMessage(it) },
+                        navGraphViewModel = signUpViewModel
                     )
                     addCreatePasswordScreen(
                         navController = navController,
-                        onClose = { navController.popBackStack() },
-                        onErrorMessage = { onErrorMessage(it) }
+                        onErrorMessage = { onErrorMessage(it) },
+                        navGraphViewModel = signUpViewModel
                     )
                     addCreateRecoveryScreen(
                         navController = navController,
                         onErrorMessage = { onErrorMessage(it) },
-                        onClose = { navController.popBackStack() }
+                        navGraphViewModel = signUpViewModel
                     )
-                    addMainScreen(
+                    addSkipRecoveryDialog(
+                        navController = navController,
+                        navGraphViewModel = signUpViewModel
+                    )
+                    addCountryPickerDialog(
+                        navController = navController,
+                        navGraphViewModel = signUpViewModel
+                    )
+                    addSignUpCreateUserScreen(
                         onErrorMessage = { onErrorMessage(it) },
-                        onSuccess = { onSuccess() }
+                        navController = navController,
+                        navGraphViewModel = signUpViewModel
+                    )
+                    addSignUpCongratsScreen(
+                        onSuccess = { userId -> onSuccess(userId) },
+                        onError = {
+                            onErrorMessage(it)
+                            onClose()
+                        },
+                        navGraphViewModel = signUpViewModel
                     )
                 }
             }
@@ -90,7 +113,10 @@ class SignUpActivity : ProtonActivity() {
     }
 
     private fun onErrorMessage(message: String?) {
-        errorToast(message ?: getString(R.string.presentation_error_general))
+        val errorMessage = if (message.isNullOrEmpty()) {
+            getString(R.string.presentation_error_general)
+        } else message
+        errorToast(errorMessage)
     }
 
     private fun onClose() {
@@ -98,8 +124,16 @@ class SignUpActivity : ProtonActivity() {
         finish()
     }
 
-    private fun onSuccess() {
-        setResult(Activity.RESULT_OK)
+    private fun onSuccess(userId: String) {
+        setResult(
+            Activity.RESULT_OK,
+            Intent().apply { putExtra(ARG_OUTPUT, SignupOutput(userId = userId)) }
+        )
         finish()
+    }
+
+    companion object {
+
+        const val ARG_OUTPUT = "arg.signupOutput"
     }
 }

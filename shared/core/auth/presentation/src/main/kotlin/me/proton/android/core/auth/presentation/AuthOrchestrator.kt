@@ -22,6 +22,7 @@ import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.ActivityResultLauncher
 import me.proton.android.core.auth.presentation.login.LoginInput
 import me.proton.android.core.auth.presentation.login.LoginOutput
+import me.proton.android.core.auth.presentation.signup.SignupOutput
 import javax.inject.Inject
 
 class AuthOrchestrator @Inject constructor() {
@@ -38,7 +39,7 @@ class AuthOrchestrator @Inject constructor() {
     private var onLoginHelpResultListener: ((result: Boolean) -> Unit)? = {}
     private var onSecondFactorResultListener: ((result: Boolean) -> Unit)? = {}
     private var onTwoPassModeResultListener: ((result: Boolean) -> Unit)? = {}
-    private var onSignUpResultListener: ((result: Boolean) -> Unit)? = {}
+    private var onSignUpResultListener: ((result: SignupOutput?) -> Unit)? = {}
 
     private fun registerAddAccountResult(caller: ActivityResultCaller): ActivityResultLauncher<Unit> =
         caller.registerForActivityResult(StartAddAccount) {
@@ -93,7 +94,7 @@ class AuthOrchestrator @Inject constructor() {
         onTwoPassModeResultListener = block
     }
 
-    fun setOnSignUpResult(block: (result: Boolean) -> Unit) {
+    fun setOnSignUpResult(block: (result: SignupOutput?) -> Unit) {
         onSignUpResultListener = block
     }
 
@@ -205,7 +206,7 @@ fun AuthOrchestrator.onTwoPassModeResult(block: (result: Boolean) -> Unit): Auth
     return this
 }
 
-fun AuthOrchestrator.onSignUpResult(block: (result: Boolean) -> Unit): AuthOrchestrator {
+fun AuthOrchestrator.onSignUpResult(block: (result: SignupOutput?) -> Unit): AuthOrchestrator {
     setOnSignUpResult { block(it) }
     return this
 }

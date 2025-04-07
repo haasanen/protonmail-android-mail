@@ -75,6 +75,7 @@
     <string name="auth_signup_use_current_email">Use your current email instead</string>
     <string name="auth_signup_get_encrypted_email">Get a new encrypted email address</string>
     <string name="auth_signup_external_footnote">With a Proton address, you can use all Proton services</string>
+
     <string name="auth_signup_recovery_skip">Skip</string>
     <string name="auth_signup_recovery_title">Set recovery method (optional)</string>
     <string name="auth_signup_recovery_subtitle">We will send recovery instructions to this email or phone number if you get locked out of your account.</string>
@@ -82,7 +83,28 @@
     <string name="auth_signup_recovery_phone">Phone</string>
     <string name="auth_signup_recovery_email_hint">Recovery email</string>
     <string name="auth_signup_recovery_phone_hint">Recovery phone number</string>
+    <string name="auth_signup_recovery_select_country">Select Country</string>
     <string name="auth_signup_phone_placeholder">XX XXX XX XX</string>
+
+    <string name="auth_signup_skip_recovery_title">Skip recovery method?</string>
+    <string name="auth_signup_skip_recovery_description">A recovery method will help you access your account in case you forget your password or get locked out of your account.</string>
+    <string name="auth_signup_skip_recovery">Skip</string>
+    <string name="auth_signup_set_recovery">Set recovery method</string>
+
     <string name="auth_signup_your_account_is_being_setup">Your account is being created…</string>
     <string name="auth_signup_please_wait">It usually takes no more than a minute.</string>
+
+    <string name="auth_signup_congratulations_subtitle">Your Proton account was successfully created.\nEnjoy the world of privacy.</string>
+    <string name="auth_signup_congratulations_title">Congratulations!</string>
+    <string name="auth_signup_start_using_proton">Start using Proton</string>
+
+    <string name="auth_signup_validation_password">Password must not be empty.</string>
+    <string name="auth_signup_validation_passwords_do_not_match">Passwords do not match.</string>
+    <string name="auth_signup_validation_password_input_invalid">Password input invalid.</string>
+    <string name="auth_signup_validation_username">Username must not be blank.</string>
+    <string name="auth_signup_validation_email">Email must not be blank.</string>
+    <string name="auth_signup_validation_username_input_invalid">Username input invalid.</string>
+    <string name="auth_signup_validation_email_input_invalid">Username input invalid.</string>
+
+    <string name="auth_signup_countries_search">Search country</string>
 </resources>

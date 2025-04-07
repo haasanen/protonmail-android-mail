@@ -18,8 +18,94 @@
 
 package me.proton.android.core.auth.presentation.signup
 
-sealed interface SignUpOperation : RecoveryMethodOperation
+import me.proton.android.core.auth.presentation.signup.ui.Country
+import me.proton.core.account.domain.entity.AccountType
+import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
+
+sealed interface SignUpOperation
 
 sealed interface SignUpAction : SignUpOperation {
-    data object SignUp : SignUpAction
+    data object CreatePlan : SignUpAction // add in the future
+    data object CreateUser : SignUpAction
+    data object FinalizeSignup : SignUpAction
+}
+
+sealed interface CreateUsernameAction : SignUpAction {
+    data class LoadData(
+        val accountType: AccountType
+    ) : CreateUsernameAction
+
+    data object CreateExternalAccount : CreateUsernameAction
+    data object CreateInternalAccount : CreateUsernameAction
+    data class Perform(
+        val unused: Long = System.currentTimeMillis(),
+        val value: String,
+        val domain: String?,
+        val accountType: AccountType,
+        val usernameFrameDetails: ChallengeFrameDetails
+    ) : CreateUsernameAction
+
+    data class CreateUsernameClosed(
+        val back: Boolean = false
+    ) : CreateUsernameAction
+}
+
+sealed interface CreatePasswordAction : SignUpAction {
+    data object LoadData : CreatePasswordAction
+    data class Perform(
+        val unused: Long = System.currentTimeMillis(),
+        val password: String,
+        val confirmPassword: String
+    ) : CreatePasswordAction
+
+    data class CreatePasswordClosed(
+        val back: Boolean = false
+    ) : CreatePasswordAction
+}
+
+sealed interface CreateRecoveryAction : SignUpAction {
+
+    data class SelectRecoveryMethod(
+        val unused: Long = System.currentTimeMillis(),
+        val recoveryMethod: RecoveryMethod,
+        val locale: String
+    ) : CreateRecoveryAction
+
+    data class SubmitRecoveryEmail(
+        val unused: Long = System.currentTimeMillis(),
+        val recoveryMethod: RecoveryMethod = RecoveryMethod.Email,
+        val email: String,
+        val recoveryFrameDetails: ChallengeFrameDetails
+    ) : CreateRecoveryAction
+
+    data class SubmitRecoveryPhone(
+        val unused: Long = System.currentTimeMillis(),
+        val recoveryMethod: RecoveryMethod = RecoveryMethod.Phone,
+        val callingCode: String,
+        val phoneNumber: String,
+        val recoveryFrameDetails: ChallengeFrameDetails
+    ) : CreateRecoveryAction
+
+    sealed interface DialogAction : CreateRecoveryAction {
+        data object WantSkipRecovery : DialogAction
+
+        data object RecoverySkipped : DialogAction
+
+        data object WantSkipDialogClosed : DialogAction
+
+        data class PickCountry(
+            val recoveryMethod: RecoveryMethod = RecoveryMethod.Phone
+        ) : DialogAction
+
+        data class CountryPicked(
+            val recoveryMethod: RecoveryMethod = RecoveryMethod.Phone,
+            val country: Country
+        ) : DialogAction
+
+        data object CountryPickerClosed : DialogAction
+    }
+
+    data class CreateRecoveryClosed(
+        val back: Boolean = false
+    ) : CreateRecoveryAction
 }

@@ -23,10 +23,10 @@ import androidx.activity.compose.setContent
 import dagger.hilt.android.AndroidEntryPoint
 import me.proton.android.core.auth.presentation.AuthOrchestrator
 import me.proton.android.core.auth.presentation.onLoginResult
+import me.proton.android.core.auth.presentation.onSignUpResult
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.presentation.ui.ProtonActivity
 import me.proton.core.presentation.utils.addOnBackPressedCallback
-import me.proton.core.presentation.utils.showToast
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -46,19 +46,14 @@ class AddAccountActivity : ProtonActivity() {
         addOnBackPressedCallback { onClose() }
 
         authOrchestrator.register(this)
-        authOrchestrator.onLoginResult { result ->
-            if (result != null) onSuccess()
-        }
+        authOrchestrator.onLoginResult { result -> if (result != null) onSuccess() }
+        authOrchestrator.onSignUpResult { result -> if (result != null) onSuccess() }
 
         setContent {
             ProtonTheme {
                 AddAccountScreenMail(
                     onSignInClicked = { authOrchestrator.startLoginWorkflow() },
-                    onSignUpClicked = {
-                        showToast("Coming soon")
-                        // Enable when ready:
-                        // authOrchestrator.startSignUpWorkflow()
-                    }
+                    onSignUpClicked = { authOrchestrator.startSignUpWorkflow() }
                 )
             }
         }

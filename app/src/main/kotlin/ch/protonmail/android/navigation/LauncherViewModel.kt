@@ -49,6 +49,7 @@ import me.proton.android.core.auth.presentation.AuthOrchestrator
 import me.proton.android.core.auth.presentation.login.LoginInput
 import me.proton.android.core.auth.presentation.onAddAccountResult
 import me.proton.android.core.auth.presentation.onLoginResult
+import me.proton.android.core.auth.presentation.onSignUpResult
 import me.proton.android.core.payment.presentation.PaymentOrchestrator
 import me.proton.android.core.payment.presentation.onUpgradeResult
 import me.proton.core.domain.entity.UserId
@@ -153,7 +154,8 @@ class LauncherViewModel @Inject constructor(
         with(authOrchestrator) {
             register(context)
             onAddAccountResult { result -> if (!result) context.finish() }
-            onLoginResult { result -> if (result != null) onSwitchToAccount(result.userId.toUserId()) }
+            onLoginResult { result -> if (result != null) { onSwitchToAccount(result.userId.toUserId()) } }
+            onSignUpResult { result -> if (result != null) { onSwitchToAccount(result.userId.toUserId()) } }
             userSessionRepository.observe(context.lifecycle, minActiveState = Lifecycle.State.RESUMED)
                 .onAccountTwoFactorNeeded { startSecondFactorWorkflow(it.userId.toLocalUserId()) }
                 .onAccountTwoPasswordNeeded { startTwoPassModeWorkflow(it.userId.toLocalUserId()) }
@@ -177,6 +179,7 @@ class LauncherViewModel @Inject constructor(
                 is Action.OpenSubscription -> onOpenSubscription()
                 is Action.RequestNotificationPermission -> onRequestNotificationPermission()
                 is Action.SignIn -> onSignIn(action.userId)
+                is Action.SignUp -> onSignUp()
                 is Action.SwitchToAccount -> onSwitchToAccount(action.userId)
             }
         }
@@ -213,6 +216,10 @@ class LauncherViewModel @Inject constructor(
         authOrchestrator.startLoginWorkflow(LoginInput(username = address))
     }
 
+    private fun onSignUp() = viewModelScope.launch {
+        authOrchestrator.startSignUpWorkflow()
+    }
+
     private fun onSwitchToAccount(userId: UserId) = viewModelScope.launch {
         setPrimaryAccount(userId)
     }
@@ -231,6 +238,7 @@ class LauncherViewModel @Inject constructor(
         data object OpenSubscription : Action
         data object RequestNotificationPermission : Action
         data class SignIn(val userId: UserId?) : Action
+        data object SignUp : Action
         data class SwitchToAccount(val userId: UserId) : Action
     }
 }

@@ -62,6 +62,8 @@ dependencies {
     implementation(libs.proton.core.challenge.data)
     implementation(libs.proton.core.challenge.domain)
     implementation(libs.proton.core.challenge.presentation)
+    implementation(libs.proton.core.account.domain)
+//    implementation(libs.proton.core.challenge)
     implementation(libs.proton.core.domain)
     implementation(libs.proton.core.presentation)
     implementation(libs.proton.core.presentationCompose)
