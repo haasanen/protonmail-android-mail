@@ -2,7 +2,7 @@
 android-gradle-plugin = "8.9.1"
 google-services-plugin = "4.4.2"
 proton-core-plugin = "1.3.0"
-sentry-gradle-plugin = "3.14.0"
+sentry-gradle-plugin = "4.14.1"
 
 accompanist-webview = "0.30.1"
 accompanist-permissions = "0.37.2"
@@ -63,13 +63,13 @@ lottie = "6.1.0"
 material = "1.12.0"
 mockk = "1.13.17"
 paparazzi = "1.3.4"
-proton-core = "30.3.1"
+proton-core = "31.0.0"
 proton-rust-core = "0.70.0"
 kotlinpoet-ksp = "2.0.0"
 leakcanary = "2.14"
 okhttp = "4.12.0"
 retrofit = "2.11.0"
-sentry = "6.34.0"
+sentry = "7.21.0"
 
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

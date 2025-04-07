@@ -24,6 +24,7 @@ import me.proton.core.usersettings.domain.entity.RecoverySetting
 import me.proton.core.usersettings.domain.entity.UserSettings
 
 object UserSettingsTestData {
+
     const val RECOVERY_EMAIL_RAW = "recoveryemail@proton.ch"
     private const val RECOVERY_PHONE_RAW = "+346527847362"
 
@@ -57,7 +58,8 @@ object UserSettingsTestData {
         telemetry = null,
         crashReports = null,
         deviceRecovery = null,
-        sessionAccountRecovery = null
+        sessionAccountRecovery = null,
+        easyDeviceMigrationOptOut = false
     )
 
     val emptyUserSettings = UserSettings(
@@ -90,6 +92,7 @@ object UserSettingsTestData {
         telemetry = null,
         crashReports = null,
         deviceRecovery = null,
-        sessionAccountRecovery = null
+        sessionAccountRecovery = null,
+        easyDeviceMigrationOptOut = false
     )
 }

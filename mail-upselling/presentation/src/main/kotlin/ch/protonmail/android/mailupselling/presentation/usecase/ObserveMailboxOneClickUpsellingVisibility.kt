@@ -48,7 +48,7 @@ class ObserveMailboxOneClickUpsellingVisibility @Inject constructor(
         observeOneClickUpsellingEnabled(null)
     ) { userId, purchases, isOneClickOnCooldown, isOneClickUpsellingEnabled ->
         if (userId == null) return@combine false
-        if (!canUpgradeFromMobile()) return@combine false
+        if (!canUpgradeFromMobile(userId)) return@combine false
         if (isOneClickUpsellingEnabled == null || !isOneClickUpsellingEnabled.value) return@combine false
         if (isOneClickOnCooldown && !alwaysShowOneClickUpselling) return@combine false
         if (userHasPendingPurchases(purchases, userId)) return@combine false

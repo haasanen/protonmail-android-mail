@@ -292,7 +292,7 @@ internal class ObserveUpsellingVisibilityTest {
     }
 
     private fun expectCanUpgradeFromMobile(value: Boolean) {
-        coEvery { canUpgradeFromMobile() } returns value
+        coEvery { canUpgradeFromMobile(any()) } returns value
     }
 
     private fun expectUpsellingFeatureFlag(upsellingEntryPoint: UpsellingEntryPoint.BottomSheet, value: Boolean) {

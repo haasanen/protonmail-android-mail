@@ -168,7 +168,7 @@ internal class ObserveUpsellingOnboardingVisibilityTest {
     }
 
     private fun expectCanUpgradeFromMobile(value: Boolean) {
-        coEvery { canUpgradeFromMobile() } returns value
+        coEvery { canUpgradeFromMobile(any()) } returns value
     }
 
     private fun expectOnboardingUpsellingPlans(userId: UserId) {
