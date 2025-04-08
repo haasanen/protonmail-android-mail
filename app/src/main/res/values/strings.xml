@@ -31,6 +31,7 @@
     <string name="feature_coming_soon">Feature coming soon…</string>
     <string name="mailbox_draft_saved">Draft saved</string>
     <string name="mailbox_draft_discard">Discard</string>
+    <string name="mailbox_draft_discarded">Draft discarded</string>
     <string name="mailbox_message_sending">Sending message…</string>
     <string name="mailbox_message_sending_offline">Offline: message queued for sending</string>
     <string name="mailbox_message_sending_success">Message sent</string>

@@ -93,12 +93,14 @@ internal fun NavGraphBuilder.addMailbox(
     }
 }
 
+@Suppress("LongParameterList")
 internal fun NavGraphBuilder.addComposer(
     navController: NavHostController,
     activityActions: MainActivity.Actions,
     showDraftSavedSnackbar: (messageId: MessageId?) -> Unit,
     showMessageSendingSnackbar: () -> Unit,
-    showMessageSendingOfflineSnackbar: () -> Unit
+    showMessageSendingOfflineSnackbar: () -> Unit,
+    showDraftDiscardedSnackbar: () -> Unit
 ) {
     val actions = ComposerScreen.Actions(
         onCloseComposerClick = navController::navigateBack,
@@ -107,7 +109,8 @@ internal fun NavGraphBuilder.addComposer(
         },
         showDraftSavedSnackbar = showDraftSavedSnackbar,
         showMessageSendingSnackbar = showMessageSendingSnackbar,
-        showMessageSendingOfflineSnackbar = showMessageSendingOfflineSnackbar
+        showMessageSendingOfflineSnackbar = showMessageSendingOfflineSnackbar,
+        showDraftDiscardedSnackbar = showDraftDiscardedSnackbar
     )
     composable(route = Destination.Screen.Composer.route) { ComposerScreen(actions) }
     composable(route = Destination.Screen.EditDraftComposer.route) { ComposerScreen(actions) }

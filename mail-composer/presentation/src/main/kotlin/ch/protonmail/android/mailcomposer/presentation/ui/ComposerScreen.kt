@@ -318,6 +318,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 ) {
                     viewModel.submit(ComposerAction.DiscardDraftConfirmed)
                     discardDraftDialogState.value = false
+                    actions.showDraftDiscardedSnackbar()
                 }
             },
             onDismissRequest = { discardDraftDialogState.value = false }
@@ -486,7 +487,8 @@ object ComposerScreen {
         val onSetMessagePasswordClick: (MessageId, SenderEmail) -> Unit,
         val showDraftSavedSnackbar: (MessageId?) -> Unit,
         val showMessageSendingSnackbar: () -> Unit,
-        val showMessageSendingOfflineSnackbar: () -> Unit
+        val showMessageSendingOfflineSnackbar: () -> Unit,
+        val showDraftDiscardedSnackbar: () -> Unit
     ) {
 
         companion object {
@@ -497,7 +499,8 @@ object ComposerScreen {
                 onSetMessagePasswordClick = { _, _ -> },
                 showDraftSavedSnackbar = {},
                 showMessageSendingSnackbar = {},
-                showMessageSendingOfflineSnackbar = {}
+                showMessageSendingOfflineSnackbar = {},
+                showDraftDiscardedSnackbar = {}
             )
         }
     }

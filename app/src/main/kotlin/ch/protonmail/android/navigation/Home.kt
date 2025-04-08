@@ -181,6 +181,11 @@ fun Home(
         )
     }
 
+    val draftDiscardedMessage = stringResource(id = R.string.mailbox_draft_discarded)
+    fun showDraftDiscardedSnackbar() = scope.launch {
+        showNormalSnackbar(text = draftDiscardedMessage)
+    }
+
     val draftSavedText = stringResource(id = R.string.mailbox_draft_saved)
     val draftSavedDiscardText = stringResource(id = R.string.mailbox_draft_discard)
     fun showDraftSavedSnackbar(messageId: MessageId?) = scope.launch {
@@ -191,7 +196,10 @@ fun Home(
 
         )
         when (result) {
-            SnackbarResult.ActionPerformed -> viewModel.discardDraft(messageId)
+            SnackbarResult.ActionPerformed -> {
+                viewModel.discardDraft(messageId)
+                showDraftDiscardedSnackbar()
+            }
             SnackbarResult.Dismissed -> Unit
         }
     }
@@ -504,7 +512,8 @@ fun Home(
                             activityActions,
                             showDraftSavedSnackbar = { showDraftSavedSnackbar(it) },
                             showMessageSendingSnackbar = { showMessageSendingSnackbar() },
-                            showMessageSendingOfflineSnackbar = { showMessageSendingOfflineSnackbar() }
+                            showMessageSendingOfflineSnackbar = { showMessageSendingOfflineSnackbar() },
+                            showDraftDiscardedSnackbar = { showDraftDiscardedSnackbar() }
                         )
 
                         addSetMessagePassword(navController)
