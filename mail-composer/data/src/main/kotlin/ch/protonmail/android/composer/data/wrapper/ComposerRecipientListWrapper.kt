@@ -26,6 +26,7 @@ import uniffi.proton_mail_uniffi.AddSingleRecipientError
 import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.ComposerRecipientList
 import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
+import uniffi.proton_mail_uniffi.RemoveRecipientError
 import uniffi.proton_mail_uniffi.SingleRecipientEntry
 
 class ComposerRecipientListWrapper(private val rustRecipients: ComposerRecipientList) {
@@ -34,13 +35,17 @@ class ComposerRecipientListWrapper(private val rustRecipients: ComposerRecipient
 
     fun registerCallback(callback: ComposerRecipientValidationCallback) = rustRecipients.setCallback(callback)
 
-    suspend fun addSingleRecipient(recipient: SingleRecipientEntry): Either<DataError, Unit> =
+    fun addSingleRecipient(recipient: SingleRecipientEntry): Either<DataError, Unit> =
         when (rustRecipients.addSingleRecipient(recipient)) {
             AddSingleRecipientError.OK -> Unit.right()
             AddSingleRecipientError.DUPLICATE -> DataError.Local.SaveDraftError.DuplicateRecipient.left()
             AddSingleRecipientError.SAVE_FAILED -> DataError.Local.SaveDraftError.SaveFailed.left()
         }
 
-    suspend fun removeSingleRecipient(recipient: SingleRecipientEntry): Either<DataError, Unit> =
-        rustRecipients.removeSingleRecipient(recipient.email).right()
+    fun removeSingleRecipient(recipient: SingleRecipientEntry): Either<DataError, Unit> =
+        when (rustRecipients.removeSingleRecipient(recipient.email)) {
+            RemoveRecipientError.OK -> Unit.right()
+            RemoveRecipientError.EMPTY_GROUP_NAME -> DataError.Local.SaveDraftError.EmptyRecipientGroupName.left()
+            RemoveRecipientError.SAVE_FAILED -> DataError.Local.SaveDraftError.SaveFailed.left()
+        }
 }
