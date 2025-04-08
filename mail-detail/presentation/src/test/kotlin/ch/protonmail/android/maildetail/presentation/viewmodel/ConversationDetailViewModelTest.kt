@@ -63,7 +63,6 @@ import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
-import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
 import ch.protonmail.android.maildetail.presentation.R.string
@@ -241,7 +240,6 @@ class ConversationDetailViewModelTest {
     }
     private val getConversationMoveToLocations = mockk<GetConversationMoveToLocations>()
     private val getMessageMoveToLocations = mockk<GetMessageMoveToLocations>()
-    private val observeAttachmentStatus = mockk<ObserveMessageAttachmentStatus>()
     private val getAttachmentIntentValues = mockk<GetAttachmentIntentValues>()
     private val getAttachmentDownloadStatus = mockk<GetDownloadingAttachmentsForMessages>()
     private val getEmbeddedImageAvoidDuplicatedExecution = mockk<GetEmbeddedImageAvoidDuplicatedExecution>()
@@ -334,7 +332,6 @@ class ConversationDetailViewModelTest {
             observeDetailActions = observeDetailBottomBarActions,
             getConversationMoveToLocations = getConversationMoveToLocations,
             getMessageMoveToLocations = getMessageMoveToLocations,
-            observeMessageAttachmentStatus = observeAttachmentStatus,
             getDownloadingAttachmentsForMessages = getAttachmentDownloadStatus,
             reducer = reducer,
             starConversations = starConversations,

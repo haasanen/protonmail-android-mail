@@ -54,7 +54,6 @@ import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
-import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
@@ -141,7 +140,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -174,7 +172,6 @@ class ConversationDetailViewModel @Inject constructor(
     private val observeDetailActions: ObserveDetailBottomBarActions,
     private val getConversationMoveToLocations: GetConversationMoveToLocations,
     private val getMessageMoveToLocations: GetMessageMoveToLocations,
-    private val observeMessageAttachmentStatus: ObserveMessageAttachmentStatus,
     private val getDownloadingAttachmentsForMessages: GetDownloadingAttachmentsForMessages,
     private val reducer: ConversationDetailReducer,
     private val starConversations: StarConversations,
@@ -1027,22 +1024,9 @@ class ConversationDetailViewModel @Inject constructor(
                     }
                 }
             }
-                .flatMapMerge { (messageId, attachmentId) ->
-                    observeMessageAttachmentStatus(userId, messageId, attachmentId)
-                        .mapLatest {
-                            ConversationDetailEvent.AttachmentStatusChanged(
-                                MessageIdUiModel(messageId.id),
-                                attachmentId,
-                                it.status
-                            )
-                        }
-                        .distinctUntilChanged()
-                }
+
         }
     }
-        .onEach { event ->
-            emitNewStateFrom(event)
-        }
         .launchIn(viewModelScope)
 
     private fun onOpenAttachmentClicked(messageId: MessageIdUiModel, attachmentId: AttachmentId) {

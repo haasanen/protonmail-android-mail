@@ -80,7 +80,6 @@ import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
-import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
 import ch.protonmail.android.maildetail.domain.usecase.ShouldShowEmbeddedImages
@@ -186,7 +185,6 @@ import io.mockk.Called
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.coVerifyOrder
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -283,7 +281,6 @@ class ConversationDetailViewModelIntegrationTest {
     }
     private val updateLinkConfirmationSetting = mockk<UpdateLinkConfirmationSetting>()
 
-    private val observeAttachmentStatus = mockk<ObserveMessageAttachmentStatus>()
     private val getDownloadingAttachmentsForMessages = mockk<GetDownloadingAttachmentsForMessages>()
     private val getAttachmentIntentValues = mockk<GetAttachmentIntentValues>()
     private val getEmbeddedImageAvoidDuplicatedExecution = mockk<GetEmbeddedImageAvoidDuplicatedExecution>()
@@ -551,7 +548,6 @@ class ConversationDetailViewModelIntegrationTest {
                 AttachmentMetadataSamples.Image
             )
         ).right()
-        coEvery { observeAttachmentStatus.invoke(userId, messageId, any()) } returns flowOf()
 
         val viewModel = buildConversationDetailViewModel()
         viewModel.state.test {
@@ -579,16 +575,6 @@ class ConversationDetailViewModelIntegrationTest {
                 expandedMessage.messageBodyUiModel.attachments
             )
             assertEquals(MessageBodyExpandCollapseMode.NotApplicable, expandedMessage.expandCollapseMode)
-            coVerifyOrder {
-                observeAttachmentStatus.invoke(userId, messageId, AttachmentMetadataSamples.Document.attachmentId)
-                observeAttachmentStatus.invoke(
-                    userId,
-                    messageId,
-                    AttachmentMetadataSamples.DocumentWithReallyLongFileName.attachmentId
-                )
-                observeAttachmentStatus.invoke(userId, messageId, AttachmentMetadataSamples.Invoice.attachmentId)
-                observeAttachmentStatus.invoke(userId, messageId, AttachmentMetadataSamples.Image.attachmentId)
-            }
         }
     }
 
@@ -610,7 +596,6 @@ class ConversationDetailViewModelIntegrationTest {
                 AttachmentMetadataSamples.Image
             )
         ).right()
-        coEvery { observeAttachmentStatus.invoke(userId, messageId, any()) } returns flowOf()
 
         val viewModel = buildConversationDetailViewModel()
         viewModel.state.test {
@@ -651,7 +636,6 @@ class ConversationDetailViewModelIntegrationTest {
                 AttachmentMetadataSamples.Image
             )
         ).right()
-        coEvery { observeAttachmentStatus.invoke(userId, messageId, any()) } returns flowOf()
 
         val viewModel = buildConversationDetailViewModel()
         viewModel.state.test {
@@ -699,7 +683,6 @@ class ConversationDetailViewModelIntegrationTest {
                 AttachmentMetadataSamples.Image
             )
         ).right()
-        coEvery { observeAttachmentStatus.invoke(userId, messageId, any()) } returns flowOf()
 
         val viewModel = buildConversationDetailViewModel()
         viewModel.state.test {
@@ -1009,7 +992,6 @@ class ConversationDetailViewModelIntegrationTest {
                     aMessageAttachment(id = it.toString())
                 }
             ).right()
-        coEvery { observeAttachmentStatus.invoke(userId, any(), any()) } returns flowOf()
 
         val viewModel = buildConversationDetailViewModel()
 
@@ -1062,7 +1044,6 @@ class ConversationDetailViewModelIntegrationTest {
                     aMessageAttachment(id = it.toString())
                 }
             ).right()
-        coEvery { observeAttachmentStatus(userId, expandedMessageId, any()) } returns flowOf()
         coEvery {
             getDownloadingAttachmentsForMessages(
                 userId,
@@ -1121,7 +1102,6 @@ class ConversationDetailViewModelIntegrationTest {
                         aMessageAttachment(id = it.toString())
                     }
                 ).right()
-            coEvery { observeAttachmentStatus(userId, expandedMessageId, any()) } returns flowOf()
             coEvery {
                 getDownloadingAttachmentsForMessages(
                     userId,
@@ -1346,7 +1326,6 @@ class ConversationDetailViewModelIntegrationTest {
                     aMessageAttachment(id = it.toString())
                 }
             ).right()
-        coEvery { observeAttachmentStatus(userId, expandedMessageId, any()) } returns flowOf()
         coEvery {
             getDownloadingAttachmentsForMessages(
                 userId,
@@ -1567,7 +1546,6 @@ class ConversationDetailViewModelIntegrationTest {
                 mimeType = MimeType.Html,
                 attachments = listOf(AttachmentMetadataSamples.Calendar)
             ).right()
-            coEvery { observeAttachmentStatus.invoke(userId, messageId, any()) } returns flowOf()
             coEvery { isProtonCalendarInstalled() } returns true
             coEvery {
                 getAttachmentIntentValues(userId, messageId, AttachmentId(AttachmentMetadataSamples.Ids.ID_CALENDAR))
@@ -1610,7 +1588,6 @@ class ConversationDetailViewModelIntegrationTest {
                 mimeType = MimeType.Html,
                 attachments = listOf(AttachmentMetadataSamples.Calendar)
             ).right()
-            coEvery { observeAttachmentStatus.invoke(userId, messageId, any()) } returns flowOf()
             coEvery { isProtonCalendarInstalled() } returns false
 
             val viewModel = buildConversationDetailViewModel()
@@ -2180,7 +2157,6 @@ class ConversationDetailViewModelIntegrationTest {
                 observeConversationViewState,
                 observeDetailBottomBarActions,
                 observeContacts,
-                observeAttachmentStatus,
                 observePrivacySettings,
                 answers = false,
                 recordedCalls = true
@@ -2195,7 +2171,6 @@ class ConversationDetailViewModelIntegrationTest {
                 observeDetailBottomBarActions wasNot Called
                 observeContacts wasNot Called
                 observeConversationViewState wasNot Called
-                observeAttachmentStatus wasNot Called
                 observePrivacySettings wasNot Called
             }
 
@@ -2240,7 +2215,6 @@ class ConversationDetailViewModelIntegrationTest {
                 observeConversationViewState,
                 observeDetailBottomBarActions,
                 observeContacts,
-                observeAttachmentStatus,
                 observePrivacySettings,
                 answers = false,
                 recordedCalls = true
@@ -2252,7 +2226,6 @@ class ConversationDetailViewModelIntegrationTest {
             coVerify {
                 observeConversationUseCase(userId, conversationId, any())
                 observeConversationViewState()
-                observeAttachmentStatus(userId, any(), any())
                 observePrivacySettings(userId)
             }
 
@@ -2278,7 +2251,6 @@ class ConversationDetailViewModelIntegrationTest {
         observeConversation: ObserveConversation = observeConversationUseCase,
         observeConversationMessages: ObserveConversationMessages = this.observeConversationMessages,
         observeDetailActions: ObserveDetailBottomBarActions = observeDetailBottomBarActions,
-        observeMessageAttachmentStatus: ObserveMessageAttachmentStatus = observeAttachmentStatus,
         getAttachmentStatus: GetDownloadingAttachmentsForMessages = getDownloadingAttachmentsForMessages,
         detailReducer: ConversationDetailReducer = reducer,
         savedState: SavedStateHandle = savedStateHandle,
@@ -2310,7 +2282,6 @@ class ConversationDetailViewModelIntegrationTest {
         observeDetailActions = observeDetailActions,
         getConversationMoveToLocations = getConversationMoveToLocations,
         getMessageMoveToLocations = getMessageMoveToLocations,
-        observeMessageAttachmentStatus = observeMessageAttachmentStatus,
         getDownloadingAttachmentsForMessages = getAttachmentStatus,
         reducer = detailReducer,
         starConversations = star,
@@ -2374,7 +2345,6 @@ class ConversationDetailViewModelIntegrationTest {
         } returns flowOf(
             listOf(Action.Archive, Action.MarkUnread).right()
         )
-        coEvery { observeAttachmentStatus.invoke(userId, any(), any()) } returns flowOf()
         coEvery { observePrivacySettings.invoke(any()) } returns flowOf(
             PrivacySettings(
                 autoShowRemoteContent = false,
