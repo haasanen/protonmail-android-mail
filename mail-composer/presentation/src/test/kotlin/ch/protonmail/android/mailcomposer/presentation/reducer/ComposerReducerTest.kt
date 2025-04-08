@@ -514,9 +514,16 @@ class ComposerReducerTest(
         )
 
         private val SubmittableToDiscardDraft = TestTransition(
-            name = "Should update state with an effect to close composer when discarding a draft",
+            name = "Should update state with an effect to show confirmation dialog when discarding a draft",
             currentState = aSubmittableState(draftId = messageId),
             operation = ComposerAction.DiscardDraft,
+            expectedState = aSubmittableState(draftId = messageId).copy(confirmDiscardDraft = Effect.of(Unit))
+        )
+
+        private val SubmittableToDiscardDraftConfirmed = TestTransition(
+            name = "Should update state with an effect to close composer when discarding a draft is confirmed",
+            currentState = aSubmittableState(draftId = messageId),
+            operation = ComposerAction.DiscardDraftConfirmed,
             expectedState = aSubmittableState(draftId = messageId).copy(closeComposer = Effect.of(Unit))
         )
 
@@ -555,7 +562,8 @@ class ComposerReducerTest(
             EmptyToErrorSettingExpirationTime,
             EmptyToMessageExpirationTimeUpdated,
             EmptyToConfirmSendExpiringMessage,
-            SubmittableToDiscardDraft
+            SubmittableToDiscardDraft,
+            SubmittableToDiscardDraftConfirmed
         )
 
         private fun aSubmittableState(
@@ -599,7 +607,8 @@ class ComposerReducerTest(
             isMessagePasswordSet = false,
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
-            openImagePicker = Effect.empty()
+            openImagePicker = Effect.empty(),
+            confirmDiscardDraft = Effect.empty()
         )
 
         private fun aNotSubmittableState(
@@ -647,7 +656,8 @@ class ComposerReducerTest(
             senderChangedNotice = senderChangedNotice,
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
-            openImagePicker = Effect.empty()
+            openImagePicker = Effect.empty(),
+            confirmDiscardDraft = Effect.empty()
         )
 
         @JvmStatic

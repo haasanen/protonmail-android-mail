@@ -50,7 +50,8 @@ data class ComposerDraftState(
     val senderChangedNotice: Effect<TextUiModel> = Effect.empty(),
     val messageExpiresIn: Duration,
     val confirmSendExpiringMessage: Effect<List<Participant>>,
-    val openImagePicker: Effect<Unit>
+    val openImagePicker: Effect<Unit>,
+    val confirmDiscardDraft: Effect<Unit>
 ) {
 
     companion object {
@@ -86,7 +87,8 @@ data class ComposerDraftState(
             senderChangedNotice = Effect.empty(),
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
-            openImagePicker = Effect.empty()
+            openImagePicker = Effect.empty(),
+            confirmDiscardDraft = Effect.empty()
         )
     }
 }

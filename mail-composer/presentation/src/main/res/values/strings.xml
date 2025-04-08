@@ -102,4 +102,9 @@
         <item quantity="one">%d member</item>
         <item quantity="other">%d members</item>
     </plurals>
+    <!-- Discard draft dialog -->
+    <string name="discard_draft_dialog_title">Discard this message?</string>
+    <string name="discard_draft_dialog_text">Your draft will not be saved</string>
+    <string name="discard_draft_dialog_confirm_button">Discard</string>
+    <string name="discard_draft_dialog_dismiss_button">Cancel</string>
 </resources>

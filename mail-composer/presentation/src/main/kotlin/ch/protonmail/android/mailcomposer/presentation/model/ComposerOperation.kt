@@ -49,6 +49,7 @@ internal sealed interface ComposerAction : ComposerOperation {
     data object RejectSendingWithoutSubject : ComposerAction
     data object SendExpiringMessageToExternalRecipientsConfirmed : ComposerAction
     data object DiscardDraft : ComposerAction
+    data object DiscardDraftConfirmed : ComposerAction
 }
 
 sealed interface ComposerEvent : ComposerOperation {

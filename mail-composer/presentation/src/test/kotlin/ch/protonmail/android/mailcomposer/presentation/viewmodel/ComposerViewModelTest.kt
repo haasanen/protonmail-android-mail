@@ -1355,6 +1355,55 @@ class ComposerViewModelTest {
         }
     }
 
+    @Test
+    fun `should show confirmation dialog when discarding a draft`() = runTest {
+        // Given
+        val expectedMessageId = MessageIdSample.EmptyDraft
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        expectNoInputDraftMessageId()
+        expectInputDraftAction { DraftAction.Compose }
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
+        expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
+        expectObservedMessageAttachments(expectedUserId, expectedMessageId)
+        expectObserveMessageSendingError(expectedUserId, expectedMessageId)
+        ignoreRecipientsUpdates()
+        coEvery { discardDraft(expectedUserId, expectedMessageId) } returns Unit.right()
+
+        // When
+        viewModel.submit(ComposerAction.DiscardDraft)
+
+        // Then
+        viewModel.state.test {
+            assertEquals(Unit, awaitItem().confirmDiscardDraft.consume())
+        }
+
+    }
+
+    @Test
+    fun `should call use case and close composer when discarding draft is confirmed`() = runTest {
+        // Given
+        val expectedMessageId = MessageIdSample.EmptyDraft
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        expectNoInputDraftMessageId()
+        expectInputDraftAction { DraftAction.Compose }
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
+        expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
+        expectObservedMessageAttachments(expectedUserId, expectedMessageId)
+        expectObserveMessageSendingError(expectedUserId, expectedMessageId)
+        ignoreRecipientsUpdates()
+        coEvery { discardDraft(expectedUserId, expectedMessageId) } returns Unit.right()
+
+        // When
+        viewModel.submit(ComposerAction.DiscardDraftConfirmed)
+
+        // Then
+        viewModel.state.test {
+            assertEquals(Unit, awaitItem().closeComposer.consume())
+        }
+        coVerify { discardDraft(expectedUserId, expectedMessageId) }
+    }
+
+
     @BeforeTest
     fun setUp() {
         mockkStatic(android.graphics.Color::parseColor)

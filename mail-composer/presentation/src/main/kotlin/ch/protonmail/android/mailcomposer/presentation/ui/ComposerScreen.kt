@@ -30,6 +30,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -110,6 +111,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     val sendExpiringMessageDialogState = remember {
         mutableStateOf(SendExpiringMessageDialogState(false, emptyList()))
     }
+    val discardDraftDialogState = remember { mutableStateOf(false) }
 
     val featureMissingSnackbarMessage = stringResource(id = R.string.feature_coming_soon)
     val scope = rememberCoroutineScope()
@@ -299,6 +301,29 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         )
     }
 
+    if (discardDraftDialogState.value) {
+        ProtonAlertDialog(
+            titleResId = R.string.discard_draft_dialog_title,
+            text = {
+                Text(text = stringResource(id = R.string.discard_draft_dialog_text))
+            },
+            dismissButton = {
+                ProtonAlertDialogButton(
+                    titleResId = R.string.discard_draft_dialog_dismiss_button
+                ) { discardDraftDialogState.value = false }
+            },
+            confirmButton = {
+                ProtonAlertDialogButton(
+                    titleResId = R.string.discard_draft_dialog_confirm_button
+                ) {
+                    viewModel.submit(ComposerAction.DiscardDraftConfirmed)
+                    discardDraftDialogState.value = false
+                }
+            },
+            onDismissRequest = { discardDraftDialogState.value = false }
+        )
+    }
+
     if (attachmentSizeDialogState.value) {
         ProtonAlertDialog(
             onDismissRequest = { attachmentSizeDialogState.value = false },
@@ -414,6 +439,10 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         sendExpiringMessageDialogState.value = SendExpiringMessageDialogState(
             isVisible = true, externalParticipants = it
         )
+    }
+
+    ConsumableLaunchedEffect(effect = state.confirmDiscardDraft) {
+        discardDraftDialogState.value = true
     }
 
     BackHandler(true) {

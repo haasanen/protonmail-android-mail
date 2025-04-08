@@ -68,6 +68,7 @@ class ComposerReducer @Inject constructor(
         is ComposerAction.ExpirationTimeSet -> updateStateForExpirationTimeSet(currentState)
         is ComposerAction.SendExpiringMessageToExternalRecipientsConfirmed -> currentState
         is ComposerAction.DiscardDraft -> updateStateForDiscardDraft(currentState)
+        is ComposerAction.DiscardDraftConfirmed -> updateStateForDiscardDraftConfirmed(currentState)
     }
 
     @Suppress("ComplexMethod", "LongMethod")
@@ -289,6 +290,10 @@ class ComposerReducer @Inject constructor(
     )
 
     private fun updateStateForDiscardDraft(currentState: ComposerDraftState) = currentState.copy(
+        confirmDiscardDraft = Effect.of(Unit)
+    )
+
+    private fun updateStateForDiscardDraftConfirmed(currentState: ComposerDraftState) = currentState.copy(
         closeComposer = Effect.of(Unit)
     )
 

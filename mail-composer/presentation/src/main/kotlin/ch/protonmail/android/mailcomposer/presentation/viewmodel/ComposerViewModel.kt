@@ -348,7 +348,8 @@ class ComposerViewModel @AssistedInject constructor(
                     is ComposerAction.SendExpiringMessageToExternalRecipientsConfirmed -> emitNewStateFor(
                         onSendMessage(action)
                     )
-                    is ComposerAction.DiscardDraft -> onDiscardDraft(action)
+                    is ComposerAction.DiscardDraft -> emitNewStateFor(action)
+                    is ComposerAction.DiscardDraftConfirmed -> onDiscardDraftConfirmed(action)
                 }
                 composerIdlingResource.decrement()
             }
@@ -475,7 +476,7 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    private fun onDiscardDraft(action: ComposerAction.DiscardDraft) {
+    private fun onDiscardDraftConfirmed(action: ComposerAction.DiscardDraftConfirmed) {
         viewModelScope.launch {
             currentMessageId()?.let {
                 discardDraft(primaryUserId(), it)
