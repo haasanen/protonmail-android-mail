@@ -132,8 +132,6 @@ fun AttachmentItem(
                 }
             }
             .padding(
-                // top = ProtonDimens.Spacing.MediumLight,
-                // bottom = ProtonDimens.Spacing.MediumLight,
                 start = ProtonDimens.Spacing.Medium,
                 end = ProtonDimens.Spacing.Large
             ),
