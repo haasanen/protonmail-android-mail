@@ -183,7 +183,7 @@ fun Home(
 
     val draftSavedText = stringResource(id = R.string.mailbox_draft_saved)
     val draftSavedDiscardText = stringResource(id = R.string.mailbox_draft_discard)
-    fun showDraftSavedSnackbar(messageId: MessageId) = scope.launch {
+    fun showDraftSavedSnackbar(messageId: MessageId?) = scope.launch {
         val result = snackbarHostSuccessState.showSnackbar(
             message = draftSavedText,
             type = ProtonSnackbarType.SUCCESS,

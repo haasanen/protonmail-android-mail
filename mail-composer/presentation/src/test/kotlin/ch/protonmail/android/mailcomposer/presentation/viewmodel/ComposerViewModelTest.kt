@@ -50,7 +50,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageExpiratio
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageSendingError
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
-import ch.protonmail.android.mailcomposer.domain.usecase.ProvideNewDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
@@ -143,7 +142,6 @@ class ComposerViewModelTest {
     private val observePrimaryUserIdMock = mockk<ObservePrimaryUserId>()
     private val composerIdlingResource = spyk<ComposerIdlingResource>()
     private val isValidEmailAddressMock = mockk<IsValidEmailAddress>()
-    private val provideNewDraftIdMock = mockk<ProvideNewDraftId>()
     private val savedStateHandle = mockk<SavedStateHandle>()
     private val deleteAttachment = mockk<DeleteAttachment>()
     private val addAttachment = mockk<AddAttachment>()
@@ -199,8 +197,7 @@ class ComposerViewModelTest {
             recipientsStateManager,
             discardDraft,
             savedStateHandle,
-            observePrimaryUserIdMock,
-            provideNewDraftIdMock
+            observePrimaryUserIdMock
         )
     }
 
@@ -245,7 +242,7 @@ class ComposerViewModelTest {
     @Test
     fun `should store the draft body when the body changes`() {
         // Given
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         val expectedDraftBody = DraftBody(RawDraftBody)
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.DraftBodyChanged(expectedDraftBody)
@@ -276,7 +273,7 @@ class ComposerViewModelTest {
         // Given
         val expectedDraftBody = DraftBody(RawDraftBody)
         val expectedSenderEmail = SenderEmail(UserAddressSample.AliasAddress.email)
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.SenderChanged(SenderUiModel(expectedSenderEmail.value))
         expectStoreDraftBodySucceeds(expectedMessageId, expectedDraftBody)
@@ -307,7 +304,7 @@ class ComposerViewModelTest {
         // Given
         val expectedDraftBody = DraftBody(RawDraftBody)
         val expectedSenderEmail = SenderEmail(UserAddressSample.AliasAddress.email)
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.SenderChanged(SenderUiModel(expectedSenderEmail.value))
         expectStoreDraftBodySucceeds(expectedMessageId, expectedDraftBody)
@@ -333,7 +330,7 @@ class ComposerViewModelTest {
     fun `should store draft subject when subject changes`() = runTest {
         // Given
         val expectedSubject = Subject("Subject for the message")
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         expectStoreDraftSubjectSucceeds(expectedMessageId, expectedSubject)
         expectNoInputDraftMessageId()
@@ -365,7 +362,7 @@ class ComposerViewModelTest {
             RecipientUiModel.Valid("valid@email.com"),
             RecipientUiModel.Invalid("invalid email")
         )
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
         expectUpdateRecipientsSucceeds(expectedTo, expectedCc, expectedBcc)
@@ -394,7 +391,7 @@ class ComposerViewModelTest {
         // Given
         val expectedSubject = Subject("Subject for the message")
         val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftBody = DraftBody("I am plaintext")
         val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
@@ -523,7 +520,7 @@ class ComposerViewModelTest {
     fun `should close composer without saving draft when fields are empty and composer is closed`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
@@ -547,7 +544,7 @@ class ComposerViewModelTest {
     fun `emits state with primary sender address when available`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
         expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
@@ -570,7 +567,7 @@ class ComposerViewModelTest {
     fun `emits state with initialization error when creating new empty draft fails`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         ignoreRecipientsUpdates()
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
@@ -595,7 +592,7 @@ class ComposerViewModelTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val addresses = listOf(UserAddressSample.PrimaryAddress, UserAddressSample.AliasAddress)
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
@@ -619,7 +616,7 @@ class ComposerViewModelTest {
     fun `emits state with upgrade plan to change sender when user cannot change sender`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
@@ -643,7 +640,7 @@ class ComposerViewModelTest {
     fun `emits state with error when cannot determine if user can change sender`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
@@ -668,7 +665,7 @@ class ComposerViewModelTest {
         // Given
         val expectedDraftBody = DraftBody("")
         val expectedSenderEmail = SenderEmail(UserAddressSample.AliasAddress.email)
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.SenderChanged(SenderUiModel(expectedSenderEmail.value))
         expectStoreDraftBodySucceeds(expectedMessageId, expectedDraftBody)
@@ -697,7 +694,7 @@ class ComposerViewModelTest {
         val expectedSenderEmail = SenderEmail(UserAddressSample.AliasAddress.email)
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.SenderChanged(SenderUiModel(expectedSenderEmail.value))
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         expectStoreDraftBodyFails(expectedDraftBody) {
             DataError.Local.SaveDraftError.SaveFailed
         }
@@ -727,7 +724,7 @@ class ComposerViewModelTest {
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftBody = DraftBody("updated-draft")
         val action = ComposerAction.DraftBodyChanged(expectedDraftBody)
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
         expectStoreDraftBodyFails(expectedDraftBody) {
             DataError.Local.SaveDraftError.SaveFailed
@@ -754,7 +751,7 @@ class ComposerViewModelTest {
     fun `emits state with saving draft subject error when save draft subject returns error`() = runTest {
         // Given
         val expectedSubject = Subject("Subject for the message")
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         expectStoreDraftSubjectFails(expectedSubject) {
             DataError.Local.SaveDraftError.Unknown
@@ -785,7 +782,7 @@ class ComposerViewModelTest {
     @Test
     fun `emits state with saving draft recipients error when save recipients returns error`() = runTest {
         // Given
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val toRecipients = listOf(
             Recipient("valid@email.com", "Valid Email", false)
@@ -916,7 +913,7 @@ class ComposerViewModelTest {
     fun `emits state with valid sender and notice effect when parent draft sender is invalid`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val expectedDraftId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedDraftId = MessageIdSample.EmptyDraft
         val expectedParentId = MessageIdSample.Invoice
         val expectedAction = expectInputDraftAction { DraftAction.Reply(expectedParentId) }
         expectNoInputDraftMessageId()
@@ -1115,7 +1112,7 @@ class ComposerViewModelTest {
     fun `should update state with message password info when message password changes`() = runTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
-        val messageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val messageId = MessageIdSample.EmptyDraft
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectObservedMessageAttachments(userId, messageId)
@@ -1135,13 +1132,12 @@ class ComposerViewModelTest {
     @Test
     fun `should set recipient to state when recipient was given as an input`() = runTest {
         // Given
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedRecipient = RecipientSample.NamelessRecipient
         val expectedAction = DraftAction.ComposeToAddresses(listOf(expectedRecipient.address))
 
         expectNoInputDraftMessageId()
-        expectedMessageId { expectedMessageId }
         expectContacts()
         mockParticipantMapper()
         expectInputDraftAction { expectedAction }
@@ -1173,7 +1169,7 @@ class ComposerViewModelTest {
     fun `should emit state for showing bottom sheet when action for setting expiration time is submitted`() = runTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
-        val messageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val messageId = MessageIdSample.EmptyDraft
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectObservedMessageAttachments(userId, messageId)
@@ -1197,7 +1193,7 @@ class ComposerViewModelTest {
     fun `should emit state for hiding bottom sheet when action for saving expiration time is submitted`() = runTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
-        val messageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val messageId = MessageIdSample.EmptyDraft
         val expirationTime = 1.days
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
@@ -1224,7 +1220,7 @@ class ComposerViewModelTest {
     fun `should emit state for showing an error when saving expiration time has failed`() = runTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
-        val messageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val messageId = MessageIdSample.EmptyDraft
         val expirationTime = 1.days
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
@@ -1253,7 +1249,7 @@ class ComposerViewModelTest {
     fun `should emit state with message expiration time when the expiration time has changed`() = runTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
-        val messageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val messageId = MessageIdSample.EmptyDraft
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectObservedMessageAttachments(userId, messageId)
@@ -1276,7 +1272,7 @@ class ComposerViewModelTest {
             // Given
             val expectedSubject = Subject("Subject for the message")
             val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
-            val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+            val expectedMessageId = MessageIdSample.EmptyDraft
             val expectedUserId = expectedUserId { UserIdSample.Primary }
             val expectedDraftBody = DraftBody("I am plaintext")
             val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
@@ -1319,7 +1315,7 @@ class ComposerViewModelTest {
         // Given
         val expectedSubject = Subject("Subject for the message")
         val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedMessageId = MessageIdSample.EmptyDraft
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftBody = DraftBody("I am plaintext")
         val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
@@ -1462,10 +1458,6 @@ class ComposerViewModelTest {
 
     private fun expectNetworkManagerIsDisconnected() {
         every { networkManagerMock.isConnectedToNetwork() } returns false
-    }
-
-    private fun expectedMessageId(messageId: () -> MessageId): MessageId = messageId().also {
-        every { provideNewDraftIdMock() } returns it
     }
 
     private fun expectedUserId(userId: () -> UserId): UserId = userId().also {

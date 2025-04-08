@@ -55,7 +55,7 @@ data class ComposerDraftState(
 
     companion object {
 
-        fun initial(draftId: MessageId, isSubmittable: Boolean = false): ComposerDraftState = ComposerDraftState(
+        fun initial(draftId: MessageId?, isSubmittable: Boolean = false): ComposerDraftState = ComposerDraftState(
             fields = ComposerFields(
                 draftId = draftId,
                 sender = SenderUiModel(""),
@@ -96,7 +96,7 @@ data class ComposerDraftState(
  * @body is used to expose back to the viewModel any changes applied by the user (no template, user-content only);
  */
 data class ComposerFields(
-    val draftId: MessageId,
+    val draftId: MessageId?,
     val sender: SenderUiModel,
     val displayBody: DraftDisplayBodyUiModel,
     val body: String

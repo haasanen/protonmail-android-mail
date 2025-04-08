@@ -45,16 +45,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.presentation.R
-import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
 fun ComposerBottomBar(
-    draftId: MessageId,
-    senderEmail: SenderEmail,
     isMessagePasswordSet: Boolean,
     isMessageExpirationTimeSet: Boolean,
     actions: ComposerBottomBar.Actions,
@@ -70,7 +66,7 @@ fun ComposerBottomBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AttachmentsButton(onClick = actions.onAddAttachmentsClick)
-            AddPasswordButton(draftId, senderEmail, isMessagePasswordSet, actions.onSetMessagePasswordClick)
+            AddPasswordButton(isMessagePasswordSet, actions.onSetMessagePasswordClick)
             SetExpirationButton(isMessageExpirationTimeSet, actions.onSetExpirationTimeClick)
             Spacer(modifier = Modifier.weight(1f))
             DiscardDraftButton(actions.onDiscardDraftClicked)
@@ -114,17 +110,12 @@ private fun DiscardDraftButton(onDiscardDraftClicked: () -> Unit) {
 }
 
 @Composable
-private fun AddPasswordButton(
-    draftId: MessageId,
-    senderEmail: SenderEmail,
-    isMessagePasswordSet: Boolean,
-    onSetMessagePasswordClick: (MessageId, SenderEmail) -> Unit
-) {
+private fun AddPasswordButton(isMessagePasswordSet: Boolean, onSetMessagePasswordClick: () -> Unit) {
     BottomBarButton(
         iconRes = R.drawable.ic_proton_lock,
         contentDescriptionRes = R.string.composer_button_add_password,
         shouldShowCheckmark = isMessagePasswordSet,
-        onClick = { onSetMessagePasswordClick(draftId, senderEmail) }
+        onClick = onSetMessagePasswordClick
     )
 }
 
@@ -189,7 +180,7 @@ private fun BottomBarButtonCheckmark(modifier: Modifier = Modifier) {
 object ComposerBottomBar {
 
     data class Actions(
-        val onSetMessagePasswordClick: (MessageId, SenderEmail) -> Unit,
+        val onSetMessagePasswordClick: () -> Unit,
         val onSetExpirationTimeClick: () -> Unit,
         val onAddAttachmentsClick: () -> Unit,
         val onDiscardDraftClicked: () -> Unit
@@ -198,7 +189,7 @@ object ComposerBottomBar {
         companion object {
 
             val Empty = Actions(
-                onSetMessagePasswordClick = { _, _ -> },
+                onSetMessagePasswordClick = {},
                 onSetExpirationTimeClick = {},
                 onAddAttachmentsClick = {},
                 onDiscardDraftClicked = {}

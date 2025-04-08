@@ -96,7 +96,7 @@ internal fun NavGraphBuilder.addMailbox(
 internal fun NavGraphBuilder.addComposer(
     navController: NavHostController,
     activityActions: MainActivity.Actions,
-    showDraftSavedSnackbar: (messasgeId: MessageId) -> Unit,
+    showDraftSavedSnackbar: (messageId: MessageId?) -> Unit,
     showMessageSendingSnackbar: () -> Unit,
     showMessageSendingOfflineSnackbar: () -> Unit
 ) {

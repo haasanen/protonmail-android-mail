@@ -51,7 +51,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageExpiratio
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageSendingError
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
-import ch.protonmail.android.mailcomposer.domain.usecase.ProvideNewDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
@@ -131,8 +130,7 @@ class ComposerViewModel @AssistedInject constructor(
     @Assisted private val recipientsStateManager: RecipientsStateManager,
     private val discardDraft: DiscardDraft,
     savedStateHandle: SavedStateHandle,
-    observePrimaryUserId: ObservePrimaryUserId,
-    provideNewDraftId: ProvideNewDraftId
+    observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
 
@@ -143,7 +141,7 @@ class ComposerViewModel @AssistedInject constructor(
 
     private val mutableState = MutableStateFlow(
         ComposerDraftState.initial(
-            MessageId(savedStateHandle.get<String>(ComposerScreen.DraftMessageIdKey) ?: provideNewDraftId().id)
+            savedStateHandle.get<String>(ComposerScreen.DraftMessageIdKey)?.let { MessageId(it) }
         )
     )
     val state: StateFlow<ComposerDraftState> = mutableState
@@ -153,7 +151,7 @@ class ComposerViewModel @AssistedInject constructor(
             if (!setupInitialState(savedStateHandle)) return@launch
 
             observeAttachments()
-            observeSendingError()
+//            observeSendingError()
             observeComposerSubject()
             observeComposerRecipients()
 
@@ -265,7 +263,7 @@ class ComposerViewModel @AssistedInject constructor(
     // hardcoding values for isBlockedSendingFromPmAddress / isBlockedSendingFromDisabledAddress
     private suspend fun prefillForDraftAction(draftAction: DraftAction) {
         Timber.d("Opening composer for draft action $draftAction / ${currentMessageId()}")
-        emitNewStateFor(ComposerEvent.OpenWithMessageAction(currentMessageId(), draftAction))
+        emitNewStateFor(ComposerEvent.OpenWithMessageAction(draftAction))
 
         when (draftAction) {
             DraftAction.Compose -> prefillForNewDraft()
@@ -299,7 +297,7 @@ class ComposerViewModel @AssistedInject constructor(
     // isDataRefresh param of event is hardcoded to true
     private suspend fun prefillWithExistingDraft(inputDraftId: String) {
         Timber.d("Opening composer with $inputDraftId / ${currentMessageId()}")
-        emitNewStateFor(ComposerEvent.OpenExistingDraft(currentMessageId()))
+        emitNewStateFor(ComposerEvent.OpenExistingDraft)
 
         openExistingDraft(primaryUserId(), MessageId(inputDraftId))
             .onRight { draftFields ->
@@ -370,9 +368,10 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
+    @MissingRustApi
     private fun observeSendingError() {
         primaryUserId
-            .flatMapLatest { userId -> observeMessageSendingError(userId, currentMessageId()) }
+            .flatMapLatest { userId -> observeMessageSendingError(userId, currentMessageId()!!) }
             .onEach {
                 formatMessageSendingError(it)?.run {
                     emitNewStateFor(ComposerEvent.OnSendingError(TextUiModel.Text(this)))
@@ -385,7 +384,7 @@ class ComposerViewModel @AssistedInject constructor(
     // Message password not implemented
     private fun observeMessagePassword() {
         primaryUserId
-            .flatMapLatest { userId -> observeMessagePassword(userId, currentMessageId()) }
+            .flatMapLatest { userId -> observeMessagePassword(userId, currentMessageId()!!) }
             .onEach { emitNewStateFor(ComposerEvent.OnMessagePasswordUpdated(it)) }
             .launchIn(viewModelScope)
     }
@@ -394,16 +393,17 @@ class ComposerViewModel @AssistedInject constructor(
     // Message expiration not implemented
     private fun observeMessageExpirationTime() {
         primaryUserId
-            .flatMapLatest { userId -> observeMessageExpirationTime(userId, currentMessageId()) }
+            .flatMapLatest { userId -> observeMessageExpirationTime(userId, currentMessageId()!!) }
             .onEach { emitNewStateFor(ComposerEvent.OnMessageExpirationTimeUpdated(it)) }
             .launchIn(viewModelScope)
     }
 
     private fun validateEmailAddress(emailAddress: String): Boolean = isValidEmailAddress(emailAddress)
 
+    @MissingRustApi
     fun clearSendingError() {
         viewModelScope.launch {
-            clearMessageSendingError(primaryUserId(), currentMessageId()).onLeft {
+            clearMessageSendingError(primaryUserId(), currentMessageId()!!).onLeft {
                 Timber.e("Failed to clear SendingError: $it")
             }
         }
@@ -477,7 +477,9 @@ class ComposerViewModel @AssistedInject constructor(
 
     private fun onDiscardDraft(action: ComposerAction.DiscardDraft) {
         viewModelScope.launch {
-            discardDraft(primaryUserId(), currentMessageId())
+            currentMessageId()?.let {
+                discardDraft(primaryUserId(), it)
+            }
             emitNewStateFor(action)
         }
     }

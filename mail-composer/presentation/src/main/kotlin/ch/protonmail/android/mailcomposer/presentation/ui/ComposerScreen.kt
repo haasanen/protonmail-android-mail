@@ -124,7 +124,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         onAddAttachmentsClick = {
             viewModel.submit(ComposerAction.OnAddAttachments)
         },
-        onSetMessagePasswordClick = { _, _ ->
+        onSetMessagePasswordClick = {
             showFeatureMissingSnackbar()
             // actions.onSetMessagePasswordClick()
         },
@@ -182,8 +182,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             },
             bottomBar = {
                 ComposerBottomBar(
-                    draftId = state.fields.draftId,
-                    senderEmail = SenderEmail(state.fields.sender.email),
                     isMessagePasswordSet = state.isMessagePasswordSet,
                     isMessageExpirationTimeSet = state.messageExpiresIn != Duration.ZERO,
                     actions = bottomBarActions
@@ -342,7 +340,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             errorMessage = this,
             onDismissClicked = {
                 sendingErrorDialogState.value = null
-                viewModel.clearSendingError()
+//                viewModel.clearSendingError()
             }
         )
     }
@@ -457,7 +455,7 @@ object ComposerScreen {
     data class Actions(
         val onCloseComposerClick: () -> Unit,
         val onSetMessagePasswordClick: (MessageId, SenderEmail) -> Unit,
-        val showDraftSavedSnackbar: (MessageId) -> Unit,
+        val showDraftSavedSnackbar: (MessageId?) -> Unit,
         val showMessageSendingSnackbar: () -> Unit,
         val showMessageSendingOfflineSnackbar: () -> Unit
     ) {

@@ -54,8 +54,8 @@ internal sealed interface ComposerAction : ComposerOperation {
 sealed interface ComposerEvent : ComposerOperation {
     data class DefaultSenderReceived(val sender: SenderUiModel) : ComposerEvent
     data class SenderAddressesReceived(val senders: List<SenderUiModel>) : ComposerEvent
-    data class OpenExistingDraft(val draftId: MessageId) : ComposerEvent
-    data class OpenWithMessageAction(val parentId: MessageId, val draftAction: DraftAction) : ComposerEvent
+    data object OpenExistingDraft : ComposerEvent
+    data class OpenWithMessageAction(val draftAction: DraftAction) : ComposerEvent
     data class PrefillDraftDataReceived(
         val draftUiModel: DraftUiModel,
         val isDataRefreshed: Boolean,

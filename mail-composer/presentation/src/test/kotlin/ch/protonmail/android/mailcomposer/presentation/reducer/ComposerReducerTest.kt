@@ -251,7 +251,7 @@ class ComposerReducerTest(
         private val EmptyToLoadingWithOpenExistingDraft = TestTransition(
             name = "Should set state to loading when open of existing draft was requested",
             currentState = ComposerDraftState.initial(messageId),
-            operation = ComposerEvent.OpenExistingDraft(messageId),
+            operation = ComposerEvent.OpenExistingDraft,
             expectedState = aNotSubmittableState(
                 draftId = messageId,
                 error = Effect.empty(),
