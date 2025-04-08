@@ -23,7 +23,7 @@ import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
 
 class DraftWrapper(private val rustDraft: Draft) {
 
-    fun attachmentList(): AttachmentListWrapper = AttachmentListWrapper(rustDraft.attachmentList())
+    fun attachmentList(): AttachmentsWrapper = AttachmentsWrapper(rustDraft.attachmentList())
 
     fun subject(): String = rustDraft.subject()
 

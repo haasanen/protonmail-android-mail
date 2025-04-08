@@ -22,7 +22,7 @@ import android.net.Uri
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.composer.data.wrapper.AttachmentListWrapper
+import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.mailcommon.data.file.FileInformation
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -80,7 +80,7 @@ class RustAttachmentDataSourceImplTest {
             attachmentState = AttachmentState.Uploaded
         )
 
-        val wrapper = mockk<AttachmentListWrapper>()
+        val wrapper = mockk<AttachmentsWrapper>()
         val watcher = mockk<DraftAttachmentWatcher>()
         val callbackSlot = slot<AsyncLiveQueryCallback>()
 
@@ -107,7 +107,7 @@ class RustAttachmentDataSourceImplTest {
         val protonError = LocalProtonError.OtherReason(
             OtherErrorReason.Other("some internal error")
         )
-        val wrapper = mockk<AttachmentListWrapper>()
+        val wrapper = mockk<AttachmentsWrapper>()
         val watcher = mockk<DraftAttachmentWatcher>()
         val callbackSlot = slot<AsyncLiveQueryCallback>()
 
@@ -143,7 +143,7 @@ class RustAttachmentDataSourceImplTest {
             size = 1024L,
             mimeType = "application/pdf"
         )
-        val wrapper = mockk<AttachmentListWrapper>()
+        val wrapper = mockk<AttachmentsWrapper>()
 
         coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
         coEvery { wrapper.attachmentUploadDirectory() } returns "/fake/path"
@@ -175,7 +175,7 @@ class RustAttachmentDataSourceImplTest {
     fun `addAttachment fails when saving attachment fails`() = runTest {
         // Given
         val uri = mockk<Uri>()
-        val wrapper = mockk<AttachmentListWrapper>()
+        val wrapper = mockk<AttachmentsWrapper>()
 
         coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
         coEvery { wrapper.attachmentUploadDirectory() } returns "/fake/path"
@@ -199,7 +199,7 @@ class RustAttachmentDataSourceImplTest {
             size = 2048L,
             mimeType = "application/pdf"
         )
-        val wrapper = mockk<AttachmentListWrapper>()
+        val wrapper = mockk<AttachmentsWrapper>()
         val rustError = uniffi.proton_mail_uniffi.DraftAttachmentError.Other(
             LocalProtonError.OtherReason(OtherErrorReason.Other("internal"))
         )

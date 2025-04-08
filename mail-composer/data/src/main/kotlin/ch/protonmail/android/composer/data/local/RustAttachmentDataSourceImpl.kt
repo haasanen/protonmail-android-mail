@@ -23,7 +23,7 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toAttachmentMetaDataWithState
-import ch.protonmail.android.composer.data.wrapper.AttachmentListWrapper
+import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.local.AttachmentFileStorage
@@ -121,7 +121,7 @@ class RustAttachmentDataSourceImpl @Inject constructor(
         )
     }
 
-    private suspend fun AttachmentListWrapper.getAttachments(): Either<DataError, List<AttachmentMetadataWithState>> {
+    private suspend fun AttachmentsWrapper.getAttachments(): Either<DataError, List<AttachmentMetadataWithState>> {
         return when (val result = this.attachments()) {
             is AttachmentListAttachmentsResult.Ok -> {
                 val attachments = result.v1.map { it.toAttachmentMetaDataWithState() }

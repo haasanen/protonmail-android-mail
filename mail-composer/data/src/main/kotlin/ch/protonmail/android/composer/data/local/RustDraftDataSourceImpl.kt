@@ -36,7 +36,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.composer.data.worker.SendingStatusWorker
-import ch.protonmail.android.composer.data.wrapper.AttachmentListWrapper
+import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -195,7 +195,7 @@ class RustDraftDataSourceImpl @Inject constructor(
 
     }
 
-    override suspend fun attachmentList(): Either<DataError, AttachmentListWrapper> {
+    override suspend fun attachmentList(): Either<DataError, AttachmentsWrapper> {
         val wrapper = draftWrapperStateFlow.filterNotNull().first()
         return wrapper.attachmentList().right()
     }
