@@ -198,7 +198,7 @@ fun MailboxScreen(
 
     val completeActions = actions.copy(
         navigateToComposer = {
-            actions.navigateToComposer()
+            if (isComposerEnabled.value) actions.navigateToComposer() else actions.showMissingFeature()
         },
         onDisableUnreadFilter = { viewModel.submit(MailboxViewAction.DisableUnreadFilter) },
         onEnableUnreadFilter = { viewModel.submit(MailboxViewAction.EnableUnreadFilter) },
