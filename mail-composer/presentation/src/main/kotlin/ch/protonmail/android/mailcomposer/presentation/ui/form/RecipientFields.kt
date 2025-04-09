@@ -43,6 +43,9 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -76,6 +79,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
     modifier: Modifier = Modifier,
     fieldFocusRequesters: Map<FocusedFieldType, FocusRequester>,
     onToggleSuggestions: (Boolean) -> Unit,
+    formHeightPx: Float,
     viewModel: RecipientsViewModel
 ) {
     var recipientsOpen by remember { mutableStateOf(false) }
@@ -140,6 +144,19 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
         }
     }
 
+    // Take height of to chip text field as it's always shown (ie. no changing to 0 on recompose)
+    var toChipTextFieldHeightPx by remember { mutableStateOf(0f) }
+    // When showing to suggestions, only "to" field is visible
+    val toSuggestionsListHeightPx = (formHeightPx - toChipTextFieldHeightPx).coerceAtLeast(0f)
+    // When showing cc suggestions, "to" and "cc" fields are visible
+    val ccSuggestionsListHeightPx = (formHeightPx - toChipTextFieldHeightPx * 2).coerceAtLeast(0f)
+    // When showing cc suggestions, "to", "cc" and "bcc" fields are visible
+    val bccSuggestionsListHeightPx = (formHeightPx - toChipTextFieldHeightPx * 3).coerceAtLeast(0f)
+
+    val toSuggestionListHeightDp = with(LocalDensity.current) { toSuggestionsListHeightPx.toDp() }
+    val ccSuggestionListHeightDp = with(LocalDensity.current) { ccSuggestionsListHeightPx.toDp() }
+    val bccSuggestionListHeightDp = with(LocalDensity.current) { bccSuggestionsListHeightPx.toDp() }
+
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -151,7 +168,13 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                 .heightIn(min = MailDimens.Composer.FormFieldsRowHeight)
                 .weight(1f)
                 .testTag(ComposerTestTags.ToRecipient)
-                .retainFieldFocusOnConfigurationChange(FocusedFieldType.TO),
+                .retainFieldFocusOnConfigurationChange(FocusedFieldType.TO)
+                .onGloballyPositioned {
+                    // Only take this measure when suggestions are not shown, as we want the height of the field only
+                    if (!isShowingToSuggestions) {
+                        toChipTextFieldHeightPx = it.boundsInWindow().height
+                    }
+                },
             focusRequester = fieldFocusRequesters[FocusedFieldType.TO],
             actions = ComposerChipsListField.Actions(
                 onSuggestionTermTyped = {
@@ -166,7 +189,8 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
             ),
             contactSuggestionState = ContactSuggestionState(
                 areSuggestionsExpanded = isShowingToSuggestions,
-                contactSuggestionItems = suggestions
+                contactSuggestionItems = suggestions,
+                suggestionListHeightDp = toSuggestionListHeightDp
             ),
             chevronIconContent = {
                 if (!hasCcBccContent) {
@@ -227,7 +251,8 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                 ),
                 contactSuggestionState = ContactSuggestionState(
                     areSuggestionsExpanded = isShowingCcSuggestions,
-                    contactSuggestionItems = suggestions
+                    contactSuggestionItems = suggestions,
+                    suggestionListHeightDp = ccSuggestionListHeightDp
                 )
             )
 
@@ -253,7 +278,8 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                     ),
                     contactSuggestionState = ContactSuggestionState(
                         areSuggestionsExpanded = isShowingBccSuggestions,
-                        contactSuggestionItems = suggestions
+                        contactSuggestionItems = suggestions,
+                        suggestionListHeightDp = bccSuggestionListHeightDp
                     )
                 )
             }

@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.delete
 import androidx.compose.material3.HorizontalDivider
@@ -46,8 +47,8 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
-import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionItemElement
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionState
+import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionsList
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerChipsListViewModel
 import ch.protonmail.android.uicomponents.chips.ChipsListTextField
 import ch.protonmail.android.uicomponents.chips.ChipsTestTags
@@ -149,13 +150,21 @@ fun ComposerChipsListField(
         ) {
             HorizontalDivider(modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Large))
 
-            contactSuggestionState.contactSuggestionItems.forEach { suggestionItem ->
-                ContactSuggestionItemElement(textFieldState.text.toString(), suggestionItem, onClick = {
-                    actions.onSuggestionsDismissed()
-                    listState.typeWord(it)
-                    textFieldState.edit { delete(0, length) }
-                })
-            }
+            ContactSuggestionsList(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(contactSuggestionState.suggestionListHeightDp),
+                currentText = textFieldState.text.toString(),
+                contactSuggestionItems = contactSuggestionState.contactSuggestionItems,
+                actions = ContactSuggestionsList.Actions(
+                    onContactSuggestionsDismissed = actions.onSuggestionsDismissed,
+                    onContactSuggestionSelected = {
+                        actions.onSuggestionsDismissed()
+                        listState.typeWord(it.name)
+                        textFieldState.edit { delete(0, length) }
+                    }
+                )
+            )
         }
     }
 

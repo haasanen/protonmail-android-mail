@@ -228,12 +228,15 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     scrollState.value.toDp(localDensity)
                 )
 
+                var formHeightPx by remember { mutableStateOf(0f) }
+
                 Column(
                     modifier = Modifier
                         .padding(paddingValues)
                         .verticalScroll(scrollState)
                         .onGloballyPositioned { coordinates ->
                             columnBounds = coordinates.boundsInWindow()
+                            formHeightPx = columnBounds.height
                         }
                 ) {
                     // Not showing the form till we're done loading ensure it does receive the
@@ -264,7 +267,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                         recipientsStateManager = recipientsStateManager,
                         subjectTextField = viewModel.subjectTextField,
                         bodyInitialValue = state.fields.displayBody,
-                        focusTextBody = Effect.empty()
+                        focusTextBody = Effect.empty(),
+                        formHeightPx = formHeightPx
                     )
                 }
             }

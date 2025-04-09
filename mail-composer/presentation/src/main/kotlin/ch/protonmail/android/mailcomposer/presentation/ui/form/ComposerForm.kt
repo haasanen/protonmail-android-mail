@@ -59,6 +59,7 @@ internal fun ComposerForm(
     bodyInitialValue: DraftDisplayBodyUiModel,
     focusTextBody: Effect<Unit>,
     actions: ComposerForm.Actions,
+    formHeightPx: Float,
     modifier: Modifier = Modifier
 ) {
 
@@ -111,9 +112,9 @@ internal fun ComposerForm(
                 RecipientFields(
                     fieldFocusRequesters = fieldFocusRequesters,
                     onToggleSuggestions = { isShown -> showSubjectAndBody = isShown },
-                    viewModel = recipientsViewModel
+                    viewModel = recipientsViewModel,
+                    formHeightPx = formHeightPx
                 )
-
 
                 if (showSubjectAndBody) {
                     MailDivider()
