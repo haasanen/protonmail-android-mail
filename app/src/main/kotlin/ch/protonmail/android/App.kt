@@ -27,6 +27,7 @@ import ch.protonmail.android.logging.LogsFileHandlerLifecycleObserver
 import ch.protonmail.android.mailbugreport.domain.LogsExportFeatureSetting
 import ch.protonmail.android.mailbugreport.domain.annotations.LogsExportFeatureSettingValue
 import ch.protonmail.android.mailcommon.domain.benchmark.BenchmarkTracer
+import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObserver
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 import javax.inject.Provider
@@ -47,6 +48,9 @@ internal class App : Application() {
     @LogsExportFeatureSettingValue
     lateinit var logsExportFeatureSetting: Provider<LogsExportFeatureSetting>
 
+    @Inject
+    lateinit var databaseLifecycleObserver: Provider<DatabaseLifecycleObserver>
+
     override fun onCreate() {
         super.onCreate()
 
@@ -57,6 +61,7 @@ internal class App : Application() {
         registerActivityLifecycleCallbacks(lockScreenLifecycleCallbacks)
 
         addLogsFileHandlerObserver()
+        addDatabaseObserver()
 
         benchmarkTracer.end()
     }
@@ -65,5 +70,9 @@ internal class App : Application() {
         if (logsExportFeatureSetting.get().isEnabled) {
             ProcessLifecycleOwner.get().lifecycle.addObserver(LogsFileHandlerLifecycleObserver(this))
         }
+    }
+
+    private fun addDatabaseObserver() {
+        ProcessLifecycleOwner.get().lifecycle.addObserver(databaseLifecycleObserver.get())
     }
 }

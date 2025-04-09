@@ -18,11 +18,16 @@
 
 package ch.protonmail.android.mailsession.dagger
 
+import android.content.Context
+import ch.protonmail.android.mailsession.data.database.getDatabaseBaseDirectory
+import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObserver
+import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObserverImpl
 import ch.protonmail.android.mailsession.data.keychain.OsKeyChainMock
 import ch.protonmail.android.mailsession.data.repository.InMemoryMailSessionRepository
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.data.repository.RustEventLoopRepository
 import ch.protonmail.android.mailsession.data.repository.UserSessionRepositoryImpl
+import ch.protonmail.android.mailsession.domain.annotations.DatabasesBaseDirectory
 import ch.protonmail.android.mailsession.domain.coroutines.EventLoopScope
 import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -30,6 +35,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,6 +58,11 @@ object MailSessionModule {
     @EventLoopScope
     fun provideEventLoopScope() = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
+    @Provides
+    @Singleton
+    @DatabasesBaseDirectory
+    fun provideBaseDbDirectory(@ApplicationContext context: Context) = getDatabaseBaseDirectory(context)
+
     @Module
     @InstallIn(SingletonComponent::class)
     interface BindsModule {
@@ -71,5 +82,9 @@ object MailSessionModule {
         @Binds
         @Singleton
         fun bindUserSessionRepository(impl: UserSessionRepositoryImpl): UserSessionRepository
+
+        @Binds
+        @Singleton
+        fun bindDatabaseObserver(impl: DatabaseLifecycleObserverImpl): DatabaseLifecycleObserver
     }
 }

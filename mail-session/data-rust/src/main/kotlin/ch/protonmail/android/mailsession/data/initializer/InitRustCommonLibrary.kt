@@ -18,16 +18,16 @@
 
 package ch.protonmail.android.mailsession.data.initializer
 
+import java.io.File
 import android.content.Context
 import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.annotations.RustLogsFileHandler
 import ch.protonmail.android.mailsession.data.keychain.OsKeyChainMock
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
+import ch.protonmail.android.mailsession.domain.annotations.DatabasesBaseDirectory
 import ch.protonmail.android.mailsession.domain.model.RustApiConfig
 import dagger.hilt.android.qualifiers.ApplicationContext
 import me.proton.android.core.humanverification.domain.ChallengeNotifierCallback
-import me.proton.core.network.data.di.BaseProtonApiUrl
-import okhttp3.HttpUrl
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ApiConfig
 import uniffi.proton_mail_uniffi.CreateMailSessionResult
@@ -39,8 +39,8 @@ class InitRustCommonLibrary @Inject constructor(
     @ApplicationContext private val context: Context,
     private val mailSessionRepository: MailSessionRepository,
     private val initializeRustTlsModule: InitializeRustTlsModule,
+    @DatabasesBaseDirectory private val databasesBaseDirectory: File,
     @RustLogsFileHandler private val rustLogsFileHandler: LogsFileHandler,
-    @BaseProtonApiUrl private val baseApiUrl: HttpUrl,
     private val challengeNotifierCallback: ChallengeNotifierCallback,
     private val rustApiConfig: RustApiConfig
 ) {
@@ -50,11 +50,10 @@ class InitRustCommonLibrary @Inject constructor(
 
         initializeRustTlsModule()
 
-        val skipSrpProofValidation = isRunningAgainstMockWebserver(baseApiUrl)
-        val allowInsecureNetworking = isRunningAgainstMockWebserver(baseApiUrl)
+        val databasePath = databasesBaseDirectory.absolutePath
         val sessionParams = MailSessionParams(
-            sessionDir = context.filesDir.absolutePath,
-            userDir = context.filesDir.absolutePath,
+            sessionDir = databasePath,
+            userDir = databasePath,
             mailCacheDir = context.cacheDir.absolutePath,
             mailCacheSize = CACHE_SIZE,
             logDir = rustLogsFileHandler.getParentPath().absolutePath,
@@ -72,6 +71,7 @@ class InitRustCommonLibrary @Inject constructor(
             is CreateMailSessionResult.Error -> {
                 Timber.e("rust-session: Critical error! Failed creating Mail session. Reason: ${result.v1}")
             }
+
             is CreateMailSessionResult.Ok -> {
                 Timber.v("rust-session: Mail session created! (hash: ${result.v1.hashCode()})")
                 Timber.v("rust-session: Storing mail session to In Memory Session Repository...")
@@ -81,9 +81,8 @@ class InitRustCommonLibrary @Inject constructor(
         }
     }
 
-    private fun isRunningAgainstMockWebserver(baseApiUrl: HttpUrl) = baseApiUrl.host == "localhost"
-
     companion object {
+
         private const val CACHE_SIZE = 500_000_000uL
     }
 }
