@@ -63,6 +63,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerEvent
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
+import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
@@ -194,7 +195,7 @@ class ComposerViewModel @AssistedInject constructor(
 
     private fun prefillForComposeToAction(recipients: List<RecipientUiModel>) {
         viewModelScope.launch {
-            emitNewStateFor(onToChanged(recipients))
+            recipientsStateManager.updateRecipients(recipients, ContactSuggestionsField.TO)
         }
     }
 
