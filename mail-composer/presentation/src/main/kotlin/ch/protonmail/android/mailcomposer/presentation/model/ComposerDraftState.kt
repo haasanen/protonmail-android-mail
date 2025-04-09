@@ -32,7 +32,6 @@ data class ComposerDraftState(
     val recipientValidationError: Effect<TextUiModel>,
     val error: Effect<TextUiModel>,
     val isSubmittable: Boolean,
-    val isDeviceContactsSuggestionsPromptEnabled: Boolean,
     val senderAddresses: List<SenderUiModel>,
     val changeBottomSheetVisibility: Effect<Boolean>,
     val closeComposer: Effect<Unit>,
@@ -49,7 +48,6 @@ data class ComposerDraftState(
     val isMessagePasswordSet: Boolean,
     val focusTextBody: Effect<Unit> = Effect.empty(),
     val sendingErrorEffect: Effect<TextUiModel> = Effect.empty(),
-    val clearContactSuggestionTerm: Effect<ContactSuggestionsField> = Effect.empty(),
     val senderChangedNotice: Effect<TextUiModel> = Effect.empty(),
     val messageExpiresIn: Duration,
     val confirmSendExpiringMessage: Effect<List<Participant>>,
@@ -93,14 +91,13 @@ data class ComposerDraftState(
             isLoading = false,
             attachmentsFileSizeExceeded = Effect.empty(),
             attachmentsReEncryptionFailed = Effect.empty(),
-            warning = Effect.empty(),
             replaceDraftBody = Effect.empty(),
-            sendingErrorEffect = Effect.empty(),
+            warning = Effect.empty(),
             isMessagePasswordSet = false,
+            sendingErrorEffect = Effect.empty(),
             senderChangedNotice = Effect.empty(),
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
-            isDeviceContactsSuggestionsPromptEnabled = false,
             openImagePicker = Effect.empty()
         )
     }
