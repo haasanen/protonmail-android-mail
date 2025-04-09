@@ -45,7 +45,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerTestTags
 import ch.protonmail.android.mailcomposer.presentation.ui.MessageBodyEditor
 import ch.protonmail.android.mailcomposer.presentation.ui.SenderEmailWithSelector
-import ch.protonmail.android.mailcomposer.presentation.ui.SubjectTextField2
+import ch.protonmail.android.mailcomposer.presentation.ui.SubjectTextField
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.RecipientsViewModel
 import ch.protonmail.android.uicomponents.keyboardVisibilityAsState
 import timber.log.Timber
@@ -58,7 +58,7 @@ internal fun ComposerForm(
     subjectTextField: TextFieldState,
     bodyInitialValue: DraftDisplayBodyUiModel,
     focusTextBody: Effect<Unit>,
-    actions: ComposerForm2.Actions,
+    actions: ComposerForm.Actions,
     modifier: Modifier = Modifier
 ) {
 
@@ -108,7 +108,7 @@ internal fun ComposerForm(
                         actions.onHeaderPositioned(headerBounds, headerHeight)
                     }
             ) {
-                RecipientFields2(
+                RecipientFields(
                     fieldFocusRequesters = fieldFocusRequesters,
                     onToggleSuggestions = { isShown -> showSubjectAndBody = isShown },
                     viewModel = recipientsViewModel
@@ -125,7 +125,7 @@ internal fun ComposerForm(
                     )
                     MailDivider()
 
-                    SubjectTextField2(
+                    SubjectTextField(
                         textFieldState = subjectTextField,
                         isFocused = isSubjectFocused,
                         modifier = maxWidthModifier
@@ -155,7 +155,7 @@ internal fun ComposerForm(
     }
 }
 
-internal object ComposerForm2 {
+internal object ComposerForm {
     data class Actions(
         val onChangeSender: () -> Unit,
         val onBodyChanged: (String) -> Unit,

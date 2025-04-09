@@ -76,7 +76,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm
-import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm2
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
@@ -433,7 +432,7 @@ private fun buildActions(
     onHeaderPositioned: (Rect, Float) -> Unit,
     onWebViewPositioned: (Rect) -> Unit,
     showFeatureMissingSnackbar: () -> Unit
-): ComposerForm2.Actions = ComposerForm2.Actions(
+): ComposerForm.Actions = ComposerForm.Actions(
     onBodyChanged = {
         viewModel.submit(ComposerAction.DraftBodyChanged(DraftBody(it)))
     },

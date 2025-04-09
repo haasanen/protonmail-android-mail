@@ -72,7 +72,7 @@ import com.google.accompanist.permissions.shouldShowRationale
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
+internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
     modifier: Modifier = Modifier,
     fieldFocusRequesters: Map<FocusedFieldType, FocusRequester>,
     onToggleSuggestions: (Boolean) -> Unit,
@@ -181,10 +181,10 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                     ) {
                         Icon(
                             modifier = Modifier
-                                .thenIf(recipientsButtonRotation.value == RecipientsButtonRotationValues2.Closed) {
+                                .thenIf(recipientsButtonRotation.value == RecipientsButtonRotationValues.Closed) {
                                     testTag(ComposerTestTags.ExpandCollapseArrow)
                                 }
-                                .thenIf(recipientsButtonRotation.value == RecipientsButtonRotationValues2.Open) {
+                                .thenIf(recipientsButtonRotation.value == RecipientsButtonRotationValues.Open) {
                                     testTag(ComposerTestTags.CollapseExpandArrow)
                                 }
                                 .rotate(recipientsButtonRotation.value),
@@ -262,13 +262,13 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
 
     LaunchedEffect(key1 = recipientsOpen) {
         recipientsButtonRotation.animateTo(
-            if (recipientsOpen) RecipientsButtonRotationValues2.Open else RecipientsButtonRotationValues2.Closed
+            if (recipientsOpen) RecipientsButtonRotationValues.Open else RecipientsButtonRotationValues.Closed
         )
     }
 }
 
 // Move the below it once ComposerV2 becomes the default flow.
-private object RecipientsButtonRotationValues2 {
+private object RecipientsButtonRotationValues {
 
     const val Open = 180f
     const val Closed = 0f

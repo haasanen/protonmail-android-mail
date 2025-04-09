@@ -29,44 +29,33 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.mailcomposer.presentation.R
 
 @Composable
 internal fun SubjectTextField(
-    initialValue: String,
-    onSubjectChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    isFocused: Boolean
+    textFieldState: TextFieldState,
+    isFocused: Boolean,
+    modifier: Modifier = Modifier
 ) {
-    var text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(initialValue))
-    }
 
-    var userUpdated by rememberSaveable { mutableStateOf(false) }
-    LaunchedEffect(key1 = initialValue) {
-        if (!userUpdated) {
-            text = TextFieldValue(initialValue)
-        }
+    val keyboardOptions = remember {
+        KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Next)
     }
 
     Row(
@@ -86,23 +75,14 @@ internal fun SubjectTextField(
         Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
 
         BasicTextField(
-            value = text,
-            onValueChange = {
-                text = it
-                onSubjectChange(it.text)
-                userUpdated = true
-            },
             modifier = Modifier
                 .padding(horizontal = 0.dp)
                 .weight(1f),
+            state = textFieldState,
             textStyle = ProtonTheme.typography.bodyMediumNorm,
-            maxLines = 1,
-            singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                capitalization = KeyboardCapitalization.Sentences,
-                imeAction = ImeAction.Next
-            ),
-            decorationBox = { innerTextField ->
+            lineLimits = TextFieldLineLimits.SingleLine,
+            keyboardOptions = keyboardOptions,
+            decorator = { innerTextField ->
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -112,7 +92,7 @@ internal fun SubjectTextField(
 
                     } else {
                         Text(
-                            text = text.text,
+                            text = textFieldState.text.toString(),
                             style = ProtonTheme.typography.bodyMediumNorm,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -126,16 +106,3 @@ internal fun SubjectTextField(
         )
     }
 }
-
-@Preview
-@Composable
-private fun SubjectTextFieldPreview() {
-    ProtonTheme {
-        SubjectTextField(
-            initialValue = "Test subject",
-            onSubjectChange = {},
-            isFocused = true
-        )
-    }
-}
-
