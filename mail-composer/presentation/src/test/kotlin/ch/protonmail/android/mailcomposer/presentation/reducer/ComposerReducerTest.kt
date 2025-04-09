@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcomposer.presentation.reducer
 
 import java.util.Random
 import java.util.UUID
-import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -40,9 +39,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerEvent
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerFields
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
-import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionState
-import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
@@ -419,19 +415,6 @@ class ComposerReducerTest(
             )
         }
 
-        private val EmptyToUpdatedSubject = with(Subject("This is a new subject")) {
-            TestTransition(
-                name = "Should update the state with the new subject when it changes",
-                currentState = ComposerDraftState.initial(messageId),
-                operation = ComposerAction.SubjectChanged(this),
-                expectedState = aNotSubmittableState(
-                    draftId = messageId,
-                    subject = this,
-                    error = Effect.empty()
-                )
-            )
-        }
-
         private val EmptyToCloseComposer = TestTransition(
             name = "Should close the composer",
             currentState = ComposerDraftState.initial(messageId),
@@ -477,48 +460,6 @@ class ComposerReducerTest(
                     closeComposerWithMessageSendingOffline = Effect.of(Unit)
                 )
             )
-
-        private val ContactsSuggestionExpandedToDismissed =
-            TestTransition(
-                name = "Should update state with dismissing suggestions after ContactSuggestionsDismissed action",
-                currentState = ComposerDraftState.initial(messageId).copy(
-                    contactSuggestionState = ContactSuggestionState.Data(
-                        searchTerm = "dav",
-                        suggestionsField = ContactSuggestionsField.BCC,
-                        contactSuggestionItems = listOf(
-                            ContactSuggestionUiModel.Contact(
-                                name = "David Green",
-                                initial = "D",
-                                avatarColor = Color(0xFF4682B4), // Steel Blue
-                                email = "david.green@example.com"
-                            )
-                        )
-                    )
-                ),
-                operation = ComposerAction.ContactSuggestionsDismissed(ContactSuggestionsField.BCC),
-                expectedState = ComposerDraftState.initial(messageId).copy(
-                    error = Effect.empty(),
-                    contactSuggestionState = ContactSuggestionState.Empty
-                )
-            )
-
-        private val ContactSuggestionSelected = TestTransition(
-            name = "Should emit effect to clear contact suggestion term when a suggestion is selected",
-            currentState = ComposerDraftState.initial(messageId),
-            operation = ComposerAction.ContactSuggestionSelected(
-                suggestionsField = ContactSuggestionsField.CC,
-                contact = ContactSuggestionUiModel.Contact(
-                    name = "Alice Blue",
-                    initial = "A",
-                    avatarColor = Color(0xFFADD8E6),
-                    email = "alice.blue@example.com"
-                )
-            ),
-            expectedState = ComposerDraftState.initial(messageId).copy(
-                clearContactSuggestionTerm = Effect.of(ContactSuggestionsField.CC)
-            )
-        )
-
 
         private val EmptyToLoadingWithOpenExistingDraft = TestTransition(
             name = "Should set state to loading when open of existing draft was requested",
@@ -728,45 +669,6 @@ class ComposerReducerTest(
             )
         )
 
-        private val EmptyToUpdateContactSuggestions = TestTransition(
-            name = "Should update state with contact suggestions on UpdateContactSuggestions event",
-            currentState = ComposerDraftState.initial(messageId),
-            operation = ComposerEvent.UpdateContactSuggestions(
-                contactSuggestions = listOf(
-                    ContactSuggestionUiModel.Contact(
-                        name = "Alice Smith",
-                        initial = "A",
-                        avatarColor = Color(0xFF6A5ACD), // Slate Blue
-                        email = "alice.smith@example.com"
-                    ),
-                    ContactSuggestionUiModel.ContactGroup(
-                        name = "A Project Team",
-                        emails = listOf("bob.jones@example.com", "carol.lee@example.com")
-                    )
-                ),
-                searchTerm = "a",
-                suggestionsField = ContactSuggestionsField.CC
-            ),
-            expectedState = ComposerDraftState.initial(messageId).copy(
-                contactSuggestionState = ContactSuggestionState.Data(
-                    searchTerm = "a",
-                    suggestionsField = ContactSuggestionsField.CC,
-                    contactSuggestionItems = listOf(
-                        ContactSuggestionUiModel.Contact(
-                            name = "Alice Smith",
-                            initial = "A",
-                            avatarColor = Color(0xFF6A5ACD),
-                            email = "alice.smith@example.com"
-                        ),
-                        ContactSuggestionUiModel.ContactGroup(
-                            name = "A Project Team",
-                            emails = listOf("bob.jones@example.com", "carol.lee@example.com")
-                        )
-                    )
-                )
-            )
-        )
-
         private val EmptyToOnMessagePasswordUpdated = TestTransition(
             name = "Should update state with info whether a message password is set",
             currentState = ComposerDraftState.initial(messageId),
@@ -862,27 +764,6 @@ class ComposerReducerTest(
             expectedState = ComposerDraftState.initial(messageId).copy(messageExpiresIn = 1.days)
         )
 
-        private val EmptyToDeviceContactsPromptDenied = TestTransition(
-            name = "Should update state with a flag when contacts permission is denied from custom dialog",
-            currentState = ComposerDraftState.initial(messageId).copy(
-                isDeviceContactsSuggestionsPromptEnabled = true
-            ),
-            operation = ComposerAction.DeviceContactsPromptDenied,
-            expectedState = ComposerDraftState.initial(messageId).copy(
-                isDeviceContactsSuggestionsPromptEnabled = false
-            )
-        )
-
-        @Suppress("VariableMaxLength")
-        private val EmptyToOnIsDeviceContactsSuggestionsPromptEnabled = TestTransition(
-            name = "Should update state with a flag when contacts permission dialog state is read from preferences",
-            currentState = ComposerDraftState.initial(messageId),
-            operation = ComposerEvent.OnIsDeviceContactsSuggestionsPromptEnabled(true),
-            expectedState = ComposerDraftState.initial(messageId).copy(
-                isDeviceContactsSuggestionsPromptEnabled = true
-            )
-        )
-
         private val EmptyToConfirmSendExpiringMessage = TestTransition(
             name = "Should update state with an effect when sending an expiring message to external recipients",
             currentState = ComposerDraftState.initial(messageId),
@@ -919,14 +800,11 @@ class ComposerReducerTest(
             ManyDuplicatesCcToNotDuplicateWithError,
             ManyDuplicatesBccToNotDuplicateWithError,
             EmptyToUpdatedDraftBody,
-            EmptyToUpdatedSubject,
             EmptyToCloseComposer,
             EmptyToCloseComposerWithDraftSaved,
             EmptyToStateWhenReplaceDraftBody,
             SubmittableToSendMessage,
             SubmittableToOnSendMessageOffline,
-            ContactsSuggestionExpandedToDismissed,
-            ContactSuggestionSelected,
             EmptyToLoadingWithOpenExistingDraft,
             LoadingToFieldsWhenReceivedDraftDataEmptyRecipients,
             LoadingToFieldsWhenReceivedDraftDataValidRecipients,
@@ -939,7 +817,6 @@ class ComposerReducerTest(
             EmptyToAttachmentFileExceeded,
             EmptyToAttachmentReEncryptionFailed,
             EmptyToOnSendingError,
-            EmptyToUpdateContactSuggestions,
             EmptyToOnMessagePasswordUpdated,
             SubmittableToRequestConfirmEmptySubject,
             SubmittableToConfirmEmptySubject,
@@ -948,8 +825,6 @@ class ComposerReducerTest(
             EmptyToExpirationTimeSet,
             EmptyToErrorSettingExpirationTime,
             EmptyToMessageExpirationTimeUpdated,
-            EmptyToDeviceContactsPromptDenied,
-            EmptyToOnIsDeviceContactsSuggestionsPromptEnabled,
             EmptyToConfirmSendExpiringMessage
         )
 

@@ -22,7 +22,6 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
 import ch.protonmail.android.mailcomposer.domain.repository.ContactsPermissionRepository
 import ch.protonmail.android.mailcomposer.presentation.mapper.ContactSuggestionsMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
@@ -63,7 +62,7 @@ internal class RecipientsViewModelTest {
         every { this@mockk.observePermissionDenied() } returns flowOf()
     }
     private val recipientsStateManager = spyk<RecipientsStateManager>()
-    private val contactSuggestionsMapper = ContactSuggestionsMapper(GetInitials())
+    private val contactSuggestionsMapper = spyk<ContactSuggestionsMapper>()
 
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -181,6 +180,7 @@ internal class RecipientsViewModelTest {
         coEvery {
             getContactSuggestions(userId, ContactSuggestionQuery(searchTerm))
         } returns expectedContacts.right()
+        coEvery { contactSuggestionsMapper.toUiModel(expectedContacts) } returns expectedSuggestions
 
         val viewModel = viewModel()
 
