@@ -27,7 +27,7 @@ plugins {
 }
 
 android {
-    namespace = "me.proton.android.core.accountmanager.presentation"
+    namespace = "me.proton.android.core.accountrecovery.presentation"
 
     compileSdk = AppConfiguration.compileSdk.get()
 
@@ -51,8 +51,6 @@ android {
 }
 
 dependencies {
-    api(project(":shared:core:account-manager:domain"))
-
     compileOnly(libs.proton.rust.core)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
@@ -64,9 +62,13 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.dagger.hilt.android)
     implementation(libs.proton.core.presentation)
+    implementation(libs.proton.core.presentationCompose)
     implementation(libs.proton.core.utilKotlin)
+    implementation(libs.proton.core.domain)
+    implementation(libs.proton.core.network.domain)
 
     implementation(project(":shared:core:account:domain"))
+    implementation(project(":shared:core:account-manager:presentation"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
 

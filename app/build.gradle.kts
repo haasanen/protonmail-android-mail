@@ -230,6 +230,7 @@ dependencies {
     implementation(project(":shared:core:account:dagger"))
     implementation(project(":shared:core:account-manager:dagger"))
     implementation(project(":shared:core:account-manager:presentation"))
+    implementation(project(":shared:core:account-recovery:presentation"))
     implementation(project(":shared:core:humanverification:dagger"))
     implementation(project(":shared:core:humanverification:presentation"))
     implementation(project(":shared:core:auth:presentation"))

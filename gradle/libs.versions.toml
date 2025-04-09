@@ -216,6 +216,7 @@ proton-core-keyTransparency = { module = "me.proton.core:key-transparency", vers
 proton-core-mailSendPreferences = { module = "me.proton.core:mail-send-preferences", version.ref = "proton-core" }
 proton-core-mailSettings = { module = "me.proton.core:mail-settings", version.ref = "proton-core" }
 proton-core-network = { module = "me.proton.core:network", version.ref = "proton-core" }
+proton-core-network-domain = { module = "me.proton.core:network-domain", version.ref = "proton-core" }
 proton-core-notification = { module = "me.proton.core:notification", version.ref = "proton-core" }
 proton-core-observability = { module = "me.proton.core:observability", version.ref = "proton-core" }
 proton-core-payment = { module = "me.proton.core:payment", version.ref = "proton-core" }
