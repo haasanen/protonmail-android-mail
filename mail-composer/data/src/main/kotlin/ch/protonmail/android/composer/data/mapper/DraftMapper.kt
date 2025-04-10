@@ -77,6 +77,17 @@ fun DraftAction.toDraftCreateMode(): DraftCreateMode? = when (this) {
     }
 }
 
+fun List<LocalComposerRecipient>.toSingleRecipients(): List<Recipient> = this
+    .filterIsInstance<ComposerRecipient.Single>()
+    .map {
+        val localRecipient = it.v1
+        Recipient(
+            address = localRecipient.address,
+            name = localRecipient.displayName ?: localRecipient.address,
+            isProton = false
+        )
+    }
+
 private fun List<LocalComposerRecipient>.toComposerRecipients(): List<String> = this.map { localRecipient ->
     when (localRecipient) {
         is ComposerRecipient.Group -> localRecipient.v1.displayName

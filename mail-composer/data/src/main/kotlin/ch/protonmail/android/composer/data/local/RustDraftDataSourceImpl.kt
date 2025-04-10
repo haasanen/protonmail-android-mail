@@ -22,15 +22,18 @@ import java.time.Duration
 import androidx.annotation.VisibleForTesting
 import arrow.core.Either
 import arrow.core.left
+import arrow.core.raise.either
 import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toDraftCreateMode
 import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
+import ch.protonmail.android.composer.data.mapper.toSingleRecipients
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
 import ch.protonmail.android.composer.data.usecase.OpenRustDraft
 import ch.protonmail.android.composer.data.usecase.RustDraftUndoSend
 import ch.protonmail.android.composer.data.worker.SendingStatusWorker
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
+import ch.protonmail.android.composer.data.wrapper.ComposerRecipientListWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
@@ -169,6 +172,24 @@ class RustDraftDataSourceImpl @Inject constructor(
         return@withValidRustDraftWrapper recipientsWrapper.removeSingleRecipient(recipient.toSingleRecipientEntry())
     }
 
+    override suspend fun updateToRecipients(recipients: List<Recipient>): Either<DataError, Unit> =
+        withValidRustDraftWrapper { draftWrapper ->
+            val recipientsToWrapper = draftWrapper.recipientsTo()
+            return@withValidRustDraftWrapper updateRecipients(recipientsToWrapper, recipients)
+        }
+
+    override suspend fun updateCcRecipients(recipients: List<Recipient>): Either<DataError, Unit> =
+        withValidRustDraftWrapper { draftWrapper ->
+            val recipientsCcWrapper = draftWrapper.recipientsCc()
+            return@withValidRustDraftWrapper updateRecipients(recipientsCcWrapper, recipients)
+        }
+
+    override suspend fun updateBccRecipients(recipients: List<Recipient>): Either<DataError, Unit> =
+        withValidRustDraftWrapper { draftWrapper ->
+            val recipientsBccWrapper = draftWrapper.recipientsBcc()
+            return@withValidRustDraftWrapper updateRecipients(recipientsBccWrapper, recipients)
+        }
+
     override suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>> =
         // Will emit based on a mutableFlow which is updated by the callback above;
         // Requests again the data from rust library, maps it to the new entity and exposes to the view
@@ -204,6 +225,25 @@ class RustDraftDataSourceImpl @Inject constructor(
     override suspend fun attachmentList(): Either<DataError, AttachmentsWrapper> {
         val wrapper = draftWrapperStateFlow.filterNotNull().first()
         return wrapper.attachmentList().right()
+    }
+
+    private fun updateRecipients(
+        recipientsWrapper: ComposerRecipientListWrapper,
+        updatedRecipients: List<Recipient>
+    ): Either<DataError, Unit> = either {
+        val currentRecipients = recipientsWrapper.recipients().toSingleRecipients()
+        val recipientsToAdd = updatedRecipients.filterNot { it in currentRecipients }
+        val recipientsToRemove = currentRecipients.filterNot { it in updatedRecipients }
+
+        recipientsToAdd.forEach {
+            recipientsWrapper.addSingleRecipient(it.toSingleRecipientEntry())
+                .onLeft { error -> raise(error) }
+        }
+
+        recipientsToRemove.forEach {
+            recipientsWrapper.removeSingleRecipient(it.toSingleRecipientEntry())
+                .onLeft { error -> raise(error) }
+        }
     }
 
     private suspend fun startSendingStatusWorker() {

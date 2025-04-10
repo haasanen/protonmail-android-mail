@@ -48,4 +48,7 @@ interface RustDraftDataSource {
     suspend fun send(): Either<DataError, Unit>
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>
     suspend fun attachmentList(): Either<DataError, AttachmentsWrapper>
+    suspend fun updateToRecipients(recipients: List<Recipient>): Either<DataError, Unit>
+    suspend fun updateCcRecipients(recipients: List<Recipient>): Either<DataError, Unit>
+    suspend fun updateBccRecipients(recipients: List<Recipient>): Either<DataError, Unit>
 }
