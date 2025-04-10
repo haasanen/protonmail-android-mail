@@ -47,6 +47,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
+import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionState
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionsList
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerChipsListViewModel
@@ -54,6 +55,7 @@ import ch.protonmail.android.uicomponents.chips.ChipsListTextField
 import ch.protonmail.android.uicomponents.chips.ChipsTestTags
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.thenIf
+import me.proton.core.util.kotlin.takeIfNotBlank
 
 @Composable
 fun ComposerChipsListField(
@@ -158,9 +160,18 @@ fun ComposerChipsListField(
                 contactSuggestionItems = contactSuggestionState.contactSuggestionItems,
                 actions = ContactSuggestionsList.Actions(
                     onContactSuggestionsDismissed = actions.onSuggestionsDismissed,
-                    onContactSuggestionSelected = {
+                    onContactSuggestionSelected = { item ->
+                        val selection = when (item) {
+                            is ContactSuggestionUiModel.ContactGroup ->
+                                item.emails
+                                    .joinToString(separator = "\n")
+                                    .takeIfNotBlank()
+                                    .orEmpty()
+
+                            is ContactSuggestionUiModel.Contact -> item.email
+                        }
                         actions.onSuggestionsDismissed()
-                        listState.typeWord(it.name)
+                        listState.typeWord(selection)
                         textFieldState.edit { delete(0, length) }
                     }
                 )

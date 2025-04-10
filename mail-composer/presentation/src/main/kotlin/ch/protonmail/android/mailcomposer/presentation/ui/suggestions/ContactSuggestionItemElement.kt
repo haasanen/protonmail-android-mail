@@ -52,28 +52,17 @@ import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUi
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionsColor.ContactGroupsBackground
 import ch.protonmail.android.uicomponents.R
 import ch.protonmail.android.uicomponents.text.HighlightedText
-import me.proton.core.util.kotlin.takeIfNotBlank
 
 @Composable
 fun ContactSuggestionItemElement(
     currentText: String,
     item: ContactSuggestionUiModel,
-    onClick: (String) -> Unit
+    onClick: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .clickable {
-                when (item) {
-                    is ContactSuggestionUiModel.ContactGroup ->
-                        item.emails
-                            .joinToString(separator = "\n")
-                            .takeIfNotBlank()
-                            ?.let { onClick(it) }
-
-                    is ContactSuggestionUiModel.Contact -> onClick(item.email)
-                }
-            }
+            .clickable { onClick() }
             .background(color = ProtonTheme.colors.backgroundInvertedSecondary)
             .fillMaxWidth()
             .padding(horizontal = ProtonDimens.Spacing.Large)
