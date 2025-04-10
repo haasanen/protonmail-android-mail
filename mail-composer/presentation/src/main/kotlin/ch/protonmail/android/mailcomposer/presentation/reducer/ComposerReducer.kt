@@ -30,7 +30,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerEvent
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
-import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -71,9 +70,6 @@ class ComposerReducer @Inject constructor(
 
     @Suppress("ComplexMethod", "LongMethod")
     private fun ComposerEvent.newStateForEvent(currentState: ComposerDraftState) = when (this) {
-        is ComposerEvent.UpdateBccRecipients -> updateRecipientsBcc(currentState, this.recipients)
-        is ComposerEvent.UpdateCcRecipients -> updateRecipientsCc(currentState, this.recipients)
-        is ComposerEvent.UpdateToRecipients -> updateRecipientsTo(currentState, this.recipients)
 
         is ComposerEvent.DefaultSenderReceived -> updateSenderTo(currentState, this.sender)
         is ComposerEvent.ErrorLoadingDefaultSenderAddress -> updateStateToSenderError(currentState)
@@ -152,9 +148,6 @@ class ComposerReducer @Inject constructor(
         is ComposerEvent.ConfirmSendExpiringMessageToExternalRecipients -> currentState.copy(
             confirmSendExpiringMessage = Effect.of(this.externalRecipients)
         )
-        is ComposerEvent.RecipientsBccChanged -> updateRecipientsBcc(currentState, this.recipients)
-        is ComposerEvent.RecipientsCcChanged -> updateRecipientsCc(currentState, this.recipients)
-        is ComposerEvent.RecipientsToChanged -> updateRecipientsTo(currentState, this.recipients)
         is ComposerEvent.RecipientsUpdated -> updateRecipients(currentState, hasValidRecipients)
     }
 
@@ -164,37 +157,26 @@ class ComposerReducer @Inject constructor(
         isDataRefreshed: Boolean,
         blockedSendingFromPmAddress: Boolean,
         blockedSendingFromDisabledAddress: Boolean
-    ): ComposerDraftState {
-
-        val validToRecipients = draftUiModel.draftFields.recipientsTo.value.map { RecipientUiModel.Valid(it.address) }
-        val validCcRecipients = draftUiModel.draftFields.recipientsCc.value.map { RecipientUiModel.Valid(it.address) }
-        val validBccRecipients = draftUiModel.draftFields.recipientsBcc.value.map { RecipientUiModel.Valid(it.address) }
-
-        return currentState.copy(
-            fields = currentState.fields.copy(
-                sender = SenderUiModel(draftUiModel.draftFields.sender.value),
-                body = draftUiModel.draftFields.body.value,
-                displayBody = draftUiModel.draftDisplayBodyUiModel,
-                to = validToRecipients,
-                cc = validCcRecipients,
-                bcc = validBccRecipients
-            ),
-            isLoading = false,
-            isSubmittable = (validToRecipients + validCcRecipients + validBccRecipients).isNotEmpty(),
-            warning = if (!isDataRefreshed) {
-                Effect.of(TextUiModel(R.string.composer_warning_local_data_shown))
-            } else {
-                Effect.empty()
-            },
-            senderChangedNotice = when {
-                blockedSendingFromPmAddress ->
-                    Effect.of(TextUiModel(R.string.composer_sender_changed_pm_address_is_a_paid_feature))
-                blockedSendingFromDisabledAddress ->
-                    Effect.of(TextUiModel(R.string.composer_sender_changed_original_address_disabled))
-                else -> Effect.empty()
-            }
-        )
-    }
+    ) = currentState.copy(
+        fields = currentState.fields.copy(
+            sender = SenderUiModel(draftUiModel.draftFields.sender.value),
+            body = draftUiModel.draftFields.body.value,
+            displayBody = draftUiModel.draftDisplayBodyUiModel
+        ),
+        isLoading = false,
+        warning = if (!isDataRefreshed) {
+            Effect.of(TextUiModel(R.string.composer_warning_local_data_shown))
+        } else {
+            Effect.empty()
+        },
+        senderChangedNotice = when {
+            blockedSendingFromPmAddress ->
+                Effect.of(TextUiModel(R.string.composer_sender_changed_pm_address_is_a_paid_feature))
+            blockedSendingFromDisabledAddress ->
+                Effect.of(TextUiModel(R.string.composer_sender_changed_original_address_disabled))
+            else -> Effect.empty()
+        }
+    )
 
     private fun updateAttachmentsState(
         currentState: ComposerDraftState,
@@ -296,103 +278,7 @@ class ComposerReducer @Inject constructor(
         openImagePicker = Effect.of(Unit)
     )
 
-    private fun updateRecipientsTo(
-        currentState: ComposerDraftState,
-        recipients: List<RecipientUiModel>
-    ): ComposerDraftState = updateRecipients(
-        currentState = currentState,
-        to = recipients,
-        cc = currentState.fields.cc,
-        bcc = currentState.fields.bcc
-    )
-
-    private fun updateRecipientsCc(
-        currentState: ComposerDraftState,
-        recipients: List<RecipientUiModel>
-    ): ComposerDraftState = updateRecipients(
-        currentState = currentState,
-        to = currentState.fields.to,
-        cc = recipients,
-        bcc = currentState.fields.bcc
-    )
-
-    private fun updateRecipientsBcc(
-        currentState: ComposerDraftState,
-        recipients: List<RecipientUiModel>
-    ): ComposerDraftState = updateRecipients(
-        currentState = currentState,
-        to = currentState.fields.to,
-        cc = currentState.fields.cc,
-        bcc = recipients
-    )
-
-    private fun updateRecipients(
-        currentState: ComposerDraftState,
-        to: List<RecipientUiModel>,
-        cc: List<RecipientUiModel>,
-        bcc: List<RecipientUiModel>
-    ): ComposerDraftState {
-        val allValid = (to + cc + bcc).all { it is RecipientUiModel.Valid }
-        val notEmpty = (to + cc + bcc).isNotEmpty()
-        val hasInvalidRecipients = hasInvalidRecipients(to, cc, bcc, currentState)
-
-        val capturedToDuplicates = captureDuplicateEmails(to)
-        val capturedCcDuplicates = captureDuplicateEmails(cc)
-        val capturedBccDuplicates = captureDuplicateEmails(bcc)
-        val hasDuplicates = hasDuplicates(capturedToDuplicates, capturedCcDuplicates, capturedBccDuplicates)
-
-        val error = when {
-            hasDuplicates -> { Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient)) }
-            hasInvalidRecipients -> Effect.of(TextUiModel(R.string.composer_error_invalid_email))
-            else -> Effect.empty()
-        }
-
-        return currentState.copy(
-            fields = currentState.fields.copy(
-                to = capturedToDuplicates.cleanedRecipients,
-                cc = capturedCcDuplicates.cleanedRecipients,
-                bcc = capturedBccDuplicates.cleanedRecipients
-            ),
-            recipientValidationError = error,
-            isSubmittable = allValid && notEmpty
-        )
-    }
     private fun updateRecipients(currentState: ComposerDraftState, hasValidRecipients: Boolean) =
         currentState.copy(isSubmittable = hasValidRecipients)
 
-    private fun hasDuplicates(
-        capturedToDuplicates: CleanedRecipients,
-        capturedCcDuplicates: CleanedRecipients,
-        capturedBccDuplicates: CleanedRecipients
-    ): Boolean = capturedToDuplicates.duplicatesFound.isNotEmpty() ||
-        capturedCcDuplicates.duplicatesFound.isNotEmpty() ||
-        capturedBccDuplicates.duplicatesFound.isNotEmpty()
-
-    private fun captureDuplicateEmails(recipients: List<RecipientUiModel>): CleanedRecipients {
-        val itemsCounted = recipients.groupingBy { it }.eachCount()
-        return CleanedRecipients(
-            itemsCounted.map { it.key },
-            itemsCounted.filter { it.value > 1 }.map { it.key }
-        )
-    }
-
-    // For now we consider an error state if the last recipient is invalid and we have not deleted a recipient
-    private fun hasInvalidRecipients(
-        to: List<RecipientUiModel>,
-        cc: List<RecipientUiModel>,
-        bcc: List<RecipientUiModel>,
-        currentState: ComposerDraftState
-    ): Boolean {
-        return hasError(to, currentState.fields.to) ||
-            hasError(cc, currentState.fields.cc) ||
-            hasError(bcc, currentState.fields.bcc)
-    }
-
-    private fun hasError(newRecipients: List<RecipientUiModel>, currentRecipients: List<RecipientUiModel>) =
-        newRecipients.size > currentRecipients.size && newRecipients.lastOrNull() is RecipientUiModel.Invalid
-
-    private data class CleanedRecipients(
-        val cleanedRecipients: List<RecipientUiModel>,
-        val duplicatesFound: List<RecipientUiModel>
-    )
 }

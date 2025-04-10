@@ -51,10 +51,6 @@ internal sealed interface ComposerAction : ComposerOperation {
 }
 
 sealed interface ComposerEvent : ComposerOperation {
-    data class UpdateToRecipients(val recipients: List<RecipientUiModel>) : ComposerEvent
-    data class UpdateCcRecipients(val recipients: List<RecipientUiModel>) : ComposerEvent
-    data class UpdateBccRecipients(val recipients: List<RecipientUiModel>) : ComposerEvent
-
     data class DefaultSenderReceived(val sender: SenderUiModel) : ComposerEvent
     data class SenderAddressesReceived(val senders: List<SenderUiModel>) : ComposerEvent
     data class OpenExistingDraft(val draftId: MessageId) : ComposerEvent
@@ -72,9 +68,6 @@ sealed interface ComposerEvent : ComposerOperation {
     data class OnMessagePasswordUpdated(val messagePassword: MessagePassword?) : ComposerEvent
     data class OnMessageExpirationTimeUpdated(val messageExpirationTime: MessageExpirationTime?) : ComposerEvent
     data class ConfirmSendExpiringMessageToExternalRecipients(val externalRecipients: List<Recipient>) : ComposerEvent
-    data class RecipientsToChanged(val recipients: List<RecipientUiModel>) : ComposerEvent
-    data class RecipientsCcChanged(val recipients: List<RecipientUiModel>) : ComposerEvent
-    data class RecipientsBccChanged(val recipients: List<RecipientUiModel>) : ComposerEvent
     data class RecipientsUpdated(val hasValidRecipients: Boolean) : ComposerEvent
 
     data object ErrorLoadingDefaultSenderAddress : ComposerEvent

@@ -19,11 +19,8 @@
 package ch.protonmail.android.mailcomposer.presentation.model
 
 import androidx.compose.runtime.Stable
-import ch.protonmail.android.mailmessage.domain.model.Participant
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 
 @Stable
 data class RecipientsState(
@@ -38,33 +35,6 @@ data class RecipientsState(
             emptyList<RecipientUiModel>().toImmutableList(),
             emptyList<RecipientUiModel>().toImmutableList(),
             emptyList<RecipientUiModel>().toImmutableList()
-        )
-    }
-}
-
-suspend fun RecipientsState.toParticipantFields(
-    action: suspend (recipient: RecipientUiModel.Valid) -> Participant
-): Triple<List<Participant>, List<Participant>, List<Participant>> {
-    return coroutineScope {
-        val toParticipants = async {
-            toRecipients.mapNotNull { it as? RecipientUiModel.Valid }
-                .map { action(it) }
-        }
-
-        val ccParticipants = async {
-            ccRecipients.mapNotNull { it as? RecipientUiModel.Valid }
-                .map { action(it) }
-        }
-
-        val bccParticipants = async {
-            bccRecipients.mapNotNull { it as? RecipientUiModel.Valid }
-                .map { action(it) }
-        }
-
-        Triple(
-            toParticipants.await(),
-            ccParticipants.await(),
-            bccParticipants.await()
         )
     }
 }

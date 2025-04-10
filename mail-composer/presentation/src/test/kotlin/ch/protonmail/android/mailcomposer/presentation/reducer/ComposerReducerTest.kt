@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailcomposer.presentation.reducer
 
-import java.util.Random
 import java.util.UUID
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -42,9 +41,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
-import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel.Invalid
-import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel.Valid
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailmessage.domain.model.AttachmentState
@@ -111,152 +107,28 @@ class ComposerReducerTest(
 
         private val draftUiModelWithoutRecipients = DraftUiModel(draftFieldsWithoutRecipients, draftDisplayBody)
 
-        private val EmptyToSubmittableToField = with("a@b.c") {
-            TestTransition(
-                name = "Should generate submittable state when adding a new valid email address in the to field",
-                currentState = ComposerDraftState.initial(messageId),
-                operation = ComposerEvent.UpdateToRecipients(listOf(Valid(this))),
-                expectedState = aSubmittableState(messageId, to = listOf(Valid(this)))
-            )
-        }
+        private val EmptyToSubmittableToField = TestTransition(
+            name = "Should generate submittable state when recipients updated with a valid recipient",
+            currentState = ComposerDraftState.initial(messageId),
+            operation = ComposerEvent.RecipientsUpdated(true),
+            expectedState = aSubmittableState(messageId)
+        )
 
-        private val EmptyToNotSubmittableToField = with(UUID.randomUUID().toString()) {
-            TestTransition(
-                name = "Should generate not submittable error state when adding invalid email address in the to field",
-                currentState = ComposerDraftState.initial(messageId),
-                operation = ComposerEvent.UpdateToRecipients(listOf(Invalid(this))),
-                expectedState = aNotSubmittableState(
-                    messageId,
-                    to = listOf(Invalid(this)),
-                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_invalid_email))
-                )
-            )
-        }
-
-        private val SubmittableToNotSubmittableEmptyToField = with("a@b.c") {
-            TestTransition(
-                name = "Should generate not-submittable state when removing all valid email addresses from TO field",
-                currentState = ComposerDraftState.initial(
-                    messageId,
-                    to = listOf(Valid(this)),
-                    isSubmittable = true
-                ),
-                operation = ComposerEvent.UpdateToRecipients(emptyList()),
-                expectedState = aNotSubmittableState(messageId, to = emptyList(), error = Effect.empty())
-            )
-        }
-
-        private val EmptyToSubmittableCcField = with("a@b.c") {
-            TestTransition(
-                name = "Should generate submittable state when adding a new valid email address in the cc field",
-                currentState = ComposerDraftState.initial(messageId),
-                operation = ComposerEvent.UpdateCcRecipients(listOf(Valid(this))),
-                expectedState = aSubmittableState(messageId, cc = listOf(Valid(this)))
-            )
-        }
-
-        private val EmptyToNotSubmittableCcField = with(UUID.randomUUID().toString()) {
-            TestTransition(
-                name = "Should generate not submittable error state when adding invalid email address in the cc field",
-                currentState = ComposerDraftState.initial(messageId),
-                operation = ComposerEvent.UpdateCcRecipients(listOf(Invalid(this))),
-                expectedState = aNotSubmittableState(
-                    messageId,
-                    cc = listOf(Invalid(this)),
-                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_invalid_email))
-                )
-            )
-        }
-
-        private val SubmittableToNotSubmittableEmptyCcField = with("a@b.c") {
-            TestTransition(
-                name = "Should generate not-submittable state when removing all valid email addresses from CC field",
-                currentState = ComposerDraftState.initial(
-                    messageId,
-                    cc = listOf(Valid(this)),
-                    isSubmittable = true
-                ),
-                operation = ComposerEvent.UpdateCcRecipients(emptyList()),
-                expectedState = aNotSubmittableState(messageId, cc = emptyList(), error = Effect.empty())
-            )
-        }
-
-        private val EmptyToSubmittableBccField = with("a@b.c") {
-            TestTransition(
-                name = "Should generate submittable state when adding a new valid email address in the bcc field",
-                currentState = ComposerDraftState.initial(messageId),
-                operation = ComposerEvent.UpdateBccRecipients(listOf(Valid(this))),
-                expectedState = aSubmittableState(messageId, bcc = listOf(Valid(this)))
-            )
-        }
-
-        private val EmptyToNotSubmittableBccField = with(UUID.randomUUID().toString()) {
-            TestTransition(
-                name = "Should generate not submittable error state when adding invalid email address in the bcc field",
-                currentState = ComposerDraftState.initial(messageId),
-                operation = ComposerEvent.UpdateBccRecipients(listOf(Invalid(this))),
-                expectedState = aNotSubmittableState(
-                    messageId,
-                    bcc = listOf(Invalid(this)),
-                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_invalid_email))
-                )
-            )
-        }
-
-        private val SubmittableToNotSubmittableEmptyBccField = with("a@b.c") {
-            TestTransition(
-                name = "Should generate not-submittable state when removing all valid email addresses from BCC field",
-                currentState = ComposerDraftState.initial(
-                    messageId,
-                    bcc = listOf(Valid(this)),
-                    isSubmittable = true
-                ),
-                operation = ComposerEvent.UpdateBccRecipients(emptyList()),
-                expectedState = aNotSubmittableState(messageId, bcc = emptyList(), error = Effect.empty())
-            )
-        }
-
-        private val NotSubmittableToWithoutErrorToField = with("a@b.c") {
-            val invalidEmail = UUID.randomUUID().toString()
-            TestTransition(
-                name = "Should generate not submittable non error state when adding valid email to current error",
-                currentState = aNotSubmittableState(messageId, to = listOf(Invalid(invalidEmail))),
-                operation = ComposerEvent.UpdateToRecipients(listOf(Invalid(invalidEmail), Valid(this))),
-                expectedState = aNotSubmittableState(
-                    draftId = messageId,
-                    to = listOf(Invalid(invalidEmail), Valid(this)),
-                    error = Effect.empty()
-                )
-            )
-        }
-
-        private val NotSubmittableToWithErrorToField = with("a@b.c") {
-            val invalidEmail = UUID.randomUUID().toString()
-            TestTransition(
-                name = "Should generate not submittable error state when adding invalid followed by invalid address",
-                currentState = aNotSubmittableState(messageId, to = listOf(Invalid(invalidEmail))),
-                operation = ComposerEvent.UpdateToRecipients(listOf(Invalid(invalidEmail), Invalid(this))),
-                expectedState = aNotSubmittableState(
-                    draftId = messageId,
-                    to = listOf(Invalid(invalidEmail), Invalid(this)),
-                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_invalid_email))
-                )
-            )
-        }
-
-        private val NotSubmittableWithoutErrorWhenRemoving = with("a@b.c") {
-            val invalidEmail = UUID.randomUUID().toString()
-            TestTransition(
-                name = "Should generate not submittable state without error when removing invalid address",
-                currentState = aNotSubmittableState(messageId, to = listOf(Invalid(invalidEmail), Invalid(this))),
-                operation = ComposerEvent.UpdateToRecipients(listOf(Invalid(invalidEmail))),
-                expectedState = aNotSubmittableState(
-                    draftId = messageId,
-                    to = listOf(Invalid(invalidEmail)),
-                    error = Effect.empty()
-                )
-            )
-        }
+        private val EmptyToNotSubmittableToField = TestTransition(
+            name = "Should generate not submittable error state when recipients update with no valid recipient",
+            currentState = ComposerDraftState.initial(messageId),
+            operation = ComposerEvent.RecipientsUpdated(false),
+            expectedState = aNotSubmittableState(messageId)
+        )
+        private val SubmittableToNotSubmittableEmptyToField = TestTransition(
+            name = "Should generate not-submittable state when removing all valid email addresses",
+            currentState = ComposerDraftState.initial(
+                messageId,
+                isSubmittable = true
+            ),
+            operation = ComposerEvent.RecipientsUpdated(false),
+            expectedState = aNotSubmittableState(messageId, error = Effect.empty())
+        )
 
         private val EmptyToUpgradePlan = TestTransition(
             name = "Should generate a state showing 'upgrade plan' message when free user tries to change sender",
@@ -314,93 +186,6 @@ class ComposerReducerTest(
                 error = Effect.of(TextUiModel(R.string.composer_error_store_draft_subject))
             )
         )
-
-        private val DuplicateToToNotDuplicateWithError = with(aMultipleRandomRange().map { "a@b.c" }) {
-            TestTransition(
-                name = "Should remove duplicate TO recipients and contain error if there are",
-                currentState = ComposerDraftState.initial(messageId),
-                operation = ComposerEvent.UpdateToRecipients(this.map { Valid(it) }),
-                expectedState = aSubmittableState(
-                    draftId = messageId,
-                    to = listOf(Valid(this.first())),
-                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient))
-                )
-            )
-        }
-
-        private val DuplicateCcToNotDuplicateWithError = with(aMultipleRandomRange().map { "a@b.c" }) {
-            TestTransition(
-                name = "Should remove duplicate CC recipients and contain error if there are",
-                currentState = ComposerDraftState.initial(messageId),
-                operation = ComposerEvent.UpdateCcRecipients(this.map { Valid(it) }),
-                expectedState = aSubmittableState(
-                    draftId = messageId,
-                    cc = listOf(Valid(this.first())),
-                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient))
-                )
-            )
-        }
-
-        private val DuplicateBccToNotDuplicateWithError = with(aMultipleRandomRange().map { "a@b.c" }) {
-            TestTransition(
-                name = "Should remove duplicate BCC recipients and contain error if there are",
-                currentState = ComposerDraftState.initial(messageId),
-                operation = ComposerEvent.UpdateBccRecipients(this.map { Valid(it) }),
-                expectedState = aSubmittableState(
-                    draftId = messageId,
-                    bcc = listOf(Valid(this.first())),
-                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient))
-                )
-            )
-        }
-
-        private val ManyDuplicatesToToNotDuplicateWithError = with(
-            aMultipleRandomRange().map { "a@b.c" } + aMultipleRandomRange().map { "d@e.f" }
-        ) {
-            val expected = listOf(Valid("a@b.c"), Valid("d@e.f"))
-            TestTransition(
-                name = "Should remove multiple duplicate To recipients and contain error if there are",
-                currentState = ComposerDraftState.initial(messageId),
-                operation = ComposerEvent.UpdateToRecipients(this.map { Valid(it) }),
-                expectedState = aSubmittableState(
-                    draftId = messageId,
-                    to = expected,
-                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient))
-                )
-            )
-        }
-
-        private val ManyDuplicatesCcToNotDuplicateWithError = with(
-            aMultipleRandomRange().map { "a@b.c" } + aMultipleRandomRange().map { "d@e.f" }
-        ) {
-            val expected = listOf(Valid("a@b.c"), Valid("d@e.f"))
-            TestTransition(
-                name = "Should remove multiple duplicate CC recipients and contain error if there are",
-                currentState = ComposerDraftState.initial(messageId),
-                operation = ComposerEvent.UpdateCcRecipients(this.map { Valid(it) }),
-                expectedState = aSubmittableState(
-                    draftId = messageId,
-                    cc = expected,
-                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient))
-                )
-            )
-        }
-
-        private val ManyDuplicatesBccToNotDuplicateWithError = with(
-            aMultipleRandomRange().map { "a@b.c" } + aMultipleRandomRange().map { "d@e.f" }
-        ) {
-            val expected = listOf(Valid("a@b.c"), Valid("d@e.f"))
-            TestTransition(
-                name = "Should remove multiple duplicate BCC recipients and contain error if there are",
-                currentState = ComposerDraftState.initial(messageId),
-                operation = ComposerEvent.UpdateBccRecipients(this.map { Valid(it) }),
-                expectedState = aSubmittableState(
-                    draftId = messageId,
-                    bcc = expected,
-                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient))
-                )
-            )
-        }
 
         private val EmptyToUpdatedDraftBody = with(DraftBody("Updated draft body")) {
             TestTransition(
@@ -473,33 +258,8 @@ class ComposerReducerTest(
         )
 
         @Suppress("VariableMaxLength")
-        private val LoadingToFieldsWhenReceivedDraftDataEmptyRecipients = TestTransition(
-            name = "Should stop loading and set the received draft data as composer fields when draft data received, " +
-                "empty recipients",
-            currentState = ComposerDraftState.initial(messageId).copy(isLoading = true),
-            operation = ComposerEvent.PrefillDraftDataReceived(
-                draftUiModelWithoutRecipients,
-                isDataRefreshed = true,
-                isBlockedSendingFromPmAddress = false,
-                isBlockedSendingFromDisabledAddress = false
-            ),
-            expectedState = aNotSubmittableState(
-                draftId = messageId,
-                sender = SenderUiModel(draftFieldsWithoutRecipients.sender.value),
-                to = draftFieldsWithoutRecipients.recipientsTo.value.map { Valid(it.address) },
-                cc = draftFieldsWithoutRecipients.recipientsCc.value.map { Valid(it.address) },
-                bcc = draftFieldsWithoutRecipients.recipientsBcc.value.map { Valid(it.address) },
-                draftBody = draftFieldsWithoutRecipients.body.value,
-                draftDisplayBodyUiModel = draftDisplayBody,
-                error = Effect.empty(),
-                isLoading = false
-            )
-        )
-
-        @Suppress("VariableMaxLength")
-        private val LoadingToFieldsWhenReceivedDraftDataValidRecipients = TestTransition(
-            name = "Should stop loading and set the received draft data as composer fields when draft data received, " +
-                "valid recipients",
+        private val LoadingToFieldsWhenReceivedDraftDataFromRemote = TestTransition(
+            name = "Should stop loading and set the received draft data as composer fields when draft data received",
             currentState = ComposerDraftState.initial(messageId).copy(isLoading = true),
             operation = ComposerEvent.PrefillDraftDataReceived(
                 draftUiModel,
@@ -507,12 +267,9 @@ class ComposerReducerTest(
                 isBlockedSendingFromPmAddress = false,
                 isBlockedSendingFromDisabledAddress = false
             ),
-            expectedState = aSubmittableState(
+            expectedState = aNotSubmittableState(
                 draftId = messageId,
                 sender = SenderUiModel(draftFieldsWithoutRecipients.sender.value),
-                to = draftFields.recipientsTo.value.map { Valid(it.address) },
-                cc = draftFields.recipientsCc.value.map { Valid(it.address) },
-                bcc = draftFields.recipientsBcc.value.map { Valid(it.address) },
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
                 error = Effect.empty()
@@ -521,8 +278,7 @@ class ComposerReducerTest(
 
         @Suppress("VariableMaxLength")
         private val LoadingToFieldsWhenReceivedDraftDataFromLocal = TestTransition(
-            name = "Should stop loading and set the received draft data as composer fields when draft data received, " +
-                "valid recipients",
+            name = "Should stop loading and set the received draft data as composer fields when draft data received",
             currentState = ComposerDraftState.initial(messageId).copy(isLoading = true),
             operation = ComposerEvent.PrefillDraftDataReceived(
                 draftUiModel,
@@ -530,12 +286,9 @@ class ComposerReducerTest(
                 isBlockedSendingFromPmAddress = false,
                 isBlockedSendingFromDisabledAddress = false
             ),
-            expectedState = aSubmittableState(
+            expectedState = aNotSubmittableState(
                 draftId = messageId,
                 sender = SenderUiModel(draftFieldsWithoutRecipients.sender.value),
-                to = draftFields.recipientsTo.value.map { Valid(it.address) },
-                cc = draftFields.recipientsCc.value.map { Valid(it.address) },
-                bcc = draftFields.recipientsBcc.value.map { Valid(it.address) },
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
                 warning = Effect.of(TextUiModel(R.string.composer_warning_local_data_shown))
@@ -548,12 +301,9 @@ class ComposerReducerTest(
                 " via share",
             currentState = ComposerDraftState.initial(messageId).copy(isLoading = true),
             operation = ComposerEvent.PrefillDataReceivedViaShare(draftUiModel),
-            expectedState = aSubmittableState(
+            expectedState = aNotSubmittableState(
                 draftId = messageId,
                 sender = SenderUiModel(draftFieldsWithoutRecipients.sender.value),
-                to = draftFields.recipientsTo.value.map { Valid(it.address) },
-                cc = draftFields.recipientsCc.value.map { Valid(it.address) },
-                bcc = draftFields.recipientsBcc.value.map { Valid(it.address) },
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
                 warning = Effect.empty()
@@ -573,9 +323,6 @@ class ComposerReducerTest(
             expectedState = aNotSubmittableState(
                 draftId = messageId,
                 sender = SenderUiModel(draftFieldsWithoutRecipients.sender.value),
-                to = draftFieldsWithoutRecipients.recipientsTo.value.map { Valid(it.address) },
-                cc = draftFieldsWithoutRecipients.recipientsCc.value.map { Valid(it.address) },
-                bcc = draftFieldsWithoutRecipients.recipientsBcc.value.map { Valid(it.address) },
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
                 error = Effect.empty(),
@@ -768,26 +515,11 @@ class ComposerReducerTest(
             EmptyToSubmittableToField,
             EmptyToNotSubmittableToField,
             SubmittableToNotSubmittableEmptyToField,
-            EmptyToSubmittableCcField,
-            EmptyToNotSubmittableCcField,
-            SubmittableToNotSubmittableEmptyCcField,
-            EmptyToSubmittableBccField,
-            EmptyToNotSubmittableBccField,
-            SubmittableToNotSubmittableEmptyBccField,
-            NotSubmittableToWithoutErrorToField,
-            NotSubmittableToWithErrorToField,
-            NotSubmittableWithoutErrorWhenRemoving,
             EmptyToUpgradePlan,
             EmptyToSenderAddressesList,
             EmptyToErrorWhenUserPlanUnknown,
             EmptyToUpdatedSender,
             EmptyToChangeSubjectError,
-            DuplicateToToNotDuplicateWithError,
-            DuplicateCcToNotDuplicateWithError,
-            DuplicateBccToNotDuplicateWithError,
-            ManyDuplicatesToToNotDuplicateWithError,
-            ManyDuplicatesCcToNotDuplicateWithError,
-            ManyDuplicatesBccToNotDuplicateWithError,
             EmptyToUpdatedDraftBody,
             EmptyToCloseComposer,
             EmptyToCloseComposerWithDraftSaved,
@@ -795,8 +527,7 @@ class ComposerReducerTest(
             SubmittableToSendMessage,
             SubmittableToOnSendMessageOffline,
             EmptyToLoadingWithOpenExistingDraft,
-            LoadingToFieldsWhenReceivedDraftDataEmptyRecipients,
-            LoadingToFieldsWhenReceivedDraftDataValidRecipients,
+            LoadingToFieldsWhenReceivedDraftDataFromRemote,
             LoadingToFieldsWhenReceivedDraftDataFromLocal,
             LoadingToFieldsWhenReceivedDraftDataFromViaShare,
             LoadingToErrorWhenErrorLoadingDraftData,
@@ -820,12 +551,8 @@ class ComposerReducerTest(
         private fun aSubmittableState(
             draftId: MessageId,
             sender: SenderUiModel = SenderUiModel(""),
-            to: List<RecipientUiModel> = emptyList(),
-            cc: List<RecipientUiModel> = emptyList(),
-            bcc: List<RecipientUiModel> = emptyList(),
             draftBody: String = "",
             draftDisplayBodyUiModel: DraftDisplayBodyUiModel = DraftDisplayBodyUiModel(""),
-            recipientValidationError: Effect<TextUiModel> = Effect.empty(),
             error: Effect<TextUiModel> = Effect.empty(),
             closeComposerWithMessageSending: Effect<Unit> = Effect.empty(),
             closeComposerWithMessageSendingOffline: Effect<Unit> = Effect.empty(),
@@ -839,15 +566,11 @@ class ComposerReducerTest(
             fields = ComposerFields(
                 draftId = draftId,
                 sender = sender,
-                to = to,
-                cc = cc,
-                bcc = bcc,
                 displayBody = draftDisplayBodyUiModel,
                 body = draftBody
             ),
             attachments = AttachmentGroupUiModel(attachments = emptyList()),
             premiumFeatureMessage = Effect.empty(),
-            recipientValidationError = recipientValidationError,
             error = error,
             isSubmittable = true,
             senderAddresses = emptyList(),
@@ -872,10 +595,6 @@ class ComposerReducerTest(
         private fun aNotSubmittableState(
             draftId: MessageId,
             sender: SenderUiModel = SenderUiModel(""),
-            to: List<RecipientUiModel> = emptyList(),
-            cc: List<RecipientUiModel> = emptyList(),
-            bcc: List<RecipientUiModel> = emptyList(),
-            recipientValidationError: Effect<TextUiModel> = Effect.empty(),
             error: Effect<TextUiModel> = Effect.empty(),
             premiumFeatureMessage: Effect<TextUiModel> = Effect.empty(),
             senderAddresses: List<SenderUiModel> = emptyList(),
@@ -894,15 +613,11 @@ class ComposerReducerTest(
             fields = ComposerFields(
                 draftId = draftId,
                 sender = sender,
-                to = to,
-                cc = cc,
-                bcc = bcc,
                 displayBody = draftDisplayBodyUiModel,
                 body = draftBody
             ),
             attachments = AttachmentGroupUiModel(attachments = emptyList()),
             premiumFeatureMessage = premiumFeatureMessage,
-            recipientValidationError = recipientValidationError,
             error = error,
             isSubmittable = false,
             senderAddresses = senderAddresses,
@@ -924,11 +639,6 @@ class ComposerReducerTest(
             confirmSendExpiringMessage = Effect.empty(),
             openImagePicker = Effect.empty()
         )
-
-        private fun aPositiveRandomInt(bound: Int = 10) = Random().nextInt(bound)
-
-        private fun aMultipleRandomRange(lowerBound: Int = 2, upperBound: Int = 10) =
-            lowerBound until aPositiveRandomInt(upperBound) + 2 * lowerBound
 
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")

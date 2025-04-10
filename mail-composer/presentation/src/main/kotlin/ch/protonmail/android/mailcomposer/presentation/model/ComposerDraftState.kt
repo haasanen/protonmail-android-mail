@@ -29,7 +29,6 @@ data class ComposerDraftState(
     val fields: ComposerFields,
     val attachments: AttachmentGroupUiModel,
     val premiumFeatureMessage: Effect<TextUiModel>,
-    val recipientValidationError: Effect<TextUiModel>,
     val error: Effect<TextUiModel>,
     val isSubmittable: Boolean,
     val senderAddresses: List<SenderUiModel>,
@@ -56,19 +55,10 @@ data class ComposerDraftState(
 
     companion object {
 
-        fun initial(
-            draftId: MessageId,
-            to: List<RecipientUiModel> = emptyList(),
-            cc: List<RecipientUiModel> = emptyList(),
-            bcc: List<RecipientUiModel> = emptyList(),
-            isSubmittable: Boolean = false
-        ): ComposerDraftState = ComposerDraftState(
+        fun initial(draftId: MessageId, isSubmittable: Boolean = false): ComposerDraftState = ComposerDraftState(
             fields = ComposerFields(
                 draftId = draftId,
                 sender = SenderUiModel(""),
-                to = to,
-                cc = cc,
-                bcc = bcc,
                 displayBody = DraftDisplayBodyUiModel(""),
                 body = ""
             ),
@@ -76,7 +66,6 @@ data class ComposerDraftState(
                 attachments = emptyList()
             ),
             premiumFeatureMessage = Effect.empty(),
-            recipientValidationError = Effect.empty(),
             error = Effect.empty(),
             isSubmittable = isSubmittable,
             senderAddresses = emptyList(),
@@ -102,12 +91,13 @@ data class ComposerDraftState(
     }
 }
 
+/**
+ * @displayBody is the body wrapped with an HTML template to allow injecting css and javascript; used to display only;
+ * @body is used to expose back to the viewModel any changes applied by the user (no template, user-content only);
+ */
 data class ComposerFields(
     val draftId: MessageId,
     val sender: SenderUiModel,
-    val to: List<RecipientUiModel>,
-    val cc: List<RecipientUiModel>,
-    val bcc: List<RecipientUiModel>,
     val displayBody: DraftDisplayBodyUiModel,
     val body: String
 )
