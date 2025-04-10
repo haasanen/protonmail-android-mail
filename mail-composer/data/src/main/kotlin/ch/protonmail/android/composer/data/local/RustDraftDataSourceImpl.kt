@@ -29,14 +29,14 @@ import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
 import ch.protonmail.android.composer.data.usecase.OpenRustDraft
 import ch.protonmail.android.composer.data.usecase.RustDraftUndoSend
+import ch.protonmail.android.composer.data.worker.SendingStatusWorker
+import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.Subject
-import ch.protonmail.android.composer.data.worker.SendingStatusWorker
-import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -132,32 +132,38 @@ class RustDraftDataSourceImpl @Inject constructor(
         }
     }
 
+    @Deprecated("Will be replaced by updateToRecipients(list)")
     override suspend fun addToRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
         val recipientsWrapper = it.recipientsTo()
         recipientsWrapper.registerCallback(recipientsUpdatedCallback)
         return@withValidRustDraftWrapper recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
     }
 
+    @Deprecated("Will be replaced by updateCcRecipients(list)")
     override suspend fun addCcRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
         val recipientsWrapper = it.recipientsCc()
         return@withValidRustDraftWrapper recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
     }
 
+    @Deprecated("Will be replaced by updateBccRecipients(list)")
     override suspend fun addBccRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
         val recipientsWrapper = it.recipientsBcc()
         return@withValidRustDraftWrapper recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
     }
 
+    @Deprecated("Will be replaced by updateToRecipients(list)")
     override suspend fun removeToRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
         val recipientsWrapper = it.recipientsTo()
         return@withValidRustDraftWrapper recipientsWrapper.removeSingleRecipient(recipient.toSingleRecipientEntry())
     }
 
+    @Deprecated("Will be replaced by updateCcRecipients(list)")
     override suspend fun removeCcRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
         val recipientsWrapper = it.recipientsCc()
         return@withValidRustDraftWrapper recipientsWrapper.removeSingleRecipient(recipient.toSingleRecipientEntry())
     }
 
+    @Deprecated("Will be replaced by updateBccRecipients(list)")
     override suspend fun removeBccRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
         val recipientsWrapper = it.recipientsBcc()
         return@withValidRustDraftWrapper recipientsWrapper.removeSingleRecipient(recipient.toSingleRecipientEntry())
