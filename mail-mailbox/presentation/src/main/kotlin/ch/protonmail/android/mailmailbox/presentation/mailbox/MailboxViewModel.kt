@@ -1036,9 +1036,10 @@ class MailboxViewModel @Inject constructor(
             .mapNotNull { it?.selectedMailboxItems }
             .distinctUntilChanged()
 
-    private fun isActionAllowedForCurrentLabel(labelId: LabelId): Boolean {
-        return state.value.mailboxListState.let { usedLabels ->
-            usedLabels is MailboxListState.Data && usedLabels.currentMailLabel.id.labelId != labelId
+    private suspend fun isActionAllowedForCurrentLabel(labelId: LabelId): Boolean {
+        return when (val mailLabel = observeCurrentMailLabel().first()) {
+            is MailLabel.System -> mailLabel.systemLabelId.labelId != labelId
+            else -> true
         }
     }
 
