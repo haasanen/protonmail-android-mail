@@ -489,7 +489,6 @@ class ComposerReducerTest(
                 to = draftFieldsWithoutRecipients.recipientsTo.value.map { Valid(it.address) },
                 cc = draftFieldsWithoutRecipients.recipientsCc.value.map { Valid(it.address) },
                 bcc = draftFieldsWithoutRecipients.recipientsBcc.value.map { Valid(it.address) },
-                subject = draftFieldsWithoutRecipients.subject,
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
                 error = Effect.empty(),
@@ -514,7 +513,6 @@ class ComposerReducerTest(
                 to = draftFields.recipientsTo.value.map { Valid(it.address) },
                 cc = draftFields.recipientsCc.value.map { Valid(it.address) },
                 bcc = draftFields.recipientsBcc.value.map { Valid(it.address) },
-                subject = draftFieldsWithoutRecipients.subject,
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
                 error = Effect.empty()
@@ -538,7 +536,6 @@ class ComposerReducerTest(
                 to = draftFields.recipientsTo.value.map { Valid(it.address) },
                 cc = draftFields.recipientsCc.value.map { Valid(it.address) },
                 bcc = draftFields.recipientsBcc.value.map { Valid(it.address) },
-                subject = draftFieldsWithoutRecipients.subject,
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
                 warning = Effect.of(TextUiModel(R.string.composer_warning_local_data_shown))
@@ -557,7 +554,6 @@ class ComposerReducerTest(
                 to = draftFields.recipientsTo.value.map { Valid(it.address) },
                 cc = draftFields.recipientsCc.value.map { Valid(it.address) },
                 bcc = draftFields.recipientsBcc.value.map { Valid(it.address) },
-                subject = draftFieldsWithoutRecipients.subject,
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
                 warning = Effect.empty()
@@ -580,7 +576,6 @@ class ComposerReducerTest(
                 to = draftFieldsWithoutRecipients.recipientsTo.value.map { Valid(it.address) },
                 cc = draftFieldsWithoutRecipients.recipientsCc.value.map { Valid(it.address) },
                 bcc = draftFieldsWithoutRecipients.recipientsBcc.value.map { Valid(it.address) },
-                subject = draftFieldsWithoutRecipients.subject,
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
                 error = Effect.empty(),
@@ -688,13 +683,11 @@ class ComposerReducerTest(
             name = "Should update state to request confirmation for sending without subject",
             currentState = aSubmittableState(
                 messageId,
-                subject = Subject(""),
                 confirmSendingWithoutSubject = Effect.empty()
             ),
             operation = ComposerEvent.ConfirmEmptySubject,
             expectedState = aSubmittableState(
                 messageId,
-                subject = Subject(""),
                 confirmSendingWithoutSubject = Effect.of(Unit)
             )
         )
@@ -703,13 +696,11 @@ class ComposerReducerTest(
             name = "Should update state to confirm sending without subject",
             currentState = aSubmittableState(
                 messageId,
-                subject = Subject(""),
                 confirmSendingWithoutSubject = Effect.of(Unit)
             ),
             operation = ComposerAction.ConfirmSendingWithoutSubject,
             expectedState = aSubmittableState(
                 messageId,
-                subject = Subject(""),
                 confirmSendingWithoutSubject = Effect.empty(),
                 closeComposerWithMessageSending = Effect.of(Unit)
             )
@@ -719,14 +710,12 @@ class ComposerReducerTest(
             name = "Should update state to reject sending without subject",
             currentState = aSubmittableState(
                 messageId,
-                subject = Subject(""),
                 confirmSendingWithoutSubject = Effect.of(Unit),
                 changeFocusToField = Effect.empty()
             ),
             operation = ComposerAction.RejectSendingWithoutSubject,
             expectedState = aSubmittableState(
                 messageId,
-                subject = Subject(""),
                 confirmSendingWithoutSubject = Effect.empty(),
                 changeFocusToField = Effect.of(FocusedFieldType.SUBJECT)
             )
@@ -835,7 +824,6 @@ class ComposerReducerTest(
             cc: List<RecipientUiModel> = emptyList(),
             bcc: List<RecipientUiModel> = emptyList(),
             draftBody: String = "",
-            subject: Subject = Subject(""),
             draftDisplayBodyUiModel: DraftDisplayBodyUiModel = DraftDisplayBodyUiModel(""),
             recipientValidationError: Effect<TextUiModel> = Effect.empty(),
             error: Effect<TextUiModel> = Effect.empty(),
@@ -854,7 +842,6 @@ class ComposerReducerTest(
                 to = to,
                 cc = cc,
                 bcc = bcc,
-                subject = subject.value,
                 displayBody = draftDisplayBodyUiModel,
                 body = draftBody
             ),
@@ -895,7 +882,6 @@ class ComposerReducerTest(
             changeSenderBottomSheetVisibility: Effect<Boolean> = Effect.empty(),
             draftBody: String = "",
             draftDisplayBodyUiModel: DraftDisplayBodyUiModel = DraftDisplayBodyUiModel(""),
-            subject: Subject = Subject(""),
             closeComposer: Effect<Unit> = Effect.empty(),
             closeComposerWithDraftSaved: Effect<Unit> = Effect.empty(),
             isLoading: Boolean = false,
@@ -911,7 +897,6 @@ class ComposerReducerTest(
                 to = to,
                 cc = cc,
                 bcc = bcc,
-                subject = subject.value,
                 displayBody = draftDisplayBodyUiModel,
                 body = draftBody
             ),

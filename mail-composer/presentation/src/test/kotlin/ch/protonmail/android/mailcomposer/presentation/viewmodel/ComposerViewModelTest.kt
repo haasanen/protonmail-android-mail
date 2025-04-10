@@ -1024,7 +1024,6 @@ class ComposerViewModelTest {
             expectedDraftFields.recipientsTo.value.map { RecipientUiModel.Valid(it.address) },
             emptyList(),
             emptyList(),
-            expectedDraftFields.subject.value,
             expectedDisplayBody,
             expectedDraftFields.body.value
         )
@@ -1057,7 +1056,6 @@ class ComposerViewModelTest {
             expectedDraftFields.recipientsTo.value.map { RecipientUiModel.Valid(it.address) },
             emptyList(),
             emptyList(),
-            expectedDraftFields.subject.value,
             expectedDisplayBody,
             expectedDraftFields.body.value
         )

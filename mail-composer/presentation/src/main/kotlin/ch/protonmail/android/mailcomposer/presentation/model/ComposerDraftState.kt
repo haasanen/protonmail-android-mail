@@ -69,7 +69,6 @@ data class ComposerDraftState(
                 to = to,
                 cc = cc,
                 bcc = bcc,
-                subject = "",
                 displayBody = DraftDisplayBodyUiModel(""),
                 body = ""
             ),
@@ -109,7 +108,6 @@ data class ComposerFields(
     val to: List<RecipientUiModel>,
     val cc: List<RecipientUiModel>,
     val bcc: List<RecipientUiModel>,
-    val subject: String,
     val displayBody: DraftDisplayBodyUiModel,
     val body: String
 )

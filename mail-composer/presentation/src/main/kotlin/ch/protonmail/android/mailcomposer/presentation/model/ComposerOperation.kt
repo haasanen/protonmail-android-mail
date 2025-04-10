@@ -23,7 +23,6 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
-import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -73,7 +72,6 @@ sealed interface ComposerEvent : ComposerOperation {
     data class OnMessagePasswordUpdated(val messagePassword: MessagePassword?) : ComposerEvent
     data class OnMessageExpirationTimeUpdated(val messageExpirationTime: MessageExpirationTime?) : ComposerEvent
     data class ConfirmSendExpiringMessageToExternalRecipients(val externalRecipients: List<Recipient>) : ComposerEvent
-    data class SubjectChanged(val subject: Subject) : ComposerEvent
     data class RecipientsToChanged(val recipients: List<RecipientUiModel>) : ComposerEvent
     data class RecipientsCcChanged(val recipients: List<RecipientUiModel>) : ComposerEvent
     data class RecipientsBccChanged(val recipients: List<RecipientUiModel>) : ComposerEvent

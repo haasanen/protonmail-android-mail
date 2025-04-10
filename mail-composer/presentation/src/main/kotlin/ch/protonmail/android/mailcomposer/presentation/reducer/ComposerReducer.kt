@@ -23,7 +23,6 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
-import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
@@ -153,7 +152,6 @@ class ComposerReducer @Inject constructor(
         is ComposerEvent.ConfirmSendExpiringMessageToExternalRecipients -> currentState.copy(
             confirmSendExpiringMessage = Effect.of(this.externalRecipients)
         )
-        is ComposerEvent.SubjectChanged -> updateSubjectTo(currentState, this.subject)
         is ComposerEvent.RecipientsBccChanged -> updateRecipientsBcc(currentState, this.recipients)
         is ComposerEvent.RecipientsCcChanged -> updateRecipientsCc(currentState, this.recipients)
         is ComposerEvent.RecipientsToChanged -> updateRecipientsTo(currentState, this.recipients)
@@ -174,7 +172,6 @@ class ComposerReducer @Inject constructor(
         return currentState.copy(
             fields = currentState.fields.copy(
                 sender = SenderUiModel(draftUiModel.draftFields.sender.value),
-                subject = draftUiModel.draftFields.subject.value,
                 body = draftUiModel.draftFields.body.value,
                 displayBody = draftUiModel.draftDisplayBodyUiModel,
                 to = validToRecipients,
@@ -225,9 +222,6 @@ class ComposerReducer @Inject constructor(
 
     private fun updateDraftBodyTo(currentState: ComposerDraftState, draftBody: DraftBody): ComposerDraftState =
         currentState.copy(fields = currentState.fields.copy(body = draftBody.value))
-
-    private fun updateSubjectTo(currentState: ComposerDraftState, subject: Subject) =
-        currentState.copy(fields = currentState.fields.copy(subject = subject.value))
 
     private fun updateStateForOpenWithMessageAction(
         currentState: ComposerDraftState,

@@ -189,7 +189,7 @@ class ComposerViewModel @AssistedInject constructor(
 
     private fun observeComposerSubject() {
         snapshotFlow { subjectTextField.text }
-            .onEach { emitNewStateFor(onSubjectChanged(Subject(it.toString().stripNewLines()))) }
+            .onEach { onSubjectChanged(Subject(it.toString().stripNewLines())) }
             .launchIn(viewModelScope)
     }
 
@@ -486,13 +486,11 @@ class ComposerViewModel @AssistedInject constructor(
         currentValidRecipientsBcc()
     )
 
-    private suspend fun onSubjectChanged(subject: Subject): ComposerOperation = storeDraftWithSubject(subject).fold(
-        ifLeft = {
+    private suspend fun onSubjectChanged(subject: Subject) = storeDraftWithSubject(subject)
+        .onLeft {
             Timber.e("Store draft ${currentMessageId()} with new subject $subject failed")
-            ComposerEvent.ErrorStoringDraftSubject
-        },
-        ifRight = { ComposerEvent.SubjectChanged(subject) }
-    )
+            emitNewStateFor(ComposerEvent.ErrorStoringDraftSubject)
+        }
 
     private suspend fun onDraftBodyChanged(action: ComposerAction.DraftBodyChanged) {
         emitNewStateFor(ComposerAction.DraftBodyChanged(action.draftBody))
@@ -504,7 +502,7 @@ class ComposerViewModel @AssistedInject constructor(
 
     private suspend fun primaryUserId() = primaryUserId.first()
 
-    private fun currentSubject() = Subject(state.value.fields.subject)
+    private fun currentSubject() = Subject(subjectTextField.text.toString())
 
     private fun currentDraftBody() = DraftBody(state.value.fields.body)
 
