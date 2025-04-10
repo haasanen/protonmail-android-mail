@@ -57,6 +57,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateBccRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateCcRecipients
+import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients2
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateToRecipients
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
@@ -66,6 +67,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.RecipientsState
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
@@ -74,6 +76,7 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.FormatMessageSend
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
@@ -105,6 +108,7 @@ import kotlin.time.Duration
 class ComposerViewModel @AssistedInject constructor(
     private val storeDraftWithBody: StoreDraftWithBody,
     private val storeDraftWithSubject: StoreDraftWithSubject,
+    private val updateRecipients2: UpdateRecipients2,
     private val updateToRecipients: UpdateToRecipients,
     private val updateCcRecipients: UpdateCcRecipients,
     private val updateBccRecipients: UpdateBccRecipients,
@@ -179,11 +183,7 @@ class ComposerViewModel @AssistedInject constructor(
 
     private fun observeComposerRecipients() {
         recipientsStateManager.recipients
-            .onEach { recipients ->
-                emitNewStateFor(onToChanged(recipients.toRecipients))
-                emitNewStateFor(onCcChanged(recipients.ccRecipients))
-                emitNewStateFor(onBccChanged(recipients.bccRecipients))
-            }
+            .onEach { recipients -> onRecipientsChanged(recipients) }
             .launchIn(viewModelScope)
     }
 
@@ -538,6 +538,25 @@ class ComposerViewModel @AssistedInject constructor(
     }
 
     private suspend fun contactsOrEmpty() = getContacts(primaryUserId()).getOrElse { emptyList() }
+
+    private suspend fun onRecipientsChanged(recipients: RecipientsState) {
+        val contacts = contactsOrEmpty()
+
+        fun List<RecipientUiModel>.toRecipients(): List<Recipient> = this
+            .filterIsInstance<RecipientUiModel.Valid>()
+            .map { uiModel ->
+                participantMapper.recipientUiModelToParticipant(uiModel, contacts)
+            }
+
+        updateRecipients2(
+            recipients.toRecipients.toRecipients(),
+            recipients.ccRecipients.toRecipients(),
+            recipients.bccRecipients.toRecipients()
+        ).fold(
+            ifLeft = { emitNewStateFor(ComposerEvent.ErrorStoringDraftRecipients) },
+            ifRight = { emitNewStateFor(ComposerEvent.RecipientsUpdated(recipientsStateManager.hasValidRecipients())) }
+        )
+    }
 
     private suspend fun onToChanged(toRecipients: List<RecipientUiModel>): ComposerOperation {
         val contacts = contactsOrEmpty()

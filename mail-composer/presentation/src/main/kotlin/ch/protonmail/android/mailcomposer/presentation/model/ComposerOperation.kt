@@ -75,6 +75,7 @@ sealed interface ComposerEvent : ComposerOperation {
     data class RecipientsToChanged(val recipients: List<RecipientUiModel>) : ComposerEvent
     data class RecipientsCcChanged(val recipients: List<RecipientUiModel>) : ComposerEvent
     data class RecipientsBccChanged(val recipients: List<RecipientUiModel>) : ComposerEvent
+    data class RecipientsUpdated(val hasValidRecipients: Boolean) : ComposerEvent
 
     data object ErrorLoadingDefaultSenderAddress : ComposerEvent
     data object ErrorFreeUserCannotChangeSender : ComposerEvent

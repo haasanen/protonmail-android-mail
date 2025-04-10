@@ -56,6 +56,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateBccRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateCcRecipients
+import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients2
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateToRecipients
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
@@ -138,6 +139,7 @@ class ComposerViewModelTest {
     private val storeDraftWithSubjectMock = mockk<StoreDraftWithSubject> {
         coEvery { this@mockk.invoke(any()) } returns Unit.right()
     }
+    private val updateRecipients = mockk<UpdateRecipients2>()
     private val updateToRecipients = mockk<UpdateToRecipients>()
     private val updateCcRecipients = mockk<UpdateCcRecipients>()
     private val updateBccRecipients = mockk<UpdateBccRecipients>()
@@ -178,6 +180,7 @@ class ComposerViewModelTest {
         ComposerViewModel(
             storeDraftWithBodyMock,
             storeDraftWithSubjectMock,
+            updateRecipients,
             updateToRecipients,
             updateCcRecipients,
             updateBccRecipients,

@@ -155,6 +155,7 @@ class ComposerReducer @Inject constructor(
         is ComposerEvent.RecipientsBccChanged -> updateRecipientsBcc(currentState, this.recipients)
         is ComposerEvent.RecipientsCcChanged -> updateRecipientsCc(currentState, this.recipients)
         is ComposerEvent.RecipientsToChanged -> updateRecipientsTo(currentState, this.recipients)
+        is ComposerEvent.RecipientsUpdated -> updateRecipients(currentState, hasValidRecipients)
     }
 
     private fun updateComposerFieldsState(
@@ -356,6 +357,8 @@ class ComposerReducer @Inject constructor(
             isSubmittable = allValid && notEmpty
         )
     }
+    private fun updateRecipients(currentState: ComposerDraftState, hasValidRecipients: Boolean) =
+        currentState.copy(isSubmittable = hasValidRecipients)
 
     private fun hasDuplicates(
         capturedToDuplicates: CleanedRecipients,
