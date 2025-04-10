@@ -140,10 +140,6 @@ fun MessageBodyWebView(
         }
     }
 
-    ConsumableLaunchedEffect(messageBodyUiModel.printEffect) {
-        webView?.let { actions.onPrint(messageId) }
-    }
-
     val client = remember(messageBodyUiModel.shouldShowRemoteContent, messageBodyUiModel.shouldShowEmbeddedImages) {
         object : AccompanistWebViewClient() {
 

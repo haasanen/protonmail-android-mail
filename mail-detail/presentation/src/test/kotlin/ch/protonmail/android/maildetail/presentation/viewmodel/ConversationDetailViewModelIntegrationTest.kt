@@ -98,7 +98,6 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteSta
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Collapsed
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanded
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanding
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ExpandMessage
@@ -120,7 +119,6 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
-import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
@@ -180,10 +178,8 @@ import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkStatic
 import io.mockk.verify
@@ -319,7 +315,6 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery { this@mockk.invoke(userId) } returns true
     }
     private val isProtonCalendarInstalled = mockk<IsProtonCalendarInstalled>()
-    private val printMessage = mockk<PrintMessage>()
     private val markMessageAsUnread = mockk<MarkMessageAsUnread>()
     private val moveMessage = mockk<MoveMessage>()
     private val deleteMessages = mockk<DeleteMessages>()
@@ -1638,106 +1633,6 @@ class ConversationDetailViewModelIntegrationTest {
     }
 
     @Test
-    fun `emit the correct state when printing the message has been requested`() = runTest {
-        // Given
-        val messages = ConversationMessages(
-            nonEmptyListOf(
-                MessageSample.AugWeatherForecast,
-                MessageSample.Invoice,
-                MessageSample.EmptyDraft
-            ),
-            MessageSample.AugWeatherForecast.messageId
-        )
-        coEvery { observeConversationMessages(userId, any(), any()) } returns flowOf(messages.right())
-
-        // When
-        val viewModel = buildConversationDetailViewModel()
-
-        viewModel.submit(
-            ExpandMessage(
-                messageIdUiModelMapper.toUiModel(MessageSample.Invoice.messageId)
-            )
-        )
-
-        viewModel.state.test {
-            skipItems(4)
-
-            viewModel.submit(
-                ConversationDetailViewAction.PrintRequested(
-                    MessageSample.Invoice.messageId
-                )
-            )
-
-            // then
-            val item = awaitItem()
-
-            val actualBottomSheetVisibilityEffect = item.bottomSheetState?.bottomSheetVisibilityEffect
-            assertIs<Effect<BottomSheetVisibilityEffect.Hide>>(actualBottomSheetVisibilityEffect)
-
-            val messagesState = item.messagesState as ConversationDetailsMessagesState.Data
-            val expandedMessage = messagesState.messages.find {
-                it.messageId.id == MessageSample.Invoice.messageId.id
-            } as Expanded
-            val actual = expandedMessage.messageBodyUiModel.printEffect
-            assertEquals(Effect.of(Unit), actual)
-
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `should call the print message use case in order to print a message`() = runTest {
-        // Given
-        val context = mockk<Context>()
-        val messages = ConversationMessages(
-            nonEmptyListOf(
-                MessageSample.AugWeatherForecast,
-                MessageSample.Invoice,
-                MessageSample.EmptyDraft
-            ),
-            MessageSample.AugWeatherForecast.messageId
-        )
-        coEvery { observeConversationMessages(userId, any(), any()) } returns flowOf(messages.right())
-        every { printMessage(any(), any(), any(), any(), any(), any()) } just runs
-
-        // When
-        val viewModel = buildConversationDetailViewModel()
-
-        viewModel.submit(
-            ExpandMessage(
-                messageIdUiModelMapper.toUiModel(MessageSample.Invoice.messageId)
-            )
-        )
-
-        viewModel.state.test {
-            skipItems(4)
-
-            viewModel.submit(
-                ConversationDetailViewAction.Print(context, MessageSample.Invoice.messageId)
-            )
-
-            // then
-            val conversationState = viewModel.state.value.conversationState as ConversationDetailMetadataState.Data
-            val messagesState = viewModel.state.value.messagesState as ConversationDetailsMessagesState.Data
-            val messageState = messagesState.messages.find {
-                it.messageId.id == MessageSample.Invoice.messageId.id
-            } as Expanded
-            verify {
-                printMessage(
-                    context,
-                    conversationState.conversationUiModel.subject,
-                    messageState.messageDetailHeaderUiModel,
-                    messageState.messageBodyUiModel,
-                    messageState.expandCollapseMode,
-                    viewModel::loadEmbeddedImage
-                )
-            }
-
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
     fun `should close bottom sheet, collapse message and call use case when marking a message as unread`() = runTest {
         // Given
         val messages = ConversationMessages(
@@ -2224,7 +2119,6 @@ class ConversationDetailViewModelIntegrationTest {
         reportPhishingMessage = report,
         isProtonCalendarInstalled = protonCalendarInstalled,
         networkManager = networkMgmt,
-        printMessage = printMessage,
         markMessageAsUnread = markMessageAsUnread,
         findContactByEmail = findContactByEmailAddress,
         getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,

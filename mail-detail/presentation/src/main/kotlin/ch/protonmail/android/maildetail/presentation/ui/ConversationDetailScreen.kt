@@ -297,7 +297,7 @@ fun ConversationDetailScreen(
                         onDelete = { viewModel.submit(ConversationDetailViewAction.DeleteMessageRequested(it)) },
                         onMoveToSpam = { viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Spam(it)) },
                         onMove = { viewModel.submit(ConversationDetailViewAction.RequestMessageMoveToBottomSheet(it)) },
-                        onPrint = { viewModel.submit(ConversationDetailViewAction.PrintRequested(it)) },
+                        onPrint = { actions.showFeatureMissingSnackbar() },
                         onReportPhishing = { viewModel.submit(ConversationDetailViewAction.ReportPhishing(it)) },
 
                         onMarkReadConversation = { viewModel.submit(ConversationDetailViewAction.MarkRead) },
@@ -440,9 +440,7 @@ fun ConversationDetailScreen(
                 onOpenInProtonCalendar = {
                     viewModel.submit(ConversationDetailViewAction.OpenInProtonCalendar(MessageId(it.id)))
                 },
-                onPrint = { messageId ->
-                    viewModel.submit(ConversationDetailViewAction.Print(context, messageId))
-                },
+                onPrint = { _ -> actions.showFeatureMissingSnackbar() },
                 onAvatarClicked = { participantUiModel, avatarUiModel ->
                     viewModel.submit(
                         ConversationDetailViewAction.RequestContactActionsBottomSheet(

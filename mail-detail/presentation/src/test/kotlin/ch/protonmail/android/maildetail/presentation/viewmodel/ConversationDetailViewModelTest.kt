@@ -86,7 +86,6 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
-import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
@@ -289,7 +288,6 @@ class ConversationDetailViewModelTest {
     private val networkManager = mockk<NetworkManager>()
     private val reportPhishingMessage = mockk<ReportPhishingMessage>()
     private val isProtonCalendarInstalled = mockk<IsProtonCalendarInstalled>()
-    private val printMessage = mockk<PrintMessage>()
     private val markMessageAsUnread = mockk<MarkMessageAsUnread>()
     private val getMoreActionsBottomSheetData = mockk<GetMoreActionsBottomSheetData>()
     private val moveMessage = mockk<MoveMessage>()
@@ -339,7 +337,6 @@ class ConversationDetailViewModelTest {
             reportPhishingMessage = reportPhishingMessage,
             isProtonCalendarInstalled = isProtonCalendarInstalled,
             networkManager = networkManager,
-            printMessage = printMessage,
             markMessageAsUnread = markMessageAsUnread,
             findContactByEmail = findContactByEmail,
             getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,

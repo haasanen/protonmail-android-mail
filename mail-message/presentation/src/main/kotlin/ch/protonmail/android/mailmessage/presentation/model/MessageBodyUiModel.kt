@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmessage.presentation.model
 
-import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 
@@ -34,8 +33,7 @@ data class MessageBodyUiModel(
     val shouldShowExpandCollapseButton: Boolean,
     val shouldShowOpenInProtonCalendar: Boolean,
     val attachments: AttachmentGroupUiModel?,
-    val viewModePreference: ViewModePreference,
-    val printEffect: Effect<Unit>
+    val viewModePreference: ViewModePreference
 )
 
 enum class MimeTypeUiModel(val value: String) {

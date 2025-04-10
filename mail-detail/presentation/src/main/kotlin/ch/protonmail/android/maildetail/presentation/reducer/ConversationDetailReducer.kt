@@ -143,7 +143,6 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailEvent.ReportPhishingRequested,
                 is ConversationDetailViewAction.DismissBottomSheet,
                 is ConversationDetailViewAction.SwitchViewMode,
-                is ConversationDetailViewAction.PrintRequested,
                 is ConversationDetailViewAction.MarkMessageUnread,
                 is ConversationDetailViewAction.DeleteConfirmed,
                 is ConversationDetailViewAction.DeleteMessageConfirmed,

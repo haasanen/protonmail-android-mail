@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.maildetail.presentation.model
 
-import android.content.Context
 import android.net.Uri
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
@@ -220,15 +219,6 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
         val messageId: MessageId,
         val viewModePreference: ViewModePreference
     ) : ConversationDetailViewAction, AffectingBottomSheet, AffectingMessages
-
-    data class PrintRequested(
-        val messageId: MessageId
-    ) : ConversationDetailViewAction, AffectingBottomSheet, AffectingMessages
-
-    data class Print(
-        val context: Context,
-        val messageId: MessageId
-    ) : ConversationDetailViewAction
 
     data class MarkMessageUnread(
         val messageId: MessageId

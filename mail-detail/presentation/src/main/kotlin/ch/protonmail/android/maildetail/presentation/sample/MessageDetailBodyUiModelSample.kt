@@ -18,13 +18,11 @@
 
 package ch.protonmail.android.maildetail.presentation.sample
 
-import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
-import me.proton.core.user.domain.entity.UserAddress
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 
 object MessageDetailBodyUiModelSample {
 
@@ -77,8 +75,7 @@ object MessageDetailBodyUiModelSample {
         shouldShowEmbeddedImagesBanner: Boolean = false,
         shouldShowRemoteContentBanner: Boolean = false,
         shouldShowOpenInProtonCalendar: Boolean = false,
-        attachments: AttachmentGroupUiModel? = null,
-        userAddress: UserAddress? = null
+        attachments: AttachmentGroupUiModel? = null
     ) = MessageBodyUiModel(
         messageId = messageId,
         messageBody = messageBody,
@@ -91,7 +88,6 @@ object MessageDetailBodyUiModelSample {
         shouldShowExpandCollapseButton = false,
         shouldShowOpenInProtonCalendar = shouldShowOpenInProtonCalendar,
         attachments = attachments,
-        viewModePreference = ViewModePreference.ThemeDefault,
-        printEffect = Effect.empty()
+        viewModePreference = ViewModePreference.ThemeDefault
     )
 }

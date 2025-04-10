@@ -224,7 +224,6 @@ class ConversationDetailReducerTest(
             ConversationDetailViewAction.SwitchViewMode(
                 MessageId(messageId.id), ViewModePreference.LightMode
             ) affects listOf(BottomSheet, Messages),
-            ConversationDetailViewAction.PrintRequested(MessageId(messageId.id)) affects listOf(BottomSheet, Messages),
             ConversationDetailViewAction.MarkMessageUnread(MessageId(messageId.id)) affects listOf(BottomSheet),
             ConversationDetailViewAction.RequestMessageLabelAsBottomSheet(MessageId(messageId.id)) affects BottomSheet,
             ConversationDetailViewAction.MoveMessage.System.Trash(MessageId(messageId.id)) affects listOf(BottomSheet),

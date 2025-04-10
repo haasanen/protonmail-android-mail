@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
-import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.maildetail.domain.usecase.DoesMessageBodyHaveEmbeddedImages
 import ch.protonmail.android.maildetail.domain.usecase.DoesMessageBodyHaveRemoteContent
 import ch.protonmail.android.maildetail.domain.usecase.ShouldShowEmbeddedImages
@@ -139,8 +138,7 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = false,
             shouldShowOpenInProtonCalendar = false,
             attachments = null,
-            viewModePreference = ViewModePreference.ThemeDefault,
-            printEffect = Effect.empty()
+            viewModePreference = ViewModePreference.ThemeDefault
         )
 
         // When
@@ -185,8 +183,7 @@ class MessageBodyUiModelMapperTest {
                     AttachmentMetadataUiModelSamples.DocumentWithMultipleDots
                 )
             ),
-            viewModePreference = ViewModePreference.ThemeDefault,
-            printEffect = Effect.empty()
+            viewModePreference = ViewModePreference.ThemeDefault
         )
 
         // When
@@ -226,8 +223,7 @@ class MessageBodyUiModelMapperTest {
                     AttachmentMetadataUiModelSamples.Calendar
                 )
             ),
-            viewModePreference = ViewModePreference.ThemeDefault,
-            printEffect = Effect.empty()
+            viewModePreference = ViewModePreference.ThemeDefault
         )
 
         // When
@@ -267,8 +263,7 @@ class MessageBodyUiModelMapperTest {
                         AttachmentMetadataUiModelSamples.InvoiceWithBinaryContentType
                     )
                 ),
-                viewModePreference = ViewModePreference.ThemeDefault,
-                printEffect = Effect.empty()
+                viewModePreference = ViewModePreference.ThemeDefault
             )
 
             every {
@@ -314,8 +309,7 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = false,
             shouldShowOpenInProtonCalendar = false,
             attachments = null,
-            viewModePreference = ViewModePreference.ThemeDefault,
-            printEffect = Effect.empty()
+            viewModePreference = ViewModePreference.ThemeDefault
         )
 
         // When
@@ -347,8 +341,7 @@ class MessageBodyUiModelMapperTest {
                 shouldShowExpandCollapseButton = false,
                 shouldShowOpenInProtonCalendar = false,
                 attachments = null,
-                viewModePreference = ViewModePreference.ThemeDefault,
-                printEffect = Effect.empty()
+                viewModePreference = ViewModePreference.ThemeDefault
             )
             every { doesMessageBodyHaveRemoteContent(messageBody) } returns true
             coEvery { shouldShowRemoteContent(UserIdTestData.userId) } returns true
@@ -382,8 +375,7 @@ class MessageBodyUiModelMapperTest {
                 shouldShowExpandCollapseButton = false,
                 shouldShowOpenInProtonCalendar = false,
                 attachments = null,
-                viewModePreference = ViewModePreference.ThemeDefault,
-                printEffect = Effect.empty()
+                viewModePreference = ViewModePreference.ThemeDefault
             )
             every { doesMessageBodyHaveRemoteContent(messageBody) } returns true
             coEvery { shouldShowRemoteContent(UserIdTestData.userId) } returns false
@@ -417,8 +409,7 @@ class MessageBodyUiModelMapperTest {
                 shouldShowExpandCollapseButton = false,
                 shouldShowOpenInProtonCalendar = false,
                 attachments = null,
-                viewModePreference = ViewModePreference.ThemeDefault,
-                printEffect = Effect.empty()
+                viewModePreference = ViewModePreference.ThemeDefault
             )
             every { doesMessageBodyHaveEmbeddedImages(any()) } returns true
             coEvery { shouldShowEmbeddedImages(UserIdTestData.userId) } returns true
@@ -452,8 +443,7 @@ class MessageBodyUiModelMapperTest {
                 shouldShowExpandCollapseButton = false,
                 shouldShowOpenInProtonCalendar = false,
                 attachments = null,
-                viewModePreference = ViewModePreference.ThemeDefault,
-                printEffect = Effect.empty()
+                viewModePreference = ViewModePreference.ThemeDefault
             )
             every { doesMessageBodyHaveEmbeddedImages(any()) } returns true
             coEvery { shouldShowEmbeddedImages(UserIdTestData.userId) } returns false
@@ -482,8 +472,7 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = false,
             shouldShowOpenInProtonCalendar = false,
             attachments = null,
-            viewModePreference = ViewModePreference.ThemeDefault,
-            printEffect = Effect.empty()
+            viewModePreference = ViewModePreference.ThemeDefault
         )
 
         // When
@@ -518,8 +507,7 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = true,
             shouldShowOpenInProtonCalendar = false,
             attachments = null,
-            viewModePreference = ViewModePreference.ThemeDefault,
-            printEffect = Effect.empty()
+            viewModePreference = ViewModePreference.ThemeDefault
         )
 
         // When
@@ -550,8 +538,7 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = false,
             shouldShowOpenInProtonCalendar = false,
             attachments = null,
-            viewModePreference = ViewModePreference.DarkMode,
-            printEffect = Effect.empty()
+            viewModePreference = ViewModePreference.DarkMode
         )
 
         every { doesMessageBodyHaveEmbeddedImages(any()) } returns true

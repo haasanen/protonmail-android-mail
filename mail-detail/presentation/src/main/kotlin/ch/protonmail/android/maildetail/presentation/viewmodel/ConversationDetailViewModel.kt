@@ -19,7 +19,6 @@
 package ch.protonmail.android.maildetail.presentation.viewmodel
 
 import java.util.concurrent.CopyOnWriteArrayList
-import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -60,7 +59,6 @@ import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.mapper.MessageIdUiModelMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
@@ -83,7 +81,6 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
-import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -182,7 +179,6 @@ class ConversationDetailViewModel @Inject constructor(
     private val reportPhishingMessage: ReportPhishingMessage,
     private val isProtonCalendarInstalled: IsProtonCalendarInstalled,
     private val networkManager: NetworkManager,
-    private val printMessage: PrintMessage,
     private val markMessageAsUnread: MarkMessageAsUnread,
     private val findContactByEmail: FindContactByEmail,
     private val getMoreActionsBottomSheetData: GetMoreActionsBottomSheetData,
@@ -292,7 +288,6 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.ReportPhishing -> handleReportPhishing(action)
             is ConversationDetailViewAction.ReportPhishingConfirmed -> handleReportPhishingConfirmed(action)
             is ConversationDetailViewAction.OpenInProtonCalendar -> handleOpenInProtonCalendar(action)
-            is ConversationDetailViewAction.Print -> handlePrint(action.context, action.messageId)
             is ConversationDetailViewAction.MarkMessageUnread -> handleMarkMessageUnread(action)
             is ConversationDetailViewAction.MoveMessage -> handleMoveMessage(action)
 
@@ -313,8 +308,7 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.LoadRemoteAndEmbeddedContent,
             is ConversationDetailViewAction.LoadRemoteContent,
             is ConversationDetailViewAction.ReportPhishingDismissed,
-            is ConversationDetailViewAction.SwitchViewMode,
-            is ConversationDetailViewAction.PrintRequested -> directlyHandleViewAction(action)
+            is ConversationDetailViewAction.SwitchViewMode -> directlyHandleViewAction(action)
 
             is ConversationDetailViewAction.OnAvatarImageLoadRequested ->
                 handleOnAvatarImageLoadRequested(action.avatar)
@@ -1064,28 +1058,6 @@ class ConversationDetailViewModel @Inject constructor(
                 emitNewStateFrom(ConversationDetailEvent.HandleOpenProtonCalendarRequest(intent))
             }
         )
-    }
-
-    private fun handlePrint(context: Context, messageId: MessageId) {
-        val conversationState = state.value.conversationState
-        val messagesState = state.value.messagesState
-        if (
-            conversationState is ConversationDetailMetadataState.Data &&
-            messagesState is ConversationDetailsMessagesState.Data
-        ) {
-            messagesState.messages.find { it.messageId.id == messageId.id }?.let {
-                if (it is ConversationDetailMessageUiModel.Expanded) {
-                    printMessage(
-                        context,
-                        conversationState.conversationUiModel.subject,
-                        it.messageDetailHeaderUiModel,
-                        it.messageBodyUiModel,
-                        it.expandCollapseMode,
-                        this@ConversationDetailViewModel::loadEmbeddedImage
-                    )
-                }
-            }
-        }
     }
 
     private fun handleMarkMessageUnread(action: ConversationDetailViewAction.MarkMessageUnread) {
