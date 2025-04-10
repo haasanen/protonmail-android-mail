@@ -43,4 +43,7 @@ interface DraftRepository {
     suspend fun removeToRecipient(recipient: Recipient): Either<DataError, Unit>
     suspend fun removeCcRecipient(recipient: Recipient): Either<DataError, Unit>
     suspend fun removeBccRecipient(recipient: Recipient): Either<DataError, Unit>
+    suspend fun updateToRecipient(recipients: List<Recipient>): Either<DataError, Unit>
+    suspend fun updateCcRecipient(recipients: List<Recipient>): Either<DataError, Unit>
+    suspend fun updateBccRecipient(recipients: List<Recipient>): Either<DataError, Unit>
 }
