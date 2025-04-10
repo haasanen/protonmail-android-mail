@@ -47,6 +47,9 @@ import ch.protonmail.android.mailcomposer.presentation.ui.MessageBodyEditor
 import ch.protonmail.android.mailcomposer.presentation.ui.SenderEmailWithSelector
 import ch.protonmail.android.mailcomposer.presentation.ui.SubjectTextField
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.RecipientsViewModel
+import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
+import ch.protonmail.android.mailmessage.presentation.ui.AttachmentList
 import ch.protonmail.android.uicomponents.keyboardVisibilityAsState
 import timber.log.Timber
 
@@ -57,6 +60,7 @@ internal fun ComposerForm(
     recipientsStateManager: RecipientsStateManager,
     subjectTextField: TextFieldState,
     bodyInitialValue: DraftDisplayBodyUiModel,
+    attachments: AttachmentGroupUiModel,
     focusTextBody: Effect<Unit>,
     actions: ComposerForm.Actions,
     formHeightPx: Float,
@@ -135,6 +139,18 @@ internal fun ComposerForm(
                     )
                     MailDivider()
 
+                    if (attachments.attachments.isNotEmpty()) {
+                        AttachmentList(
+                            messageAttachmentsUiModel = attachments,
+                            actions = AttachmentList.Actions(
+                                onShowAllAttachments = { Timber.d("On show all attachments clicked") },
+                                onAttachmentClicked = { Timber.d("On attachment clicked: $it") },
+                                onAttachmentDeleteClicked = {
+                                    actions.onAttachmentRemoveRequested(it)
+                                }
+                            )
+                        )
+                    }
                 }
             }
 
@@ -162,6 +178,7 @@ internal object ComposerForm {
         val onBodyChanged: (String) -> Unit,
         val onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
         val onHeaderPositioned: (boundsInWindow: Rect, height: Float) -> Unit,
-        val onWebViewPositioned: (boundsInWindow: Rect) -> Unit
+        val onWebViewPositioned: (boundsInWindow: Rect) -> Unit,
+        val onAttachmentRemoveRequested: (AttachmentId) -> Unit
     )
 }

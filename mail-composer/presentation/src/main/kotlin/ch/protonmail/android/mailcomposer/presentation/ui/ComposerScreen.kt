@@ -84,7 +84,6 @@ import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.time.Duration
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
@@ -267,6 +266,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                         recipientsStateManager = recipientsStateManager,
                         subjectTextField = viewModel.subjectTextField,
                         bodyInitialValue = state.fields.displayBody,
+                        attachments = state.attachments,
                         focusTextBody = Effect.empty(),
                         formHeightPx = formHeightPx
                     )
