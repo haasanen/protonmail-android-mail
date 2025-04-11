@@ -69,11 +69,7 @@ import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.presentation.R
-import ch.protonmail.android.mailmessage.presentation.extension.getSecuredWebResourceResponse
 import ch.protonmail.android.mailmessage.presentation.extension.isEmbeddedImage
-import ch.protonmail.android.mailmessage.presentation.extension.isRemoteContent
-import ch.protonmail.android.mailmessage.presentation.extension.isRemoteUnsecuredContent
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.webview.MessageBodyWebViewOperation
@@ -88,7 +84,6 @@ import kotlinx.coroutines.delay
 fun MessageBodyWebView(
     modifier: Modifier = Modifier,
     messageBodyUiModel: MessageBodyUiModel,
-    bodyDisplayMode: MessageBodyExpandCollapseMode,
     webViewActions: MessageBodyWebView.Actions,
     onMessageBodyLoaded: (messageId: MessageId, height: Int) -> Unit = { _, _ -> },
     viewModel: MessageBodyWebViewViewModel = hiltViewModel()
@@ -96,11 +91,7 @@ fun MessageBodyWebView(
     val context = LocalContext.current
 
     val state = rememberWebViewStateWithHTMLData(
-        data = if (bodyDisplayMode == MessageBodyExpandCollapseMode.Collapsed) {
-            messageBodyUiModel.messageBodyWithoutQuote
-        } else {
-            messageBodyUiModel.messageBody
-        },
+        data = messageBodyUiModel.messageBody,
         mimeType = MimeType.Html.value
     )
 
@@ -140,7 +131,7 @@ fun MessageBodyWebView(
         }
     }
 
-    val client = remember(messageBodyUiModel.shouldShowRemoteContent, messageBodyUiModel.shouldShowEmbeddedImages) {
+    val client = remember(messageBodyUiModel.messageId) {
         object : AccompanistWebViewClient() {
 
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
@@ -151,24 +142,13 @@ fun MessageBodyWebView(
             }
 
             override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
-                return if (!messageBodyUiModel.shouldShowRemoteContent && request?.isRemoteContent() == true) {
-                    WebResourceResponse("", "", null)
-                } else if (messageBodyUiModel.shouldShowEmbeddedImages && request?.isEmbeddedImage() == true) {
+                return if (request?.isEmbeddedImage() == true) {
                     actions.loadEmbeddedImage(messageId, request.url.schemeSpecificPart)?.let {
                         WebResourceResponse(it.mimeType, "", ByteArrayInputStream(it.data))
                     }
-                } else if (request?.isRemoteUnsecuredContent() == true) {
-                    request.getSecuredWebResourceResponse()
                 } else {
                     super.shouldInterceptRequest(view, request)
                 }
-            }
-
-            override fun onLoadResource(view: WebView?, url: String?) {
-                if (!messageBodyUiModel.shouldShowRemoteContent && url?.isRemoteContent() == true) {
-                    return
-                }
-                super.onLoadResource(view, url)
             }
         }
     }
@@ -226,7 +206,7 @@ fun MessageBodyWebView(
                 client = client
             )
         }
-        if (bodyDisplayMode != MessageBodyExpandCollapseMode.NotApplicable) {
+        if (messageBodyUiModel.shouldShowExpandCollapseButton) {
             ExpandCollapseBodyButton(
                 modifier = Modifier.offset(x = ProtonDimens.Spacing.Standard),
                 onClick = { actions.onExpandCollapseButtonCLicked() }
@@ -316,8 +296,6 @@ private fun ExpandCollapseBodyButtonPreview() {
 
 
 object MessageBodyWebView {
-
-    const val PrintJobName = "Proton Mail Document"
 
     data class Actions(
         val onMessageBodyLinkClicked: (uri: Uri) -> Unit,

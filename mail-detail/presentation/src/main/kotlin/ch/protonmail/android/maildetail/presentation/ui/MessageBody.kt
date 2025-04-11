@@ -36,6 +36,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
+import ch.protonmail.android.design.compose.component.ProtonSolidButton
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilitiesProvider
@@ -43,15 +47,10 @@ import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageBodyState
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.ui.MessageBodyWebView
-import ch.protonmail.android.design.compose.component.ProtonSolidButton
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyMediumWeak
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 
 @Composable
 @Suppress("LongParameterList", "LongMethod")
@@ -59,8 +58,7 @@ fun MessageBody(
     modifier: Modifier = Modifier,
     messageBodyUiModel: MessageBodyUiModel,
     actions: MessageBody.Actions,
-    onMessageBodyLoaded: (messageId: MessageId, height: Int) -> Unit = { _, _ -> },
-    expandCollapseMode: MessageBodyExpandCollapseMode
+    onMessageBodyLoaded: (messageId: MessageId, height: Int) -> Unit = { _, _ -> }
 ) {
     val hasWebView = LocalDeviceCapabilitiesProvider.current.hasWebView
 
@@ -106,7 +104,6 @@ fun MessageBody(
         MessageBodyWebView(
             modifier = modifier,
             messageBodyUiModel = messageBodyUiModel,
-            bodyDisplayMode = expandCollapseMode,
             webViewActions = MessageBodyWebView.Actions(
                 onMessageBodyLinkClicked = actions.onMessageBodyLinkClicked,
                 onMessageBodyLinkLongClicked = {}, // Deferred init to MessageBodyWebView.

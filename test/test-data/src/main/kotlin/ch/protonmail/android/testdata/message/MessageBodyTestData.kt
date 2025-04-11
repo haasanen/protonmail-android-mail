@@ -40,7 +40,7 @@ object MessageBodyTestData {
     fun buildMessageBody(
         messageId: MessageId = MessageId(RAW_MESSAGE_ID),
         body: String = RAW_ENCRYPTED_MESSAGE_BODY,
-        mimeType: MimeType = MimeType.PlainText,
+        mimeType: MimeType = MimeType.PlainText
     ) = MessageBody(
         messageId = messageId,
         body = body,
