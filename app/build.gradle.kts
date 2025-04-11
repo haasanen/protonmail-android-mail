@@ -288,7 +288,6 @@ dependencies {
     androidTestImplementation(libs.proton.core.accountRecoveryTest)
     androidTestImplementation(libs.proton.core.authTest)
     androidTestImplementation(libs.proton.core.planTest)
-    androidTestImplementation(libs.proton.core.reportTest)
     androidTestImplementation(libs.proton.core.userRecoveryTest)
     androidTestImplementation(libs.proton.core.testRule)
     androidTestImplementation(project(":test:annotations"))

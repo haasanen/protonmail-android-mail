@@ -305,9 +305,5 @@
         <activity
             android:name="me.proton.core.presentation.ui.alert.ForceUpdateActivity"
             android:excludeFromRecents="true" />
-        <activity
-            android:name="me.proton.core.report.presentation.ui.BugReportActivity"
-            android:theme="@style/ProtonTheme.Mail"
-            tools:replace="android:theme" />
     </application>
 </manifest>

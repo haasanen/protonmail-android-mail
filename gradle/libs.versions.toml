@@ -228,8 +228,6 @@ proton-core-presentation = { module = "me.proton.core:presentation", version.ref
 proton-core-presentationCompose = { module = "me.proton.core:presentation-compose", version.ref = "proton-core" }
 proton-core-proguardRules = { module = "me.proton.core:proguard-rules", version.ref = "proton-core" }
 proton-core-push = { module = "me.proton.core:push", version.ref = "proton-core" }
-proton-core-report = { module = "me.proton.core:report", version.ref = "proton-core" }
-proton-core-reportTest = { module = "me.proton.core:report-test", version.ref = "proton-core" }
 proton-core-telemetry = { module = "me.proton.core:telemetry", version.ref = "proton-core" }
 proton-core-user = { module = "me.proton.core:user", version.ref = "proton-core" }
 proton-core-user-domain = { module = "me.proton.core:user-domain", version.ref = "proton-core" }
@@ -302,7 +300,6 @@ appLibs = [
     "proton-core-presentation",
     "proton-core-presentationCompose",
     "proton-core-push",
-    "proton-core-report",
     "proton-core-telemetry",
     "proton-core-user",
     "proton-core-userRecovery",
