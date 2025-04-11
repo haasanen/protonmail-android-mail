@@ -44,8 +44,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.proton.core.domain)
-
     implementation(project(":mail-settings:data"))
     implementation(project(":mail-settings:domain"))
     implementation(project(":mail-settings:presentation"))
@@ -56,5 +54,4 @@ dependencies {
 
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
-    implementation(libs.kotlin.coroutines.core)
 }

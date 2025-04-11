@@ -19,9 +19,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    kotlin("plugin.serialization")
-    id("org.jetbrains.kotlin.plugin.compose")
     id("app-config-plugin")
 }
 
@@ -43,10 +40,6 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
-    buildFeatures {
-        compose = true
-    }
-
     packaging {
         resources.excludes.add("META-INF/licenses/**")
         resources.excludes.add("META-INF/AL2.0")
@@ -55,8 +48,6 @@ android {
 }
 
 dependencies {
-    kapt(libs.bundles.app.annotationProcessors)
-
     implementation(libs.bundles.module.presentation)
     implementation(libs.androidx.paging.common)
     implementation(libs.androidx.paging.runtime)

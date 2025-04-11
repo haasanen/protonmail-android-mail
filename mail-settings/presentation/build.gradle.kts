@@ -55,18 +55,15 @@ android {
 }
 
 dependencies {
-    testImplementation(project(":test:utils"))
     kapt(libs.bundles.app.annotationProcessors)
     debugImplementation(libs.bundles.compose.debug)
 
     implementation(libs.bundles.module.presentation)
-    implementation(libs.jsoup)
     implementation(libs.accompanist.webview)
 
-    implementation(libs.proton.core.account)
     implementation(libs.proton.core.accountManager)
     implementation(libs.proton.core.key)
-    implementation(libs.proton.core.user)
+    implementation(libs.proton.core.user.domain)
     implementation(libs.proton.core.userSettings)
     implementation(libs.proton.core.mailSettings)
 
@@ -86,5 +83,6 @@ dependencies {
     testImplementation(libs.bundles.test)
     testImplementation(libs.proton.core.network)
     testImplementation(project(":test:test-data"))
+    testImplementation(project(":test:utils"))
     testImplementation(libs.proton.rust.core)
 }
