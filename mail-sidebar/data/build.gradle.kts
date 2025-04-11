@@ -19,8 +19,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    kotlin("plugin.serialization")
     id("app-config-plugin")
 }
 
@@ -41,14 +39,4 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
-}
-
-dependencies {
-    kapt(libs.bundles.app.annotationProcessors)
-
-    implementation(libs.bundles.module.data)
-    implementation(libs.androidx.appcompat)
-
-    testImplementation(libs.bundles.test)
-    testImplementation(project(":test:utils"))
 }

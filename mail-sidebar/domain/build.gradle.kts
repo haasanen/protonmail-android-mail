@@ -19,9 +19,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    kotlin("plugin.serialization")
-    id("dagger.hilt.android.plugin")
     id("app-config-plugin")
 }
 
@@ -42,9 +39,4 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
-}
-
-dependencies {
-    kapt(libs.bundles.app.annotationProcessors)
-    implementation(libs.dagger.hilt.android)
 }
