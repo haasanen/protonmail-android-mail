@@ -55,7 +55,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTi
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
-import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients2
+import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
@@ -105,7 +105,7 @@ import kotlin.time.Duration
 class ComposerViewModel @AssistedInject constructor(
     private val storeDraftWithBody: StoreDraftWithBody,
     private val storeDraftWithSubject: StoreDraftWithSubject,
-    private val updateRecipients2: UpdateRecipients2,
+    private val updateRecipients: UpdateRecipients,
     private val getContacts: GetContacts,
     private val participantMapper: ParticipantMapper,
     private val reducer: ComposerReducer,
@@ -542,7 +542,7 @@ class ComposerViewModel @AssistedInject constructor(
                 participantMapper.recipientUiModelToParticipant(uiModel, contacts)
             }
 
-        updateRecipients2(
+        updateRecipients(
             recipients.toRecipients.toRecipients(),
             recipients.ccRecipients.toRecipients(),
             recipients.bccRecipients.toRecipients()

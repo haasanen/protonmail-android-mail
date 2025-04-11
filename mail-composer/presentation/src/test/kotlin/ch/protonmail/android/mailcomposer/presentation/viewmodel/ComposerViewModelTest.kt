@@ -54,7 +54,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTi
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
-import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients2
+import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
@@ -136,7 +136,7 @@ class ComposerViewModelTest {
     private val storeDraftWithSubjectMock = mockk<StoreDraftWithSubject> {
         coEvery { this@mockk.invoke(any()) } returns Unit.right()
     }
-    private val updateRecipients = mockk<UpdateRecipients2>()
+    private val updateRecipients = mockk<UpdateRecipients>()
     private val sendMessageMock = mockk<SendMessage>()
     private val networkManagerMock = mockk<NetworkManager>()
     private val getContactsMock = mockk<GetContacts>()

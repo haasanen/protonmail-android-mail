@@ -25,7 +25,7 @@ import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import javax.inject.Inject
 
-class UpdateRecipients2 @Inject constructor(
+class UpdateRecipients @Inject constructor(
     private val draftRepository: DraftRepository
 ) {
 
