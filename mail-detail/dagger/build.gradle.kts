@@ -46,7 +46,6 @@ android {
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
-    implementation(libs.kotlin.coroutines.core)
 
     implementation(project(":mail-detail:data"))
     implementation(project(":mail-detail:domain"))
