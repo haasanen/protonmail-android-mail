@@ -19,8 +19,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    id("org.jetbrains.kotlin.plugin.compose")
     id("app-config-plugin")
 }
 
@@ -40,12 +38,6 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
-    }
-
-
-    buildFeatures {
-        compose = true
-        buildConfig = true
     }
 }
 
