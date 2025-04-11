@@ -38,12 +38,6 @@ interface RustDraftDataSource {
     suspend fun save(): Either<DataError, Unit>
     suspend fun saveSubject(subject: Subject): Either<DataError, Unit>
     suspend fun saveBody(body: DraftBody): Either<DataError, Unit>
-    suspend fun addToRecipient(recipient: Recipient): Either<DataError, Unit>
-    suspend fun addCcRecipient(recipient: Recipient): Either<DataError, Unit>
-    suspend fun addBccRecipient(recipient: Recipient): Either<DataError, Unit>
-    suspend fun removeToRecipient(recipient: Recipient): Either<DataError, Unit>
-    suspend fun removeCcRecipient(recipient: Recipient): Either<DataError, Unit>
-    suspend fun removeBccRecipient(recipient: Recipient): Either<DataError, Unit>
     suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>>
     suspend fun send(): Either<DataError, Unit>
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>

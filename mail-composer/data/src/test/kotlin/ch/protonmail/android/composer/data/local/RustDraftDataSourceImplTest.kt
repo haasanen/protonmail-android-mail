@@ -3,10 +3,10 @@ package ch.protonmail.android.composer.data.local
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.composer.data.local.RustDraftDataSourceImpl.Companion.InitialDelayForSendingStatusWorker
-import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
 import ch.protonmail.android.composer.data.usecase.OpenRustDraft
 import ch.protonmail.android.composer.data.usecase.RustDraftUndoSend
+import ch.protonmail.android.composer.data.worker.SendingStatusWorker
 import ch.protonmail.android.composer.data.wrapper.ComposerRecipientListWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
@@ -15,13 +15,11 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.Subject
-import ch.protonmail.android.composer.data.worker.SendingStatusWorker
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.testdata.composer.LocalComposerRecipientTestData
@@ -347,202 +345,6 @@ class RustDraftDataSourceImplTest {
     }
 
     @Test
-    fun `save to recipient calls rust recipient wrapper to set recipient`() = runTest {
-        // Given
-        val recipient = RecipientSample.Alice
-        val singleRecipient = recipient.toSingleRecipientEntry()
-        val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
-        val expectedDraftWrapper = expectDraftWrapperReturns(
-            toRecipientsWrapper = toRecipientsWrapperMock
-        )
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns Unit.right()
-        coEvery { toRecipientsWrapperMock.registerCallback(any()) } returns Unit
-
-        // When
-        val actual = dataSource.addToRecipient(recipient)
-
-        // Then
-        assertEquals(actual, Unit.right())
-    }
-
-    @Test
-    fun `save to recipient returns error when rust recipient wrapper call fails`() = runTest {
-        // Given
-        val recipient = RecipientSample.Alice
-        val singleRecipient = recipient.toSingleRecipientEntry()
-        val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
-        val expectedDraftWrapper = expectDraftWrapperReturns(
-            toRecipientsWrapper = toRecipientsWrapperMock
-        )
-        val expected = DataError.Local.SaveDraftError.DuplicateRecipient
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns expected.left()
-        coEvery { toRecipientsWrapperMock.registerCallback(any()) } returns Unit
-
-        // When
-        val actual = dataSource.addToRecipient(recipient)
-
-        // Then
-        assertEquals(actual, expected.left())
-    }
-
-    @Test
-    fun `save cc recipient calls rust recipient wrapper to set recipient`() = runTest {
-        // Given
-        val recipient = RecipientSample.Alice
-        val singleRecipient = recipient.toSingleRecipientEntry()
-        val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
-        val expectedDraftWrapper = expectDraftWrapperReturns(
-            ccRecipientsWrapper = toRecipientsWrapperMock
-        )
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns Unit.right()
-
-        // When
-        val actual = dataSource.addCcRecipient(recipient)
-
-        // Then
-        assertEquals(actual, Unit.right())
-    }
-
-    @Test
-    fun `save cc recipient returns error when rust recipient wrapper call fails`() = runTest {
-        // Given
-        val recipient = RecipientSample.Alice
-        val singleRecipient = recipient.toSingleRecipientEntry()
-        val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
-        val expectedDraftWrapper = expectDraftWrapperReturns(
-            ccRecipientsWrapper = toRecipientsWrapperMock
-        )
-        val expected = DataError.Local.SaveDraftError.DuplicateRecipient
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns expected.left()
-
-        // When
-        val actual = dataSource.addCcRecipient(recipient)
-
-        // Then
-        assertEquals(actual, expected.left())
-    }
-
-    @Test
-    fun `save bcc recipient calls rust recipient wrapper to set recipient`() = runTest {
-        // Given
-        val recipient = RecipientSample.Alice
-        val singleRecipient = recipient.toSingleRecipientEntry()
-        val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
-        val expectedDraftWrapper = expectDraftWrapperReturns(
-            bccRecipientsWrapper = toRecipientsWrapperMock
-        )
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns Unit.right()
-
-        // When
-        val actual = dataSource.addBccRecipient(recipient)
-
-        // Then
-        assertEquals(actual, Unit.right())
-    }
-
-    @Test
-    fun `save bcc recipient returns error when rust recipient wrapper call fails`() = runTest {
-        // Given
-        val recipient = RecipientSample.Alice
-        val singleRecipient = recipient.toSingleRecipientEntry()
-        val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
-        val expectedDraftWrapper = expectDraftWrapperReturns(
-            bccRecipientsWrapper = toRecipientsWrapperMock
-        )
-        val expected = DataError.Local.SaveDraftError.DuplicateRecipient
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns expected.left()
-
-        // When
-        val actual = dataSource.addBccRecipient(recipient)
-
-        // Then
-        assertEquals(actual, expected.left())
-    }
-
-    @Test
-    fun `remove to recipient calls rust recipient wrapper to remove recipient`() = runTest {
-        // Given
-        val recipient = RecipientSample.Alice
-        val singleRecipient = recipient.toSingleRecipientEntry()
-        val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
-        val expectedDraftWrapper = expectDraftWrapperReturns(
-            toRecipientsWrapper = toRecipientsWrapperMock
-        )
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { toRecipientsWrapperMock.removeSingleRecipient(singleRecipient) } returns Unit.right()
-
-        // When
-        val actual = dataSource.removeToRecipient(recipient)
-
-        // Then
-        assertEquals(actual, Unit.right())
-    }
-
-    @Test
-    fun `remove cc recipient calls rust recipient wrapper to remove recipient`() = runTest {
-        // Given
-        val recipient = RecipientSample.Alice
-        val singleRecipient = recipient.toSingleRecipientEntry()
-        val ccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
-        val expectedDraftWrapper = expectDraftWrapperReturns(
-            ccRecipientsWrapper = ccRecipientsWrapperMock
-        )
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { ccRecipientsWrapperMock.removeSingleRecipient(singleRecipient) } returns Unit.right()
-
-        // When
-        val actual = dataSource.removeCcRecipient(recipient)
-
-        // Then
-        assertEquals(actual, Unit.right())
-    }
-
-    @Test
-    fun `remove Bcc recipient calls rust recipient wrapper to remove recipient`() = runTest {
-        // Given
-        val recipient = RecipientSample.Alice
-        val singleRecipient = recipient.toSingleRecipientEntry()
-        val bccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
-        val expectedDraftWrapper = expectDraftWrapperReturns(
-            bccRecipientsWrapper = bccRecipientsWrapperMock
-        )
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { bccRecipientsWrapperMock.removeSingleRecipient(singleRecipient) } returns Unit.right()
-
-        // When
-        val actual = dataSource.removeBccRecipient(recipient)
-
-        // Then
-        assertEquals(actual, Unit.right())
-    }
-
-    private fun expectDraftWrapperReturns(
-        subject: String = "",
-        sender: String = "",
-        body: String = "",
-        toRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
-        ccRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
-        bccRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
-        messageId: LocalMessageId = LocalMessageIdSample.AugWeatherForecast,
-        sendResult: VoidDraftSaveSendResult = VoidDraftSaveSendResult.Ok
-    ) = mockk<DraftWrapper> {
-        every { subject() } returns subject
-        every { sender() } returns sender
-        every { body() } returns body
-        every { recipientsTo() } returns toRecipientsWrapper
-        every { recipientsCc() } returns ccRecipientsWrapper
-        every { recipientsBcc() } returns bccRecipientsWrapper
-        coEvery { send() } returns sendResult
-        coEvery { messageId() } returns DraftMessageIdResult.Ok(messageId)
-    }
-
-    @Test
     fun `returns success when send draft succeeds`() = runTest {
         // Given
         val userId = UserIdSample.Primary
@@ -655,6 +457,26 @@ class RustDraftDataSourceImplTest {
         // Then
         assertEquals(Unit.right(), actual)
         coVerify { enqueuer.cancelWork(SendingStatusWorker.id(userId, messageId)) }
+    }
+
+    private fun expectDraftWrapperReturns(
+        subject: String = "",
+        sender: String = "",
+        body: String = "",
+        toRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
+        ccRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
+        bccRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
+        messageId: LocalMessageId = LocalMessageIdSample.AugWeatherForecast,
+        sendResult: VoidDraftSaveSendResult = VoidDraftSaveSendResult.Ok
+    ) = mockk<DraftWrapper> {
+        every { subject() } returns subject
+        every { sender() } returns sender
+        every { body() } returns body
+        every { recipientsTo() } returns toRecipientsWrapper
+        every { recipientsCc() } returns ccRecipientsWrapper
+        every { recipientsBcc() } returns bccRecipientsWrapper
+        coEvery { send() } returns sendResult
+        coEvery { messageId() } returns DraftMessageIdResult.Ok(messageId)
     }
 
 }

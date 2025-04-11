@@ -48,24 +48,6 @@ class DraftRepositoryImpl @Inject constructor(
 
     override suspend fun saveBody(body: DraftBody): Either<DataError, Unit> = draftDataSource.saveBody(body)
 
-    override suspend fun addToRecipient(recipient: Recipient): Either<DataError, Unit> =
-        draftDataSource.addToRecipient(recipient)
-
-    override suspend fun addCcRecipient(recipient: Recipient): Either<DataError, Unit> =
-        draftDataSource.addCcRecipient(recipient)
-
-    override suspend fun addBccRecipient(recipient: Recipient): Either<DataError, Unit> =
-        draftDataSource.addBccRecipient(recipient)
-
-    override suspend fun removeToRecipient(recipient: Recipient): Either<DataError, Unit> =
-        draftDataSource.removeToRecipient(recipient)
-
-    override suspend fun removeCcRecipient(recipient: Recipient): Either<DataError, Unit> =
-        draftDataSource.removeCcRecipient(recipient)
-
-    override suspend fun removeBccRecipient(recipient: Recipient): Either<DataError, Unit> =
-        draftDataSource.removeBccRecipient(recipient)
-
     override suspend fun updateToRecipient(recipients: List<Recipient>): Either<DataError, Unit> =
         draftDataSource.updateToRecipients(recipients)
 

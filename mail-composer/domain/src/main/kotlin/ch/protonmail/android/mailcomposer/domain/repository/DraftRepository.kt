@@ -37,12 +37,6 @@ interface DraftRepository {
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>
     suspend fun saveSubject(subject: Subject): Either<DataError, Unit>
     suspend fun saveBody(body: DraftBody): Either<DataError, Unit>
-    suspend fun addToRecipient(recipient: Recipient): Either<DataError, Unit>
-    suspend fun addCcRecipient(recipient: Recipient): Either<DataError, Unit>
-    suspend fun addBccRecipient(recipient: Recipient): Either<DataError, Unit>
-    suspend fun removeToRecipient(recipient: Recipient): Either<DataError, Unit>
-    suspend fun removeCcRecipient(recipient: Recipient): Either<DataError, Unit>
-    suspend fun removeBccRecipient(recipient: Recipient): Either<DataError, Unit>
     suspend fun updateToRecipient(recipients: List<Recipient>): Either<DataError, Unit>
     suspend fun updateCcRecipient(recipients: List<Recipient>): Either<DataError, Unit>
     suspend fun updateBccRecipient(recipients: List<Recipient>): Either<DataError, Unit>

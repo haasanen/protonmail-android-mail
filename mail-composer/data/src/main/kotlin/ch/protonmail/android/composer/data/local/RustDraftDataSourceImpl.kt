@@ -135,43 +135,6 @@ class RustDraftDataSourceImpl @Inject constructor(
         }
     }
 
-    @Deprecated("Will be replaced by updateToRecipients(list)")
-    override suspend fun addToRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
-        val recipientsWrapper = it.recipientsTo()
-        recipientsWrapper.registerCallback(recipientsUpdatedCallback)
-        return@withValidRustDraftWrapper recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
-    }
-
-    @Deprecated("Will be replaced by updateCcRecipients(list)")
-    override suspend fun addCcRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
-        val recipientsWrapper = it.recipientsCc()
-        return@withValidRustDraftWrapper recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
-    }
-
-    @Deprecated("Will be replaced by updateBccRecipients(list)")
-    override suspend fun addBccRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
-        val recipientsWrapper = it.recipientsBcc()
-        return@withValidRustDraftWrapper recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
-    }
-
-    @Deprecated("Will be replaced by updateToRecipients(list)")
-    override suspend fun removeToRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
-        val recipientsWrapper = it.recipientsTo()
-        return@withValidRustDraftWrapper recipientsWrapper.removeSingleRecipient(recipient.toSingleRecipientEntry())
-    }
-
-    @Deprecated("Will be replaced by updateCcRecipients(list)")
-    override suspend fun removeCcRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
-        val recipientsWrapper = it.recipientsCc()
-        return@withValidRustDraftWrapper recipientsWrapper.removeSingleRecipient(recipient.toSingleRecipientEntry())
-    }
-
-    @Deprecated("Will be replaced by updateBccRecipients(list)")
-    override suspend fun removeBccRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
-        val recipientsWrapper = it.recipientsBcc()
-        return@withValidRustDraftWrapper recipientsWrapper.removeSingleRecipient(recipient.toSingleRecipientEntry())
-    }
-
     override suspend fun updateToRecipients(recipients: List<Recipient>): Either<DataError, Unit> =
         withValidRustDraftWrapper { draftWrapper ->
             val recipientsToWrapper = draftWrapper.recipientsTo()
