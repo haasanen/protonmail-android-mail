@@ -21,8 +21,6 @@ import studio.forface.easygradle.dsl.compileOnly
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    kotlin("plugin.serialization")
     id("app-config-plugin")
 }
 
@@ -46,11 +44,9 @@ android {
 }
 
 dependencies {
-    kapt(libs.bundles.app.annotationProcessors)
     compileOnly(libs.proton.rust.core)
 
     implementation(libs.bundles.module.data)
-    implementation(libs.androidx.hilt.work)
     implementation(libs.proton.core.domain)
 
     implementation(project(":mail-common:data"))

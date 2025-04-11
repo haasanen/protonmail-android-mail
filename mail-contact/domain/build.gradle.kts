@@ -43,9 +43,7 @@ android {
 
 dependencies {
     implementation(libs.bundles.module.domain)
-    implementation(libs.kotlin.serialization.json)
     implementation(libs.proton.core.user.domain)
-    implementation(libs.proton.core.featureFlag)
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-label:domain"))
