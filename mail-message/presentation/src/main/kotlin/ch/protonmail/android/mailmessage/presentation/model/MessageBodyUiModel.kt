@@ -24,10 +24,7 @@ import ch.protonmail.android.mailmessage.presentation.model.attachment.Attachmen
 data class MessageBodyUiModel(
     val messageId: MessageId,
     val messageBody: String,
-    val messageBodyWithoutQuote: String,
     val mimeType: MimeTypeUiModel,
-    val shouldShowEmbeddedImages: Boolean,
-    val shouldShowRemoteContent: Boolean,
     val shouldShowEmbeddedImagesBanner: Boolean,
     val shouldShowRemoteContentBanner: Boolean,
     val shouldShowExpandCollapseButton: Boolean,

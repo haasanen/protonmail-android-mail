@@ -20,8 +20,6 @@ package ch.protonmail.android.maildetail.presentation.mapper
 
 import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
-import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
-import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ExpirationTimeMapper
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
@@ -29,14 +27,12 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMes
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
+import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.Message
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
-import ch.protonmail.android.mailmessage.presentation.model.isApplicable
+import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -84,19 +80,12 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     }
 
     suspend fun toUiModel(
-        userId: UserId,
         message: Message,
         avatarImageState: AvatarImageState,
         primaryUserAddress: String?,
-        decryptedMessageBody: DecryptedMessageBody,
-        existingMessageUiState: ConversationDetailMessageUiModel.Expanded? = null
+        decryptedMessageBody: DecryptedMessageBody
     ): ConversationDetailMessageUiModel.Expanded {
-        val uiModel =
-            messageBodyUiModelMapper.toUiModel(
-                userId,
-                decryptedMessageBody,
-                existingMessageUiState?.messageBodyUiModel
-            )
+        val uiModel = messageBodyUiModelMapper.toUiModel(decryptedMessageBody)
         return ConversationDetailMessageUiModel.Expanded(
             messageId = messageIdUiModelMapper.toUiModel(message.messageId),
             isUnread = message.isUnread,
@@ -108,20 +97,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             messageDetailFooterUiModel = messageDetailFooterUiModelMapper.toUiModel(message),
             messageBannersUiModel = messageBannersUiModelMapper.createMessageBannersUiModel(message),
             requestPhishingLinkConfirmation = message.isPhishing(),
-            messageBodyUiModel = uiModel,
-            expandCollapseMode = existingMessageUiState?.let {
-                if (it.expandCollapseMode.isApplicable()) it.expandCollapseMode
-                else getInitialBodyExpandCollapseMode(uiModel)
-            } ?: getInitialBodyExpandCollapseMode(uiModel)
+            messageBodyUiModel = uiModel
         )
-    }
-
-    private fun getInitialBodyExpandCollapseMode(uiModel: MessageBodyUiModel): MessageBodyExpandCollapseMode {
-        return if (uiModel.shouldShowExpandCollapseButton) {
-            MessageBodyExpandCollapseMode.Collapsed
-        } else {
-            MessageBodyExpandCollapseMode.NotApplicable
-        }
     }
 
     suspend fun toUiModel(
@@ -177,5 +154,4 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         }.toImmutableList()
 
     private fun Message.hasUndisclosedRecipients() = (toList + ccList + bccList).isEmpty()
-
 }

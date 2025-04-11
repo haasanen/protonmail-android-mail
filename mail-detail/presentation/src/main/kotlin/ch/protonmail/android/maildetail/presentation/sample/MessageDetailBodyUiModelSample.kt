@@ -28,40 +28,32 @@ object MessageDetailBodyUiModelSample {
 
     val withBlockedRemoteContent = build(
         "A message body with blocked remote content",
-        shouldShowRemoteContent = false,
         shouldShowRemoteContentBanner = true
     )
 
     val withAllowedRemoteContent = build(
         "A message body with blocked remote content",
-        shouldShowRemoteContent = true,
         shouldShowRemoteContentBanner = false
     )
 
     val withBlockedEmbeddedImages = build(
         "A message body with embedded images",
-        shouldShowEmbeddedImages = false,
         shouldShowEmbeddedImagesBanner = true
     )
 
     val withAllowedEmbeddedImages = build(
         "A message body with embedded images",
-        shouldShowEmbeddedImages = true,
         shouldShowEmbeddedImagesBanner = false
     )
 
     val withBlockedContent = build(
         "A message body with both remote and embedded images",
-        shouldShowRemoteContent = false,
-        shouldShowEmbeddedImages = false,
         shouldShowRemoteContentBanner = true,
         shouldShowEmbeddedImagesBanner = true
     )
 
     val withAllowedContent = build(
         "A message body with both remote and embedded images",
-        shouldShowRemoteContent = true,
-        shouldShowEmbeddedImages = true,
         shouldShowRemoteContentBanner = false,
         shouldShowEmbeddedImagesBanner = false
     )
@@ -70,8 +62,6 @@ object MessageDetailBodyUiModelSample {
         messageBody: String,
         messageId: MessageId = MessageId("sample message id"),
         mimeType: MimeTypeUiModel = MimeTypeUiModel.Html,
-        shouldShowEmbeddedImages: Boolean = false,
-        shouldShowRemoteContent: Boolean = false,
         shouldShowEmbeddedImagesBanner: Boolean = false,
         shouldShowRemoteContentBanner: Boolean = false,
         shouldShowOpenInProtonCalendar: Boolean = false,
@@ -79,10 +69,7 @@ object MessageDetailBodyUiModelSample {
     ) = MessageBodyUiModel(
         messageId = messageId,
         messageBody = messageBody,
-        messageBodyWithoutQuote = messageBody,
         mimeType = mimeType,
-        shouldShowEmbeddedImages = shouldShowEmbeddedImages,
-        shouldShowRemoteContent = shouldShowRemoteContent,
         shouldShowEmbeddedImagesBanner = shouldShowEmbeddedImagesBanner,
         shouldShowRemoteContentBanner = shouldShowRemoteContentBanner,
         shouldShowExpandCollapseButton = false,

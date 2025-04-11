@@ -18,13 +18,9 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
-import ch.protonmail.android.maildetail.domain.usecase.DoesMessageBodyHaveEmbeddedImages
-import ch.protonmail.android.maildetail.domain.usecase.DoesMessageBodyHaveRemoteContent
-import ch.protonmail.android.maildetail.domain.usecase.ShouldShowEmbeddedImages
-import ch.protonmail.android.maildetail.domain.usecase.ShouldShowRemoteContent
-import ch.protonmail.android.maildetail.presentation.usecase.ExtractMessageBodyWithoutQuote
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
+import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.isCalendarAttachment
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentGroupUiModelMapper
@@ -33,21 +29,14 @@ import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
-import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class MessageBodyUiModelMapper @Inject constructor(
     private val attachmentGroupUiModelMapper: AttachmentGroupUiModelMapper,
-    private val doesMessageBodyHaveEmbeddedImages: DoesMessageBodyHaveEmbeddedImages,
-    private val doesMessageBodyHaveRemoteContent: DoesMessageBodyHaveRemoteContent,
-    private val injectCssIntoDecryptedMessageBody: InjectCssIntoDecryptedMessageBody,
-    private val extractMessageBodyWithoutQuote: ExtractMessageBodyWithoutQuote,
-    private val shouldShowEmbeddedImages: ShouldShowEmbeddedImages,
-    private val shouldShowRemoteContent: ShouldShowRemoteContent
+    private val injectCssIntoDecryptedMessageBody: InjectCssIntoDecryptedMessageBody
 ) {
 
     suspend fun toUiModel(
-        userId: UserId,
         decryptedMessageBody: DecryptedMessageBody,
         existingMessageBodyUiModel: MessageBodyUiModel? = null
     ): MessageBodyUiModel {
@@ -56,12 +45,11 @@ class MessageBodyUiModelMapper @Inject constructor(
             decryptedMessageBody.mimeType.toMimeTypeUiModel()
         )
         val messageBody = decryptedMessageBodyWithType.messageBody
-        val shouldShowEmbeddedImages = existingMessageBodyUiModel?.shouldShowEmbeddedImages
-            ?: shouldShowEmbeddedImages(userId)
-        val doesMessageBodyHaveEmbeddedImages = doesMessageBodyHaveEmbeddedImages(decryptedMessageBody)
-        val shouldShowRemoteContent =
-            existingMessageBodyUiModel?.shouldShowRemoteContent ?: shouldShowRemoteContent(userId)
-        val doesMessageBodyHaveRemoteContent = doesMessageBodyHaveRemoteContent(decryptedMessageBody)
+
+        val hasRemoteContentBlocked = decryptedMessageBody.banners.contains(MessageBanner.RemoteContent)
+        val hasEmbeddedImagesBlocked = decryptedMessageBody.banners.contains(MessageBanner.EmbeddedImages)
+        val hasExpandCollapseButton = existingMessageBodyUiModel?.shouldShowExpandCollapseButton == true ||
+            decryptedMessageBody.hasQuotedText
 
         val messageBodyWithType = MessageBodyWithType(
             messageBody,
@@ -69,22 +57,15 @@ class MessageBodyUiModelMapper @Inject constructor(
         )
 
         val originalMessageBody = injectCssIntoDecryptedMessageBody(messageBodyWithType)
-        val extractQuoteResult = extractMessageBodyWithoutQuote(originalMessageBody)
-        val bodyWithoutQuote = if (extractQuoteResult.hasQuote) {
-            extractQuoteResult.messageBodyHtmlWithoutQuote
-        } else originalMessageBody
         val viewModePreference = existingMessageBodyUiModel?.viewModePreference ?: ViewModePreference.ThemeDefault
 
         return MessageBodyUiModel(
             messageId = decryptedMessageBody.messageId,
             messageBody = originalMessageBody,
-            messageBodyWithoutQuote = bodyWithoutQuote,
             mimeType = decryptedMessageBody.mimeType.toMimeTypeUiModel(),
-            shouldShowEmbeddedImages = shouldShowEmbeddedImages,
-            shouldShowRemoteContent = shouldShowRemoteContent,
-            shouldShowEmbeddedImagesBanner = !shouldShowEmbeddedImages && doesMessageBodyHaveEmbeddedImages,
-            shouldShowRemoteContentBanner = !shouldShowRemoteContent && doesMessageBodyHaveRemoteContent,
-            shouldShowExpandCollapseButton = extractQuoteResult.hasQuote,
+            shouldShowEmbeddedImagesBanner = hasEmbeddedImagesBlocked,
+            shouldShowRemoteContentBanner = hasRemoteContentBlocked,
+            shouldShowExpandCollapseButton = hasExpandCollapseButton,
             shouldShowOpenInProtonCalendar = decryptedMessageBody.attachments.any { it.isCalendarAttachment() },
             attachments = if (decryptedMessageBody.attachments.isNotEmpty()) {
                 attachmentGroupUiModelMapper.toUiModel(
@@ -98,10 +79,7 @@ class MessageBodyUiModelMapper @Inject constructor(
     fun toUiModel(decryptionError: GetDecryptedMessageBodyError.Decryption) = MessageBodyUiModel(
         messageId = decryptionError.messageId,
         messageBody = decryptionError.encryptedMessageBody,
-        messageBodyWithoutQuote = decryptionError.encryptedMessageBody,
         mimeType = MimeTypeUiModel.PlainText,
-        shouldShowEmbeddedImages = false,
-        shouldShowRemoteContent = false,
         shouldShowEmbeddedImagesBanner = false,
         shouldShowRemoteContentBanner = false,
         shouldShowExpandCollapseButton = false,

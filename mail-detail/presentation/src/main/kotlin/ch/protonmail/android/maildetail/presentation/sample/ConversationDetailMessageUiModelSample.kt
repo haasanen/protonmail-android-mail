@@ -19,7 +19,6 @@
 package ch.protonmail.android.maildetail.presentation.sample
 
 import java.util.UUID
-import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
@@ -31,12 +30,12 @@ import ch.protonmail.android.maildetail.presentation.model.MessageDetailFooterUi
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import kotlinx.collections.immutable.persistentListOf
@@ -261,8 +260,7 @@ object ConversationDetailMessageUiModelSample {
             expirationBannerText = null
         ),
         messageBodyUiModel = messageBodyUiModel,
-        requestPhishingLinkConfirmation = false,
-        expandCollapseMode = MessageBodyExpandCollapseMode.Collapsed
+        requestPhishingLinkConfirmation = false
     )
 
     private fun buildExpanding(

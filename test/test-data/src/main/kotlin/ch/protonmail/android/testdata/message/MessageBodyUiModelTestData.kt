@@ -25,7 +25,6 @@ import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
-import me.proton.core.user.domain.entity.UserAddress
 
 object MessageBodyUiModelTestData {
 
@@ -75,37 +74,29 @@ object MessageBodyUiModelTestData {
             </div>
         """.trimIndent(),
         mimeType = MimeTypeUiModel.Html,
-        shouldShowRemoteContent = false,
         shouldShowRemoteContentBanner = true
     )
 
     val messageBodyWithRemoteContentLoaded = messageBodyWithRemoteContentBlocked.copy(
-        shouldShowRemoteContent = true,
         shouldShowRemoteContentBanner = false
     )
 
     val messageBodyWithEmbeddedImagesBlocked = buildMessageBodyUiModel(
         messageBody = "MessageWithEmbeddedImages",
-        shouldShowEmbeddedImages = false,
         shouldShowEmbeddedImagesBanner = true
     )
 
     val messageBodyWithEmbeddedImagesLoaded = messageBodyWithEmbeddedImagesBlocked.copy(
-        shouldShowEmbeddedImages = true,
         shouldShowEmbeddedImagesBanner = false
     )
 
     val bodyWithRemoteAndEmbeddedContentBlocked = buildMessageBodyUiModel(
         messageBody = "MessageWithRemoteAndEmbeddedImages",
-        shouldShowRemoteContent = false,
-        shouldShowEmbeddedImages = false,
         shouldShowRemoteContentBanner = true,
         shouldShowEmbeddedImagesBanner = true
     )
 
     val bodyWithRemoteAndEmbeddedContentLoaded = bodyWithRemoteAndEmbeddedContentBlocked.copy(
-        shouldShowEmbeddedImages = true,
-        shouldShowRemoteContent = true,
         shouldShowRemoteContentBanner = false,
         shouldShowEmbeddedImagesBanner = false
     )
@@ -115,22 +106,16 @@ object MessageBodyUiModelTestData {
         messageId: MessageId = MessageIdSample.build(),
         messageBody: String = MessageBodyTestData.messageBody.body,
         mimeType: MimeTypeUiModel = MimeTypeUiModel.PlainText,
-        shouldShowEmbeddedImages: Boolean = false,
-        shouldShowRemoteContent: Boolean = false,
         shouldShowEmbeddedImagesBanner: Boolean = false,
         shouldShowRemoteContentBanner: Boolean = false,
         shouldShowOpenInProtonCalendar: Boolean = false,
         attachments: AttachmentGroupUiModel? = null,
-        userAddress: UserAddress? = null,
         viewModePreference: ViewModePreference = ViewModePreference.ThemeDefault
     ): MessageBodyUiModel {
         return MessageBodyUiModel(
             messageId = messageId,
             messageBody = messageBody,
-            messageBodyWithoutQuote = messageBody,
             mimeType = mimeType,
-            shouldShowEmbeddedImages = shouldShowEmbeddedImages,
-            shouldShowRemoteContent = shouldShowRemoteContent,
             shouldShowEmbeddedImagesBanner = shouldShowEmbeddedImagesBanner,
             shouldShowRemoteContentBanner = shouldShowRemoteContentBanner,
             shouldShowExpandCollapseButton = false,
