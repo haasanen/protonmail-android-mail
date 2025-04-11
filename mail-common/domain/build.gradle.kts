@@ -19,9 +19,7 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
     kotlin("plugin.serialization")
-    id("dagger.hilt.android.plugin")
     id("app-config-plugin")
 }
 
@@ -45,14 +43,9 @@ android {
 }
 
 dependencies {
-    kapt(libs.bundles.app.annotationProcessors)
-
     implementation(libs.bundles.module.domain)
-    implementation(libs.proton.core.accountManager)
-    implementation(libs.proton.core.featureFlag)
-    implementation(libs.proton.core.mailSettings)
     implementation(libs.proton.core.key)
-    implementation(libs.proton.core.user)
+    implementation(libs.proton.core.user.domain)
 
     testImplementation(libs.bundles.test)
     testImplementation(libs.proton.rust.core)
