@@ -46,8 +46,6 @@ dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
 
-    implementation(libs.proton.core.network)
-
     implementation(project(":mail-composer:data"))
     implementation(project(":mail-composer:domain"))
     implementation(project(":mail-composer:presentation"))

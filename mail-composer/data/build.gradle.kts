@@ -49,7 +49,7 @@ dependencies {
 
     implementation(libs.bundles.module.data)
     implementation(libs.androidx.hilt.work)
-    implementation(libs.proton.core.user)
+    implementation(libs.proton.core.user.domain)
     implementation(libs.proton.core.mailSendPreferences)
 
     implementation(project(":mail-session:domain"))

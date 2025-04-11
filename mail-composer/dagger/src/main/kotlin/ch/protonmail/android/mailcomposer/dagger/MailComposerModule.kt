@@ -18,10 +18,10 @@
 
 package ch.protonmail.android.mailcomposer.dagger
 
-import ch.protonmail.android.composer.data.local.RustAttachmentDataSource
-import ch.protonmail.android.composer.data.local.RustAttachmentDataSourceImpl
 import ch.protonmail.android.composer.data.local.ContactsPermissionLocalDataSource
 import ch.protonmail.android.composer.data.local.ContactsPermissionLocalDataSourceImpl
+import ch.protonmail.android.composer.data.local.RustAttachmentDataSource
+import ch.protonmail.android.composer.data.local.RustAttachmentDataSourceImpl
 import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.composer.data.local.RustDraftDataSourceImpl
 import ch.protonmail.android.composer.data.local.RustSendingStatusDataSource
@@ -33,7 +33,6 @@ import ch.protonmail.android.composer.data.repository.MessageExpirationTimeRepos
 import ch.protonmail.android.composer.data.repository.MessagePasswordRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessageRepositoryImpl
 import ch.protonmail.android.composer.data.repository.SendingStatusRepositoryImpl
-import ch.protonmail.android.mailcomposer.domain.annotations.NewContactSuggestionsEnabled
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailcomposer.domain.repository.ContactsPermissionRepository
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
@@ -41,10 +40,8 @@ import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTim
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessageRepository
 import ch.protonmail.android.mailcomposer.domain.repository.SendingStatusRepository
-import ch.protonmail.android.mailcomposer.domain.usecase.featureflags.IsNewContactsSuggestionsEnabled
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
@@ -87,17 +84,6 @@ abstract class MailComposerModule {
     abstract fun bindsRustAttachmentDataSource(impl: RustAttachmentDataSourceImpl): RustAttachmentDataSource
 
 }
-
-@Module
-@InstallIn(SingletonComponent::class)
-object FeatureFlagModule {
-
-    @Provides
-    @NewContactSuggestionsEnabled
-    @Singleton
-    fun provideNewContactsSuggestionsEnabled(isEnabled: IsNewContactsSuggestionsEnabled) = isEnabled(null)
-}
-
 
 @Module
 @InstallIn(SingletonComponent::class)
