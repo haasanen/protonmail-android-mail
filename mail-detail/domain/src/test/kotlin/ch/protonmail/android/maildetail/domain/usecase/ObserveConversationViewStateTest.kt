@@ -39,7 +39,8 @@ class ObserveConversationViewStateTest {
         // Given
         val useCase = buildUseCase()
         val conversationState = InMemoryConversationStateRepository.MessagesState(
-            (0 until Random().nextInt(100)).associate {
+            messagesTransformations = emptyMap(),
+            messagesState = (0 until Random().nextInt(100)).associate {
                 Pair(MessageId(it.toString()), Collapsed)
             },
             shouldHideMessagesBasedOnTrashFilter = true
