@@ -19,9 +19,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    kotlin("plugin.serialization")
-    id("dagger.hilt.android.plugin")
     id("app-config-plugin")
 }
 
@@ -45,14 +42,11 @@ android {
 }
 
 dependencies {
-    kapt(libs.bundles.app.annotationProcessors)
-
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-onboarding:domain"))
 
     implementation(libs.bundles.module.data)
-    implementation(libs.androidx.appcompat)
 
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:utils"))

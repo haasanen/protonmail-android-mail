@@ -60,7 +60,7 @@ dependencies {
     debugImplementation(libs.bundles.compose.debug)
 
     implementation(libs.bundles.module.presentation)
-    implementation(libs.proton.core.user)
+    implementation(libs.proton.core.user.domain)
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
@@ -73,5 +73,4 @@ dependencies {
     testImplementation(project(":test:test-data"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
-
 }

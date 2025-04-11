@@ -47,9 +47,6 @@ dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
 
-    implementation(libs.kotlin.coroutines.core)
-
     implementation(project(":mail-onboarding:data"))
     implementation(project(":mail-onboarding:domain"))
-    implementation(project(":mail-onboarding:presentation"))
 }
