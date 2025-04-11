@@ -45,10 +45,6 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
-    kapt {
-        correctErrorTypes = true
-    }
-
     buildFeatures {
         compose = true
     }
@@ -62,6 +58,10 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
 
@@ -71,7 +71,6 @@ dependencies {
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.room.ktx)
     implementation(libs.proton.core.account)
-    implementation(libs.proton.core.featureFlag)
     implementation(libs.proton.core.mailSettings)
     implementation(libs.proton.core.plan.presentationCompose)
     implementation(libs.proton.core.user.domain)

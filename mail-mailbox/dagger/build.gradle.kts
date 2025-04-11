@@ -55,6 +55,5 @@ dependencies {
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-conversation:domain"))
 
-    implementation(libs.kotlin.coroutines.core)
     implementation(libs.dagger.hilt.android)
 }

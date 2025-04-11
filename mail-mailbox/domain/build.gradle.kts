@@ -19,9 +19,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    kotlin("plugin.serialization")
-    id("kotlin-parcelize")
     id("app-config-plugin")
 }
 
@@ -47,7 +44,7 @@ android {
 dependencies {
     implementation(libs.bundles.module.domain)
     implementation(libs.proton.core.mailSettings)
-    implementation(libs.proton.core.user)
+    implementation(libs.proton.core.user.domain)
 
     implementation(project(":mail-label:domain"))
     implementation(project(":mail-pagination:domain"))
