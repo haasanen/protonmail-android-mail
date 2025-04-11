@@ -47,8 +47,6 @@ dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
 
-    implementation(libs.proton.core.network)
-
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-conversation:data-rust"))
@@ -57,6 +55,4 @@ dependencies {
     implementation(project(":mail-message:data"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-label:data"))
-
-
 }
