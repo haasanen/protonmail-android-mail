@@ -19,8 +19,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    id("dagger.hilt.android.plugin")
     id("app-config-plugin")
 }
 
@@ -41,19 +39,17 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
+}
 
-    dependencies {
-        kapt(libs.bundles.app.annotationProcessors)
-        implementation(libs.dagger.hilt.android)
+dependencies {
+    implementation(libs.bundles.module.data)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.arrow.core)
 
-        implementation(libs.androidx.datastore.preferences)
-        implementation(libs.arrow.core)
+    implementation(project(":mail-upselling:domain"))
+    implementation(project(":mail-common:data"))
+    implementation(project(":mail-common:data-rust"))
+    implementation(project(":mail-common:domain"))
 
-        implementation(project(":mail-upselling:domain"))
-        implementation(project(":mail-common:data"))
-        implementation(project(":mail-common:data-rust"))
-        implementation(project(":mail-common:domain"))
-
-        testImplementation(libs.bundles.test)
-    }
+    testImplementation(libs.bundles.test)
 }

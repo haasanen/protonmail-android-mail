@@ -19,8 +19,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    id("dagger.hilt.android.plugin")
     id("app-config-plugin")
 }
 
@@ -44,9 +42,6 @@ android {
 }
 
 dependencies {
-    kapt(libs.bundles.app.annotationProcessors)
-    implementation(libs.dagger.hilt.android)
-
     implementation(libs.arrow.core)
     implementation(libs.proton.core.plan)
     implementation(libs.proton.core.telemetry)
