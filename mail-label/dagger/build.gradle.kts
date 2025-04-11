@@ -47,8 +47,6 @@ dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
 
-    implementation(libs.kotlin.coroutines.core)
-
     implementation(project(":mail-label:data"))
     implementation(project(":mail-label:domain"))
     implementation(project(":mail-label:presentation"))
