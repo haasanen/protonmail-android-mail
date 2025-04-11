@@ -45,6 +45,7 @@ import ch.protonmail.android.mailmessage.data.usecase.RustMoveMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import me.proton.core.domain.entity.UserId
@@ -105,7 +106,11 @@ class RustMessageDataSourceImpl @Inject constructor(
             .onLeft { Timber.e("rust-message: Failed to get remote message $it") }
     }
 
-    override suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): Either<DataError, MessageBody> {
+    override suspend fun getMessageBody(
+        userId: UserId,
+        messageId: LocalMessageId,
+        transformations: MessageBodyTransformations
+    ): Either<DataError, MessageBody> {
         // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
         // the current labelId is not needed to get the body and is planned to be dropped on this API
         val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull() ?: return DataError.Local.NoDataCached.left()
@@ -114,9 +119,9 @@ class RustMessageDataSourceImpl @Inject constructor(
             .onLeft { Timber.e("rust-message: Failed to get message body $it") }
             .flatMap { decryptedMessage ->
                 val transformOptions = TransformOpts(
-                    showBlockQuote = true,
-                    hideRemoteImages = null,
-                    hideEmbeddedImages = null
+                    showBlockQuote = transformations.showQuotedText,
+                    hideRemoteImages = transformations.hideRemoteContent,
+                    hideEmbeddedImages = transformations.hideEmbeddedImages
                 )
 
                 decryptedMessage.body(transformOptions).map { decryptedBody ->

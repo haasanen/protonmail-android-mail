@@ -34,6 +34,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toRemoteMessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
@@ -176,7 +177,7 @@ class RustMessageRepositoryImplTest {
         val messageId = LocalMessageIdSample.AugWeatherForecast.toMessageId()
         val localMessage = LocalMessageTestData.AugWeatherForecast
         val transformOpts = mockk<TransformOpts>()
-        val bodyBanners = mockk<List<MessageBanner>>()
+        val bodyBanners = emptyList<MessageBanner>()
         val bodyOutput = BodyOutput(
             "message body",
             false,
@@ -193,11 +194,13 @@ class RustMessageRepositoryImplTest {
         coEvery {
             rustMessageDataSource.getMessageBody(
                 userId,
-                messageId.toLocalMessageId()
+                messageId.toLocalMessageId(),
+                MessageBodyTransformations.MessageDetailsDefaults
             )
         } returns expectedMessageWithBody.right()
         // When
-        val result = repository.getMessageWithBody(userId, messageId).getOrNull()
+        val result = repository.getMessageWithBody(userId, messageId, MessageBodyTransformations.MessageDetailsDefaults)
+            .getOrNull()
 
         // Then
         assertNotNull(result)
@@ -207,7 +210,8 @@ class RustMessageRepositoryImplTest {
         coVerify {
             rustMessageDataSource.getMessageBody(
                 userId,
-                messageId.toLocalMessageId()
+                messageId.toLocalMessageId(),
+                MessageBodyTransformations.MessageDetailsDefaults
             )
         }
     }

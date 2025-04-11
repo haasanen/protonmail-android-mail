@@ -34,6 +34,7 @@ import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.RefreshedMessageWithBody
@@ -99,28 +100,19 @@ class RustMessageRepositoryImpl @Inject constructor(
             emit(message)
         }
 
-    override fun observeMessageWithBody(
-        userId: UserId,
-        messageId: MessageId
-    ): Flow<Either<DataError, MessageWithBody>> = flow {
-        emit(getMessageWithBody(userId, messageId))
-    }
-
     override fun observeMessageAttachments(userId: UserId, messageId: MessageId): Flow<List<MessageAttachment>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getMessageWithBody(userId: UserId, messageId: MessageId): Either<DataError, MessageWithBody> =
-        getLocalMessageWithBody(userId, messageId)
-
-    override suspend fun getLocalMessageWithBody(
+    override suspend fun getMessageWithBody(
         userId: UserId,
-        messageId: MessageId
+        messageId: MessageId,
+        messageBodyTransformations: MessageBodyTransformations
     ): Either<DataError, MessageWithBody> {
         val localMessageId = messageId.toLocalMessageId()
 
         return rustMessageDataSource.getMessage(userId, localMessageId).flatMap { localMessage ->
-            rustMessageDataSource.getMessageBody(userId, localMessageId)
+            rustMessageDataSource.getMessageBody(userId, localMessageId, messageBodyTransformations)
                 .map { MessageWithBody(localMessage.toMessage(), it) }
         }
     }

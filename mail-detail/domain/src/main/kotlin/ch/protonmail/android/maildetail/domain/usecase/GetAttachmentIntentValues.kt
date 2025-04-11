@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
@@ -42,7 +43,12 @@ class GetAttachmentIntentValues @Inject constructor(
         messageId: MessageId,
         attachmentId: AttachmentId
     ): Either<DataError, OpenAttachmentIntentValues> = either {
-        val messageWithBody = messageRepository.getMessageWithBody(userId, messageId).bind()
+        val messageWithBody =
+            messageRepository.getMessageWithBody(
+                userId,
+                messageId,
+                MessageBodyTransformations.AttachmentDefaults
+            ).bind()
         val fileUri = attachmentRepository.getAttachment(userId, messageId, attachmentId).bind().fileUri
 
         val attachment = messageWithBody.message.attachments.firstOrNull { it.attachmentId == attachmentId }

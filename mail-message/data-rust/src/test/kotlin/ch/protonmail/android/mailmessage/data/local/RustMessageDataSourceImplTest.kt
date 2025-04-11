@@ -40,6 +40,7 @@ import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
 import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -155,7 +156,7 @@ class RustMessageDataSourceImplTest {
         val messageId = LocalMessageIdSample.AugWeatherForecast
         val mailbox = mockk<MailboxWrapper>()
         val transformOpts = mockk<TransformOpts>()
-        val bodyBanners = mockk<List<MessageBanner>>()
+        val bodyBanners = emptyList<MessageBanner>()
         val bodyOutput = BodyOutput(
             "message body",
             false,
@@ -177,7 +178,7 @@ class RustMessageDataSourceImplTest {
         coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns decryptedMessageBodyWrapper.right()
 
         // When
-        val result = dataSource.getMessageBody(userId, messageId)
+        val result = dataSource.getMessageBody(userId, messageId, MessageBodyTransformations.MessageDetailsDefaults)
 
         // Then
         coVerify { rustMailboxFactory.createAllMail(userId) }
@@ -195,7 +196,7 @@ class RustMessageDataSourceImplTest {
         coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
         coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns expectedError.left()
         // When
-        val result = dataSource.getMessageBody(userId, messageId)
+        val result = dataSource.getMessageBody(userId, messageId, MessageBodyTransformations.MessageDetailsDefaults)
 
         // Then
         coVerify { rustMailboxFactory.createAllMail(userId) }

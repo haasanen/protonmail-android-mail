@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.DecryptedAttachment
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
@@ -77,7 +78,13 @@ class GetAttachmentIntentValuesTest {
                 attachmentId = id
             )
         } returns decryptedAttachment.right()
-        coEvery { messageRepository.getMessageWithBody(userId, messageId) } returns messageWithBody.right()
+        coEvery {
+            messageRepository.getMessageWithBody(
+                userId,
+                messageId,
+                MessageBodyTransformations.AttachmentDefaults
+            )
+        } returns messageWithBody.right()
 
         // When
         val result = getAttachmentIntentValues(userId, messageId, id)
@@ -96,7 +103,13 @@ class GetAttachmentIntentValuesTest {
                 attachmentId = attachmentId
             )
         } returns DataError.Local.NoDataCached.left()
-        coEvery { messageRepository.getMessageWithBody(userId, messageId) } returns messageWithBody.right()
+        coEvery {
+            messageRepository.getMessageWithBody(
+                userId,
+                messageId,
+                MessageBodyTransformations.AttachmentDefaults
+            )
+        } returns messageWithBody.right()
 
         // When
         val result = getAttachmentIntentValues(userId, messageId, attachmentId)
@@ -109,7 +122,13 @@ class GetAttachmentIntentValuesTest {
     @Test
     fun `should return no data cached when message is not locally available`() = runTest {
         // Given
-        coEvery { messageRepository.getMessageWithBody(userId, messageId) } returns DataError.Local.NoDataCached.left()
+        coEvery {
+            messageRepository.getMessageWithBody(
+                userId,
+                messageId,
+                MessageBodyTransformations.AttachmentDefaults
+            )
+        } returns DataError.Local.NoDataCached.left()
 
         // When
         val result = getAttachmentIntentValues(userId, messageId, attachmentId)
@@ -129,7 +148,13 @@ class GetAttachmentIntentValuesTest {
                 attachmentId = attachmentId
             )
         } returns DataError.Local.OutOfMemory.left()
-        coEvery { messageRepository.getMessageWithBody(userId, messageId) } returns messageWithBody.right()
+        coEvery {
+            messageRepository.getMessageWithBody(
+                userId,
+                messageId,
+                MessageBodyTransformations.AttachmentDefaults
+            )
+        } returns messageWithBody.right()
 
         // When
         val result = getAttachmentIntentValues(userId, messageId, attachmentId)

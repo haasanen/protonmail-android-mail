@@ -26,6 +26,7 @@ import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.RefreshedMessageWithBody
@@ -68,24 +69,19 @@ interface MessageRepository {
     fun observeMessage(userId: UserId, remoteMessageId: RemoteMessageId): Flow<Either<DataError, Message>>
 
     /**
-     * Observe the [MessageWithBody] for a given [MessageId], for [userId]
-     */
-    fun observeMessageWithBody(userId: UserId, messageId: MessageId): Flow<Either<DataError, MessageWithBody>>
-
-    /**
      * Observe the list of [MessageAttachment] for a given [MessageId], for [userId]
      */
     fun observeMessageAttachments(userId: UserId, messageId: MessageId): Flow<List<MessageAttachment>>
 
     /**
-     * Get the [MessageWithBody] for a given [MessageId], for [userId]
+     * Get the [MessageWithBody] for a given [MessageId], for [userId],
+     * respecting the [MessageBodyTransformations] provided.
      */
-    suspend fun getMessageWithBody(userId: UserId, messageId: MessageId): Either<DataError, MessageWithBody>
-
-    /**
-     * Get the [MessageWithBody] for a given [MessageId] and [userId] from the local storage.
-     */
-    suspend fun getLocalMessageWithBody(userId: UserId, messageId: MessageId): Either<DataError, MessageWithBody>
+    suspend fun getMessageWithBody(
+        userId: UserId,
+        messageId: MessageId,
+        messageBodyTransformations: MessageBodyTransformations
+    ): Either<DataError, MessageWithBody>
 
     /**
      * Get the [MessageWithBody] for a given [MessageId] and [userId] from the remote storage
