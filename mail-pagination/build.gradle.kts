@@ -33,7 +33,6 @@ android {
 }
 
 dependencies {
-    api(project(":mail-pagination:data"))
     api(project(":mail-pagination:domain"))
     api(project(":mail-pagination:presentation"))
 }

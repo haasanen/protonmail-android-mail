@@ -52,7 +52,6 @@ dependencies {
     implementation(libs.proton.core.eventManager)
 
     api(project(":mail-pagination:domain"))
-    implementation(project(":mail-pagination:data"))
     implementation(project(":mail-conversation:domain"))
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))

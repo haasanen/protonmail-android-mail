@@ -51,7 +51,6 @@ dependencies {
     implementation(libs.proton.core.user.domain)
 
     api(project(":mail-pagination:domain"))
-    implementation(project(":mail-pagination:data"))
     implementation(project(":mail-conversation:domain"))
     implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-common:domain"))

@@ -60,7 +60,6 @@ dependencies {
     implementation(libs.bundles.module.presentation)
     implementation(libs.androidx.paging.common)
     implementation(libs.androidx.paging.runtime)
-    implementation(libs.androidx.room.ktx)
 
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-pagination:domain"))

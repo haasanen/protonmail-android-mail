@@ -19,8 +19,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    kotlin("plugin.serialization")
     id("app-config-plugin")
 }
 
@@ -45,8 +43,5 @@ android {
 
 dependencies {
     implementation(project(":mail-label:domain"))
-
     implementation(libs.bundles.module.domain)
-
-    testImplementation(libs.bundles.test)
 }
