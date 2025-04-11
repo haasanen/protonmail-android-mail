@@ -19,22 +19,30 @@
 package ch.protonmail.android.maildetail.presentation.viewmodel
 
 import java.util.concurrent.ConcurrentHashMap
-import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
-import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessagesState
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessageState
+import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessagesState
+import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 class FakeInMemoryConversationStateRepository : InMemoryConversationStateRepository {
 
+    private val transformationCache = ConcurrentHashMap<MessageId, MessageBodyTransformations>()
     private val conversationCache = ConcurrentHashMap<MessageId, MessageState>()
     private var shouldHideMessagesBasedOnTrashFilter = true
     private val conversationStateFlow = MutableSharedFlow<MessagesState>(1)
 
     init {
-        conversationStateFlow.tryEmit(MessagesState(conversationCache, shouldHideMessagesBasedOnTrashFilter))
+        conversationStateFlow.tryEmit(
+            MessagesState(
+                transformationCache,
+                conversationCache,
+                shouldHideMessagesBasedOnTrashFilter
+            )
+        )
     }
 
     override val conversationState: Flow<MessagesState> =
@@ -42,21 +50,51 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
 
     override suspend fun expandMessage(messageId: MessageId, decryptedBody: DecryptedMessageBody) {
         conversationCache[messageId] = MessageState.Expanded(decryptedBody)
-        conversationStateFlow.emit(MessagesState(conversationCache, shouldHideMessagesBasedOnTrashFilter))
+        conversationStateFlow.emit(
+            MessagesState(
+                transformationCache,
+                conversationCache,
+                shouldHideMessagesBasedOnTrashFilter
+            )
+        )
     }
 
     override suspend fun expandingMessage(messageId: MessageId) {
         conversationCache[messageId] = MessageState.Expanding
-        conversationStateFlow.emit(MessagesState(conversationCache, shouldHideMessagesBasedOnTrashFilter))
+        conversationStateFlow.emit(
+            MessagesState(
+                transformationCache,
+                conversationCache,
+                shouldHideMessagesBasedOnTrashFilter
+            )
+        )
     }
 
     override suspend fun collapseMessage(messageId: MessageId) {
         conversationCache[messageId] = MessageState.Collapsed
-        conversationStateFlow.emit(MessagesState(conversationCache, shouldHideMessagesBasedOnTrashFilter))
+        conversationStateFlow.emit(
+            MessagesState(
+                transformationCache,
+                conversationCache,
+                shouldHideMessagesBasedOnTrashFilter
+            )
+        )
     }
 
     override suspend fun switchTrashedMessagesFilter() {
         shouldHideMessagesBasedOnTrashFilter = shouldHideMessagesBasedOnTrashFilter.not()
-        conversationStateFlow.emit(MessagesState(conversationCache, shouldHideMessagesBasedOnTrashFilter))
+        conversationStateFlow.emit(
+            MessagesState(
+                transformationCache,
+                conversationCache,
+                shouldHideMessagesBasedOnTrashFilter
+            )
+        )
+    }
+
+    override fun getTransformationsForMessage(messageId: MessageId) = transformationCache[messageId]
+
+    override fun setTransformationsForMessage(messageId: MessageId, transformations: MessageBodyTransformations) {
+        transformationCache[messageId] = transformations
     }
 }

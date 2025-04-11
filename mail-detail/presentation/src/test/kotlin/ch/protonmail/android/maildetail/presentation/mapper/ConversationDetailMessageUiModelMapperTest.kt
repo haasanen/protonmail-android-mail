@@ -20,9 +20,7 @@ package ch.protonmail.android.maildetail.presentation.mapper
 
 import java.util.UUID
 import android.text.format.Formatter
-import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
-import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ExpirationTimeMapper
 import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
@@ -32,10 +30,10 @@ import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
-import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded
 import ch.protonmail.android.maildetail.presentation.sample.MessageDetailBodyUiModelSample
 import ch.protonmail.android.maildetail.presentation.sample.MessageLocationUiModelSample
 import ch.protonmail.android.maildetail.presentation.viewmodel.EmailBodyTestSamples
+import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
@@ -43,7 +41,6 @@ import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
 import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.maildetail.MessageBannersUiModelTestData.messageBannersUiModel
 import io.mockk.coEvery
@@ -119,7 +116,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         messageBody = EmailBodyTestSamples.BodyWithoutQuotes
     )
     private val messageBodyUiModelMapper: MessageBodyUiModelMapper = mockk {
-        coEvery { toUiModel(any(), any<DecryptedMessageBody>(), any()) } returns messageBodyUiModel
+        coEvery { toUiModel(any(), any()) } returns messageBodyUiModel
     }
     private val participantUiModelMapper: ParticipantUiModelMapper = mockk {
         every {
@@ -181,18 +178,19 @@ internal class ConversationDetailMessageUiModelMapperTest {
     @Test
     fun `map to ui model returns expanded model`() = runTest {
         // given
-        val userId = UserIdSample.Primary
         val message = MessageSample.AugWeatherForecast
         val decryptedMessageBody = DecryptedMessageBody(
             message.messageId,
             UUID.randomUUID().toString(),
-            MimeType.Html
+            isUnread = true,
+            MimeType.Html,
+            hasQuotedText = false,
+            banners = emptyList()
         )
         val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
         val result = mapper.toUiModel(
-            userId = userId,
             message = message,
             avatarImageState = avatarImageState,
             primaryUserAddress = primaryUserAddress,
@@ -207,7 +205,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
                 message, primaryUserAddress, avatarImageState
             )
         }
-        coVerify { messageBodyUiModelMapper.toUiModel(userId, decryptedMessageBody) }
+        coVerify { messageBodyUiModelMapper.toUiModel(decryptedMessageBody) }
     }
 
     @Test
@@ -357,38 +355,5 @@ internal class ConversationDetailMessageUiModelMapperTest {
         // Then
         assertEquals(true, result.isUnread)
         assertNull(result.messageDetailHeaderUiModel.location.color)
-    }
-
-    @Test
-    fun `should retain the body quote expanded or collapsed state`() = runTest {
-        // given
-        val userId = UserIdSample.Primary
-        val message = MessageSample.AugWeatherForecast
-        val decryptedMessageBody = DecryptedMessageBody(
-            message.messageId,
-            UUID.randomUUID().toString(),
-            MimeType.Html
-        )
-        val previousState = AugWeatherForecastExpanded.copy(expandCollapseMode = MessageBodyExpandCollapseMode.Expanded)
-        val avatarImageState = AvatarImageState.NoImageAvailable
-
-        // when
-        val result = mapper.toUiModel(
-            userId,
-            message,
-            avatarImageState = avatarImageState,
-            primaryUserAddress = primaryUserAddress,
-            decryptedMessageBody = decryptedMessageBody,
-            existingMessageUiState = previousState
-        )
-
-        // then
-        assertEquals(MessageBodyExpandCollapseMode.Expanded, result.expandCollapseMode)
-        coVerify {
-            messageBodyUiModelMapper.toUiModel(
-                userId, decryptedMessageBody,
-                previousState.messageBodyUiModel
-            )
-        }
     }
 }

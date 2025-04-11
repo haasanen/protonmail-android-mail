@@ -56,13 +56,13 @@ import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
+import ch.protonmail.android.maildetail.domain.usecase.MessageViewStateCache
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
-import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
 import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMetadataUiModelMapper
@@ -93,6 +93,7 @@ import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Participant
@@ -104,7 +105,6 @@ import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
@@ -119,6 +119,7 @@ import ch.protonmail.android.testdata.conversation.ConversationTestData
 import ch.protonmail.android.testdata.conversation.ConversationUiModelTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -251,8 +252,8 @@ class ConversationDetailViewModelTest {
         } returns listOf(ConversationTestData.conversation).right()
     }
     private val getDecryptedMessageBody: GetDecryptedMessageBody = mockk {
-        coEvery { this@mockk.invoke(any(), any()) } returns DecryptedMessageBody(
-            MessageIdSample.build(), "", MimeType.Html, emptyList()
+        coEvery { this@mockk.invoke(any(), any(), any()) } returns DecryptedMessageBody(
+            MessageIdSample.build(), "", isUnread = false, MimeType.Html, hasQuotedText = false, banners = emptyList()
         ).right()
     }
     private val markMessageAsRead: MarkMessageAsRead =
@@ -283,7 +284,7 @@ class ConversationDetailViewModelTest {
     private val updateLinkConfirmationSetting = mockk<UpdateLinkConfirmationSetting>()
 
     private val inMemoryConversationStateRepository = FakeInMemoryConversationStateRepository()
-    private val setMessageViewState = SetMessageViewState(inMemoryConversationStateRepository)
+    private val messageViewStateCache = MessageViewStateCache(inMemoryConversationStateRepository)
     private val observeConversationViewState = ObserveConversationViewState(inMemoryConversationStateRepository)
     private val networkManager = mockk<NetworkManager>()
     private val reportPhishingMessage = mockk<ReportPhishingMessage>()
@@ -327,7 +328,7 @@ class ConversationDetailViewModelTest {
             savedStateHandle = savedStateHandle,
             getDecryptedMessageBody = getDecryptedMessageBody,
             markMessageAsRead = markMessageAsRead,
-            setMessageViewState = setMessageViewState,
+            messageViewStateCache = messageViewStateCache,
             observeConversationViewState = observeConversationViewState,
             getAttachmentIntentValues = getAttachmentIntentValues,
             getEmbeddedImageAvoidDuplicatedExecution = getEmbeddedImageAvoidDuplicatedExecution,
@@ -487,7 +488,6 @@ class ConversationDetailViewModelTest {
         } returns expectedState
         coEvery {
             conversationMessageMapper.toUiModel(
-                userId = any(),
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
@@ -619,7 +619,6 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                userId = any(),
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
@@ -659,7 +658,6 @@ class ConversationDetailViewModelTest {
         val expected = initialState.copy(bottomBarState = BottomBarState.Error.FailedLoadingActions)
         coEvery {
             conversationMessageMapper.toUiModel(
-                userId = any(),
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
@@ -986,6 +984,10 @@ class ConversationDetailViewModelTest {
         // given
         val (messageIds, expectedExpanded) = setupCollapsedToExpandMessagesState(withUnreadMessage = true)
 
+        coEvery { getDecryptedMessageBody(userId, MessageId(messageIds.first().id)) } returns DecryptedMessageBody(
+            MessageIdSample.build(), "", isUnread = true, MimeType.Html, hasQuotedText = false, banners = emptyList()
+        ).right()
+
         viewModel.state.test {
             conversationMessagesEmitted()
 
@@ -1124,7 +1126,6 @@ class ConversationDetailViewModelTest {
         ).toImmutableList()
         coEvery {
             conversationMessageMapper.toUiModel(
-                userId = any(),
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
@@ -1158,124 +1159,193 @@ class ConversationDetailViewModelTest {
     }
 
     @Test
-    fun `expand collapse mode of the automatically expanded message will be collapsed when body contains quote`() =
-        runTest {
-            // given
-            val expectedUiModel = InvoiceWithLabelExpanded.copy(
-                expandCollapseMode = MessageBodyExpandCollapseMode.Collapsed
-            )
-            val messages = nonEmptyListOf(
-                InvoiceWithLabelExpanded
-            ).toImmutableList()
-            coEvery {
-                conversationMessageMapper.toUiModel(
-                    userId = any(),
-                    message = any(),
-                    avatarImageState = any(),
-                    primaryUserAddress = primaryUserAddress,
-                    decryptedMessageBody = any()
-                )
-            } returns expectedUiModel
-            coEvery {
-                reducer.newStateFrom(
-                    currentState = any(),
-                    operation = any()
-                )
-            } returns ConversationDetailState.Loading.copy(
-                messagesState = ConversationDetailsMessagesState.Data(messages)
-            )
+    fun `should request the message body again when expand quoted body is invoked`() = runTest {
+        // Given
+        val messages = nonEmptyListOf(InvoiceWithLabelExpanded).toImmutableList()
+        val messageId = InvoiceWithLabelExpanded.messageId
 
-            viewModel.state.test {
-                initialStateEmitted()
-
-                // when
-                advanceUntilIdle()
-                val newState = awaitItem().messagesState as ConversationDetailsMessagesState.Data
-
-                // then
-                val expandedMessage =
-                    newState
-                        .messages
-                        .first { it.messageId == InvoiceWithLabelExpanded.messageId }
-                assertIs<ConversationDetailMessageUiModel.Expanded>(expandedMessage)
-                assertEquals(MessageBodyExpandCollapseMode.Collapsed, expandedMessage.expandCollapseMode)
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
-    fun `when user clicks on expand collapse button in the expanded message then mode will toggle`() = runTest {
-        // given
-        val expectedUiModel = InvoiceWithLabelExpanded.copy(
-            expandCollapseMode = MessageBodyExpandCollapseMode.Collapsed
-        )
-        val messagesBodyCollapsed = nonEmptyListOf(
-            InvoiceWithLabelExpanded.copy(
-                expandCollapseMode = MessageBodyExpandCollapseMode.Collapsed
-            )
-        ).toImmutableList()
-        val messagesBodyExpanded = nonEmptyListOf(
-            InvoiceWithLabelExpanded.copy(
-                expandCollapseMode = MessageBodyExpandCollapseMode.Expanded
-            )
-        ).toImmutableList()
         coEvery {
             conversationMessageMapper.toUiModel(
-                userId = any(),
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
-        } returns expectedUiModel
+        } returns messages.first()
+
         coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = any()
             )
         } returns ConversationDetailState.Loading.copy(
-            messagesState = ConversationDetailsMessagesState.Data(messagesBodyCollapsed)
-        )
-        coEvery {
-            reducer.newStateFrom(
-                currentState = any(),
-                operation = ofType<ConversationDetailViewAction.ExpandOrCollapseMessageBody>()
-            )
-        } returns ConversationDetailState.Loading.copy(
-            messagesState = ConversationDetailsMessagesState.Data(messagesBodyExpanded)
+            messagesState = ConversationDetailsMessagesState.Data(messages)
         )
 
         viewModel.state.test {
             initialStateEmitted()
 
-            // when
             advanceUntilIdle()
             val newState = awaitItem().messagesState as ConversationDetailsMessagesState.Data
 
-            // then
-            val expandedMessage =
-                newState
-                    .messages
-                    .first { it.messageId == InvoiceWithLabelExpanded.messageId }
+            val expandedMessage = newState.messages.first { it.messageId == messageId }
             assertIs<ConversationDetailMessageUiModel.Expanded>(expandedMessage)
-            assertEquals(MessageBodyExpandCollapseMode.Collapsed, expandedMessage.expandCollapseMode)
 
-            // when
-            viewModel.submit(
-                ConversationDetailViewAction.ExpandOrCollapseMessageBody(InvoiceWithLabelExpanded.messageId)
-            )
+            viewModel.submit(ConversationDetailViewAction.ExpandOrCollapseMessageBody(messageId))
             advanceUntilIdle()
 
-            // Then
-            val newStateForExpandBody = awaitItem().messagesState as ConversationDetailsMessagesState.Data
-            val messageWithCollapsedBody =
-                newStateForExpandBody
-                    .messages
-                    .first { it.messageId == InvoiceWithLabelExpanded.messageId }
-            assertIs<ConversationDetailMessageUiModel.Expanded>(messageWithCollapsedBody)
-            assertEquals(MessageBodyExpandCollapseMode.Expanded, messageWithCollapsedBody.expandCollapseMode)
+            cancelAndIgnoreRemainingEvents()
+
+            val transformations = MessageBodyTransformations.MessageDetailsDefaults.copy(showQuotedText = true)
+
+            coVerify(exactly = 1) {
+                getDecryptedMessageBody(userId, MessageId(messageId.id), transformations)
+            }
+            confirmVerified(getDecryptedMessageBody)
+        }
+    }
+
+    @Test
+    fun `should request the message body again when load remote content is invoked`() = runTest {
+        // Given
+        val messages = nonEmptyListOf(InvoiceWithLabelExpanded).toImmutableList()
+        val messageId = InvoiceWithLabelExpanded.messageId
+
+        coEvery {
+            conversationMessageMapper.toUiModel(
+                message = any(),
+                avatarImageState = any(),
+                primaryUserAddress = primaryUserAddress,
+                decryptedMessageBody = any()
+            )
+        } returns messages.first()
+
+        coEvery {
+            reducer.newStateFrom(
+                currentState = any(),
+                operation = any()
+            )
+        } returns ConversationDetailState.Loading.copy(
+            messagesState = ConversationDetailsMessagesState.Data(messages)
+        )
+
+        viewModel.state.test {
+            initialStateEmitted()
+
+            advanceUntilIdle()
+            val newState = awaitItem().messagesState as ConversationDetailsMessagesState.Data
+
+            val expandedMessage = newState.messages.first { it.messageId == messageId }
+            assertIs<ConversationDetailMessageUiModel.Expanded>(expandedMessage)
+
+            viewModel.submit(ConversationDetailViewAction.LoadRemoteContent(messageId))
+            advanceUntilIdle()
 
             cancelAndIgnoreRemainingEvents()
+
+            val transformations = MessageBodyTransformations.MessageDetailsDefaults.copy(hideRemoteContent = false)
+
+            coVerify(exactly = 1) {
+                getDecryptedMessageBody(userId, MessageId(messageId.id), transformations)
+            }
+            confirmVerified(getDecryptedMessageBody)
+        }
+    }
+
+    @Test
+    fun `should request the message body again when load embedded images is invoked`() = runTest {
+        // Given
+        val messages = nonEmptyListOf(InvoiceWithLabelExpanded).toImmutableList()
+        val messageId = InvoiceWithLabelExpanded.messageId
+
+        coEvery {
+            conversationMessageMapper.toUiModel(
+                message = any(),
+                avatarImageState = any(),
+                primaryUserAddress = primaryUserAddress,
+                decryptedMessageBody = any()
+            )
+        } returns messages.first()
+
+        coEvery {
+            reducer.newStateFrom(
+                currentState = any(),
+                operation = any()
+            )
+        } returns ConversationDetailState.Loading.copy(
+            messagesState = ConversationDetailsMessagesState.Data(messages)
+        )
+
+        viewModel.state.test {
+            initialStateEmitted()
+
+            advanceUntilIdle()
+            val newState = awaitItem().messagesState as ConversationDetailsMessagesState.Data
+
+            val expandedMessage = newState.messages.first { it.messageId == messageId }
+            assertIs<ConversationDetailMessageUiModel.Expanded>(expandedMessage)
+
+            viewModel.submit(ConversationDetailViewAction.ShowEmbeddedImages(messageId))
+            advanceUntilIdle()
+
+            cancelAndIgnoreRemainingEvents()
+
+            val transformations = MessageBodyTransformations.MessageDetailsDefaults.copy(hideEmbeddedImages = false)
+
+            coVerify(exactly = 1) {
+                getDecryptedMessageBody(userId, MessageId(messageId.id), transformations)
+            }
+            confirmVerified(getDecryptedMessageBody)
+        }
+    }
+
+    @Test
+    fun `should request the message body again when load remote + embedded images is invoked`() = runTest {
+        // Given
+        val messages = nonEmptyListOf(InvoiceWithLabelExpanded).toImmutableList()
+        val messageId = InvoiceWithLabelExpanded.messageId
+
+        coEvery {
+            conversationMessageMapper.toUiModel(
+                message = any(),
+                avatarImageState = any(),
+                primaryUserAddress = primaryUserAddress,
+                decryptedMessageBody = any()
+            )
+        } returns messages.first()
+
+        coEvery {
+            reducer.newStateFrom(
+                currentState = any(),
+                operation = any()
+            )
+        } returns ConversationDetailState.Loading.copy(
+            messagesState = ConversationDetailsMessagesState.Data(messages)
+        )
+
+        viewModel.state.test {
+            initialStateEmitted()
+
+            advanceUntilIdle()
+            val newState = awaitItem().messagesState as ConversationDetailsMessagesState.Data
+
+            val expandedMessage = newState.messages.first { it.messageId == messageId }
+            assertIs<ConversationDetailMessageUiModel.Expanded>(expandedMessage)
+
+            viewModel.submit(ConversationDetailViewAction.LoadRemoteAndEmbeddedContent(messageId))
+            advanceUntilIdle()
+
+            cancelAndIgnoreRemainingEvents()
+
+            val transformations = MessageBodyTransformations.MessageDetailsDefaults.copy(
+                hideEmbeddedImages = false,
+                hideRemoteContent = false
+            )
+
+            coVerify(exactly = 1) {
+                getDecryptedMessageBody(userId, MessageId(messageId.id), transformations)
+            }
+            confirmVerified(getDecryptedMessageBody)
         }
     }
 
@@ -1285,7 +1355,6 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                userId = any(),
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
@@ -1309,7 +1378,6 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                userId = any(),
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
@@ -1641,7 +1709,6 @@ class ConversationDetailViewModelTest {
             ConversationDetailMessageUiModelSample.InvoiceWithLabel
         coEvery {
             conversationMessageMapper.toUiModel(
-                userId = any(),
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,

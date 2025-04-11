@@ -200,13 +200,10 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     data class ExpandOrCollapseAttachmentList(val messageId: MessageIdUiModel) :
         ConversationDetailViewAction
 
-    data class ExpandOrCollapseMessageBody(val messageId: MessageIdUiModel) :
-        ConversationDetailViewAction, AffectingMessages
-
-    data class LoadRemoteContent(val messageId: MessageIdUiModel) : ConversationDetailViewAction, AffectingMessages
-    data class ShowEmbeddedImages(val messageId: MessageIdUiModel) : ConversationDetailViewAction, AffectingMessages
-    data class LoadRemoteAndEmbeddedContent(val messageId: MessageIdUiModel) :
-        ConversationDetailViewAction, AffectingMessages
+    data class ExpandOrCollapseMessageBody(val messageId: MessageIdUiModel) : ConversationDetailViewAction
+    data class LoadRemoteContent(val messageId: MessageIdUiModel) : ConversationDetailViewAction
+    data class ShowEmbeddedImages(val messageId: MessageIdUiModel) : ConversationDetailViewAction
+    data class LoadRemoteAndEmbeddedContent(val messageId: MessageIdUiModel) : ConversationDetailViewAction
 
     data class ReportPhishing(val messageId: MessageId) : ConversationDetailViewAction
     object ReportPhishingDismissed : ConversationDetailViewAction, AffectingReportPhishingDialog

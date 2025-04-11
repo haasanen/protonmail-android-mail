@@ -25,9 +25,10 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMes
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState.Data
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState.Error
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
@@ -46,18 +47,15 @@ class ConversationDetailMessagesReducer @Inject constructor(
         currentState: ConversationDetailsMessagesState,
         operation: ConversationDetailOperation.AffectingMessages
     ): ConversationDetailsMessagesState = when (operation) {
-        ConversationDetailEvent.ErrorLoadingContacts -> ConversationDetailsMessagesState.Error(
+        ConversationDetailEvent.ErrorLoadingContacts -> Error(
             message = TextUiModel(string.detail_error_loading_contacts)
         )
 
-        is ConversationDetailEvent.ErrorLoadingMessages -> ConversationDetailsMessagesState.Error(
+        is ConversationDetailEvent.ErrorLoadingMessages -> Error(
             message = TextUiModel(string.detail_error_loading_messages)
         )
 
-        is ConversationDetailEvent.MessagesData -> ConversationDetailsMessagesState.Data(
-            messages = operation.messagesUiModels
-        )
-
+        is ConversationDetailEvent.MessagesData -> Data(messages = operation.messagesUiModels)
         is ConversationDetailEvent.NoNetworkError -> currentState.toNewStateForNoNetworkError()
         is ConversationDetailEvent.ErrorLoadingConversation -> currentState.toNewStateForErrorLoadingConversation()
         is ConversationDetailEvent.CollapseDecryptedMessage ->
@@ -102,22 +100,6 @@ class ConversationDetailMessagesReducer @Inject constructor(
                 operation.expandCollapseMode
             )
 
-        is ConversationDetailViewAction.ExpandOrCollapseMessageBody -> {
-            currentState.toNewMessageBodyExpandCollapseState(operation)
-        }
-
-        is ConversationDetailViewAction.LoadRemoteContent -> {
-            currentState.toNewMessageBodyLoadRemoteContentState(operation)
-        }
-
-        is ConversationDetailViewAction.ShowEmbeddedImages -> {
-            currentState.toNewMessageBodyShowEmbeddedImagesState(operation)
-        }
-
-        is ConversationDetailViewAction.LoadRemoteAndEmbeddedContent -> {
-            currentState.toNewStateLoadRemoteAndEmbeddedContent(operation)
-        }
-
         is ConversationDetailViewAction.SwitchViewMode -> {
             currentState.toNewStateForSwitchViewMode(operation.messageId, operation.viewModePreference)
         }
@@ -137,93 +119,6 @@ class ConversationDetailMessagesReducer @Inject constructor(
         is ConversationDetailsMessagesState.Error -> ConversationDetailsMessagesState.Error(
             message = TextUiModel(string.detail_error_loading_messages)
         )
-    }
-
-    private fun ConversationDetailsMessagesState.toNewStateLoadRemoteAndEmbeddedContent(
-        operation: ConversationDetailViewAction.LoadRemoteAndEmbeddedContent
-    ): ConversationDetailsMessagesState = when (this) {
-        is ConversationDetailsMessagesState.Data -> ConversationDetailsMessagesState.Data(
-            messages = messages.map {
-                if (it.messageId == operation.messageId && it is ConversationDetailMessageUiModel.Expanded) {
-                    it.copy(
-                        messageBodyUiModel = it.messageBodyUiModel.copy(
-                            shouldShowEmbeddedImages = true,
-                            shouldShowRemoteContent = true,
-                            shouldShowEmbeddedImagesBanner = false,
-                            shouldShowRemoteContentBanner = false
-                        )
-                    )
-                } else {
-                    it
-                }
-            }.toImmutableList()
-        )
-
-        else -> this
-    }
-
-    private fun ConversationDetailsMessagesState.toNewMessageBodyShowEmbeddedImagesState(
-        operation: ConversationDetailViewAction.ShowEmbeddedImages
-    ): ConversationDetailsMessagesState = when (this) {
-        is ConversationDetailsMessagesState.Data -> ConversationDetailsMessagesState.Data(
-            messages = messages.map {
-                if (it.messageId == operation.messageId && it is ConversationDetailMessageUiModel.Expanded) {
-                    it.copy(
-                        messageBodyUiModel = it.messageBodyUiModel.copy(
-                            shouldShowEmbeddedImages = true,
-                            shouldShowEmbeddedImagesBanner = false
-                        )
-                    )
-                } else {
-                    it
-                }
-            }.toImmutableList()
-        )
-
-        else -> this
-    }
-
-    private fun ConversationDetailsMessagesState.toNewMessageBodyLoadRemoteContentState(
-        operation: ConversationDetailViewAction.LoadRemoteContent
-    ): ConversationDetailsMessagesState = when (this) {
-        is ConversationDetailsMessagesState.Data -> ConversationDetailsMessagesState.Data(
-            messages = messages.map {
-                if (it.messageId == operation.messageId && it is ConversationDetailMessageUiModel.Expanded) {
-                    it.copy(
-                        messageBodyUiModel = it.messageBodyUiModel.copy(
-                            shouldShowRemoteContent = true,
-                            shouldShowRemoteContentBanner = false
-                        )
-                    )
-                } else {
-                    it
-                }
-            }.toImmutableList()
-        )
-
-        else -> this
-    }
-
-    private fun ConversationDetailsMessagesState.toNewMessageBodyExpandCollapseState(
-        operation: ConversationDetailViewAction.ExpandOrCollapseMessageBody
-    ): ConversationDetailsMessagesState = when (this) {
-        is ConversationDetailsMessagesState.Data -> ConversationDetailsMessagesState.Data(
-            messages = messages.map {
-                if (it.messageId == operation.messageId && it is ConversationDetailMessageUiModel.Expanded) {
-                    it.copy(
-                        expandCollapseMode = when (it.expandCollapseMode) {
-                            MessageBodyExpandCollapseMode.Collapsed -> MessageBodyExpandCollapseMode.Expanded
-                            MessageBodyExpandCollapseMode.Expanded -> MessageBodyExpandCollapseMode.Collapsed
-                            else -> it.expandCollapseMode
-                        }
-                    )
-                } else {
-                    it
-                }
-            }.toImmutableList()
-        )
-
-        else -> this
     }
 
     private fun ConversationDetailsMessagesState.toNewExpandCollapseState(
@@ -358,13 +253,6 @@ class ConversationDetailMessagesReducer @Inject constructor(
                                 messageBody = injectCssIntoDecryptedMessageBody(
                                     MessageBodyWithType(
                                         it.messageBodyUiModel.messageBody,
-                                        it.messageBodyUiModel.mimeType
-                                    ),
-                                    viewModePreference
-                                ),
-                                messageBodyWithoutQuote = injectCssIntoDecryptedMessageBody(
-                                    MessageBodyWithType(
-                                        it.messageBodyUiModel.messageBodyWithoutQuote,
                                         it.messageBodyUiModel.mimeType
                                     ),
                                     viewModePreference

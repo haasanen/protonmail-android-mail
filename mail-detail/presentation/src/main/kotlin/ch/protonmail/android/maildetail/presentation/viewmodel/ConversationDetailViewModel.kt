@@ -47,13 +47,13 @@ import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
+import ch.protonmail.android.maildetail.domain.usecase.MessageViewStateCache
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
-import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMetadataUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.MessageIdUiModelMapper
@@ -90,6 +90,7 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
+import ch.protonmail.android.mailmessage.domain.mapper.MessageBodyTransformationsMapper
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
@@ -98,6 +99,8 @@ import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.Message
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformationsOverride
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
@@ -169,7 +172,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val getDecryptedMessageBody: GetDecryptedMessageBody,
     private val markMessageAsRead: MarkMessageAsRead,
-    private val setMessageViewState: SetMessageViewState,
+    private val messageViewStateCache: MessageViewStateCache,
     private val observeConversationViewState: ObserveConversationViewState,
     private val getAttachmentIntentValues: GetAttachmentIntentValues,
     private val getEmbeddedImageAvoidDuplicatedExecution: GetEmbeddedImageAvoidDuplicatedExecution,
@@ -303,15 +306,40 @@ class ConversationDetailViewModel @Inject constructor(
             is MessageBodyLinkClicked,
             is RequestScrollTo,
             is ScrollRequestCompleted,
-            is ConversationDetailViewAction.ExpandOrCollapseMessageBody,
-            is ConversationDetailViewAction.ShowEmbeddedImages,
-            is ConversationDetailViewAction.LoadRemoteAndEmbeddedContent,
-            is ConversationDetailViewAction.LoadRemoteContent,
+
             is ConversationDetailViewAction.ReportPhishingDismissed,
             is ConversationDetailViewAction.SwitchViewMode -> directlyHandleViewAction(action)
 
             is ConversationDetailViewAction.OnAvatarImageLoadRequested ->
                 handleOnAvatarImageLoadRequested(action.avatar)
+
+            is ConversationDetailViewAction.ShowEmbeddedImages -> viewModelScope.launch {
+                setOrRefreshMessageBody(
+                    messageId = action.messageId,
+                    override = MessageBodyTransformationsOverride.LoadEmbeddedImages
+                )
+            }
+
+            is ConversationDetailViewAction.ExpandOrCollapseMessageBody -> viewModelScope.launch {
+                setOrRefreshMessageBody(
+                    messageId = action.messageId,
+                    override = MessageBodyTransformationsOverride.ToggleQuotedText
+                )
+            }
+
+            is ConversationDetailViewAction.LoadRemoteAndEmbeddedContent -> viewModelScope.launch {
+                setOrRefreshMessageBody(
+                    messageId = action.messageId,
+                    override = MessageBodyTransformationsOverride.LoadRemoteContentAndEmbeddedImages
+                )
+            }
+
+            is ConversationDetailViewAction.LoadRemoteContent -> viewModelScope.launch {
+                setOrRefreshMessageBody(
+                    messageId = action.messageId,
+                    override = MessageBodyTransformationsOverride.LoadRemoteContent
+                )
+            }
         }
     }
 
@@ -376,7 +404,6 @@ class ConversationDetailViewModel @Inject constructor(
                 }
             }
             val messagesUiModels = buildMessagesUiModels(
-                userId = userId,
                 messages = conversationMessages.messages,
                 primaryUserAddress = primaryUserAddress,
                 currentViewState = conversationViewState,
@@ -428,14 +455,12 @@ class ConversationDetailViewModel @Inject constructor(
     }
 
     private suspend fun buildMessagesUiModels(
-        userId: UserId,
         messages: NonEmptyList<Message>,
         primaryUserAddress: String?,
         currentViewState: InMemoryConversationStateRepository.MessagesState,
         avatarImageStates: AvatarImageStates
     ): NonEmptyList<ConversationDetailMessageUiModel> {
         val messagesList = messages.map { message ->
-            val existingMessageState = getExistingExpandedMessageUiState(message.messageId)
             val avatarImageState = avatarImageStates.getStateForAddress(message.sender.address)
             when (val viewState = currentViewState.messagesState[message.messageId]) {
                 is InMemoryConversationStateRepository.MessageState.Expanding ->
@@ -445,10 +470,8 @@ class ConversationDetailViewModel @Inject constructor(
 
                 is InMemoryConversationStateRepository.MessageState.Expanded -> {
                     buildExpandedMessage(
-                        userId,
                         message,
                         avatarImageState,
-                        existingMessageState,
                         primaryUserAddress,
                         viewState.decryptedBody
                     )
@@ -460,18 +483,6 @@ class ConversationDetailViewModel @Inject constructor(
             }
         }
         return messagesList
-    }
-
-    private fun getExistingExpandedMessageUiState(messageId: MessageId): ConversationDetailMessageUiModel.Expanded? {
-        return when (val messagesState = state.value.messagesState) {
-            is ConversationDetailsMessagesState.Data -> {
-                messagesState.messages
-                    .filterIsInstance<ConversationDetailMessageUiModel.Expanded>()
-                    .firstOrNull { it.messageId.id == messageId.id }
-            }
-
-            else -> null
-        }
     }
 
     private fun requestScrollToMessageId(
@@ -506,19 +517,15 @@ class ConversationDetailViewModel @Inject constructor(
     )
 
     private suspend fun buildExpandedMessage(
-        userId: UserId,
         message: Message,
         avatarImageState: AvatarImageState,
-        existingMessageUiState: ConversationDetailMessageUiModel.Expanded?,
         primaryUserAddress: String?,
         decryptedBody: DecryptedMessageBody
     ): ConversationDetailMessageUiModel.Expanded = conversationMessageMapper.toUiModel(
-        userId,
         message,
         avatarImageState,
         primaryUserAddress,
-        decryptedBody,
-        existingMessageUiState
+        decryptedBody
     )
 
     private fun observeBottomBarActions(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
@@ -836,34 +843,60 @@ class ConversationDetailViewModel @Inject constructor(
     private fun onExpandMessage(messageId: MessageIdUiModel) {
         viewModelScope.launch(ioDispatcher) {
             val domainMsgId = MessageId(messageId.id)
-            setMessageViewState.expanding(domainMsgId)
-            getDecryptedMessageBody(primaryUserId.first(), domainMsgId)
-                .onRight { message ->
-                    setMessageViewState.expanded(domainMsgId, message)
-                    if (message.attachments.isNotEmpty()) {
-                        updateObservedAttachments(mapOf(domainMsgId to message.attachments))
-                    }
-
-                    markMessageAsRead(primaryUserId.first(), domainMsgId)
-                }
-                .onLeft {
-                    emitMessageBodyDecryptError(it, messageId)
-                    setMessageViewState.collapsed(domainMsgId)
-                }
-                .getOrNull()
+            messageViewStateCache.setExpanding(domainMsgId)
+            setOrRefreshMessageBody(messageId)
         }
+    }
+
+    private suspend fun setOrRefreshMessageBody(
+        messageId: MessageIdUiModel,
+        override: MessageBodyTransformationsOverride? = null
+    ) {
+        val domainMsgId = MessageId(messageId.id)
+
+        val currentTransformations = messageViewStateCache.getTransformations(domainMsgId)
+            ?: MessageBodyTransformations.MessageDetailsDefaults
+
+        val newTransformations = MessageBodyTransformationsMapper.applyOverride(currentTransformations, override)
+
+        processMessageBody(primaryUserId.first(), domainMsgId, messageId, newTransformations)
+    }
+
+    private suspend fun processMessageBody(
+        userId: UserId,
+        domainMsgId: MessageId,
+        uiMessageId: MessageIdUiModel,
+        transformations: MessageBodyTransformations
+    ) {
+        getDecryptedMessageBody(userId, domainMsgId, transformations)
+            .onRight { message ->
+                messageViewStateCache.setExpanded(domainMsgId, message)
+                messageViewStateCache.setTransformations(domainMsgId, transformations)
+
+                if (message.attachments.isNotEmpty()) {
+                    updateObservedAttachments(mapOf(domainMsgId to message.attachments))
+                }
+
+                if (message.isUnread) {
+                    markMessageAsRead(userId, domainMsgId)
+                }
+            }
+            .onLeft { error ->
+                emitMessageBodyDecryptError(error, uiMessageId)
+                messageViewStateCache.setCollapsed(domainMsgId)
+            }
     }
 
     private fun onCollapseMessage(messageId: MessageIdUiModel) {
         viewModelScope.launch {
-            setMessageViewState.collapsed(MessageId(messageId.id))
+            messageViewStateCache.setCollapsed(MessageId(messageId.id))
             removeObservedAttachments(MessageId(messageId.id))
         }
     }
 
     private fun handleChangeVisibilityOfMessages() {
         viewModelScope.launch {
-            setMessageViewState.switchTrashedMessagesFilter()
+            messageViewStateCache.switchTrashedMessagesFilter()
         }
     }
 

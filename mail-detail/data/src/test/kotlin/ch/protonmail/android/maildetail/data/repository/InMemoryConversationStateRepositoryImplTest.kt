@@ -90,7 +90,10 @@ class InMemoryConversationStateRepositoryImplTest {
         val decryptedBody = DecryptedMessageBody(
             messageId = messageId,
             value = UUID.randomUUID().toString(),
-            mimeType = MimeType.Html
+            mimeType = MimeType.Html,
+            hasQuotedText = false,
+            isUnread = false,
+            banners = emptyList()
         )
 
         // When
@@ -113,7 +116,10 @@ class InMemoryConversationStateRepositoryImplTest {
         val decryptedBody = DecryptedMessageBody(
             messageId = messageId,
             value = UUID.randomUUID().toString(),
-            mimeType = MimeType.Html
+            mimeType = MimeType.Html,
+            hasQuotedText = false,
+            isUnread = false,
+            banners = emptyList()
         )
 
         // When

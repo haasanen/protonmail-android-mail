@@ -28,12 +28,12 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
-class SetMessageViewStateTest {
+class MessageViewStateCacheTest {
 
     private val repo = mockk<InMemoryConversationStateRepository>(relaxUnitFun = true)
 
     @Test
-    fun `Should expand message on expand`() = runTest {
+    fun `Should expand message on setExpanded`() = runTest {
         // Given
         val useCase = buildUseCase()
         val messageId = MessageId(UUID.randomUUID().toString())
@@ -41,37 +41,40 @@ class SetMessageViewStateTest {
             messageId = messageId,
             value = UUID.randomUUID().toString(),
             mimeType = MimeType.Html,
+            hasQuotedText = false,
+            isUnread = true,
+            banners = emptyList(),
             attachments = emptyList()
         )
 
         // When
-        useCase.expanded(messageId, decryptedMessageBody)
+        useCase.setExpanded(messageId, decryptedMessageBody)
 
         // Then
         coVerify { repo.expandMessage(messageId, decryptedMessageBody) }
     }
 
     @Test
-    fun `Should collapse message on collapse`() = runTest {
+    fun `Should collapse message on setCollapsed`() = runTest {
         // Given
         val useCase = buildUseCase()
         val messageId = MessageId(UUID.randomUUID().toString())
 
         // When
-        useCase.collapsed(messageId)
+        useCase.setCollapsed(messageId)
 
         // Then
         coVerify { repo.collapseMessage(messageId) }
     }
 
     @Test
-    fun `Should call expanding on expanding message`() = runTest {
+    fun `Should call setExpanding on expanding message`() = runTest {
         // Given
         val useCase = buildUseCase()
         val messageId = MessageId(UUID.randomUUID().toString())
 
         // When
-        useCase.expanding(messageId)
+        useCase.setExpanding(messageId)
 
         // Then
         coVerify { repo.expandingMessage(messageId) }
@@ -89,5 +92,5 @@ class SetMessageViewStateTest {
         coVerify { repo.switchTrashedMessagesFilter() }
     }
 
-    private fun buildUseCase() = SetMessageViewState(repo)
+    private fun buildUseCase() = MessageViewStateCache(repo)
 }

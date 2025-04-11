@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.domain.repository
 
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.flow.Flow
 
@@ -34,7 +35,11 @@ interface InMemoryConversationStateRepository {
 
     suspend fun switchTrashedMessagesFilter()
 
+    fun getTransformationsForMessage(messageId: MessageId): MessageBodyTransformations?
+    fun setTransformationsForMessage(messageId: MessageId, transformations: MessageBodyTransformations)
+
     data class MessagesState(
+        val messagesTransformations: Map<MessageId, MessageBodyTransformations>,
         val messagesState: Map<MessageId, MessageState>,
         val shouldHideMessagesBasedOnTrashFilter: Boolean
     )

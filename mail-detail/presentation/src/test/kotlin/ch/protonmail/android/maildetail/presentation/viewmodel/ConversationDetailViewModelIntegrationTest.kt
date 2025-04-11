@@ -63,25 +63,20 @@ import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenIcsInProtonCalendar
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenProtonCalendarOnPlayStore
-import ch.protonmail.android.maildetail.domain.usecase.DoesMessageBodyHaveEmbeddedImages
-import ch.protonmail.android.maildetail.domain.usecase.DoesMessageBodyHaveRemoteContent
 import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
-import ch.protonmail.android.maildetail.domain.usecase.LabelMessage
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
+import ch.protonmail.android.maildetail.domain.usecase.MessageViewStateCache
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
-import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
-import ch.protonmail.android.maildetail.domain.usecase.ShouldShowEmbeddedImages
-import ch.protonmail.android.maildetail.domain.usecase.ShouldShowRemoteContent
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.mapper.ActionResultMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
@@ -114,7 +109,6 @@ import ch.protonmail.android.maildetail.presentation.reducer.ConversationReportP
 import ch.protonmail.android.maildetail.presentation.reducer.TrashedMessagesBannerReducer
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
-import ch.protonmail.android.maildetail.presentation.usecase.ExtractMessageBodyWithoutQuote
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
@@ -133,6 +127,7 @@ import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.Message
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
@@ -153,7 +148,6 @@ import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataU
 import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.mapper.DetailMoreActionsBottomSheetUiMapper
 import ch.protonmail.android.mailmessage.presentation.mapper.MailLabelTextMapper
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetVisibilityEffect
@@ -200,6 +194,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -293,7 +288,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val unStarConversations: UnStarConversations = mockk()
     private val getDecryptedMessageBody: GetDecryptedMessageBody = mockk {
         coEvery { this@mockk.invoke(any(), any()) } returns DecryptedMessageBody(
-            MessageId("default"), "", MimeType.Html, emptyList()
+            MessageId("default"), "", isUnread = false, MimeType.Html, hasQuotedText = false, emptyList()
         ).right()
     }
 
@@ -308,17 +303,10 @@ class ConversationDetailViewModelIntegrationTest {
     private val getCurrentEpochTimeDuration: GetCurrentEpochTimeDuration = mockk {
         coEvery { this@mockk.invoke() } returns Duration.parse("PT0S")
     }
-    private val shouldShowEmbeddedImages = mockk<ShouldShowEmbeddedImages> {
-        coEvery { this@mockk.invoke(userId) } returns true
-    }
-    private val shouldShowRemoteContent = mockk<ShouldShowRemoteContent> {
-        coEvery { this@mockk.invoke(userId) } returns true
-    }
     private val isProtonCalendarInstalled = mockk<IsProtonCalendarInstalled>()
     private val markMessageAsUnread = mockk<MarkMessageAsUnread>()
     private val moveMessage = mockk<MoveMessage>()
     private val deleteMessages = mockk<DeleteMessages>()
-    private val labelMessage = mockk<LabelMessage>()
     private val avatarInformationMapper = mockk<AvatarInformationMapper> {
         every {
             this@mockk.toUiModel(any(), any(), any())
@@ -328,8 +316,6 @@ class ConversationDetailViewModelIntegrationTest {
     private val messageIdUiModelMapper = MessageIdUiModelMapper()
     private val attachmentMetadataUiModelMapper = AttachmentMetadataUiModelMapper()
     private val attachmentGroupUiModelMapper = AttachmentGroupUiModelMapper(attachmentMetadataUiModelMapper)
-    private val doesMessageBodyHaveEmbeddedImages = DoesMessageBodyHaveEmbeddedImages()
-    private val doesMessageBodyHaveRemoteContent = DoesMessageBodyHaveRemoteContent()
 
     private val getMoreActionsBottomSheetData = GetMoreActionsBottomSheetData(
         getMessageAvailableActions, getConversationAvailableActions, observeMessage, observeConversationUseCase
@@ -358,7 +344,6 @@ class ConversationDetailViewModelIntegrationTest {
         }
     }
     private val injectCssIntoDecryptedMessageBody = InjectCssIntoDecryptedMessageBody(context, flowOf(false))
-    private val extractMessageBodyWithoutQuote = ExtractMessageBodyWithoutQuote()
     private val avatarImageUiModelMapper = AvatarImageUiModelMapper()
 
     private val mailLabelTextMapper = mockk<MailLabelTextMapper> {
@@ -390,12 +375,7 @@ class ConversationDetailViewModelIntegrationTest {
         messageBannersUiModelMapper = MessageBannersUiModelMapper(context),
         messageBodyUiModelMapper = MessageBodyUiModelMapper(
             attachmentGroupUiModelMapper = attachmentGroupUiModelMapper,
-            doesMessageBodyHaveEmbeddedImages = doesMessageBodyHaveEmbeddedImages,
-            doesMessageBodyHaveRemoteContent = doesMessageBodyHaveRemoteContent,
-            injectCssIntoDecryptedMessageBody = injectCssIntoDecryptedMessageBody,
-            shouldShowEmbeddedImages = shouldShowEmbeddedImages,
-            shouldShowRemoteContent = shouldShowRemoteContent,
-            extractMessageBodyWithoutQuote = extractMessageBodyWithoutQuote
+            injectCssIntoDecryptedMessageBody = injectCssIntoDecryptedMessageBody
         ),
         participantUiModelMapper = ParticipantUiModelMapper(resolveParticipantName),
         messageIdUiModelMapper = messageIdUiModelMapper,
@@ -425,7 +405,7 @@ class ConversationDetailViewModelIntegrationTest {
     )
 
     private val inMemoryConversationStateRepository = FakeInMemoryConversationStateRepository()
-    private val setMessageViewState = SetMessageViewState(inMemoryConversationStateRepository)
+    private val messageViewStateCache = MessageViewStateCache(inMemoryConversationStateRepository)
     private val observeConversationViewState = spyk(ObserveConversationViewState(inMemoryConversationStateRepository))
     private val networkManager = mockk<NetworkManager>()
     private val testDispatcher: TestDispatcher by lazy { StandardTestDispatcher() }
@@ -524,6 +504,9 @@ class ConversationDetailViewModelIntegrationTest {
             messageId = messageId,
             value = EmailBodyTestSamples.BodyWithoutQuotes,
             mimeType = MimeType.Html,
+            isUnread = false,
+            hasQuotedText = false,
+            banners = emptyList(),
             attachments = listOf(
                 AttachmentMetadataSamples.Document,
                 AttachmentMetadataSamples.DocumentWithReallyLongFileName,
@@ -557,7 +540,7 @@ class ConversationDetailViewModelIntegrationTest {
                 messages.first().messageBodyUiModel.attachments,
                 expandedMessage.messageBodyUiModel.attachments
             )
-            assertEquals(MessageBodyExpandCollapseMode.NotApplicable, expandedMessage.expandCollapseMode)
+            assertFalse(expandedMessage.messageBodyUiModel.shouldShowExpandCollapseButton)
         }
     }
 
@@ -568,10 +551,15 @@ class ConversationDetailViewModelIntegrationTest {
             ConversationDetailMessageUiModelSample.invoiceExpandedWithAttachments(3)
         )
         val messageId = MessageId(messages.first().messageId.id)
-        coEvery { getDecryptedMessageBody.invoke(userId, any()) } returns DecryptedMessageBody(
+        val transformations =
+            MessageBodyTransformations(showQuotedText = false, hideEmbeddedImages = null, hideRemoteContent = null)
+        coEvery { getDecryptedMessageBody.invoke(userId, any(), transformations) } returns DecryptedMessageBody(
             messageId = messageId,
             value = EmailBodyTestSamples.BodyWithProtonMailQuote,
             mimeType = MimeType.Html,
+            isUnread = false,
+            hasQuotedText = true,
+            banners = emptyList(),
             attachments = listOf(
                 AttachmentMetadataSamples.Document,
                 AttachmentMetadataSamples.DocumentWithReallyLongFileName,
@@ -595,99 +583,7 @@ class ConversationDetailViewModelIntegrationTest {
                 it.messageId == messages.first().messageId
             }
             assertIs<Expanded>(expandedMessageBodyCollapsed)
-            assertEquals(MessageBodyExpandCollapseMode.Collapsed, expandedMessageBodyCollapsed.expandCollapseMode)
-
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `Should expand message body content when user clicks on body expand button`() = runTest {
-        // given
-        val messages = nonEmptyListOf(
-            ConversationDetailMessageUiModelSample.invoiceExpandedWithAttachments(3)
-        )
-        val messageId = MessageId(messages.first().messageId.id)
-        coEvery { getDecryptedMessageBody.invoke(userId, any()) } returns DecryptedMessageBody(
-            messageId = messageId,
-            value = EmailBodyTestSamples.BodyWithProtonMailQuote,
-            mimeType = MimeType.Html,
-            attachments = listOf(
-                AttachmentMetadataSamples.Document,
-                AttachmentMetadataSamples.DocumentWithReallyLongFileName,
-                AttachmentMetadataSamples.Invoice,
-                AttachmentMetadataSamples.Image
-            )
-        ).right()
-
-        val viewModel = buildConversationDetailViewModel()
-        viewModel.state.test {
-            // The initial states
-            skipItems(4)
-            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
-            val stateBodyCollapsed = awaitItem().messagesState as ConversationDetailsMessagesState.Data
-            val msgBodyCollapsed = stateBodyCollapsed.messages.first {
-                it.messageId == messages.first().messageId
-            }
-
-            // When
-            viewModel.submit(
-                ConversationDetailViewAction.ExpandOrCollapseMessageBody(msgBodyCollapsed.messageId)
-            )
-
-            // then
-            val newState = awaitItem().messagesState as ConversationDetailsMessagesState.Data
-            val msgBodyExpanded = newState.messages.first {
-                it.messageId == messages.first().messageId
-            }
-            assertIs<Expanded>(msgBodyExpanded)
-            assertEquals(MessageBodyExpandCollapseMode.Expanded, msgBodyExpanded.expandCollapseMode)
-
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `Should collapse message body content when user clicks on body collapse button`() = runTest {
-        // given
-        val messages = nonEmptyListOf(
-            ConversationDetailMessageUiModelSample.invoiceExpandedWithAttachments(3)
-        )
-        val messageId = MessageId(messages.first().messageId.id)
-        val messageIdUiModel = messageIdUiModelMapper.toUiModel(messageId)
-        coEvery { getDecryptedMessageBody.invoke(userId, any()) } returns DecryptedMessageBody(
-            messageId = messageId,
-            value = EmailBodyTestSamples.BodyWithProtonMailQuote,
-            mimeType = MimeType.Html,
-            attachments = listOf(
-                AttachmentMetadataSamples.Document,
-                AttachmentMetadataSamples.DocumentWithReallyLongFileName,
-                AttachmentMetadataSamples.Invoice,
-                AttachmentMetadataSamples.Image
-            )
-        ).right()
-
-        val viewModel = buildConversationDetailViewModel()
-        viewModel.state.test {
-            // The initial states
-            skipItems(4)
-            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
-            awaitItem()
-            viewModel.submit(ConversationDetailViewAction.ExpandOrCollapseMessageBody(messageIdUiModel))
-            awaitItem()
-
-            // When
-            viewModel.submit(
-                ConversationDetailViewAction.ExpandOrCollapseMessageBody(messageIdUiModel)
-            )
-
-            // then
-            val newState = awaitItem().messagesState as ConversationDetailsMessagesState.Data
-            val msgBodyExpanded = newState.messages.first {
-                it.messageId == messages.first().messageId
-            }
-            assertIs<Expanded>(msgBodyExpanded)
-            assertEquals(MessageBodyExpandCollapseMode.Collapsed, msgBodyExpanded.expandCollapseMode)
+            assertTrue(expandedMessageBodyCollapsed.messageBodyUiModel.shouldShowExpandCollapseButton)
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -861,7 +757,10 @@ class ConversationDetailViewModelIntegrationTest {
             DecryptedMessageBody(
                 messageId = defaultExpanded.messageId,
                 value = "",
-                mimeType = MimeType.Html
+                mimeType = MimeType.Html,
+                isUnread = false,
+                hasQuotedText = false,
+                banners = emptyList()
             ).right()
         }
 
@@ -971,6 +870,9 @@ class ConversationDetailViewModelIntegrationTest {
                 messageId = expectedExpanded.messageId,
                 value = "",
                 mimeType = MimeType.Html,
+                isUnread = false,
+                hasQuotedText = false,
+                banners = emptyList(),
                 attachments = (0 until expectedAttachmentCount).map {
                     aMessageAttachment(id = it.toString())
                 }
@@ -1023,6 +925,9 @@ class ConversationDetailViewModelIntegrationTest {
                 messageId = expandedMessageId,
                 value = "",
                 mimeType = MimeType.Html,
+                isUnread = false,
+                hasQuotedText = false,
+                banners = emptyList(),
                 attachments = (0 until expectedAttachmentCount).map {
                     aMessageAttachment(id = it.toString())
                 }
@@ -1081,6 +986,9 @@ class ConversationDetailViewModelIntegrationTest {
                     messageId = expandedMessageId,
                     value = "",
                     mimeType = MimeType.Html,
+                    isUnread = false,
+                    hasQuotedText = false,
+                    banners = emptyList(),
                     attachments = (0 until expectedAttachmentCount).map {
                         aMessageAttachment(id = it.toString())
                     }
@@ -1304,7 +1212,10 @@ class ConversationDetailViewModelIntegrationTest {
             DecryptedMessageBody(
                 messageId = expandedMessageId,
                 value = "",
-                MimeType.Html,
+                mimeType = MimeType.Html,
+                isUnread = false,
+                hasQuotedText = false,
+                banners = emptyList(),
                 attachments = (0 until expectedAttachmentCount).map {
                     aMessageAttachment(id = it.toString())
                 }
@@ -1527,6 +1438,9 @@ class ConversationDetailViewModelIntegrationTest {
                 messageId = messageId,
                 value = EmailBodyTestSamples.BodyWithoutQuotes,
                 mimeType = MimeType.Html,
+                isUnread = false,
+                hasQuotedText = false,
+                banners = emptyList(),
                 attachments = listOf(AttachmentMetadataSamples.Calendar)
             ).right()
             coEvery { isProtonCalendarInstalled() } returns true
@@ -1569,6 +1483,9 @@ class ConversationDetailViewModelIntegrationTest {
                 messageId = messageId,
                 value = EmailBodyTestSamples.BodyWithoutQuotes,
                 mimeType = MimeType.Html,
+                isUnread = false,
+                hasQuotedText = false,
+                banners = emptyList(),
                 attachments = listOf(AttachmentMetadataSamples.Calendar)
             ).right()
             coEvery { isProtonCalendarInstalled() } returns false
@@ -1956,6 +1873,9 @@ class ConversationDetailViewModelIntegrationTest {
             messageId = messageId,
             value = EmailBodyTestSamples.BodyWithoutQuotes,
             mimeType = MimeType.Html,
+            isUnread = false,
+            hasQuotedText = false,
+            banners = emptyList(),
             attachments = listOf(
                 AttachmentMetadataSamples.Document,
                 AttachmentMetadataSamples.DocumentWithReallyLongFileName,
@@ -2013,6 +1933,9 @@ class ConversationDetailViewModelIntegrationTest {
             messageId = messageId,
             value = EmailBodyTestSamples.BodyWithoutQuotes,
             mimeType = MimeType.Html,
+            isUnread = false,
+            hasQuotedText = false,
+            banners = emptyList(),
             attachments = listOf(
                 AttachmentMetadataSamples.Document,
                 AttachmentMetadataSamples.DocumentWithReallyLongFileName,
@@ -2109,7 +2032,7 @@ class ConversationDetailViewModelIntegrationTest {
         savedStateHandle = savedState,
         getDecryptedMessageBody = decryptedMessageBody,
         markMessageAsRead = markMessageAndConversationRead,
-        setMessageViewState = setMessageViewState,
+        messageViewStateCache = messageViewStateCache,
         observeConversationViewState = observeConversationViewState,
         getAttachmentIntentValues = getIntentValues,
         getEmbeddedImageAvoidDuplicatedExecution = getEmbeddedImageAvoidDuplicatedExecution,

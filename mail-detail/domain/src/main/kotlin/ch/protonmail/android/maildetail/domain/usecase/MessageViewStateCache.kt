@@ -18,24 +18,31 @@
 
 package ch.protonmail.android.maildetail.domain.usecase
 
-import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
+import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import javax.inject.Inject
 
-class SetMessageViewState @Inject constructor(
+class MessageViewStateCache @Inject constructor(
     private val inMemoryConversationStateRepository: InMemoryConversationStateRepository
 ) {
 
-    suspend fun expanded(messageId: MessageId, decryptedBody: DecryptedMessageBody) {
+    fun getTransformations(messageId: MessageId) =
+        inMemoryConversationStateRepository.getTransformationsForMessage(messageId)
+
+    fun setTransformations(messageId: MessageId, transformations: MessageBodyTransformations) =
+        inMemoryConversationStateRepository.setTransformationsForMessage(messageId, transformations)
+
+    suspend fun setExpanded(messageId: MessageId, decryptedBody: DecryptedMessageBody) {
         inMemoryConversationStateRepository.expandMessage(messageId, decryptedBody)
     }
 
-    suspend fun expanding(messageId: MessageId) {
+    suspend fun setExpanding(messageId: MessageId) {
         inMemoryConversationStateRepository.expandingMessage(messageId)
     }
 
-    suspend fun collapsed(messageId: MessageId) {
+    suspend fun setCollapsed(messageId: MessageId) {
         inMemoryConversationStateRepository.collapseMessage(messageId)
     }
 

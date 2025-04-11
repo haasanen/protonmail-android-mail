@@ -296,55 +296,6 @@ class ConversationDetailMessagesReducerTest(
                     ).toImmutableList()
                 )
             ),
-
-            Input(
-                currentState = ConversationDetailsMessagesState.Data(
-                    messages = listOf(
-                        ConversationDetailMessageUiModelSample.MessageWithRemoteContentBlocked
-                    ).toImmutableList()
-                ),
-                operation = ConversationDetailViewAction.LoadRemoteContent(
-                    messageId = ConversationDetailMessageUiModelSample.MessageWithRemoteContentBlocked.messageId
-                ),
-                expectedState = ConversationDetailsMessagesState.Data(
-                    messages = listOf(
-                        ConversationDetailMessageUiModelSample.MessageWithRemoteContentLoaded
-                    ).toImmutableList()
-                )
-            ),
-
-            Input(
-                currentState = ConversationDetailsMessagesState.Data(
-                    messages = listOf(
-                        ConversationDetailMessageUiModelSample.MessageWithEmbeddedImagesBlocked
-                    ).toImmutableList()
-                ),
-                operation = ConversationDetailViewAction.ShowEmbeddedImages(
-                    messageId = ConversationDetailMessageUiModelSample.MessageWithEmbeddedImagesBlocked.messageId
-                ),
-                expectedState = ConversationDetailsMessagesState.Data(
-                    messages = listOf(
-                        ConversationDetailMessageUiModelSample.MessageWithEmbeddedImagesLoaded
-                    ).toImmutableList()
-                )
-            ),
-
-            Input(
-                currentState = ConversationDetailsMessagesState.Data(
-                    messages = listOf(
-                        ConversationDetailMessageUiModelSample.WithRemoteAndEmbeddedContentBlocked
-                    ).toImmutableList()
-                ),
-                operation = ConversationDetailViewAction.LoadRemoteAndEmbeddedContent(
-                    ConversationDetailMessageUiModelSample.WithRemoteAndEmbeddedContentBlocked.messageId
-                ),
-                expectedState = ConversationDetailsMessagesState.Data(
-                    messages = listOf(
-                        ConversationDetailMessageUiModelSample.WithRemoteAndEmbeddedContentLoaded
-                    ).toImmutableList()
-                )
-            ),
-
             Input(
                 currentState = ConversationDetailsMessagesState.Data(
                     messages = listOf(
