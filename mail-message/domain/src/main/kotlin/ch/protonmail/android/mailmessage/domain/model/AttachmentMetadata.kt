@@ -26,8 +26,4 @@ data class AttachmentMetadata(
     val size: Long
 )
 
-fun AttachmentMetadata.isInline() = disposition == AttachmentDisposition.Inline
-
 fun AttachmentMetadata.isCalendarAttachment() = mimeType.category == MimeTypeCategory.Calendar
-fun AttachmentMetadata.isAllowedEmbeddedImage() = mimeType.category == MimeTypeCategory.Image &&
-    disposition == AttachmentDisposition.Inline
