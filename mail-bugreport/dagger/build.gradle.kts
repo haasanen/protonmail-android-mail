@@ -46,7 +46,6 @@ android {
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
-    implementation(libs.proton.core.report)
     implementation(libs.kotlin.coroutines.core)
 
     implementation(project(":mail-bugreport:data"))

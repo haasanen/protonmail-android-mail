@@ -19,8 +19,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    kotlin("plugin.serialization")
     id("app-config-plugin")
 }
 
@@ -45,7 +43,5 @@ android {
 
 dependencies {
     implementation(libs.bundles.module.domain)
-    implementation(libs.proton.core.featureFlag)
-
     testImplementation(libs.bundles.test)
 }

@@ -19,8 +19,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    kotlin("plugin.serialization")
     id("app-config-plugin")
 }
 
@@ -44,11 +42,9 @@ android {
 }
 
 dependencies {
-    kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.bundles.module.data)
 
     implementation(libs.timber)
-    implementation(libs.proton.core.report)
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-bugreport:domain"))
