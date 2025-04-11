@@ -3,6 +3,7 @@ package ch.protonmail.android.composer.data.local
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.composer.data.local.RustDraftDataSourceImpl.Companion.InitialDelayForSendingStatusWorker
+import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
 import ch.protonmail.android.composer.data.usecase.OpenRustDraft
 import ch.protonmail.android.composer.data.usecase.RustDraftUndoSend
@@ -20,6 +21,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.testdata.composer.LocalComposerRecipientTestData
@@ -31,6 +33,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verifyOrder
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -457,6 +460,96 @@ class RustDraftDataSourceImplTest {
         // Then
         assertEquals(Unit.right(), actual)
         coVerify { enqueuer.cancelWork(SendingStatusWorker.id(userId, messageId)) }
+    }
+
+    @Test
+    fun `update To recipients adds and removes recipients as needed`() = runTest {
+        // Given
+        val bob = RecipientSample.Bob // will be removed
+        val john = RecipientSample.John // will be added
+        val alice = RecipientSample.Alice // unchanged
+        val updatedRecipients = listOf(john, alice)
+        val currentRecipients = listOf(
+            LocalComposerRecipientTestData.Alice, LocalComposerRecipientTestData.Bob
+        )
+
+        val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            toRecipientsWrapper = toRecipientsWrapperMock
+        )
+        coEvery { toRecipientsWrapperMock.recipients() } returns currentRecipients
+        coEvery { toRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
+        coEvery { toRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+
+        // When
+        dataSource.updateToRecipients(updatedRecipients)
+
+        // Then
+        verifyOrder {
+            toRecipientsWrapperMock.addSingleRecipient(john.toSingleRecipientEntry())
+            toRecipientsWrapperMock.removeSingleRecipient(bob.toSingleRecipientEntry())
+        }
+    }
+
+    @Test
+    fun `update Cc recipients adds and removes recipients as needed`() = runTest {
+        // Given
+        val bob = RecipientSample.Bob // will be removed
+        val john = RecipientSample.John // will be added
+        val alice = RecipientSample.Alice // unchanged
+        val updatedRecipients = listOf(john, alice)
+        val currentRecipients = listOf(
+            LocalComposerRecipientTestData.Alice, LocalComposerRecipientTestData.Bob
+        )
+
+        val ccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            ccRecipientsWrapper = ccRecipientsWrapperMock
+        )
+        coEvery { ccRecipientsWrapperMock.recipients() } returns currentRecipients
+        coEvery { ccRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
+        coEvery { ccRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+
+        // When
+        dataSource.updateCcRecipients(updatedRecipients)
+
+        // Then
+        verifyOrder {
+            ccRecipientsWrapperMock.addSingleRecipient(john.toSingleRecipientEntry())
+            ccRecipientsWrapperMock.removeSingleRecipient(bob.toSingleRecipientEntry())
+        }
+    }
+
+    @Test
+    fun `update Bcc recipients adds and removes recipients as needed`() = runTest {
+        // Given
+        val bob = RecipientSample.Bob // will be removed
+        val john = RecipientSample.John // will be added
+        val alice = RecipientSample.Alice // unchanged
+        val updatedRecipients = listOf(john, alice)
+        val currentRecipients = listOf(
+            LocalComposerRecipientTestData.Alice, LocalComposerRecipientTestData.Bob
+        )
+
+        val bccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            bccRecipientsWrapper = bccRecipientsWrapperMock
+        )
+        coEvery { bccRecipientsWrapperMock.recipients() } returns currentRecipients
+        coEvery { bccRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
+        coEvery { bccRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+
+        // When
+        dataSource.updateBccRecipients(updatedRecipients)
+
+        // Then
+        verifyOrder {
+            bccRecipientsWrapperMock.addSingleRecipient(john.toSingleRecipientEntry())
+            bccRecipientsWrapperMock.removeSingleRecipient(bob.toSingleRecipientEntry())
+        }
     }
 
     private fun expectDraftWrapperReturns(
