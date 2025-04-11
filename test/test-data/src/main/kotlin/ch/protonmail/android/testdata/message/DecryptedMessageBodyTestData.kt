@@ -18,14 +18,13 @@
 
 package ch.protonmail.android.testdata.message
 
-import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
+import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import me.proton.core.user.domain.entity.UserAddress
 
 object DecryptedMessageBodyTestData {
 
@@ -97,12 +96,17 @@ object DecryptedMessageBodyTestData {
         messageId: MessageId = MessageIdSample.build(),
         value: String = DECRYPTED_MESSAGE_BODY,
         mimeType: MimeType = MimeType.Html,
-        attachments: List<AttachmentMetadata> = emptyList(),
-        userAddress: UserAddress = UserAddressSample.PrimaryAddress
+        hasQuotedText: Boolean = false,
+        isUnread: Boolean = false,
+        banners: List<MessageBanner> = emptyList(),
+        attachments: List<AttachmentMetadata> = emptyList()
     ) = DecryptedMessageBody(
         messageId = messageId,
         value = value,
+        isUnread = isUnread,
+        hasQuotedText = hasQuotedText,
         mimeType = mimeType,
+        banners = banners,
         attachments = attachments
     )
 }

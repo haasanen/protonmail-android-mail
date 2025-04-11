@@ -21,12 +21,7 @@ package ch.protonmail.android.testdata.message
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.domain.model.Recipient
-import ch.protonmail.android.mailmessage.domain.model.UnsubscribeMethods
-import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.testdata.message.MessageTestData.RAW_MESSAGE_ID
-import ch.protonmail.android.testdata.user.UserIdTestData
-import me.proton.core.domain.entity.UserId
 
 object MessageBodyTestData {
 
@@ -43,23 +38,14 @@ object MessageBodyTestData {
     )
 
     fun buildMessageBody(
-        userId: UserId = UserIdTestData.userId,
         messageId: MessageId = MessageId(RAW_MESSAGE_ID),
         body: String = RAW_ENCRYPTED_MESSAGE_BODY,
-        header: String = "",
         mimeType: MimeType = MimeType.PlainText,
-        spamScore: String = "",
-        replyTo: Recipient = RecipientSample.John,
-        replyTos: List<Recipient> = emptyList(),
-        unsubscribeMethods: UnsubscribeMethods? = UnsubscribeMethods(null, null, null)
     ) = MessageBody(
         messageId = messageId,
         body = body,
-        header = header,
+        hasQuotedText = false,
         mimeType = mimeType,
-        spamScore = spamScore,
-        replyTo = replyTo,
-        replyTos = replyTos,
-        unsubscribeMethods = unsubscribeMethods
+        banners = emptyList()
     )
 }

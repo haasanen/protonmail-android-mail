@@ -21,6 +21,9 @@ package ch.protonmail.android.mailmessage.domain.model
 data class DecryptedMessageBody(
     val messageId: MessageId,
     val value: String,
+    val isUnread: Boolean,
     val mimeType: MimeType,
+    val hasQuotedText: Boolean,
+    val banners: List<MessageBanner>,
     val attachments: List<AttachmentMetadata> = emptyList()
 )

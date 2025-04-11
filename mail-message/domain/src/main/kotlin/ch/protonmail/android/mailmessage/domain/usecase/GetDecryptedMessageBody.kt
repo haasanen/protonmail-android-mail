@@ -24,6 +24,7 @@ import arrow.core.right
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.MimeType
@@ -38,9 +39,10 @@ class GetDecryptedMessageBody @Inject constructor(
 
     suspend operator fun invoke(
         userId: UserId,
-        messageId: MessageId
+        messageId: MessageId,
+        transformations: MessageBodyTransformations = MessageBodyTransformations.MessageDetailsDefaults
     ): Either<GetDecryptedMessageBodyError, DecryptedMessageBody> {
-        return messageRepository.getMessageWithBody(userId, messageId)
+        return messageRepository.getMessageWithBody(userId, messageId, transformations)
             .mapLeft { GetDecryptedMessageBodyError.Data(it) }
             .flatMap { messageWithBody ->
                 val messageBody = messageWithBody.messageBody
@@ -48,16 +50,19 @@ class GetDecryptedMessageBody @Inject constructor(
                 val attachments = when {
                     messageBody.mimeType == MimeType.MultipartMixed ->
                         getDecryptedMimeAttachments(userId, messageId, messageWithBody)
+
                     else -> messageWithBody.message.attachments
                 }
 
                 DecryptedMessageBody(
                     messageId = messageId,
                     value = messageBody.body,
+                    isUnread = messageWithBody.message.isUnread,
                     mimeType = messageBody.mimeType,
+                    hasQuotedText = messageBody.hasQuotedText,
+                    banners = messageBody.banners,
                     attachments = attachments
                 ).right()
-
             }
     }
 
@@ -69,7 +74,7 @@ class GetDecryptedMessageBody @Inject constructor(
         // After the message body is decrypted (through the first messageWithBody call)
         // rust will expose the decrypted mime attachments to the message "attachments" field.
         // This logic is needed to get such up-to-date attachments when opening a MIME message
-        return messageRepository.getMessageWithBody(userId, messageId)
+        return messageRepository.getMessageWithBody(userId, messageId, MessageBodyTransformations.AttachmentDefaults)
             .onLeft {
                 Timber.w("decrypted-message-body: Failed getting refreshed MIME attachments")
             }

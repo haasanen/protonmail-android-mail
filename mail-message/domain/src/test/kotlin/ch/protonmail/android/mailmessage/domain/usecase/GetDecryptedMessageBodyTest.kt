@@ -25,6 +25,7 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.MimeType
@@ -58,13 +59,27 @@ class GetDecryptedMessageBodyTest(
         runTest {
             // Given
             val expected = DecryptedMessageBody(
-                messageId,
-                testInput.messageWithBody.messageBody.body,
-                testInput.messageWithBody.messageBody.mimeType,
-                testInput.messageWithBody.message.attachments
+                messageId = messageId,
+                value = testInput.messageWithBody.messageBody.body,
+                mimeType = testInput.messageWithBody.messageBody.mimeType,
+                hasQuotedText = false,
+                isUnread = false,
+                banners = emptyList(),
+                attachments = testInput.messageWithBody.message.attachments
             ).right()
             coEvery {
-                messageRepository.getMessageWithBody(UserIdTestData.userId, messageId)
+                messageRepository.getMessageWithBody(
+                    UserIdTestData.userId,
+                    messageId,
+                    MessageBodyTransformations.MessageDetailsDefaults
+                )
+            } returns testInput.messageWithBody.right()
+            coEvery {
+                messageRepository.getMessageWithBody(
+                    UserIdTestData.userId,
+                    messageId,
+                    MessageBodyTransformations.AttachmentDefaults
+                )
             } returns testInput.messageWithBody.right()
 
             // When
@@ -79,7 +94,11 @@ class GetDecryptedMessageBodyTest(
         // Given
         val expected = GetDecryptedMessageBodyError.Data(DataError.Local.NoDataCached).left()
         coEvery {
-            messageRepository.getMessageWithBody(UserIdTestData.userId, messageId)
+            messageRepository.getMessageWithBody(
+                UserIdTestData.userId,
+                messageId,
+                MessageBodyTransformations.MessageDetailsDefaults
+            )
         } returns DataError.Local.NoDataCached.left()
 
         // When

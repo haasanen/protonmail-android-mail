@@ -21,12 +21,9 @@ package ch.protonmail.android.mailmessage.domain.model
 data class MessageBody(
     val messageId: MessageId,
     val body: String,
-    val header: String,
-    val mimeType: MimeType,
-    val spamScore: String,
-    val replyTo: Recipient,
-    val replyTos: List<Recipient>,
-    val unsubscribeMethods: UnsubscribeMethods?
+    val hasQuotedText: Boolean,
+    val banners: List<MessageBanner>,
+    val mimeType: MimeType
 )
 
 enum class MimeType(val value: String) {
@@ -35,18 +32,24 @@ enum class MimeType(val value: String) {
     MultipartMixed("multipart/mixed");
 
     companion object {
-        fun from(value: String) = values().find { it.value == value } ?: PlainText
+
+        fun from(value: String) = entries.find { it.value == value } ?: PlainText
     }
 }
 
-data class UnsubscribeMethods(
-    val httpClient: String?,
-    val oneClick: String?,
-    val mailTo: MailTo?
-)
+sealed interface MessageBanner {
+    object BlockedSender : MessageBanner
+    object PhishingAttempt : MessageBanner
+    object Spam : MessageBanner
 
-data class MailTo(
-    val toList: List<String>,
-    val subject: String?,
-    val body: String?
-)
+    data class Expiry(val timestamp: Long) : MessageBanner
+    data class AutoDelete(val timestamp: Long, val deleteDays: Int) : MessageBanner
+
+    object UnsubscribeNewsletter : MessageBanner
+
+    data class ScheduledSend(val timestamp: Long) : MessageBanner
+    data class Snoozed(val timestamp: Long) : MessageBanner
+
+    object EmbeddedImages : MessageBanner
+    object RemoteContent : MessageBanner
+}

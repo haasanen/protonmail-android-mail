@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcommon.datarust.mapper
 
+import uniffi.proton_mail_common.MessageBanner
 import uniffi.proton_mail_uniffi.AlmostAllMail
 import uniffi.proton_mail_uniffi.AttachmentMetadata
 import uniffi.proton_mail_uniffi.AttachmentMimeType
@@ -61,6 +62,17 @@ typealias LocalLabelId = Id
 typealias LocalViewMode = ViewMode
 typealias LocalMessageId = Id
 typealias LocalMessageMetadata = Message
+typealias LocalMessageBanner = MessageBanner
+typealias LocalMessageBannerAutoDelete = MessageBanner.AutoDelete
+typealias LocalMessageBannerBlockedSender = MessageBanner.BlockedSender
+typealias LocalMessageBannerEmbeddedImages = MessageBanner.EmbeddedImages
+typealias LocalMessageBannerExpiry = MessageBanner.Expiry
+typealias LocalMessageBannerPhishingAttempt = MessageBanner.PhishingAttempt
+typealias LocalMessageBannerRemoteContent = MessageBanner.RemoteContent
+typealias LocalMessageBannerScheduledSend = MessageBanner.ScheduledSend
+typealias LocalMessageBannerSnoozed = MessageBanner.Snoozed
+typealias LocalMessageBannerSpam = MessageBanner.Spam
+typealias LocalMessageBannerUnsubscribeNewsletter = MessageBanner.UnsubscribeNewsletter
 typealias LocalAlmostAllMail = AlmostAllMail
 typealias LocalAttachmentMetadata = AttachmentMetadata
 typealias LocalAttachmentId = Id
@@ -99,5 +111,4 @@ typealias LocalDraftSendResult = DraftSendResult
 typealias LocalDeviceContact = DeviceContact
 typealias LocalContactSuggestion = ContactSuggestion
 typealias LocalContactSuggestionKind = ContactSuggestionKind
-
 typealias RemoteMessageId = RemoteId

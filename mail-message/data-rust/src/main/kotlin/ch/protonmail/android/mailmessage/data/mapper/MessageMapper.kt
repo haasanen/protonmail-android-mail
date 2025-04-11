@@ -26,6 +26,17 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentDisposition
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAvatarInformation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageBanner
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageBannerAutoDelete
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageBannerBlockedSender
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageBannerEmbeddedImages
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageBannerExpiry
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageBannerPhishingAttempt
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageBannerRemoteContent
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageBannerScheduledSend
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageBannerSnoozed
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageBannerSpam
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageBannerUnsubscribeNewsletter
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
@@ -38,6 +49,7 @@ import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.Message
+import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
@@ -50,7 +62,6 @@ import uniffi.proton_mail_common.BodyOutput
 import uniffi.proton_mail_uniffi.MessageRecipient
 import uniffi.proton_mail_uniffi.MessageSender
 import ch.protonmail.android.mailcommon.datarust.mapper.RemoteMessageId as RustRemoteMessageId
-
 
 fun LocalAvatarInformation.toAvatarInformation(): AvatarInformation {
     return AvatarInformation(
@@ -137,12 +148,9 @@ fun LocalMimeType.toAndroidMimeType(): MimeType {
 fun BodyOutput.toMessageBody(messageId: MessageId, mimeType: LocalMimeType) = MessageBody(
     messageId = messageId,
     body = this.body,
-    header = "",
-    mimeType = mimeType.toAndroidMimeType(),
-    spamScore = "",
-    replyTo = Recipient("", ""),
-    replyTos = emptyList(),
-    unsubscribeMethods = null
+    hasQuotedText = this.hadBlockquote,
+    banners = this.bodyBanners.map { it.toMessageBanner() },
+    mimeType = mimeType.toAndroidMimeType()
 )
 
 fun LocalConversationMessages.toConversationMessagesWithMessageToOpen(): Either<DataError, ConversationMessages> {
@@ -157,3 +165,16 @@ fun LocalConversationMessages.toConversationMessagesWithMessageToOpen(): Either<
 
 fun RemoteMessageId.toRemoteMessageId(): RustRemoteMessageId = RustRemoteMessageId(this.id)
 fun RustRemoteMessageId.toRemoteMessageId(): RemoteMessageId = RemoteMessageId(this.value)
+
+private fun LocalMessageBanner.toMessageBanner(): MessageBanner = when (this) {
+    is LocalMessageBannerAutoDelete -> MessageBanner.AutoDelete(this.timestamp.toLong(), this.deleteDays.toInt())
+    is LocalMessageBannerBlockedSender -> MessageBanner.BlockedSender
+    is LocalMessageBannerEmbeddedImages -> MessageBanner.EmbeddedImages
+    is LocalMessageBannerExpiry -> MessageBanner.Expiry(this.timestamp.toLong())
+    is LocalMessageBannerPhishingAttempt -> MessageBanner.PhishingAttempt
+    is LocalMessageBannerRemoteContent -> MessageBanner.RemoteContent
+    is LocalMessageBannerScheduledSend -> MessageBanner.ScheduledSend(this.timestamp.toLong())
+    is LocalMessageBannerSnoozed -> MessageBanner.Snoozed(this.timestamp.toLong())
+    is LocalMessageBannerSpam -> MessageBanner.Spam
+    is LocalMessageBannerUnsubscribeNewsletter -> MessageBanner.UnsubscribeNewsletter
+}
