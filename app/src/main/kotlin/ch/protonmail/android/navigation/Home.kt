@@ -99,7 +99,6 @@ import ch.protonmail.android.navigation.route.addFeatureFlagsOverrides
 import ch.protonmail.android.navigation.route.addFolderForm
 import ch.protonmail.android.navigation.route.addFolderList
 import ch.protonmail.android.navigation.route.addLabelForm
-import ch.protonmail.android.navigation.route.addLabelList
 import ch.protonmail.android.navigation.route.addLanguageSettings
 import ch.protonmail.android.navigation.route.addMailbox
 import ch.protonmail.android.navigation.route.addManageMembers
@@ -206,6 +205,7 @@ fun Home(
                 showFeatureMissingSnackbar()
                 // viewModel.discardDraft(messageId)
             }
+
             SnackbarResult.Dismissed -> Unit
         }
     }
@@ -332,6 +332,7 @@ fun Home(
                     is BottomSheetType.NotificationsPermissions -> {
                         notificationsPermissionViewModel.trackPermissionRequested()
                     }
+
                     BottomSheetType.Onboarding -> {
                         onboardingStepViewModel.submit(OnboardingStepAction.MarkOnboardingComplete)
                     }
@@ -562,10 +563,6 @@ fun Home(
                         addRemoveAccountDialog(navController)
                         addSettings(navController)
                         addAppSettings(navController, showFeatureMissingSnackbar = { showFeatureMissingSnackbar() })
-                        addLabelList(
-                            navController,
-                            showLabelListErrorLoadingSnackbar = { showLabelListErrorLoadingSnackbar() }
-                        )
                         addLabelForm(
                             navController,
                             showLabelSavedSnackbar = { showLabelSavedSnackbar() },

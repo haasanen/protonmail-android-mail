@@ -44,7 +44,6 @@ import ch.protonmail.android.maillabel.presentation.folderform.FolderFormScreen
 import ch.protonmail.android.maillabel.presentation.folderlist.FolderListScreen
 import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen
 import ch.protonmail.android.maillabel.presentation.labelform.LabelFormScreen
-import ch.protonmail.android.maillabel.presentation.labellist.LabelListScreen
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -222,28 +221,6 @@ internal fun NavGraphBuilder.addAppSettings(navController: NavHostController, sh
                 onBackClick = {
                     navController.navigateBack()
                 }
-            )
-        )
-    }
-}
-
-internal fun NavGraphBuilder.addLabelList(
-    navController: NavHostController,
-    showLabelListErrorLoadingSnackbar: () -> Unit
-) {
-    composable(route = Destination.Screen.LabelList.route) {
-        LabelListScreen(
-            actions = LabelListScreen.Actions(
-                onBackClick = {
-                    navController.navigateBack()
-                },
-                onLabelSelected = { labelId ->
-                    navController.navigate(Destination.Screen.EditLabel(labelId))
-                },
-                onAddLabelClick = {
-                    navController.navigate(Destination.Screen.CreateLabel.route)
-                },
-                showLabelListErrorLoadingSnackbar = showLabelListErrorLoadingSnackbar
             )
         )
     }
