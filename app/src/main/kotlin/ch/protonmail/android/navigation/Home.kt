@@ -85,8 +85,6 @@ import ch.protonmail.android.navigation.route.addAutoLockPinScreen
 import ch.protonmail.android.navigation.route.addAutoLockSettings
 import ch.protonmail.android.navigation.route.addCombinedContactsSetting
 import ch.protonmail.android.navigation.route.addComposer
-import ch.protonmail.android.navigation.route.addContactDetails
-import ch.protonmail.android.navigation.route.addContactForm
 import ch.protonmail.android.navigation.route.addContactGroupDetails
 import ch.protonmail.android.navigation.route.addContactGroupForm
 import ch.protonmail.android.navigation.route.addContactSearch
@@ -468,9 +466,9 @@ fun Home(
                                         )
                                     )
                                 },
-                                onViewContactDetails = { navController.navigate(Screen.ContactDetails(it)) },
-                                onAddContact = { basicContactInfo ->
-                                    navController.navigate(Screen.AddContact(basicContactInfo))
+                                onViewContactDetails = { showFeatureMissingSnackbar() },
+                                onAddContact = { _ ->
+                                    showFeatureMissingSnackbar()
                                 },
                                 onComposeNewMessage = {
                                     navController.navigate(
@@ -539,50 +537,6 @@ fun Home(
                             },
                             showNormalSnackbar = {
                                 showNormalSnackbar(it)
-                            },
-                            showFeatureMissingSnackbar = {
-                                showFeatureMissingSnackbar()
-                            }
-                        )
-                        addContactDetails(
-                            navController,
-                            showSuccessSnackbar = { message ->
-                                scope.launch {
-                                    snackbarHostSuccessState.showSnackbar(
-                                        message = message,
-                                        type = ProtonSnackbarType.SUCCESS
-                                    )
-                                }
-                            },
-                            showErrorSnackbar = { message ->
-                                scope.launch {
-                                    snackbarHostErrorState.showSnackbar(
-                                        message = message,
-                                        type = ProtonSnackbarType.ERROR
-                                    )
-                                }
-                            },
-                            showFeatureMissingSnackbar = {
-                                showFeatureMissingSnackbar()
-                            }
-                        )
-                        addContactForm(
-                            navController,
-                            showSuccessSnackbar = { message ->
-                                scope.launch {
-                                    snackbarHostSuccessState.showSnackbar(
-                                        message = message,
-                                        type = ProtonSnackbarType.SUCCESS
-                                    )
-                                }
-                            },
-                            showErrorSnackbar = { message ->
-                                scope.launch {
-                                    snackbarHostErrorState.showSnackbar(
-                                        message = message,
-                                        type = ProtonSnackbarType.ERROR
-                                    )
-                                }
                             },
                             showFeatureMissingSnackbar = {
                                 showFeatureMissingSnackbar()

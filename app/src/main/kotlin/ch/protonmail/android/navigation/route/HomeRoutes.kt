@@ -31,8 +31,6 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
-import ch.protonmail.android.mailcontact.presentation.contactdetails.ContactDetailsScreen
-import ch.protonmail.android.mailcontact.presentation.contactform.ContactFormScreen
 import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen
 import ch.protonmail.android.mailcontact.presentation.contactgroupform.ContactGroupFormScreen
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
@@ -265,69 +263,6 @@ internal fun NavGraphBuilder.addContacts(
                 }
             )
         )
-    }
-}
-
-internal fun NavGraphBuilder.addContactDetails(
-    navController: NavHostController,
-    showSuccessSnackbar: (message: String) -> Unit,
-    showErrorSnackbar: (message: String) -> Unit,
-    showFeatureMissingSnackbar: () -> Unit
-) {
-    val actions = ContactDetailsScreen.Actions.Empty.copy(
-        onBackClick = { navController.navigateBack() },
-        exitWithSuccessMessage = { message ->
-            navController.navigateBack()
-            showSuccessSnackbar(message)
-        },
-        exitWithErrorMessage = { message ->
-            navController.navigateBack()
-            showErrorSnackbar(message)
-        },
-        onEditClick = { contactId ->
-            navController.navigate(Destination.Screen.EditContact(contactId))
-        },
-        showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
-        navigateToComposer = {
-            navController.navigate(Destination.Screen.MessageActionComposer(DraftAction.ComposeToAddresses(listOf(it))))
-        }
-    )
-    composable(route = Destination.Screen.ContactDetails.route) {
-        ContactDetailsScreen(actions)
-    }
-}
-
-internal fun NavGraphBuilder.addContactForm(
-    navController: NavHostController,
-    showSuccessSnackbar: (message: String) -> Unit,
-    showErrorSnackbar: (message: String) -> Unit,
-    showFeatureMissingSnackbar: () -> Unit
-) {
-
-    val actions = ContactFormScreen.Actions.Empty.copy(
-        onCloseClick = {
-            navController.navigateBack()
-        },
-        exitWithSuccessMessage = { message ->
-            navController.navigateBack()
-            showSuccessSnackbar(message)
-        },
-        exitWithErrorMessage = { message ->
-            navController.navigateBack()
-            showErrorSnackbar(message)
-        },
-        showFeatureMissingSnackbar = {
-            showFeatureMissingSnackbar()
-        }
-    )
-    composable(route = Destination.Screen.CreateContact.route) {
-        ContactFormScreen(actions)
-    }
-    composable(route = Destination.Screen.EditContact.route) {
-        ContactFormScreen(actions)
-    }
-    composable(route = Destination.Screen.AddContact.route) {
-        ContactFormScreen(actions)
     }
 }
 
