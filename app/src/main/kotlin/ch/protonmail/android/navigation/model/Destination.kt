@@ -21,19 +21,13 @@ package ch.protonmail.android.navigation.model
 import ch.protonmail.android.feature.account.SignOutAccountDialog.USER_ID_KEY
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsViewItemMode
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsPeekView.ApplicationLogsViewMode
-import ch.protonmail.android.mailcommon.domain.model.BasicContactInfo
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.encode
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.DraftActionForShareKey
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.DraftMessageIdKey
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.SerializedDraftActionKey
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
-import ch.protonmail.android.mailcontact.domain.model.ContactId
-import ch.protonmail.android.mailcontact.presentation.contactdetails.ContactDetailsScreen.ContactDetailsContactIdKey
-import ch.protonmail.android.mailcontact.presentation.contactform.ContactFormScreen.ContactFormBasicContactInfoKey
-import ch.protonmail.android.mailcontact.presentation.contactform.ContactFormScreen.ContactFormContactIdKey
 import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen.ContactGroupDetailsGroupIdKey
 import ch.protonmail.android.mailcontact.presentation.contactgroupform.ContactGroupFormScreen.ContactGroupFormGroupIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
@@ -137,28 +131,8 @@ sealed class Destination(val route: String) {
         object DeepLinksHandler : Destination("deepLinksHandler")
 
         object Contacts : Destination("contacts")
-        object ContactDetails : Destination("contacts/contact/${ContactDetailsContactIdKey.wrap()}") {
-
-            operator fun invoke(contactId: ContactId) = route.replace(ContactDetailsContactIdKey.wrap(), contactId.id)
-        }
 
         object CreateContact : Destination("contacts/contact/form")
-        object AddContact : Destination(
-            "contacts/addContact/${ContactFormBasicContactInfoKey.wrap()}/form"
-        ) {
-
-            operator fun invoke(contactInfo: BasicContactInfo): String {
-                return route.replace(
-                    ContactFormBasicContactInfoKey.wrap(),
-                    contactInfo.encode().serialize()
-                )
-            }
-        }
-
-        object EditContact : Destination("contacts/contact/${ContactFormContactIdKey.wrap()}/form") {
-
-            operator fun invoke(contactId: ContactId) = route.replace(ContactFormContactIdKey.wrap(), contactId.id)
-        }
 
         object ContactGroupDetails : Destination("contacts/group/${ContactGroupDetailsGroupIdKey.wrap()}") {
 
