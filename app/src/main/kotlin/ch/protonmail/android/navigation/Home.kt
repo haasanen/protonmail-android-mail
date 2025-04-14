@@ -94,7 +94,6 @@ import ch.protonmail.android.navigation.route.addExportLogsSettings
 import ch.protonmail.android.navigation.route.addFeatureFlagsOverrides
 import ch.protonmail.android.navigation.route.addLanguageSettings
 import ch.protonmail.android.navigation.route.addMailbox
-import ch.protonmail.android.navigation.route.addManageMembers
 import ch.protonmail.android.navigation.route.addNotificationsSettings
 import ch.protonmail.android.navigation.route.addPrivacySettings
 import ch.protonmail.android.navigation.route.addRemoveAccountDialog
@@ -538,17 +537,6 @@ fun Home(
                             },
                             showFeatureMissingSnackbar = {
                                 showFeatureMissingSnackbar()
-                            }
-                        )
-                        addManageMembers(
-                            navController,
-                            showErrorSnackbar = { message ->
-                                scope.launch {
-                                    snackbarHostErrorState.showSnackbar(
-                                        message = message,
-                                        type = ProtonSnackbarType.ERROR
-                                    )
-                                }
                             }
                         )
                         addContactSearch(

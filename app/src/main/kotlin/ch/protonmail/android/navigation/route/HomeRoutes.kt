@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.navigation.route
 
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -33,7 +32,6 @@ import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
 import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearchScreen
-import ch.protonmail.android.mailcontact.presentation.managemembers.ManageMembersScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
@@ -41,7 +39,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsettings.presentation.appsettings.AppSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsScreen
 import ch.protonmail.android.navigation.model.Destination
-import ch.protonmail.android.navigation.model.SavedStateKey
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
 import me.proton.core.compose.navigation.get
 import me.proton.core.domain.entity.UserId
@@ -257,36 +254,6 @@ internal fun NavGraphBuilder.addContacts(
                     showErrorSnackbar(message)
                 }
             )
-        )
-    }
-}
-
-internal fun NavGraphBuilder.addManageMembers(
-    navController: NavHostController,
-    showErrorSnackbar: (message: String) -> Unit
-) {
-    val actions = ManageMembersScreen.Actions(
-        onDone = { selectedContactEmailsIds ->
-            navController.previousBackStackEntry?.savedStateHandle?.set(
-                SavedStateKey.SelectedContactIds.key,
-                selectedContactEmailsIds.map { it.id }
-            )
-            navController.navigateBack()
-        },
-        onClose = { navController.navigateBack() },
-        exitWithErrorMessage = { message ->
-            navController.navigateBack()
-            showErrorSnackbar(message)
-        }
-    )
-    composable(route = Destination.Screen.ManageMembers.route) {
-        ManageMembersScreen(
-            actions,
-            selectedContactIds = navController
-                .previousBackStackEntry
-                ?.savedStateHandle
-                ?.getLiveData<List<String>>(SavedStateKey.SelectedContactIds.key)
-                ?.observeAsState()
         )
     }
 }
