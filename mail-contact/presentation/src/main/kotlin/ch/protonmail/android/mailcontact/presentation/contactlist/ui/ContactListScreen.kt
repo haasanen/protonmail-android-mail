@@ -15,20 +15,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.contactlist.ContactListState
 import ch.protonmail.android.mailcontact.presentation.contactlist.ContactListViewAction
 import ch.protonmail.android.mailcontact.presentation.contactlist.ContactListViewModel
+import ch.protonmail.android.mailcontact.presentation.dialogs.ContactDeleteConfirmationDialog
+import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.upselling.ContactGroupsUpsellingBottomSheet
 import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactCreate
 import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
@@ -38,14 +46,6 @@ import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrain
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
-import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
-import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
-import ch.protonmail.android.design.compose.component.ProtonSnackbarType
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.mailcontact.domain.model.ContactId
-import ch.protonmail.android.mailcontact.presentation.dialogs.ContactDeleteConfirmationDialog
-import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +71,6 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
 
             listActions.onBackClick()
         },
-        onNewGroupClick = { viewModel.submit(ContactListViewAction.OnNewContactGroupClick) },
         onDeleteContactRequest = { contact ->
             viewModel.submit(ContactListViewAction.OnDeleteContactRequested(contact))
         }
@@ -111,15 +110,9 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
                         ContactBottomSheetContent(
                             isContactGroupsUpsellingVisible = state.isContactGroupsUpsellingVisible,
                             actions = ContactBottomSheet.Actions(
-                                onNewContactClick = {
-                                    viewModel.submit(ContactListViewAction.OnNewContactClick)
-                                },
-                                onNewContactGroupClick = {
-                                    viewModel.submit(ContactListViewAction.OnNewContactGroupClick)
-                                },
-                                onImportContactClick = {
-                                    viewModel.submit(ContactListViewAction.OnImportContactClick)
-                                }
+                                onNewContactClick = { /* No-op, unimplemented */ },
+                                onNewContactGroupClick = { /* No-op, unimplemented */ },
+                                onImportContactClick = { /* No-op, unimplemented */ }
                             )
                         )
                     }

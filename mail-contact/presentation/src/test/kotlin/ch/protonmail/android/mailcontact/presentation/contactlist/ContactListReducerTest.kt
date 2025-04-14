@@ -26,8 +26,8 @@ import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
-import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailcontact.presentation.model.GroupedContactListItemsUiModel
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -99,47 +99,23 @@ internal class ContactListReducerTest(
             errorLoading = Effect.of(TextUiModel(R.string.contact_list_loading_error))
         )
         private val emptyLoadedState = ContactListState.Loaded.Empty()
-        private val dataLoadedState = ContactListState.Loaded.Data(
-            groupedContacts = groupedContacts,
-            isContactGroupsUpsellingVisible = true
-        )
+        private val dataLoadedState = ContactListState.Loaded.Data(groupedContacts = groupedContacts)
 
         private val transitionsFromLoadingState = listOf(
             TestInput(
                 currentState = emptyLoadingState,
-                event = ContactListEvent.ContactListLoaded(
-                    groupedContacts,
-                    isContactGroupsUpsellingVisible = true
-                ),
+                event = ContactListEvent.ContactListLoaded(groupedContacts),
                 expectedState = dataLoadedState
             ),
             TestInput(
                 currentState = emptyLoadingState,
-                event = ContactListEvent.ContactListLoaded(
-                    emptyList(),
-                    isContactGroupsUpsellingVisible = false
-                ),
+                event = ContactListEvent.ContactListLoaded(emptyList()),
                 expectedState = ContactListState.Loaded.Empty()
             ),
             TestInput(
                 currentState = emptyLoadingState,
                 event = ContactListEvent.ErrorLoadingContactList,
                 expectedState = errorLoadingState
-            ),
-            TestInput(
-                currentState = emptyLoadingState,
-                event = ContactListEvent.OpenContactForm,
-                expectedState = emptyLoadingState
-            ),
-            TestInput(
-                currentState = emptyLoadingState,
-                event = ContactListEvent.OpenContactGroupForm,
-                expectedState = emptyLoadingState
-            ),
-            TestInput(
-                currentState = emptyLoadingState,
-                event = ContactListEvent.OpenImportContact,
-                expectedState = emptyLoadingState
             ),
             TestInput(
                 currentState = emptyLoadingState,
@@ -161,20 +137,14 @@ internal class ContactListReducerTest(
         private val transitionsFromEmptyLoadedState = listOf(
             TestInput(
                 currentState = emptyLoadedState,
-                event = ContactListEvent.ContactListLoaded(
-                    groupedContacts,
-                    isContactGroupsUpsellingVisible = true
-                ),
+                event = ContactListEvent.ContactListLoaded(groupedContacts),
                 expectedState = dataLoadedState
             ),
             TestInput(
                 currentState = emptyLoadedState.copy(
                     bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
                 ),
-                event = ContactListEvent.ContactListLoaded(
-                    emptyList(),
-                    isContactGroupsUpsellingVisible = false
-                ),
+                event = ContactListEvent.ContactListLoaded(emptyList()),
                 expectedState = ContactListState.Loaded.Empty().copy(
                     bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
                 )
@@ -186,44 +156,9 @@ internal class ContactListReducerTest(
             ),
             TestInput(
                 currentState = emptyLoadedState,
-                event = ContactListEvent.OpenContactForm,
-                expectedState = emptyLoadedState.copy(
-                    openContactForm = Effect.of(Unit),
-                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-                )
-            ),
-            TestInput(
-                currentState = emptyLoadedState,
-                event = ContactListEvent.OpenContactGroupForm,
-                expectedState = emptyLoadedState.copy(
-                    openContactGroupForm = Effect.of(Unit),
-                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-                )
-            ),
-            TestInput(
-                currentState = emptyLoadedState,
-                event = ContactListEvent.OpenImportContact,
-                expectedState = emptyLoadedState.copy(
-                    openImportContact = Effect.of(Unit),
-                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-                )
-            ),
-            TestInput(
-                currentState = emptyLoadedState,
                 event = ContactListEvent.OpenBottomSheet,
                 expectedState = emptyLoadedState.copy(
                     bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
-                )
-            ),
-            TestInput(
-                currentState = emptyLoadedState.copy(
-                    bottomSheetVisibilityEffect = Effect.empty(),
-                    bottomSheetType = ContactListState.BottomSheetType.Menu
-                ),
-                event = ContactListEvent.OpenUpsellingBottomSheet,
-                expectedState = emptyLoadedState.copy(
-                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
-                    bottomSheetType = ContactListState.BottomSheetType.Upselling
                 )
             ),
             TestInput(
@@ -239,42 +174,18 @@ internal class ContactListReducerTest(
                 expectedState = emptyLoadedState.copy(
                     bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
                 )
-            ),
-            TestInput(
-                currentState = emptyLoadedState,
-                event = ContactListEvent.SubscriptionUpgradeRequiredError,
-                expectedState = emptyLoadedState.copy(
-                    subscriptionError = Effect.of(TextUiModel.TextRes(R.string.contact_group_form_subscription_error)),
-                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-                )
-            ),
-            TestInput(
-                currentState = emptyLoadedState,
-                event = ContactListEvent.UpsellingInProgress,
-                expectedState = emptyLoadedState.copy(
-                    upsellingInProgress = Effect.of(
-                        TextUiModel.TextRes(R.string.upselling_snackbar_upgrade_in_progress)
-                    ),
-                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-                )
             )
         )
 
         private val transitionsFromDataLoadedState = listOf(
             TestInput(
                 currentState = dataLoadedState,
-                event = ContactListEvent.ContactListLoaded(
-                    groupedContacts,
-                    isContactGroupsUpsellingVisible = true
-                ),
+                event = ContactListEvent.ContactListLoaded(groupedContacts),
                 expectedState = dataLoadedState
             ),
             TestInput(
                 currentState = dataLoadedState,
-                event = ContactListEvent.ContactListLoaded(
-                    emptyList(),
-                    isContactGroupsUpsellingVisible = false
-                ),
+                event = ContactListEvent.ContactListLoaded(emptyList()),
                 expectedState = ContactListState.Loaded.Empty()
             ),
             TestInput(
@@ -284,30 +195,6 @@ internal class ContactListReducerTest(
             ),
             TestInput(
                 currentState = dataLoadedState,
-                event = ContactListEvent.OpenContactForm,
-                expectedState = dataLoadedState.copy(
-                    openContactForm = Effect.of(Unit),
-                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-                )
-            ),
-            TestInput(
-                currentState = dataLoadedState,
-                event = ContactListEvent.OpenContactGroupForm,
-                expectedState = dataLoadedState.copy(
-                    openContactGroupForm = Effect.of(Unit),
-                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-                )
-            ),
-            TestInput(
-                currentState = dataLoadedState,
-                event = ContactListEvent.OpenImportContact,
-                expectedState = dataLoadedState.copy(
-                    openImportContact = Effect.of(Unit),
-                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-                )
-            ),
-            TestInput(
-                currentState = dataLoadedState,
                 event = ContactListEvent.OpenBottomSheet,
                 expectedState = dataLoadedState.copy(
                     bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
@@ -325,24 +212,6 @@ internal class ContactListReducerTest(
                 currentState = dataLoadedState,
                 event = ContactListEvent.DismissBottomSheet,
                 expectedState = dataLoadedState.copy(
-                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-                )
-            ),
-            TestInput(
-                currentState = dataLoadedState,
-                event = ContactListEvent.SubscriptionUpgradeRequiredError,
-                expectedState = dataLoadedState.copy(
-                    subscriptionError = Effect.of(TextUiModel.TextRes(R.string.contact_group_form_subscription_error)),
-                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-                )
-            ),
-            TestInput(
-                currentState = dataLoadedState,
-                event = ContactListEvent.UpsellingInProgress,
-                expectedState = dataLoadedState.copy(
-                    upsellingInProgress = Effect.of(
-                        TextUiModel.TextRes(R.string.upselling_snackbar_upgrade_in_progress)
-                    ),
                     bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
                 )
             )

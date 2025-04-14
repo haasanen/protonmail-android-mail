@@ -20,25 +20,20 @@ package ch.protonmail.android.mailcontact.presentation.contactlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.domain.usecase.IsPaidUser
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.usecase.DeleteContact
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveGroupedContacts
-import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
-import ch.protonmail.android.mailupselling.domain.model.UserUpgradeState
-import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.mailcontact.presentation.model.GroupedContactListItemsUiModelMapper
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -50,11 +45,8 @@ import javax.inject.Inject
 class ContactListViewModel @Inject constructor(
     private val observeGroupedContacts: ObserveGroupedContacts,
     private val deleteContact: DeleteContact,
-    private val isPaidUser: IsPaidUser,
     private val reducer: ContactListReducer,
     private val groupedContactListItemsUiModelMapper: GroupedContactListItemsUiModelMapper,
-    private val observeUpsellingVisibility: ObserveUpsellingVisibility,
-    private val userUpgradeState: UserUpgradeState,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -77,9 +69,6 @@ class ContactListViewModel @Inject constructor(
                 ContactListViewAction.OnOpenBottomSheet -> emitNewStateFor(ContactListEvent.OpenBottomSheet)
                 ContactListViewAction.OnOpenContactSearch -> emitNewStateFor(ContactListEvent.OpenContactSearch)
                 ContactListViewAction.OnDismissBottomSheet -> emitNewStateFor(ContactListEvent.DismissBottomSheet)
-                ContactListViewAction.OnNewContactClick -> emitNewStateFor(ContactListEvent.OpenContactForm)
-                ContactListViewAction.OnNewContactGroupClick -> handleOnNewContactGroupClick()
-                ContactListViewAction.OnImportContactClick -> emitNewStateFor(ContactListEvent.OpenImportContact)
                 is ContactListViewAction.OnDeleteContactConfirmed -> handleOnDeleteContactConfirmed(action.contactId)
                 is ContactListViewAction.OnDeleteContactRequested -> emitNewStateFor(
                     ContactListEvent.DeleteContactRequested(action.contact)
@@ -94,35 +83,14 @@ class ContactListViewModel @Inject constructor(
 
         emitNewStateFor(ContactListEvent.DeleteContactConfirmed)
     }
-    private suspend fun handleOnNewContactGroupClick() {
-        if (userUpgradeState.isUserPendingUpgrade) return emitNewStateFor(ContactListEvent.UpsellingInProgress)
 
-        val shouldShowUpselling = observeUpsellingVisibility(UpsellingEntryPoint.BottomSheet.ContactGroups).first()
 
-        if (shouldShowUpselling) {
-            emitNewStateFor(ContactListEvent.OpenUpsellingBottomSheet)
-        } else {
-            val isPaid = isPaidUser(primaryUserId()).getOrElse { false }
-
-            if (isPaid) {
-                emitNewStateFor(ContactListEvent.OpenContactGroupForm)
-            } else {
-                emitNewStateFor(ContactListEvent.SubscriptionUpgradeRequiredError)
-            }
-        }
-    }
-
-    private fun flowContactListEvent(userId: UserId): Flow<ContactListEvent> {
-        return combine(
-            observeGroupedContacts(userId),
-            observeUpsellingVisibility(UpsellingEntryPoint.BottomSheet.ContactGroups)
-        ) { contactsEither, isContactGroupsUpsellingVisible ->
-
+    private fun flowContactListEvent(userId: UserId): Flow<ContactListEvent> =
+        observeGroupedContacts(userId).mapLatest { contactsEither ->
             contactsEither.fold(
                 ifRight = { contactList ->
                     ContactListEvent.ContactListLoaded(
-                        groupedContactsList = contactList.map { groupedContactListItemsUiModelMapper.toUiModel(it) },
-                        isContactGroupsUpsellingVisible = isContactGroupsUpsellingVisible
+                        groupedContactsList = contactList.map { groupedContactListItemsUiModelMapper.toUiModel(it) }
                     )
                 },
                 ifLeft = {
@@ -131,7 +99,6 @@ class ContactListViewModel @Inject constructor(
                 }
             )
         }
-    }
 
 
     private fun emitNewStateFor(event: ContactListEvent) {

@@ -30,15 +30,9 @@ class ContactListReducer @Inject constructor() {
         return when (event) {
             is ContactListEvent.ContactListLoaded -> reduceContactListLoaded(currentState, event)
             is ContactListEvent.ErrorLoadingContactList -> reduceErrorLoadingContactList()
-            is ContactListEvent.OpenContactForm -> reduceOpenContactForm(currentState)
-            is ContactListEvent.OpenContactGroupForm -> reduceOpenContactGroupForm(currentState)
-            is ContactListEvent.OpenImportContact -> reduceOpenImportContact(currentState)
             is ContactListEvent.DismissBottomSheet -> reduceDismissBottomSheet(currentState)
             is ContactListEvent.OpenBottomSheet -> reduceOpenBottomSheet(currentState)
             is ContactListEvent.OpenContactSearch -> reduceOpenContactSearch(currentState)
-            is ContactListEvent.SubscriptionUpgradeRequiredError -> reduceErrorSubscriptionUpgradeRequired(currentState)
-            is ContactListEvent.OpenUpsellingBottomSheet -> reduceOpenUpsellingBottomSheet(currentState)
-            is ContactListEvent.UpsellingInProgress -> reduceUpsellingInProgress(currentState)
             is ContactListEvent.DeleteContactConfirmed -> reduceDeleteConfirmed(currentState)
             is ContactListEvent.DeleteContactRequested -> reduceDeleteRequested(currentState, event)
         }
@@ -51,10 +45,7 @@ class ContactListReducer @Inject constructor() {
         return when (currentState) {
             is ContactListState.Loading -> {
                 if (event.groupedContactsList.isNotEmpty()) {
-                    ContactListState.Loaded.Data(
-                        groupedContacts = event.groupedContactsList,
-                        isContactGroupsUpsellingVisible = event.isContactGroupsUpsellingVisible
-                    )
+                    ContactListState.Loaded.Data(groupedContacts = event.groupedContactsList)
                 } else ContactListState.Loaded.Empty()
             }
 
@@ -62,13 +53,11 @@ class ContactListReducer @Inject constructor() {
                 if (event.groupedContactsList.isNotEmpty()) {
                     ContactListState.Loaded.Data(
                         bottomSheetVisibilityEffect = currentState.bottomSheetVisibilityEffect,
-                        groupedContacts = event.groupedContactsList,
-                        isContactGroupsUpsellingVisible = event.isContactGroupsUpsellingVisible
+                        groupedContacts = event.groupedContactsList
                     )
                 } else {
                     ContactListState.Loaded.Empty(
-                        bottomSheetVisibilityEffect = currentState.bottomSheetVisibilityEffect,
-                        isContactGroupsUpsellingVisible = event.isContactGroupsUpsellingVisible
+                        bottomSheetVisibilityEffect = currentState.bottomSheetVisibilityEffect
                     )
                 }
             }
@@ -77,65 +66,6 @@ class ContactListReducer @Inject constructor() {
 
     private fun reduceErrorLoadingContactList() =
         ContactListState.Loading(errorLoading = Effect.of(TextUiModel(R.string.contact_list_loading_error)))
-
-    private fun reduceErrorSubscriptionUpgradeRequired(currentState: ContactListState) = when (currentState) {
-        is ContactListState.Loaded.Empty -> currentState.copy(
-            subscriptionError = Effect.of(TextUiModel.TextRes(R.string.contact_group_form_subscription_error)),
-            bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-        )
-
-        is ContactListState.Loaded.Data -> currentState.copy(
-            subscriptionError = Effect.of(TextUiModel.TextRes(R.string.contact_group_form_subscription_error)),
-            bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-        )
-
-        is ContactListState.Loading -> currentState
-    }
-
-    private fun reduceOpenContactForm(currentState: ContactListState): ContactListState {
-        return when (currentState) {
-            is ContactListState.Loading -> currentState
-            is ContactListState.Loaded.Data -> currentState.copy(
-                openContactForm = Effect.of(Unit),
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-            )
-
-            is ContactListState.Loaded.Empty -> currentState.copy(
-                openContactForm = Effect.of(Unit),
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-            )
-        }
-    }
-
-    private fun reduceOpenContactGroupForm(currentState: ContactListState): ContactListState {
-        return when (currentState) {
-            is ContactListState.Loading -> currentState
-            is ContactListState.Loaded.Data -> currentState.copy(
-                openContactGroupForm = Effect.of(Unit),
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-            )
-
-            is ContactListState.Loaded.Empty -> currentState.copy(
-                openContactGroupForm = Effect.of(Unit),
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-            )
-        }
-    }
-
-    private fun reduceOpenImportContact(currentState: ContactListState): ContactListState {
-        return when (currentState) {
-            is ContactListState.Loading -> currentState
-            is ContactListState.Loaded.Data -> currentState.copy(
-                openImportContact = Effect.of(Unit),
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-            )
-
-            is ContactListState.Loaded.Empty -> currentState.copy(
-                openImportContact = Effect.of(Unit),
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-            )
-        }
-    }
 
     private fun reduceOpenBottomSheet(currentState: ContactListState): ContactListState {
         return when (currentState) {
@@ -165,21 +95,6 @@ class ContactListReducer @Inject constructor() {
         }
     }
 
-    private fun reduceOpenUpsellingBottomSheet(currentState: ContactListState): ContactListState {
-        return when (currentState) {
-            is ContactListState.Loading -> currentState
-            is ContactListState.Loaded.Data -> currentState.copy(
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
-                bottomSheetType = ContactListState.BottomSheetType.Upselling
-            )
-
-            is ContactListState.Loaded.Empty -> currentState.copy(
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
-                bottomSheetType = ContactListState.BottomSheetType.Upselling
-            )
-        }
-    }
-
     private fun reduceDismissBottomSheet(currentState: ContactListState): ContactListState {
         return when (currentState) {
             is ContactListState.Loading -> currentState
@@ -188,22 +103,6 @@ class ContactListReducer @Inject constructor() {
             )
 
             is ContactListState.Loaded.Empty -> currentState.copy(
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-            )
-        }
-    }
-
-    private fun reduceUpsellingInProgress(currentState: ContactListState): ContactListState {
-        val upsellingInProgressEffect = Effect.of(TextUiModel(R.string.upselling_snackbar_upgrade_in_progress))
-        return when (currentState) {
-            is ContactListState.Loading -> currentState
-            is ContactListState.Loaded.Data -> currentState.copy(
-                upsellingInProgress = upsellingInProgressEffect,
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-            )
-
-            is ContactListState.Loaded.Empty -> currentState.copy(
-                upsellingInProgress = upsellingInProgressEffect,
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
             )
         }

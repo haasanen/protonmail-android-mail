@@ -20,39 +20,25 @@ package ch.protonmail.android.mailcontact.presentation.contactlist
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.GroupedContactListItemsUiModel
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 
 sealed interface ContactListState {
 
-    val isContactGroupsUpsellingVisible: Boolean
-
     data class Loading(
-        val errorLoading: Effect<TextUiModel> = Effect.empty(),
-        override val isContactGroupsUpsellingVisible: Boolean = false
+        val errorLoading: Effect<TextUiModel> = Effect.empty()
     ) : ContactListState
 
     sealed interface Loaded : ContactListState {
 
         val bottomSheetVisibilityEffect: Effect<BottomSheetVisibilityEffect>
-        val openContactForm: Effect<Unit>
-        val openContactGroupForm: Effect<Unit>
-        val openImportContact: Effect<Unit>
         val openContactSearch: Effect<Boolean>
-        val subscriptionError: Effect<TextUiModel>
-        val upsellingInProgress: Effect<TextUiModel>
         val bottomSheetType: BottomSheetType
 
         data class Data(
             override val bottomSheetVisibilityEffect: Effect<BottomSheetVisibilityEffect> = Effect.empty(),
-            override val openContactForm: Effect<Unit> = Effect.empty(),
-            override val openContactGroupForm: Effect<Unit> = Effect.empty(),
-            override val openImportContact: Effect<Unit> = Effect.empty(),
             override val openContactSearch: Effect<Boolean> = Effect.empty(),
-            override val subscriptionError: Effect<TextUiModel> = Effect.empty(),
-            override val upsellingInProgress: Effect<TextUiModel> = Effect.empty(),
-            override val isContactGroupsUpsellingVisible: Boolean = false,
             override val bottomSheetType: BottomSheetType = BottomSheetType.Menu,
             val showDeleteConfirmDialog: Effect<ContactListItemUiModel.Contact> = Effect.empty(),
             val groupedContacts: List<GroupedContactListItemsUiModel>
@@ -60,13 +46,7 @@ sealed interface ContactListState {
 
         data class Empty(
             override val bottomSheetVisibilityEffect: Effect<BottomSheetVisibilityEffect> = Effect.empty(),
-            override val openContactForm: Effect<Unit> = Effect.empty(),
-            override val openContactGroupForm: Effect<Unit> = Effect.empty(),
-            override val openImportContact: Effect<Unit> = Effect.empty(),
             override val openContactSearch: Effect<Boolean> = Effect.empty(),
-            override val subscriptionError: Effect<TextUiModel> = Effect.empty(),
-            override val upsellingInProgress: Effect<TextUiModel> = Effect.empty(),
-            override val isContactGroupsUpsellingVisible: Boolean = false,
             override val bottomSheetType: BottomSheetType = BottomSheetType.Menu
         ) : Loaded
     }

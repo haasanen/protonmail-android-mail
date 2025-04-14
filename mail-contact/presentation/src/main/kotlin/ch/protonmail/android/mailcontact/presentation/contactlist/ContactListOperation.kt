@@ -28,28 +28,16 @@ internal sealed interface ContactListViewAction : ContactListOperation {
     data object OnOpenBottomSheet : ContactListViewAction
     data object OnOpenContactSearch : ContactListViewAction
     data object OnDismissBottomSheet : ContactListViewAction
-    data object OnNewContactClick : ContactListViewAction
-    data object OnNewContactGroupClick : ContactListViewAction
-    data object OnImportContactClick : ContactListViewAction
     data class OnDeleteContactRequested(val contact: ContactListItemUiModel.Contact) : ContactListViewAction
     data class OnDeleteContactConfirmed(val contactId: ContactId) : ContactListViewAction
 }
 
 internal sealed interface ContactListEvent : ContactListOperation {
-    data class ContactListLoaded(
-        val groupedContactsList: List<GroupedContactListItemsUiModel>,
-        val isContactGroupsUpsellingVisible: Boolean
-    ) : ContactListEvent
+    data class ContactListLoaded(val groupedContactsList: List<GroupedContactListItemsUiModel>) : ContactListEvent
     data object ErrorLoadingContactList : ContactListEvent
-    data object SubscriptionUpgradeRequiredError : ContactListEvent
-    data object OpenUpsellingBottomSheet : ContactListEvent
-    data object OpenContactForm : ContactListEvent
-    data object OpenContactGroupForm : ContactListEvent
-    data object OpenImportContact : ContactListEvent
     data object OpenBottomSheet : ContactListEvent
     data object OpenContactSearch : ContactListEvent
     data object DismissBottomSheet : ContactListEvent
-    data object UpsellingInProgress : ContactListEvent
     data class DeleteContactRequested(val contact: ContactListItemUiModel.Contact) : ContactListEvent
     data object DeleteContactConfirmed : ContactListEvent
 }

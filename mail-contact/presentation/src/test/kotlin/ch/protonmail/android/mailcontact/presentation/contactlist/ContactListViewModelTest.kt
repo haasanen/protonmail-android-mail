@@ -18,49 +18,42 @@
 
 package ch.protonmail.android.mailcontact.presentation.contactlist
 
-import androidx.compose.ui.graphics.Color
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
-import ch.protonmail.android.mailcommon.domain.usecase.IsPaidUser
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcontact.domain.model.GetContactError
-import ch.protonmail.android.mailcontact.presentation.R
-import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
-import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModelMapper
-import ch.protonmail.android.mailupselling.domain.model.UserUpgradeState
-import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
-import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
-import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
-import ch.protonmail.android.test.utils.rule.MainDispatcherRule
-import ch.protonmail.android.testdata.user.UserIdTestData
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.runTest
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import ch.protonmail.android.mailcontact.domain.usecase.DeleteContact
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveGroupedContacts
+import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.model.ContactEmailListMapper
+import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
+import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.GroupedContactListItemsUiModelMapper
-import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
+import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
+import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import ch.protonmail.android.testdata.user.UserIdTestData
+import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 
@@ -69,18 +62,6 @@ class ContactListViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val defaultTestContactGroupLabel = Label(
-        labelId = LabelId("LabelId1"),
-        parentId = null,
-        name = "Label 1",
-        type = LabelType.ContactGroup,
-        path = "",
-        color = Color.Red.getHexStringFromColor(),
-        order = 0,
-        isNotified = null,
-        isExpanded = null,
-        isSticky = null
-    )
     private val defaultTestContactMetadata = ContactMetadata.Contact(
         id = ContactId("1"),
         avatar = AvatarInformationSample.avatarSample,
@@ -117,17 +98,12 @@ class ContactListViewModelTest {
         every { this@mockk(any()) } returns flowOf(false)
     }
 
-    private val userUpgradeState = mockk<UserUpgradeState> {
-        every { this@mockk.isUserPendingUpgrade } returns false
-    }
-
     private val deleteContact = mockk<DeleteContact> {
         coEvery { this@mockk(UserIdTestData.userId, any()) } returns Unit.right()
     }
 
     private val reducer = ContactListReducer()
 
-    private val isPaidUser = mockk<IsPaidUser>()
     private val colorMapper = ColorMapper()
     private val contactGroupItemUiModelMapper = ContactGroupItemUiModelMapper(colorMapper)
     private val contactEmailListMapper = ContactEmailListMapper()
@@ -144,11 +120,8 @@ class ContactListViewModelTest {
         ContactListViewModel(
             observeGroupedContacts,
             deleteContact,
-            isPaidUser,
             reducer,
             groupedContactListItemsUiModelMapper,
-            observeUpsellingVisibilityMock,
-            userUpgradeState,
             observePrimaryUserId
         )
     }
@@ -230,34 +203,6 @@ class ContactListViewModelTest {
     }
 
     @Test
-    fun `when user subscription upgrade is pending, emit the upselling in progress event`() = runTest {
-        // Given
-        expectContactsData()
-        coEvery { observeUpsellingVisibilityMock(any()) } returns flowOf(false)
-        every { userUpgradeState.isUserPendingUpgrade } returns true
-
-        // When
-        contactListViewModel.state.test {
-            // Then
-            skipItems(1)
-
-            contactListViewModel.submit(ContactListViewAction.OnNewContactGroupClick)
-
-            val actual = awaitItem()
-            val expected = ContactListState.Loaded.Data(
-                groupedContacts = listOf(defaultTestGroupedContacts).map {
-                    groupedContactListItemsUiModelMapper.toUiModel(it)
-                },
-                isContactGroupsUpsellingVisible = false,
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide),
-                upsellingInProgress = Effect.of(TextUiModel(R.string.upselling_snackbar_upgrade_in_progress))
-            )
-
-            assertEquals(expected, actual)
-        }
-    }
-
-    @Test
     fun `given contact list, when action open bottom sheet, then emits open state`() = runTest {
         // Given
         expectContactsData()
@@ -300,7 +245,7 @@ class ContactListViewModelTest {
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
             )
 
-            kotlin.test.assertEquals(expected, actual)
+            assertEquals(expected, actual)
         }
     }
 
@@ -321,137 +266,6 @@ class ContactListViewModelTest {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
-            )
-
-            assertEquals(expected, actual)
-        }
-    }
-
-    @Test
-    fun `given contact list, when action new contact, then emits open contact form state`() = runTest {
-        // Given
-        expectContactsData()
-
-        // When
-        contactListViewModel.state.test {
-            awaitItem()
-
-            contactListViewModel.submit(ContactListViewAction.OnNewContactClick)
-
-            val actual = awaitItem()
-            val expected = ContactListState.Loaded.Data(
-                groupedContacts = listOf(defaultTestGroupedContacts).map {
-                    groupedContactListItemsUiModelMapper.toUiModel(it)
-                },
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide),
-                openContactForm = Effect.of(Unit)
-            )
-
-            assertEquals(expected, actual)
-        }
-    }
-
-
-    @Test
-    fun `given paid user contact list, when action new contact group, then emits open group form state`() = runTest {
-        // Given
-        expectContactsData()
-        expectPaidUser(true)
-
-        // When
-        contactListViewModel.state.test {
-            awaitItem()
-
-            contactListViewModel.submit(ContactListViewAction.OnNewContactGroupClick)
-
-            val actual = awaitItem()
-            val expected = ContactListState.Loaded.Data(
-                groupedContacts = listOf(defaultTestGroupedContacts).map {
-                    groupedContactListItemsUiModelMapper.toUiModel(it)
-                },
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide),
-                openContactGroupForm = Effect.of(Unit)
-            )
-
-            kotlin.test.assertEquals(expected, actual)
-        }
-    }
-
-
-    @Test
-    fun `given free user, when action new contact group, then emits subscription upgrade required error`() = runTest {
-        // Given
-        expectContactsData()
-        expectPaidUser(false)
-
-        // When
-        contactListViewModel.state.test {
-            awaitItem()
-
-            contactListViewModel.submit(ContactListViewAction.OnNewContactGroupClick)
-
-            val actual = awaitItem()
-            val expected = ContactListState.Loaded.Data(
-                groupedContacts = listOf(defaultTestGroupedContacts).map {
-                    groupedContactListItemsUiModelMapper.toUiModel(it)
-                },
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide),
-                subscriptionError = Effect.of(TextUiModel.TextRes(R.string.contact_group_form_subscription_error))
-            )
-
-            assertEquals(expected, actual)
-        }
-    }
-
-    @Suppress("MaxLineLength")
-    @Test
-    fun `given free user contact list and ContactGroup upselling visibility = true, when action new contact group, then emits open upselling bottom sheet`() =
-        runTest {
-            // Given
-            expectContactsData()
-            expectPaidUser(false)
-            coEvery { observeUpsellingVisibilityMock(any()) } returns flowOf(true)
-
-            // When
-            contactListViewModel.state.test {
-                awaitItem()
-
-                contactListViewModel.submit(ContactListViewAction.OnNewContactGroupClick)
-
-                val actual = awaitItem()
-                val expected = ContactListState.Loaded.Data(
-                    groupedContacts = listOf(defaultTestGroupedContacts).map {
-                        groupedContactListItemsUiModelMapper.toUiModel(it)
-                    },
-                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
-                    bottomSheetType = ContactListState.BottomSheetType.Upselling,
-                    subscriptionError = Effect.empty(),
-                    isContactGroupsUpsellingVisible = true
-                )
-
-                assertEquals(expected, actual)
-            }
-        }
-
-
-    @Test
-    fun `given contact list, when action import contact, then emits open import state`() = runTest {
-        // Given
-        expectContactsData()
-
-        // When
-        contactListViewModel.state.test {
-            awaitItem()
-
-            contactListViewModel.submit(ContactListViewAction.OnImportContactClick)
-
-            val actual = awaitItem()
-            val expected = ContactListState.Loaded.Data(
-                groupedContacts = listOf(defaultTestGroupedContacts).map {
-                    groupedContactListItemsUiModelMapper.toUiModel(it)
-                },
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide),
-                openImportContact = Effect.of(Unit)
             )
 
             assertEquals(expected, actual)
@@ -528,9 +342,5 @@ class ContactListViewModelTest {
         coEvery {
             observeGroupedContacts(userId = UserIdTestData.userId)
         } returns flowOf(listOf(defaultTestGroupedContacts).right())
-    }
-
-    private fun expectPaidUser(value: Boolean) {
-        coEvery { isPaidUser(userId = UserIdTestData.userId) } returns value.right()
     }
 }
