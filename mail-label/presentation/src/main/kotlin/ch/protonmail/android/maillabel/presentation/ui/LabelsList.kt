@@ -38,15 +38,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Constraints
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.labelSmallNorm
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.maillabel.presentation.previewdata.MailboxItemLabelsPreviewDataProvider
 import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.Plus1CharLimit
 import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.Plus2CharsLimit
 import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.Plus3CharsLimit
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.labelSmallNorm
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 
 @Composable
 fun LabelsList(

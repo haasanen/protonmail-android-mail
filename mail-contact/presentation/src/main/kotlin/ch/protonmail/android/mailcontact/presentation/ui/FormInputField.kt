@@ -33,13 +33,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.maillabel.presentation.R
 
 @Composable
 fun FormInputField(
@@ -85,7 +84,7 @@ fun FormInputField(
                     content = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_proton_cross),
-                            contentDescription = stringResource(R.string.input_field_clear_content_description),
+                            contentDescription = null,
                             tint = ProtonTheme.colors.iconNorm
                         )
                     },
