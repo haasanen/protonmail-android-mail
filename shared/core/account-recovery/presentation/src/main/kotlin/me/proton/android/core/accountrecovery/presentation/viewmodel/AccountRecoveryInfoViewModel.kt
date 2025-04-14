@@ -18,25 +18,54 @@
 
 package me.proton.android.core.accountrecovery.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import me.proton.android.core.account.domain.usecase.ObservePrimaryCoreAccount
+import me.proton.android.core.accountrecovery.presentation.entity.UserRecovery
 import me.proton.android.core.accountrecovery.presentation.ui.AccountRecoveryInfoViewState
+import me.proton.android.core.accountrecovery.presentation.usecase.ObserveUserRecovery
+import me.proton.core.compose.viewmodel.BaseViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class AccountRecoveryInfoViewModel @Inject constructor() : ViewModel() {
+class AccountRecoveryInfoViewModel @Inject constructor(
+    observePrimaryCoreAccount: ObservePrimaryCoreAccount,
+    private val observeUserRecovery: ObserveUserRecovery
+) : BaseViewModel<Unit, AccountRecoveryInfoViewState>(Unit, AccountRecoveryInfoViewState.None) {
 
-    val state: StateFlow<AccountRecoveryInfoViewState> =
-        flowOf<AccountRecoveryInfoViewState>()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
-                initialValue = AccountRecoveryInfoViewState.None
-            )
+    private val primaryUserId = observePrimaryCoreAccount().map { it?.userId }.filterNotNull().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
+        initialValue = null
+    )
+
+    override suspend fun FlowCollector<AccountRecoveryInfoViewState>.onError(throwable: Throwable) {
+        emit(AccountRecoveryInfoViewState.Error(throwable.message))
+    }
+
+    override fun onAction(action: Unit): Flow<AccountRecoveryInfoViewState> {
+        return primaryUserId
+            .filterNotNull()
+            .flatMapLatest { observeUserRecovery(it) }
+            .map { recovery ->
+                when (recovery?.state?.enum) {
+                    null -> AccountRecoveryInfoViewState.None
+                    UserRecovery.State.None -> AccountRecoveryInfoViewState.None
+                    else -> AccountRecoveryInfoViewState.Recovery(
+                        recoveryState = recovery.state.enum,
+                        startDate = recovery.startDateFormatted,
+                        endDate = recovery.endDateFormatted,
+                        durationUntilEnd = recovery.durationFormatted
+                    )
+                }
+            }
+    }
 }

@@ -92,7 +92,7 @@ fun AccountRecoveryDialog(
     AccountRecoveryDialog(
         modifier = modifier,
         state = state,
-        onDismiss = { viewModel.userAcknowledged() }
+        onDismiss = { viewModel.perform(true) }
     )
 }
 

@@ -18,57 +18,149 @@
 
 package me.proton.android.core.accountrecovery.presentation.viewmodel
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.accountrecovery.presentation.LogTag
+import me.proton.android.core.accountrecovery.presentation.R
+import me.proton.android.core.accountrecovery.presentation.entity.UserRecovery
 import me.proton.android.core.accountrecovery.presentation.ui.AccountRecoveryViewState
 import me.proton.android.core.accountrecovery.presentation.ui.Arg
+import me.proton.android.core.accountrecovery.presentation.ui.CancellationState
+import me.proton.android.core.accountrecovery.presentation.usecase.CancelRecovery
+import me.proton.android.core.accountrecovery.presentation.usecase.ObserveUserRecovery
+import me.proton.core.compose.viewmodel.BaseViewModel
+import me.proton.core.presentation.utils.StringBox
 import me.proton.core.util.kotlin.CoreLogger
+import me.proton.core.util.kotlin.coroutine.launchWithResultContext
 import javax.inject.Inject
 
 @HiltViewModel
 class AccountRecoveryDialogViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
-) : ViewModel() {
+    savedStateHandle: SavedStateHandle,
+    private val observeUserRecovery: ObserveUserRecovery,
+    private val cancelRecovery: CancelRecovery
+) : BaseViewModel<Boolean, AccountRecoveryViewState>(false, AccountRecoveryViewState.Loading) {
 
     private val userId = CoreUserId(requireNotNull(savedStateHandle.get<String>(Arg.UserId)))
-    private val ackFlow = MutableStateFlow(false)
+
+    private val cancellationFlow = MutableStateFlow(CancellationState())
+    private val shouldShowCancellationForm = MutableStateFlow(false)
     private val shouldShowRecoveryReset = MutableStateFlow(false)
 
-    val initialState = AccountRecoveryViewState.Loading
+    override suspend fun FlowCollector<AccountRecoveryViewState>.onError(throwable: Throwable) {
+        CoreLogger.e(LogTag.ERROR_OBSERVING_STATE, throwable)
+        emit(AccountRecoveryViewState.Error(throwable.message))
+    }
 
-    val state: StateFlow<AccountRecoveryViewState> = ackFlow.flatMapLatest { ack ->
-        shouldShowRecoveryReset.flatMapLatest { showRecovery ->
+    override fun onAction(action: Boolean): Flow<AccountRecoveryViewState> {
+        return shouldShowRecoveryReset.flatMapLatest { showRecovery ->
             when {
-                ack -> flowOf(AccountRecoveryViewState.Closed())
+                action -> flowOf(AccountRecoveryViewState.Closed())
                 showRecovery -> flowOf(AccountRecoveryViewState.StartPasswordManager(userId))
                 else -> observeState()
             }
         }
-    }.catch {
-        CoreLogger.e(LogTag.ERROR_OBSERVING_STATE, it)
-        emit(AccountRecoveryViewState.Error(it.message))
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
-        initialValue = initialState
-    )
+    }
 
-    private fun observeState() = flowOf<AccountRecoveryViewState>()
+    private fun observeState() = combine(
+        observeUserRecovery(userId),
+        cancellationFlow,
+        shouldShowCancellationForm
+    ) { userRecovery, cancellationState, showCancellationForm ->
+        when (userRecovery?.state?.enum) {
+            null, UserRecovery.State.None -> AccountRecoveryViewState.Closed()
+            UserRecovery.State.Grace -> onGracePeriod(cancellationState, showCancellationForm, userRecovery)
+            UserRecovery.State.Cancelled -> AccountRecoveryViewState.Opened.CancellationHappened
+            UserRecovery.State.Insecure -> onInsecurePeriod(
+                cancellationState,
+                showCancellationForm,
+                userRecovery
+            )
 
-    internal fun userAcknowledged() {
-        ackFlow.update { true }
+            UserRecovery.State.Expired -> AccountRecoveryViewState.Opened.RecoveryEnded(email = userRecovery.email)
+        }
+    }
+
+    private fun onGracePeriod(
+        cancellationState: CancellationState,
+        showCancellationForm: Boolean,
+        userRecovery: UserRecovery
+    ): AccountRecoveryViewState = when (showCancellationForm) {
+        true -> cancellationState.toViewModelState(
+            onCancelPasswordRequest = { startAccountRecoveryCancel(it) },
+            onBack = { hideCancellationForm() }
+        )
+
+        false -> AccountRecoveryViewState.Opened.GracePeriodStarted(
+            email = userRecovery.email,
+            remainingHours = userRecovery.remainingHours,
+            onShowCancellationForm = { showCancellationForm() }
+        )
+    }
+
+    private fun onInsecurePeriod(
+        cancellationState: CancellationState,
+        showCancellationForm: Boolean,
+        userRecovery: UserRecovery
+    ): AccountRecoveryViewState = when (showCancellationForm) {
+        true -> cancellationState.toViewModelState(
+            onCancelPasswordRequest = { startAccountRecoveryCancel(it) },
+            onBack = { hideCancellationForm() }
+        )
+
+        false -> {
+            if (userRecovery.selfInitiated && userRecovery.isAccountRecoveryResetEnabled) {
+                AccountRecoveryViewState.Opened.PasswordChangePeriodStarted.SelfInitiated(
+                    endDate = userRecovery.endDateFormatted,
+                    onShowPasswordChangeForm = { startAccountRecoveryReset() },
+                    onShowCancellationForm = { showCancellationForm() }
+                )
+            } else {
+                AccountRecoveryViewState.Opened.PasswordChangePeriodStarted.OtherDeviceInitiated(
+                    endDate = userRecovery.endDateFormatted,
+                    onShowCancellationForm = { showCancellationForm() }
+                )
+            }
+        }
+    }
+
+    @VisibleForTesting
+    internal fun showCancellationForm() {
+        shouldShowCancellationForm.update { true }
+    }
+
+    private fun hideCancellationForm() {
+        shouldShowCancellationForm.update { false }
+    }
+
+    private fun startAccountRecoveryReset() {
+        shouldShowRecoveryReset.update { true }
+    }
+
+    @VisibleForTesting
+    internal fun startAccountRecoveryCancel(password: String) = viewModelScope.launchWithResultContext {
+        // add observability
+//        onResultEnqueueObservability("account_recovery.cancellation") { AccountRecoveryCancellationTotal(this) }
+
+        cancellationFlow.update { CancellationState(processing = true) }
+        cancellationFlow.value = when {
+            password.isEmpty() -> CancellationState(passwordError = StringBox(R.string.presentation_field_required))
+            else -> runCatching {
+                cancelRecovery(password, userId)
+            }.fold(
+                onSuccess = { CancellationState(success = true) },
+                onFailure = { error -> CancellationState(success = false, error = error) }
+            )
+        }
     }
 }

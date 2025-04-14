@@ -19,6 +19,9 @@
 package me.proton.android.core.accountrecovery.presentation.ui
 
 import me.proton.android.core.account.domain.model.CoreUserId
+import me.proton.android.core.accountrecovery.presentation.R
+import me.proton.core.network.domain.ResponseCodes.PASSWORD_WRONG
+import me.proton.core.network.domain.hasProtonErrorCode
 import me.proton.core.presentation.utils.StringBox
 
 sealed class AccountRecoveryViewState {
@@ -62,4 +65,32 @@ sealed class AccountRecoveryViewState {
     object Loading : AccountRecoveryViewState()
 
     data class Error(val message: String?) : AccountRecoveryViewState()
+}
+
+internal data class CancellationState(
+    val processing: Boolean = false,
+    val success: Boolean? = null,
+    val error: Throwable? = null,
+    val passwordError: StringBox? = null
+) {
+
+    fun toViewModelState(onCancelPasswordRequest: (String) -> Unit, onBack: () -> Unit): AccountRecoveryViewState =
+        when {
+            error?.hasProtonErrorCode(PASSWORD_WRONG) == true -> AccountRecoveryViewState.Opened.CancelPasswordReset(
+                passwordError = error.message?.let {
+                    StringBox(it)
+                } ?: StringBox(R.string.presentation_error_general),
+                onCancelPasswordRequest = onCancelPasswordRequest,
+                onBack = onBack
+            )
+
+            error != null -> AccountRecoveryViewState.Error(error.message)
+            success == true -> AccountRecoveryViewState.Closed(hasCancelledSuccessfully = true)
+            else -> AccountRecoveryViewState.Opened.CancelPasswordReset(
+                processing = processing,
+                passwordError = passwordError,
+                onCancelPasswordRequest = onCancelPasswordRequest,
+                onBack = onBack
+            )
+        }
 }

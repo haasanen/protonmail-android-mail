@@ -19,76 +19,55 @@
 package me.proton.android.core.accountrecovery.presentation.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
-import me.proton.android.core.account.domain.model.CoreAccount
 import me.proton.android.core.account.domain.model.CoreUserId
-import me.proton.android.core.account.domain.usecase.ObserveCoreAccounts
 import me.proton.android.core.accountrecovery.presentation.ui.Arg
 import me.proton.android.core.accountrecovery.presentation.ui.PasswordResetDialogAction
 import me.proton.android.core.accountrecovery.presentation.ui.PasswordResetDialogViewState
+import me.proton.android.core.accountrecovery.presentation.usecase.ObserveUserEmail
+import me.proton.android.core.accountrecovery.presentation.usecase.StartRecovery
+import me.proton.core.compose.viewmodel.BaseViewModel
 import me.proton.core.util.kotlin.coroutine.flowWithResultContext
 import javax.inject.Inject
 
 @HiltViewModel
 class PasswordResetDialogViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    observeCoreAccounts: ObserveCoreAccounts
-) : ViewModel() {
-
+    observeUserEmail: ObserveUserEmail,
+    private val startRecovery: StartRecovery
+) : BaseViewModel<PasswordResetDialogAction, PasswordResetDialogViewState>(
+    initialAction = PasswordResetDialogAction.ObserveState,
+    initialState = PasswordResetDialogViewState.Loading()
+) {
     private val userId = CoreUserId(requireNotNull(savedStateHandle.get<String>(Arg.UserId)))
+    private val userEmail = observeUserEmail(userId).stateIn(viewModelScope, Eagerly, null)
 
-    private val currentUser =
-        observeCoreAccounts()
-            .map { accounts ->
-                accounts.firstOrNull { it.userId == userId }
-            }
-            .stateIn(viewModelScope, Eagerly, null)
-
-    private val currentAction = MutableStateFlow<PasswordResetDialogAction>(PasswordResetDialogAction.ObserveState)
-
-    val state: StateFlow<PasswordResetDialogViewState> = currentAction.flatMapLatest { action ->
-        when (action) {
-            is PasswordResetDialogAction.ObserveState -> observeState()
-            is PasswordResetDialogAction.RequestReset -> requestReset()
-        }
-    }.catch {
-        emit(PasswordResetDialogViewState.Error(it.message))
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
-        initialValue = PasswordResetDialogViewState.Loading()
-    )
-
-    private fun CoreAccount.getEmail() = primaryEmailAddress ?: username ?: displayName ?: ""
-
-    private fun observeState(): Flow<PasswordResetDialogViewState> = flow {
-        emit(PasswordResetDialogViewState.Loading(currentUser.value?.getEmail()))
-        emitAll(currentUser.filterNotNull().mapLatest { PasswordResetDialogViewState.Ready(it.getEmail()) })
+    override suspend fun FlowCollector<PasswordResetDialogViewState>.onError(throwable: Throwable) {
+        emit(PasswordResetDialogViewState.Error(throwable.message))
     }
 
-    private suspend fun requestReset(): Flow<PasswordResetDialogViewState> = flowWithResultContext {
-//        onResultEnqueueObservability("account_recovery.start") { AccountRecoveryStartTotal(this) }
+    override fun onAction(action: PasswordResetDialogAction): Flow<PasswordResetDialogViewState> {
+        return when (action) {
+            is PasswordResetDialogAction.ObserveState -> observeState(userEmail.value)
+            is PasswordResetDialogAction.RequestReset -> requestReset(userEmail.value)
+        }
+    }
 
-        emit(PasswordResetDialogViewState.Loading(currentUser.value?.getEmail()))
-//        startRecovery(userId)
+    private fun observeState(email: String?): Flow<PasswordResetDialogViewState> = flow {
+        emit(PasswordResetDialogViewState.Loading(email))
+        emit(PasswordResetDialogViewState.Ready(email ?: ""))
+    }
+
+    private fun requestReset(email: String?): Flow<PasswordResetDialogViewState> = flowWithResultContext {
+        // add observability
+        emit(PasswordResetDialogViewState.Loading(email))
+        startRecovery(userId)
         emit(PasswordResetDialogViewState.ResetRequested)
     }
-
-    fun perform(action: PasswordResetDialogAction) = currentAction.tryEmit(action)
 }

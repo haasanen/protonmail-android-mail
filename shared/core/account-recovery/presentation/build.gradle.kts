@@ -61,11 +61,10 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.dagger.hilt.android)
+    implementation(libs.proton.core.crypto)
     implementation(libs.proton.core.presentation)
     implementation(libs.proton.core.presentationCompose)
-    implementation(libs.proton.core.utilKotlin)
-    implementation(libs.proton.core.domain)
-    implementation(libs.proton.core.network.domain)
+    implementation(libs.proton.core.user.domain)
 
     implementation(project(":shared:core:account:domain"))
     implementation(project(":shared:core:account-manager:presentation"))

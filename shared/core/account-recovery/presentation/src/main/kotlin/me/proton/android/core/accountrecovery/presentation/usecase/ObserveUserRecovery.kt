@@ -16,17 +16,19 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.accountrecovery.presentation.ui
+package me.proton.android.core.accountrecovery.presentation.usecase
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.accountrecovery.presentation.entity.UserRecovery
+import javax.inject.Inject
 
-sealed class AccountRecoveryInfoViewState {
-    data object None : AccountRecoveryInfoViewState()
-    data class Error(val message: String?) : AccountRecoveryInfoViewState()
-    data class Recovery(
-        val recoveryState: UserRecovery.State?,
-        val startDate: String,
-        val endDate: String,
-        val durationUntilEnd: String
-    ) : AccountRecoveryInfoViewState()
+class ObserveUserRecovery @Inject constructor() {
+
+    @Suppress("ExpressionBodySyntax")
+    operator fun invoke(userId: CoreUserId): Flow<UserRecovery?> {
+        // call Rust user recovery observer and replace UserRecovery with Rust UserRecovery entity
+        return flowOf(null)
+    }
 }

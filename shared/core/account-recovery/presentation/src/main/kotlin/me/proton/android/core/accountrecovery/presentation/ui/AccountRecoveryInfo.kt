@@ -31,6 +31,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -40,7 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.viewmodel.hiltViewModelOrNull
 import me.proton.android.core.accountrecovery.presentation.R
-import me.proton.android.core.accountrecovery.presentation.UserRecovery
+import me.proton.android.core.accountrecovery.presentation.entity.UserRecovery
 import me.proton.android.core.accountrecovery.presentation.viewmodel.AccountRecoveryInfoViewModel
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
@@ -50,14 +51,23 @@ import me.proton.core.compose.theme.defaultWeak
 @Composable
 fun AccountRecoveryInfo(
     modifier: Modifier = Modifier,
-    viewModel: AccountRecoveryInfoViewModel? = hiltViewModelOrNull(),
+    onError: (String?) -> Unit,
     onOpenDialog: () -> Unit = { },
     quickAction: Boolean = true,
-    expanded: Boolean = false
+    expanded: Boolean = false,
+    viewModel: AccountRecoveryInfoViewModel? = hiltViewModelOrNull()
 ) {
     val state = when (viewModel) {
         null -> AccountRecoveryInfoViewState.None
         else -> viewModel.state.collectAsStateWithLifecycle().value
+    }
+
+    LaunchedEffect(state) {
+        when (state) {
+            is AccountRecoveryInfoViewState.Error -> onError(state.message)
+            is AccountRecoveryInfoViewState.None,
+            is AccountRecoveryInfoViewState.Recovery -> Unit
+        }
     }
 
     AccountRecoveryInfo(
@@ -78,6 +88,7 @@ fun AccountRecoveryInfo(
     expanded: Boolean = false
 ) {
     when (state) {
+        is AccountRecoveryInfoViewState.Error,
         is AccountRecoveryInfoViewState.None -> Unit
         is AccountRecoveryInfoViewState.Recovery -> AccountRecoveryInfo(
             modifier = modifier,

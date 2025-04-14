@@ -16,17 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.accountrecovery.presentation.ui
+package me.proton.android.core.accountrecovery.presentation.usecase
 
-import me.proton.android.core.accountrecovery.presentation.entity.UserRecovery
+import me.proton.android.core.account.domain.model.CoreUserId
+import javax.inject.Inject
 
-sealed class AccountRecoveryInfoViewState {
-    data object None : AccountRecoveryInfoViewState()
-    data class Error(val message: String?) : AccountRecoveryInfoViewState()
-    data class Recovery(
-        val recoveryState: UserRecovery.State?,
-        val startDate: String,
-        val endDate: String,
-        val durationUntilEnd: String
-    ) : AccountRecoveryInfoViewState()
+class StartRecovery @Inject constructor() {
+    operator fun invoke(userId: CoreUserId) {
+        // call rust start recovery flow
+    }
 }
