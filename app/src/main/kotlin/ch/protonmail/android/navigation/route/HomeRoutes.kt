@@ -41,7 +41,6 @@ import ch.protonmail.android.mailcontact.presentation.managemembers.ManageMember
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maillabel.presentation.folderform.FolderFormScreen
-import ch.protonmail.android.maillabel.presentation.folderlist.FolderListScreen
 import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -219,31 +218,6 @@ internal fun NavGraphBuilder.addAppSettings(navController: NavHostController, sh
                 onClearCacheClick = {},
                 onBackClick = {
                     navController.navigateBack()
-                }
-            )
-        )
-    }
-}
-
-internal fun NavGraphBuilder.addFolderList(
-    navController: NavHostController,
-    showErrorSnackbar: (message: String) -> Unit
-) {
-    composable(route = Destination.Screen.FolderList.route) {
-        FolderListScreen(
-            actions = FolderListScreen.Actions(
-                onBackClick = {
-                    navController.navigateBack()
-                },
-                onFolderSelected = { labelId ->
-                    navController.navigate(Destination.Screen.EditFolder(labelId))
-                },
-                onAddFolderClick = {
-                    navController.navigate(Destination.Screen.CreateFolder.route)
-                },
-                exitWithErrorMessage = { message ->
-                    navController.navigateBack()
-                    showErrorSnackbar(message)
                 }
             )
         )
