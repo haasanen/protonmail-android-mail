@@ -22,17 +22,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.UpdateLabelExpandedState
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
-import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction
 import ch.protonmail.android.maillabel.presentation.toUiModels
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -97,7 +97,6 @@ class SidebarViewModel @Inject constructor(
 
     private fun onSidebarLabelAction(action: SidebarLabelAction) {
         when (action) {
-            is SidebarLabelAction.ViewList -> Unit
             is SidebarLabelAction.Add -> Unit
             is SidebarLabelAction.Collapse -> onUpdateLabelExpandedState(action.labelId, false)
             is SidebarLabelAction.Expand -> onUpdateLabelExpandedState(action.labelId, true)

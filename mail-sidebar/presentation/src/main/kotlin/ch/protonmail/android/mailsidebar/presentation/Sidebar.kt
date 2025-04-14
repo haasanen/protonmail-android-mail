@@ -34,25 +34,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.domain.AppInformation
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
-import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction
-import ch.protonmail.android.mailsidebar.presentation.label.sidebarFolderItems
-import ch.protonmail.android.mailsidebar.presentation.label.sidebarLabelItems
-import ch.protonmail.android.mailsidebar.presentation.label.sidebarSystemLabelItems
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Disabled
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Enabled
-import kotlinx.coroutines.launch
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarAppVersionItem
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarItem
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarLazy
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarReportBugItem
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarSettingsItem
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarSubscriptionItem
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction
+import ch.protonmail.android.mailsidebar.presentation.label.sidebarFolderItems
+import ch.protonmail.android.mailsidebar.presentation.label.sidebarLabelItems
+import ch.protonmail.android.mailsidebar.presentation.label.sidebarSystemLabelItems
+import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 
 @Composable
 @Suppress("ComplexMethod")
@@ -81,15 +81,6 @@ fun Sidebar(
                 close = ::close,
                 onLabelAction = { sidebarLabelAction ->
                     when (sidebarLabelAction) {
-                        is SidebarLabelAction.ViewList -> {
-                            close()
-                            if (sidebarLabelAction.type == LabelType.MessageLabel) {
-                                navigationActions.onLabelList()
-                            } else if (sidebarLabelAction.type == LabelType.MessageFolder) {
-                                navigationActions.onFolderList()
-                            }
-                        }
-
                         is SidebarLabelAction.Add -> {
                             close()
                             if (sidebarLabelAction.type == LabelType.MessageLabel) {
@@ -235,8 +226,6 @@ object Sidebar {
         val onRemoveAccount: (UserId?) -> Unit,
         val onSwitchAccount: (UserId) -> Unit,
         val onSettings: () -> Unit,
-        val onLabelList: () -> Unit,
-        val onFolderList: () -> Unit,
         val onLabelAdd: () -> Unit,
         val onFolderAdd: () -> Unit,
         val onSubscription: () -> Unit,
@@ -291,8 +280,6 @@ object Sidebar {
                 onRemoveAccount = {},
                 onSwitchAccount = {},
                 onSettings = {},
-                onLabelList = {},
-                onFolderList = {},
                 onLabelAdd = {},
                 onFolderAdd = {},
                 onSubscription = {},

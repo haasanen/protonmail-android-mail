@@ -115,10 +115,6 @@ sealed class Destination(val route: String) {
         }
 
         object CombinedContactsSettings : Destination("settings/combinedContacts")
-        object ConversationModeSettings : Destination("settings/account/conversationMode")
-        object AutoDeleteSettings : Destination("settings/account/autoDelete")
-        object DefaultEmailSettings : Destination("settings/account/defaultEmail")
-        object DisplayNameSettings : Destination("settings/account/displayName")
         object PrivacySettings : Destination("settings/account/privacy")
         object LanguageSettings : Destination("settings/appLanguage")
         object SwipeActionsSettings : Destination("settings/swipeActions")
@@ -139,10 +135,6 @@ sealed class Destination(val route: String) {
 
         object FeatureFlagsOverrides : Destination("settings/debug/featureFlags")
         object DeepLinksHandler : Destination("deepLinksHandler")
-        object LabelList : Destination("labelList")
-        object CreateLabel : Destination("labelForm")
-
-        object FolderList : Destination("folderList")
 
         object Contacts : Destination("contacts")
         object ContactDetails : Destination("contacts/contact/${ContactDetailsContactIdKey.wrap()}") {

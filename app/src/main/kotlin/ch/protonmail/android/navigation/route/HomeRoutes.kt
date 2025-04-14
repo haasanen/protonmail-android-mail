@@ -40,7 +40,6 @@ import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearc
 import ch.protonmail.android.mailcontact.presentation.managemembers.ManageMembersScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
-import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -90,8 +89,8 @@ internal fun NavGraphBuilder.addMailbox(
                 showOfflineSnackbar = showOfflineSnackbar,
                 showNormalSnackbar = showNormalSnackbar,
                 showErrorSnackbar = showErrorSnackbar,
-                onAddLabel = { navController.navigate(Destination.Screen.CreateLabel.route) },
-                onAddFolder = { navController.navigate(Destination.Screen.CreateFolder.route) },
+                onAddLabel = { navController.navigate(Destination.Screen.FolderAndLabelSettings.route) },
+                onAddFolder = { navController.navigate(Destination.Screen.FolderAndLabelSettings.route) },
                 onAccountAvatarClicked = {
                     navController.navigate(Destination.Screen.AccountsManager.route)
                 },
@@ -220,38 +219,6 @@ internal fun NavGraphBuilder.addAppSettings(navController: NavHostController, sh
                 }
             )
         )
-    }
-}
-
-internal fun NavGraphBuilder.addParentFolderList(
-    navController: NavHostController,
-    showErrorSnackbar: (message: String) -> Unit
-) {
-    val actions = ParentFolderListScreen.Actions.Empty.copy(
-        onBackClick = {
-            navController.navigateBack()
-        },
-        onFolderSelected = { labelId ->
-            navController.previousBackStackEntry?.savedStateHandle?.set(
-                SavedStateKey.CurrentParentFolderId.key,
-                labelId.id
-            )
-            navController.navigateBack()
-        },
-        onNoneClick = {
-            navController.previousBackStackEntry?.savedStateHandle?.set(
-                SavedStateKey.CurrentParentFolderId.key,
-                ""
-            )
-            navController.navigateBack()
-        },
-        exitWithErrorMessage = { message ->
-            navController.navigateBack()
-            showErrorSnackbar(message)
-        }
-    )
-    composable(route = Destination.Screen.ParentFolderList.route) {
-        ParentFolderListScreen(actions)
     }
 }
 

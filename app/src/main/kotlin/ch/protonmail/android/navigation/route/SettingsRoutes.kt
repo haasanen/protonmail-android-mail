@@ -24,10 +24,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import ch.protonmail.android.LockScreenActivity
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
-import ch.protonmail.android.mailfeatureflags.presentation.ui.FeatureFlagOverridesScreen
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsPeekView
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsScreen
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
+import ch.protonmail.android.mailfeatureflags.presentation.ui.FeatureFlagOverridesScreen
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
 import ch.protonmail.android.mailsettings.presentation.settings.alternativerouting.AlternativeRoutingSettingScreen
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.ui.AutoLockSettingsScreen
@@ -46,11 +46,10 @@ import ch.protonmail.android.mailsettings.presentation.webfoldersettings.WebFold
 import ch.protonmail.android.mailsettings.presentation.webprivacysettings.WebPrivacyAndSecuritySettingsScreen
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsScreenActions
 import ch.protonmail.android.mailsettings.presentation.webspamsettings.WebSpamFilterSettingsScreen
-import ch.protonmail.android.navigation.Launcher
 import ch.protonmail.android.navigation.model.Destination.Screen
 import me.proton.core.compose.navigation.require
 
-fun NavGraphBuilder.addWebAccountSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
+fun NavGraphBuilder.addWebAccountSettings(navController: NavHostController) {
     composable(route = Screen.AccountSettings.route) {
         ProtonInvertedTheme {
             WebAccountSettingScreen(
@@ -62,7 +61,7 @@ fun NavGraphBuilder.addWebAccountSettings(navController: NavHostController, laun
     }
 }
 
-fun NavGraphBuilder.addWebEmailSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
+fun NavGraphBuilder.addWebEmailSettings(navController: NavHostController) {
     composable(route = Screen.EmailSettings.route) {
         ProtonInvertedTheme {
             WebEmailSettingScreen(
@@ -74,7 +73,7 @@ fun NavGraphBuilder.addWebEmailSettings(navController: NavHostController, launch
     }
 }
 
-fun NavGraphBuilder.addWebFolderAndLabelSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
+fun NavGraphBuilder.addWebFolderAndLabelSettings(navController: NavHostController) {
     composable(route = Screen.FolderAndLabelSettings.route) {
         ProtonInvertedTheme {
             WebFoldersAndLabelsSettingScreen(
@@ -86,10 +85,7 @@ fun NavGraphBuilder.addWebFolderAndLabelSettings(navController: NavHostControlle
     }
 }
 
-fun NavGraphBuilder.addWebPrivacyAndSecuritySettings(
-    navController: NavHostController,
-    launcherActions: Launcher.Actions
-) {
+fun NavGraphBuilder.addWebPrivacyAndSecuritySettings(navController: NavHostController) {
     composable(route = Screen.PrivacyAndSecuritySettings.route) {
         ProtonInvertedTheme {
             WebPrivacyAndSecuritySettingsScreen(
@@ -101,7 +97,7 @@ fun NavGraphBuilder.addWebPrivacyAndSecuritySettings(
     }
 }
 
-fun NavGraphBuilder.addWebSpamFilterSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
+fun NavGraphBuilder.addWebSpamFilterSettings(navController: NavHostController) {
     composable(route = Screen.SpamFilterSettings.route) {
         ProtonInvertedTheme {
             WebSpamFilterSettingsScreen(

@@ -100,7 +100,6 @@ import ch.protonmail.android.navigation.route.addLanguageSettings
 import ch.protonmail.android.navigation.route.addMailbox
 import ch.protonmail.android.navigation.route.addManageMembers
 import ch.protonmail.android.navigation.route.addNotificationsSettings
-import ch.protonmail.android.navigation.route.addParentFolderList
 import ch.protonmail.android.navigation.route.addPrivacySettings
 import ch.protonmail.android.navigation.route.addRemoveAccountDialog
 import ch.protonmail.android.navigation.route.addSetMessagePassword
@@ -167,11 +166,10 @@ fun Home(
     }
 
     val featureMissingSnackbarMessage = stringResource(id = R.string.feature_coming_soon)
-    fun showFeatureMissingSnackbar() = scope.launch {
-        snackbarHostNormState.showSnackbar(
-            message = featureMissingSnackbarMessage,
-            type = ProtonSnackbarType.NORM
-        )
+    fun showFeatureMissingSnackbar() {
+        scope.launch {
+            snackbarHostNormState.showSnackbar(message = featureMissingSnackbarMessage, type = ProtonSnackbarType.NORM)
+        }
     }
 
     fun showErrorSnackbar(text: String) = scope.launch {
@@ -257,40 +255,6 @@ fun Home(
             SnackbarResult.ActionPerformed -> viewModel.navigateToDrafts(navController)
             SnackbarResult.Dismissed -> Unit
         }
-    }
-
-    val errorUploadAttachmentText = stringResource(id = R.string.mailbox_attachment_uploading_error)
-    fun showErrorUploadAttachmentSnackbar() = scope.launch {
-        snackbarHostErrorState.showSnackbar(message = errorUploadAttachmentText, type = ProtonSnackbarType.ERROR)
-    }
-
-    val labelSavedText = stringResource(id = R.string.label_saved)
-    fun showLabelSavedSnackbar() = scope.launch {
-        snackbarHostSuccessState.showSnackbar(message = labelSavedText, type = ProtonSnackbarType.SUCCESS)
-    }
-
-    val labelDeletedText = stringResource(id = R.string.label_deleted)
-    fun showLabelDeletedSnackbar() = scope.launch {
-        snackbarHostSuccessState.showSnackbar(message = labelDeletedText, type = ProtonSnackbarType.SUCCESS)
-    }
-
-    fun showUpsellingSnackbar(message: String) = scope.launch {
-        snackbarHostNormState.showSnackbar(
-            message = message,
-            type = ProtonSnackbarType.NORM
-        )
-    }
-
-    fun showUpsellingErrorSnackbar(message: String) = scope.launch {
-        snackbarHostErrorState.showSnackbar(
-            message = message,
-            type = ProtonSnackbarType.ERROR
-        )
-    }
-
-    val labelListErrorLoadingText = stringResource(id = R.string.label_list_loading_error)
-    fun showLabelListErrorLoadingSnackbar() = scope.launch {
-        snackbarHostErrorState.showSnackbar(message = labelListErrorLoadingText, type = ProtonSnackbarType.ERROR)
     }
 
     val undoActionEffect = remember { mutableStateOf(Effect.empty<ActionResult>()) }
@@ -435,10 +399,7 @@ fun Home(
                 ) {
                     Sidebar(
                         drawerState = drawerState,
-                        navigationActions = buildSidebarActions(
-                            navController,
-                            launcherActions
-                        ).copy(
+                        navigationActions = buildSidebarActions(navController, launcherActions).copy(
                             onReportBug = { navController.navigate(Destination.Screen.ApplicationLogs.route) },
                             onSubscription = { showFeatureMissingSnackbar() }
                         )
@@ -487,8 +448,8 @@ fun Home(
                                 openMessageBodyLink = activityActions.openInActivityInNewTask,
                                 openAttachment = activityActions.openIntentChooser,
                                 handleProtonCalendarRequest = activityActions.openProtonCalendarIntentValues,
-                                onAddLabel = { navController.navigate(Screen.LabelList.route) },
-                                onAddFolder = { navController.navigate(Screen.FolderList.route) },
+                                onAddLabel = { navController.navigate(Screen.FolderAndLabelSettings.route) },
+                                onAddFolder = { navController.navigate(Screen.FolderAndLabelSettings.route) },
                                 showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
                                 onReply = {
                                     navController.navigate(Screen.MessageActionComposer(DraftAction.Reply(it)))
@@ -560,23 +521,12 @@ fun Home(
                         addRemoveAccountDialog(navController)
                         addSettings(navController)
                         addAppSettings(navController, showFeatureMissingSnackbar = { showFeatureMissingSnackbar() })
-                        addParentFolderList(
-                            navController,
-                            showErrorSnackbar = { message ->
-                                scope.launch {
-                                    snackbarHostErrorState.showSnackbar(
-                                        message = message,
-                                        type = ProtonSnackbarType.ERROR
-                                    )
-                                }
-                            }
-                        )
                         // settings
-                        addWebAccountSettings(navController, launcherActions)
-                        addWebEmailSettings(navController, launcherActions)
-                        addWebFolderAndLabelSettings(navController, launcherActions)
-                        addWebSpamFilterSettings(navController, launcherActions)
-                        addWebPrivacyAndSecuritySettings(navController, launcherActions)
+                        addWebAccountSettings(navController)
+                        addWebEmailSettings(navController)
+                        addWebFolderAndLabelSettings(navController)
+                        addWebSpamFilterSettings(navController)
+                        addWebPrivacyAndSecuritySettings(navController)
                         addContacts(
                             navController,
                             showErrorSnackbar = { message ->
@@ -739,10 +689,8 @@ private fun buildSidebarActions(navController: NavHostController, launcherAction
         onRemoveAccount = { navController.navigate(Dialog.RemoveAccount(it)) },
         onSwitchAccount = launcherActions.onSwitchToAccount,
         onSettings = { navController.navigate(Screen.Settings.route) },
-        onLabelList = { navController.navigate(Screen.LabelList.route) },
-        onFolderList = { navController.navigate(Screen.FolderList.route) },
-        onLabelAdd = { navController.navigate(Screen.CreateLabel.route) },
-        onFolderAdd = { navController.navigate(Screen.CreateFolder.route) },
+        onLabelAdd = { navController.navigate(Screen.FolderAndLabelSettings.route) },
+        onFolderAdd = { navController.navigate(Screen.FolderAndLabelSettings.route) },
         onSubscription = launcherActions.onSubscription,
         onContacts = { navController.navigate(Screen.Contacts.route) },
         onReportBug = launcherActions.onReportBug

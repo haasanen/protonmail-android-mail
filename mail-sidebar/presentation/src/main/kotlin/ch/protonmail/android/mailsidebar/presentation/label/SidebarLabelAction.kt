@@ -18,11 +18,10 @@
 
 package ch.protonmail.android.mailsidebar.presentation.label
 
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.maillabel.domain.model.MailLabelId
 
 sealed interface SidebarLabelAction {
-    data class ViewList(val type: LabelType) : SidebarLabelAction
     data class Add(val type: LabelType) : SidebarLabelAction
     data class Select(val labelId: MailLabelId) : SidebarLabelAction
     data class Collapse(val labelId: MailLabelId) : SidebarLabelAction
