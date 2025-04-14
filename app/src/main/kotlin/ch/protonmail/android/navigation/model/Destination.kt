@@ -28,7 +28,6 @@ import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.DraftMe
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.SerializedDraftActionKey
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
-import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen.ContactGroupDetailsGroupIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
@@ -132,14 +131,6 @@ sealed class Destination(val route: String) {
         object Contacts : Destination("contacts")
 
         object CreateContact : Destination("contacts/contact/form")
-
-        object ContactGroupDetails : Destination("contacts/group/${ContactGroupDetailsGroupIdKey.wrap()}") {
-
-            operator fun invoke(contactGroupId: ContactGroupId) = route.replace(
-                ContactGroupDetailsGroupIdKey.wrap(),
-                contactGroupId.id
-            )
-        }
 
         object ManageMembers : Destination("contacts/group/manageMembers")
 

@@ -31,14 +31,12 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
-import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
 import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearchScreen
 import ch.protonmail.android.mailcontact.presentation.managemembers.ManageMembersScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
-import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsettings.presentation.appsettings.AppSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsScreen
@@ -242,8 +240,8 @@ internal fun NavGraphBuilder.addContacts(
                     showFeatureMissingSnackbar()
                     // navController.navigate(Destination.Screen.ContactDetails(contactId))
                 },
-                onContactGroupSelected = { contactGroupId ->
-                    navController.navigate(Destination.Screen.ContactGroupDetails(contactGroupId))
+                onContactGroupSelected = { _ ->
+                    showFeatureMissingSnackbar()
                 },
                 onBackClick = {
                     navController.navigateBack()
@@ -260,35 +258,6 @@ internal fun NavGraphBuilder.addContacts(
                 }
             )
         )
-    }
-}
-
-internal fun NavGraphBuilder.addContactGroupDetails(
-    navController: NavHostController,
-    showErrorSnackbar: (message: String) -> Unit,
-    showNormSnackbar: (message: String) -> Unit,
-    showFeatureMissingSnackbar: () -> Unit
-) {
-    val actions = ContactGroupDetailsScreen.Actions(
-        onBackClick = { navController.navigateBack() },
-        exitWithErrorMessage = { message ->
-            navController.navigateBack()
-            showErrorSnackbar(message)
-        },
-        exitWithNormMessage = { message ->
-            navController.navigateBack()
-            showNormSnackbar(message)
-        },
-        showErrorMessage = { message ->
-            showErrorSnackbar(message)
-        },
-        onEditClick = { _ -> showFeatureMissingSnackbar() },
-        navigateToComposer = { emails ->
-            navController.navigate(Destination.Screen.MessageActionComposer(DraftAction.ComposeToAddresses(emails)))
-        }
-    )
-    composable(route = Destination.Screen.ContactGroupDetails.route) {
-        ContactGroupDetailsScreen(actions)
     }
 }
 
@@ -327,12 +296,11 @@ internal fun NavGraphBuilder.addContactSearch(
     showFeatureMissingSnackbar: () -> Unit
 ) {
     val actions = ContactSearchScreen.Actions(
-        onContactSelected = { contactId ->
+        onContactSelected = { _ ->
             showFeatureMissingSnackbar()
-//            navController.navigate(Destination.Screen.ContactDetails(contactId))
         },
-        onContactGroupSelected = { labelId ->
-            navController.navigate(Destination.Screen.ContactGroupDetails(labelId))
+        onContactGroupSelected = { _ ->
+            showFeatureMissingSnackbar()
         },
         onClose = { navController.navigateBack() }
     )

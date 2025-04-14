@@ -85,7 +85,6 @@ import ch.protonmail.android.navigation.route.addAutoLockPinScreen
 import ch.protonmail.android.navigation.route.addAutoLockSettings
 import ch.protonmail.android.navigation.route.addCombinedContactsSetting
 import ch.protonmail.android.navigation.route.addComposer
-import ch.protonmail.android.navigation.route.addContactGroupDetails
 import ch.protonmail.android.navigation.route.addContactSearch
 import ch.protonmail.android.navigation.route.addContacts
 import ch.protonmail.android.navigation.route.addConversationDetail
@@ -540,26 +539,6 @@ fun Home(
                             showFeatureMissingSnackbar = {
                                 showFeatureMissingSnackbar()
                             }
-                        )
-                        addContactGroupDetails(
-                            navController,
-                            showErrorSnackbar = { message ->
-                                scope.launch {
-                                    snackbarHostErrorState.showSnackbar(
-                                        message = message,
-                                        type = ProtonSnackbarType.ERROR
-                                    )
-                                }
-                            },
-                            showNormSnackbar = { message ->
-                                scope.launch {
-                                    snackbarHostNormState.showSnackbar(
-                                        message = message,
-                                        type = ProtonSnackbarType.NORM
-                                    )
-                                }
-                            },
-                            showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
                         )
                         addManageMembers(
                             navController,
