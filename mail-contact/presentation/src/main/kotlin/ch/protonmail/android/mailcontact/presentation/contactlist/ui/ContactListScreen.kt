@@ -12,7 +12,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -24,7 +23,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
-import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
@@ -37,21 +35,17 @@ import ch.protonmail.android.mailcontact.presentation.contactlist.ContactListVie
 import ch.protonmail.android.mailcontact.presentation.contactlist.ContactListViewModel
 import ch.protonmail.android.mailcontact.presentation.dialogs.ContactDeleteConfirmationDialog
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
-import ch.protonmail.android.mailcontact.presentation.upselling.ContactGroupsUpsellingBottomSheet
 import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactCreate
 import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
-import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.UpsellingBottomSheet
 import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.UpsellingBottomSheet.DELAY_SHOWING
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: ContactListViewModel = hiltViewModel()) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { ProtonSnackbarHostState() }
 
     val state = viewModel.state.collectAsStateWithLifecycle().value
@@ -84,16 +78,6 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
         activity?.window?.statusBarColor = backgroundColor.toArgb()
     }
 
-    val bottomSheetActions = UpsellingBottomSheet.Actions.Empty.copy(
-        onDismiss = { viewModel.submit(ContactListViewAction.OnDismissBottomSheet) },
-        onUpgrade = { message ->
-            scope.launch { snackbarHostState.showSnackbar(ProtonSnackbarType.NORM, message) }
-        },
-        onError = { message ->
-            scope.launch { snackbarHostState.showSnackbar(ProtonSnackbarType.ERROR, message) }
-        }
-    )
-
     BackHandler(bottomSheetState.isVisible) {
         viewModel.submit(ContactListViewAction.OnDismissBottomSheet)
     }
@@ -108,7 +92,6 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
                 when (state.bottomSheetType) {
                     ContactListState.BottomSheetType.Menu -> {
                         ContactBottomSheetContent(
-                            isContactGroupsUpsellingVisible = state.isContactGroupsUpsellingVisible,
                             actions = ContactBottomSheet.Actions(
                                 onNewContactClick = { /* No-op, unimplemented */ },
                                 onNewContactGroupClick = { /* No-op, unimplemented */ },
@@ -117,9 +100,7 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
                         )
                     }
 
-                    ContactListState.BottomSheetType.Upselling -> {
-                        ContactGroupsUpsellingBottomSheet(actions = bottomSheetActions)
-                    }
+                    ContactListState.BottomSheetType.Upselling -> Unit
                 }
             }
         }
@@ -143,15 +124,6 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
             },
             content = { paddingValues ->
                 if (state is ContactListState.Loaded) {
-                    ConsumableLaunchedEffect(effect = state.openContactForm) {
-                        actions.onNavigateToNewContactForm()
-                    }
-                    ConsumableLaunchedEffect(effect = state.openContactGroupForm) {
-                        actions.onNavigateToNewGroupForm()
-                    }
-                    ConsumableLaunchedEffect(effect = state.openImportContact) {
-                        actions.openImportContact()
-                    }
                     ConsumableLaunchedEffect(effect = state.openContactSearch) {
                         actions.onNavigateToContactSearch()
                     }
@@ -169,10 +141,6 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
                                 bottomSheetState.show()
                             }
                         }
-                    }
-                    ConsumableTextEffect(effect = state.upsellingInProgress) { message ->
-                        snackbarHostState.snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar(ProtonSnackbarType.NORM, message)
                     }
                 }
 
@@ -197,10 +165,6 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
                             showAddButton = ContactCreate.value,
                             onAddClick = { viewModel.submit(ContactListViewAction.OnOpenBottomSheet) }
                         )
-
-                        ConsumableTextEffect(effect = state.subscriptionError) { message ->
-                            actions.onSubscriptionUpgradeRequired(message)
-                        }
                     }
 
                     is ContactListState.Loading -> {
@@ -239,7 +203,6 @@ object ContactListScreen {
         val onNavigateToContactSearch: () -> Unit,
         val onNewGroupClick: () -> Unit,
         val openImportContact: () -> Unit,
-        val onSubscriptionUpgradeRequired: (String) -> Unit,
         val exitWithErrorMessage: (String) -> Unit,
         val onDeleteContactRequest: (ContactListItemUiModel.Contact) -> Unit
     ) {
@@ -255,7 +218,6 @@ object ContactListScreen {
                 onNavigateToContactSearch = {},
                 openImportContact = {},
                 onNewGroupClick = {},
-                onSubscriptionUpgradeRequired = {},
                 exitWithErrorMessage = {},
                 onDeleteContactRequest = {}
             )

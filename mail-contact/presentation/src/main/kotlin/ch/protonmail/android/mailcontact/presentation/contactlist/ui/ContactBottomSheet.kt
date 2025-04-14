@@ -26,29 +26,24 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailupselling.presentation.ui.UpsellingIcon
-import ch.protonmail.android.mailcontact.presentation.R
-import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactCreate
-import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactImport
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
+import ch.protonmail.android.mailcontact.presentation.R
+import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactCreate
+import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactImport
 
 @Composable
-internal fun ContactBottomSheetContent(
-    modifier: Modifier = Modifier,
-    isContactGroupsUpsellingVisible: Boolean,
-    actions: ContactBottomSheet.Actions
-) {
+internal fun ContactBottomSheetContent(modifier: Modifier = Modifier, actions: ContactBottomSheet.Actions) {
     Column(
         modifier = modifier
             .padding(top = ProtonDimens.Spacing.Standard)
@@ -66,7 +61,6 @@ internal fun ContactBottomSheetContent(
             modifier = Modifier,
             titleResId = R.string.new_group,
             iconResId = R.drawable.ic_proton_users_plus,
-            isUpsellingVisible = isContactGroupsUpsellingVisible,
             onClick = actions.onNewContactGroupClick
         )
 
@@ -86,7 +80,6 @@ private fun ContactBottomSheetItem(
     modifier: Modifier = Modifier,
     titleResId: Int,
     iconResId: Int,
-    isUpsellingVisible: Boolean = false,
     onClick: () -> Unit
 ) {
     Row(
@@ -109,9 +102,6 @@ private fun ContactBottomSheetItem(
             text = stringResource(id = titleResId),
             style = ProtonTheme.typography.bodyLargeNorm
         )
-        if (isUpsellingVisible) {
-            UpsellingIcon(modifier = Modifier.padding(start = ProtonDimens.Spacing.Standard))
-        }
     }
 }
 
@@ -137,8 +127,5 @@ object ContactBottomSheet {
 @Composable
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 private fun ContactBottomSheetScreenPreview() {
-    ContactBottomSheetContent(
-        isContactGroupsUpsellingVisible = true,
-        actions = ContactBottomSheet.Actions.Empty
-    )
+    ContactBottomSheetContent(actions = ContactBottomSheet.Actions.Empty)
 }

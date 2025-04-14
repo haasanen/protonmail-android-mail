@@ -532,9 +532,6 @@ fun Home(
                                     )
                                 }
                             },
-                            showNormalSnackbar = {
-                                showNormalSnackbar(it)
-                            },
                             showFeatureMissingSnackbar = {
                                 showFeatureMissingSnackbar()
                             }

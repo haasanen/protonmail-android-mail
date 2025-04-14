@@ -194,8 +194,7 @@ class ContactListViewModelTest {
             val expected = ContactListState.Loaded.Data(
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
-                },
-                isContactGroupsUpsellingVisible = true
+                }
             )
 
             assertEquals(expected, actual)
@@ -294,7 +293,6 @@ class ContactListViewModelTest {
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
-                isContactGroupsUpsellingVisible = false,
                 showDeleteConfirmDialog = Effect.of(contactUiModel),
                 bottomSheetType = ContactListState.BottomSheetType.Menu
             )
