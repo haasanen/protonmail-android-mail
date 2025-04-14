@@ -96,7 +96,6 @@ import ch.protonmail.android.navigation.route.addDeepLinkHandler
 import ch.protonmail.android.navigation.route.addEditSwipeActionsSettings
 import ch.protonmail.android.navigation.route.addExportLogsSettings
 import ch.protonmail.android.navigation.route.addFeatureFlagsOverrides
-import ch.protonmail.android.navigation.route.addFolderForm
 import ch.protonmail.android.navigation.route.addLanguageSettings
 import ch.protonmail.android.navigation.route.addMailbox
 import ch.protonmail.android.navigation.route.addManageMembers
@@ -561,36 +560,6 @@ fun Home(
                         addRemoveAccountDialog(navController)
                         addSettings(navController)
                         addAppSettings(navController, showFeatureMissingSnackbar = { showFeatureMissingSnackbar() })
-                        addFolderForm(
-                            navController,
-                            showSuccessSnackbar = { message ->
-                                scope.launch {
-                                    snackbarHostSuccessState.showSnackbar(
-                                        message = message,
-                                        type = ProtonSnackbarType.SUCCESS
-                                    )
-                                }
-                            },
-                            showErrorSnackbar = { message ->
-                                scope.launch {
-                                    snackbarHostErrorState.showSnackbar(
-                                        message = message,
-                                        type = ProtonSnackbarType.ERROR
-                                    )
-                                }
-                            },
-                            showNormSnackbar = { message ->
-                                scope.launch {
-                                    snackbarHostNormState.showSnackbar(
-                                        message = message,
-                                        type = ProtonSnackbarType.NORM
-                                    )
-                                }
-                            },
-                            showFeatureMissingSnackbar = {
-                                showFeatureMissingSnackbar()
-                            }
-                        )
                         addParentFolderList(
                             navController,
                             showErrorSnackbar = { message ->

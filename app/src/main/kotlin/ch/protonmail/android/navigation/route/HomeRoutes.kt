@@ -40,7 +40,6 @@ import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearc
 import ch.protonmail.android.mailcontact.presentation.managemembers.ManageMembersScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
-import ch.protonmail.android.maillabel.presentation.folderform.FolderFormScreen
 import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -220,50 +219,6 @@ internal fun NavGraphBuilder.addAppSettings(navController: NavHostController, sh
                     navController.navigateBack()
                 }
             )
-        )
-    }
-}
-
-internal fun NavGraphBuilder.addFolderForm(
-    navController: NavHostController,
-    showSuccessSnackbar: (message: String) -> Unit,
-    showErrorSnackbar: (message: String) -> Unit,
-    showNormSnackbar: (String) -> Unit,
-    showFeatureMissingSnackbar: () -> Unit
-) {
-    val actions = FolderFormScreen.Actions.Empty.copy(
-        onBackClick = {
-            navController.navigateBack()
-        },
-        onFolderParentClick = { labelId, currentParentLabelId ->
-            navController.navigate(Destination.Screen.ParentFolderList(labelId, currentParentLabelId))
-        },
-        exitWithSuccessMessage = { message ->
-            navController.navigateBack()
-            showSuccessSnackbar(message)
-        },
-        exitWithErrorMessage = { message ->
-            navController.navigateBack()
-            showErrorSnackbar(message)
-        },
-        showUpsellingSnackbar = { showNormSnackbar(it) },
-        showUpsellingErrorSnackbar = { showErrorSnackbar(it) },
-        showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
-    )
-    composable(route = Destination.Screen.CreateFolder.route) {
-        FolderFormScreen(
-            actions,
-            currentParentLabelId = navController.currentBackStackEntry?.savedStateHandle?.getLiveData<String>(
-                SavedStateKey.CurrentParentFolderId.key
-            )?.observeAsState()
-        )
-    }
-    composable(route = Destination.Screen.EditFolder.route) {
-        FolderFormScreen(
-            actions,
-            currentParentLabelId = navController.currentBackStackEntry?.savedStateHandle?.getLiveData<String>(
-                SavedStateKey.CurrentParentFolderId.key
-            )?.observeAsState()
         )
     }
 }

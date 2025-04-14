@@ -40,7 +40,6 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.presentation.folderform.FolderFormScreen.FolderFormLabelIdKey
 import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen.ParentFolderListLabelIdKey
 import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen.ParentFolderListParentLabelIdKey
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -144,11 +143,6 @@ sealed class Destination(val route: String) {
         object CreateLabel : Destination("labelForm")
 
         object FolderList : Destination("folderList")
-        object CreateFolder : Destination("folderForm")
-        object EditFolder : Destination("folderForm/${FolderFormLabelIdKey.wrap()}") {
-
-            operator fun invoke(labelId: LabelId) = route.replace(FolderFormLabelIdKey.wrap(), labelId.id)
-        }
 
         object ParentFolderList : Destination(
             "parentFolderList/${ParentFolderListLabelIdKey.wrap()}/${ParentFolderListParentLabelIdKey.wrap()}"
