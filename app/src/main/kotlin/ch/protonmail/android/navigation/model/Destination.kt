@@ -43,7 +43,6 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.folderform.FolderFormScreen.FolderFormLabelIdKey
 import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen.ParentFolderListLabelIdKey
 import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen.ParentFolderListParentLabelIdKey
-import ch.protonmail.android.maillabel.presentation.labelform.LabelFormScreen.LabelFormLabelIdKey
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
@@ -143,10 +142,6 @@ sealed class Destination(val route: String) {
         object DeepLinksHandler : Destination("deepLinksHandler")
         object LabelList : Destination("labelList")
         object CreateLabel : Destination("labelForm")
-        object EditLabel : Destination("labelForm/${LabelFormLabelIdKey.wrap()}") {
-
-            operator fun invoke(labelId: LabelId) = route.replace(LabelFormLabelIdKey.wrap(), labelId.id)
-        }
 
         object FolderList : Destination("folderList")
         object CreateFolder : Destination("folderForm")

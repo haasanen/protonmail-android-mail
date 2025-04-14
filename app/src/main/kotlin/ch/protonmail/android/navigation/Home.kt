@@ -97,8 +97,6 @@ import ch.protonmail.android.navigation.route.addEditSwipeActionsSettings
 import ch.protonmail.android.navigation.route.addExportLogsSettings
 import ch.protonmail.android.navigation.route.addFeatureFlagsOverrides
 import ch.protonmail.android.navigation.route.addFolderForm
-import ch.protonmail.android.navigation.route.addFolderList
-import ch.protonmail.android.navigation.route.addLabelForm
 import ch.protonmail.android.navigation.route.addLanguageSettings
 import ch.protonmail.android.navigation.route.addMailbox
 import ch.protonmail.android.navigation.route.addManageMembers
@@ -563,25 +561,6 @@ fun Home(
                         addRemoveAccountDialog(navController)
                         addSettings(navController)
                         addAppSettings(navController, showFeatureMissingSnackbar = { showFeatureMissingSnackbar() })
-                        addLabelForm(
-                            navController,
-                            showLabelSavedSnackbar = { showLabelSavedSnackbar() },
-                            showLabelDeletedSnackbar = { showLabelDeletedSnackbar() },
-                            showUpsellingSnackbar = { showUpsellingSnackbar(it) },
-                            showUpsellingErrorSnackbar = { showUpsellingErrorSnackbar(it) },
-                            showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
-                        )
-                        addFolderList(
-                            navController,
-                            showErrorSnackbar = { message ->
-                                scope.launch {
-                                    snackbarHostErrorState.showSnackbar(
-                                        message = message,
-                                        type = ProtonSnackbarType.ERROR
-                                    )
-                                }
-                            }
-                        )
                         addFolderForm(
                             navController,
                             showSuccessSnackbar = { message ->

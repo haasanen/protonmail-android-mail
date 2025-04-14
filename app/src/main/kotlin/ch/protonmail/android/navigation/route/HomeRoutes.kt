@@ -43,7 +43,6 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maillabel.presentation.folderform.FolderFormScreen
 import ch.protonmail.android.maillabel.presentation.folderlist.FolderListScreen
 import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen
-import ch.protonmail.android.maillabel.presentation.labelform.LabelFormScreen
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -224,29 +223,6 @@ internal fun NavGraphBuilder.addAppSettings(navController: NavHostController, sh
             )
         )
     }
-}
-
-@Suppress("LongParameterList")
-internal fun NavGraphBuilder.addLabelForm(
-    navController: NavHostController,
-    showLabelSavedSnackbar: () -> Unit,
-    showLabelDeletedSnackbar: () -> Unit,
-    showUpsellingSnackbar: (String) -> Unit,
-    showUpsellingErrorSnackbar: (String) -> Unit,
-    showFeatureMissingSnackbar: () -> Unit
-) {
-    val actions = LabelFormScreen.Actions.Empty.copy(
-        onBackClick = {
-            navController.navigateBack()
-        },
-        showLabelSavedSnackbar = showLabelSavedSnackbar,
-        showLabelDeletedSnackbar = showLabelDeletedSnackbar,
-        showUpsellingSnackbar = showUpsellingSnackbar,
-        showUpsellingErrorSnackbar = showUpsellingErrorSnackbar,
-        showFeatureMissingSnackbar = showFeatureMissingSnackbar
-    )
-    composable(route = Destination.Screen.CreateLabel.route) { LabelFormScreen(actions) }
-    composable(route = Destination.Screen.EditLabel.route) { LabelFormScreen(actions) }
 }
 
 internal fun NavGraphBuilder.addFolderList(
