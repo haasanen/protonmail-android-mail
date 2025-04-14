@@ -40,8 +40,6 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen.ParentFolderListLabelIdKey
-import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen.ParentFolderListParentLabelIdKey
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
@@ -134,28 +132,17 @@ sealed class Destination(val route: String) {
         object Notifications : Destination("settings/notifications")
         object ApplicationLogs : Destination("settings/applicationLogs")
         object ApplicationLogsView : Destination("settings/applicationLogs/view/${ApplicationLogsViewMode.wrap()}") {
+
             operator fun invoke(item: ApplicationLogsViewItemMode) =
                 route.replace(ApplicationLogsViewMode.wrap(), item.serialize())
         }
+
         object FeatureFlagsOverrides : Destination("settings/debug/featureFlags")
         object DeepLinksHandler : Destination("deepLinksHandler")
         object LabelList : Destination("labelList")
         object CreateLabel : Destination("labelForm")
 
         object FolderList : Destination("folderList")
-
-        object ParentFolderList : Destination(
-            "parentFolderList/${ParentFolderListLabelIdKey.wrap()}/${ParentFolderListParentLabelIdKey.wrap()}"
-        ) {
-
-            operator fun invoke(labelId: LabelId?, parentLabelId: LabelId?) = run {
-                route.replace(
-                    ParentFolderListLabelIdKey.wrap(), labelId?.id ?: "null"
-                ).replace(
-                    ParentFolderListParentLabelIdKey.wrap(), parentLabelId?.id ?: "null"
-                )
-            }
-        }
 
         object Contacts : Destination("contacts")
         object ContactDetails : Destination("contacts/contact/${ContactDetailsContactIdKey.wrap()}") {
