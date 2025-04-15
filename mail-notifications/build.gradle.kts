@@ -81,7 +81,7 @@ dependencies {
     implementation(project(":mail-pagination:domain"))
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-settings:domain"))
-    implementation(project(":mail-session:data-rust"))
+    implementation(project(":mail-session:data"))
     implementation(project(":mail-session:domain"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))

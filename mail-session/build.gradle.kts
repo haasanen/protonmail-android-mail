@@ -34,7 +34,7 @@ android {
 
 dependencies {
     api(project(":mail-session:dagger"))
-    api(project(":mail-session:data-rust"))
+    api(project(":mail-session:data"))
     api(project(":mail-session:domain"))
     api(project(":mail-session:presentation"))
 }
