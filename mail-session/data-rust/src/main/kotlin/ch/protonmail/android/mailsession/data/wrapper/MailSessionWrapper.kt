@@ -98,4 +98,5 @@ class MailSessionWrapper(private val mailSession: MailSession) {
 
     suspend fun setPrimaryAccount(userId: LocalUserId) = mailSession.setPrimaryAccount(userId)
 
+    fun registerDeviceTask() = mailSession.registerDeviceTask()
 }
