@@ -48,7 +48,6 @@ dependencies {
     kapt(libs.bundles.app.annotationProcessors)
 
     implementation(project(":mail-mailbox:data"))
-    implementation(project(":mail-mailbox:data-rust"))
     implementation(project(":mail-mailbox:domain"))
     implementation(project(":mail-mailbox:presentation"))
     implementation(project(":mail-pagination:domain"))
