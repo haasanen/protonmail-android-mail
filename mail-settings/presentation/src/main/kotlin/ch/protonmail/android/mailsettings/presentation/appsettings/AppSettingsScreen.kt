@@ -136,19 +136,6 @@ fun AppSettingsScreen(
                     onCombinedContactsClick = actions.onCombinedContactsClick
                 )
             }
-            item {
-                ProtonSettingsItem(
-                    name = stringResource(id = string.mail_settings_swipe_actions),
-                    onClick = actions.onSwipeActionsClick
-                )
-                MailDivider()
-            }
-            item {
-                ClearLocalCacheItem(
-                    totalSize = state.totalSizeInformation,
-                    onClearCacheClick = actions.onClearCacheClick
-                )
-            }
         }
     }
 }
@@ -174,6 +161,7 @@ private fun CombinedContactsSettingItem(
 }
 
 @Composable
+@Suppress("UnusedPrivateMember")
 private fun ClearLocalCacheItem(
     modifier: Modifier = Modifier,
     totalSize: LocalStorageUsageInformation,

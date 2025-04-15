@@ -561,7 +561,7 @@ fun Home(
                         addSignOutAccountDialog(navController)
                         addRemoveAccountDialog(navController)
                         addSettings(navController)
-                        addAppSettings(navController)
+                        addAppSettings(navController, showFeatureMissingSnackbar = { showFeatureMissingSnackbar() })
                         addLabelList(
                             navController,
                             showLabelListErrorLoadingSnackbar = { showLabelListErrorLoadingSnackbar() }

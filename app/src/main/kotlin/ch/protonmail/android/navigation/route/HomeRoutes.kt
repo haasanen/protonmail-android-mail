@@ -199,7 +199,7 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController) {
     }
 }
 
-internal fun NavGraphBuilder.addAppSettings(navController: NavHostController) {
+internal fun NavGraphBuilder.addAppSettings(navController: NavHostController, showFeatureMissingSnackbar: () -> Unit) {
     composable(route = Destination.Screen.AppSettings.route) {
         AppSettingsScreen(
             actions = AppSettingsScreen.Actions(
@@ -212,18 +212,12 @@ internal fun NavGraphBuilder.addAppSettings(navController: NavHostController) {
                 onAutoLockClick = {
                     navController.navigate(Destination.Screen.AutoLockSettings.route)
                 },
-                onAlternativeRoutingClick = {
-                    navController.navigate(Destination.Screen.AlternativeRoutingSettings.route)
-                },
+                onAlternativeRoutingClick = showFeatureMissingSnackbar,
                 onAppLanguageClick = {
                     navController.navigate(Destination.Screen.LanguageSettings.route)
                 },
-                onCombinedContactsClick = {
-                    navController.navigate(Destination.Screen.CombinedContactsSettings.route)
-                },
-                onSwipeActionsClick = {
-                    navController.navigate(Destination.Screen.SwipeActionsSettings.route)
-                },
+                onCombinedContactsClick = showFeatureMissingSnackbar,
+                onSwipeActionsClick = showFeatureMissingSnackbar,
                 onClearCacheClick = {},
                 onBackClick = {
                     navController.navigateBack()
