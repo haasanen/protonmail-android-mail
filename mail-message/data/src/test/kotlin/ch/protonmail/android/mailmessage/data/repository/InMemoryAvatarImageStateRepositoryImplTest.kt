@@ -48,7 +48,10 @@ class InMemoryAvatarImageStateRepositoryImplTest {
 
     @Before
     fun setup() {
-        repository = InMemoryAvatarImageStateRepositoryImpl(getSenderImage, testCoroutineScope)
+        repository = InMemoryAvatarImageStateRepositoryImpl(
+            getSenderImage,
+            testCoroutineScope
+        )
     }
 
     @Test

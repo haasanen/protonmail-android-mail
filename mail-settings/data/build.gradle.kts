@@ -57,7 +57,6 @@ dependencies {
     implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-settings:domain"))
-    implementation(project(":mail-message:data"))
     implementation(project(":mail-conversation:domain"))
     implementation(project(":mail-session:domain"))
 

@@ -23,7 +23,7 @@ plugins {
 }
 
 android {
-    namespace = "ch.protonmail.android.mailmessage.data"
+    namespace = "ch.protonmail.android.mailmessage.datarust"
     compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
@@ -42,19 +42,25 @@ android {
 }
 
 dependencies {
-    testImplementation(project(":test:utils"))
-    implementation(libs.bundles.module.data)
+    compileOnly(libs.proton.rust.core)
 
+    implementation(libs.bundles.module.data)
     implementation(libs.proton.core.user.domain)
 
     api(project(":mail-pagination:domain"))
     implementation(project(":mail-common:data"))
+    implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
     implementation(project(":mail-label:domain"))
+    implementation(project(":mail-label:data"))
+    implementation(project(":mail-label:domain"))
     implementation(project(":mail-message:domain"))
+    implementation(project(":mail-session:domain"))
+    implementation(project(":mail-session:data-rust"))
 
+    testImplementation(project(":test:utils"))
     testImplementation(project(":test:test-data"))
     testImplementation(libs.bundles.test)
-    androidTestImplementation(libs.bundles.test.androidTest)
+    testImplementation(libs.proton.rust.core)
 }

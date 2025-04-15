@@ -20,8 +20,8 @@ package ch.protonmail.android.mailmessage.data.repository
 
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
-import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.data.ImageLoaderCoroutineScope
+import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.repository.InMemoryAvatarImageStateRepository
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.GetSenderImage
