@@ -27,6 +27,7 @@ import ch.protonmail.android.logging.LogsFileHandlerLifecycleObserver
 import ch.protonmail.android.mailbugreport.domain.LogsExportFeatureSetting
 import ch.protonmail.android.mailbugreport.domain.annotations.LogsExportFeatureSettingValue
 import ch.protonmail.android.mailcommon.domain.benchmark.BenchmarkTracer
+import ch.protonmail.android.mailnotifications.domain.FirebaseMessagingTokenLifecycleObserver
 import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObserver
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
@@ -51,6 +52,9 @@ internal class App : Application() {
     @Inject
     lateinit var databaseLifecycleObserver: Provider<DatabaseLifecycleObserver>
 
+    @Inject
+    lateinit var firebaseLifecycleObserver: Provider<FirebaseMessagingTokenLifecycleObserver>
+
     override fun onCreate() {
         super.onCreate()
 
@@ -62,6 +66,7 @@ internal class App : Application() {
 
         addLogsFileHandlerObserver()
         addDatabaseObserver()
+        addFirebaseTokenLifecycleObserver()
 
         benchmarkTracer.end()
     }
@@ -74,5 +79,9 @@ internal class App : Application() {
 
     private fun addDatabaseObserver() {
         ProcessLifecycleOwner.get().lifecycle.addObserver(databaseLifecycleObserver.get())
+    }
+
+    private fun addFirebaseTokenLifecycleObserver() {
+        ProcessLifecycleOwner.get().lifecycle.addObserver(firebaseLifecycleObserver.get())
     }
 }

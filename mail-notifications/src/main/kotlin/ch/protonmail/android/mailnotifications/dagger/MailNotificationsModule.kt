@@ -20,16 +20,10 @@ package ch.protonmail.android.mailnotifications.dagger
 
 import android.content.Context
 import androidx.core.app.NotificationManagerCompat
-import ch.protonmail.android.mailnotifications.data.local.NotificationTokenLocalDataSource
-import ch.protonmail.android.mailnotifications.data.local.NotificationTokenLocalDataSourceImpl
-import ch.protonmail.android.mailnotifications.data.local.NotificationTokenPreferences
 import ch.protonmail.android.mailnotifications.data.local.NotificationsPermissionLocalDataSource
 import ch.protonmail.android.mailnotifications.data.local.NotificationsPermissionLocalDataSourceImpl
-import ch.protonmail.android.mailnotifications.data.local.fcm.FcmTokenPreferencesImpl
-import ch.protonmail.android.mailnotifications.data.remote.NotificationTokenRemoteDataSource
-import ch.protonmail.android.mailnotifications.data.remote.NotificationTokenRemoteDataSourceImpl
-import ch.protonmail.android.mailnotifications.data.repository.NotificationTokenRepository
-import ch.protonmail.android.mailnotifications.data.repository.NotificationTokenRepositoryImpl
+import ch.protonmail.android.mailnotifications.data.repository.DeviceRegistrationRepository
+import ch.protonmail.android.mailnotifications.data.repository.DeviceRegistrationRepositoryImpl
 import ch.protonmail.android.mailnotifications.data.repository.NotificationsPermissionRepository
 import ch.protonmail.android.mailnotifications.data.repository.NotificationsPermissionRepositoryImpl
 import ch.protonmail.android.mailnotifications.domain.handler.AccountStateAwareNotificationHandler
@@ -76,7 +70,9 @@ object MailNotificationsModule {
 
         @Binds
         @Singleton
-        fun bindFcmTokenPreferences(implementation: FcmTokenPreferencesImpl): NotificationTokenPreferences
+        fun bindDeviceRegistrationRepository(
+            implementation: DeviceRegistrationRepositoryImpl
+        ): DeviceRegistrationRepository
 
         @Binds
         @Singleton
@@ -95,22 +91,6 @@ object MailNotificationsModule {
         fun bindNotificationPermissionsDataSource(
             implementation: NotificationsPermissionLocalDataSourceImpl
         ): NotificationsPermissionLocalDataSource
-
-        @Binds
-        @Reusable
-        fun bindNotificationTokenRemoteDataSource(
-            dataSource: NotificationTokenRemoteDataSourceImpl
-        ): NotificationTokenRemoteDataSource
-
-        @Binds
-        @Reusable
-        fun bindNotificationTokenLocalDataSource(
-            dataSource: NotificationTokenLocalDataSourceImpl
-        ): NotificationTokenLocalDataSource
-
-        @Binds
-        @Reusable
-        fun bindNotificationTokenRepository(repository: NotificationTokenRepositoryImpl): NotificationTokenRepository
 
         @Binds
         @Reusable

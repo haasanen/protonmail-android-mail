@@ -16,17 +16,21 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailnotifications.data.local
+package ch.protonmail.android.mailnotifications.data
 
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
+import javax.inject.Singleton
 
-internal class NotificationTokenLocalDataSourceImpl @Inject constructor(
-    private val notificationTokenPreferences: NotificationTokenPreferences
-) : NotificationTokenLocalDataSource {
+@Singleton
+class FirebaseNotificationsTokenChannel @Inject constructor() {
 
-    override suspend fun storeToken(token: String) {
-        notificationTokenPreferences.storeToken(token)
+    private val channel = Channel<String>(Channel.BUFFERED)
+
+    val tokenFlow = channel.receiveAsFlow()
+
+    suspend fun sendToken(token: String) {
+        channel.send(token)
     }
-
-    override suspend fun getToken() = notificationTokenPreferences.getToken()
 }

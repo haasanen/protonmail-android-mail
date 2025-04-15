@@ -18,33 +18,20 @@
 
 package ch.protonmail.android.mailnotifications.data.remote
 
-import androidx.work.ExistingWorkPolicy
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.suspendCancellableCoroutine
-import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
-internal class NotificationTokenRemoteDataSourceImpl @Inject constructor(
-    private val firebaseMessaging: FirebaseMessaging,
-    private val enqueuer: Enqueuer
-) : NotificationTokenRemoteDataSource {
+class FirebaseMessagingProxy @Inject constructor(
+    private val firebaseMessaging: FirebaseMessaging
+) {
 
-    override suspend fun fetchToken() = fetchFirebaseToken()
-
-    override suspend fun bindTokenToUser(userId: UserId, token: String) {
-        enqueuer.enqueueUniqueWork<RegisterDeviceWorker>(
-            userId,
-            workerId = RegisterDeviceWorker.id(userId),
-            params = RegisterDeviceWorker.params(userId, token),
-            existingWorkPolicy = ExistingWorkPolicy.REPLACE
-        )
-    }
+    suspend fun fetchToken() = fetchFirebaseToken()
 
     private suspend fun fetchFirebaseToken(): Either<DataError.Remote, String> {
         return suspendCancellableCoroutine { continuation ->
