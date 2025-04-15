@@ -18,14 +18,11 @@
 
 package ch.protonmail.android.mailnotifications.domain
 
-import ch.protonmail.android.mailnotifications.data.repository.NotificationTokenRepository
 import ch.protonmail.android.mailnotifications.domain.handler.AccountStateAwareNotificationHandler
 import ch.protonmail.android.mailnotifications.domain.usecase.DismissEmailNotificationsForUser
 import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import io.mockk.called
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
@@ -41,12 +38,10 @@ import org.junit.Test
 internal class AccountStateAwareNotificationHandlerTests {
 
     private val userSessionRepository = mockk<UserSessionRepository>()
-    private val notificationTokenRepository: NotificationTokenRepository = mockk()
     private val dismissEmailNotificationsForUser: DismissEmailNotificationsForUser = mockk()
     private val scope = TestScope()
     private val notificationHandler = AccountStateAwareNotificationHandler(
         userSessionRepository,
-        notificationTokenRepository,
         dismissEmailNotificationsForUser,
         scope
     )
@@ -56,20 +51,6 @@ internal class AccountStateAwareNotificationHandlerTests {
         unmockkAll()
     }
 
-    @Test
-    fun `should call notification token registration when account state becomes ready`() = runTest {
-        // given
-        val expectedAccount = BaseAccount.copy(state = AccountState.Ready)
-        every { userSessionRepository.observeAccounts() } returns flowOf(listOf(expectedAccount))
-
-        // when
-        notificationHandler.handle()
-        scope.advanceUntilIdle()
-
-        // then
-        coVerify(exactly = 1) { notificationTokenRepository.bindTokenToUser(expectedAccount.userId) }
-        verify { dismissEmailNotificationsForUser wasNot called }
-    }
 
     @Test
     fun `should call notifications dismissal when account state becomes disabled`() = runTest {
@@ -83,22 +64,6 @@ internal class AccountStateAwareNotificationHandlerTests {
 
         // then
         verify(exactly = 1) { dismissEmailNotificationsForUser(expectedAccount.userId) }
-        verify { notificationTokenRepository wasNot called }
-    }
-
-    @Test
-    fun `should do nothing when account state does not need any action`() {
-        // given
-        val expectedAccount = BaseAccount.copy(state = AccountState.NotReady)
-        every { userSessionRepository.observeAccounts() } returns flowOf(listOf(expectedAccount))
-
-        // when
-        notificationHandler.handle()
-        scope.advanceUntilIdle()
-
-        // then
-        verify(exactly = 1) { dismissEmailNotificationsForUser(expectedAccount.userId) }
-        verify { notificationTokenRepository wasNot called }
     }
 
     private companion object {

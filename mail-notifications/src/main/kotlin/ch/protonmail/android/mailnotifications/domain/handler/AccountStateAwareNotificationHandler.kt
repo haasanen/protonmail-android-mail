@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailnotifications.domain.handler
 
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
-import ch.protonmail.android.mailnotifications.data.repository.NotificationTokenRepository
 import ch.protonmail.android.mailnotifications.domain.usecase.DismissEmailNotificationsForUser
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -30,7 +29,6 @@ import javax.inject.Inject
 
 internal class AccountStateAwareNotificationHandler @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
-    private val notificationTokenRepository: NotificationTokenRepository,
     private val dismissEmailNotificationsForUser: DismissEmailNotificationsForUser,
     @AppScope private val coroutineScope: CoroutineScope
 ) : NotificationHandler {
@@ -43,11 +41,10 @@ internal class AccountStateAwareNotificationHandler @Inject constructor(
                 .collect { accounts ->
                     accounts.forEach { account ->
                         when (account.state) {
-                            AccountState.NotReady,
                             AccountState.Disabled -> dismissEmailNotificationsForUser(account.userId)
 
-                            AccountState.Ready -> notificationTokenRepository.bindTokenToUser(account.userId)
-
+                            AccountState.NotReady,
+                            AccountState.Ready,
                             AccountState.TwoPasswordNeeded,
                             AccountState.TwoFactorNeeded -> Unit
                         }
