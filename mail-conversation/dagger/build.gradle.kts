@@ -49,7 +49,7 @@ dependencies {
 
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
-    implementation(project(":mail-conversation:data-rust"))
+    implementation(project(":mail-conversation:data"))
     implementation(project(":mail-conversation:domain"))
     implementation(project(":mail-conversation:presentation"))
     implementation(project(":mail-session:domain"))
