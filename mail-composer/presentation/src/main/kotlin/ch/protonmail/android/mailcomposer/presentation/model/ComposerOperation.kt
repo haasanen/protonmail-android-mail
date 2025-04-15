@@ -71,7 +71,7 @@ sealed interface ComposerEvent : ComposerOperation {
     data class OnMessageExpirationTimeUpdated(val messageExpirationTime: MessageExpirationTime?) : ComposerEvent
     data class ConfirmSendExpiringMessageToExternalRecipients(val externalRecipients: List<Recipient>) : ComposerEvent
     data class RecipientsUpdated(val hasValidRecipients: Boolean) : ComposerEvent
-    data class MessageIdProvided(val messageId: MessageId) : ComposerEvent
+    data class OnCloseWithDraftSaved(val messageId: MessageId) : ComposerEvent
 
     data object ErrorLoadingDefaultSenderAddress : ComposerEvent
     data object ErrorFreeUserCannotChangeSender : ComposerEvent
@@ -79,7 +79,6 @@ sealed interface ComposerEvent : ComposerOperation {
     data object ErrorStoringDraftBody : ComposerEvent
     data object ErrorStoringDraftRecipients : ComposerEvent
     data object ErrorStoringDraftSubject : ComposerEvent
-    data object OnCloseWithDraftSaved : ComposerEvent
     data object OnSendMessageOffline : ComposerEvent
     data object ErrorLoadingDraftData : ComposerEvent
     data object ErrorLoadingParentMessageData : ComposerEvent
@@ -87,4 +86,5 @@ sealed interface ComposerEvent : ComposerOperation {
     data object ErrorAttachmentsReEncryption : ComposerEvent
     data object ErrorSettingExpirationTime : ComposerEvent
     data object ConfirmEmptySubject : ComposerEvent
+    data object ErrorDiscardingDraft : ComposerEvent
 }

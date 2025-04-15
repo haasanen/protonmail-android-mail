@@ -31,15 +31,13 @@ import me.proton.core.domain.entity.UserId
 
 interface RustDraftDataSource {
 
+    suspend fun getMessageId(): Either<DataError, MessageId>
     suspend fun open(userId: UserId, messageId: MessageId): Either<DataError, LocalDraft>
-
     suspend fun create(userId: UserId, action: DraftAction): Either<DataError, LocalDraft>
-
     suspend fun discard(userId: UserId, messageId: MessageId): Either<DataError, Unit>
-
-    suspend fun save(): Either<DataError, MessageId?>
-    suspend fun saveSubject(subject: Subject): Either<DataError, MessageId?>
-    suspend fun saveBody(body: DraftBody): Either<DataError, MessageId?>
+    suspend fun save(): Either<DataError, Unit>
+    suspend fun saveSubject(subject: Subject): Either<DataError, Unit>
+    suspend fun saveBody(body: DraftBody): Either<DataError, Unit>
     suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>>
     suspend fun send(): Either<DataError, Unit>
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>

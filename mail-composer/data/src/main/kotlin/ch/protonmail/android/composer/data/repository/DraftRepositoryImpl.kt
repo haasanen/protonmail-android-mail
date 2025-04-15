@@ -36,6 +36,8 @@ class DraftRepositoryImpl @Inject constructor(
     private val draftDataSource: RustDraftDataSource
 ) : DraftRepository {
 
+    override suspend fun getMessageId(): Either<DataError, MessageId> = draftDataSource.getMessageId()
+
     override suspend fun openDraft(userId: UserId, messageId: MessageId): Either<DataError, DraftFields> =
         draftDataSource.open(userId, messageId).map { it.toDraftFields() }
 
@@ -44,12 +46,11 @@ class DraftRepositoryImpl @Inject constructor(
 
     override suspend fun discardDraft(userId: UserId, messageId: MessageId) = draftDataSource.discard(userId, messageId)
 
-    override suspend fun save(): Either<DataError, MessageId?> = draftDataSource.save()
+    override suspend fun save(): Either<DataError, Unit> = draftDataSource.save()
 
-    override suspend fun saveSubject(subject: Subject): Either<DataError, MessageId?> =
-        draftDataSource.saveSubject(subject)
+    override suspend fun saveSubject(subject: Subject): Either<DataError, Unit> = draftDataSource.saveSubject(subject)
 
-    override suspend fun saveBody(body: DraftBody): Either<DataError, MessageId?> = draftDataSource.saveBody(body)
+    override suspend fun saveBody(body: DraftBody): Either<DataError, Unit> = draftDataSource.saveBody(body)
 
     override suspend fun updateToRecipient(recipients: List<Recipient>): Either<DataError, Unit> =
         draftDataSource.updateToRecipients(recipients)

@@ -34,7 +34,7 @@ data class ComposerDraftState(
     val senderAddresses: List<SenderUiModel>,
     val changeBottomSheetVisibility: Effect<Boolean>,
     val closeComposer: Effect<Unit>,
-    val closeComposerWithDraftSaved: Effect<Unit>,
+    val closeComposerWithDraftSaved: Effect<MessageId>,
     val closeComposerWithMessageSending: Effect<Unit>,
     val closeComposerWithMessageSendingOffline: Effect<Unit>,
     val confirmSendingWithoutSubject: Effect<Unit>,
@@ -56,9 +56,8 @@ data class ComposerDraftState(
 
     companion object {
 
-        fun initial(draftId: MessageId?, isSubmittable: Boolean = false): ComposerDraftState = ComposerDraftState(
+        fun initial(isSubmittable: Boolean = false): ComposerDraftState = ComposerDraftState(
             fields = ComposerFields(
-                draftId = draftId,
                 sender = SenderUiModel(""),
                 displayBody = DraftDisplayBodyUiModel(""),
                 body = ""
@@ -98,7 +97,6 @@ data class ComposerDraftState(
  * @body is used to expose back to the viewModel any changes applied by the user (no template, user-content only);
  */
 data class ComposerFields(
-    val draftId: MessageId?,
     val sender: SenderUiModel,
     val displayBody: DraftDisplayBodyUiModel,
     val body: String

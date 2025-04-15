@@ -132,12 +132,10 @@ class HomeViewModel @Inject constructor(
 //        selectedMailLabelId.set()
     }
 
-    fun discardDraft(messageId: MessageId?) {
+    fun discardDraft(messageId: MessageId) {
         viewModelScope.launch {
             primaryUserId.firstOrNull()?.let { userId ->
-                messageId?.let {
-                    discardDraft(userId, it)
-                }
+                discardDraft(userId, messageId)
             } ?: Timber.e("Primary user is not available!")
         }
     }

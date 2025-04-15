@@ -64,6 +64,8 @@ sealed interface DataError {
 
         data object UndoSendError : Local
 
+        data object NoDraftId : Local
+
         /**
          * This object is not meant to be actively used.
          * Its purpose is to notify the logging tool that a case that should be handled

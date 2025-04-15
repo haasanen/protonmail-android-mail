@@ -39,6 +39,7 @@ import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.DraftCreateMode
+import uniffi.proton_mail_uniffi.DraftMessageIdResult
 import uniffi.proton_mail_uniffi.DraftSaveSendError
 import uniffi.proton_mail_uniffi.DraftSaveSendErrorReason
 import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
@@ -311,7 +312,7 @@ class RustDraftDataSourceImplTest {
         val actual = dataSource.save()
 
         // Then
-        assertEquals(actual, draft.messageId.right())
+        assertEquals(actual, Unit.right())
     }
 
     @Test
@@ -352,7 +353,7 @@ class RustDraftDataSourceImplTest {
         val actual = dataSource.saveSubject(subject)
 
         // Then
-        assertEquals(actual, draft.messageId.right())
+        assertEquals(actual, Unit.right())
     }
 
     @Test
@@ -394,7 +395,7 @@ class RustDraftDataSourceImplTest {
         val actual = dataSource.saveBody(body)
 
         // Then
-        assertEquals(actual, draft.messageId.right())
+        assertEquals(actual, Unit.right())
     }
 
     @Test
@@ -638,7 +639,7 @@ class RustDraftDataSourceImplTest {
         every { recipientsCc() } returns ccRecipientsWrapper
         every { recipientsBcc() } returns bccRecipientsWrapper
         coEvery { send() } returns sendResult
-        coEvery { messageId() } returns messageId
+        coEvery { messageId() } returns DraftMessageIdResult.Ok(messageId)
     }
 
 }

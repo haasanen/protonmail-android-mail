@@ -85,7 +85,6 @@ class ComposerReducerTest(
         private val addresses = listOf(UserAddressSample.PrimaryAddress, UserAddressSample.AliasAddress)
 
         private val draftFields = DraftFields(
-            messageId,
             SenderEmail("author@proton.me"),
             Subject("Here is the matter"),
             DraftBody("Decrypted body of this draft"),
@@ -95,7 +94,6 @@ class ComposerReducerTest(
         )
 
         private val draftFieldsWithoutRecipients = DraftFields(
-            messageId,
             SenderEmail("author@proton.me"),
             Subject("Here is the matter"),
             DraftBody("Decrypted body of this draft"),
@@ -111,33 +109,29 @@ class ComposerReducerTest(
 
         private val EmptyToSubmittableToField = TestTransition(
             name = "Should generate submittable state when recipients updated with a valid recipient",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.RecipientsUpdated(true),
-            expectedState = aSubmittableState(messageId)
+            expectedState = aSubmittableState()
         )
 
         private val EmptyToNotSubmittableToField = TestTransition(
             name = "Should generate not submittable error state when recipients update with no valid recipient",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.RecipientsUpdated(false),
-            expectedState = aNotSubmittableState(messageId)
+            expectedState = aNotSubmittableState()
         )
         private val SubmittableToNotSubmittableEmptyToField = TestTransition(
             name = "Should generate not-submittable state when removing all valid email addresses",
-            currentState = ComposerDraftState.initial(
-                messageId,
-                isSubmittable = true
-            ),
+            currentState = ComposerDraftState.initial(isSubmittable = true),
             operation = ComposerEvent.RecipientsUpdated(false),
-            expectedState = aNotSubmittableState(messageId, error = Effect.empty())
+            expectedState = aNotSubmittableState(error = Effect.empty())
         )
 
         private val EmptyToUpgradePlan = TestTransition(
             name = "Should generate a state showing 'upgrade plan' message when free user tries to change sender",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.ErrorFreeUserCannotChangeSender,
             expectedState = aNotSubmittableState(
-                draftId = messageId,
                 premiumFeatureMessage = Effect.of(TextUiModel(R.string.composer_change_sender_paid_feature)),
                 error = Effect.empty()
             )
@@ -145,10 +139,9 @@ class ComposerReducerTest(
 
         private val EmptyToSenderAddressesList = TestTransition(
             name = "Should generate a state showing change sender bottom sheet when paid tries to change sender",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.SenderAddressesReceived(addresses.map { SenderUiModel(it.email) }),
             expectedState = aNotSubmittableState(
-                draftId = messageId,
                 error = Effect.empty(),
                 senderAddresses = addresses.map { SenderUiModel(it.email) },
                 changeSenderBottomSheetVisibility = Effect.of(true)
@@ -157,10 +150,9 @@ class ComposerReducerTest(
 
         private val EmptyToErrorWhenUserPlanUnknown = TestTransition(
             name = "Should generate an error state when failing to determine if user can change sender",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.ErrorVerifyingPermissionsToChangeSender,
             expectedState = aNotSubmittableState(
-                draftId = messageId,
                 error = Effect.of(TextUiModel(R.string.composer_error_change_sender_failed_getting_subscription))
             )
         )
@@ -168,10 +160,9 @@ class ComposerReducerTest(
         private val EmptyToUpdatedSender = with(SenderUiModel("updated-sender@proton.ch")) {
             TestTransition(
                 name = "Should update the state with the new sender and close bottom sheet when address changes",
-                currentState = ComposerDraftState.initial(messageId),
+                currentState = ComposerDraftState.initial(),
                 operation = SenderChanged(this),
                 expectedState = aNotSubmittableState(
-                    draftId = messageId,
                     sender = this,
                     error = Effect.empty(),
                     changeSenderBottomSheetVisibility = Effect.of(false)
@@ -181,10 +172,9 @@ class ComposerReducerTest(
 
         private val EmptyToChangeSubjectError = TestTransition(
             name = "Should update the state showing an error when error storing draft subject",
-            currentState = aNotSubmittableState(draftId = messageId),
+            currentState = aNotSubmittableState(),
             operation = ComposerEvent.ErrorStoringDraftSubject,
             expectedState = aNotSubmittableState(
-                draftId = messageId,
                 error = Effect.of(TextUiModel(R.string.composer_error_store_draft_subject))
             )
         )
@@ -192,10 +182,9 @@ class ComposerReducerTest(
         private val EmptyToUpdatedDraftBody = with(DraftBody("Updated draft body")) {
             TestTransition(
                 name = "Should update the state with the new draft body when it changes",
-                currentState = ComposerDraftState.initial(messageId),
+                currentState = ComposerDraftState.initial(),
                 operation = ComposerAction.DraftBodyChanged(this),
                 expectedState = aNotSubmittableState(
-                    draftId = messageId,
                     error = Effect.empty(),
                     draftBody = this.value
                 )
@@ -204,10 +193,9 @@ class ComposerReducerTest(
 
         private val EmptyToCloseComposer = TestTransition(
             name = "Should close the composer",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerAction.OnCloseComposer,
             expectedState = aNotSubmittableState(
-                draftId = messageId,
                 error = Effect.empty(),
                 closeComposer = Effect.of(Unit),
                 closeComposerWithDraftSaved = Effect.empty()
@@ -216,23 +204,21 @@ class ComposerReducerTest(
 
         private val EmptyToCloseComposerWithDraftSaved = TestTransition(
             name = "Should close the composer notifying draft saved",
-            currentState = ComposerDraftState.initial(messageId),
-            operation = ComposerEvent.OnCloseWithDraftSaved,
+            currentState = ComposerDraftState.initial(),
+            operation = ComposerEvent.OnCloseWithDraftSaved(messageId),
             expectedState = aNotSubmittableState(
-                draftId = messageId,
                 error = Effect.empty(),
                 closeComposer = Effect.empty(),
-                closeComposerWithDraftSaved = Effect.of(Unit)
+                closeComposerWithDraftSaved = Effect.of(messageId)
             )
         )
 
         private val SubmittableToSendMessage =
             TestTransition(
                 name = "Should update submittable state with message sending after OnSendMessage action",
-                currentState = aSubmittableState(messageId),
+                currentState = aSubmittableState(),
                 operation = ComposerAction.OnSendMessage,
                 expectedState = aSubmittableState(
-                    messageId,
                     closeComposerWithMessageSending = Effect.of(Unit)
                 )
             )
@@ -240,20 +226,18 @@ class ComposerReducerTest(
         private val SubmittableToOnSendMessageOffline =
             TestTransition(
                 name = "Should update submittable state with message sending after OnSendMessageOffline action",
-                currentState = aSubmittableState(messageId),
+                currentState = aSubmittableState(),
                 operation = ComposerEvent.OnSendMessageOffline,
                 expectedState = aSubmittableState(
-                    messageId,
                     closeComposerWithMessageSendingOffline = Effect.of(Unit)
                 )
             )
 
         private val EmptyToLoadingWithOpenExistingDraft = TestTransition(
             name = "Should set state to loading when open of existing draft was requested",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.OpenExistingDraft,
             expectedState = aNotSubmittableState(
-                draftId = messageId,
                 error = Effect.empty(),
                 isLoading = true
             )
@@ -262,7 +246,7 @@ class ComposerReducerTest(
         @Suppress("VariableMaxLength")
         private val LoadingToFieldsWhenReceivedDraftDataFromRemote = TestTransition(
             name = "Should stop loading and set the received draft data as composer fields when draft data received",
-            currentState = ComposerDraftState.initial(messageId).copy(isLoading = true),
+            currentState = ComposerDraftState.initial().copy(isLoading = true),
             operation = ComposerEvent.PrefillDraftDataReceived(
                 draftUiModel,
                 isDataRefreshed = true,
@@ -270,7 +254,6 @@ class ComposerReducerTest(
                 isBlockedSendingFromDisabledAddress = false
             ),
             expectedState = aNotSubmittableState(
-                draftId = messageId,
                 sender = SenderUiModel(draftFieldsWithoutRecipients.sender.value),
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
@@ -281,7 +264,7 @@ class ComposerReducerTest(
         @Suppress("VariableMaxLength")
         private val LoadingToFieldsWhenReceivedDraftDataFromLocal = TestTransition(
             name = "Should stop loading and set the received draft data as composer fields when draft data received",
-            currentState = ComposerDraftState.initial(messageId).copy(isLoading = true),
+            currentState = ComposerDraftState.initial().copy(isLoading = true),
             operation = ComposerEvent.PrefillDraftDataReceived(
                 draftUiModel,
                 isDataRefreshed = false,
@@ -289,7 +272,6 @@ class ComposerReducerTest(
                 isBlockedSendingFromDisabledAddress = false
             ),
             expectedState = aNotSubmittableState(
-                draftId = messageId,
                 sender = SenderUiModel(draftFieldsWithoutRecipients.sender.value),
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
@@ -301,10 +283,9 @@ class ComposerReducerTest(
         private val LoadingToFieldsWhenReceivedDraftDataFromViaShare = TestTransition(
             name = "Should stop loading and set the received draft data as composer fields when draft data received, " +
                 " via share",
-            currentState = ComposerDraftState.initial(messageId).copy(isLoading = true),
+            currentState = ComposerDraftState.initial().copy(isLoading = true),
             operation = ComposerEvent.PrefillDataReceivedViaShare(draftUiModel),
             expectedState = aNotSubmittableState(
-                draftId = messageId,
                 sender = SenderUiModel(draftFieldsWithoutRecipients.sender.value),
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
@@ -315,7 +296,7 @@ class ComposerReducerTest(
         @Suppress("VariableMaxLength")
         private val LoadingToSendingNoticeWhenReceivedDraftDataWithInvalidSender = TestTransition(
             name = "Should stop loading and show the sending notice when prefilled address in invalid",
-            currentState = ComposerDraftState.initial(messageId).copy(isLoading = true),
+            currentState = ComposerDraftState.initial().copy(isLoading = true),
             operation = ComposerEvent.PrefillDraftDataReceived(
                 draftUiModelWithoutRecipients,
                 isDataRefreshed = true,
@@ -323,7 +304,6 @@ class ComposerReducerTest(
                 isBlockedSendingFromDisabledAddress = false
             ),
             expectedState = aNotSubmittableState(
-                draftId = messageId,
                 sender = SenderUiModel(draftFieldsWithoutRecipients.sender.value),
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
@@ -338,20 +318,18 @@ class ComposerReducerTest(
         @Suppress("VariableMaxLength")
         private val EmptyToStateWhenReplaceDraftBody = TestTransition(
             name = "Should update the state with new DraftBody Effect when ReplaceDraftBody was emitted",
-            currentState = aNotSubmittableState(draftId = messageId),
+            currentState = aNotSubmittableState(),
             operation = ComposerEvent.ReplaceDraftBody(draftFieldsWithoutRecipients.body),
             expectedState = aNotSubmittableState(
-                draftId = messageId,
                 replaceDraftBody = Effect.of(TextUiModel(draftFieldsWithoutRecipients.body.value))
             )
         )
 
         private val LoadingToErrorWhenErrorLoadingDraftData = TestTransition(
             name = "Should stop loading and display error when failing to receive draft data",
-            currentState = ComposerDraftState.initial(messageId).copy(isLoading = true),
+            currentState = ComposerDraftState.initial().copy(isLoading = true),
             operation = ComposerEvent.ErrorLoadingDraftData,
             expectedState = aNotSubmittableState(
-                draftId = messageId,
                 error = Effect.of(TextUiModel(R.string.composer_error_loading_draft)),
                 isLoading = false
             )
@@ -359,22 +337,22 @@ class ComposerReducerTest(
 
         private val EmptyToBottomSheetOpened = TestTransition(
             name = "Should open the file picker when add attachments action is chosen",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerAction.OnAddAttachments,
-            expectedState = ComposerDraftState.initial(messageId).copy(
+            expectedState = ComposerDraftState.initial().copy(
                 openImagePicker = Effect.of(Unit)
             )
         )
 
         private val EmptyToAttachmentsUpdated = TestTransition(
             name = "Should emit attachments when they are updated",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.OnAttachmentsUpdated(
                 listOf(
                     AttachmentMetadataWithState(AttachmentMetadataSamples.Invoice, AttachmentState.Uploaded)
                 )
             ),
-            expectedState = ComposerDraftState.initial(messageId).copy(
+            expectedState = ComposerDraftState.initial().copy(
                 attachments = AttachmentGroupUiModel(
                     limit = NO_ATTACHMENT_LIMIT,
                     attachments = listOf(
@@ -388,34 +366,34 @@ class ComposerReducerTest(
 
         private val EmptyToAttachmentFileExceeded = TestTransition(
             name = "Should emit attachment exceeded file limit",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.ErrorAttachmentsExceedSizeLimit,
-            expectedState = ComposerDraftState.initial(messageId).copy(
+            expectedState = ComposerDraftState.initial().copy(
                 attachmentsFileSizeExceeded = Effect.of(Unit)
             )
         )
 
         private val EmptyToAttachmentReEncryptionFailed = TestTransition(
             name = "Should emit attachment exceeded file limit",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.ErrorAttachmentsReEncryption,
-            expectedState = ComposerDraftState.initial(messageId).copy(
+            expectedState = ComposerDraftState.initial().copy(
                 attachmentsReEncryptionFailed = Effect.of(Unit)
             )
         )
 
         private val EmptyToOnSendingError = TestTransition(
             name = "Should emit sending error",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.OnSendingError(TextUiModel.Text("SendingError")),
-            expectedState = ComposerDraftState.initial(messageId).copy(
+            expectedState = ComposerDraftState.initial().copy(
                 sendingErrorEffect = Effect.of(TextUiModel.Text("SendingError"))
             )
         )
 
         private val EmptyToOnMessagePasswordUpdated = TestTransition(
             name = "Should update state with info whether a message password is set",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.OnMessagePasswordUpdated(
                 MessagePassword(
                     UserIdTestData.userId,
@@ -424,19 +402,17 @@ class ComposerReducerTest(
                     null
                 )
             ),
-            expectedState = ComposerDraftState.initial(messageId).copy(
+            expectedState = ComposerDraftState.initial().copy(
                 isMessagePasswordSet = true
             )
         )
         private val SubmittableToRequestConfirmEmptySubject = TestTransition(
             name = "Should update state to request confirmation for sending without subject",
             currentState = aSubmittableState(
-                messageId,
                 confirmSendingWithoutSubject = Effect.empty()
             ),
             operation = ComposerEvent.ConfirmEmptySubject,
             expectedState = aSubmittableState(
-                messageId,
                 confirmSendingWithoutSubject = Effect.of(Unit)
             )
         )
@@ -444,12 +420,10 @@ class ComposerReducerTest(
         private val SubmittableToConfirmEmptySubject = TestTransition(
             name = "Should update state to confirm sending without subject",
             currentState = aSubmittableState(
-                messageId,
                 confirmSendingWithoutSubject = Effect.of(Unit)
             ),
             operation = ComposerAction.ConfirmSendingWithoutSubject,
             expectedState = aSubmittableState(
-                messageId,
                 confirmSendingWithoutSubject = Effect.empty(),
                 closeComposerWithMessageSending = Effect.of(Unit)
             )
@@ -458,13 +432,11 @@ class ComposerReducerTest(
         private val SubmittableToRejectEmptySubject = TestTransition(
             name = "Should update state to reject sending without subject",
             currentState = aSubmittableState(
-                messageId,
                 confirmSendingWithoutSubject = Effect.of(Unit),
                 changeFocusToField = Effect.empty()
             ),
             operation = ComposerAction.RejectSendingWithoutSubject,
             expectedState = aSubmittableState(
-                messageId,
                 confirmSendingWithoutSubject = Effect.empty(),
                 changeFocusToField = Effect.of(FocusedFieldType.SUBJECT)
             )
@@ -472,59 +444,59 @@ class ComposerReducerTest(
 
         private val EmptyToSetExpirationTimeRequested = TestTransition(
             name = "Should update state to open expiration time bottom sheet",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerAction.OnSetExpirationTimeRequested,
-            expectedState = ComposerDraftState.initial(messageId).copy(changeBottomSheetVisibility = Effect.of(true))
+            expectedState = ComposerDraftState.initial().copy(changeBottomSheetVisibility = Effect.of(true))
         )
 
         private val EmptyToExpirationTimeSet = TestTransition(
             name = "Should update state to open expiration time bottom sheet",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerAction.ExpirationTimeSet(duration = 1.days),
-            expectedState = ComposerDraftState.initial(messageId).copy(changeBottomSheetVisibility = Effect.of(false))
+            expectedState = ComposerDraftState.initial().copy(changeBottomSheetVisibility = Effect.of(false))
         )
 
         private val EmptyToErrorSettingExpirationTime = TestTransition(
             name = "Should update state to an error when setting expiration time failed",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.ErrorSettingExpirationTime,
-            expectedState = ComposerDraftState.initial(messageId).copy(
+            expectedState = ComposerDraftState.initial().copy(
                 error = Effect.of(TextUiModel(R.string.composer_error_setting_expiration_time))
             )
         )
 
         private val EmptyToMessageExpirationTimeUpdated = TestTransition(
             name = "Should update state with message expiration time",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.OnMessageExpirationTimeUpdated(
                 MessageExpirationTime(UserIdTestData.userId, messageId, 1.days)
             ),
-            expectedState = ComposerDraftState.initial(messageId).copy(messageExpiresIn = 1.days)
+            expectedState = ComposerDraftState.initial().copy(messageExpiresIn = 1.days)
         )
 
         private val EmptyToConfirmSendExpiringMessage = TestTransition(
             name = "Should update state with an effect when sending an expiring message to external recipients",
-            currentState = ComposerDraftState.initial(messageId),
+            currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.ConfirmSendExpiringMessageToExternalRecipients(
                 listOf(RecipientSample.ExternalEncrypted)
             ),
-            expectedState = ComposerDraftState.initial(messageId).copy(
+            expectedState = ComposerDraftState.initial().copy(
                 confirmSendExpiringMessage = Effect.of(listOf(RecipientSample.ExternalEncrypted))
             )
         )
 
         private val SubmittableToDiscardDraft = TestTransition(
             name = "Should update state with an effect to show confirmation dialog when discarding a draft",
-            currentState = aSubmittableState(draftId = messageId),
+            currentState = aSubmittableState(),
             operation = ComposerAction.DiscardDraft,
-            expectedState = aSubmittableState(draftId = messageId).copy(confirmDiscardDraft = Effect.of(Unit))
+            expectedState = aSubmittableState().copy(confirmDiscardDraft = Effect.of(Unit))
         )
 
         private val SubmittableToDiscardDraftConfirmed = TestTransition(
             name = "Should update state with an effect to close composer when discarding a draft is confirmed",
-            currentState = aSubmittableState(draftId = messageId),
+            currentState = aSubmittableState(),
             operation = ComposerAction.DiscardDraftConfirmed,
-            expectedState = aSubmittableState(draftId = messageId).copy(closeComposer = Effect.of(Unit))
+            expectedState = aSubmittableState().copy(closeComposer = Effect.of(Unit))
         )
 
         private val transitions = listOf(
@@ -567,7 +539,6 @@ class ComposerReducerTest(
         )
 
         private fun aSubmittableState(
-            draftId: MessageId,
             sender: SenderUiModel = SenderUiModel(""),
             draftBody: String = "",
             draftDisplayBodyUiModel: DraftDisplayBodyUiModel = DraftDisplayBodyUiModel(""),
@@ -582,7 +553,6 @@ class ComposerReducerTest(
             replaceDraftBody: Effect<TextUiModel> = Effect.empty()
         ) = ComposerDraftState(
             fields = ComposerFields(
-                draftId = draftId,
                 sender = sender,
                 displayBody = draftDisplayBodyUiModel,
                 body = draftBody
@@ -612,7 +582,6 @@ class ComposerReducerTest(
         )
 
         private fun aNotSubmittableState(
-            draftId: MessageId,
             sender: SenderUiModel = SenderUiModel(""),
             error: Effect<TextUiModel> = Effect.empty(),
             premiumFeatureMessage: Effect<TextUiModel> = Effect.empty(),
@@ -621,7 +590,7 @@ class ComposerReducerTest(
             draftBody: String = "",
             draftDisplayBodyUiModel: DraftDisplayBodyUiModel = DraftDisplayBodyUiModel(""),
             closeComposer: Effect<Unit> = Effect.empty(),
-            closeComposerWithDraftSaved: Effect<Unit> = Effect.empty(),
+            closeComposerWithDraftSaved: Effect<MessageId> = Effect.empty(),
             isLoading: Boolean = false,
             attachmentsFileSizeExceeded: Effect<Unit> = Effect.empty(),
             attachmentReEncryptionFailed: Effect<Unit> = Effect.empty(),
@@ -630,7 +599,6 @@ class ComposerReducerTest(
             senderChangedNotice: Effect<TextUiModel> = Effect.empty()
         ) = ComposerDraftState(
             fields = ComposerFields(
-                draftId = draftId,
                 sender = sender,
                 displayBody = draftDisplayBodyUiModel,
                 body = draftBody

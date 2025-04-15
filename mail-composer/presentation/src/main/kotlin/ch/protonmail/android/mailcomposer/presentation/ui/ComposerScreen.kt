@@ -407,7 +407,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     ConsumableLaunchedEffect(effect = state.closeComposerWithDraftSaved) {
         dismissKeyboard(context, view, keyboardController)
         actions.onCloseComposerClick()
-        actions.showDraftSavedSnackbar(state.fields.draftId)
+        actions.showDraftSavedSnackbar(it)
     }
 
     ConsumableLaunchedEffect(effect = state.closeComposerWithMessageSending) {
@@ -485,7 +485,7 @@ object ComposerScreen {
     data class Actions(
         val onCloseComposerClick: () -> Unit,
         val onSetMessagePasswordClick: (MessageId, SenderEmail) -> Unit,
-        val showDraftSavedSnackbar: (MessageId?) -> Unit,
+        val showDraftSavedSnackbar: (MessageId) -> Unit,
         val showMessageSendingSnackbar: () -> Unit,
         val showMessageSendingOfflineSnackbar: () -> Unit,
         val showDraftDiscardedSnackbar: () -> Unit

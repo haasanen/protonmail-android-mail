@@ -107,4 +107,5 @@
     <string name="discard_draft_dialog_text">Your draft will not be saved</string>
     <string name="discard_draft_dialog_confirm_button">Discard</string>
     <string name="discard_draft_dialog_dismiss_button">Cancel</string>
+    <string name="discard_draft_error">Error discarding draft</string>
 </resources>

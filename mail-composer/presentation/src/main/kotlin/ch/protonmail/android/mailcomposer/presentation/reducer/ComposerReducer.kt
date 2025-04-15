@@ -59,7 +59,7 @@ class ComposerReducer @Inject constructor(
         is ComposerAction.SenderChanged -> updateSenderTo(currentState, this.sender)
         is ComposerAction.DraftBodyChanged -> updateDraftBodyTo(currentState, this.draftBody)
         is ComposerAction.OnAddAttachments -> updateForOnAddAttachments(currentState)
-        is ComposerAction.OnCloseComposer -> updateCloseComposerState(currentState, false)
+        is ComposerAction.OnCloseComposer -> updateCloseComposerState(currentState)
         is ComposerAction.ChangeSenderRequested -> currentState
         is ComposerAction.OnSendMessage -> updateStateForSendMessage(currentState)
         is ComposerAction.ConfirmSendingWithoutSubject -> updateForConfirmSendWithoutSubject(currentState)
@@ -99,7 +99,7 @@ class ComposerReducer @Inject constructor(
             changeBottomSheetVisibility = Effect.of(true)
         )
 
-        is ComposerEvent.OnCloseWithDraftSaved -> updateCloseComposerState(currentState, true)
+        is ComposerEvent.OnCloseWithDraftSaved -> updateCloseComposerStateWithDraftSaved(currentState, this.messageId)
         is ComposerEvent.OpenExistingDraft -> currentState.copy(isLoading = true)
         is ComposerEvent.OpenWithMessageAction -> updateStateForOpenWithMessageAction(currentState, draftAction)
         is ComposerEvent.PrefillDraftDataReceived -> updateComposerFieldsState(
@@ -152,7 +152,7 @@ class ComposerReducer @Inject constructor(
             confirmSendExpiringMessage = Effect.of(this.externalRecipients)
         )
         is ComposerEvent.RecipientsUpdated -> updateRecipients(currentState, hasValidRecipients)
-        is ComposerEvent.MessageIdProvided -> updateStateForMessageId(currentState, this.messageId)
+        is ComposerEvent.ErrorDiscardingDraft -> updateForErrorDiscardingDraft(currentState)
     }
 
     private fun updateComposerFieldsState(
@@ -163,7 +163,6 @@ class ComposerReducer @Inject constructor(
         blockedSendingFromDisabledAddress: Boolean
     ) = currentState.copy(
         fields = currentState.fields.copy(
-            draftId = draftUiModel.draftFields.messageId ?: currentState.fields.draftId,
             sender = SenderUiModel(draftUiModel.draftFields.sender.value),
             body = draftUiModel.draftFields.body.value,
             displayBody = draftUiModel.draftDisplayBodyUiModel
@@ -202,20 +201,17 @@ class ComposerReducer @Inject constructor(
     private fun updateSendingErrorState(currentState: ComposerDraftState, sendingError: TextUiModel) =
         currentState.copy(sendingErrorEffect = Effect.of(sendingError))
 
-    private fun updateCloseComposerState(currentState: ComposerDraftState, isDraftSaved: Boolean) = if (isDraftSaved) {
-        currentState.copy(closeComposerWithDraftSaved = Effect.of(Unit))
-    } else {
-        currentState.copy(closeComposer = Effect.of(Unit))
-    }
+    private fun updateCloseComposerState(currentState: ComposerDraftState) = currentState.copy(
+        closeComposer = Effect.of(Unit)
+    )
+
+    private fun updateCloseComposerStateWithDraftSaved(currentState: ComposerDraftState, messageId: MessageId) =
+        currentState.copy(
+            closeComposerWithDraftSaved = Effect.of(messageId)
+        )
 
     private fun updateDraftBodyTo(currentState: ComposerDraftState, draftBody: DraftBody): ComposerDraftState =
         currentState.copy(fields = currentState.fields.copy(body = draftBody.value))
-
-    private fun updateStateForMessageId(currentState: ComposerDraftState, messageId: MessageId) = currentState.copy(
-        fields = currentState.fields.copy(
-            draftId = messageId
-        )
-    )
 
     private fun updateStateForOpenWithMessageAction(
         currentState: ComposerDraftState,
@@ -300,4 +296,7 @@ class ComposerReducer @Inject constructor(
     private fun updateRecipients(currentState: ComposerDraftState, hasValidRecipients: Boolean) =
         currentState.copy(isSubmittable = hasValidRecipients)
 
+    private fun updateForErrorDiscardingDraft(currentState: ComposerDraftState) = currentState.copy(
+        error = Effect.of(TextUiModel.TextRes(R.string.discard_draft_error))
+    )
 }

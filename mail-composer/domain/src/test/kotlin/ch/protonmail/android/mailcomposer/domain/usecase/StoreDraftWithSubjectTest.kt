@@ -23,7 +23,6 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import ch.protonmail.android.mailmessage.domain.model.MessageId
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -40,16 +39,15 @@ class StoreDraftWithSubjectTest {
     @Test
     fun `save draft with subject`() = runTest {
         // Given
-        val messageId = MessageId("messageId")
         val subject = Subject("Subject of this email")
-        givenSaveDraftSucceeds(messageId, subject)
+        givenSaveDraftSucceeds(subject)
 
         // When
         val actualEither = storeDraftWithSubject(subject)
 
         // Then
         coVerify { draftRepository.saveSubject(subject) }
-        assertEquals(messageId.right(), actualEither)
+        assertEquals(Unit.right(), actualEither)
     }
 
     @Test
@@ -65,8 +63,8 @@ class StoreDraftWithSubjectTest {
         assertEquals(expected.left(), actualEither)
     }
 
-    private fun givenSaveDraftSucceeds(messageId: MessageId, subject: Subject) {
-        coEvery { draftRepository.saveSubject(subject) } returns messageId.right()
+    private fun givenSaveDraftSucceeds(subject: Subject) {
+        coEvery { draftRepository.saveSubject(subject) } returns Unit.right()
     }
 
     private fun givenSaveDraftFails(subject: Subject, expected: DataError) {

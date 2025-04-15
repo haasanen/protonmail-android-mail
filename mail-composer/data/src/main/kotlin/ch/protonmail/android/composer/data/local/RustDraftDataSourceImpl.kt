@@ -58,6 +58,7 @@ import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
+import uniffi.proton_mail_uniffi.DraftMessageIdResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
 import javax.inject.Inject
 
@@ -78,6 +79,13 @@ class RustDraftDataSourceImpl @Inject constructor(
     private val recipientsUpdatedCallback = object : ComposerRecipientValidationCallback {
         override fun onUpdate() {
             Timber.d("rust-draft: recipients validation state updated...")
+        }
+    }
+
+    override suspend fun getMessageId(): Either<DataError, MessageId> = withValidRustDraftWrapper {
+        return@withValidRustDraftWrapper when (val result = it.messageId()) {
+            is DraftMessageIdResult.Error -> result.v1.toDataError().left()
+            is DraftMessageIdResult.Ok -> result.v1?.toMessageId()?.right() ?: DataError.Local.NoDraftId.left()
         }
     }
 
@@ -125,21 +133,21 @@ class RustDraftDataSourceImpl @Inject constructor(
         return discardRustDraft(session, messageId.toLocalMessageId())
     }
 
-    override suspend fun save(): Either<DataError, MessageId?> = withValidRustDraftWrapper {
+    override suspend fun save(): Either<DataError, Unit> = withValidRustDraftWrapper {
         return@withValidRustDraftWrapper when (val result = it.save()) {
             is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
-            VoidDraftSaveSendResult.Ok -> it.messageId()?.toMessageId().right()
+            VoidDraftSaveSendResult.Ok -> Unit.right()
         }
     }
 
-    override suspend fun saveSubject(subject: Subject): Either<DataError, MessageId?> = withValidRustDraftWrapper {
+    override suspend fun saveSubject(subject: Subject): Either<DataError, Unit> = withValidRustDraftWrapper {
         return@withValidRustDraftWrapper when (val result = it.setSubject(subject.value)) {
             is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
             VoidDraftSaveSendResult.Ok -> save()
         }
     }
 
-    override suspend fun saveBody(body: DraftBody): Either<DataError, MessageId?> = withValidRustDraftWrapper {
+    override suspend fun saveBody(body: DraftBody): Either<DataError, Unit> = withValidRustDraftWrapper {
         return@withValidRustDraftWrapper when (val result = it.setBody(body.value)) {
             is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
             VoidDraftSaveSendResult.Ok -> save()
@@ -227,7 +235,10 @@ class RustDraftDataSourceImpl @Inject constructor(
             return
         }
 
-        val messageId = draftWrapperMutableStateFlow.value?.messageId()?.toMessageId()
+        val messageId = this.getMessageId()
+            .onLeft { Timber.e("rust-draft: Failed to get messageId due to error: $it") }
+            .getOrNull()
+
 
         if (messageId == null) {
             Timber.e("rust-draft: Trying to start sending status worker with null messageId; Failing.")

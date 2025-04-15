@@ -116,14 +116,13 @@ class DraftRepositoryImplTest {
     @Test
     fun `returns success when save draft succeeds`() = runTest {
         // Given
-        val messageId = MessageIdSample.PlainTextMessage
-        coEvery { draftDataSource.save() } returns messageId.right()
+        coEvery { draftDataSource.save() } returns Unit.right()
 
         // When
         val actual = draftRepository.save()
 
         // Then
-        assertEquals(messageId.right(), actual)
+        assertEquals(Unit.right(), actual)
     }
 
     @Test
@@ -142,15 +141,14 @@ class DraftRepositoryImplTest {
     @Test
     fun `returns success when save draft subject succeeds`() = runTest {
         // Given
-        val messageId = MessageIdSample.PlainTextMessage
         val subject = Subject("test subject")
-        coEvery { draftDataSource.saveSubject(subject) } returns messageId.right()
+        coEvery { draftDataSource.saveSubject(subject) } returns Unit.right()
 
         // When
         val actual = draftRepository.saveSubject(subject)
 
         // Then
-        assertEquals(messageId.right(), actual)
+        assertEquals(Unit.right(), actual)
     }
 
     @Test
@@ -170,15 +168,14 @@ class DraftRepositoryImplTest {
     @Test
     fun `returns success when save draft body succeeds`() = runTest {
         // Given
-        val messageId = MessageIdSample.PlainTextMessage
         val body = DraftBody("test body")
-        coEvery { draftDataSource.saveBody(body) } returns messageId.right()
+        coEvery { draftDataSource.saveBody(body) } returns Unit.right()
 
         // When
         val actual = draftRepository.saveBody(body)
 
         // Then
-        assertEquals(messageId.right(), actual)
+        assertEquals(Unit.right(), actual)
     }
 
     @Test

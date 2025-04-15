@@ -48,7 +48,6 @@ import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 fun LocalDraft.toDraftFields() = DraftFields(
-    messageId = this.messageId,
     sender = SenderEmail(this.sender),
     subject = Subject(this.subject),
     body = DraftBody(this.body),
@@ -57,8 +56,7 @@ fun LocalDraft.toDraftFields() = DraftFields(
     recipientsBcc = RecipientsBcc(this.recipientsBcc.toRecipients())
 )
 
-suspend fun DraftWrapper.toLocalDraft() = LocalDraft(
-    messageId = this.messageId()?.toMessageId(),
+fun DraftWrapper.toLocalDraft() = LocalDraft(
     subject = this.subject(),
     sender = this.sender(),
     body = this.body(),
