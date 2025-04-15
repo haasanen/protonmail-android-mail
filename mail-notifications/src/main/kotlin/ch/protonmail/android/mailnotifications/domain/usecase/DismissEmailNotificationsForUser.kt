@@ -49,7 +49,7 @@ internal class DismissEmailNotificationsForUser @Inject constructor(
     }
 
     private fun shouldDismissGroupNotification(userId: UserId) =
-        notificationManagerCompatProxy.activeNotifications.count { userId.id in it.groupKey } == 1
+        notificationManagerCompatProxy.activeNotifications.count { userId.id in it.groupKey } <= DISMISSAL_THRESHOLD
 
     private fun shouldDismissGroupNotification(
         userId: UserId,
@@ -64,5 +64,10 @@ internal class DismissEmailNotificationsForUser @Inject constructor(
             shouldDismissGroupNotification(userId)
 
         return isSingleRegularNotification || isSingleSilentNotification
+    }
+
+    private companion object {
+
+        const val DISMISSAL_THRESHOLD = 2 // It's 2 since we always show group + child notification.
     }
 }

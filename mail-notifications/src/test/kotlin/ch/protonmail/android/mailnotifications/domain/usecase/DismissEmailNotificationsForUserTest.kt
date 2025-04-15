@@ -50,7 +50,7 @@ internal class DismissEmailNotificationsForUserTest {
     }
 
     @Test
-    fun `when dismissal is invoked for a non silent notification, group is dismissed when notification count is 1`() {
+    fun `when dismissal is invoked for a standard notification, group is dismissed when group count is less than 2`() {
         // Given
         val userId = UserId("user-id")
         val notificationId = Random.nextInt()
@@ -70,11 +70,12 @@ internal class DismissEmailNotificationsForUserTest {
     }
 
     @Test
-    fun `when dismissal is invoked for a non silent notification, group is not dismissed on count greater than 1`() {
+    fun `when dismissal is invoked for a standard notification, group is not dismissed on count greater than 2`() {
         // Given
         val userId = UserId("user-id")
         val notificationId = Random.nextInt()
         every { notificationManagerCompatProxy.activeNotifications } returns listOf(
+            mockk { every { this@mockk.groupKey } returns "12312323|${userId.id}" },
             mockk { every { this@mockk.groupKey } returns "12312323|${userId.id}" },
             mockk { every { this@mockk.groupKey } returns "12312323|${userId.id}" }
         )
@@ -99,6 +100,10 @@ internal class DismissEmailNotificationsForUserTest {
             mockk {
                 every { this@mockk.groupKey } returns "12312323|${userId.id}"
                 every { this@mockk.id } returns notificationId
+            },
+            mockk {
+                every { this@mockk.groupKey } returns "12312323|${userId.id}"
+                every { this@mockk.id } returns notificationId + 1
             }
         )
 
@@ -124,6 +129,10 @@ internal class DismissEmailNotificationsForUserTest {
             mockk {
                 every { this@mockk.groupKey } returns "12312323|${userId.id}"
                 every { this@mockk.id } returns "another-id".hashCode()
+            },
+            mockk {
+                every { this@mockk.groupKey } returns "12312323|${userId.id}"
+                every { this@mockk.id } returns "another-id-2".hashCode()
             }
         )
 
