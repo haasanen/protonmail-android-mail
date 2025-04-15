@@ -50,7 +50,6 @@ dependencies {
     implementation(libs.proton.core.domain)
 
     implementation(project(":mail-common:data"))
-    implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-label:domain"))

@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.mailmessage.data.model
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalUserId
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.data.mapper.LocalUserId
 
 data class PaginatorParams(
     val userId: LocalUserId,

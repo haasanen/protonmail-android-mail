@@ -48,7 +48,6 @@ dependencies {
 
     implementation(project(":mail-upselling:domain"))
     implementation(project(":mail-common:data"))
-    implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-common:domain"))
 
     testImplementation(libs.bundles.test)

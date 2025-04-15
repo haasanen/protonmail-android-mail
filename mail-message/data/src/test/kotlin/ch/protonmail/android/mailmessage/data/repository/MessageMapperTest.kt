@@ -18,17 +18,17 @@
 
 package ch.protonmail.android.mailmessage.data.repository
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMimeType
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAvatarInformation
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalExclusiveLocationSystem
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeTypeCategory
+import ch.protonmail.android.mailcommon.data.mapper.LocalAddressId
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentId
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentMetadata
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentMimeType
+import ch.protonmail.android.mailcommon.data.mapper.LocalAvatarInformation
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.data.mapper.LocalExclusiveLocationSystem
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.data.mapper.LocalMimeTypeCategory
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.mapper.toAddressId

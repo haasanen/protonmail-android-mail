@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcontact.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactItemTypeGroup
+import ch.protonmail.android.mailcommon.data.mapper.LocalContactItemTypeGroup
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import javax.inject.Inject

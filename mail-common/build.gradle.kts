@@ -35,7 +35,6 @@ android {
 dependencies {
     api(project(":mail-common:dagger"))
     api(project(":mail-common:data"))
-    api(project(":mail-common:data-rust"))
     api(project(":mail-common:domain"))
     api(project(":mail-common:presentation"))
 }

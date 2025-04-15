@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcontact.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactSuggestion
+import ch.protonmail.android.mailcommon.data.mapper.LocalContactSuggestion
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId

@@ -20,7 +20,7 @@ package ch.protonmail.android.mailcontact.data.local
 
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalDeviceContact
+import ch.protonmail.android.mailcommon.data.mapper.LocalDeviceContact
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcontact.data.mapper.ContactGroupItemMapper

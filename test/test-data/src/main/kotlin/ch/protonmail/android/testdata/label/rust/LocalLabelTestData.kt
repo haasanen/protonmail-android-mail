@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.testdata.label.rust
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalSystemLabel
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.data.mapper.LocalSystemLabel
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.LabelDescription
 import uniffi.proton_mail_uniffi.SidebarCustomFolder

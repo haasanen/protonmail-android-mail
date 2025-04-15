@@ -18,11 +18,11 @@
 
 package ch.protonmail.android.testdata.contact.rust
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactGroupId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactItemTypeContact
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactItemTypeGroup
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalGroupedContacts
+import ch.protonmail.android.mailcommon.data.mapper.LocalContactGroupId
+import ch.protonmail.android.mailcommon.data.mapper.LocalContactId
+import ch.protonmail.android.mailcommon.data.mapper.LocalContactItemTypeContact
+import ch.protonmail.android.mailcommon.data.mapper.LocalContactItemTypeGroup
+import ch.protonmail.android.mailcommon.data.mapper.LocalGroupedContacts
 import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.ContactEmailItem
 import uniffi.proton_mail_uniffi.ContactGroupItem

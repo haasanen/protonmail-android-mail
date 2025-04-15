@@ -19,9 +19,9 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import kotlinx.coroutines.flow.Flow

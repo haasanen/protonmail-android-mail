@@ -44,9 +44,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":mail-common:data"))
     kapt(libs.bundles.app.annotationProcessors)
 
+    implementation(project(":mail-common:data"))
     implementation(project(":mail-mailbox:data"))
     implementation(project(":mail-mailbox:domain"))
     implementation(project(":mail-mailbox:presentation"))

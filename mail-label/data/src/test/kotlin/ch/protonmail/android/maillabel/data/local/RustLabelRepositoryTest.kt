@@ -19,7 +19,7 @@
 package ch.protonmail.android.maillabel.data.local
 
 import app.cash.turbine.test
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalSystemLabel
+import ch.protonmail.android.mailcommon.data.mapper.LocalSystemLabel
 import ch.protonmail.android.maillabel.data.repository.RustLabelRepository
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.testdata.label.LabelTestData

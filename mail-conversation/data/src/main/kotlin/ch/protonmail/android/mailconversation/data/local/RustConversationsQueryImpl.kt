@@ -19,8 +19,8 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId

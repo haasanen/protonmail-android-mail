@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
 

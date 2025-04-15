@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailsettings.data.local
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMailSettings
+import ch.protonmail.android.mailcommon.data.mapper.LocalMailSettings
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 

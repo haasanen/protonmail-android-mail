@@ -19,7 +19,7 @@
 package ch.protonmail.android.maillabel.data.local
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId

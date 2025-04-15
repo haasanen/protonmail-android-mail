@@ -23,7 +23,7 @@ plugins {
 }
 
 android {
-    namespace = "ch.protonmail.android.mailconversation.datarust"
+    namespace = "ch.protonmail.android.mailconversation.data"
     compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
@@ -49,7 +49,7 @@ dependencies {
 
     api(project(":mail-pagination:domain"))
     implementation(project(":mail-conversation:domain"))
-    implementation(project(":mail-common:data-rust"))
+    implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-label:domain"))
     implementation(project(":mail-label:data"))

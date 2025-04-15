@@ -48,9 +48,8 @@ dependencies {
     implementation(libs.proton.core.network)
 
     implementation(project(":shared:core:account:domain"))
-    implementation(project(":mail-common:data"))
-    implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-bugreport:domain"))
+    implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-session:domain"))
     implementation(project(":shared:core:humanverification:domain"))

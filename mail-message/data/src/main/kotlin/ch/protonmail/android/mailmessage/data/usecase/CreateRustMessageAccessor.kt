@@ -22,10 +22,10 @@ import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailcommon.datarust.mapper.RemoteMessageId
-import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId
+import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId

@@ -44,7 +44,6 @@ include(":mail-bugreport:presentation")
 
 include(":mail-common:dagger")
 include(":mail-common:data")
-include(":mail-common:data-rust")
 include(":mail-common:domain")
 include(":mail-common:presentation")
 

@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.mailmessage.data.wrapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalViewMode
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.data.mapper.LocalViewMode
 import uniffi.proton_mail_uniffi.Mailbox
 
 class MailboxWrapper(private val rustMailbox: Mailbox) {

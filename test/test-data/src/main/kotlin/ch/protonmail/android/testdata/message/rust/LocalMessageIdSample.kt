@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.testdata.message.rust
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 
 object LocalMessageIdSample {
     val AugWeatherForecast = LocalMessageId(1uL)

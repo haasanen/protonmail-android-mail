@@ -21,7 +21,7 @@ package ch.protonmail.android.mailconversation.data.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.ConversationScroller

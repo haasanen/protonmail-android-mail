@@ -26,7 +26,7 @@ import ch.protonmail.android.composer.data.usecase.CreateRustDraftSendWatcher
 import ch.protonmail.android.composer.data.usecase.RustDeleteDraftSendResult
 import ch.protonmail.android.composer.data.usecase.RustMarkDraftSendResultAsSeen
 import ch.protonmail.android.composer.data.usecase.RustQueryUnseenDraftSendResults
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalDraftSendResult
+import ch.protonmail.android.mailcommon.data.mapper.LocalDraftSendResult
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId

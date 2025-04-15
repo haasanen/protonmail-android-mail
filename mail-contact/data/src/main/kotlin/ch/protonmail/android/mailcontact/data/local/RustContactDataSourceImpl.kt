@@ -21,8 +21,8 @@ package ch.protonmail.android.mailcontact.data.local
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalGroupedContacts
+import ch.protonmail.android.mailcommon.data.mapper.LocalContactId
+import ch.protonmail.android.mailcommon.data.mapper.LocalGroupedContacts
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontact.data.ContactRustCoroutineScope
 import ch.protonmail.android.mailcontact.data.mapper.ContactSuggestionsMapper

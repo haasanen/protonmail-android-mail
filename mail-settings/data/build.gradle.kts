@@ -54,7 +54,6 @@ dependencies {
     implementation(libs.proton.core.mailSettings)
 
     implementation(project(":mail-common:data"))
-    implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-settings:domain"))
     implementation(project(":mail-conversation:domain"))

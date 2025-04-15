@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.watchConversation

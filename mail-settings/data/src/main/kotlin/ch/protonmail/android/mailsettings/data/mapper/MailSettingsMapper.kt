@@ -18,20 +18,20 @@
 
 package ch.protonmail.android.mailsettings.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAlmostAllMail
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalComposerDirection
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalComposerMode
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMailSettings
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageButtons
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMobileSettings
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalPgpScheme
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalPmSignature
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalShowImages
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalShowMoved
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalSwipeAction
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalViewLayout
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalViewMode
+import ch.protonmail.android.mailcommon.data.mapper.LocalAlmostAllMail
+import ch.protonmail.android.mailcommon.data.mapper.LocalComposerDirection
+import ch.protonmail.android.mailcommon.data.mapper.LocalComposerMode
+import ch.protonmail.android.mailcommon.data.mapper.LocalMailSettings
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageButtons
+import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
+import ch.protonmail.android.mailcommon.data.mapper.LocalMobileSettings
+import ch.protonmail.android.mailcommon.data.mapper.LocalPgpScheme
+import ch.protonmail.android.mailcommon.data.mapper.LocalPmSignature
+import ch.protonmail.android.mailcommon.data.mapper.LocalShowImages
+import ch.protonmail.android.mailcommon.data.mapper.LocalShowMoved
+import ch.protonmail.android.mailcommon.data.mapper.LocalSwipeAction
+import ch.protonmail.android.mailcommon.data.mapper.LocalViewLayout
+import ch.protonmail.android.mailcommon.data.mapper.LocalViewMode
 import ch.protonmail.android.mailcommon.domain.model.DeprecatedId
 import me.proton.core.domain.type.IntEnum
 import me.proton.core.domain.type.StringEnum

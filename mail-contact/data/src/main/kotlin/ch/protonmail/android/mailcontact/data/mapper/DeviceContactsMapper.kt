@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcontact.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalDeviceContact
+import ch.protonmail.android.mailcommon.data.mapper.LocalDeviceContact
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
 import javax.inject.Inject
 

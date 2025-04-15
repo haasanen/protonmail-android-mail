@@ -18,9 +18,9 @@
 
 package ch.protonmail.android.maillabel.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalExclusiveLocation
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalExclusiveLocationCustom
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalExclusiveLocationSystem
+import ch.protonmail.android.mailcommon.data.mapper.LocalExclusiveLocation
+import ch.protonmail.android.mailcommon.data.mapper.LocalExclusiveLocationCustom
+import ch.protonmail.android.mailcommon.data.mapper.LocalExclusiveLocationSystem
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 
 fun LocalExclusiveLocation?.toExclusiveLocation(): ExclusiveLocation {

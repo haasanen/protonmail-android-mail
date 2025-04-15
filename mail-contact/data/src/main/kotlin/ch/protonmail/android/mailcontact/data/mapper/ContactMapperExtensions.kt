@@ -18,10 +18,10 @@
 
 package ch.protonmail.android.mailcontact.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAvatarInformation
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactEmail
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactGroupId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactId
+import ch.protonmail.android.mailcommon.data.mapper.LocalAvatarInformation
+import ch.protonmail.android.mailcommon.data.mapper.LocalContactEmail
+import ch.protonmail.android.mailcommon.data.mapper.LocalContactGroupId
+import ch.protonmail.android.mailcommon.data.mapper.LocalContactId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail

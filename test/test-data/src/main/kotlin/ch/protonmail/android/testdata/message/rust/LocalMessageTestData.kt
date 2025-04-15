@@ -18,12 +18,12 @@
 
 package ch.protonmail.android.testdata.message.rust
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.data.mapper.LocalAddressId
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentMetadata
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelColor

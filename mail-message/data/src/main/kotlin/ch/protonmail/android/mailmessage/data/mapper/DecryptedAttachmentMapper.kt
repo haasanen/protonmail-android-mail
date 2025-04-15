@@ -21,7 +21,7 @@ package ch.protonmail.android.mailmessage.data.mapper
 import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalDecryptedAttachment
+import ch.protonmail.android.mailcommon.data.mapper.LocalDecryptedAttachment
 import ch.protonmail.android.mailmessage.domain.model.DecryptedAttachment
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File

@@ -18,9 +18,9 @@
 
 package ch.protonmail.android.mailconversation.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentDisposition
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentDisposition
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation

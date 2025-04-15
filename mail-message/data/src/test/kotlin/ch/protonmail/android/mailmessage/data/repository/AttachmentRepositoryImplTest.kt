@@ -24,7 +24,7 @@ import io.mockk.mockk
 
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalDecryptedAttachment
+import ch.protonmail.android.mailcommon.data.mapper.LocalDecryptedAttachment
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailmessage.data.mapper.DecryptedAttachmentMapper

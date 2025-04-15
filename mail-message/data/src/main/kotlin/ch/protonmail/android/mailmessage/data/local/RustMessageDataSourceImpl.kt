@@ -21,11 +21,11 @@ package ch.protonmail.android.mailmessage.data.local
 import arrow.core.Either
 import arrow.core.flatMap
 import arrow.core.left
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailcommon.datarust.mapper.RemoteMessageId
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelAsAction
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody

@@ -49,7 +49,6 @@ dependencies {
     implementation(libs.dagger.hilt.android)
 
     implementation(project(":mail-common:data"))
-    implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
 }

@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcommon.datarust.mapper
+package ch.protonmail.android.mailcommon.data.mapper
 
 import uniffi.proton_mail_common.MessageBanner
 import uniffi.proton_mail_uniffi.AlmostAllMail

@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailsession.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalUserId
+import ch.protonmail.android.mailcommon.data.mapper.LocalUserId
 import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.core.domain.entity.UserId
 

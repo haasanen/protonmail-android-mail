@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.testdata.contact.rust
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAvatarInformation
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactSuggestion
+import ch.protonmail.android.mailcommon.data.mapper.LocalAvatarInformation
+import ch.protonmail.android.mailcommon.data.mapper.LocalContactSuggestion
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.testdata.contact.ContactIdTestData
 import uniffi.proton_mail_uniffi.ContactEmailItem

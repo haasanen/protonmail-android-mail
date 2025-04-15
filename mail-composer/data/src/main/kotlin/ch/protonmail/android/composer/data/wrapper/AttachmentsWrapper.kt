@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.composer.data.wrapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentId
 import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
 import uniffi.proton_mail_uniffi.AttachmentList
 

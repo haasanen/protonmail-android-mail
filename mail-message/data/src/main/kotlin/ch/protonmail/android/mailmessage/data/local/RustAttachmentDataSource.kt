@@ -19,8 +19,8 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalDecryptedAttachment
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentId
+import ch.protonmail.android.mailcommon.data.mapper.LocalDecryptedAttachment
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import me.proton.core.domain.entity.UserId
 

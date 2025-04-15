@@ -18,12 +18,12 @@
 
 package ch.protonmail.android.mailmessage.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentDisposition
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMimeType
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeTypeCategory
-import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentDisposition
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentId
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentMetadata
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentMimeType
+import ch.protonmail.android.mailcommon.data.mapper.LocalMimeTypeCategory
+import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata

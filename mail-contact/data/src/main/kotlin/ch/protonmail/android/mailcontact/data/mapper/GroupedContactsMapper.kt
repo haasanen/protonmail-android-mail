@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcontact.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalGroupedContacts
+import ch.protonmail.android.mailcommon.data.mapper.LocalGroupedContacts
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import javax.inject.Inject
 

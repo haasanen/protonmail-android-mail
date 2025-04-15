@@ -20,9 +20,9 @@ package ch.protonmail.android.composer.data.mapper
 
 import ch.protonmail.android.composer.data.local.LocalDraft
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalComposerRecipient
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalDraftSendResult
-import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.data.mapper.LocalComposerRecipient
+import ch.protonmail.android.mailcommon.data.mapper.LocalDraftSendResult
+import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields

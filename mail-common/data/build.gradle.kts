@@ -46,6 +46,8 @@ android {
 }
 
 dependencies {
+    compileOnly(libs.proton.rust.core)
+
     implementation(libs.bundles.module.data)
     implementation(libs.androidx.appcompat)
     implementation(libs.proton.core.utilKotlin)

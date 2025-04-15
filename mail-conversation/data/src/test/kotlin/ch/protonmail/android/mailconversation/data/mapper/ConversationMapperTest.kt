@@ -18,11 +18,11 @@
 
 package ch.protonmail.android.mailconversation.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalExclusiveLocationSystem
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentMetadata
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.data.mapper.LocalExclusiveLocationSystem
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel

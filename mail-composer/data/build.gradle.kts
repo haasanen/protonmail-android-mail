@@ -53,7 +53,6 @@ dependencies {
     implementation(libs.proton.core.mailSendPreferences)
 
     implementation(project(":mail-session:domain"))
-    implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-composer:domain"))

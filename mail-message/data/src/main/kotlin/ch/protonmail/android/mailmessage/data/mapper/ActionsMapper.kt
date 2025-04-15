@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions

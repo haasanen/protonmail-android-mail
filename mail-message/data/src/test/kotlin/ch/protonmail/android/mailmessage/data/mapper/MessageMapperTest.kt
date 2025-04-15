@@ -18,11 +18,11 @@
 
 package ch.protonmail.android.mailmessage.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAvatarInformation
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.data.mapper.LocalAddressId
+import ch.protonmail.android.mailcommon.data.mapper.LocalAvatarInformation
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
