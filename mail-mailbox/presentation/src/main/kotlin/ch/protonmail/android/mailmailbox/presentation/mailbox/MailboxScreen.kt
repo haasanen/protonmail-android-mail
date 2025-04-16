@@ -239,10 +239,16 @@ fun MailboxScreen(
         },
         onSwipeLabelAs = { itemId -> viewModel.submit(MailboxViewAction.SwipeLabelAsAction(itemId)) },
         onSwipeMoveTo = { itemId -> viewModel.submit(MailboxViewAction.SwipeMoveToAction(itemId)) },
-        onEnterSearchMode = { viewModel.submit(MailboxViewAction.EnterSearchMode) },
+        onEnterSearchMode = {
+            actions.onEnterSearchMode()
+            viewModel.submit(MailboxViewAction.EnterSearchMode)
+        },
         onSearchQuery = { query -> viewModel.submit(MailboxViewAction.SearchQuery(query)) },
         onSearchResult = { viewModel.submit(MailboxViewAction.SearchResult) },
-        onExitSearchMode = { viewModel.submit(MailboxViewAction.ExitSearchMode) },
+        onExitSearchMode = {
+            actions.onExitSearchMode()
+            viewModel.submit(MailboxViewAction.ExitSearchMode)
+        },
         onOpenUpsellingPage = { viewModel.submit(MailboxViewAction.RequestUpsellingBottomSheet) },
         onCloseUpsellingPage = { viewModel.submit(MailboxViewAction.DismissBottomSheet) }
     )

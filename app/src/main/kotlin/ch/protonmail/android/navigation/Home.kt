@@ -134,6 +134,7 @@ fun Home(
     val snackbarHostWarningState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.WARNING) }
     val snackbarHostNormState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.NORM) }
     val snackbarHostErrorState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR) }
+    val isDrawerSwipeGestureEnabled = remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
     val state by viewModel.state.collectAsStateWithLifecycle(HomeState.Initial)
     val onboardingEligibilityState by onboardingStepViewModel.onboardingEligibilityState.collectAsStateWithLifecycle()
@@ -407,7 +408,7 @@ fun Home(
 
             },
             scrimColor = ProtonTheme.colors.blenderNorm,
-            gesturesEnabled = currentDestinationRoute == Screen.Mailbox.route
+            gesturesEnabled = currentDestinationRoute == Screen.Mailbox.route && isDrawerSwipeGestureEnabled.value
         ) {
             Scaffold(
                 snackbarHost = {
@@ -495,6 +496,7 @@ fun Home(
                         addMailbox(
                             navController,
                             openDrawerMenu = { scope.launch { drawerState.open() } },
+                            setDrawerEnabled = { isDrawerSwipeGestureEnabled.value = it },
                             showOfflineSnackbar = { showOfflineSnackbar() },
                             showNormalSnackbar = { showNormalSnackbar(it) },
                             showErrorSnackbar = { showErrorSnackbar(it) },

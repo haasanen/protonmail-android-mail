@@ -54,6 +54,7 @@ internal fun NavGraphBuilder.addConversationDetail(actions: ConversationDetail.A
 internal fun NavGraphBuilder.addMailbox(
     navController: NavHostController,
     openDrawerMenu: () -> Unit,
+    setDrawerEnabled: (Boolean) -> Unit,
     onEvent: (AccountSwitchEvent) -> Unit,
     showOfflineSnackbar: () -> Unit,
     showNormalSnackbar: (message: String) -> Unit,
@@ -86,7 +87,13 @@ internal fun NavGraphBuilder.addMailbox(
                 onAccountAvatarClicked = {
                     navController.navigate(Destination.Screen.AccountsManager.route)
                 },
-                showMissingFeature = showFeatureMissingSnackbar
+                showMissingFeature = showFeatureMissingSnackbar,
+                onEnterSearchMode = {
+                    setDrawerEnabled(false)
+                },
+                onExitSearchMode = {
+                    setDrawerEnabled(true)
+                }
             ),
             onEvent = onEvent
         )
