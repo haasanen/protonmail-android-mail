@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap
 import android.database.sqlite.SQLiteDatabase
 import androidx.lifecycle.LifecycleOwner
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
 import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObserverImpl.DatabaseIdentifier.Companion.AccountDatabaseIdentifier
 import ch.protonmail.android.mailsession.domain.annotations.DatabasesBaseDirectory
 import ch.protonmail.android.mailsession.domain.model.AccountState
@@ -30,8 +31,11 @@ import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
@@ -42,7 +46,8 @@ import javax.inject.Provider
 class DatabaseLifecycleObserverImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     @AppScope private val scope: CoroutineScope,
-    @DatabasesBaseDirectory private val dbBaseDirectory: Provider<File>
+    @DatabasesBaseDirectory private val dbBaseDirectory: Provider<File>,
+    @IsDebugInspectDbEnabled private val isDebugInspectDbEnabled: Flow<Boolean>
 ) : DatabaseLifecycleObserver {
 
     private val databases = ConcurrentHashMap<String, SQLiteDatabase>()
@@ -50,9 +55,17 @@ class DatabaseLifecycleObserverImpl @Inject constructor(
 
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
-        Timber.tag(TAG).i("Initializing database inspector")
-        setupDatabaseWatchers()
-        initializeDatabase(AccountDatabaseIdentifier)
+
+        isDebugInspectDbEnabled.mapLatest { isEnabled ->
+            if (!isEnabled) {
+                Timber.tag(TAG).i("Db inspection flag disabled - No DB watcher started")
+                return@mapLatest
+            }
+
+            Timber.tag(TAG).i("Initializing database inspector")
+            setupDatabaseWatchers()
+            initializeDatabase(AccountDatabaseIdentifier)
+        }.launchIn(scope)
     }
 
     override fun onDestroy(owner: LifecycleOwner) {

@@ -21,10 +21,12 @@ package ch.protonmail.android.mailfeatureflags.di
 import ch.protonmail.android.mailfeatureflags.data.local.DataStoreFeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.data.local.DefaultFeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.ComposerEnabledDefinition
+import ch.protonmail.android.mailfeatureflags.domain.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.UseV6CssInjectionDefinition
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.V6CssInjectionEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import dagger.Module
@@ -60,6 +62,18 @@ object FeatureFlagsModule {
     @V6CssInjectionEnabled
     fun provideUseV6CssInjection(resolver: FeatureFlagResolver) =
         resolver.observeFeatureFlag(UseV6CssInjectionDefinition.key)
+
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideDebugInspectDbEnabledDefinition(): FeatureFlagDefinition = DebugInspectDbEnabled
+
+    @Provides
+    @Singleton
+    @IsDebugInspectDbEnabled
+    fun provideIsDebugInspectDbEnabled(resolver: FeatureFlagResolver) =
+        resolver.observeFeatureFlag(DebugInspectDbEnabled.key)
 
     @Provides
     @IntoSet

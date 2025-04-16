@@ -27,3 +27,7 @@ annotation class ComposerEnabled
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class V6CssInjectionEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsDebugInspectDbEnabled

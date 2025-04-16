@@ -36,3 +36,11 @@ data object UseV6CssInjectionDefinition : FeatureFlagDefinition(
     description = "Applies V6 CSS injection on the Rust-provided message body.",
     defaultValue = true
 )
+
+data object DebugInspectDbEnabled : FeatureFlagDefinition(
+    key = "debug_observe_db_enabled",
+    name = "Attach to DB for debug inspection",
+    category = FeatureFlagCategory.System,
+    description = "(Only on debuggable builds) Enables attaching AS DB inspector (read only) to rust DB",
+    defaultValue = true
+)
