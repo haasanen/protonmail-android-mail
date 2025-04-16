@@ -111,7 +111,6 @@ class HomeViewModelTest {
             networkManager,
             observeSendingMessagesStatus,
             recordMailboxScreenView,
-            selectedMailLabelId,
             discardDraft,
             undoSendMessage,
             markMessageSendingStatusesAsSeen,

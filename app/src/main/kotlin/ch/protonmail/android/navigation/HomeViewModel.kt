@@ -34,7 +34,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.MarkMessageSendingStatusesAsSeen
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveSendingMessagesStatus
 import ch.protonmail.android.mailcomposer.domain.usecase.UndoSendMessage
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordMailboxScreenView
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -64,11 +63,10 @@ class HomeViewModel @Inject constructor(
     private val networkManager: NetworkManager,
     private val observeSendingMessagesStatus: ObserveSendingMessagesStatus,
     private val recordMailboxScreenView: RecordMailboxScreenView,
-    private val selectedMailLabelId: SelectedMailLabelId,
     private val discardDraft: DiscardDraft,
     private val undoSendMessage: UndoSendMessage,
     private val markMessageSendingStatusesAsSeen: MarkMessageSendingStatusesAsSeen,
-    private val observePrimaryUserId: ObservePrimaryUserId,
+    observePrimaryUserId: ObservePrimaryUserId,
     shareIntentObserver: ShareIntentObserver
 ) : ViewModel() {
 
