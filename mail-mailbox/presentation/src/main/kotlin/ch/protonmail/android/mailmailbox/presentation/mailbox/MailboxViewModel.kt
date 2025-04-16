@@ -309,14 +309,19 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.SearchQuery -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.SearchResult -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.RequestUpsellingBottomSheet -> showUpsellingBottomSheet(viewAction)
-                is MailboxViewAction.NavigateToInboxLabel ->
-                    selectedMailLabelId.set(MailLabelId.System(SystemLabelId.Inbox.labelId))
-
+                is MailboxViewAction.NavigateToInboxLabel -> handleNavigateToInbox()
                 is MailboxViewAction.SelectAll -> handleSelectAllAction(viewAction)
                 is MailboxViewAction.DeselectAll -> handleDeselectAllAction()
                 is MailboxViewAction.CustomizeToolbar -> handleCustomizeToolbar(viewAction)
             }.exhaustive
         }
+    }
+
+    private suspend fun handleNavigateToInbox() {
+        val inboxLabel = findLocalSystemLabelId(primaryUserId.first(), SystemLabelId.Inbox)
+            ?: return Timber.e("Unable to find Inbox system label")
+
+        selectedMailLabelId.set(inboxLabel)
     }
 
     private fun handleCustomizeToolbar(viewAction: MailboxViewAction) {

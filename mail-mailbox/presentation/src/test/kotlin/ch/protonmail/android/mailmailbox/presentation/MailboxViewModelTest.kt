@@ -2775,13 +2775,15 @@ class MailboxViewModelTest {
     @Test
     fun `navigate to inbox label will trigger selected mail label use case`() = runTest {
         // Given
-        coJustRun { selectedMailLabelId.set(MailLabelTestData.inboxSystemLabel.id) }
+        val expectedLabel = MailLabelTestData.inboxSystemLabel
+        coEvery { findLocalSystemLabelId(userId, SystemLabelId.Inbox) } returns expectedLabel.id
+        coJustRun { selectedMailLabelId.set(expectedLabel.id) }
 
         // When
         mailboxViewModel.submit(MailboxViewAction.NavigateToInboxLabel)
 
         // Then
-        coVerify { selectedMailLabelId.set(MailLabelTestData.inboxSystemLabel.id) }
+        coVerify { selectedMailLabelId.set(expectedLabel.id) }
     }
 
     @Test
