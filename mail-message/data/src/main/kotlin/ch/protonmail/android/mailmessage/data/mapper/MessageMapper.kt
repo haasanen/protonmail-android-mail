@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.mapper
 
+import java.time.Instant
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
@@ -166,15 +167,19 @@ fun LocalConversationMessages.toConversationMessagesWithMessageToOpen(): Either<
 fun RemoteMessageId.toRemoteMessageId(): RustRemoteMessageId = RustRemoteMessageId(this.id)
 fun RustRemoteMessageId.toRemoteMessageId(): RemoteMessageId = RemoteMessageId(this.value)
 
-private fun LocalMessageBanner.toMessageBanner(): MessageBanner = when (this) {
-    is LocalMessageBannerAutoDelete -> MessageBanner.AutoDelete(this.timestamp.toLong(), this.deleteDays.toInt())
-    is LocalMessageBannerBlockedSender -> MessageBanner.BlockedSender
-    is LocalMessageBannerEmbeddedImages -> MessageBanner.EmbeddedImages
-    is LocalMessageBannerExpiry -> MessageBanner.Expiry(this.timestamp.toLong())
-    is LocalMessageBannerPhishingAttempt -> MessageBanner.PhishingAttempt
-    is LocalMessageBannerRemoteContent -> MessageBanner.RemoteContent
-    is LocalMessageBannerScheduledSend -> MessageBanner.ScheduledSend(this.timestamp.toLong())
-    is LocalMessageBannerSnoozed -> MessageBanner.Snoozed(this.timestamp.toLong())
-    is LocalMessageBannerSpam -> MessageBanner.Spam
-    is LocalMessageBannerUnsubscribeNewsletter -> MessageBanner.UnsubscribeNewsletter
+private fun LocalMessageBanner.toMessageBanner(): MessageBanner {
+    fun ULong.toInstant() = Instant.ofEpochMilli(this.toLong())
+
+    return when (this) {
+        is LocalMessageBannerAutoDelete -> MessageBanner.AutoDelete(timestamp.toInstant(), this.deleteDays.toInt())
+        is LocalMessageBannerBlockedSender -> MessageBanner.BlockedSender
+        is LocalMessageBannerEmbeddedImages -> MessageBanner.EmbeddedImages
+        is LocalMessageBannerExpiry -> MessageBanner.Expiry(timestamp.toInstant())
+        is LocalMessageBannerPhishingAttempt -> MessageBanner.PhishingAttempt
+        is LocalMessageBannerRemoteContent -> MessageBanner.RemoteContent
+        is LocalMessageBannerScheduledSend -> MessageBanner.ScheduledSend(timestamp.toInstant())
+        is LocalMessageBannerSnoozed -> MessageBanner.Snoozed(timestamp.toInstant())
+        is LocalMessageBannerSpam -> MessageBanner.Spam
+        is LocalMessageBannerUnsubscribeNewsletter -> MessageBanner.UnsubscribeNewsletter
+    }
 }

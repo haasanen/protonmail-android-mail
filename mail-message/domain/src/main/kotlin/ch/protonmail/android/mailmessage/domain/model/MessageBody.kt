@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailmessage.domain.model
 
+import java.time.Instant
+
 data class MessageBody(
     val messageId: MessageId,
     val body: String,
@@ -42,13 +44,13 @@ sealed interface MessageBanner {
     object PhishingAttempt : MessageBanner
     object Spam : MessageBanner
 
-    data class Expiry(val timestamp: Long) : MessageBanner
-    data class AutoDelete(val timestamp: Long, val deleteDays: Int) : MessageBanner
+    data class Expiry(val expiresAt: Instant) : MessageBanner
+    data class AutoDelete(val deletesAt: Instant, val deleteDays: Int) : MessageBanner
 
     object UnsubscribeNewsletter : MessageBanner
 
-    data class ScheduledSend(val timestamp: Long) : MessageBanner
-    data class Snoozed(val timestamp: Long) : MessageBanner
+    data class ScheduledSend(val scheduledAt: Instant) : MessageBanner
+    data class Snoozed(val snoozedUntil: Instant) : MessageBanner
 
     object EmbeddedImages : MessageBanner
     object RemoteContent : MessageBanner
