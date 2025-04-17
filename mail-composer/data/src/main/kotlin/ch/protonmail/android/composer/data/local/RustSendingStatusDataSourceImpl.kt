@@ -33,11 +33,9 @@ import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.flow.callbackFlow
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.DraftSendResultCallback
@@ -52,28 +50,39 @@ class RustSendingStatusDataSourceImpl @Inject constructor(
     private val rustMarkDraftSendResultAsSeen: RustMarkDraftSendResultAsSeen
 ) : RustSendingStatusDataSource {
 
-    private var draftSendResultWatcher: DraftSendResultWatcher? = null
-    private val mutex = Mutex()
-    private val sendResultsFlow = MutableSharedFlow<MessageSendingStatus>(1)
+    override suspend fun observeMessageSendingStatus(userId: UserId): Flow<MessageSendingStatus> = callbackFlow {
+        val session = userSessionRepository.getUserSession(userId) ?: run {
+            Timber.e("rust-draft: Trying to observe sending status; Failing.")
+            close()
+            return@callbackFlow
+        }
 
-    private val draftSendResultCallback = object : DraftSendResultCallback {
-        override fun onNewSendResult(sendResults: List<LocalDraftSendResult>) {
-            for (result in sendResults) {
-                sendResultsFlow.tryEmit(result.toMessageSendingStatus())
+        var watchHandle: DraftSendResultWatcher? = null
+        val draftSendResultCallback = object : DraftSendResultCallback {
+            override fun onNewSendResult(details: List<LocalDraftSendResult>) {
+                for (result in details) {
+                    trySend(result.toMessageSendingStatus())
+                }
             }
         }
-    }
 
-    override suspend fun observeMessageSendingStatus(userId: UserId): Flow<MessageSendingStatus> {
+        createRustDraftSendWatcher(session, draftSendResultCallback)
+            .onLeft {
+                Timber.e("rust-draft: Failed to create draft send result watcher; Failing.")
+                close()
+                return@callbackFlow
+            }
+            .onRight {
+                watchHandle = it
+            }
 
-        initialiseDraftSendResultWatcher(userId)
+        Timber.d("rust-draft: Draft send result watcher created.")
 
-        return draftSendResultWatcher?.let {
-            sendResultsFlow
-        } ?: run {
-            Timber.e("rust-draft: Failed to observe message sending status.")
-            flowOf()
+        awaitClose {
+            watchHandle?.destroy()
+            Timber.d("rust-draft: system labels watcher destroyed")
         }
+
     }
 
     override suspend fun queryUnseenMessageSendingStatuses(
@@ -114,25 +123,6 @@ class RustSendingStatusDataSourceImpl @Inject constructor(
             },
             ifRight = { Unit.right() }
         )
-    }
-
-    private suspend fun initialiseDraftSendResultWatcher(userId: UserId) {
-        mutex.withLock {
-            if (draftSendResultWatcher != null) return@withLock
-
-            val session = userSessionRepository.getUserSession(userId) ?: run {
-                Timber.e("rust-draft: Trying to observe sending status; Failing.")
-                return@withLock
-            }
-
-            draftSendResultWatcher = createRustDraftSendWatcher(session, draftSendResultCallback).getOrNull()
-                ?: run {
-                    Timber.e("rust-draft: Failed to create draft send result watcher; Failing.")
-                    return@withLock
-                }
-
-            Timber.d("rust-draft: Draft send result watcher created.")
-        }
     }
 
     private suspend fun <T> withValidUserSession(
