@@ -44,7 +44,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
-import ch.protonmail.android.mailcomposer.domain.usecase.GetExternalRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageExpirationTime
@@ -97,7 +96,6 @@ import me.proton.core.network.domain.NetworkManager
 import me.proton.core.util.kotlin.deserialize
 import me.proton.core.util.kotlin.takeIfNotEmpty
 import timber.log.Timber
-import kotlin.time.Duration
 
 @Suppress("LargeClass", "LongParameterList", "TooManyFunctions", "UnusedPrivateMember")
 @HiltViewModel(assistedFactory = ComposerViewModel.Factory::class)
@@ -121,7 +119,6 @@ class ComposerViewModel @AssistedInject constructor(
     private val observeMessagePassword: ObserveMessagePassword,
     private val saveMessageExpirationTime: SaveMessageExpirationTime,
     private val observeMessageExpirationTime: ObserveMessageExpirationTime,
-    private val getExternalRecipients: GetExternalRecipients,
     private val openExistingDraft: OpenExistingDraft,
     private val createEmptyDraft: CreateEmptyDraft,
     private val createDraftForAction: CreateDraftForAction,
@@ -389,20 +386,9 @@ class ComposerViewModel @AssistedInject constructor(
 
     private suspend fun handleOnSendMessage(action: ComposerAction.OnSendMessage): ComposerOperation {
         val draftFields = buildDraftFields()
-        val isMessageExpirationSet = state.value.messageExpiresIn != Duration.ZERO
-        val isMessagePasswordSet = state.value.isMessagePasswordSet
-        val externalRecipients = draftFields.let {
-            getExternalRecipients(primaryUserId(), it.recipientsTo, it.recipientsCc, it.recipientsBcc)
-        }
-        val isClearTextExpiringMessageToExternal = isMessageExpirationSet &&
-            isMessagePasswordSet.not() &&
-            externalRecipients.isNotEmpty()
 
         return when {
             draftFields.haveBlankSubject() -> ComposerEvent.ConfirmEmptySubject
-            isClearTextExpiringMessageToExternal -> {
-                ComposerEvent.ConfirmSendExpiringMessageToExternalRecipients(externalRecipients)
-            }
 
             else -> onSendMessage(action)
         }
