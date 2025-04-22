@@ -228,6 +228,11 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
 
                 var formHeightPx by remember { mutableStateOf(0f) }
 
+
+                if (state.showSendingLoading) {
+                    LoadingIndicator(preventBackNavigation = true)
+                }
+
                 Column(
                     modifier = Modifier
                         .padding(paddingValues)

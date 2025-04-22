@@ -150,9 +150,11 @@ class ComposerReducer @Inject constructor(
         )
         is ComposerEvent.ConfirmSendExpiringMessageToExternalRecipients -> currentState.copy(
             confirmSendExpiringMessage = Effect.of(this.externalRecipients)
+
         )
         is ComposerEvent.RecipientsUpdated -> updateRecipients(currentState, hasValidRecipients)
         is ComposerEvent.ErrorDiscardingDraft -> updateForErrorDiscardingDraft(currentState)
+        ComposerEvent.OnMessageSending -> currentState.copy(showSendingLoading = true)
     }
 
     private fun updateComposerFieldsState(
@@ -228,7 +230,7 @@ class ComposerReducer @Inject constructor(
     }
 
     private fun updateStateForSendMessage(currentState: ComposerDraftState) =
-        currentState.copy(closeComposerWithMessageSending = Effect.of(Unit))
+        currentState.copy(closeComposerWithMessageSending = Effect.of(Unit), showSendingLoading = false)
 
     private fun updateForConfirmSendWithoutSubject(currentState: ComposerDraftState) = currentState.copy(
         closeComposerWithMessageSending = Effect.of(Unit),
@@ -241,7 +243,7 @@ class ComposerReducer @Inject constructor(
     )
 
     private fun updateStateForSendMessageOffline(currentState: ComposerDraftState) =
-        currentState.copy(closeComposerWithMessageSendingOffline = Effect.of(Unit))
+        currentState.copy(closeComposerWithMessageSendingOffline = Effect.of(Unit), showSendingLoading = false)
 
     private fun updateStateToPaidFeatureMessage(currentState: ComposerDraftState) =
         currentState.copy(premiumFeatureMessage = Effect.of(TextUiModel(R.string.composer_change_sender_paid_feature)))

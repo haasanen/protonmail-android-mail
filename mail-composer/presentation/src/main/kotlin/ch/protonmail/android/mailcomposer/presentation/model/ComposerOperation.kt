@@ -87,4 +87,5 @@ sealed interface ComposerEvent : ComposerOperation {
     data object ErrorSettingExpirationTime : ComposerEvent
     data object ConfirmEmptySubject : ComposerEvent
     data object ErrorDiscardingDraft : ComposerEvent
+    data object OnMessageSending : ComposerEvent
 }

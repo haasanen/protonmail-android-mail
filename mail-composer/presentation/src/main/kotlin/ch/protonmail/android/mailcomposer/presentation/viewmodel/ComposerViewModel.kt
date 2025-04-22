@@ -382,9 +382,13 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun handleOnSendMessage(action: ComposerAction.OnSendMessage): ComposerOperation = when {
-        currentSubject().value.isBlank() -> ComposerEvent.ConfirmEmptySubject
-        else -> onSendMessage(action)
+    private suspend fun handleOnSendMessage(action: ComposerAction.OnSendMessage): ComposerOperation {
+        emitNewStateFor(ComposerEvent.OnMessageSending)
+
+        if (currentSubject().value.isBlank()) {
+            return ComposerEvent.ConfirmEmptySubject
+        }
+        return onSendMessage(action)
     }
 
     private suspend fun onSendMessage(action: ComposerOperation): ComposerOperation {
