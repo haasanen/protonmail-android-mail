@@ -56,7 +56,7 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
     private val avatarImageUiModelMapper: AvatarImageUiModelMapper
 ) {
 
-    suspend fun toUiModel(
+    fun toUiModel(
         message: Message,
         primaryUserAddress: String?,
         avatarImageState: AvatarImageState
@@ -64,7 +64,10 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
         return MessageDetailHeaderUiModel(
             avatar = detailAvatarUiModelMapper(message.avatarInformation, message.sender),
             avatarImage = avatarImageUiModelMapper.toUiModel(avatarImageState),
-            sender = participantUiModelMapper.senderToUiModel(message.sender),
+            sender = participantUiModelMapper.senderToUiModel(
+                message.sender,
+                isPhishing = message.isPhishingAuto() && message.isHamManual().not()
+            ),
             shouldShowTrackerProtectionIcon = true,
             shouldShowAttachmentIcon = message.hasNonCalendarAttachments(),
             shouldShowStar = message.isStarred,

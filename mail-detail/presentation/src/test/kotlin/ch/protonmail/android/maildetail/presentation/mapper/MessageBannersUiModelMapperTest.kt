@@ -61,6 +61,17 @@ class MessageBannersUiModelMapperTest {
     }
 
     @Test
+    fun `should map to ui model with no phishing banner when message is phishing but was marked as legitimate`() {
+        // When
+        val result = messageBannersUiModelMapper.createMessageBannersUiModel(
+            MessageTestData.autoPhishingMarkedLegitimateMessage
+        )
+
+        // Then
+        assertFalse(result.shouldShowPhishingBanner)
+    }
+
+    @Test
     fun `should map to ui model with expiration banner if expiration is in the future`() {
         // Given
         every { resourcesMock.getQuantityString(any(), any(), any()) } returns "formatted duration"

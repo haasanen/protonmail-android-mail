@@ -39,6 +39,7 @@ import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelSample
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
+import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
 import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
@@ -55,6 +56,8 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 class MessageDetailHeaderUiModelMapperTest {
@@ -272,5 +275,39 @@ class MessageDetailHeaderUiModelMapperTest {
 
         // Then
         assertEquals(expected, result.labels)
+    }
+
+    @Test
+    fun `sender address should be shown in red when message is phishing and was not marked as legitimate`() {
+        // Given
+        val input = message.copy(flags = Message.FLAG_PHISHING_AUTO)
+        every {
+            participantUiModelMapper.senderToUiModel(MessageTestData.sender, isPhishing = true)
+        } returns senderUiModel.copy(shouldShowAddressInRed = true)
+
+        // When
+        val result = messageDetailHeaderUiModelMapper.toUiModel(
+            input, primaryUserAddress, AvatarImageState.NoImageAvailable
+        )
+
+        // Then
+        assertTrue(result.sender.shouldShowAddressInRed)
+    }
+
+    @Test
+    fun `sender address should not be shown in red when message is phishing but was marked as legitimate`() {
+        // Given
+        val input = message.copy(flags = Message.FLAG_PHISHING_AUTO.and(Message.FLAG_HAM_MANUAL))
+        every {
+            participantUiModelMapper.senderToUiModel(MessageTestData.sender, isPhishing = false)
+        } returns senderUiModel.copy(shouldShowAddressInRed = false)
+
+        // When
+        val result = messageDetailHeaderUiModelMapper.toUiModel(
+            input, primaryUserAddress, AvatarImageState.NoImageAvailable
+        )
+
+        // Then
+        assertFalse(result.sender.shouldShowAddressInRed)
     }
 }

@@ -179,6 +179,11 @@ object MessageTestData {
 
     val autoPhishingMessage = buildMessage(id = "message", flags = Message.FLAG_PHISHING_AUTO)
 
+    val autoPhishingMarkedLegitimateMessage = buildMessage(
+        id = "message",
+        flags = Message.FLAG_PHISHING_AUTO.and(Message.FLAG_HAM_MANUAL)
+    )
+
     val expiringMessage = buildMessage(
         id = "message",
         expirationTime = Instant.now().plus(1, ChronoUnit.HOURS).epochSecond

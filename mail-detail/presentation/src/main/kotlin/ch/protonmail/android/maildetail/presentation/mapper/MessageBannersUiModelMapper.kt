@@ -34,7 +34,7 @@ import kotlin.time.toKotlinDuration
 class MessageBannersUiModelMapper @Inject constructor(@ApplicationContext val context: Context) {
 
     fun createMessageBannersUiModel(message: Message) = MessageBannersUiModel(
-        shouldShowPhishingBanner = message.isPhishing(),
+        shouldShowPhishingBanner = message.isPhishingAuto() && message.isHamManual().not(),
         expirationBannerText = formatExpirationTime(message)
     )
 

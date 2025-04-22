@@ -25,5 +25,6 @@ data class ParticipantUiModel(
     val participantAddress: String,
     @DrawableRes val participantPadlock: Int,
     val shouldShowOfficialBadge: Boolean,
-    val isPrimaryUser: Boolean = false
+    val isPrimaryUser: Boolean = false,
+    val shouldShowAddressInRed: Boolean = false
 )

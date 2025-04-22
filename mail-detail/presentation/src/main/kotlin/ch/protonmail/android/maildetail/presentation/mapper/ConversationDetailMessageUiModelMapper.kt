@@ -96,7 +96,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             ),
             messageDetailFooterUiModel = messageDetailFooterUiModelMapper.toUiModel(message),
             messageBannersUiModel = messageBannersUiModelMapper.createMessageBannersUiModel(message),
-            requestPhishingLinkConfirmation = message.isPhishing(),
+            requestPhishingLinkConfirmation = message.isPhishingAuto(),
             messageBodyUiModel = uiModel
         )
     }

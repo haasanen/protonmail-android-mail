@@ -71,10 +71,13 @@ data class Message(
 
     fun expirationTimeOrNull(): Duration? = expirationTime.takeIf { it > 0 }?.seconds
 
-    fun isPhishing() = flags.and(FLAG_PHISHING_AUTO) == FLAG_PHISHING_AUTO
+    fun isPhishingAuto() = flags.and(FLAG_PHISHING_AUTO) == FLAG_PHISHING_AUTO
+
+    fun isHamManual() = flags.and(FLAG_HAM_MANUAL) == FLAG_HAM_MANUAL
 
     companion object {
 
         const val FLAG_PHISHING_AUTO = 1_073_741_824L
+        const val FLAG_HAM_MANUAL = 134_217_728L
     }
 }

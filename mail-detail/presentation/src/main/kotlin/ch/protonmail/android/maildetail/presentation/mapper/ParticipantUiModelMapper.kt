@@ -30,7 +30,11 @@ class ParticipantUiModelMapper @Inject constructor(
     private val resolveParticipantName: ResolveParticipantName
 ) {
 
-    fun senderToUiModel(participant: Sender) = toUiModel(participant, ResolveParticipantName.FallbackType.USERNAME)
+    fun senderToUiModel(participant: Sender, isPhishing: Boolean = false) = toUiModel(
+        participant,
+        ResolveParticipantName.FallbackType.USERNAME,
+        isPhishing = isPhishing
+    )
 
     fun recipientToUiModel(participant: Recipient, primaryUserAddress: String?) =
         toUiModel(participant, ResolveParticipantName.FallbackType.NONE, primaryUserAddress)
@@ -38,7 +42,8 @@ class ParticipantUiModelMapper @Inject constructor(
     private fun toUiModel(
         participant: Participant,
         fallbackType: ResolveParticipantName.FallbackType,
-        primaryUserAddress: String? = null
+        primaryUserAddress: String? = null,
+        isPhishing: Boolean = false
     ): ParticipantUiModel {
         val resolveParticipantNameResult = resolveParticipantName(
             participant,
@@ -50,6 +55,7 @@ class ParticipantUiModelMapper @Inject constructor(
             participantAddress = participant.address,
             participantPadlock = R.drawable.ic_proton_lock,
             shouldShowOfficialBadge = resolveParticipantNameResult.isProton,
+            shouldShowAddressInRed = isPhishing,
             isPrimaryUser = primaryUserAddress == participant.address
         )
     }

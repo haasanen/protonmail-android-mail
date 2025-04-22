@@ -245,7 +245,7 @@ private fun ParticipantAddress(
             text = participantUiModel.participantAddress,
             modifier = modifier.testTag(MessageDetailHeaderTestTags.ParticipantValue),
             maxLines = maxLines,
-            color = textColor,
+            color = if (participantUiModel.shouldShowAddressInRed) ProtonTheme.colors.notificationError else textColor,
             style = ProtonTheme.typography.bodySmall,
             overflow = overflow
         )
