@@ -25,10 +25,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.accountrecovery.presentation.LogTag
 import me.proton.android.core.accountrecovery.presentation.R
@@ -39,9 +44,12 @@ import me.proton.android.core.accountrecovery.presentation.ui.CancellationState
 import me.proton.android.core.accountrecovery.presentation.usecase.CancelRecovery
 import me.proton.android.core.accountrecovery.presentation.usecase.ObserveUserRecovery
 import me.proton.core.compose.viewmodel.BaseViewModel
+import me.proton.core.compose.viewmodel.stopTimeoutMillis
 import me.proton.core.presentation.utils.StringBox
 import me.proton.core.util.kotlin.CoreLogger
 import me.proton.core.util.kotlin.coroutine.launchWithResultContext
+import uniffi.proton_mail_uniffi.AccountRecoveryScreenId
+import uniffi.proton_mail_uniffi.recordAccountRecoveryScreenView
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,6 +64,13 @@ class AccountRecoveryDialogViewModel @Inject constructor(
     private val cancellationFlow = MutableStateFlow(CancellationState())
     private val shouldShowCancellationForm = MutableStateFlow(false)
     private val shouldShowRecoveryReset = MutableStateFlow(false)
+
+    val screenId: StateFlow<AccountRecoveryScreenId?> =
+        state.map(AccountRecoveryViewState::toScreenId).stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
+            initialValue = null
+        )
 
     override suspend fun FlowCollector<AccountRecoveryViewState>.onError(throwable: Throwable) {
         CoreLogger.e(LogTag.ERROR_OBSERVING_STATE, throwable)
@@ -149,9 +164,6 @@ class AccountRecoveryDialogViewModel @Inject constructor(
 
     @VisibleForTesting
     internal fun startAccountRecoveryCancel(password: String) = viewModelScope.launchWithResultContext {
-        // add observability
-//        onResultEnqueueObservability("account_recovery.cancellation") { AccountRecoveryCancellationTotal(this) }
-
         cancellationFlow.update { CancellationState(processing = true) }
         cancellationFlow.value = when {
             password.isEmpty() -> CancellationState(passwordError = StringBox(R.string.presentation_field_required))
@@ -163,4 +175,20 @@ class AccountRecoveryDialogViewModel @Inject constructor(
             )
         }
     }
+
+    fun onScreenView(screenId: AccountRecoveryScreenId) = viewModelScope.launch {
+        recordAccountRecoveryScreenView(screenId)
+    }
+}
+
+internal fun AccountRecoveryViewState.toScreenId(): AccountRecoveryScreenId? = when (this) {
+    is AccountRecoveryViewState.Closed -> null
+    is AccountRecoveryViewState.Error -> null
+    is AccountRecoveryViewState.Loading -> null
+    is AccountRecoveryViewState.StartPasswordManager -> null
+    is AccountRecoveryViewState.Opened.CancellationHappened -> AccountRecoveryScreenId.RECOVERY_CANCELLED_INFO
+    is AccountRecoveryViewState.Opened.GracePeriodStarted -> AccountRecoveryScreenId.GRACE_PERIOD_INFO
+    is AccountRecoveryViewState.Opened.CancelPasswordReset -> AccountRecoveryScreenId.CANCEL_RESET_PASSWORD
+    is AccountRecoveryViewState.Opened.PasswordChangePeriodStarted -> AccountRecoveryScreenId.PASSWORD_CHANGE_INFO
+    is AccountRecoveryViewState.Opened.RecoveryEnded -> AccountRecoveryScreenId.RECOVERY_EXPIRED_INFO
 }

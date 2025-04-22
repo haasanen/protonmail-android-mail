@@ -37,9 +37,11 @@ import me.proton.core.util.kotlin.serialize
 import uniffi.proton_mail_uniffi.LoginError
 import uniffi.proton_mail_uniffi.LoginFlowToUserContextResult
 import uniffi.proton_mail_uniffi.LoginFlowUserIdResult
+import uniffi.proton_mail_uniffi.LoginScreenId
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
 import uniffi.proton_mail_uniffi.VoidLoginResult
+import uniffi.proton_mail_uniffi.recordLoginScreenView
 import javax.inject.Inject
 
 @HiltViewModel
@@ -133,5 +135,9 @@ class LoginViewModel @Inject internal constructor(
 
     private suspend fun onClose() {
         getLoginFlow().destroy()
+    }
+
+    fun onScreenView() = viewModelScope.launch {
+        recordLoginScreenView(LoginScreenId.CHOOSE_INTERNAL_ADDRESS)
     }
 }

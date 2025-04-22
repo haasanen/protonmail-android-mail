@@ -49,6 +49,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -84,6 +86,7 @@ import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.ProtonTypography
 import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.compose.theme.defaultStrongNorm
+import me.proton.core.presentation.utils.launchOnScreenView
 import me.proton.core.presentation.R as CoreR
 
 internal const val PASSWORD_FIELD_TAG = "PASSWORD_FIELD_TAG" // gitleaks:allow
@@ -99,7 +102,15 @@ public fun LoginScreen(
     onSuccess: (String) -> Unit = {},
     viewModel: LoginViewModel = hiltViewModel()
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val savedStateRegistryOwner = LocalSavedStateRegistryOwner.current
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        lifecycleOwner.launchOnScreenView(savedStateRegistryOwner.savedStateRegistry) {
+            viewModel.onScreenView()
+        }
+    }
     LoginScreen(
         modifier = modifier,
         initialUsername = initialUsername,

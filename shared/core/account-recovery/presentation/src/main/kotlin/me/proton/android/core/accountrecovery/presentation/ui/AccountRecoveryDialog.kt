@@ -75,7 +75,9 @@ fun AccountRecoveryDialog(
 
     LaunchedEffect(Unit) {
         lifecycleOwner.launchOnScreenView(savedStateRegistryOwner.savedStateRegistry) {
-            // add observability
+            viewModel.screenId.collect { screenId ->
+                screenId?.let { viewModel.onScreenView(it) }
+            }
         }
     }
 
