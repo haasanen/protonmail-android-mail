@@ -81,7 +81,6 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -91,7 +90,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import me.proton.core.network.domain.NetworkManager
 import me.proton.core.util.kotlin.deserialize
 import me.proton.core.util.kotlin.takeIfNotEmpty
@@ -394,11 +392,7 @@ class ComposerViewModel @AssistedInject constructor(
         return when {
             draftFields.areBlank() -> action
             else -> {
-                viewModelScope.launch {
-                    withContext(NonCancellable) {
-                        sendMessage(primaryUserId())
-                    }
-                }
+                sendMessage(primaryUserId())
 
                 if (networkManager.isConnectedToNetwork()) {
                     ComposerAction.OnSendMessage
