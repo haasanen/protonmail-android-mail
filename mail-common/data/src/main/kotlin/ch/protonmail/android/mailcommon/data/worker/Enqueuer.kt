@@ -22,10 +22,12 @@ import java.time.Duration
 import java.util.concurrent.TimeUnit
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.ListenableWorker
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
+import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.workDataOf
@@ -33,6 +35,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 
 class Enqueuer @Inject constructor(private val workManager: WorkManager) {
 
@@ -182,11 +186,36 @@ class Enqueuer @Inject constructor(private val workManager: WorkManager) {
         initialDelay: Duration = Duration.ZERO
     ) {
         workManager.enqueueUniqueWork(
-            workerId, existingWorkPolicy,
+            workerId,
+            existingWorkPolicy,
             createRequest(
                 userId, worker, params, constraints,
                 backoffCriteria, initialDelay
             )
+        )
+    }
+
+    fun enqueueUniquePeriodicWork(
+        workerId: String,
+        worker: Class<out ListenableWorker>,
+        constraints: Constraints = buildDefaultPeriodicConstraints(),
+        tag: String,
+        existingPeriodicWorkPolicy: ExistingPeriodicWorkPolicy,
+        backoffCriteria: BackoffCriteria = BackoffCriteria.DefaultLinear,
+        initialDelay: Duration = Duration.ZERO
+    ) {
+        val request = createPeriodicRequest(
+            worker = worker,
+            constraints = constraints,
+            tag = tag,
+            backoffCriteria = backoffCriteria,
+            initialDelay = initialDelay
+        )
+
+        workManager.enqueueUniquePeriodicWork(
+            workerId,
+            existingPeriodicWorkPolicy,
+            request
         )
     }
 
@@ -206,7 +235,8 @@ class Enqueuer @Inject constructor(private val workManager: WorkManager) {
             addTag(userId.id)
             setBackoffCriteria(
                 backoffCriteria.backoffPolicy,
-                backoffCriteria.delayDuration, backoffCriteria.timeUnit
+                backoffCriteria.delayDuration,
+                backoffCriteria.timeUnit
             )
             keepResultsForAtLeast(0, TimeUnit.MILLISECONDS)
             setInitialDelay(initialDelay)
@@ -215,12 +245,40 @@ class Enqueuer @Inject constructor(private val workManager: WorkManager) {
         }
     }
 
+    private fun createPeriodicRequest(
+        worker: Class<out ListenableWorker>,
+        constraints: Constraints?,
+        tag: String,
+        backoffCriteria: BackoffCriteria = BackoffCriteria.DefaultLinear,
+        repeatedInterval: Long = 30,
+        repeatedIntervalUnit: TimeUnit = TimeUnit.MINUTES,
+        initialDelay: Duration = 30.seconds.toJavaDuration()
+    ): PeriodicWorkRequest {
+        return PeriodicWorkRequest.Builder(worker, repeatedInterval, repeatedIntervalUnit).apply {
+            addTag(tag)
+            setInitialDelay(initialDelay)
+            setBackoffCriteria(
+                backoffCriteria.backoffPolicy,
+                backoffCriteria.delayDuration,
+                backoffCriteria.timeUnit
+            )
+            if (constraints != null) setConstraints(constraints)
+        }.build()
+    }
+
+
     fun buildDefaultConstraints(): Constraints {
         return Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
     }
 
+    private fun buildDefaultPeriodicConstraints(): Constraints {
+        return Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresBatteryNotLow(true)
+            .build()
+    }
 
     data class BackoffCriteria(
         val backoffPolicy: BackoffPolicy,
