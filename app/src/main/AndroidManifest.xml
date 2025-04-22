@@ -179,6 +179,11 @@
                 android:value="androidx.startup"
                 tools:node="remove" />
 
+            <meta-data
+                android:name="ch.protonmail.android.initializer.background.BackgroundExecutionInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+
             <!--
              Left Initializers:
              - androidx.profileinstaller.ProfileInstallerInitializer

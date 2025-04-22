@@ -22,6 +22,7 @@ import android.content.Context
 import androidx.startup.AppInitializer
 import androidx.startup.Initializer
 import ch.protonmail.android.BuildConfig
+import ch.protonmail.android.initializer.background.BackgroundExecutionInitializer
 import ch.protonmail.android.initializer.strictmode.StrictModeInitializer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -59,7 +60,8 @@ class MainInitializer : Initializer<Unit> {
         NotificationHandlersInitializer::class.java,
         AutoLockHandlerInitializer::class.java,
         RustMailCommonInitializer::class.java,
-        ChallengeInitializer::class.java
+        ChallengeInitializer::class.java,
+        BackgroundExecutionInitializer::class.java
     )
 
     companion object {
