@@ -384,14 +384,9 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun handleOnSendMessage(action: ComposerAction.OnSendMessage): ComposerOperation {
-        val draftFields = buildDraftFields()
-
-        return when {
-            draftFields.haveBlankSubject() -> ComposerEvent.ConfirmEmptySubject
-
-            else -> onSendMessage(action)
-        }
+    private suspend fun handleOnSendMessage(action: ComposerAction.OnSendMessage): ComposerOperation = when {
+        currentSubject().value.isBlank() -> ComposerEvent.ConfirmEmptySubject
+        else -> onSendMessage(action)
     }
 
     private suspend fun onSendMessage(action: ComposerOperation): ComposerOperation {
