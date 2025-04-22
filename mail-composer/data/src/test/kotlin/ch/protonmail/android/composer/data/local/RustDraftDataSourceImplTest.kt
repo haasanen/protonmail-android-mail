@@ -11,8 +11,8 @@ import ch.protonmail.android.composer.data.usecase.RustDraftUndoSend
 import ch.protonmail.android.composer.data.worker.SendingStatusWorker
 import ch.protonmail.android.composer.data.wrapper.ComposerRecipientListWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
-import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
@@ -619,6 +619,36 @@ class RustDraftDataSourceImplTest {
         verifyOrder {
             bccRecipientsWrapperMock.addSingleRecipient(john.toSingleRecipientEntry())
             bccRecipientsWrapperMock.removeSingleRecipient(bob.toSingleRecipientEntry())
+        }
+    }
+
+    @Test
+    fun `update recipients compares recipients by address`() = runTest {
+        // Given
+        // Due to some contact-suggestions related features not done yet, it can happen that the contact
+        // we pass from UI has a different name than the one that's saved in rust (ie. in reply case where
+        // rust save the contact before UI passes it); To keep this working, we compare contacts by address.
+        val johnNameless = RecipientSample.John.copy(name = "") // won't be (re) added
+        val updatedRecipients = listOf(johnNameless)
+        val currentRecipients = listOf(
+            LocalComposerRecipientTestData.John, LocalComposerRecipientTestData.Bob
+        )
+
+        val bccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            bccRecipientsWrapper = bccRecipientsWrapperMock
+        )
+        coEvery { bccRecipientsWrapperMock.recipients() } returns currentRecipients
+        coEvery { bccRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
+        coEvery { bccRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+
+        // When
+        dataSource.updateBccRecipients(updatedRecipients)
+
+        // Then
+        coVerify(exactly = 0) {
+            bccRecipientsWrapperMock.addSingleRecipient(johnNameless.toSingleRecipientEntry())
         }
     }
 

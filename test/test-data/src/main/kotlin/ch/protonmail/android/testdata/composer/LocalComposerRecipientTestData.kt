@@ -44,6 +44,11 @@ object LocalComposerRecipientTestData {
         name = "Billing Service"
     )
 
+    val John = build(
+        address = "john@pm.me",
+        name = "John"
+    )
+
     private fun build(address: String, name: String) = ComposerRecipient.Single(
         ComposerRecipientSingle(name, address, ComposerRecipientValidState.Validating)
     )

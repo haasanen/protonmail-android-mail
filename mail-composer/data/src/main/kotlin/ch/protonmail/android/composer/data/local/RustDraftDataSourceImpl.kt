@@ -172,11 +172,10 @@ class RustDraftDataSourceImpl @Inject constructor(
             return@withValidRustDraftWrapper updateRecipients(recipientsBccWrapper, recipients)
         }
 
-    override suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>> =
-        // Will emit based on a mutableFlow which is updated by the callback above;
-        // Requests again the data from rust library, maps it to the new entity and exposes to the view
-        // RecipientEntity will probably be used also in LocalDraft to follow (to convey groups + Validation info to UI)
-        flowOf(emptyList())
+    // Will emit based on a mutableFlow which is updated by the callback above;
+    // Requests again the data from rust library, maps it to the new entity and exposes to the view
+    // RecipientEntity will probably be used also in LocalDraft to follow (to convey groups + Validation info to UI)
+    override suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>> = flowOf(emptyList())
 
 
     override suspend fun send(): Either<DataError, Unit> = withValidRustDraftWrapper {
@@ -214,8 +213,12 @@ class RustDraftDataSourceImpl @Inject constructor(
         updatedRecipients: List<Recipient>
     ): Either<DataError, Unit> = either {
         val currentRecipients = recipientsWrapper.recipients().toSingleRecipients()
-        val recipientsToAdd = updatedRecipients.filterNot { it in currentRecipients }
-        val recipientsToRemove = currentRecipients.filterNot { it in updatedRecipients }
+        val recipientsToAdd = updatedRecipients.filterNot { updatedRecipient ->
+            updatedRecipient.address in currentRecipients.map { it.address }
+        }
+        val recipientsToRemove = currentRecipients.filterNot { currentRecipient ->
+            currentRecipient.address in updatedRecipients.map { it.address }
+        }
 
         recipientsToAdd.forEach {
             recipientsWrapper.addSingleRecipient(it.toSingleRecipientEntry())
