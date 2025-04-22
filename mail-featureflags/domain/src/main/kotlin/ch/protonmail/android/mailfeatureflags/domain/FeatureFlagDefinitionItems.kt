@@ -26,7 +26,7 @@ data object ComposerEnabledDefinition : FeatureFlagDefinition(
     name = "Navigation",
     category = FeatureFlagCategory.Composer,
     description = "Grants access to Composer.",
-    defaultValue = false
+    defaultValue = true
 )
 
 data object UseV6CssInjectionDefinition : FeatureFlagDefinition(
