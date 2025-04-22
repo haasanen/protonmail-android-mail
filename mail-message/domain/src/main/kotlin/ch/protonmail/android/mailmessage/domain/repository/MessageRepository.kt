@@ -176,4 +176,6 @@ interface MessageRepository {
         partiallySelectedLabels: List<LabelId>,
         shouldArchive: Boolean
     ): Either<DataError, Unit>
+
+    suspend fun markMessageAsLegitimate(userId: UserId, messageId: MessageId): Either<DataError, Unit>
 }

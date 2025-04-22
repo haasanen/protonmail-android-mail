@@ -39,6 +39,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToAction
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustLabelMessages
+import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessageAsLegitimate
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailmessage.data.usecase.RustMoveMessages
@@ -75,7 +76,8 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustLabelMessages: RustLabelMessages,
     private val getRustAvailableMessageActions: GetRustAvailableMessageActions,
     private val getRustMessageMoveToActions: GetRustMessageMoveToActions,
-    private val getRustMessageLabelAsActions: GetRustMessageLabelAsActions
+    private val getRustMessageLabelAsActions: GetRustMessageLabelAsActions,
+    private val rustMarkMessageAsLegitimate: RustMarkMessageAsLegitimate
 ) : RustMessageDataSource {
 
     override suspend fun getMessage(
@@ -318,5 +320,15 @@ class RustMessageDataSourceImpl @Inject constructor(
             .flatMap { decryptedMessage ->
                 decryptedMessage.getEmbeddedAttachment(contentId)
             }
+    }
+
+    override suspend fun markMessageAsLegitimate(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit> {
+        val mailbox = rustMailboxFactory.create(userId).getOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-message: trying to mark message as legitimate with null Mailbox! failing")
+            return DataError.Local.NoDataCached.left()
+        }
+
+        return rustMarkMessageAsLegitimate(mailbox, messageId)
     }
 }

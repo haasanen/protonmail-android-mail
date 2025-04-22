@@ -202,4 +202,7 @@ class RustMessageRepositoryImpl @Inject constructor(
     ): Either<DataError, Unit> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun markMessageAsLegitimate(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
+        rustMessageDataSource.markMessageAsLegitimate(userId, messageId.toLocalMessageId())
 }

@@ -33,6 +33,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToAction
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustLabelMessages
+import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessageAsLegitimate
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailmessage.data.usecase.RustMoveMessages
@@ -91,6 +92,7 @@ class RustMessageDataSourceImplTest {
     private val getRustAvailableMessageActions = mockk<GetRustAvailableMessageActions>()
     private val getRustMessageMoveToActions = mockk<GetRustMessageMoveToActions>()
     private val getRustMessageLabelAsActions = mockk<GetRustMessageLabelAsActions>()
+    private val rustMarkMessageAsLegitimate = mockk<RustMarkMessageAsLegitimate>()
 
     private val dataSource = RustMessageDataSourceImpl(
         userSessionRepository,
@@ -109,7 +111,8 @@ class RustMessageDataSourceImplTest {
         rustLabelMessages,
         getRustAvailableMessageActions,
         getRustMessageMoveToActions,
-        getRustMessageLabelAsActions
+        getRustMessageLabelAsActions,
+        rustMarkMessageAsLegitimate
     )
 
     @Test
@@ -712,6 +715,58 @@ class RustMessageDataSourceImplTest {
             partiallySelectedLabelIds,
             shouldArchive
         )
+
+        // Then
+        assertEquals(expectedError.left(), result)
+    }
+
+    @Test
+    fun `should mark message as legitimate when mailbox is available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageId = LocalMessageId(1uL)
+        val mailbox = mockk<MailboxWrapper>()
+
+        coEvery { rustMarkMessageAsLegitimate(mailbox, messageId) } returns Unit.right()
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+
+        // When
+        val result = dataSource.markMessageAsLegitimate(userId, messageId)
+
+        // Then
+        assertTrue(result.isRight())
+        coVerify { rustMarkMessageAsLegitimate(mailbox, messageId) }
+    }
+
+    @Test
+    fun `should not mark message as legitimate when mailbox is not available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageId = LocalMessageId(1uL)
+
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
+
+        // When
+        val result = dataSource.markMessageAsLegitimate(userId, messageId)
+
+        // Then
+        assertTrue(result.isLeft())
+        verify { rustMarkMessageAsLegitimate wasNot Called }
+    }
+
+    @Test
+    fun `should handle error when marking message as legitimate`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailbox = mockk<MailboxWrapper>()
+        val messageId = LocalMessageId(1uL)
+        val expectedError = DataError.Local.NoDataCached
+
+        coEvery { rustMarkMessageAsLegitimate(mailbox, messageId) } returns expectedError.left()
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+
+        // When
+        val result = dataSource.markMessageAsLegitimate(userId, messageId)
 
         // Then
         assertEquals(expectedError.left(), result)
