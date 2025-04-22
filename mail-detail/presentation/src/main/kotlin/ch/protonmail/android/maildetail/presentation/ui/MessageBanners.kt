@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonBanner
+import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.R
@@ -16,17 +18,20 @@ import ch.protonmail.android.design.compose.theme.bodyMediumInverted
 import ch.protonmail.android.mailcommon.presentation.model.string
 
 @Composable
-fun MessageBanners(messageBannersUiModel: MessageBannersUiModel) {
+fun MessageBanners(messageBannersUiModel: MessageBannersUiModel, onMarkPhishingMessageAsLegitimate: () -> Unit) {
     Column {
         if (messageBannersUiModel.shouldShowPhishingBanner) {
-            ProtonBanner(
+            ProtonBannerWithButton(
                 icon = R.drawable.ic_proton_hook,
                 iconTint = ProtonTheme.colors.iconInverted,
                 iconSize = ProtonDimens.IconSize.Medium,
                 text = TextUiModel.TextRes(R.string.message_phishing_banner_text).string(),
+                buttonText = TextUiModel.TextRes(R.string.message_phishing_banner_button_text).string(),
                 textStyle = ProtonTheme.typography.bodyMediumInverted,
                 backgroundColor = ProtonTheme.colors.notificationError,
-                borderColorIsBackgroundColor = true
+                buttonBackgroundColor = Color(PHISHING_BANNER_BUTTON_BACKGROUND),
+                borderColorIsBackgroundColor = true,
+                onButtonClicked = onMarkPhishingMessageAsLegitimate
             )
         }
         if (messageBannersUiModel.expirationBannerText != null) {
@@ -44,6 +49,8 @@ fun MessageBanners(messageBannersUiModel: MessageBannersUiModel) {
     }
 }
 
+private const val PHISHING_BANNER_BUTTON_BACKGROUND = 0x33FFFFFF
+
 @Preview(
     name = "Main settings screen light mode",
     showBackground = true,
@@ -56,7 +63,8 @@ fun PreviewMessageBanners() {
             MessageBannersUiModel(
                 shouldShowPhishingBanner = true,
                 expirationBannerText = TextUiModel("This message will expire in 1 day, 2 hours, 3 minutes")
-            )
+            ),
+            onMarkPhishingMessageAsLegitimate = {}
         )
     }
 }

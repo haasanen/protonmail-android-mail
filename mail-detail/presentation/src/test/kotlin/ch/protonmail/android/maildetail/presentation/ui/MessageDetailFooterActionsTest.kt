@@ -60,7 +60,8 @@ internal class MessageDetailFooterActionsTest {
             onParticipantClicked = { _, _ -> },
             onOpenComposer = {},
             onAvatarImageLoadRequested = {},
-            onToggleAttachmentsExpandCollapseMode = {}
+            onToggleAttachmentsExpandCollapseMode = {},
+            onMarkPhishingMessageAsLegitimate = {}
         )
 
         // When

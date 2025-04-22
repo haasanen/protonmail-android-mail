@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumInverted
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 
@@ -192,6 +193,59 @@ fun ProtonBannerWithButton(
     }
 }
 
+@Composable
+fun ProtonBannerWithButton(
+    modifier: Modifier = Modifier,
+    @DrawableRes icon: Int,
+    iconTint: Color,
+    iconSize: Dp?,
+    text: String,
+    buttonText: String,
+    textStyle: TextStyle,
+    backgroundColor: Color,
+    buttonBackgroundColor: Color,
+    onButtonClicked: () -> Unit,
+    contentPadding: PaddingValues = PaddingValues(ProtonDimens.Spacing.ModeratelyLarge),
+    borderColorIsBackgroundColor: Boolean = false,
+    contentAlignedWithText: Boolean = false
+) {
+    ProtonBanner(
+        modifier = modifier,
+        icon = icon,
+        iconTint = iconTint,
+        iconSize = iconSize,
+        text = text,
+        textStyle = textStyle,
+        backgroundColor = backgroundColor,
+        contentPadding = contentPadding,
+        borderColorIsBackgroundColor = borderColorIsBackgroundColor,
+        contentAlignedWithText = contentAlignedWithText
+    ) {
+        Column {
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
+            ProtonButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onButtonClicked,
+                colors = ButtonDefaults.buttonColors().copy(
+                    containerColor = buttonBackgroundColor,
+                    contentColor = textStyle.color
+                ),
+                elevation = ButtonDefaults.buttonElevation(0.dp),
+                shape = ProtonTheme.shapes.huge,
+                border = null,
+                contentPadding = PaddingValues(
+                    horizontal = ProtonDimens.Spacing.Standard,
+                    vertical = ProtonDimens.Spacing.Medium
+                )
+            ) {
+                Text(
+                    text = buttonText,
+                    style = textStyle
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun ProtonBannerWithLink(
@@ -265,6 +319,26 @@ fun ProtonBannerWithButtonPreview() {
             bannerText = "Banner text",
             buttonText = "Button text",
             icon = R.drawable.ic_info_circle,
+            onButtonClicked = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+@Suppress("MagicNumber")
+fun RedProtonBannerWithButtonPreview() {
+    ProtonTheme {
+        ProtonBannerWithButton(
+            icon = R.drawable.ic_info_circle,
+            iconTint = ProtonTheme.colors.iconInverted,
+            iconSize = ProtonDimens.IconSize.Medium,
+            text = "Banner text",
+            buttonText = "Button text",
+            textStyle = ProtonTheme.typography.bodyMediumInverted,
+            backgroundColor = ProtonTheme.colors.notificationError,
+            buttonBackgroundColor = Color(0x33FFFFFF),
+            borderColorIsBackgroundColor = true,
             onButtonClicked = {}
         )
     }

@@ -68,6 +68,7 @@ import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachments
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
+import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsLegitimate
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MessageViewStateCache
@@ -312,6 +313,7 @@ class ConversationDetailViewModelIntegrationTest {
             this@mockk.toUiModel(any(), any(), any())
         } returns ParticipantAvatarSample.ebay
     }
+    private val markMessageAsLegitimate = mockk<MarkMessageAsLegitimate>()
 
     private val messageIdUiModelMapper = MessageIdUiModelMapper()
     private val attachmentMetadataUiModelMapper = AttachmentMetadataUiModelMapper()
@@ -1980,6 +1982,41 @@ class ConversationDetailViewModelIntegrationTest {
         }
     }
 
+    @Test
+    fun `should call use case when marking a message as legitimate`() = runTest {
+        // Given
+        val messageId = MessageSample.Invoice.messageId
+        val messages = ConversationMessages(
+            nonEmptyListOf(
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
+            ),
+            MessageSample.AugWeatherForecast.messageId
+        )
+        val labelId = SystemLabelId.Archive.labelId
+        coEvery { observeConversationMessages(userId, any(), labelId) } returns flowOf(messages.right())
+        coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.Invoice.right())
+        coEvery { markMessageAsLegitimate(userId, messageId) } returns Unit.right()
+
+        // When
+        val viewModel = buildConversationDetailViewModel()
+
+        viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
+
+        viewModel.state.test {
+            skipItems(4)
+
+            viewModel.submit(ConversationDetailViewAction.MarkPhishingMessageAsLegitimate(messageId))
+            advanceUntilIdle()
+
+            // Then
+            coVerify { markMessageAsLegitimate(userId, messageId) }
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
     @Suppress("LongParameterList")
     private fun buildConversationDetailViewModel(
         observePrimaryUser: ObservePrimaryUserId = observePrimaryUserId,
@@ -2051,6 +2088,7 @@ class ConversationDetailViewModelIntegrationTest {
         loadAvatarImage = loadAvatarImg,
         observeAvatarImageStates = observeAvatarImgStates,
         getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
+        markMessageAsLegitimate = markMessageAsLegitimate,
         isComposerEnabled = flowOf(true)
     )
 

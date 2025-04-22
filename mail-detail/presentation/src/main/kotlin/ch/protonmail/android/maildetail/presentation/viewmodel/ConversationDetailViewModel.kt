@@ -45,6 +45,7 @@ import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachments
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
+import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsLegitimate
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MessageViewStateCache
@@ -191,6 +192,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val loadAvatarImage: LoadAvatarImage,
     private val observeAvatarImageStates: ObserveAvatarImageStates,
     private val getMessagesInSameExclusiveLocation: GetMessagesInSameExclusiveLocation,
+    private val markMessageAsLegitimate: MarkMessageAsLegitimate,
     @ComposerEnabled val isComposerEnabled: Flow<Boolean>
 ) : ViewModel() {
 
@@ -338,6 +340,13 @@ class ConversationDetailViewModel @Inject constructor(
                 setOrRefreshMessageBody(
                     messageId = action.messageId,
                     override = MessageBodyTransformationsOverride.LoadRemoteContent
+                )
+            }
+
+            is ConversationDetailViewAction.MarkPhishingMessageAsLegitimate -> viewModelScope.launch {
+                markMessageAsLegitimate(
+                    userId = primaryUserId.first(),
+                    messageId = action.messageId
                 )
             }
         }

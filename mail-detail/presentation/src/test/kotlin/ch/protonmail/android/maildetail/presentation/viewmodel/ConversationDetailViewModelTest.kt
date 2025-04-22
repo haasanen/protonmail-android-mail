@@ -54,6 +54,7 @@ import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachments
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
+import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsLegitimate
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MessageViewStateCache
@@ -300,6 +301,7 @@ class ConversationDetailViewModelTest {
         every { this@mockk() } returns flowOf(AvatarImageStatesTestData.SampleData1)
     }
     private val getMessagesInSameExclusiveLocation = mockk<GetMessagesInSameExclusiveLocation>()
+    private val markMessageAsLegitimate = mockk<MarkMessageAsLegitimate>()
 
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
@@ -347,6 +349,7 @@ class ConversationDetailViewModelTest {
             loadAvatarImage = loadAvatarImage,
             observeAvatarImageStates = observeAvatarImageStates,
             getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
+            markMessageAsLegitimate = markMessageAsLegitimate,
             isComposerEnabled = flowOf(true)
         )
     }

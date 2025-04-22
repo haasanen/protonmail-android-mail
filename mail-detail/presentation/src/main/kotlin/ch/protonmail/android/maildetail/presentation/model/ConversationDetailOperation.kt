@@ -301,4 +301,6 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
             override val mailLabelText: MailLabelText
         ) : MoveMessage(messageId, mailLabelText)
     }
+
+    data class MarkPhishingMessageAsLegitimate(val messageId: MessageId) : ConversationDetailViewAction
 }
