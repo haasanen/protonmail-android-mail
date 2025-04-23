@@ -25,7 +25,5 @@ class SendMessage @Inject constructor(
     private val draftRepository: DraftRepository
 ) {
 
-    suspend operator fun invoke() {
-        draftRepository.send()
-    }
+    suspend operator fun invoke() = draftRepository.send()
 }

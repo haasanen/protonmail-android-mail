@@ -336,7 +336,7 @@ class ComposerViewModelTest {
         expectNetworkManagerIsConnected()
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(expectedSubject)
-        expectSendMessageSucceeds(expectedUserId)
+        expectSendMessageSucceeds()
         expectObservedMessageAttachments()
         expectNoFileShareVia()
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedMessageId) {
@@ -377,7 +377,7 @@ class ComposerViewModelTest {
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(expectedSubject)
         expectUpdateRecipientsSucceeds(recipientsTo.value, recipientsCc.value, recipientsBcc.value)
-        expectSendMessageSucceeds(expectedUserId)
+        expectSendMessageSucceeds()
         expectObservedMessageAttachments()
         expectNoFileShareVia()
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedMessageId) {
@@ -784,7 +784,7 @@ class ComposerViewModelTest {
         expectNetworkManagerIsDisconnected()
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
-        expectSendMessageSucceeds(expectedUserId)
+        expectSendMessageSucceeds()
         expectObservedMessageAttachments()
         expectNoFileShareVia()
         ignoreRecipientsUpdates()
@@ -918,8 +918,8 @@ class ComposerViewModelTest {
         every { savedStateHandle.get<String>(ComposerScreen.DraftMessageIdKey) } returns it.id
     }
 
-    private fun expectSendMessageSucceeds(expectedUserId: UserId) {
-        coEvery { sendMessageMock.invoke() } returns Unit
+    private fun expectSendMessageSucceeds() {
+        coEvery { sendMessageMock.invoke() } returns Unit.right()
     }
 
     private fun expectNetworkManagerIsConnected() {

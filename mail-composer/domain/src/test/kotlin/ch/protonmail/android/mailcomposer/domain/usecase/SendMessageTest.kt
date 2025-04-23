@@ -19,30 +19,30 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class SendMessageTest {
 
     private val draftRepository = mockk<DraftRepository>(relaxed = true)
     private val sendMessage = SendMessage(draftRepository)
 
-    private val userId = UserIdSample.Primary
-
     @Test
     fun `send message should call draftRepository send`() = runTest {
         // Given
-        coEvery { draftRepository.send() } returns Unit.right()
+        val expected = Unit.right()
+        coEvery { draftRepository.send() } returns expected
 
         // When
-        sendMessage()
+        val actual = sendMessage()
 
         // Then
         coVerify(exactly = 1) { draftRepository.send() }
+        assertEquals(expected, actual)
     }
 }
