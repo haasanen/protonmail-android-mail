@@ -237,57 +237,6 @@ class ComposerViewModelTest {
     }
 
     @Test
-    @Ignore("Need to define how rust API will look like")
-    fun `should emit Effect for ReplaceDraftBody when sender changes`() = runTest {
-        // Given
-        val expectedDraftBody = DraftBody(RawDraftBody)
-        val expectedSenderEmail = SenderEmail(UserAddressSample.AliasAddress.email)
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val action = ComposerAction.SenderChanged(SenderUiModel(expectedSenderEmail.value))
-        expectStoreDraftBodySucceeds(expectedDraftBody)
-        expectNoInputDraftMessageId()
-        expectNoInputDraftAction()
-        expectObservedMessageAttachments()
-        expectNoFileShareVia()
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        val expectedReplaceDraftBodyTextUiModel = TextUiModel(expectDraftBodyWithSignature().value)
-
-        // When
-        viewModel.submit(action)
-
-        // Then
-        assertEquals(
-            expectedReplaceDraftBodyTextUiModel,
-            viewModel.state.value.replaceDraftBody.consume()
-        )
-    }
-
-    @Test
-    @Ignore("Rust lib to expose change sender API")
-    fun `should store draft with sender when sender changes`() = runTest {
-        // Given
-        val expectedDraftBody = DraftBody(RawDraftBody)
-        val expectedSenderEmail = SenderEmail(UserAddressSample.AliasAddress.email)
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val action = ComposerAction.SenderChanged(SenderUiModel(expectedSenderEmail.value))
-        expectStoreDraftBodySucceeds(expectedDraftBody)
-        expectNoInputDraftMessageId()
-        expectNoInputDraftAction()
-        expectObservedMessageAttachments()
-        expectNoFileShareVia()
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // When
-        viewModel.submit(action)
-
-        // Then
-        coVerify {
-            storeDraftWithBodyMock(expectedDraftBody)
-        }
-    }
-
-    @Test
     fun `should store draft subject when subject changes`() = runTest {
         // Given
         val expectedSubject = Subject("Subject for the message")
@@ -510,119 +459,6 @@ class ComposerViewModelTest {
     }
 
     @Test
-    @Ignore("To be re-enabled when adding back change sender feature")
-    fun `emits state with user addresses when sender can be changed`() = runTest {
-        // Given
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val addresses = listOf(UserAddressSample.PrimaryAddress, UserAddressSample.AliasAddress)
-        expectNoInputDraftMessageId()
-        expectNoInputDraftAction()
-        expectObservedMessageAttachments()
-        expectNoFileShareVia()
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // When
-        viewModel.submit(ComposerAction.ChangeSenderRequested)
-
-        // Then
-        val currentState = viewModel.state.value
-        val expected = addresses.map { SenderUiModel(it.email) }
-        assertEquals(expected, currentState.senderAddresses)
-    }
-
-    @Test
-    @Ignore("To be re-enabled when adding back change sender feature")
-    fun `emits state with upgrade plan to change sender when user cannot change sender`() = runTest {
-        // Given
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        expectNoInputDraftMessageId()
-        expectNoInputDraftAction()
-        expectObservedMessageAttachments()
-        expectNoFileShareVia()
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // When
-        viewModel.submit(ComposerAction.ChangeSenderRequested)
-
-        // Then
-        val currentState = viewModel.state.value
-        val expected = TextUiModel(R.string.composer_change_sender_paid_feature)
-        assertEquals(expected, currentState.premiumFeatureMessage.consume())
-    }
-
-    @Test
-    @Ignore("To be re-enabled when adding back change sender feature")
-    fun `emits state with error when cannot determine if user can change sender`() = runTest {
-        // Given
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        expectNoInputDraftMessageId()
-        expectNoInputDraftAction()
-        expectObservedMessageAttachments()
-        expectNoFileShareVia()
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // When
-        viewModel.submit(ComposerAction.ChangeSenderRequested)
-
-        // Then
-        val currentState = viewModel.state.value
-        val expected = TextUiModel(R.string.composer_error_change_sender_failed_getting_subscription)
-        assertEquals(expected, currentState.error.consume())
-    }
-
-    @Test
-    @Ignore("To be re-enabled when adding back change sender feature")
-    fun `emits state with new sender address when sender changed`() = runTest {
-        // Given
-        val expectedDraftBody = DraftBody("")
-        val expectedSenderEmail = SenderEmail(UserAddressSample.AliasAddress.email)
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val action = ComposerAction.SenderChanged(SenderUiModel(expectedSenderEmail.value))
-        expectStoreDraftBodySucceeds(expectedDraftBody)
-        expectNoInputDraftMessageId()
-        expectInputDraftAction { DraftAction.Compose }
-        expectObservedMessageAttachments()
-        expectNoFileShareVia()
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // When
-        viewModel.submit(action)
-
-        // Then
-        val currentState = viewModel.state.value
-        assertEquals(SenderUiModel(expectedSenderEmail.value), currentState.fields.sender)
-    }
-
-    @Test
-    @Ignore("Rust lib to expose change sender API")
-    fun `emits state with saving draft with new sender error when save draft with sender returns error`() = runTest {
-        // Given
-        val expectedDraftBody = DraftBody("")
-        val expectedSenderEmail = SenderEmail(UserAddressSample.AliasAddress.email)
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val action = ComposerAction.SenderChanged(SenderUiModel(expectedSenderEmail.value))
-        val expectedMessageId = MessageIdSample.EmptyDraft
-        expectStoreDraftBodyFails(expectedDraftBody) {
-            DataError.Local.SaveDraftError.SaveFailed
-        }
-        expectNoInputDraftMessageId()
-        expectNoInputDraftAction()
-        expectObservedMessageAttachments()
-        expectNoFileShareVia()
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // When
-        viewModel.submit(action)
-
-        // Then
-        val currentState = viewModel.state.value
-        assertEquals(TextUiModel(R.string.composer_error_store_draft_sender_address), currentState.error.consume())
-        loggingTestRule.assertErrorLogged(
-            "Store draft $expectedMessageId with new sender ${expectedSenderEmail.value} failed"
-        )
-    }
-
-    @Test
     fun `emits state with saving draft body error when save draft body returns error`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
@@ -784,32 +620,6 @@ class ComposerViewModelTest {
         )
         assertEquals(expectedComposerFields, actual.fields)
         expectStoreDraftSubjectSucceeds(expectedDraftFields.subject)
-    }
-
-    @Test
-    @Ignore("TBD how rust lib will expose information of sender address being changed")
-    fun `emits state with valid sender and notice effect when parent draft sender is invalid`() = runTest {
-        // Given
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val expectedParentId = MessageIdSample.Invoice
-        val expectedAction = expectInputDraftAction { DraftAction.Reply(expectedParentId) }
-        expectNoInputDraftMessageId()
-        val expectedValidEmail = SenderEmail("valid-to-use-instead@proton.me")
-        expectInitComposerForActionSuccess(
-            expectedUserId, expectedAction
-        ) { draftFieldsWithQuotedBody }
-        expectObservedMessageAttachments()
-        expectNoFileShareVia()
-
-        // When
-        val actual = viewModel.state.value
-
-        // Then
-        assertEquals(SenderUiModel(expectedValidEmail.value), actual.fields.sender)
-        assertEquals(
-            Effect.of(TextUiModel(R.string.composer_sender_changed_pm_address_is_a_paid_feature)),
-            actual.senderChangedNotice
-        )
     }
 
     @Test
@@ -1095,14 +905,6 @@ class ComposerViewModelTest {
         unmockkStatic(android.graphics.Color::parseColor)
     }
 
-    private fun expectInitComposerForActionSuccess(
-        userId: UserId,
-        action: DraftAction,
-        draftFields: () -> DraftFields
-    ) = draftFields().also {
-        coEvery { createDraftForAction(userId, action) } returns it.right()
-    }
-
     // This is both used to mock the result of the "composer init" in the cases where we
     // create a new draft (eg. Compose, Reply, ComposeTo...)
     // and also as a hack to initialize the composer's state to an expected one to test
@@ -1146,15 +948,6 @@ class ComposerViewModelTest {
     private fun expectNoInputDraftMessageId() {
         every { savedStateHandle.get<String>(ComposerScreen.DraftMessageIdKey) } returns null
     }
-
-    private fun expectDraftBodyWithSignature() = DraftBody(
-        """
-            Email body
-
-
-            Signature
-        """.trimIndent()
-    )
 
     private fun expectInputDraftMessageId(draftId: () -> MessageId) = draftId().also {
         every { savedStateHandle.get<String>(ComposerScreen.DraftMessageIdKey) } returns it.id
@@ -1313,15 +1106,6 @@ class ComposerViewModelTest {
             Subject("Here is the matter"),
             DraftBody("Decrypted body of this draft"),
             RecipientsTo(listOf(Recipient("valid@email.com", "Valid Email"))),
-            RecipientsCc(emptyList()),
-            RecipientsBcc(emptyList())
-        )
-
-        val draftFieldsWithQuotedBody = DraftFields(
-            SenderEmail("author@proton.me"),
-            Subject("Here is the matter"),
-            DraftBody(""),
-            RecipientsTo(listOf(Recipient("you@proton.ch", "Name"))),
             RecipientsCc(emptyList()),
             RecipientsBcc(emptyList())
         )
