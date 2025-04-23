@@ -38,7 +38,6 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.usecase.AddAttachment
-import ch.protonmail.android.mailcomposer.domain.usecase.ClearMessageSendingError
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
@@ -46,11 +45,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
-import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageExpirationTime
-import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePassword
-import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageSendingError
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
-import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
@@ -68,7 +63,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateMana
 import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
-import ch.protonmail.android.mailcomposer.presentation.usecase.FormatMessageSendingError
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -107,16 +101,10 @@ class ComposerViewModel @AssistedInject constructor(
     private val isValidEmailAddress: IsValidEmailAddress,
     private val composerIdlingResource: ComposerIdlingResource,
     private val observeMessageAttachments: ObserveMessageAttachments,
-    private val observeMessageSendingError: ObserveMessageSendingError,
-    private val clearMessageSendingError: ClearMessageSendingError,
-    private val formatMessageSendingError: FormatMessageSendingError,
     private val sendMessage: SendMessage,
     private val networkManager: NetworkManager,
     private val addAttachment: AddAttachment,
     private val deleteAttachment: DeleteAttachment,
-    private val observeMessagePassword: ObserveMessagePassword,
-    private val saveMessageExpirationTime: SaveMessageExpirationTime,
-    private val observeMessageExpirationTime: ObserveMessageExpirationTime,
     private val openExistingDraft: OpenExistingDraft,
     private val createEmptyDraft: CreateEmptyDraft,
     private val createDraftForAction: CreateDraftForAction,
