@@ -201,7 +201,7 @@ class ComposerReducer @Inject constructor(
     )
 
     private fun updateSendingErrorState(currentState: ComposerDraftState, sendingError: TextUiModel) =
-        currentState.copy(sendingErrorEffect = Effect.of(sendingError))
+        currentState.copy(sendingErrorEffect = Effect.of(sendingError), showSendingLoading = false)
 
     private fun updateCloseComposerState(currentState: ComposerDraftState) = currentState.copy(
         closeComposer = Effect.of(Unit)

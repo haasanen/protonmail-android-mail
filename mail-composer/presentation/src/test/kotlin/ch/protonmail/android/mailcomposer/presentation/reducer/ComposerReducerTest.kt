@@ -500,10 +500,20 @@ class ComposerReducerTest(
         )
 
         private val EmptyToOnMessageSending = TestTransition(
-            name = "Should emit sending error",
+            name = "Should show sending loader when sending",
             currentState = ComposerDraftState.initial(),
             operation = ComposerEvent.OnMessageSending,
             expectedState = ComposerDraftState.initial().copy(showSendingLoading = true)
+        )
+
+        private val SendingLoaderToSendingError = TestTransition(
+            name = "Should dismiss send message loader when sending fails",
+            currentState = aSubmittableState(showSendingLoading = true),
+            operation = ComposerEvent.OnSendingError(TextUiModel.Text("SendingError")),
+            expectedState = aSubmittableState().copy(
+                sendingErrorEffect = Effect.of(TextUiModel.Text("SendingError")),
+                showSendingLoading = false
+            )
         )
 
         private val transitions = listOf(
@@ -543,7 +553,8 @@ class ComposerReducerTest(
             EmptyToConfirmSendExpiringMessage,
             SubmittableToDiscardDraft,
             SubmittableToDiscardDraftConfirmed,
-            EmptyToOnMessageSending
+            EmptyToOnMessageSending,
+            SendingLoaderToSendingError
         )
 
         private fun aSubmittableState(

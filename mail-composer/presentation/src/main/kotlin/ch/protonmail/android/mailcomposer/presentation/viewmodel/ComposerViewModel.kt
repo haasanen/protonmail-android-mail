@@ -30,6 +30,7 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.decode
 import ch.protonmail.android.mailcommon.domain.model.hasEmailData
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
@@ -380,17 +381,23 @@ class ComposerViewModel @AssistedInject constructor(
         return onSendMessage(action)
     }
 
-    private suspend fun onSendMessage(action: ComposerOperation): ComposerOperation = when {
-        buildDraftFields().areBlank() -> action
-        else -> {
-            sendMessage()
+    private suspend fun onSendMessage(action: ComposerOperation): ComposerOperation {
 
-            if (networkManager.isConnectedToNetwork()) {
-                ComposerAction.OnSendMessage
-            } else {
-                ComposerEvent.OnSendMessageOffline
+        if (buildDraftFields().areBlank()) return action
+
+        return sendMessage().fold(
+            ifLeft = {
+                Timber.w("composer: Send message failed. Error: $it")
+                ComposerEvent.OnSendingError(TextUiModel(it.toString()))
+            },
+            ifRight = {
+                return if (networkManager.isConnectedToNetwork()) {
+                    ComposerAction.OnSendMessage
+                } else {
+                    ComposerEvent.OnSendMessageOffline
+                }
             }
-        }
+        )
     }
 
     private fun onDiscardDraftConfirmed(action: ComposerAction.DiscardDraftConfirmed) {
