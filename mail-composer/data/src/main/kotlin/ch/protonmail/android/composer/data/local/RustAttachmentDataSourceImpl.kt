@@ -27,20 +27,20 @@ import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.local.AttachmentFileStorage
-import kotlinx.coroutines.channels.awaitClose
 import ch.protonmail.android.mailmessage.data.mapper.toLocalAttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
-import uniffi.proton_mail_uniffi.AttachmentListAttachmentsResult
-import uniffi.proton_mail_uniffi.AttachmentListWatcherResult
-import javax.inject.Inject
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
 import uniffi.proton_mail_uniffi.AttachmentListAddResult
+import uniffi.proton_mail_uniffi.AttachmentListAttachmentsResult
 import uniffi.proton_mail_uniffi.AttachmentListRemoveResult
+import uniffi.proton_mail_uniffi.AttachmentListWatcherResult
 import uniffi.proton_mail_uniffi.DraftAttachmentWatcher
+import javax.inject.Inject
 
 class RustAttachmentDataSourceImpl @Inject constructor(
     private val rustDraftDataSource: RustDraftDataSource,
@@ -109,7 +109,7 @@ class RustAttachmentDataSourceImpl @Inject constructor(
                     fileUri
                 ) ?: return DataError.Local.FailedToStoreFile.left()
 
-                when (val addResult = attachmentListWrapper.addAttachment(fileInfo.path)) {
+                when (val addResult = attachmentListWrapper.addAttachment(fileInfo.path, fileInfo.name)) {
                     is AttachmentListAddResult.Ok -> {
                         Timber.d("rust-draft-attachments: Added attachment: ${fileInfo.path}")
                         Unit.right()

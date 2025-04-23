@@ -151,7 +151,7 @@ class RustAttachmentDataSourceImplTest {
         coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
         coEvery { wrapper.attachmentUploadDirectory() } returns "/fake/path"
         coEvery { attachmentFileStorage.saveAttachment(any(), eq(uri)) } returns fileInfo
-        coEvery { wrapper.addAttachment(fileInfo.path) } returns AttachmentListAddResult.Ok
+        coEvery { wrapper.addAttachment(fileInfo.path, fileInfo.name) } returns AttachmentListAddResult.Ok
 
         // When
         val result = dataSource.addAttachment(uri)
@@ -210,7 +210,7 @@ class RustAttachmentDataSourceImplTest {
         coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
         coEvery { wrapper.attachmentUploadDirectory() } returns "/fake/path"
         coEvery { attachmentFileStorage.saveAttachment(any(), eq(uri)) } returns fileInfo
-        coEvery { wrapper.addAttachment(fileInfo.path) } returns AttachmentListAddResult.Error(rustError)
+        coEvery { wrapper.addAttachment(fileInfo.path, fileInfo.name) } returns AttachmentListAddResult.Error(rustError)
 
         // When
         val result = dataSource.addAttachment(uri)

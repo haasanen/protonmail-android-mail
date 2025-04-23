@@ -25,7 +25,6 @@ import android.net.Uri
 import ch.protonmail.android.mailcommon.data.file.FileInformation
 import ch.protonmail.android.mailcommon.data.file.InternalFileStorage
 import ch.protonmail.android.mailcommon.data.file.UriHelper
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import javax.inject.Inject
 
 class AttachmentFileStorage @Inject constructor(
@@ -33,29 +32,27 @@ class AttachmentFileStorage @Inject constructor(
     private val internalFileStorage: InternalFileStorage
 ) {
 
-    @MissingRustApi
     suspend fun saveAttachment(attachmentFolder: String, uri: Uri): FileInformation? {
         return uriHelper.readFromUri(uri)?.let {
 
-            // Rust uses file path to get the file name. This does not solve duplicate file name issue.
-            // We need to use a unique file name for each attachment.
-            // The following is a workaround for now to user name as the file path (instead of UUID)
-            val filename = uriHelper.getFileNameFromUri(uri) ?: UUID.randomUUID().toString()
+            // Random id to avoid conflicts on file name.
+            // File display name resolved from uri and returned in the FileInformation
+            val fileId = UUID.randomUUID().toString()
 
-            saveAttachmentAsStream(attachmentFolder, filename, it)?.let { file ->
+            saveAttachmentAsStream(attachmentFolder, fileId, it)?.let { file ->
                 uriHelper.resolveFileInformation(uri, file)
             }
         }
     }
 
-    suspend fun saveAttachmentAsStream(
+    private suspend fun saveAttachmentAsStream(
         attachmentFolder: String,
-        filename: String,
+        fileId: String,
         inputStream: InputStream
     ): File? {
         return internalFileStorage.writeFileAsStream(
             InternalFileStorage.Folder.UploadFolder(attachmentFolder),
-            InternalFileStorage.FileIdentifier(filename),
+            InternalFileStorage.FileIdentifier(fileId),
             inputStream
         )
     }
