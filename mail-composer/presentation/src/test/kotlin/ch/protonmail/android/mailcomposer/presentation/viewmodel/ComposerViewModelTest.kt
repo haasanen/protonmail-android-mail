@@ -106,7 +106,6 @@ import me.proton.core.util.kotlin.serialize
 import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -179,7 +178,6 @@ class ComposerViewModelTest {
     }
 
     @Test
-    @Ignore("Missing rust implementation to store attachments")
     fun `should store attachments when attachments are added to the draft`() {
         // Given
         val uri = mockk<Uri>()
@@ -204,12 +202,15 @@ class ComposerViewModelTest {
         expectObservedMessageAttachments()
         expectNoInputDraftAction()
         expectNoFileShareVia()
+        expectStoreDraftSubjectSucceeds(expectedSubject)
+        expectAddAttachmentsSucceeds(uri)
+        ignoreRecipientsUpdates()
 
         // When
         viewModel.submit(ComposerAction.AttachmentsAdded(listOf(uri)))
 
         // Then
-        // ???
+        coVerify { addAttachment(uri) }
     }
 
     @Test
@@ -642,7 +643,6 @@ class ComposerViewModelTest {
     }
 
     @Test
-    @Ignore("To be re-enabled when adding back attachments feature")
     fun `emits state with an effect to open the file picker when add attachments action is submitted`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
@@ -651,6 +651,8 @@ class ComposerViewModelTest {
         expectNoInputDraftAction()
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectStoreDraftSubjectSucceeds(existingDraftFields.subject)
+        ignoreRecipientsUpdates()
 
         // When
         viewModel.submit(ComposerAction.OnAddAttachments)
@@ -661,7 +663,6 @@ class ComposerViewModelTest {
     }
 
     @Test
-    @Ignore("To be re-enabled when adding back attachments feature")
     fun `emits state with updated attachments when the attachments change`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
@@ -684,6 +685,8 @@ class ComposerViewModelTest {
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedDraftId) { expectedFields }
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectStoreDraftSubjectSucceeds(expectedSubject)
+        ignoreRecipientsUpdates()
 
         // When
         viewModel.state.test {
@@ -691,7 +694,7 @@ class ComposerViewModelTest {
             // Then
             val expected = AttachmentGroupUiModel(
                 limit = NO_ATTACHMENT_LIMIT,
-                attachments = listOf(AttachmentMetadataUiModelSamples.DeletableInvoice)
+                attachments = listOf(AttachmentMetadataUiModelSamples.DeletableInvoiceUploaded)
             )
             val actual = awaitItem().attachments
             assertEquals(expected, actual)
@@ -733,44 +736,6 @@ class ComposerViewModelTest {
 
         // Then
         coVerify { deleteAttachment(expectedAttachmentId) }
-    }
-
-    @Test
-    @Ignore("To be re-enabled when adding back attachments feature")
-    fun `emit state with effect when attachment file size exceeded`() = runTest {
-        // Given
-        val uri = mockk<Uri>()
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val messageId = MessageIdSample.Invoice
-        val expectedSubject = Subject("Subject for the message")
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
-        val expectedDraftBody = DraftBody("I am plaintext")
-        val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
-        val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
-        val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
-        val expectedFields = DraftFields(
-            expectedSenderEmail,
-            expectedSubject,
-            expectedDraftBody,
-            recipientsTo,
-            recipientsCc,
-            recipientsBcc
-        )
-        expectInputDraftMessageId { messageId }
-        expectInitComposerWithExistingDraftSuccess(expectedUserId, messageId) { expectedFields }
-        expectObservedMessageAttachments()
-        expectNoInputDraftAction()
-        expectNoFileShareVia()
-
-        // When
-        viewModel.submit(ComposerAction.AttachmentsAdded(listOf(uri)))
-
-        // Then
-        viewModel.state.test {
-            val expected = Effect.of(Unit)
-            val actual = awaitItem().attachmentsFileSizeExceeded
-            assertEquals(expected, actual)
-        }
     }
 
     @Test
@@ -991,11 +956,7 @@ class ComposerViewModelTest {
     }
 
     private fun expectStoreDraftSubjectSucceeds(expectedSubject: Subject) {
-        coEvery {
-            storeDraftWithSubjectMock(
-                expectedSubject
-            )
-        } returns Unit.right()
+        coEvery { storeDraftWithSubjectMock(expectedSubject) } returns Unit.right()
     }
 
     private fun expectStoreDraftSubjectFails(expectedSubject: Subject, error: () -> DataError) = error().also {
@@ -1095,6 +1056,10 @@ class ComposerViewModelTest {
                 any()
             )
         } returns Recipient(RecipientSample.NamelessRecipient.address, "", false)
+    }
+
+    private fun expectAddAttachmentsSucceeds(uri: Uri) {
+        coEvery { addAttachment(uri) } returns Unit.right()
     }
 
     companion object TestData {

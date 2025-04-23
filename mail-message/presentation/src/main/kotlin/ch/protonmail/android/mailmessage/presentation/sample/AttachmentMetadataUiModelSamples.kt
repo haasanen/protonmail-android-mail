@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmessage.presentation.sample
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
@@ -155,5 +156,7 @@ object AttachmentMetadataUiModelSamples {
     )
 
     val DeletableInvoice = Invoice.copy(deletable = true)
+
+    val DeletableInvoiceUploaded = Invoice.copy(deletable = true, status = AttachmentState.Uploaded)
 }
 
