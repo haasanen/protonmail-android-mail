@@ -371,6 +371,8 @@ class ComposerViewModel @AssistedInject constructor(
     }
 
     private suspend fun onCloseComposer(action: ComposerAction.OnCloseComposer): ComposerOperation {
+        emitNewStateFor(ComposerEvent.OnMessageSending)
+
         return when {
             buildDraftFields().areBlank() -> action
 
