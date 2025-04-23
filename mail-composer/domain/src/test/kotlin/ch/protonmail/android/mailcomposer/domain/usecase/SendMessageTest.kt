@@ -21,7 +21,6 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -31,22 +30,19 @@ import org.junit.Test
 class SendMessageTest {
 
     private val draftRepository = mockk<DraftRepository>(relaxed = true)
-    private val eventLoopRepository = mockk<EventLoopRepository>(relaxed = true)
-    private val sendMessage = SendMessage(draftRepository, eventLoopRepository)
+    private val sendMessage = SendMessage(draftRepository)
 
     private val userId = UserIdSample.Primary
 
     @Test
-    fun `send message should call draftRepository send and eventLoopRepository trigger`() = runTest {
+    fun `send message should call draftRepository send`() = runTest {
         // Given
         coEvery { draftRepository.send() } returns Unit.right()
-        coEvery { eventLoopRepository.trigger(userId) } returns Unit
 
         // When
-        sendMessage(userId)
+        sendMessage()
 
         // Then
         coVerify(exactly = 1) { draftRepository.send() }
-        coVerify(exactly = 1) { eventLoopRepository.trigger(userId) }
     }
 }

@@ -356,7 +356,7 @@ class ComposerViewModelTest {
 
         // Then
         coVerifyOrder {
-            sendMessageMock(expectedUserId)
+            sendMessageMock()
         }
         assertEquals(Effect.of(Unit), viewModel.state.value.closeComposerWithMessageSending)
     }
@@ -396,7 +396,7 @@ class ComposerViewModelTest {
 
         // Then
         coVerifyOrder {
-            sendMessageMock(expectedUserId)
+            sendMessageMock()
         }
         assertEquals(Effect.of(Unit), viewModel.state.value.closeComposerWithMessageSendingOffline)
     }
@@ -804,7 +804,7 @@ class ComposerViewModelTest {
 
         // Then
         coVerifyOrder {
-            sendMessageMock(expectedUserId)
+            sendMessageMock()
         }
     }
 
@@ -919,7 +919,7 @@ class ComposerViewModelTest {
     }
 
     private fun expectSendMessageSucceeds(expectedUserId: UserId) {
-        coEvery { sendMessageMock.invoke(expectedUserId) } returns Unit
+        coEvery { sendMessageMock.invoke() } returns Unit
     }
 
     private fun expectNetworkManagerIsConnected() {

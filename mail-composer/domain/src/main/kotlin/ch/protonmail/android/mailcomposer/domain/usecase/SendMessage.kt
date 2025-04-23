@@ -19,17 +19,13 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
-import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class SendMessage @Inject constructor(
-    private val draftRepository: DraftRepository,
-    private val eventLoopRepository: EventLoopRepository
+    private val draftRepository: DraftRepository
 ) {
 
-    suspend operator fun invoke(userId: UserId) {
+    suspend operator fun invoke() {
         draftRepository.send()
-        eventLoopRepository.trigger(userId)
     }
 }

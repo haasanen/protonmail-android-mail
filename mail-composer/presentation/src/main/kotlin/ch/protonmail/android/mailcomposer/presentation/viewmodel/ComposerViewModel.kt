@@ -383,7 +383,7 @@ class ComposerViewModel @AssistedInject constructor(
     private suspend fun onSendMessage(action: ComposerOperation): ComposerOperation = when {
         buildDraftFields().areBlank() -> action
         else -> {
-            sendMessage(primaryUserId())
+            sendMessage()
 
             if (networkManager.isConnectedToNetwork()) {
                 ComposerAction.OnSendMessage
