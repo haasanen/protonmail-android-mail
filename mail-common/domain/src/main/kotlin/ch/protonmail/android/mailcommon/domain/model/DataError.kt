@@ -58,6 +58,13 @@ sealed interface DataError {
             data object Unknown : SaveDraftError
         }
 
+        sealed interface SendDraftError : Local {
+            data object AlreadySent : SendDraftError
+            data object InvalidSenderAddress : SendDraftError
+            data object InvalidRecipient : SendDraftError
+            data object AttachmentsError : SendDraftError
+        }
+
         data object OpenDraftError : Local
 
         data object DiscardDraftError : Local

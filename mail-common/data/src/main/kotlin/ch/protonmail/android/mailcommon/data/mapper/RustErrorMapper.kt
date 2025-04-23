@@ -58,19 +58,19 @@ fun ActionError.toDataError(): DataError = when (this) {
 fun DraftSaveSendError.toDataError(): DataError = when (this) {
     is DraftSaveSendError.Other -> this.v1.toDataError()
     is DraftSaveSendError.Reason -> when (this.v1) {
+        is DraftSaveSendErrorReason.AlreadySent,
+        is DraftSaveSendErrorReason.MessageAlreadySent,
+        is DraftSaveSendErrorReason.MessageIsNotADraft -> DataError.Local.SendDraftError.AlreadySent
         is DraftSaveSendErrorReason.AddressDisabled,
-        is DraftSaveSendErrorReason.AddressDoesNotHavePrimaryKey,
-        DraftSaveSendErrorReason.AlreadySent,
-        DraftSaveSendErrorReason.MessageAlreadySent,
-        DraftSaveSendErrorReason.MessageDoesNotExist,
-        DraftSaveSendErrorReason.MessageIsNotADraft,
-        DraftSaveSendErrorReason.NoRecipients,
-        DraftSaveSendErrorReason.MissingAttachmentUploads,
-        DraftSaveSendErrorReason.AttachmentUpload,
-        is DraftSaveSendErrorReason.PackageError,
-        is DraftSaveSendErrorReason.ProtonRecipientDoesNotExist,
+        is DraftSaveSendErrorReason.AddressDoesNotHavePrimaryKey -> DataError.Local.SendDraftError.InvalidSenderAddress
+        is DraftSaveSendErrorReason.UnknownRecipientValidationError,
         is DraftSaveSendErrorReason.RecipientEmailInvalid,
-        is DraftSaveSendErrorReason.UnknownRecipientValidationError -> DataError.Local.SaveDraftError.Unknown
+        is DraftSaveSendErrorReason.ProtonRecipientDoesNotExist,
+        is DraftSaveSendErrorReason.NoRecipients -> DataError.Local.SendDraftError.InvalidRecipient
+        is DraftSaveSendErrorReason.MissingAttachmentUploads,
+        is DraftSaveSendErrorReason.AttachmentUpload -> DataError.Local.SendDraftError.AttachmentsError
+        is DraftSaveSendErrorReason.MessageDoesNotExist,
+        is DraftSaveSendErrorReason.PackageError -> DataError.Local.SaveDraftError.Unknown
     }
 }
 

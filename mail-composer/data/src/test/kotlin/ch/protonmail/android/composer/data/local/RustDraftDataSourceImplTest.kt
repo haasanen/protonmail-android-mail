@@ -322,9 +322,9 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
         dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Error(
-            DraftSaveSendError.Reason(DraftSaveSendErrorReason.MessageIsNotADraft)
+            DraftSaveSendError.Reason(DraftSaveSendErrorReason.NoRecipients)
         )
-        val expected = DataError.Local.SaveDraftError.Unknown
+        val expected = DataError.Local.SendDraftError.InvalidRecipient
 
         // When
         val actual = dataSource.save()
@@ -366,7 +366,7 @@ class RustDraftDataSourceImplTest {
         coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveSendResult.Error(
             DraftSaveSendError.Reason(DraftSaveSendErrorReason.MessageIsNotADraft)
         )
-        val expected = DataError.Local.SaveDraftError.Unknown
+        val expected = DataError.Local.SendDraftError.AlreadySent
 
         // When
         val actual = dataSource.saveSubject(subject)
@@ -408,7 +408,7 @@ class RustDraftDataSourceImplTest {
         coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveSendResult.Error(
             DraftSaveSendError.Reason(DraftSaveSendErrorReason.MessageIsNotADraft)
         )
-        val expected = DataError.Local.SaveDraftError.Unknown
+        val expected = DataError.Local.SendDraftError.AlreadySent
 
         // When
         val actual = dataSource.saveBody(body)
@@ -458,13 +458,13 @@ class RustDraftDataSourceImplTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = LocalMessageIdSample.AugWeatherForecast
-        val expectedError = DataError.Local.SaveDraftError.Unknown
+        val expectedError = DataError.Local.SendDraftError.AttachmentsError
 
         val expectedDraftWrapper = expectDraftWrapperReturns(
             messageId = messageId,
             sendResult = VoidDraftSaveSendResult.Error(
                 DraftSaveSendError.Reason(
-                    DraftSaveSendErrorReason.MessageIsNotADraft
+                    DraftSaveSendErrorReason.AttachmentUpload
                 )
             )
         )
