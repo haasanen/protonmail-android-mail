@@ -23,6 +23,7 @@ import androidx.startup.AppInitializer
 import androidx.startup.Initializer
 import ch.protonmail.android.BuildConfig
 import ch.protonmail.android.initializer.background.BackgroundExecutionInitializer
+import ch.protonmail.android.initializer.prefetch.DataPrefetchInitializer
 import ch.protonmail.android.initializer.strictmode.StrictModeInitializer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -61,7 +62,8 @@ class MainInitializer : Initializer<Unit> {
         AutoLockHandlerInitializer::class.java,
         RustMailCommonInitializer::class.java,
         ChallengeInitializer::class.java,
-        BackgroundExecutionInitializer::class.java
+        BackgroundExecutionInitializer::class.java,
+        DataPrefetchInitializer::class.java
     )
 
     companion object {
@@ -79,7 +81,6 @@ class MainInitializer : Initializer<Unit> {
             CoroutineScope(Dispatchers.Default + SupervisorJob()).launch {
                 AppInitializer.getInstance(appContext).initializeComponent(MainAsyncInitializer::class.java)
             }
-
         }
     }
 }
