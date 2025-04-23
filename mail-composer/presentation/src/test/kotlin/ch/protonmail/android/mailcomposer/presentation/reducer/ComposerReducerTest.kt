@@ -506,27 +506,6 @@ class ComposerReducerTest(
             expectedState = ComposerDraftState.initial().copy(showSendingLoading = true)
         )
 
-        private val OnMessageSendingToSendMessage = TestTransition(
-            name = "Should emit sending error",
-            currentState = aSubmittableState(isSending = true),
-            operation = ComposerAction.OnSendMessage,
-            expectedState = aSubmittableState(
-                isSending = false,
-                closeComposerWithMessageSending = Effect.of(Unit)
-            )
-        )
-
-        private val OnMessageSendingToSendMessageOffline = TestTransition(
-            name = "Should emit sending error",
-            currentState = aSubmittableState(isSending = true),
-            operation = ComposerEvent.OnSendMessageOffline,
-            expectedState = aSubmittableState(
-                isSending = false,
-                closeComposerWithMessageSendingOffline = Effect.of(Unit)
-            )
-        )
-
-
         private val transitions = listOf(
             EmptyToSubmittableToField,
             EmptyToNotSubmittableToField,
@@ -564,16 +543,14 @@ class ComposerReducerTest(
             EmptyToConfirmSendExpiringMessage,
             SubmittableToDiscardDraft,
             SubmittableToDiscardDraftConfirmed,
-            EmptyToOnMessageSending,
-            OnMessageSendingToSendMessage,
-            OnMessageSendingToSendMessageOffline
+            EmptyToOnMessageSending
         )
 
         private fun aSubmittableState(
             sender: SenderUiModel = SenderUiModel(""),
             draftBody: String = "",
             draftDisplayBodyUiModel: DraftDisplayBodyUiModel = DraftDisplayBodyUiModel(""),
-            isSending: Boolean = false,
+            showSendingLoading: Boolean = false,
             error: Effect<TextUiModel> = Effect.empty(),
             closeComposerWithMessageSending: Effect<Unit> = Effect.empty(),
             closeComposerWithMessageSendingOffline: Effect<Unit> = Effect.empty(),
@@ -602,7 +579,7 @@ class ComposerReducerTest(
             confirmSendingWithoutSubject = confirmSendingWithoutSubject,
             changeFocusToField = changeFocusToField,
             isLoading = false,
-            showSendingLoading = isSending,
+            showSendingLoading = showSendingLoading,
             attachmentsFileSizeExceeded = attachmentsFileSizeExceeded,
             attachmentsReEncryptionFailed = attachmentReEncryptionFailed,
             replaceDraftBody = replaceDraftBody,

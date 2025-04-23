@@ -230,7 +230,7 @@ class ComposerReducer @Inject constructor(
     }
 
     private fun updateStateForSendMessage(currentState: ComposerDraftState) =
-        currentState.copy(closeComposerWithMessageSending = Effect.of(Unit), showSendingLoading = false)
+        currentState.copy(closeComposerWithMessageSending = Effect.of(Unit))
 
     private fun updateForConfirmSendWithoutSubject(currentState: ComposerDraftState) = currentState.copy(
         closeComposerWithMessageSending = Effect.of(Unit),
@@ -243,7 +243,7 @@ class ComposerReducer @Inject constructor(
     )
 
     private fun updateStateForSendMessageOffline(currentState: ComposerDraftState) =
-        currentState.copy(closeComposerWithMessageSendingOffline = Effect.of(Unit), showSendingLoading = false)
+        currentState.copy(closeComposerWithMessageSendingOffline = Effect.of(Unit))
 
     private fun updateStateToPaidFeatureMessage(currentState: ComposerDraftState) =
         currentState.copy(premiumFeatureMessage = Effect.of(TextUiModel(R.string.composer_change_sender_paid_feature)))
