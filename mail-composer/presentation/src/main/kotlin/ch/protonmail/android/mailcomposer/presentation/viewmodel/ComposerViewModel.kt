@@ -371,9 +371,8 @@ class ComposerViewModel @AssistedInject constructor(
     }
 
     private suspend fun onCloseComposer(action: ComposerAction.OnCloseComposer): ComposerOperation {
-        val draftFields = buildDraftFields()
         return when {
-            draftFields.areBlank() -> action
+            buildDraftFields().areBlank() -> action
 
             else -> getDraftId().fold(
                 ifLeft = { action },
@@ -391,18 +390,15 @@ class ComposerViewModel @AssistedInject constructor(
         return onSendMessage(action)
     }
 
-    private suspend fun onSendMessage(action: ComposerOperation): ComposerOperation {
-        val draftFields = buildDraftFields()
-        return when {
-            draftFields.areBlank() -> action
-            else -> {
-                sendMessage(primaryUserId())
+    private suspend fun onSendMessage(action: ComposerOperation): ComposerOperation = when {
+        buildDraftFields().areBlank() -> action
+        else -> {
+            sendMessage(primaryUserId())
 
-                if (networkManager.isConnectedToNetwork()) {
-                    ComposerAction.OnSendMessage
-                } else {
-                    ComposerEvent.OnSendMessageOffline
-                }
+            if (networkManager.isConnectedToNetwork()) {
+                ComposerAction.OnSendMessage
+            } else {
+                ComposerEvent.OnSendMessageOffline
             }
         }
     }
