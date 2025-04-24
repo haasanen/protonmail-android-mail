@@ -36,8 +36,8 @@ import ch.protonmail.android.composer.data.worker.SendingStatusWorker
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.composer.data.wrapper.ComposerRecipientListWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
-import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
+import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.Subject
@@ -100,9 +100,9 @@ class RustDraftDataSourceImpl @Inject constructor(
         return openRustDraft(session, messageId.toLocalMessageId())
             .onRight {
                 Timber.d("rust-draft: Draft opened successfully.")
-                draftWrapperMutableStateFlow.value = it
+                draftWrapperMutableStateFlow.value = it.draftWrapper
             }
-            .map { it.toLocalDraft() }
+            .map { it.draftWrapper.toLocalDraft() }
     }
 
     override suspend fun create(userId: UserId, action: DraftAction): Either<DataError, LocalDraft> {

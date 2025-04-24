@@ -35,6 +35,7 @@ import uniffi.proton_mail_uniffi.DecryptedAttachment
 import uniffi.proton_mail_uniffi.DeviceContact
 import uniffi.proton_mail_uniffi.Disposition
 import uniffi.proton_mail_uniffi.DraftSendResult
+import uniffi.proton_mail_uniffi.DraftSyncStatus
 import uniffi.proton_mail_uniffi.ExclusiveLocation
 import uniffi.proton_mail_uniffi.GroupedContacts
 import uniffi.proton_mail_uniffi.Id
@@ -112,3 +113,4 @@ typealias LocalDeviceContact = DeviceContact
 typealias LocalContactSuggestion = ContactSuggestion
 typealias LocalContactSuggestionKind = ContactSuggestionKind
 typealias RemoteMessageId = RemoteId
+typealias LocalDraftSyncStatus = DraftSyncStatus
