@@ -311,14 +311,14 @@ class ComposerViewModel @AssistedInject constructor(
 
                     is ComposerAction.OnAddAttachments -> emitNewStateFor(action)
                     is ComposerAction.OnCloseComposer -> emitNewStateFor(onCloseComposer(action))
-                    is ComposerAction.OnSendMessage -> emitNewStateFor(handleOnSendMessage(action))
-                    is ComposerAction.ConfirmSendingWithoutSubject -> emitNewStateFor(onSendMessage(action))
+                    is ComposerAction.OnSendMessage -> emitNewStateFor(handleOnSendMessage())
+                    is ComposerAction.ConfirmSendingWithoutSubject -> emitNewStateFor(onSendMessage())
                     is ComposerAction.RejectSendingWithoutSubject -> emitNewStateFor(action)
                     is ComposerAction.RemoveAttachment -> onAttachmentsRemoved(action)
                     is ComposerAction.OnSetExpirationTimeRequested -> TODO()
                     is ComposerAction.ExpirationTimeSet -> TODO()
                     is ComposerAction.SendExpiringMessageToExternalRecipientsConfirmed -> emitNewStateFor(
-                        onSendMessage(action)
+                        onSendMessage()
                     )
                     is ComposerAction.DiscardDraft -> emitNewStateFor(action)
                     is ComposerAction.DiscardDraftConfirmed -> onDiscardDraftConfirmed(action)
@@ -362,43 +362,34 @@ class ComposerViewModel @AssistedInject constructor(
     private suspend fun onCloseComposer(action: ComposerAction.OnCloseComposer): ComposerOperation {
         emitNewStateFor(ComposerEvent.OnMessageSending)
 
-        return when {
-            buildDraftFields().areBlank() -> action
-
-            else -> getDraftId().fold(
-                ifLeft = { action },
-                ifRight = { ComposerEvent.OnCloseWithDraftSaved(it) }
-            )
-        }
+        return getDraftId().fold(
+            ifLeft = { action },
+            ifRight = { ComposerEvent.OnCloseWithDraftSaved(it) }
+        )
     }
 
-    private suspend fun handleOnSendMessage(action: ComposerAction.OnSendMessage): ComposerOperation {
+    private suspend fun handleOnSendMessage(): ComposerOperation {
         emitNewStateFor(ComposerEvent.OnMessageSending)
 
         if (currentSubject().value.isBlank()) {
             return ComposerEvent.ConfirmEmptySubject
         }
-        return onSendMessage(action)
+        return onSendMessage()
     }
 
-    private suspend fun onSendMessage(action: ComposerOperation): ComposerOperation {
-
-        if (buildDraftFields().areBlank()) return action
-
-        return sendMessage().fold(
-            ifLeft = {
-                Timber.w("composer: Send message failed. Error: $it")
-                ComposerEvent.OnSendingError(TextUiModel(it.toString()))
-            },
-            ifRight = {
-                return if (networkManager.isConnectedToNetwork()) {
-                    ComposerAction.OnSendMessage
-                } else {
-                    ComposerEvent.OnSendMessageOffline
-                }
+    private suspend fun onSendMessage(): ComposerOperation = sendMessage().fold(
+        ifLeft = {
+            Timber.w("composer: Send message failed. Error: $it")
+            ComposerEvent.OnSendingError(TextUiModel(it.toString()))
+        },
+        ifRight = {
+            return if (networkManager.isConnectedToNetwork()) {
+                ComposerAction.OnSendMessage
+            } else {
+                ComposerEvent.OnSendMessageOffline
             }
-        )
-    }
+        }
+    )
 
     private fun onDiscardDraftConfirmed(action: ComposerAction.DiscardDraftConfirmed) {
         viewModelScope.launch {

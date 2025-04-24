@@ -25,19 +25,4 @@ data class DraftFields(
     val recipientsTo: RecipientsTo,
     val recipientsCc: RecipientsCc,
     val recipientsBcc: RecipientsBcc
-) {
-    /**
-     * Returns true if all of the fields are blank.
-     * Can be used to infer whether these fields should be used to store or discard a draft.
-     */
-    @Deprecated("Not valid anymore due to signature injection performed on rust side. ET-2734 will drop it.")
-    fun areBlank() = haveBlankSubject() &&
-        haveBlankRecipients() &&
-        body.value.isBlank()
-
-    private fun haveBlankSubject() = subject.value.isBlank()
-
-    private fun haveBlankRecipients() = recipientsTo.value.isEmpty() &&
-        recipientsCc.value.isEmpty() &&
-        recipientsBcc.value.isEmpty()
-}
+)

@@ -402,7 +402,7 @@ class ComposerViewModelTest {
     }
 
     @Test
-    fun `should close composer without saving draft when fields are empty and composer is closed`() = runTest {
+    fun `should close composer without mention of saved draft when composer is closed with no draft saved`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         expectNoInputDraftMessageId()
@@ -413,6 +413,7 @@ class ComposerViewModelTest {
         expectContacts()
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
         ignoreRecipientsUpdates()
+        expectedNoDraftSaved()
 
         // When
         viewModel.submit(ComposerAction.OnCloseComposer)
@@ -932,6 +933,10 @@ class ComposerViewModelTest {
 
     private fun expectedMessageId(messageId: () -> MessageId): MessageId = messageId().also {
         coEvery { getDraftId() } returns it.right()
+    }
+
+    private fun expectedNoDraftSaved() {
+        coEvery { getDraftId() } returns DataError.Local.NoDraftId.left()
     }
 
     private fun expectedUserId(userId: () -> UserId): UserId = userId().also {
