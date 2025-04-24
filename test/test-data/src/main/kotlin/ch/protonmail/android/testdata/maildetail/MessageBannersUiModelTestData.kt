@@ -25,11 +25,17 @@ object MessageBannersUiModelTestData {
 
     val messageBannersUiModel = build(
         shouldShowPhishingBanner = true,
+        shouldShowSpamBanner = true,
         expirationBannerDuration = TextUiModel("1 day, 2 hours, 3 minutes")
     )
 
-    fun build(shouldShowPhishingBanner: Boolean, expirationBannerDuration: TextUiModel) = MessageBannersUiModel(
+    fun build(
+        shouldShowPhishingBanner: Boolean,
+        shouldShowSpamBanner: Boolean,
+        expirationBannerDuration: TextUiModel
+    ) = MessageBannersUiModel(
         shouldShowPhishingBanner = shouldShowPhishingBanner,
+        shouldShowSpamBanner = shouldShowSpamBanner,
         expirationBannerText = expirationBannerDuration
     )
 }

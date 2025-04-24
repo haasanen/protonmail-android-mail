@@ -22,5 +22,6 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
 data class MessageBannersUiModel(
     val shouldShowPhishingBanner: Boolean,
+    val shouldShowSpamBanner: Boolean,
     val expirationBannerText: TextUiModel?
 )

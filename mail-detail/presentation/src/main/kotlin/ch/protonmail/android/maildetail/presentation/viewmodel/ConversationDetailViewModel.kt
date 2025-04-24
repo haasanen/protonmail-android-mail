@@ -343,12 +343,7 @@ class ConversationDetailViewModel @Inject constructor(
                 )
             }
 
-            is ConversationDetailViewAction.MarkPhishingMessageAsLegitimate -> viewModelScope.launch {
-                markMessageAsLegitimate(
-                    userId = primaryUserId.first(),
-                    messageId = action.messageId
-                )
-            }
+            is ConversationDetailViewAction.MarkMessageAsLegitimate -> handleMarkMessageAsLegitimate(action.messageId)
         }
     }
 
@@ -1192,6 +1187,16 @@ class ConversationDetailViewModel @Inject constructor(
                 loadAvatarImage(avatar.address, avatar.bimiSelector)
             }
         }
+    }
+
+    private fun handleMarkMessageAsLegitimate(messageId: MessageId) = viewModelScope.launch {
+        markMessageAsLegitimate(
+            userId = primaryUserId.first(),
+            messageId = messageId
+        ).fold(
+            ifLeft = { Timber.e("Failed to mark message $messageId as legitimate") },
+            ifRight = { setOrRefreshMessageBody(MessageIdUiModel(messageId.id)) }
+        )
     }
 
     /**

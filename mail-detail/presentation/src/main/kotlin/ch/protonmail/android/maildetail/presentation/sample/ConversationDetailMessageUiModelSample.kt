@@ -257,6 +257,7 @@ object ConversationDetailMessageUiModelSample {
         ),
         messageBannersUiModel = MessageBannersUiModel(
             shouldShowPhishingBanner = true,
+            shouldShowSpamBanner = false,
             expirationBannerText = null
         ),
         messageBodyUiModel = messageBodyUiModel,

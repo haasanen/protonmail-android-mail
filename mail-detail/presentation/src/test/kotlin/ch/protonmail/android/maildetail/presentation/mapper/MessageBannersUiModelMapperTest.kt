@@ -62,6 +62,28 @@ class MessageBannersUiModelMapperTest {
     }
 
     @Test
+    fun `should map to ui model with a spam banner when banners list contains it`() {
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            listOf(MessageBanner.Spam)
+        )
+
+        // Then
+        assertTrue(result.shouldShowSpamBanner)
+    }
+
+    @Test
+    fun `should map to ui model without a spam banner when banners list does not contain it`() {
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            emptyList()
+        )
+
+        // Then
+        assertFalse(result.shouldShowSpamBanner)
+    }
+
+    @Test
     fun `should map to ui model with expiration banner when banners list contains it`() {
         // Given
         every { resourcesMock.getQuantityString(any(), any(), any()) } returns "formatted duration"

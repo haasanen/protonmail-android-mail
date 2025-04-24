@@ -35,6 +35,7 @@ class MessageBannersUiModelMapper @Inject constructor(@ApplicationContext val co
 
     fun toUiModel(messageBanners: List<MessageBanner>) = MessageBannersUiModel(
         shouldShowPhishingBanner = messageBanners.contains(MessageBanner.PhishingAttempt),
+        shouldShowSpamBanner = messageBanners.contains(MessageBanner.Spam),
         expirationBannerText = (messageBanners.find { it is MessageBanner.Expiry } as? MessageBanner.Expiry)?.let {
             formatExpirationTime(it.expiresAt)
         }

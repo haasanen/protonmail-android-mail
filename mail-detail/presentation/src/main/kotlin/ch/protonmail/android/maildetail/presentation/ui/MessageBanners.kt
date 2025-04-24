@@ -18,7 +18,7 @@ import ch.protonmail.android.design.compose.theme.bodyMediumInverted
 import ch.protonmail.android.mailcommon.presentation.model.string
 
 @Composable
-fun MessageBanners(messageBannersUiModel: MessageBannersUiModel, onMarkPhishingMessageAsLegitimate: () -> Unit) {
+fun MessageBanners(messageBannersUiModel: MessageBannersUiModel, onMarkMessageAsLegitimate: () -> Unit) {
     Column {
         if (messageBannersUiModel.shouldShowPhishingBanner) {
             ProtonBannerWithButton(
@@ -26,12 +26,26 @@ fun MessageBanners(messageBannersUiModel: MessageBannersUiModel, onMarkPhishingM
                 iconTint = ProtonTheme.colors.iconInverted,
                 iconSize = ProtonDimens.IconSize.Medium,
                 text = TextUiModel.TextRes(R.string.message_phishing_banner_text).string(),
-                buttonText = TextUiModel.TextRes(R.string.message_phishing_banner_button_text).string(),
+                buttonText = TextUiModel.TextRes(R.string.message_banner_mark_as_legitimate_button).string(),
                 textStyle = ProtonTheme.typography.bodyMediumInverted,
                 backgroundColor = ProtonTheme.colors.notificationError,
                 buttonBackgroundColor = Color(PHISHING_BANNER_BUTTON_BACKGROUND),
                 borderColorIsBackgroundColor = true,
-                onButtonClicked = onMarkPhishingMessageAsLegitimate
+                onButtonClicked = onMarkMessageAsLegitimate
+            )
+        }
+        if (messageBannersUiModel.shouldShowSpamBanner) {
+            ProtonBannerWithButton(
+                icon = R.drawable.ic_proton_fire,
+                iconTint = ProtonTheme.colors.iconInverted,
+                iconSize = ProtonDimens.IconSize.Medium,
+                text = TextUiModel.TextRes(R.string.message_spam_banner_text).string(),
+                buttonText = TextUiModel.TextRes(R.string.message_banner_mark_as_legitimate_button).string(),
+                textStyle = ProtonTheme.typography.bodyMediumInverted,
+                backgroundColor = ProtonTheme.colors.notificationError,
+                buttonBackgroundColor = Color(PHISHING_BANNER_BUTTON_BACKGROUND),
+                borderColorIsBackgroundColor = true,
+                onButtonClicked = onMarkMessageAsLegitimate
             )
         }
         if (messageBannersUiModel.expirationBannerText != null) {
@@ -62,9 +76,10 @@ fun PreviewMessageBanners() {
         MessageBanners(
             MessageBannersUiModel(
                 shouldShowPhishingBanner = true,
+                shouldShowSpamBanner = true,
                 expirationBannerText = TextUiModel("This message will expire in 1 day, 2 hours, 3 minutes")
             ),
-            onMarkPhishingMessageAsLegitimate = {}
+            onMarkMessageAsLegitimate = {}
         )
     }
 }

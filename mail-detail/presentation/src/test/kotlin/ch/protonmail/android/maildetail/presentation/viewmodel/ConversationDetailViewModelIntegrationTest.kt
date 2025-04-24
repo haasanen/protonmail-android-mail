@@ -2007,7 +2007,7 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
 
-            viewModel.submit(ConversationDetailViewAction.MarkPhishingMessageAsLegitimate(messageId))
+            viewModel.submit(ConversationDetailViewAction.MarkMessageAsLegitimate(messageId))
             advanceUntilIdle()
 
             // Then

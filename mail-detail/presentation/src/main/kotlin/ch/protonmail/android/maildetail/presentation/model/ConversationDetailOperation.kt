@@ -302,5 +302,5 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
         ) : MoveMessage(messageId, mailLabelText)
     }
 
-    data class MarkPhishingMessageAsLegitimate(val messageId: MessageId) : ConversationDetailViewAction
+    data class MarkMessageAsLegitimate(val messageId: MessageId) : ConversationDetailViewAction
 }

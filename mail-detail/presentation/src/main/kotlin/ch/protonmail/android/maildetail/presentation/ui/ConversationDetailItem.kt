@@ -176,7 +176,7 @@ private fun ConversationDetailExpandedItem(
         )
         MessageBanners(
             messageBannersUiModel = uiModel.messageBannersUiModel,
-            onMarkPhishingMessageAsLegitimate = { actions.onMarkPhishingMessageAsLegitimate(uiModel.messageId) }
+            onMarkMessageAsLegitimate = { actions.onMarkMessageAsLegitimate(uiModel.messageId) }
         )
         MessageBody(
             messageBodyUiModel = uiModel.messageBodyUiModel,
@@ -235,7 +235,7 @@ object ConversationDetailItem {
         val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit,
-        val onMarkPhishingMessageAsLegitimate: (MessageIdUiModel) -> Unit
+        val onMarkMessageAsLegitimate: (MessageIdUiModel) -> Unit
     )
 }
 
