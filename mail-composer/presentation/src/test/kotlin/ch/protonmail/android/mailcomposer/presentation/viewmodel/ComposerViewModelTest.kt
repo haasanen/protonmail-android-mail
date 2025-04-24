@@ -30,6 +30,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
+import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
@@ -625,6 +626,30 @@ class ComposerViewModelTest {
     }
 
     @Test
+    fun `emits state with draft not in sync warning when open existing draft from local cache`() = runTest {
+        // Given
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
+        val expectedDraftFields = existingDraftFields
+        val expectedDisplayBody = DraftDisplayBodyUiModel("<html> ${expectedDraftFields.body.value} </html>")
+        expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedDraftId, isDraftSynced = false) {
+            existingDraftFields
+        }
+        expectStoreDraftSubjectSucceeds(expectedDraftFields.subject)
+        expectObservedMessageAttachments()
+        expectInputDraftAction { DraftAction.Compose }
+        expectNoFileShareVia()
+        ignoreRecipientsUpdates()
+
+        // When
+        val actual = viewModel.state.value
+
+        // Then
+        val expectedWarning = Effect.of(TextUiModel(R.string.composer_warning_local_data_shown))
+        assertEquals(expectedWarning, actual.warning)
+    }
+
+    @Test
     fun `emits state with error loading existing draft when open draft fails`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
@@ -891,11 +916,16 @@ class ComposerViewModelTest {
         userId: UserId,
         draftId: MessageId,
         responseDelay: Long = 0L,
+        isDraftSynced: Boolean = true,
         result: () -> DraftFields
     ) = result().also { draftFields ->
         coEvery { openExistingDraft(userId, draftId) } coAnswers {
             delay(responseDelay)
-            draftFields.right()
+            if (isDraftSynced) {
+                DraftFieldsWithSyncStatus.Remote(draftFields)
+            } else {
+                DraftFieldsWithSyncStatus.Local(draftFields)
+            }.right()
         }
     }
 

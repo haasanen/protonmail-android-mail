@@ -32,7 +32,7 @@ class OpenExistingDraftTest {
         val actual = openExistingDraft(userId, messageId)
 
         // Then
-        assertEquals(expected.draftFields.right(), actual)
+        assertEquals(expected.right(), actual)
     }
 
     @Test

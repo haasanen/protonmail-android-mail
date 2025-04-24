@@ -33,6 +33,7 @@ import ch.protonmail.android.mailcommon.domain.model.hasEmailData
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
+import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
@@ -265,19 +266,18 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    @MissingRustApi
-    // isDataRefresh param of event is hardcoded to true
     private suspend fun prefillWithExistingDraft(inputDraftId: String) {
         Timber.d("Opening composer with $inputDraftId")
         emitNewStateFor(ComposerEvent.OpenExistingDraft)
 
         openExistingDraft(primaryUserId(), MessageId(inputDraftId))
-            .onRight { draftFields ->
+            .onRight { draftFieldsWithSyncStatus ->
+                val draftFields = draftFieldsWithSyncStatus.draftFields
                 initComposerFields(draftFields)
                 emitNewStateFor(
                     ComposerEvent.PrefillDraftDataReceived(
                         draftUiModel = draftFields.toDraftUiModel(),
-                        isDataRefreshed = true,
+                        isDataRefreshed = draftFieldsWithSyncStatus is DraftFieldsWithSyncStatus.Remote,
                         isBlockedSendingFromPmAddress = false,
                         isBlockedSendingFromDisabledAddress = false
                     )
