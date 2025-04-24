@@ -30,6 +30,7 @@ import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.Message
+import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -85,7 +86,6 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         primaryUserAddress: String?,
         decryptedMessageBody: DecryptedMessageBody
     ): ConversationDetailMessageUiModel.Expanded {
-        val uiModel = messageBodyUiModelMapper.toUiModel(decryptedMessageBody)
         return ConversationDetailMessageUiModel.Expanded(
             messageId = messageIdUiModelMapper.toUiModel(message.messageId),
             isUnread = message.isUnread,
@@ -95,13 +95,13 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
                 avatarImageState
             ),
             messageDetailFooterUiModel = messageDetailFooterUiModelMapper.toUiModel(message),
-            messageBannersUiModel = messageBannersUiModelMapper.createMessageBannersUiModel(message),
-            requestPhishingLinkConfirmation = message.isPhishingAuto(),
-            messageBodyUiModel = uiModel
+            messageBannersUiModel = messageBannersUiModelMapper.toUiModel(decryptedMessageBody.banners),
+            requestPhishingLinkConfirmation = decryptedMessageBody.banners.contains(MessageBanner.PhishingAttempt),
+            messageBodyUiModel = messageBodyUiModelMapper.toUiModel(decryptedMessageBody)
         )
     }
 
-    suspend fun toUiModel(
+    fun toUiModel(
         messageUiModel: ConversationDetailMessageUiModel.Expanded,
         message: Message,
         avatarImageState: AvatarImageState

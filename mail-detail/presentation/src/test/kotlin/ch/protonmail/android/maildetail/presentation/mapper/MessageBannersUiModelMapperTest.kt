@@ -18,9 +18,10 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
+import java.time.Instant
 import android.content.Context
 import android.content.res.Resources
-import ch.protonmail.android.testdata.message.MessageTestData
+import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import io.mockk.every
 import io.mockk.mockk
 import kotlin.test.Test
@@ -39,10 +40,10 @@ class MessageBannersUiModelMapperTest {
     private val messageBannersUiModelMapper = MessageBannersUiModelMapper(contextMock)
 
     @Test
-    fun `should map to ui model that allows showing a phishing banner when message is auto marked as phishing`() {
+    fun `should map to ui model with a phishing banner when banners list contains it`() {
         // When
-        val result = messageBannersUiModelMapper.createMessageBannersUiModel(
-            MessageTestData.autoPhishingMessage
+        val result = messageBannersUiModelMapper.toUiModel(
+            listOf(MessageBanner.PhishingAttempt)
         )
 
         // Then
@@ -50,10 +51,10 @@ class MessageBannersUiModelMapperTest {
     }
 
     @Test
-    fun `should map to ui model that doesn't allow showing a phishing banner when message isn't marked as phishing`() {
+    fun `should map to ui model without a phishing banner when banners list does not contain it`() {
         // When
-        val result = messageBannersUiModelMapper.createMessageBannersUiModel(
-            MessageTestData.message
+        val result = messageBannersUiModelMapper.toUiModel(
+            emptyList()
         )
 
         // Then
@@ -61,25 +62,14 @@ class MessageBannersUiModelMapperTest {
     }
 
     @Test
-    fun `should map to ui model with no phishing banner when message is phishing but was marked as legitimate`() {
-        // When
-        val result = messageBannersUiModelMapper.createMessageBannersUiModel(
-            MessageTestData.autoPhishingMarkedLegitimateMessage
-        )
-
-        // Then
-        assertFalse(result.shouldShowPhishingBanner)
-    }
-
-    @Test
-    fun `should map to ui model with expiration banner if expiration is in the future`() {
+    fun `should map to ui model with expiration banner when banners list contains it`() {
         // Given
         every { resourcesMock.getQuantityString(any(), any(), any()) } returns "formatted duration"
         every { resourcesMock.getString(any(), any()) } returns "message expires in"
 
         // When
-        val result = messageBannersUiModelMapper.createMessageBannersUiModel(
-            MessageTestData.expiringMessage
+        val result = messageBannersUiModelMapper.toUiModel(
+            listOf(MessageBanner.Expiry(Instant.MAX))
         )
 
         // Then
@@ -87,10 +77,10 @@ class MessageBannersUiModelMapperTest {
     }
 
     @Test
-    fun `should map to ui model with no expiration banner if expiration is in the past`() {
+    fun `should map to ui model with no expiration banner when banners list does not contain it`() {
         // When
-        val result = messageBannersUiModelMapper.createMessageBannersUiModel(
-            MessageTestData.message
+        val result = messageBannersUiModelMapper.toUiModel(
+            emptyList()
         )
 
         // Then

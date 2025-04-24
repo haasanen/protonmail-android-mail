@@ -109,7 +109,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
     private val messageDetailFooterUiModelMapper = spyk(MessageDetailFooterUiModelMapper())
     private val messageIdUiModelMapper = MessageIdUiModelMapper()
     private val messageBannersUiModelMapper = mockk<MessageBannersUiModelMapper> {
-        every { createMessageBannersUiModel(any()) } returns messageBannersUiModel
+        every { toUiModel(any()) } returns messageBannersUiModel
     }
 
     private val messageBodyUiModel = MessageDetailBodyUiModelSample.build(
