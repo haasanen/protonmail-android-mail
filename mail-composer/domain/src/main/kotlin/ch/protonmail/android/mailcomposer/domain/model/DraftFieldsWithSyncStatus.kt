@@ -18,11 +18,11 @@
 
 package ch.protonmail.android.mailcomposer.domain.model
 
-sealed interface DecryptedDraftFields {
+sealed interface DraftFieldsWithSyncStatus {
 
     val draftFields: DraftFields
 
-    data class Remote(override val draftFields: DraftFields) : DecryptedDraftFields
+    data class Remote(override val draftFields: DraftFields) : DraftFieldsWithSyncStatus
 
-    data class Local(override val draftFields: DraftFields) : DecryptedDraftFields
+    data class Local(override val draftFields: DraftFields) : DraftFieldsWithSyncStatus
 }
