@@ -236,6 +236,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 Column(
                     modifier = Modifier
                         .padding(paddingValues)
+                        .fillMaxSize()
                         .verticalScroll(scrollState)
                         .onGloballyPositioned { coordinates ->
                             columnBounds = coordinates.boundsInWindow()

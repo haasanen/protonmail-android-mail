@@ -150,7 +150,7 @@ fun ComposerChipsListField(
         if (contactSuggestionState.areSuggestionsExpanded &&
             contactSuggestionState.contactSuggestionItems.isNotEmpty()
         ) {
-            HorizontalDivider(modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Large))
+            HorizontalDivider(color = ProtonTheme.colors.backgroundInvertedBorder)
 
             ContactSuggestionsList(
                 modifier = Modifier
