@@ -283,57 +283,6 @@ class RustDraftDataSourceImplTest {
     }
 
     @Test
-    fun `save draft returns error when no draft instance exists`() = runTest {
-        // Given
-        val expected = DataError.Local.SaveDraftError.NoRustDraftAvailable
-
-        // When
-        val actual = dataSource.save()
-
-        // Then
-        assertEquals(actual, expected.left())
-    }
-
-    @Test
-    fun `save draft calls rust draft wrapper when draft instance exists`() = runTest {
-        // Given
-        val messageId = MessageIdSample.RustJobApplication
-        val draft = LocalDraftTestData.JobApplicationDraft
-        val expectedDraftWrapper = expectDraftWrapperReturns(
-            draft.subject,
-            draft.sender,
-            draft.body,
-            messageId = messageId.toLocalMessageId()
-        )
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
-
-        // When
-        val actual = dataSource.save()
-
-        // Then
-        assertEquals(actual, Unit.right())
-    }
-
-    @Test
-    fun `save draft returns error when rust draft wrapper call fails`() = runTest {
-        // Given
-        val draft = LocalDraftTestData.JobApplicationDraft
-        val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Error(
-            DraftSaveSendError.Reason(DraftSaveSendErrorReason.NoRecipients)
-        )
-        val expected = DataError.Local.SendDraftError.InvalidRecipient
-
-        // When
-        val actual = dataSource.save()
-
-        // Then
-        assertEquals(actual, expected.left())
-    }
-
-    @Test
     fun `save subject calls rust draft wrapper to set subject and save`() = runTest {
         // Given
         val messageId = MessageIdSample.RustJobApplication

@@ -114,31 +114,6 @@ class DraftRepositoryImplTest {
     }
 
     @Test
-    fun `returns success when save draft succeeds`() = runTest {
-        // Given
-        coEvery { draftDataSource.save() } returns Unit.right()
-
-        // When
-        val actual = draftRepository.save()
-
-        // Then
-        assertEquals(Unit.right(), actual)
-    }
-
-    @Test
-    fun `returns error when save draft fails`() = runTest {
-        // Given
-        val expected = DataError.Local.SaveDraftError.Unknown
-        coEvery { draftDataSource.save() } returns expected.left()
-
-        // When
-        val actual = draftRepository.save()
-
-        // Then
-        assertEquals(expected.left(), actual)
-    }
-
-    @Test
     fun `returns success when save draft subject succeeds`() = runTest {
         // Given
         val subject = Subject("test subject")

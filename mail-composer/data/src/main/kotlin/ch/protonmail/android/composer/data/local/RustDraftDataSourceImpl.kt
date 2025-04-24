@@ -133,24 +133,17 @@ class RustDraftDataSourceImpl @Inject constructor(
         return discardRustDraft(session, messageId.toLocalMessageId())
     }
 
-    override suspend fun save(): Either<DataError, Unit> = withValidRustDraftWrapper {
-        return@withValidRustDraftWrapper when (val result = it.save()) {
-            is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
-            VoidDraftSaveSendResult.Ok -> Unit.right()
-        }
-    }
-
     override suspend fun saveSubject(subject: Subject): Either<DataError, Unit> = withValidRustDraftWrapper {
         return@withValidRustDraftWrapper when (val result = it.setSubject(subject.value)) {
             is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
-            VoidDraftSaveSendResult.Ok -> save()
+            VoidDraftSaveSendResult.Ok -> Unit.right()
         }
     }
 
     override suspend fun saveBody(body: DraftBody): Either<DataError, Unit> = withValidRustDraftWrapper {
         return@withValidRustDraftWrapper when (val result = it.setBody(body.value)) {
             is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
-            VoidDraftSaveSendResult.Ok -> save()
+            VoidDraftSaveSendResult.Ok -> Unit.right()
         }
     }
 
