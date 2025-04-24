@@ -21,9 +21,11 @@ package ch.protonmail.android.composer.data.repository
 import arrow.core.Either
 import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.composer.data.mapper.toDraftFields
+import ch.protonmail.android.composer.data.mapper.toDraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
+import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -38,8 +40,8 @@ class DraftRepositoryImpl @Inject constructor(
 
     override suspend fun getMessageId(): Either<DataError, MessageId> = draftDataSource.getMessageId()
 
-    override suspend fun openDraft(userId: UserId, messageId: MessageId): Either<DataError, DraftFields> =
-        draftDataSource.open(userId, messageId).map { it.toDraftFields() }
+    override suspend fun openDraft(userId: UserId, messageId: MessageId): Either<DataError, DraftFieldsWithSyncStatus> =
+        draftDataSource.open(userId, messageId).map { it.toDraftFieldsWithSyncStatus() }
 
     override suspend fun createDraft(userId: UserId, action: DraftAction): Either<DataError, DraftFields> =
         draftDataSource.create(userId, action).map { it.toDraftFields() }

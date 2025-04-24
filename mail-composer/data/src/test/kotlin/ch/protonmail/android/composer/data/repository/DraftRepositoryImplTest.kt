@@ -2,10 +2,12 @@ package ch.protonmail.android.composer.data.repository
 
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.composer.data.local.LocalDraftWithSyncStatus
 import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -28,14 +30,14 @@ class DraftRepositoryImplTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
-        val localFields = LocalDraftTestData.BasicLocalDraft
-        coEvery { draftDataSource.open(userId, messageId) } returns localFields.right()
+        val localFieldsWithSyncStatus = LocalDraftWithSyncStatus.Local(LocalDraftTestData.BasicLocalDraft)
+        coEvery { draftDataSource.open(userId, messageId) } returns localFieldsWithSyncStatus.right()
 
         // When
         val actual = draftRepository.openDraft(userId, messageId)
 
         // Then
-        val expected = DraftFieldsTestData.BasicDraftFields
+        val expected = DraftFieldsWithSyncStatus.Local(DraftFieldsTestData.BasicDraftFields)
         assertEquals(expected.right(), actual)
     }
 

@@ -19,13 +19,16 @@
 package ch.protonmail.android.composer.data.mapper
 
 import ch.protonmail.android.composer.data.local.LocalDraft
+import ch.protonmail.android.composer.data.local.LocalDraftWithSyncStatus
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
+import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
 import ch.protonmail.android.mailcommon.data.mapper.LocalComposerRecipient
 import ch.protonmail.android.mailcommon.data.mapper.LocalDraftSendResult
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
+import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
@@ -43,9 +46,15 @@ import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.DraftSaveSendError
 import uniffi.proton_mail_uniffi.DraftSaveSendErrorReason
 import uniffi.proton_mail_uniffi.DraftSendStatus
+import uniffi.proton_mail_uniffi.DraftSyncStatus
 import uniffi.proton_mail_uniffi.SingleRecipientEntry
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
+
+fun LocalDraftWithSyncStatus.toDraftFieldsWithSyncStatus() = when (this) {
+    is LocalDraftWithSyncStatus.Local -> DraftFieldsWithSyncStatus.Local(this.localDraft.toDraftFields())
+    is LocalDraftWithSyncStatus.Remote -> DraftFieldsWithSyncStatus.Remote(this.localDraft.toDraftFields())
+}
 
 fun LocalDraft.toDraftFields() = DraftFields(
     sender = SenderEmail(this.sender),
@@ -55,6 +64,11 @@ fun LocalDraft.toDraftFields() = DraftFields(
     recipientsCc = RecipientsCc(this.recipientsCc.toRecipients()),
     recipientsBcc = RecipientsBcc(this.recipientsBcc.toRecipients())
 )
+
+fun DraftWrapperWithSyncStatus.toLocalDraftWithSyncStatus() = when (this.syncStatus) {
+    DraftSyncStatus.CACHED -> LocalDraftWithSyncStatus.Local(this.draftWrapper.toLocalDraft())
+    DraftSyncStatus.SYNCED -> LocalDraftWithSyncStatus.Remote(this.draftWrapper.toLocalDraft())
+}
 
 fun DraftWrapper.toLocalDraft() = LocalDraft(
     subject = this.subject(),

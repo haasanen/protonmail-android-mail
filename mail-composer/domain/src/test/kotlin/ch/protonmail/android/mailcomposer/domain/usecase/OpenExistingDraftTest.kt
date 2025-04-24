@@ -4,6 +4,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.testdata.composer.DraftFieldsTestData
@@ -24,14 +25,14 @@ class OpenExistingDraftTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
-        val expected = DraftFieldsTestData.BasicDraftFields
+        val expected = DraftFieldsWithSyncStatus.Remote(DraftFieldsTestData.BasicDraftFields)
         coEvery { draftRepository.openDraft(userId, messageId) } returns expected.right()
 
         // When
         val actual = openExistingDraft(userId, messageId)
 
         // Then
-        assertEquals(expected.right(), actual)
+        assertEquals(expected.draftFields.right(), actual)
     }
 
     @Test

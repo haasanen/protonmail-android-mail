@@ -26,6 +26,7 @@ import arrow.core.raise.either
 import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toDraftCreateMode
 import ch.protonmail.android.composer.data.mapper.toLocalDraft
+import ch.protonmail.android.composer.data.mapper.toLocalDraftWithSyncStatus
 import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.mapper.toSingleRecipients
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
@@ -89,7 +90,7 @@ class RustDraftDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun open(userId: UserId, messageId: MessageId): Either<DataError, LocalDraft> {
+    override suspend fun open(userId: UserId, messageId: MessageId): Either<DataError, LocalDraftWithSyncStatus> {
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-draft: Trying to open draft with null session; Failing.")
@@ -102,7 +103,7 @@ class RustDraftDataSourceImpl @Inject constructor(
                 Timber.d("rust-draft: Draft opened successfully.")
                 draftWrapperMutableStateFlow.value = it.draftWrapper
             }
-            .map { it.draftWrapper.toLocalDraft() }
+            .map { it.toLocalDraftWithSyncStatus() }
     }
 
     override suspend fun create(userId: UserId, action: DraftAction): Either<DataError, LocalDraft> {

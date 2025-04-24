@@ -12,7 +12,6 @@ import ch.protonmail.android.composer.data.worker.SendingStatusWorker
 import ch.protonmail.android.composer.data.wrapper.ComposerRecipientListWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
-import ch.protonmail.android.mailcommon.data.mapper.LocalDraftSyncStatus
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -44,6 +43,7 @@ import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
 import uniffi.proton_mail_uniffi.DraftSaveSendError
 import uniffi.proton_mail_uniffi.DraftSaveSendErrorReason
+import uniffi.proton_mail_uniffi.DraftSyncStatus
 import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -89,20 +89,20 @@ class RustDraftDataSourceImplTest {
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.RustJobApplication
         val localMessageId = MessageIdSample.RustJobApplication.toLocalMessageId()
-        val expected = LocalDraftTestData.JobApplicationDraftWithRecipients
+        val expectedSyncStatus = DraftSyncStatus.SYNCED
+        val expected = LocalDraftWithSyncStatus.Remote(LocalDraftTestData.JobApplicationDraftWithRecipients)
         val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
         val ccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
         val bccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
         val expectedDraftWrapper = expectDraftWrapperReturns(
-            expected.subject,
-            expected.sender,
-            expected.body,
+            expected.localDraft.subject,
+            expected.localDraft.sender,
+            expected.localDraft.body,
             toRecipientsWrapperMock,
             ccRecipientsWrapperMock,
             bccRecipientsWrapperMock,
             localMessageId
         )
-        val expectedSyncStatus = LocalDraftSyncStatus.SYNCED
         val expectedWrapperWithSyncStatus = DraftWrapperWithSyncStatus(expectedDraftWrapper, expectedSyncStatus)
         coEvery { toRecipientsWrapperMock.recipients() } returns listOf(LocalComposerRecipientTestData.Alice)
         coEvery { ccRecipientsWrapperMock.recipients() } returns listOf(LocalComposerRecipientTestData.Bob)
@@ -135,8 +135,7 @@ class RustDraftDataSourceImplTest {
             recipientsWrapperMock,
             recipientsWrapperMock
         )
-        val expectedSyncStatus = LocalDraftSyncStatus.SYNCED
-        val expectedWrapperWithSyncStatus = DraftWrapperWithSyncStatus(expectedDraftWrapper, expectedSyncStatus)
+        val expectedWrapperWithSyncStatus = DraftWrapperWithSyncStatus(expectedDraftWrapper, DraftSyncStatus.SYNCED)
         coEvery { recipientsWrapperMock.recipients() } returns emptyList()
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { openRustDraft(mockUserSession, localMessageId) } returns expectedWrapperWithSyncStatus.right()

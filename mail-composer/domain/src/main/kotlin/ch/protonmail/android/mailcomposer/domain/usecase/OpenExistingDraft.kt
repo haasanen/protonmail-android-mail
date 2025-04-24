@@ -32,4 +32,5 @@ class OpenExistingDraft @Inject constructor(
 
     suspend operator fun invoke(userId: UserId, draftId: MessageId): Either<DataError, DraftFields> =
         draftRepository.openDraft(userId, draftId)
+            .map { it.draftFields }
 }

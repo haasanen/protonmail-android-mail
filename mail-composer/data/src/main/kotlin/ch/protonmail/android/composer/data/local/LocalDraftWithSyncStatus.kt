@@ -16,11 +16,17 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.composer.data.wrapper
+package ch.protonmail.android.composer.data.local
 
-import uniffi.proton_mail_uniffi.DraftSyncStatus
+/**
+ * When opening a draft, carries the info whether it's in sync with remote API
+ * (ie. can be edited safely) or whether it's not (ie. edits locally will override what's on API)
+ */
+sealed interface LocalDraftWithSyncStatus {
 
-data class DraftWrapperWithSyncStatus(
-    val draftWrapper: DraftWrapper,
-    val syncStatus: DraftSyncStatus
-)
+    val localDraft: LocalDraft
+
+    data class Remote(override val localDraft: LocalDraft) : LocalDraftWithSyncStatus
+
+    data class Local(override val localDraft: LocalDraft) : LocalDraftWithSyncStatus
+}
