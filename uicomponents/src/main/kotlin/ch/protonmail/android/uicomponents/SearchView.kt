@@ -151,11 +151,11 @@ fun SearchView(
                 }
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_proton_close),
+                    painter = painterResource(id = R.drawable.ic_proton_cross),
                     contentDescription = stringResource(
                         id = parameters.closeButtonContentDescription
                     ),
-                    tint = ProtonTheme.colors.textNorm
+                    tint = ProtonTheme.colors.iconWeak
                 )
             }
         }
