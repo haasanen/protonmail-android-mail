@@ -22,11 +22,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import me.proton.android.core.auth.presentation.IODispatcher
 import me.proton.android.core.auth.presentation.challenge.GetChallengePayload
 import me.proton.core.challenge.data.frame.ChallengeFrame
 import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
@@ -44,7 +47,8 @@ class LoginViewModel @Inject internal constructor(
     @ApplicationContext
     private val context: Context,
     private val getChallengePayload: GetChallengePayload,
-    private val sessionInterface: MailSession
+    private val sessionInterface: MailSession,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val loginFlowResult = viewModelScope.async { sessionInterface.newLoginFlow() }
@@ -80,7 +84,7 @@ class LoginViewModel @Inject internal constructor(
         username: String,
         usernameFrameDetails: ChallengeFrameDetails,
         password: String
-    ) {
+    ) = withContext(ioDispatcher) {
         mutableState.emit(LoginViewState.LoggingIn)
 
         val payload = getChallengePayload(listOfNotNull(ChallengeFrame.Username.from(context, usernameFrameDetails)))
