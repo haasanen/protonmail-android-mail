@@ -47,7 +47,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ch.protonmail.android.design.compose.component.appbar.ProtonLargeTopAppBar
+import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.presentation.R
@@ -59,6 +59,7 @@ import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData
@@ -181,7 +182,7 @@ fun ContactSearchTopBar(
     onSearchValueClear: () -> Unit
 ) {
 
-    ProtonLargeTopAppBar(
+    ProtonTopAppBar(
         modifier = modifier,
         backgroundColor = ProtonTheme.colors.backgroundSecondary,
         title = {
@@ -192,7 +193,7 @@ fun ContactSearchTopBar(
                     closeButtonContentDescription = R.string.contact_search_content_description
                 ),
                 modifier = Modifier
-                    .padding(end = ProtonDimens.Spacing.Large)
+                    .padding(end = ProtonDimens.Spacing.Small)
                     .fillMaxWidth(),
                 actions = SearchView.Actions(
                     onClearSearchQuery = { onSearchValueClear() },
@@ -213,7 +214,8 @@ fun ContactSearchTopBar(
                     contentDescription = stringResource(id = R.string.contact_search_arrow_back_content_description)
                 )
             }
-        }
+        },
+        minHeight = MailDimens.Contacts.SearchTopBarHeight
     )
 }
 
