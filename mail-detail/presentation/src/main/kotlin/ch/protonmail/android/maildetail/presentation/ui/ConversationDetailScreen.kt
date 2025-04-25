@@ -466,6 +466,9 @@ fun ConversationDetailScreen(
                 },
                 onMarkMessageAsLegitimate = {
                     viewModel.submit(ConversationDetailViewAction.MarkMessageAsLegitimate(MessageId(it.id)))
+                },
+                onUnblockSender = { messageId, email ->
+                    viewModel.submit(ConversationDetailViewAction.UnblockSender(messageId, email))
                 }
             ),
             scrollToMessageId = state.scrollToMessage?.id
@@ -659,7 +662,8 @@ fun ConversationDetailScreen(
                     onAvatarClicked = actions.onAvatarClicked,
                     onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested,
                     onParticipantClicked = actions.onParticipantClicked,
-                    onMarkMessageAsLegitimate = actions.onMarkMessageAsLegitimate
+                    onMarkMessageAsLegitimate = actions.onMarkMessageAsLegitimate,
+                    onUnblockSender = actions.onUnblockSender
                 )
                 MessagesContentWithHiddenEdges(
                     uiModels = state.messagesState.messages,
@@ -983,7 +987,8 @@ object ConversationDetailScreen {
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit,
         val onTrashedMessagesBannerClick: () -> Unit,
-        val onMarkMessageAsLegitimate: (MessageIdUiModel) -> Unit
+        val onMarkMessageAsLegitimate: (MessageIdUiModel) -> Unit,
+        val onUnblockSender: (MessageIdUiModel, String) -> Unit
     ) {
 
         companion object {
@@ -1031,7 +1036,8 @@ object ConversationDetailScreen {
                 onAvatarImageLoadRequested = {},
                 onParticipantClicked = { _, _ -> },
                 onTrashedMessagesBannerClick = {},
-                onMarkMessageAsLegitimate = {}
+                onMarkMessageAsLegitimate = {},
+                onUnblockSender = { _, _ -> }
             )
         }
     }

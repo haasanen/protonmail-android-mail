@@ -303,4 +303,5 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     }
 
     data class MarkMessageAsLegitimate(val messageId: MessageId) : ConversationDetailViewAction
+    data class UnblockSender(val messageId: MessageIdUiModel, val email: String) : ConversationDetailViewAction
 }

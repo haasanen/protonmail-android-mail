@@ -78,6 +78,8 @@
     <string name="message_phishing_banner_text">Our system flagged this message as a phishing attempt. Please check that it is legitimate.</string>
     <string name="message_spam_banner_text">This email has failed its domain\'s authentication requirements. It may be spoofed or improperly forwarded.</string>
     <string name="message_banner_mark_as_legitimate_button">Mark as legitimate</string>
+    <string name="message_blocked_sender_banner_text">This sender has been blocked in the past.</string>
+    <string name="message_blocked_sender_button_text">Unblock</string>
     <string name="message_expiration_banner_text">This message will expire in %1$s</string>
     <!-- External link confirmation dialog -->
     <string name="external_link_confirmation_dialog_text">You are about to leave the app and navigate to:</string>

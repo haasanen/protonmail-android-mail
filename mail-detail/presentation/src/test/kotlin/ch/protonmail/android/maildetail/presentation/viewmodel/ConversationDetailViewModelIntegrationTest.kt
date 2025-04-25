@@ -78,6 +78,7 @@ import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessag
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
+import ch.protonmail.android.maildetail.domain.usecase.UnblockSender
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.mapper.ActionResultMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
@@ -101,6 +102,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailVie
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestScrollTo
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ShowAllAttachmentsForMessage
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
+import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDeleteDialogReducer
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailMessagesReducer
@@ -314,6 +316,7 @@ class ConversationDetailViewModelIntegrationTest {
         } returns ParticipantAvatarSample.ebay
     }
     private val markMessageAsLegitimate = mockk<MarkMessageAsLegitimate>()
+    private val unblockSender = mockk<UnblockSender>()
 
     private val messageIdUiModelMapper = MessageIdUiModelMapper()
     private val attachmentMetadataUiModelMapper = AttachmentMetadataUiModelMapper()
@@ -2017,6 +2020,43 @@ class ConversationDetailViewModelIntegrationTest {
         }
     }
 
+    @Test
+    fun `should call use case when unblocking sender`() = runTest {
+        // Given
+        val email = "abc@pm.me"
+        val messageId = MessageSample.Invoice.messageId
+        val messageIdUiModel = MessageIdUiModel(messageId.id)
+        val messages = ConversationMessages(
+            nonEmptyListOf(
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
+            ),
+            MessageSample.AugWeatherForecast.messageId
+        )
+        val labelId = SystemLabelId.Archive.labelId
+        coEvery { observeConversationMessages(userId, any(), labelId) } returns flowOf(messages.right())
+        coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.Invoice.right())
+        coEvery { unblockSender(userId, email) } returns Unit.right()
+
+        // When
+        val viewModel = buildConversationDetailViewModel()
+
+        viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
+
+        viewModel.state.test {
+            skipItems(4)
+
+            viewModel.submit(ConversationDetailViewAction.UnblockSender(messageIdUiModel, email))
+            advanceUntilIdle()
+
+            // Then
+            coVerify { unblockSender(userId, email) }
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
     @Suppress("LongParameterList")
     private fun buildConversationDetailViewModel(
         observePrimaryUser: ObservePrimaryUserId = observePrimaryUserId,
@@ -2089,6 +2129,7 @@ class ConversationDetailViewModelIntegrationTest {
         observeAvatarImageStates = observeAvatarImgStates,
         getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
         markMessageAsLegitimate = markMessageAsLegitimate,
+        unblockSender = unblockSender,
         isComposerEnabled = flowOf(true)
     )
 

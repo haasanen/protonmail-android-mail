@@ -64,6 +64,7 @@ import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessag
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
+import ch.protonmail.android.maildetail.domain.usecase.UnblockSender
 import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMetadataUiModelMapper
@@ -302,6 +303,7 @@ class ConversationDetailViewModelTest {
     }
     private val getMessagesInSameExclusiveLocation = mockk<GetMessagesInSameExclusiveLocation>()
     private val markMessageAsLegitimate = mockk<MarkMessageAsLegitimate>()
+    private val unblockSender = mockk<UnblockSender>()
 
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
@@ -350,6 +352,7 @@ class ConversationDetailViewModelTest {
             observeAvatarImageStates = observeAvatarImageStates,
             getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
             markMessageAsLegitimate = markMessageAsLegitimate,
+            unblockSender = unblockSender,
             isComposerEnabled = flowOf(true)
         )
     }

@@ -84,6 +84,28 @@ class MessageBannersUiModelMapperTest {
     }
 
     @Test
+    fun `should map to ui model with a blocked sender banner when banners list contains it`() {
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            listOf(MessageBanner.BlockedSender)
+        )
+
+        // Then
+        assertTrue(result.shouldShowBlockedSenderBanner)
+    }
+
+    @Test
+    fun `should map to ui model without a blocked sender banner when banners list does not contain it`() {
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            emptyList()
+        )
+
+        // Then
+        assertFalse(result.shouldShowBlockedSenderBanner)
+    }
+
+    @Test
     fun `should map to ui model with expiration banner when banners list contains it`() {
         // Given
         every { resourcesMock.getQuantityString(any(), any(), any()) } returns "formatted duration"

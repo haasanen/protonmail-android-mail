@@ -55,6 +55,7 @@ import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessag
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
+import ch.protonmail.android.maildetail.domain.usecase.UnblockSender
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMetadataUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.MessageIdUiModelMapper
@@ -193,6 +194,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val observeAvatarImageStates: ObserveAvatarImageStates,
     private val getMessagesInSameExclusiveLocation: GetMessagesInSameExclusiveLocation,
     private val markMessageAsLegitimate: MarkMessageAsLegitimate,
+    private val unblockSender: UnblockSender,
     @ComposerEnabled val isComposerEnabled: Flow<Boolean>
 ) : ViewModel() {
 
@@ -344,6 +346,8 @@ class ConversationDetailViewModel @Inject constructor(
             }
 
             is ConversationDetailViewAction.MarkMessageAsLegitimate -> handleMarkMessageAsLegitimate(action.messageId)
+
+            is ConversationDetailViewAction.UnblockSender -> handleUnblockSender(action.messageId, action.email)
         }
     }
 
@@ -1194,9 +1198,21 @@ class ConversationDetailViewModel @Inject constructor(
             userId = primaryUserId.first(),
             messageId = messageId
         ).fold(
-            ifLeft = { Timber.e("Failed to mark message $messageId as legitimate") },
+            ifLeft = { Timber.e("Failed to mark message ${messageId.id} as legitimate") },
             ifRight = { setOrRefreshMessageBody(MessageIdUiModel(messageId.id)) }
         )
+    }
+
+    private fun handleUnblockSender(messageId: MessageIdUiModel, email: String) = viewModelScope.launch {
+        viewModelScope.launch {
+            unblockSender(
+                userId = primaryUserId.first(),
+                email = email
+            ).fold(
+                ifLeft = { Timber.e("Failed to unblock sender in message ${messageId.id}") },
+                ifRight = { setOrRefreshMessageBody(messageId) }
+            )
+        }
     }
 
     /**

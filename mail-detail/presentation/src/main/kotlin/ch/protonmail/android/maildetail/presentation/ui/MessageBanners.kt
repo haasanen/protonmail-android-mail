@@ -18,7 +18,11 @@ import ch.protonmail.android.design.compose.theme.bodyMediumInverted
 import ch.protonmail.android.mailcommon.presentation.model.string
 
 @Composable
-fun MessageBanners(messageBannersUiModel: MessageBannersUiModel, onMarkMessageAsLegitimate: () -> Unit) {
+fun MessageBanners(
+    messageBannersUiModel: MessageBannersUiModel,
+    onMarkMessageAsLegitimate: () -> Unit,
+    onUnblockSender: () -> Unit
+) {
     Column {
         if (messageBannersUiModel.shouldShowPhishingBanner) {
             ProtonBannerWithButton(
@@ -46,6 +50,14 @@ fun MessageBanners(messageBannersUiModel: MessageBannersUiModel, onMarkMessageAs
                 buttonBackgroundColor = Color(PHISHING_BANNER_BUTTON_BACKGROUND),
                 borderColorIsBackgroundColor = true,
                 onButtonClicked = onMarkMessageAsLegitimate
+            )
+        }
+        if (messageBannersUiModel.shouldShowBlockedSenderBanner) {
+            ProtonBannerWithButton(
+                bannerText = TextUiModel.TextRes(R.string.message_blocked_sender_banner_text).string(),
+                buttonText = TextUiModel.TextRes(R.string.message_blocked_sender_button_text).string(),
+                icon = R.drawable.ic_proton_circle_slash,
+                onButtonClicked = onUnblockSender
             )
         }
         if (messageBannersUiModel.expirationBannerText != null) {
@@ -77,9 +89,11 @@ fun PreviewMessageBanners() {
             MessageBannersUiModel(
                 shouldShowPhishingBanner = true,
                 shouldShowSpamBanner = true,
+                shouldShowBlockedSenderBanner = true,
                 expirationBannerText = TextUiModel("This message will expire in 1 day, 2 hours, 3 minutes")
             ),
-            onMarkMessageAsLegitimate = {}
+            onMarkMessageAsLegitimate = {},
+            onUnblockSender = {}
         )
     }
 }
