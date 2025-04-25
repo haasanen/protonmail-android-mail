@@ -96,17 +96,10 @@ object MailDimens {
         val BottomButtonSize = 24.dp
     }
 
-    val ContactAvatarSize = 80.dp
-    val ContactAvatarCornerRadius = 30.dp
-
-    val ContactActionSize = 52.dp
-    val ContactActionCornerRadius = 16.dp
-
-    val ContactGroupLabelPaddingHorizontal = 6.dp
-    val ContactGroupLabelPaddingVertical = 2.dp
-    val ContactGroupLabelCornerRadius = 6.dp
-
-    val ContactFormTypedFieldPaddingEnd = 56.dp
+    object Contacts {
+        val SearchTopBarHeight = 72.dp
+        val AvatarSize = 40.dp
+    }
 
     val PickerDialogItemVerticalPadding = 12.dp
 
@@ -122,10 +115,6 @@ object MailDimens {
     }
 
     val DialogCardRadius = 16.dp
-
-    object ContactActions {
-        val AvatarSize = 40.dp
-    }
 
     val NarrowScreenWidth = 360.dp
 

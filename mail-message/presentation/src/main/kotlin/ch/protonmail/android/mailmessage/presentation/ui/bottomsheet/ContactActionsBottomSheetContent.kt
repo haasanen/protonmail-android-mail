@@ -138,8 +138,8 @@ fun ContactActionsBottomSheetHeader(participant: Participant, avatarUiModel: Ava
                 avatarUiModel = avatarUiModel,
                 onClick = { },
                 clickable = false,
-                outerContainerSize = MailDimens.ContactActions.AvatarSize,
-                avatarSize = MailDimens.ContactActions.AvatarSize,
+                outerContainerSize = MailDimens.Contacts.AvatarSize,
+                avatarSize = MailDimens.Contacts.AvatarSize,
                 backgroundShape = CircleShape
             )
         }
