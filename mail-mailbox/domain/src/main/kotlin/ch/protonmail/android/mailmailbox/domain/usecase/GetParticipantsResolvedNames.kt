@@ -23,20 +23,22 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
+import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class GetParticipantsResolvedNames @Inject constructor(
-    private val resolveParticipantName: ResolveParticipantName
+    private val resolveParticipantName: ResolveParticipantName,
+    private val shouldShowRecipients: ShouldShowRecipients
 ) {
 
     @MissingRustApi
     // Need rust to expose when to display recipients and when senders
-    operator fun invoke(
+    suspend operator fun invoke(
+        userId: UserId,
         mailboxItem: MailboxItem
     ): ParticipantsResolvedNamesResult {
-        val shouldDisplayRecipients = false
 
-        return if (shouldDisplayRecipients && mailboxItem.type == MailboxItemType.Message) {
+        return if (shouldShowRecipients(userId) && mailboxItem.type == MailboxItemType.Message) {
             ParticipantsResolvedNamesResult.Recipients(
                 mailboxItem.recipients.map { resolveParticipantName(it) }
             )

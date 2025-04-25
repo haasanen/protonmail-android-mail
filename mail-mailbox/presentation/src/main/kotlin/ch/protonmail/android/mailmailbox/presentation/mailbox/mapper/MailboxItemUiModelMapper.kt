@@ -60,7 +60,7 @@ class MailboxItemUiModelMapper @Inject constructor(
         folderColorSettings: FolderColorSettings,
         isShowingSearchResults: Boolean
     ): MailboxItemUiModel {
-        val participantsResolvedNamesResult = getParticipantsResolvedNames(mailboxItem)
+        val participantsResolvedNamesResult = getParticipantsResolvedNames(userId, mailboxItem)
 
         return MailboxItemUiModel(
             avatar = mailboxAvatarUiModelMapper(mailboxItem),

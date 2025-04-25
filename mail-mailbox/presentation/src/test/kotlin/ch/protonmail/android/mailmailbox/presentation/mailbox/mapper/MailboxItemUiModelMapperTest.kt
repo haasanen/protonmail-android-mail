@@ -91,8 +91,8 @@ class MailboxItemUiModelMapperTest {
     private val formatMailboxItemTime: FormatShortTime = mockk()
 
     private val getParticipantsResolvedNames = mockk<GetParticipantsResolvedNames> {
-        every {
-            this@mockk.invoke(any())
+        coEvery {
+            this@mockk.invoke(userId, any())
         } returns ParticipantsResolvedNamesResult.Senders(
             listOf(
                 ResolveParticipantNameResult(
@@ -189,8 +189,8 @@ class MailboxItemUiModelMapperTest {
                 ParticipantUiModel("display name", shouldShowOfficialBadge = true)
             ).toImmutableList()
         )
-        every {
-            getParticipantsResolvedNames.invoke(mailboxItem)
+        coEvery {
+            getParticipantsResolvedNames.invoke(userId, mailboxItem)
         } returns ParticipantsResolvedNamesResult.Recipients(resolvedNames)
         // When
         val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
@@ -206,8 +206,8 @@ class MailboxItemUiModelMapperTest {
         val expected = ParticipantsUiModel.NoParticipants(
             TextUiModel(ch.protonmail.android.mailmailbox.presentation.R.string.mailbox_default_recipient)
         )
-        every {
-            getParticipantsResolvedNames.invoke(mailboxItem)
+        coEvery {
+            getParticipantsResolvedNames.invoke(userId, mailboxItem)
         } returns ParticipantsResolvedNamesResult.Recipients(resolvedNames)
         // When
         val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
@@ -223,8 +223,8 @@ class MailboxItemUiModelMapperTest {
         val expected = ParticipantsUiModel.NoParticipants(
             TextUiModel(ch.protonmail.android.mailmailbox.presentation.R.string.mailbox_default_sender)
         )
-        every {
-            getParticipantsResolvedNames.invoke(mailboxItem)
+        coEvery {
+            getParticipantsResolvedNames.invoke(userId, mailboxItem)
         } returns ParticipantsResolvedNamesResult.Senders(resolvedNames)
         // When
         val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
@@ -328,8 +328,8 @@ class MailboxItemUiModelMapperTest {
             ResolveParticipantNameResult("contact name", isProton = false),
             ResolveParticipantNameResult("display name", isProton = false)
         )
-        every {
-            getParticipantsResolvedNames.invoke(mailboxItem)
+        coEvery {
+            getParticipantsResolvedNames.invoke(userId, mailboxItem)
         } returns ParticipantsResolvedNamesResult.Senders(resolvedNames)
         every { mailboxAvatarUiModelMapper.invoke(mailboxItem) } returns avatarUiModel
 
