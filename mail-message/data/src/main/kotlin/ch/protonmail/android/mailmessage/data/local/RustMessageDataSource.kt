@@ -106,4 +106,6 @@ interface RustMessageDataSource {
     ): Either<DataError, EmbeddedAttachmentInfo>
 
     suspend fun markMessageAsLegitimate(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit>
+
+    suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit>
 }

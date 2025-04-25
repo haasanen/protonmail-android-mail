@@ -460,4 +460,38 @@ class RustMessageRepositoryImplTest {
             assertEquals(expectedError.left(), result)
         }
     }
+
+    @Test
+    fun `unblock sender should call rust data source and return unit when successful`() {
+        runTest {
+            // Given
+            val email = "abc@pm.me"
+
+            coEvery { rustMessageDataSource.unblockSender(userId, email) } returns Unit.right()
+
+            // When
+            val result = repository.unblockSender(userId, email)
+
+            // Then
+            coVerify { rustMessageDataSource.unblockSender(userId, email) }
+            assertEquals(Unit.right(), result)
+        }
+    }
+
+    @Test
+    fun `unblock sender should call rust data source and return error when failing`() {
+        runTest {
+            // Given
+            val email = "abc@pm.me"
+            val expectedError = DataError.Local.Unknown
+
+            coEvery { rustMessageDataSource.unblockSender(userId, email) } returns expectedError.left()
+
+            // When
+            val result = repository.unblockSender(userId, email)
+
+            // Then
+            assertEquals(expectedError.left(), result)
+        }
+    }
 }

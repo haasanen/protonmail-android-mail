@@ -38,6 +38,7 @@ import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailmessage.data.usecase.RustMoveMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
+import ch.protonmail.android.mailmessage.data.usecase.RustUnblockAddress
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
 import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
@@ -93,6 +94,7 @@ class RustMessageDataSourceImplTest {
     private val getRustMessageMoveToActions = mockk<GetRustMessageMoveToActions>()
     private val getRustMessageLabelAsActions = mockk<GetRustMessageLabelAsActions>()
     private val rustMarkMessageAsLegitimate = mockk<RustMarkMessageAsLegitimate>()
+    private val rustUnblockAddress = mockk<RustUnblockAddress>()
 
     private val dataSource = RustMessageDataSourceImpl(
         userSessionRepository,
@@ -112,7 +114,8 @@ class RustMessageDataSourceImplTest {
         getRustAvailableMessageActions,
         getRustMessageMoveToActions,
         getRustMessageLabelAsActions,
-        rustMarkMessageAsLegitimate
+        rustMarkMessageAsLegitimate,
+        rustUnblockAddress
     )
 
     @Test
@@ -767,6 +770,58 @@ class RustMessageDataSourceImplTest {
 
         // When
         val result = dataSource.markMessageAsLegitimate(userId, messageId)
+
+        // Then
+        assertEquals(expectedError.left(), result)
+    }
+
+    @Test
+    fun `should unblock address when mailbox is available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val email = "abc@pm.me"
+        val mailbox = mockk<MailboxWrapper>()
+
+        coEvery { rustUnblockAddress(mailbox, email) } returns Unit.right()
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+
+        // When
+        val result = dataSource.unblockSender(userId, email)
+
+        // Then
+        assertTrue(result.isRight())
+        coVerify { rustUnblockAddress(mailbox, email) }
+    }
+
+    @Test
+    fun `should not unblock address when mailbox is not available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val email = "abc@pm.me"
+
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
+
+        // When
+        val result = dataSource.unblockSender(userId, email)
+
+        // Then
+        assertTrue(result.isLeft())
+        verify { rustUnblockAddress wasNot Called }
+    }
+
+    @Test
+    fun `should handle error when unblocking address`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val email = "abc@pm.me"
+        val mailbox = mockk<MailboxWrapper>()
+        val expectedError = DataError.Local.NoDataCached
+
+        coEvery { rustUnblockAddress(mailbox, email) } returns expectedError.left()
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+
+        // When
+        val result = dataSource.unblockSender(userId, email)
 
         // Then
         assertEquals(expectedError.left(), result)

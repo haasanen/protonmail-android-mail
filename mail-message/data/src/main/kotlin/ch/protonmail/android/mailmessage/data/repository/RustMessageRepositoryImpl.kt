@@ -205,4 +205,7 @@ class RustMessageRepositoryImpl @Inject constructor(
 
     override suspend fun markMessageAsLegitimate(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
         rustMessageDataSource.markMessageAsLegitimate(userId, messageId.toLocalMessageId())
+
+    override suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit> =
+        rustMessageDataSource.unblockSender(userId, email)
 }

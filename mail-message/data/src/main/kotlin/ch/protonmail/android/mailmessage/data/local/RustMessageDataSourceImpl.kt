@@ -44,6 +44,7 @@ import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailmessage.data.usecase.RustMoveMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
+import ch.protonmail.android.mailmessage.data.usecase.RustUnblockAddress
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
@@ -77,7 +78,8 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val getRustAvailableMessageActions: GetRustAvailableMessageActions,
     private val getRustMessageMoveToActions: GetRustMessageMoveToActions,
     private val getRustMessageLabelAsActions: GetRustMessageLabelAsActions,
-    private val rustMarkMessageAsLegitimate: RustMarkMessageAsLegitimate
+    private val rustMarkMessageAsLegitimate: RustMarkMessageAsLegitimate,
+    private val rustUnblockAddress: RustUnblockAddress
 ) : RustMessageDataSource {
 
     override suspend fun getMessage(
@@ -330,5 +332,15 @@ class RustMessageDataSourceImpl @Inject constructor(
         }
 
         return rustMarkMessageAsLegitimate(mailbox, messageId)
+    }
+
+    override suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit> {
+        val mailbox = rustMailboxFactory.create(userId).getOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-message: trying to unblock sender with null Mailbox! failing")
+            return DataError.Local.NoDataCached.left()
+        }
+
+        return rustUnblockAddress(mailbox, email)
     }
 }

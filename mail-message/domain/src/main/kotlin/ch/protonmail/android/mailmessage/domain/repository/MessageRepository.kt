@@ -178,4 +178,6 @@ interface MessageRepository {
     ): Either<DataError, Unit>
 
     suspend fun markMessageAsLegitimate(userId: UserId, messageId: MessageId): Either<DataError, Unit>
+
+    suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit>
 }
