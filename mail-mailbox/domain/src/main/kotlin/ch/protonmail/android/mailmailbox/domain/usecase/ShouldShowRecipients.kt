@@ -31,6 +31,10 @@ class ShouldShowRecipients @Inject constructor(
     private val observeSystemMailLabels: ObserveSystemMailLabels
 ) {
 
+    // Cache (userId -> set of labelIds where recipients should be shown) because this case
+    // will be called for every message in the mailbox list.
+    private val userRecipientLocationsCache = mutableMapOf<UserId, Set<MailLabelId>>()
+
     suspend operator fun invoke(userId: UserId): Boolean {
         return when (val currentMailLabelId = observeCurrentMailLabel(userId).firstOrNull()?.id) {
             is MailLabelId.Custom.Label -> false
@@ -46,21 +50,25 @@ class ShouldShowRecipients @Inject constructor(
         mailLabelId: MailLabelId,
         observeSystemMailLabels: ObserveSystemMailLabels
     ): Boolean {
-        val locationList = observeSystemMailLabels(userId).firstOrNull()?.fold(
-            ifLeft = { emptyList() },
-            ifRight = { systemMailLabels ->
-                systemMailLabels
-                    .filter {
-                        it.systemLabelId.labelId == SystemLabelId.Drafts.labelId ||
-                            it.systemLabelId.labelId == SystemLabelId.AllDrafts.labelId ||
-                            it.systemLabelId.labelId == SystemLabelId.Sent.labelId ||
-                            it.systemLabelId.labelId == SystemLabelId.AllSent.labelId ||
-                            it.systemLabelId.labelId == SystemLabelId.AllScheduled.labelId
-                    }
-                    .map { it.id }
-            }
-        )
+        val locationList = userRecipientLocationsCache.getOrPut(userId) {
 
-        return locationList?.contains(mailLabelId) ?: false
+            observeSystemMailLabels(userId).firstOrNull()?.fold(
+                ifLeft = { emptySet() },
+                ifRight = { systemMailLabels ->
+                    systemMailLabels
+                        .filter {
+                            it.systemLabelId.labelId == SystemLabelId.Drafts.labelId ||
+                                it.systemLabelId.labelId == SystemLabelId.AllDrafts.labelId ||
+                                it.systemLabelId.labelId == SystemLabelId.Sent.labelId ||
+                                it.systemLabelId.labelId == SystemLabelId.AllSent.labelId ||
+                                it.systemLabelId.labelId == SystemLabelId.AllScheduled.labelId
+                        }
+                        .map { it.id }
+                        .toSet()
+                }
+            ) ?: emptySet()
+        }
+
+        return locationList.contains(mailLabelId)
     }
 }

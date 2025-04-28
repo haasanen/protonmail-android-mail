@@ -26,6 +26,7 @@ import ch.protonmail.android.maillabel.domain.usecase.ObserveCurrentMailLabel
 import ch.protonmail.android.maillabel.domain.usecase.ObserveSystemMailLabels
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
@@ -110,5 +111,22 @@ class ShouldShowRecipientsTest {
 
         // Then
         assertFalse(result)
+    }
+
+    @Test
+    fun `should cache system labels result for same userId`() = runTest {
+        // Given
+        val sentMailLabel = MailLabelTestData.sentSystemLabel
+        coEvery { observeCurrentMailLabel(userId) } returns flowOf(sentMailLabel)
+
+        // When
+        val firstCallResult = shouldShowRecipients(userId)
+        val secondCallResult = shouldShowRecipients(userId)
+
+        // Then
+        assertTrue(firstCallResult)
+        assertTrue(secondCallResult)
+
+        coVerify(exactly = 1) { observeSystemMailLabels(userId) }
     }
 }
