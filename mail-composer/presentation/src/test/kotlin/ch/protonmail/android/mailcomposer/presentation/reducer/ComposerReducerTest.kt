@@ -365,24 +365,6 @@ class ComposerReducerTest(
             )
         )
 
-        private val EmptyToAttachmentFileExceeded = TestTransition(
-            name = "Should emit attachment exceeded file limit",
-            currentState = ComposerDraftState.initial(),
-            operation = ComposerEvent.ErrorAttachmentsExceedSizeLimit,
-            expectedState = ComposerDraftState.initial().copy(
-                attachmentsFileSizeExceeded = Effect.of(Unit)
-            )
-        )
-
-        private val EmptyToAttachmentEncryptionFailed = TestTransition(
-            name = "Should emit attachment exceeded file limit",
-            currentState = ComposerDraftState.initial(),
-            operation = ComposerEvent.ErrorAttachmentsEncryption,
-            expectedState = ComposerDraftState.initial().copy(
-                attachmentsEncryptionFailed = Effect.of(Unit)
-            )
-        )
-
         private val EmptyToOnSendingError = TestTransition(
             name = "Should emit sending error",
             currentState = ComposerDraftState.initial(),
@@ -576,8 +558,6 @@ class ComposerReducerTest(
             LoadingToSendingNoticeWhenReceivedDraftDataWithInvalidSender,
             EmptyToBottomSheetOpened,
             EmptyToAttachmentsUpdated,
-            EmptyToAttachmentFileExceeded,
-            EmptyToAttachmentEncryptionFailed,
             EmptyToOnSendingError,
             EmptyToOnMessagePasswordUpdated,
             SubmittableToRequestConfirmEmptySubject,

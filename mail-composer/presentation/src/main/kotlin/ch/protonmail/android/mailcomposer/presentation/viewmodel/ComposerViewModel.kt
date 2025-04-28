@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
+import android.net.Uri
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.snapshotFlow
@@ -40,6 +41,7 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.usecase.AddAttachment
+import ch.protonmail.android.mailcomposer.domain.usecase.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
@@ -189,7 +191,7 @@ class ComposerViewModel @AssistedInject constructor(
 
         fileShareInfo.attachmentUris.takeIfNotEmpty()?.let { uris ->
             Timber.w("composer: storing attachment not implemented")
-            emitNewStateFor(ComposerEvent.ErrorAttachmentsExceedSizeLimit)
+            emitNewStateFor(ComposerEvent.AddAttachmentError(AttachmentAddError.Unknown))
         }
 
         if (fileShareInfo.hasEmailData()) {
@@ -304,7 +306,7 @@ class ComposerViewModel @AssistedInject constructor(
             actionMutex.withLock {
                 composerIdlingResource.increment()
                 when (action) {
-                    is ComposerAction.AttachmentsAdded -> onAttachmentsAdded(action)
+                    is ComposerAction.AttachmentsAdded -> onAttachmentsAdded(action.uriList)
                     is ComposerAction.DraftBodyChanged -> onDraftBodyChanged(action)
                     is ComposerAction.SenderChanged -> TODO()
                     is ComposerAction.ChangeSenderRequested -> TODO()
@@ -343,14 +345,13 @@ class ComposerViewModel @AssistedInject constructor(
 
     private fun validateEmailAddress(emailAddress: String): Boolean = isValidEmailAddress(emailAddress)
 
-    private fun onAttachmentsAdded(action: ComposerAction.AttachmentsAdded) {
+    private fun onAttachmentsAdded(uriList: List<Uri>) {
         viewModelScope.launch {
-            action.uriList.forEach { uri ->
-                addAttachment(uri)
-                    .onLeft {
-                        Timber.e("Failed to add attachment: $it")
-                        emitNewStateFor(ComposerEvent.AddAttachmentError(it))
-                    }
+            uriList.forEach { uri ->
+                addAttachment(uri).onLeft {
+                    Timber.e("Failed to add attachment: $it")
+                    emitNewStateFor(ComposerEvent.AddAttachmentError(it))
+                }
             }
         }
     }

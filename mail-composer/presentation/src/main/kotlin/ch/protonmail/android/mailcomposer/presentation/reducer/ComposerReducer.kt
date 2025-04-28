@@ -135,8 +135,6 @@ class ComposerReducer @Inject constructor(
             isLoading = false
         )
 
-        is ComposerEvent.ErrorAttachmentsExceedSizeLimit -> updateStateForAttachmentsExceedSizeLimit(currentState)
-        is ComposerEvent.ErrorAttachmentsEncryption -> updateStateForDeleteAllAttachment(currentState)
         is ComposerEvent.OnSendingError -> updateSendingErrorState(currentState, sendingError)
         is ComposerEvent.OnMessagePasswordUpdated -> updateStateForMessagePassword(currentState, this.messagePassword)
         is ComposerEvent.ConfirmEmptySubject -> currentState.copy(
@@ -271,14 +269,6 @@ class ComposerReducer @Inject constructor(
         fields = currentState.fields.copy(sender = SenderUiModel("")),
         error = Effect.of(TextUiModel(R.string.composer_error_invalid_sender))
     )
-
-    @Deprecated("replaced by AddAttachmentsError event")
-    private fun updateStateForAttachmentsExceedSizeLimit(currentState: ComposerDraftState) =
-        currentState.copy(attachmentsFileSizeExceeded = Effect.of(Unit))
-
-    @Deprecated("replaced by AddAttachmentsError event")
-    private fun updateStateForDeleteAllAttachment(currentState: ComposerDraftState) =
-        currentState.copy(attachmentsEncryptionFailed = Effect.of(Unit))
 
     private fun updateSenderTo(currentState: ComposerDraftState, sender: SenderUiModel) = currentState.copy(
         fields = currentState.fields.copy(sender = sender),
