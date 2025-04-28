@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import timber.log.Timber
 import uniffi.proton_mail_common.BodyOutput
 import uniffi.proton_mail_common.TransformOpts
+import uniffi.proton_mail_uniffi.BodyOutputResult
 import uniffi.proton_mail_uniffi.DecryptedMessage
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
@@ -34,7 +35,10 @@ import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
 class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
 
     suspend fun body(transformOpts: TransformOpts): Either<DataError, BodyOutput> =
-        decryptedMessage.body(transformOpts).right()
+        when (val result = decryptedMessage.body(transformOpts)) {
+            is BodyOutputResult.Error -> result.v1.toDataError().left()
+            is BodyOutputResult.Ok -> result.v1.right()
+        }
 
     suspend fun getEmbeddedAttachment(contentId: String): Either<DataError, EmbeddedAttachmentInfo> =
         when (val result = decryptedMessage.getEmbeddedAttachment(contentId)) {
