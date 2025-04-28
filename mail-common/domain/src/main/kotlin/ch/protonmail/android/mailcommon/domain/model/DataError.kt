@@ -65,6 +65,13 @@ sealed interface DataError {
             data object AttachmentsError : SendDraftError
         }
 
+        sealed interface AttachmentError : Local {
+            data object AttachmentTooLarge : SendDraftError
+            data object TooManyAttachments : SendDraftError
+            data object InvalidDraftMessage : SendDraftError
+            data object EncryptionError : SendDraftError
+        }
+
         data object OpenDraftError : Local
 
         data object DiscardDraftError : Local

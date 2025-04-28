@@ -108,10 +108,10 @@ fun DraftAttachmentError.toDataError(): DataError = when (this) {
     is DraftAttachmentError.Reason -> when (this.v1) {
         DraftAttachmentErrorReason.MESSAGE_DOES_NOT_EXIST,
         DraftAttachmentErrorReason.MESSAGE_DOES_NOT_EXIST_ON_SERVER,
-        DraftAttachmentErrorReason.CRYPTO,
-        DraftAttachmentErrorReason.ATTACHMENT_TOO_LARGE,
-        DraftAttachmentErrorReason.MESSAGE_ALREADY_SENT,
-        DraftAttachmentErrorReason.TOO_MANY_ATTACHMENTS,
+        DraftAttachmentErrorReason.MESSAGE_ALREADY_SENT -> DataError.Local.AttachmentError.InvalidDraftMessage
+        DraftAttachmentErrorReason.CRYPTO -> DataError.Local.AttachmentError.EncryptionError
+        DraftAttachmentErrorReason.ATTACHMENT_TOO_LARGE -> DataError.Local.AttachmentError.AttachmentTooLarge
+        DraftAttachmentErrorReason.TOO_MANY_ATTACHMENTS -> DataError.Local.AttachmentError.TooManyAttachments
         DraftAttachmentErrorReason.RETRY_INVALID_STATE -> DataError.Local.Unknown
     }
 }
