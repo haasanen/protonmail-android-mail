@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.usecase.AttachmentAddError
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
@@ -154,7 +155,21 @@ class ComposerReducer @Inject constructor(
         )
         is ComposerEvent.RecipientsUpdated -> updateRecipients(currentState, hasValidRecipients)
         is ComposerEvent.ErrorDiscardingDraft -> updateForErrorDiscardingDraft(currentState)
-        ComposerEvent.OnMessageSending -> currentState.copy(showSendingLoading = true)
+        is ComposerEvent.OnMessageSending -> currentState.copy(showSendingLoading = true)
+        is ComposerEvent.AddAttachmentError -> updateStateForAddAttachmentError(currentState, this.error)
+    }
+
+    private fun updateStateForAddAttachmentError(
+        currentState: ComposerDraftState,
+        error: AttachmentAddError
+    ): ComposerDraftState = when (error) {
+        AttachmentAddError.AttachmentTooLarge -> currentState.copy(attachmentsFileSizeExceeded = Effect.of(Unit))
+        AttachmentAddError.EncryptionError -> currentState.copy(attachmentsEncryptionFailed = Effect.of(Unit))
+        AttachmentAddError.TooManyAttachments ->
+            currentState.copy(error = Effect.of(TextUiModel(R.string.composer_too_many_attachments_error)))
+        AttachmentAddError.Unknown,
+        AttachmentAddError.InvalidDraftMessage ->
+            currentState.copy(error = Effect.of(TextUiModel(R.string.composer_unexpected_attachments_error)))
     }
 
     private fun updateComposerFieldsState(
@@ -253,9 +268,11 @@ class ComposerReducer @Inject constructor(
         error = Effect.of(TextUiModel(R.string.composer_error_invalid_sender))
     )
 
+    @Deprecated("replaced by AddAttachmentsError event")
     private fun updateStateForAttachmentsExceedSizeLimit(currentState: ComposerDraftState) =
         currentState.copy(attachmentsFileSizeExceeded = Effect.of(Unit))
 
+    @Deprecated("replaced by AddAttachmentsError event")
     private fun updateStateForDeleteAllAttachment(currentState: ComposerDraftState) =
         currentState.copy(attachmentsEncryptionFailed = Effect.of(Unit))
 

@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.usecase.AttachmentAddError
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -82,10 +83,15 @@ sealed interface ComposerEvent : ComposerOperation {
     data object OnSendMessageOffline : ComposerEvent
     data object ErrorLoadingDraftData : ComposerEvent
     data object ErrorLoadingParentMessageData : ComposerEvent
+
+    @Deprecated("replaced by AddAttachmentsError event")
     data object ErrorAttachmentsExceedSizeLimit : ComposerEvent
+
+    @Deprecated("replaced by AddAttachmentsError event")
     data object ErrorAttachmentsEncryption : ComposerEvent
     data object ErrorSettingExpirationTime : ComposerEvent
     data object ConfirmEmptySubject : ComposerEvent
     data object ErrorDiscardingDraft : ComposerEvent
     data object OnMessageSending : ComposerEvent
+    data class AddAttachmentError(val error: AttachmentAddError) : ComposerEvent
 }

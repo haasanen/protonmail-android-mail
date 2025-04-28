@@ -345,9 +345,12 @@ class ComposerViewModel @AssistedInject constructor(
 
     private fun onAttachmentsAdded(action: ComposerAction.AttachmentsAdded) {
         viewModelScope.launch {
-            action.uriList.forEach {
-                addAttachment(it)
-                    .onLeft { Timber.e("Failed to add attachment: $it") }
+            action.uriList.forEach { uri ->
+                addAttachment(uri)
+                    .onLeft {
+                        Timber.e("Failed to add attachment: $it")
+                        emitNewStateFor(ComposerEvent.AddAttachmentError(it))
+                    }
             }
         }
     }
@@ -402,15 +405,6 @@ class ComposerViewModel @AssistedInject constructor(
             )
         }
     }
-
-    private suspend fun buildDraftFields() = DraftFields(
-        currentSenderEmail(),
-        currentSubject(),
-        currentDraftBody(),
-        currentValidRecipientsTo(),
-        currentValidRecipientsCc(),
-        currentValidRecipientsBcc()
-    )
 
     private suspend fun onSubjectChanged(subject: Subject) = storeDraftWithSubject(subject).onLeft {
         emitNewStateFor(ComposerEvent.ErrorStoringDraftSubject)
