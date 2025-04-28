@@ -45,7 +45,7 @@
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">OK</string>
   <string name="composer_attachment_size_exceeded_dialog_title">Bol dosiahnutý limit príloh</string>
   <string name="composer_attachment_size_exceeded_dialog_message">Limit veľkosti príloh je %1$s</string>
-  <string name="composer_attachment_reencryption_failed_message">Opätovné zašifrovanie prílohy zlyhalo. Z bezpečnostných dôvodov boli všetky prílohy odstránené.</string>
+  <string name="composer_attachment_encryption_failed_message">Opätovné zašifrovanie prílohy zlyhalo. Z bezpečnostných dôvodov boli všetky prílohy odstránené.</string>
   <string name="composer_warning_local_data_shown">Najnovšiu verziu tohto konceptu sa nepodarilo načítať. Akákoľvek zmena prepíše jej obsah.</string>
   <string name="composer_button_add_password">Pridať heslo</string>
   <string name="composer_button_set_expiration">Nastaviť čas pre vypršanie platnosti</string>

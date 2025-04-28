@@ -45,7 +45,7 @@
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">OK</string>
   <string name="composer_attachment_size_exceeded_dialog_title">Limite degli allegati raggiunto</string>
   <string name="composer_attachment_size_exceeded_dialog_message">Il limite di dimensione per gli allegati è %1$s</string>
-  <string name="composer_attachment_reencryption_failed_message">Nuova crittografia dell\'allegato non riuscita. Allegati rimossi per motivi di sicurezza.</string>
+  <string name="composer_attachment_encryption_failed_message">Nuova crittografia dell\'allegato non riuscita. Allegati rimossi per motivi di sicurezza.</string>
   <string name="composer_warning_local_data_shown">Caricamento dell\'ultima versione della bozza non riuscito. Qualsiasi modifica sovrascriverà il suo contenuto.</string>
   <string name="composer_button_add_password">Aggiungi una password</string>
   <string name="composer_button_set_expiration">Imposta la scadenza</string>

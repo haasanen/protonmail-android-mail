@@ -45,7 +45,7 @@
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">確定</string>
   <string name="composer_attachment_size_exceeded_dialog_title">已達附件上限</string>
   <string name="composer_attachment_size_exceeded_dialog_message">附件大小上限為 %1$s</string>
-  <string name="composer_attachment_reencryption_failed_message">附件重新加密失敗。基於安全考量，所有附件已被移除。</string>
+  <string name="composer_attachment_encryption_failed_message">附件重新加密失敗。基於安全考量，所有附件已被移除。</string>
   <string name="composer_warning_local_data_shown">此草稿的最新版本無法載入。任何變更將覆蓋其內容。</string>
   <string name="composer_button_add_password">新增密碼</string>
   <string name="composer_button_set_expiration">設定到期時間</string>

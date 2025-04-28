@@ -45,7 +45,7 @@
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">V redu</string>
   <string name="composer_attachment_size_exceeded_dialog_title">Dosežena je omejitev velikosti priponk</string>
   <string name="composer_attachment_size_exceeded_dialog_message">Velikost priponk je omejena na %1$s</string>
-  <string name="composer_attachment_reencryption_failed_message">Vnovično šifriranje priponk ni bilo uspešno. Iz varnostnih razlogov so bile vse priponke odstranjene.</string>
+  <string name="composer_attachment_encryption_failed_message">Vnovično šifriranje priponk ni bilo uspešno. Iz varnostnih razlogov so bile vse priponke odstranjene.</string>
   <string name="composer_warning_local_data_shown">Zadnje različice tega osnutka ni bilo mogoče naložiti. Vsaka sprememba bo vplivala na njeno vsebino.</string>
   <string name="composer_button_add_password">Dodaj geslo</string>
   <string name="composer_button_set_expiration">Nastavi čas poteka</string>

@@ -45,7 +45,7 @@
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">OK</string>
   <string name="composer_attachment_size_exceeded_dialog_title">S-a atins limita pentru atașamente</string>
   <string name="composer_attachment_size_exceeded_dialog_message">Limita dimensiunii atașamentelor este de %1$s</string>
-  <string name="composer_attachment_reencryption_failed_message">Recriptarea atașamentului a eșuat. Din motive de securitate, toate atașamentele au fost eliminate.</string>
+  <string name="composer_attachment_encryption_failed_message">Recriptarea atașamentului a eșuat. Din motive de securitate, toate atașamentele au fost eliminate.</string>
   <string name="composer_warning_local_data_shown">Nu s-a încărcat ultima versiune a acestei ciorne. Orice modificare va anula conținutul acesteia.</string>
   <string name="composer_button_add_password">Adăugare parolă</string>
   <string name="composer_button_set_expiration">Setare timp expirare</string>

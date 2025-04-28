@@ -45,7 +45,7 @@
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">OK</string>
   <string name="composer_attachment_size_exceeded_dialog_title">Досягнуто обмеження для вкладень</string>
   <string name="composer_attachment_size_exceeded_dialog_message">Обмеження розміру для вкладень – %1$s</string>
-  <string name="composer_attachment_reencryption_failed_message">Збій повторного шифрування вкладення. З міркувань безпеки усі вкладення вилучено.</string>
+  <string name="composer_attachment_encryption_failed_message">Збій повторного шифрування вкладення. З міркувань безпеки усі вкладення вилучено.</string>
   <string name="composer_warning_local_data_shown">Не вдалося завантажити останню версію цієї чернетки. Будь-які зміни перезапишуть її.</string>
   <string name="composer_button_add_password">Додати пароль</string>
   <string name="composer_button_set_expiration">Вказати термін дії</string>

@@ -45,7 +45,7 @@
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">OK</string>
   <string name="composer_attachment_size_exceeded_dialog_title">Elérte a mellékletekre vonatkozó korlátot</string>
   <string name="composer_attachment_size_exceeded_dialog_message">A mellékletek maximális mérete %1$s</string>
-  <string name="composer_attachment_reencryption_failed_message">A melléklet ismételt titkosítása nem sikerült. Biztonsági okokból minden melléklet eltávolításra került.</string>
+  <string name="composer_attachment_encryption_failed_message">A melléklet ismételt titkosítása nem sikerült. Biztonsági okokból minden melléklet eltávolításra került.</string>
   <string name="composer_warning_local_data_shown">A vázlat legutóbbi változatának betöltése nem sikerült. Bármilyen változtatás felülírja a tartalmát.</string>
   <string name="composer_button_add_password">Jelszó hozzáadása</string>
   <string name="composer_button_set_expiration">Időkorlát megadása</string>

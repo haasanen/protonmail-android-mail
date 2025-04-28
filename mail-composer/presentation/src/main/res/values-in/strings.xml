@@ -45,7 +45,7 @@
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">OK</string>
   <string name="composer_attachment_size_exceeded_dialog_title">Batas lampiran tercapai</string>
   <string name="composer_attachment_size_exceeded_dialog_message">Batas ukuran lampiran adalah %1$s</string>
-  <string name="composer_attachment_reencryption_failed_message">Lampiran gagal dienkripsi ulang. Demi alasan keamanan, seluruh lampiran telah dihapus.</string>
+  <string name="composer_attachment_encryption_failed_message">Lampiran gagal dienkripsi ulang. Demi alasan keamanan, seluruh lampiran telah dihapus.</string>
   <string name="composer_warning_local_data_shown">Versi terbaru draf ini gagal dimuat. Perubahan apa pun akan menimpa draf ini.</string>
   <string name="composer_button_add_password">Tambahkan kata sandi</string>
   <string name="composer_button_set_expiration">Tentukan waktu kedaluwarsa</string>
