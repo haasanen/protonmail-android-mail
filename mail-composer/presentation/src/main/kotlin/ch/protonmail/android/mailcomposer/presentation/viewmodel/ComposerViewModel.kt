@@ -358,7 +358,10 @@ class ComposerViewModel @AssistedInject constructor(
     private fun onAttachmentsRemoved(action: ComposerAction.RemoveAttachment) {
         viewModelScope.launch {
             deleteAttachment(action.attachmentId)
-                .onLeft { Timber.e("Failed to delete attachment: $it") }
+                .onLeft {
+                    Timber.e("Failed to delete attachment: $it")
+                    emitNewStateFor(ComposerEvent.DeleteAttachmentError)
+                }
         }
     }
 

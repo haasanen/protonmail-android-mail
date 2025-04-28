@@ -31,6 +31,7 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailcomposer.domain.usecase.AttachmentAddError
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction.SenderChanged
@@ -516,6 +517,42 @@ class ComposerReducerTest(
             )
         )
 
+        private val EmptyToAttachmentTooLarge = TestTransition(
+            name = "Should emit attachment exceeded file limit",
+            currentState = ComposerDraftState.initial(),
+            operation = ComposerEvent.AddAttachmentError(AttachmentAddError.AttachmentTooLarge),
+            expectedState = ComposerDraftState.initial().copy(
+                attachmentsFileSizeExceeded = Effect.of(Unit)
+            )
+        )
+
+        private val EmptyToAttachmentCountLimit = TestTransition(
+            name = "Should emit attachment count limit reached",
+            currentState = ComposerDraftState.initial(),
+            operation = ComposerEvent.AddAttachmentError(AttachmentAddError.TooManyAttachments),
+            expectedState = ComposerDraftState.initial().copy(
+                error = Effect.of(TextUiModel(R.string.composer_too_many_attachments_error))
+            )
+        )
+
+        private val EmptyToAttachmentUnexpectedError = TestTransition(
+            name = "Should emit attachment unexpected error",
+            currentState = ComposerDraftState.initial(),
+            operation = ComposerEvent.AddAttachmentError(AttachmentAddError.InvalidDraftMessage),
+            expectedState = ComposerDraftState.initial().copy(
+                error = Effect.of(TextUiModel(R.string.composer_unexpected_attachments_error))
+            )
+        )
+
+        private val EmptyToAttachmentEncryptionFailed = TestTransition(
+            name = "Should emit attachment encryption error",
+            currentState = ComposerDraftState.initial(),
+            operation = ComposerEvent.AddAttachmentError(AttachmentAddError.EncryptionError),
+            expectedState = ComposerDraftState.initial().copy(
+                attachmentsEncryptionFailed = Effect.of(Unit)
+            )
+        )
+
         private val transitions = listOf(
             EmptyToSubmittableToField,
             EmptyToNotSubmittableToField,
@@ -554,7 +591,11 @@ class ComposerReducerTest(
             SubmittableToDiscardDraft,
             SubmittableToDiscardDraftConfirmed,
             EmptyToOnMessageSending,
-            SendingLoaderToSendingError
+            SendingLoaderToSendingError,
+            EmptyToAttachmentCountLimit,
+            EmptyToAttachmentTooLarge,
+            EmptyToAttachmentEncryptionFailed,
+            EmptyToAttachmentUnexpectedError
         )
 
         private fun aSubmittableState(

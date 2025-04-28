@@ -48,6 +48,7 @@
     <string name="composer_attachment_size_exceeded_dialog_message">The size limit for attachments is %1$s</string>
     <string name="composer_attachment_encryption_failed_message">Encryption of attachment failed. For security reasons all attachments got removed.</string>
     <string name="composer_too_many_attachments_error">Maximum number of attachments (100) exceeded.</string>
+    <string name="composer_delete_attachment_error">There was an unexpected error while deleting an attachment.</string>
     <string name="composer_unexpected_attachments_error">There was an unexpected error related with attachments.</string>
     <string name="composer_warning_local_data_shown">The latest version of this draft failed to load. Any change will override its content.</string>
     <string name="composer_button_add_password">Add password</string>

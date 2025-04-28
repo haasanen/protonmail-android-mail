@@ -93,5 +93,6 @@ sealed interface ComposerEvent : ComposerOperation {
     data object ConfirmEmptySubject : ComposerEvent
     data object ErrorDiscardingDraft : ComposerEvent
     data object OnMessageSending : ComposerEvent
+    data object DeleteAttachmentError : ComposerEvent
     data class AddAttachmentError(val error: AttachmentAddError) : ComposerEvent
 }

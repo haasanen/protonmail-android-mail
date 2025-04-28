@@ -157,7 +157,11 @@ class ComposerReducer @Inject constructor(
         is ComposerEvent.ErrorDiscardingDraft -> updateForErrorDiscardingDraft(currentState)
         is ComposerEvent.OnMessageSending -> currentState.copy(showSendingLoading = true)
         is ComposerEvent.AddAttachmentError -> updateStateForAddAttachmentError(currentState, this.error)
+        is ComposerEvent.DeleteAttachmentError -> updateStateForDeleteAttachmentError(currentState)
     }
+
+    private fun updateStateForDeleteAttachmentError(currentState: ComposerDraftState): ComposerDraftState =
+        currentState.copy(error = Effect.of(TextUiModel(R.string.composer_delete_attachment_error)))
 
     private fun updateStateForAddAttachmentError(
         currentState: ComposerDraftState,
