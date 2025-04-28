@@ -28,6 +28,24 @@ class AddAttachment @Inject constructor(
     private val attachmentRepository: AttachmentRepository
 ) {
 
-    suspend operator fun invoke(fileUri: Uri): Either<DataError, Unit> = attachmentRepository.addAttachment(fileUri)
+    suspend operator fun invoke(fileUri: Uri): Either<AttachmentAddError, Unit> =
+        attachmentRepository.addAttachment(fileUri).mapLeft {
+            when (it) {
+                DataError.Local.AttachmentError.AttachmentTooLarge -> AttachmentAddError.AttachmentTooLarge
+                DataError.Local.AttachmentError.EncryptionError -> AttachmentAddError.EncryptionError
+                DataError.Local.AttachmentError.InvalidDraftMessage -> AttachmentAddError.InvalidDraftMessage
+                DataError.Local.AttachmentError.TooManyAttachments -> AttachmentAddError.TooManyAttachments
+                DataError.Local.Unknown -> AttachmentAddError.Unknown
+                else -> AttachmentAddError.Unknown
+            }
+        }
 
+}
+
+sealed interface AttachmentAddError {
+    data object AttachmentTooLarge : AttachmentAddError
+    data object TooManyAttachments : AttachmentAddError
+    data object InvalidDraftMessage : AttachmentAddError
+    data object EncryptionError : AttachmentAddError
+    data object Unknown : AttachmentAddError
 }

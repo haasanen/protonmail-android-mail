@@ -34,6 +34,7 @@ class DeleteAttachment @Inject constructor(
             .mapLeft {
                 when (it) {
                     DataError.Local.FailedToDeleteFile -> AttachmentDeleteError.FailedToDeleteFile
+                    DataError.Local.AttachmentError.InvalidDraftMessage -> AttachmentDeleteError.InvalidDraftMessage
                     else -> AttachmentDeleteError.Unknown
                 }
             }
@@ -42,7 +43,7 @@ class DeleteAttachment @Inject constructor(
 }
 
 sealed interface AttachmentDeleteError {
-    object DraftNotFound : AttachmentDeleteError
-    object FailedToDeleteFile : AttachmentDeleteError
-    object Unknown : AttachmentDeleteError
+    data object InvalidDraftMessage : AttachmentDeleteError
+    data object FailedToDeleteFile : AttachmentDeleteError
+    data object Unknown : AttachmentDeleteError
 }

@@ -30,13 +30,11 @@ class DeleteAttachmentTest {
         deleteAttachment(attachmentId)
 
         // Then
-        coVerifyOrder {
-            attachmentRepository.deleteAttachment(attachmentId)
-        }
+        coVerifyOrder { attachmentRepository.deleteAttachment(attachmentId) }
     }
 
     @Test
-    fun `deleteAttachment should return failed to delete file error when file deletion failed`() = runTest {
+    fun `deleteAttachment should map failed to delete file error`() = runTest {
         // Given
         val expected = AttachmentDeleteError.FailedToDeleteFile.left()
         expectComposerAttachmentDeleteFails(DataError.Local.FailedToDeleteFile.left())
@@ -49,10 +47,23 @@ class DeleteAttachmentTest {
     }
 
     @Test
-    fun `deleteAttachment should return unknown error when unknown error is returned from the repo failed`() = runTest {
+    fun `deleteAttachment should map invalid message error`() = runTest {
+        // Given
+        val expected = AttachmentDeleteError.InvalidDraftMessage.left()
+        expectComposerAttachmentDeleteFails(DataError.Local.AttachmentError.InvalidDraftMessage.left())
+
+        // When
+        val actual = deleteAttachment(attachmentId)
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `deleteAttachment should return unknown error when not relevant error is returned from the repo`() = runTest {
         // Given
         val expected = AttachmentDeleteError.Unknown.left()
-        expectComposerAttachmentDeleteFails(DataError.Local.Unknown.left())
+        expectComposerAttachmentDeleteFails(DataError.Local.AttachmentError.TooManyAttachments.left())
 
         // When
         val actual = deleteAttachment(attachmentId)
