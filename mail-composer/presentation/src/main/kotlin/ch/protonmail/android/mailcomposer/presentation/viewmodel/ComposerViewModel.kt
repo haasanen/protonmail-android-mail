@@ -41,7 +41,6 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.usecase.AddAttachment
-import ch.protonmail.android.mailcomposer.domain.usecase.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
@@ -184,14 +183,13 @@ class ComposerViewModel @AssistedInject constructor(
             .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingDefaultSenderAddress) }
     }
 
-    @MissingRustApi
-    // Storing of attachments not implemented
     private suspend fun prefillForShareDraftAction(shareDraftAction: DraftAction.PrefillForShare) {
         val fileShareInfo = shareDraftAction.intentShareInfo.decode()
 
-        fileShareInfo.attachmentUris.takeIfNotEmpty()?.let { uris ->
+        fileShareInfo.attachmentUris.takeIfNotEmpty()?.let { rawUri ->
             Timber.w("composer: storing attachment not implemented")
-            emitNewStateFor(ComposerEvent.AddAttachmentError(AttachmentAddError.Unknown))
+            val uriList = rawUri.map { Uri.parse(it) }
+            onAttachmentsAdded(uriList)
         }
 
         if (fileShareInfo.hasEmailData()) {
