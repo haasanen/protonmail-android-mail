@@ -373,12 +373,12 @@ class ComposerReducerTest(
             )
         )
 
-        private val EmptyToAttachmentReEncryptionFailed = TestTransition(
+        private val EmptyToAttachmentEncryptionFailed = TestTransition(
             name = "Should emit attachment exceeded file limit",
             currentState = ComposerDraftState.initial(),
-            operation = ComposerEvent.ErrorAttachmentsReEncryption,
+            operation = ComposerEvent.ErrorAttachmentsEncryption,
             expectedState = ComposerDraftState.initial().copy(
-                attachmentsReEncryptionFailed = Effect.of(Unit)
+                attachmentsEncryptionFailed = Effect.of(Unit)
             )
         )
 
@@ -540,7 +540,7 @@ class ComposerReducerTest(
             EmptyToBottomSheetOpened,
             EmptyToAttachmentsUpdated,
             EmptyToAttachmentFileExceeded,
-            EmptyToAttachmentReEncryptionFailed,
+            EmptyToAttachmentEncryptionFailed,
             EmptyToOnSendingError,
             EmptyToOnMessagePasswordUpdated,
             SubmittableToRequestConfirmEmptySubject,
@@ -568,7 +568,7 @@ class ComposerReducerTest(
             confirmSendingWithoutSubject: Effect<Unit> = Effect.empty(),
             changeFocusToField: Effect<FocusedFieldType> = Effect.empty(),
             attachmentsFileSizeExceeded: Effect<Unit> = Effect.empty(),
-            attachmentReEncryptionFailed: Effect<Unit> = Effect.empty(),
+            attachmentEncryptionFailed: Effect<Unit> = Effect.empty(),
             warning: Effect<TextUiModel> = Effect.empty(),
             replaceDraftBody: Effect<TextUiModel> = Effect.empty()
         ) = ComposerDraftState(
@@ -592,7 +592,7 @@ class ComposerReducerTest(
             isLoading = false,
             showSendingLoading = showSendingLoading,
             attachmentsFileSizeExceeded = attachmentsFileSizeExceeded,
-            attachmentsReEncryptionFailed = attachmentReEncryptionFailed,
+            attachmentsEncryptionFailed = attachmentEncryptionFailed,
             replaceDraftBody = replaceDraftBody,
             warning = warning,
             isMessagePasswordSet = false,
@@ -614,7 +614,7 @@ class ComposerReducerTest(
             closeComposerWithDraftSaved: Effect<MessageId> = Effect.empty(),
             isLoading: Boolean = false,
             attachmentsFileSizeExceeded: Effect<Unit> = Effect.empty(),
-            attachmentReEncryptionFailed: Effect<Unit> = Effect.empty(),
+            attachmentEncryptionFailed: Effect<Unit> = Effect.empty(),
             warning: Effect<TextUiModel> = Effect.empty(),
             replaceDraftBody: Effect<TextUiModel> = Effect.empty(),
             senderChangedNotice: Effect<TextUiModel> = Effect.empty()
@@ -639,7 +639,7 @@ class ComposerReducerTest(
             isLoading = isLoading,
             showSendingLoading = false,
             attachmentsFileSizeExceeded = attachmentsFileSizeExceeded,
-            attachmentsReEncryptionFailed = attachmentReEncryptionFailed,
+            attachmentsEncryptionFailed = attachmentEncryptionFailed,
             replaceDraftBody = replaceDraftBody,
             warning = warning,
             isMessagePasswordSet = false,

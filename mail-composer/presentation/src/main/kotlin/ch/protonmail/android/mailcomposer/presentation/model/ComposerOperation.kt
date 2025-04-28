@@ -83,7 +83,7 @@ sealed interface ComposerEvent : ComposerOperation {
     data object ErrorLoadingDraftData : ComposerEvent
     data object ErrorLoadingParentMessageData : ComposerEvent
     data object ErrorAttachmentsExceedSizeLimit : ComposerEvent
-    data object ErrorAttachmentsReEncryption : ComposerEvent
+    data object ErrorAttachmentsEncryption : ComposerEvent
     data object ErrorSettingExpirationTime : ComposerEvent
     data object ConfirmEmptySubject : ComposerEvent
     data object ErrorDiscardingDraft : ComposerEvent

@@ -389,9 +389,9 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         snackbarHostState.showSnackbar(type = ProtonSnackbarType.WARNING, message = warning)
     }
 
-    val errorAttachmentReEncryption = stringResource(id = R.string.composer_attachment_encryption_failed_message)
-    ConsumableLaunchedEffect(effect = state.attachmentsReEncryptionFailed) {
-        snackbarHostState.showSnackbar(type = ProtonSnackbarType.ERROR, message = errorAttachmentReEncryption)
+    val errorAttachmentEncryption = stringResource(id = R.string.composer_attachment_encryption_failed_message)
+    ConsumableLaunchedEffect(effect = state.attachmentsEncryptionFailed) {
+        snackbarHostState.showSnackbar(type = ProtonSnackbarType.ERROR, message = errorAttachmentEncryption)
     }
 
     ConsumableLaunchedEffect(effect = state.changeBottomSheetVisibility) { show ->
