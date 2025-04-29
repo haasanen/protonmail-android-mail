@@ -22,7 +22,7 @@ import java.io.File
 import android.content.Context
 import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.annotations.RustLogsFileHandler
-import ch.protonmail.android.mailsession.data.keychain.OsKeyChainMock
+import ch.protonmail.android.mailsession.data.keychain.AndroidKeyChain
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.annotations.DatabasesBaseDirectory
 import ch.protonmail.android.mailsession.domain.model.RustApiConfig
@@ -67,7 +67,7 @@ class InitRustCommonLibrary @Inject constructor(
         )
         Timber.d("rust-session: Initializing the Rust Lib with $sessionParams")
 
-        when (val result = createMailSession(sessionParams, OsKeyChainMock(context), challengeNotifierCallback)) {
+        when (val result = createMailSession(sessionParams, AndroidKeyChain(context), challengeNotifierCallback)) {
             is CreateMailSessionResult.Error -> {
                 Timber.e("rust-session: Critical error! Failed creating Mail session. Reason: ${result.v1}")
             }

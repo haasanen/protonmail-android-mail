@@ -22,7 +22,7 @@ import android.content.Context
 import ch.protonmail.android.mailsession.data.database.getDatabaseBaseDirectory
 import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObserver
 import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObserverImpl
-import ch.protonmail.android.mailsession.data.keychain.OsKeyChainMock
+import ch.protonmail.android.mailsession.data.keychain.AndroidKeyChain
 import ch.protonmail.android.mailsession.data.repository.InMemoryMailSessionRepository
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.data.repository.RustEventLoopRepository
@@ -69,7 +69,7 @@ object MailSessionModule {
 
         @Binds
         @Singleton
-        fun bindOsKeyChain(impl: OsKeyChainMock): OsKeyChain
+        fun bindOsKeyChain(impl: AndroidKeyChain): OsKeyChain
 
         @Binds
         @Singleton

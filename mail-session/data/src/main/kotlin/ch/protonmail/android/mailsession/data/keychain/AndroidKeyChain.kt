@@ -19,15 +19,15 @@
 package ch.protonmail.android.mailsession.data.keychain
 
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.OsKeyChain
-import javax.inject.Inject
-import android.content.SharedPreferences
 import uniffi.proton_mail_uniffi.OsKeyChainEntryKind
-import androidx.core.content.edit
+import javax.inject.Inject
 
-class OsKeyChainMock @Inject constructor(
+class AndroidKeyChain @Inject constructor(
     @ApplicationContext private val context: Context
 ) : OsKeyChain {
 
