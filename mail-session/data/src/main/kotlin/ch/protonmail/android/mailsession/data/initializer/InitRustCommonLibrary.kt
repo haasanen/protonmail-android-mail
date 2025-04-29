@@ -22,7 +22,6 @@ import java.io.File
 import android.content.Context
 import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.annotations.RustLogsFileHandler
-import ch.protonmail.android.mailsession.data.keychain.AndroidKeyChain
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.annotations.DatabasesBaseDirectory
 import ch.protonmail.android.mailsession.domain.model.RustApiConfig
@@ -32,6 +31,7 @@ import timber.log.Timber
 import uniffi.proton_mail_uniffi.ApiConfig
 import uniffi.proton_mail_uniffi.CreateMailSessionResult
 import uniffi.proton_mail_uniffi.MailSessionParams
+import uniffi.proton_mail_uniffi.OsKeyChain
 import uniffi.proton_mail_uniffi.createMailSession
 import javax.inject.Inject
 
@@ -42,7 +42,8 @@ class InitRustCommonLibrary @Inject constructor(
     @DatabasesBaseDirectory private val databasesBaseDirectory: File,
     @RustLogsFileHandler private val rustLogsFileHandler: LogsFileHandler,
     private val challengeNotifierCallback: ChallengeNotifierCallback,
-    private val rustApiConfig: RustApiConfig
+    private val rustApiConfig: RustApiConfig,
+    private val keyChain: OsKeyChain
 ) {
 
     fun init() {
@@ -67,7 +68,7 @@ class InitRustCommonLibrary @Inject constructor(
         )
         Timber.d("rust-session: Initializing the Rust Lib with $sessionParams")
 
-        when (val result = createMailSession(sessionParams, AndroidKeyChain(context), challengeNotifierCallback)) {
+        when (val result = createMailSession(sessionParams, keyChain, challengeNotifierCallback)) {
             is CreateMailSessionResult.Error -> {
                 Timber.e("rust-session: Critical error! Failed creating Mail session. Reason: ${result.v1}")
             }
