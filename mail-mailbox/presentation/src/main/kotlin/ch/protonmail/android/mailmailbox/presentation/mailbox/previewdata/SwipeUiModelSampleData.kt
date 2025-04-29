@@ -30,7 +30,8 @@ object SwipeUiModelSampleData {
         icon = R.drawable.ic_proton_trash,
         descriptionRes = R.string.mail_settings_swipe_action_trash_description,
         getColor = { Color.Red },
-        staysDismissed = true
+        staysDismissed = true,
+        isEnabled = true
     )
 
     val Archive = SwipeUiModel(
@@ -38,7 +39,8 @@ object SwipeUiModelSampleData {
         icon = R.drawable.ic_proton_archive_box,
         descriptionRes = R.string.mail_settings_swipe_action_archive_description,
         getColor = { Color.Blue },
-        staysDismissed = true
+        staysDismissed = true,
+        isEnabled = true
     )
 
     val MarkRead = SwipeUiModel(
@@ -46,7 +48,8 @@ object SwipeUiModelSampleData {
         icon = R.drawable.ic_proton_envelope_dot,
         descriptionRes = R.string.mail_settings_swipe_action_read_description,
         getColor = { Color.Green },
-        staysDismissed = false
+        staysDismissed = false,
+        isEnabled = true
     )
 
 }

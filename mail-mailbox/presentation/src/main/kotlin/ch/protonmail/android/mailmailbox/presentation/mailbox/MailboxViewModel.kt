@@ -256,7 +256,11 @@ class MailboxViewModel @Inject constructor(
     private fun handleSwipeActionPreferences(userId: UserId, currentMailLabel: MailLabel): Flow<MailboxEvent> {
         return observeSwipeActionsPreference(userId)
             .map { swipeActionsPreference ->
-                val swipeActions = swipeActionsMapper(currentMailLabel.id.labelId, swipeActionsPreference)
+                val currentMailLabelId = when (currentMailLabel) {
+                    is MailLabel.Custom -> currentMailLabel.id.labelId
+                    is MailLabel.System -> currentMailLabel.systemLabelId.labelId
+                }
+                val swipeActions = swipeActionsMapper(currentMailLabelId, swipeActionsPreference)
                 MailboxEvent.SwipeActionsChanged(swipeActions)
             }
             .distinctUntilChanged()

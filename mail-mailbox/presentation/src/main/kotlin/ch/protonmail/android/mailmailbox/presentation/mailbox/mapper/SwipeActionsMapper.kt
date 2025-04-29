@@ -47,7 +47,8 @@ class SwipeActionsMapper @Inject constructor() {
             icon = actionConfig.iconRes,
             descriptionRes = actionConfig.descriptionRes,
             getColor = { actionConfig.color() },
-            staysDismissed = isDismissible(swipeAction, currentMailLabel)
+            staysDismissed = isDismissible(swipeAction, currentMailLabel),
+            isEnabled = isEnabled(swipeAction, currentMailLabel)
         )
     }
 
@@ -101,6 +102,14 @@ class SwipeActionsMapper @Inject constructor() {
         SwipeAction.Star -> false
         SwipeAction.Archive -> labelId != SystemLabelId.Archive.labelId
         SwipeAction.MarkRead, SwipeAction.LabelAs, SwipeAction.MoveTo -> false
+    }
+
+    private fun isEnabled(swipeAction: SwipeAction, labelId: LabelId) = when (swipeAction) {
+        SwipeAction.None -> false
+        SwipeAction.Trash -> labelId != SystemLabelId.Trash.labelId
+        SwipeAction.Spam -> labelId != SystemLabelId.Spam.labelId
+        SwipeAction.Archive -> labelId != SystemLabelId.Archive.labelId
+        else -> true
     }
 
     private data class ActionConfig(

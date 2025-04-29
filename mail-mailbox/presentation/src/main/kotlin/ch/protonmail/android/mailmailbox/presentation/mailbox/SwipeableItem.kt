@@ -105,12 +105,18 @@ fun SwipeableItem(
             }
     }
 
+    val enableDismissFromStartToEnd = swipeActionsUiModel?.start?.let {
+        it.swipeAction != SwipeAction.None && it.isEnabled
+    } ?: false
+    val enableDismissFromEndToStart = swipeActionsUiModel?.end?.let {
+        it.swipeAction != SwipeAction.None && it.isEnabled
+    } ?: false
     SwipeToDismissBox(
         modifier = modifier,
         state = dismissState,
         gesturesEnabled = swipingEnabled,
-        enableDismissFromStartToEnd = swipeActionsUiModel?.start?.swipeAction != SwipeAction.None,
-        enableDismissFromEndToStart = swipeActionsUiModel?.end?.swipeAction != SwipeAction.None,
+        enableDismissFromStartToEnd = enableDismissFromStartToEnd,
+        enableDismissFromEndToStart = enableDismissFromEndToStart,
         backgroundContent = {
             swipeActionsUiModel ?: return@SwipeToDismissBox
 

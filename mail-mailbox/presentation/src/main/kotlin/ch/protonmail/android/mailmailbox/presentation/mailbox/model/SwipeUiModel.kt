@@ -29,7 +29,8 @@ data class SwipeUiModel(
     @DrawableRes val icon: Int,
     @StringRes val descriptionRes: Int,
     val getColor: @Composable () -> Color,
-    val staysDismissed: Boolean
+    val staysDismissed: Boolean,
+    val isEnabled: Boolean
 ) {
 
     override fun equals(other: Any?): Boolean {
@@ -40,6 +41,7 @@ data class SwipeUiModel(
         if (icon != other.icon) return false
         if (descriptionRes != other.descriptionRes) return false
         if (staysDismissed != other.staysDismissed) return false
+        if (isEnabled != other.isEnabled) return false
 
         return true
     }
@@ -50,6 +52,7 @@ data class SwipeUiModel(
         result = 31 * result + staysDismissed.hashCode()
         result = 31 * result + swipeAction.hashCode()
         result = 31 * result + getColor.hashCode()
+        result = 31 * result + isEnabled.hashCode()
         return result
     }
 }
