@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailnotifications.domain.handler
 
+import java.util.concurrent.ConcurrentHashMap
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailnotifications.domain.usecase.DismissEmailNotificationsForUser
 import ch.protonmail.android.mailsession.domain.model.AccountState
@@ -25,6 +26,7 @@ import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 internal class AccountStateAwareNotificationHandler @Inject constructor(
@@ -33,13 +35,26 @@ internal class AccountStateAwareNotificationHandler @Inject constructor(
     @AppScope private val coroutineScope: CoroutineScope
 ) : NotificationHandler {
 
+    private val accountStatesMap = ConcurrentHashMap<UserId, AccountState>()
+
     override fun handle() {
         coroutineScope.launch {
             userSessionRepository
                 .observeAccounts()
                 .distinctUntilChanged()
                 .collect { accounts ->
+                    val existingUserIds = accounts.map { it.userId }.toSet()
+                    val removedAccounts = accountStatesMap.keys.filter { !existingUserIds.contains(it) }
+
+                    // Account removal is not collected via `observeAccounts`, since the entity is not emitted anymore.
+                    removedAccounts.forEach { userId ->
+                        dismissEmailNotificationsForUser(userId)
+                        accountStatesMap.remove(userId)
+                    }
+
                     accounts.forEach { account ->
+                        accountStatesMap[account.userId] = account.state
+
                         when (account.state) {
                             AccountState.Disabled -> dismissEmailNotificationsForUser(account.userId)
 

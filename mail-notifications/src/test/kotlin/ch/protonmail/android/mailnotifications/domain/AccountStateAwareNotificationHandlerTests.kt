@@ -23,23 +23,34 @@ import ch.protonmail.android.mailnotifications.domain.usecase.DismissEmailNotifi
 import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import io.mockk.verify
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.After
+import org.junit.Rule
 import org.junit.Test
 
 internal class AccountStateAwareNotificationHandlerTests {
 
+    private val testDispatcher = UnconfinedTestDispatcher()
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule(testDispatcher)
+
+    private val scope = TestScope(testDispatcher)
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val dismissEmailNotificationsForUser: DismissEmailNotificationsForUser = mockk()
-    private val scope = TestScope()
+
     private val notificationHandler = AccountStateAwareNotificationHandler(
         userSessionRepository,
         dismissEmailNotificationsForUser,
@@ -50,7 +61,6 @@ internal class AccountStateAwareNotificationHandlerTests {
     fun resetMocks() {
         unmockkAll()
     }
-
 
     @Test
     fun `should call notifications dismissal when account state becomes disabled`() = runTest {
@@ -64,9 +74,33 @@ internal class AccountStateAwareNotificationHandlerTests {
 
         // then
         verify(exactly = 1) { dismissEmailNotificationsForUser(expectedAccount.userId) }
+        confirmVerified(dismissEmailNotificationsForUser)
+    }
+
+    @Test
+    fun `should call notifications dismissal when account is logged out and removed`() = runTest {
+        // given
+        val expectedAccount = BaseAccount.copy(state = AccountState.Ready)
+        val secondUserId = UserId("user-id2")
+        val secondExpectedAccount = BaseAccount.copy(userId = secondUserId, state = AccountState.Ready)
+
+        val accountsFlow = MutableStateFlow<List<Account>>(emptyList())
+        every { userSessionRepository.observeAccounts() } returns accountsFlow
+
+        // when
+        notificationHandler.handle()
+        accountsFlow.value = listOf(expectedAccount, secondExpectedAccount)
+        advanceUntilIdle()
+        accountsFlow.value = listOf(expectedAccount)
+        advanceUntilIdle()
+
+        // then
+        verify(exactly = 1) { dismissEmailNotificationsForUser(secondUserId) }
+        confirmVerified(dismissEmailNotificationsForUser)
     }
 
     private companion object {
+
         val BaseAccount = Account(
             userId = UserId("user-id"),
             name = "name",
