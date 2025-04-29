@@ -18,38 +18,32 @@
 
 package ch.protonmail.android.mailsession.data.keychain
 
-import android.content.Context
-import android.content.SharedPreferences
-import androidx.core.content.edit
-import dagger.hilt.android.qualifiers.ApplicationContext
-import timber.log.Timber
+import ch.protonmail.android.mailsession.domain.coroutines.KeyChainScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import uniffi.proton_mail_uniffi.OsKeyChain
 import uniffi.proton_mail_uniffi.OsKeyChainEntryKind
 import javax.inject.Inject
 
 class AndroidKeyChain @Inject constructor(
-    @ApplicationContext private val context: Context
+    private val keyChainLocalDataSource: KeyChainLocalDataSource,
+    @KeyChainScope private val coroutineScope: CoroutineScope
 ) : OsKeyChain {
 
-    private val sharedPreferences: SharedPreferences by lazy {
-        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-    }
-
     override fun delete(kind: OsKeyChainEntryKind) {
-        sharedPreferences.edit { remove(kind.name) }
+        coroutineScope.launch {
+            keyChainLocalDataSource.remove(kind)
+        }
     }
 
-    override fun load(kind: OsKeyChainEntryKind): String? {
-        val key = sharedPreferences.getString(kind.name, null)
-        Timber.d("get key: $key")
-        return key
-    }
+    override fun load(kind: OsKeyChainEntryKind): String? = runBlocking(coroutineScope.coroutineContext) {
+        keyChainLocalDataSource.get(kind)
+    }.getOrNull()
 
     override fun store(kind: OsKeyChainEntryKind, key: String) {
-        sharedPreferences.edit { putString(kind.name, key) }
-    }
-
-    companion object {
-        private const val PREFS_NAME = "OsKeyChainPrefs"
+        coroutineScope.launch {
+            keyChainLocalDataSource.save(kind, key)
+        }
     }
 }

@@ -23,12 +23,15 @@ import ch.protonmail.android.mailsession.data.database.getDatabaseBaseDirectory
 import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObserver
 import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObserverImpl
 import ch.protonmail.android.mailsession.data.keychain.AndroidKeyChain
+import ch.protonmail.android.mailsession.data.keychain.KeyChainLocalDataSource
+import ch.protonmail.android.mailsession.data.keychain.KeyChainLocalDataSourceImpl
 import ch.protonmail.android.mailsession.data.repository.InMemoryMailSessionRepository
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.data.repository.RustEventLoopRepository
 import ch.protonmail.android.mailsession.data.repository.UserSessionRepositoryImpl
 import ch.protonmail.android.mailsession.domain.annotations.DatabasesBaseDirectory
 import ch.protonmail.android.mailsession.domain.coroutines.EventLoopScope
+import ch.protonmail.android.mailsession.domain.coroutines.KeyChainScope
 import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import dagger.Binds
@@ -60,6 +63,11 @@ object MailSessionModule {
 
     @Provides
     @Singleton
+    @KeyChainScope
+    fun provideKeyChainScope() = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+    @Provides
+    @Singleton
     @DatabasesBaseDirectory
     fun provideBaseDbDirectory(@ApplicationContext context: Context) = getDatabaseBaseDirectory(context)
 
@@ -86,5 +94,9 @@ object MailSessionModule {
         @Binds
         @Singleton
         fun bindDatabaseObserver(impl: DatabaseLifecycleObserverImpl): DatabaseLifecycleObserver
+
+        @Binds
+        @Singleton
+        fun bindKeyChainLocalDataSource(impl: KeyChainLocalDataSourceImpl): KeyChainLocalDataSource
     }
 }

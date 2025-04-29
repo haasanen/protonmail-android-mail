@@ -27,7 +27,7 @@ import ch.protonmail.android.mailcommon.data.mapper.safeEdit
 import ch.protonmail.android.mailcommon.domain.model.PreferencesError
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import me.proton.android.core.crypto.domain.model.EncryptedString
+import me.proton.core.crypto.common.keystore.EncryptedString
 import uniffi.proton_mail_uniffi.OsKeyChainEntryKind
 import javax.inject.Inject
 
