@@ -87,13 +87,16 @@ class RustLabelDataSourceTest {
         val expected = listOf(LocalLabelTestData.localSystemLabelWithCount)
         val systemCallbackSlot = slot<LiveQueryCallback>()
         val userSessionMock = mockk<MailUserSessionWrapper>()
-        val labelsWatcherMock = mockk<WatchHandle>()
+        val labelsWatcherMock = mockk<WatchHandle> {
+            coEvery { this@mockk.destroy() } just Runs
+        }
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
         val sidebarMock = mockk<SidebarWrapper> {
             coEvery { this@mockk.systemLabels() } returns expected.right()
             coEvery {
                 this@mockk.watchLabels(LabelType.SYSTEM, capture(systemCallbackSlot))
             } returns labelsWatcherMock.right()
+            coEvery { this@mockk.destroy() } just Runs
         }
         every { createRustSidebar(userSessionMock) } returns sidebarMock
 
@@ -110,13 +113,16 @@ class RustLabelDataSourceTest {
         val expected = listOf(LocalLabelTestData.localSystemLabelWithCount)
         val systemCallbackSlot = slot<LiveQueryCallback>()
         val userSessionMock = mockk<MailUserSessionWrapper>()
-        val labelsWatcherMock = mockk<WatchHandle>()
+        val labelsWatcherMock = mockk<WatchHandle> {
+            coEvery { this@mockk.destroy() } just Runs
+        }
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
         val sidebarMock = mockk<SidebarWrapper> {
             coEvery { this@mockk.systemLabels() } returns expected.right()
             coEvery {
                 this@mockk.watchLabels(LabelType.SYSTEM, capture(systemCallbackSlot))
             } returns labelsWatcherMock.right()
+            coEvery { this@mockk.destroy() } just Runs
         }
         every { createRustSidebar(userSessionMock) } returns sidebarMock
 
@@ -177,7 +183,9 @@ class RustLabelDataSourceTest {
         val expected = listOf(LocalLabelTestData.localMessageLabelWithCount)
         val messageLabelsCallbackSlot = slot<LiveQueryCallback>()
         val userSessionMock = mockk<MailUserSessionWrapper>()
-        val labelsWatcherMock = mockk<WatchHandle>()
+        val labelsWatcherMock = mockk<WatchHandle> {
+            coEvery { this@mockk.destroy() } just Runs
+        }
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
         val sidebarMock = mockk<SidebarWrapper> {
             coEvery { this@mockk.customLabels() } returns expected.right()
@@ -187,6 +195,7 @@ class RustLabelDataSourceTest {
                     capture(messageLabelsCallbackSlot)
                 )
             } returns labelsWatcherMock.right()
+            coEvery { this@mockk.destroy() } just Runs
         }
         every { createRustSidebar(userSessionMock) } returns sidebarMock
 
@@ -204,7 +213,9 @@ class RustLabelDataSourceTest {
         val expected = listOf(LocalLabelTestData.localMessageLabelWithCount)
         val messageLabelsCallbackSlot = slot<LiveQueryCallback>()
         val userSessionMock = mockk<MailUserSessionWrapper>()
-        val labelsWatcherMock = mockk<WatchHandle>()
+        val labelsWatcherMock = mockk<WatchHandle> {
+            coEvery { this@mockk.destroy() } just Runs
+        }
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
         val sidebarMock = mockk<SidebarWrapper> {
             coEvery { this@mockk.customLabels() } returns expected.right()
@@ -214,6 +225,7 @@ class RustLabelDataSourceTest {
                     capture(messageLabelsCallbackSlot)
                 )
             } returns labelsWatcherMock.right()
+            coEvery { this@mockk.destroy() } just Runs
         }
         every { createRustSidebar(userSessionMock) } returns sidebarMock
 
@@ -275,13 +287,16 @@ class RustLabelDataSourceTest {
         val expected = listOf(LocalLabelTestData.localMessageFolderWithCount)
         val messageFoldersCallbackSlot = slot<LiveQueryCallback>()
         val userSessionMock = mockk<MailUserSessionWrapper>()
-        val watcherMock = mockk<WatchHandle>()
+        val watcherMock = mockk<WatchHandle> {
+            coEvery { this@mockk.destroy() } just Runs
+        }
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
         val sidebarMock = mockk<SidebarWrapper> {
             coEvery { this@mockk.allCustomFolders() } returns expected.right()
             coEvery {
                 this@mockk.watchLabels(LabelType.FOLDER, capture(messageFoldersCallbackSlot))
             } returns watcherMock.right()
+            coEvery { this@mockk.destroy() } just Runs
         }
         every { createRustSidebar(userSessionMock) } returns sidebarMock
 
@@ -299,13 +314,16 @@ class RustLabelDataSourceTest {
         val expected = listOf(LocalLabelTestData.localMessageFolderWithCount)
         val messageFoldersCallbackSlot = slot<LiveQueryCallback>()
         val userSessionMock = mockk<MailUserSessionWrapper>()
-        val watcherMock = mockk<WatchHandle>()
+        val watcherMock = mockk<WatchHandle> {
+            coEvery { this@mockk.destroy() } just Runs
+        }
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
         val sidebarMock = mockk<SidebarWrapper> {
             coEvery { this@mockk.allCustomFolders() } returns expected.right()
             coEvery {
                 this@mockk.watchLabels(LabelType.FOLDER, capture(messageFoldersCallbackSlot))
             } returns watcherMock.right()
+            coEvery { this@mockk.destroy() } just Runs
         }
         every { createRustSidebar(userSessionMock) } returns sidebarMock
 
