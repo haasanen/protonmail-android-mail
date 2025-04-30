@@ -25,7 +25,7 @@ import uniffi.proton_mail_uniffi.OsKeyChainEntryKind
 
 interface KeyChainLocalDataSource {
 
-    suspend fun get(key: OsKeyChainEntryKind): Either<PreferencesError, EncryptedString>
+    suspend fun get(key: OsKeyChainEntryKind): Either<PreferencesError, EncryptedString?>
 
     suspend fun save(key: OsKeyChainEntryKind, value: EncryptedString): Either<PreferencesError, Unit>
 

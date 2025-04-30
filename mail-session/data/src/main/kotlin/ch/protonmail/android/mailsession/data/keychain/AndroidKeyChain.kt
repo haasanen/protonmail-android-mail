@@ -49,7 +49,7 @@ class AndroidKeyChain @Inject constructor(
         try {
             keyChainLocalDataSource.get(kind)
                 .onLeft { throw IOException("Failed to read from data source. cause: $it") }
-                .map { keyStoreCrypto.decrypt(it) }
+                .map { it?.let { keyStoreCrypto.decrypt(it) } }
                 .getOrNull()
 
         } catch (exception: Exception) {

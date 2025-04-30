@@ -20,8 +20,6 @@ package ch.protonmail.android.mailsession.data.keychain
 
 import androidx.datastore.preferences.core.stringPreferencesKey
 import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.safeData
 import ch.protonmail.android.mailcommon.data.mapper.safeEdit
 import ch.protonmail.android.mailcommon.domain.model.PreferencesError
@@ -35,20 +33,12 @@ class KeyChainLocalDataSourceImpl @Inject constructor(
     private val dataStoreProvider: KeyChainDataStoreProvider
 ) : KeyChainLocalDataSource {
 
-    override suspend fun get(key: OsKeyChainEntryKind): Either<PreferencesError, EncryptedString> {
+    override suspend fun get(key: OsKeyChainEntryKind): Either<PreferencesError, EncryptedString?> {
         val preferenceKey = stringPreferencesKey(key.name)
 
-        val encryptedSecret = dataStoreProvider.keyChainDataStore.safeData.map { prefsEither ->
+        return dataStoreProvider.keyChainDataStore.safeData.map { prefsEither ->
             prefsEither.map { prefs -> prefs[preferenceKey] }
-        }
-            .first()
-            .getOrNull()
-
-        if (encryptedSecret == null) {
-            return PreferencesError.left()
-        }
-
-        return encryptedSecret.right()
+        }.first()
     }
 
     override suspend fun save(key: OsKeyChainEntryKind, value: EncryptedString): Either<PreferencesError, Unit> {

@@ -14,6 +14,7 @@ import uniffi.proton_mail_uniffi.OsKeyChainEntryKind
 import uniffi.proton_mail_uniffi.OsKeyChainException
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 
 class AndroidKeyChainTest {
 
@@ -55,6 +56,19 @@ class AndroidKeyChainTest {
 
         // Then
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `load returns null when no value is available in local storage`() {
+        // Given
+        val type = OsKeyChainEntryKind.ENCRYPTION_KEY
+        coEvery { keyChainLocalDataSource.get(type) } returns null.right()
+
+        // When
+        val actual = keyChain.load(type)
+
+        // Then
+        assertNull(actual)
     }
 
     @Test
