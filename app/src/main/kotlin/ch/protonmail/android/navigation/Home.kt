@@ -110,8 +110,10 @@ import ch.protonmail.android.navigation.route.addWebSpamFilterSettings
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import io.sentry.compose.withSentryObservableEffect
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.proton.android.core.accountmanager.presentation.manager.addAccountsManager
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
 import me.proton.core.network.domain.NetworkStatus
@@ -275,10 +277,12 @@ fun Home(
             is MessageSendingStatus.MessageSentUndoable -> {
                 showMessageSentWithUndoSnackbar(sendingStatus.messageId)
 
-                delay(sendingStatus.timeRemainingForUndo.inWholeMilliseconds)
-                hideMessageSentSnackbar()
-
-                viewModel.confirmMessageAsSeen(sendingStatus.messageId)
+                // If a new event arrives, we need to make sure the dismissal is still happening.
+                withContext(NonCancellable) {
+                    delay(sendingStatus.timeRemainingForUndo.inWholeMilliseconds)
+                    hideMessageSentSnackbar()
+                    viewModel.confirmMessageAsSeen(sendingStatus.messageId)
+                }
             }
         }
     }
