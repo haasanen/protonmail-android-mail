@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import me.proton.core.domain.entity.UserId
 import kotlin.test.Test
 
 class GetCurrentMailLabelTest {
@@ -47,6 +48,7 @@ class GetCurrentMailLabelTest {
     private val getCurrentMailLabel = GetCurrentMailLabel(observeMailLabels, selectedMailLabelId)
 
     private val userId = UserIdSample.Primary
+    private val secondaryUserId = UserId("secondary")
 
     @Test
     fun `should return current label when selected label exists in mail labels`() = runTest {
@@ -104,5 +106,28 @@ class GetCurrentMailLabelTest {
 
         // Then
         verify(exactly = 1) { observeMailLabels(userId) }
+    }
+
+    @Test
+    fun `should not return cached label when user changes`() = runTest {
+        // Given
+        val selectedId = MailLabelTestData.sentSystemLabel.id
+        val expectedLabel = MailLabelTestData.sentSystemLabel
+        val mailLabels = mockk<MailLabels> {
+            every { allById } returns mapOf(selectedId to expectedLabel)
+        }
+        every { observeMailLabels(userId) } returns flowOf(mailLabels)
+        every { observeMailLabels(secondaryUserId) } returns flowOf(mailLabels)
+
+        // When
+        val first = getCurrentMailLabel(userId)
+        assertEquals(expectedLabel, first)
+
+        val second = getCurrentMailLabel(secondaryUserId)
+        assertEquals(expectedLabel, second)
+
+        // Then
+        verify(exactly = 1) { observeMailLabels(userId) }
+        verify(exactly = 1) { observeMailLabels(secondaryUserId) }
     }
 }
