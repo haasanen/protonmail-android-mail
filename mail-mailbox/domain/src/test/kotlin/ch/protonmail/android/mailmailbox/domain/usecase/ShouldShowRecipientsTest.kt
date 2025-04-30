@@ -22,7 +22,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.maillabel.domain.usecase.ObserveCurrentMailLabel
+import ch.protonmail.android.maillabel.domain.usecase.GetCurrentMailLabel
 import ch.protonmail.android.maillabel.domain.usecase.ObserveSystemMailLabels
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.coEvery
@@ -37,20 +37,20 @@ import kotlin.test.Test
 class ShouldShowRecipientsTest {
 
     private val userId = UserIdSample.Primary
-    private val observeCurrentMailLabel = mockk<ObserveCurrentMailLabel>()
+    private val getCurrentMailLabel = mockk<GetCurrentMailLabel>()
     private val observeSystemMailLabels = mockk<ObserveSystemMailLabels> {
         coEvery { this@mockk.invoke(userId) } returns flowOf(
             MailLabelTestData.dynamicSystemLabels.right()
         )
     }
-    private val shouldShowRecipients = ShouldShowRecipients(observeCurrentMailLabel, observeSystemMailLabels)
+    private val shouldShowRecipients = ShouldShowRecipients(getCurrentMailLabel, observeSystemMailLabels)
 
 
     @Test
     fun `should return false when current label is custom`() = runTest {
         // Given
         val customMailLabel = MailLabelTestData.customLabelOne
-        coEvery { observeCurrentMailLabel(userId) } returns flowOf(customMailLabel)
+        coEvery { getCurrentMailLabel(userId) } returns customMailLabel
 
         // When
         val result = shouldShowRecipients(userId)
@@ -63,7 +63,7 @@ class ShouldShowRecipientsTest {
     fun `should return true when current label is sent and exists in system labels`() = runTest {
         // Given
         val sentMailLabel = MailLabelTestData.sentSystemLabel
-        coEvery { observeCurrentMailLabel(userId) } returns flowOf(sentMailLabel)
+        coEvery { getCurrentMailLabel(userId) } returns sentMailLabel
 
         // When
         val result = shouldShowRecipients(userId)
@@ -76,7 +76,7 @@ class ShouldShowRecipientsTest {
     fun `should return false when current system label is not eligible`() = runTest {
         // Given
         val archiveMailLabel = MailLabelTestData.archiveSystemLabel
-        coEvery { observeCurrentMailLabel(userId) } returns flowOf(archiveMailLabel)
+        coEvery { getCurrentMailLabel(userId) } returns archiveMailLabel
 
         // When
         val result = shouldShowRecipients(userId)
@@ -88,7 +88,7 @@ class ShouldShowRecipientsTest {
     @Test
     fun `should return false when observeCurrentMailLabel returns null`() = runTest {
         // Given
-        coEvery { observeCurrentMailLabel(userId) } returns flowOf(null)
+        coEvery { getCurrentMailLabel(userId) } returns null
 
         // When
         val result = shouldShowRecipients(userId)
@@ -101,7 +101,7 @@ class ShouldShowRecipientsTest {
     fun `should return false when observeSystemMailLabels fails`() = runTest {
         // Given
         val sentMailLabel = MailLabelTestData.sentSystemLabel
-        coEvery { observeCurrentMailLabel(userId) } returns flowOf(sentMailLabel)
+        coEvery { getCurrentMailLabel(userId) } returns sentMailLabel
         coEvery { observeSystemMailLabels(userId) } returns flowOf(
             DataError.Local.Unknown.left()
         )
@@ -117,7 +117,7 @@ class ShouldShowRecipientsTest {
     fun `should cache system labels result for same userId`() = runTest {
         // Given
         val sentMailLabel = MailLabelTestData.sentSystemLabel
-        coEvery { observeCurrentMailLabel(userId) } returns flowOf(sentMailLabel)
+        coEvery { getCurrentMailLabel(userId) } returns sentMailLabel
 
         // When
         val firstCallResult = shouldShowRecipients(userId)

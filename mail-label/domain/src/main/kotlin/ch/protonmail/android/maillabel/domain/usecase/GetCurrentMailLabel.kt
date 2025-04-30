@@ -20,21 +20,28 @@ package ch.protonmail.android.maillabel.domain.usecase
 
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import ch.protonmail.android.maillabel.domain.model.MailLabels
+import kotlinx.coroutines.flow.first
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class ObserveCurrentMailLabel @Inject constructor(
+class GetCurrentMailLabel @Inject constructor(
     private val observeMailLabels: ObserveMailLabels,
     private val selectedMailLabelId: SelectedMailLabelId
 ) {
-    operator fun invoke(userId: UserId): Flow<MailLabel?> {
-        return combine(
-            observeMailLabels(userId),
-            selectedMailLabelId.flow
-        ) { mailLabels, selectedLabelId ->
-            mailLabels.allById[selectedLabelId]
+    private var cachedMailLabels: MailLabels? = null
+
+    suspend operator fun invoke(userId: UserId): MailLabel? {
+        val selectedId = selectedMailLabelId.flow.value
+
+        val cached = cachedMailLabels?.allById?.get(selectedId)
+        if (cached != null) {
+            return cached
         }
+
+        // Fetch and cache if not found
+        val mailLabels = observeMailLabels(userId).first()
+        cachedMailLabels = mailLabels
+        return mailLabels.allById[selectedId]
     }
 }

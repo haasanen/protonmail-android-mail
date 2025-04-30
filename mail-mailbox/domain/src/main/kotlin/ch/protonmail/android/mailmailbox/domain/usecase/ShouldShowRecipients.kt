@@ -20,14 +20,14 @@ package ch.protonmail.android.mailmailbox.domain.usecase
 
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.usecase.ObserveCurrentMailLabel
+import ch.protonmail.android.maillabel.domain.usecase.GetCurrentMailLabel
 import ch.protonmail.android.maillabel.domain.usecase.ObserveSystemMailLabels
 import kotlinx.coroutines.flow.firstOrNull
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class ShouldShowRecipients @Inject constructor(
-    private val observeCurrentMailLabel: ObserveCurrentMailLabel,
+    private val getCurrentMailLabel: GetCurrentMailLabel,
     private val observeSystemMailLabels: ObserveSystemMailLabels
 ) {
 
@@ -36,7 +36,7 @@ class ShouldShowRecipients @Inject constructor(
     private val userRecipientLocationsCache = mutableMapOf<UserId, Set<MailLabelId>>()
 
     suspend operator fun invoke(userId: UserId): Boolean {
-        return when (val currentMailLabelId = observeCurrentMailLabel(userId).firstOrNull()?.id) {
+        return when (val currentMailLabelId = getCurrentMailLabel(userId)?.id) {
             is MailLabelId.Custom.Label -> false
             is MailLabelId.System -> shouldShowRecipientsForSystemLabel(
                 userId, currentMailLabelId, observeSystemMailLabels

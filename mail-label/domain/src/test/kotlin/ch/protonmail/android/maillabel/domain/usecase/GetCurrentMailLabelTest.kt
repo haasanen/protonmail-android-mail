@@ -26,6 +26,7 @@ import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.mockk
 import io.mockk.every
+import io.mockk.verify
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +36,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
-class ObserveCurrentMailLabelTest {
+class GetCurrentMailLabelTest {
 
     private val observeMailLabels = mockk<ObserveMailLabels>()
     private val mutableSelectedIdFlow = MutableStateFlow<MailLabelId>(MailLabelTestData.sentSystemLabel.id)
@@ -43,12 +44,12 @@ class ObserveCurrentMailLabelTest {
         every { flow } returns mutableSelectedIdFlow.asStateFlow()
     }
 
-    private val observeCurrentMailLabel = ObserveCurrentMailLabel(observeMailLabels, selectedMailLabelId)
+    private val getCurrentMailLabel = GetCurrentMailLabel(observeMailLabels, selectedMailLabelId)
 
     private val userId = UserIdSample.Primary
 
     @Test
-    fun `should emit current label when selected label exists in mail labels`() = runTest {
+    fun `should return current label when selected label exists in mail labels`() = runTest {
         // Given
         val selectedId = MailLabelTestData.sentSystemLabel.id
         val expectedLabel = MailLabelTestData.sentSystemLabel
@@ -59,14 +60,14 @@ class ObserveCurrentMailLabelTest {
         every { observeMailLabels(userId) } returns flowOf(mailLabels)
 
         // When
-        val result = observeCurrentMailLabel(userId).first()
+        val result = getCurrentMailLabel(userId)
 
         // Then
         assertEquals(expectedLabel, result)
     }
 
     @Test
-    fun `should emit null when selected label does not exist in mail labels`() = runTest {
+    fun `should return null when selected label does not exist in mail labels`() = runTest {
         // Given
         val nonExistentId = MailLabelId.System(LabelIdSample.Label2021)
         mutableSelectedIdFlow.value = nonExistentId
@@ -78,10 +79,30 @@ class ObserveCurrentMailLabelTest {
         every { observeMailLabels(userId) } returns flowOf(mailLabels)
 
         // When
-        val result = observeCurrentMailLabel(userId).first()
+        val result = getCurrentMailLabel(userId)
 
         // Then
         assertNull(result)
     }
 
+    @Test
+    fun `should return cached label on successive calls`() = runTest {
+        // Given
+        val selectedId = MailLabelTestData.sentSystemLabel.id
+        val expectedLabel = MailLabelTestData.sentSystemLabel
+        val mailLabels = mockk<MailLabels> {
+            every { allById } returns mapOf(selectedId to expectedLabel)
+        }
+        every { observeMailLabels(userId) } returns flowOf(mailLabels)
+
+        // When
+        val first = getCurrentMailLabel(userId)
+        assertEquals(expectedLabel, first)
+
+        val second = getCurrentMailLabel(userId)
+        assertEquals(expectedLabel, second)
+
+        // Then
+        verify(exactly = 1) { observeMailLabels(userId) }
+    }
 }
