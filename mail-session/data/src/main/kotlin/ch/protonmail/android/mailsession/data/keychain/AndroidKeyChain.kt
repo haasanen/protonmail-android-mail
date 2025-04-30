@@ -22,12 +22,15 @@ import ch.protonmail.android.mailsession.domain.coroutines.KeyChainScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import me.proton.core.crypto.common.keystore.KeyStoreCrypto
+import timber.log.Timber
 import uniffi.proton_mail_uniffi.OsKeyChain
 import uniffi.proton_mail_uniffi.OsKeyChainEntryKind
 import javax.inject.Inject
 
 class AndroidKeyChain @Inject constructor(
     private val keyChainLocalDataSource: KeyChainLocalDataSource,
+    private val keyStoreCrypto: KeyStoreCrypto,
     @KeyChainScope private val coroutineScope: CoroutineScope
 ) : OsKeyChain {
 
@@ -39,11 +42,17 @@ class AndroidKeyChain @Inject constructor(
 
     override fun load(kind: OsKeyChainEntryKind): String? = runBlocking(coroutineScope.coroutineContext) {
         keyChainLocalDataSource.get(kind)
+            .onLeft { Timber.e("android-keychain: failed to read secret from data source") }
+            .map {
+                keyStoreCrypto.decrypt(it)
+            }
     }.getOrNull()
 
     override fun store(kind: OsKeyChainEntryKind, key: String) {
         coroutineScope.launch {
-            keyChainLocalDataSource.save(kind, key)
+            val encryptedString = keyStoreCrypto.encrypt(key)
+            keyChainLocalDataSource.save(kind, encryptedString)
         }
     }
+
 }
