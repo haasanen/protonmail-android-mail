@@ -46,6 +46,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -244,9 +246,19 @@ private fun LoginForm(
     val usernameHasFocus = remember { mutableStateOf(false) }
     val usernamePayloadController = remember { PayloadController() }
     val usernameTextCopies = remember { MutableStateFlow("") }
+    val usernameFocusRequester = remember { FocusRequester() }
+    val passwordFocusRequester = remember { FocusRequester() }
 
     LocalClipManager.current?.OnClipChangedDisposableEffect {
         if (usernameHasFocus.value) usernameTextCopies.value = it
+    }
+
+    LaunchedEffect(Unit) {
+        if (!initialUsername.isNullOrEmpty()) {
+            passwordFocusRequester.requestFocus()
+        } else {
+            usernameFocusRequester.requestFocus()
+        }
     }
 
     fun onSubmit() = scope.launch {
@@ -276,6 +288,7 @@ private fun LoginForm(
                 .onFocusChanged { usernameHasFocus.value = it.hasFocus }
                 .fillMaxWidth()
                 .padding(top = DefaultSpacing)
+                .focusRequester(usernameFocusRequester)
                 .payload(
                     flow = LOGIN_CHALLENGE_FLOW_NAME,
                     frame = LOGIN_CHALLENGE_USERNAME_FRAME,
@@ -302,6 +315,7 @@ private fun LoginForm(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = DefaultSpacing)
+                .focusRequester(passwordFocusRequester)
                 .testTag(PASSWORD_FIELD_TAG)
         )
 
