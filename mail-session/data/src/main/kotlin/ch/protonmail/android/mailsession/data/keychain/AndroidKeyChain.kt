@@ -18,40 +18,56 @@
 
 package ch.protonmail.android.mailsession.data.keychain
 
-import ch.protonmail.android.mailsession.domain.coroutines.KeyChainScope
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import java.io.IOException
 import kotlinx.coroutines.runBlocking
 import me.proton.core.crypto.common.keystore.KeyStoreCrypto
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.OsKeyChain
 import uniffi.proton_mail_uniffi.OsKeyChainEntryKind
+import uniffi.proton_mail_uniffi.OsKeyChainException
 import javax.inject.Inject
 
+@SuppressWarnings("TooGenericExceptionCaught", "SwallowedException")
 class AndroidKeyChain @Inject constructor(
     private val keyChainLocalDataSource: KeyChainLocalDataSource,
-    private val keyStoreCrypto: KeyStoreCrypto,
-    @KeyChainScope private val coroutineScope: CoroutineScope
+    private val keyStoreCrypto: KeyStoreCrypto
 ) : OsKeyChain {
 
     override fun delete(kind: OsKeyChainEntryKind) {
-        coroutineScope.launch {
-            keyChainLocalDataSource.remove(kind)
+        runBlocking {
+            try {
+                keyChainLocalDataSource.remove(kind)
+                    .onLeft { throw IOException("Failed to delete from data source. cause: $it") }
+            } catch (exception: Exception) {
+                Timber.e("android-keychain: failed to delete secret. Error: $exception")
+                throw OsKeyChainException.Os(exception.message ?: exception.toString())
+            }
         }
     }
 
-    override fun load(kind: OsKeyChainEntryKind): String? = runBlocking(coroutineScope.coroutineContext) {
-        keyChainLocalDataSource.get(kind)
-            .onLeft { Timber.e("android-keychain: failed to read secret from data source") }
-            .map {
-                keyStoreCrypto.decrypt(it)
-            }
-    }.getOrNull()
+    override fun load(kind: OsKeyChainEntryKind): String? = runBlocking {
+        try {
+            keyChainLocalDataSource.get(kind)
+                .onLeft { throw IOException("Failed to read from data source. cause: $it") }
+                .map { keyStoreCrypto.decrypt(it) }
+                .getOrNull()
+
+        } catch (exception: Exception) {
+            Timber.e("android-keychain: failed to read or decrypt secret. Error: $exception")
+            throw OsKeyChainException.Os(exception.message ?: exception.toString())
+        }
+    }
 
     override fun store(kind: OsKeyChainEntryKind, key: String) {
-        coroutineScope.launch {
-            val encryptedString = keyStoreCrypto.encrypt(key)
-            keyChainLocalDataSource.save(kind, encryptedString)
+        runBlocking {
+            try {
+                val encryptedString = keyStoreCrypto.encrypt(key)
+                keyChainLocalDataSource.save(kind, encryptedString)
+                    .onLeft { throw IOException("Failed to write to data source. cause: $it") }
+            } catch (exception: Exception) {
+                Timber.e("android-keychain: failed to encrypt or write secret. Error: $exception")
+                throw OsKeyChainException.Os(exception.message ?: exception.toString())
+            }
         }
     }
 

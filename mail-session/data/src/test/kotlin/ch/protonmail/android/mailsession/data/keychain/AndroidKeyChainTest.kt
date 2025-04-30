@@ -1,56 +1,28 @@
 package ch.protonmail.android.mailsession.data.keychain
 
+import java.security.GeneralSecurityException
+import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.test.utils.rule.MainDispatcherRule
-import io.mockk.MockKException
+import ch.protonmail.android.mailcommon.domain.model.PreferencesError
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.test.TestScope
-import me.proton.core.crypto.common.keystore.EncryptedByteArray
-import me.proton.core.crypto.common.keystore.EncryptedString
+import kotlinx.coroutines.test.runTest
 import me.proton.core.crypto.common.keystore.KeyStoreCrypto
-import me.proton.core.crypto.common.keystore.PlainByteArray
-import org.junit.Rule
 import org.junit.Test
 import uniffi.proton_mail_uniffi.OsKeyChainEntryKind
+import uniffi.proton_mail_uniffi.OsKeyChainException
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class AndroidKeyChainTest {
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
-
     private val keyChainLocalDataSource = mockk<KeyChainLocalDataSource>()
-    private val keyStoreCrypto = object : KeyStoreCrypto {
-        private var encryptResult: EncryptedString? = null
-        private var decryptResult: String? = null
-
-        fun encryptSucceeds(result: EncryptedString) { encryptResult = result }
-        fun decryptSucceeds(result: String) { decryptResult = result }
-        override fun decrypt(value: EncryptedString): String = decryptResult!!
-
-        override fun decrypt(value: EncryptedByteArray): PlainByteArray {
-            throw MockKException("Not stubbed")
-        }
-
-        override fun encrypt(value: String): EncryptedString = encryptResult!!
-
-        override fun encrypt(value: PlainByteArray): EncryptedByteArray {
-            throw MockKException("Not stubbed")
-        }
-
-        override fun isUsingKeyStore(): Boolean {
-            throw MockKException("Not stubbed")
-        }
-    }
-    private val dispatcher = mainDispatcherRule.testDispatcher
-    private val coroutineScope = TestScope(dispatcher)
+    private val keyStoreCrypto = mockk<KeyStoreCrypto>()
 
     private val keyChain = AndroidKeyChain(
         keyChainLocalDataSource,
-        keyStoreCrypto,
-        coroutineScope
+        keyStoreCrypto
     )
 
     @Test
@@ -59,7 +31,7 @@ class AndroidKeyChainTest {
         val type = OsKeyChainEntryKind.ENCRYPTION_KEY
         val secret = "secret-key"
         val encryptedSecret = "can't touch this"
-        keyStoreCrypto.encryptSucceeds(encryptedSecret)
+        coEvery { keyStoreCrypto.encrypt(secret) } returns encryptedSecret
         coEvery { keyChainLocalDataSource.save(type, encryptedSecret) } returns Unit.right()
 
         // When
@@ -75,7 +47,7 @@ class AndroidKeyChainTest {
         val type = OsKeyChainEntryKind.ENCRYPTION_KEY
         val expected = "secret-key"
         val encryptedSecret = "can't touch this"
-        keyStoreCrypto.decryptSucceeds(expected)
+        coEvery { keyStoreCrypto.decrypt(encryptedSecret) } returns expected
         coEvery { keyChainLocalDataSource.get(type) } returns encryptedSecret.right()
 
         // When
@@ -83,6 +55,62 @@ class AndroidKeyChainTest {
 
         // Then
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `throws error when load fails reading from disk`() {
+        // Given
+        val type = OsKeyChainEntryKind.ENCRYPTION_KEY
+        coEvery { keyChainLocalDataSource.get(type) } returns PreferencesError.left()
+
+        // When / Then
+        assertFailsWith<OsKeyChainException> { keyChain.load(type) }
+    }
+
+    @Test
+    fun `throws error when load fails decrypting the secret`() {
+        // Given
+        val type = OsKeyChainEntryKind.ENCRYPTION_KEY
+        val encryptedSecret = "can't touch this"
+        coEvery { keyStoreCrypto.decrypt(encryptedSecret) } throws GeneralSecurityException("test - failed")
+        coEvery { keyChainLocalDataSource.get(type) } returns encryptedSecret.right()
+
+        // When / Then
+        assertFailsWith<OsKeyChainException> { keyChain.load(type) }
+    }
+
+    @Test
+    fun `throws error when store fails writing to disk`() = runTest {
+        // Given
+        val type = OsKeyChainEntryKind.DEVICE_KEY
+        val secret = "secret-key"
+        val encryptedSecret = "can't touch this"
+        coEvery { keyStoreCrypto.encrypt(secret) } returns encryptedSecret
+        coEvery { keyChainLocalDataSource.save(type, encryptedSecret) } returns PreferencesError.left()
+
+        // When / Then
+        assertFailsWith<OsKeyChainException> { keyChain.store(type, secret) }
+    }
+
+    @Test
+    fun `throws error when store fails encrypting the secret`() {
+        // Given
+        val type = OsKeyChainEntryKind.DEVICE_KEY
+        val secret = "secret-key"
+        coEvery { keyStoreCrypto.encrypt(secret) } throws GeneralSecurityException("test - failed")
+
+        // When / Then
+        assertFailsWith<OsKeyChainException> { keyChain.store(type, secret) }
+    }
+
+    @Test
+    fun `throws error when delete fails`() {
+        // Given
+        val type = OsKeyChainEntryKind.DEVICE_KEY
+        coEvery { keyChainLocalDataSource.remove(type) } returns PreferencesError.left()
+
+        // When / Then
+        assertFailsWith<OsKeyChainException> { keyChain.delete(type) }
     }
 
 }
