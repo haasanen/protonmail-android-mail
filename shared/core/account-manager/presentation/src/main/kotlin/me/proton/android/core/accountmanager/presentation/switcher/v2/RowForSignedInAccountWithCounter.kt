@@ -36,10 +36,10 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.accountmanager.presentation.AccountDimens
+import me.proton.android.core.accountmanager.presentation.switcher.BaseAccountSwitcherRow
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountItem
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountListItem
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
-import me.proton.android.core.accountmanager.presentation.switcher.BaseAccountSwitcherRow
 
 private const val COUNTER_MIN_VALUE = 0
 private const val COUNTER_MAX_VALUE = 9
@@ -64,15 +64,17 @@ fun RowForSignedInAccountWithCounter(
         accountInitialsShape = CircleShape,
         trailingRowContent = {
             if (accountListItem is AccountListItem.Ready) {
-                val counter = accountListItem.accountItem.counter ?: 0
-                Box(
-                    modifier = Modifier
-                        .size(AccountDimens.AccountCounterSize)
-                        .clip(CircleShape)
-                        .background(color = ProtonTheme.colors.interactionWeakNorm),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = counter.trim())
+                val counter = accountListItem.accountItem.counter
+                if (counter != null) {
+                    Box(
+                        modifier = Modifier
+                            .size(AccountDimens.AccountCounterSize)
+                            .clip(CircleShape)
+                            .background(color = ProtonTheme.colors.interactionWeakNorm),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = counter.trim())
+                    }
                 }
             }
         }
