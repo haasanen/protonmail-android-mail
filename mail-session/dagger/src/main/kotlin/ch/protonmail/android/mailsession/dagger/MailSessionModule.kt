@@ -31,7 +31,6 @@ import ch.protonmail.android.mailsession.data.repository.RustEventLoopRepository
 import ch.protonmail.android.mailsession.data.repository.UserSessionRepositoryImpl
 import ch.protonmail.android.mailsession.domain.annotations.DatabasesBaseDirectory
 import ch.protonmail.android.mailsession.domain.coroutines.EventLoopScope
-import ch.protonmail.android.mailsession.domain.coroutines.KeyChainScope
 import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import dagger.Binds
@@ -60,11 +59,6 @@ object MailSessionModule {
     @Singleton
     @EventLoopScope
     fun provideEventLoopScope() = CoroutineScope(Dispatchers.IO + SupervisorJob())
-
-    @Provides
-    @Singleton
-    @KeyChainScope
-    fun provideKeyChainScope() = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     @Provides
     @Singleton
