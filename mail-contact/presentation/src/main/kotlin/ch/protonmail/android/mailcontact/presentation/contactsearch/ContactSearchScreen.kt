@@ -149,8 +149,6 @@ fun ContactSearchContent(
                             )
                         )
                     }
-
-                    else -> {}
                 }
 
             }
