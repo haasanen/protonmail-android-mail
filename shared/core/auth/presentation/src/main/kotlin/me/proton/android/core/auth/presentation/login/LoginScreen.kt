@@ -48,12 +48,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -308,6 +311,7 @@ private fun LoginForm(
                     onFrameUpdated = {},
                     payloadController = usernamePayloadController
                 )
+                .semantics { contentType = ContentType.Username }
                 .testTag(USERNAME_FIELD_TAG)
         )
 
@@ -327,6 +331,7 @@ private fun LoginForm(
                 .fillMaxWidth()
                 .padding(top = DefaultSpacing)
                 .focusRequester(passwordFocusRequester)
+                .semantics { contentType = ContentType.Password }
                 .testTag(PASSWORD_FIELD_TAG)
         )
 
