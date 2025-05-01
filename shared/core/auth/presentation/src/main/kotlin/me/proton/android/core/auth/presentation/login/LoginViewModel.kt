@@ -115,7 +115,7 @@ class LoginViewModel @Inject internal constructor(
         return when {
             getLoginFlow().isAwaitingMailboxPassword() -> onTwoPass(userId)
             getLoginFlow().isAwaiting2fa() -> onTwoFa(userId)
-            getLoginFlow().isLoggedIn() -> onLoggedIn()
+            getLoginFlow().isLoggedIn() -> onLoggedIn(userId)
             else -> LoginViewState.Idle
         }
     }
@@ -124,10 +124,10 @@ class LoginViewModel @Inject internal constructor(
 
     private fun onTwoFa(userId: String): LoginViewState.Awaiting2fa = LoginViewState.Awaiting2fa(userId)
 
-    private suspend fun onLoggedIn(): LoginViewState {
+    private suspend fun onLoggedIn(userId: String): LoginViewState {
         return when (val result = getLoginFlow().toUserContext()) {
             is LoginFlowToUserContextResult.Error -> LoginViewState.Error.LoginFlow("${result.v1}")
-            is LoginFlowToUserContextResult.Ok -> LoginViewState.LoggedIn(result.v1.userId().toString())
+            is LoginFlowToUserContextResult.Ok -> LoginViewState.LoggedIn(userId)
         }
     }
 
