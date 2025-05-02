@@ -390,7 +390,7 @@ class ComposerViewModel @AssistedInject constructor(
     private suspend fun handleOnSendMessage(): ComposerOperation {
         emitNewStateFor(ComposerEvent.OnMessageSending)
 
-        if (currentSubject().value.isBlank()) {
+        if (subjectTextField.text.isBlank()) {
             return ComposerEvent.ConfirmEmptySubject
         }
         return onSendMessage()
@@ -439,38 +439,7 @@ class ComposerViewModel @AssistedInject constructor(
 
     private suspend fun primaryUserId() = primaryUserId.first()
 
-    private fun currentSubject() = Subject(subjectTextField.text.toString())
-
-    private fun currentDraftBody() = DraftBody(state.value.fields.body)
-
     private fun currentSenderEmail() = SenderEmail(state.value.fields.sender.email)
-
-    private suspend fun currentValidRecipientsTo(): RecipientsTo {
-        val contacts = contactsOrEmpty()
-        return RecipientsTo(
-            recipientsStateManager.recipients.value.toRecipients
-                .filterIsInstance<RecipientUiModel.Valid>()
-                .map { participantMapper.recipientUiModelToParticipant(it, contacts) }
-        )
-    }
-
-    private suspend fun currentValidRecipientsCc(): RecipientsCc {
-        val contacts = contactsOrEmpty()
-        return RecipientsCc(
-            recipientsStateManager.recipients.value.ccRecipients
-                .filterIsInstance<RecipientUiModel.Valid>()
-                .map { participantMapper.recipientUiModelToParticipant(it, contacts) }
-        )
-    }
-
-    private suspend fun currentValidRecipientsBcc(): RecipientsBcc {
-        val contacts = contactsOrEmpty()
-        return RecipientsBcc(
-            recipientsStateManager.recipients.value.bccRecipients
-                .filterIsInstance<RecipientUiModel.Valid>()
-                .map { participantMapper.recipientUiModelToParticipant(it, contacts) }
-        )
-    }
 
     private suspend fun contactsOrEmpty() = getContacts(primaryUserId()).getOrElse { emptyList() }
 
