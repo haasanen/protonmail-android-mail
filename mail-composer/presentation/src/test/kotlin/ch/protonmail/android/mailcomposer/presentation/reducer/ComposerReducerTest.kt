@@ -416,12 +416,14 @@ class ComposerReducerTest(
             name = "Should update state to reject sending without subject",
             currentState = aSubmittableState(
                 confirmSendingWithoutSubject = Effect.of(Unit),
-                changeFocusToField = Effect.empty()
+                changeFocusToField = Effect.empty(),
+                showSendingLoading = true
             ),
             operation = ComposerAction.RejectSendingWithoutSubject,
             expectedState = aSubmittableState(
                 confirmSendingWithoutSubject = Effect.empty(),
-                changeFocusToField = Effect.of(FocusedFieldType.SUBJECT)
+                changeFocusToField = Effect.of(FocusedFieldType.SUBJECT),
+                showSendingLoading = false
             )
         )
 

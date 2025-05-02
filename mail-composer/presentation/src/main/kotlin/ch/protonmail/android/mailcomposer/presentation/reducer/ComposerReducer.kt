@@ -256,7 +256,8 @@ class ComposerReducer @Inject constructor(
 
     private fun updateForRejectSendWithoutSubject(currentState: ComposerDraftState) = currentState.copy(
         changeFocusToField = Effect.of(FocusedFieldType.SUBJECT),
-        confirmSendingWithoutSubject = Effect.empty()
+        confirmSendingWithoutSubject = Effect.empty(),
+        showSendingLoading = false
     )
 
     private fun updateStateForSendMessageOffline(currentState: ComposerDraftState) =
