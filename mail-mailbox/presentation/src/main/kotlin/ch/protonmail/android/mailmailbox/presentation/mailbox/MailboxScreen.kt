@@ -555,13 +555,13 @@ fun ComposeMailFab(onComposeClick: () -> Unit) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_proton_pen_square),
                 contentDescription = stringResource(id = R.string.mailbox_fab_compose_button_content_description),
-                tint = ProtonTheme.colors.brandNorm
+                tint = ProtonTheme.colors.iconNorm
             )
         },
         text = {
             Text(
                 text = stringResource(id = R.string.mailbox_fab_compose_button_title),
-                color = ProtonTheme.colors.brandNorm,
+                color = ProtonTheme.colors.textNorm,
                 style = ProtonTheme.typography.titleMedium
             )
         },
@@ -584,7 +584,7 @@ fun ComposeMailFab(onComposeClick: () -> Unit) {
         expanded = true,
         shape = RoundedCornerShape(MailDimens.MailboxFabRadius),
         containerColor = ProtonTheme.colors.interactionFabNorm,
-        contentColor = ProtonTheme.colors.brandNorm,
+        contentColor = ProtonTheme.colors.iconNorm,
         elevation = FloatingActionButtonDefaults.elevation(
             defaultElevation = 0.dp,
             pressedElevation = 0.dp
@@ -611,7 +611,7 @@ fun IconOnlyComposeMailFab(onComposeClick: () -> Unit) {
             ),
         shape = RoundedCornerShape(MailDimens.MailboxFabRadius),
         containerColor = ProtonTheme.colors.interactionFabNorm,
-        contentColor = ProtonTheme.colors.brandNorm,
+        contentColor = ProtonTheme.colors.iconNorm,
         elevation = FloatingActionButtonDefaults.elevation(
             defaultElevation = 0.dp,
             pressedElevation = 0.dp
@@ -620,7 +620,7 @@ fun IconOnlyComposeMailFab(onComposeClick: () -> Unit) {
         Icon(
             painter = painterResource(id = R.drawable.ic_proton_pen_square),
             contentDescription = stringResource(id = R.string.mailbox_fab_compose_button_content_description),
-            tint = ProtonTheme.colors.brandNorm
+            tint = ProtonTheme.colors.iconNorm
         )
     }
 }
