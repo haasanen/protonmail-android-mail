@@ -62,7 +62,7 @@ fun MailboxTopAppBar(
         is MailboxTopAppBarState.Loading -> UiModel.Empty
         is MailboxTopAppBarState.Data.DefaultMode -> UiModel(
             title = state.currentLabelName.string(),
-            navigationIconRes = R.drawable.ic_proton_hamburger,
+            navigationIconRes = R.drawable.ic_proton_menu,
             navigationIconContentDescription = stringResource(
                 id = R.string.mailbox_toolbar_menu_button_content_description
             ),
@@ -220,6 +220,7 @@ private fun NavigationIcon(uiModel: UiModel, onNavigationIconClick: () -> Unit) 
         ) {
             Icon(
                 painter = painterResource(id = uiModel.navigationIconRes),
+                tint = ProtonTheme.colors.iconNorm,
                 contentDescription = uiModel.navigationIconContentDescription
             )
         }
@@ -255,7 +256,7 @@ private data class UiModel(
 
         val Empty = UiModel(
             title = EMPTY_STRING,
-            navigationIconRes = R.drawable.ic_proton_hamburger,
+            navigationIconRes = R.drawable.ic_proton_menu,
             navigationIconContentDescription = EMPTY_STRING,
             shouldShowActions = false,
             accountAvatarItem = null
