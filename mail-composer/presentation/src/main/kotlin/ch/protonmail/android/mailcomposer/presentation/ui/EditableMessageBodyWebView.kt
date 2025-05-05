@@ -18,44 +18,31 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
-import java.io.ByteArrayInputStream
 import android.annotation.SuppressLint
 import android.net.Uri
-import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
+import androidx.compose.ui.viewinterop.AndroidView
 import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.presentation.extension.getSecuredWebResourceResponse
-import ch.protonmail.android.mailmessage.presentation.extension.isEmbeddedImage
-import ch.protonmail.android.mailmessage.presentation.extension.isRemoteContent
-import ch.protonmail.android.mailmessage.presentation.extension.isRemoteUnsecuredContent
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.ui.showInDarkMode
 import ch.protonmail.android.mailmessage.presentation.ui.showInLightMode
-import com.google.accompanist.web.AccompanistWebViewClient
-import com.google.accompanist.web.LoadingState
-import com.google.accompanist.web.WebView
-import com.google.accompanist.web.rememberWebViewStateWithHTMLData
 import timber.log.Timber
 
 // Needed to allow "remember" on javascript interface
@@ -66,67 +53,18 @@ fun EditableMessageBodyWebView(
     messageBodyUiModel: DraftDisplayBodyUiModel,
     webViewActions: EditableMessageBodyWebView.Actions
 ) {
-    val state = rememberWebViewStateWithHTMLData(
-        data = messageBodyUiModel.value,
-        mimeType = MimeType.Html.value
-    )
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val viewModePreference = ViewModePreference.LightMode
-    val showMediaContent = true
+    val localDensity = LocalDensity.current
 
     var webView by remember { mutableStateOf<WebView?>(null) }
-    LaunchedEffect(key1 = viewModePreference) {
-        webView?.let {
-            configureDarkLightMode(it, isSystemInDarkTheme, viewModePreference)
-        }
-    }
-
-    val client = remember(showMediaContent) {
-        object : AccompanistWebViewClient() {
-
-            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                request?.let {
-                    webViewActions.onMessageBodyLinkClicked(it.url)
-                }
-                return true
-            }
-
-            override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
-                return if (!showMediaContent && request?.isRemoteContent() == true) {
-                    WebResourceResponse("", "", null)
-                } else if (showMediaContent && request?.isEmbeddedImage() == true) {
-                    webViewActions.loadEmbeddedImage(request.url.schemeSpecificPart)?.let {
-                        WebResourceResponse(it.mimeType, "", ByteArrayInputStream(it.data))
-                    }
-                } else if (request?.isRemoteUnsecuredContent() == true) {
-                    request.getSecuredWebResourceResponse()
-                } else {
-                    super.shouldInterceptRequest(view, request)
-                }
-            }
-
-            override fun onLoadResource(view: WebView?, url: String?) {
-                if (!showMediaContent && url?.isRemoteContent() == true) {
-                    return
-                }
-                super.onLoadResource(view, url)
-            }
-        }
-    }
-
     var currentCursorPosition = remember { 0.dp }
     var currentLineHeight = remember { 0.dp }
 
-    val localDensity = LocalDensity.current
-
     fun onWebViewResize() {
-        if (state.loadingState != LoadingState.Finished) {
-            Timber.tag("composer-scroll").d("WebView resized while loading state not finished. Skipping.")
-            return
-        }
-
         val height = webView?.height ?: 0
+        Timber.d("editor-webview: webview params change height: $height")
         webViewActions.onWebViewParamsChanged(
             WebViewMeasures(height.toDp(localDensity), currentCursorPosition, currentLineHeight)
         )
@@ -143,30 +81,43 @@ fun EditableMessageBodyWebView(
         JavascriptCallback(webViewActions.onMessageBodyChanged, ::onWebViewResize, ::onCursorPositionChanged)
     }
 
-    key(client) {
-        WebView(
-            onCreated = {
-                it.settings.builtInZoomControls = true
-                it.settings.displayZoomControls = false
-                it.settings.javaScriptEnabled = true
-                it.settings.safeBrowsingEnabled = true
-                it.settings.allowContentAccess = false
-                it.settings.allowFileAccess = false
-                it.settings.loadWithOverviewMode = true
-                it.settings.useWideViewPort = true
+    webView?.let { wv ->
+        LaunchedEffect(key1 = viewModePreference) {
+            webView?.let {
                 configureDarkLightMode(it, isSystemInDarkTheme, viewModePreference)
-                it.addJavascriptInterface(javascriptCallback, JAVASCRIPT_CALLBACK_INTERFACE_NAME)
-                webView = it
-            },
-            captureBackPresses = false,
-            state = state,
-            modifier = modifier
-                .fillMaxWidth()
-                .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp()),
-            client = client
-        )
+            }
+        }
+        LaunchedEffect(wv, messageBodyUiModel) {
+            snapshotFlow { messageBodyUiModel.value }.collect { content ->
+                wv.loadDataWithBaseURL(null, content, MimeType.Html.value, "utf-8", null)
+            }
+        }
     }
 
+
+    AndroidView(
+        factory = { context ->
+            Timber.d("editor-webview: constructing android view")
+            WebView(context).apply {
+                this.settings.builtInZoomControls = true
+                this.settings.displayZoomControls = false
+                this.settings.javaScriptEnabled = true
+                this.settings.safeBrowsingEnabled = true
+                this.settings.allowContentAccess = false
+                this.settings.allowFileAccess = false
+                this.settings.loadWithOverviewMode = true
+                this.settings.useWideViewPort = true
+
+                this.addJavascriptInterface(javascriptCallback, JAVASCRIPT_CALLBACK_INTERFACE_NAME)
+                configureDarkLightMode(this, isSystemInDarkTheme, viewModePreference)
+                webView = this
+            }
+        },
+        modifier = modifier,
+        onRelease = {
+            Timber.d("editor-webview: webview is leaving composition for good.")
+        }
+    )
 }
 
 private fun configureDarkLightMode(
