@@ -38,6 +38,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -98,6 +100,7 @@ fun TwoPassInputScreen(
 ) {
     val isLoading = state.isLoading
     var mailboxPassword by remember { mutableStateOf("") }
+    val passwordFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(state) {
         when (state) {
@@ -106,6 +109,10 @@ fun TwoPassInputScreen(
             is TwoPassInputState.Closed -> onClose()
             else -> Unit
         }
+    }
+
+    LaunchedEffect(Unit) {
+        passwordFocusRequester.requestFocus()
     }
 
     Scaffold(
@@ -144,7 +151,9 @@ fun TwoPassInputScreen(
                     keyboardActions = KeyboardActions { onUnlock(TwoPassInputAction.Unlock(mailboxPassword)) },
                     label = { Text(text = stringResource(R.string.auth_two_pass_input_label)) },
                     enabled = !isLoading,
-                    modifier = Modifier.padding(top = ProtonDimens.MediumSpacing),
+                    modifier = Modifier
+                        .padding(top = ProtonDimens.MediumSpacing)
+                        .focusRequester(passwordFocusRequester),
                     errorText = when {
                         state is Error.PasswordIsEmpty -> stringResource(R.string.auth_two_pass_input_empty)
                         else -> null

@@ -40,6 +40,8 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
 import me.proton.core.compose.component.ProtonOutlinedTextFieldWithError
@@ -78,6 +80,7 @@ fun OneTimePasswordInputForm(
     var mode by remember { mutableStateOf(initialMode) }
     var code by remember { mutableStateOf("") }
     val isLoading = state.isLoading
+    val twoFactorCodeFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(state) {
         when (state) {
@@ -86,6 +89,10 @@ fun OneTimePasswordInputForm(
             is OneTimePasswordInputState.LoggedIn -> onSuccess()
             else -> Unit
         }
+    }
+
+    LaunchedEffect(Unit) {
+        twoFactorCodeFocusRequester.requestFocus()
     }
 
     Column(modifier = modifier) {
@@ -97,6 +104,7 @@ fun OneTimePasswordInputForm(
                 helpText = stringResource(R.string.auth_second_factor_totp_input_help),
                 label = { Text(text = stringResource(R.string.auth_second_factor_totp_input_label)) },
                 enabled = !isLoading,
+                modifier = Modifier.focusRequester(twoFactorCodeFocusRequester),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
             )
         } else if (mode == OneTimePasswordInputMode.RecoveryCode) {
@@ -107,6 +115,7 @@ fun OneTimePasswordInputForm(
                 helpText = stringResource(R.string.auth_second_factor_recovery_help),
                 label = { Text(text = stringResource(R.string.auth_second_factor_recovery_label)) },
                 enabled = !isLoading,
+                modifier = Modifier.focusRequester(twoFactorCodeFocusRequester),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
         }
