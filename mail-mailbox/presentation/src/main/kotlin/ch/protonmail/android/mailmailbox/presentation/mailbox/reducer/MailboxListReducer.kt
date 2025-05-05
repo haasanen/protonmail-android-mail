@@ -188,7 +188,6 @@ class MailboxListReducer @Inject constructor(
                 currentMailLabel,
                 openItemEffect = Effect.empty(),
                 scrollToMailboxTop = Effect.empty(),
-                offlineEffect = Effect.empty(),
                 refreshErrorEffect = Effect.empty(),
                 refreshRequested = false,
                 swipeActions = null,
@@ -217,7 +216,6 @@ class MailboxListReducer @Inject constructor(
                 currentMailLabel,
                 openItemEffect = Effect.empty(),
                 scrollToMailboxTop = Effect.empty(),
-                offlineEffect = Effect.empty(),
                 refreshErrorEffect = Effect.empty(),
                 refreshRequested = false,
                 swipeActions = null,
@@ -283,7 +281,7 @@ class MailboxListReducer @Inject constructor(
     private fun reduceOfflineWithData(currentState: MailboxListState) = when (currentState) {
         is MailboxListState.Data.ViewMode -> {
             if (currentState.refreshRequested) {
-                currentState.copy(offlineEffect = Effect.of(Unit), refreshRequested = false)
+                currentState.copy(refreshRequested = false)
             } else {
                 currentState
             }
@@ -334,7 +332,6 @@ class MailboxListReducer @Inject constructor(
             currentMailLabel = currentState.currentMailLabel,
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
-            offlineEffect = Effect.empty(),
             refreshErrorEffect = Effect.empty(),
             refreshRequested = false,
             swipeActions = currentState.swipeActions,

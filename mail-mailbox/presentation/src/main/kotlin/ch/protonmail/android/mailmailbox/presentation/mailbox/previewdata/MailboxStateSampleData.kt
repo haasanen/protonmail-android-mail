@@ -77,7 +77,6 @@ object MailboxStateSampleData {
             currentMailLabel = inboxDynamicLabel,
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
-            offlineEffect = Effect.empty(),
             refreshErrorEffect = Effect.empty(),
             refreshRequested = false,
             swipeActions = SwipeActionsUiModel(
@@ -110,7 +109,6 @@ object MailboxStateSampleData {
             currentMailLabel = allMailDynamicLabel,
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
-            offlineEffect = Effect.empty(),
             refreshErrorEffect = Effect.empty(),
             refreshRequested = false,
             swipeActions = SwipeActionsUiModel(

@@ -116,7 +116,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.proton.android.core.accountmanager.presentation.manager.addAccountsManager
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
-import me.proton.core.network.domain.NetworkStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -144,20 +143,6 @@ fun Home(
 
     var bottomSheetType: BottomSheetType by remember { mutableStateOf(BottomSheetType.Onboarding) }
     var showBottomSheet by remember { mutableStateOf(false) }
-
-    val offlineSnackbarMessage = stringResource(id = R.string.you_are_offline)
-    fun showOfflineSnackbar() = scope.launch {
-        snackbarHostWarningState.showSnackbar(
-            message = offlineSnackbarMessage,
-            type = ProtonSnackbarType.WARNING
-        )
-    }
-
-    ConsumableLaunchedEffect(state.networkStatusEffect) {
-        if (it == NetworkStatus.Disconnected) {
-            showOfflineSnackbar()
-        }
-    }
 
     ConsumableLaunchedEffect(state.navigateToEffect) {
         viewModel.navigateTo(navController, it)
@@ -501,7 +486,6 @@ fun Home(
                             navController,
                             openDrawerMenu = { scope.launch { drawerState.open() } },
                             setDrawerEnabled = { isDrawerSwipeGestureEnabled.value = it },
-                            showOfflineSnackbar = { showOfflineSnackbar() },
                             showNormalSnackbar = { showNormalSnackbar(it) },
                             showErrorSnackbar = { showErrorSnackbar(it) },
                             onEvent = eventHandler,

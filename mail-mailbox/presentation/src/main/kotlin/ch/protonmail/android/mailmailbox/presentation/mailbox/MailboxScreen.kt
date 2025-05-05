@@ -499,10 +499,6 @@ fun MailboxScreen(
                         actions.navigateToMailboxItem(request)
                     }
 
-                    ConsumableLaunchedEffect(mailboxListState.offlineEffect) {
-                        actions.showOfflineSnackbar()
-                    }
-
                     ConsumableLaunchedEffect(mailboxListState.refreshErrorEffect) {
                         actions.showErrorSnackbar(refreshErrorText)
                     }
@@ -1086,7 +1082,6 @@ object MailboxScreen {
         val onRefreshList: () -> Unit,
         val onRefreshListCompleted: () -> Unit,
         val openDrawerMenu: () -> Unit,
-        val showOfflineSnackbar: () -> Unit,
         val showNormalSnackbar: (String) -> Unit,
         val showErrorSnackbar: (String) -> Unit,
         val onOfflineWithData: () -> Unit,
@@ -1139,7 +1134,6 @@ object MailboxScreen {
                 onRefreshList = {},
                 onRefreshListCompleted = {},
                 openDrawerMenu = {},
-                showOfflineSnackbar = {},
                 showNormalSnackbar = {},
                 showErrorSnackbar = {},
                 onOfflineWithData = {},

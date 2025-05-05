@@ -163,7 +163,6 @@ internal class MailboxReducerTest(
                 currentMailLabel = spamLabel,
                 openItemEffect = Effect.empty(),
                 scrollToMailboxTop = Effect.empty(),
-                offlineEffect = Effect.empty(),
                 refreshErrorEffect = Effect.empty(),
                 refreshRequested = false,
                 swipeActions = null,

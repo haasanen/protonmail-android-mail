@@ -56,7 +56,6 @@ internal fun NavGraphBuilder.addMailbox(
     openDrawerMenu: () -> Unit,
     setDrawerEnabled: (Boolean) -> Unit,
     onEvent: (AccountSwitchEvent) -> Unit,
-    showOfflineSnackbar: () -> Unit,
     showNormalSnackbar: (message: String) -> Unit,
     showErrorSnackbar: (String) -> Unit,
     showFeatureMissingSnackbar: () -> Unit
@@ -79,7 +78,6 @@ internal fun NavGraphBuilder.addMailbox(
                 },
                 navigateToComposer = { navController.navigate(Destination.Screen.Composer.route) },
                 openDrawerMenu = openDrawerMenu,
-                showOfflineSnackbar = showOfflineSnackbar,
                 showNormalSnackbar = showNormalSnackbar,
                 showErrorSnackbar = showErrorSnackbar,
                 onAddLabel = { navController.navigate(Destination.Screen.FolderAndLabelSettings.route) },
