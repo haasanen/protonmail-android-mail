@@ -26,7 +26,6 @@
   <string name="dialog_remove_account_confirm">Ta bort</string>
   <string name="dialog_remove_account_cancel">Avbryt</string>
   <string name="user_select_other_account_content_description">Välj annat konto</string>
-  <string name="you_are_offline">Du är offline</string>
   <string name="feature_coming_soon">Funktion kommer snart…</string>
   <string name="mailbox_draft_saved">Utkast sparat</string>
   <string name="mailbox_draft_discard">Kasta</string>

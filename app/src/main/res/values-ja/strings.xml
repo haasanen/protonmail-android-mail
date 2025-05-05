@@ -26,7 +26,6 @@
   <string name="dialog_remove_account_confirm">削除</string>
   <string name="dialog_remove_account_cancel">キャンセル</string>
   <string name="user_select_other_account_content_description">別のアカウントを選択する</string>
-  <string name="you_are_offline">オフラインです</string>
   <string name="feature_coming_soon">近日公開予定です。</string>
   <string name="mailbox_draft_saved">下書き保存</string>
   <string name="mailbox_draft_discard">破棄</string>

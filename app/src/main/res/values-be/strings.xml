@@ -26,7 +26,6 @@
   <string name="dialog_remove_account_confirm">Выдаліць</string>
   <string name="dialog_remove_account_cancel">Скасаваць</string>
   <string name="user_select_other_account_content_description">Выбраць іншы ўліковы запіс</string>
-  <string name="you_are_offline">Вы па-за сеткай</string>
   <string name="feature_coming_soon">Функцыя неўзабаве з\'явіцца…</string>
   <string name="mailbox_draft_saved">Чарнавік захаваны</string>
   <string name="mailbox_draft_discard">Адхіліць</string>

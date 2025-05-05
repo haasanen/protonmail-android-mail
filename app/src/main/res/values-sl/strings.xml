@@ -26,7 +26,6 @@
   <string name="dialog_remove_account_confirm">Odstrani</string>
   <string name="dialog_remove_account_cancel">Prekliči</string>
   <string name="user_select_other_account_content_description">Izberite drug račun</string>
-  <string name="you_are_offline">Niste povezani</string>
   <string name="feature_coming_soon">Funkcija bo kmalu na voljo ...</string>
   <string name="mailbox_draft_saved">Osnutek shranjen</string>
   <string name="mailbox_draft_discard">Zavrzi</string>

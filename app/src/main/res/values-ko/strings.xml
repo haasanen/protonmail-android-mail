@@ -26,7 +26,6 @@
   <string name="dialog_remove_account_confirm">제거</string>
   <string name="dialog_remove_account_cancel">취소</string>
   <string name="user_select_other_account_content_description">다른 계정 선택</string>
-  <string name="you_are_offline">연결되지 않음</string>
   <string name="feature_coming_soon">곧 출시될 기능입니다…</string>
   <string name="mailbox_draft_saved">임시 저장됨</string>
   <string name="mailbox_draft_discard">저장 안 함</string>

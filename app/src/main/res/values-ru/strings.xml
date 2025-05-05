@@ -26,7 +26,6 @@
   <string name="dialog_remove_account_confirm">Удалить</string>
   <string name="dialog_remove_account_cancel">Отменить</string>
   <string name="user_select_other_account_content_description">Выбрать другой аккаунт</string>
-  <string name="you_are_offline">Вы офлайн</string>
   <string name="feature_coming_soon">Функция скоро появится…</string>
   <string name="mailbox_draft_saved">Черновик сохранён</string>
   <string name="mailbox_draft_discard">Не сохранять</string>

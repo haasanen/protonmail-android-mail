@@ -26,7 +26,6 @@
   <string name="dialog_remove_account_confirm">Retirer</string>
   <string name="dialog_remove_account_cancel">Annuler</string>
   <string name="user_select_other_account_content_description">Sélectionner un autre compte</string>
-  <string name="you_are_offline">Vous êtes hors ligne.</string>
   <string name="feature_coming_soon">Fonctionnalité bientôt disponible…</string>
   <string name="mailbox_draft_saved">Le brouillon a été enregistré.</string>
   <string name="mailbox_draft_discard">Abandonner</string>

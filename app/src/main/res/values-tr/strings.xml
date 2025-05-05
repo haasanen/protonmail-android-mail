@@ -26,7 +26,6 @@
   <string name="dialog_remove_account_confirm">Kaldır</string>
   <string name="dialog_remove_account_cancel">İptal</string>
   <string name="user_select_other_account_content_description">Başka bir hesap seçin</string>
-  <string name="you_are_offline">Çevrim dışısınız</string>
   <string name="feature_coming_soon">Özellik yakında kullanılabilecek…</string>
   <string name="mailbox_draft_saved">Taslak kaydedildi</string>
   <string name="mailbox_draft_discard">Yok say</string>
