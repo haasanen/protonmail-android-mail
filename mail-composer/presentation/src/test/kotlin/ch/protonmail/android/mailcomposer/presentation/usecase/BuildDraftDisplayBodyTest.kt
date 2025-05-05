@@ -82,7 +82,19 @@ class BuildDraftDisplayBodyTest {
 
             editor.addEventListener('keyup', updateCaretPosition);
             editor.addEventListener('click', updateCaretPosition);
-            editor.addEventListener('touchend', updateCaretPosition);
+
+            let touchStartTime = 0;
+
+            editor.addEventListener('touchstart', (e) => {
+                touchStartTime = Date.now();
+            });
+            
+            editor.addEventListener('touchend', (e) => {
+                // This bit is required to allow the "native" long press to be triggered (for context menu in Android)
+                if (Date.now() - touchStartTime < 500) {
+                    updateCaretPosition();
+                }
+            });
 
             function updateCaretPosition() {
                 var selection = window.getSelection();
