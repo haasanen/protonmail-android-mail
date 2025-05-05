@@ -194,7 +194,7 @@ fun Home(
     fun showDraftSavedSnackbar(messageId: MessageId) = scope.launch {
         val result = snackbarHostSuccessState.showSnackbar(
             message = draftSavedText,
-            type = ProtonSnackbarType.SUCCESS,
+            type = ProtonSnackbarType.NORM,
             actionLabel = draftSavedDiscardText
 
         )
