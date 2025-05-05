@@ -55,11 +55,8 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import me.proton.core.network.domain.NetworkManager
-import me.proton.core.network.domain.NetworkStatus
 import org.junit.Assert.assertNull
 import org.junit.Rule
 import kotlin.test.AfterTest
@@ -79,7 +76,6 @@ class HomeViewModelTest {
     private val userId = UserIdSample.Primary
     private val messageId = MessageIdSample.LocalDraft
 
-    private val networkManager = mockk<NetworkManager>()
 
     private val observePrimaryUserId = mockk<ObservePrimaryUserId> {
         every { this@mockk() } returns MutableStateFlow<UserId?>(userId)
@@ -108,7 +104,6 @@ class HomeViewModelTest {
 
     private val homeViewModel by lazy {
         HomeViewModel(
-            networkManager,
             observeSendingMessagesStatus,
             recordMailboxScreenView,
             discardDraft,
@@ -132,9 +127,6 @@ class HomeViewModelTest {
 
     @Test
     fun `when initialized then emit initial state`() = runTest {
-        // Given
-        every { networkManager.observe() } returns emptyFlow()
-
         // When
         homeViewModel.state.test {
             val actualItem = awaitItem()
@@ -152,7 +144,6 @@ class HomeViewModelTest {
             action = Intent.ACTION_MAIN,
             data = null
         )
-        every { networkManager.observe() } returns emptyFlow()
         every { shareIntentObserver() } returns flowOf(mainIntent)
 
         // When
@@ -168,76 +159,8 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `when the status is disconnected and is still disconnected after 5 seconds then emit disconnected status`() =
-        runTest {
-            // Given
-            every { networkManager.observe() } returns flowOf(NetworkStatus.Disconnected)
-            every { networkManager.networkStatus } returns NetworkStatus.Disconnected
-
-            // When
-            homeViewModel.state.test {
-                awaitItem()
-                advanceUntilIdle()
-                val actualItem = awaitItem()
-                val expectedItem = HomeState(
-                    networkStatusEffect = Effect.of(NetworkStatus.Disconnected),
-                    messageSendingStatusEffect = Effect.empty(),
-                    navigateToEffect = Effect.empty(),
-                    startedFromLauncher = false
-                )
-
-                // Then
-                assertEquals(expectedItem, actualItem)
-            }
-        }
-
-    @Test
-    fun `when the status is disconnected and is metered after 5 seconds then emit metered status`() = runTest {
-        // Given
-        every { networkManager.observe() } returns flowOf(NetworkStatus.Disconnected)
-        every { networkManager.networkStatus } returns NetworkStatus.Metered
-
-        // When
-        homeViewModel.state.test {
-            awaitItem()
-            advanceUntilIdle()
-            val actualItem = awaitItem()
-            val expectedItem = HomeState(
-                networkStatusEffect = Effect.of(NetworkStatus.Metered),
-                messageSendingStatusEffect = Effect.empty(),
-                navigateToEffect = Effect.empty(),
-                startedFromLauncher = false
-            )
-
-            // Then
-            assertEquals(expectedItem, actualItem)
-        }
-    }
-
-    @Test
-    fun `when the status is metered then emit metered status`() = runTest {
-        // Given
-        every { networkManager.observe() } returns flowOf(NetworkStatus.Metered)
-
-        // When
-        homeViewModel.state.test {
-            val actualItem = awaitItem()
-            val expectedItem = HomeState(
-                networkStatusEffect = Effect.of(NetworkStatus.Metered),
-                messageSendingStatusEffect = Effect.empty(),
-                navigateToEffect = Effect.empty(),
-                startedFromLauncher = false
-            )
-
-            // Then
-            assertEquals(expectedItem, actualItem)
-        }
-    }
-
-    @Test
     fun `when sending message status changes, it should update state correctly`() = runTest {
         // Given
-        every { networkManager.observe() } returns flowOf(NetworkStatus.Unmetered)
         val sendingMessageStatusFlow = MutableStateFlow<MessageSendingStatus>(
             MessageSendingStatus.MessageSentUndoable(messageId, 5000L.toDuration(DurationUnit.MILLISECONDS))
         )
@@ -247,7 +170,6 @@ class HomeViewModelTest {
         homeViewModel.state.test {
             val actualItem = awaitItem()
             val expectedItem = HomeState(
-                networkStatusEffect = Effect.of(NetworkStatus.Unmetered),
                 messageSendingStatusEffect = Effect.of(
                     MessageSendingStatus.MessageSentUndoable(
                         messageId,
@@ -266,7 +188,6 @@ class HomeViewModelTest {
     @Test
     fun `when observe sending message status emits Send and then None then emit only send effect`() = runTest {
         // Given
-        every { networkManager.observe() } returns flowOf(NetworkStatus.Metered)
         val sendingMessageStatusFlow = MutableStateFlow<MessageSendingStatus>(
             MessageSendingStatus.MessageSentFinal(messageId)
         )
@@ -276,7 +197,6 @@ class HomeViewModelTest {
         homeViewModel.state.test {
             val actualItem = awaitItem()
             val expectedItem = HomeState(
-                networkStatusEffect = Effect.of(NetworkStatus.Metered),
                 messageSendingStatusEffect = Effect.of(MessageSendingStatus.MessageSentFinal(messageId)),
                 navigateToEffect = Effect.empty(),
                 startedFromLauncher = false
@@ -293,7 +213,6 @@ class HomeViewModelTest {
         // Given
         val messageId = MessageIdSample.LocalDraft
 
-        every { networkManager.observe() } returns flowOf()
         coEvery { undoSendMessage(userId, messageId) } returns Unit.right()
 
         // When
@@ -307,7 +226,6 @@ class HomeViewModelTest {
     fun `when observe sending message status emits error then emit effect and reset sending messages status`() =
         runTest {
             // Given
-            every { networkManager.observe() } returns flowOf(NetworkStatus.Metered)
             coEvery { observeSendingMessagesStatus(user.userId) } returns flowOf(
                 MessageSendingStatus.SendMessageError(
                     messageId, SendErrorReason.OtherDataError(DataError.Local.SaveDraftError.Unknown)
@@ -318,7 +236,6 @@ class HomeViewModelTest {
             homeViewModel.state.test {
                 val actualItem = awaitItem()
                 val expectedItem = HomeState(
-                    networkStatusEffect = Effect.of(NetworkStatus.Metered),
                     messageSendingStatusEffect = Effect.of(
                         MessageSendingStatus.SendMessageError(
                             messageId, SendErrorReason.OtherDataError(DataError.Local.SaveDraftError.Unknown)
@@ -336,15 +253,12 @@ class HomeViewModelTest {
     @Test
     fun `when pin lock screen needs to be shown, the effect is emitted accordingly`() = runTest {
         // Given
-        every { networkManager.observe() } returns flowOf(NetworkStatus.Unmetered)
         every { shouldPresentPinInsertionScreen() } returns flowOf(true)
 
         // When + Then
         homeViewModel.state.test {
             val actualItem = awaitItem()
-            val expectedItem = HomeState.Initial.copy(
-                networkStatusEffect = Effect.of(NetworkStatus.Unmetered)
-            )
+            val expectedItem = HomeState.Initial
             assertEquals(expectedItem, actualItem)
         }
     }
@@ -365,7 +279,6 @@ class HomeViewModelTest {
         mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
         every { any<Intent>().getShareInfo() } returns intentShareInfo
 
-        every { networkManager.observe() } returns flowOf()
         every { shouldPresentPinInsertionScreen() } returns flowOf()
         every { shareIntentObserver() } returns flowOf(shareIntent)
 
@@ -388,7 +301,6 @@ class HomeViewModelTest {
         mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
         every { any<Intent>().getShareInfo() } returns IntentShareInfo.Empty
 
-        every { networkManager.observe() } returns flowOf()
         every { shouldPresentPinInsertionScreen() } returns flowOf()
         every { shareIntentObserver() } returns flowOf(shareIntent)
 
@@ -419,7 +331,6 @@ class HomeViewModelTest {
         mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
         every { any<Intent>().getShareInfo() } returns intentShareInfo
 
-        every { networkManager.observe() } returns flowOf()
         every { shouldPresentPinInsertionScreen() } returns flowOf()
         every { shareIntentObserver() } returns flowOf(mainIntent, shareIntent)
 
@@ -435,7 +346,6 @@ class HomeViewModelTest {
         // Given
         val messageId = MessageIdSample.LocalDraft
 
-        every { networkManager.observe() } returns flowOf()
         coEvery { discardDraft(user.userId, messageId) } returns Unit.right()
 
         // When
@@ -447,9 +357,6 @@ class HomeViewModelTest {
 
     @Test
     fun `should call use case when recording mailbox screen view count`() {
-        // Given
-        every { networkManager.observe() } returns flowOf()
-
         // When
         homeViewModel.recordViewOfMailboxScreen()
 
@@ -468,7 +375,6 @@ class HomeViewModelTest {
     fun `confirmMessageAsSeen calls mark as seen and delete send result when user is available`() = runTest {
         // Given
         val messageId = MessageIdSample.LocalDraft
-        every { networkManager.observe() } returns flowOf()
         coEvery { markMessageSendingStatusesAsSeen(userId, listOf(messageId)) } just Runs
 
         // When
@@ -481,7 +387,6 @@ class HomeViewModelTest {
     @Test
     fun `confirmMessageAsSeen fails when primary user is unavailable`() = runTest {
         // Given
-        every { networkManager.observe() } returns flowOf()
         coEvery { observePrimaryUserId() } returns MutableStateFlow<UserId?>(null)
 
         // When
@@ -490,6 +395,4 @@ class HomeViewModelTest {
         // Then
         coVerify(exactly = 0) { markMessageSendingStatusesAsSeen(any(), any()) }
     }
-
-
 }

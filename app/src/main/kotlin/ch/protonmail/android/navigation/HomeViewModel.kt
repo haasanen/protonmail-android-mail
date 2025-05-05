@@ -43,24 +43,19 @@ import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.model.NavigationEffect
 import ch.protonmail.android.navigation.share.ShareIntentObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import me.proton.core.network.domain.NetworkManager
-import me.proton.core.network.domain.NetworkStatus
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val networkManager: NetworkManager,
     private val observeSendingMessagesStatus: ObserveSendingMessagesStatus,
     private val recordMailboxScreenView: RecordMailboxScreenView,
     private val discardDraft: DiscardDraft,
@@ -77,15 +72,6 @@ class HomeViewModel @Inject constructor(
     val state: StateFlow<HomeState> = mutableState
 
     init {
-        observeNetworkStatus().onEach { networkStatus ->
-            if (networkStatus == NetworkStatus.Disconnected) {
-                delay(NetworkStatusUpdateDelay)
-                emitNewStateFor(networkManager.networkStatus)
-            } else {
-                emitNewStateFor(networkStatus)
-            }
-        }.launchIn(viewModelScope)
-
         primaryUserId.flatMapLatest { userId ->
             observeSendingMessagesStatus(userId)
         }.onEach {
@@ -191,17 +177,5 @@ class HomeViewModel @Inject constructor(
                 )
             )
         )
-    }
-
-    private fun emitNewStateFor(networkStatus: NetworkStatus) {
-        val currentState = state.value
-        mutableState.value = currentState.copy(networkStatusEffect = Effect.of(networkStatus))
-    }
-
-    private fun observeNetworkStatus() = networkManager.observe().distinctUntilChanged()
-
-    companion object {
-
-        const val NetworkStatusUpdateDelay = 5000L
     }
 }

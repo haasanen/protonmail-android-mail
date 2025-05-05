@@ -20,10 +20,8 @@ package ch.protonmail.android.navigation.model
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
-import me.proton.core.network.domain.NetworkStatus
 
 data class HomeState(
-    val networkStatusEffect: Effect<NetworkStatus>,
     val messageSendingStatusEffect: Effect<MessageSendingStatus>,
     val navigateToEffect: Effect<out NavigationEffect>,
     val startedFromLauncher: Boolean
@@ -32,7 +30,6 @@ data class HomeState(
     companion object {
 
         val Initial = HomeState(
-            networkStatusEffect = Effect.empty(),
             messageSendingStatusEffect = Effect.empty(),
             navigateToEffect = Effect.empty(),
             startedFromLauncher = false
