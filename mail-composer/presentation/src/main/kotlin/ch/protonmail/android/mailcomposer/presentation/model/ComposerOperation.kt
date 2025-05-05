@@ -73,6 +73,10 @@ sealed interface ComposerEvent : ComposerOperation {
     data class ConfirmSendExpiringMessageToExternalRecipients(val externalRecipients: List<Recipient>) : ComposerEvent
     data class RecipientsUpdated(val hasValidRecipients: Boolean) : ComposerEvent
     data class OnCloseWithDraftSaved(val messageId: MessageId) : ComposerEvent
+    data class OnDraftBodyUpdated(
+        val draftBody: DraftBody,
+        val displayBodyUiModel: DraftDisplayBodyUiModel
+    ) : ComposerEvent
 
     data object ErrorLoadingDefaultSenderAddress : ComposerEvent
     data object ErrorFreeUserCannotChangeSender : ComposerEvent

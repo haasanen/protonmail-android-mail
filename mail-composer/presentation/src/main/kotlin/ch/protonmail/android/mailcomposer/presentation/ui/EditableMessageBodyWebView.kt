@@ -28,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -87,13 +86,11 @@ fun EditableMessageBodyWebView(
                 configureDarkLightMode(it, isSystemInDarkTheme, viewModePreference)
             }
         }
-        LaunchedEffect(wv, messageBodyUiModel) {
-            snapshotFlow { messageBodyUiModel.value }.collect { content ->
-                wv.loadDataWithBaseURL(null, content, MimeType.Html.value, "utf-8", null)
-            }
+        LaunchedEffect(wv) {
+            Timber.d("editor-webview: setting initial value on webview (should happen only once!)")
+            wv.loadDataWithBaseURL(null, messageBodyUiModel.value, MimeType.Html.value, "utf-8", null)
         }
     }
-
 
     AndroidView(
         factory = { context ->

@@ -183,6 +183,10 @@ class ComposerViewModel @AssistedInject constructor(
     }
 
     private suspend fun prefillForNewDraft() {
+        // Emitting also for "empty draft" as now signature is returned with the init body, effectively
+        // making this the same as other prefill cases (eg. "reply" or "fw")
+        emitNewStateFor(ComposerEvent.OpenWithMessageAction(DraftAction.Compose))
+
         createEmptyDraft(primaryUserId())
             .onRight { draftFields ->
                 emitNewStateFor(
@@ -428,10 +432,12 @@ class ComposerViewModel @AssistedInject constructor(
     }
 
     private suspend fun onDraftBodyChanged(action: ComposerAction.DraftBodyChanged) {
-        emitNewStateFor(ComposerAction.DraftBodyChanged(action.draftBody))
+        val updatedDraftBody = action.draftBody
+        val draftDisplayBody = buildDraftDisplayBody(MessageBodyWithType(updatedDraftBody.value, MimeTypeUiModel.Html))
+        emitNewStateFor(ComposerEvent.OnDraftBodyUpdated(updatedDraftBody, draftDisplayBody))
 
         storeDraftWithBody(
-            action.draftBody
+            updatedDraftBody
         ).onLeft { emitNewStateFor(ComposerEvent.ErrorStoringDraftBody) }
 
         savedStateHandle[ComposerScreen.HasSavedDraftKey] = true

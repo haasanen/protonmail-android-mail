@@ -29,6 +29,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerEvent
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
+import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
@@ -54,11 +55,11 @@ class ComposerReducer @Inject constructor(
 
     @Suppress("ComplexMethod")
     private fun ComposerAction.newStateForAction(currentState: ComposerDraftState) = when (this) {
+        is ComposerAction.DraftBodyChanged,
         is ComposerAction.AttachmentsAdded,
         is ComposerAction.RemoveAttachment -> currentState
 
         is ComposerAction.SenderChanged -> updateSenderTo(currentState, this.sender)
-        is ComposerAction.DraftBodyChanged -> updateDraftBodyTo(currentState, this.draftBody)
         is ComposerAction.OnAddAttachments -> updateForOnAddAttachments(currentState)
         is ComposerAction.OnCloseComposer -> updateCloseComposerState(currentState)
         is ComposerAction.ChangeSenderRequested -> currentState
@@ -156,6 +157,7 @@ class ComposerReducer @Inject constructor(
         is ComposerEvent.OnMessageSending -> currentState.copy(showSendingLoading = true)
         is ComposerEvent.AddAttachmentError -> updateStateForAddAttachmentError(currentState, this.error)
         is ComposerEvent.DeleteAttachmentError -> updateStateForDeleteAttachmentError(currentState)
+        is ComposerEvent.OnDraftBodyUpdated -> updateDraftBodyTo(currentState, this.draftBody, this.displayBodyUiModel)
     }
 
     private fun updateStateForDeleteAttachmentError(currentState: ComposerDraftState): ComposerDraftState =
@@ -229,8 +231,12 @@ class ComposerReducer @Inject constructor(
             closeComposerWithDraftSaved = Effect.of(messageId)
         )
 
-    private fun updateDraftBodyTo(currentState: ComposerDraftState, draftBody: DraftBody): ComposerDraftState =
-        currentState.copy(fields = currentState.fields.copy(body = draftBody.value))
+    private fun updateDraftBodyTo(
+        currentState: ComposerDraftState,
+        draftBody: DraftBody,
+        draftDisplayBody: DraftDisplayBodyUiModel
+    ): ComposerDraftState =
+        currentState.copy(fields = currentState.fields.copy(body = draftBody.value, displayBody = draftDisplayBody))
 
     private fun updateStateForOpenWithMessageAction(
         currentState: ComposerDraftState,

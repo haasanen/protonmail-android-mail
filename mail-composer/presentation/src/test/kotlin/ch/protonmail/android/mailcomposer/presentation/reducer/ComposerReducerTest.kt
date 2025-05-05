@@ -180,14 +180,25 @@ class ComposerReducerTest(
             )
         )
 
+        private val DraftBodyChangedActionShouldDoNothing = with(DraftBody("Updated draft body")) {
+            TestTransition(
+                name = "Should do nothing when draft body changed action is reduced (dedicated event)",
+                currentState = ComposerDraftState.initial(),
+                operation = ComposerAction.DraftBodyChanged(this),
+                expectedState = aNotSubmittableState(error = Effect.empty())
+            )
+        }
+
         private val EmptyToUpdatedDraftBody = with(DraftBody("Updated draft body")) {
+            val displayBodyUiModel = DraftDisplayBodyUiModel("<html>$this</html>")
             TestTransition(
                 name = "Should update the state with the new draft body when it changes",
                 currentState = ComposerDraftState.initial(),
-                operation = ComposerAction.DraftBodyChanged(this),
+                operation = ComposerEvent.OnDraftBodyUpdated(this, displayBodyUiModel),
                 expectedState = aNotSubmittableState(
                     error = Effect.empty(),
-                    draftBody = this.value
+                    draftBody = this.value,
+                    draftDisplayBodyUiModel = displayBodyUiModel
                 )
             )
         }
@@ -577,7 +588,8 @@ class ComposerReducerTest(
             EmptyToAttachmentCountLimit,
             EmptyToAttachmentTooLarge,
             EmptyToAttachmentEncryptionFailed,
-            EmptyToAttachmentUnexpectedError
+            EmptyToAttachmentUnexpectedError,
+            DraftBodyChangedActionShouldDoNothing
         )
 
         private fun aSubmittableState(
