@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.mapper
 
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
@@ -55,7 +54,7 @@ class AttachmentMetadataUiModelMapperTest {
 
         // Then
         assertEquals(AttachmentIdUiModel("123"), result.id)
-        assertEquals(TextUiModel("TestFile.pdf"), result.name)
+        assertEquals("TestFile.pdf", result.name)
     }
 
     @Test

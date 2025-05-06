@@ -159,14 +159,14 @@ object MailboxItemUiModelPreviewData {
             attachments = persistentListOf(
                 AttachmentMetadataUiModel(
                     id = AttachmentIdUiModel("0"),
-                    name = TextUiModel.Text("Account_statement_01.pdf"),
+                    name = "Account_statement_01.pdf",
                     icon = R.drawable.ic_file_type_pdf,
                     contentDescription = R.string.attachment_type_pdf,
                     size = 5678L
                 ),
                 AttachmentMetadataUiModel(
                     id = AttachmentIdUiModel("1"),
-                    name = TextUiModel.Text("Account_statement_all.zip"),
+                    name = "Account_statement_all.zip",
                     icon = R.drawable.ic_file_type_zip,
                     contentDescription = R.string.attachment_type_archive,
                     size = 5678L

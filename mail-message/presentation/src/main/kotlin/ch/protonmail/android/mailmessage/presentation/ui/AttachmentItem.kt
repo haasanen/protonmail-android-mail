@@ -158,7 +158,7 @@ fun AttachmentItem(
                 modifier = Modifier
                     .weight(1f)
                     .testTag(AttachmentItemTestTags.Name),
-                text = attachmentUiModel.name.string(),
+                text = attachmentUiModel.name,
                 style = ProtonTheme.typography.bodyMedium,
                 color = nameTextColor,
                 maxLines = 1,

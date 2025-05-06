@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmessage.presentation.mapper
 
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.AttachmentState
@@ -37,7 +36,7 @@ class AttachmentMetadataUiModelMapper @Inject constructor() {
     ): AttachmentMetadataUiModel {
         return AttachmentMetadataUiModel(
             id = AttachmentIdUiModel(attachmentMetadata.attachmentId.id),
-            name = TextUiModel(attachmentMetadata.name),
+            name = attachmentMetadata.name,
             icon = getIcon(attachmentMetadata.mimeType.category),
             size = attachmentMetadata.size,
             isCalendar = attachmentMetadata.isCalendarAttachment(),

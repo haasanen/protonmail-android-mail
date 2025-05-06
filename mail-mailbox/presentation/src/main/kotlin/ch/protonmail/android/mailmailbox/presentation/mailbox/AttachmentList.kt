@@ -47,8 +47,6 @@ import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.Attachment.TotalIconAndPaddingDp
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
@@ -259,7 +257,7 @@ private fun Attachment(
                 tint = Color.Unspecified
             )
             Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Compact))
-            val fileName = attachment.name.string()
+            val fileName = attachment.name
             val extension = fileName.substringAfterLast('.', "")
             val baseName = fileName.substringBeforeLast('.', fileName)
             val baseNameWidthDp = with(LocalDensity.current) { baseNameWidth?.toDp() }
@@ -280,7 +278,7 @@ private fun MinTruncatedAttachment(maxWidth: Int) {
     Attachment(
         attachment = AttachmentMetadataUiModel(
             AttachmentIdUiModel("0"),
-            TextUiModel("AAA... .pdf"),
+            "AAA... .pdf",
             R.drawable.ic_file_type_default,
             R.string.attachment_type_unknown,
             size = 0L
@@ -390,7 +388,7 @@ private fun AttachmentPreview() {
             attachments = listOf(
                 AttachmentMetadataUiModel(
                     AttachmentIdUiModel("0"),
-                    TextUiModel("Attachment name.pdf"),
+                    "Attachment name.pdf",
                     R.drawable.ic_file_type_unknown,
                     R.string.attachment_type_unknown,
                     size = 1024L

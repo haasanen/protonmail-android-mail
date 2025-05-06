@@ -21,13 +21,12 @@ package ch.protonmail.android.mailmessage.presentation.model.attachment
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 
 @Immutable
 data class AttachmentMetadataUiModel(
     val id: AttachmentIdUiModel,
-    val name: TextUiModel,
+    val name: String,
     @DrawableRes val icon: Int,
     @StringRes val contentDescription: Int,
     val size: Long,
