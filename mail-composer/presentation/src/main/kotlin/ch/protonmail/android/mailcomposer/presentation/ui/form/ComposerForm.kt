@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui.form
 
+import android.webkit.WebView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.input.TextFieldState
@@ -156,11 +157,22 @@ internal fun ComposerForm(
                 }
             }
 
+            val editorWebView = remember { mutableStateOf<WebView?>(null) }
             if (showSubjectAndBody) {
                 MessageBodyEditor(
                     messageBodyUiModel = bodyInitialValue,
                     onBodyChanged = actions.onBodyChanged,
                     onWebViewMeasuresChanged = actions.onWebViewMeasuresChanged,
+                    webViewFactory = { context ->
+                        if (editorWebView.value == null) {
+                            Timber.d("editor-webview: factory creating new editor webview")
+                            val webView = WebView(context)
+                            editorWebView.value = webView
+                        }
+
+                        Timber.d("editor-webview: factory returning editor webview")
+                        editorWebView.value ?: throw IllegalStateException("Editor WebView wasn't initialized.")
+                    },
                     modifier = maxWidthModifier
                         .testTag(ComposerTestTags.MessageBody)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)

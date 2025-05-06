@@ -17,14 +17,18 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
+import android.content.Context
+import android.webkit.WebView
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 
 @Composable
+@Suppress("UseComposableActions")
 internal fun MessageBodyEditor(
     messageBodyUiModel: DraftDisplayBodyUiModel,
+    webViewFactory: (Context) -> WebView,
     onBodyChanged: (body: String) -> Unit,
     onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
     modifier: Modifier = Modifier
@@ -32,6 +36,7 @@ internal fun MessageBodyEditor(
     EditableMessageBodyWebView(
         modifier = modifier,
         messageBodyUiModel = messageBodyUiModel,
+        webViewFactory = webViewFactory,
         webViewActions = EditableMessageBodyWebView.Actions(
             onMessageBodyLinkClicked = {},
             onAttachmentClicked = {},

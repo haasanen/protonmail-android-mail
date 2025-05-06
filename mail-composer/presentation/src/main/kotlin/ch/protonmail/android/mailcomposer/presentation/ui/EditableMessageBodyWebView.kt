@@ -19,9 +19,14 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.net.Uri
+import android.view.ViewGroup.LayoutParams
 import android.webkit.WebView
+import android.widget.FrameLayout
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,6 +38,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
@@ -50,6 +56,7 @@ import timber.log.Timber
 fun EditableMessageBodyWebView(
     modifier: Modifier = Modifier,
     messageBodyUiModel: DraftDisplayBodyUiModel,
+    webViewFactory: (Context) -> WebView,
     webViewActions: EditableMessageBodyWebView.Actions
 ) {
 
@@ -92,29 +99,38 @@ fun EditableMessageBodyWebView(
         }
     }
 
-    AndroidView(
-        factory = { context ->
-            Timber.d("editor-webview: constructing android view")
-            WebView(context).apply {
-                this.settings.builtInZoomControls = true
-                this.settings.displayZoomControls = false
-                this.settings.javaScriptEnabled = true
-                this.settings.safeBrowsingEnabled = true
-                this.settings.allowContentAccess = false
-                this.settings.allowFileAccess = false
-                this.settings.loadWithOverviewMode = true
-                this.settings.useWideViewPort = true
+    BoxWithConstraints(modifier) {
+        // WebView changes it's layout strategy based on
+        // it's layoutParams. We convert from Compose Modifier to
+        // layout params here.
+        val width = if (constraints.hasFixedWidth) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT
+        val height = if (constraints.hasFixedHeight) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT
+        val layoutParams = FrameLayout.LayoutParams(width, height)
 
-                this.addJavascriptInterface(javascriptCallback, JAVASCRIPT_CALLBACK_INTERFACE_NAME)
-                configureDarkLightMode(this, isSystemInDarkTheme, viewModePreference)
-                webView = this
+        AndroidView(
+            factory = { context ->
+                webViewFactory.invoke(context).apply {
+                    this.settings.builtInZoomControls = true
+                    this.settings.displayZoomControls = false
+                    this.settings.javaScriptEnabled = true
+                    this.settings.safeBrowsingEnabled = true
+                    this.settings.allowContentAccess = false
+                    this.settings.allowFileAccess = false
+                    this.settings.loadWithOverviewMode = true
+                    this.settings.useWideViewPort = true
+                    this.layoutParams = layoutParams
+
+                    this.addJavascriptInterface(javascriptCallback, JAVASCRIPT_CALLBACK_INTERFACE_NAME)
+                    configureDarkLightMode(this, isSystemInDarkTheme, viewModePreference)
+                    webView = this
+                }
+            },
+            modifier = Modifier.heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp()),
+            onRelease = {
+                Timber.d("editor-webview: webview is leaving composition for good.")
             }
-        },
-        modifier = modifier,
-        onRelease = {
-            Timber.d("editor-webview: webview is leaving composition for good.")
-        }
-    )
+        )
+    }
 }
 
 private fun configureDarkLightMode(
