@@ -194,11 +194,14 @@ private fun SubcomposeMeasureScope.measureAttachmentsFullWidth(
     attachments: List<AttachmentMetadataUiModel>,
     textColor: Color
 ): List<FullWidthAttachmentInfo> {
-    return attachments.map { attachment ->
-        val measuredExtensionsMap = mutableMapOf<AttachmentIdUiModel, Int>()
+    val result = mutableListOf<FullWidthAttachmentInfo>()
+
+    attachments.forEach { attachment ->
+
+        val extensionWidth = measureExtensionWidth(attachment.name, attachmentId = attachment.id.value)
+
         val placeable = subcompose(generateSlotId("measure-attachment", attachment.id.value)) {
-            val extensionWidth = measureExtensionWidth(attachment.name.string(), attachmentId = attachment.id.value)
-            measuredExtensionsMap[attachment.id] = extensionWidth
+
             Attachment(
                 attachment = attachment,
                 textColor = textColor,
@@ -207,8 +210,10 @@ private fun SubcomposeMeasureScope.measureAttachmentsFullWidth(
             )
         }.single().measure(Constraints())
 
-        FullWidthAttachmentInfo(attachment, placeable, measuredExtensionsMap[attachment.id] ?: 0)
+        result += FullWidthAttachmentInfo(attachment, placeable, extensionWidth)
     }
+
+    return result
 }
 
 private fun SubcomposeMeasureScope.measureMinTruncatedWidth(constraints: Constraints): Int {
