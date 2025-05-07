@@ -29,7 +29,7 @@ import me.proton.android.core.payment.domain.SubscriptionManager
 import me.proton.android.core.payment.domain.model.ProductDetail
 import me.proton.android.core.payment.domain.model.Purchase
 import me.proton.android.core.payment.domain.model.SubscriptionDetail
-import me.proton.android.core.payment.presentation.extension.getErrorMessage
+import me.proton.android.core.payment.data.extension.getErrorMessage
 import uniffi.proton_mail_uniffi.GetPaymentsPlansOptions
 import uniffi.proton_mail_uniffi.GoogleRecurringReceiptDetails
 import uniffi.proton_mail_uniffi.MailUserSession

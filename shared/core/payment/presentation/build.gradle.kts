@@ -51,8 +51,6 @@ android {
 }
 
 dependencies {
-    compileOnly(libs.proton.rust.core)
-
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation(libs.androidx.compose.material3)
@@ -76,5 +74,4 @@ dependencies {
 
     testImplementation(kotlin("test"))
     testImplementation(libs.bundles.test)
-    testImplementation(libs.proton.rust.core)
 }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.payment.presentation.extension
+package me.proton.android.core.payment.data.extension
 
 import android.content.Context
 import me.proton.android.core.payment.presentation.R
