@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
@@ -51,6 +52,8 @@ import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_common.TransformOpts
@@ -81,34 +84,35 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val getRustMessageLabelAsActions: GetRustMessageLabelAsActions,
     private val rustMarkMessageAsLegitimate: RustMarkMessageAsLegitimate,
     private val rustUnblockAddress: RustUnblockAddress,
-    private val rustReportPhishing: RustReportPhishing
+    private val rustReportPhishing: RustReportPhishing,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RustMessageDataSource {
 
     override suspend fun getMessage(
         userId: UserId,
         messageId: LocalMessageId
-    ): Either<DataError, LocalMessageMetadata> {
+    ): Either<DataError, LocalMessageMetadata> = withContext(ioDispatcher) {
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-message: trying to load message with a null session")
-            return DataError.Local.NoUserSession.left()
+            return@withContext DataError.Local.NoUserSession.left()
         }
 
-        return createRustMessageAccessor(session, messageId)
+        return@withContext createRustMessageAccessor(session, messageId)
             .onLeft { Timber.e("rust-message: Failed to get message $it") }
     }
 
     override suspend fun getMessage(
         userId: UserId,
         messageId: RemoteMessageId
-    ): Either<DataError, LocalMessageMetadata> {
+    ): Either<DataError, LocalMessageMetadata> = withContext(ioDispatcher) {
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-message: trying to fetch remote message with a null session")
-            return DataError.Local.NoUserSession.left()
+            return@withContext DataError.Local.NoUserSession.left()
         }
 
-        return createRustMessageAccessor(session, messageId)
+        return@withContext createRustMessageAccessor(session, messageId)
             .onLeft { Timber.e("rust-message: Failed to get remote message $it") }
     }
 
@@ -116,12 +120,13 @@ class RustMessageDataSourceImpl @Inject constructor(
         userId: UserId,
         messageId: LocalMessageId,
         transformations: MessageBodyTransformations
-    ): Either<DataError, MessageBody> {
+    ): Either<DataError, MessageBody> = withContext(ioDispatcher) {
         // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
         // the current labelId is not needed to get the body and is planned to be dropped on this API
-        val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull() ?: return DataError.Local.NoDataCached.left()
+        val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
+            ?: return@withContext DataError.Local.NoDataCached.left()
 
-        return createRustMessageBodyAccessor(mailbox, messageId)
+        return@withContext createRustMessageBodyAccessor(mailbox, messageId)
             .onLeft { Timber.e("rust-message: Failed to get message body $it") }
             .flatMap { decryptedMessage ->
                 val transformOptions = TransformOpts(
@@ -136,86 +141,93 @@ class RustMessageDataSourceImpl @Inject constructor(
             }
     }
 
-    override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata> {
-        Timber.d("rust-message: getMessages for pageKey: $pageKey")
-        val messages = rustMessageQuery.getMessages(userId, pageKey)
-        Timber.d("rust-message: paginator returning messages ${messages?.joinToString { it.id.toString() }}")
-        return messages ?: run {
-            Timber.w("rust-message: paginator returned null result for $pageKey")
-            emptyList()
+    override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata> =
+        withContext(ioDispatcher) {
+            Timber.d("rust-message: getMessages for pageKey: $pageKey")
+            val messages = rustMessageQuery.getMessages(userId, pageKey)
+            Timber.d("rust-message: paginator returning messages ${messages?.joinToString { it.id.toString() }}")
+            return@withContext messages ?: run {
+                Timber.w("rust-message: paginator returned null result for $pageKey")
+                emptyList()
+            }
         }
-    }
 
     override suspend fun getSenderImage(
         userId: UserId,
         address: String,
         bimi: String?
-    ): String? {
+    ): String? = withContext(ioDispatcher) {
         Timber.d("rust-message: getSenderImage for address: $address")
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-message: trying to get sender image with a null session")
-            return null
+            return@withContext null
         }
 
-        return getRustSenderImage(session, address, bimi)
+        return@withContext getRustSenderImage(session, address, bimi)
             .onLeft { Timber.e("rust-message: Failed to get sender image $it") }
             .getOrNull()
     }
 
     @MissingRustApi
-    override suspend fun markRead(userId: UserId, messages: List<LocalMessageId>): Either<DataError, Unit> {
-        // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
-        // the current labelId is not needed to mark as read and is planned to be dropped on this API
-        val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
-        if (mailbox == null) {
-            Timber.e("rust-message: trying to mark message read with a null mailbox")
-            return DataError.Local.Unknown.left()
+    override suspend fun markRead(userId: UserId, messages: List<LocalMessageId>): Either<DataError, Unit> =
+        withContext(ioDispatcher) {
+            // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
+            // the current labelId is not needed to mark as read and is planned to be dropped on this API
+            val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
+            if (mailbox == null) {
+                Timber.e("rust-message: trying to mark message read with a null mailbox")
+                return@withContext DataError.Local.Unknown.left()
+            }
+
+            Timber.v("rust-message: marking message as read...")
+            return@withContext rustMarkMessagesRead(mailbox, messages)
+                .onLeft { Timber.e("rust-message: Failed to mark message read $it") }
         }
 
-        Timber.v("rust-message: marking message as read...")
-        return rustMarkMessagesRead(mailbox, messages)
-            .onLeft { Timber.e("rust-message: Failed to mark message read $it") }
-    }
+    override suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>): Either<DataError, Unit> =
+        withContext(ioDispatcher) {
+            // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
+            // the current labelId is not needed to mark as unread and is planned to be dropped on this API
+            val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
+            if (mailbox == null) {
+                Timber.e("rust-message: trying to mark unread with null Mailbox! failing")
+                return@withContext DataError.Local.NoDataCached.left()
+            }
 
-    override suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>): Either<DataError, Unit> {
-        // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
-        // the current labelId is not needed to mark as unread and is planned to be dropped on this API
-        val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
-        if (mailbox == null) {
-            Timber.e("rust-message: trying to mark unread with null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+            return@withContext rustMarkMessagesUnread(mailbox, messages)
+                .onLeft { Timber.e("rust-message: Failed to mark message unread $it") }
         }
 
-        return rustMarkMessagesUnread(mailbox, messages)
-            .onLeft { Timber.e("rust-message: Failed to mark message unread $it") }
-    }
+    override suspend fun starMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError, Unit> =
+        withContext(ioDispatcher) {
+            val session = userSessionRepository.getUserSession(userId)
+                ?: return@withContext DataError.Local.NoUserSession.left()
 
-    override suspend fun starMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError, Unit> {
-        val session = userSessionRepository.getUserSession(userId) ?: return DataError.Local.NoUserSession.left()
+            return@withContext rustStarMessages(session, messages)
+                .onLeft { Timber.e("rust-message: Failed to mark message as starred $it") }
+        }
 
-        return rustStarMessages(session, messages)
-            .onLeft { Timber.e("rust-message: Failed to mark message as starred $it") }
-    }
+    override suspend fun unStarMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError, Unit> =
+        withContext(ioDispatcher) {
+            val session = userSessionRepository.getUserSession(userId)
+                ?: return@withContext DataError.Local.NoUserSession.left()
 
-    override suspend fun unStarMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError, Unit> {
-        val session = userSessionRepository.getUserSession(userId) ?: return DataError.Local.NoUserSession.left()
-
-        return rustUnstarMessages(session, messages)
-            .onLeft { Timber.e("rust-message: Failed to mark message unStarred $it") }
-    }
+            return@withContext rustUnstarMessages(session, messages)
+                .onLeft { Timber.e("rust-message: Failed to mark message unStarred $it") }
+        }
 
     override suspend fun moveMessages(
         userId: UserId,
         messageIds: List<LocalMessageId>,
         toLabelId: LocalLabelId
-    ): Either<DataError, Unit> {
+    ): Either<DataError, Unit> = withContext(ioDispatcher) {
         val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to move messages with null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.NoDataCached.left()
         }
-        return rustMoveMessages(mailbox, toLabelId, messageIds)
+        return@withContext rustMoveMessages(mailbox, toLabelId, messageIds)
             .onLeft { Timber.e("rust-message: Failed to move messages $it") }
     }
 
@@ -223,69 +235,70 @@ class RustMessageDataSourceImpl @Inject constructor(
         userId: UserId,
         labelId: LocalLabelId,
         messageId: LocalMessageId
-    ): Either<DataError, MessageAvailableActions> {
+    ): Either<DataError, MessageAvailableActions> = withContext(ioDispatcher) {
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get available actions for null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.NoDataCached.left()
         }
-        return getRustAvailableMessageActions(mailbox, messageId)
+        return@withContext getRustAvailableMessageActions(mailbox, messageId)
     }
 
     override suspend fun getAllAvailableBottomBarActions(
         userId: UserId,
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
-    ): Either<DataError, AllBottomBarMessageActions> {
+    ): Either<DataError, AllBottomBarMessageActions> = withContext(ioDispatcher) {
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get all available actions for null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.NoDataCached.left()
         }
 
-        return getRustAllMessageBottomBarActions(mailbox, messageIds)
+        return@withContext getRustAllMessageBottomBarActions(mailbox, messageIds)
     }
 
     override suspend fun getAvailableSystemMoveToActions(
         userId: UserId,
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
-    ): Either<DataError, List<MoveAction.SystemFolder>> {
+    ): Either<DataError, List<MoveAction.SystemFolder>> = withContext(ioDispatcher) {
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get available actions for null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.NoDataCached.left()
         }
         val moveActions = getRustMessageMoveToActions(mailbox, messageIds)
-        return moveActions.map { it.filterIsInstance<MoveAction.SystemFolder>() }
+        return@withContext moveActions.map { it.filterIsInstance<MoveAction.SystemFolder>() }
     }
 
     override suspend fun getAvailableLabelAsActions(
         userId: UserId,
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
-    ): Either<DataError, List<LocalLabelAsAction>> {
+    ): Either<DataError, List<LocalLabelAsAction>> = withContext(ioDispatcher) {
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get available label actions for null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.NoDataCached.left()
         }
-        return getRustMessageLabelAsActions(mailbox, messageIds)
+        return@withContext getRustMessageLabelAsActions(mailbox, messageIds)
     }
 
-    override suspend fun deleteMessages(userId: UserId, messageIds: List<LocalMessageId>): Either<DataError, Unit> {
-        Timber.v("rust-message: executing delete message for $messageIds")
-        // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
-        // the current labelId is not needed to delete messages and is planned to be dropped on this API
-        val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
-        if (mailbox == null) {
-            Timber.e("rust-message: trying to delete messages with null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
-        }
+    override suspend fun deleteMessages(userId: UserId, messageIds: List<LocalMessageId>): Either<DataError, Unit> =
+        withContext(ioDispatcher) {
+            Timber.v("rust-message: executing delete message for $messageIds")
+            // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
+            // the current labelId is not needed to delete messages and is planned to be dropped on this API
+            val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
+            if (mailbox == null) {
+                Timber.e("rust-message: trying to delete messages with null Mailbox! failing")
+                return@withContext DataError.Local.NoDataCached.left()
+            }
 
-        return rustDeleteMessages(mailbox, messageIds)
-            .onLeft { Timber.e("rust-message: Failure deleting message on rust lib $it") }
-    }
+            return@withContext rustDeleteMessages(mailbox, messageIds)
+                .onLeft { Timber.e("rust-message: Failure deleting message on rust lib $it") }
+        }
 
     override suspend fun labelMessages(
         userId: UserId,
@@ -293,15 +306,15 @@ class RustMessageDataSourceImpl @Inject constructor(
         selectedLabelIds: List<LocalLabelId>,
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
-    ): Either<DataError, Unit> {
+    ): Either<DataError, Unit> = withContext(ioDispatcher) {
         Timber.v("rust-message: executing labels messages for $messageIds")
         val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to label messages with null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.NoDataCached.left()
         }
 
-        return rustLabelMessages(
+        return@withContext rustLabelMessages(
             mailbox = mailbox,
             messageIds = messageIds,
             selectedLabelIds = selectedLabelIds,
@@ -314,45 +327,49 @@ class RustMessageDataSourceImpl @Inject constructor(
         userId: UserId,
         messageId: LocalMessageId,
         contentId: String
-    ): Either<DataError, EmbeddedAttachmentInfo> {
+    ): Either<DataError, EmbeddedAttachmentInfo> = withContext(ioDispatcher) {
         // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
         // the current labelId is not needed to get the body and is planned to be dropped on this API
-        val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull() ?: return DataError.Local.NoDataCached.left()
+        val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
+            ?: return@withContext DataError.Local.NoDataCached.left()
 
-        return createRustMessageBodyAccessor(mailbox, messageId)
+        return@withContext createRustMessageBodyAccessor(mailbox, messageId)
             .onLeft { Timber.e("rust-message: Failed to build message body accessor $it") }
             .flatMap { decryptedMessage ->
                 decryptedMessage.getEmbeddedAttachment(contentId)
             }
     }
 
-    override suspend fun markMessageAsLegitimate(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit> {
-        val mailbox = rustMailboxFactory.create(userId).getOrNull()
-        if (mailbox == null) {
-            Timber.e("rust-message: trying to mark message as legitimate with null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+    override suspend fun markMessageAsLegitimate(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit> =
+        withContext(ioDispatcher) {
+            val mailbox = rustMailboxFactory.create(userId).getOrNull()
+            if (mailbox == null) {
+                Timber.e("rust-message: trying to mark message as legitimate with null Mailbox! failing")
+                return@withContext DataError.Local.NoDataCached.left()
+            }
+
+            return@withContext rustMarkMessageAsLegitimate(mailbox, messageId)
         }
 
-        return rustMarkMessageAsLegitimate(mailbox, messageId)
-    }
+    override suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit> =
+        withContext(ioDispatcher) {
+            val mailbox = rustMailboxFactory.create(userId).getOrNull()
+            if (mailbox == null) {
+                Timber.e("rust-message: trying to unblock sender with null Mailbox! failing")
+                return@withContext DataError.Local.NoDataCached.left()
+            }
 
-    override suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit> {
-        val mailbox = rustMailboxFactory.create(userId).getOrNull()
-        if (mailbox == null) {
-            Timber.e("rust-message: trying to unblock sender with null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+            return@withContext rustUnblockAddress(mailbox, email)
         }
 
-        return rustUnblockAddress(mailbox, email)
-    }
+    override suspend fun reportPhishing(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit> =
+        withContext(ioDispatcher) {
+            val mailbox = rustMailboxFactory.create(userId).getOrNull()
+            if (mailbox == null) {
+                Timber.e("rust-message: trying to report phishing with null Mailbox! failing")
+                return@withContext DataError.Local.NoDataCached.left()
+            }
 
-    override suspend fun reportPhishing(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit> {
-        val mailbox = rustMailboxFactory.create(userId).getOrNull()
-        if (mailbox == null) {
-            Timber.e("rust-message: trying to report phishing with null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+            return@withContext rustReportPhishing(mailbox, messageId)
         }
-
-        return rustReportPhishing(mailbox, messageId)
-    }
 }

@@ -55,6 +55,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import uniffi.proton_mail_common.BodyOutput
@@ -77,7 +78,6 @@ import kotlin.test.assertTrue
 class RustMessageDataSourceImplTest {
 
     private val userSessionRepository = mockk<UserSessionRepository>()
-
     private val rustMailboxFactory: RustMailboxFactory = mockk()
     private val rustMessageQuery: RustMessageQuery = mockk()
     private val createRustMessageAccessor = mockk<CreateRustMessageAccessor>()
@@ -97,6 +97,8 @@ class RustMessageDataSourceImplTest {
     private val rustMarkMessageAsLegitimate = mockk<RustMarkMessageAsLegitimate>()
     private val rustUnblockAddress = mockk<RustUnblockAddress>()
     private val rustReportPhishing = mockk<RustReportPhishing>()
+
+    private val testDispatcher = StandardTestDispatcher()
 
     private val dataSource = RustMessageDataSourceImpl(
         userSessionRepository,
@@ -118,11 +120,12 @@ class RustMessageDataSourceImplTest {
         getRustMessageLabelAsActions,
         rustMarkMessageAsLegitimate,
         rustUnblockAddress,
-        rustReportPhishing
+        rustReportPhishing,
+        testDispatcher
     )
 
     @Test
-    fun `get message should return message metadata`() = runTest {
+    fun `get message should return message metadata`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailUserSessionWrapper>()
@@ -139,7 +142,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `get message should handle error`() = runTest {
+    fun `get message should handle error`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailUserSessionWrapper>()
@@ -158,7 +161,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `get message body should return decrypted message body`() = runTest {
+    fun `get message body should return decrypted message body`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailUserSessionWrapper>()
@@ -196,7 +199,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `get message body should handle error`() = runTest {
+    fun `get message body should handle error`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val messageId = LocalMessageIdSample.AugWeatherForecast
@@ -213,7 +216,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `get messages should return list of message metadata`() = runTest {
+    fun `get messages should return list of message metadata`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailUserSessionWrapper>()
@@ -235,7 +238,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `getSenderImage should return sender image when session is available`() = runTest {
+    fun `getSenderImage should return sender image when session is available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailUserSessionWrapper>()
@@ -255,7 +258,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `getSenderImage should return null when session is not available`() = runTest {
+    fun `getSenderImage should return null when session is not available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val address = "test@example.com"
@@ -272,7 +275,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `getSenderImage should return null when error occurs`() = runTest {
+    fun `getSenderImage should return null when error occurs`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailUserSessionWrapper>()
@@ -296,7 +299,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should mark messages as read when session and labelId are available`() = runTest {
+    fun `should mark messages as read when session and labelId are available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailbox = mockk<MailboxWrapper>()
@@ -314,7 +317,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should not mark messages as read when mailbox is null`() = runTest {
+    fun `should not mark messages as read when mailbox is null`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
@@ -330,7 +333,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should handle error when marking messages as read`() = runTest {
+    fun `should handle error when marking messages as read`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailbox = mockk<MailboxWrapper>()
@@ -347,7 +350,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should mark messages as unread when session and labelId are available`() = runTest {
+    fun `should mark messages as unread when session and labelId are available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailbox = mockk<MailboxWrapper>()
@@ -365,7 +368,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should star messages when session is available`() = runTest {
+    fun `should star messages when session is available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailUserSessionWrapper>()
@@ -383,7 +386,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should not mark messages as unread when mailbox is not available`() = runTest {
+    fun `should not mark messages as unread when mailbox is not available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
@@ -399,7 +402,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should handle error when marking messages as unread`() = runTest {
+    fun `should handle error when marking messages as unread`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailbox = mockk<MailboxWrapper>()
@@ -416,7 +419,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should unstar messages when session is available`() = runTest {
+    fun `should unstar messages when session is available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailUserSessionWrapper>()
@@ -434,7 +437,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should not unstar messages when session is null`() = runTest {
+    fun `should not unstar messages when session is null`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
@@ -450,7 +453,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should handle error when unstarring messages`() = runTest {
+    fun `should handle error when unstarring messages`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailUserSessionWrapper>()
@@ -468,7 +471,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `get available actions should return available message actions`() = runTest {
+    fun `get available actions should return available message actions`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
@@ -487,34 +490,35 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `get available system move to actions should return only available actions towards system folders`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val labelId = LocalLabelId(1uL)
-        val mailbox = mockk<MailboxWrapper>()
-        val messageId = LocalMessageIdSample.AugWeatherForecast
-        val archive = MovableSystemFolderAction(Id(2uL), MovableSystemFolder.ARCHIVE)
-        val customFolder = CustomFolderAction(
-            Id(100uL),
-            "custom",
-            LabelColor("#fff"),
-            emptyList()
-        )
-        val allMoveToActions = listOf(MoveAction.SystemFolder(archive), MoveAction.CustomFolder(customFolder))
-        val expected = listOf(MoveAction.SystemFolder(archive))
+    fun `get available system move to actions should return only available actions towards system folders`() =
+        runTest(testDispatcher) {
+            // Given
+            val userId = UserIdTestData.userId
+            val labelId = LocalLabelId(1uL)
+            val mailbox = mockk<MailboxWrapper>()
+            val messageId = LocalMessageIdSample.AugWeatherForecast
+            val archive = MovableSystemFolderAction(Id(2uL), MovableSystemFolder.ARCHIVE)
+            val customFolder = CustomFolderAction(
+                Id(100uL),
+                "custom",
+                LabelColor("#fff"),
+                emptyList()
+            )
+            val allMoveToActions = listOf(MoveAction.SystemFolder(archive), MoveAction.CustomFolder(customFolder))
+            val expected = listOf(MoveAction.SystemFolder(archive))
 
-        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustMessageMoveToActions(mailbox, listOf(messageId)) } returns allMoveToActions.right()
+            coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
+            coEvery { getRustMessageMoveToActions(mailbox, listOf(messageId)) } returns allMoveToActions.right()
 
-        // When
-        val result = dataSource.getAvailableSystemMoveToActions(userId, labelId, listOf(messageId))
+            // When
+            val result = dataSource.getAvailableSystemMoveToActions(userId, labelId, listOf(messageId))
 
-        // Then
-        assertEquals(expected.right(), result)
-    }
+            // Then
+            assertEquals(expected.right(), result)
+        }
 
     @Test
-    fun `get available label as actions should return available message actions`() = runTest {
+    fun `get available label as actions should return available message actions`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
@@ -536,45 +540,47 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `get all available bottom bar actions should return all available bottom bar actions`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val labelId = LocalLabelId(1uL)
-        val mailbox = mockk<MailboxWrapper>()
-        val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
-        val expected = AllBottomBarMessageActions(emptyList(), emptyList())
+    fun `get all available bottom bar actions should return all available bottom bar actions`() =
+        runTest(testDispatcher) {
+            // Given
+            val userId = UserIdTestData.userId
+            val labelId = LocalLabelId(1uL)
+            val mailbox = mockk<MailboxWrapper>()
+            val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
+            val expected = AllBottomBarMessageActions(emptyList(), emptyList())
 
-        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustAllBottomBarActions(mailbox, messageIds) } returns expected.right()
+            coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
+            coEvery { getRustAllBottomBarActions(mailbox, messageIds) } returns expected.right()
 
-        // When
-        val result = dataSource.getAllAvailableBottomBarActions(userId, labelId, messageIds)
+            // When
+            val result = dataSource.getAllAvailableBottomBarActions(userId, labelId, messageIds)
 
-        // Then
-        assertEquals(expected.right(), result)
-    }
-
-    @Test
-    fun `get all available bottom bar actions should return error when rust throws exception`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val labelId = LocalLabelId(1uL)
-        val mailbox = mockk<MailboxWrapper>()
-        val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
-        val expected = DataError.Local.Unknown
-
-        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustAllBottomBarActions(mailbox, messageIds) } returns expected.left()
-
-        // When
-        val result = dataSource.getAllAvailableBottomBarActions(userId, labelId, messageIds)
-
-        // Then
-        assertEquals(expected.left(), result)
-    }
+            // Then
+            assertEquals(expected.right(), result)
+        }
 
     @Test
-    fun `should not delete messages when mailbox is not available`() = runTest {
+    fun `get all available bottom bar actions should return error when rust throws exception`() =
+        runTest(testDispatcher) {
+            // Given
+            val userId = UserIdTestData.userId
+            val labelId = LocalLabelId(1uL)
+            val mailbox = mockk<MailboxWrapper>()
+            val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
+            val expected = DataError.Local.Unknown
+
+            coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
+            coEvery { getRustAllBottomBarActions(mailbox, messageIds) } returns expected.left()
+
+            // When
+            val result = dataSource.getAllAvailableBottomBarActions(userId, labelId, messageIds)
+
+            // Then
+            assertEquals(expected.left(), result)
+        }
+
+    @Test
+    fun `should not delete messages when mailbox is not available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
@@ -590,7 +596,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should handle exception when deleting messages`() = runTest {
+    fun `should handle exception when deleting messages`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailbox = mockk<MailboxWrapper>()
@@ -608,7 +614,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should not move messages when mailbox is not available`() = runTest {
+    fun `should not move messages when mailbox is not available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
@@ -625,7 +631,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should handle exception when moving messages`() = runTest {
+    fun `should handle exception when moving messages`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailbox = mockk<MailboxWrapper>()
@@ -644,7 +650,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should label messages when mailbox is available`() = runTest {
+    fun `should label messages when mailbox is available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
@@ -673,7 +679,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should not label messages when mailbox is not available`() = runTest {
+    fun `should not label messages when mailbox is not available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
@@ -698,7 +704,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should handle error when labelling messages`() = runTest {
+    fun `should handle error when labelling messages`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailbox = mockk<MailboxWrapper>()
@@ -727,7 +733,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should mark message as legitimate when mailbox is available`() = runTest {
+    fun `should mark message as legitimate when mailbox is available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val messageId = LocalMessageId(1uL)
@@ -745,7 +751,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should not mark message as legitimate when mailbox is not available`() = runTest {
+    fun `should not mark message as legitimate when mailbox is not available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val messageId = LocalMessageId(1uL)
@@ -761,7 +767,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should handle error when marking message as legitimate`() = runTest {
+    fun `should handle error when marking message as legitimate`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val mailbox = mockk<MailboxWrapper>()
@@ -779,7 +785,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should unblock address when mailbox is available`() = runTest {
+    fun `should unblock address when mailbox is available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val email = "abc@pm.me"
@@ -797,7 +803,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should not unblock address when mailbox is not available`() = runTest {
+    fun `should not unblock address when mailbox is not available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val email = "abc@pm.me"
@@ -813,7 +819,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should handle error when unblocking address`() = runTest {
+    fun `should handle error when unblocking address`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val email = "abc@pm.me"
@@ -831,7 +837,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should report phishing when mailbox is available`() = runTest {
+    fun `should report phishing when mailbox is available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val messageId = LocalMessageIdSample.AugWeatherForecast
@@ -849,7 +855,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should not report phishing when mailbox is not available`() = runTest {
+    fun `should not report phishing when mailbox is not available`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val messageId = LocalMessageIdSample.AugWeatherForecast
@@ -865,7 +871,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `should handle error when report phishing`() = runTest {
+    fun `should handle error when report phishing`() = runTest(testDispatcher) {
         // Given
         val userId = UserIdTestData.userId
         val messageId = LocalMessageIdSample.AugWeatherForecast
