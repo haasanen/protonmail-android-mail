@@ -51,6 +51,7 @@ fun UserSessionError.getErrorMessage(context: Context) = when (this) {
 fun SessionErrorReason.getErrorMessage() = when (this) {
     SessionErrorReason.UNKNOWN_LABEL -> "UNKNOWN_LABEL"
     SessionErrorReason.DUPLICATE_CONTEXT -> "DUPLICATE_CONTEXT"
+    SessionErrorReason.USER_CONTEXT_NOT_INITIALIZED -> "USER_CONTEXT_NOT_INITIALIZED"
 }
 
 fun ProtonError.getErrorMessage(context: Context) = when (this) {

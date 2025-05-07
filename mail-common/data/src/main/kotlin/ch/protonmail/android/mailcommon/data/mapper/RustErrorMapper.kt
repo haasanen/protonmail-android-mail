@@ -42,7 +42,8 @@ fun UserSessionError.toDataError(): DataError = when (this) {
     is UserSessionError.Other -> this.v1.toDataError()
     is UserSessionError.Reason -> when (this.v1) {
         SessionErrorReason.UNKNOWN_LABEL,
-        SessionErrorReason.DUPLICATE_CONTEXT -> DataError.Local.Unknown
+        SessionErrorReason.DUPLICATE_CONTEXT,
+        SessionErrorReason.USER_CONTEXT_NOT_INITIALIZED -> DataError.Local.Unknown
     }
 }
 
