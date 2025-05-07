@@ -123,6 +123,7 @@ fun EditableMessageBodyWebView(
             modifier = Modifier.heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp()),
             onRelease = {
                 Timber.d("editor-webview: webview is leaving composition for good.")
+                webView = null
             }
         )
     }
