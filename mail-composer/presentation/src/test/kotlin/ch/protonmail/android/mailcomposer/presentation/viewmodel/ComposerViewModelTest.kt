@@ -131,7 +131,7 @@ class ComposerViewModelTest {
     private val observePrimaryUserIdMock = mockk<ObservePrimaryUserId>()
     private val composerIdlingResource = spyk<ComposerIdlingResource>()
     private val isValidEmailAddressMock = mockk<IsValidEmailAddress>()
-    private val savedStateHandle = mockk<SavedStateHandle>()
+    private val savedStateHandle = mockk<SavedStateHandle>(relaxed = true)
     private val deleteAttachment = mockk<DeleteAttachment>()
     private val addAttachment = mockk<AddAttachment>()
     private val observeMessageAttachments = mockk<ObserveMessageAttachments>()
@@ -179,6 +179,19 @@ class ComposerViewModelTest {
     }
 
     @Test
+    fun `should close composer when restored from saved state handle (process death)`() = runTest {
+        // Given
+        expectedUserId { UserIdSample.Primary }
+        expectRestoredState(savedStateHandle)
+        expectNoInputDraftAction()
+        expectInputDraftMessageId { MessageIdSample.EmptyDraft }
+
+        viewModel.state.test {
+            assertEquals(Effect.of(Unit), awaitItem().closeComposer)
+        }
+    }
+
+    @Test
     fun `should store attachments when attachments are added to the draft`() {
         // Given
         val uri = mockk<Uri>()
@@ -203,6 +216,7 @@ class ComposerViewModelTest {
         expectObservedMessageAttachments()
         expectNoInputDraftAction()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectStoreDraftSubjectSucceeds(expectedSubject)
         expectAddAttachmentsSucceeds(uri)
         ignoreRecipientsUpdates()
@@ -226,6 +240,7 @@ class ComposerViewModelTest {
         expectInputDraftAction { DraftAction.Compose }
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
         ignoreRecipientsUpdates()
 
@@ -248,6 +263,7 @@ class ComposerViewModelTest {
         expectInputDraftAction { DraftAction.Compose }
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
         ignoreRecipientsUpdates()
 
@@ -274,6 +290,7 @@ class ComposerViewModelTest {
         expectInputDraftAction { DraftAction.Compose }
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
 
         // When
@@ -303,6 +320,7 @@ class ComposerViewModelTest {
         expectNoInputDraftAction()
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
             DraftFields(
                 sender = expectedSenderEmail,
@@ -340,6 +358,7 @@ class ComposerViewModelTest {
         expectSendMessageSucceeds()
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedMessageId) {
             DraftFields(
                 sender = expectedSenderEmail,
@@ -381,6 +400,7 @@ class ComposerViewModelTest {
         expectSendMessageSucceeds()
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedMessageId) {
             DraftFields(
                 sender = expectedSenderEmail,
@@ -411,6 +431,7 @@ class ComposerViewModelTest {
         expectStoreDraftSubjectSucceeds(Subject(""))
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectContacts()
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
         ignoreRecipientsUpdates()
@@ -432,6 +453,7 @@ class ComposerViewModelTest {
         expectStoreDraftSubjectSucceeds(Subject(""))
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         val expectedDraftFields = expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
         ignoreRecipientsUpdates()
 
@@ -452,6 +474,7 @@ class ComposerViewModelTest {
         expectStoreDraftSubjectSucceeds(Subject(""))
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftFails(expectedUserId) { DataError.Local.NoDataCached }
 
         // When
@@ -475,6 +498,7 @@ class ComposerViewModelTest {
         expectInputDraftAction { DraftAction.Compose }
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
         ignoreRecipientsUpdates()
 
@@ -498,6 +522,7 @@ class ComposerViewModelTest {
         expectInputDraftAction { DraftAction.Compose }
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
         ignoreRecipientsUpdates()
 
@@ -532,6 +557,7 @@ class ComposerViewModelTest {
         expectInputDraftAction { DraftAction.Compose }
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
 
         viewModel.state.test {
@@ -557,6 +583,7 @@ class ComposerViewModelTest {
         expectObservedMessageAttachments()
         expectNoInputDraftAction()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         ignoreRecipientsUpdates()
 
         // When
@@ -585,6 +612,7 @@ class ComposerViewModelTest {
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(existingDraftFields.subject)
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
 
         // When
         val actual = viewModel.state.value
@@ -610,6 +638,7 @@ class ComposerViewModelTest {
         expectObservedMessageAttachments()
         expectInputDraftAction { DraftAction.Compose }
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         ignoreRecipientsUpdates()
 
         // When
@@ -639,6 +668,7 @@ class ComposerViewModelTest {
         expectObservedMessageAttachments()
         expectInputDraftAction { DraftAction.Compose }
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         ignoreRecipientsUpdates()
 
         // When
@@ -659,6 +689,7 @@ class ComposerViewModelTest {
         expectObservedMessageAttachments()
         expectNoInputDraftAction()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         ignoreRecipientsUpdates()
 
         // When
@@ -677,6 +708,7 @@ class ComposerViewModelTest {
         expectNoInputDraftAction()
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectStoreDraftSubjectSucceeds(existingDraftFields.subject)
         ignoreRecipientsUpdates()
 
@@ -711,6 +743,7 @@ class ComposerViewModelTest {
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedDraftId) { expectedFields }
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectStoreDraftSubjectSucceeds(expectedSubject)
         ignoreRecipientsUpdates()
 
@@ -754,6 +787,7 @@ class ComposerViewModelTest {
         expectNoInputDraftAction()
         expectAttachmentDeleteSucceeds(expectedAttachmentId)
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         mockParticipantMapper()
         ignoreRecipientsUpdates()
 
@@ -780,6 +814,7 @@ class ComposerViewModelTest {
         expectObservedMessageAttachments()
         expectAddressValidation(expectedRecipient.address, true)
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
             DraftFieldsTestData.EmptyDraftWithPrimarySender
         }
@@ -813,6 +848,7 @@ class ComposerViewModelTest {
         expectSendMessageSucceeds()
         expectObservedMessageAttachments()
         expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
         ignoreRecipientsUpdates()
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
             DraftFields(
@@ -1095,6 +1131,14 @@ class ComposerViewModelTest {
 
     private fun expectAddAttachmentsSucceeds(uri: Uri) {
         coEvery { addAttachment(uri) } returns Unit.right()
+    }
+
+    private fun expectRestoredState(savedStateHandle: SavedStateHandle) {
+        every { savedStateHandle.get<Boolean>(ComposerScreen.HasSavedDraftKey) } returns true
+    }
+
+    private fun expectNoRestoredState(savedStateHandle: SavedStateHandle) {
+        every { savedStateHandle.get<Boolean>(ComposerScreen.HasSavedDraftKey) } returns null
     }
 
     companion object TestData {

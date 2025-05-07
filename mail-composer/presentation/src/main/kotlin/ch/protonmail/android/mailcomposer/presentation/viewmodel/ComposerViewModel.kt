@@ -115,7 +115,7 @@ class ComposerViewModel @AssistedInject constructor(
     @Assisted private val recipientsStateManager: RecipientsStateManager,
     private val discardDraft: DiscardDraft,
     private val getDraftId: GetDraftId,
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -142,7 +142,13 @@ class ComposerViewModel @AssistedInject constructor(
         val draftAction = savedStateHandle.get<String>(ComposerScreen.SerializedDraftActionKey)
             ?.deserialize<DraftAction>()
 
+        val restoredHandle = savedStateHandle.get<Boolean>(ComposerScreen.HasSavedDraftKey) == true
+
         when {
+            restoredHandle -> {
+                onComposerRestored()
+                return false
+            }
             inputDraftId != null -> prefillWithExistingDraft(inputDraftId)
             draftAction != null -> prefillForDraftAction(draftAction)
             else -> prefillForNewDraft()
@@ -160,6 +166,14 @@ class ComposerViewModel @AssistedInject constructor(
         snapshotFlow { subjectTextField.text }
             .onEach { onSubjectChanged(Subject(it.toString().stripNewLines())) }
             .launchIn(viewModelScope)
+    }
+
+    private fun onComposerRestored() {
+        // This is hit when process death occurs and the user could be in an inconsistent state:
+        // Theoretically we can restore the draft from local storage, but it's not guaranteed that its content is
+        // up to date and we don't know if it should overwrite the remote state.
+        Timber.tag("ComposerViewModel").d("Restored Composer instance - navigating back.")
+        emitNewStateFor(ComposerAction.OnCloseComposer)
     }
 
     private fun prefillForComposeToAction(recipients: List<RecipientUiModel>) {
@@ -410,6 +424,7 @@ class ComposerViewModel @AssistedInject constructor(
 
     private suspend fun onSubjectChanged(subject: Subject) = storeDraftWithSubject(subject).onLeft {
         emitNewStateFor(ComposerEvent.ErrorStoringDraftSubject)
+        savedStateHandle[ComposerScreen.HasSavedDraftKey] = true
     }
 
     private suspend fun onDraftBodyChanged(action: ComposerAction.DraftBodyChanged) {
@@ -418,6 +433,8 @@ class ComposerViewModel @AssistedInject constructor(
         storeDraftWithBody(
             action.draftBody
         ).onLeft { emitNewStateFor(ComposerEvent.ErrorStoringDraftBody) }
+
+        savedStateHandle[ComposerScreen.HasSavedDraftKey] = true
     }
 
     private suspend fun primaryUserId() = primaryUserId.first()
@@ -474,6 +491,8 @@ class ComposerViewModel @AssistedInject constructor(
             ifLeft = { emitNewStateFor(ComposerEvent.ErrorStoringDraftRecipients) },
             ifRight = { emitNewStateFor(ComposerEvent.RecipientsUpdated(recipientsStateManager.hasValidRecipients())) }
         )
+
+        savedStateHandle[ComposerScreen.HasSavedDraftKey] = true
     }
 
     private fun initComposerFields(draftFields: DraftFields) {
