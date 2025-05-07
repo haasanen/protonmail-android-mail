@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maillabel.dagger
 
+import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.maillabel.data.MailLabelRustCoroutineScope
 import ch.protonmail.android.maillabel.data.local.LabelDataSource
 import ch.protonmail.android.maillabel.data.local.RustLabelDataSource
@@ -30,6 +31,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -50,12 +52,14 @@ object MailLabelModule {
         userSessionRepository: UserSessionRepository,
         createRustSidebar: CreateRustSidebar,
         rustGetAllMailLabelId: RustGetAllMailLabelId,
-        @MailLabelRustCoroutineScope coroutineScope: CoroutineScope
+        @MailLabelRustCoroutineScope coroutineScope: CoroutineScope,
+        @IODispatcher ioDispatcher: CoroutineDispatcher
     ): LabelDataSource = RustLabelDataSource(
         userSessionRepository,
         createRustSidebar,
         rustGetAllMailLabelId,
-        coroutineScope
+        coroutineScope,
+        ioDispatcher
     )
 
     @Provides

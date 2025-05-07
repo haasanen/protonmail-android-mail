@@ -62,7 +62,8 @@ class RustLabelDataSourceTest {
         userSessionRepository,
         createRustSidebar,
         rustGetAllMailLabelId,
-        testCoroutineScope
+        testCoroutineScope,
+        mainDispatcherRule.testDispatcher
     )
 
     @Test

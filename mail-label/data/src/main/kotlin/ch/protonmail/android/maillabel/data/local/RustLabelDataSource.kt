@@ -21,16 +21,19 @@ package ch.protonmail.android.maillabel.data.local
 import arrow.core.Either
 import arrow.core.left
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.MailLabelRustCoroutineScope
 import ch.protonmail.android.maillabel.data.usecase.CreateRustSidebar
 import ch.protonmail.android.maillabel.data.usecase.RustGetAllMailLabelId
 import ch.protonmail.android.maillabel.data.wrapper.SidebarWrapper
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -43,12 +46,14 @@ import uniffi.proton_mail_uniffi.WatchHandle
 import javax.inject.Inject
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 
 class RustLabelDataSource @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val createRustSidebar: CreateRustSidebar,
     private val rustGetAllMailLabelId: RustGetAllMailLabelId,
-    @MailLabelRustCoroutineScope private val coroutineScope: CoroutineScope
+    @MailLabelRustCoroutineScope private val coroutineScope: CoroutineScope,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : LabelDataSource {
 
     private suspend fun getRustSidebarInstance(userId: UserId): SidebarWrapper? {
@@ -124,35 +129,36 @@ class RustLabelDataSource @Inject constructor(
                 }
             }
         }
-    }
+    }.flowOn(ioDispatcher)
 
     override fun observeSystemLabels(userId: UserId): Flow<List<SidebarSystemLabel>> = observeLabels(
         userId = userId,
         labelType = LabelType.SYSTEM
     ) { sidebar ->
         sidebar.systemLabels().getOrNull()
-    }
+    }.flowOn(ioDispatcher)
 
     override fun observeMessageLabels(userId: UserId): Flow<List<SidebarCustomLabel>> = observeLabels(
         userId = userId,
         labelType = LabelType.LABEL
     ) { sidebar ->
         sidebar.customLabels().getOrNull()
-    }
+    }.flowOn(ioDispatcher)
 
     override fun observeMessageFolders(userId: UserId): Flow<List<SidebarCustomFolder>> = observeLabels(
         userId = userId,
         labelType = LabelType.FOLDER
     ) { sidebar ->
         sidebar.allCustomFolders().getOrNull()
-    }
+    }.flowOn(ioDispatcher)
 
-    override suspend fun getAllMailLabelId(userId: UserId): Either<DataError, LocalLabelId> {
-        val session = userSessionRepository.getUserSession(userId)
-        if (session == null) {
-            Timber.e("rust-label: trying to get all mail label id with null session.")
-            return DataError.Local.NoDataCached.left()
+    override suspend fun getAllMailLabelId(userId: UserId): Either<DataError, LocalLabelId> =
+        withContext(ioDispatcher) {
+            val session = userSessionRepository.getUserSession(userId)
+            if (session == null) {
+                Timber.e("rust-label: trying to get all mail label id with null session.")
+                return@withContext DataError.Local.NoDataCached.left()
+            }
+            return@withContext rustGetAllMailLabelId(session)
         }
-        return rustGetAllMailLabelId(session)
-    }
 }
