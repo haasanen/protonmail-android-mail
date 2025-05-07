@@ -45,7 +45,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.ui.showInDarkMode
 import ch.protonmail.android.mailmessage.presentation.ui.showInLightMode
 import timber.log.Timber
@@ -61,7 +60,6 @@ fun EditableMessageBodyWebView(
 ) {
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
-    val viewModePreference = ViewModePreference.LightMode
     val localDensity = LocalDensity.current
 
     var webView by remember { mutableStateOf<WebView?>(null) }
@@ -88,10 +86,8 @@ fun EditableMessageBodyWebView(
     }
 
     webView?.let { wv ->
-        LaunchedEffect(key1 = viewModePreference) {
-            webView?.let {
-                configureDarkLightMode(it, isSystemInDarkTheme, viewModePreference)
-            }
+        LaunchedEffect(isSystemInDarkTheme) {
+            configureDarkLightMode(wv, isSystemInDarkTheme)
         }
         LaunchedEffect(wv) {
             Timber.d("editor-webview: setting initial value on webview (should happen only once!)")
@@ -121,7 +117,6 @@ fun EditableMessageBodyWebView(
                     this.layoutParams = layoutParams
 
                     this.addJavascriptInterface(javascriptCallback, JAVASCRIPT_CALLBACK_INTERFACE_NAME)
-                    configureDarkLightMode(this, isSystemInDarkTheme, viewModePreference)
                     webView = this
                 }
             },
@@ -133,23 +128,11 @@ fun EditableMessageBodyWebView(
     }
 }
 
-private fun configureDarkLightMode(
-    webView: WebView,
-    isInDarkTheme: Boolean,
-    viewModePreference: ViewModePreference
-) {
+private fun configureDarkLightMode(webView: WebView, isInDarkTheme: Boolean) {
     if (isInDarkTheme) {
-        configureDarkLightModeWhenInDarkTheme(webView, viewModePreference)
-    } else {
-        webView.showInLightMode()
-    }
-}
-
-private fun configureDarkLightModeWhenInDarkTheme(webView: WebView, viewModePreference: ViewModePreference) {
-    if (viewModePreference == ViewModePreference.LightMode) {
-        webView.showInLightMode()
-    } else {
         webView.showInDarkMode()
+    } else {
+        webView.showInLightMode()
     }
 }
 
