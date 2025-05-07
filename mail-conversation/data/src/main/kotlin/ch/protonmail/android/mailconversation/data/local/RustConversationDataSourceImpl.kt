@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAllConversationBottomBarActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
@@ -35,7 +36,10 @@ import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
@@ -59,7 +63,8 @@ class RustConversationDataSourceImpl @Inject constructor(
     private val rustDeleteConversations: RustDeleteConversations,
     private val rustMarkConversationsAsRead: RustMarkConversationsAsRead,
     private val rustMarkConversationsAsUnread: RustMarkConversationsAsUnread,
-    private val executeWithUserSession: ExecuteWithUserSession
+    private val executeWithUserSession: ExecuteWithUserSession,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RustConversationDataSource {
 
     /**
@@ -67,14 +72,15 @@ class RustConversationDataSourceImpl @Inject constructor(
      * Adds in an Invalidation Observer on the label that will be fired when any conversation
      * in the label changes
      */
-    override suspend fun getConversations(userId: UserId, pageKey: PageKey): List<LocalConversation> {
-        return if (pageKey is PageKey.DefaultPageKey) {
-            rustConversationsQuery.getConversations(userId, pageKey) ?: emptyList()
-        } else {
-            Timber.e("Error: PageKey must be of type DefaultPageKey, received: ${pageKey::class.simpleName}")
-            emptyList()
+    override suspend fun getConversations(userId: UserId, pageKey: PageKey): List<LocalConversation> =
+        withContext(ioDispatcher) {
+            return@withContext if (pageKey is PageKey.DefaultPageKey) {
+                rustConversationsQuery.getConversations(userId, pageKey) ?: emptyList()
+            } else {
+                Timber.e("Error: PageKey must be of type DefaultPageKey, received: ${pageKey::class.simpleName}")
+                emptyList()
+            }
         }
-    }
 
     override fun observeConversation(
         userId: UserId,
@@ -82,6 +88,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         labelId: LocalLabelId
     ): Flow<Either<DataError, LocalConversation>> =
         rustConversationDetailQuery.observeConversation(userId, conversationId, labelId)
+            .flowOn(ioDispatcher)
 
     override fun observeConversationMessages(
         userId: UserId,
@@ -89,26 +96,30 @@ class RustConversationDataSourceImpl @Inject constructor(
         labelId: LocalLabelId
     ): Flow<Either<DataError, LocalConversationMessages>> = rustConversationDetailQuery.observeConversationMessages(
         userId, conversationId, labelId
-    )
+    ).flowOn(ioDispatcher)
 
     override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) =
-        executeMailboxAction(
-            userId = userId,
-            action = { rustDeleteConversations(it, conversations) },
-            actionName = "delete conversations"
-        )
+        withContext(ioDispatcher) {
+            executeMailboxAction(
+                userId = userId,
+                action = { rustDeleteConversations(it, conversations) },
+                actionName = "delete conversations"
+            )
+        }
 
     override suspend fun markRead(
         userId: UserId,
         labelId: LocalLabelId,
         conversations: List<LocalConversationId>
     ) {
-        executeMailboxAction(
-            userId = userId,
-            labelId = labelId,
-            action = { rustMarkConversationsAsRead(it, conversations) },
-            actionName = "mark as read"
-        )
+        withContext(ioDispatcher) {
+            executeMailboxAction(
+                userId = userId,
+                labelId = labelId,
+                action = { rustMarkConversationsAsRead(it, conversations) },
+                actionName = "mark as read"
+            )
+        }
     }
 
     override suspend fun markUnread(
@@ -116,29 +127,33 @@ class RustConversationDataSourceImpl @Inject constructor(
         labelId: LocalLabelId,
         conversations: List<LocalConversationId>
     ) {
-        executeMailboxAction(
-            userId = userId,
-            labelId = labelId,
-            action = { mailbox -> rustMarkConversationsAsUnread(mailbox, conversations) },
-            actionName = "mark as unread"
-        )
+        withContext(ioDispatcher) {
+            executeMailboxAction(
+                userId = userId,
+                labelId = labelId,
+                action = { mailbox -> rustMarkConversationsAsUnread(mailbox, conversations) },
+                actionName = "mark as unread"
+            )
+        }
     }
 
-    override suspend fun starConversations(userId: UserId, conversations: List<LocalConversationId>) {
-        executeUserSessionAction(
-            userId = userId,
-            action = { userSession -> rustStarConversation(userSession.getRustUserSession(), conversations) },
-            actionName = "star conversations"
-        )
-    }
+    override suspend fun starConversations(userId: UserId, conversations: List<LocalConversationId>) =
+        withContext(ioDispatcher) {
+            executeUserSessionAction(
+                userId = userId,
+                action = { userSession -> rustStarConversation(userSession.getRustUserSession(), conversations) },
+                actionName = "star conversations"
+            )
+        }
 
-    override suspend fun unStarConversations(userId: UserId, conversations: List<LocalConversationId>) {
-        executeUserSessionAction(
-            userId = userId,
-            action = { userSession -> rustUnstarConversation(userSession.getRustUserSession(), conversations) },
-            actionName = "unstar conversations"
-        )
-    }
+    override suspend fun unStarConversations(userId: UserId, conversations: List<LocalConversationId>) =
+        withContext(ioDispatcher) {
+            executeUserSessionAction(
+                userId = userId,
+                action = { userSession -> rustUnstarConversation(userSession.getRustUserSession(), conversations) },
+                actionName = "unstar conversations"
+            )
+        }
 
     @MissingRustApi
     // ET - Missing Implementation. This function requires Rust settings integration
@@ -148,28 +163,28 @@ class RustConversationDataSourceImpl @Inject constructor(
         userId: UserId,
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
-    ): Either<DataError, ConversationAvailableActions> {
+    ): Either<DataError, ConversationAvailableActions> = withContext(ioDispatcher) {
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.NoDataCached.left()
         }
 
-        return getRustAvailableConversationActions(mailbox, conversationIds)
+        return@withContext getRustAvailableConversationActions(mailbox, conversationIds)
     }
 
     override suspend fun getAllAvailableBottomBarActions(
         userId: UserId,
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
-    ): Either<DataError, AllBottomBarMessageActions> {
+    ): Either<DataError, AllBottomBarMessageActions> = withContext(ioDispatcher) {
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.NoDataCached.left()
         }
 
-        return getRustAllConversationBottomBarActions(mailbox, conversationIds)
+        return@withContext getRustAllConversationBottomBarActions(mailbox, conversationIds)
     }
 
     override suspend fun labelConversations(
@@ -178,15 +193,15 @@ class RustConversationDataSourceImpl @Inject constructor(
         selectedLabelIds: List<LocalLabelId>,
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
-    ): Either<DataError, Unit> {
+    ): Either<DataError, Unit> = withContext(ioDispatcher) {
         Timber.v("rust-conversation: executing label conversations for $conversationIds")
         val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to label conversations with null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.NoDataCached.left()
         }
 
-        return rustLabelConversations(
+        return@withContext rustLabelConversations(
             mailbox = mailbox,
             conversationIds = conversationIds,
             selectedLabelIds = selectedLabelIds,
@@ -202,14 +217,14 @@ class RustConversationDataSourceImpl @Inject constructor(
         userId: UserId,
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
-    ): Either<DataError, List<MoveAction.SystemFolder>> {
+    ): Either<DataError, List<MoveAction.SystemFolder>> = withContext(ioDispatcher) {
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.NoDataCached.left()
         }
 
-        return getRustConversationMoveToActions(mailbox, conversationIds)
+        return@withContext getRustConversationMoveToActions(mailbox, conversationIds)
             .map { it.filterIsInstance<MoveAction.SystemFolder>() }
     }
 
@@ -217,9 +232,9 @@ class RustConversationDataSourceImpl @Inject constructor(
         userId: UserId,
         conversationIds: List<LocalConversationId>,
         toLabelId: LocalLabelId
-    ): Either<DataError.Local, Unit> {
+    ): Either<DataError.Local, Unit> = withContext(ioDispatcher) {
         Timber.v("rust-conversation: move conversations to $toLabelId executing for: $conversationIds")
-        return executeMailboxAction(
+        return@withContext executeMailboxAction(
             userId = userId,
             action = { rustMoveConversations(it, toLabelId, conversationIds) },
             actionName = "move conversations"
@@ -230,13 +245,13 @@ class RustConversationDataSourceImpl @Inject constructor(
         userId: UserId,
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
-    ): Either<DataError, List<LabelAsAction>> {
+    ): Either<DataError, List<LabelAsAction>> = withContext(ioDispatcher) {
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to get available label actions for null Mailbox! failing")
-            return DataError.Local.NoDataCached.left()
+            return@withContext DataError.Local.NoDataCached.left()
         }
-        return getRustConversationLabelAsActions(mailbox, conversationIds)
+        return@withContext getRustConversationLabelAsActions(mailbox, conversationIds)
     }
 
     private suspend fun executeUserSessionAction(

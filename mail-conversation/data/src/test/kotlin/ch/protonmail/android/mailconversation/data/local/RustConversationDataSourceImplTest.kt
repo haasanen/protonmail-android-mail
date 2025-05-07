@@ -34,7 +34,6 @@ import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
@@ -46,7 +45,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -68,9 +66,6 @@ class RustConversationDataSourceImplTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
-    private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
-
-    private val sessionManager = mockk<UserSessionRepository>()
 
     private val rustMailboxFactory: RustMailboxFactory = mockk()
     private val rustConversationDetailQuery: RustConversationDetailQuery = mockk()
@@ -100,7 +95,8 @@ class RustConversationDataSourceImplTest {
         rustDeleteConversations,
         rustMarkConversationsAsRead,
         rustMarkConversationsAsUnread,
-        executeWithUserSession
+        executeWithUserSession,
+        mainDispatcherRule.testDispatcher
     )
 
     @Test
@@ -135,7 +131,7 @@ class RustConversationDataSourceImplTest {
         } returns flowOf(LocalConversationTestData.AugConversation.right())
 
         // When
-        val result = dataSource.observeConversation(userId, conversationId, localLabelId)?.first()
+        val result = dataSource.observeConversation(userId, conversationId, localLabelId).first()
 
         // Then
         assertEquals(LocalConversationTestData.AugConversation.right(), result)
