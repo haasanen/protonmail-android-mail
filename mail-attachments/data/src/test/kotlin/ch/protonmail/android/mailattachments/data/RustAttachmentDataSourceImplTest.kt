@@ -30,7 +30,7 @@ import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Assert.assertEquals
@@ -38,15 +38,17 @@ import org.junit.Test
 
 class RustAttachmentDataSourceImplTest {
 
+    private val testDispatcher = StandardTestDispatcher()
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val getRustAttachment = mockk<GetRustAttachment>()
     private val rustAttachmentDataSource = RustAttachmentDataSourceImpl(
         userSessionRepository = userSessionRepository,
-        getRustAttachment = getRustAttachment
+        getRustAttachment = getRustAttachment,
+        ioDispatcher = testDispatcher
     )
 
     @Test
-    fun `getAttachment returns no user session error for null session`() = runTest {
+    fun `getAttachment returns no user session error for null session`() = runTest(testDispatcher) {
         // Given
         val userId = UserId("test-user-id")
         val attachmentId = LocalAttachmentId(1u)
@@ -60,7 +62,7 @@ class RustAttachmentDataSourceImplTest {
     }
 
     @Test
-    fun `getAttachment returns decrypted attachment for valid session`() = runBlocking {
+    fun `getAttachment returns decrypted attachment for valid session`() = runTest(testDispatcher) {
         // Given
         val userId = UserId("test-user-id")
         val attachmentId = LocalAttachmentId(2u)
@@ -79,7 +81,7 @@ class RustAttachmentDataSourceImplTest {
     }
 
     @Test
-    fun `getAttachment returns data error when attachment fetching fails`() = runTest {
+    fun `getAttachment returns data error when attachment fetching fails`() = runTest(testDispatcher) {
         // Given
         val userId = UserId("test-user-id")
         val attachmentId = LocalAttachmentId(1u)

@@ -23,28 +23,32 @@ import arrow.core.left
 import ch.protonmail.android.mailattachments.data.usecase.GetRustAttachment
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentId
 import ch.protonmail.android.mailcommon.data.mapper.LocalDecryptedAttachment
+import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
 class RustAttachmentDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
-    private val getRustAttachment: GetRustAttachment
+    private val getRustAttachment: GetRustAttachment,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RustAttachmentDataSource {
 
     override suspend fun getAttachment(
         userId: UserId,
         attachmentId: LocalAttachmentId
-    ): Either<DataError, LocalDecryptedAttachment> {
+    ): Either<DataError, LocalDecryptedAttachment> = withContext(ioDispatcher) {
 
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-attachment: trying to load attachment with a null session")
-            return DataError.Local.NoUserSession.left()
+            return@withContext DataError.Local.NoUserSession.left()
         }
 
-        return getRustAttachment(session, attachmentId)
+        return@withContext getRustAttachment(session, attachmentId)
     }
 }

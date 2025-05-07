@@ -67,7 +67,11 @@ class RustAttachmentDataSourceImplTest {
 
     @Before
     fun setUp() {
-        dataSource = RustAttachmentDataSourceImpl(rustDraftDataSource, attachmentFileStorage)
+        dataSource = RustAttachmentDataSourceImpl(
+            rustDraftDataSource,
+            attachmentFileStorage,
+            mainDispatcherRule.testDispatcher
+        )
     }
 
     @Test
