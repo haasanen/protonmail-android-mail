@@ -59,7 +59,7 @@ internal fun FocusedChipsList(
     chipItems: List<ChipItem>,
     animateChipsCreation: Boolean = false,
     textMaxWidth: Dp,
-    onDeleteItem: (Int) -> Unit
+    onClickItem: (Int) -> Unit
 ) {
     chipItems.forEachIndexed { index, chipItem ->
         val scale by remember { mutableStateOf(Animatable(0F)) }
@@ -74,7 +74,7 @@ internal fun FocusedChipsList(
                     alpha(alpha.value)
                 },
             selected = false,
-            onClick = { onDeleteItem(index) },
+            onClick = { onClickItem(index) },
             label = {
                 Text(
                     modifier = Modifier
@@ -175,7 +175,7 @@ private fun FocusedChipsListPreview() {
                 ),
                 animateChipsCreation = false,
                 textMaxWidth = 200.dp,
-                onDeleteItem = {}
+                onClickItem = {}
             )
         }
     }

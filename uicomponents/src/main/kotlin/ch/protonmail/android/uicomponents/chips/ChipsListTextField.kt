@@ -63,7 +63,7 @@ fun ChipsListTextField(
     val localDensity = LocalDensity.current
     var textMaxWidth by remember { mutableStateOf(Dp.Unspecified) }
 
-    var rect by remember { mutableStateOf(Rect.Zero) }
+    val rect by remember { mutableStateOf(Rect.Zero) }
 
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val coroutineScope = rememberCoroutineScope()
@@ -98,10 +98,11 @@ fun ChipsListTextField(
         when (items) {
             ChipItemsList.Empty -> Unit
             is ChipItemsList.Focused -> FocusedChipsList(
-                items.items,
-                animateChipsCreation,
-                textMaxWidth
-            ) { actions.onItemDeleted(it) }
+                chipItems = items.items,
+                animateChipsCreation = animateChipsCreation,
+                textMaxWidth = textMaxWidth,
+                onClickItem = { actions.onItemClicked(it) }
+            )
 
             is ChipItemsList.Unfocused.Multiple -> UnFocusedChipsList(
                 items.item,
@@ -128,7 +129,7 @@ fun ChipsListTextField(
                 .padding(end = ProtonDimens.Spacing.Large)
                 .onKeyEvent { keyEvent ->
                     if (keyEvent.key == Key.Backspace) {
-                        actions.onItemDeleted(null)
+                        actions.onItemClicked(null)
                         bringRectIntoView(rect)
                         true
                     } else {
@@ -154,7 +155,7 @@ fun ChipsListTextField(
 object ChipsListTextField {
     data class Actions(
         val onFocusChanged: (focusChange: FocusState) -> Unit,
-        val onItemDeleted: (index: Int?) -> Unit,
+        val onItemClicked: (index: Int?) -> Unit,
         val onTriggerChipCreation: () -> Unit
     )
 }
