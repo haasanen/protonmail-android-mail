@@ -242,6 +242,7 @@ dependencies {
     implementation(project(":shared:core:payment-google:presentation"))
 
     implementation(libs.bundles.appLibs)
+    implementation(libs.bundles.module.legacyCore)
     implementation(libs.java.jna) { artifact { type = "aar" } }
 
     implementation(project(":mail-attachments"))
@@ -262,6 +263,7 @@ dependencies {
     implementation(project(":mail-onboarding"))
     implementation(project(":mail-sidebar"))
     implementation(project(":mail-session"))
+    implementation(project(":mail-legacy-migration"))
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
