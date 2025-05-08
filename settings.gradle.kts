@@ -130,6 +130,11 @@ include(":mail-session:data")
 include(":mail-session:domain")
 include(":mail-session:presentation")
 
+include(":mail-legacy-migration:dagger")
+include(":mail-legacy-migration:data")
+include(":mail-legacy-migration:domain")
+include(":mail-legacy-migration:presentation")
+
 include(":uicomponents")
 include(":design-system")
 include(":presentation-compose")
