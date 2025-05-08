@@ -129,7 +129,7 @@ fun ChipsListTextField(
                 .padding(end = ProtonDimens.Spacing.Large)
                 .onKeyEvent { keyEvent ->
                     if (keyEvent.key == Key.Backspace) {
-                        actions.onItemClicked(null)
+                        actions.onDeleteLastItem()
                         bringRectIntoView(rect)
                         true
                     } else {
@@ -155,7 +155,8 @@ fun ChipsListTextField(
 object ChipsListTextField {
     data class Actions(
         val onFocusChanged: (focusChange: FocusState) -> Unit,
-        val onItemClicked: (index: Int?) -> Unit,
+        val onItemClicked: (index: Int) -> Unit,
+        val onDeleteLastItem: () -> Unit,
         val onTriggerChipCreation: () -> Unit
     )
 }

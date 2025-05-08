@@ -93,13 +93,14 @@ fun ComposerChipsListField(
                 }
             },
             onItemClicked = {
-                it?.let { listState.onDelete(it) } ?: listState.onDelete()
+                listState.onDelete(it)
             },
             onTriggerChipCreation = {
                 listState.createChip()
                 textFieldState.edit { delete(0, length) }
                 actions.onSuggestionsDismissed()
-            }
+            },
+            onDeleteLastItem = { listState.onDelete() }
         )
     }
 
