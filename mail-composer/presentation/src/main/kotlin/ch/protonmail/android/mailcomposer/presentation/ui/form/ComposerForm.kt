@@ -91,6 +91,7 @@ internal fun ComposerForm(
         initialFocus = FocusedFieldType.TO,
         onFocusedField = {
             Timber.d("Focus changed: onFocusedField: $it")
+            Timber.d("editor-webview: Focus changed: onFocusedField: $it")
 
             isSubjectFocused = it == FocusedFieldType.SUBJECT
             isBodyFocused = it == FocusedFieldType.BODY

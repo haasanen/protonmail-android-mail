@@ -23,6 +23,7 @@ import android.content.Context
 import android.net.Uri
 import android.view.ViewGroup.LayoutParams
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -92,6 +93,15 @@ fun EditableMessageBodyWebView(
         JavascriptCallback(webViewActions.onMessageBodyChanged, ::onWebViewResize, ::onCursorPositionChanged)
     }
 
+    val contentLoadingFinished = remember { mutableStateOf(false) }
+    val client = object : WebViewClient() {
+
+        override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
+            contentLoadingFinished.value = true
+        }
+    }
+
     webView?.let { wv ->
         LaunchedEffect(isSystemInDarkTheme) {
             configureDarkLightMode(wv, isSystemInDarkTheme)
@@ -101,9 +111,11 @@ fun EditableMessageBodyWebView(
             wv.loadDataWithBaseURL(null, messageBodyUiModel.value, MimeType.Html.value, "utf-8", null)
         }
 
-        ConsumableLaunchedEffect(shouldRequestFocus) {
-            Timber.d("editor-webview: webview is requesting focus...")
-            focusRequester.requestFocus()
+        if (contentLoadingFinished.value) {
+            ConsumableLaunchedEffect(shouldRequestFocus) {
+                Timber.d("editor-webview: webview is requesting focus...")
+                focusRequester.requestFocus()
+            }
         }
     }
 
@@ -127,12 +139,21 @@ fun EditableMessageBodyWebView(
                     this.settings.loadWithOverviewMode = true
                     this.settings.useWideViewPort = true
                     this.layoutParams = layoutParams
-
                     this.addJavascriptInterface(javascriptCallback, JAVASCRIPT_CALLBACK_INTERFACE_NAME)
+                    this.webViewClient = client
+
                     webView = this
                 }
             },
-            modifier = Modifier.heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp()),
+            modifier = Modifier
+                .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
+                .focusRequester(focusRequester)
+                .onFocusEvent { event ->
+                    if (event.hasFocus) {
+                        Timber.v("editor-webview: composable webview has focus; focusing html element...")
+                        webView?.evaluateJavascript("focusEditor();", null)
+                    }
+                },
             onRelease = {
                 Timber.d("editor-webview: webview is leaving composition for good.")
                 webView = null

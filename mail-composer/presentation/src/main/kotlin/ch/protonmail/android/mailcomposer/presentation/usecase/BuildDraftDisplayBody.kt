@@ -86,6 +86,11 @@ class BuildDraftDisplayBody @Inject constructor(private val getCustomCss: GetCus
         });
         observer.observe(document.querySelector('body'));
 
+        function focusEditor() {
+            var editor = document.getElementById('$EDITOR_ID');
+            editor.focus();
+        }
+
         function trackCursorPosition() {
             var editor = document.getElementById('$EDITOR_ID');
 
