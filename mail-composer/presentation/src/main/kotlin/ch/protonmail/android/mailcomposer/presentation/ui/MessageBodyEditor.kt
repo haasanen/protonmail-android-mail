@@ -21,6 +21,7 @@ import android.content.Context
 import android.webkit.WebView
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 
@@ -29,6 +30,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 internal fun MessageBodyEditor(
     messageBodyUiModel: DraftDisplayBodyUiModel,
     webViewFactory: (Context) -> WebView,
+    focusBody: Effect<Unit>,
     onBodyChanged: (body: String) -> Unit,
     onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
     modifier: Modifier = Modifier
@@ -37,6 +39,7 @@ internal fun MessageBodyEditor(
         modifier = modifier,
         messageBodyUiModel = messageBodyUiModel,
         webViewFactory = webViewFactory,
+        shouldRequestFocus = focusBody,
         webViewActions = EditableMessageBodyWebView.Actions(
             onMessageBodyLinkClicked = {},
             onAttachmentClicked = {},

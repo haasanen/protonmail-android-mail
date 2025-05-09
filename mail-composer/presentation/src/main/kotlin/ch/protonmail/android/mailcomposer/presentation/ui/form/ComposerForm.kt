@@ -162,6 +162,7 @@ internal fun ComposerForm(
                 MessageBodyEditor(
                     messageBodyUiModel = bodyInitialValue,
                     onBodyChanged = actions.onBodyChanged,
+                    focusBody = focusTextBody,
                     onWebViewMeasuresChanged = actions.onWebViewMeasuresChanged,
                     webViewFactory = { context ->
                         if (editorWebView.value == null) {

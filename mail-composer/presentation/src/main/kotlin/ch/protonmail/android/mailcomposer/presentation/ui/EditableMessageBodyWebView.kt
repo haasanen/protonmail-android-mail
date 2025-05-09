@@ -34,10 +34,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
@@ -55,6 +60,7 @@ import timber.log.Timber
 fun EditableMessageBodyWebView(
     modifier: Modifier = Modifier,
     messageBodyUiModel: DraftDisplayBodyUiModel,
+    shouldRequestFocus: Effect<Unit>,
     webViewFactory: (Context) -> WebView,
     webViewActions: EditableMessageBodyWebView.Actions
 ) {
@@ -65,6 +71,7 @@ fun EditableMessageBodyWebView(
     var webView by remember { mutableStateOf<WebView?>(null) }
     var currentCursorPosition = remember { 0.dp }
     var currentLineHeight = remember { 0.dp }
+    val focusRequester = remember { FocusRequester() }
 
     fun onWebViewResize() {
         val height = webView?.height ?: 0
@@ -92,6 +99,11 @@ fun EditableMessageBodyWebView(
         LaunchedEffect(wv) {
             Timber.d("editor-webview: setting initial value on webview (should happen only once!)")
             wv.loadDataWithBaseURL(null, messageBodyUiModel.value, MimeType.Html.value, "utf-8", null)
+        }
+
+        ConsumableLaunchedEffect(shouldRequestFocus) {
+            Timber.d("editor-webview: webview is requesting focus...")
+            focusRequester.requestFocus()
         }
     }
 

@@ -64,7 +64,6 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
-import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcommon.presentation.compose.toPx
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
@@ -272,7 +271,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                         subjectTextField = viewModel.subjectTextField,
                         bodyInitialValue = state.fields.displayBody,
                         attachments = state.attachments,
-                        focusTextBody = Effect.empty(),
+                        focusTextBody = state.focusTextBody,
                         formHeightPx = formHeightPx
                     )
                 }
