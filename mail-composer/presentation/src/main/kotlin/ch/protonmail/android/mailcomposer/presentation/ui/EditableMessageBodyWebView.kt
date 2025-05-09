@@ -39,6 +39,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -68,6 +69,7 @@ fun EditableMessageBodyWebView(
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val localDensity = LocalDensity.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     var webView by remember { mutableStateOf<WebView?>(null) }
     var currentCursorPosition = remember { 0.dp }
@@ -151,7 +153,10 @@ fun EditableMessageBodyWebView(
                 .onFocusEvent { event ->
                     if (event.hasFocus) {
                         Timber.v("editor-webview: composable webview has focus; focusing html element...")
-                        webView?.evaluateJavascript("focusEditor();", null)
+                        webView?.evaluateJavascript("focusEditor();") {
+                            Timber.v("editor-webview: editor webview got focused; show keyboard...")
+                            keyboardController?.show()
+                        }
                     }
                 },
             onRelease = {

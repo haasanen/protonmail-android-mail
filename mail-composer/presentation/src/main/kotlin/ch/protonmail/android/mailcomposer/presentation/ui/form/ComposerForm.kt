@@ -78,7 +78,6 @@ internal fun ComposerForm(
 
     var showSubjectAndBody by remember { mutableStateOf(true) }
     var isSubjectFocused by remember { mutableStateOf(false) }
-    var isBodyFocused by remember { mutableStateOf(false) }
 
     FocusableForm(
         fieldList = listOf(
@@ -94,7 +93,6 @@ internal fun ComposerForm(
             Timber.d("editor-webview: Focus changed: onFocusedField: $it")
 
             isSubjectFocused = it == FocusedFieldType.SUBJECT
-            isBodyFocused = it == FocusedFieldType.BODY
         }
     ) { fieldFocusRequesters ->
 
@@ -181,10 +179,6 @@ internal fun ComposerForm(
                         .onGloballyPositioned { coordinates ->
                             val webViewBounds = coordinates.boundsInWindow()
                             actions.onWebViewPositioned(webViewBounds)
-
-                            if (isBodyFocused) {
-                                keyboardController?.show()
-                            }
                         }
                 )
             }
