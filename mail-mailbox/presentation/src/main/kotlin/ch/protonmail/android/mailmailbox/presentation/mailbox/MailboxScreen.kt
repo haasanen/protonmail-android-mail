@@ -528,6 +528,14 @@ fun MailboxScreen(
 @Composable
 fun AnimatedComposeMailFab(showMinimized: Boolean, onComposeClick: () -> Unit) {
     AnimatedContent(
+        modifier = Modifier
+            .shadow(
+                elevation = 4.dp,
+                shape = RoundedCornerShape(MailDimens.MailboxFabRadius),
+                clip = false,
+                ambientColor = ProtonTheme.colors.shadowLifted.copy(alpha = 0.4f),
+                spotColor = ProtonTheme.colors.shadowLifted.copy(alpha = 0.4f)
+            ),
         targetState = showMinimized,
         transitionSpec = {
             (scaleIn(initialScale = 0.8f) + fadeIn())
@@ -569,13 +577,6 @@ fun ComposeMailFab(onComposeClick: () -> Unit) {
             .background(
                 color = ProtonTheme.colors.interactionFabNorm,
                 shape = RoundedCornerShape(MailDimens.MailboxFabRadius)
-            )
-            .shadow(
-                elevation = 4.dp,
-                shape = RoundedCornerShape(MailDimens.MailboxFabRadius),
-                clip = false,
-                ambientColor = ProtonTheme.colors.shadowLifted.copy(alpha = 0.4f),
-                spotColor = ProtonTheme.colors.shadowLifted.copy(alpha = 0.4f)
             ),
         expanded = true,
         shape = RoundedCornerShape(MailDimens.MailboxFabRadius),
@@ -597,13 +598,6 @@ fun IconOnlyComposeMailFab(onComposeClick: () -> Unit) {
                 width = 1.dp,
                 color = ProtonTheme.colors.borderNorm,
                 shape = CircleShape
-            )
-            .shadow(
-                elevation = 4.dp,
-                shape = CircleShape,
-                clip = false,
-                ambientColor = ProtonTheme.colors.shadowLifted.copy(alpha = 0.4f),
-                spotColor = ProtonTheme.colors.shadowLifted.copy(alpha = 0.4f)
             ),
         shape = RoundedCornerShape(MailDimens.MailboxFabRadius),
         containerColor = ProtonTheme.colors.interactionFabNorm,
