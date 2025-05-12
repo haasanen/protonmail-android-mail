@@ -41,10 +41,13 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
-import uniffi.proton_mail_uniffi.DraftSaveSendError
-import uniffi.proton_mail_uniffi.DraftSaveSendErrorReason
+import uniffi.proton_mail_uniffi.DraftSaveError
+import uniffi.proton_mail_uniffi.DraftSaveErrorReason
+import uniffi.proton_mail_uniffi.DraftSendError
+import uniffi.proton_mail_uniffi.DraftSendErrorReason
 import uniffi.proton_mail_uniffi.DraftSyncStatus
-import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
+import uniffi.proton_mail_uniffi.VoidDraftSaveResult
+import uniffi.proton_mail_uniffi.VoidDraftSendResult
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -300,8 +303,8 @@ class RustDraftDataSourceImplTest {
             messageId = messageId.toLocalMessageId()
         )
         dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveSendResult.Ok
-        coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
+        coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveResult.Ok
+        coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveResult.Ok
 
         // When
         val actual = dataSource.saveSubject(subject)
@@ -317,8 +320,8 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
         val subject = Subject("saving a draft...")
         dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveSendResult.Error(
-            DraftSaveSendError.Reason(DraftSaveSendErrorReason.MessageIsNotADraft)
+        coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveResult.Error(
+            DraftSaveError.Reason(DraftSaveErrorReason.MessageIsNotADraft)
         )
         val expected = DataError.Local.SendDraftError.AlreadySent
 
@@ -342,8 +345,8 @@ class RustDraftDataSourceImplTest {
             messageId = messageId.toLocalMessageId()
         )
         dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveSendResult.Ok
-        coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
+        coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveResult.Ok
+        coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveResult.Ok
 
         // When
         val actual = dataSource.saveBody(body)
@@ -359,8 +362,8 @@ class RustDraftDataSourceImplTest {
         val body = DraftBody("saving a draft's body...")
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.body, draft.sender, draft.body)
         dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
-        coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveSendResult.Error(
-            DraftSaveSendError.Reason(DraftSaveSendErrorReason.MessageIsNotADraft)
+        coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveResult.Error(
+            DraftSaveError.Reason(DraftSaveErrorReason.MessageIsNotADraft)
         )
         val expected = DataError.Local.SendDraftError.AlreadySent
 
@@ -412,14 +415,12 @@ class RustDraftDataSourceImplTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = LocalMessageIdSample.AugWeatherForecast
-        val expectedError = DataError.Local.SendDraftError.AttachmentsError
+        val expectedError = DataError.Local.SendDraftError.InvalidRecipient
 
         val expectedDraftWrapper = expectDraftWrapperReturns(
             messageId = messageId,
-            sendResult = VoidDraftSaveSendResult.Error(
-                DraftSaveSendError.Reason(
-                    DraftSaveSendErrorReason.AttachmentUpload
-                )
+            sendResult = VoidDraftSendResult.Error(
+                DraftSendError.Reason(DraftSendErrorReason.RecipientEmailInvalid("test!"))
             )
         )
         dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
@@ -614,7 +615,7 @@ class RustDraftDataSourceImplTest {
         ccRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
         bccRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
         messageId: LocalMessageId = LocalMessageIdSample.AugWeatherForecast,
-        sendResult: VoidDraftSaveSendResult = VoidDraftSaveSendResult.Ok
+        sendResult: VoidDraftSendResult = VoidDraftSendResult.Ok
     ) = mockk<DraftWrapper> {
         every { subject() } returns subject
         every { sender() } returns sender

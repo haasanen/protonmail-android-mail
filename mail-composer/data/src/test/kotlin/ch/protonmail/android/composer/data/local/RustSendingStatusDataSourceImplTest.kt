@@ -44,14 +44,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
-import uniffi.proton_mail_uniffi.DraftSaveSendError
+import uniffi.proton_mail_uniffi.DraftSendFailure
 import uniffi.proton_mail_uniffi.DraftSendResultCallback
 import uniffi.proton_mail_uniffi.DraftSendResultOrigin
 import uniffi.proton_mail_uniffi.DraftSendResultWatcher
 import uniffi.proton_mail_uniffi.DraftSendStatus
-import uniffi.proton_mail_uniffi.ProtonError as LocalProtonError
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import uniffi.proton_mail_uniffi.ProtonError as LocalProtonError
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class RustSendingStatusDataSourceImplTest {
@@ -106,7 +106,6 @@ class RustSendingStatusDataSourceImplTest {
         assertTrue(result.isEmpty())
     }
 
-
     @Test
     fun `observeMessageSendingStatus emits message sending status when watcher is created successfully`() = runTest {
         // Given
@@ -115,7 +114,7 @@ class RustSendingStatusDataSourceImplTest {
         val testDraftSendResult = LocalDraftSendResult(
             messageId = LocalMessageIdSample.AugWeatherForecast,
             timestamp = System.currentTimeMillis(),
-            error = DraftSendStatus.Failure(DraftSaveSendError.Other(LocalProtonError.Network)),
+            error = DraftSendStatus.Failure(DraftSendFailure.Other(LocalProtonError.Network)),
             origin = DraftSendResultOrigin.SEND
         )
 
@@ -178,7 +177,7 @@ class RustSendingStatusDataSourceImplTest {
             LocalDraftSendResult(
                 messageId = testLocalMessageId,
                 timestamp = System.currentTimeMillis(),
-                error = DraftSendStatus.Failure(DraftSaveSendError.Other(LocalProtonError.Network)),
+                error = DraftSendStatus.Failure(DraftSendFailure.Other(LocalProtonError.Network)),
                 origin = DraftSendResultOrigin.SEND
             )
         )

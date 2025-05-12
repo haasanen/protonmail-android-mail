@@ -29,7 +29,11 @@ sealed interface SendErrorReason {
         data object MessageIsNotADraft : SendErrorReason
         data object MessageAlreadySent : SendErrorReason
         data object MissingAttachmentUploads : SendErrorReason
-        data object AttachmentUpload : SendErrorReason
+        data object AttachmentTooLarge : SendErrorReason
+        data object TooManyAttachments : SendErrorReason
+        data object AttachmentCryptoFailure : SendErrorReason
+        data object AttachmentUploadFailureRetriable : SendErrorReason
+        data object ScheduledSendExpired : SendErrorReason
     }
 
     sealed interface ErrorWithMessage : SendErrorReason {

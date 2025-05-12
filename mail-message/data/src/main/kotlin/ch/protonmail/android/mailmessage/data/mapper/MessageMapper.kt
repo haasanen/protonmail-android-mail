@@ -173,7 +173,7 @@ private fun LocalMessageBanner.toMessageBanner(): MessageBanner {
     fun ULong.toInstant() = Instant.ofEpochMilli(this.toLong())
 
     return when (this) {
-        is LocalMessageBannerAutoDelete -> MessageBanner.AutoDelete(timestamp.toInstant(), this.deleteDays.toInt())
+        is LocalMessageBannerAutoDelete -> MessageBanner.AutoDelete(timestamp.toInstant())
         is LocalMessageBannerBlockedSender -> MessageBanner.BlockedSender
         is LocalMessageBannerEmbeddedImages -> MessageBanner.EmbeddedImages
         is LocalMessageBannerExpiry -> MessageBanner.Expiry(timestamp.toInstant())

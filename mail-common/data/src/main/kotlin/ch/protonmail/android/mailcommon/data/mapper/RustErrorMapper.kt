@@ -22,14 +22,16 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import uniffi.proton_mail_uniffi.ActionError
 import uniffi.proton_mail_uniffi.ActionErrorReason
-import uniffi.proton_mail_uniffi.DraftAttachmentError
-import uniffi.proton_mail_uniffi.DraftAttachmentErrorReason
+import uniffi.proton_mail_uniffi.DraftAttachmentUploadError
+import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 import uniffi.proton_mail_uniffi.DraftDiscardError
 import uniffi.proton_mail_uniffi.DraftDiscardErrorReason
 import uniffi.proton_mail_uniffi.DraftOpenError
 import uniffi.proton_mail_uniffi.DraftOpenErrorReason
-import uniffi.proton_mail_uniffi.DraftSaveSendError
-import uniffi.proton_mail_uniffi.DraftSaveSendErrorReason
+import uniffi.proton_mail_uniffi.DraftSaveError
+import uniffi.proton_mail_uniffi.DraftSaveErrorReason
+import uniffi.proton_mail_uniffi.DraftSendError
+import uniffi.proton_mail_uniffi.DraftSendErrorReason
 import uniffi.proton_mail_uniffi.DraftUndoSendError
 import uniffi.proton_mail_uniffi.DraftUndoSendErrorReason
 import uniffi.proton_mail_uniffi.EventError
@@ -56,22 +58,37 @@ fun ActionError.toDataError(): DataError = when (this) {
     }
 }
 
-fun DraftSaveSendError.toDataError(): DataError = when (this) {
-    is DraftSaveSendError.Other -> this.v1.toDataError()
-    is DraftSaveSendError.Reason -> when (this.v1) {
-        is DraftSaveSendErrorReason.AlreadySent,
-        is DraftSaveSendErrorReason.MessageAlreadySent,
-        is DraftSaveSendErrorReason.MessageIsNotADraft -> DataError.Local.SendDraftError.AlreadySent
-        is DraftSaveSendErrorReason.AddressDisabled,
-        is DraftSaveSendErrorReason.AddressDoesNotHavePrimaryKey -> DataError.Local.SendDraftError.InvalidSenderAddress
-        is DraftSaveSendErrorReason.UnknownRecipientValidationError,
-        is DraftSaveSendErrorReason.RecipientEmailInvalid,
-        is DraftSaveSendErrorReason.ProtonRecipientDoesNotExist,
-        is DraftSaveSendErrorReason.NoRecipients -> DataError.Local.SendDraftError.InvalidRecipient
-        is DraftSaveSendErrorReason.MissingAttachmentUploads,
-        is DraftSaveSendErrorReason.AttachmentUpload -> DataError.Local.SendDraftError.AttachmentsError
-        is DraftSaveSendErrorReason.MessageDoesNotExist,
-        is DraftSaveSendErrorReason.PackageError -> DataError.Local.SaveDraftError.Unknown
+fun DraftSaveError.toDataError(): DataError = when (this) {
+    is DraftSaveError.Other -> this.v1.toDataError()
+    is DraftSaveError.Reason -> when (this.v1) {
+        is DraftSaveErrorReason.AlreadySent,
+        is DraftSaveErrorReason.MessageAlreadySent,
+        is DraftSaveErrorReason.MessageIsNotADraft -> DataError.Local.SendDraftError.AlreadySent
+        is DraftSaveErrorReason.AddressDisabled,
+        is DraftSaveErrorReason.AddressDoesNotHavePrimaryKey -> DataError.Local.SendDraftError.InvalidSenderAddress
+        is DraftSaveErrorReason.UnknownRecipientValidationError,
+        is DraftSaveErrorReason.RecipientEmailInvalid,
+        is DraftSaveErrorReason.ProtonRecipientDoesNotExist -> DataError.Local.SendDraftError.InvalidRecipient
+        is DraftSaveErrorReason.MessageDoesNotExist -> DataError.Local.SaveDraftError.Unknown
+    }
+}
+
+fun DraftSendError.toDataError(): DataError = when (this) {
+    is DraftSendError.Other -> this.v1.toDataError()
+    is DraftSendError.Reason -> when (this.v1) {
+        is DraftSendErrorReason.AlreadySent,
+        is DraftSendErrorReason.MessageAlreadySent,
+        is DraftSendErrorReason.MessageIsNotADraft -> DataError.Local.SendDraftError.AlreadySent
+        is DraftSendErrorReason.AddressDisabled,
+        is DraftSendErrorReason.AddressDoesNotHavePrimaryKey -> DataError.Local.SendDraftError.InvalidSenderAddress
+        is DraftSendErrorReason.UnknownRecipientValidationError,
+        is DraftSendErrorReason.RecipientEmailInvalid,
+        is DraftSendErrorReason.ProtonRecipientDoesNotExist,
+        is DraftSendErrorReason.NoRecipients -> DataError.Local.SendDraftError.InvalidRecipient
+        is DraftSendErrorReason.MissingAttachmentUploads -> DataError.Local.SendDraftError.AttachmentsError
+        is DraftSendErrorReason.MessageDoesNotExist,
+        is DraftSendErrorReason.ScheduleSendExpired,
+        is DraftSendErrorReason.PackageError -> DataError.Local.SaveDraftError.Unknown
     }
 }
 
@@ -104,16 +121,16 @@ fun DraftUndoSendError.toDataError(): DataError = when (this) {
     }
 }
 
-fun DraftAttachmentError.toDataError(): DataError = when (this) {
-    is DraftAttachmentError.Other -> this.v1.toDataError()
-    is DraftAttachmentError.Reason -> when (this.v1) {
-        DraftAttachmentErrorReason.MESSAGE_DOES_NOT_EXIST,
-        DraftAttachmentErrorReason.MESSAGE_DOES_NOT_EXIST_ON_SERVER,
-        DraftAttachmentErrorReason.MESSAGE_ALREADY_SENT -> DataError.Local.AttachmentError.InvalidDraftMessage
-        DraftAttachmentErrorReason.CRYPTO -> DataError.Local.AttachmentError.EncryptionError
-        DraftAttachmentErrorReason.ATTACHMENT_TOO_LARGE -> DataError.Local.AttachmentError.AttachmentTooLarge
-        DraftAttachmentErrorReason.TOO_MANY_ATTACHMENTS -> DataError.Local.AttachmentError.TooManyAttachments
-        DraftAttachmentErrorReason.RETRY_INVALID_STATE -> DataError.Local.Unknown
+fun DraftAttachmentUploadError.toDataError(): DataError = when (this) {
+    is DraftAttachmentUploadError.Other -> this.v1.toDataError()
+    is DraftAttachmentUploadError.Reason -> when (this.v1) {
+        DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST,
+        DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST_ON_SERVER,
+        DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT -> DataError.Local.AttachmentError.InvalidDraftMessage
+        DraftAttachmentUploadErrorReason.CRYPTO -> DataError.Local.AttachmentError.EncryptionError
+        DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE -> DataError.Local.AttachmentError.AttachmentTooLarge
+        DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS -> DataError.Local.AttachmentError.TooManyAttachments
+        DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE -> DataError.Local.Unknown
     }
 }
 

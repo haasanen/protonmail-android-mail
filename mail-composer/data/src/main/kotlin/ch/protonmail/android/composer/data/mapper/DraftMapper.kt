@@ -42,9 +42,11 @@ import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipient
+import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 import uniffi.proton_mail_uniffi.DraftCreateMode
-import uniffi.proton_mail_uniffi.DraftSaveSendError
-import uniffi.proton_mail_uniffi.DraftSaveSendErrorReason
+import uniffi.proton_mail_uniffi.DraftSaveErrorReason
+import uniffi.proton_mail_uniffi.DraftSendErrorReason
+import uniffi.proton_mail_uniffi.DraftSendFailure
 import uniffi.proton_mail_uniffi.DraftSendStatus
 import uniffi.proton_mail_uniffi.DraftSyncStatus
 import uniffi.proton_mail_uniffi.SingleRecipientEntry
@@ -130,58 +132,84 @@ private fun LocalDraftSendResult.toMessageSendingStatusForSuccess(timeRemainingF
     }
 }
 
-private fun LocalDraftSendResult.toMessageSendingStatusForFailure(error: DraftSaveSendError): MessageSendingStatus {
+private fun LocalDraftSendResult.toMessageSendingStatusForFailure(error: DraftSendFailure): MessageSendingStatus {
     return when (error) {
-        is DraftSaveSendError.Reason -> {
-            // Check if the error reason indicates that the message was already sent.
-            if (error.v1.isAlreadySent()) {
-                // Treat it as a successful send, with no undo time.
-                MessageSendingStatus.MessageSentFinal(this.messageId.toMessageId())
-            } else {
-                MessageSendingStatus.SendMessageError(
-                    messageId = this.messageId.toMessageId(),
-                    reason = error.v1.toSendErrorReason()
-                )
-            }
-        }
-        is DraftSaveSendError.Other -> MessageSendingStatus.SendMessageError(
+        is DraftSendFailure.AttachmentUpload -> MessageSendingStatus.SendMessageError(
+            messageId = this.messageId.toMessageId(),
+            reason = error.v1.toSendErrorReason()
+        )
+        is DraftSendFailure.Other -> MessageSendingStatus.SendMessageError(
             messageId = this.messageId.toMessageId(),
             reason = SendErrorReason.OtherDataError(error.v1.toDataError())
+        )
+        is DraftSendFailure.Save -> MessageSendingStatus.SendMessageError(
+            messageId = this.messageId.toMessageId(),
+            reason = error.v1.toSendErrorReason()
+        )
+        is DraftSendFailure.Send -> MessageSendingStatus.SendMessageError(
+            messageId = this.messageId.toMessageId(),
+            reason = error.v1.toSendErrorReason()
         )
     }
 }
 
-fun DraftSaveSendErrorReason.isAlreadySent(): Boolean = when (this) {
-    DraftSaveSendErrorReason.AlreadySent,
-    DraftSaveSendErrorReason.MessageAlreadySent -> true
-    else -> false
-}
-
-fun DraftSaveSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
-    DraftSaveSendErrorReason.NoRecipients -> SendErrorReason.ErrorNoMessage.NoRecipients
-    DraftSaveSendErrorReason.AlreadySent -> SendErrorReason.ErrorNoMessage.AlreadySent
-    DraftSaveSendErrorReason.MessageDoesNotExist -> SendErrorReason.ErrorNoMessage.MessageDoesNotExist
-    DraftSaveSendErrorReason.MessageIsNotADraft -> SendErrorReason.ErrorNoMessage.MessageIsNotADraft
-    DraftSaveSendErrorReason.MessageAlreadySent -> SendErrorReason.ErrorNoMessage.MessageAlreadySent
-    DraftSaveSendErrorReason.MissingAttachmentUploads -> SendErrorReason.ErrorNoMessage.MissingAttachmentUploads
-    DraftSaveSendErrorReason.AttachmentUpload -> SendErrorReason.ErrorNoMessage.AttachmentUpload
-
-    is DraftSaveSendErrorReason.AddressDoesNotHavePrimaryKey ->
-        SendErrorReason.ErrorWithMessage.AddressDoesNotHavePrimaryKey(v1)
-
-    is DraftSaveSendErrorReason.RecipientEmailInvalid ->
-        SendErrorReason.ErrorWithMessage.RecipientEmailInvalid(v1)
-
-    is DraftSaveSendErrorReason.ProtonRecipientDoesNotExist ->
-        SendErrorReason.ErrorWithMessage.ProtonRecipientDoesNotExist(v1)
-
-    is DraftSaveSendErrorReason.UnknownRecipientValidationError ->
-        SendErrorReason.ErrorWithMessage.UnknownRecipientValidationError(v1)
-
-    is DraftSaveSendErrorReason.AddressDisabled ->
+fun DraftSaveErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
+    is DraftSaveErrorReason.AlreadySent,
+    is DraftSaveErrorReason.MessageAlreadySent,
+    is DraftSaveErrorReason.MessageIsNotADraft -> SendErrorReason.ErrorNoMessage.AlreadySent
+    is DraftSaveErrorReason.AddressDisabled ->
         SendErrorReason.ErrorWithMessage.AddressDisabled(v1)
 
-    is DraftSaveSendErrorReason.PackageError ->
+    is DraftSaveErrorReason.AddressDoesNotHavePrimaryKey ->
+        SendErrorReason.ErrorWithMessage.AddressDoesNotHavePrimaryKey(v1)
+
+    is DraftSaveErrorReason.UnknownRecipientValidationError ->
+        SendErrorReason.ErrorWithMessage.RecipientEmailInvalid(v1)
+
+    is DraftSaveErrorReason.RecipientEmailInvalid -> SendErrorReason.ErrorWithMessage.RecipientEmailInvalid(v1)
+
+    is DraftSaveErrorReason.ProtonRecipientDoesNotExist ->
+        SendErrorReason.ErrorWithMessage.ProtonRecipientDoesNotExist(v1)
+
+    is DraftSaveErrorReason.MessageDoesNotExist -> SendErrorReason.ErrorNoMessage.MessageDoesNotExist
+}
+
+fun DraftAttachmentUploadErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
+    DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST,
+    DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST_ON_SERVER,
+    DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT -> SendErrorReason.ErrorNoMessage.AlreadySent
+    DraftAttachmentUploadErrorReason.CRYPTO -> SendErrorReason.ErrorNoMessage.AttachmentCryptoFailure
+    DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE -> SendErrorReason.ErrorNoMessage.AttachmentTooLarge
+    DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS -> SendErrorReason.ErrorNoMessage.TooManyAttachments
+    DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE ->
+        SendErrorReason.ErrorNoMessage.AttachmentUploadFailureRetriable
+}
+
+fun DraftSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
+    DraftSendErrorReason.NoRecipients -> SendErrorReason.ErrorNoMessage.NoRecipients
+    DraftSendErrorReason.AlreadySent -> SendErrorReason.ErrorNoMessage.AlreadySent
+    DraftSendErrorReason.MessageDoesNotExist -> SendErrorReason.ErrorNoMessage.MessageDoesNotExist
+    DraftSendErrorReason.MessageIsNotADraft -> SendErrorReason.ErrorNoMessage.MessageIsNotADraft
+    DraftSendErrorReason.MessageAlreadySent -> SendErrorReason.ErrorNoMessage.MessageAlreadySent
+    DraftSendErrorReason.MissingAttachmentUploads -> SendErrorReason.ErrorNoMessage.MissingAttachmentUploads
+    DraftSendErrorReason.ScheduleSendExpired -> SendErrorReason.ErrorNoMessage.ScheduledSendExpired
+
+    is DraftSendErrorReason.AddressDoesNotHavePrimaryKey ->
+        SendErrorReason.ErrorWithMessage.AddressDoesNotHavePrimaryKey(v1)
+
+    is DraftSendErrorReason.RecipientEmailInvalid ->
+        SendErrorReason.ErrorWithMessage.RecipientEmailInvalid(v1)
+
+    is DraftSendErrorReason.ProtonRecipientDoesNotExist ->
+        SendErrorReason.ErrorWithMessage.ProtonRecipientDoesNotExist(v1)
+
+    is DraftSendErrorReason.UnknownRecipientValidationError ->
+        SendErrorReason.ErrorWithMessage.UnknownRecipientValidationError(v1)
+
+    is DraftSendErrorReason.AddressDisabled ->
+        SendErrorReason.ErrorWithMessage.AddressDisabled(v1)
+
+    is DraftSendErrorReason.PackageError ->
         SendErrorReason.ErrorWithMessage.PackageError(v1)
 }
 

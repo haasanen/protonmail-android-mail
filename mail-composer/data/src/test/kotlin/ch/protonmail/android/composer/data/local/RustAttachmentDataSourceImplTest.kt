@@ -47,6 +47,8 @@ import uniffi.proton_mail_uniffi.AttachmentListRemoveResult
 import uniffi.proton_mail_uniffi.AttachmentListWatcherResult
 import uniffi.proton_mail_uniffi.DraftAttachment
 import uniffi.proton_mail_uniffi.DraftAttachmentState
+import uniffi.proton_mail_uniffi.DraftAttachmentUploadError
+import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 import uniffi.proton_mail_uniffi.DraftAttachmentWatcher
 import uniffi.proton_mail_uniffi.OtherErrorReason
 import kotlin.test.Test
@@ -107,8 +109,8 @@ class RustAttachmentDataSourceImplTest {
     @Test
     fun `observe attachments fail when rust draft attachment access fails`() = runTest {
         // Given
-        val protonError = LocalProtonError.OtherReason(
-            OtherErrorReason.Other("some internal error")
+        val protonError = DraftAttachmentUploadError.Reason(
+            DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE
         )
         val wrapper = mockk<AttachmentsWrapper>()
         val watcher = mockk<DraftAttachmentWatcher>()
@@ -117,9 +119,7 @@ class RustAttachmentDataSourceImplTest {
         coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
         coEvery {
             wrapper.attachments()
-        } returns AttachmentListAttachmentsResult.Error(
-            uniffi.proton_mail_uniffi.DraftAttachmentError.Other(protonError)
-        )
+        } returns AttachmentListAttachmentsResult.Error(protonError)
         coEvery { wrapper.createWatcher(capture(callbackSlot)) } returns AttachmentListWatcherResult.Ok(watcher)
 
         val expected = protonError.toDataError()
@@ -203,7 +203,7 @@ class RustAttachmentDataSourceImplTest {
             mimeType = "application/pdf"
         )
         val wrapper = mockk<AttachmentsWrapper>()
-        val rustError = uniffi.proton_mail_uniffi.DraftAttachmentError.Other(
+        val rustError = DraftAttachmentUploadError.Other(
             LocalProtonError.OtherReason(OtherErrorReason.Other("internal"))
         )
 
@@ -257,9 +257,7 @@ class RustAttachmentDataSourceImplTest {
         // Given
         val attachmentId = AttachmentId("456")
         val wrapper = mockk<AttachmentsWrapper>()
-        val rustError = uniffi.proton_mail_uniffi.DraftAttachmentError.Other(
-            LocalProtonError.OtherReason(OtherErrorReason.Other("internal failure"))
-        )
+        val rustError = LocalProtonError.OtherReason(OtherErrorReason.Other("internal failure"))
 
         coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
         coEvery {

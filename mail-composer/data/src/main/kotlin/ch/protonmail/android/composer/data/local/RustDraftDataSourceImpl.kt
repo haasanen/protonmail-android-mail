@@ -60,7 +60,8 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
-import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
+import uniffi.proton_mail_uniffi.VoidDraftSaveResult
+import uniffi.proton_mail_uniffi.VoidDraftSendResult
 import javax.inject.Inject
 
 class RustDraftDataSourceImpl @Inject constructor(
@@ -136,15 +137,15 @@ class RustDraftDataSourceImpl @Inject constructor(
 
     override suspend fun saveSubject(subject: Subject): Either<DataError, Unit> = withValidRustDraftWrapper {
         return@withValidRustDraftWrapper when (val result = it.setSubject(subject.value)) {
-            is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
-            VoidDraftSaveSendResult.Ok -> Unit.right()
+            is VoidDraftSaveResult.Error -> result.v1.toDataError().left()
+            is VoidDraftSaveResult.Ok -> Unit.right()
         }
     }
 
     override suspend fun saveBody(body: DraftBody): Either<DataError, Unit> = withValidRustDraftWrapper {
         return@withValidRustDraftWrapper when (val result = it.setBody(body.value)) {
-            is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
-            VoidDraftSaveSendResult.Ok -> Unit.right()
+            is VoidDraftSaveResult.Error -> result.v1.toDataError().left()
+            is VoidDraftSaveResult.Ok -> Unit.right()
         }
     }
 
@@ -175,8 +176,8 @@ class RustDraftDataSourceImpl @Inject constructor(
     override suspend fun send(): Either<DataError, Unit> = withValidRustDraftWrapper {
         Timber.d("rust-draft: Sending draft...")
         return@withValidRustDraftWrapper when (val result = it.send()) {
-            is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
-            VoidDraftSaveSendResult.Ok -> {
+            is VoidDraftSendResult.Error -> result.v1.toDataError().left()
+            is VoidDraftSendResult.Ok -> {
                 startSendingStatusWorker()
                 Unit.right()
             }
