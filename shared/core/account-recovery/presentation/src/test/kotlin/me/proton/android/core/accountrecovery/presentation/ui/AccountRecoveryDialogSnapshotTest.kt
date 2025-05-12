@@ -35,7 +35,7 @@ class AccountRecoveryDialogSnapshotTest {
     @Test
     fun accountRecoveryGracePeriodTest() {
         paparazzi.snapshot {
-            AccountRecoveryGracePeriodDialog(
+            GracePeriodDialog(
                 email = "user@email.test",
                 remainingHours = 24
             )
@@ -45,7 +45,7 @@ class AccountRecoveryDialogSnapshotTest {
     @Test
     fun accountRecoveryInvalidPasswordTest() {
         paparazzi.snapshot {
-            AccountRecoveryCancellationForm(
+            CancellationForm(
                 passwordError = StringBox("Invalid password")
             )
         }
@@ -54,14 +54,14 @@ class AccountRecoveryDialogSnapshotTest {
     @Test
     fun accountRecoveryCancellationTest() {
         paparazzi.snapshot {
-            AccountRecoveryCancelledDialog { }
+            CancelledDialog { }
         }
     }
 
     @Test
     fun accountRecoveryPasswordPeriodTest() {
         paparazzi.snapshot {
-            AccountRecoveryPasswordPeriodStartedDialog(
+            PasswordPeriodStartedDialog(
                 endDate = "16 Aug"
             )
         }
@@ -145,9 +145,7 @@ class AccountRecoveryDialogSnapshotTest {
     fun accountRecoveryStateOpenedGracePeriodStartedProcessingTest() {
         paparazzi.snapshot {
             AccountRecoveryDialog(
-                state = AccountRecoveryViewState.Opened.CancelPasswordReset(
-                    processing = true
-                )
+                state = AccountRecoveryViewState.Opened.Cancellation.Init
             )
         }
     }

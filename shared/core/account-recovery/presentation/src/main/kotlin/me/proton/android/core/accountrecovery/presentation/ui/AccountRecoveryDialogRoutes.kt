@@ -28,16 +28,19 @@ import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.core.domain.entity.UserId
 
 internal object Arg {
+
     const val UserId = "userId"
 }
 
 internal object Route {
     object Recovery {
+
         const val Deeplink = "users/{${Arg.UserId}}/recovery"
         fun get(userId: UserId) = "users/${userId.id}/recovery"
     }
 
     object Reset {
+
         const val Deeplink = "users/{${Arg.UserId}}/recovery/reset"
         fun get(userId: UserId) = "users/${userId.id}/recovery/reset"
     }

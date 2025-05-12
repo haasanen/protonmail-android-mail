@@ -19,78 +19,52 @@
 package me.proton.android.core.accountrecovery.presentation.ui
 
 import me.proton.android.core.account.domain.model.CoreUserId
-import me.proton.android.core.accountrecovery.presentation.R
-import me.proton.core.network.domain.ResponseCodes.PASSWORD_WRONG
-import me.proton.core.network.domain.hasProtonErrorCode
 import me.proton.core.presentation.utils.StringBox
+import uniffi.proton_mail_uniffi.AccountRecoveryScreenId
 
-sealed class AccountRecoveryViewState {
+sealed interface AccountRecoveryViewState {
 
-    sealed class Opened : AccountRecoveryViewState() {
+    data object Loading : AccountRecoveryViewState
+    data class Closed(val passwordResetCancelled: Boolean = false) : AccountRecoveryViewState
+    data class Error(val message: String?) : AccountRecoveryViewState
+    data class StartPasswordManager(val userId: CoreUserId) : AccountRecoveryViewState
+
+    sealed interface Opened : AccountRecoveryViewState {
+
         data class GracePeriodStarted(
             val email: String,
-            val remainingHours: Int,
-            val onShowCancellationForm: () -> Unit = {}
-        ) : Opened()
+            val remainingHours: Int
+        ) : Opened
 
-        sealed class PasswordChangePeriodStarted : Opened() {
-            data class OtherDeviceInitiated(
-                val endDate: String, // formatted day, e.g. "16 Aug"
-                val onShowCancellationForm: () -> Unit = {}
-            ) : PasswordChangePeriodStarted()
-
-            data class SelfInitiated(
-                val endDate: String, // formatted day, e.g. "16 Aug"
-                val onShowPasswordChangeForm: () -> Unit = {},
-                val onShowCancellationForm: () -> Unit = {}
-            ) : PasswordChangePeriodStarted()
+        sealed interface PasswordChangePeriodStarted : Opened {
+            data class SelfInitiated(val endDate: String) : PasswordChangePeriodStarted
+            data class OtherDeviceInitiated(val endDate: String) : PasswordChangePeriodStarted
         }
 
-        data class CancelPasswordReset(
-            val processing: Boolean = false,
-            val passwordError: StringBox? = null,
-            val onCancelPasswordRequest: (String) -> Unit = {},
-            val onBack: () -> Unit = {}
-        ) : Opened()
+        data class RecoveryEnded(val email: String) : Opened
 
-        object CancellationHappened : Opened()
+        data object CancellationHappened : Opened
 
-        data class RecoveryEnded(val email: String) : Opened()
+        sealed interface Cancellation : Opened {
+            data object Init : Cancellation
+
+            data object Processing : Cancellation
+
+            data object Success : Cancellation
+
+            data class Error(
+                val passwordError: StringBox? = null,
+                val error: String? = null
+            ) : Cancellation
+        }
     }
 
-    data class Closed(val hasCancelledSuccessfully: Boolean = false) : AccountRecoveryViewState()
-
-    data class StartPasswordManager(val userId: CoreUserId) : AccountRecoveryViewState()
-
-    object Loading : AccountRecoveryViewState()
-
-    data class Error(val message: String?) : AccountRecoveryViewState()
-}
-
-internal data class CancellationState(
-    val processing: Boolean = false,
-    val success: Boolean? = null,
-    val error: Throwable? = null,
-    val passwordError: StringBox? = null
-) {
-
-    fun toViewModelState(onCancelPasswordRequest: (String) -> Unit, onBack: () -> Unit): AccountRecoveryViewState =
-        when {
-            error?.hasProtonErrorCode(PASSWORD_WRONG) == true -> AccountRecoveryViewState.Opened.CancelPasswordReset(
-                passwordError = error.message?.let {
-                    StringBox(it)
-                } ?: StringBox(R.string.presentation_error_general),
-                onCancelPasswordRequest = onCancelPasswordRequest,
-                onBack = onBack
-            )
-
-            error != null -> AccountRecoveryViewState.Error(error.message)
-            success == true -> AccountRecoveryViewState.Closed(hasCancelledSuccessfully = true)
-            else -> AccountRecoveryViewState.Opened.CancelPasswordReset(
-                processing = processing,
-                passwordError = passwordError,
-                onCancelPasswordRequest = onCancelPasswordRequest,
-                onBack = onBack
-            )
-        }
+    fun toScreenId(): AccountRecoveryScreenId? = when (this) {
+        is Opened.CancellationHappened -> AccountRecoveryScreenId.RECOVERY_CANCELLED_INFO
+        is Opened.GracePeriodStarted -> AccountRecoveryScreenId.GRACE_PERIOD_INFO
+        is Opened.Cancellation -> AccountRecoveryScreenId.CANCEL_RESET_PASSWORD
+        is Opened.PasswordChangePeriodStarted -> AccountRecoveryScreenId.PASSWORD_CHANGE_INFO
+        is Opened.RecoveryEnded -> AccountRecoveryScreenId.RECOVERY_EXPIRED_INFO
+        else -> null
+    }
 }
