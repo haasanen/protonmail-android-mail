@@ -385,7 +385,7 @@ fun MailboxScreen(
 
     val showMinimizedFab by remember {
         derivedStateOf {
-            lazyListState.lastScrolledForward
+            lazyListState.firstVisibleItemIndex > 0
         }
     }
 
