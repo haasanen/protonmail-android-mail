@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
@@ -38,7 +37,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -57,7 +55,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.R
 import ch.protonmail.android.design.compose.component.appbar.ProtonMediumTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -272,37 +269,36 @@ fun ProtonSettingsToggleItem(
 ) {
     val isSwitchChecked = value ?: false
     val isViewEnabled = value != null
-    Column(
-        modifier = modifier
-            .toggleable(
-                value = isSwitchChecked,
-                enabled = isViewEnabled,
-                role = Role.Switch
-            ) { onToggle(!isSwitchChecked) }
-            .padding(horizontal = ProtonDimens.Spacing.Large),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        ProtonRawListItem(
-            modifier = Modifier.sizeIn(minHeight = ProtonDimens.ListItemHeight),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = name,
-                color = ProtonTheme.colors.textNorm(isViewEnabled),
-                style = ProtonTheme.typography.bodyLargeNorm
-            )
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        ProtonRawListItem(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = name,
+                    color = ProtonTheme.colors.textNorm(isViewEnabled),
+                    style = ProtonTheme.typography.titleMedium
+                )
+                VerticalSpacer(height = ProtonDimens.Spacing.Small)
+                hint?.let {
+                    Text(
+                        text = hint,
+                        color = ProtonTheme.colors.textHint,
+                        style = ProtonTheme.typography.bodyMediumNorm
+                    )
+                }
+            }
+
             Switch(
                 checked = isSwitchChecked,
-                onCheckedChange = null,
+                onCheckedChange = if (isViewEnabled) {
+                    { onToggle(it) }
+                } else {
+                    null
+                },
                 enabled = isViewEnabled
-            )
-        }
-        hint?.let {
-            Text(
-                modifier = Modifier.offset(y = toggleItemNegativeOffset),
-                text = hint,
-                color = ProtonTheme.colors.textHint,
-                style = ProtonTheme.typography.bodyMediumNorm
             )
         }
     }
@@ -428,5 +424,3 @@ fun SettingsPreview() {
         item { ProtonSettingsItem(name = "Test user", hint = "testuser@proton.ch") {} }
     }
 }
-
-private val toggleItemNegativeOffset = (-10).dp

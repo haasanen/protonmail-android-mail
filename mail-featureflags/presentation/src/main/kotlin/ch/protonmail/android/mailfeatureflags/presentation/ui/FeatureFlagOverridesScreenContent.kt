@@ -42,10 +42,10 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.ProtonTypography
 import ch.protonmail.android.design.compose.theme.bodySmallHint
+import ch.protonmail.android.mailfeatureflags.presentation.R
 import ch.protonmail.android.mailfeatureflags.presentation.model.FeatureFlagListItem
 import ch.protonmail.android.mailfeatureflags.presentation.model.FeatureFlagOverridesState
 import ch.protonmail.android.mailfeatureflags.presentation.model.FeatureFlagUiModel
-import ch.protonmail.android.mailfeatureflags.presentation.R
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -80,7 +80,7 @@ internal fun FeatureFlagOverridesScreenContent(
                     is FeatureFlagListItem.Header -> ProtonSettingsHeader(title = item.categoryName)
                     is FeatureFlagListItem.FeatureFlag -> {
                         Box(modifier = Modifier.fillMaxWidth()) {
-                            Column {
+                            Column(modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Large)) {
                                 ProtonSettingsToggleItem(
                                     name = item.model.name,
                                     hint = item.model.description,
