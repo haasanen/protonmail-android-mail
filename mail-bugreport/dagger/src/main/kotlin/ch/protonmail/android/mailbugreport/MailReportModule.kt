@@ -20,13 +20,17 @@ package ch.protonmail.android.mailbugreport
 
 import ch.protonmail.android.mailbugreport.data.LogsFileHandlerImpl
 import ch.protonmail.android.mailbugreport.data.RustLogsFileHandlerImpl
+import ch.protonmail.android.mailbugreport.data.local.RustBugReportDataSource
+import ch.protonmail.android.mailbugreport.data.local.RustBugReportDataSourceImpl
 import ch.protonmail.android.mailbugreport.data.provider.LogcatProviderImpl
+import ch.protonmail.android.mailbugreport.data.repository.BugReportRepositoryImpl
 import ch.protonmail.android.mailbugreport.domain.LogsExportFeatureSetting
 import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.annotations.AppLogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.annotations.LogsExportFeatureSettingValue
 import ch.protonmail.android.mailbugreport.domain.annotations.RustLogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.provider.LogcatProvider
+import ch.protonmail.android.mailbugreport.domain.repository.BugReportRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -47,6 +51,14 @@ object MailReportModule {
     @Module
     @InstallIn(SingletonComponent::class)
     internal interface BindsModule {
+
+        @Binds
+        @Reusable
+        fun provideBugReportRepository(impl: BugReportRepositoryImpl): BugReportRepository
+
+        @Binds
+        @Reusable
+        fun provideBugReportDataSource(impl: RustBugReportDataSourceImpl): RustBugReportDataSource
 
         @Binds
         @Reusable
