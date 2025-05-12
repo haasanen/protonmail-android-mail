@@ -57,10 +57,14 @@ dependencies {
     implementation(libs.dagger.hilt.android)
 
     implementation(project(":mail-bugreport:domain"))
+    implementation(project(":mail-session:domain"))
+    implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
 
     implementation(project(":design-system"))
+    implementation(project(":uicomponents"))
     implementation(project(":presentation-compose"))
 
     testImplementation(libs.bundles.test)
+    testImplementation(project(":test:utils"))
 }
