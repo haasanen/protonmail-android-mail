@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -37,9 +38,9 @@ interface DraftRepository {
     suspend fun discardDraft(userId: UserId, messageId: MessageId): Either<DataError, Unit>
     suspend fun send(): Either<DataError, Unit>
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>
-    suspend fun saveSubject(subject: Subject): Either<DataError, Unit>
-    suspend fun saveBody(body: DraftBody): Either<DataError, Unit>
-    suspend fun updateToRecipient(recipients: List<Recipient>): Either<DataError, Unit>
-    suspend fun updateCcRecipient(recipients: List<Recipient>): Either<DataError, Unit>
-    suspend fun updateBccRecipient(recipients: List<Recipient>): Either<DataError, Unit>
+    suspend fun saveSubject(subject: Subject): Either<SaveDraftError, Unit>
+    suspend fun saveBody(body: DraftBody): Either<SaveDraftError, Unit>
+    suspend fun updateToRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
+    suspend fun updateCcRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
+    suspend fun updateBccRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
 }

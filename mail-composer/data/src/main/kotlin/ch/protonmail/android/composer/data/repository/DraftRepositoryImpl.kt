@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -48,17 +49,18 @@ class DraftRepositoryImpl @Inject constructor(
 
     override suspend fun discardDraft(userId: UserId, messageId: MessageId) = draftDataSource.discard(userId, messageId)
 
-    override suspend fun saveSubject(subject: Subject): Either<DataError, Unit> = draftDataSource.saveSubject(subject)
+    override suspend fun saveSubject(subject: Subject): Either<SaveDraftError, Unit> =
+        draftDataSource.saveSubject(subject)
 
-    override suspend fun saveBody(body: DraftBody): Either<DataError, Unit> = draftDataSource.saveBody(body)
+    override suspend fun saveBody(body: DraftBody): Either<SaveDraftError, Unit> = draftDataSource.saveBody(body)
 
-    override suspend fun updateToRecipient(recipients: List<Recipient>): Either<DataError, Unit> =
+    override suspend fun updateToRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit> =
         draftDataSource.updateToRecipients(recipients)
 
-    override suspend fun updateCcRecipient(recipients: List<Recipient>): Either<DataError, Unit> =
+    override suspend fun updateCcRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit> =
         draftDataSource.updateCcRecipients(recipients)
 
-    override suspend fun updateBccRecipient(recipients: List<Recipient>): Either<DataError, Unit> =
+    override suspend fun updateBccRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit> =
         draftDataSource.updateBccRecipients(recipients)
 
     override suspend fun send(): Either<DataError, Unit> = draftDataSource.send()

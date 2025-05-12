@@ -21,7 +21,7 @@ package ch.protonmail.android.composer.data.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import uniffi.proton_mail_uniffi.AddSingleRecipientError
 import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.ComposerRecipientList
@@ -35,17 +35,17 @@ class ComposerRecipientListWrapper(private val rustRecipients: ComposerRecipient
 
     fun registerCallback(callback: ComposerRecipientValidationCallback) = rustRecipients.setCallback(callback)
 
-    fun addSingleRecipient(recipient: SingleRecipientEntry): Either<DataError, Unit> =
+    fun addSingleRecipient(recipient: SingleRecipientEntry): Either<SaveDraftError, Unit> =
         when (rustRecipients.addSingleRecipient(recipient)) {
             AddSingleRecipientError.OK -> Unit.right()
-            AddSingleRecipientError.DUPLICATE -> DataError.Local.SaveDraftError.DuplicateRecipient.left()
-            AddSingleRecipientError.SAVE_FAILED -> DataError.Local.SaveDraftError.SaveFailed.left()
+            AddSingleRecipientError.DUPLICATE -> SaveDraftError.DuplicateRecipient.left()
+            AddSingleRecipientError.SAVE_FAILED -> SaveDraftError.SaveFailed.left()
         }
 
-    fun removeSingleRecipient(recipient: SingleRecipientEntry): Either<DataError, Unit> =
+    fun removeSingleRecipient(recipient: SingleRecipientEntry): Either<SaveDraftError, Unit> =
         when (rustRecipients.removeSingleRecipient(recipient.email)) {
             RemoveRecipientError.OK -> Unit.right()
-            RemoveRecipientError.EMPTY_GROUP_NAME -> DataError.Local.SaveDraftError.EmptyRecipientGroupName.left()
-            RemoveRecipientError.SAVE_FAILED -> DataError.Local.SaveDraftError.SaveFailed.left()
+            RemoveRecipientError.EMPTY_GROUP_NAME -> SaveDraftError.EmptyRecipientGroupName.left()
+            RemoveRecipientError.SAVE_FAILED -> SaveDraftError.SaveFailed.left()
         }
 }

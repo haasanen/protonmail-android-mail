@@ -28,8 +28,6 @@ import uniffi.proton_mail_uniffi.DraftDiscardError
 import uniffi.proton_mail_uniffi.DraftDiscardErrorReason
 import uniffi.proton_mail_uniffi.DraftOpenError
 import uniffi.proton_mail_uniffi.DraftOpenErrorReason
-import uniffi.proton_mail_uniffi.DraftSaveError
-import uniffi.proton_mail_uniffi.DraftSaveErrorReason
 import uniffi.proton_mail_uniffi.DraftSendError
 import uniffi.proton_mail_uniffi.DraftSendErrorReason
 import uniffi.proton_mail_uniffi.DraftUndoSendError
@@ -58,21 +56,6 @@ fun ActionError.toDataError(): DataError = when (this) {
     }
 }
 
-fun DraftSaveError.toDataError(): DataError = when (this) {
-    is DraftSaveError.Other -> this.v1.toDataError()
-    is DraftSaveError.Reason -> when (this.v1) {
-        is DraftSaveErrorReason.AlreadySent,
-        is DraftSaveErrorReason.MessageAlreadySent,
-        is DraftSaveErrorReason.MessageIsNotADraft -> DataError.Local.SendDraftError.AlreadySent
-        is DraftSaveErrorReason.AddressDisabled,
-        is DraftSaveErrorReason.AddressDoesNotHavePrimaryKey -> DataError.Local.SendDraftError.InvalidSenderAddress
-        is DraftSaveErrorReason.UnknownRecipientValidationError,
-        is DraftSaveErrorReason.RecipientEmailInvalid,
-        is DraftSaveErrorReason.ProtonRecipientDoesNotExist -> DataError.Local.SendDraftError.InvalidRecipient
-        is DraftSaveErrorReason.MessageDoesNotExist -> DataError.Local.SaveDraftError.Unknown
-    }
-}
-
 fun DraftSendError.toDataError(): DataError = when (this) {
     is DraftSendError.Other -> this.v1.toDataError()
     is DraftSendError.Reason -> when (this.v1) {
@@ -88,7 +71,7 @@ fun DraftSendError.toDataError(): DataError = when (this) {
         is DraftSendErrorReason.MissingAttachmentUploads -> DataError.Local.SendDraftError.AttachmentsError
         is DraftSendErrorReason.MessageDoesNotExist,
         is DraftSendErrorReason.ScheduleSendExpired,
-        is DraftSendErrorReason.PackageError -> DataError.Local.SaveDraftError.Unknown
+        is DraftSendErrorReason.PackageError -> DataError.Local.Unknown
     }
 }
 

@@ -17,6 +17,7 @@ import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
@@ -323,7 +324,7 @@ class RustDraftDataSourceImplTest {
         coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveResult.Error(
             DraftSaveError.Reason(DraftSaveErrorReason.MessageIsNotADraft)
         )
-        val expected = DataError.Local.SendDraftError.AlreadySent
+        val expected = SaveDraftError.MessageIsNotADraft
 
         // When
         val actual = dataSource.saveSubject(subject)
@@ -365,7 +366,7 @@ class RustDraftDataSourceImplTest {
         coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveResult.Error(
             DraftSaveError.Reason(DraftSaveErrorReason.MessageIsNotADraft)
         )
-        val expected = DataError.Local.SendDraftError.AlreadySent
+        val expected = SaveDraftError.MessageIsNotADraft
 
         // When
         val actual = dataSource.saveBody(body)

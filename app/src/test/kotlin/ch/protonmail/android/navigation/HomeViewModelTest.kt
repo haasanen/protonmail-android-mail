@@ -228,7 +228,7 @@ class HomeViewModelTest {
             // Given
             coEvery { observeSendingMessagesStatus(user.userId) } returns flowOf(
                 MessageSendingStatus.SendMessageError(
-                    messageId, SendErrorReason.OtherDataError(DataError.Local.SaveDraftError.Unknown)
+                    messageId, SendErrorReason.OtherDataError(DataError.Local.DbWriteFailed)
                 )
             )
 
@@ -238,7 +238,7 @@ class HomeViewModelTest {
                 val expectedItem = HomeState(
                     messageSendingStatusEffect = Effect.of(
                         MessageSendingStatus.SendMessageError(
-                            messageId, SendErrorReason.OtherDataError(DataError.Local.SaveDraftError.Unknown)
+                            messageId, SendErrorReason.OtherDataError(DataError.Local.DbWriteFailed)
                         )
                     ),
                     navigateToEffect = Effect.empty(),

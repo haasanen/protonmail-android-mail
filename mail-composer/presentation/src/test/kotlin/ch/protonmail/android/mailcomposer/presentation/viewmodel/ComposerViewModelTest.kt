@@ -38,6 +38,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.usecase.AddAttachment
@@ -492,7 +493,7 @@ class ComposerViewModelTest {
         val action = ComposerAction.DraftBodyChanged(expectedDraftBody)
         expectStoreDraftSubjectSucceeds(Subject(""))
         expectStoreDraftBodyFails(expectedDraftBody) {
-            DataError.Local.SaveDraftError.SaveFailed
+            SaveDraftError.SaveFailed
         }
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
@@ -516,7 +517,7 @@ class ComposerViewModelTest {
         val expectedSubject = Subject("Subject for the message")
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         expectStoreDraftSubjectFails(expectedSubject) {
-            DataError.Local.SaveDraftError.Unknown
+            SaveDraftError.SaveFailed
         }
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
@@ -550,7 +551,7 @@ class ComposerViewModelTest {
         expectStoreDraftSubjectSucceeds(Subject(""))
         ignoreRecipientsUpdates() // Ignore first emission due to RecipientsStateManager init
         expectUpdateRecipientsFails(toRecipients, emptyList(), emptyList()) {
-            DataError.Local.SaveDraftError.SaveFailed
+            SaveDraftError.SaveFailed
         }
         mockParticipantMapper()
         expectNoInputDraftMessageId()
@@ -712,7 +713,6 @@ class ComposerViewModelTest {
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
         val expectedDraftFields = existingDraftFields
-        val expectedDisplayBody = DraftDisplayBodyUiModel("<html> ${expectedDraftFields.body.value} </html>")
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedDraftId, isDraftSynced = false) {
             existingDraftFields
         }
@@ -1072,7 +1072,7 @@ class ComposerViewModelTest {
         } returns Unit.right()
     }
 
-    private fun expectStoreDraftBodyFails(expectedDraftBody: DraftBody, error: () -> DataError) = error().also {
+    private fun expectStoreDraftBodyFails(expectedDraftBody: DraftBody, error: () -> SaveDraftError) = error().also {
         coEvery {
             storeDraftWithBodyMock(expectedDraftBody)
         } returns it.left()
@@ -1082,7 +1082,7 @@ class ComposerViewModelTest {
         coEvery { storeDraftWithSubjectMock(expectedSubject) } returns Unit.right()
     }
 
-    private fun expectStoreDraftSubjectFails(expectedSubject: Subject, error: () -> DataError) = error().also {
+    private fun expectStoreDraftSubjectFails(expectedSubject: Subject, error: () -> SaveDraftError) = error().also {
         coEvery {
             storeDraftWithSubjectMock(
                 expectedSubject
@@ -1109,7 +1109,7 @@ class ComposerViewModelTest {
         toRecipients: List<Recipient>,
         ccRecipients: List<Recipient>,
         bccRecipients: List<Recipient>,
-        error: () -> DataError
+        error: () -> SaveDraftError
     ) = error().also {
         coEvery { updateRecipients(toRecipients, ccRecipients, bccRecipients) } returns it.left()
     }

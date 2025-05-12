@@ -22,6 +22,7 @@ import arrow.core.Either
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -35,13 +36,13 @@ interface RustDraftDataSource {
     suspend fun open(userId: UserId, messageId: MessageId): Either<DataError, LocalDraftWithSyncStatus>
     suspend fun create(userId: UserId, action: DraftAction): Either<DataError, LocalDraft>
     suspend fun discard(userId: UserId, messageId: MessageId): Either<DataError, Unit>
-    suspend fun saveSubject(subject: Subject): Either<DataError, Unit>
-    suspend fun saveBody(body: DraftBody): Either<DataError, Unit>
+    suspend fun saveSubject(subject: Subject): Either<SaveDraftError, Unit>
+    suspend fun saveBody(body: DraftBody): Either<SaveDraftError, Unit>
     suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>>
     suspend fun send(): Either<DataError, Unit>
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>
     suspend fun attachmentList(): Either<DataError, AttachmentsWrapper>
-    suspend fun updateToRecipients(recipients: List<Recipient>): Either<DataError, Unit>
-    suspend fun updateCcRecipients(recipients: List<Recipient>): Either<DataError, Unit>
-    suspend fun updateBccRecipients(recipients: List<Recipient>): Either<DataError, Unit>
+    suspend fun updateToRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
+    suspend fun updateCcRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
+    suspend fun updateBccRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
 }

@@ -19,8 +19,8 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import javax.inject.Inject
 
@@ -28,5 +28,6 @@ class StoreDraftWithBody @Inject constructor(
     private val draftRepository: DraftRepository
 ) {
 
-    suspend operator fun invoke(draftBody: DraftBody): Either<DataError, Unit> = draftRepository.saveBody(draftBody)
+    suspend operator fun invoke(draftBody: DraftBody): Either<SaveDraftError, Unit> =
+        draftRepository.saveBody(draftBody)
 }

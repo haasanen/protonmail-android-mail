@@ -16,17 +16,19 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.usecase
+package ch.protonmail.android.mailcomposer.domain.model
 
-import arrow.core.Either
-import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
-import ch.protonmail.android.mailcomposer.domain.model.Subject
-import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import javax.inject.Inject
+import ch.protonmail.android.mailcommon.domain.model.DataError
 
-class StoreDraftWithSubject @Inject constructor(
-    private val draftRepository: DraftRepository
-) {
+sealed interface SaveDraftError {
+    data object MessageIsNotADraft : SaveDraftError
+    data object EmptyRecipientGroupName : SaveDraftError
+    data object DuplicateRecipient : SaveDraftError
+    data object SaveFailed : SaveDraftError
 
-    suspend operator fun invoke(subject: Subject): Either<SaveDraftError, Unit> = draftRepository.saveSubject(subject)
+    data class InvalidRecipient(val message: String) : SaveDraftError
+    data class AddressDisabled(val message: String) : SaveDraftError
+    data class AddressDoesNotHavePrimaryKey(val message: String) : SaveDraftError
+
+    data class Other(val error: DataError) : SaveDraftError
 }

@@ -27,6 +27,7 @@ import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toDraftCreateMode
 import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.mapper.toLocalDraftWithSyncStatus
+import ch.protonmail.android.composer.data.mapper.toSaveDraftError
 import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.mapper.toSingleRecipients
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
@@ -41,6 +42,7 @@ import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
@@ -135,33 +137,33 @@ class RustDraftDataSourceImpl @Inject constructor(
         return discardRustDraft(session, messageId.toLocalMessageId())
     }
 
-    override suspend fun saveSubject(subject: Subject): Either<DataError, Unit> = withValidRustDraftWrapper {
+    override suspend fun saveSubject(subject: Subject): Either<SaveDraftError, Unit> = withValidRustDraftWrapper {
         return@withValidRustDraftWrapper when (val result = it.setSubject(subject.value)) {
-            is VoidDraftSaveResult.Error -> result.v1.toDataError().left()
+            is VoidDraftSaveResult.Error -> result.v1.toSaveDraftError().left()
             is VoidDraftSaveResult.Ok -> Unit.right()
         }
     }
 
-    override suspend fun saveBody(body: DraftBody): Either<DataError, Unit> = withValidRustDraftWrapper {
+    override suspend fun saveBody(body: DraftBody): Either<SaveDraftError, Unit> = withValidRustDraftWrapper {
         return@withValidRustDraftWrapper when (val result = it.setBody(body.value)) {
-            is VoidDraftSaveResult.Error -> result.v1.toDataError().left()
+            is VoidDraftSaveResult.Error -> result.v1.toSaveDraftError().left()
             is VoidDraftSaveResult.Ok -> Unit.right()
         }
     }
 
-    override suspend fun updateToRecipients(recipients: List<Recipient>): Either<DataError, Unit> =
+    override suspend fun updateToRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit> =
         withValidRustDraftWrapper { draftWrapper ->
             val recipientsToWrapper = draftWrapper.recipientsTo()
             return@withValidRustDraftWrapper updateRecipients(recipientsToWrapper, recipients)
         }
 
-    override suspend fun updateCcRecipients(recipients: List<Recipient>): Either<DataError, Unit> =
+    override suspend fun updateCcRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit> =
         withValidRustDraftWrapper { draftWrapper ->
             val recipientsCcWrapper = draftWrapper.recipientsCc()
             return@withValidRustDraftWrapper updateRecipients(recipientsCcWrapper, recipients)
         }
 
-    override suspend fun updateBccRecipients(recipients: List<Recipient>): Either<DataError, Unit> =
+    override suspend fun updateBccRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit> =
         withValidRustDraftWrapper { draftWrapper ->
             val recipientsBccWrapper = draftWrapper.recipientsBcc()
             return@withValidRustDraftWrapper updateRecipients(recipientsBccWrapper, recipients)
@@ -206,7 +208,7 @@ class RustDraftDataSourceImpl @Inject constructor(
     private fun updateRecipients(
         recipientsWrapper: ComposerRecipientListWrapper,
         updatedRecipients: List<Recipient>
-    ): Either<DataError, Unit> = either {
+    ): Either<SaveDraftError, Unit> = either {
         val currentRecipients = recipientsWrapper.recipients().toSingleRecipients()
         val recipientsToAdd = updatedRecipients.filterNot { updatedRecipient ->
             updatedRecipient.address in currentRecipients.map { it.address }
@@ -253,14 +255,11 @@ class RustDraftDataSourceImpl @Inject constructor(
         )
     }
 
-    private suspend fun <T> withValidRustDraftWrapper(
-        closure: suspend (DraftWrapper) -> Either<DataError, T>
-    ): Either<DataError, T> {
+    private suspend fun <E, T> withValidRustDraftWrapper(
+        closure: suspend (DraftWrapper) -> Either<E, T>
+    ): Either<E, T> {
         val rustDraftWrapper: DraftWrapper = draftWrapperStateFlow.value
-            ?: run {
-                Timber.w("Attempting to access draft operations while not draft object exists")
-                return DataError.Local.SaveDraftError.NoRustDraftAvailable.left()
-            }
+            ?: throw IllegalStateException("Attempting to access draft operations while no draft object exists")
 
         return closure(rustDraftWrapper)
     }

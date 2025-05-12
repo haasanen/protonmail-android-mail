@@ -257,19 +257,20 @@ class RustAttachmentDataSourceImplTest {
         // Given
         val attachmentId = AttachmentId("456")
         val wrapper = mockk<AttachmentsWrapper>()
-        val rustError = LocalProtonError.OtherReason(OtherErrorReason.Other("internal failure"))
+        val rustError = AttachmentListRemoveResult.Error(
+            LocalProtonError.OtherReason(OtherErrorReason.Other("internal failure"))
+        )
 
         coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
         coEvery {
             wrapper.removeAttachment(attachmentId.toLocalAttachmentId())
-        } returns AttachmentListRemoveResult.Error(rustError)
+        } returns rustError
 
         // When
         val result = dataSource.removeAttachment(attachmentId)
 
         // Then
-        assertTrue(result.isLeft())
-        assertEquals(rustError.toDataError(), result.swap().getOrNull())
+        assertEquals(DataError.Local.Unknown.left(), result)
     }
 
 }

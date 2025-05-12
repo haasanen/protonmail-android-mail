@@ -20,7 +20,7 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import io.mockk.coEvery
@@ -54,7 +54,7 @@ class StoreDraftWithSubjectTest {
     fun `returns error when save draft subject fails`() = runTest {
         // Given
         val subject = Subject("Subject of this email")
-        val expected = DataError.Local.SaveDraftError.NoRustDraftAvailable
+        val expected = SaveDraftError.MessageIsNotADraft
         givenSaveDraftFails(subject, expected)
         // When
         val actualEither = storeDraftWithSubject(subject)
@@ -67,7 +67,7 @@ class StoreDraftWithSubjectTest {
         coEvery { draftRepository.saveSubject(subject) } returns Unit.right()
     }
 
-    private fun givenSaveDraftFails(subject: Subject, expected: DataError) {
+    private fun givenSaveDraftFails(subject: Subject, expected: SaveDraftError) {
         coEvery { draftRepository.saveSubject(subject) } returns expected.left()
     }
 

@@ -33,6 +33,7 @@ import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
@@ -44,6 +45,7 @@ import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 import uniffi.proton_mail_uniffi.DraftCreateMode
+import uniffi.proton_mail_uniffi.DraftSaveError
 import uniffi.proton_mail_uniffi.DraftSaveErrorReason
 import uniffi.proton_mail_uniffi.DraftSendErrorReason
 import uniffi.proton_mail_uniffi.DraftSendFailure
@@ -212,6 +214,22 @@ fun DraftSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
     is DraftSendErrorReason.PackageError ->
         SendErrorReason.ErrorWithMessage.PackageError(v1)
 }
+
+fun DraftSaveError.toSaveDraftError(): SaveDraftError = when (this) {
+    is DraftSaveError.Other -> SaveDraftError.Other(this.v1.toDataError())
+    is DraftSaveError.Reason -> when (val reason = this.v1) {
+        is DraftSaveErrorReason.AlreadySent,
+        is DraftSaveErrorReason.MessageAlreadySent,
+        is DraftSaveErrorReason.MessageDoesNotExist,
+        is DraftSaveErrorReason.MessageIsNotADraft -> SaveDraftError.MessageIsNotADraft
+        is DraftSaveErrorReason.AddressDisabled -> SaveDraftError.AddressDisabled(reason.v1)
+        is DraftSaveErrorReason.AddressDoesNotHavePrimaryKey -> SaveDraftError.AddressDoesNotHavePrimaryKey(reason.v1)
+        is DraftSaveErrorReason.UnknownRecipientValidationError -> SaveDraftError.InvalidRecipient(reason.v1)
+        is DraftSaveErrorReason.RecipientEmailInvalid -> SaveDraftError.InvalidRecipient(reason.v1)
+        is DraftSaveErrorReason.ProtonRecipientDoesNotExist -> SaveDraftError.InvalidRecipient(reason.v1)
+    }
+}
+
 
 @MissingRustApi
 // Hardcoded values in the mapping

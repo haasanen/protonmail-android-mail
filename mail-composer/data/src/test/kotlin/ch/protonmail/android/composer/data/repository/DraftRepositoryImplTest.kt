@@ -8,6 +8,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -131,7 +132,7 @@ class DraftRepositoryImplTest {
     @Test
     fun `returns error when save draft subject fails`() = runTest {
         // Given
-        val expected = DataError.Local.SaveDraftError.Unknown
+        val expected = SaveDraftError.SaveFailed
         val subject = Subject("test subject")
         coEvery { draftDataSource.saveSubject(subject) } returns expected.left()
 
@@ -158,7 +159,7 @@ class DraftRepositoryImplTest {
     @Test
     fun `returns error when save draft body fails`() = runTest {
         // Given
-        val expected = DataError.Local.SaveDraftError.Unknown
+        val expected = SaveDraftError.SaveFailed
         val body = DraftBody("test body")
         coEvery { draftDataSource.saveBody(body) } returns expected.left()
 

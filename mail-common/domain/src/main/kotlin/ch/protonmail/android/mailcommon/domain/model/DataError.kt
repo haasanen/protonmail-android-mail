@@ -50,14 +50,6 @@ sealed interface DataError {
 
         data object UnsupportedOperation : Local
 
-        sealed interface SaveDraftError : Local {
-            data object NoRustDraftAvailable : SaveDraftError
-            data object EmptyRecipientGroupName : SaveDraftError
-            data object DuplicateRecipient : SaveDraftError
-            data object SaveFailed : SaveDraftError
-            data object Unknown : SaveDraftError
-        }
-
         sealed interface SendDraftError : Local {
             data object AlreadySent : SendDraftError
             data object InvalidSenderAddress : SendDraftError
