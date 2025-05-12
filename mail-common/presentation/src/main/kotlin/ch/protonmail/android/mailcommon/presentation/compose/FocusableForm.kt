@@ -42,7 +42,7 @@ import androidx.compose.ui.focus.onFocusChanged
 @Composable
 fun <FocusedField> FocusableForm(
     fieldList: List<FocusedField>,
-    initialFocus: FocusedField,
+    initialFocus: FocusedField?,
     onFocusedField: (FocusedField) -> Unit = {},
     content: @Composable FocusableFormScope<FocusedField>.(Map<FocusedField, FocusRequester>) -> Unit
 ) {
