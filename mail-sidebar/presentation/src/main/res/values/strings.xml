@@ -19,9 +19,10 @@
     <string name="drawer_title_more">More</string>
     <string name="drawer_title_contacts">Contacts</string>
     <string name="drawer_title_subscription">Subscription</string>
-    <string name="drawer_title_bug_report">Bug report</string>
+    <string name="drawer_title_bug_report">Report a problem</string>
     <string name="drawer_item_create_label">Create label</string>
     <string name="drawer_item_create_folder">Create folder</string>
+    <string name="drawer_title_share_logs" translatable="false">Export logs</string>
 
 
 </resources>

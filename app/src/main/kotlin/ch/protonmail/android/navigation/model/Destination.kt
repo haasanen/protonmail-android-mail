@@ -139,6 +139,8 @@ sealed class Destination(val route: String) {
             data object MainScreen : Destination("onboarding/main")
             data object Upselling : Destination("onboarding/upselling")
         }
+
+        object BugReporting : Destination("support/bugreporting")
     }
 
     object Dialog {

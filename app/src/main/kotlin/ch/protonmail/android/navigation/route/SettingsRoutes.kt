@@ -19,6 +19,7 @@
 package ch.protonmail.android.navigation.route
 
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -26,6 +27,7 @@ import ch.protonmail.android.LockScreenActivity
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsPeekView
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsScreen
+import ch.protonmail.android.mailbugreport.presentation.ui.report.BugReportScreen
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailfeatureflags.presentation.ui.FeatureFlagOverridesScreen
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
@@ -238,6 +240,18 @@ internal fun NavGraphBuilder.addFeatureFlagsOverrides(navController: NavHostCont
     composable(route = Screen.FeatureFlagsOverrides.route) {
         FeatureFlagOverridesScreen(
             onBack = { navController.navigateBack() }
+        )
+    }
+}
+
+internal fun NavGraphBuilder.addBugReporting(navController: NavController, onShowNormalSnackbar: (String) -> Unit) {
+    composable(route = Screen.BugReporting.route) {
+        BugReportScreen(
+            onBack = { navController.navigateBack() },
+            onSuccess = {
+                navController.navigateBack()
+                onShowNormalSnackbar(it)
+            }
         )
     }
 }

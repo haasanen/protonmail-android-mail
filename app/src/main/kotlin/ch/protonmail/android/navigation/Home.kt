@@ -74,7 +74,6 @@ import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingSte
 import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepViewModel
 import ch.protonmail.android.mailsession.data.mapper.toUserId
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
-import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
 import ch.protonmail.android.navigation.model.HomeState
@@ -83,6 +82,7 @@ import ch.protonmail.android.navigation.route.addAlternativeRoutingSetting
 import ch.protonmail.android.navigation.route.addAppSettings
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen
 import ch.protonmail.android.navigation.route.addAutoLockSettings
+import ch.protonmail.android.navigation.route.addBugReporting
 import ch.protonmail.android.navigation.route.addCombinedContactsSetting
 import ch.protonmail.android.navigation.route.addComposer
 import ch.protonmail.android.navigation.route.addContactSearch
@@ -188,6 +188,7 @@ fun Home(
                 viewModel.discardDraft(messageId)
                 showDraftDiscardedSnackbar()
             }
+
             SnackbarResult.Dismissed -> Unit
         }
     }
@@ -389,8 +390,8 @@ fun Home(
                     Sidebar(
                         drawerState = drawerState,
                         navigationActions = buildSidebarActions(navController, launcherActions).copy(
-                            onReportBug = { navController.navigate(Destination.Screen.ApplicationLogs.route) },
-                            onSubscription = { launcherActions.onSubscription() }
+                            onReportBug = { navController.navigate(Screen.BugReporting.route) },
+                            onSubscription = { showFeatureMissingSnackbar() }
                         )
                     )
                 }
@@ -560,6 +561,7 @@ fun Home(
                         addNotificationsSettings(navController)
                         addExportLogsSettings(navController)
                         addFeatureFlagsOverrides(navController)
+                        addBugReporting(navController, onShowNormalSnackbar = { showNormalSnackbar(it) })
                         addDeepLinkHandler(navController)
                     }
                 }
@@ -579,7 +581,8 @@ private fun buildSidebarActions(navController: NavHostController, launcherAction
         onFolderAdd = { navController.navigate(Screen.FolderAndLabelSettings.route) },
         onSubscription = launcherActions.onSubscription,
         onContacts = { navController.navigate(Screen.Contacts.route) },
-        onReportBug = launcherActions.onReportBug
+        onReportBug = { navController.navigate(Screen.BugReporting.route) },
+        onExportLogs = { navController.navigate(Screen.ApplicationLogs.route) }
     )
 
 sealed interface BottomSheetType {

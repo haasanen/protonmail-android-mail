@@ -34,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import ch.protonmail.android.design.compose.component.VerticalSpacer
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.domain.AppInformation
@@ -46,6 +47,7 @@ import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarItem
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarLazy
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarReportBugItem
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarSettingsItem
+import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarShareLogs
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarSubscriptionItem
 import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction
 import ch.protonmail.android.mailsidebar.presentation.label.sidebarFolderItems
@@ -132,19 +134,16 @@ fun Sidebar(
         item { SidebarDivider() }
         sidebarLabelItems(viewState.mailLabels.labels, actions.onLabelAction)
         item { SidebarDivider() }
-        item {
-            ProtonSidebarSubscriptionItem(
-                modifier = Modifier.padding(top = ProtonDimens.Spacing.Standard)
-            ) { actions.onSubscription() }
-        }
+        item { VerticalSpacer(height = ProtonDimens.Spacing.Standard) }
+
+        item { ProtonSidebarSubscriptionItem { actions.onSubscription() } }
+
         item { ProtonSidebarSettingsItem(onClick = actions.onSettings) }
         item { SidebarContactsItem(onClick = actions.onContacts) }
-        item {
-            ProtonSidebarReportBugItem(
-                modifier = Modifier.padding(bottom = ProtonDimens.Spacing.ExtraLarge),
-                onClick = actions.onReportBug
-            )
-        }
+        item { ProtonSidebarReportBugItem(onClick = actions.onReportBug) }
+        item { ProtonSidebarShareLogs(onClick = actions.onExportlogs) }
+        item { VerticalSpacer(height = ProtonDimens.Spacing.ExtraLarge) }
+
         item { SidebarDivider() }
         item { SidebarAppVersionItem(viewState.appInformation) }
     }
@@ -201,7 +200,8 @@ object Sidebar {
         val onLabelAction: (SidebarLabelAction) -> Unit,
         val onSubscription: () -> Unit,
         val onContacts: () -> Unit,
-        val onReportBug: () -> Unit
+        val onReportBug: () -> Unit,
+        val onExportlogs: () -> Unit
     ) {
 
         companion object {
@@ -215,7 +215,8 @@ object Sidebar {
                 onLabelAction = {},
                 onSubscription = {},
                 onContacts = {},
-                onReportBug = {}
+                onReportBug = {},
+                onExportlogs = {}
             )
         }
     }
@@ -230,7 +231,8 @@ object Sidebar {
         val onFolderAdd: () -> Unit,
         val onSubscription: () -> Unit,
         val onContacts: () -> Unit,
-        val onReportBug: () -> Unit
+        val onReportBug: () -> Unit,
+        val onExportLogs: () -> Unit
     ) {
 
         fun toSidebarActions(close: () -> Unit, onLabelAction: (SidebarLabelAction) -> Unit) = Actions(
@@ -269,6 +271,10 @@ object Sidebar {
             onReportBug = {
                 onReportBug()
                 close()
+            },
+            onExportlogs = {
+                onExportLogs()
+                close()
             }
         )
 
@@ -284,7 +290,8 @@ object Sidebar {
                 onFolderAdd = {},
                 onSubscription = {},
                 onContacts = {},
-                onReportBug = {}
+                onReportBug = {},
+                onExportLogs = {}
             )
         }
     }
