@@ -119,12 +119,3 @@ sealed interface DataError {
 }
 
 fun DataError.isOfflineError() = this is DataError.Remote.Http && this.networkError is NetworkError.NoNetwork
-
-fun DataError.isMessageAlreadySentDraftError() = this is DataError.Remote.Proton &&
-    this.protonError is ProtonError.MessageUpdateDraftNotDraft
-
-fun DataError.isMessageAlreadySentAttachmentError() = this is DataError.Remote.Proton &&
-    this.protonError is ProtonError.AttachmentUploadMessageAlreadySent
-
-fun DataError.isMessageAlreadySentSendingError() = this is DataError.Remote.Proton &&
-    this.protonError is ProtonError.MessageAlreadySent
