@@ -23,7 +23,7 @@ plugins {
 }
 
 android {
-    namespace = "ch.protonmail.android.mailpagination.domain"
+    namespace = "ch.protonmail.android.mailbugreport.domain"
     compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
@@ -43,5 +43,9 @@ android {
 
 dependencies {
     implementation(libs.bundles.module.domain)
+    implementation(libs.proton.core.user.domain)
+
+    implementation(project(":mail-common:domain"))
+
     testImplementation(libs.bundles.test)
 }

@@ -38,6 +38,7 @@ import uniffi.proton_mail_uniffi.DraftSendResult
 import uniffi.proton_mail_uniffi.ExclusiveLocation
 import uniffi.proton_mail_uniffi.GroupedContacts
 import uniffi.proton_mail_uniffi.Id
+import uniffi.proton_mail_uniffi.IssueReport
 import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.MailSettings
 import uniffi.proton_mail_uniffi.Message
@@ -111,4 +112,5 @@ typealias LocalDraftSendResult = DraftSendResult
 typealias LocalDeviceContact = DeviceContact
 typealias LocalContactSuggestion = ContactSuggestion
 typealias LocalContactSuggestionKind = ContactSuggestionKind
+typealias LocalIssueReport = IssueReport
 typealias RemoteMessageId = RemoteId

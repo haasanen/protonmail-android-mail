@@ -1,3 +1,5 @@
+import studio.forface.easygradle.dsl.compileOnly
+
 /*
  * Copyright (c) 2022 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
@@ -42,12 +44,18 @@ android {
 }
 
 dependencies {
+    compileOnly(libs.proton.rust.core)
     implementation(libs.bundles.module.data)
 
     implementation(libs.timber)
+    implementation(libs.proton.core.domain)
 
+    implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-bugreport:domain"))
+    implementation(project(":mail-session:domain"))
 
+    testImplementation(project(":test:utils"))
     testImplementation(libs.bundles.test)
+    testImplementation(libs.proton.rust.core)
 }
