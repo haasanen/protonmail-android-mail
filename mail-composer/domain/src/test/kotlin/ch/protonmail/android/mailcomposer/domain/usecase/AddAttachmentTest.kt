@@ -3,6 +3,7 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 import android.net.Uri
 import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import io.mockk.coEvery
 import io.mockk.mockk

@@ -5,6 +5,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import io.mockk.coEvery
 import io.mockk.coVerifyOrder

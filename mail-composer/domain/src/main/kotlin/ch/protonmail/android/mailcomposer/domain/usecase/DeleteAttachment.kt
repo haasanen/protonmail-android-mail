@@ -22,6 +22,7 @@ import arrow.core.Either
 import arrow.core.raise.either
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import javax.inject.Inject
 
@@ -40,10 +41,4 @@ class DeleteAttachment @Inject constructor(
             }
             .bind()
     }
-}
-
-sealed interface AttachmentDeleteError {
-    data object InvalidDraftMessage : AttachmentDeleteError
-    data object FailedToDeleteFile : AttachmentDeleteError
-    data object Unknown : AttachmentDeleteError
 }

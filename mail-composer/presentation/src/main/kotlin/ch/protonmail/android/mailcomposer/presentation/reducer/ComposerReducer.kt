@@ -24,7 +24,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
-import ch.protonmail.android.mailcomposer.domain.usecase.AttachmentAddError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState

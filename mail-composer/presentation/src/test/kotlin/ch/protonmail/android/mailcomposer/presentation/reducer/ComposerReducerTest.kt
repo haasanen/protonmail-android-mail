@@ -34,7 +34,7 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
-import ch.protonmail.android.mailcomposer.domain.usecase.AttachmentAddError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction.SenderChanged

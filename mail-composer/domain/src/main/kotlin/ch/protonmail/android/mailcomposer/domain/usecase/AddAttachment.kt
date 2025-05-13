@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 import android.net.Uri
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import javax.inject.Inject
 
@@ -40,12 +41,4 @@ class AddAttachment @Inject constructor(
             }
         }
 
-}
-
-sealed interface AttachmentAddError {
-    data object AttachmentTooLarge : AttachmentAddError
-    data object TooManyAttachments : AttachmentAddError
-    data object InvalidDraftMessage : AttachmentAddError
-    data object EncryptionError : AttachmentAddError
-    data object Unknown : AttachmentAddError
 }
