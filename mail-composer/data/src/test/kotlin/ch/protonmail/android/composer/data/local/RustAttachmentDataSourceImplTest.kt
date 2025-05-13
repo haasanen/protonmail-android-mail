@@ -41,9 +41,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
+import uniffi.proton_mail_uniffi.AttachmentListAddInlineResult
 import uniffi.proton_mail_uniffi.AttachmentListAddResult
 import uniffi.proton_mail_uniffi.AttachmentListAttachmentsResult
 import uniffi.proton_mail_uniffi.AttachmentListRemoveResult
+import uniffi.proton_mail_uniffi.AttachmentListRemoveWithCidResult
 import uniffi.proton_mail_uniffi.AttachmentListWatcherResult
 import uniffi.proton_mail_uniffi.DraftAttachment
 import uniffi.proton_mail_uniffi.DraftAttachmentState
@@ -275,6 +277,90 @@ class RustAttachmentDataSourceImplTest {
 
         // Then
         assertEquals(DataError.Local.Unknown.left(), result)
+    }
+
+    @Test
+    fun `add inline attachment successfully when storage and Rust add succeeds`() = runTest {
+        // Given
+        val uri = mockk<Uri>()
+        val fileInfo = FileInformation(
+            name = "image.png",
+            path = "/fake/path/image.png",
+            size = 1024L,
+            mimeType = "image/png"
+        )
+        val wrapper = mockk<AttachmentsWrapper>()
+
+        coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
+        coEvery { wrapper.attachmentUploadDirectory() } returns "/fake/path"
+        coEvery { attachmentFileStorage.saveAttachment(any(), eq(uri)) } returns fileInfo
+        coEvery { wrapper.addInlineAttachment(fileInfo.path, fileInfo.name) } returns
+            AttachmentListAddInlineResult.Ok("ok")
+
+        // When
+        val result = dataSource.addInlineAttachment(uri)
+
+        // Then
+        assertTrue(result.isRight())
+    }
+
+    @Test
+    fun `add Inline Attachment returns left when rust call fails`() = runTest {
+        // Given
+        val uri = mockk<Uri>()
+        val fileInfo = FileInformation(
+            name = "error.jpg",
+            path = "/fake/path/error.jpg",
+            size = 2048L,
+            mimeType = "image/jpg"
+        )
+        val wrapper = mockk<AttachmentsWrapper>()
+        val rustError = DraftAttachmentUploadError.Reason(DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE)
+
+        coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
+        coEvery { wrapper.attachmentUploadDirectory() } returns "/fake/path"
+        coEvery { attachmentFileStorage.saveAttachment(any(), eq(uri)) } returns fileInfo
+        coEvery { wrapper.addInlineAttachment(fileInfo.path, fileInfo.name) } returns
+            AttachmentListAddInlineResult.Error(rustError)
+
+        // When
+        val result = dataSource.addInlineAttachment(uri)
+
+        // Then
+        assertEquals(rustError.toDataError().left(), result)
+    }
+
+    @Test
+    fun `inline attachment deletion succeeds when rust removes the attachment`() = runTest {
+        // Given
+        val cid = "cid-123"
+        val wrapper = mockk<AttachmentsWrapper>()
+
+        coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
+        coEvery { wrapper.removeInlineAttachment(cid) } returns AttachmentListRemoveWithCidResult.Ok
+
+        // When
+        val result = dataSource.removeInlineAttachment(cid)
+
+        // Then
+        assertTrue(result.isRight())
+    }
+
+    @Test
+    fun `inline attachment deletion fails when rust fails to remove`() = runTest {
+        // Given
+        val cid = "cid-456"
+        val wrapper = mockk<AttachmentsWrapper>()
+        val rustError = DraftAttachmentUploadError.Reason(DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS)
+
+        coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
+        coEvery { wrapper.removeInlineAttachment(cid) } returns AttachmentListRemoveWithCidResult.Error(rustError)
+
+        // When
+        val result = dataSource.removeInlineAttachment(cid)
+
+        // Then
+        assertEquals(rustError.toDataError().left(), result)
     }
 
 }

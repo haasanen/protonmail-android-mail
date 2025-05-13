@@ -27,6 +27,7 @@ import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.mailattachments.data.mapper.toLocalAttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
+import ch.protonmail.android.mailcommon.data.file.FileInformation
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -38,9 +39,11 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
+import uniffi.proton_mail_uniffi.AttachmentListAddInlineResult
 import uniffi.proton_mail_uniffi.AttachmentListAddResult
 import uniffi.proton_mail_uniffi.AttachmentListAttachmentsResult
 import uniffi.proton_mail_uniffi.AttachmentListRemoveResult
+import uniffi.proton_mail_uniffi.AttachmentListRemoveWithCidResult
 import uniffi.proton_mail_uniffi.AttachmentListWatcherResult
 import uniffi.proton_mail_uniffi.DraftAttachmentWatcher
 import javax.inject.Inject
@@ -98,35 +101,35 @@ class RustAttachmentDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun addAttachment(fileUri: Uri): Either<DataError, Unit> = withContext(ioDispatcher) {
-        val listResult = rustDraftDataSource.attachmentList()
+    override suspend fun addAttachment(fileUri: Uri): Either<DataError, Unit> =
+        storeAttachmentToCache(fileUri) { attachmentListWrapper, fileInfo ->
+            when (val addResult = attachmentListWrapper.addAttachment(fileInfo.path, fileInfo.name)) {
+                is AttachmentListAddResult.Ok -> {
+                    Timber.d("rust-draft-attachments: Added attachment: ${fileInfo.path}")
+                    Unit.right()
+                }
 
-        return@withContext listResult.fold(
-            ifLeft = { error ->
-                Timber.e("rust-draft-attachments: Failed to get attachment list: $error")
-                error.left()
-            },
-            ifRight = { attachmentListWrapper ->
-                // Save attachment to local storage
-                val fileInfo = attachmentFileStorage.saveAttachment(
-                    attachmentListWrapper.attachmentUploadDirectory(),
-                    fileUri
-                ) ?: return@withContext DataError.Local.FailedToStoreFile.left()
-
-                when (val addResult = attachmentListWrapper.addAttachment(fileInfo.path, fileInfo.name)) {
-                    is AttachmentListAddResult.Ok -> {
-                        Timber.d("rust-draft-attachments: Added attachment: ${fileInfo.path}")
-                        Unit.right()
-                    }
-
-                    is AttachmentListAddResult.Error -> {
-                        Timber.e("rust-draft-attachments: Failed to add attachment: ${addResult.v1}")
-                        addResult.v1.toDataError().left()
-                    }
+                is AttachmentListAddResult.Error -> {
+                    Timber.e("rust-draft-attachments: Failed to add attachment: ${addResult.v1}")
+                    addResult.v1.toDataError().left()
                 }
             }
-        )
-    }
+        }
+
+    override suspend fun addInlineAttachment(fileUri: Uri): Either<DataError, Unit> =
+        storeAttachmentToCache(fileUri) { attachmentListWrapper, fileInfo ->
+            when (val addResult = attachmentListWrapper.addInlineAttachment(fileInfo.path, fileInfo.name)) {
+                is AttachmentListAddInlineResult.Ok -> {
+                    Timber.d("rust-draft-attachments: Added inline attachment: ${fileInfo.path}")
+                    Unit.right()
+                }
+
+                is AttachmentListAddInlineResult.Error -> {
+                    Timber.e("rust-draft-attachments: Failed to add inline attachment: ${addResult.v1}")
+                    addResult.v1.toDataError().left()
+                }
+            }
+        }
 
     override suspend fun removeAttachment(attachmentId: AttachmentId): Either<DataError, Unit> =
         withContext(ioDispatcher) {
@@ -157,6 +160,31 @@ class RustAttachmentDataSourceImpl @Inject constructor(
             )
         }
 
+    override suspend fun removeInlineAttachment(cid: String): Either<DataError, Unit> = withContext(ioDispatcher) {
+        val listResult = rustDraftDataSource.attachmentList()
+
+        return@withContext listResult.fold(
+            ifLeft = { error ->
+                Timber.e("rust-draft-attachments: Failed to get attachment list: $error")
+                error.left()
+            },
+            ifRight = { attachmentListWrapper ->
+
+                when (val removeResult = attachmentListWrapper.removeInlineAttachment(cid)) {
+                    is AttachmentListRemoveWithCidResult.Ok -> {
+                        Timber.d("rust-draft-attachments: Removed inline attachment: $cid")
+                        Unit.right()
+                    }
+
+                    is AttachmentListRemoveWithCidResult.Error -> {
+                        Timber.e("rust-draft-attachments: Failed to remove inline attachment: ${removeResult.v1}")
+                        removeResult.v1.toDataError().left()
+                    }
+                }
+            }
+        )
+    }
+
     private suspend fun AttachmentsWrapper.getAttachments(): Either<DataError, List<AttachmentMetadataWithState>> {
         return when (val result = this.attachments()) {
             is AttachmentListAttachmentsResult.Ok -> {
@@ -168,6 +196,29 @@ class RustAttachmentDataSourceImpl @Inject constructor(
                 result.v1.toDataError().left()
             }
         }
+    }
+
+    private suspend fun storeAttachmentToCache(
+        fileUri: Uri,
+        closure: suspend (AttachmentsWrapper, FileInformation) -> Either<DataError, Unit>
+    ): Either<DataError, Unit> = withContext(ioDispatcher) {
+        val listResult = rustDraftDataSource.attachmentList()
+
+        return@withContext listResult.fold(
+            ifLeft = { error ->
+                Timber.e("rust-draft-attachments: Failed to get attachment list: $error")
+                error.left()
+            },
+            ifRight = { attachmentListWrapper ->
+                // Save attachment to local storage
+                val fileInfo = attachmentFileStorage.saveAttachment(
+                    attachmentListWrapper.attachmentUploadDirectory(),
+                    fileUri
+                ) ?: return@withContext DataError.Local.FailedToStoreFile.left()
+
+                closure(attachmentListWrapper, fileInfo)
+            }
+        )
     }
 
 }

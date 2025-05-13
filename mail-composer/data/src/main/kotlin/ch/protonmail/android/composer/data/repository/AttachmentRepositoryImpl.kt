@@ -38,7 +38,13 @@ class AttachmentRepositoryImpl @Inject constructor(
     override suspend fun deleteAttachment(attachmentId: AttachmentId): Either<DataError, Unit> =
         rustAttachmentDataSource.removeAttachment(attachmentId)
 
+    override suspend fun deleteInlineAttachment(cid: AttachmentId): Either<DataError, Unit> =
+        rustAttachmentDataSource.removeInlineAttachment(cid.id)
+
     override suspend fun addAttachment(fileUri: Uri): Either<DataError, Unit> =
         rustAttachmentDataSource.addAttachment(fileUri)
+
+    override suspend fun addInlineAttachment(fileUri: Uri): Either<DataError, Unit> =
+        rustAttachmentDataSource.addInlineAttachment(fileUri)
 
 }

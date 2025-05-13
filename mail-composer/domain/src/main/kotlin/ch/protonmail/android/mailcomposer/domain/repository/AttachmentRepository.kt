@@ -33,4 +33,6 @@ interface AttachmentRepository {
 
     suspend fun addAttachment(fileUri: Uri): Either<DataError, Unit>
 
+    suspend fun deleteInlineAttachment(cid: AttachmentId): Either<DataError, Unit>
+    suspend fun addInlineAttachment(fileUri: Uri): Either<DataError, Unit>
 }
