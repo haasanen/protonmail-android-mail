@@ -99,7 +99,6 @@ import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSetti
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.avatar.AvatarImagesUiModelTestData
-import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.buildMailboxUiModelItem
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.draftMailboxItemUiModel
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.readMailboxItemUiModel
@@ -990,6 +989,41 @@ class MailboxViewModelTest {
     }
 
     @Test
+    fun `mailbox items are not mapped again in the same page when folder color change`() = runTest {
+        // See ET-2929: avoid updating the MailboxItems when the page is not re-created (eg. folder color update)
+        // this is needed to respect paging lib's immutable pages requirement.
+        // Given
+        val initialFolderColorSettings = FolderColorSettings(useFolderColor = true, inheritParentFolderColor = true)
+        val updateFolderColorSettings = FolderColorSettings(useFolderColor = false, inheritParentFolderColor = false)
+        val folderColorSettingsFlow = MutableStateFlow(initialFolderColorSettings)
+        coEvery {
+            mailboxItemMapper.toUiModel(userId, unreadMailboxItem, initialFolderColorSettings, false)
+        } returns unreadMailboxItemUiModel
+        expectPagerMock(
+            pagingDataFlow = flowOf(PagingData.from(listOf(unreadMailboxItem)))
+        )
+        every { mailboxReducer.newStateFrom(any(), any()) } returns createMailboxDataState()
+        every { observeFolderColorSettings(userId) } returns folderColorSettingsFlow
+        val differ = MailboxAsyncPagingDataDiffer.differ
+
+        mailboxViewModel.items.test {
+            // Initial item is an empty page to clear the currently shown items (when switching label)
+            awaitItem()
+            // First actual emission
+            val pagingData = awaitItem()
+            differ.submitData(pagingData)
+
+            // When
+            folderColorSettingsFlow.emit(updateFolderColorSettings)
+
+            // Then
+            val expected = listOf(unreadMailboxItemUiModel)
+            assertEquals(expected, differ.snapshot().items)
+            ensureAllEventsConsumed()
+        }
+    }
+
+    @Test
     fun `user contacts are used to map mailbox items to ui models`() = runTest {
         // Given
         val folderColorSettings = FolderColorSettings(
@@ -1762,10 +1796,6 @@ class MailboxViewModelTest {
     fun `when bottom sheet dismissal is triggered then the label as bottom sheet is dismissed `() = runTest {
         // Given
         val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id)
-        val selectedItemsList = listOf(item)
-
-        val expectedCustomLabels = LabelAsActionsTestData.actions
-
         val initialState = createMailboxDataState()
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item),

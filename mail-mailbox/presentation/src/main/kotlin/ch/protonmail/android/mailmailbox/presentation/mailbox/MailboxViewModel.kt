@@ -115,6 +115,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -169,6 +170,9 @@ class MailboxViewModel @Inject constructor(
     private val primaryUserId = observePrimaryUserId().filterNotNull()
     private val mutableState = MutableStateFlow(initialState)
     private val itemIds = Collections.synchronizedList(mutableListOf<String>())
+    private val folderColorSettings = primaryUserId.flatMapLatest {
+        observeFolderColorSettings(it).distinctUntilChanged()
+    }
 
     val state: StateFlow<MailboxState> = mutableState.asStateFlow()
     val items: Flow<PagingData<MailboxItemUiModel>> = observePagingData().cachedIn(viewModelScope)
@@ -506,14 +510,12 @@ class MailboxViewModel @Inject constructor(
         pager: Pager<MailboxPageKey, MailboxItem>
     ): Flow<PagingData<MailboxItemUiModel>> {
         return withContext(dispatchersProvider.Comp) {
-            combine(
-                pager.flow,
-                observeFolderColorSettings(userId)
-            ) { pagingData, folderColorSettings ->
+            val folderColorSettingsValue = folderColorSettings.first()
+            pager.flow.mapLatest { pagingData ->
                 pagingData.map {
                     withContext(dispatchersProvider.Comp) {
                         mailboxItemMapper.toUiModel(
-                            userId, it, folderColorSettings,
+                            userId, it, folderColorSettingsValue,
                             state.value.isInSearchMode()
                         )
                     }
