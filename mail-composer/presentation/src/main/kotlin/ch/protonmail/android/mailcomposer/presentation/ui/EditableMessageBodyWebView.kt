@@ -18,10 +18,13 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
+import java.io.ByteArrayInputStream
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.view.ViewGroup.LayoutParams
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
@@ -44,14 +47,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import androidx.hilt.navigation.compose.hiltViewModel
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
+import ch.protonmail.android.mailcomposer.presentation.viewmodel.MessageBodyEditorViewModel
+import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MimeType
+import ch.protonmail.android.mailmessage.presentation.extension.isEmbeddedImage
 import ch.protonmail.android.mailmessage.presentation.ui.showInDarkMode
 import ch.protonmail.android.mailmessage.presentation.ui.showInLightMode
 import timber.log.Timber
@@ -64,7 +71,8 @@ fun EditableMessageBodyWebView(
     messageBodyUiModel: DraftDisplayBodyUiModel,
     shouldRequestFocus: Effect<Unit>,
     webViewFactory: (Context) -> WebView,
-    webViewActions: EditableMessageBodyWebView.Actions
+    webViewActions: EditableMessageBodyWebView.Actions,
+    viewModel: MessageBodyEditorViewModel = hiltViewModel()
 ) {
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
@@ -101,6 +109,16 @@ fun EditableMessageBodyWebView(
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
             contentLoadingFinished.value = true
+        }
+
+        override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+            return if (request?.isEmbeddedImage() == true) {
+                viewModel.loadEmbeddedImage(request.url.schemeSpecificPart)?.let {
+                    WebResourceResponse(it.mimeType, "", ByteArrayInputStream(it.data))
+                }
+            } else {
+                super.shouldInterceptRequest(view, request)
+            }
         }
     }
 
