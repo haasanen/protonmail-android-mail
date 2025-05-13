@@ -54,6 +54,7 @@ import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
+import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
 import uniffi.proton_mail_uniffi.VoidLoginResult
@@ -119,6 +120,13 @@ class OneTimePasswordInputViewModel @Inject constructor(
 
     private fun onError(error: LoginError): Flow<OneTimePasswordInputState> = flow {
         emit(Error.LoginFlow(error.getErrorMessage(context)))
+
+        when ((error as? LoginError.Other)?.v1) {
+            ProtonError.SessionExpired,
+            is ProtonError.Unexpected -> emitAll(onClose())
+
+            else -> Unit
+        }
     }
 
     private fun onSuccess(loginFlow: LoginFlow): Flow<OneTimePasswordInputState> = flow {
@@ -141,6 +149,7 @@ class OneTimePasswordInputViewModel @Inject constructor(
                 CoreLogger.e(LogTag.LOGIN, result.v1.toString())
                 null
             }
+
             is MailSessionGetAccountSessionsResult.Ok -> result.v1
         }
     }
@@ -150,6 +159,7 @@ class OneTimePasswordInputViewModel @Inject constructor(
             CoreLogger.e(LogTag.LOGIN, result.v1.toString())
             null
         }
+
         is MailSessionGetAccountResult.Ok -> result.v1
     }
 }

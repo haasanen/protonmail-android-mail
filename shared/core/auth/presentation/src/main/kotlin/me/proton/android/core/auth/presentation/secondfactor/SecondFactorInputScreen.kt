@@ -91,6 +91,7 @@ fun SecondFactorInputScreen(
     SecondFactorInputScaffold(
         modifier = modifier,
         onBackClicked = onBackClicked,
+        onClose = onClose,
         onError = onError,
         onSuccess = onSuccess
     )
@@ -100,6 +101,7 @@ fun SecondFactorInputScreen(
 fun SecondFactorInputScaffold(
     modifier: Modifier = Modifier,
     onBackClicked: () -> Unit = {},
+    onClose: () -> Unit = {},
     onError: (String?) -> Unit = {},
     onSuccess: () -> Unit = {}
 ) {
@@ -130,6 +132,7 @@ fun SecondFactorInputScaffold(
                 OneTimePasswordInputForm(
                     onError = onError,
                     onSuccess = onSuccess,
+                    onClose = onClose,
                     modifier = Modifier.padding(top = ProtonDimens.MediumSpacing)
                 )
             }

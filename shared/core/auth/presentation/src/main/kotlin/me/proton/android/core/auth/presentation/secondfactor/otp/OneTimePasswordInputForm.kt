@@ -34,14 +34,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
 import me.proton.core.compose.component.ProtonOutlinedTextFieldWithError
@@ -54,6 +54,7 @@ import me.proton.core.compose.theme.ProtonTheme
 fun OneTimePasswordInputForm(
     onError: (String?) -> Unit,
     onSuccess: () -> Unit,
+    onClose: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: OneTimePasswordInputViewModel = hiltViewModel()
 ) {
@@ -64,7 +65,8 @@ fun OneTimePasswordInputForm(
         modifier = modifier,
         onAuthenticate = { viewModel.submit(it) },
         onError = onError,
-        onSuccess = onSuccess
+        onSuccess = onSuccess,
+        onClose = onClose
     )
 }
 
@@ -75,6 +77,7 @@ fun OneTimePasswordInputForm(
     onAuthenticate: (OneTimePasswordInputAction.Authenticate) -> Unit = {},
     onError: (String?) -> Unit = {},
     onSuccess: () -> Unit = {},
+    onClose: () -> Unit = {},
     initialMode: OneTimePasswordInputMode = OneTimePasswordInputMode.Totp
 ) {
     var mode by remember { mutableStateOf(initialMode) }
@@ -87,6 +90,7 @@ fun OneTimePasswordInputForm(
             is OneTimePasswordInputState.Error.LoginFlow -> onError(state.error)
             is OneTimePasswordInputState.Awaiting2Pass -> onSuccess()
             is OneTimePasswordInputState.LoggedIn -> onSuccess()
+            is OneTimePasswordInputState.Closed -> onClose()
             else -> Unit
         }
     }
