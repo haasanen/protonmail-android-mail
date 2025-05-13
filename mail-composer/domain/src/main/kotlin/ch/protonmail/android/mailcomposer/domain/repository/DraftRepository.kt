@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.domain.entity.UserId
@@ -33,6 +34,7 @@ import me.proton.core.domain.entity.UserId
 interface DraftRepository {
 
     suspend fun getMessageId(): Either<DataError, MessageId>
+    suspend fun getEmbeddedImage(contentId: String): Either<DataError, EmbeddedImage>
     suspend fun openDraft(userId: UserId, messageId: MessageId): Either<DataError, DraftFieldsWithSyncStatus>
     suspend fun createDraft(userId: UserId, action: DraftAction): Either<DataError, DraftFields>
     suspend fun discardDraft(userId: UserId, messageId: MessageId): Either<DataError, Unit>

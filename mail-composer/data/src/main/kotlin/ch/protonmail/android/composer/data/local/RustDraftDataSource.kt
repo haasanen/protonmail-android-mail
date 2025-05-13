@@ -20,6 +20,7 @@ package ch.protonmail.android.composer.data.local
 
 import arrow.core.Either
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
+import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
@@ -45,4 +46,5 @@ interface RustDraftDataSource {
     suspend fun updateToRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     suspend fun updateCcRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     suspend fun updateBccRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
+    suspend fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo>
 }

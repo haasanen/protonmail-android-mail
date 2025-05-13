@@ -24,6 +24,7 @@ import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
 import ch.protonmail.android.mailcommon.data.mapper.LocalComposerRecipient
 import ch.protonmail.android.mailcommon.data.mapper.LocalDraftSendResult
+import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
@@ -40,6 +41,7 @@ import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipient
@@ -230,6 +232,7 @@ fun DraftSaveError.toSaveDraftError(): SaveDraftError = when (this) {
     }
 }
 
+fun LocalEmbeddedImageInfo.toEmbeddedImage() = EmbeddedImage(this.data, this.mime)
 
 @MissingRustApi
 // Hardcoded values in the mapping

@@ -35,6 +35,7 @@ import uniffi.proton_mail_uniffi.DecryptedAttachment
 import uniffi.proton_mail_uniffi.DeviceContact
 import uniffi.proton_mail_uniffi.Disposition
 import uniffi.proton_mail_uniffi.DraftSendResult
+import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
 import uniffi.proton_mail_uniffi.ExclusiveLocation
 import uniffi.proton_mail_uniffi.GroupedContacts
 import uniffi.proton_mail_uniffi.Id
@@ -114,3 +115,4 @@ typealias LocalContactSuggestion = ContactSuggestion
 typealias LocalContactSuggestionKind = ContactSuggestionKind
 typealias LocalIssueReport = IssueReport
 typealias RemoteMessageId = RemoteId
+typealias LocalEmbeddedImageInfo = EmbeddedAttachmentInfo

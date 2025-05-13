@@ -12,9 +12,11 @@ import ch.protonmail.android.composer.data.worker.SendingStatusWorker
 import ch.protonmail.android.composer.data.wrapper.ComposerRecipientListWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
+import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
@@ -49,6 +51,8 @@ import uniffi.proton_mail_uniffi.DraftSendErrorReason
 import uniffi.proton_mail_uniffi.DraftSyncStatus
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
+import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
+import uniffi.proton_mail_uniffi.ProtonError
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -606,6 +610,47 @@ class RustDraftDataSourceImplTest {
         coVerify(exactly = 0) {
             bccRecipientsWrapperMock.addSingleRecipient(johnNameless.toSingleRecipientEntry())
         }
+    }
+
+    @Test
+    fun `get embedded image returns the image info when successful`() = runTest {
+        // Given
+        val localEmbeddedImage = LocalEmbeddedImageInfo(
+            "data".toByteArray(),
+            "image/jpg",
+            null,
+            null
+        )
+        val cid = "image-content-id"
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.embeddedImage(cid) } returns EmbeddedAttachmentInfoResult.Ok(
+            localEmbeddedImage
+        )
+
+        // When
+        val actual = dataSource.getEmbeddedImage(contentId = cid)
+
+        // Then
+        assertEquals(localEmbeddedImage.right(), actual)
+    }
+
+    @Test
+    fun `get embedded image returns DataError when unsuccessful`() = runTest {
+        // Given
+        val expected = DataError.Remote.Http(NetworkError.NoNetwork)
+        val cid = "image-content-id"
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.embeddedImage(cid) } returns EmbeddedAttachmentInfoResult.Error(
+            ProtonError.Network
+        )
+
+        // When
+        val actual = dataSource.getEmbeddedImage(contentId = cid)
+
+        // Then
+        assertEquals(expected.left(), actual)
     }
 
     private fun expectDraftWrapperReturns(

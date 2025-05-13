@@ -22,6 +22,7 @@ import arrow.core.Either
 import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.composer.data.mapper.toDraftFields
 import ch.protonmail.android.composer.data.mapper.toDraftFieldsWithSyncStatus
+import ch.protonmail.android.composer.data.mapper.toEmbeddedImage
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
@@ -30,6 +31,7 @@ import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.domain.entity.UserId
@@ -40,6 +42,9 @@ class DraftRepositoryImpl @Inject constructor(
 ) : DraftRepository {
 
     override suspend fun getMessageId(): Either<DataError, MessageId> = draftDataSource.getMessageId()
+
+    override suspend fun getEmbeddedImage(contentId: String): Either<DataError, EmbeddedImage> =
+        draftDataSource.getEmbeddedImage(contentId).map { it.toEmbeddedImage() }
 
     override suspend fun openDraft(userId: UserId, messageId: MessageId): Either<DataError, DraftFieldsWithSyncStatus> =
         draftDataSource.open(userId, messageId).map { it.toDraftFieldsWithSyncStatus() }

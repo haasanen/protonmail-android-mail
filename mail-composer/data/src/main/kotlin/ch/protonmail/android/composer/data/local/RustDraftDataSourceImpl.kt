@@ -38,6 +38,7 @@ import ch.protonmail.android.composer.data.worker.SendingStatusWorker
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.composer.data.wrapper.ComposerRecipientListWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
+import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -64,6 +65,7 @@ import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
+import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
 import javax.inject.Inject
 
 class RustDraftDataSourceImpl @Inject constructor(
@@ -204,6 +206,14 @@ class RustDraftDataSourceImpl @Inject constructor(
         val wrapper = draftWrapperStateFlow.filterNotNull().first()
         return wrapper.attachmentList().right()
     }
+
+    override suspend fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo> =
+        withValidRustDraftWrapper {
+            when (val result = it.embeddedImage(contentId)) {
+                is EmbeddedAttachmentInfoResult.Error -> result.v1.toDataError().left()
+                is EmbeddedAttachmentInfoResult.Ok -> result.v1.right()
+            }
+        }
 
     private fun updateRecipients(
         recipientsWrapper: ComposerRecipientListWrapper,
