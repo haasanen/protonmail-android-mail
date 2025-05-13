@@ -42,27 +42,27 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.presentation.R
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailcommon.presentation.model.string
+import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentState
+import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -122,6 +122,7 @@ fun AttachmentItem(
                 color = ProtonTheme.colors.interactionWeakNorm,
                 shape = ProtonTheme.shapes.huge
             )
+            .clip(ProtonTheme.shapes.huge)
             .clickable {
                 if (!attachmentUiModel.deletable) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || externalStoragePermission.status.isGranted) {

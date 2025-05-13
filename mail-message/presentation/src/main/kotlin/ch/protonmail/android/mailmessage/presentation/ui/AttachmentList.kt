@@ -34,20 +34,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.presentation.R
-import ch.protonmail.android.mailmessage.presentation.extension.getTotalAttachmentByteSizeReadable
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.titleSmallNorm
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.presentation.R
+import ch.protonmail.android.mailmessage.presentation.extension.getTotalAttachmentByteSizeReadable
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import me.proton.core.presentation.R.drawable
@@ -161,6 +162,7 @@ fun AttachmentListHeader(
                 color = ProtonTheme.colors.interactionWeakNorm,
                 shape = ProtonTheme.shapes.huge
             )
+            .clip(ProtonTheme.shapes.huge)
             .clickable {
                 onClick()
             }
