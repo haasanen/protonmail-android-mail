@@ -42,8 +42,11 @@ object AppSettingsScreenPreviewData {
         onAlternativeRoutingClick = {},
         onAppLanguageClick = {},
         onCombinedContactsClick = {},
+        onSwipeToNextEmailClick = {},
         onSwipeActionsClick = {},
         onClearCacheClick = {},
+        onCustomizeToolbarClick = {},
+        onViewApplicationLogsClick = {},
         onBackClick = {}
     )
 }

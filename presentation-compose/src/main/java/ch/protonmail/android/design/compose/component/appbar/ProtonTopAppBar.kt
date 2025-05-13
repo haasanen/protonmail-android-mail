@@ -146,7 +146,7 @@ fun ProtonTopAppBarPreview() {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = Color.White
+                    tint = Color.Black
                 )
             }
         )

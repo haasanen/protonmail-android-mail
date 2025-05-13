@@ -260,7 +260,10 @@ object AppSettingsScreen {
         val onAlternativeRoutingClick: () -> Unit,
         val onAppLanguageClick: () -> Unit,
         val onCombinedContactsClick: () -> Unit,
+        val onSwipeToNextEmailClick: () -> Unit,
         val onSwipeActionsClick: () -> Unit,
+        val onCustomizeToolbarClick: () -> Unit,
+        val onViewApplicationLogsClick: () -> Unit,
         val onClearCacheClick: () -> Unit,
         val onBackClick: () -> Unit
     )

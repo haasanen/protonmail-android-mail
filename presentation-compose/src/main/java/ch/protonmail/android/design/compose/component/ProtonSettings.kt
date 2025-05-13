@@ -37,6 +37,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -44,6 +45,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -54,14 +56,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.R
 import ch.protonmail.android.design.compose.component.appbar.ProtonMediumTopAppBar
+import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.textNorm
 
 /**
@@ -100,6 +105,31 @@ fun ProtonSettingsTopBar(
         modifier = modifier.fillMaxWidth(),
         title = { Text(title) },
         actions = actions,
+        navigationIcon = {
+            IconButton(onClick = onBackClick) {
+                Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.presentation_back))
+            }
+        }
+    )
+}
+
+/**
+ * A [TopAppBar] styled with [ProtonTheme] to be used in settings screens
+ * By default, shows a back icon and the given title
+ * @param onBackClick callback to handle back icon click
+ */
+@Composable
+fun ProtonSettingsAppCustomizationTopBar(
+    modifier: Modifier = Modifier,
+    title: String,
+    actions: @Composable RowScope.() -> Unit = {},
+    onBackClick: () -> Unit
+) {
+    ProtonTopAppBar(
+        modifier = modifier.fillMaxWidth(),
+        title = { Text(title) },
+        actions = actions,
+        backgroundColor = ProtonTheme.colors.backgroundInvertedNorm,
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.presentation_back))
@@ -186,6 +216,7 @@ fun ProtonMainSettingsItem(
             Text(
                 modifier = Modifier,
                 text = name,
+                color = ProtonTheme.colors.textWeak,
                 style = ProtonTheme.typography.bodyLargeWeak
             )
             Text(
@@ -204,6 +235,107 @@ fun ProtonMainSettingsItem(
             contentDescription = hint,
             tint = ProtonTheme.colors.iconDisabled
         )
+    }
+}
+
+@Composable
+fun ProtonAppCustomizationSettingsItemInvert(
+    modifier: Modifier = Modifier,
+    name: String,
+    icon: @Composable () -> Unit,
+    hint: String? = null,
+    isClickable: Boolean = true,
+    onClick: () -> Unit = {}
+) {
+    ProtonAppCustomizationSettingsItem(
+        modifier = modifier,
+        name = name,
+        icon = icon,
+        hint = hint,
+        isClickable = isClickable,
+        onClick = onClick,
+        nameTextStyle = ProtonTheme.typography.bodyMediumWeak,
+        nameTextColor = ProtonTheme.colors.textWeak,
+        hintTextStyle = ProtonTheme.typography.bodyLargeNorm,
+        hintTextColor = ProtonTheme.colors.textNorm
+    )
+}
+
+@Composable
+fun ProtonAppCustomizationSettingsItemNorm(
+    modifier: Modifier = Modifier,
+    name: String,
+    icon: @Composable () -> Unit,
+    hint: String? = null,
+    isClickable: Boolean = true,
+    onClick: () -> Unit = {}
+) {
+    ProtonAppCustomizationSettingsItem(
+        modifier = modifier,
+        name = name,
+        icon = icon,
+        hint = hint,
+        isClickable = isClickable,
+        onClick = onClick,
+        nameTextStyle = ProtonTheme.typography.bodyLargeNorm,
+        nameTextColor = ProtonTheme.colors.textNorm,
+        hintTextStyle = ProtonTheme.typography.bodyMediumWeak,
+        hintTextColor = ProtonTheme.colors.textWeak
+    )
+}
+
+@Composable
+private fun ProtonAppCustomizationSettingsItem(
+    modifier: Modifier = Modifier,
+    name: String,
+    icon: @Composable () -> Unit,
+    hint: String? = null,
+    isClickable: Boolean = true,
+    onClick: () -> Unit = {},
+    nameTextStyle: TextStyle,
+    nameTextColor: Color,
+    hintTextStyle: TextStyle,
+    hintTextColor: Color
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(isClickable, onClick = onClick)
+            .padding(horizontal = ProtonDimens.Spacing.Large, vertical = ProtonDimens.Spacing.Standard),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Column(
+            modifier = Modifier
+                .padding(vertical = ProtonDimens.Spacing.Compact)
+                .semantics(mergeDescendants = true) {}
+                .weight(1f)
+        ) {
+            Text(
+                modifier = Modifier,
+                text = name,
+                color = nameTextColor,
+                style = nameTextStyle
+            )
+            hint?.let {
+                Text(
+                    modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
+                    text = hint,
+                    color = hintTextColor,
+                    style = hintTextStyle
+                )
+            }
+
+        }
+
+        Box(
+            modifier = Modifier
+                .padding(start = ProtonDimens.Spacing.Large)
+                .size(ProtonDimens.IconSize.Default),
+            contentAlignment = Alignment.Center
+        ) {
+            icon()
+        }
     }
 }
 
@@ -305,6 +437,65 @@ fun ProtonSettingsToggleItem(
 }
 
 @Composable
+fun ProtonAppCustomizationSettingsToggleItem(
+    modifier: Modifier = Modifier,
+    name: String,
+    hint: String? = null,
+    value: Boolean?,
+    onToggle: (Boolean) -> Unit = {}
+) {
+    val isSwitchChecked = value ?: false
+    val isViewEnabled = value != null
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .toggleable(
+                value = isSwitchChecked,
+                enabled = isViewEnabled,
+                role = Role.Switch
+            ) { onToggle(!isSwitchChecked) }
+            .padding(horizontal = ProtonDimens.Spacing.Large, vertical = ProtonDimens.Spacing.Standard),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Column(
+            modifier = Modifier
+                .padding(vertical = ProtonDimens.Spacing.Compact)
+                .semantics(mergeDescendants = true) {}
+                .weight(1f)
+        ) {
+            Text(
+                modifier = Modifier,
+                text = name,
+                color = ProtonTheme.colors.textNorm,
+                style = ProtonTheme.typography.bodyLargeNorm
+            )
+
+            hint?.let {
+                Text(
+                    modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
+                    text = hint,
+                    color = ProtonTheme.colors.textWeak,
+                    style = ProtonTheme.typography.bodyMediumWeak
+                )
+            }
+
+        }
+
+        Switch(
+            modifier = Modifier.padding(start = ProtonDimens.Spacing.Large),
+            checked = isSwitchChecked,
+            onCheckedChange = null,
+            enabled = isViewEnabled,
+            colors = SwitchDefaults.colors(
+                checkedTrackColor = ProtonTheme.colors.iconSelected
+            )
+        )
+    }
+}
+
+@Composable
 fun ProtonSettingsRadioItem(
     modifier: Modifier = Modifier,
     name: String,
@@ -379,6 +570,19 @@ fun DisabledSettingsToggleableItemPreview() {
 @Composable
 fun SettingsToggleableItemWithHintPreview() {
     ProtonSettingsToggleItem(
+        name = "Setting toggle",
+        hint = "Use this space to provide an explanation of what toggling this setting does",
+        value = true
+    )
+}
+
+@Preview(
+    name = "Proton settings toggleable item with hint",
+    showBackground = true
+)
+@Composable
+fun SettingsAppToggleableItemWithHintPreview() {
+    ProtonAppCustomizationSettingsToggleItem(
         name = "Setting toggle",
         hint = "Use this space to provide an explanation of what toggling this setting does",
         value = true

@@ -31,6 +31,7 @@ import ch.protonmail.android.mailbugreport.presentation.ui.report.BugReportScree
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailfeatureflags.presentation.ui.FeatureFlagOverridesScreen
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
+import ch.protonmail.android.mailsettings.presentation.appsettings.AppSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.alternativerouting.AlternativeRoutingSettingScreen
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.ui.AutoLockSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.ui.pin.AutoLockPinScreen
@@ -41,6 +42,7 @@ import ch.protonmail.android.mailsettings.presentation.settings.privacy.PrivacyS
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen.SWIPE_DIRECTION_KEY
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.SwipeActionsPreferenceScreen
+import ch.protonmail.android.mailsettings.presentation.settings.appcustomization.AppCustomizationSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.webaccountsettings.WebAccountSettingScreen
 import ch.protonmail.android.mailsettings.presentation.webemailsettings.WebEmailSettingScreen
@@ -253,5 +255,41 @@ internal fun NavGraphBuilder.addBugReporting(navController: NavController, onSho
                 onShowNormalSnackbar(it)
             }
         )
+    }
+}
+
+internal fun NavGraphBuilder.addAppCustomizationSettings(
+    navController: NavHostController,
+    showFeatureMissingSnackbar: () -> Unit
+) {
+    composable(route = Screen.AppCustomizationSettings.route) {
+        ProtonInvertedTheme {
+            AppCustomizationSettingsScreen(
+                actions = AppSettingsScreen.Actions(
+                    onThemeClick = {
+                        navController.navigate(Screen.ThemeSettings.route)
+                    },
+                    onPushNotificationsClick = {
+                        navController.navigate(Screen.Notifications.route)
+                    },
+                    onAutoLockClick = {
+                        navController.navigate(Screen.AutoLockSettings.route)
+                    },
+                    onAlternativeRoutingClick = showFeatureMissingSnackbar,
+                    onAppLanguageClick = {
+                        navController.navigate(Screen.LanguageSettings.route)
+                    },
+                    onCombinedContactsClick = showFeatureMissingSnackbar,
+                    onSwipeToNextEmailClick = showFeatureMissingSnackbar,
+                    onSwipeActionsClick = showFeatureMissingSnackbar,
+                    onCustomizeToolbarClick = showFeatureMissingSnackbar,
+                    onViewApplicationLogsClick = showFeatureMissingSnackbar,
+                    onClearCacheClick = {},
+                    onBackClick = {
+                        navController.navigateBack()
+                    }
+                )
+            )
+        }
     }
 }

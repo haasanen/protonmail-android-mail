@@ -188,6 +188,9 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController) {
                     onPrivacyAndSecuritySettingsClicked = {
                         navController.navigate(Destination.Screen.PrivacyAndSecuritySettings.route)
                     },
+                    onAppCustomizationClick = {
+                        navController.navigate(Destination.Screen.AppCustomizationSettings.route)
+                    },
                     onBackClick = {
                         navController.navigateBack()
                     }
@@ -214,9 +217,12 @@ internal fun NavGraphBuilder.addAppSettings(navController: NavHostController, sh
                 onAppLanguageClick = {
                     navController.navigate(Destination.Screen.LanguageSettings.route)
                 },
+                onSwipeToNextEmailClick = showFeatureMissingSnackbar,
                 onCombinedContactsClick = showFeatureMissingSnackbar,
                 onSwipeActionsClick = showFeatureMissingSnackbar,
-                onClearCacheClick = {},
+                onClearCacheClick = showFeatureMissingSnackbar,
+                onViewApplicationLogsClick = showFeatureMissingSnackbar,
+                onCustomizeToolbarClick = showFeatureMissingSnackbar,
                 onBackClick = {
                     navController.navigateBack()
                 }

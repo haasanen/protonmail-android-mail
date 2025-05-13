@@ -183,6 +183,14 @@ fun MainSettingsScreen(
                         hint = stringResource(id = string.mail_settings_app_hint),
                         onClick = actions.onAppSettingsClick
                     )
+
+                    ProtonMainSettingsItem(
+                        name = stringResource(id = string.mail_settings_app_customization),
+                        iconRes = R.drawable.ic_proton_chevron_right,
+                        hint = stringResource(id = string.mail_settings_app_customization),
+                        onClick = actions.onAppCustomizationClick
+                    )
+                    SettingsItemDivider()
                 }
             }
         }
@@ -250,6 +258,7 @@ object MainSettingsScreen {
         val onFolderAndLabelSettingsClicked: () -> Unit,
         val onSpamFilterSettingsClicked: () -> Unit,
         val onPrivacyAndSecuritySettingsClicked: () -> Unit,
+        val onAppCustomizationClick: () -> Unit,
         val onBackClick: () -> Unit
     )
 }
