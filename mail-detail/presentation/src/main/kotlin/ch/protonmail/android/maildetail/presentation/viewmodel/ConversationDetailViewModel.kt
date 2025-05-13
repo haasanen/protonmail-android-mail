@@ -285,7 +285,7 @@ class ConversationDetailViewModel @Inject constructor(
             is DoNotAskLinkConfirmationAgain -> onDoNotAskLinkConfirmationChecked()
             is ShowAllAttachmentsForMessage -> showAllAttachmentsForMessage(action.messageId)
             is ConversationDetailViewAction.OnAttachmentClicked -> {
-                onOpenAttachmentClicked(action.messageId, action.attachmentId)
+                onOpenAttachmentClicked(action.attachmentId)
             }
 
             is ConversationDetailViewAction.ExpandOrCollapseAttachmentList -> {
@@ -994,12 +994,11 @@ class ConversationDetailViewModel @Inject constructor(
     }
         .launchIn(viewModelScope)
 
-    private fun onOpenAttachmentClicked(messageId: MessageIdUiModel, attachmentId: AttachmentId) {
-        val domainMsgId = MessageId(messageId.id)
+    private fun onOpenAttachmentClicked(attachmentId: AttachmentId) {
         viewModelScope.launch {
             if (isAttachmentDownloadInProgress().not()) {
                 val userId = primaryUserId.first()
-                getAttachmentIntentValues(userId, domainMsgId, attachmentId).fold(
+                getAttachmentIntentValues(userId, attachmentId).fold(
                     ifLeft = {
                         Timber.d("Failed to download attachment: $it")
                         val event = when (it) {
@@ -1090,7 +1089,6 @@ class ConversationDetailViewModel @Inject constructor(
 
         getAttachmentIntentValues(
             userId = primaryUserId.first(),
-            messageId = MessageId(messageUiModel.messageId.id),
             attachmentId = AttachmentId(firstCalendarAttachment.id.value)
         ).fold(
             ifLeft = { Timber.d("Failed to download attachment: $it") },

@@ -35,11 +35,7 @@ interface AttachmentRepository {
     /**
      * Get the attachment for the given [userId], [messageId] and [attachmentId].
      */
-    suspend fun getAttachment(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId
-    ): Either<DataError, DecryptedAttachment>
+    suspend fun getAttachment(userId: UserId, attachmentId: AttachmentId): Either<DataError, DecryptedAttachment>
 
     suspend fun getAttachmentFromRemote(
         userId: UserId,

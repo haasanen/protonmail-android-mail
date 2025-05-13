@@ -26,25 +26,17 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.DecryptedAttachment
-import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
-import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.repository.AttachmentRepository
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
-import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.testdata.message.MessageBodyTestData
-import ch.protonmail.android.testdata.message.MessageTestData
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class GetAttachmentIntentValuesTest {
 
     private val userId = UserIdSample.Primary
-    private val messageId = MessageIdSample.Invoice
     private val attachmentId = AttachmentId("1")
 
     private val uri = mockk<Uri>()
@@ -56,16 +48,9 @@ class GetAttachmentIntentValuesTest {
         )
     }
 
-    private val messageWithBody = MessageWithBody(
-        message = MessageTestData.messageWithAttachments,
-        messageBody = MessageBodyTestData.messageBody
-    )
-
     private val attachmentRepository = mockk<AttachmentRepository>()
-    private val messageRepository = mockk<MessageRepository>()
 
-    private val getAttachmentIntentValues =
-        GetAttachmentIntentValues(attachmentRepository, messageRepository)
+    private val getAttachmentIntentValues = GetAttachmentIntentValues(attachmentRepository)
 
     @Test
     fun `should return intent values when attachment and metadata is locally available`() = runTest {
@@ -74,20 +59,12 @@ class GetAttachmentIntentValuesTest {
         coEvery {
             attachmentRepository.getAttachment(
                 userId = userId,
-                messageId = messageId,
                 attachmentId = id
             )
         } returns decryptedAttachment.right()
-        coEvery {
-            messageRepository.getMessageWithBody(
-                userId,
-                messageId,
-                MessageBodyTransformations.AttachmentDefaults
-            )
-        } returns messageWithBody.right()
 
         // When
-        val result = getAttachmentIntentValues(userId, messageId, id)
+        val result = getAttachmentIntentValues(userId, id)
 
         // Then
         assertEquals(OpenAttachmentIntentValues("application/pdf", uri).right(), result)
@@ -99,42 +76,14 @@ class GetAttachmentIntentValuesTest {
         coEvery {
             attachmentRepository.getAttachment(
                 userId = userId,
-                messageId = messageId,
                 attachmentId = attachmentId
             )
         } returns DataError.Local.NoDataCached.left()
-        coEvery {
-            messageRepository.getMessageWithBody(
-                userId,
-                messageId,
-                MessageBodyTransformations.AttachmentDefaults
-            )
-        } returns messageWithBody.right()
 
         // When
-        val result = getAttachmentIntentValues(userId, messageId, attachmentId)
+        val result = getAttachmentIntentValues(userId, attachmentId)
 
         // Then
-        assertTrue(result.isLeft())
-        assertEquals(DataError.Local.NoDataCached.left(), result)
-    }
-
-    @Test
-    fun `should return no data cached when message is not locally available`() = runTest {
-        // Given
-        coEvery {
-            messageRepository.getMessageWithBody(
-                userId,
-                messageId,
-                MessageBodyTransformations.AttachmentDefaults
-            )
-        } returns DataError.Local.NoDataCached.left()
-
-        // When
-        val result = getAttachmentIntentValues(userId, messageId, attachmentId)
-
-        // Then
-        assertTrue(result.isLeft())
         assertEquals(DataError.Local.NoDataCached.left(), result)
     }
 
@@ -144,20 +93,12 @@ class GetAttachmentIntentValuesTest {
         coEvery {
             attachmentRepository.getAttachment(
                 userId = userId,
-                messageId = messageId,
                 attachmentId = attachmentId
             )
         } returns DataError.Local.OutOfMemory.left()
-        coEvery {
-            messageRepository.getMessageWithBody(
-                userId,
-                messageId,
-                MessageBodyTransformations.AttachmentDefaults
-            )
-        } returns messageWithBody.right()
 
         // When
-        val result = getAttachmentIntentValues(userId, messageId, attachmentId)
+        val result = getAttachmentIntentValues(userId, attachmentId)
 
         // Then
         assertEquals(DataError.Local.OutOfMemory.left(), result)

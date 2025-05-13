@@ -944,7 +944,7 @@ class ConversationDetailViewModelIntegrationTest {
             )
         } returns listOf()
         coEvery {
-            getAttachmentIntentValues.invoke(any(), any(), any())
+            getAttachmentIntentValues.invoke(any(), any())
         } returns DataError.Local.NoDataCached.left()
 
         val viewModel = buildConversationDetailViewModel()
@@ -963,9 +963,7 @@ class ConversationDetailViewModelIntegrationTest {
             awaitItem()
 
             // Then
-            val expectedMessageId = expectedExpanded.messageId
-
-            coVerify { getAttachmentIntentValues(userId, expectedMessageId, AttachmentId(0.toString())) }
+            coVerify { getAttachmentIntentValues(userId, AttachmentId(0.toString())) }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1063,9 +1061,7 @@ class ConversationDetailViewModelIntegrationTest {
             val actualState = awaitItem()
 
             // Then
-            val expectedMessageId = expectedExpanded.messageId
-
-            coVerify { getAttachmentIntentValues(userId, expectedMessageId, AttachmentId(0.toString())) }
+            coVerify { getAttachmentIntentValues(userId, AttachmentId(0.toString())) }
             assertEquals(Effect.of(TextUiModel(R.string.error_get_attachment_failed)), actualState.error)
             cancelAndIgnoreRemainingEvents()
         }
@@ -1108,9 +1104,7 @@ class ConversationDetailViewModelIntegrationTest {
                 val actualState = awaitItem()
 
                 // Then
-                val expectedMessageId = expectedExpanded.messageId
-
-                coVerify { getAttachmentIntentValues(userId, expectedMessageId, AttachmentId(0.toString())) }
+                coVerify { getAttachmentIntentValues(userId, AttachmentId(0.toString())) }
                 assertEquals(Effect.of(TextUiModel(R.string.error_get_attachment_not_enough_memory)), actualState.error)
                 cancelAndIgnoreRemainingEvents()
             }
@@ -1232,7 +1226,7 @@ class ConversationDetailViewModelIntegrationTest {
             )
         } returns listOf()
         coEvery {
-            getAttachmentIntentValues(userId, expandedMessageId, AttachmentId(0.toString()))
+            getAttachmentIntentValues(userId, AttachmentId(0.toString()))
         } returns expectedError.left()
     }
 
@@ -1450,7 +1444,7 @@ class ConversationDetailViewModelIntegrationTest {
             ).right()
             coEvery { isProtonCalendarInstalled() } returns true
             coEvery {
-                getAttachmentIntentValues(userId, messageId, AttachmentId(AttachmentMetadataSamples.Ids.ID_CALENDAR))
+                getAttachmentIntentValues(userId, AttachmentId(AttachmentMetadataSamples.Ids.ID_CALENDAR))
             } returns OpenAttachmentIntentValues(
                 mimeType = " text/calendar",
                 uri = expectedUri

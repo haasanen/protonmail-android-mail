@@ -19,24 +19,22 @@
 package ch.protonmail.android.mailmessage.data.repository
 
 import android.net.Uri
-import ch.protonmail.android.mailmessage.data.local.RustAttachmentDataSource
-import io.mockk.mockk
-
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalDecryptedAttachment
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailmessage.data.local.RustAttachmentDataSource
 import ch.protonmail.android.mailmessage.data.mapper.DecryptedAttachmentMapper
 import ch.protonmail.android.mailmessage.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailmessage.data.mapper.toLocalAttachmentId
 import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.DecryptedAttachment
-import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -53,7 +51,6 @@ class AttachmentRepositoryImplTest {
     fun `test get attachment returns decrypted attachment for valid inputs`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        val messageId = MessageIdSample.Invoice
         val attachmentId = AttachmentId("121")
         val mockUri = mockk<Uri>()
 
@@ -72,7 +69,7 @@ class AttachmentRepositoryImplTest {
         } returns localAttachment.right()
 
         // When
-        val result = attachmentRepository.getAttachment(userId, messageId, attachmentId)
+        val result = attachmentRepository.getAttachment(userId, attachmentId)
 
         // Then
         assertEquals(expectedDecryptedAttachment.right(), result)
@@ -83,7 +80,6 @@ class AttachmentRepositoryImplTest {
     fun `test get attachment returns data error for failed fetch`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        val messageId = MessageIdSample.Invoice
         val attachmentId = AttachmentId("1221")
         val expectedError = DataError.Local.Unknown
 
@@ -92,7 +88,7 @@ class AttachmentRepositoryImplTest {
         } returns expectedError.left()
 
         // When
-        val result = attachmentRepository.getAttachment(userId, messageId, attachmentId)
+        val result = attachmentRepository.getAttachment(userId, attachmentId)
 
         // Then
         assertEquals(expectedError.left(), result)

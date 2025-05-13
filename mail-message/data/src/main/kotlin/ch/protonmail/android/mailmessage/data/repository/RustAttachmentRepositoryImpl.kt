@@ -46,7 +46,6 @@ class AttachmentRepositoryImpl @Inject constructor(
 
     override suspend fun getAttachment(
         userId: UserId,
-        messageId: MessageId,
         attachmentId: AttachmentId
     ): Either<DataError, DecryptedAttachment> {
         return rustAttachmentDataSource
@@ -134,6 +133,7 @@ class AttachmentRepositoryImpl @Inject constructor(
         Timber.w("Not implemented")
         return DataError.Local.Unknown.left()
     }
+
     override suspend fun readFileFromStorage(
         userId: UserId,
         messageId: MessageId,
