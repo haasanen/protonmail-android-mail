@@ -20,7 +20,6 @@ package ch.protonmail.android.mailsidebar.presentation
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -31,6 +30,7 @@ import ch.protonmail.android.maillabel.domain.usecase.UpdateLabelExpandedState
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.Action.LabelAction
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Disabled
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Enabled
@@ -97,7 +97,8 @@ class SidebarViewModelTest {
             updateLabelExpandedState = updateLabelExpandedState,
             observePrimaryUserId = observePrimaryUserId,
             observeMailLabels = observeMailboxLabels,
-            observeUnreadCounters = observeUnreadCounters
+            observeUnreadCounters = observeUnreadCounters,
+            reportAProblemEnabled = flowOf(false)
         )
     }
 

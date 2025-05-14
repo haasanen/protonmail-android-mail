@@ -44,3 +44,11 @@ data object DebugInspectDbEnabled : FeatureFlagDefinition(
     description = "(Only on debuggable builds) Enables attaching AS DB inspector (read only) to rust DB",
     defaultValue = true
 )
+
+data object ReportAProblemEnabled : FeatureFlagDefinition(
+    key = "report_a_problem",
+    name = "Report A Problem",
+    category = FeatureFlagCategory.Settings,
+    description = "Grants access to 'Report a Problem' feature.",
+    defaultValue = false
+)

@@ -27,6 +27,7 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -34,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.VerticalSpacer
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -69,6 +71,8 @@ fun Sidebar(
         drawerState = drawerState,
         appInformation = viewModel.appInformation
     )
+
+    val isReportAProblemEnabled by viewModel.isReportAProblemEnabled.collectAsStateWithLifecycle()
 
     fun close() = scope.launch {
         viewState.drawerState.close()
@@ -107,7 +111,8 @@ fun Sidebar(
             Sidebar(
                 modifier = modifier,
                 viewState = viewState,
-                actions = actions
+                actions = actions,
+                isReportAProblemEnabled = isReportAProblemEnabled
             )
         }
     }
@@ -117,7 +122,8 @@ fun Sidebar(
 fun Sidebar(
     modifier: Modifier = Modifier,
     viewState: SidebarState,
-    actions: Sidebar.Actions
+    actions: Sidebar.Actions,
+    isReportAProblemEnabled: Boolean
 ) {
 
     SidebarHeader()
@@ -140,7 +146,11 @@ fun Sidebar(
 
         item { ProtonSidebarSettingsItem(onClick = actions.onSettings) }
         item { SidebarContactsItem(onClick = actions.onContacts) }
-        item { ProtonSidebarReportBugItem(onClick = actions.onReportBug) }
+
+        if (isReportAProblemEnabled) {
+            item { ProtonSidebarReportBugItem(onClick = actions.onReportBug) }
+        }
+
         item { ProtonSidebarShareLogs(onClick = actions.onExportlogs) }
         item { VerticalSpacer(height = ProtonDimens.Spacing.ExtraLarge) }
 
@@ -316,7 +326,8 @@ fun PreviewSidebar() {
                 mailLabels = MailLabelsUiModel.PreviewForTesting,
                 isSubscriptionVisible = true
             ),
-            actions = Sidebar.Actions.Empty
+            actions = Sidebar.Actions.Empty,
+            isReportAProblemEnabled = false
         )
     }
 }

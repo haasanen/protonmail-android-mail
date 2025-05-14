@@ -22,6 +22,7 @@ sealed class FeatureFlagCategory(val name: String) {
     data object System : FeatureFlagCategory("System")
     data object Composer : FeatureFlagCategory("Composer")
     data object Details : FeatureFlagCategory("Details")
+    data object Settings : FeatureFlagCategory("Settings")
 
     // Unused, only available in tests.
     data object Test : FeatureFlagCategory("Test")

@@ -24,9 +24,11 @@ import ch.protonmail.android.mailfeatureflags.domain.ComposerEnabledDefinition
 import ch.protonmail.android.mailfeatureflags.domain.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
+import ch.protonmail.android.mailfeatureflags.domain.ReportAProblemEnabled
 import ch.protonmail.android.mailfeatureflags.domain.UseV6CssInjectionDefinition
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsReportAProblemEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.V6CssInjectionEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import dagger.Module
@@ -39,6 +41,17 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object FeatureFlagsModule {
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideReportAProblemDefinition(): FeatureFlagDefinition = ReportAProblemEnabled
+
+    @Provides
+    @Singleton
+    @IsReportAProblemEnabled
+    fun provideReportAProblemEnabled(resolver: FeatureFlagResolver) =
+        resolver.observeFeatureFlag(ReportAProblemEnabled.key)
 
     @Provides
     @IntoSet
