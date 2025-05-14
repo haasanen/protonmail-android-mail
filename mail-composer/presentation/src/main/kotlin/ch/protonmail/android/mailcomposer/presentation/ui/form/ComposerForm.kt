@@ -49,6 +49,7 @@ import ch.protonmail.android.mailcomposer.presentation.ui.MessageBodyEditor
 import ch.protonmail.android.mailcomposer.presentation.ui.SenderEmailWithSelector
 import ch.protonmail.android.mailcomposer.presentation.ui.SubjectTextField
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.RecipientsViewModel
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.ui.AttachmentList
 import ch.protonmail.android.uicomponents.keyboardVisibilityAsState
@@ -160,9 +161,6 @@ internal fun ComposerForm(
             if (showSubjectAndBody) {
                 MessageBodyEditor(
                     messageBodyUiModel = bodyInitialValue,
-                    onBodyChanged = actions.onBodyChanged,
-                    focusBody = focusTextBody,
-                    onWebViewMeasuresChanged = actions.onWebViewMeasuresChanged,
                     webViewFactory = { context ->
                         if (editorWebView.value == null) {
                             Timber.d("editor-webview: factory creating new editor webview")
@@ -173,6 +171,10 @@ internal fun ComposerForm(
                         Timber.d("editor-webview: factory returning editor webview")
                         editorWebView.value ?: throw IllegalStateException("Editor WebView wasn't initialized.")
                     },
+                    focusBody = focusTextBody,
+                    onBodyChanged = actions.onBodyChanged,
+                    onWebViewMeasuresChanged = actions.onWebViewMeasuresChanged,
+                    loadEmbeddedImage = actions.loadEmbeddedImage,
                     modifier = maxWidthModifier
                         .testTag(ComposerTestTags.MessageBody)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
@@ -193,6 +195,7 @@ internal object ComposerForm {
         val onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
         val onHeaderPositioned: (boundsInWindow: Rect, height: Float) -> Unit,
         val onWebViewPositioned: (boundsInWindow: Rect) -> Unit,
+        val loadEmbeddedImage: (String) -> EmbeddedImage?,
         val onAttachmentRemoveRequested: (AttachmentId) -> Unit
     )
 }

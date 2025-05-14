@@ -47,6 +47,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
+import ch.protonmail.android.mailcomposer.domain.usecase.GetEmbeddedImage
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
@@ -142,6 +143,7 @@ class ComposerViewModelTest {
     private val recipientsStateManager = spyk<RecipientsStateManager>()
     private val discardDraft = mockk<DiscardDraft>()
     private val getDraftId = mockk<GetDraftId>()
+    private val getEmbeddedImage = mockk<GetEmbeddedImage>()
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<MessageBodyWithType>()
@@ -175,6 +177,7 @@ class ComposerViewModelTest {
             discardDraft,
             getDraftId,
             savedStateHandle,
+            getEmbeddedImage,
             observePrimaryUserIdMock
         )
     }

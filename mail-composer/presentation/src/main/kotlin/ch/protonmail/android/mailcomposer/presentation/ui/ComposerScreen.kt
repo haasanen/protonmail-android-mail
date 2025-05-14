@@ -76,6 +76,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateMana
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
@@ -264,6 +265,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                                 val visibleBounds = boundsInWindow.intersect(columnBounds)
                                 visibleWebViewHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
                             },
+                            onLoadEmbeddedImage = { contentId -> viewModel.loadEmbeddedImage(contentId) },
                             showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
                         ),
                         senderEmail = state.fields.sender.email,
@@ -463,6 +465,7 @@ private fun buildActions(
     onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
     onHeaderPositioned: (Rect, Float) -> Unit,
     onWebViewPositioned: (Rect) -> Unit,
+    onLoadEmbeddedImage: (String) -> EmbeddedImage?,
     showFeatureMissingSnackbar: () -> Unit
 ): ComposerForm.Actions = ComposerForm.Actions(
     onBodyChanged = {
@@ -476,6 +479,7 @@ private fun buildActions(
     onWebViewMeasuresChanged = onWebViewMeasuresChanged,
     onHeaderPositioned = onHeaderPositioned,
     onWebViewPositioned = onWebViewPositioned,
+    loadEmbeddedImage = onLoadEmbeddedImage,
     onAttachmentRemoveRequested = { viewModel.submit(ComposerAction.RemoveAttachment(it)) }
 )
 

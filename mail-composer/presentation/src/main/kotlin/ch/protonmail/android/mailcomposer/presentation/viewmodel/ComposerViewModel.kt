@@ -47,6 +47,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
+import ch.protonmail.android.mailcomposer.domain.usecase.GetEmbeddedImage
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
@@ -75,6 +76,7 @@ import ch.protonmail.android.mailmessage.domain.model.DraftAction.Forward
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.PrefillForShare
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Reply
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.ReplyAll
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
@@ -92,6 +94,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.proton.core.network.domain.NetworkManager
@@ -123,6 +126,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val discardDraft: DiscardDraft,
     private val getDraftId: GetDraftId,
     private val savedStateHandle: SavedStateHandle,
+    private val getEmbeddedImage: GetEmbeddedImage,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -356,6 +360,10 @@ class ComposerViewModel @AssistedInject constructor(
                 composerIdlingResource.decrement()
             }
         }
+    }
+
+    fun loadEmbeddedImage(contentId: String): EmbeddedImage? = runBlocking {
+        return@runBlocking getEmbeddedImage(contentId).getOrNull()
     }
 
     private fun observeAttachments() {

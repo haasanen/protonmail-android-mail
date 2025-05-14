@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 
 @Composable
 @Suppress("UseComposableActions")
@@ -33,6 +34,7 @@ internal fun MessageBodyEditor(
     focusBody: Effect<Unit>,
     onBodyChanged: (body: String) -> Unit,
     onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
+    loadEmbeddedImage: (contentId: String) -> EmbeddedImage?,
     modifier: Modifier = Modifier
 ) {
     EditableMessageBodyWebView(
@@ -43,7 +45,7 @@ internal fun MessageBodyEditor(
         webViewActions = EditableMessageBodyWebView.Actions(
             onMessageBodyLinkClicked = {},
             onAttachmentClicked = {},
-            loadEmbeddedImage = { _ -> null },
+            loadEmbeddedImage = loadEmbeddedImage,
             onMessageBodyChanged = onBodyChanged,
             onWebViewParamsChanged = onWebViewMeasuresChanged
         )
