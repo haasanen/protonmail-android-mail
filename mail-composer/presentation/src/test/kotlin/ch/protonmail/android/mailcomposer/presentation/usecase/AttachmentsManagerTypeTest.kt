@@ -5,8 +5,8 @@ import android.net.Uri
 import arrow.core.right
 import ch.protonmail.android.mailcomposer.domain.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.AddInlineAttachment
-import ch.protonmail.android.mailcomposer.presentation.usecase.AttachmentsManagerTest.ExpectedAttachmentOperation.AddInlineAttachmentOp
-import ch.protonmail.android.mailcomposer.presentation.usecase.AttachmentsManagerTest.ExpectedAttachmentOperation.AddStandardAttachmentOp
+import ch.protonmail.android.mailcomposer.presentation.usecase.AttachmentsManagerTypeTest.ExpectedAttachmentOperation.AddInlineAttachmentOp
+import ch.protonmail.android.mailcomposer.presentation.usecase.AttachmentsManagerTypeTest.ExpectedAttachmentOperation.AddStandardAttachmentOp
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -17,7 +17,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(Parameterized::class)
-class AttachmentsManagerTest(
+class AttachmentsManagerTypeTest(
     @Suppress("unused") private val testName: String,
     val mimeType: String?,
     val expected: ExpectedAttachmentOperation
