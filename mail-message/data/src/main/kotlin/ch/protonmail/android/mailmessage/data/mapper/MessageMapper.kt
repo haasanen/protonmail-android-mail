@@ -23,6 +23,10 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import arrow.core.toNonEmptyListOrNull
+import ch.protonmail.android.mailcommon.data.mapper.LocalAddressId
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentDisposition
+import ch.protonmail.android.mailcommon.data.mapper.LocalAvatarInformation
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBanner
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerAutoDelete
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerBlockedSender
@@ -34,10 +38,6 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerScheduledS
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerSnoozed
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerSpam
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerUnsubscribeNewsletter
-import ch.protonmail.android.mailcommon.data.mapper.LocalAddressId
-import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentDisposition
-import ch.protonmail.android.mailcommon.data.mapper.LocalAvatarInformation
-import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
@@ -171,7 +171,7 @@ private fun LocalMessageBanner.toMessageBanner(): MessageBanner {
     fun ULong.toInstant() = Instant.ofEpochMilli(this.toLong())
 
     return when (this) {
-        is LocalMessageBannerAutoDelete -> MessageBanner.AutoDelete(timestamp.toInstant(), this.deleteDays.toInt())
+        is LocalMessageBannerAutoDelete -> MessageBanner.AutoDelete(timestamp.toInstant())
         is LocalMessageBannerBlockedSender -> MessageBanner.BlockedSender
         is LocalMessageBannerEmbeddedImages -> MessageBanner.EmbeddedImages
         is LocalMessageBannerExpiry -> MessageBanner.Expiry(timestamp.toInstant())

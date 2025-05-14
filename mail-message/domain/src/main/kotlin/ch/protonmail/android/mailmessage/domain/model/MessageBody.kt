@@ -45,7 +45,7 @@ sealed interface MessageBanner {
     object Spam : MessageBanner
 
     data class Expiry(val expiresAt: Instant) : MessageBanner
-    data class AutoDelete(val deletesAt: Instant, val deleteDays: Int) : MessageBanner
+    data class AutoDelete(val deletesAt: Instant) : MessageBanner
 
     object UnsubscribeNewsletter : MessageBanner
 
