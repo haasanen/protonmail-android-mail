@@ -32,6 +32,7 @@ import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
 import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearchScreen
+import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
@@ -56,6 +57,7 @@ internal fun NavGraphBuilder.addMailbox(
     openDrawerMenu: () -> Unit,
     setDrawerEnabled: (Boolean) -> Unit,
     onEvent: (AccountSwitchEvent) -> Unit,
+    onAttachmentReady: (OpenAttachmentIntentValues) -> Unit,
     showNormalSnackbar: (message: String) -> Unit,
     showErrorSnackbar: (String) -> Unit,
     showFeatureMissingSnackbar: () -> Unit
@@ -91,7 +93,8 @@ internal fun NavGraphBuilder.addMailbox(
                 },
                 onExitSearchMode = {
                     setDrawerEnabled(true)
-                }
+                },
+                onAttachmentReady = onAttachmentReady
             ),
             onEvent = onEvent
         )

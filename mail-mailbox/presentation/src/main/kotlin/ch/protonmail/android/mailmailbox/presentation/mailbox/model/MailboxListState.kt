@@ -19,6 +19,8 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -43,7 +45,10 @@ sealed interface MailboxListState {
             val openItemEffect: Effect<OpenMailboxItemRequest>,
             val scrollToMailboxTop: Effect<MailLabelId>,
             val refreshErrorEffect: Effect<Unit>,
-            val refreshRequested: Boolean
+            val refreshRequested: Boolean,
+            val displayAttachment: Effect<OpenAttachmentIntentValues> = Effect.empty(),
+            val displayAttachmentError: Effect<TextUiModel> = Effect.empty(),
+            val attachmentOpeningStarted: Effect<TextUiModel> = Effect.empty()
         ) : Data {
 
             fun isInInboxLabel() = (currentMailLabel as? MailLabel.System)?.systemLabelId == SystemLabelId.Inbox

@@ -163,7 +163,7 @@ fun Home(
     }
 
     fun showNormalSnackbar(text: String) = scope.launch {
-        snackbarHostErrorState.showSnackbar(
+        snackbarHostNormState.showSnackbar(
             message = text,
             type = ProtonSnackbarType.NORM
         )
@@ -490,7 +490,8 @@ fun Home(
                             showNormalSnackbar = { showNormalSnackbar(it) },
                             showErrorSnackbar = { showErrorSnackbar(it) },
                             onEvent = eventHandler,
-                            showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
+                            showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
+                            onAttachmentReady = activityActions.openIntentChooser
                         )
                         addAccountsManager(
                             navController,

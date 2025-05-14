@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
@@ -56,6 +58,7 @@ import ch.protonmail.android.mailmessage.presentation.model.attachment.Attachmen
 fun AttachmentList(
     modifier: Modifier = Modifier,
     attachments: List<AttachmentMetadataUiModel>,
+    onAttachmentClicked: (AttachmentIdUiModel) -> Unit,
     textColor: Color
 ) {
     SubcomposeLayout(
@@ -67,7 +70,8 @@ fun AttachmentList(
         val (placeableWithInfoList, height) = measureAttachments(
             attachments = attachments,
             constraints = constraints,
-            textColor = textColor
+            textColor = textColor,
+            onAttachmentClicked = onAttachmentClicked
         )
 
         layout(
@@ -86,7 +90,8 @@ fun AttachmentList(
 private fun SubcomposeMeasureScope.measureAttachments(
     attachments: List<AttachmentMetadataUiModel>,
     constraints: Constraints,
-    textColor: Color
+    textColor: Color,
+    onAttachmentClicked: (AttachmentIdUiModel) -> Unit
 ): MeasureResult {
 
     val (plusOneDigitWidth, plusTwoDigitWidth, plusThreeDigitWidth) = measurePlusWidths(constraints)
@@ -95,7 +100,8 @@ private fun SubcomposeMeasureScope.measureAttachments(
     val externalPadding = ProtonDimens.Spacing.Small.roundToPx()
 
     val minTruncatedAttachmentWidth = measureMinTruncatedWidth(constraints)
-    val attachmentsFullWidth = measureAttachmentsFullWidth(attachments, textColor)
+    val attachmentsFullWidth =
+        measureAttachmentsFullWidth(attachments, textColor, onAttachmentClicked = onAttachmentClicked)
 
     var attachmentsWidth = 0
     var notPlacedCount = attachments.size
@@ -138,7 +144,8 @@ private fun SubcomposeMeasureScope.measureAttachments(
                 textColor = textColor,
                 minTruncatedAttachmentWidth = minTruncatedAttachmentWidth,
                 maxAttachmentWidth = maxAttachmentWidth,
-                baseNameWidth = maxAttachmentWidth - extensionWidth - iconAndPaddingWidth - externalPadding
+                baseNameWidth = maxAttachmentWidth - extensionWidth - iconAndPaddingWidth - externalPadding,
+                onAttachmentClicked = onAttachmentClicked
             )
             attachmentPlaceables.add(truncatedPlaceable)
             attachmentsWidth += truncatedPlaceable.width
@@ -151,12 +158,14 @@ private fun SubcomposeMeasureScope.measureAttachments(
     return calculateCoordinates(attachmentPlaceables)
 }
 
+@Suppress("LongParameterList")
 private fun SubcomposeMeasureScope.createTruncatedPlaceable(
     attachment: AttachmentMetadataUiModel,
     textColor: Color,
     minTruncatedAttachmentWidth: Int,
     maxAttachmentWidth: Int,
-    baseNameWidth: Int
+    baseNameWidth: Int,
+    onAttachmentClicked: (AttachmentIdUiModel) -> Unit
 ): Placeable {
     return subcompose(generateSlotId("place-attachment", attachment.id.value)) {
         Attachment(
@@ -164,7 +173,8 @@ private fun SubcomposeMeasureScope.createTruncatedPlaceable(
             textColor = textColor,
             minWidth = minTruncatedAttachmentWidth,
             maxWidth = maxAttachmentWidth,
-            baseNameWidth = baseNameWidth
+            baseNameWidth = baseNameWidth,
+            onAttachmentClicked = onAttachmentClicked
         )
     }.single().measure(
         Constraints(
@@ -192,7 +202,8 @@ private fun calculatePlusWidth(
 
 private fun SubcomposeMeasureScope.measureAttachmentsFullWidth(
     attachments: List<AttachmentMetadataUiModel>,
-    textColor: Color
+    textColor: Color,
+    onAttachmentClicked: (AttachmentIdUiModel) -> Unit
 ): List<FullWidthAttachmentInfo> {
     val result = mutableListOf<FullWidthAttachmentInfo>()
 
@@ -206,7 +217,8 @@ private fun SubcomposeMeasureScope.measureAttachmentsFullWidth(
                 attachment = attachment,
                 textColor = textColor,
                 minWidth = 0,
-                maxWidth = Int.MAX_VALUE
+                maxWidth = Int.MAX_VALUE,
+                onAttachmentClicked = onAttachmentClicked
             )
         }.single().measure(Constraints())
 
@@ -236,11 +248,14 @@ private fun Attachment(
     textColor: Color,
     minWidth: Int,
     maxWidth: Int,
-    baseNameWidth: Int? = null
+    baseNameWidth: Int? = null,
+    onAttachmentClicked: (AttachmentIdUiModel) -> Unit
 ) {
     Box(
         modifier = Modifier
             .background(ProtonTheme.colors.backgroundNorm, shape = ProtonTheme.shapes.huge)
+            .clip(ProtonTheme.shapes.huge)
+            .clickable { onAttachmentClicked(attachment.id) }
             .border(
                 width = ProtonDimens.OutlinedBorderSize,
                 color = ProtonTheme.colors.borderNorm,
@@ -291,7 +306,8 @@ private fun MinTruncatedAttachment(maxWidth: Int) {
         textColor = ProtonTheme.colors.textWeak,
         minWidth = 0,
         maxWidth = maxWidth,
-        baseNameWidth = maxWidth
+        baseNameWidth = maxWidth,
+        onAttachmentClicked = { }
     )
 }
 
@@ -399,7 +415,8 @@ private fun AttachmentPreview() {
                     size = 1024L
                 )
             ),
-            textColor = ProtonTheme.colors.textWeak
+            textColor = ProtonTheme.colors.textWeak,
+            onAttachmentClicked = {}
         )
     }
 }

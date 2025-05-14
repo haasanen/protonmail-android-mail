@@ -36,6 +36,7 @@ import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.extension.launchWithDelayedCallback
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
@@ -48,6 +49,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAs
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
+import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -81,6 +83,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewA
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
+import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
@@ -124,7 +127,6 @@ import me.proton.android.core.accountmanager.domain.usecase.ObservePrimaryAccoun
 import me.proton.core.domain.entity.UserId
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import me.proton.core.util.kotlin.DispatcherProvider
-import me.proton.core.util.kotlin.exhaustive
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -164,6 +166,7 @@ class MailboxViewModel @Inject constructor(
     private val handleAvatarImageLoadingFailure: HandleAvatarImageLoadingFailure,
     private val observeAvatarImageStates: ObserveAvatarImageStates,
     private val observePrimaryAccountAvatarItem: ObservePrimaryAccountAvatarItem,
+    private val getAttachmentIntentValues: GetAttachmentIntentValues,
     @ComposerEnabled val isComposerEnabled: Flow<Boolean>
 ) : ViewModel() {
 
@@ -321,7 +324,20 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.SelectAll -> handleSelectAllAction(viewAction)
                 is MailboxViewAction.DeselectAll -> handleDeselectAllAction()
                 is MailboxViewAction.CustomizeToolbar -> handleCustomizeToolbar(viewAction)
-            }.exhaustive
+                is MailboxViewAction.RequestAttachment -> handleRequestAttachment(viewAction)
+            }
+        }
+    }
+
+    private fun handleRequestAttachment(action: MailboxViewAction.RequestAttachment) {
+        viewModelScope.launchWithDelayedCallback(
+            onThresholdExceeded = { emitNewStateFrom(MailboxEvent.AttachmentDownloadOngoingEvent) }
+        ) {
+            val domainAttachmentId = AttachmentId(action.attachmentId.value)
+            val attachmentIntentValues = getAttachmentIntentValues(primaryUserId.first(), domainAttachmentId)
+                .getOrElse { return@launchWithDelayedCallback emitNewStateFrom(MailboxEvent.AttachmentErrorEvent) }
+
+            emitNewStateFrom(MailboxEvent.AttachmentReadyEvent(attachmentIntentValues))
         }
     }
 

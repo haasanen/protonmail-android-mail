@@ -19,9 +19,12 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
+import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState.Data.SelectionMode.SelectedMailboxItem
@@ -37,6 +40,7 @@ import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.avatar.AvatarImagesUiModelTestData
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
+import io.mockk.mockk
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -112,6 +116,8 @@ internal class MailboxListReducerTest(
         )
 
         private const val UNREAD_COUNT = 42
+
+        private val attachmentIntentValues = OpenAttachmentIntentValues("mimeType", mockk())
 
         private val transitionsFromLoadingState = listOf(
             TestInput(
@@ -572,6 +578,86 @@ internal class MailboxListReducerTest(
                     shouldShowFab = false,
                     avatarImagesUiModel = AvatarImagesUiModel.Empty,
                     areAllItemsSelected = false
+                )
+            ),
+            TestInput(
+                currentState = MailboxListState.Data.ViewMode(
+                    currentMailLabel = MailLabelTestData.customLabelOne,
+                    openItemEffect = Effect.empty(),
+                    scrollToMailboxTop = Effect.empty(),
+                    refreshErrorEffect = Effect.empty(),
+                    refreshRequested = false,
+                    swipeActions = null,
+                    searchState = MailboxSearchStateSampleData.NotSearching,
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty
+                ),
+                operation = MailboxEvent.AttachmentReadyEvent(attachmentIntentValues),
+                expectedState = MailboxListState.Data.ViewMode(
+                    currentMailLabel = MailLabelTestData.customLabelOne,
+                    openItemEffect = Effect.empty(),
+                    scrollToMailboxTop = Effect.empty(),
+                    refreshErrorEffect = Effect.empty(),
+                    refreshRequested = false,
+                    swipeActions = null,
+                    searchState = MailboxSearchStateSampleData.NotSearching,
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty,
+                    displayAttachment = Effect.of(attachmentIntentValues)
+                )
+            ),
+            TestInput(
+                currentState = MailboxListState.Data.ViewMode(
+                    currentMailLabel = MailLabelTestData.customLabelOne,
+                    openItemEffect = Effect.empty(),
+                    scrollToMailboxTop = Effect.empty(),
+                    refreshErrorEffect = Effect.empty(),
+                    refreshRequested = false,
+                    swipeActions = null,
+                    searchState = MailboxSearchStateSampleData.NotSearching,
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty
+                ),
+                operation = MailboxEvent.AttachmentErrorEvent,
+                expectedState = MailboxListState.Data.ViewMode(
+                    currentMailLabel = MailLabelTestData.customLabelOne,
+                    openItemEffect = Effect.empty(),
+                    scrollToMailboxTop = Effect.empty(),
+                    refreshErrorEffect = Effect.empty(),
+                    refreshRequested = false,
+                    swipeActions = null,
+                    searchState = MailboxSearchStateSampleData.NotSearching,
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty,
+                    displayAttachmentError = Effect.of(TextUiModel.TextRes(R.string.mailbox_attachment_download_error))
+                )
+            ),
+            TestInput(
+                currentState = MailboxListState.Data.ViewMode(
+                    currentMailLabel = MailLabelTestData.customLabelOne,
+                    openItemEffect = Effect.empty(),
+                    scrollToMailboxTop = Effect.empty(),
+                    refreshErrorEffect = Effect.empty(),
+                    refreshRequested = false,
+                    swipeActions = null,
+                    searchState = MailboxSearchStateSampleData.NotSearching,
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty
+                ),
+                operation = MailboxEvent.AttachmentDownloadOngoingEvent,
+                expectedState = MailboxListState.Data.ViewMode(
+                    currentMailLabel = MailLabelTestData.customLabelOne,
+                    openItemEffect = Effect.empty(),
+                    scrollToMailboxTop = Effect.empty(),
+                    refreshErrorEffect = Effect.empty(),
+                    refreshRequested = false,
+                    swipeActions = null,
+                    searchState = MailboxSearchStateSampleData.NotSearching,
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty,
+                    attachmentOpeningStarted = Effect.of(
+                        TextUiModel.TextRes(R.string.mailbox_attachment_download_started)
+                    )
                 )
             ),
             TestInput(

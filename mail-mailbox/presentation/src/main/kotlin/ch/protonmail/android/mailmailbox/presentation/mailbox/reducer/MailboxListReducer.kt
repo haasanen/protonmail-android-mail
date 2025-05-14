@@ -19,9 +19,11 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
+import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
@@ -82,6 +84,44 @@ class MailboxListReducer @Inject constructor(
             is MailboxViewAction.SearchResult -> reduceSearchResult(currentState)
             is MailboxViewAction.ExitSearchMode -> reduceExitSearchMode(currentState)
             is MailboxEvent.AvatarImageStatesUpdated -> reduceAvatarImageStatesUpdated(operation, currentState)
+            is MailboxEvent.AttachmentDownloadOngoingEvent -> reduceAttachmentDownload(currentState)
+            is MailboxEvent.AttachmentReadyEvent -> reduceAttachmentReady(operation, currentState)
+            is MailboxEvent.AttachmentErrorEvent -> reduceAttachmentDownloadError(currentState)
+        }
+    }
+
+    private fun reduceAttachmentDownload(currentState: MailboxListState): MailboxListState {
+        return when (currentState) {
+            is MailboxListState.Data.ViewMode -> {
+                val downloadMessage = TextUiModel.TextRes(R.string.mailbox_attachment_download_started)
+                currentState.copy(attachmentOpeningStarted = Effect.of(downloadMessage))
+            }
+
+            else -> currentState
+        }
+    }
+
+    private fun reduceAttachmentReady(
+        event: MailboxEvent.AttachmentReadyEvent,
+        currentState: MailboxListState
+    ): MailboxListState {
+        return when (currentState) {
+            is MailboxListState.Data.ViewMode -> currentState.copy(
+                displayAttachment = Effect.of(event.openAttachmentIntentValues)
+            )
+
+            else -> currentState
+        }
+    }
+
+    private fun reduceAttachmentDownloadError(currentState: MailboxListState): MailboxListState {
+        return when (currentState) {
+            is MailboxListState.Data.ViewMode -> {
+                val errorMessage = TextUiModel.TextRes(R.string.mailbox_attachment_download_error)
+                currentState.copy(displayAttachmentError = Effect.of(errorMessage))
+            }
+
+            else -> currentState
         }
     }
 
@@ -193,7 +233,10 @@ class MailboxListReducer @Inject constructor(
                 swipeActions = null,
                 searchState = MailboxSearchState.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModel.Empty
+                avatarImagesUiModel = AvatarImagesUiModel.Empty,
+                attachmentOpeningStarted = Effect.empty(),
+                displayAttachment = Effect.empty(),
+                displayAttachmentError = Effect.empty()
             )
 
             is MailboxListState.Data.SelectionMode -> currentState.copy(
@@ -221,7 +264,10 @@ class MailboxListReducer @Inject constructor(
                 swipeActions = null,
                 searchState = MailboxSearchState.NotSearching,
                 shouldShowFab = true,
-                avatarImagesUiModel = AvatarImagesUiModel.Empty
+                avatarImagesUiModel = AvatarImagesUiModel.Empty,
+                attachmentOpeningStarted = Effect.empty(),
+                displayAttachment = Effect.empty(),
+                displayAttachmentError = Effect.empty()
             )
 
             is MailboxListState.Data.ViewMode -> currentState.copy(
@@ -337,7 +383,10 @@ class MailboxListReducer @Inject constructor(
             swipeActions = currentState.swipeActions,
             searchState = currentState.searchState,
             shouldShowFab = !currentState.searchState.isInSearch(),
-            avatarImagesUiModel = currentState.avatarImagesUiModel
+            avatarImagesUiModel = currentState.avatarImagesUiModel,
+            attachmentOpeningStarted = Effect.empty(),
+            displayAttachment = Effect.empty(),
+            displayAttachmentError = Effect.empty()
         )
 
         else -> currentState

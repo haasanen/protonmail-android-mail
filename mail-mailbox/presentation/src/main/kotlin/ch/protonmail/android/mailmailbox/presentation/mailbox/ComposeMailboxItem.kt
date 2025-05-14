@@ -44,28 +44,29 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.mailcommon.presentation.compose.SmallClickableIcon
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
 import ch.protonmail.android.mailcommon.presentation.extension.isItemRead
 import ch.protonmail.android.mailcommon.presentation.extension.tintColor
+import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.maillabel.presentation.ui.LabelsList
 import ch.protonmail.android.mailmailbox.presentation.R
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInformationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemLocationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxItemUiModelPreviewData
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import kotlinx.collections.immutable.ImmutableList
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodySmallNorm
-import ch.protonmail.android.design.compose.theme.bodyLargeNorm
-import ch.protonmail.android.mailcommon.presentation.compose.SmallClickableIcon
-import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInformationUiModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -218,7 +219,11 @@ fun MailboxItem(
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        AttachmentList(attachments = item.attachments, textColor = fontColor)
+                        AttachmentList(
+                            attachments = item.attachments,
+                            textColor = fontColor,
+                            onAttachmentClicked = actions.onAttachmentClicked
+                        )
                     }
                 }
 
@@ -428,7 +433,8 @@ object ComposeMailboxItem {
         val onAvatarClicked: (MailboxItemUiModel) -> Unit,
         val onAvatarImageLoadRequested: (MailboxItemUiModel) -> Unit,
         val onAvatarImageLoadFailed: (MailboxItemUiModel) -> Unit,
-        val onStarClicked: (MailboxItemUiModel) -> Unit
+        val onStarClicked: (MailboxItemUiModel) -> Unit,
+        val onAttachmentClicked: (AttachmentIdUiModel) -> Unit
     ) {
 
         companion object {
@@ -439,7 +445,8 @@ object ComposeMailboxItem {
                 onAvatarImageLoadFailed = {},
                 onItemLongClicked = {},
                 onItemClicked = {},
-                onStarClicked = {}
+                onStarClicked = {},
+                onAttachmentClicked = {}
             )
         }
     }

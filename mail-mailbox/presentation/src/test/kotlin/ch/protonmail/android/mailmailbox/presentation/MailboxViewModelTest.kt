@@ -22,10 +22,12 @@ import android.graphics.Color
 import android.util.Log
 import androidx.paging.PagingData
 import app.cash.turbine.test
+import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
@@ -40,6 +42,8 @@ import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAs
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
+import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
+import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
@@ -77,6 +81,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.Mailbo
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.SwipeUiModelSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
+import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
@@ -89,6 +94,7 @@ import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
@@ -126,11 +132,13 @@ import io.mockk.unmockkStatic
 import io.mockk.verify
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -195,6 +203,8 @@ class MailboxViewModelTest {
     private val observeMailboxActions = mockk<GetBottomBarActions> {
         coEvery { this@mockk(any(), any(), any(), any()) } returns listOf(Action.Archive, Action.Trash).right()
     }
+
+    private val getAttachmentIntentValues = mockk<GetAttachmentIntentValues>()
 
     private val findLocalSystemLabelId = mockk<FindLocalSystemLabelId>()
     private val markConversationsAsRead = mockk<MarkConversationsAsRead>()
@@ -277,7 +287,8 @@ class MailboxViewModelTest {
             handleAvatarImageLoadingFailure = handleAvatarImageLoadingFailure,
             observeAvatarImageStates = observeAvatarImageStates,
             observePrimaryAccountAvatarItem = observePrimaryAccountAvatarItem,
-            isComposerEnabled = flowOf(true)
+            isComposerEnabled = flowOf(true),
+            getAttachmentIntentValues = getAttachmentIntentValues
         )
     }
 
@@ -2886,6 +2897,117 @@ class MailboxViewModelTest {
         }
     }
 
+    @Test
+    fun `should get attachment intent values and pass it to the reducer upon requesting an attachment`() = runTest {
+        // Given
+        val attachmentIdUiModel = AttachmentIdUiModel("attachment-id")
+        val attachmentId = AttachmentId(attachmentIdUiModel.value)
+
+        val attachmentIntentValues = OpenAttachmentIntentValues(mimeType = "mimeType", uri = mockk())
+        coEvery { getAttachmentIntentValues(userId, attachmentId) } returns attachmentIntentValues.right()
+
+        val mailboxAction = MailboxViewAction.RequestAttachment(attachmentIdUiModel)
+
+
+        // When
+        mailboxViewModel.submit(mailboxAction)
+
+        // Then
+        coVerify(exactly = 1) {
+            getAttachmentIntentValues.invoke(userId, attachmentId)
+            mailboxReducer.newStateFrom(
+                any(),
+                MailboxEvent.AttachmentReadyEvent(attachmentIntentValues)
+            )
+        }
+    }
+
+    @Test
+    fun `should get attachment intent values and emit an error when it fails`() = runTest {
+        // Given
+        val attachmentIdUiModel = AttachmentIdUiModel("attachment-id")
+        val attachmentId = AttachmentId(attachmentIdUiModel.value)
+
+        val mailboxAction = MailboxViewAction.RequestAttachment(attachmentIdUiModel)
+        coEvery { getAttachmentIntentValues(userId, attachmentId) } returns DataError.Local.NoDataCached.left()
+        // When
+        mailboxViewModel.submit(mailboxAction)
+
+        // Then
+        coVerify(exactly = 1) {
+            getAttachmentIntentValues.invoke(userId, attachmentId)
+            mailboxReducer.newStateFrom(
+                any(),
+                MailboxEvent.AttachmentErrorEvent
+            )
+        }
+    }
+
+    @Test
+    fun `should emit intermediate state on intent values fetch when it takes too long (success)`() = runTest {
+        // Given
+        val attachmentIdUiModel = AttachmentIdUiModel("attachment-id")
+        val attachmentId = AttachmentId(attachmentIdUiModel.value)
+
+        val attachmentIntentValues = OpenAttachmentIntentValues(mimeType = "mimeType", uri = mockk())
+        coEvery { getAttachmentIntentValues(userId, attachmentId) } coAnswers {
+            delay(1500)
+            attachmentIntentValues.right()
+        }
+
+        val mailboxAction = MailboxViewAction.RequestAttachment(attachmentIdUiModel)
+
+        // When
+        mailboxViewModel.submit(mailboxAction)
+
+        advanceTimeBy(2000)
+
+        // Then
+        coVerify(exactly = 1) {
+            getAttachmentIntentValues.invoke(userId, attachmentId)
+            mailboxReducer.newStateFrom(
+                any(),
+                MailboxEvent.AttachmentDownloadOngoingEvent
+            )
+            mailboxReducer.newStateFrom(
+                any(),
+                MailboxEvent.AttachmentReadyEvent(attachmentIntentValues)
+            )
+        }
+    }
+
+    @Test
+    fun `should emit intermediate state on intent values fetch when it takes too long (error)`() = runTest {
+        // Given
+        val attachmentIdUiModel = AttachmentIdUiModel("attachment-id")
+        val attachmentId = AttachmentId(attachmentIdUiModel.value)
+
+        coEvery { getAttachmentIntentValues(userId, attachmentId) } coAnswers {
+            delay(1500)
+            DataError.Local.NoDataCached.left()
+        }
+
+        val mailboxAction = MailboxViewAction.RequestAttachment(attachmentIdUiModel)
+
+        // When
+        mailboxViewModel.submit(mailboxAction)
+
+        advanceTimeBy(2000)
+
+        // Then
+        coVerify(exactly = 1) {
+            getAttachmentIntentValues.invoke(userId, attachmentId)
+            mailboxReducer.newStateFrom(
+                any(),
+                MailboxEvent.AttachmentDownloadOngoingEvent
+            )
+            mailboxReducer.newStateFrom(
+                any(),
+                MailboxEvent.AttachmentErrorEvent
+            )
+        }
+    }
+
     private fun returnExpectedStateForBottomBarEvent(
         intermediateState: MailboxState? = null,
         expectedState: MailboxState
@@ -2967,6 +3089,7 @@ class MailboxViewModelTest {
     private fun expectViewModeForCurrentLocation(viewMode: ViewMode) {
         every { observeCurrentViewMode(any(), any()) } returns flowOf(viewMode)
     }
+
     private fun expectBottomSheetActionsSucceeds(
         expectedActions: List<Action>,
         labelId: LabelId,

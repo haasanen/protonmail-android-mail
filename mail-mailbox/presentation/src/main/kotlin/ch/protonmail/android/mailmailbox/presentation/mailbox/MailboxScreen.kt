@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.ReportDrawn
 import androidx.compose.animation.AnimatedContent
@@ -82,6 +83,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -118,6 +120,7 @@ import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
+import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheet
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetScreen
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
@@ -139,6 +142,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.Mailbo
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.paging.mapToUiStates
 import ch.protonmail.android.mailmailbox.presentation.paging.search.mapToUiStatesInSearch
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
@@ -250,7 +254,8 @@ fun MailboxScreen(
             viewModel.submit(MailboxViewAction.ExitSearchMode)
         },
         onOpenUpsellingPage = { viewModel.submit(MailboxViewAction.RequestUpsellingBottomSheet) },
-        onCloseUpsellingPage = { viewModel.submit(MailboxViewAction.DismissBottomSheet) }
+        onCloseUpsellingPage = { viewModel.submit(MailboxViewAction.DismissBottomSheet) },
+        onAttachmentClicked = { viewModel.submit(MailboxViewAction.RequestAttachment(it)) }
     )
 
     mailboxState.bottomSheetState?.let {
@@ -382,6 +387,7 @@ fun MailboxScreen(
     val snackbarHostErrorState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR) }
     val rememberTopBarHeight = remember { mutableStateOf(0.dp) }
     val refreshErrorText = stringResource(id = R.string.mailbox_error_message_generic)
+    val context = LocalContext.current
 
     val showMinimizedFab by remember {
         derivedStateOf {
@@ -501,6 +507,18 @@ fun MailboxScreen(
 
                     ConsumableLaunchedEffect(mailboxListState.refreshErrorEffect) {
                         actions.showErrorSnackbar(refreshErrorText)
+                    }
+
+                    ConsumableTextEffect(mailboxListState.attachmentOpeningStarted) {
+                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                    }
+
+                    ConsumableLaunchedEffect(mailboxListState.displayAttachment) {
+                        actions.onAttachmentReady(it)
+                    }
+
+                    ConsumableTextEffect(mailboxListState.displayAttachmentError) {
+                        actions.showErrorSnackbar(it)
                     }
                 }
 
@@ -757,7 +775,8 @@ private fun MailboxItemsList(
         onAvatarClicked = actions.onAvatarClicked,
         onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested,
         onAvatarImageLoadFailed = actions.onAvatarImageLoadFailed,
-        onStarClicked = actions.onStarClicked
+        onStarClicked = actions.onStarClicked,
+        onAttachmentClicked = actions.onAttachmentClicked
     )
 
     var shouldScrollToTop by rememberSaveable { mutableStateOf(true) }
@@ -1072,6 +1091,8 @@ object MailboxScreen {
         val onAvatarClicked: (MailboxItemUiModel) -> Unit,
         val onAvatarImageLoadRequested: (MailboxItemUiModel) -> Unit,
         val onAvatarImageLoadFailed: (MailboxItemUiModel) -> Unit,
+        val onAttachmentClicked: (AttachmentIdUiModel) -> Unit,
+        val onAttachmentReady: (OpenAttachmentIntentValues) -> Unit,
         val onStarClicked: (MailboxItemUiModel) -> Unit,
         val onRefreshList: () -> Unit,
         val onRefreshListCompleted: () -> Unit,
@@ -1159,7 +1180,9 @@ object MailboxScreen {
                 onOpenUpsellingPage = {},
                 onCloseUpsellingPage = {},
                 onAccountAvatarClicked = {},
-                showMissingFeature = {}
+                showMissingFeature = {},
+                onAttachmentClicked = {},
+                onAttachmentReady = {}
             )
         }
     }

@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
+import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
@@ -32,6 +33,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingTopAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingUnreadFilter
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
 import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
 import me.proton.core.mailsettings.domain.entity.ViewMode
@@ -139,6 +141,8 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     data class SelectAll(val allItems: List<MailboxItemUiModel>) : MailboxViewAction
     data object DeselectAll : MailboxViewAction
     object CustomizeToolbar : MailboxViewAction
+
+    data class RequestAttachment(val attachmentId: AttachmentIdUiModel) : MailboxViewAction
 }
 
 internal sealed interface MailboxEvent : MailboxOperation {
@@ -242,6 +246,12 @@ internal sealed interface MailboxEvent : MailboxOperation {
     object ErrorRetrievingFolderColorSettings : MailboxEvent, AffectingErrorBar, AffectingBottomSheet
     object ErrorMoving : MailboxEvent, AffectingErrorBar
     object ErrorRetrievingDestinationMailFolders : MailboxEvent, AffectingErrorBar, AffectingBottomSheet
+
+    data object AttachmentDownloadOngoingEvent : MailboxEvent, AffectingMailboxList
+    data object AttachmentErrorEvent : MailboxEvent, AffectingMailboxList
+    data class AttachmentReadyEvent(
+        val openAttachmentIntentValues: OpenAttachmentIntentValues
+    ) : MailboxEvent, AffectingMailboxList
 }
 
 
