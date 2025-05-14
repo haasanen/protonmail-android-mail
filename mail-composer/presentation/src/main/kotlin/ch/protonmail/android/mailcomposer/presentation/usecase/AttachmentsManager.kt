@@ -38,9 +38,16 @@ class AttachmentsManager @Inject constructor(
         "image/gif",
         "image/apng",
         "image/png" -> addInlineAttachment(fileUri)
+            .map { AddAttachmentResult.InlineAttachmentAdded(it) }
 
         else -> addStandardAttachment(fileUri)
+            .map { AddAttachmentResult.StandardAttachmentAdded }
     }
 
     private fun Uri.mimeType() = applicationContext.contentResolver.getType(this)
+
+    sealed interface AddAttachmentResult {
+        data object StandardAttachmentAdded : AddAttachmentResult
+        data class InlineAttachmentAdded(val cid: String) : AddAttachmentResult
+    }
 }
