@@ -116,12 +116,12 @@ class RustAttachmentDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun addInlineAttachment(fileUri: Uri): Either<DataError, Unit> =
+    override suspend fun addInlineAttachment(fileUri: Uri): Either<DataError, String> =
         storeAttachmentToCache(fileUri) { attachmentListWrapper, fileInfo ->
             when (val addResult = attachmentListWrapper.addInlineAttachment(fileInfo.path, fileInfo.name)) {
                 is AttachmentListAddInlineResult.Ok -> {
                     Timber.d("rust-draft-attachments: Added inline attachment: ${fileInfo.path}")
-                    Unit.right()
+                    addResult.v1.right()
                 }
 
                 is AttachmentListAddInlineResult.Error -> {
@@ -198,10 +198,10 @@ class RustAttachmentDataSourceImpl @Inject constructor(
         }
     }
 
-    private suspend fun storeAttachmentToCache(
+    private suspend fun <T> storeAttachmentToCache(
         fileUri: Uri,
-        closure: suspend (AttachmentsWrapper, FileInformation) -> Either<DataError, Unit>
-    ): Either<DataError, Unit> = withContext(ioDispatcher) {
+        closure: suspend (AttachmentsWrapper, FileInformation) -> Either<DataError, T>
+    ): Either<DataError, T> = withContext(ioDispatcher) {
         val listResult = rustDraftDataSource.attachmentList()
 
         return@withContext listResult.fold(

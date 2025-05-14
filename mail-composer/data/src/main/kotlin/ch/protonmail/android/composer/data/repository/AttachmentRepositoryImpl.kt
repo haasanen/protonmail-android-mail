@@ -44,7 +44,7 @@ class AttachmentRepositoryImpl @Inject constructor(
     override suspend fun addAttachment(fileUri: Uri): Either<DataError, Unit> =
         rustAttachmentDataSource.addAttachment(fileUri)
 
-    override suspend fun addInlineAttachment(fileUri: Uri): Either<DataError, Unit> =
+    override suspend fun addInlineAttachment(fileUri: Uri): Either<DataError, String> =
         rustAttachmentDataSource.addInlineAttachment(fileUri)
 
 }

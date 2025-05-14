@@ -29,7 +29,7 @@ class AddInlineAttachment @Inject constructor(
     private val attachmentRepository: AttachmentRepository
 ) {
 
-    suspend operator fun invoke(fileUri: Uri): Either<AttachmentAddError, Unit> =
+    suspend operator fun invoke(fileUri: Uri): Either<AttachmentAddError, String> =
         attachmentRepository.addInlineAttachment(fileUri).mapLeft {
             when (it) {
                 DataError.Local.AttachmentError.AttachmentTooLarge -> AttachmentAddError.AttachmentTooLarge

@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.Flow
 interface RustAttachmentDataSource {
     suspend fun observeAttachments(): Flow<Either<DataError, List<AttachmentMetadataWithState>>>
     suspend fun addAttachment(fileUri: Uri): Either<DataError, Unit>
-    suspend fun addInlineAttachment(fileUri: Uri): Either<DataError, Unit>
+    suspend fun addInlineAttachment(fileUri: Uri): Either<DataError, String>
     suspend fun removeAttachment(attachmentId: AttachmentId): Either<DataError, Unit>
     suspend fun removeInlineAttachment(cid: String): Either<DataError, Unit>
 }

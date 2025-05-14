@@ -290,18 +290,19 @@ class RustAttachmentDataSourceImplTest {
             mimeType = "image/png"
         )
         val wrapper = mockk<AttachmentsWrapper>()
+        val expectedCid = "rust-defined-cid"
 
         coEvery { rustDraftDataSource.attachmentList() } returns wrapper.right()
         coEvery { wrapper.attachmentUploadDirectory() } returns "/fake/path"
         coEvery { attachmentFileStorage.saveAttachment(any(), eq(uri)) } returns fileInfo
         coEvery { wrapper.addInlineAttachment(fileInfo.path, fileInfo.name) } returns
-            AttachmentListAddInlineResult.Ok("ok")
+            AttachmentListAddInlineResult.Ok(expectedCid)
 
         // When
         val result = dataSource.addInlineAttachment(uri)
 
         // Then
-        assertTrue(result.isRight())
+        assertEquals(expectedCid.right(), result)
     }
 
     @Test

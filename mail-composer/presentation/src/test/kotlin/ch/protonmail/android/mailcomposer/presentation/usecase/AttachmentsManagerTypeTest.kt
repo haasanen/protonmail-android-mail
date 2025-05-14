@@ -39,7 +39,7 @@ class AttachmentsManagerTypeTest(
         val fileUri = mockk<Uri>()
         every { context.contentResolver.getType(fileUri) } returns mimeType
         when (expected) {
-            AddInlineAttachmentOp -> coEvery { addInlineAttachment(fileUri) } returns Unit.right()
+            AddInlineAttachmentOp -> coEvery { addInlineAttachment(fileUri) } returns "".right()
             AddStandardAttachmentOp -> coEvery { addStandardAttachment(fileUri) } returns Unit.right()
         }
 
