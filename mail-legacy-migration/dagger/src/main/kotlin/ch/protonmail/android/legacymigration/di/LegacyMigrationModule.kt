@@ -27,7 +27,9 @@ import ch.protonmail.android.legacymigration.data.local.LegacyUserAddressDataSou
 import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSource
 import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSourceImpl
 import ch.protonmail.android.legacymigration.data.repository.LegacyAccountRepositoryImpl
+import ch.protonmail.android.legacymigration.data.repository.LegacyMigrationStatusRepositoryImpl
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAccountRepository
+import ch.protonmail.android.legacymigration.domain.repository.LegacyMigrationStatusRepository
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
@@ -59,5 +61,12 @@ object LegacyMigrationModule {
         fun bindLegacyMigrationStatusLocalDataSource(
             impl: LegacyMigrationStatusLocalDataSourceImpl
         ): LegacyMigrationStatusLocalDataSource
+
+        @Binds
+        @Singleton
+        fun bindLegacyMigrationStatusRepository(
+            impl: LegacyMigrationStatusRepositoryImpl
+        ): LegacyMigrationStatusRepository
+
     }
 }
