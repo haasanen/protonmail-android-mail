@@ -20,6 +20,8 @@ package ch.protonmail.android.legacymigration.di
 
 import ch.protonmail.android.legacymigration.data.local.LegacyAccountDataSource
 import ch.protonmail.android.legacymigration.data.local.LegacyAccountDataSourceImpl
+import ch.protonmail.android.legacymigration.data.local.LegacyUserAddressDataSource
+import ch.protonmail.android.legacymigration.data.local.LegacyUserAddressDataSourceImpl
 import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSource
 import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSourceImpl
 import dagger.Module
@@ -40,6 +42,9 @@ object LegacyMigrationModule {
 
         @Binds
         fun bindLegacyUserDataSource(impl: LegacyUserDataSourceImpl): LegacyUserDataSource
+
+        @Binds
+        fun bindLegacyUserAddressDataSource(impl: LegacyUserAddressDataSourceImpl): LegacyUserAddressDataSource
 
     }
 }
