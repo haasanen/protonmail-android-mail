@@ -44,17 +44,23 @@ android {
 
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
+    compileOnly(libs.proton.rust.core)
+
     implementation(libs.bundles.module.data)
     implementation(libs.bundles.module.legacyCore)
 
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.room.ktx)
 
+    implementation(project(":mail-session:data"))
+    implementation(project(":mail-session:domain"))
+    implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-legacy-migration:domain"))
 
 
     testImplementation(libs.bundles.test)
+    testImplementation(libs.proton.rust.core)
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))
 
