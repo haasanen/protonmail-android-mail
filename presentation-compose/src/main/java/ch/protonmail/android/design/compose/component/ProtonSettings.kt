@@ -37,7 +37,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -45,7 +44,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -119,7 +117,7 @@ fun ProtonSettingsTopBar(
  * @param onBackClick callback to handle back icon click
  */
 @Composable
-fun ProtonSettingsAppCustomizationTopBar(
+fun ProtonSettingsDetailsAppBar(
     modifier: Modifier = Modifier,
     title: String,
     actions: @Composable RowScope.() -> Unit = {},
@@ -239,7 +237,7 @@ fun ProtonMainSettingsItem(
 }
 
 @Composable
-fun ProtonAppCustomizationSettingsItemInvert(
+fun ProtonAppSettingsItemInvert(
     modifier: Modifier = Modifier,
     name: String,
     icon: @Composable () -> Unit,
@@ -247,7 +245,7 @@ fun ProtonAppCustomizationSettingsItemInvert(
     isClickable: Boolean = true,
     onClick: () -> Unit = {}
 ) {
-    ProtonAppCustomizationSettingsItem(
+    ProtonAppSettingsItem(
         modifier = modifier,
         name = name,
         icon = icon,
@@ -262,7 +260,7 @@ fun ProtonAppCustomizationSettingsItemInvert(
 }
 
 @Composable
-fun ProtonAppCustomizationSettingsItemNorm(
+fun ProtonAppSettingsItemNorm(
     modifier: Modifier = Modifier,
     name: String,
     icon: @Composable () -> Unit,
@@ -270,7 +268,7 @@ fun ProtonAppCustomizationSettingsItemNorm(
     isClickable: Boolean = true,
     onClick: () -> Unit = {}
 ) {
-    ProtonAppCustomizationSettingsItem(
+    ProtonAppSettingsItem(
         modifier = modifier,
         name = name,
         icon = icon,
@@ -285,7 +283,7 @@ fun ProtonAppCustomizationSettingsItemNorm(
 }
 
 @Composable
-private fun ProtonAppCustomizationSettingsItem(
+private fun ProtonAppSettingsItem(
     modifier: Modifier = Modifier,
     name: String,
     icon: @Composable () -> Unit,
@@ -437,65 +435,6 @@ fun ProtonSettingsToggleItem(
 }
 
 @Composable
-fun ProtonAppCustomizationSettingsToggleItem(
-    modifier: Modifier = Modifier,
-    name: String,
-    hint: String? = null,
-    value: Boolean?,
-    onToggle: (Boolean) -> Unit = {}
-) {
-    val isSwitchChecked = value ?: false
-    val isViewEnabled = value != null
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .toggleable(
-                value = isSwitchChecked,
-                enabled = isViewEnabled,
-                role = Role.Switch
-            ) { onToggle(!isSwitchChecked) }
-            .padding(horizontal = ProtonDimens.Spacing.Large, vertical = ProtonDimens.Spacing.Standard),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        Column(
-            modifier = Modifier
-                .padding(vertical = ProtonDimens.Spacing.Compact)
-                .semantics(mergeDescendants = true) {}
-                .weight(1f)
-        ) {
-            Text(
-                modifier = Modifier,
-                text = name,
-                color = ProtonTheme.colors.textNorm,
-                style = ProtonTheme.typography.bodyLargeNorm
-            )
-
-            hint?.let {
-                Text(
-                    modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
-                    text = hint,
-                    color = ProtonTheme.colors.textWeak,
-                    style = ProtonTheme.typography.bodyMediumWeak
-                )
-            }
-
-        }
-
-        Switch(
-            modifier = Modifier.padding(start = ProtonDimens.Spacing.Large),
-            checked = isSwitchChecked,
-            onCheckedChange = null,
-            enabled = isViewEnabled,
-            colors = SwitchDefaults.colors(
-                checkedTrackColor = ProtonTheme.colors.iconSelected
-            )
-        )
-    }
-}
-
-@Composable
 fun ProtonSettingsRadioItem(
     modifier: Modifier = Modifier,
     name: String,
@@ -570,19 +509,6 @@ fun DisabledSettingsToggleableItemPreview() {
 @Composable
 fun SettingsToggleableItemWithHintPreview() {
     ProtonSettingsToggleItem(
-        name = "Setting toggle",
-        hint = "Use this space to provide an explanation of what toggling this setting does",
-        value = true
-    )
-}
-
-@Preview(
-    name = "Proton settings toggleable item with hint",
-    showBackground = true
-)
-@Composable
-fun SettingsAppToggleableItemWithHintPreview() {
-    ProtonAppCustomizationSettingsToggleItem(
         name = "Setting toggle",
         hint = "Use this space to provide an explanation of what toggling this setting does",
         value = true

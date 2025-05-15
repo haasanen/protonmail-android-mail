@@ -188,9 +188,6 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController) {
                     onPrivacyAndSecuritySettingsClicked = {
                         navController.navigate(Destination.Screen.PrivacyAndSecuritySettings.route)
                     },
-                    onAppCustomizationClick = {
-                        navController.navigate(Destination.Screen.AppCustomizationSettings.route)
-                    },
                     onBackClick = {
                         navController.navigateBack()
                     }
@@ -202,32 +199,33 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController) {
 
 internal fun NavGraphBuilder.addAppSettings(navController: NavHostController, showFeatureMissingSnackbar: () -> Unit) {
     composable(route = Destination.Screen.AppSettings.route) {
-        AppSettingsScreen(
-            actions = AppSettingsScreen.Actions(
-                onThemeClick = {
-                    navController.navigate(Destination.Screen.ThemeSettings.route)
-                },
-                onPushNotificationsClick = {
-                    navController.navigate(Destination.Screen.Notifications.route)
-                },
-                onAutoLockClick = {
-                    showFeatureMissingSnackbar()
-                },
-                onAlternativeRoutingClick = showFeatureMissingSnackbar,
-                onAppLanguageClick = {
-                    navController.navigate(Destination.Screen.LanguageSettings.route)
-                },
-                onSwipeToNextEmailClick = showFeatureMissingSnackbar,
-                onCombinedContactsClick = showFeatureMissingSnackbar,
-                onSwipeActionsClick = showFeatureMissingSnackbar,
-                onClearCacheClick = showFeatureMissingSnackbar,
-                onViewApplicationLogsClick = showFeatureMissingSnackbar,
-                onCustomizeToolbarClick = showFeatureMissingSnackbar,
-                onBackClick = {
-                    navController.navigateBack()
-                }
+        ProtonInvertedTheme {
+            AppSettingsScreen(
+                actions = AppSettingsScreen.Actions(
+                    onThemeClick = {
+                        navController.navigate(Destination.Screen.ThemeSettings.route)
+                    },
+                    onPushNotificationsClick = {
+                        navController.navigate(Destination.Screen.Notifications.route)
+                    },
+                    onAutoLockClick = {
+                        showFeatureMissingSnackbar()
+                    },
+                    onAlternativeRoutingClick = showFeatureMissingSnackbar,
+                    onAppLanguageClick = {
+                        navController.navigate(Destination.Screen.LanguageSettings.route)
+                    },
+                    onSwipeToNextEmailClick = showFeatureMissingSnackbar,
+                    onCombinedContactsClick = showFeatureMissingSnackbar,
+                    onSwipeActionsClick = showFeatureMissingSnackbar,
+                    onViewApplicationLogsClick = showFeatureMissingSnackbar,
+                    onCustomizeToolbarClick = showFeatureMissingSnackbar,
+                    onBackClick = {
+                        navController.navigateBack()
+                    }
+                )
             )
-        )
+        }
     }
 }
 

@@ -19,13 +19,8 @@
 package ch.protonmail.android.mailsettings.presentation.appsettings
 
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
-import ch.protonmail.android.mailsettings.domain.model.LocalStorageUsageInformation
 
 sealed class AppSettingsState {
-    data class Data(
-        val appSettings: AppSettings,
-        val totalSizeInformation: LocalStorageUsageInformation
-    ) : AppSettingsState()
-
+    data class Data(val appSettings: AppSettings) : AppSettingsState()
     data object Loading : AppSettingsState()
 }

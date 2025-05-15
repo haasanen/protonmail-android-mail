@@ -43,10 +43,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ch.protonmail.android.mailsettings.presentation.R
-import ch.protonmail.android.mailsettings.presentation.R.string
-import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
-import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonMainSettingsItem
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
@@ -55,6 +51,10 @@ import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.Avatar
 import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
+import ch.protonmail.android.mailsettings.presentation.R
+import ch.protonmail.android.mailsettings.presentation.R.string
+import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
+import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
 
 @Composable
 fun MainSettingsScreen(
@@ -183,13 +183,6 @@ fun MainSettingsScreen(
                         hint = stringResource(id = string.mail_settings_app_hint),
                         onClick = actions.onAppSettingsClick
                     )
-
-                    ProtonMainSettingsItem(
-                        name = stringResource(id = string.mail_settings_app_customization),
-                        iconRes = R.drawable.ic_proton_chevron_right,
-                        hint = stringResource(id = string.mail_settings_app_customization),
-                        onClick = actions.onAppCustomizationClick
-                    )
                     SettingsItemDivider()
                 }
             }
@@ -258,7 +251,6 @@ object MainSettingsScreen {
         val onFolderAndLabelSettingsClicked: () -> Unit,
         val onSpamFilterSettingsClicked: () -> Unit,
         val onPrivacyAndSecuritySettingsClicked: () -> Unit,
-        val onAppCustomizationClick: () -> Unit,
         val onBackClick: () -> Unit
     )
 }

@@ -18,238 +18,391 @@
 
 package ch.protonmail.android.mailsettings.presentation.appsettings
 
-import android.content.res.Configuration.UI_MODE_NIGHT_NO
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.widget.Toast
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import android.content.Context
+import android.content.Intent
+import android.content.res.Configuration
+import android.provider.Settings
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.component.ProtonAppSettingsItemInvert
+import ch.protonmail.android.design.compose.component.ProtonAppSettingsItemNorm
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
-import ch.protonmail.android.design.compose.component.ProtonSettingsItem
-import ch.protonmail.android.design.compose.component.ProtonSettingsList
-import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.design.compose.component.ProtonMainSettingsIcon
+import ch.protonmail.android.design.compose.component.ProtonSettingsDetailsAppBar
+import ch.protonmail.android.design.compose.component.ProtonSettingsToggleItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
-import ch.protonmail.android.mailsettings.domain.model.AppSettings
-import ch.protonmail.android.mailsettings.domain.model.LocalStorageUsageInformation
-import ch.protonmail.android.mailsettings.presentation.R.string
-import me.proton.core.presentation.utils.formatByteToHumanReadable
+import ch.protonmail.android.mailsettings.presentation.R
+import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsHeader
+import ch.protonmail.android.mailsettings.presentation.settings.SettingsItemDivider
 
 @Composable
-fun AppSettingsScreen(
+fun AppSettingsScreen(modifier: Modifier = Modifier, actions: AppSettingsScreen.Actions) {
+    AppSettingsScreenContent(modifier, actions)
+}
+
+@Composable
+private fun AppSettingsScreenContent(
     modifier: Modifier = Modifier,
     actions: AppSettingsScreen.Actions,
-    settingsViewModel: AppSettingsViewModel = hiltViewModel()
+    viewModel: AppSettingsViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
-    val toastText = stringResource(id = string.mail_settings_clearing_cached_data)
-    val showClearDataToast = { Toast.makeText(context, toastText, Toast.LENGTH_LONG).show() }
-
-    val dataActions = actions.copy(
-        onClearCacheClick = {
-            settingsViewModel.clearAllData()
-            showClearDataToast()
+    when (val state = viewModel.state.collectAsStateWithLifecycle().value) {
+        is AppSettingsState.Data -> {
+            AppSettingsScreenContent(
+                modifier = modifier,
+                actions = actions,
+                state = state
+            )
         }
-    )
-    when (val settingsState = settingsViewModel.state.collectAsStateWithLifecycle(AppSettingsState.Loading).value) {
-        is AppSettingsState.Data -> AppSettingsScreen(
-            modifier = modifier,
-            state = settingsState,
-            actions = dataActions
-        )
 
         is AppSettingsState.Loading -> ProtonCenteredProgress(modifier = Modifier.fillMaxSize())
     }
 }
 
-
 @Composable
-fun AppSettingsScreen(
-    state: AppSettingsState.Data,
+private fun AppSettingsScreenContent(
+    modifier: Modifier = Modifier,
     actions: AppSettingsScreen.Actions,
-    modifier: Modifier = Modifier
+    state: AppSettingsState.Data
 ) {
+    val context = LocalContext.current
+
     Scaffold(
-        modifier = modifier.testTag(AppSettingsScreenTestTags.RootItem),
+        modifier = modifier,
         topBar = {
-            ProtonSettingsTopBar(
-                title = stringResource(id = string.mail_settings_app_settings),
+            ProtonSettingsDetailsAppBar(
+                title = stringResource(id = R.string.mail_settings_app_customization_title),
                 onBackClick = actions.onBackClick
             )
-        }
-    ) { contentPadding ->
-        ProtonSettingsList(
-            modifier = modifier
-                .testTag(AppSettingsScreenTestTags.SettingsList)
-                .padding(contentPadding)
-        ) {
+        },
+        content = { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .padding(horizontal = ProtonDimens.Spacing.Large)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
 
-            item {
-                ProtonSettingsItem(
-                    name = stringResource(id = string.mail_settings_theme),
+                NotificationLanguageSettingsItem(
+                    notificationStatus = "On",
+                    language = state.appSettings.customAppLanguage ?: "English",
+                    onNotificationClick = { launchNotificationSettingsIntent(context) },
+                    onLanguageClick = actions.onAppLanguageClick
+                )
+
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
+
+                AppearanceSettingsItem(
+                    appearance = "System default",
                     onClick = actions.onThemeClick
                 )
-                MailDivider()
-            }
-            item {
-                ProtonSettingsItem(
-                    name = stringResource(id = string.mail_settings_push_notifications),
-                    onClick = actions.onPushNotificationsClick
+
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
+
+                ProtectionSettingsItem(
+                    autoLockStatus = if (state.appSettings.hasAutoLock) {
+                        stringResource(id = R.string.mail_settings_app_customization_protection_enabled_description)
+                    } else {
+                        stringResource(id = R.string.mail_settings_app_customization_protection_disabled_description)
+                    },
+                    onClick = actions.onAutoLockClick
                 )
-                MailDivider()
-            }
-            item {
-                AutoLockSettingItem(
-                    appSettings = state.appSettings,
-                    onAutoLockClick = actions.onAutoLockClick
+
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
+
+                UseDeviceContactsSettingsItem(
+                    useDeviceContacts = state.appSettings.hasCombinedContacts,
+                    onToggle = {
+                        actions.onCombinedContactsClick()
+                    }
                 )
-            }
-            item {
-                AlternativeRoutingSettingItem(
-                    appSettings = state.appSettings,
-                    onAlternativeRoutingClick = actions.onAlternativeRoutingClick
+
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Medium))
+
+                MainSettingsHeader(titleRes = R.string.mail_settings_app_customization_mail_experience_header)
+
+                MailExperienceSettingsItem(
+                    swipeToNextEmail = true,
+                    actions = actions
                 )
-            }
-            item {
-                AppLanguageSettingItem(
-                    appSettings = state.appSettings,
-                    onAppLanguageClick = actions.onAppLanguageClick
+
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Medium))
+
+                MainSettingsHeader(titleRes = R.string.mail_settings_app_customization_advanced_header)
+                AdvancedSettingsItem(
+                    alternativeRouting = state.appSettings.hasAlternativeRouting,
+                    actions = actions
                 )
+
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Jumbo))
             }
-            item {
-                CombinedContactsSettingItem(
-                    appSettings = state.appSettings,
-                    onCombinedContactsClick = actions.onCombinedContactsClick
-                )
-            }
+        }
+    )
+}
+
+private fun launchNotificationSettingsIntent(context: Context) {
+    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+    intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+    startActivity(context, intent, null)
+}
+
+@Composable
+private fun NotificationLanguageSettingsItem(
+    modifier: Modifier = Modifier,
+    notificationStatus: String,
+    language: String,
+    onNotificationClick: () -> Unit = {},
+    onLanguageClick: () -> Unit = {}
+) {
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = ProtonTheme.shapes.extraLarge,
+        elevation = CardDefaults.cardElevation(),
+        colors = CardDefaults.cardColors().copy(
+            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+        )
+    ) {
+        Column {
+            ProtonAppSettingsItemInvert(
+                name = stringResource(id = R.string.mail_settings_app_customization_notification),
+                hint = notificationStatus,
+                onClick = onNotificationClick,
+                icon = {
+                    ProtonMainSettingsIcon(
+                        iconRes = R.drawable.ic_proton_arrow_out_over_square,
+                        contentDescription = stringResource(id = R.string.mail_settings_app_customization_notification),
+                        tint = ProtonTheme.colors.iconHint
+                    )
+                }
+            )
+
+            SettingsItemDivider()
+
+            ProtonAppSettingsItemInvert(
+                name = stringResource(id = R.string.mail_settings_app_customization_language),
+                hint = language,
+                onClick = onLanguageClick,
+                icon = {
+                    ProtonMainSettingsIcon(
+                        iconRes = R.drawable.ic_proton_arrow_out_over_square,
+                        contentDescription = stringResource(id = R.string.mail_settings_app_customization_language),
+                        tint = ProtonTheme.colors.iconHint
+                    )
+                }
+            )
         }
     }
 }
 
 @Composable
-private fun CombinedContactsSettingItem(
+private fun AppearanceSettingsItem(
     modifier: Modifier = Modifier,
-    appSettings: AppSettings,
-    onCombinedContactsClick: () -> Unit
+    appearance: String,
+    onClick: () -> Unit = {}
 ) {
-    val hint = if (appSettings.hasCombinedContacts) {
-        stringResource(id = string.mail_settings_enabled)
-    } else {
-        stringResource(id = string.mail_settings_disabled)
-    }
-    ProtonSettingsItem(
-        modifier = modifier,
-        name = stringResource(id = string.mail_settings_combined_contacts),
-        hint = hint,
-        onClick = onCombinedContactsClick
-    )
-    MailDivider()
-}
-
-@Composable
-@Suppress("UnusedPrivateMember")
-private fun ClearLocalCacheItem(
-    modifier: Modifier = Modifier,
-    totalSize: LocalStorageUsageInformation,
-    onClearCacheClick: () -> Unit
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = ProtonTheme.shapes.extraLarge,
+        elevation = CardDefaults.cardElevation(),
+        colors = CardDefaults.cardColors().copy(
+            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+        )
     ) {
 
-        ProtonSettingsItem(
-            modifier = Modifier.weight(1f),
-            name = stringResource(id = string.mail_settings_local_cache),
-            hint = stringResource(
-                id = string.mail_settings_local_cache_hint,
-                totalSize.value.formatByteToHumanReadable()
-            ),
-            isClickable = false
+        ProtonAppSettingsItemInvert(
+            name = stringResource(id = R.string.mail_settings_app_customization_appearance),
+            hint = appearance,
+            onClick = onClick,
+            icon = {
+                ProtonMainSettingsIcon(
+                    iconRes = R.drawable.ic_proton_chevron_up_down,
+                    contentDescription = stringResource(id = R.string.mail_settings_app_customization_appearance),
+                    tint = ProtonTheme.colors.iconHint
+                )
+            }
         )
+    }
+}
 
-        Button(
-            modifier = Modifier.padding(end = ProtonDimens.Spacing.Large),
-            onClick = onClearCacheClick
-        ) {
-            Text(text = stringResource(id = string.mail_settings_local_cache_clear_button))
+@Composable
+private fun ProtectionSettingsItem(
+    modifier: Modifier = Modifier,
+    autoLockStatus: String,
+    onClick: () -> Unit = {}
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = ProtonTheme.shapes.extraLarge,
+        elevation = CardDefaults.cardElevation(),
+        colors = CardDefaults.cardColors().copy(
+            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+        )
+    ) {
+
+        ProtonAppSettingsItemInvert(
+            name = stringResource(id = R.string.mail_settings_app_customization_protection),
+            hint = autoLockStatus,
+            onClick = onClick,
+            icon = {
+                ProtonMainSettingsIcon(
+                    iconRes = R.drawable.ic_proton_chevron_right,
+                    contentDescription = stringResource(id = R.string.mail_settings_app_customization_protection),
+                    tint = ProtonTheme.colors.iconHint
+                )
+            }
+        )
+    }
+}
+
+@Composable
+private fun UseDeviceContactsSettingsItem(
+    modifier: Modifier = Modifier,
+    useDeviceContacts: Boolean,
+    onToggle: (Boolean) -> Unit = {}
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = ProtonTheme.shapes.extraLarge,
+        elevation = CardDefaults.cardElevation(),
+        colors = CardDefaults.cardColors().copy(
+            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+        )
+    ) {
+
+        ProtonSettingsToggleItem(
+            modifier = Modifier.padding(ProtonDimens.Spacing.Large),
+            name = stringResource(id = R.string.mail_settings_app_customization_use_device_contacts),
+            hint = stringResource(id = R.string.mail_settings_app_customization_use_device_contacts_hint),
+            value = useDeviceContacts,
+            onToggle = onToggle
+        )
+    }
+}
+
+@Composable
+private fun MailExperienceSettingsItem(
+    modifier: Modifier = Modifier,
+    swipeToNextEmail: Boolean,
+    actions: AppSettingsScreen.Actions
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = ProtonTheme.shapes.extraLarge,
+        elevation = CardDefaults.cardElevation(),
+        colors = CardDefaults.cardColors().copy(
+            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+        )
+    ) {
+        Column {
+            ProtonSettingsToggleItem(
+                modifier = Modifier.padding(ProtonDimens.Spacing.Large),
+                name = stringResource(id = R.string.mail_settings_app_customization_swipe_to_next_email),
+                hint = stringResource(id = R.string.mail_settings_app_customization_swipe_to_next_email_hint),
+                value = swipeToNextEmail,
+                onToggle = {
+                    actions.onSwipeToNextEmailClick()
+                }
+            )
+
+            SettingsItemDivider()
+
+            ProtonAppSettingsItemNorm(
+                name = stringResource(id = R.string.mail_settings_app_customization_swipe_action),
+                hint = stringResource(id = R.string.mail_settings_app_customization_swipe_action_hint),
+                onClick = { actions.onSwipeActionsClick() },
+                icon = {
+                    ProtonMainSettingsIcon(
+                        iconRes = R.drawable.ic_proton_chevron_right,
+                        contentDescription = stringResource(
+                            id = R.string.mail_settings_app_customization_swipe_action_hint
+                        ),
+                        tint = ProtonTheme.colors.iconHint
+                    )
+                }
+            )
+
+            SettingsItemDivider()
+
+            ProtonAppSettingsItemNorm(
+                name = stringResource(id = R.string.mail_settings_app_customization_customize_toolbar),
+                onClick = { actions.onCustomizeToolbarClick() },
+                icon = {
+                    ProtonMainSettingsIcon(
+                        iconRes = R.drawable.ic_proton_chevron_right,
+                        contentDescription = stringResource(
+                            id = R.string.mail_settings_app_customization_customize_toolbar
+                        ),
+                        tint = ProtonTheme.colors.iconHint
+                    )
+                }
+            )
         }
     }
-    MailDivider()
 }
 
 @Composable
-private fun AppLanguageSettingItem(
+private fun AdvancedSettingsItem(
     modifier: Modifier = Modifier,
-    appSettings: AppSettings,
-    onAppLanguageClick: () -> Unit
+    alternativeRouting: Boolean,
+    actions: AppSettingsScreen.Actions
 ) {
-    val appLanguage = appSettings.customAppLanguage
-        ?: stringResource(id = string.mail_settings_auto_detect)
-    ProtonSettingsItem(
-        modifier = modifier,
-        name = stringResource(id = string.mail_settings_app_language),
-        hint = appLanguage,
-        onClick = onAppLanguageClick
-    )
-    MailDivider()
-}
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = ProtonTheme.shapes.extraLarge,
+        elevation = CardDefaults.cardElevation(),
+        colors = CardDefaults.cardColors().copy(
+            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+        )
+    ) {
+        Column {
 
-@Composable
-private fun AlternativeRoutingSettingItem(
-    modifier: Modifier = Modifier,
-    appSettings: AppSettings,
-    onAlternativeRoutingClick: () -> Unit
-) {
-    val hint = if (appSettings.hasAlternativeRouting) {
-        stringResource(id = string.mail_settings_allowed)
-    } else {
-        stringResource(id = string.mail_settings_denied)
+            ProtonSettingsToggleItem(
+                modifier = Modifier.padding(ProtonDimens.Spacing.Large),
+                name = stringResource(id = R.string.mail_settings_app_customization_alternative_routing),
+                hint = stringResource(id = R.string.mail_settings_app_customization_alternative_routing_hint),
+                value = alternativeRouting,
+                onToggle = { actions.onAlternativeRoutingClick() }
+            )
+
+            SettingsItemDivider()
+
+            ProtonAppSettingsItemNorm(
+                name = stringResource(id = R.string.mail_settings_app_customization_view_application_logs),
+                onClick = { actions.onViewApplicationLogsClick() },
+                icon = {
+                    ProtonMainSettingsIcon(
+                        iconRes = R.drawable.ic_proton_chevron_right,
+                        contentDescription = stringResource(
+                            id = R.string.mail_settings_app_customization_view_application_logs
+                        ),
+                        tint = ProtonTheme.colors.iconHint
+                    )
+                }
+            )
+        }
     }
-    ProtonSettingsItem(
-        modifier = modifier,
-        name = stringResource(id = string.mail_settings_alternative_routing),
-        hint = hint,
-        onClick = onAlternativeRoutingClick
-    )
-    MailDivider()
 }
-
-@Composable
-private fun AutoLockSettingItem(
-    modifier: Modifier = Modifier,
-    appSettings: AppSettings,
-    onAutoLockClick: () -> Unit
-) {
-    val hint = if (appSettings.hasAutoLock) {
-        stringResource(id = string.mail_settings_enabled)
-    } else {
-        stringResource(id = string.mail_settings_disabled)
-    }
-    ProtonSettingsItem(
-        modifier = modifier,
-        name = stringResource(id = string.mail_settings_auto_lock),
-        hint = hint,
-        onClick = onAutoLockClick
-    )
-    MailDivider()
-}
-
 
 object AppSettingsScreen {
 
@@ -264,32 +417,35 @@ object AppSettingsScreen {
         val onSwipeActionsClick: () -> Unit,
         val onCustomizeToolbarClick: () -> Unit,
         val onViewApplicationLogsClick: () -> Unit,
-        val onClearCacheClick: () -> Unit,
         val onBackClick: () -> Unit
     )
 }
 
 @Preview(
-    name = "App settings screen light mode",
-    showBackground = true,
-    uiMode = UI_MODE_NIGHT_NO
-)
-@Preview(
-    name = "App settings screen dark mode",
-    showBackground = true,
-    uiMode = UI_MODE_NIGHT_YES
+    name = "App customization settings screen light mode",
+    showBackground = true
 )
 @Composable
-fun PreviewAppSettingsScreen() {
-    ProtonTheme {
-        AppSettingsScreen(
-            state = AppSettingsScreenPreviewData.Data,
-            actions = AppSettingsScreenPreviewData.Actions
+fun PreviewAppCustomizationScreenLight() {
+    ProtonInvertedTheme {
+        AppSettingsScreenContent(
+            actions = AppSettingsScreenPreviewData.Actions,
+            state = AppSettingsScreenPreviewData.Data
         )
     }
 }
 
-object AppSettingsScreenTestTags {
-    const val RootItem = "SettingsScreenTestTag"
-    const val SettingsList = "SettingsListTestTag"
+@Preview(
+    name = "App customization settings screen dark mode",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun PreviewAppCustomizationScreenDark() {
+    ProtonInvertedTheme {
+        AppSettingsScreenContent(
+            actions = AppSettingsScreenPreviewData.Actions,
+            state = AppSettingsScreenPreviewData.Data
+        )
+    }
 }

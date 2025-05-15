@@ -20,43 +20,24 @@ package ch.protonmail.android.mailsettings.presentation.appsettings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailsettings.domain.model.ClearDataAction
-import ch.protonmail.android.mailsettings.domain.usecase.ClearLocalStorage
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveAppSettings
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveOverallLocalStorageUsage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import javax.inject.Inject
 
 @HiltViewModel
-class AppSettingsViewModel @Inject constructor(
-    observeAppSettings: ObserveAppSettings,
-    observeOverallLocalDataUsage: ObserveOverallLocalStorageUsage,
-    private val clearLocalStorage: ClearLocalStorage
+internal class AppSettingsViewModel @Inject constructor(
+    observeAppSettings: ObserveAppSettings
 ) : ViewModel() {
 
-    val state = combine(
-        observeAppSettings(),
-        observeOverallLocalDataUsage()
-    ) { appSettings, totalDataSize ->
-        AppSettingsState.Data(
-            appSettings,
-            totalDataSize
-        )
+    val state = observeAppSettings().map { appSettings ->
+        AppSettingsState.Data(appSettings)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(stopTimeoutMillis),
         AppSettingsState.Loading
     )
-
-    fun clearAllData() {
-        viewModelScope.launch {
-            clearLocalStorage(clearDataAction = ClearDataAction.ClearAll)
-        }
-    }
-
 }

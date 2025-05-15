@@ -141,8 +141,6 @@ sealed class Destination(val route: String) {
         }
 
         object BugReporting : Destination("support/bugreporting")
-
-        object AppCustomizationSettings : Destination("settings/appCustomization")
     }
 
     object Dialog {
