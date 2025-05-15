@@ -83,5 +83,6 @@ object ProtonDimens {
         val Thin = 0.5.dp
         val Default = 1.dp
         val Medium = 2.dp
+        val Large = 4.dp
     }
 }

@@ -18,16 +18,35 @@
 
 package ch.protonmail.android.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.MainActivity
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.navigation.model.LauncherState
 import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.R
+import ch.protonmail.android.design.compose.theme.ProtonColors
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 fun Launcher(activityActions: MainActivity.Actions, viewModel: LauncherViewModel = hiltViewModel()) {
@@ -52,6 +71,55 @@ fun Launcher(activityActions: MainActivity.Actions, viewModel: LauncherViewModel
 
         LauncherState.Processing,
         LauncherState.StepNeeded -> ProtonCenteredProgress(Modifier.fillMaxSize())
+
+        LauncherState.MigrationInProgress,
+        LauncherState.ProcessingAfterMigration -> MigrationLoadingScreen(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        )
+    }
+}
+
+@Composable
+fun MigrationLoadingScreen(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(ProtonColors.Light.shade10),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(modifier = Modifier.padding(ProtonDimens.Spacing.MediumLight)) {
+                CircularProgressIndicator(
+                    strokeWidth = ProtonDimens.BorderSize.Large,
+                    color = ProtonTheme.colors.brandNorm,
+                    modifier = Modifier
+                        .size(ProtonDimens.IconSize.MediumLarge)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Huge))
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Jumbo)
+            ) {
+                Text(
+                    text = stringResource(R.string.loading_mailbox),
+                    style = ProtonTheme.typography.bodyLargeNorm,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
+                Text(
+                    text = stringResource(R.string.loading_mailbox_subtitle),
+                    style = ProtonTheme.typography.bodyLargeNorm,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 }
 
