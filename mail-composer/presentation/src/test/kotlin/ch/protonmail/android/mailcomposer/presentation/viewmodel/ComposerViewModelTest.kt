@@ -41,7 +41,6 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
-import ch.protonmail.android.mailcomposer.domain.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
@@ -67,6 +66,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateMana
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
+import ch.protonmail.android.mailcomposer.presentation.usecase.AttachmentsManager
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
@@ -135,7 +135,7 @@ class ComposerViewModelTest {
     private val isValidEmailAddressMock = mockk<IsValidEmailAddress>()
     private val savedStateHandle = mockk<SavedStateHandle>(relaxed = true)
     private val deleteAttachment = mockk<DeleteAttachment>()
-    private val addAttachment = mockk<AddAttachment>()
+    private val attachmentsManager = mockk<AttachmentsManager>()
     private val observeMessageAttachments = mockk<ObserveMessageAttachments>()
     private val createEmptyDraft = mockk<CreateEmptyDraft>()
     private val createDraftForAction = mockk<CreateDraftForAction>()
@@ -167,7 +167,7 @@ class ComposerViewModelTest {
             observeMessageAttachments,
             sendMessageMock,
             networkManagerMock,
-            addAttachment,
+            attachmentsManager,
             deleteAttachment,
             openExistingDraft,
             createEmptyDraft,
@@ -229,7 +229,7 @@ class ComposerViewModelTest {
         viewModel.submit(ComposerAction.AttachmentsAdded(listOf(uri)))
 
         // Then
-        coVerify { addAttachment(uri) }
+        coVerify { attachmentsManager.addAttachment(uri) }
     }
 
     @Test
@@ -1185,7 +1185,8 @@ class ComposerViewModelTest {
     }
 
     private fun expectAddAttachmentsSucceeds(uri: Uri) {
-        coEvery { addAttachment(uri) } returns Unit.right()
+        coEvery { attachmentsManager.addAttachment(uri) } returns
+            AttachmentsManager.AddAttachmentResult.StandardAttachmentAdded.right()
     }
 
     private fun expectRestoredState(savedStateHandle: SavedStateHandle) {

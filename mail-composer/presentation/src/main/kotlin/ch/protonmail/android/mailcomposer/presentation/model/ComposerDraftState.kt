@@ -52,7 +52,8 @@ data class ComposerDraftState(
     val messageExpiresIn: Duration,
     val confirmSendExpiringMessage: Effect<List<Participant>>,
     val openImagePicker: Effect<Unit>,
-    val confirmDiscardDraft: Effect<Unit>
+    val confirmDiscardDraft: Effect<Unit>,
+    val injectInlineAttachment: Effect<String>
 ) {
 
     companion object {
@@ -89,7 +90,8 @@ data class ComposerDraftState(
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
             openImagePicker = Effect.empty(),
-            confirmDiscardDraft = Effect.empty()
+            confirmDiscardDraft = Effect.empty(),
+            injectInlineAttachment = Effect.empty()
         )
     }
 }

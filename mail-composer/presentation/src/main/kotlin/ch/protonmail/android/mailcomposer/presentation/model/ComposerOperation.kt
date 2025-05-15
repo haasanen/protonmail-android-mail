@@ -92,4 +92,5 @@ sealed interface ComposerEvent : ComposerOperation {
     data object OnMessageSending : ComposerEvent
     data object DeleteAttachmentError : ComposerEvent
     data class AddAttachmentError(val error: AttachmentAddError) : ComposerEvent
+    data class InlineAttachmentAdded(val contentId: String) : ComposerEvent
 }

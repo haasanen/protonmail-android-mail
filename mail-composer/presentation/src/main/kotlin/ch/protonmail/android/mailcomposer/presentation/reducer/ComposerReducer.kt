@@ -161,6 +161,9 @@ class ComposerReducer @Inject constructor(
         is ComposerEvent.AddAttachmentError -> updateStateForAddAttachmentError(currentState, this.error)
         is ComposerEvent.DeleteAttachmentError -> updateStateForDeleteAttachmentError(currentState)
         is ComposerEvent.OnDraftBodyUpdated -> updateDraftBodyTo(currentState, this.draftBody, this.displayBodyUiModel)
+        is ComposerEvent.InlineAttachmentAdded -> currentState.copy(
+            injectInlineAttachment = Effect.of(this.contentId)
+        )
     }
 
     private fun updateStateForDeleteAttachmentError(currentState: ComposerDraftState): ComposerDraftState =

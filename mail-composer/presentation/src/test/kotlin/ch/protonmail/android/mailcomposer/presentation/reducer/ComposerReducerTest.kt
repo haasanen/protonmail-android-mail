@@ -25,6 +25,7 @@ import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSam
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
@@ -34,7 +35,6 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
-import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction.SenderChanged
@@ -570,6 +570,16 @@ class ComposerReducerTest(
             )
         )
 
+        private val EmptyToInjectInlineAttachment = TestTransition(
+            name = "Should emit inline attachment effect",
+            currentState = ComposerDraftState.initial(),
+            operation = ComposerEvent.InlineAttachmentAdded("attachment-cid"),
+            expectedState = ComposerDraftState.initial().copy(
+                injectInlineAttachment = Effect.of("attachment-cid")
+            )
+        )
+
+
         private val transitions = listOf(
             EmptyToSubmittableToField,
             EmptyToNotSubmittableToField,
@@ -612,7 +622,8 @@ class ComposerReducerTest(
             EmptyToAttachmentEncryptionFailed,
             EmptyToAttachmentUnexpectedError,
             DraftBodyChangedActionShouldDoNothing,
-            LoadingDraftAndBodyShouldBeFocused
+            LoadingDraftAndBodyShouldBeFocused,
+            EmptyToInjectInlineAttachment
         )
 
         private fun aSubmittableState(
@@ -657,7 +668,8 @@ class ComposerReducerTest(
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
             openImagePicker = Effect.empty(),
-            confirmDiscardDraft = Effect.empty()
+            confirmDiscardDraft = Effect.empty(),
+            injectInlineAttachment = Effect.empty()
         )
 
         private fun aNotSubmittableState(
@@ -707,7 +719,8 @@ class ComposerReducerTest(
             confirmSendExpiringMessage = Effect.empty(),
             openImagePicker = Effect.empty(),
             confirmDiscardDraft = Effect.empty(),
-            focusTextBody = focusTextBody
+            focusTextBody = focusTextBody,
+            injectInlineAttachment = Effect.empty()
         )
 
         @JvmStatic
