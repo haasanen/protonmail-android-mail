@@ -46,6 +46,10 @@ android {
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.bundles.module.domain)
+    implementation(libs.bundles.module.legacyCore)
+
+    implementation(project(":mail-common:domain"))
+    implementation(project(":mail-session:domain"))
 
     testImplementation(libs.bundles.test)
 }
