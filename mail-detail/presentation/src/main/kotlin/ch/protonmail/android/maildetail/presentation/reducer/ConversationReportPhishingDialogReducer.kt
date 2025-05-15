@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.maildetail.presentation.reducer
 
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ReportPhishingRequested
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
@@ -29,13 +28,8 @@ class ConversationReportPhishingDialogReducer @Inject constructor() {
     internal fun newStateFrom(operation: ConversationDetailOperation.AffectingReportPhishingDialog) = when (operation) {
         is ConversationDetailViewAction.ReportPhishingDismissed,
         is ConversationDetailViewAction.ReportPhishingConfirmed -> ReportPhishingDialogState.Hidden
-        is ReportPhishingRequested -> reduceReportPhishingRequested(operation)
-    }
-
-    private fun reduceReportPhishingRequested(operation: ReportPhishingRequested): ReportPhishingDialogState {
-        return when (operation.isOffline) {
-            true -> ReportPhishingDialogState.Shown.ShowOfflineHint
-            false -> ReportPhishingDialogState.Shown.ShowConfirmation(operation.messageId)
-        }
+        is ConversationDetailViewAction.ReportPhishing -> ReportPhishingDialogState.Shown.ShowConfirmation(
+            operation.messageId
+        )
     }
 }

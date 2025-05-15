@@ -146,10 +146,6 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
     ) : ConversationDetailEvent, AffectingMessages
 
     data class OpenAttachmentEvent(val values: OpenAttachmentIntentValues) : ConversationDetailEvent
-    data class ReportPhishingRequested(
-        val messageId: MessageId,
-        val isOffline: Boolean
-    ) : ConversationDetailEvent, AffectingBottomSheet, AffectingReportPhishingDialog
 
     data class HandleOpenProtonCalendarRequest(val intent: OpenProtonCalendarIntentValues) : ConversationDetailEvent
 
@@ -205,7 +201,9 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     data class ShowEmbeddedImages(val messageId: MessageIdUiModel) : ConversationDetailViewAction
     data class LoadRemoteAndEmbeddedContent(val messageId: MessageIdUiModel) : ConversationDetailViewAction
 
-    data class ReportPhishing(val messageId: MessageId) : ConversationDetailViewAction
+    data class ReportPhishing(
+        val messageId: MessageId
+    ) : ConversationDetailViewAction, AffectingBottomSheet, AffectingReportPhishingDialog
     object ReportPhishingDismissed : ConversationDetailViewAction, AffectingReportPhishingDialog
     data class ReportPhishingConfirmed(
         val messageId: MessageId

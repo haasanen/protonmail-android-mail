@@ -1,6 +1,5 @@
 package ch.protonmail.android.maildetail.presentation.reducer
 
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
@@ -37,16 +36,8 @@ class ConversationReportPhishingDialogReducerTest(
                 expectedState = ReportPhishingDialogState.Hidden
             ),
             TestInput(
-                operation = ConversationDetailEvent.ReportPhishingRequested(
-                    messageId = MessageIdSample.HtmlInvoice,
-                    isOffline = true
-                ),
-                expectedState = ReportPhishingDialogState.Shown.ShowOfflineHint
-            ),
-            TestInput(
-                operation = ConversationDetailEvent.ReportPhishingRequested(
-                    messageId = MessageIdSample.HtmlInvoice,
-                    isOffline = false
+                operation = ConversationDetailViewAction.ReportPhishing(
+                    messageId = MessageIdSample.HtmlInvoice
                 ),
                 expectedState = ReportPhishingDialogState.Shown.ShowConfirmation(MessageIdSample.HtmlInvoice)
             )

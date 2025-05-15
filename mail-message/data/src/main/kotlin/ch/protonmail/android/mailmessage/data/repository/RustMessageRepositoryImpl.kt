@@ -30,7 +30,6 @@ import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toRemoteMessageId
-import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
@@ -196,12 +195,8 @@ class RustMessageRepositoryImpl @Inject constructor(
     // Mailbox requires this function to be implemented
     override fun observeClearLabelOperation(userId: UserId, labelId: LabelId): Flow<Boolean> = flowOf(false)
 
-    override suspend fun reportPhishing(
-        userId: UserId,
-        decryptedMessageBody: DecryptedMessageBody
-    ): Either<DataError, Unit> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun reportPhishing(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
+        rustMessageDataSource.reportPhishing(userId, messageId.toLocalMessageId())
 
     override suspend fun markMessageAsLegitimate(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
         rustMessageDataSource.markMessageAsLegitimate(userId, messageId.toLocalMessageId())

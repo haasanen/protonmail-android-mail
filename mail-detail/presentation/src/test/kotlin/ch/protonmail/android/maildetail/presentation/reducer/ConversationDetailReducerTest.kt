@@ -163,6 +163,12 @@ class ConversationDetailReducerTest(
             } else {
                 verify { trashedMessagesBannerReducer wasNot Called }
             }
+
+            if (reducesReportPhishingDialog) {
+                verify { reportPhishingDialogReducer.newStateFrom(any()) }
+            } else {
+                verify { reportPhishingDialogReducer wasNot Called }
+            }
         }
     }
 
@@ -179,7 +185,8 @@ class ConversationDetailReducerTest(
         val reducesLinkClick: Boolean,
         val reducesMessageScroll: Boolean,
         val reducesDeleteDialog: Boolean,
-        val reducesTrashedMessagesBanner: Boolean
+        val reducesTrashedMessagesBanner: Boolean,
+        val reducesReportPhishingDialog: Boolean
     ) {
 
         fun operationAffectingBottomBar() = operation as ConversationDetailEvent.ConversationBottomBarEvent
@@ -235,7 +242,14 @@ class ConversationDetailReducerTest(
             ConversationDetailViewAction.UnStarMessage(MessageId(messageId.id)) affects listOf(BottomSheet),
             ConversationDetailViewAction.RequestMessageMoveToBottomSheet(
                 MessageId(messageId.id)
-            ) affects listOf(BottomSheet)
+            ) affects listOf(BottomSheet),
+            ConversationDetailViewAction.ReportPhishing(
+                MessageId(messageId.id)
+            ) affects listOf(BottomSheet, ReportPhishingDialog),
+            ConversationDetailViewAction.ReportPhishingConfirmed(
+                MessageId(messageId.id)
+            ) affects listOf(ReportPhishingDialog),
+            ConversationDetailViewAction.ReportPhishingDismissed affects listOf(ReportPhishingDialog)
         )
 
         val events = listOf(
@@ -332,7 +346,8 @@ private infix fun ConversationDetailOperation.affects(entities: List<Entity>) = 
     reducesLinkClick = entities.contains(LinkClick),
     reducesMessageScroll = entities.contains(MessageScroll),
     reducesDeleteDialog = entities.contains(DeleteDialog),
-    reducesTrashedMessagesBanner = entities.contains(TrashedMessagesBanner)
+    reducesTrashedMessagesBanner = entities.contains(TrashedMessagesBanner),
+    reducesReportPhishingDialog = entities.contains(ReportPhishingDialog)
 )
 
 private infix fun ConversationDetailOperation.affects(entity: Entity) = this.affects(listOf(entity))
@@ -350,6 +365,7 @@ private data object LinkClick : Entity
 private data object MessageScroll : Entity
 private data object DeleteDialog : Entity
 private data object TrashedMessagesBanner : Entity
+private data object ReportPhishingDialog : Entity
 
 private val allMessagesFirstExpanded = listOf(
     ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded,

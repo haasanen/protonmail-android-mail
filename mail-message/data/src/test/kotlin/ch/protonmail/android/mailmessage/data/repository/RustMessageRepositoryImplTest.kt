@@ -494,4 +494,38 @@ class RustMessageRepositoryImplTest {
             assertEquals(expectedError.left(), result)
         }
     }
+
+    @Test
+    fun `report phishing should call rust data source and return unit when successful`() {
+        runTest {
+            // Given
+            val messageId = LocalMessageIdSample.AugWeatherForecast
+
+            coEvery { rustMessageDataSource.reportPhishing(userId, messageId) } returns Unit.right()
+
+            // When
+            val result = repository.reportPhishing(userId, messageId.toMessageId())
+
+            // Then
+            coVerify { rustMessageDataSource.reportPhishing(userId, messageId) }
+            assertEquals(Unit.right(), result)
+        }
+    }
+
+    @Test
+    fun `report phishing should call rust data source and return error when failing`() {
+        runTest {
+            // Given
+            val messageId = LocalMessageIdSample.AugWeatherForecast
+            val expectedError = DataError.Local.Unknown
+
+            coEvery { rustMessageDataSource.reportPhishing(userId, messageId) } returns expectedError.left()
+
+            // When
+            val result = repository.reportPhishing(userId, messageId.toMessageId())
+
+            // Then
+            assertEquals(expectedError.left(), result)
+        }
+    }
 }

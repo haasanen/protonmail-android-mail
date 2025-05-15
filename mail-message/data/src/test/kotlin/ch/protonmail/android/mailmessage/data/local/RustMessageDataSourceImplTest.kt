@@ -37,6 +37,7 @@ import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessageAsLegitimat
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailmessage.data.usecase.RustMoveMessages
+import ch.protonmail.android.mailmessage.data.usecase.RustReportPhishing
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustUnblockAddress
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
@@ -95,6 +96,7 @@ class RustMessageDataSourceImplTest {
     private val getRustMessageLabelAsActions = mockk<GetRustMessageLabelAsActions>()
     private val rustMarkMessageAsLegitimate = mockk<RustMarkMessageAsLegitimate>()
     private val rustUnblockAddress = mockk<RustUnblockAddress>()
+    private val rustReportPhishing = mockk<RustReportPhishing>()
 
     private val dataSource = RustMessageDataSourceImpl(
         userSessionRepository,
@@ -115,7 +117,8 @@ class RustMessageDataSourceImplTest {
         getRustMessageMoveToActions,
         getRustMessageLabelAsActions,
         rustMarkMessageAsLegitimate,
-        rustUnblockAddress
+        rustUnblockAddress,
+        rustReportPhishing
     )
 
     @Test
@@ -822,6 +825,58 @@ class RustMessageDataSourceImplTest {
 
         // When
         val result = dataSource.unblockSender(userId, email)
+
+        // Then
+        assertEquals(expectedError.left(), result)
+    }
+
+    @Test
+    fun `should report phishing when mailbox is available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageId = LocalMessageIdSample.AugWeatherForecast
+        val mailbox = mockk<MailboxWrapper>()
+
+        coEvery { rustReportPhishing(mailbox, messageId) } returns Unit.right()
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+
+        // When
+        val result = dataSource.reportPhishing(userId, messageId)
+
+        // Then
+        assertTrue(result.isRight())
+        coVerify { rustReportPhishing(mailbox, messageId) }
+    }
+
+    @Test
+    fun `should not report phishing when mailbox is not available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageId = LocalMessageIdSample.AugWeatherForecast
+
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
+
+        // When
+        val result = dataSource.reportPhishing(userId, messageId)
+
+        // Then
+        assertTrue(result.isLeft())
+        verify { rustReportPhishing wasNot Called }
+    }
+
+    @Test
+    fun `should handle error when report phishing`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageId = LocalMessageIdSample.AugWeatherForecast
+        val mailbox = mockk<MailboxWrapper>()
+        val expectedError = DataError.Local.NoDataCached
+
+        coEvery { rustReportPhishing(mailbox, messageId) } returns expectedError.left()
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+
+        // When
+        val result = dataSource.reportPhishing(userId, messageId)
 
         // Then
         assertEquals(expectedError.left(), result)

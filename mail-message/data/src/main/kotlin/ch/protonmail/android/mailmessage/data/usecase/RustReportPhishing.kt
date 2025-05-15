@@ -16,19 +16,24 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maildetail.domain.usecase
+package ch.protonmail.android.mailmessage.data.usecase
 
 import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
-import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import uniffi.proton_mail_uniffi.VoidActionResult
+import uniffi.proton_mail_uniffi.reportPhishing
 import javax.inject.Inject
 
-class ReportPhishingMessage @Inject constructor(
-    private val repository: MessageRepository
-) {
+class RustReportPhishing @Inject constructor() {
 
-    suspend operator fun invoke(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
-        repository.reportPhishing(userId, messageId)
+    suspend operator fun invoke(mailbox: MailboxWrapper, messageId: LocalMessageId): Either<DataError, Unit> =
+        when (val result = reportPhishing(mailbox.getRustMailbox(), messageId)) {
+            is VoidActionResult.Error -> result.v1.toDataError().left()
+            is VoidActionResult.Ok -> Unit.right()
+        }
 }

@@ -50,6 +50,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOpe
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingDeleteDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
 import ch.protonmail.android.maildetail.presentation.model.MessageBodyLink
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
@@ -140,7 +141,7 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.MarkUnread,
                 is ConversationDetailViewAction.Star,
                 is ConversationDetailViewAction.UnStar,
-                is ConversationDetailEvent.ReportPhishingRequested,
+                is ConversationDetailViewAction.ReportPhishing,
                 is ConversationDetailViewAction.DismissBottomSheet,
                 is ConversationDetailViewAction.SwitchViewMode,
                 is ConversationDetailViewAction.MarkMessageUnread,
@@ -210,6 +211,14 @@ class ConversationDetailReducer @Inject constructor(
     private fun ConversationDetailState.toExitState(operation: ConversationDetailOperation): Effect<Unit> =
         when (operation) {
             is ConversationDetailEvent.ExitScreen -> Effect.of(Unit)
+            is ConversationDetailViewAction.ReportPhishingConfirmed -> when (messagesState) {
+                is ConversationDetailsMessagesState.Data -> if (messagesState.messages.size > 1) {
+                    exitScreenEffect
+                } else {
+                    Effect.of(Unit)
+                }
+                else -> exitScreenEffect
+            }
             else -> exitScreenEffect
         }
 

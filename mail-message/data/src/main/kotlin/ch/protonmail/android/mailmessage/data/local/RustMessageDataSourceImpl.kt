@@ -43,6 +43,7 @@ import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessageAsLegitimat
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailmessage.data.usecase.RustMoveMessages
+import ch.protonmail.android.mailmessage.data.usecase.RustReportPhishing
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustUnblockAddress
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
@@ -79,7 +80,8 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val getRustMessageMoveToActions: GetRustMessageMoveToActions,
     private val getRustMessageLabelAsActions: GetRustMessageLabelAsActions,
     private val rustMarkMessageAsLegitimate: RustMarkMessageAsLegitimate,
-    private val rustUnblockAddress: RustUnblockAddress
+    private val rustUnblockAddress: RustUnblockAddress,
+    private val rustReportPhishing: RustReportPhishing
 ) : RustMessageDataSource {
 
     override suspend fun getMessage(
@@ -342,5 +344,15 @@ class RustMessageDataSourceImpl @Inject constructor(
         }
 
         return rustUnblockAddress(mailbox, email)
+    }
+
+    override suspend fun reportPhishing(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit> {
+        val mailbox = rustMailboxFactory.create(userId).getOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-message: trying to report phishing with null Mailbox! failing")
+            return DataError.Local.NoDataCached.left()
+        }
+
+        return rustReportPhishing(mailbox, messageId)
     }
 }

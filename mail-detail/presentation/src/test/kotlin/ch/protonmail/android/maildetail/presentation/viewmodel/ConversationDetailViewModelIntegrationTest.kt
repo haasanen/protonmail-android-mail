@@ -192,7 +192,6 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import me.proton.core.network.domain.NetworkManager
-import me.proton.core.network.domain.NetworkStatus
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -1370,27 +1369,9 @@ class ConversationDetailViewModelIntegrationTest {
         }
 
     @Test
-    fun `when user clicks report phishing and network state is connected then confirm dialog is shown`() = runTest {
+    fun `when user clicks report phishing then confirm dialog is shown`() = runTest {
         // Given
         val expected = ReportPhishingDialogState.Shown.ShowConfirmation(MessageIdSample.Invoice)
-        coEvery { networkManager.networkStatus } returns NetworkStatus.Metered
-
-        val viewModel = buildConversationDetailViewModel()
-        viewModel.state.test {
-            // When
-            viewModel.submit(ConversationDetailViewAction.ReportPhishing(MessageIdSample.Invoice))
-            advanceUntilIdle()
-
-            // Then
-            assertEquals(expected, lastEmittedItem().reportPhishingDialogState)
-        }
-    }
-
-    @Test
-    fun `when user clicks report phishing and network state is disconnected then offline hint is shown`() = runTest {
-        // Given
-        val expected = ReportPhishingDialogState.Shown.ShowOfflineHint
-        coEvery { networkManager.networkStatus } returns NetworkStatus.Disconnected
 
         val viewModel = buildConversationDetailViewModel()
         viewModel.state.test {
@@ -1407,7 +1388,6 @@ class ConversationDetailViewModelIntegrationTest {
     fun `when user confirms report phishing then report use case is called`() = runTest {
         // Given
         val expectedMessageId = MessageIdSample.HtmlInvoice
-        coEvery { networkManager.networkStatus } returns NetworkStatus.Metered
         coEvery { reportPhishingMessage(userId, expectedMessageId) } returns Unit.right()
 
         val viewModel = buildConversationDetailViewModel()
@@ -2046,6 +2026,72 @@ class ConversationDetailViewModelIntegrationTest {
 
             // Then
             coVerify { unblockSender(userId, email) }
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `should call use case and not exit screen when report phishing in a multiple message conversation`() = runTest {
+        // Given
+        val messageId = MessageSample.AugWeatherForecast.messageId
+        val messages = ConversationMessages(
+            nonEmptyListOf(
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
+            ),
+            MessageSample.AugWeatherForecast.messageId
+        )
+        val labelId = SystemLabelId.Archive.labelId
+        coEvery { observeConversationMessages(userId, any(), labelId) } returns flowOf(messages.right())
+        coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.AugWeatherForecast.right())
+        coEvery { reportPhishingMessage(userId, messageId) } returns Unit.right()
+
+        // When
+        val viewModel = buildConversationDetailViewModel()
+
+        viewModel.state.test {
+            skipItems(3)
+            viewModel.submit(ConversationDetailViewAction.ReportPhishingConfirmed(messageId))
+            advanceUntilIdle()
+
+            // Then
+            val item = awaitItem()
+            assertNull(item.exitScreenEffect.consume())
+            coVerify { reportPhishingMessage(userId, messageId) }
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `should call use case and exit screen when report phishing in a single message conversation`() = runTest {
+        // Given
+        val messageId = MessageSample.AugWeatherForecast.messageId
+        val messages = ConversationMessages(
+            nonEmptyListOf(
+                MessageSample.AugWeatherForecast
+            ),
+            MessageSample.AugWeatherForecast.messageId
+        )
+        val labelId = SystemLabelId.Archive.labelId
+        coEvery { observeConversationMessages(userId, any(), labelId) } returns flowOf(messages.right())
+        coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.AugWeatherForecast.right())
+        coEvery { reportPhishingMessage(userId, messageId) } returns Unit.right()
+
+        // When
+        val viewModel = buildConversationDetailViewModel()
+
+        viewModel.state.test {
+            skipItems(4)
+            viewModel.submit(ConversationDetailViewAction.ReportPhishingConfirmed(messageId))
+            advanceUntilIdle()
+
+            // Then
+            val item = awaitItem()
+            assertEquals(Unit, item.exitScreenEffect.consume())
+            coVerify { reportPhishingMessage(userId, messageId) }
 
             cancelAndIgnoreRemainingEvents()
         }

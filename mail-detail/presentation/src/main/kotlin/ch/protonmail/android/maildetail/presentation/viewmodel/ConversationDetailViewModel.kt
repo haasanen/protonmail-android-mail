@@ -146,7 +146,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.NetworkManager
-import me.proton.core.network.domain.NetworkStatus
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -292,7 +291,6 @@ class ConversationDetailViewModel @Inject constructor(
                 handleExpandOrCollapseAttachmentList(action.messageId)
             }
 
-            is ConversationDetailViewAction.ReportPhishing -> handleReportPhishing(action)
             is ConversationDetailViewAction.ReportPhishingConfirmed -> handleReportPhishingConfirmed(action)
             is ConversationDetailViewAction.OpenInProtonCalendar -> handleOpenInProtonCalendar(action)
             is ConversationDetailViewAction.MarkMessageUnread -> handleMarkMessageUnread(action)
@@ -310,7 +308,7 @@ class ConversationDetailViewModel @Inject constructor(
             is MessageBodyLinkClicked,
             is RequestScrollTo,
             is ScrollRequestCompleted,
-
+            is ConversationDetailViewAction.ReportPhishing,
             is ConversationDetailViewAction.ReportPhishingDismissed,
             is ConversationDetailViewAction.SwitchViewMode -> directlyHandleViewAction(action)
 
@@ -1041,20 +1039,6 @@ class ConversationDetailViewModel @Inject constructor(
             reportPhishingMessage(primaryUserId.first(), action.messageId)
                 .onLeft { Timber.e("Error while reporting phishing message: $it") }
             emitNewStateFrom(action)
-        }
-    }
-
-    private fun handleReportPhishing(action: ConversationDetailViewAction.ReportPhishing) {
-        viewModelScope.launch {
-            val operation = when (networkManager.networkStatus) {
-                NetworkStatus.Disconnected -> ConversationDetailEvent.ReportPhishingRequested(
-                    messageId = action.messageId,
-                    isOffline = true
-                )
-
-                else -> ConversationDetailEvent.ReportPhishingRequested(messageId = action.messageId, isOffline = false)
-            }
-            emitNewStateFrom(operation)
         }
     }
 
