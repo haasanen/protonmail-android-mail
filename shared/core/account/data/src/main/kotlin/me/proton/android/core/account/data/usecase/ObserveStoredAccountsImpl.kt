@@ -19,13 +19,14 @@
 package me.proton.android.core.account.data.usecase
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import me.proton.android.core.account.data.qualifier.QueryWatcherCoroutineScope
 import me.proton.android.core.account.domain.usecase.ObserveCoreSessions
 import me.proton.android.core.account.domain.usecase.ObserveStoredAccounts
@@ -35,54 +36,77 @@ import uniffi.proton_mail_uniffi.MailSessionGetAccountsResult
 import uniffi.proton_mail_uniffi.MailSessionWatchAccountsResult
 import uniffi.proton_mail_uniffi.StoredAccount
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ObserveStoredAccountsImpl @Inject constructor(
     @QueryWatcherCoroutineScope private val coroutineScope: CoroutineScope,
     private val mailSession: MailSession,
     private val observeCoreSessions: ObserveCoreSessions
 ) : ObserveStoredAccounts {
 
-    /**
-     * Note:
-     * Instead of just invoking [MailSession.watchAccounts],
-     * we also call [observeCoreSessions],
-     * so that the [StoredAccount.state] is always up to date.
-     * This is needed because currently, a session state is not part of the "Accounts" SQL table.
-     */
-    private val storedAccountsWithSessionStateFlow = observeCoreSessions()
-        .flatMapLatest { accountsFlow() }
-        .shareIn(coroutineScope, SharingStarted.WhileSubscribed(), replay = 1)
+    private val accountsMutableStateFlow = MutableStateFlow<List<StoredAccount>>(emptyList())
+    private val watcherMutex = Mutex()
 
-    override fun invoke(): Flow<List<StoredAccount>> = storedAccountsWithSessionStateFlow
+    private var watchedStoredAccounts: MailSessionWatchAccountsResult.Ok? = null
 
-    private fun accountsFlow(): Flow<List<StoredAccount>> = callbackFlow {
-        val watchedStoredAccounts = mailSession.watchAccounts(
-            object : LiveQueryCallback {
-                override fun onUpdate() {
-                    launch {
-                        when (val accountsResult = mailSession.getAccounts()) {
-                            is MailSessionGetAccountsResult.Error -> send(emptyList())
-                            is MailSessionGetAccountsResult.Ok -> send(accountsResult.v1)
-                        }
-
-                    }
-                }
-            }
+    private val storedAccountsWithSessionStateFlow: StateFlow<List<StoredAccount>> =
+        accountsMutableStateFlow.stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = emptyList()
         )
 
-        when (watchedStoredAccounts) {
-            is MailSessionWatchAccountsResult.Error -> {
-                send(emptyList())
-                close()
+    init {
+        /**
+         * Note:
+         * Instead of just invoking [MailSession.watchAccounts],
+         * we also call [observeCoreSessions],
+         * so that the [StoredAccount.state] is always up to date.
+         * This is needed because currently, a session state is not part of the "Accounts" SQL table.
+         */
+        coroutineScope.launch {
+            observeCoreSessions().collect {
+                ensureWatchingAccounts()
             }
-            is MailSessionWatchAccountsResult.Ok -> {
-                send(watchedStoredAccounts.v1.accounts)
+        }
+    }
 
-                awaitClose {
-                    watchedStoredAccounts.v1.handle.disconnect()
-                    watchedStoredAccounts.destroy()
+    private fun ensureWatchingAccounts() {
+        coroutineScope.launch {
+            watcherMutex.withLock {
+                if (watchedStoredAccounts != null) return@withLock
+
+                when (
+                    val result = mailSession.watchAccounts(
+                        object : LiveQueryCallback {
+                            override fun onUpdate() {
+                                coroutineScope.launch {
+                                    when (val accountsResult = mailSession.getAccounts()) {
+                                        is MailSessionGetAccountsResult.Ok -> {
+                                            accountsMutableStateFlow.value = accountsResult.v1
+                                        }
+
+                                        is MailSessionGetAccountsResult.Error ->
+                                            accountsMutableStateFlow.value = emptyList()
+                                    }
+                                }
+                            }
+                        }
+                    )
+                ) {
+                    is MailSessionWatchAccountsResult.Ok -> {
+                        watchedStoredAccounts = result
+                        accountsMutableStateFlow.value = result.v1.accounts
+                    }
+
+                    is MailSessionWatchAccountsResult.Error -> {
+                        accountsMutableStateFlow.value = emptyList()
+                    }
                 }
             }
         }
     }
+
+    override fun invoke(): Flow<List<StoredAccount>> = storedAccountsWithSessionStateFlow
 }
