@@ -24,6 +24,8 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalUserId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailsession.domain.model.LoginError
+import ch.protonmail.android.mailsession.domain.model.toLoginError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.BackgroundExecutionCallback
 import uniffi.proton_mail_uniffi.LiveQueryCallback
@@ -33,6 +35,7 @@ import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountsResult
 import uniffi.proton_mail_uniffi.MailSessionGetPrimaryAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetSessionsResult
+import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
 import uniffi.proton_mail_uniffi.MailSessionUserContextFromSessionResult
 import uniffi.proton_mail_uniffi.MailSessionWatchAccountsResult
 import uniffi.proton_mail_uniffi.StoredAccount
@@ -102,4 +105,11 @@ class MailSessionWrapper(private val mailSession: MailSession) {
     fun registerDeviceTask() = mailSession.registerDeviceTask()
 
     fun startBackgroundTask(callback: BackgroundExecutionCallback) = mailSession.startBackgroundExecution(callback)
+
+    suspend fun newLoginFlow(): Either<LoginError, LoginFlowWrapper> {
+        return when (val result = mailSession.newLoginFlow()) {
+            is MailSessionNewLoginFlowResult.Ok -> LoginFlowWrapper(result.v1).right()
+            is MailSessionNewLoginFlowResult.Error -> result.v1.toLoginError().left()
+        }
+    }
 }
