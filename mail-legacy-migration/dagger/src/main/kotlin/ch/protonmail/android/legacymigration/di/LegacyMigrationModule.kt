@@ -40,8 +40,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object LegacyMigrationModule {
 
-
-
     @Module
     @InstallIn(SingletonComponent::class)
     internal interface BindsModule {
