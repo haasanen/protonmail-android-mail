@@ -16,25 +16,22 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.legacymigration.di
+package ch.protonmail.android.legacymigration.data.local
 
-import ch.protonmail.android.legacymigration.data.local.LegacyAccountDataSource
-import ch.protonmail.android.legacymigration.data.local.LegacyAccountDataSourceImpl
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import dagger.Binds
+import kotlinx.coroutines.flow.Flow
+import me.proton.core.account.domain.entity.Account
+import me.proton.core.domain.entity.UserId
+import me.proton.core.network.domain.session.Session
+import me.proton.core.network.domain.session.SessionId
 
-@Module(includes = [LegacyMigrationModule.BindsModule::class])
-@InstallIn(SingletonComponent::class)
-object LegacyMigrationModule {
+interface LegacyAccountDataSource {
 
-    @Module
-    @InstallIn(SingletonComponent::class)
-    internal interface BindsModule {
+    fun getAccount(userId: UserId): Flow<Account?>
 
-        @Binds
-        fun bindLegacyAccountDataSource(impl: LegacyAccountDataSourceImpl): LegacyAccountDataSource
+    fun getSession(sessionId: SessionId): Flow<Session?>
 
-    }
+    fun getPrimaryUserId(): Flow<UserId?>
+
+    fun getSessions(): Flow<List<Session>>
+
 }
