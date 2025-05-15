@@ -18,4 +18,11 @@
 
 package ch.protonmail.android.navigation.model
 
-enum class LauncherState { Processing, AccountNeeded, PrimaryExist, StepNeeded }
+enum class LauncherState {
+    Processing,
+    AccountNeeded,
+    PrimaryExist,
+    StepNeeded,
+    MigrationInProgress,
+    ProcessingAfterMigration
+}

@@ -22,6 +22,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.legacymigration.domain.usecase.MigrateLegacyAccounts
+import ch.protonmail.android.legacymigration.domain.usecase.ObserveLegacyMigrationStatus
+import ch.protonmail.android.legacymigration.domain.usecase.ShouldMigrateLegacyAccount
 import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionOrchestrator
 import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
 import ch.protonmail.android.mailsession.data.mapper.toUserId
@@ -36,11 +39,11 @@ import ch.protonmail.android.navigation.model.LauncherState.AccountNeeded
 import ch.protonmail.android.navigation.model.LauncherState.PrimaryExist
 import ch.protonmail.android.navigation.model.LauncherState.Processing
 import ch.protonmail.android.navigation.model.LauncherState.StepNeeded
+import ch.protonmail.android.navigation.model.LauncherState.MigrationInProgress
+import ch.protonmail.android.navigation.model.LauncherState.ProcessingAfterMigration
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.AuthOrchestrator
 import me.proton.android.core.auth.presentation.login.LoginInput
@@ -50,6 +53,14 @@ import me.proton.android.core.payment.presentation.PaymentOrchestrator
 import me.proton.android.core.payment.presentation.onUpgradeResult
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import ch.protonmail.android.legacymigration.domain.model.LegacyMigrationStatus
+import ch.protonmail.android.legacymigration.domain.usecase.SetLegacyMigrationStatus
+import kotlinx.coroutines.flow.first
+import timber.log.Timber
 
 @HiltViewModel
 @SuppressWarnings("NotImplementedDeclaration", "UnusedPrivateMember")
@@ -58,24 +69,74 @@ class LauncherViewModel @Inject constructor(
     private val paymentOrchestrator: PaymentOrchestrator,
     private val setPrimaryAccount: SetPrimaryAccount,
     private val userSessionRepository: UserSessionRepository,
-    private val notificationsPermissionOrchestrator: NotificationsPermissionOrchestrator
+    private val notificationsPermissionOrchestrator: NotificationsPermissionOrchestrator,
+    private val observeLegacyMigrationStatus: ObserveLegacyMigrationStatus,
+    private val setLegacyMigrationStatus: SetLegacyMigrationStatus,
+    private val migrateLegacyAccounts: MigrateLegacyAccounts,
+    private val shouldMigrateLegacyAccount: ShouldMigrateLegacyAccount
 ) : ViewModel() {
 
-    val state: StateFlow<LauncherState> = userSessionRepository.observeAccounts()
-        .mapLatest { accounts ->
-            when {
-                accounts.isEmpty() || accounts.all { it.state == AccountState.Disabled } -> AccountNeeded
-                accounts.any { it.state == AccountState.TwoPasswordNeeded } -> StepNeeded
-                accounts.any { it.state == AccountState.TwoFactorNeeded } -> StepNeeded
-                accounts.any { it.state == AccountState.Ready } -> PrimaryExist
-                else -> Processing
+    private val mutableState = MutableStateFlow(Processing)
+    val state: StateFlow<LauncherState> = mutableState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            when (observeLegacyMigrationStatus().first()) {
+                LegacyMigrationStatus.NotDone -> {
+                    mutableState.value = MigrationInProgress
+
+                    val shouldMigrateAccount = shouldMigrateLegacyAccount()
+
+                    if (shouldMigrateAccount) {
+                        migrateLegacyAccounts()
+                            .onLeft {
+                                Timber.e("Legacy migration: Failed to migrate legacy accounts")
+                            }
+                            .onRight {
+                                Timber.d("Legacy migration: Successfully migrated legacy accounts")
+                            }
+                    } else {
+                        Timber.d("Legacy migration: No legacy account to migrate")
+                    }
+
+                    setLegacyMigrationStatus(LegacyMigrationStatus.Done)
+                    observeStoredAccounts(afterMigration = true)
+                }
+
+                LegacyMigrationStatus.Done -> {
+                    observeStoredAccounts()
+                }
             }
         }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = Processing
-        )
+    }
+
+    private fun observeStoredAccounts(afterMigration: Boolean = false) {
+        userSessionRepository.observeAccounts()
+            .mapLatest { accounts ->
+                when {
+                    accounts.isEmpty() || accounts.all { it.state == AccountState.Disabled } ->
+                        AccountNeeded
+
+                    accounts.any { it.state == AccountState.TwoPasswordNeeded } ||
+                        accounts.any { it.state == AccountState.TwoFactorNeeded } ->
+                        StepNeeded
+
+                    accounts.any { it.state == AccountState.Ready } ->
+                        PrimaryExist
+
+                    else -> {
+                        if (afterMigration) {
+                            ProcessingAfterMigration
+                        } else {
+                            Processing
+                        }
+                    }
+                }
+            }
+            .onEach { mutableState.value = it }
+            .launchIn(viewModelScope)
+    }
+
 
     override fun onCleared() {
         authOrchestrator.unregister()
