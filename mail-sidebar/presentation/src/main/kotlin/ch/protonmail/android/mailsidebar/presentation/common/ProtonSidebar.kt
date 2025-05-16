@@ -120,7 +120,7 @@ fun ProtonSidebarReportBugItem(
 ) {
     ProtonSidebarItem(
         text = R.string.drawer_title_bug_report,
-        icon = R.drawable.ic_proton_bug,
+        icon = R.drawable.ic_proton_exclamation_circle,
         modifier = modifier,
         onClick = onClick,
         isClickable = isClickable,
