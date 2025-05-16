@@ -40,13 +40,13 @@ import ch.protonmail.android.design.compose.component.ProtonSolidButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilitiesProvider
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageBodyState
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel

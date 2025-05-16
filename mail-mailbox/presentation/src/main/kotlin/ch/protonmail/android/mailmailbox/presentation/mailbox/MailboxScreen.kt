@@ -110,6 +110,8 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
+import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
+import ch.protonmail.android.mailattachments.presentation.model.AttachmentIdUiModel
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
@@ -120,7 +122,6 @@ import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
-import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheet
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetScreen
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
@@ -142,7 +143,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.Mailbo
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.paging.mapToUiStates
 import ch.protonmail.android.mailmailbox.presentation.paging.search.mapToUiStatesInSearch
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState

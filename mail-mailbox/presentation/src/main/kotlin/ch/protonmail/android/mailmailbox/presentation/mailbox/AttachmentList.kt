@@ -48,11 +48,11 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailattachments.presentation.model.AttachmentIdUiModel
+import ch.protonmail.android.mailattachments.presentation.model.AttachmentMetadataUiModel
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.Attachment.TotalIconAndPaddingDp
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
 
 @Composable
 fun AttachmentList(

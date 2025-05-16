@@ -26,6 +26,7 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.nonEmptyListOf
 import arrow.core.right
+import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
@@ -49,7 +50,6 @@ import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
-import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead

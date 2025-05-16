@@ -3,9 +3,9 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import io.mockk.coEvery
 import io.mockk.coVerifyOrder
 import io.mockk.mockk

@@ -32,6 +32,14 @@ import arrow.core.NonEmptyList
 import arrow.core.left
 import arrow.core.nonEmptyListOf
 import arrow.core.right
+import ch.protonmail.android.mailattachments.domain.model.AttachmentDisposition
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMimeType
+import ch.protonmail.android.mailattachments.domain.model.MimeTypeCategory
+import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
+import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
+import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -60,10 +68,8 @@ import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvai
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
-import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenIcsInProtonCalendar
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenProtonCalendarOnPlayStore
-import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
@@ -123,10 +129,6 @@ import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
-import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMimeType
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
@@ -135,8 +137,6 @@ import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
-import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages

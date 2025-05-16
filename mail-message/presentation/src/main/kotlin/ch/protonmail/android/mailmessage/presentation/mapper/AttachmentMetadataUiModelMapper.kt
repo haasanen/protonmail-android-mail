@@ -18,13 +18,13 @@
 
 package ch.protonmail.android.mailmessage.presentation.mapper
 
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
-import ch.protonmail.android.mailmessage.domain.model.AttachmentState
-import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
-import ch.protonmail.android.mailmessage.domain.model.isCalendarAttachment
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailattachments.domain.model.AttachmentState
+import ch.protonmail.android.mailattachments.domain.model.MimeTypeCategory
+import ch.protonmail.android.mailattachments.domain.model.isCalendarAttachment
+import ch.protonmail.android.mailattachments.presentation.model.AttachmentIdUiModel
+import ch.protonmail.android.mailattachments.presentation.model.AttachmentMetadataUiModel
 import ch.protonmail.android.mailmessage.presentation.R
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
 import javax.inject.Inject
 
 class AttachmentMetadataUiModelMapper @Inject constructor() {

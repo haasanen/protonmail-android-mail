@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailmessage.domain.usecase
 
 import java.util.UUID
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import javax.inject.Inject
 
 class ProvideNewAttachmentId @Inject constructor() {

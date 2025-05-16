@@ -21,7 +21,7 @@ package ch.protonmail.android.mailmessage.domain.usecase
 import arrow.core.Either
 import arrow.core.flatMap
 import arrow.core.right
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations

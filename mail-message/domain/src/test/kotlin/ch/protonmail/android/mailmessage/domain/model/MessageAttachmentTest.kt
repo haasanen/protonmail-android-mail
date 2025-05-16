@@ -18,7 +18,8 @@
 
 package ch.protonmail.android.mailmessage.domain.model
 
-import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
+import ch.protonmail.android.mailattachments.domain.model.isCalendarAttachment
+import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

@@ -22,7 +22,7 @@ import android.content.Context
 import android.text.format.Formatter
 import androidx.compose.ui.graphics.Color
 import arrow.core.right
-import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
+import ch.protonmail.android.mailattachments.domain.model.AttachmentCount
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_archive_box
 import ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_lock
@@ -38,7 +38,7 @@ import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiMode
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelSample
-import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
+import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult

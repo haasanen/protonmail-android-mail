@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailconversation.data.mapper
 
+import ch.protonmail.android.mailattachments.domain.model.MimeTypeCategory
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
@@ -29,7 +30,6 @@ import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
-import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Test

@@ -67,6 +67,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.jsoup)
 
+    implementation(project(":mail-attachments:domain"))
+    implementation(project(":mail-attachments:presentation"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
     implementation(project(":mail-contact:domain"))

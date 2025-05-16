@@ -30,9 +30,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailcommon.domain.system.DeviceCapabilities
 import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilitiesProvider
-import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.util.ProtonCalendarUtil
 import ch.protonmail.android.navigation.Launcher

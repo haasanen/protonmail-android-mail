@@ -19,6 +19,8 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata
 
 import androidx.compose.ui.graphics.Color
+import ch.protonmail.android.mailattachments.presentation.model.AttachmentIdUiModel
+import ch.protonmail.android.mailattachments.presentation.model.AttachmentMetadataUiModel
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -30,8 +32,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemL
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.domain.entity.UserId

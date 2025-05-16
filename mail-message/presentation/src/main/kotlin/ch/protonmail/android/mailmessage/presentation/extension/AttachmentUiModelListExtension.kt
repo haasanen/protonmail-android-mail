@@ -20,7 +20,7 @@ package ch.protonmail.android.mailmessage.presentation.extension
 
 import android.content.Context
 import android.text.format.Formatter
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
+import ch.protonmail.android.mailattachments.presentation.model.AttachmentMetadataUiModel
 
 fun List<AttachmentMetadataUiModel>.getTotalAttachmentByteSizeReadable(context: Context): String =
     this.sumOf { it.size }.let { Formatter.formatShortFileSize(context, it) }

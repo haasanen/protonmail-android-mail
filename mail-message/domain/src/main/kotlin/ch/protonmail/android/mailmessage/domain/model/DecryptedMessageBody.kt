@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailmessage.domain.model
 
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
+
 data class DecryptedMessageBody(
     val messageId: MessageId,
     val value: String,

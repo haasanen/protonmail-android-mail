@@ -32,6 +32,8 @@ import arrow.core.flatMap
 import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -49,7 +51,6 @@ import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAs
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
-import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -83,7 +84,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewA
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages

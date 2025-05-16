@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.proton.core.user)
     implementation(libs.proton.core.userSettings)
 
+    implementation(project(":mail-attachments"))
     implementation(project(":mail-contact"))
     implementation(project(":mail-common"))
     implementation(project(":mail-composer"))

@@ -77,6 +77,8 @@ dependencies {
     implementation(libs.proton.core.key)
     implementation(libs.proton.core.plan)
 
+    implementation(project(":mail-attachments:domain"))
+    implementation(project(":mail-attachments:presentation"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
     implementation(project(":mail-contact:domain"))

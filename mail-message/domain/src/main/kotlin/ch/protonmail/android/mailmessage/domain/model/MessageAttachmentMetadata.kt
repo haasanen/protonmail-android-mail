@@ -19,6 +19,8 @@
 package ch.protonmail.android.mailmessage.domain.model
 
 import android.net.Uri
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import me.proton.core.domain.entity.UserId
 
 data class MessageAttachmentMetadata(

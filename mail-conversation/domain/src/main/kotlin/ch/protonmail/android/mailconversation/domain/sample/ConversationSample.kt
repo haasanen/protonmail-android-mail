@@ -18,6 +18,9 @@
 
 package ch.protonmail.android.mailconversation.domain.sample
 
+import ch.protonmail.android.mailattachments.domain.model.AttachmentCount
+import ch.protonmail.android.mailattachments.domain.sample.AttachmentCountSample
+import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
@@ -27,11 +30,8 @@ import ch.protonmail.android.mailconversation.domain.entity.ConversationLabel
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
-import ch.protonmail.android.mailmessage.domain.sample.AttachmentCountSample
-import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import me.proton.core.domain.entity.UserId
 

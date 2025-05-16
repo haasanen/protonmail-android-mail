@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.proton.core.user.domain)
     implementation(libs.jsoup)
 
+    implementation(project(":mail-attachments:domain"))
     implementation(project(":mail-conversation:domain"))
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-label:domain"))

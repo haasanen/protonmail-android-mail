@@ -43,13 +43,13 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.presentation.ui.showInDarkMode

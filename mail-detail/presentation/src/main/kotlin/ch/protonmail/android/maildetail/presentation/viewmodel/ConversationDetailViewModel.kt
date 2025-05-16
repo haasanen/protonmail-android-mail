@@ -25,6 +25,9 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import arrow.core.NonEmptyList
 import arrow.core.getOrElse
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
@@ -40,7 +43,6 @@ import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
-import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
@@ -93,8 +95,6 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBot
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.mapper.MessageBodyTransformationsMapper
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages

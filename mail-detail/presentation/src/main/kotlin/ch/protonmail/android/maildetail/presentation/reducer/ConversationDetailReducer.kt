@@ -18,11 +18,11 @@
 
 package ch.protonmail.android.maildetail.presentation.reducer
 
+import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
-import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.mapper.ActionResultMapper

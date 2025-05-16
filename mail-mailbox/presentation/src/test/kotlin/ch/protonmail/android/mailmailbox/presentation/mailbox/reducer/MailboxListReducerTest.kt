@@ -18,9 +18,9 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
+import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest

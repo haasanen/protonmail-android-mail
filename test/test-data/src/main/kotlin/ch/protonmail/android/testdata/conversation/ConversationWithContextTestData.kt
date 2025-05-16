@@ -18,19 +18,19 @@
 
 package ch.protonmail.android.testdata.conversation
 
+import ch.protonmail.android.mailattachments.domain.model.AttachmentCount
+import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
-import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
-import ch.protonmail.android.testdata.user.UserIdTestData.userId
-import ch.protonmail.android.testdata.user.UserIdTestData.userId1
-import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
+import ch.protonmail.android.testdata.user.UserIdTestData.userId
+import ch.protonmail.android.testdata.user.UserIdTestData.userId1
+import me.proton.core.domain.entity.UserId
 
 object ConversationWithContextTestData {
 

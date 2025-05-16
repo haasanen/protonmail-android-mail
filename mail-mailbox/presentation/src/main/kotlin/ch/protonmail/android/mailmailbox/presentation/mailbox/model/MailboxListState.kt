@@ -18,9 +18,9 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
+import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId

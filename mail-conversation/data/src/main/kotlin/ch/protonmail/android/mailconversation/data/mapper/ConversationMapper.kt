@@ -18,6 +18,9 @@
 
 package ch.protonmail.android.mailconversation.data.mapper
 
+import ch.protonmail.android.mailattachments.data.mapper.getCalendarAttachmentCount
+import ch.protonmail.android.mailattachments.data.mapper.toAttachmentMetadata
+import ch.protonmail.android.mailattachments.domain.model.AttachmentCount
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentDisposition
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
@@ -25,11 +28,8 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
-import ch.protonmail.android.mailmessage.data.mapper.getCalendarAttachmentCount
-import ch.protonmail.android.mailmessage.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailmessage.data.mapper.toAvatarInformation
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
-import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 
 fun LocalConversation.toConversation() = Conversation(
     conversationId = this.id.toConversationId(),

@@ -18,6 +18,9 @@
 
 package ch.protonmail.android.mailmessage.data.repository
 
+import ch.protonmail.android.mailattachments.data.mapper.toAttachmentId
+import ch.protonmail.android.mailattachments.data.mapper.toAttachmentMetadata
+import ch.protonmail.android.mailattachments.data.mapper.toMimeTypeCategory
 import ch.protonmail.android.mailcommon.data.mapper.LocalAddressId
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentId
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentMetadata
@@ -32,11 +35,8 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMimeTypeCategory
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.mapper.toAddressId
-import ch.protonmail.android.mailmessage.data.mapper.toAttachmentId
-import ch.protonmail.android.mailmessage.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailmessage.data.mapper.toConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
-import ch.protonmail.android.mailmessage.data.mapper.toMimeTypeCategory
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.data.mapper.toRecipient
 import ch.protonmail.android.mailmessage.domain.model.MessageId

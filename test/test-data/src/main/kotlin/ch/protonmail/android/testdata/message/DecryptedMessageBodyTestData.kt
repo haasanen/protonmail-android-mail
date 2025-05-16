@@ -18,12 +18,12 @@
 
 package ch.protonmail.android.testdata.message
 
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 
 object DecryptedMessageBodyTestData {

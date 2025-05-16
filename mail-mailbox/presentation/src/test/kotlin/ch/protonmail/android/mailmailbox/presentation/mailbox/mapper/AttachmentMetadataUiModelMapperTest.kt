@@ -18,14 +18,14 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.mapper
 
+import ch.protonmail.android.mailattachments.domain.model.AttachmentDisposition
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMimeType
+import ch.protonmail.android.mailattachments.domain.model.MimeTypeCategory
+import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
+import ch.protonmail.android.mailattachments.presentation.model.AttachmentIdUiModel
 import ch.protonmail.android.mailmailbox.presentation.R
-import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMimeType
-import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
-import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import org.junit.Assert.assertEquals

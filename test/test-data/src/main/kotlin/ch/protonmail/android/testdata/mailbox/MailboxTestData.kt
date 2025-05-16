@@ -19,6 +19,7 @@
 package ch.protonmail.android.testdata.mailbox
 
 import androidx.compose.ui.graphics.Color
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -35,7 +36,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInform
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemLocationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.testdata.R

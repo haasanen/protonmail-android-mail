@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailmessage.presentation.model.attachment
 
+import ch.protonmail.android.mailattachments.presentation.model.AttachmentMetadataUiModel
+
 const val DEFAULT_ATTACHMENT_LIMIT = 3
 const val NO_ATTACHMENT_LIMIT = Int.MAX_VALUE
 

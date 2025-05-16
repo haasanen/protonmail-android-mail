@@ -47,12 +47,13 @@ dependencies {
     implementation(libs.proton.core.user.domain)
     implementation(libs.proton.core.mailSettings)
 
-    implementation(project(":mail-message:domain"))
+    implementation(project(":mail-attachments:domain"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-label:domain"))
+    implementation(project(":mail-message:domain"))
     implementation(project(":mail-pagination:domain"))
-    implementation(project(":mail-settings:domain"))
     implementation(project(":mail-session:domain"))
+    implementation(project(":mail-settings:domain"))
 
     testImplementation(libs.bundles.test)
     // Used to access sample test data (here instead of test-data as shared with compose previews / android tests)

@@ -26,13 +26,13 @@ import ch.protonmail.android.MainActivity
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.feature.account.RemoveAccountDialog
 import ch.protonmail.android.feature.account.SignOutAccountDialog
+import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
 import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearchScreen
-import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen

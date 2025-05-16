@@ -18,8 +18,9 @@
 
 package ch.protonmail.android.maildetail.domain.usecase
 
+import ch.protonmail.android.mailattachments.domain.repository.AttachmentRepository
+import ch.protonmail.android.mailmessage.domain.model.MessageAttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.AttachmentRepository
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -27,7 +28,6 @@ class GetDownloadingAttachmentsForMessages @Inject constructor(
     private val attachmentLocalDataSource: AttachmentRepository
 ) {
 
-    suspend operator fun invoke(userId: UserId, messages: List<MessageId>) =
-        attachmentLocalDataSource.getDownloadingAttachmentsForMessages(userId, messages)
-
+    // Unused, will be removed
+    suspend operator fun invoke(userId: UserId, messages: List<MessageId>) = emptyList<MessageAttachmentMetadata>()
 }

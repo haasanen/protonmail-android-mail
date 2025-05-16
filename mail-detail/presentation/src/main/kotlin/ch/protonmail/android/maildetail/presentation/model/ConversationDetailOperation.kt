@@ -19,9 +19,11 @@
 package ch.protonmail.android.maildetail.presentation.model
 
 import android.net.Uri
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentState
+import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
-import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingBottomSheet
@@ -38,8 +40,6 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode

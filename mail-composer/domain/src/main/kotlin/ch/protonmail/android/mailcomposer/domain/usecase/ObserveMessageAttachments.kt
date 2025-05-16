@@ -19,9 +19,9 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -31,5 +31,4 @@ class ObserveMessageAttachments @Inject constructor(
 
     suspend operator fun invoke(): Flow<Either<DataError, List<AttachmentMetadataWithState>>> =
         attachmentRepository.observeAttachments()
-
 }

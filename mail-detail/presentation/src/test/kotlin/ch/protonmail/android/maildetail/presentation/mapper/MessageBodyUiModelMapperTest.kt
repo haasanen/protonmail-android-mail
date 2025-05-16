@@ -18,11 +18,11 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
+import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentGroupUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel

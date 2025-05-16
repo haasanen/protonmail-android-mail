@@ -48,6 +48,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.mailattachments.presentation.model.AttachmentIdUiModel
 import ch.protonmail.android.mailcommon.presentation.compose.SmallClickableIcon
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
 import ch.protonmail.android.mailcommon.presentation.extension.isItemRead
@@ -64,7 +65,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemL
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxItemUiModelPreviewData
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import kotlinx.collections.immutable.ImmutableList
 

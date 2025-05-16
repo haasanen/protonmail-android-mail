@@ -52,6 +52,8 @@ dependencies {
     implementation(libs.proton.core.user.domain)
     implementation(libs.proton.core.mailSendPreferences)
 
+    implementation(project(":mail-attachments:data"))
+    implementation(project(":mail-attachments:domain"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))

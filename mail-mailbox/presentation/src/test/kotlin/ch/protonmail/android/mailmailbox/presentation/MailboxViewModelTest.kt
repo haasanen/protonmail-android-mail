@@ -24,6 +24,10 @@ import androidx.paging.PagingData
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
+import ch.protonmail.android.mailattachments.domain.usecase.GetAttachmentIntentValues
+import ch.protonmail.android.mailattachments.presentation.model.AttachmentIdUiModel
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
@@ -42,8 +46,6 @@ import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAs
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
-import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
-import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
@@ -81,7 +83,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.Mailbo
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.SwipeUiModelSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
@@ -94,7 +95,6 @@ import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState

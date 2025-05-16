@@ -18,10 +18,10 @@
 
 package ch.protonmail.android.mailmailbox.domain.mapper
 
+import ch.protonmail.android.mailattachments.domain.model.isCalendarAttachment
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
-import ch.protonmail.android.mailmessage.domain.model.isCalendarAttachment
 import me.proton.core.domain.arch.Mapper
 import javax.inject.Inject
 

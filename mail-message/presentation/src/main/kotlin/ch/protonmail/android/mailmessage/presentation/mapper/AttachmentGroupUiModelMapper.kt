@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmessage.presentation.mapper
 
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.attachment.DEFAULT_ATTACHMENT_LIMIT

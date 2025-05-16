@@ -19,6 +19,9 @@
 package ch.protonmail.android.mailcomposer.presentation.reducer
 
 import java.util.UUID
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
+import ch.protonmail.android.mailattachments.domain.model.AttachmentState
+import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -43,11 +46,8 @@ import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiM
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
-import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
-import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel

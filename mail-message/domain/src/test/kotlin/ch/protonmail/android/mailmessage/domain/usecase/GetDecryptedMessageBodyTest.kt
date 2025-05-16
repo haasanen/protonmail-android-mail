@@ -20,8 +20,8 @@ package ch.protonmail.android.mailmessage.domain.usecase
 
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment

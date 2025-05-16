@@ -46,4 +46,8 @@ android {
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
+
+    implementation(project(":mail-attachments:data"))
+    implementation(project(":mail-attachments:domain"))
+    implementation(project(":mail-attachments:presentation"))
 }

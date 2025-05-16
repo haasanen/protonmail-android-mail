@@ -74,6 +74,8 @@ import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailcommon.domain.model.BasicContactInfo
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
@@ -89,7 +91,6 @@ import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
 import ch.protonmail.android.mailcontact.domain.model.ContactId
-import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
@@ -109,7 +110,6 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomShe
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetScreen
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheet
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetScreen
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference

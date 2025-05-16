@@ -44,8 +44,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.titleSmallNorm
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.extension.getTotalAttachmentByteSizeReadable
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel

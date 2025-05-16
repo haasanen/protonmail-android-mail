@@ -244,6 +244,7 @@ dependencies {
     implementation(libs.bundles.appLibs)
     implementation(libs.java.jna) { artifact { type = "aar" } }
 
+    implementation(project(":mail-attachments"))
     implementation(project(":mail-bugreport"))
     implementation(project(":mail-common"))
     implementation(project(":mail-composer"))

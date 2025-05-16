@@ -18,11 +18,11 @@
 
 package ch.protonmail.android.mailmailbox.domain.model
 
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import me.proton.core.mailsettings.domain.entity.ViewMode

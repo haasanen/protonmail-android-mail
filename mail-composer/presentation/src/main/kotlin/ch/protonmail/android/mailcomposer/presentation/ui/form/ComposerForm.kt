@@ -35,6 +35,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableForm
@@ -48,7 +49,6 @@ import ch.protonmail.android.mailcomposer.presentation.ui.MessageBodyEditor
 import ch.protonmail.android.mailcomposer.presentation.ui.SenderEmailWithSelector
 import ch.protonmail.android.mailcomposer.presentation.ui.SubjectTextField
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.RecipientsViewModel
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.ui.AttachmentList
 import ch.protonmail.android.uicomponents.keyboardVisibilityAsState

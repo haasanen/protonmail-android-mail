@@ -24,12 +24,12 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toAttachmentMetaDataWithState
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
+import ch.protonmail.android.mailattachments.data.mapper.toLocalAttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.local.AttachmentFileStorage
-import ch.protonmail.android.mailmessage.data.mapper.toLocalAttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

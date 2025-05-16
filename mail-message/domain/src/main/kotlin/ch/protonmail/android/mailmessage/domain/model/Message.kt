@@ -18,11 +18,13 @@
 
 package ch.protonmail.android.mailmessage.domain.model
 
+import ch.protonmail.android.mailattachments.domain.model.AttachmentCount
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
-import kotlinx.serialization.Serializable
 import ch.protonmail.android.maillabel.domain.model.Label
+import kotlinx.serialization.Serializable
 import me.proton.core.user.domain.entity.AddressId
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds

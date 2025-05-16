@@ -19,13 +19,13 @@
 package ch.protonmail.android.mailcomposer.presentation.model
 
 import android.net.Uri
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.AttachmentAddError
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import kotlin.time.Duration

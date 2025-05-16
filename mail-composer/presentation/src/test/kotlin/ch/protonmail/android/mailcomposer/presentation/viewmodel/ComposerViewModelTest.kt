@@ -23,6 +23,10 @@ import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
+import ch.protonmail.android.mailattachments.domain.model.AttachmentState
+import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
@@ -64,13 +68,9 @@ import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
-import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
-import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper

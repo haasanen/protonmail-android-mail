@@ -64,6 +64,8 @@ dependencies {
     implementation(libs.proton.core.domain)
     implementation(libs.proton.core.user.domain)
 
+    implementation(project(":mail-attachments:domain"))
+    implementation(project(":mail-attachments:presentation"))
     implementation(project(":mail-detail:domain"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))

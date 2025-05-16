@@ -18,10 +18,9 @@
 
 package ch.protonmail.android.mailmessage.domain.model
 
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.attachments.header.HeaderValue
 import me.proton.core.util.kotlin.equalsNoCase
-
-data class AttachmentId(val id: String)
 
 data class MessageAttachment(
     val attachmentId: AttachmentId,

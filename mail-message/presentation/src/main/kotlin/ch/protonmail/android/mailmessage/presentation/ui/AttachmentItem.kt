@@ -54,11 +54,11 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
+import ch.protonmail.android.mailattachments.domain.model.AttachmentState
+import ch.protonmail.android.mailattachments.presentation.model.AttachmentMetadataUiModel
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.presentation.R
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted

@@ -49,11 +49,12 @@ dependencies {
     implementation(libs.proton.core.user.domain)
     implementation(libs.proton.core.mailSendPreferences)
 
-    implementation(project(":mail-pagination:domain"))
+    implementation(project(":mail-attachments:domain"))
     implementation(project(":mail-common:domain"))
-    implementation(project(":mail-label:domain"))
     implementation(project(":mail-contact:domain"))
+    implementation(project(":mail-label:domain"))
     implementation(project(":mail-session:domain"))
+    implementation(project(":mail-pagination:domain"))
 
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
