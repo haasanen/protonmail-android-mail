@@ -75,9 +75,10 @@
     <string name="message_body_embedded_images_banner_text">Automatic loading of embedded images is turned off. This can be changed in the settings.</string>
     <string name="message_body_remote_content_banner_text">Automatic loading of remote content is turned off. This can be changed in the settings.</string>
     <string name="message_body_embedded_and_remote_content_banner_text">Automatic loading of embedded images and remote content is turned off. These can be changed in the settings.</string>
-    <string name="message_phishing_banner_text">Our system flagged this message as a phishing attempt. Please check that it is legitimate.</string>
-    <string name="message_spam_banner_text">This email has failed its domain\'s authentication requirements. It may be spoofed or improperly forwarded.</string>
-    <string name="message_banner_mark_as_legitimate_button">Mark as legitimate</string>
+    <string name="message_phishing_banner_text">This message was flagged as suspicious, either by our system or by you. If you believe it’s safe, mark it as legitimate.</string>
+    <string name="message_phishing_banner_mark_as_legitimate_button">Mark as legitimate</string>
+    <string name="message_spam_banner_text">This message was flagged as Spam, either by our system or by you.</string>
+    <string name="message_spam_banner_not_spam_button">Not Spam</string>
     <string name="message_blocked_sender_banner_text">This sender has been blocked in the past.</string>
     <string name="message_blocked_sender_button_text">Unblock</string>
     <string name="message_expiration_banner_text">This message will expire in %1$s</string>
@@ -92,6 +93,12 @@
     <string name="phishing_link_confirmation_dialog_content_part_2">For your security, do not continue.</string>
     <string name="phishing_link_confirmation_dialog_button_go_back">Go back (recommended)</string>
     <string name="phishing_link_confirmation_dialog_button_continue">Ignore warning and continue</string>
+    <!-- Mark as legitimate confirmation dialog -->
+    <string name="mark_as_legitimate_phishing_dialog_title">Confirm mark as legitimate</string>
+    <string name="mark_as_legitimate_phishing_dialog_message">We apologize. This might have been a mistake from our side. Please confirm if you want to mark this email as legitimate.</string>
+    <string name="mark_as_legitimate_spam_dialog_title">Confirm not Spam</string>
+    <string name="mark_as_legitimate_spam_dialog_message">We apologize. This might have been a mistake from our side. Please confirm this email is not Spam.</string>
+    <!-- Delete message dialog -->
     <string name="message_delete_dialog_title">Delete message</string>
     <string name="message_delete_dialog_message">Are you sure you want to permanently delete this message?</string>
     <string name="message_deleted">Message deleted</string>
