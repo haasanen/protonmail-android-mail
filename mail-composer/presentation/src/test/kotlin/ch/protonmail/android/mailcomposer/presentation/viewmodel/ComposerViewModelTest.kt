@@ -657,7 +657,7 @@ class ComposerViewModelTest {
         val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
         mockParticipantMapper()
         expectUpdateRecipientsSucceeds(
-            existingDraftFields.recipientsTo.value,
+            emptyList(),
             existingDraftFields.recipientsCc.value,
             existingDraftFields.recipientsBcc.value
         )
