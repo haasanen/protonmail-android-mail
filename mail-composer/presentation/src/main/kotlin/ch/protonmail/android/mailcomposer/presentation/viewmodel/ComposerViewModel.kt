@@ -263,7 +263,7 @@ class ComposerViewModel @AssistedInject constructor(
     private suspend fun prefillForDraftAction(draftAction: DraftAction) {
         Timber.d("Opening composer for draft action $draftAction")
         emitNewStateFor(ComposerEvent.OpenDraft)
-
+        val focusDraftBody = draftAction is Reply || draftAction is ReplyAll
         when (draftAction) {
             Compose -> prefillForNewDraft()
             is ComposeToAddresses -> {
@@ -283,7 +283,7 @@ class ComposerViewModel @AssistedInject constructor(
                             isDataRefreshed = true,
                             isBlockedSendingFromPmAddress = false,
                             isBlockedSendingFromDisabledAddress = false,
-                            bodyShouldTakeFocus = (draftAction is Reply) || (draftAction is ReplyAll)
+                            bodyShouldTakeFocus = focusDraftBody
                         )
                     )
                 }
