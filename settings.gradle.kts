@@ -45,6 +45,11 @@ include(":benchmark")
 include(":coverage")
 include(":detekt-rules")
 
+include(":mail-attachments:dagger")
+include(":mail-attachments:data")
+include(":mail-attachments:domain")
+include(":mail-attachments:presentation")
+
 include(":mail-bugreport:dagger")
 include(":mail-bugreport:data")
 include(":mail-bugreport:domain")
