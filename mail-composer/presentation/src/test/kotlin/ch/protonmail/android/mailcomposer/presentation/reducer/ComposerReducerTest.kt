@@ -270,7 +270,7 @@ class ComposerReducerTest(
                 sender = SenderUiModel(draftFieldsWithoutRecipients.sender.value),
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
-                error = Effect.empty(),
+                error = Effect.empty()
             )
         )
 
@@ -290,6 +290,25 @@ class ComposerReducerTest(
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
                 warning = Effect.of(TextUiModel(R.string.composer_warning_local_data_shown))
+            )
+        )
+
+        @Suppress("VariableMaxLength")
+        private val LoadingDraftAndBodyShouldBeFocused = TestTransition(
+            name = "Loading Draft with a body that should take focus then FocusTextBody",
+            currentState = ComposerDraftState.initial().copy(isLoading = true),
+            operation = ComposerEvent.PrefillDraftDataReceived(
+                draftUiModel,
+                isDataRefreshed = true,
+                isBlockedSendingFromPmAddress = false,
+                isBlockedSendingFromDisabledAddress = false,
+                bodyShouldTakeFocus = true
+            ),
+            expectedState = aNotSubmittableState(
+                sender = SenderUiModel(draftFieldsWithoutRecipients.sender.value),
+                draftBody = draftFieldsWithoutRecipients.body.value,
+                draftDisplayBodyUiModel = draftDisplayBody,
+                focusTextBody = Effect.of(Unit)
             )
         )
 
@@ -592,7 +611,8 @@ class ComposerReducerTest(
             EmptyToAttachmentTooLarge,
             EmptyToAttachmentEncryptionFailed,
             EmptyToAttachmentUnexpectedError,
-            DraftBodyChangedActionShouldDoNothing
+            DraftBodyChangedActionShouldDoNothing,
+            LoadingDraftAndBodyShouldBeFocused
         )
 
         private fun aSubmittableState(
@@ -655,7 +675,8 @@ class ComposerReducerTest(
             attachmentEncryptionFailed: Effect<Unit> = Effect.empty(),
             warning: Effect<TextUiModel> = Effect.empty(),
             replaceDraftBody: Effect<TextUiModel> = Effect.empty(),
-            senderChangedNotice: Effect<TextUiModel> = Effect.empty()
+            senderChangedNotice: Effect<TextUiModel> = Effect.empty(),
+            focusTextBody: Effect<Unit> = Effect.empty()
         ) = ComposerDraftState(
             fields = ComposerFields(
                 sender = sender,
@@ -685,7 +706,8 @@ class ComposerReducerTest(
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
             openImagePicker = Effect.empty(),
-            confirmDiscardDraft = Effect.empty()
+            confirmDiscardDraft = Effect.empty(),
+            focusTextBody = focusTextBody
         )
 
         @JvmStatic

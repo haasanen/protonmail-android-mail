@@ -627,6 +627,58 @@ class ComposerViewModelTest {
     }
 
     @Test
+    fun `emits state with focusTextBody effect when draft has a recipient`() = runTest {
+        // Given
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
+        mockParticipantMapper()
+        expectUpdateRecipientsSucceeds(
+            existingDraftFields.recipientsTo.value,
+            existingDraftFields.recipientsCc.value,
+            existingDraftFields.recipientsBcc.value
+        )
+        expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedDraftId) { existingDraftFields }
+        expectObservedMessageAttachments()
+        expectNoInputDraftAction()
+        expectStoreDraftSubjectSucceeds(existingDraftFields.subject)
+        expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
+
+        // When
+        val actual = viewModel.state.value
+
+        assertEquals(Unit, actual.focusTextBody.consume())
+    }
+
+    @Test
+    fun `emits state with NO focusTextBody effect when draft has no recipients`() = runTest {
+        // Given
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
+        mockParticipantMapper()
+        expectUpdateRecipientsSucceeds(
+            existingDraftFields.recipientsTo.value,
+            existingDraftFields.recipientsCc.value,
+            existingDraftFields.recipientsBcc.value
+        )
+        val expectedExistingDraftFieldsNoRecipients = existingDraftFields.copy(recipientsTo = RecipientsTo(emptyList()))
+        expectInitComposerWithExistingDraftSuccess(
+            expectedUserId,
+            expectedDraftId
+        ) { expectedExistingDraftFieldsNoRecipients }
+        expectObservedMessageAttachments()
+        expectNoInputDraftAction()
+        expectStoreDraftSubjectSucceeds(existingDraftFields.subject)
+        expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
+
+        // When
+        val actual = viewModel.state.value
+
+        assertEquals(null, actual.focusTextBody.consume())
+    }
+
+    @Test
     fun `emits state with local draft fields to be prefilled when open existing draft succeeds`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
