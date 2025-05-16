@@ -22,6 +22,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.data.mapper.safeData
 import ch.protonmail.android.mailcommon.data.mapper.safeEdit
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.PreferencesError
 import ch.protonmail.android.mailsettings.data.MailSettingsDataStoreProvider
 import ch.protonmail.android.mailsettings.domain.model.CombinedContactsPreference
@@ -32,6 +33,8 @@ import javax.inject.Inject
 
 private const val DEFAULT_VALUE = false
 
+@MissingRustApi
+// To be bound to Rust or dropped when implementing App settings.
 class CombinedContactsRepositoryImpl @Inject constructor(
     private val dataStoreProvider: MailSettingsDataStoreProvider
 ) : CombinedContactsRepository {

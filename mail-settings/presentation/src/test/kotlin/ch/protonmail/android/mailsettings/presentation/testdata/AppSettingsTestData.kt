@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailsettings.presentation.testdata
 
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
+import ch.protonmail.android.mailsettings.domain.model.Theme
 
 object AppSettingsTestData {
 
@@ -26,6 +27,7 @@ object AppSettingsTestData {
         hasAutoLock = false,
         hasAlternativeRouting = true,
         customAppLanguage = null,
-        hasCombinedContacts = true
+        hasDeviceContactsEnabled = true,
+        theme = Theme.SYSTEM_DEFAULT
     )
 }

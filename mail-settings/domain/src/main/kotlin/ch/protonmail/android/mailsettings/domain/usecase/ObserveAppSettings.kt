@@ -28,11 +28,13 @@ import ch.protonmail.android.mailsettings.domain.repository.AlternativeRoutingRe
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AutoLockRepository
 import ch.protonmail.android.mailsettings.domain.repository.CombinedContactsRepository
+import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class ObserveAppSettings @Inject constructor(
+    private val themeRepository: ThemeRepository,
     private val autoLockRepository: AutoLockRepository,
     private val alternativeRoutingRepository: AlternativeRoutingRepository,
     private val appLanguageRepository: AppLanguageRepository,
@@ -40,11 +42,12 @@ class ObserveAppSettings @Inject constructor(
 ) {
 
     operator fun invoke(): Flow<AppSettings> = combine(
+        themeRepository.observe(),
         autoLockRepository.observeAutoLockEnabledValue(),
         alternativeRoutingRepository.observe(),
         appLanguageRepository.observe(),
         combinedContactsRepository.observe()
-    ) { autoLockPref, alternativeRouting, customLanguage, combinedContacts ->
+    ) { selectedTheme, autoLockPref, alternativeRouting, customLanguage, combinedContacts ->
         val hasAutoLock = autoLockPref.getOrElse { AutoLockPreference(isEnabled = false) }
         val hasCombinedContacts = (combinedContacts as Either.Right<CombinedContactsPreference>).value.isEnabled
         val hasAlternativeRouting = (alternativeRouting as Either.Right<AlternativeRoutingPreference>).value.isEnabled
@@ -53,7 +56,8 @@ class ObserveAppSettings @Inject constructor(
             hasAutoLock = hasAutoLock.isEnabled,
             hasAlternativeRouting = hasAlternativeRouting,
             customAppLanguage = customLanguage?.langName,
-            hasCombinedContacts = hasCombinedContacts
+            hasDeviceContactsEnabled = hasCombinedContacts, // This should be device contacts, not combined contacts.
+            theme = selectedTheme
         )
     }
 }

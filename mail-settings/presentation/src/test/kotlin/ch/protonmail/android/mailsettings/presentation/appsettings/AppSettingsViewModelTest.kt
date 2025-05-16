@@ -20,8 +20,10 @@ package ch.protonmail.android.mailsettings.presentation.appsettings
 
 import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveAppSettings
+import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.testdata.AppSettingsTestData
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserTestData
@@ -35,7 +37,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AppSettingsViewModelTest {
+internal class AppSettingsViewModelTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -74,13 +76,14 @@ class AppSettingsViewModelTest {
 
             // Then
             val actual = awaitItem() as AppSettingsState.Data
-            val expected = AppSettings(
-                hasAutoLock = false,
-                hasAlternativeRouting = true,
-                customAppLanguage = null,
-                hasCombinedContacts = true
+            val expected = AppSettingsUiModel(
+                autoLockEnabled = false,
+                alternativeRoutingEnabled = true,
+                customLanguage = null,
+                deviceContactsEnabled = true,
+                theme = TextUiModel.TextRes(R.string.mail_settings_system_default)
             )
-            assertEquals(expected, actual.appSettings)
+            assertEquals(expected, actual.settings)
         }
     }
 

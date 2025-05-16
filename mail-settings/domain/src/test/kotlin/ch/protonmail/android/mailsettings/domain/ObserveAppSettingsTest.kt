@@ -24,11 +24,13 @@ import ch.protonmail.android.mailsettings.domain.model.AlternativeRoutingPrefere
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.CombinedContactsPreference
+import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockPreference
 import ch.protonmail.android.mailsettings.domain.repository.AlternativeRoutingRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AutoLockRepository
 import ch.protonmail.android.mailsettings.domain.repository.CombinedContactsRepository
+import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveAppSettings
 import io.mockk.every
 import io.mockk.mockk
@@ -53,11 +55,16 @@ class ObserveAppSettingsTest {
         every { this@mockk.observeAutoLockEnabledValue() } returns flowOf(AutoLockPreference(false).right())
     }
 
+    private val themeRepository = mockk<ThemeRepository> {
+        every { this@mockk.observe() } returns flowOf(Theme.SYSTEM_DEFAULT)
+    }
+
     private lateinit var observeAppSettings: ObserveAppSettings
 
     @Before
     fun setUp() {
         observeAppSettings = ObserveAppSettings(
+            themeRepository,
             autoLockRepository,
             alternativeRoutingRepository,
             appLanguageRepository,
@@ -77,7 +84,8 @@ class ObserveAppSettingsTest {
                 hasAutoLock = true,
                 hasAlternativeRouting = true,
                 customAppLanguage = null,
-                hasCombinedContacts = true
+                hasDeviceContactsEnabled = true,
+                theme = Theme.SYSTEM_DEFAULT
             )
             assertEquals(expected, awaitItem())
 
@@ -99,7 +107,8 @@ class ObserveAppSettingsTest {
                 hasAutoLock = false,
                 hasAlternativeRouting = false,
                 customAppLanguage = null,
-                hasCombinedContacts = true
+                hasDeviceContactsEnabled = true,
+                theme = Theme.SYSTEM_DEFAULT
             )
             assertEquals(expected, awaitItem())
 
@@ -120,7 +129,8 @@ class ObserveAppSettingsTest {
                     hasAutoLock = false,
                     hasAlternativeRouting = true,
                     customAppLanguage = "Italiano",
-                    hasCombinedContacts = true
+                    hasDeviceContactsEnabled = true,
+                    theme = Theme.SYSTEM_DEFAULT
                 )
                 assertEquals(expected, awaitItem())
 
@@ -140,7 +150,8 @@ class ObserveAppSettingsTest {
                 hasAutoLock = false,
                 hasAlternativeRouting = true,
                 customAppLanguage = null,
-                hasCombinedContacts = true
+                hasDeviceContactsEnabled = true,
+                theme = Theme.SYSTEM_DEFAULT
             )
             assertEquals(expected, awaitItem())
 
@@ -162,7 +173,29 @@ class ObserveAppSettingsTest {
                 hasAutoLock = false,
                 hasAlternativeRouting = true,
                 customAppLanguage = null,
-                hasCombinedContacts = false
+                hasDeviceContactsEnabled = false,
+                theme = Theme.SYSTEM_DEFAULT
+            )
+            assertEquals(expected, awaitItem())
+
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `theme is returned from theme repository`() = runTest {
+        // Given
+        every { themeRepository.observe() } returns flowOf(Theme.DARK)
+
+        // When
+        observeAppSettings().test {
+            // Then
+            val expected = AppSettings(
+                hasAutoLock = false,
+                hasAlternativeRouting = true,
+                customAppLanguage = null,
+                hasDeviceContactsEnabled = true,
+                theme = Theme.DARK
             )
             assertEquals(expected, awaitItem())
 

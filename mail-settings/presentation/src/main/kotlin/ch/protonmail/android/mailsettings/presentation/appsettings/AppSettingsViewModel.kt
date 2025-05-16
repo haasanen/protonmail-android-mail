@@ -34,7 +34,8 @@ internal class AppSettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val state = observeAppSettings().map { appSettings ->
-        AppSettingsState.Data(appSettings)
+        val uiModel = AppSettingsUiModelMapper.toUiModel(appSettings)
+        AppSettingsState.Data(uiModel)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(stopTimeoutMillis),

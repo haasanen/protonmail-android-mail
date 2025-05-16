@@ -18,9 +18,17 @@
 
 package ch.protonmail.android.mailsettings.presentation.appsettings
 
-import ch.protonmail.android.mailsettings.domain.model.AppSettings
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
-sealed class AppSettingsState {
-    data class Data(val appSettings: AppSettings) : AppSettingsState()
+internal sealed class AppSettingsState {
+    data class Data(val settings: AppSettingsUiModel) : AppSettingsState()
     data object Loading : AppSettingsState()
 }
+
+internal data class AppSettingsUiModel(
+    val autoLockEnabled: Boolean,
+    val alternativeRoutingEnabled: Boolean,
+    val customLanguage: String?,
+    val theme: TextUiModel,
+    val deviceContactsEnabled: Boolean
+)

@@ -50,6 +50,7 @@ import ch.protonmail.android.design.compose.component.ProtonSettingsToggleItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsHeader
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsItemDivider
@@ -105,7 +106,7 @@ private fun AppSettingsScreenContent(
 
                 NotificationLanguageSettingsItem(
                     notificationStatus = "On",
-                    language = state.appSettings.customAppLanguage ?: "English",
+                    language = state.settings.customLanguage ?: "English",
                     onNotificationClick = { launchNotificationSettingsIntent(context) },
                     onLanguageClick = actions.onAppLanguageClick
                 )
@@ -113,14 +114,14 @@ private fun AppSettingsScreenContent(
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
 
                 AppearanceSettingsItem(
-                    appearance = "System default",
+                    appearance = state.settings.theme.string(),
                     onClick = actions.onThemeClick
                 )
 
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
 
                 ProtectionSettingsItem(
-                    autoLockStatus = if (state.appSettings.hasAutoLock) {
+                    autoLockStatus = if (state.settings.autoLockEnabled) {
                         stringResource(id = R.string.mail_settings_app_customization_protection_enabled_description)
                     } else {
                         stringResource(id = R.string.mail_settings_app_customization_protection_disabled_description)
@@ -131,7 +132,7 @@ private fun AppSettingsScreenContent(
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
 
                 UseDeviceContactsSettingsItem(
-                    useDeviceContacts = state.appSettings.hasCombinedContacts,
+                    useDeviceContacts = state.settings.deviceContactsEnabled,
                     onToggle = {
                         actions.onCombinedContactsClick()
                     }
@@ -150,7 +151,7 @@ private fun AppSettingsScreenContent(
 
                 MainSettingsHeader(titleRes = R.string.mail_settings_app_customization_advanced_header)
                 AdvancedSettingsItem(
-                    alternativeRouting = state.appSettings.hasAlternativeRouting,
+                    alternativeRouting = state.settings.alternativeRoutingEnabled,
                     actions = actions
                 )
 

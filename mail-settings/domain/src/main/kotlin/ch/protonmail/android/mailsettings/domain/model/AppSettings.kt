@@ -22,5 +22,6 @@ data class AppSettings(
     val hasAutoLock: Boolean,
     val hasAlternativeRouting: Boolean,
     val customAppLanguage: String?,
-    val hasCombinedContacts: Boolean
+    val hasDeviceContactsEnabled: Boolean,
+    val theme: Theme
 )

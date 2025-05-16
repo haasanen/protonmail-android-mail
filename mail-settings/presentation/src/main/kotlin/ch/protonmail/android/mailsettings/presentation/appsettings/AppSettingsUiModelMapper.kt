@@ -19,31 +19,29 @@
 package ch.protonmail.android.mailsettings.presentation.appsettings
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailsettings.domain.model.AppSettings
+import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.presentation.R
 
-internal object AppSettingsScreenPreviewData {
+internal object AppSettingsUiModelMapper {
 
-    val Data = AppSettingsState.Data(
-        AppSettingsUiModel(
-            autoLockEnabled = false,
-            alternativeRoutingEnabled = false,
-            customLanguage = null,
-            deviceContactsEnabled = false,
-            theme = TextUiModel.TextRes(R.string.mail_settings_system_default)
+    fun toUiModel(appSettings: AppSettings): AppSettingsUiModel {
+        return AppSettingsUiModel(
+            autoLockEnabled = appSettings.hasAutoLock,
+            alternativeRoutingEnabled = appSettings.hasAlternativeRouting,
+            customLanguage = appSettings.customAppLanguage,
+            theme = appSettings.theme.toTextUiModel(),
+            deviceContactsEnabled = appSettings.hasDeviceContactsEnabled
         )
-    )
+    }
 
-    val Actions = AppSettingsScreen.Actions(
-        onThemeClick = {},
-        onPushNotificationsClick = {},
-        onAutoLockClick = {},
-        onAlternativeRoutingClick = {},
-        onAppLanguageClick = {},
-        onCombinedContactsClick = {},
-        onSwipeToNextEmailClick = {},
-        onSwipeActionsClick = {},
-        onCustomizeToolbarClick = {},
-        onViewApplicationLogsClick = {},
-        onBackClick = {}
-    )
+    private fun Theme.toTextUiModel(): TextUiModel {
+        val textRes = when (this) {
+            Theme.SYSTEM_DEFAULT -> R.string.mail_settings_system_default
+            Theme.LIGHT -> R.string.mail_settings_theme_light
+            Theme.DARK -> R.string.mail_settings_theme_dark
+        }
+
+        return TextUiModel.TextRes(textRes)
+    }
 }
