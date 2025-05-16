@@ -86,7 +86,6 @@ dependencies {
     implementation(project(":mail-featureflags:domain"))
     implementation(project(":mail-label:domain"))
     implementation(project(":mail-label:presentation"))
-    implementation(project(":mail-detail:domain")) // ET-2954
     implementation(project(":mail-mailbox:domain"))
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-message:presentation"))
