@@ -34,7 +34,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
-import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
@@ -102,14 +101,14 @@ class ComposerReducer @Inject constructor(
         )
 
         is ComposerEvent.OnCloseWithDraftSaved -> updateCloseComposerStateWithDraftSaved(currentState, this.messageId)
-        is ComposerEvent.OpenExistingDraft -> currentState.copy(isLoading = true)
-        is ComposerEvent.OpenWithMessageAction -> updateStateForOpenWithMessageAction(currentState, draftAction)
+        is ComposerEvent.OpenDraft -> currentState.copy(isLoading = true)
         is ComposerEvent.PrefillDraftDataReceived -> updateComposerFieldsState(
             currentState,
             this.draftUiModel,
             this.isDataRefreshed,
             this.isBlockedSendingFromPmAddress,
-            this.isBlockedSendingFromDisabledAddress
+            this.isBlockedSendingFromDisabledAddress,
+            this.bodyShouldTakeFocus
         )
 
         is ComposerEvent.PrefillDataReceivedViaShare -> updateComposerFieldsState(
@@ -141,17 +140,21 @@ class ComposerReducer @Inject constructor(
         is ComposerEvent.ConfirmEmptySubject -> currentState.copy(
             confirmSendingWithoutSubject = Effect.of(Unit)
         )
+
         is ComposerEvent.ErrorSettingExpirationTime -> currentState.copy(
             error = Effect.of(TextUiModel(R.string.composer_error_setting_expiration_time))
         )
+
         is ComposerEvent.OnMessageExpirationTimeUpdated -> updateStateForMessageExpirationTime(
             currentState,
             this.messageExpirationTime
         )
+
         is ComposerEvent.ConfirmSendExpiringMessageToExternalRecipients -> currentState.copy(
             confirmSendExpiringMessage = Effect.of(this.externalRecipients)
 
         )
+
         is ComposerEvent.RecipientsUpdated -> updateRecipients(currentState, hasValidRecipients)
         is ComposerEvent.ErrorDiscardingDraft -> updateForErrorDiscardingDraft(currentState)
         is ComposerEvent.OnMessageSending -> currentState.copy(showSendingLoading = true)
@@ -171,6 +174,7 @@ class ComposerReducer @Inject constructor(
         AttachmentAddError.EncryptionError -> currentState.copy(attachmentsEncryptionFailed = Effect.of(Unit))
         AttachmentAddError.TooManyAttachments ->
             currentState.copy(error = Effect.of(TextUiModel(R.string.composer_too_many_attachments_error)))
+
         AttachmentAddError.Unknown,
         AttachmentAddError.InvalidDraftMessage ->
             currentState.copy(error = Effect.of(TextUiModel(R.string.composer_unexpected_attachments_error)))
@@ -181,7 +185,8 @@ class ComposerReducer @Inject constructor(
         draftUiModel: DraftUiModel,
         isDataRefreshed: Boolean,
         blockedSendingFromPmAddress: Boolean,
-        blockedSendingFromDisabledAddress: Boolean
+        blockedSendingFromDisabledAddress: Boolean,
+        bodyShouldTakeFocus: Boolean = false
     ) = currentState.copy(
         fields = currentState.fields.copy(
             sender = SenderUiModel(draftUiModel.draftFields.sender.value),
@@ -197,10 +202,13 @@ class ComposerReducer @Inject constructor(
         senderChangedNotice = when {
             blockedSendingFromPmAddress ->
                 Effect.of(TextUiModel(R.string.composer_sender_changed_pm_address_is_a_paid_feature))
+
             blockedSendingFromDisabledAddress ->
                 Effect.of(TextUiModel(R.string.composer_sender_changed_original_address_disabled))
+
             else -> Effect.empty()
-        }
+        },
+        focusTextBody = if (bodyShouldTakeFocus) Effect.of(Unit) else Effect.empty()
     )
 
     private fun updateAttachmentsState(
@@ -237,20 +245,6 @@ class ComposerReducer @Inject constructor(
         draftDisplayBody: DraftDisplayBodyUiModel
     ): ComposerDraftState =
         currentState.copy(fields = currentState.fields.copy(body = draftBody.value, displayBody = draftDisplayBody))
-
-    private fun updateStateForOpenWithMessageAction(
-        currentState: ComposerDraftState,
-        draftAction: DraftAction
-    ): ComposerDraftState {
-        val bodyTextFieldEffect =
-            if (draftAction is DraftAction.Reply || draftAction is DraftAction.ReplyAll) {
-                Effect.of(Unit)
-            } else {
-                Effect.empty()
-            }
-
-        return currentState.copy(isLoading = true, focusTextBody = bodyTextFieldEffect)
-    }
 
     private fun updateStateForSendMessage(currentState: ComposerDraftState) =
         currentState.copy(closeComposerWithMessageSending = Effect.of(Unit))

@@ -68,6 +68,12 @@ import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
+import ch.protonmail.android.mailmessage.domain.model.DraftAction.Compose
+import ch.protonmail.android.mailmessage.domain.model.DraftAction.ComposeToAddresses
+import ch.protonmail.android.mailmessage.domain.model.DraftAction.Forward
+import ch.protonmail.android.mailmessage.domain.model.DraftAction.PrefillForShare
+import ch.protonmail.android.mailmessage.domain.model.DraftAction.Reply
+import ch.protonmail.android.mailmessage.domain.model.DraftAction.ReplyAll
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
@@ -149,6 +155,7 @@ class ComposerViewModel @AssistedInject constructor(
                 onComposerRestored()
                 return false
             }
+
             inputDraftId != null -> prefillWithExistingDraft(inputDraftId)
             draftAction != null -> prefillForDraftAction(draftAction)
             else -> prefillForNewDraft()
@@ -185,7 +192,7 @@ class ComposerViewModel @AssistedInject constructor(
     private suspend fun prefillForNewDraft() {
         // Emitting also for "empty draft" as now signature is returned with the init body, effectively
         // making this the same as other prefill cases (eg. "reply" or "fw")
-        emitNewStateFor(ComposerEvent.OpenWithMessageAction(DraftAction.Compose))
+        emitNewStateFor(ComposerEvent.OpenDraft)
 
         createEmptyDraft(primaryUserId())
             .onRight { draftFields ->
@@ -194,14 +201,15 @@ class ComposerViewModel @AssistedInject constructor(
                         draftUiModel = draftFields.toDraftUiModel(),
                         isDataRefreshed = true,
                         isBlockedSendingFromPmAddress = false,
-                        isBlockedSendingFromDisabledAddress = false
+                        isBlockedSendingFromDisabledAddress = false,
+                        bodyShouldTakeFocus = false
                     )
                 )
             }
             .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingDefaultSenderAddress) }
     }
 
-    private suspend fun prefillForShareDraftAction(shareDraftAction: DraftAction.PrefillForShare) {
+    private suspend fun prefillForShareDraftAction(shareDraftAction: PrefillForShare) {
         val fileShareInfo = shareDraftAction.intentShareInfo.decode()
 
         fileShareInfo.attachmentUris.takeIfNotEmpty()?.let { rawUri ->
@@ -254,19 +262,19 @@ class ComposerViewModel @AssistedInject constructor(
     // hardcoding values for isBlockedSendingFromPmAddress / isBlockedSendingFromDisabledAddress
     private suspend fun prefillForDraftAction(draftAction: DraftAction) {
         Timber.d("Opening composer for draft action $draftAction")
-        emitNewStateFor(ComposerEvent.OpenWithMessageAction(draftAction))
+        emitNewStateFor(ComposerEvent.OpenDraft)
 
         when (draftAction) {
-            DraftAction.Compose -> prefillForNewDraft()
-            is DraftAction.ComposeToAddresses -> {
+            Compose -> prefillForNewDraft()
+            is ComposeToAddresses -> {
                 Timber.d("composer: prefilling for compose To")
                 prefillForNewDraft()
                 prefillForComposeToAction(draftAction.extractRecipients())
             }
 
-            is DraftAction.Forward,
-            is DraftAction.Reply,
-            is DraftAction.ReplyAll -> createDraftForAction(primaryUserId(), draftAction)
+            is Forward,
+            is Reply,
+            is ReplyAll -> createDraftForAction(primaryUserId(), draftAction)
                 .onRight { draftFields ->
                     initComposerFields(draftFields)
                     emitNewStateFor(
@@ -274,19 +282,20 @@ class ComposerViewModel @AssistedInject constructor(
                             draftUiModel = draftFields.toDraftUiModel(),
                             isDataRefreshed = true,
                             isBlockedSendingFromPmAddress = false,
-                            isBlockedSendingFromDisabledAddress = false
+                            isBlockedSendingFromDisabledAddress = false,
+                            bodyShouldTakeFocus = (draftAction is Reply) || (draftAction is ReplyAll)
                         )
                     )
                 }
                 .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingParentMessageData) }
 
-            is DraftAction.PrefillForShare -> prefillForShareDraftAction(draftAction)
+            is PrefillForShare -> prefillForShareDraftAction(draftAction)
         }
     }
 
     private suspend fun prefillWithExistingDraft(inputDraftId: String) {
         Timber.d("Opening composer with $inputDraftId")
-        emitNewStateFor(ComposerEvent.OpenExistingDraft)
+        emitNewStateFor(ComposerEvent.OpenDraft)
 
         openExistingDraft(primaryUserId(), MessageId(inputDraftId))
             .onRight { draftFieldsWithSyncStatus ->
@@ -297,7 +306,8 @@ class ComposerViewModel @AssistedInject constructor(
                         draftUiModel = draftFields.toDraftUiModel(),
                         isDataRefreshed = draftFieldsWithSyncStatus is DraftFieldsWithSyncStatus.Remote,
                         isBlockedSendingFromPmAddress = false,
-                        isBlockedSendingFromDisabledAddress = false
+                        isBlockedSendingFromDisabledAddress = false,
+                        bodyShouldTakeFocus = draftFields.recipientsTo.value.isNotEmpty()
                     )
                 )
             }
@@ -338,6 +348,7 @@ class ComposerViewModel @AssistedInject constructor(
                     is ComposerAction.SendExpiringMessageToExternalRecipientsConfirmed -> emitNewStateFor(
                         onSendMessage()
                     )
+
                     is ComposerAction.DiscardDraft -> emitNewStateFor(action)
                     is ComposerAction.DiscardDraftConfirmed -> onDiscardDraftConfirmed(action)
                 }
@@ -484,7 +495,7 @@ class ComposerViewModel @AssistedInject constructor(
         mutableState.value = reducer.newStateFrom(currentState, operation)
     }
 
-    private fun DraftAction.ComposeToAddresses.extractRecipients(): List<RecipientUiModel> {
+    private fun ComposeToAddresses.extractRecipients(): List<RecipientUiModel> {
         return this.recipients.map { recipient ->
             when {
                 validateEmailAddress(recipient) -> RecipientUiModel.Valid(recipient)

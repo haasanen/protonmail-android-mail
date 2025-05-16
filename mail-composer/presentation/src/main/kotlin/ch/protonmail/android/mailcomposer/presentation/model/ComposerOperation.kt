@@ -26,7 +26,6 @@ import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.AttachmentAddError
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
-import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import kotlin.time.Duration
@@ -56,13 +55,13 @@ internal sealed interface ComposerAction : ComposerOperation {
 sealed interface ComposerEvent : ComposerOperation {
     data class DefaultSenderReceived(val sender: SenderUiModel) : ComposerEvent
     data class SenderAddressesReceived(val senders: List<SenderUiModel>) : ComposerEvent
-    data object OpenExistingDraft : ComposerEvent
-    data class OpenWithMessageAction(val draftAction: DraftAction) : ComposerEvent
+    data object OpenDraft : ComposerEvent
     data class PrefillDraftDataReceived(
         val draftUiModel: DraftUiModel,
         val isDataRefreshed: Boolean,
         val isBlockedSendingFromPmAddress: Boolean,
-        val isBlockedSendingFromDisabledAddress: Boolean
+        val isBlockedSendingFromDisabledAddress: Boolean,
+        val bodyShouldTakeFocus: Boolean
     ) : ComposerEvent
     data class PrefillDataReceivedViaShare(val draftUiModel: DraftUiModel) : ComposerEvent
     data class ReplaceDraftBody(val draftBody: DraftBody) : ComposerEvent

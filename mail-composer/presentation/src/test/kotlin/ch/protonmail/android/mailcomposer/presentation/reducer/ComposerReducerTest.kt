@@ -248,7 +248,7 @@ class ComposerReducerTest(
         private val EmptyToLoadingWithOpenExistingDraft = TestTransition(
             name = "Should set state to loading when open of existing draft was requested",
             currentState = ComposerDraftState.initial(),
-            operation = ComposerEvent.OpenExistingDraft,
+            operation = ComposerEvent.OpenDraft,
             expectedState = aNotSubmittableState(
                 error = Effect.empty(),
                 isLoading = true
@@ -263,13 +263,14 @@ class ComposerReducerTest(
                 draftUiModel,
                 isDataRefreshed = true,
                 isBlockedSendingFromPmAddress = false,
-                isBlockedSendingFromDisabledAddress = false
+                isBlockedSendingFromDisabledAddress = false,
+                bodyShouldTakeFocus = false
             ),
             expectedState = aNotSubmittableState(
                 sender = SenderUiModel(draftFieldsWithoutRecipients.sender.value),
                 draftBody = draftFieldsWithoutRecipients.body.value,
                 draftDisplayBodyUiModel = draftDisplayBody,
-                error = Effect.empty()
+                error = Effect.empty(),
             )
         )
 
@@ -281,7 +282,8 @@ class ComposerReducerTest(
                 draftUiModel,
                 isDataRefreshed = false,
                 isBlockedSendingFromPmAddress = false,
-                isBlockedSendingFromDisabledAddress = false
+                isBlockedSendingFromDisabledAddress = false,
+                bodyShouldTakeFocus = false
             ),
             expectedState = aNotSubmittableState(
                 sender = SenderUiModel(draftFieldsWithoutRecipients.sender.value),
@@ -313,7 +315,8 @@ class ComposerReducerTest(
                 draftUiModelWithoutRecipients,
                 isDataRefreshed = true,
                 isBlockedSendingFromPmAddress = true,
-                isBlockedSendingFromDisabledAddress = false
+                isBlockedSendingFromDisabledAddress = false,
+                bodyShouldTakeFocus = false
             ),
             expectedState = aNotSubmittableState(
                 sender = SenderUiModel(draftFieldsWithoutRecipients.sender.value),
