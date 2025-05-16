@@ -28,17 +28,27 @@ import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSource
 import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSourceImpl
 import ch.protonmail.android.legacymigration.data.repository.LegacyAccountRepositoryImpl
 import ch.protonmail.android.legacymigration.data.repository.LegacyMigrationStatusRepositoryImpl
+import ch.protonmail.android.legacymigration.domain.LegacyDBCoroutineScope
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAccountRepository
 import ch.protonmail.android.legacymigration.domain.repository.LegacyMigrationStatusRepository
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dagger.Binds
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 @Module(includes = [LegacyMigrationModule.BindsModule::class])
 @InstallIn(SingletonComponent::class)
 object LegacyMigrationModule {
+
+    @Provides
+    @Singleton
+    @LegacyDBCoroutineScope
+    fun provideLegacyDBCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     @Module
     @InstallIn(SingletonComponent::class)

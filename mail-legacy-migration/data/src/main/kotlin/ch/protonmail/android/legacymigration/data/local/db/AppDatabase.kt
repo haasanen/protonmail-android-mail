@@ -21,6 +21,7 @@ package ch.protonmail.android.legacymigration.data.local.db
 import android.content.Context
 import androidx.room.Database
 import androidx.room.TypeConverters
+import ch.protonmail.android.legacymigration.domain.model.LegacyDatabase
 import me.proton.core.account.data.db.AccountConverters
 import me.proton.core.account.data.db.AccountDatabase
 import me.proton.core.account.data.entity.AccountEntity
@@ -183,7 +184,7 @@ abstract class AppDatabase :
 
     companion object {
 
-        const val name = "db-mail"
+        const val name = LegacyDatabase.Name
         const val version = 42
 
         internal val migrations = listOf(

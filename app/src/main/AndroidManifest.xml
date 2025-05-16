@@ -188,6 +188,11 @@
                 android:value="androidx.startup"
                 tools:node="remove" />
 
+            <meta-data
+                android:name="ch.protonmail.android.legacymigration.domain.initializer.LegacyAppCleanupInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+
             <!--
              Left Initializers:
              - androidx.profileinstaller.ProfileInstallerInitializer

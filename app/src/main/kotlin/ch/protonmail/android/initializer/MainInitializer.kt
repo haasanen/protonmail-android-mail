@@ -25,6 +25,7 @@ import ch.protonmail.android.BuildConfig
 import ch.protonmail.android.initializer.background.BackgroundExecutionInitializer
 import ch.protonmail.android.initializer.prefetch.DataPrefetchInitializer
 import ch.protonmail.android.initializer.strictmode.StrictModeInitializer
+import ch.protonmail.android.legacymigration.domain.initializer.LegacyAppCleanupInitializer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -72,6 +73,10 @@ class MainInitializer : Initializer<Unit> {
             with(AppInitializer.getInstance(appContext)) {
                 // WorkManager need to be initialized before any other dependant initializer.
                 initializeComponent(WorkManagerInitializer::class.java)
+
+                // Cleanup legacy app data if needed
+                initializeComponent(LegacyAppCleanupInitializer::class.java)
+
                 initializeComponent(MainInitializer::class.java)
             }
 
