@@ -18,25 +18,16 @@
 
 package ch.protonmail.android.mailmessage.data.repository
 
-import java.io.File
-import android.net.Uri
 import arrow.core.Either
 import arrow.core.flatMap
-import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.local.RustAttachmentDataSource
 import ch.protonmail.android.mailmessage.data.mapper.DecryptedAttachmentMapper
 import ch.protonmail.android.mailmessage.data.mapper.toLocalAttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.DecryptedAttachment
-import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
-import ch.protonmail.android.mailmessage.domain.model.MessageAttachmentMetadata
-import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.AttachmentRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
 class AttachmentRepositoryImpl @Inject constructor(
@@ -51,124 +42,5 @@ class AttachmentRepositoryImpl @Inject constructor(
         return rustAttachmentDataSource
             .getAttachment(userId, attachmentId.toLocalAttachmentId())
             .flatMap { decryptedAttachmentMapper.toDomainModel(it) }
-    }
-
-    override suspend fun getAttachmentFromRemote(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId
-    ): Either<DataError, ByteArray> {
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
-    }
-
-    override suspend fun saveMimeAttachmentToPublicStorage(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId
-    ): Either<DataError, Uri> {
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
-    }
-
-    override suspend fun getEmbeddedImage(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId
-    ): Either<DataError, ByteArray> {
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
-    }
-
-    override suspend fun getDownloadingAttachmentsForMessages(
-        userId: UserId,
-        messageIds: List<MessageId>
-    ): List<MessageAttachmentMetadata> {
-        Timber.w("Not implemented")
-        return emptyList()
-    }
-
-    override suspend fun observeAttachmentMetadata(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId
-    ): Flow<MessageAttachmentMetadata?> {
-        Timber.w("Not implemented")
-        return flowOf()
-    }
-
-    override suspend fun saveAttachment(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId,
-        uri: Uri
-    ): Either<DataError, Unit> {
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
-    }
-
-    override suspend fun saveAttachmentToFile(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId,
-        content: ByteArray
-    ): Either<DataError, File> {
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
-    }
-
-    override suspend fun saveMimeAttachment(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId,
-        content: ByteArray,
-        attachment: MessageAttachment
-    ): Either<DataError, Unit> {
-
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
-    }
-
-    override suspend fun getFileSizeFromUri(uri: Uri): Either<DataError, Long> {
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
-    }
-
-    override suspend fun readFileFromStorage(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId
-    ): Either<DataError, File> {
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
-    }
-
-    override suspend fun getAttachmentInfo(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId
-    ): Either<DataError, MessageAttachment> {
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
-    }
-
-    override suspend fun updateMessageAttachment(
-        userId: UserId,
-        messageId: MessageId,
-        localAttachmentId: AttachmentId,
-        attachment: MessageAttachment
-    ): Either<DataError, Unit> {
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
-    }
-
-    override suspend fun copyMimeAttachmentsToMessage(
-        userId: UserId,
-        sourceMessageId: MessageId,
-        targetMessageId: MessageId,
-        attachmentIds: List<AttachmentId>
-    ): Either<DataError.Local, Unit> {
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
     }
 }
