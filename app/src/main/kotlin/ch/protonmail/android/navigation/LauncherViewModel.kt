@@ -58,6 +58,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import ch.protonmail.android.legacymigration.domain.model.LegacyMigrationStatus
+import ch.protonmail.android.legacymigration.domain.usecase.DestroyLegacyDatabases
 import ch.protonmail.android.legacymigration.domain.usecase.SetLegacyMigrationStatus
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
@@ -70,6 +71,7 @@ class LauncherViewModel @Inject constructor(
     private val setPrimaryAccount: SetPrimaryAccount,
     private val userSessionRepository: UserSessionRepository,
     private val notificationsPermissionOrchestrator: NotificationsPermissionOrchestrator,
+    private val destroyLegacyDatabases: DestroyLegacyDatabases,
     private val observeLegacyMigrationStatus: ObserveLegacyMigrationStatus,
     private val setLegacyMigrationStatus: SetLegacyMigrationStatus,
     private val migrateLegacyAccounts: MigrateLegacyAccounts,
@@ -94,9 +96,11 @@ class LauncherViewModel @Inject constructor(
                             }
                             .onRight {
                                 Timber.d("Legacy migration: Successfully migrated legacy accounts")
+                                destroyLegacyDatabases()
                             }
                     } else {
                         Timber.d("Legacy migration: No legacy account to migrate")
+                        destroyLegacyDatabases()
                     }
 
                     setLegacyMigrationStatus(LegacyMigrationStatus.Done)

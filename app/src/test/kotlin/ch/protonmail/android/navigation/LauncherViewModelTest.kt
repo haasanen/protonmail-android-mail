@@ -45,6 +45,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import arrow.core.right
 import ch.protonmail.android.legacymigration.domain.model.LegacyMigrationStatus
+import ch.protonmail.android.legacymigration.domain.usecase.DestroyLegacyDatabases
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 @ExperimentalCoroutinesApi
@@ -62,6 +63,7 @@ class LauncherViewModelTest {
     private val setLegacyMigrationStatus = mockk<SetLegacyMigrationStatus>(relaxUnitFun = true)
     private val migrateLegacyAccounts = mockk<MigrateLegacyAccounts>()
     private val shouldMigrateLegacyAccountMock = mockk<ShouldMigrateLegacyAccount>()
+    private val destroyLegacyDatabases = mockk<DestroyLegacyDatabases>()
 
     private lateinit var viewModel: LauncherViewModel
 
@@ -86,6 +88,7 @@ class LauncherViewModelTest {
                 setPrimaryAccount,
                 userSessionRepository,
                 notificationsPermissionOrchestrator,
+                destroyLegacyDatabases,
                 observeLegacyMigrationStatus,
                 setLegacyMigrationStatus,
                 migrateLegacyAccounts,
@@ -115,6 +118,7 @@ class LauncherViewModelTest {
             setPrimaryAccount,
             userSessionRepository,
             notificationsPermissionOrchestrator,
+            destroyLegacyDatabases,
             observeLegacyMigrationStatus,
             setLegacyMigrationStatus,
             migrateLegacyAccounts,
@@ -136,6 +140,7 @@ class LauncherViewModelTest {
             every { observeLegacyMigrationStatus() } returns migrationStatusFlow
             coEvery { shouldMigrateLegacyAccountMock() } returns true
             coEvery { migrateLegacyAccounts() } returns Unit.right()
+            coEvery { destroyLegacyDatabases() } returns Unit
             every {
                 userSessionRepository.observeAccounts()
             } returns flowOf(listOf(readyAccount))
@@ -147,6 +152,7 @@ class LauncherViewModelTest {
                 setPrimaryAccount,
                 userSessionRepository,
                 notificationsPermissionOrchestrator,
+                destroyLegacyDatabases,
                 observeLegacyMigrationStatus,
                 setLegacyMigrationStatus,
                 migrateLegacyAccounts,
@@ -164,6 +170,7 @@ class LauncherViewModelTest {
             }
 
             coVerify(exactly = 1) { migrateLegacyAccounts() }
+            coVerify(exactly = 1) { destroyLegacyDatabases() }
             coVerify { setLegacyMigrationStatus(LegacyMigrationStatus.Done) }
         }
 
@@ -174,7 +181,7 @@ class LauncherViewModelTest {
             // Given
             val migrationStatusFlow = MutableSharedFlow<LegacyMigrationStatus>()
             every { observeLegacyMigrationStatus() } returns migrationStatusFlow
-
+            coEvery { destroyLegacyDatabases() } returns Unit
             coEvery { shouldMigrateLegacyAccountMock() } returns false
             every { userSessionRepository.observeAccounts() } returns flowOf(emptyList())
 
@@ -185,6 +192,7 @@ class LauncherViewModelTest {
                 setPrimaryAccount,
                 userSessionRepository,
                 notificationsPermissionOrchestrator,
+                destroyLegacyDatabases,
                 observeLegacyMigrationStatus,
                 setLegacyMigrationStatus,
                 migrateLegacyAccounts,
@@ -202,6 +210,7 @@ class LauncherViewModelTest {
             }
 
             coVerify(exactly = 0) { migrateLegacyAccounts() }
+            coVerify(exactly = 1) { destroyLegacyDatabases() }
             coVerify { setLegacyMigrationStatus(LegacyMigrationStatus.Done) }
         }
 }
