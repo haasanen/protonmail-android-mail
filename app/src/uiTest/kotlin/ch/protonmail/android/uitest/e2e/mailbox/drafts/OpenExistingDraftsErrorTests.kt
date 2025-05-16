@@ -56,7 +56,7 @@ import org.junit.Test
 @RegressionTest
 @HiltAndroidTest
 @UninstallModules(ServerProofModule::class)
-internal class OpenDraftsErrorTests :
+internal class OpenExistingDraftsErrorTests :
     MockedNetworkTest(loginType = LoginTestUserTypes.Paid.FancyCapybara),
     OpenExistingDraftsTest {
 
