@@ -28,6 +28,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOpe
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingConversation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingDeleteDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingErrorBar
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingMarkAsLegitimateDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingMessageBar
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingMessages
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingReportPhishingDialog
@@ -55,6 +56,7 @@ sealed interface ConversationDetailOperation {
     sealed interface AffectingDeleteDialog
     sealed interface AffectingReportPhishingDialog
     sealed interface AffectingTrashedMessagesBanner
+    sealed interface AffectingMarkAsLegitimateDialog
 }
 
 sealed interface ConversationDetailEvent : ConversationDetailOperation {
@@ -300,6 +302,16 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
         ) : MoveMessage(messageId, mailLabelText)
     }
 
-    data class MarkMessageAsLegitimate(val messageId: MessageId) : ConversationDetailViewAction
+    data class MarkMessageAsLegitimate(
+        val messageId: MessageId,
+        val isPhishing: Boolean
+    ) : ConversationDetailViewAction, AffectingMarkAsLegitimateDialog
+
+    data class MarkMessageAsLegitimateConfirmed(
+        val messageId: MessageId
+    ) : ConversationDetailViewAction, AffectingMarkAsLegitimateDialog
+
+    data object MarkMessageAsLegitimateDismissed : ConversationDetailViewAction, AffectingMarkAsLegitimateDialog
+
     data class UnblockSender(val messageId: MessageIdUiModel, val email: String) : ConversationDetailViewAction
 }

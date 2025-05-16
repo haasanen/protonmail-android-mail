@@ -78,6 +78,7 @@ class ConversationDetailReducerTest(
     private val deleteDialogReducer = mockk<ConversationDeleteDialogReducer>(relaxed = true)
     private val reportPhishingDialogReducer = mockk<ConversationReportPhishingDialogReducer>(relaxed = true)
     private val trashedMessagesBannerReducer = mockk<TrashedMessagesBannerReducer>(relaxed = true)
+    private val markAsLegitimateDialogReducer = mockk<MarkAsLegitimateDialogReducer>(relaxed = true)
     private val reducer = ConversationDetailReducer(
         bottomBarReducer = bottomBarReducer,
         messagesReducer = messagesReducer,
@@ -86,6 +87,7 @@ class ConversationDetailReducerTest(
         deleteDialogReducer = deleteDialogReducer,
         reportPhishingDialogReducer = reportPhishingDialogReducer,
         trashedMessagesBannerReducer = trashedMessagesBannerReducer,
+        markAsLegitimateDialogReducer = markAsLegitimateDialogReducer,
         actionResultMapper = actionResultMapper
     )
 
@@ -169,6 +171,12 @@ class ConversationDetailReducerTest(
             } else {
                 verify { reportPhishingDialogReducer wasNot Called }
             }
+
+            if (reducesMarkAsLegitimateDialog) {
+                verify { markAsLegitimateDialogReducer.newStateFrom(any()) }
+            } else {
+                verify { markAsLegitimateDialogReducer wasNot Called }
+            }
         }
     }
 
@@ -186,7 +194,8 @@ class ConversationDetailReducerTest(
         val reducesMessageScroll: Boolean,
         val reducesDeleteDialog: Boolean,
         val reducesTrashedMessagesBanner: Boolean,
-        val reducesReportPhishingDialog: Boolean
+        val reducesReportPhishingDialog: Boolean,
+        val reducesMarkAsLegitimateDialog: Boolean
     ) {
 
         fun operationAffectingBottomBar() = operation as ConversationDetailEvent.ConversationBottomBarEvent
@@ -249,7 +258,14 @@ class ConversationDetailReducerTest(
             ConversationDetailViewAction.ReportPhishingConfirmed(
                 MessageId(messageId.id)
             ) affects listOf(ReportPhishingDialog),
-            ConversationDetailViewAction.ReportPhishingDismissed affects listOf(ReportPhishingDialog)
+            ConversationDetailViewAction.ReportPhishingDismissed affects listOf(ReportPhishingDialog),
+            ConversationDetailViewAction.MarkMessageAsLegitimate(
+                MessageId(messageId.id), isPhishing = true
+            ) affects listOf(MarkAsLegitimateDialog),
+            ConversationDetailViewAction.MarkMessageAsLegitimateConfirmed(
+                MessageId(messageId.id)
+            ) affects listOf(MarkAsLegitimateDialog),
+            ConversationDetailViewAction.MarkMessageAsLegitimateDismissed affects listOf(MarkAsLegitimateDialog)
         )
 
         val events = listOf(
@@ -347,7 +363,8 @@ private infix fun ConversationDetailOperation.affects(entities: List<Entity>) = 
     reducesMessageScroll = entities.contains(MessageScroll),
     reducesDeleteDialog = entities.contains(DeleteDialog),
     reducesTrashedMessagesBanner = entities.contains(TrashedMessagesBanner),
-    reducesReportPhishingDialog = entities.contains(ReportPhishingDialog)
+    reducesReportPhishingDialog = entities.contains(ReportPhishingDialog),
+    reducesMarkAsLegitimateDialog = entities.contains(MarkAsLegitimateDialog)
 )
 
 private infix fun ConversationDetailOperation.affects(entity: Entity) = this.affects(listOf(entity))
@@ -366,6 +383,7 @@ private data object MessageScroll : Entity
 private data object DeleteDialog : Entity
 private data object TrashedMessagesBanner : Entity
 private data object ReportPhishingDialog : Entity
+private data object MarkAsLegitimateDialog : Entity
 
 private val allMessagesFirstExpanded = listOf(
     ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded,

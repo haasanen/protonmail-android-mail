@@ -102,6 +102,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailVie
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestScrollTo
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ShowAllAttachmentsForMessage
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
+import ch.protonmail.android.maildetail.presentation.model.MarkAsLegitimateDialogState
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDeleteDialogReducer
@@ -109,6 +110,7 @@ import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailM
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailMetadataReducer
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailReducer
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationReportPhishingDialogReducer
+import ch.protonmail.android.maildetail.presentation.reducer.MarkAsLegitimateDialogReducer
 import ch.protonmail.android.maildetail.presentation.reducer.TrashedMessagesBannerReducer
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
@@ -405,6 +407,7 @@ class ConversationDetailViewModelIntegrationTest {
         deleteDialogReducer = ConversationDeleteDialogReducer(),
         reportPhishingDialogReducer = ConversationReportPhishingDialogReducer(),
         trashedMessagesBannerReducer = TrashedMessagesBannerReducer(),
+        markAsLegitimateDialogReducer = MarkAsLegitimateDialogReducer(),
         actionResultMapper = ActionResultMapper(mailLabelTextMapper)
     )
 
@@ -1960,7 +1963,44 @@ class ConversationDetailViewModelIntegrationTest {
     }
 
     @Test
-    fun `should call use case when marking a message as legitimate`() = runTest {
+    fun `should show confirmation dialog when marking a message as legitimate`() = runTest {
+        // Given
+        val messageId = MessageSample.Invoice.messageId
+        val messages = ConversationMessages(
+            nonEmptyListOf(
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
+            ),
+            MessageSample.AugWeatherForecast.messageId
+        )
+        val labelId = SystemLabelId.Archive.labelId
+        coEvery { observeConversationMessages(userId, any(), labelId) } returns flowOf(messages.right())
+        coEvery { observeMessage(userId, messageId) } returns flowOf(MessageSample.Invoice.right())
+
+        // When
+        val viewModel = buildConversationDetailViewModel()
+
+        viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
+
+        viewModel.state.test {
+            skipItems(4)
+
+            viewModel.submit(ConversationDetailViewAction.MarkMessageAsLegitimate(messageId, isPhishing = true))
+            advanceUntilIdle()
+
+            // Then
+            assertEquals(
+                MarkAsLegitimateDialogState.Shown(messageId, isPhishing = true),
+                awaitItem().markAsLegitimateDialogState
+            )
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `should call use case when marking a message as legitimate is confirmed`() = runTest {
         // Given
         val messageId = MessageSample.Invoice.messageId
         val messages = ConversationMessages(
@@ -1984,7 +2024,7 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
 
-            viewModel.submit(ConversationDetailViewAction.MarkMessageAsLegitimate(messageId))
+            viewModel.submit(ConversationDetailViewAction.MarkMessageAsLegitimateConfirmed(messageId))
             advanceUntilIdle()
 
             // Then

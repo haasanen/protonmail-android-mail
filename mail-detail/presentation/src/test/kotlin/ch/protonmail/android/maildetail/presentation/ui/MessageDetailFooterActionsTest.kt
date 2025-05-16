@@ -61,7 +61,7 @@ internal class MessageDetailFooterActionsTest {
             onOpenComposer = {},
             onAvatarImageLoadRequested = {},
             onToggleAttachmentsExpandCollapseMode = {},
-            onMarkMessageAsLegitimate = {},
+            onMarkMessageAsLegitimate = { _, _ -> },
             onUnblockSender = { _, _ -> }
         )
 

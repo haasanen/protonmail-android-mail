@@ -310,7 +310,9 @@ class ConversationDetailViewModel @Inject constructor(
             is ScrollRequestCompleted,
             is ConversationDetailViewAction.ReportPhishing,
             is ConversationDetailViewAction.ReportPhishingDismissed,
-            is ConversationDetailViewAction.SwitchViewMode -> directlyHandleViewAction(action)
+            is ConversationDetailViewAction.SwitchViewMode,
+            is ConversationDetailViewAction.MarkMessageAsLegitimate,
+            is ConversationDetailViewAction.MarkMessageAsLegitimateDismissed -> directlyHandleViewAction(action)
 
             is ConversationDetailViewAction.OnAvatarImageLoadRequested ->
                 handleOnAvatarImageLoadRequested(action.avatar)
@@ -343,7 +345,8 @@ class ConversationDetailViewModel @Inject constructor(
                 )
             }
 
-            is ConversationDetailViewAction.MarkMessageAsLegitimate -> handleMarkMessageAsLegitimate(action.messageId)
+            is ConversationDetailViewAction.MarkMessageAsLegitimateConfirmed ->
+                handleMarkMessageAsLegitimateConfirmed(action)
 
             is ConversationDetailViewAction.UnblockSender -> handleUnblockSender(action.messageId, action.email)
         }
@@ -1175,14 +1178,19 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun handleMarkMessageAsLegitimate(messageId: MessageId) = viewModelScope.launch {
-        markMessageAsLegitimate(
-            userId = primaryUserId.first(),
-            messageId = messageId
-        ).fold(
-            ifLeft = { Timber.e("Failed to mark message ${messageId.id} as legitimate") },
-            ifRight = { setOrRefreshMessageBody(MessageIdUiModel(messageId.id)) }
-        )
+    private fun handleMarkMessageAsLegitimateConfirmed(
+        action: ConversationDetailViewAction.MarkMessageAsLegitimateConfirmed
+    ) {
+        viewModelScope.launch {
+            markMessageAsLegitimate(
+                userId = primaryUserId.first(),
+                messageId = action.messageId
+            ).fold(
+                ifLeft = { Timber.e("Failed to mark message ${action.messageId.id} as legitimate") },
+                ifRight = { setOrRefreshMessageBody(MessageIdUiModel(action.messageId.id)) }
+            )
+            emitNewStateFrom(action)
+        }
     }
 
     private fun handleUnblockSender(messageId: MessageIdUiModel, email: String) = viewModelScope.launch {

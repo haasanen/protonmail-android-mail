@@ -20,7 +20,7 @@ import ch.protonmail.android.mailcommon.presentation.model.string
 @Composable
 fun MessageBanners(
     messageBannersUiModel: MessageBannersUiModel,
-    onMarkMessageAsLegitimate: () -> Unit,
+    onMarkMessageAsLegitimate: (Boolean) -> Unit,
     onUnblockSender: () -> Unit
 ) {
     Column {
@@ -35,7 +35,7 @@ fun MessageBanners(
                 backgroundColor = ProtonTheme.colors.notificationError,
                 buttonBackgroundColor = Color(PHISHING_BANNER_BUTTON_BACKGROUND),
                 borderColorIsBackgroundColor = true,
-                onButtonClicked = onMarkMessageAsLegitimate
+                onButtonClicked = { onMarkMessageAsLegitimate(true) }
             )
         }
         if (messageBannersUiModel.shouldShowSpamBanner) {
@@ -49,7 +49,7 @@ fun MessageBanners(
                 backgroundColor = ProtonTheme.colors.notificationError,
                 buttonBackgroundColor = Color(PHISHING_BANNER_BUTTON_BACKGROUND),
                 borderColorIsBackgroundColor = true,
-                onButtonClicked = onMarkMessageAsLegitimate
+                onButtonClicked = { onMarkMessageAsLegitimate(false) }
             )
         }
         if (messageBannersUiModel.shouldShowBlockedSenderBanner) {

@@ -102,6 +102,7 @@ import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
 import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDetailsPreviewProvider
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.scrollOffsetDp
+import ch.protonmail.android.maildetail.presentation.ui.dialog.MarkAsLegitimateDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.ReportPhishingDialog
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationDetailViewModel
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheet
@@ -198,6 +199,12 @@ fun ConversationDetailScreen(
         state = state.reportPhishingDialogState,
         onConfirm = { viewModel.submit(ConversationDetailViewAction.ReportPhishingConfirmed(it)) },
         onDismiss = { viewModel.submit(ConversationDetailViewAction.ReportPhishingDismissed) }
+    )
+
+    MarkAsLegitimateDialog(
+        state = state.markAsLegitimateDialogState,
+        onConfirm = { viewModel.submit(ConversationDetailViewAction.MarkMessageAsLegitimateConfirmed(it)) },
+        onDismiss = { viewModel.submit(ConversationDetailViewAction.MarkMessageAsLegitimateDismissed) }
     )
 
     ProtonModalBottomSheetLayout(
@@ -460,8 +467,10 @@ fun ConversationDetailScreen(
                 onTrashedMessagesBannerClick = {
                     viewModel.submit(ConversationDetailViewAction.ChangeVisibilityOfMessages)
                 },
-                onMarkMessageAsLegitimate = {
-                    viewModel.submit(ConversationDetailViewAction.MarkMessageAsLegitimate(MessageId(it.id)))
+                onMarkMessageAsLegitimate = { messageId, isPhishing ->
+                    viewModel.submit(
+                        ConversationDetailViewAction.MarkMessageAsLegitimate(MessageId(messageId.id), isPhishing)
+                    )
                 },
                 onUnblockSender = { messageId, email ->
                     viewModel.submit(ConversationDetailViewAction.UnblockSender(messageId, email))
@@ -983,7 +992,7 @@ object ConversationDetailScreen {
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit,
         val onTrashedMessagesBannerClick: () -> Unit,
-        val onMarkMessageAsLegitimate: (MessageIdUiModel) -> Unit,
+        val onMarkMessageAsLegitimate: (MessageIdUiModel, Boolean) -> Unit,
         val onUnblockSender: (MessageIdUiModel, String) -> Unit
     ) {
 
@@ -1032,7 +1041,7 @@ object ConversationDetailScreen {
                 onAvatarImageLoadRequested = {},
                 onParticipantClicked = { _, _ -> },
                 onTrashedMessagesBannerClick = {},
-                onMarkMessageAsLegitimate = {},
+                onMarkMessageAsLegitimate = { _, _ -> },
                 onUnblockSender = { _, _ -> }
             )
         }

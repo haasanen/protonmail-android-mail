@@ -32,6 +32,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteSta
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
+import ch.protonmail.android.maildetail.presentation.model.MarkAsLegitimateDialogState
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
 import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
@@ -89,7 +90,8 @@ object ConversationDetailsPreviewData {
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
+        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden
     )
 
     val SuccessWithRandomMessageIds = ConversationDetailState(
@@ -141,7 +143,8 @@ object ConversationDetailsPreviewData {
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
+        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden
     )
 
     val FailedLoadingConversation = ConversationDetailState(
@@ -160,7 +163,8 @@ object ConversationDetailsPreviewData {
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
+        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden
     )
 
     val FailedLoadingMessages = ConversationDetailState(
@@ -179,7 +183,8 @@ object ConversationDetailsPreviewData {
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
+        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden
     )
 
     val FailedLoadingBottomBar = ConversationDetailState(
@@ -198,7 +203,8 @@ object ConversationDetailsPreviewData {
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
+        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden
     )
 
     val Loading = ConversationDetailState(
@@ -217,7 +223,8 @@ object ConversationDetailsPreviewData {
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
+        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden
     )
 
     val NotLoggedIn = ConversationDetailState(
@@ -236,7 +243,8 @@ object ConversationDetailsPreviewData {
         requestLinkConfirmation = false,
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
-        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
+        trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
+        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden
     )
 }
 

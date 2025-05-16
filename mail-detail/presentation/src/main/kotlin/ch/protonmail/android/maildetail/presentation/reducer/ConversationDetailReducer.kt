@@ -51,6 +51,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOpe
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
+import ch.protonmail.android.maildetail.presentation.model.MarkAsLegitimateDialogState
 import ch.protonmail.android.maildetail.presentation.model.MessageBodyLink
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
@@ -67,6 +68,7 @@ class ConversationDetailReducer @Inject constructor(
     private val deleteDialogReducer: ConversationDeleteDialogReducer,
     private val reportPhishingDialogReducer: ConversationReportPhishingDialogReducer,
     private val trashedMessagesBannerReducer: TrashedMessagesBannerReducer,
+    private val markAsLegitimateDialogReducer: MarkAsLegitimateDialogReducer,
     private val actionResultMapper: ActionResultMapper
 ) {
 
@@ -89,7 +91,8 @@ class ConversationDetailReducer @Inject constructor(
             scrollToMessage = currentState.toScrollToMessageState(operation),
             conversationDeleteState = currentState.toNewDeleteDialogState(operation),
             reportPhishingDialogState = currentState.toNewReportPhishingDialogState(operation),
-            trashedMessagesBannerState = currentState.toNewTrashedMessagesBannerState(operation)
+            trashedMessagesBannerState = currentState.toNewTrashedMessagesBannerState(operation),
+            markAsLegitimateDialogState = currentState.toNewMarkAsLegitimateDialogState(operation)
         )
     }
 
@@ -316,6 +319,16 @@ class ConversationDetailReducer @Inject constructor(
             trashedMessagesBannerReducer.newStateFrom(operation)
         } else {
             trashedMessagesBannerState
+        }
+    }
+
+    private fun ConversationDetailState.toNewMarkAsLegitimateDialogState(
+        operation: ConversationDetailOperation
+    ): MarkAsLegitimateDialogState {
+        return if (operation is ConversationDetailOperation.AffectingMarkAsLegitimateDialog) {
+            markAsLegitimateDialogReducer.newStateFrom(operation)
+        } else {
+            markAsLegitimateDialogState
         }
     }
 }
