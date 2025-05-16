@@ -356,4 +356,24 @@ internal class ConversationDetailMessageUiModelMapperTest {
         assertEquals(true, result.isUnread)
         assertNull(result.messageDetailHeaderUiModel.location.color)
     }
+
+    @Test
+    fun `when message is a draft then ui model draft is true`() = runTest {
+        // given
+        val message = MessageSample.AugWeatherForecast.copy(
+            isDraft = true
+        )
+        val expected = with(ConversationDetailMessageUiModelSample) {
+            AugWeatherForecast.copy(
+                isDraft = true
+            )
+        }
+        val avatarImageState = AvatarImageState.NoImageAvailable
+
+        // when
+        val result = mapper.toUiModel(message, avatarImageState, primaryUserAddress)
+
+        // then
+        assertEquals(expected, result)
+    }
 }

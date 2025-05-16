@@ -72,7 +72,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             shortTime = formatShortTime(message.time.seconds),
             labels = toLabelUiModels(message.customLabels),
             messageId = messageIdUiModelMapper.toUiModel(message.messageId),
-            isDraft = false,
+            isDraft = message.isDraft,
             recipients = (message.toList + message.ccList + message.bccList).map {
                 participantUiModelMapper.recipientToUiModel(it, primaryUserAddress)
             }.toImmutableList(),
