@@ -24,5 +24,6 @@ data class AppInformation(
     val appVersionCode: Int = 0,
     val appBuildType: String = "type",
     val appBuildFlavor: String = "flavor",
-    val appHost: String = "host"
+    val appHost: String = "host",
+    val rustSdkVersion: String = "0.0.0"
 )

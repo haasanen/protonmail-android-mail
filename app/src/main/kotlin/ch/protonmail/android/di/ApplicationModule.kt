@@ -63,7 +63,8 @@ object ApplicationModule {
         appVersionCode = BuildConfig.VERSION_CODE,
         appBuildType = BuildConfig.BUILD_TYPE,
         appBuildFlavor = BuildConfig.FLAVOR,
-        appHost = envConfig.host
+        appHost = envConfig.host,
+        rustSdkVersion = BuildConfig.RUST_SDK_VERSION
     )
 
     @Provides

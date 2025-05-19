@@ -24,14 +24,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -40,8 +40,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.ProtonSidebarTheme
-import kotlinx.coroutines.launch
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProtonSidebarLazy(
@@ -131,7 +131,7 @@ fun PreviewProtonSidebarLazy() {
                 ProtonSidebarSettingsItem()
                 ProtonSidebarReportBugItem()
 
-                ProtonSidebarAppVersionItem(name = "App Name", version = "0.0.7")
+                ProtonSidebarAppVersionItem(name = "App Name", version = "0.0.7", sdkVersion = "0.7.9")
             }
         }
     }

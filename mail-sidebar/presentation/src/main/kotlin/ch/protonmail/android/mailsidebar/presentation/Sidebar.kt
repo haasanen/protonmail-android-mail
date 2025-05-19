@@ -155,6 +155,7 @@ fun Sidebar(
         item { VerticalSpacer(height = ProtonDimens.Spacing.ExtraLarge) }
 
         item { SidebarDivider() }
+        item { VerticalSpacer(height = ProtonDimens.Spacing.ExtraLarge) }
         item { SidebarAppVersionItem(viewState.appInformation) }
     }
 }
@@ -195,7 +196,8 @@ private fun SidebarContactsItem(onClick: () -> Unit) {
 private fun SidebarAppVersionItem(appInformation: AppInformation) {
     ProtonSidebarAppVersionItem(
         name = appInformation.appName,
-        version = "${appInformation.appVersionName} (${appInformation.appVersionCode})"
+        version = "${appInformation.appVersionName} (${appInformation.appVersionCode})",
+        sdkVersion = appInformation.rustSdkVersion
     )
 }
 

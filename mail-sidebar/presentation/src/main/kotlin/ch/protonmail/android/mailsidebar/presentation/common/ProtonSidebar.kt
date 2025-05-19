@@ -223,6 +223,7 @@ fun ProtonSidebarItem(
 fun ProtonSidebarAppVersionItem(
     name: String,
     version: String,
+    sdkVersion: String,
     modifier: Modifier = Modifier
 ) {
     Text(
@@ -233,7 +234,7 @@ fun ProtonSidebarAppVersionItem(
                 end = ProtonDimens.Spacing.ExtraLarge,
                 bottom = ProtonDimens.Spacing.ExtraLarge
             ),
-        text = "$name $version",
+        text = "$name $version - $sdkVersion",
         textAlign = TextAlign.Center,
         color = ProtonTheme.colors.textWeak,
         style = ProtonTheme.typography.bodySmallHint,
@@ -271,7 +272,7 @@ fun PreviewProtonSidebar() {
             ProtonSidebarSubscriptionItem()
             ProtonSidebarReportBugItem()
 
-            ProtonSidebarAppVersionItem(name = "App Name", version = "0.0.7")
+            ProtonSidebarAppVersionItem(name = "App Name", version = "0.0.7", sdkVersion = "0.7.0")
         }
     }
 }
