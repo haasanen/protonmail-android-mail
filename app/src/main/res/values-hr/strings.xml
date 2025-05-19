@@ -25,7 +25,6 @@
   <string name="dialog_remove_account_description">Odjavit ćete se i ukloniti sve podatke povezane s ovim računom.</string>
   <string name="dialog_remove_account_confirm">Ukloni</string>
   <string name="dialog_remove_account_cancel">Poništi</string>
-  <string name="user_select_other_account_content_description">Odaberite drugi račun</string>
   <string name="feature_coming_soon">Značajka uskoro dolazi...</string>
   <string name="mailbox_draft_saved">Skica je spremljena</string>
   <string name="mailbox_draft_discard">Odbaci</string>

@@ -56,7 +56,6 @@ import ch.protonmail.android.mailsidebar.presentation.label.sidebarFolderItems
 import ch.protonmail.android.mailsidebar.presentation.label.sidebarLabelItems
 import ch.protonmail.android.mailsidebar.presentation.label.sidebarSystemLabelItems
 import kotlinx.coroutines.launch
-import me.proton.core.domain.entity.UserId
 
 @Composable
 @Suppress("ComplexMethod")
@@ -204,10 +203,6 @@ private fun SidebarAppVersionItem(appInformation: AppInformation) {
 object Sidebar {
 
     data class Actions(
-        val onSignIn: (UserId?) -> Unit,
-        val onSignOut: (UserId?) -> Unit,
-        val onRemoveAccount: (UserId?) -> Unit,
-        val onSwitchAccount: (UserId) -> Unit,
         val onSettings: () -> Unit,
         val onLabelAction: (SidebarLabelAction) -> Unit,
         val onSubscription: () -> Unit,
@@ -219,10 +214,6 @@ object Sidebar {
         companion object {
 
             val Empty = Actions(
-                onSignIn = {},
-                onSignOut = {},
-                onRemoveAccount = {},
-                onSwitchAccount = {},
                 onSettings = {},
                 onLabelAction = {},
                 onSubscription = {},
@@ -234,10 +225,6 @@ object Sidebar {
     }
 
     data class NavigationActions(
-        val onSignIn: (UserId?) -> Unit,
-        val onSignOut: (UserId?) -> Unit,
-        val onRemoveAccount: (UserId?) -> Unit,
-        val onSwitchAccount: (UserId) -> Unit,
         val onSettings: () -> Unit,
         val onLabelAdd: () -> Unit,
         val onFolderAdd: () -> Unit,
@@ -248,22 +235,6 @@ object Sidebar {
     ) {
 
         fun toSidebarActions(close: () -> Unit, onLabelAction: (SidebarLabelAction) -> Unit) = Actions(
-            onSignIn = {
-                onSignIn(it)
-                close()
-            },
-            onSignOut = {
-                onSignOut(it)
-                close()
-            },
-            onRemoveAccount = {
-                onRemoveAccount(it)
-                close()
-            },
-            onSwitchAccount = {
-                onSwitchAccount(it)
-                close()
-            },
             onSettings = {
                 onSettings()
                 close()
@@ -293,10 +264,6 @@ object Sidebar {
         companion object {
 
             val Empty = NavigationActions(
-                onSignIn = {},
-                onSignOut = {},
-                onRemoveAccount = {},
-                onSwitchAccount = {},
                 onSettings = {},
                 onLabelAdd = {},
                 onFolderAdd = {},

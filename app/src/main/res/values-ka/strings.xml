@@ -25,7 +25,6 @@
   <string name="dialog_remove_account_description">გახვალთ და წაშლით ყველაფერს, რაც დაკავშირებულია ამ ანგარიშთან.</string>
   <string name="dialog_remove_account_confirm">წაშლა</string>
   <string name="dialog_remove_account_cancel">გაუქმება</string>
-  <string name="user_select_other_account_content_description">აირჩიეთ სხვა ანგარიში</string>
   <string name="feature_coming_soon">ფუნქცია მალე ჩაირთვება…</string>
   <string name="mailbox_draft_saved">მონახაზი შენახულია</string>
   <string name="mailbox_draft_discard">მოცილება</string>

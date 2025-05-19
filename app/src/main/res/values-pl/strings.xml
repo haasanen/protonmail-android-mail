@@ -25,7 +25,6 @@
   <string name="dialog_remove_account_description">Zostaniesz wylogowany i wszystkie dane powiązane z tym kontem zostaną usunięte.</string>
   <string name="dialog_remove_account_confirm">Usuń</string>
   <string name="dialog_remove_account_cancel">Anuluj</string>
-  <string name="user_select_other_account_content_description">Wybierz inne konto</string>
   <string name="feature_coming_soon">Funkcja dostępna wkrótce…</string>
   <string name="mailbox_draft_saved">Szkic został zapisany</string>
   <string name="mailbox_draft_discard">Odrzuć</string>

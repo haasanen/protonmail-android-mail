@@ -18,13 +18,34 @@
 
 package ch.protonmail.android.feature.account
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.R
+import ch.protonmail.android.design.compose.component.ProtonAlertDialog
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.feature.account.SignOutAccountViewModel.State
-import me.proton.core.accountmanager.presentation.compose.SignOutDialog
 import me.proton.core.domain.entity.UserId
 
 @Composable
@@ -49,6 +70,64 @@ fun SignOutAccountDialog(
         onRemoveAccount = { viewModel.signOut(userId, removeAccount = true) }
     )
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Suppress("UseComposableActions")
+@Composable
+private fun SignOutDialog(
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit,
+    onDisableAccount: () -> Unit,
+    onRemoveAccount: () -> Unit
+) {
+    var removeAccount by remember { mutableStateOf(false) }
+    var signingOut by remember { mutableStateOf(false) }
+
+    ProtonAlertDialog(
+        modifier = modifier,
+        title = stringResource(R.string.dialog_sign_out_account_title),
+        text = {
+            Column {
+                ProtonAlertDialogText(R.string.dialog_sign_out_account_description)
+                Spacer(Modifier.size(ProtonDimens.Spacing.Standard))
+                Row(modifier = Modifier.clickable { removeAccount = !removeAccount }) {
+                    CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+                        Checkbox(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically),
+                            checked = removeAccount,
+                            onCheckedChange = { removeAccount = !removeAccount }
+                        )
+                    }
+                    Spacer(Modifier.size(ProtonDimens.Spacing.Standard))
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        text = stringResource(R.string.dialog_remove_account_description),
+                        style = ProtonTheme.typography.bodyMediumNorm
+                    )
+                }
+            }
+        },
+        onDismissRequest = { onDismiss() },
+        confirmButton = {
+            ProtonAlertDialogButton(
+                titleResId = R.string.dialog_sign_out_account_confirm,
+                loading = signingOut
+            ) {
+                signingOut = true
+                if (removeAccount) onRemoveAccount() else onDisableAccount()
+            }
+        },
+        dismissButton = {
+            ProtonAlertDialogButton(
+                R.string.dialog_sign_out_account_cancel
+            ) {
+                onDismiss()
+            }
+        }
+    )
+}
+
 
 object SignOutAccountDialog {
 

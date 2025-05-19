@@ -25,7 +25,6 @@
   <string name="dialog_remove_account_description">Vă veți deconecta și veți elimina toate informațiile asociate cu acest cont.</string>
   <string name="dialog_remove_account_confirm">Eliminare</string>
   <string name="dialog_remove_account_cancel">Anulare</string>
-  <string name="user_select_other_account_content_description">Selectare alt cont</string>
   <string name="feature_coming_soon">Funcție disponibilă în curând…</string>
   <string name="mailbox_draft_saved">Ciornă salvată</string>
   <string name="mailbox_draft_discard">Aruncare</string>

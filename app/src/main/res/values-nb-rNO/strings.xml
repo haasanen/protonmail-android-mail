@@ -25,7 +25,6 @@
   <string name="dialog_remove_account_description">Du vil logges av og all informasjon forbundet med denne kontoen vil fjernes.</string>
   <string name="dialog_remove_account_confirm">Fjern</string>
   <string name="dialog_remove_account_cancel">Avbryt</string>
-  <string name="user_select_other_account_content_description">Velg en annen konto</string>
   <string name="feature_coming_soon">Denne funksjonen kommer snart ...</string>
   <string name="mailbox_draft_saved">Utkast lagret</string>
   <string name="mailbox_draft_discard">Forkast</string>

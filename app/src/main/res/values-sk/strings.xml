@@ -25,7 +25,6 @@
   <string name="dialog_remove_account_description">Odhlásite sa a odstránite všetky informácie spojené s týmto účtom.</string>
   <string name="dialog_remove_account_confirm">Odstrániť</string>
   <string name="dialog_remove_account_cancel">Zrušiť</string>
-  <string name="user_select_other_account_content_description">Vyberte iný účet</string>
   <string name="feature_coming_soon">Funkcia už čoskoro…</string>
   <string name="mailbox_draft_saved">Koncept bol uložený</string>
   <string name="mailbox_draft_discard">Zahodiť</string>

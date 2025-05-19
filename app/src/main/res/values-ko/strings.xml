@@ -25,7 +25,6 @@
   <string name="dialog_remove_account_description">계정에서 로그아웃되며 계정과 관련된 모든 데이터가 삭제됩니다.</string>
   <string name="dialog_remove_account_confirm">제거</string>
   <string name="dialog_remove_account_cancel">취소</string>
-  <string name="user_select_other_account_content_description">다른 계정 선택</string>
   <string name="feature_coming_soon">곧 출시될 기능입니다…</string>
   <string name="mailbox_draft_saved">임시 저장됨</string>
   <string name="mailbox_draft_discard">저장 안 함</string>

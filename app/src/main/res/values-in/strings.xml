@@ -25,7 +25,6 @@
   <string name="dialog_remove_account_description">Anda akan keluar dari akun dan menghapus segala informasi yang terhubung dengan akun ini.</string>
   <string name="dialog_remove_account_confirm">Hapus</string>
   <string name="dialog_remove_account_cancel">Batal</string>
-  <string name="user_select_other_account_content_description">Pilih akun lain</string>
   <string name="feature_coming_soon">Fitur ini akan segera hadir…</string>
   <string name="mailbox_draft_saved">Draf disimpan</string>
   <string name="mailbox_draft_discard">Buang</string>

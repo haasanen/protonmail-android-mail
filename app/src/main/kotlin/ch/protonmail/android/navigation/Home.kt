@@ -570,10 +570,6 @@ fun Home(
 
 private fun buildSidebarActions(navController: NavHostController, launcherActions: Launcher.Actions) =
     Sidebar.NavigationActions(
-        onSignIn = launcherActions.onSignIn,
-        onSignOut = { navController.navigate(Dialog.SignOut(it)) },
-        onRemoveAccount = { navController.navigate(Dialog.RemoveAccount(it)) },
-        onSwitchAccount = launcherActions.onSwitchToAccount,
         onSettings = { navController.navigate(Screen.Settings.route) },
         onLabelAdd = { navController.navigate(Screen.FolderAndLabelSettings.route) },
         onFolderAdd = { navController.navigate(Screen.FolderAndLabelSettings.route) },

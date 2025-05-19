@@ -25,7 +25,6 @@
   <string name="dialog_remove_account_description">Πρόκειται να αποσυνδεθείτε και να αφαιρέσετε όλες τις πληροφορίες που σχετίζονται με αυτόν τον λογαριασμό.</string>
   <string name="dialog_remove_account_confirm">Αφαίρεση</string>
   <string name="dialog_remove_account_cancel">Ακύρωση</string>
-  <string name="user_select_other_account_content_description">Επιλογή άλλου λογαριασμού</string>
   <string name="feature_coming_soon">Η δυνατότητα θα είναι διαθέσιμη σύντομα…</string>
   <string name="mailbox_draft_saved">Το πρόχειρο αποθηκεύτηκε</string>
   <string name="mailbox_draft_discard">Απόρριψη</string>

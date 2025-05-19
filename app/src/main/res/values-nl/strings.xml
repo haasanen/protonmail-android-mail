@@ -25,7 +25,6 @@
   <string name="dialog_remove_account_description">U zult worden afgemeld en verwijdert alle informatie verbonden met dit account.</string>
   <string name="dialog_remove_account_confirm">Verwijderen</string>
   <string name="dialog_remove_account_cancel">Annuleren</string>
-  <string name="user_select_other_account_content_description">Kies een ander account</string>
   <string name="feature_coming_soon">Functie binnenkort mogelijk</string>
   <string name="mailbox_draft_saved">Concept opgeslagen</string>
   <string name="mailbox_draft_discard">Negeren</string>
