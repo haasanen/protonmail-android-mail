@@ -875,7 +875,7 @@ private fun MessagesContent(
                 actions = actions,
                 modifier = when (uiModel) {
                     is ConversationDetailMessageUiModel.Collapsed,
-                    is ConversationDetailMessageUiModel.Expanding -> Modifier.animateItemPlacement()
+                    is ConversationDetailMessageUiModel.Expanding -> Modifier.animateItem()
 
                     else -> Modifier
                 }.onSizeChanged {

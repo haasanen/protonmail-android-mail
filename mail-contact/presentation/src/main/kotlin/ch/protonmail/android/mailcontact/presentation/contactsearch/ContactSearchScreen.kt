@@ -48,21 +48,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListGroupItem
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListItem
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
-import ch.protonmail.android.uicomponents.SearchView
-import ch.protonmail.android.uicomponents.dismissKeyboard
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyMediumWeak
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData
+import ch.protonmail.android.uicomponents.SearchView
+import ch.protonmail.android.uicomponents.dismissKeyboard
 
 @Composable
 fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: ContactSearchViewModel = hiltViewModel()) {
@@ -132,7 +132,7 @@ fun ContactSearchContent(
                 when (contact) {
                     is ContactListItemUiModel.Contact -> {
                         ContactListItem(
-                            modifier = Modifier.animateItemPlacement(),
+                            modifier = Modifier.animateItem(),
                             contact = contact,
                             actions = ContactListScreen.Actions.fromContactSearchActions(
                                 onContactClick = actions.onContactClick
@@ -142,7 +142,7 @@ fun ContactSearchContent(
 
                     is ContactListItemUiModel.ContactGroup -> {
                         ContactListGroupItem(
-                            modifier = Modifier.animateItemPlacement(),
+                            modifier = Modifier.animateItem(),
                             contactGroup = contact,
                             actions = ContactListScreen.Actions.fromContactSearchActions(
                                 onContactGroupClick = actions.onContactGroupClick
