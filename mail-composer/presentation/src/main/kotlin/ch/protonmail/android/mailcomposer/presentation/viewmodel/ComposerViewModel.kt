@@ -40,6 +40,7 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailcomposer.domain.model.hasRecipient
 import ch.protonmail.android.mailcomposer.domain.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
@@ -307,7 +308,7 @@ class ComposerViewModel @AssistedInject constructor(
                         isDataRefreshed = draftFieldsWithSyncStatus is DraftFieldsWithSyncStatus.Remote,
                         isBlockedSendingFromPmAddress = false,
                         isBlockedSendingFromDisabledAddress = false,
-                        bodyShouldTakeFocus = draftFields.recipientsTo.value.isNotEmpty()
+                        bodyShouldTakeFocus = draftFields.hasRecipient()
                     )
                 )
             }
