@@ -22,9 +22,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import ch.protonmail.android.design.compose.component.ProtonSettingsHeader
 import ch.protonmail.android.design.compose.component.ProtonSettingsItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -33,7 +35,12 @@ import ch.protonmail.android.mailbugreport.presentation.R
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 
 @Composable
-internal fun ApplicationLogsScreenList(modifier: Modifier = Modifier, actions: ApplicationLogsScreenList.Actions) {
+internal fun ApplicationLogsScreenList(
+    modifier: Modifier = Modifier,
+    appVersion: String,
+    actions: ApplicationLogsScreenList.Actions
+) {
+
     LazyColumn(modifier = modifier) {
         item {
             ProtonSettingsHeader(title = R.string.application_events_header_view)
@@ -97,7 +104,24 @@ internal fun ApplicationLogsScreenList(modifier: Modifier = Modifier, actions: A
                 onClick = actions.onFeatureFlagNavigation
             )
         }
+
+        item { AppVersion(appVersion) }
     }
+}
+
+@Composable
+private fun AppVersion(appVersion: String) {
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(ProtonDimens.Spacing.Standard)
+            .padding(top = ProtonDimens.Spacing.Standard),
+        text = appVersion,
+        textAlign = TextAlign.Center,
+        color = ProtonTheme.colors.textWeak,
+        style = ProtonTheme.typography.bodyMedium,
+        maxLines = 1
+    )
 }
 
 object ApplicationLogsScreenList {
@@ -128,6 +152,9 @@ object ApplicationLogsScreenList {
 @Composable
 private fun ApplicationLogsScreenPreview() {
     ProtonTheme {
-        ApplicationLogsScreenList(actions = ApplicationLogsScreenList.Actions.Empty)
+        ApplicationLogsScreenList(
+            appVersion = "Proton Mail (0) - 0.7.0",
+            actions = ApplicationLogsScreenList.Actions.Empty
+        )
     }
 }

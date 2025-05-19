@@ -110,7 +110,11 @@ fun ApplicationLogsScreen(
             )
         },
         content = { paddingValues ->
-            ApplicationLogsScreenList(Modifier.padding(paddingValues), screenListActions)
+            ApplicationLogsScreenList(
+                modifier = Modifier.padding(paddingValues),
+                appVersion = state.appVersion,
+                actions = screenListActions
+            )
         }
     )
 }
