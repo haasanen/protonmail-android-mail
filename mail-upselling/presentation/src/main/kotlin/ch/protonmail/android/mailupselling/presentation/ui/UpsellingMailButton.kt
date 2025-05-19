@@ -53,17 +53,12 @@ fun UpsellingMailButton(
 ) {
     val state = viewModel.state.collectAsState()
 
-    val onButtonClick = {
-        onClick()
-        viewModel.trackButtonInteraction()
-    }
-
     AnimatedVisibility(
         visible = state.value.isShown,
         enter = scaleIn(),
         exit = scaleOut()
     ) {
-        UpsellingMailButton(modifier = modifier, onButtonClick = onButtonClick)
+        UpsellingMailButton(modifier = modifier, onButtonClick = onClick)
     }
 }
 

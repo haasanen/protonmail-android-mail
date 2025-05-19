@@ -18,10 +18,9 @@
 
 package ch.protonmail.android.mailcommon.domain.usecase
 
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import me.proton.core.accountmanager.domain.AccountManager
-import me.proton.core.user.domain.UserManager
+import me.proton.core.user.domain.entity.User
 import javax.inject.Inject
 
 @Deprecated(
@@ -33,14 +32,7 @@ import javax.inject.Inject
         rust / core data layer.
     """
 )
-class ObservePrimaryUser @Inject constructor(
-    val accountManager: AccountManager,
-    val userManager: UserManager
-) {
+class ObservePrimaryUser @Inject constructor() {
 
-    operator fun invoke() = accountManager.getPrimaryUserId()
-        .flatMapLatest { userId ->
-            if (userId == null) flowOf(null)
-            else userManager.observeUser(userId)
-        }
+    operator fun invoke(): Flow<User?> = flowOf(null)
 }

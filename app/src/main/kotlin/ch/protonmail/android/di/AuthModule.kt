@@ -18,37 +18,36 @@
 
 package ch.protonmail.android.di
 
-import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import me.proton.core.accountmanager.domain.AccountManager
 import me.proton.core.auth.domain.usecase.PostLoginAccountSetup
 import me.proton.core.auth.presentation.DefaultHelpOptionHandler
-import me.proton.core.auth.presentation.DefaultUserCheck
 import me.proton.core.auth.presentation.HelpOptionHandler
-import me.proton.core.user.domain.UserManager
+import me.proton.core.user.domain.entity.User
+import javax.inject.Inject
 import javax.inject.Singleton
 
+@Deprecated(
+    """
+    This module is deprecated. Can't be removed yet due to required bindings from legacy proton-libs.
+    """
+)
 @Module
 @InstallIn(SingletonComponent::class)
 object AuthModule {
 
     @Provides
     @Singleton
-    fun provideUserCheck(
-        @ApplicationContext context: Context,
-        accountManager: AccountManager,
-        userManager: UserManager
-    ): PostLoginAccountSetup.UserCheck = DefaultUserCheck(
-        context,
-        accountManager,
-        userManager
-    )
+    fun provideUserCheck(): PostLoginAccountSetup.UserCheck = MockUserCheck()
 
     @Provides
     @Singleton
     fun provideHelpOptionHandler(): HelpOptionHandler = DefaultHelpOptionHandler()
+}
+
+private class MockUserCheck @Inject constructor() : PostLoginAccountSetup.UserCheck {
+
+    override suspend fun invoke(user: User) = PostLoginAccountSetup.UserCheckResult.Success
 }

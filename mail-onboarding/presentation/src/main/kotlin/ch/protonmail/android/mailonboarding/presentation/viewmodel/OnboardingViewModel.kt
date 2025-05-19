@@ -19,43 +19,14 @@
 package ch.protonmail.android.mailonboarding.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
-import ch.protonmail.android.mailupselling.domain.usecase.GetAccountAgeInDays
-import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingOnboardingVisibility
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import me.proton.core.user.domain.extension.hasSubscription
 import javax.inject.Inject
 
 @HiltViewModel
-class OnboardingViewModel @Inject constructor(
-    observePrimaryUser: ObservePrimaryUser,
-    private val getAccountAgeInDays: GetAccountAgeInDays,
-    private val observeUpsellingOnboardingVisibility: ObserveUpsellingOnboardingVisibility
-) : ViewModel() {
+class OnboardingViewModel @Inject constructor() : ViewModel() {
 
-    val state: StateFlow<OnboardingState> = observePrimaryUser().filterNotNull()
-        .flatMapLatest { user ->
-            when {
-                user.hasSubscription() ||
-                    getAccountAgeInDays(user).days == 0 -> flowOf(OnboardingState.NoUpsell)
-
-                else -> observeUpsellingOnboardingVisibility().map { showUpselling ->
-                    if (showUpselling) OnboardingState.ToUpsell else OnboardingState.NoUpsell
-                }
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = OnboardingState.Loading
-        )
+    val state: StateFlow<OnboardingState> = MutableStateFlow(OnboardingState.NoUpsell)
 }

@@ -18,41 +18,11 @@
 
 package ch.protonmail.android.mailupselling.presentation.usecase
 
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.mailupselling.domain.annotations.OneClickUpsellingAlwaysShown
-import ch.protonmail.android.mailupselling.domain.usecase.UserHasAvailablePlans
-import ch.protonmail.android.mailupselling.domain.usecase.UserHasPendingPurchases
-import ch.protonmail.android.mailupselling.domain.usecase.featureflags.ObserveOneClickUpsellingEnabled
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import me.proton.core.payment.domain.PurchaseManager
-import me.proton.core.plan.domain.usecase.CanUpgradeFromMobile
+import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
-class ObserveMailboxOneClickUpsellingVisibility @Inject constructor(
-    private val observePrimaryUserId: ObservePrimaryUserId,
-    private val purchaseManager: PurchaseManager,
-    private val observeOneClickUpsellingEnabled: ObserveOneClickUpsellingEnabled,
-    private val observeUpsellingOneClickOnCooldown: ObserveUpsellingOneClickOnCooldown,
-    private val canUpgradeFromMobile: CanUpgradeFromMobile,
-    private val userHasAvailablePlans: UserHasAvailablePlans,
-    private val userHasPendingPurchases: UserHasPendingPurchases,
-    @OneClickUpsellingAlwaysShown private val alwaysShowOneClickUpselling: Boolean
-) {
+class ObserveMailboxOneClickUpsellingVisibility @Inject constructor() {
 
-    operator fun invoke(): Flow<Boolean> = combine(
-        observePrimaryUserId().distinctUntilChanged(),
-        purchaseManager.observePurchases(),
-        observeUpsellingOneClickOnCooldown(),
-        observeOneClickUpsellingEnabled(null)
-    ) { userId, purchases, isOneClickOnCooldown, isOneClickUpsellingEnabled ->
-        if (userId == null) return@combine false
-        if (!canUpgradeFromMobile(userId)) return@combine false
-        if (isOneClickUpsellingEnabled == null || !isOneClickUpsellingEnabled.value) return@combine false
-        if (isOneClickOnCooldown && !alwaysShowOneClickUpselling) return@combine false
-        if (userHasPendingPurchases(purchases, userId)) return@combine false
-
-        userHasAvailablePlans(userId)
-    }
+    operator fun invoke(): Flow<Boolean> = flowOf(false)
 }
