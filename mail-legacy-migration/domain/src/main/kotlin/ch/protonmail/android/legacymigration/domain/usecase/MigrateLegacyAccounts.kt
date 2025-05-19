@@ -28,7 +28,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class MigrateLegacyAccounts @Inject constructor(
-    private val legacyAccountRepository: LegacyAccountRepository
+    private val legacyAccountRepository: LegacyAccountRepository,
+    private val setPrimaryAccountAfterMigration: SetPrimaryAccountAfterMigration
 ) {
 
     suspend operator fun invoke(): Either<List<MigrationError>, Unit> {
@@ -62,6 +63,8 @@ class MigrateLegacyAccounts @Inject constructor(
                 }
             }
         }
+
+        setPrimaryAccountAfterMigration(successfulMigrationList)
 
         return if (successfulMigrationList.isEmpty()) {
             migrationErrors.left()

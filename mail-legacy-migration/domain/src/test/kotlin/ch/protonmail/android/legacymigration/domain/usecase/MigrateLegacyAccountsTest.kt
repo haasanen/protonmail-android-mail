@@ -24,8 +24,10 @@ import ch.protonmail.android.legacymigration.domain.model.AccountMigrationInfo
 import ch.protonmail.android.legacymigration.domain.model.AccountPasswordMode
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAccountRepository
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.just
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
@@ -37,6 +39,7 @@ import kotlin.test.Test
 class MigrateLegacyAccountsTest {
 
     private val legacyAccountRepository: LegacyAccountRepository = mockk()
+    private val setPrimaryAccountAfterMigration: SetPrimaryAccountAfterMigration = mockk()
 
     private val userId1 = UserId("user-id-1")
     private val userId2 = UserId("user-id-2")
@@ -84,7 +87,9 @@ class MigrateLegacyAccountsTest {
     private val legacyDbError: MigrationError = MigrationError.LegacyDbFailure.MissingUser
     private val migrateFailError: MigrationError = MigrationError.MigrateFailed.InvalidCredentials
 
-    private val migrateLegacyAccounts = MigrateLegacyAccounts(legacyAccountRepository)
+    private val migrateLegacyAccounts = MigrateLegacyAccounts(
+        legacyAccountRepository, setPrimaryAccountAfterMigration
+    )
 
     @Test
     fun `Should migrate all accounts successfully`() = runTest {
@@ -94,12 +99,13 @@ class MigrateLegacyAccountsTest {
         coEvery { legacyAccountRepository.getLegacyAccountMigrationInfoFor(session2) } returns migrationInfo2.right()
         coEvery { legacyAccountRepository.migrateLegacyAccount(migrationInfo1) } returns Unit.right()
         coEvery { legacyAccountRepository.migrateLegacyAccount(migrationInfo2) } returns Unit.right()
-
+        coEvery { setPrimaryAccountAfterMigration(any()) } just Runs
         // When
         val result = migrateLegacyAccounts()
 
         // Then
         assertEquals(Unit.right(), result)
+        coVerify(exactly = 1) { setPrimaryAccountAfterMigration(any()) }
     }
 
     @Test
@@ -107,6 +113,7 @@ class MigrateLegacyAccountsTest {
         // Given
         coEvery { legacyAccountRepository.getAuthenticatedLegacySessions() } returns listOf(session1, session2)
         coEvery { legacyAccountRepository.getLegacyAccountMigrationInfoFor(any()) } returns legacyDbError.left()
+        coEvery { setPrimaryAccountAfterMigration(any()) } just Runs
 
         // When
         val result = migrateLegacyAccounts()
@@ -123,6 +130,7 @@ class MigrateLegacyAccountsTest {
         coEvery { legacyAccountRepository.getLegacyAccountMigrationInfoFor(session1) } returns migrationInfo1.right()
         coEvery { legacyAccountRepository.getLegacyAccountMigrationInfoFor(session2) } returns legacyDbError.left()
         coEvery { legacyAccountRepository.migrateLegacyAccount(migrationInfo1) } returns Unit.right()
+        coEvery { setPrimaryAccountAfterMigration(any()) } just Runs
 
         // When
         val result = migrateLegacyAccounts()
