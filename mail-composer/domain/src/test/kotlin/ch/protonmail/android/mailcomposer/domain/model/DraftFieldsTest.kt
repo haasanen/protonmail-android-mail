@@ -38,24 +38,24 @@ class DraftFieldsTest {
 
     @Test
     fun `when has no recipientsTo or recipientsCc or recipientsBcc then hasRecipient is false`() {
-        assertFalse(sut.hasRecipient())
+        assertFalse(sut.hasAnyRecipient())
     }
 
     @Test
     fun `when has recipientsTo then hasRecipient is true`() {
         val result = sut.copy(recipientsTo = RecipientsTo(listOf(recipient)))
-        assertTrue(result.hasRecipient())
+        assertTrue(result.hasAnyRecipient())
     }
 
     @Test
     fun `when has recipientsBcc then hasRecipient is true`() {
         val result = sut.copy(recipientsBcc = RecipientsBcc(listOf(recipient)))
-        assertTrue(result.hasRecipient())
+        assertTrue(result.hasAnyRecipient())
     }
 
     @Test
     fun `when has recipientsCc then hasRecipient is true`() {
         val result = sut.copy(recipientsCc = RecipientsCc(listOf(recipient)))
-        assertTrue(result.hasRecipient())
+        assertTrue(result.hasAnyRecipient())
     }
 }

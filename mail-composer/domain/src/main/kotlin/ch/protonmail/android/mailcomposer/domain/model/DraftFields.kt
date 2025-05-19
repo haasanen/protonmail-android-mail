@@ -27,5 +27,5 @@ data class DraftFields(
     val recipientsBcc: RecipientsBcc
 )
 
-fun DraftFields.hasRecipient() = recipientsTo.value.isNotEmpty() ||
+fun DraftFields.hasAnyRecipient() = recipientsTo.value.isNotEmpty() ||
     recipientsCc.value.isNotEmpty() || recipientsBcc.value.isNotEmpty()
