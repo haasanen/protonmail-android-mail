@@ -43,10 +43,9 @@ class GetMoreActionsBottomSheetData @Inject constructor(
         userId: UserId,
         labelId: LabelId,
         messageId: MessageId
-    ): DetailMoreActionsBottomSheetEvent.DataLoaded? =
-        getMessageAvailableActions(userId, labelId, listOf(messageId)).map {
-            buildBottomSheetActionData(userId, messageId, it)
-        }.getOrNull()
+    ): DetailMoreActionsBottomSheetEvent.DataLoaded? = getMessageAvailableActions(userId, labelId, messageId).map {
+        buildBottomSheetActionData(userId, messageId, it)
+    }.getOrNull()
 
     suspend fun forConversation(
         userId: UserId,

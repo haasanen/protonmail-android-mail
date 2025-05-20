@@ -34,6 +34,6 @@ class GetMessageAvailableActions @Inject constructor(
     suspend operator fun invoke(
         userId: UserId,
         labelId: LabelId,
-        messageIds: List<MessageId>
-    ): Either<DataError, AvailableActions> = actionRepository.getAvailableActions(userId, labelId, messageIds)
+        messageId: MessageId
+    ): Either<DataError, AvailableActions> = actionRepository.getAvailableActions(userId, labelId, messageId)
 }

@@ -473,14 +473,14 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
         val mailbox = mockk<MailboxWrapper>()
-        val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
+        val messageId = LocalMessageIdSample.AugWeatherForecast
         val expected = MessageAvailableActions(emptyList(), emptyList(), emptyList(), emptyList())
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustAvailableMessageActions(mailbox, messageIds) } returns expected.right()
+        coEvery { getRustAvailableMessageActions(mailbox, messageId) } returns expected.right()
 
         // When
-        val result = dataSource.getAvailableActions(userId, labelId, messageIds)
+        val result = dataSource.getAvailableActions(userId, labelId, messageId)
 
         // Then
         assertEquals(expected.right(), result)
@@ -492,7 +492,7 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
         val mailbox = mockk<MailboxWrapper>()
-        val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
+        val messageId = LocalMessageIdSample.AugWeatherForecast
         val archive = MovableSystemFolderAction(Id(2uL), MovableSystemFolder.ARCHIVE)
         val customFolder = CustomFolderAction(
             Id(100uL),
@@ -504,10 +504,10 @@ class RustMessageDataSourceImplTest {
         val expected = listOf(MoveAction.SystemFolder(archive))
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustMessageMoveToActions(mailbox, messageIds) } returns allMoveToActions.right()
+        coEvery { getRustMessageMoveToActions(mailbox, listOf(messageId)) } returns allMoveToActions.right()
 
         // When
-        val result = dataSource.getAvailableSystemMoveToActions(userId, labelId, messageIds)
+        val result = dataSource.getAvailableSystemMoveToActions(userId, labelId, listOf(messageId))
 
         // Then
         assertEquals(expected.right(), result)

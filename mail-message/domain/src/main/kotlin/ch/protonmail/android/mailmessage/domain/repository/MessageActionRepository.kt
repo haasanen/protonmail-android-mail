@@ -33,7 +33,7 @@ interface MessageActionRepository {
     suspend fun getAvailableActions(
         userId: UserId,
         labelId: LabelId,
-        messageIds: List<MessageId>
+        messageId: MessageId
     ): Either<DataError, AvailableActions>
 
     suspend fun getSystemMoveToLocations(

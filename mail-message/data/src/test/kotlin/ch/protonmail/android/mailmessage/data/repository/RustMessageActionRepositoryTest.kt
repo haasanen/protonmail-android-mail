@@ -63,7 +63,7 @@ class RustMessageActionRepositoryTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
-        val messageIds = listOf(MessageId("1"))
+        val messageId = MessageId("1")
         val rustAvailableActions = MessageAvailableActions(
             listOf(ReplyAction.REPLY, ReplyAction.FORWARD),
             listOf(MessageAction.STAR, MessageAction.LABEL_AS),
@@ -80,12 +80,12 @@ class RustMessageActionRepositoryTest {
             rustMessageDataSource.getAvailableActions(
                 userId,
                 labelId.toLocalLabelId(),
-                messageIds.map { it.toLocalMessageId() }
+                messageId.toLocalMessageId()
             )
         } returns rustAvailableActions.right()
 
         // When
-        val result = repository.getAvailableActions(userId, labelId, messageIds)
+        val result = repository.getAvailableActions(userId, labelId, messageId)
 
         // Then
         val expected = AvailableActions(
@@ -102,18 +102,18 @@ class RustMessageActionRepositoryTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
-        val messageIds = listOf(MessageId("1"))
+        val messageId = MessageId("1")
         val expectedError = DataError.Local.NoDataCached
         coEvery {
             rustMessageDataSource.getAvailableActions(
                 userId,
                 labelId.toLocalLabelId(),
-                messageIds.map { it.toLocalMessageId() }
+                messageId.toLocalMessageId()
             )
         } returns expectedError.left()
 
         // When
-        val result = repository.getAvailableActions(userId, labelId, messageIds)
+        val result = repository.getAvailableActions(userId, labelId, messageId)
 
         // Then
         assertEquals(expectedError.left(), result)

@@ -45,14 +45,14 @@ class RustMessageActionRepository @Inject constructor(
     override suspend fun getAvailableActions(
         userId: UserId,
         labelId: LabelId,
-        messageIds: List<MessageId>
+        messageId: MessageId
     ): Either<DataError, AvailableActions> {
         val availableActions = rustMessageDataSource.getAvailableActions(
             userId,
             labelId.toLocalLabelId(),
-            messageIds.map { it.toLocalMessageId() }
+            messageId.toLocalMessageId()
         )
-        Timber.v("rust-message: Available actions: $availableActions \n for messages $messageIds")
+        Timber.v("rust-message: Available actions: $availableActions \n for messages $messageId")
 
         return availableActions.map { it.toAvailableActions() }
     }

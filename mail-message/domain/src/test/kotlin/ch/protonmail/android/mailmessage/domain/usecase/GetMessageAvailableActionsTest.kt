@@ -26,17 +26,17 @@ class GetMessageAvailableActionsTest {
         // Given
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
-        val messageIds = listOf(MessageIdSample.AlphaAppQAReport)
+        val messageId = MessageIdSample.AlphaAppQAReport
         val expected = AvailableActions(
             listOf(Action.Reply, Action.Forward),
             listOf(Action.Star, Action.Label),
             listOf(Action.Spam, Action.Archive),
             listOf(Action.ViewHeaders)
         )
-        coEvery { actionRepository.getAvailableActions(userId, labelId, messageIds) } returns expected.right()
+        coEvery { actionRepository.getAvailableActions(userId, labelId, messageId) } returns expected.right()
 
         // When
-        val actual = getMessageAvailableActions(userId, labelId, messageIds)
+        val actual = getMessageAvailableActions(userId, labelId, messageId)
 
         // Then
         assertEquals(expected.right(), actual)
@@ -47,12 +47,12 @@ class GetMessageAvailableActionsTest {
         // Given
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
-        val messageIds = listOf(MessageIdSample.AlphaAppQAReport)
+        val messageId = MessageIdSample.AlphaAppQAReport
         val expected = DataError.Local.Unknown.left()
-        coEvery { actionRepository.getAvailableActions(userId, labelId, messageIds) } returns expected
+        coEvery { actionRepository.getAvailableActions(userId, labelId, messageId) } returns expected
 
         // When
-        val actual = getMessageAvailableActions(userId, labelId, messageIds)
+        val actual = getMessageAvailableActions(userId, labelId, messageId)
 
         // Then
         assertEquals(expected, actual)

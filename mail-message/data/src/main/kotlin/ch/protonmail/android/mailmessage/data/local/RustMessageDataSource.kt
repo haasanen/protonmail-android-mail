@@ -68,7 +68,7 @@ interface RustMessageDataSource {
     suspend fun getAvailableActions(
         userId: UserId,
         labelId: LocalLabelId,
-        messageIds: List<LocalMessageId>
+        messageId: LocalMessageId
     ): Either<DataError, MessageAvailableActions>
 
     suspend fun getAvailableSystemMoveToActions(

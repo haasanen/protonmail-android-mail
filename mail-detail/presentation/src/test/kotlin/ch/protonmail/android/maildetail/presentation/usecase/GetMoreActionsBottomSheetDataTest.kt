@@ -48,7 +48,7 @@ class GetMoreActionsBottomSheetDataTest {
         val message = MessageSample.Invoice
         val availableActions = AvailableActionsTestData.replyActionsOnly
         coEvery {
-            getMessageAvailableActions(userId, labelId, listOf(messageId))
+            getMessageAvailableActions(userId, labelId, messageId)
         } returns availableActions.right()
         coEvery { observeMessage(userId, messageId) } returns flowOf(message.right())
 
@@ -74,7 +74,7 @@ class GetMoreActionsBottomSheetDataTest {
         val messageId = MessageIdSample.PlainTextMessage
         val message = MessageSample.Invoice
         coEvery {
-            getMessageAvailableActions(userId, labelId, listOf(messageId))
+            getMessageAvailableActions(userId, labelId, messageId)
         } returns DataError.Local.NoDataCached.left()
         coEvery { observeMessage(userId, messageId) } returns flowOf(message.right())
 

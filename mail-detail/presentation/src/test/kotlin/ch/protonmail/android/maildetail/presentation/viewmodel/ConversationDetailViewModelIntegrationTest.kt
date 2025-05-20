@@ -1330,7 +1330,7 @@ class ConversationDetailViewModelIntegrationTest {
                 observeMessage(userId = userId, messageId = messageId)
             } returns flowOf(MessageSample.AugWeatherForecast.right())
             coEvery {
-                getMessageAvailableActions(userId, labelId, listOf(messageId))
+                getMessageAvailableActions(userId, labelId, messageId)
             } returns AvailableActionsTestData.replyActionsOnly.right()
 
             // When
@@ -1357,7 +1357,7 @@ class ConversationDetailViewModelIntegrationTest {
                 )
             } returns flowOf(DataError.Local.NoDataCached.left())
             coEvery {
-                getMessageAvailableActions(userId, labelId, listOf(messageId))
+                getMessageAvailableActions(userId, labelId, messageId)
             } returns AvailableActionsTestData.replyActionsOnly.right()
 
             // When
@@ -1549,7 +1549,7 @@ class ConversationDetailViewModelIntegrationTest {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
         coEvery {
-            getMessageAvailableActions(userId, labelId, listOf(messageId))
+            getMessageAvailableActions(userId, labelId, messageId)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
             markMessageAsUnread(userId, messageId)
@@ -1611,7 +1611,7 @@ class ConversationDetailViewModelIntegrationTest {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
         coEvery {
-            getMessageAvailableActions(userId, labelId, listOf(messageId))
+            getMessageAvailableActions(userId, labelId, messageId)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
             markMessageAsUnread(userId, messageId)
@@ -1667,7 +1667,7 @@ class ConversationDetailViewModelIntegrationTest {
         } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Trash) } returns Unit.right()
         coEvery {
-            getMessageAvailableActions(userId, labelId, listOf(messageId))
+            getMessageAvailableActions(userId, labelId, messageId)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
             getMessagesInSameExclusiveLocation(userId, conversationId, messageId, any()) // labelId here is not strict
@@ -1712,7 +1712,7 @@ class ConversationDetailViewModelIntegrationTest {
         } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Archive) } returns Unit.right()
         coEvery {
-            getMessageAvailableActions(userId, filterByLocationLabelId, listOf(messageId))
+            getMessageAvailableActions(userId, filterByLocationLabelId, messageId)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
             getMessagesInSameExclusiveLocation(userId, conversationId, messageId, any()) // labelId here is not strict
@@ -1759,7 +1759,7 @@ class ConversationDetailViewModelIntegrationTest {
         } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Spam) } returns Unit.right()
         coEvery {
-            getMessageAvailableActions(userId, labelId, listOf(messageId))
+            getMessageAvailableActions(userId, labelId, messageId)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
             getMessagesInSameExclusiveLocation(userId, conversationId, messageId, any()) // labelId here is not strict
@@ -1813,7 +1813,7 @@ class ConversationDetailViewModelIntegrationTest {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
         coEvery {
-            getMessageAvailableActions(userId, labelId, listOf(messageId))
+            getMessageAvailableActions(userId, labelId, messageId)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
             getMessagesInSameExclusiveLocation(userId, conversationId, messageId, any()) // labelId here is not strict

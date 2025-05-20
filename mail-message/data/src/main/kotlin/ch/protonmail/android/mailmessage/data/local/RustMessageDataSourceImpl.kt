@@ -222,14 +222,14 @@ class RustMessageDataSourceImpl @Inject constructor(
     override suspend fun getAvailableActions(
         userId: UserId,
         labelId: LocalLabelId,
-        messageIds: List<LocalMessageId>
+        messageId: LocalMessageId
     ): Either<DataError, MessageAvailableActions> {
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get available actions for null Mailbox! failing")
             return DataError.Local.NoDataCached.left()
         }
-        return getRustAvailableMessageActions(mailbox, messageIds)
+        return getRustAvailableMessageActions(mailbox, messageId)
     }
 
     override suspend fun getAllAvailableBottomBarActions(
