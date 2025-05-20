@@ -94,7 +94,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.proton.core.network.domain.NetworkManager
@@ -362,9 +361,7 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    fun loadEmbeddedImage(contentId: String): EmbeddedImage? = runBlocking {
-        return@runBlocking getEmbeddedImage(contentId).getOrNull()
-    }
+    fun loadEmbeddedImage(contentId: String): EmbeddedImage? = getEmbeddedImage(contentId).getOrNull()
 
     private fun observeAttachments() {
         viewModelScope.launch {

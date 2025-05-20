@@ -28,7 +28,7 @@ class GetEmbeddedImage @Inject constructor(
     private val draftRepository: DraftRepository
 ) {
 
-    suspend operator fun invoke(contentId: String): Either<DataError, EmbeddedImage> =
+    operator fun invoke(contentId: String): Either<DataError, EmbeddedImage> =
         draftRepository.getEmbeddedImage(contentId)
 
 

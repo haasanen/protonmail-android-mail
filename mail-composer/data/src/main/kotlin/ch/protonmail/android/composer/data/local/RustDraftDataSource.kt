@@ -46,5 +46,5 @@ interface RustDraftDataSource {
     suspend fun updateToRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     suspend fun updateCcRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     suspend fun updateBccRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
-    suspend fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo>
+    fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo>
 }

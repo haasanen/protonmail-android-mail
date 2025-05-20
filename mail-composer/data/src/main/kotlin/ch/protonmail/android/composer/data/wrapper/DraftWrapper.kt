@@ -26,7 +26,7 @@ class DraftWrapper(private val rustDraft: Draft) {
 
     fun attachmentList(): AttachmentsWrapper = AttachmentsWrapper(rustDraft.attachmentList())
 
-    suspend fun embeddedImage(cid: String) = rustDraft.getEmbeddedAttachment(cid)
+    fun embeddedImage(cid: String) = rustDraft.getEmbeddedAttachmentSync(cid)
 
     fun subject(): String = rustDraft.subject()
 

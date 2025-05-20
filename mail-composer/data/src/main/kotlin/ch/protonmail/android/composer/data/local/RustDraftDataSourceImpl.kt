@@ -63,9 +63,9 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
+import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
-import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
 import javax.inject.Inject
 
 class RustDraftDataSourceImpl @Inject constructor(
@@ -207,13 +207,15 @@ class RustDraftDataSourceImpl @Inject constructor(
         return wrapper.attachmentList().right()
     }
 
-    override suspend fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo> =
-        withValidRustDraftWrapper {
-            when (val result = it.embeddedImage(contentId)) {
-                is EmbeddedAttachmentInfoResult.Error -> result.v1.toDataError().left()
-                is EmbeddedAttachmentInfoResult.Ok -> result.v1.right()
-            }
+    override fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo> {
+        val rustDraftWrapper: DraftWrapper = draftWrapperStateFlow.value
+            ?: return DataError.Local.NoDataCached.left()
+
+        return when (val result = rustDraftWrapper.embeddedImage(contentId)) {
+            is EmbeddedAttachmentInfoResult.Error -> result.v1.toDataError().left()
+            is EmbeddedAttachmentInfoResult.Ok -> result.v1.right()
         }
+    }
 
     private fun updateRecipients(
         recipientsWrapper: ComposerRecipientListWrapper,

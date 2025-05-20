@@ -43,7 +43,7 @@ class DraftRepositoryImpl @Inject constructor(
 
     override suspend fun getMessageId(): Either<DataError, MessageId> = draftDataSource.getMessageId()
 
-    override suspend fun getEmbeddedImage(contentId: String): Either<DataError, EmbeddedImage> =
+    override fun getEmbeddedImage(contentId: String): Either<DataError, EmbeddedImage> =
         draftDataSource.getEmbeddedImage(contentId).map { it.toEmbeddedImage() }
 
     override suspend fun openDraft(userId: UserId, messageId: MessageId): Either<DataError, DraftFieldsWithSyncStatus> =
