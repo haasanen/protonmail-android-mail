@@ -149,4 +149,6 @@ object MailDimens {
     }
 
     val UnreadFilterChipHeight = 36.dp
+
+    val MailboxSkeletonRowHeight = 40.dp
 }

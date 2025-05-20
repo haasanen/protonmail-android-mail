@@ -99,6 +99,8 @@ dependencies {
     implementation(project(":shared:core:account-manager:presentation"))
     implementation(project(":mail-session:domain"))
 
+    implementation(libs.lottie.compose)
+
     debugImplementation(libs.bundles.compose.debug)
 
     testImplementation(libs.bundles.test)

@@ -530,11 +530,17 @@ fun MailboxScreen(
                 )
             }
 
-            is MailboxListState.Loading -> ProtonCenteredProgress(
-                modifier = Modifier
-                    .testTag(MailboxScreenTestTags.ListProgress)
-                    .padding(paddingValues)
-            )
+            is MailboxListState.Loading ->
+                Box(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize()
+                ) {
+
+                    MailboxSkeletonLoading(
+                        modifier = modifier.testTag(MailboxScreenTestTags.ListProgress)
+                    )
+                }
         }
     }
 }
@@ -703,9 +709,10 @@ private fun MailboxSwipeRefresh(
         onRefresh = onRefresh
     ) {
         when (currentViewState) {
-            is MailboxScreenState.Loading -> ProtonCenteredProgress(
-                modifier = Modifier.testTag(MailboxScreenTestTags.ListProgress)
-            )
+            is MailboxScreenState.Loading ->
+                MailboxSkeletonLoading(
+                    modifier = Modifier.testTag(MailboxScreenTestTags.ListProgress)
+                )
 
             is MailboxScreenState.Error -> MailboxError(
                 errorMessage = stringResource(id = R.string.mailbox_error_message_generic)
