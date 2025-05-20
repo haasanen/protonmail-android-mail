@@ -641,8 +641,11 @@ private fun MailboxSwipeRefresh(
     var lastViewState by remember { mutableStateOf<MailboxScreenState>(MailboxScreenState.Loading) }
 
     val currentViewState = remember(items.loadState, state) {
-        if (searchMode.isInSearch()) items.mapToUiStatesInSearch(searchMode, lastViewState)
-        else items.mapToUiStates(refreshRequested)
+        when {
+            state is MailboxListState.Loading -> MailboxScreenState.Loading
+            searchMode.isInSearch() -> items.mapToUiStatesInSearch(searchMode, lastViewState)
+            else -> items.mapToUiStates(refreshRequested)
+        }
     }
     lastViewState = currentViewState
 
