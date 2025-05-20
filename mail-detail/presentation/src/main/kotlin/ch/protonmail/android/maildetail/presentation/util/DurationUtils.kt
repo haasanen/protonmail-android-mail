@@ -32,7 +32,11 @@ private const val HOURS_IN_DAY: Int = 24
  */
 fun Duration.toFormattedDurationParts(resources: Resources): List<String> {
 
-    return if (this.isPositive() && this.inWholeMinutes >= 1) {
+    if (!this.isPositive()) {
+        return emptyList()
+    }
+
+    return if (this.inWholeMinutes >= 1) {
 
         if (this.inWholeMinutes < MINUTES_IN_HOUR) {
             listOf(
@@ -74,5 +78,13 @@ fun Duration.toFormattedDurationParts(resources: Resources): List<String> {
                 )
             )
         }
+    } else if (this.inWholeMinutes < 1) {
+        listOf(
+            resources.getQuantityString(
+                R.plurals.expiration_seconds_full_word,
+                this.inWholeSeconds.toInt(),
+                this.inWholeSeconds.toInt()
+            )
+        )
     } else emptyList()
 }

@@ -21,13 +21,13 @@ package ch.protonmail.android.maildetail.presentation.mapper
 import java.time.Instant
 import android.content.Context
 import android.content.res.Resources
+import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import io.mockk.every
 import io.mockk.mockk
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class MessageBannersUiModelMapperTest {
@@ -117,7 +117,7 @@ class MessageBannersUiModelMapperTest {
         )
 
         // Then
-        assertNotNull(result.expirationBannerText)
+        assertEquals(ExpirationBannerUiModel.Expiration(Instant.MAX), result.expirationBannerUiModel)
     }
 
     @Test
@@ -128,6 +128,6 @@ class MessageBannersUiModelMapperTest {
         )
 
         // Then
-        assertNull(result.expirationBannerText)
+        assertEquals(ExpirationBannerUiModel.NoExpiration, result.expirationBannerUiModel)
     }
 }

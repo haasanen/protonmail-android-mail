@@ -27,7 +27,6 @@ import io.mockk.mockk
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toKotlinDuration
 
 class DurationUtilsTest {
@@ -38,19 +37,6 @@ class DurationUtilsTest {
     fun `return empty list for non-positive Duration`() {
         // Given
         val duration = 0.minutes
-        val expected = emptyList<String>()
-
-        // When
-        val actual = duration.toFormattedDurationParts(resourcesMock)
-
-        // Then
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `return empty list for Duration under 1 minute`() {
-        // Given
-        val duration = 59.seconds
         val expected = emptyList<String>()
 
         // When

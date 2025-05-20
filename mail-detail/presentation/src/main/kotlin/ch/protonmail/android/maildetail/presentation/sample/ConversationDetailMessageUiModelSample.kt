@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
+import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailFooterUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
@@ -259,7 +260,7 @@ object ConversationDetailMessageUiModelSample {
             shouldShowPhishingBanner = true,
             shouldShowSpamBanner = false,
             shouldShowBlockedSenderBanner = false,
-            expirationBannerText = null
+            expirationBannerUiModel = ExpirationBannerUiModel.NoExpiration
         ),
         messageBodyUiModel = messageBodyUiModel,
         requestPhishingLinkConfirmation = false

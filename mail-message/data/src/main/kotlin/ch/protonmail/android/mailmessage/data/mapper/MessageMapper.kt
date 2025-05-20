@@ -170,7 +170,7 @@ fun RemoteMessageId.toRemoteMessageId(): RustRemoteMessageId = RustRemoteMessage
 fun RustRemoteMessageId.toRemoteMessageId(): RemoteMessageId = RemoteMessageId(this.value)
 
 private fun LocalMessageBanner.toMessageBanner(): MessageBanner {
-    fun ULong.toInstant() = Instant.ofEpochMilli(this.toLong())
+    fun ULong.toInstant() = Instant.ofEpochSecond(this.toLong())
 
     return when (this) {
         is LocalMessageBannerAutoDelete -> MessageBanner.AutoDelete(timestamp.toInstant())

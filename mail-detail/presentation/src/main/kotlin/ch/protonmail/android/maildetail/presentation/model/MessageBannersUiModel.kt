@@ -18,11 +18,18 @@
 
 package ch.protonmail.android.maildetail.presentation.model
 
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import java.time.Instant
 
 data class MessageBannersUiModel(
     val shouldShowPhishingBanner: Boolean,
     val shouldShowSpamBanner: Boolean,
     val shouldShowBlockedSenderBanner: Boolean,
-    val expirationBannerText: TextUiModel?
+    val expirationBannerUiModel: ExpirationBannerUiModel
 )
+
+sealed class ExpirationBannerUiModel {
+    data object NoExpiration : ExpirationBannerUiModel()
+    data class Expiration(
+        val expiresAt: Instant
+    ) : ExpirationBannerUiModel()
+}

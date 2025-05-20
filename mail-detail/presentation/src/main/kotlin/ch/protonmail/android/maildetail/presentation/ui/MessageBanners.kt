@@ -1,11 +1,18 @@
 package ch.protonmail.android.maildetail.presentation.ui
 
+import java.time.Duration
+import java.time.Instant
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonBanner
 import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
@@ -16,6 +23,12 @@ import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumInverted
 import ch.protonmail.android.mailcommon.presentation.model.string
+import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
+import ch.protonmail.android.maildetail.presentation.util.toFormattedDurationParts
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toKotlinDuration
 
 @Composable
 fun MessageBanners(
@@ -52,24 +65,62 @@ fun MessageBanners(
                 onButtonClicked = { onMarkMessageAsLegitimate(false) }
             )
         }
+        when (val uiModel = messageBannersUiModel.expirationBannerUiModel) {
+            is ExpirationBannerUiModel.NoExpiration -> Unit
+            is ExpirationBannerUiModel.Expiration -> {
+                val context = LocalContext.current
+                val expiresIn = remember {
+                    mutableStateOf(Duration.between(Instant.now(), uiModel.expiresAt).toKotlinDuration())
+                }
+                val formattedExpiration = expiresIn.value
+                    .toFormattedDurationParts(context.resources)
+                    .joinToString(separator = ", ")
+                val expirationText = stringResource(
+                    R.string.message_expiration_banner_text,
+                    formattedExpiration
+                )
+
+                LaunchedEffect(Unit) {
+                    repeat(expiresIn.value.inWholeSeconds.toInt()) {
+                        delay(1.seconds)
+                        expiresIn.value = expiresIn.value.minus(1.seconds).coerceAtLeast(1.seconds)
+                    }
+                }
+
+                fun isLessThanAnHour() = expiresIn.value.inWholeMinutes < 60.minutes.inWholeMinutes
+
+                ProtonBanner(
+                    modifier = Modifier.fillMaxWidth(),
+                    icon = R.drawable.ic_proton_hourglass,
+                    iconTint = if (isLessThanAnHour()) {
+                        ProtonTheme.colors.iconInverted
+                    } else {
+                        ProtonTheme.colors.iconWeak
+                    },
+                    iconSize = ProtonDimens.IconSize.Medium,
+                    text = expirationText,
+                    textStyle = ProtonTheme.typography.bodyMedium.copy(
+                        color = if (isLessThanAnHour()) {
+                            ProtonTheme.colors.textInverted
+                        } else {
+                            ProtonTheme.colors.textWeak
+                        }
+                    ),
+                    backgroundColor = if (isLessThanAnHour()) {
+                        ProtonTheme.colors.notificationError
+                    } else {
+                        ProtonTheme.colors.backgroundNorm
+                    },
+                    borderColorIsBackgroundColor = isLessThanAnHour()
+                )
+            }
+        }
         if (messageBannersUiModel.shouldShowBlockedSenderBanner) {
             ProtonBannerWithButton(
                 bannerText = TextUiModel.TextRes(R.string.message_blocked_sender_banner_text).string(),
                 buttonText = TextUiModel.TextRes(R.string.message_blocked_sender_button_text).string(),
                 icon = R.drawable.ic_proton_circle_slash,
                 onButtonClicked = onUnblockSender
-            )
-        }
-        if (messageBannersUiModel.expirationBannerText != null) {
-            ProtonBanner(
-                modifier = Modifier.fillMaxWidth(),
-                icon = R.drawable.ic_proton_hourglass,
-                iconTint = ProtonTheme.colors.iconInverted,
-                iconSize = ProtonDimens.IconSize.Medium,
-                text = messageBannersUiModel.expirationBannerText.string(),
-                textStyle = ProtonTheme.typography.bodyMediumInverted,
-                backgroundColor = ProtonTheme.colors.notificationError,
-                borderColorIsBackgroundColor = true
             )
         }
     }
@@ -90,7 +141,9 @@ fun PreviewMessageBanners() {
                 shouldShowPhishingBanner = true,
                 shouldShowSpamBanner = true,
                 shouldShowBlockedSenderBanner = true,
-                expirationBannerText = TextUiModel("This message will expire in 1 day, 2 hours, 3 minutes")
+                expirationBannerUiModel = ExpirationBannerUiModel.Expiration(
+                    expiresAt = Instant.now()
+                )
             ),
             onMarkMessageAsLegitimate = {},
             onUnblockSender = {}

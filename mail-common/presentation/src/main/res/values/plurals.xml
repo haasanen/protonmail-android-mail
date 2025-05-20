@@ -17,6 +17,10 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+    <plurals name="expiration_seconds_full_word">
+        <item quantity="one">%d second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
     <plurals name="expiration_minutes_full_word">
         <item quantity="one">%d minute</item>
         <item quantity="other">%d minutes</item>

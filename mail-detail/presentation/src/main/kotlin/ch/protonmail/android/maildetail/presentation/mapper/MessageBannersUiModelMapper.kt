@@ -18,18 +18,12 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
-import java.time.Duration
-import java.time.Instant
 import android.content.Context
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maildetail.presentation.R
+import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
-import ch.protonmail.android.maildetail.presentation.util.toFormattedDurationParts
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import dagger.hilt.android.qualifiers.ApplicationContext
-import me.proton.core.util.kotlin.takeIfNotEmpty
 import javax.inject.Inject
-import kotlin.time.toKotlinDuration
 
 class MessageBannersUiModelMapper @Inject constructor(@ApplicationContext val context: Context) {
 
@@ -37,23 +31,12 @@ class MessageBannersUiModelMapper @Inject constructor(@ApplicationContext val co
         shouldShowPhishingBanner = messageBanners.contains(MessageBanner.PhishingAttempt),
         shouldShowSpamBanner = messageBanners.contains(MessageBanner.Spam),
         shouldShowBlockedSenderBanner = messageBanners.contains(MessageBanner.BlockedSender),
-        expirationBannerText = (messageBanners.find { it is MessageBanner.Expiry } as? MessageBanner.Expiry)?.let {
-            formatExpirationTime(it.expiresAt)
-        }
+        expirationBannerUiModel = toExpirationBannerUiModel(messageBanners)
     )
 
-    private fun formatExpirationTime(expiresAt: Instant): TextUiModel? {
-
-        val duration = Duration.between(
-            Instant.now(),
-            expiresAt
-        ).toKotlinDuration()
-
-        val formattedExpiration = duration.toFormattedDurationParts(context.resources).joinToString(separator = ", ")
-
-        return formattedExpiration.takeIfNotEmpty()?.let {
-            TextUiModel(context.resources.getString(R.string.message_expiration_banner_text, it))
-        }
-
+    private fun toExpirationBannerUiModel(messageBanners: List<MessageBanner>): ExpirationBannerUiModel {
+        return messageBanners.filterIsInstance<MessageBanner.Expiry>().firstOrNull()?.let {
+            ExpirationBannerUiModel.Expiration(expiresAt = it.expiresAt)
+        } ?: ExpirationBannerUiModel.NoExpiration
     }
 }
