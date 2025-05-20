@@ -27,10 +27,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilter
 
 internal object MailboxEmptyUiModelMapper {
 
-    fun toEmptyMailboxUiModel(
-        unreadFilterState: UnreadFilterState,
-        listState: MailboxListState.Data
-    ): MailboxEmptyUiModel {
+    fun toEmptyMailboxUiModel(unreadFilterState: UnreadFilterState, listState: MailboxListState): MailboxEmptyUiModel {
         val isUnreadFilterEnabled = (unreadFilterState as? UnreadFilterState.Data)?.isFilterEnabled == true
 
         if (isUnreadFilterEnabled) {
@@ -41,7 +38,7 @@ internal object MailboxEmptyUiModelMapper {
             )
         }
 
-        val currentMailLabel = listState.currentMailLabel
+        val currentMailLabel = (listState as? MailboxListState.Data)?.currentMailLabel
 
         if (currentMailLabel is MailLabel.System) {
             return when (currentMailLabel.systemLabelId) {

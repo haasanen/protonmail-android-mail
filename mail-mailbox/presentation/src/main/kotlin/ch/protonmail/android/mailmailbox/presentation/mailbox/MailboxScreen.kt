@@ -486,62 +486,46 @@ fun MailboxScreen(
             DismissableSnackbarHost(protonSnackbarHostState = snackbarHostErrorState)
         }
     ) { paddingValues ->
-        when (val mailboxListState = mailboxState.mailboxListState) {
-            is MailboxListState.Data -> {
 
-                // Report for benchmarking that the mailbox is visible and emails are loaded.
-                ReportDrawn()
+        val mailboxListState = mailboxState.mailboxListState
+        ReportDrawn()
 
-                if (mailboxListState is MailboxListState.Data.ViewMode) {
-                    ConsumableLaunchedEffect(mailboxListState.scrollToMailboxTop) {
-                        lazyListState.animateScrollToItem(0)
-                    }
-
-                    ConsumableLaunchedEffect(mailboxListState.openItemEffect) { request ->
-                        actions.navigateToMailboxItem(request)
-                    }
-
-                    ConsumableLaunchedEffect(mailboxListState.refreshErrorEffect) {
-                        actions.showErrorSnackbar(refreshErrorText)
-                    }
-
-                    ConsumableTextEffect(mailboxListState.attachmentOpeningStarted) {
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                    }
-
-                    ConsumableLaunchedEffect(mailboxListState.displayAttachment) {
-                        actions.onAttachmentReady(it)
-                    }
-
-                    ConsumableTextEffect(mailboxListState.displayAttachmentError) {
-                        actions.showErrorSnackbar(it)
-                    }
-                }
-
-                MailboxSwipeRefresh(
-                    modifier = Modifier.padding(paddingValues),
-                    topBarHeight = rememberTopBarHeight.value,
-                    items = mailboxListItems,
-                    state = mailboxListState,
-                    listState = lazyListState,
-                    viewState = mailboxListState,
-                    unreadFilterState = mailboxState.unreadFilterState,
-                    actions = actions
-                )
+        if (mailboxListState is MailboxListState.Data.ViewMode) {
+            ConsumableLaunchedEffect(mailboxListState.scrollToMailboxTop) {
+                lazyListState.animateScrollToItem(0)
             }
 
-            is MailboxListState.Loading ->
-                Box(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .fillMaxSize()
-                ) {
+            ConsumableLaunchedEffect(mailboxListState.openItemEffect) { request ->
+                actions.navigateToMailboxItem(request)
+            }
 
-                    MailboxSkeletonLoading(
-                        modifier = modifier.testTag(MailboxScreenTestTags.ListProgress)
-                    )
-                }
+            ConsumableLaunchedEffect(mailboxListState.refreshErrorEffect) {
+                actions.showErrorSnackbar(refreshErrorText)
+            }
+
+            ConsumableTextEffect(mailboxListState.attachmentOpeningStarted) {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            }
+
+            ConsumableLaunchedEffect(mailboxListState.displayAttachment) {
+                actions.onAttachmentReady(it)
+            }
+
+            ConsumableTextEffect(mailboxListState.displayAttachmentError) {
+                actions.showErrorSnackbar(it)
+            }
         }
+
+        MailboxSwipeRefresh(
+            modifier = Modifier.padding(paddingValues),
+            topBarHeight = rememberTopBarHeight.value,
+            items = mailboxListItems,
+            state = mailboxListState,
+            listState = lazyListState,
+            viewState = mailboxListState,
+            unreadFilterState = mailboxState.unreadFilterState,
+            actions = actions
+        )
     }
 }
 
@@ -641,7 +625,7 @@ fun IconOnlyComposeMailFab(onComposeClick: () -> Unit) {
 private fun MailboxSwipeRefresh(
     state: MailboxListState,
     items: LazyPagingItems<MailboxItemUiModel>,
-    viewState: MailboxListState.Data,
+    viewState: MailboxListState,
     listState: LazyListState,
     unreadFilterState: UnreadFilterState,
     actions: MailboxScreen.Actions,
@@ -1012,7 +996,7 @@ private fun MailboxError(modifier: Modifier = Modifier, errorMessage: String) {
 
 @Composable
 private fun MailboxEmpty(
-    listState: MailboxListState.Data,
+    listState: MailboxListState,
     unreadFilterState: UnreadFilterState,
     topBarHeight: Dp
 ) {
