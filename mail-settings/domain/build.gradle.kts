@@ -44,9 +44,8 @@ android {
 
 dependencies {
     implementation(libs.bundles.module.domain)
-    implementation(libs.proton.core.accountManager)
-    implementation(libs.proton.core.mailSettings)
-    implementation(libs.proton.core.userSettings)
+    implementation(libs.proton.core.mailSettings.domain)
+    implementation(libs.proton.core.userSettings.domain)
     implementation(libs.proton.core.configuration.data)
 
     implementation(project(":mail-common:domain"))

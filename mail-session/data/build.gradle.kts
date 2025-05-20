@@ -47,8 +47,9 @@ dependencies {
     compileOnly(libs.proton.rust.core)
     implementation(libs.bundles.module.data)
     implementation(libs.androidx.hilt.work)
+    implementation(libs.proton.core.crypto)
     implementation(libs.proton.core.domain)
-    implementation(libs.proton.core.network)
+    implementation(libs.proton.core.network.domain)
 
     implementation(project(":mail-featureflags:domain"))
     implementation(project(":mail-bugreport:domain"))

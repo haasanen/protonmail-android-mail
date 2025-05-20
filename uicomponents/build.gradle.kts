@@ -51,7 +51,7 @@ dependencies {
 
     implementation(libs.bundles.module.presentation)
     implementation(libs.bundles.compose)
-    implementation(libs.proton.core.country)
+    implementation(libs.proton.core.country.presentation)
 
     testImplementation(libs.bundles.test)
     implementation(project(":design-system"))

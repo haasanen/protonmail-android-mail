@@ -69,7 +69,7 @@ dependencies {
     implementation(libs.arrow.core)
     implementation(libs.coil.compose)
     implementation(libs.timber)
-    implementation(libs.proton.core.plan)
+    implementation(libs.proton.core.plan.presentationCompose)
     implementation(libs.proton.core.presentation)
 
     testImplementation(project(":test:test-data"))

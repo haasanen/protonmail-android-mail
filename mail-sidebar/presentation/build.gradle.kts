@@ -59,10 +59,10 @@ dependencies {
     debugImplementation(libs.bundles.compose.debug)
 
     implementation(libs.bundles.module.presentation)
-    implementation(libs.proton.core.accountManagerPresentationCompose)
+    implementation(libs.proton.core.accountManager.presentation.compose)
 
     implementation(libs.proton.core.domain)
-    implementation(libs.proton.core.mailSettings)
+    implementation(libs.proton.core.mailSettings.domain)
     implementation(libs.proton.core.plan.presentationCompose)
 
     implementation(project(":mail-common:domain"))

@@ -60,7 +60,7 @@ dependencies {
 
     implementation(libs.bundles.module.presentation)
     implementation(libs.androidx.constraintlayout.compose)
-    implementation(libs.proton.core.mailSettings)
+    implementation(libs.proton.core.mailSettings.domain)
 
     implementation(project(":mail-label:domain"))
     implementation(project(":mail-settings:domain"))

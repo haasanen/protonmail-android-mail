@@ -43,8 +43,10 @@ android {
 
 dependencies {
     implementation(libs.arrow.core)
-    implementation(libs.proton.core.plan)
-    implementation(libs.proton.core.telemetry)
+    implementation(libs.proton.core.auth.domain)
+    implementation(libs.proton.core.plan.domain)
+    implementation(libs.proton.core.telemetry.domain)
+    implementation(libs.dagger.hilt.android)
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-session:domain"))

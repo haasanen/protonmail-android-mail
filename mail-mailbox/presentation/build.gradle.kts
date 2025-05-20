@@ -70,12 +70,8 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.room.ktx)
-    implementation(libs.proton.core.account)
-    implementation(libs.proton.core.mailSettings)
-    implementation(libs.proton.core.plan.presentationCompose)
+    implementation(libs.proton.core.mailSettings.domain)
     implementation(libs.proton.core.user.domain)
-    implementation(libs.proton.core.key)
-    implementation(libs.proton.core.plan)
 
     implementation(project(":mail-attachments:domain"))
     implementation(project(":mail-attachments:presentation"))

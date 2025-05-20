@@ -44,16 +44,18 @@ android {
 dependencies {
     compileOnly(libs.proton.rust.core)
 
+    implementation(libs.androidx.compose.ui)
     implementation(libs.kotlinx.immutableCollections)
 
-    implementation(libs.proton.core.account)
+    implementation(libs.proton.core.account.domain)
     implementation(libs.proton.core.domain)
-    implementation(libs.proton.core.featureFlag)
-    implementation(libs.proton.core.mailSettings)
-    implementation(libs.proton.core.network)
-    implementation(libs.proton.core.plan)
-    implementation(libs.proton.core.user)
-    implementation(libs.proton.core.userSettings)
+    implementation(libs.proton.core.featureFlag.domain)
+    implementation(libs.proton.core.mailSettings.domain)
+    implementation(libs.proton.core.network.domain)
+    implementation(libs.proton.core.plan.domain)
+    implementation(libs.proton.core.presentation)
+    implementation(libs.proton.core.user.domain)
+    implementation(libs.proton.core.userSettings.domain)
 
     implementation(project(":mail-attachments"))
     implementation(project(":mail-contact"))

@@ -291,7 +291,7 @@ dependencies {
     testImplementation(project(":test:utils"))
 
     androidTestImplementation(libs.bundles.test.androidTest)
-    androidTestImplementation(libs.proton.core.accountManagerPresentationCompose)
+    androidTestImplementation(libs.proton.core.accountManager.presentation.compose)
     androidTestImplementation(libs.proton.core.accountRecoveryTest)
     androidTestImplementation(libs.proton.core.authTest)
     androidTestImplementation(libs.proton.core.planTest)

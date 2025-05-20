@@ -47,7 +47,7 @@ dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
 
-    implementation(libs.proton.core.plan)
+    implementation(libs.proton.core.plan.domain)
 
     implementation(project(":mail-upselling:data"))
     implementation(project(":mail-upselling:domain"))

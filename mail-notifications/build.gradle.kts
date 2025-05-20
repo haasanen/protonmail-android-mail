@@ -96,7 +96,7 @@ dependencies {
     implementation(libs.arrow.core)
     implementation(libs.dagger.hilt.android)
     implementation(libs.timber)
-    implementation(libs.proton.core.network)
+    implementation(libs.proton.core.network.domain)
 
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))

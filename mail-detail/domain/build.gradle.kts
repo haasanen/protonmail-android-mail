@@ -43,7 +43,7 @@ android {
 
 dependencies {
     implementation(libs.bundles.module.domain)
-    implementation(libs.proton.core.mailSettings)
+    implementation(libs.proton.core.mailSettings.domain)
     implementation(libs.proton.core.presentation)
     implementation(libs.proton.core.user.domain)
     implementation(libs.jsoup)

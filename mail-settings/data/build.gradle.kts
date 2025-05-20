@@ -50,8 +50,9 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.biometrics)
-    implementation(libs.proton.core.user)
-    implementation(libs.proton.core.mailSettings)
+    implementation(libs.proton.core.user.data)
+    implementation(libs.proton.core.user.domain)
+    implementation(libs.proton.core.mailSettings.domain)
 
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))

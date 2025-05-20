@@ -61,11 +61,9 @@ dependencies {
     implementation(libs.bundles.module.presentation)
     implementation(libs.accompanist.webview)
 
-    implementation(libs.proton.core.accountManager)
-    implementation(libs.proton.core.key)
+    implementation(libs.proton.core.accountManager.domain)
     implementation(libs.proton.core.user.domain)
-    implementation(libs.proton.core.userSettings)
-    implementation(libs.proton.core.mailSettings)
+    implementation(libs.proton.core.mailSettings.domain)
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
@@ -80,7 +78,7 @@ dependencies {
     implementation(project(":presentation-compose"))
 
     testImplementation(libs.bundles.test)
-    testImplementation(libs.proton.core.network)
+    testImplementation(libs.proton.core.network.domain)
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))
     testImplementation(libs.proton.rust.core)
