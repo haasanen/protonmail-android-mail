@@ -53,9 +53,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.uicomponents.text.defaultTextFieldColors
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.uicomponents.text.defaultTextFieldColors
 
 @Composable
 fun SearchView(
@@ -171,8 +171,8 @@ internal fun EmptySearchTextFieldPreview() {
             actions = SearchView.Actions.Empty,
             parameters = SearchView.Parameters(
                 initialSearchValue = "",
-                searchPlaceholderText = R.string.countries_search,
-                closeButtonContentDescription = R.string.countries_search
+                searchPlaceholderText = R.string.search,
+                closeButtonContentDescription = R.string.close
             )
         )
     }
@@ -187,8 +187,8 @@ internal fun FilledSearchTextFieldPreview() {
             actions = SearchView.Actions.Empty,
             parameters = SearchView.Parameters(
                 initialSearchValue = "",
-                searchPlaceholderText = R.string.countries_search,
-                closeButtonContentDescription = R.string.countries_search
+                searchPlaceholderText = R.string.search,
+                closeButtonContentDescription = R.string.close
             )
         )
     }

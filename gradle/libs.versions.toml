@@ -211,7 +211,6 @@ proton-core-challenge-presentation = { module = "me.proton.core:challenge-presen
 proton-core-configuration-data = { module = "me.proton.core:configuration-data", version.ref = "proton-core" }
 proton-core-configuration-dagger-static = { module = "me.proton.core:configuration-dagger-staticdefaults", version.ref = "proton-core" }
 proton-core-configuration-dagger-contentProvider = { module = "me.proton.core:configuration-dagger-content-resolver", version.ref = "proton-core" }
-proton-core-country-presentation = { module = "me.proton.core:country-presentation", version.ref = "proton-core" }
 proton-core-crypto = { module = "me.proton.core:crypto", version.ref = "proton-core" }
 proton-core-domain = { module = "me.proton.core:domain", version.ref = "proton-core" }
 proton-core-deviceMigration-dagger = { module = "me.proton.core:device-migration-dagger", version.ref = "proton-core" }
