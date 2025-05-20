@@ -60,7 +60,6 @@ dependencies {
     implementation(libs.bundles.module.presentation)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.jsoup)
-    implementation(libs.proton.core.network.domain)
     implementation(libs.proton.core.domain)
     implementation(libs.proton.core.user.domain)
 
