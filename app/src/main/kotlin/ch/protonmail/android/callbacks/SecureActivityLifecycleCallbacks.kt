@@ -32,8 +32,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.proton.core.auth.presentation.ui.AuthActivity
-import me.proton.core.usersettings.presentation.ui.PasswordManagementActivity
+import me.proton.android.core.auth.presentation.addaccount.AddAccountActivity
+import me.proton.android.core.auth.presentation.login.LoginActivity
+import me.proton.android.core.auth.presentation.login.LoginHelpActivity
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorActivity
+import me.proton.android.core.auth.presentation.signup.SignUpActivity
+import me.proton.android.core.auth.presentation.twopass.TwoPassActivity
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -89,8 +93,12 @@ internal class SecureActivityLifecycleCallbacks @Inject constructor(
     }
 
     private fun Activity.isSecureActivity(): Boolean = when (this) {
-        is AuthActivity<*>,
-        is PasswordManagementActivity,
+        is AddAccountActivity,
+        is LoginActivity,
+        is LoginHelpActivity,
+        is SecondFactorActivity,
+        is SignUpActivity,
+        is TwoPassActivity,
         is LockScreenActivity -> true
 
         else -> false

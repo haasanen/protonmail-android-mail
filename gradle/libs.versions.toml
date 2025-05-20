@@ -250,8 +250,6 @@ proton-core-user-domain = { module = "me.proton.core:user-domain", version.ref =
 proton-core-userRecovery-dagger = { module = "me.proton.core:user-recovery-dagger", version.ref = "proton-core" }
 proton-core-userRecoveryTest = { module = "me.proton.core:user-recovery-test", version.ref = "proton-core" }
 proton-core-userSettings-dagger = { module = "me.proton.core:user-settings-dagger", version.ref = "proton-core" }
-proton-core-userSettings-domain = { module = "me.proton.core:user-settings-domain", version.ref = "proton-core" }
-proton-core-userSettings-presentation = { module = "me.proton.core:user-settings-presentation", version.ref = "proton-core" }
 proton-core-utilKotlin = { module = "me.proton.core:util-kotlin", version.ref = "proton-core" }
 proton-core-utilAndroidDateTime = { module = "me.proton.core:util-android-datetime", version.ref = "proton-core" }
 proton-core-utilAndroidDagger = { module = "me.proton.core:util-android-dagger", version.ref = "proton-core" }
@@ -320,7 +318,6 @@ appLibs = [
     "proton-core-user-dagger",
     "proton-core-userRecovery-dagger",
     "proton-core-userSettings-dagger",
-    "proton-core-userSettings-presentation",
     "proton-core-configuration-data",
     "proton-core-utilAndroidDagger",
     "proton-core-utilAndroidSentry",

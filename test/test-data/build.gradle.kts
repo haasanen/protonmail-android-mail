@@ -55,7 +55,6 @@ dependencies {
     implementation(libs.proton.core.plan.domain)
     implementation(libs.proton.core.presentation)
     implementation(libs.proton.core.user.domain)
-    implementation(libs.proton.core.userSettings.domain)
 
     implementation(project(":mail-attachments"))
     implementation(project(":mail-contact"))
