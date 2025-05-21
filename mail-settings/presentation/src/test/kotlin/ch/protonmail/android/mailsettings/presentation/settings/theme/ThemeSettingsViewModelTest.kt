@@ -112,9 +112,10 @@ class ThemeSettingsViewModelTest {
             initialStateEmitted()
 
             // When
+            themePreferenceFlow.emit(DARK)
 
-            val expectedSelectedTheme = DARK
             // Then
+            val expectedSelectedTheme = DARK
             assertEquals(
                 ThemeSettingsState.Data(
                     expectedSelectedTheme,
