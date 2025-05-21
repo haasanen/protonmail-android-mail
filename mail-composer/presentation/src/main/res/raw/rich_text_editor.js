@@ -1,4 +1,7 @@
 
+/*******************************************************************************
+ * Event listeners
+ ******************************************************************************/
 document.getElementById('$EDITOR_ID').addEventListener('input', function(){
     var body = document.getElementById('$EDITOR_ID').innerHTML
     $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onBodyUpdated(body)
@@ -11,11 +14,7 @@ for (const entry of entries) {
 });
 observer.observe(document.querySelector('body'));
 
-function focusEditor() {
-    var editor = document.getElementById('$EDITOR_ID');
-    editor.focus();
-}
-
+/* Observes the cursor position and notifies kotlin through js interface. Invoked at script init (bottom of this file).*/
 function trackCursorPosition() {
     var editor = document.getElementById('$EDITOR_ID');
 
@@ -94,4 +93,36 @@ function trackCursorPosition() {
 }
 
 trackCursorPosition();
+
+/*******************************************************************************
+ * Public functions invoked by kotlin through webview evaluate javascript method
+ ******************************************************************************/
+
+function focusEditor() {
+    var editor = document.getElementById('$EDITOR_ID');
+    editor.focus();
+}
+
+function injectInlineImage(contentId) {
+    var editor = document.getElementById('$EDITOR_ID'); // Use the real ID here
+
+    editor.focus();
+
+    var selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+        var range = selection.getRangeAt(0);
+
+        const img = document.createElement('img');
+        img.src = "cid:" + contentId;
+        range.insertNode(img);
+
+        // Move cursor after the image
+        range.setStartAfter(img);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        console.log('editor-webview: inserted image ' + img);
+    }
+}
 

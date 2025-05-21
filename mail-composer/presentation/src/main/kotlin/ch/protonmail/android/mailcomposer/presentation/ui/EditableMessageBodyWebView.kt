@@ -67,6 +67,7 @@ fun EditableMessageBodyWebView(
     modifier: Modifier = Modifier,
     messageBodyUiModel: DraftDisplayBodyUiModel,
     shouldRequestFocus: Effect<Unit>,
+    injectInlineAttachment: Effect<String>,
     webViewActions: EditableMessageBodyWebView.Actions
 ) {
 
@@ -124,6 +125,12 @@ fun EditableMessageBodyWebView(
         LaunchedEffect(wv) {
             Timber.d("editor-webview: setting initial value on webview (should happen only once!)")
             wv.loadDataWithBaseURL(null, messageBodyUiModel.value, MimeType.Html.value, "utf-8", null)
+        }
+        ConsumableLaunchedEffect(injectInlineAttachment) { contentId ->
+            Timber.v("editor-webview: requested injecting inline image into composer... $contentId")
+            wv.evaluateJavascript("injectInlineImage('$contentId');") {
+                Timber.v("editor-webview: injected inline image with cid $contentId into webview")
+            }
         }
 
         if (contentLoadingFinished.value) {

@@ -274,7 +274,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                         bodyInitialValue = state.fields.displayBody,
                         attachments = state.attachments,
                         focusTextBody = state.focusTextBody,
-                        formHeightPx = formHeightPx
+                        formHeightPx = formHeightPx,
+                        injectInlineAttachment = state.injectInlineAttachment
                     )
                 }
             }
