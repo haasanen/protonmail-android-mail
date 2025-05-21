@@ -168,7 +168,7 @@ fun MailboxScreen(
     onEvent: (AccountSwitchEvent) -> Unit,
     viewModel: MailboxViewModel = hiltViewModel()
 ) {
-    val mailboxState = viewModel.state.collectAsStateWithLifecycle(MailboxViewModel.initialState).value
+    val mailboxState = viewModel.state.collectAsStateWithLifecycle().value
 
     val mailboxListItems = viewModel.items.collectAsLazyPagingItems()
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
