@@ -69,8 +69,6 @@ dependencies {
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-session:presentation"))
 
-    implementation(project(":mail-upselling:domain"))
-    implementation(project(":mail-upselling:presentation"))
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
