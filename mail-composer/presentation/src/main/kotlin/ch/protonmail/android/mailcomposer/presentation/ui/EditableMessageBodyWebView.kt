@@ -67,7 +67,6 @@ fun EditableMessageBodyWebView(
     modifier: Modifier = Modifier,
     messageBodyUiModel: DraftDisplayBodyUiModel,
     shouldRequestFocus: Effect<Unit>,
-    webViewFactory: (Context) -> WebView,
     webViewActions: EditableMessageBodyWebView.Actions
 ) {
 
@@ -145,7 +144,7 @@ fun EditableMessageBodyWebView(
 
         AndroidView(
             factory = { context ->
-                webViewFactory.invoke(context).apply {
+                webViewActions.onBuildWebView.invoke(context).apply {
                     this.settings.builtInZoomControls = true
                     this.settings.displayZoomControls = false
                     this.settings.javaScriptEnabled = true
@@ -196,7 +195,8 @@ object EditableMessageBodyWebView {
         val onAttachmentClicked: (attachmentId: AttachmentId) -> Unit,
         val loadEmbeddedImage: (contentId: String) -> EmbeddedImage?,
         val onMessageBodyChanged: (body: String) -> Unit,
-        val onWebViewParamsChanged: (params: WebViewMeasures) -> Unit
+        val onWebViewParamsChanged: (params: WebViewMeasures) -> Unit,
+        val onBuildWebView: (Context) -> WebView
     )
 }
 

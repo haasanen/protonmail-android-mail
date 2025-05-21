@@ -18,11 +18,13 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui.form
 
+import android.content.Context
 import android.webkit.WebView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,7 +47,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerTestTags
-import ch.protonmail.android.mailcomposer.presentation.ui.MessageBodyEditor
+import ch.protonmail.android.mailcomposer.presentation.ui.EditableMessageBodyWebView
 import ch.protonmail.android.mailcomposer.presentation.ui.SenderEmailWithSelector
 import ch.protonmail.android.mailcomposer.presentation.ui.SubjectTextField
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.RecipientsViewModel
@@ -157,24 +159,19 @@ internal fun ComposerForm(
                 }
             }
 
-            val editorWebView = remember { mutableStateOf<WebView?>(null) }
+            val webViewCache = remember { mutableStateOf<WebView?>(null) }
             if (showSubjectAndBody) {
-                MessageBodyEditor(
+                EditableMessageBodyWebView(
                     messageBodyUiModel = bodyInitialValue,
-                    webViewFactory = { context ->
-                        if (editorWebView.value == null) {
-                            Timber.d("editor-webview: factory creating new editor webview")
-                            val webView = WebView(context)
-                            editorWebView.value = webView
-                        }
-
-                        Timber.d("editor-webview: factory returning editor webview")
-                        editorWebView.value ?: throw IllegalStateException("Editor WebView wasn't initialized.")
-                    },
-                    focusBody = focusTextBody,
-                    onBodyChanged = actions.onBodyChanged,
-                    onWebViewMeasuresChanged = actions.onWebViewMeasuresChanged,
-                    loadEmbeddedImage = actions.loadEmbeddedImage,
+                    shouldRequestFocus = focusTextBody,
+                    webViewActions = EditableMessageBodyWebView.Actions(
+                        onMessageBodyLinkClicked = {},
+                        onAttachmentClicked = {},
+                        loadEmbeddedImage = actions.loadEmbeddedImage,
+                        onMessageBodyChanged = actions.onBodyChanged,
+                        onWebViewParamsChanged = actions.onWebViewMeasuresChanged,
+                        onBuildWebView = onBuildWebView(webViewCache)
+                    ),
                     modifier = maxWidthModifier
                         .testTag(ComposerTestTags.MessageBody)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
@@ -186,6 +183,18 @@ internal fun ComposerForm(
             }
         }
     }
+}
+
+@Composable
+private fun onBuildWebView(editorWebView: MutableState<WebView?>) = { context: Context ->
+    if (editorWebView.value == null) {
+        Timber.d("editor-webview: factory creating new editor webview")
+        val webView = WebView(context)
+        editorWebView.value = webView
+    }
+
+    Timber.d("editor-webview: factory returning editor webview")
+    editorWebView.value ?: throw IllegalStateException("Editor WebView wasn't initialized.")
 }
 
 internal object ComposerForm {
