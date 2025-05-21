@@ -18,20 +18,35 @@
 
 package ch.protonmail.android.mailsettings.presentation.settings.theme
 
-import androidx.annotation.StringRes
+import androidx.compose.runtime.Immutable
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.Theme
+import ch.protonmail.android.mailsettings.domain.model.Theme.DARK
+import ch.protonmail.android.mailsettings.domain.model.Theme.LIGHT
+import ch.protonmail.android.mailsettings.domain.model.Theme.SYSTEM_DEFAULT
+import ch.protonmail.android.mailsettings.presentation.R
 
+@Immutable
 sealed class ThemeSettingsState {
 
     data class Data(
-        val themes: List<ThemeUiModel>
-    ) : ThemeSettingsState()
+        private val currentTheme: Theme,
+        val themesToChoices: Map<Theme, TextUiModel>
+    ) : ThemeSettingsState() {
+        val themeChoices = themesToChoices.values.toList()
+        val selectedTheme = themesToChoices.getValue(currentTheme)
+    }
 
     data object Loading : ThemeSettingsState()
 }
 
-data class ThemeUiModel(
-    val id: Theme,
-    @StringRes val name: Int,
-    val isSelected: Boolean
-)
+internal fun Theme.toUiModel() = TextUiModel(nameStringResourceBy(this))
+
+internal fun ThemeSettingsState.Data.themeFor(choice: TextUiModel) =
+    themesToChoices.entries.first { it.value == choice }.key
+
+private fun nameStringResourceBy(theme: Theme) = when (theme) {
+    SYSTEM_DEFAULT -> R.string.mail_settings_system_default
+    LIGHT -> R.string.mail_settings_theme_light
+    DARK -> R.string.mail_settings_theme_dark
+}

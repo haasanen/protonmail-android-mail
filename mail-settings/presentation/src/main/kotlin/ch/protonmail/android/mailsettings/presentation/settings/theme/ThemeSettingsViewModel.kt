@@ -20,12 +20,9 @@ package ch.protonmail.android.mailsettings.presentation.settings.theme
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailsettings.domain.model.Theme
-import ch.protonmail.android.mailsettings.domain.model.Theme.DARK
-import ch.protonmail.android.mailsettings.domain.model.Theme.LIGHT
-import ch.protonmail.android.mailsettings.domain.model.Theme.SYSTEM_DEFAULT
 import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
-import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsState.Loading
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -33,7 +30,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,13 +41,8 @@ class ThemeSettingsViewModel @Inject constructor(
         .observe()
         .mapLatest { currentTheme ->
             ThemeSettingsState.Data(
-                Theme.values().map { theme ->
-                    ThemeUiModel(
-                        id = theme,
-                        name = nameStringResourceBy(theme),
-                        isSelected = currentTheme == theme
-                    )
-                }
+                currentTheme,
+                Theme.entries.associateWith { it.toUiModel() }
             )
         }
         .stateIn(
@@ -62,11 +53,5 @@ class ThemeSettingsViewModel @Inject constructor(
 
     fun onThemeSelected(theme: Theme) = viewModelScope.launch {
         themeRepository.update(theme)
-    }
-
-    private fun nameStringResourceBy(theme: Theme) = when (theme) {
-        SYSTEM_DEFAULT -> R.string.mail_settings_system_default
-        LIGHT -> R.string.mail_settings_theme_light
-        DARK -> R.string.mail_settings_theme_dark
     }
 }

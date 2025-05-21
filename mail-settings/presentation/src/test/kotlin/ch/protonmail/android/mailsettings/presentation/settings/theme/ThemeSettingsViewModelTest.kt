@@ -20,6 +20,7 @@ package ch.protonmail.android.mailsettings.presentation.settings.theme
 
 import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.Theme.DARK
 import ch.protonmail.android.mailsettings.domain.model.Theme.LIGHT
@@ -70,13 +71,15 @@ class ThemeSettingsViewModelTest {
             // When
             themePreferenceFlow.emit(SYSTEM_DEFAULT)
 
+            val expectedSelectedTheme = SYSTEM_DEFAULT
             // Then
-            val expectedThemes = listOf(
-                systemDefaultTheme(true),
-                lightTheme(),
-                darkTheme()
+            assertEquals(
+                ThemeSettingsState.Data(
+                    expectedSelectedTheme,
+                    expectedThemes
+                ),
+                awaitItem()
             )
-            assertEquals(ThemeSettingsState.Data(expectedThemes), awaitItem())
         }
     }
 
@@ -90,12 +93,15 @@ class ThemeSettingsViewModelTest {
             themePreferenceFlow.emit(LIGHT)
 
             // Then
-            val expectedThemes = listOf(
-                systemDefaultTheme(),
-                lightTheme(true),
-                darkTheme()
+            val expectedSelectedTheme = LIGHT
+            // Then
+            assertEquals(
+                ThemeSettingsState.Data(
+                    expectedSelectedTheme,
+                    expectedThemes
+                ),
+                awaitItem()
             )
-            assertEquals(ThemeSettingsState.Data(expectedThemes), awaitItem())
         }
     }
 
@@ -106,15 +112,17 @@ class ThemeSettingsViewModelTest {
             initialStateEmitted()
 
             // When
-            themePreferenceFlow.emit(DARK)
 
+            val expectedSelectedTheme = DARK
             // Then
-            val expectedThemes = listOf(
-                systemDefaultTheme(),
-                lightTheme(),
-                darkTheme(true)
+            assertEquals(
+                ThemeSettingsState.Data(
+                    expectedSelectedTheme,
+                    expectedThemes
+                ),
+                awaitItem()
             )
-            assertEquals(ThemeSettingsState.Data(expectedThemes), awaitItem())
+
         }
     }
 
@@ -128,11 +136,7 @@ class ThemeSettingsViewModelTest {
             // Then
             assertEquals(
                 ThemeSettingsState.Data(
-                    listOf(
-                        systemDefaultTheme(),
-                        lightTheme(),
-                        darkTheme(true)
-                    )
+                    DARK, expectedThemes
                 ),
                 awaitItem()
             )
@@ -142,11 +146,7 @@ class ThemeSettingsViewModelTest {
             // Then
             assertEquals(
                 ThemeSettingsState.Data(
-                    listOf(
-                        systemDefaultTheme(),
-                        lightTheme(true),
-                        darkTheme()
-                    )
+                    LIGHT, expectedThemes
                 ),
                 awaitItem()
             )
@@ -159,29 +159,31 @@ class ThemeSettingsViewModelTest {
         coEvery { themeRepository.update(any()) } just Runs
 
         // When
-        viewModel.onThemeSelected(Theme.LIGHT)
+        viewModel.onThemeSelected(LIGHT)
 
         // Then
-        coVerify { themeRepository.update(Theme.LIGHT) }
+        coVerify { themeRepository.update(LIGHT) }
     }
 
-    private fun systemDefaultTheme(isCurrent: Boolean = false) = ThemeUiModel(
-        SYSTEM_DEFAULT,
-        string.mail_settings_system_default,
-        isCurrent
-    )
+    companion object {
+        private val systemDefaultTheme = TextUiModel(
+            string.mail_settings_system_default
+        )
 
-    private fun lightTheme(isCurrent: Boolean = false) = ThemeUiModel(
-        LIGHT,
-        string.mail_settings_theme_light,
-        isCurrent
-    )
+        private val lightTheme = TextUiModel(
+            string.mail_settings_theme_light
+        )
 
-    private fun darkTheme(isCurrent: Boolean = false) = ThemeUiModel(
-        DARK,
-        string.mail_settings_theme_dark,
-        isCurrent
-    )
+        private val darkTheme = TextUiModel(
+            string.mail_settings_theme_dark
+        )
+
+        val expectedThemes = mapOf(
+            SYSTEM_DEFAULT to systemDefaultTheme,
+            LIGHT to lightTheme,
+            DARK to darkTheme
+        )
+    }
 
     private suspend fun ReceiveTurbine<ThemeSettingsState>.initialStateEmitted() {
         awaitItem() as Loading

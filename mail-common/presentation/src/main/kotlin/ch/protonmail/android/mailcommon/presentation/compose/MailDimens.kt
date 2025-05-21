@@ -101,7 +101,7 @@ object MailDimens {
         val AvatarSize = 40.dp
     }
 
-    val PickerDialogItemVerticalPadding = 12.dp
+    val PickerDialogItemVerticalPadding = 16.dp
 
     val NotificationDotSize = 8.dp
 

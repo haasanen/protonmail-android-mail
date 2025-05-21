@@ -23,6 +23,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import ch.protonmail.android.LockScreenActivity
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsPeekView
@@ -41,7 +42,7 @@ import ch.protonmail.android.mailsettings.presentation.settings.privacy.PrivacyS
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen.SWIPE_DIRECTION_KEY
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.SwipeActionsPreferenceScreen
-import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsScreen
+import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsDialog
 import ch.protonmail.android.mailsettings.presentation.webaccountsettings.WebAccountSettingScreen
 import ch.protonmail.android.mailsettings.presentation.webemailsettings.WebEmailSettingScreen
 import ch.protonmail.android.mailsettings.presentation.webfoldersettings.WebFoldersAndLabelsSettingScreen
@@ -200,10 +201,10 @@ internal fun NavGraphBuilder.addSwipeActionsSettings(navController: NavHostContr
 }
 
 internal fun NavGraphBuilder.addThemeSettings(navController: NavHostController) {
-    composable(route = Screen.ThemeSettings.route) {
-        ThemeSettingsScreen(
+    dialog(route = Screen.ThemeSettings.route) {
+        ThemeSettingsDialog(
             modifier = Modifier,
-            onBackClick = { navController.navigateBack() }
+            onDismiss = { navController.navigateBack() }
         )
     }
 }

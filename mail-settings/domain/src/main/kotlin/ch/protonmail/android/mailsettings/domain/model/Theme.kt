@@ -24,7 +24,7 @@ enum class Theme {
     DARK;
 
     companion object {
-        private val map = values().associateBy { it.name }
+        private val map = entries.associateBy { it.name }
         fun enumOf(value: String?): Theme = map[value] ?: SYSTEM_DEFAULT
     }
 }
