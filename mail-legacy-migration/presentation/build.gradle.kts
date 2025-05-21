@@ -60,7 +60,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     implementation(project(":design-system"))
-    implementation(project(":mail-legacy-migration:data"))
     implementation(project(":mail-legacy-migration:domain"))
     implementation(project(":presentation-compose"))
 
