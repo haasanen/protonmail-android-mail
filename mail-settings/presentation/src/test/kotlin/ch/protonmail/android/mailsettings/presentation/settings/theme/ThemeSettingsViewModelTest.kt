@@ -165,6 +165,10 @@ class ThemeSettingsViewModelTest {
         coVerify { themeRepository.update(LIGHT) }
     }
 
+    private suspend fun ReceiveTurbine<ThemeSettingsState>.initialStateEmitted() {
+        awaitItem() as Loading
+    }
+
     companion object {
         private val systemDefaultTheme = TextUiModel(
             string.mail_settings_system_default
@@ -183,9 +187,5 @@ class ThemeSettingsViewModelTest {
             LIGHT to lightTheme,
             DARK to darkTheme
         )
-    }
-
-    private suspend fun ReceiveTurbine<ThemeSettingsState>.initialStateEmitted() {
-        awaitItem() as Loading
     }
 }
