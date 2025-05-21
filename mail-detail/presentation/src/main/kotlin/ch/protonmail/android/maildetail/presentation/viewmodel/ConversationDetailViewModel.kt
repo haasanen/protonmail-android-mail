@@ -85,7 +85,6 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
-import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -145,7 +144,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import me.proton.core.domain.entity.UserId
-import me.proton.core.network.domain.NetworkManager
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -182,7 +180,6 @@ class ConversationDetailViewModel @Inject constructor(
     private val updateLinkConfirmationSetting: UpdateLinkConfirmationSetting,
     private val reportPhishingMessage: ReportPhishingMessage,
     private val isProtonCalendarInstalled: IsProtonCalendarInstalled,
-    private val networkManager: NetworkManager,
     private val markMessageAsUnread: MarkMessageAsUnread,
     private val findContactByEmail: FindContactByEmail,
     private val getMoreActionsBottomSheetData: GetMoreActionsBottomSheetData,
@@ -193,8 +190,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val observeAvatarImageStates: ObserveAvatarImageStates,
     private val getMessagesInSameExclusiveLocation: GetMessagesInSameExclusiveLocation,
     private val markMessageAsLegitimate: MarkMessageAsLegitimate,
-    private val unblockSender: UnblockSender,
-    @ComposerEnabled val isComposerEnabled: Flow<Boolean>
+    private val unblockSender: UnblockSender
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()

@@ -135,7 +135,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import me.proton.core.network.domain.NetworkManager
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -288,7 +287,6 @@ class ConversationDetailViewModelTest {
     private val inMemoryConversationStateRepository = FakeInMemoryConversationStateRepository()
     private val messageViewStateCache = MessageViewStateCache(inMemoryConversationStateRepository)
     private val observeConversationViewState = ObserveConversationViewState(inMemoryConversationStateRepository)
-    private val networkManager = mockk<NetworkManager>()
     private val reportPhishingMessage = mockk<ReportPhishingMessage>()
     private val isProtonCalendarInstalled = mockk<IsProtonCalendarInstalled>()
     private val markMessageAsUnread = mockk<MarkMessageAsUnread>()
@@ -341,7 +339,6 @@ class ConversationDetailViewModelTest {
             updateLinkConfirmationSetting = updateLinkConfirmationSetting,
             reportPhishingMessage = reportPhishingMessage,
             isProtonCalendarInstalled = isProtonCalendarInstalled,
-            networkManager = networkManager,
             markMessageAsUnread = markMessageAsUnread,
             findContactByEmail = findContactByEmail,
             getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
@@ -352,8 +349,7 @@ class ConversationDetailViewModelTest {
             observeAvatarImageStates = observeAvatarImageStates,
             getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
             markMessageAsLegitimate = markMessageAsLegitimate,
-            unblockSender = unblockSender,
-            isComposerEnabled = flowOf(true)
+            unblockSender = unblockSender
         )
     }
 

@@ -140,7 +140,6 @@ fun ConversationDetailScreen(
     val context = LocalContext.current
     val isSystemBackButtonClickEnabled = remember { mutableStateOf(true) }
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-    val isComposerEnabled by viewModel.isComposerEnabled.collectAsStateWithLifecycle(initialValue = false)
 
     var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -262,15 +261,15 @@ fun ConversationDetailScreen(
                     actions = DetailMoreActionsBottomSheetContent.Actions(
                         onReply = {
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            if (isComposerEnabled) actions.onReply(it) else actions.showFeatureMissingSnackbar()
+                            actions.onReply(it)
                         },
                         onReplyAll = {
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            if (isComposerEnabled) actions.onReplyAll(it) else actions.showFeatureMissingSnackbar()
+                            actions.onReplyAll(it)
                         },
                         onForward = {
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            if (isComposerEnabled) actions.onForward(it) else actions.showFeatureMissingSnackbar()
+                            actions.onForward(it)
                         },
                         onMarkUnread = { viewModel.submit(ConversationDetailViewAction.MarkMessageUnread(it)) },
                         onStarMessage = { viewModel.submit(ConversationDetailViewAction.StarMessage(it)) },
@@ -413,13 +412,13 @@ fun ConversationDetailScreen(
                 showFeatureMissingSnackbar = actions.showFeatureMissingSnackbar,
                 loadEmbeddedImage = { messageId, contentId -> viewModel.loadEmbeddedImage(messageId, contentId) },
                 onReply = {
-                    if (isComposerEnabled) actions.onReply(it) else actions.showFeatureMissingSnackbar()
+                    actions.onReply(it)
                 },
                 onReplyAll = {
-                    if (isComposerEnabled) actions.onReplyAll(it) else actions.showFeatureMissingSnackbar()
+                    actions.onReplyAll(it)
                 },
                 onForward = {
-                    if (isComposerEnabled) actions.onForward(it) else actions.showFeatureMissingSnackbar()
+                    actions.onForward(it)
                 },
                 onScrollRequestCompleted = { viewModel.submit(ConversationDetailViewAction.ScrollRequestCompleted) },
                 onDoNotAskLinkConfirmationAgain = {

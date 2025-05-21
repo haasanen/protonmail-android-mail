@@ -21,14 +21,6 @@ package ch.protonmail.android.mailfeatureflags.domain
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagCategory
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 
-data object ComposerEnabledDefinition : FeatureFlagDefinition(
-    key = "composer_enabled",
-    name = "Navigation",
-    category = FeatureFlagCategory.Composer,
-    description = "Grants access to Composer.",
-    defaultValue = true
-)
-
 data object UseV6CssInjectionDefinition : FeatureFlagDefinition(
     key = "v6_css_injection",
     name = "Enforce V6 CSS injection",

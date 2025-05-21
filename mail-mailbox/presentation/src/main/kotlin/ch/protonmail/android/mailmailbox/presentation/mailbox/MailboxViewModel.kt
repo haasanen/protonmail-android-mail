@@ -51,7 +51,6 @@ import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAs
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
-import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
@@ -166,8 +165,7 @@ class MailboxViewModel @Inject constructor(
     private val handleAvatarImageLoadingFailure: HandleAvatarImageLoadingFailure,
     private val observeAvatarImageStates: ObserveAvatarImageStates,
     private val observePrimaryAccountAvatarItem: ObservePrimaryAccountAvatarItem,
-    private val getAttachmentIntentValues: GetAttachmentIntentValues,
-    @ComposerEnabled val isComposerEnabled: Flow<Boolean>
+    private val getAttachmentIntentValues: GetAttachmentIntentValues
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId().filterNotNull()

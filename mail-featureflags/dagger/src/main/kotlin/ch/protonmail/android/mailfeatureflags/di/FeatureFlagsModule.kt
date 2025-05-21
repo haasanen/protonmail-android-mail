@@ -20,14 +20,12 @@ package ch.protonmail.android.mailfeatureflags.di
 
 import ch.protonmail.android.mailfeatureflags.data.local.DataStoreFeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.data.local.DefaultFeatureFlagValueProvider
-import ch.protonmail.android.mailfeatureflags.domain.ComposerEnabledDefinition
 import ch.protonmail.android.mailfeatureflags.domain.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.InlineImagesComposerEnabled
 import ch.protonmail.android.mailfeatureflags.domain.ReportAProblemEnabled
 import ch.protonmail.android.mailfeatureflags.domain.UseV6CssInjectionDefinition
-import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.InlineImagesInComposerEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsReportAProblemEnabled
@@ -65,18 +63,6 @@ object FeatureFlagsModule {
     @IsReportAProblemEnabled
     fun provideReportAProblemEnabled(resolver: FeatureFlagResolver) =
         resolver.observeFeatureFlag(ReportAProblemEnabled.key)
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideComposerEnabledDefinition(): FeatureFlagDefinition = ComposerEnabledDefinition
-
-    @Provides
-    @Singleton
-    @ComposerEnabled
-    fun provideComposerEnabled(resolver: FeatureFlagResolver) =
-        resolver.observeFeatureFlag(ComposerEnabledDefinition.key)
-
 
     @Provides
     @IntoSet

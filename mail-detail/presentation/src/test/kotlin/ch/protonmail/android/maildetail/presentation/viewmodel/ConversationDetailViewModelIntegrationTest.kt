@@ -193,7 +193,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import me.proton.core.network.domain.NetworkManager
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -414,7 +413,6 @@ class ConversationDetailViewModelIntegrationTest {
     private val inMemoryConversationStateRepository = FakeInMemoryConversationStateRepository()
     private val messageViewStateCache = MessageViewStateCache(inMemoryConversationStateRepository)
     private val observeConversationViewState = spyk(ObserveConversationViewState(inMemoryConversationStateRepository))
-    private val networkManager = mockk<NetworkManager>()
     private val testDispatcher: TestDispatcher by lazy { StandardTestDispatcher() }
 
     @BeforeTest
@@ -2162,7 +2160,6 @@ class ConversationDetailViewModelIntegrationTest {
         markMessageAndConversationRead: MarkMessageAsRead = markMessageAsRead,
         getIntentValues: GetAttachmentIntentValues = getAttachmentIntentValues,
         ioDispatcher: CoroutineDispatcher = testDispatcher,
-        networkMgmt: NetworkManager = networkManager,
         protonCalendarInstalled: IsProtonCalendarInstalled = isProtonCalendarInstalled,
         findContactByEmailAddress: FindContactByEmail = findContactByEmail,
         loadAvatarImg: LoadAvatarImage = loadAvatarImage,
@@ -2198,7 +2195,6 @@ class ConversationDetailViewModelIntegrationTest {
         updateLinkConfirmationSetting = updateLinkConfirmationSetting,
         reportPhishingMessage = report,
         isProtonCalendarInstalled = protonCalendarInstalled,
-        networkManager = networkMgmt,
         markMessageAsUnread = markMessageAsUnread,
         findContactByEmail = findContactByEmailAddress,
         getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
@@ -2209,8 +2205,7 @@ class ConversationDetailViewModelIntegrationTest {
         observeAvatarImageStates = observeAvatarImgStates,
         getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
         markMessageAsLegitimate = markMessageAsLegitimate,
-        unblockSender = unblockSender,
-        isComposerEnabled = flowOf(true)
+        unblockSender = unblockSender
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(

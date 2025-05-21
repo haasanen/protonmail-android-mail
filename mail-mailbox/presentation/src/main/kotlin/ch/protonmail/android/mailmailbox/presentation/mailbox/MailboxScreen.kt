@@ -66,7 +66,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -172,7 +171,6 @@ fun MailboxScreen(
     val mailboxState = viewModel.state.collectAsStateWithLifecycle(MailboxViewModel.initialState).value
 
     val mailboxListItems = viewModel.items.collectAsLazyPagingItems()
-    val isComposerEnabled = viewModel.isComposerEnabled.collectAsState(initial = true)
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -196,9 +194,7 @@ fun MailboxScreen(
     Timber.d("BottomState: ${mailboxState.bottomAppBarState}")
 
     val completeActions = actions.copy(
-        navigateToComposer = {
-            if (isComposerEnabled.value) actions.navigateToComposer() else actions.showMissingFeature()
-        },
+        navigateToComposer = { actions.navigateToComposer() },
         onDisableUnreadFilter = { viewModel.submit(MailboxViewAction.DisableUnreadFilter) },
         onEnableUnreadFilter = { viewModel.submit(MailboxViewAction.EnableUnreadFilter) },
         onSelectAllClicked = {

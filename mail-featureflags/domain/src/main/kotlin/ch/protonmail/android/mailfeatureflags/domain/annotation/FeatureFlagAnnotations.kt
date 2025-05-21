@@ -22,10 +22,6 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class ComposerEnabled
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 annotation class InlineImagesInComposerEnabled
 
 @Qualifier

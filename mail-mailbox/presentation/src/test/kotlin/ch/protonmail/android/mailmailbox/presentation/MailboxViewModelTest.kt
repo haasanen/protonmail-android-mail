@@ -287,7 +287,6 @@ class MailboxViewModelTest {
             handleAvatarImageLoadingFailure = handleAvatarImageLoadingFailure,
             observeAvatarImageStates = observeAvatarImageStates,
             observePrimaryAccountAvatarItem = observePrimaryAccountAvatarItem,
-            isComposerEnabled = flowOf(true),
             getAttachmentIntentValues = getAttachmentIntentValues
         )
     }
