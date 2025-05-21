@@ -25,7 +25,7 @@ import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import javax.inject.Inject
 
-class AddAttachment @Inject constructor(
+class AddStandardAttachment @Inject constructor(
     private val attachmentRepository: AttachmentRepository
 ) {
 

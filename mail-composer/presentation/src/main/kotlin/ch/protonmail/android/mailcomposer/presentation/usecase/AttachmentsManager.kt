@@ -22,7 +22,7 @@ import android.content.Context
 import android.net.Uri
 import arrow.core.Either
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
-import ch.protonmail.android.mailcomposer.domain.usecase.AddAttachment
+import ch.protonmail.android.mailcomposer.domain.usecase.AddStandardAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.AddInlineAttachment
 import ch.protonmail.android.mailfeatureflags.domain.annotation.InlineImagesInComposerEnabled
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 class AttachmentsManager @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
-    private val addStandardAttachment: AddAttachment,
+    private val addStandardAttachment: AddStandardAttachment,
     private val addInlineAttachment: AddInlineAttachment,
     @InlineImagesInComposerEnabled private val isInlineImagesEnabled: Flow<Boolean>
 ) {

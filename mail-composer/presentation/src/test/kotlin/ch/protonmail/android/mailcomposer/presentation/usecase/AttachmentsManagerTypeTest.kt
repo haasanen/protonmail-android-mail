@@ -3,7 +3,7 @@ package ch.protonmail.android.mailcomposer.presentation.usecase
 import android.content.Context
 import android.net.Uri
 import arrow.core.right
-import ch.protonmail.android.mailcomposer.domain.usecase.AddAttachment
+import ch.protonmail.android.mailcomposer.domain.usecase.AddStandardAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.AddInlineAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.AttachmentsManagerTypeTest.ExpectedAttachmentOperation.AddInlineAttachmentOp
 import ch.protonmail.android.mailcomposer.presentation.usecase.AttachmentsManagerTypeTest.ExpectedAttachmentOperation.AddStandardAttachmentOp
@@ -25,7 +25,7 @@ class AttachmentsManagerTypeTest(
 ) {
 
     private val context = mockk<Context>()
-    private val addStandardAttachment = mockk<AddAttachment>()
+    private val addStandardAttachment = mockk<AddStandardAttachment>()
     private val addInlineAttachment = mockk<AddInlineAttachment>()
     private val isFeatureEnabled = MutableStateFlow(true)
 

@@ -14,11 +14,11 @@ import org.junit.runners.Parameterized
 import kotlin.test.assertEquals
 
 @RunWith(Parameterized::class)
-class AddAttachmentTest(private val testInput: TestInput) {
+class AddStandardAttachmentTest(private val testInput: TestInput) {
 
     private val attachmentRepository: AttachmentRepository = mockk()
 
-    private val addAttachment = AddAttachment(attachmentRepository)
+    private val addStandardAttachment = AddStandardAttachment(attachmentRepository)
 
     @Test
     fun `should map error correctly`() = runTest {
@@ -27,7 +27,7 @@ class AddAttachmentTest(private val testInput: TestInput) {
         coEvery { attachmentRepository.addAttachment(mockUri) } returns testInput.error.left()
 
         // When
-        val actual = addAttachment(mockUri)
+        val actual = addStandardAttachment(mockUri)
 
         // Then
         assertEquals(testInput.expected.left(), actual)

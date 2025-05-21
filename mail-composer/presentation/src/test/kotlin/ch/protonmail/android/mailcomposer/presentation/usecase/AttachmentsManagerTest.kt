@@ -5,7 +5,7 @@ import android.net.Uri
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
-import ch.protonmail.android.mailcomposer.domain.usecase.AddAttachment
+import ch.protonmail.android.mailcomposer.domain.usecase.AddStandardAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.AddInlineAttachment
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -17,7 +17,7 @@ import kotlin.test.assertEquals
 class AttachmentsManagerTest {
 
     private val context = mockk<Context>()
-    private val addStandardAttachment = mockk<AddAttachment>()
+    private val addStandardAttachment = mockk<AddStandardAttachment>()
     private val addInlineAttachment = mockk<AddInlineAttachment>()
     private val isFeatureEnabled = MutableStateFlow(true)
 
