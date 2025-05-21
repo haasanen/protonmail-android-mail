@@ -38,24 +38,26 @@ class AddAttachment @Inject constructor(
 ) {
 
     suspend operator fun invoke(fileUri: Uri): Either<AttachmentAddError, AddAttachmentResult> {
-        if (isInlineImagesEnabled.first().not()) {
+        val isNotImageMimeType = fileUri.mimeType() !in imageMimeTypes()
+        val featureFlagDisabled = isInlineImagesEnabled.first().not()
+
+        if (isNotImageMimeType || featureFlagDisabled) {
             return addStandardAttachment(fileUri)
                 .map { AddAttachmentResult.StandardAttachmentAdded }
         }
 
-        return when (fileUri.mimeType()) {
-            "image/jpg",
-            "image/webp",
-            "image/jpeg",
-            "image/gif",
-            "image/apng",
-            "image/png" -> addInlineAttachment(fileUri)
-                .map { AddAttachmentResult.InlineAttachmentAdded(it) }
-
-            else -> addStandardAttachment(fileUri)
-                .map { AddAttachmentResult.StandardAttachmentAdded }
-        }
+        return addInlineAttachment(fileUri)
+            .map { AddAttachmentResult.InlineAttachmentAdded(it) }
     }
+
+    private fun imageMimeTypes() = listOf(
+        "image/jpg",
+        "image/webp",
+        "image/jpeg",
+        "image/gif",
+        "image/apng",
+        "image/png"
+    )
 
     private fun Uri.mimeType() = applicationContext.contentResolver.getType(this)
 
