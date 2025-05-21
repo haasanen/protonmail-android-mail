@@ -114,15 +114,21 @@ function injectInlineImage(contentId) {
 
         const img = document.createElement('img');
         img.src = "cid:" + contentId;
+        img.style = "max-width: 100%;";
         range.insertNode(img);
 
-        // Move cursor after the image
+        // Insert a line break after the image
+        const br = document.createElement('br');
         range.setStartAfter(img);
         range.collapse(true);
+        range.insertNode(br);
+
+        // Move the cursor after the <br>
+        range.setStartAfter(br);
+        range.collapse(true);
+
         selection.removeAllRanges();
         selection.addRange(range);
-
-        console.log('editor-webview: inserted image ' + img);
     }
 }
 
