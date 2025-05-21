@@ -25,7 +25,6 @@ import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.data.MailSettingsDataStoreProvider
 import ch.protonmail.android.mailsettings.data.local.MailSettingsDataSource
 import ch.protonmail.android.mailsettings.data.local.RustMailSettingsDataSource
-import ch.protonmail.android.mailsettings.data.repository.AddressIdentityRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.AlternativeRoutingRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.AppLanguageRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.AutoLockRepositoryImpl
@@ -38,17 +37,12 @@ import ch.protonmail.android.mailsettings.data.repository.NotificationsSettingsR
 import ch.protonmail.android.mailsettings.data.repository.PreventScreenshotsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.RustMailSettingsRepository
 import ch.protonmail.android.mailsettings.data.repository.ThemeRepositoryImpl
-import ch.protonmail.android.mailsettings.data.repository.local.AddressIdentityLocalDataSource
-import ch.protonmail.android.mailsettings.data.repository.local.AddressIdentityLocalDataSourceImpl
 import ch.protonmail.android.mailsettings.data.repository.local.AlternativeRoutingLocalDataSource
 import ch.protonmail.android.mailsettings.data.repository.local.AlternativeRoutingLocalDataSourceImpl
 import ch.protonmail.android.mailsettings.data.repository.local.AutoLockLocalDataSource
 import ch.protonmail.android.mailsettings.data.repository.local.AutoLockLocalDataSourceImpl
 import ch.protonmail.android.mailsettings.data.repository.local.MobileFooterLocalDataSource
 import ch.protonmail.android.mailsettings.data.repository.local.MobileFooterLocalDataSourceImpl
-import ch.protonmail.android.mailsettings.data.repository.remote.AddressIdentityRemoteDataSource
-import ch.protonmail.android.mailsettings.data.repository.remote.AddressIdentityRemoteDataSourceImpl
-import ch.protonmail.android.mailsettings.domain.repository.AddressIdentityRepository
 import ch.protonmail.android.mailsettings.domain.repository.AlternativeRoutingRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AutoLockRepository
@@ -148,20 +142,6 @@ object SettingsModule {
         @Binds
         @Reusable
         fun provideBackgroundSyncRepository(impl: BackgroundSyncSettingRepositoryImpl): BackgroundSyncSettingRepository
-
-        @Binds
-        @Reusable
-        fun bindAddressIdentityRemoteDataSource(
-            impl: AddressIdentityRemoteDataSourceImpl
-        ): AddressIdentityRemoteDataSource
-
-        @Binds
-        @Reusable
-        fun bindAddressIdentityLocalDataSource(impl: AddressIdentityLocalDataSourceImpl): AddressIdentityLocalDataSource
-
-        @Binds
-        @Reusable
-        fun bindAddressIdentityRepository(impl: AddressIdentityRepositoryImpl): AddressIdentityRepository
 
         @Binds
         @Reusable

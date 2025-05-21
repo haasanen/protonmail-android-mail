@@ -46,7 +46,7 @@ internal class GetMobileFooterTest {
     @Test
     fun `should propagate the proper user mobile footer from the repository`() = runTest {
         // Given
-        val expectedFooter = MobileFooter.PaidUserMobileFooter("footer", false).right()
+        val expectedFooter = MobileFooter(value = "footer", enabled = false).right()
         coEvery { mobileFooterRepository.getMobileFooter(BaseUserId) } returns expectedFooter
 
         // When

@@ -34,7 +34,7 @@ import me.proton.core.domain.entity.UserId
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import kotlin.test.fail
+import kotlin.test.assertNotNull
 
 internal class MobileFooterRepositoryImplTest {
 
@@ -49,19 +49,18 @@ internal class MobileFooterRepositoryImplTest {
     @Test
     fun `should return the correct mobile footer when it is stored`() = runTest {
         // Given
-        val expectedFooter = MobileFooter.PaidUserMobileFooter("footer", enabled = true)
+        val expectedFooter = MobileFooter("footer", enabled = true)
         coEvery { mobileFooterLocalDataSource.observeMobileFooterPreference(BaseUserId) } returns flowOf(
             BaseMobileFooter.right()
         )
 
         // When
-        val result = mobileFooterRepository.getMobileFooter(BaseUserId)
+        val result = mobileFooterRepository.getMobileFooter(BaseUserId).getOrNull()
 
         // Then
-        (result.getOrNull() as? MobileFooter.PaidUserMobileFooter)?.run {
-            assertEquals(expectedFooter.enabled, this.enabled)
-            assertEquals(expectedFooter.value, this.value)
-        } ?: fail("Invalid result")
+        assertNotNull(result)
+        assertEquals(expectedFooter.enabled, result.enabled)
+        assertEquals(expectedFooter.value, result.value)
     }
 
     @Test

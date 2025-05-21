@@ -41,7 +41,7 @@ class MobileFooterRepositoryImpl @Inject constructor(
             ?.getOrNull()
             ?: return DataError.Local.NoDataCached.left()
 
-        return MobileFooter.PaidUserMobileFooter(preference.value, preference.enabled).right()
+        return MobileFooter(preference.value, enabled = preference.enabled).right()
     }
 
     override suspend fun updateMobileFooter(
