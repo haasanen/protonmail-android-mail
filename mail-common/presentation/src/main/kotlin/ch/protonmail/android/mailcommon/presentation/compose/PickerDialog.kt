@@ -42,7 +42,7 @@ import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import me.proton.core.compose.component.ProtonAlertDialog
-import me.proton.core.compose.component.ProtonAlertDialogButton as ProtonAlertDialogButton1
+import me.proton.core.compose.component.ProtonAlertDialogButton
 
 @Composable
 fun PickerDialog(
@@ -56,6 +56,7 @@ fun PickerDialog(
     ProtonAlertDialog(
         modifier = modifier,
         backgroundColor = ProtonTheme.colors.backgroundNorm,
+        shape = ProtonTheme.shapes.huge,
         onDismissRequest = onDismissRequest,
         title = {
             Text(
@@ -65,7 +66,7 @@ fun PickerDialog(
             )
         },
         buttons = {
-            ProtonAlertDialogButton1(
+            ProtonAlertDialogButton(
                 title = stringResource(id = R.string.picker_dialog_cancel),
                 onClick = onDismissRequest
             )
@@ -81,7 +82,7 @@ fun PickerDialog(
                                 role = Role.RadioButton
                             ) { onValueSelected(value) }
                             .padding(
-                                vertical = MailDimens.PickerDialogItemVerticalPadding
+                                vertical = ProtonDimens.Spacing.Large
                             ),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
