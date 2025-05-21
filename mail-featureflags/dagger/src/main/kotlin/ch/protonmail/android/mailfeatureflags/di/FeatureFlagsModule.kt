@@ -24,9 +24,11 @@ import ch.protonmail.android.mailfeatureflags.domain.ComposerEnabledDefinition
 import ch.protonmail.android.mailfeatureflags.domain.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
+import ch.protonmail.android.mailfeatureflags.domain.InlineImagesComposerEnabled
 import ch.protonmail.android.mailfeatureflags.domain.ReportAProblemEnabled
 import ch.protonmail.android.mailfeatureflags.domain.UseV6CssInjectionDefinition
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.InlineImagesInComposerEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsReportAProblemEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.V6CssInjectionEnabled
@@ -41,6 +43,17 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object FeatureFlagsModule {
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideInlineImagesComposerDefinition(): FeatureFlagDefinition = InlineImagesComposerEnabled
+
+    @Provides
+    @Singleton
+    @InlineImagesInComposerEnabled
+    fun provideInlineImagesComposerEnabled(resolver: FeatureFlagResolver) =
+        resolver.observeFeatureFlag(InlineImagesComposerEnabled.key)
 
     @Provides
     @IntoSet

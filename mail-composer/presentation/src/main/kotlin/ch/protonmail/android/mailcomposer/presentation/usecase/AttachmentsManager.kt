@@ -20,28 +20,41 @@ package ch.protonmail.android.mailcomposer.presentation.usecase
 
 import android.content.Context
 import android.net.Uri
+import arrow.core.Either
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.AddInlineAttachment
+import ch.protonmail.android.mailfeatureflags.domain.annotation.InlineImagesInComposerEnabled
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class AttachmentsManager @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val addStandardAttachment: AddAttachment,
-    private val addInlineAttachment: AddInlineAttachment
+    private val addInlineAttachment: AddInlineAttachment,
+    @InlineImagesInComposerEnabled private val isInlineImagesEnabled: Flow<Boolean>
 ) {
 
-    suspend fun addAttachment(fileUri: Uri) = when (fileUri.mimeType()) {
-        "image/jpg",
-        "image/webp",
-        "image/jpeg",
-        "image/gif",
-        "image/apng",
-        "image/png" -> addInlineAttachment(fileUri)
-            .map { AddAttachmentResult.InlineAttachmentAdded(it) }
+    suspend fun addAttachment(fileUri: Uri): Either<AttachmentAddError, AddAttachmentResult> {
+        if (isInlineImagesEnabled.first().not()) {
+            return addStandardAttachment(fileUri)
+                .map { AddAttachmentResult.StandardAttachmentAdded }
+        }
 
-        else -> addStandardAttachment(fileUri)
-            .map { AddAttachmentResult.StandardAttachmentAdded }
+        return when (fileUri.mimeType()) {
+            "image/jpg",
+            "image/webp",
+            "image/jpeg",
+            "image/gif",
+            "image/apng",
+            "image/png" -> addInlineAttachment(fileUri)
+                .map { AddAttachmentResult.InlineAttachmentAdded(it) }
+
+            else -> addStandardAttachment(fileUri)
+                .map { AddAttachmentResult.StandardAttachmentAdded }
+        }
     }
 
     private fun Uri.mimeType() = applicationContext.contentResolver.getType(this)

@@ -11,6 +11,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,11 +27,13 @@ class AttachmentsManagerTypeTest(
     private val context = mockk<Context>()
     private val addStandardAttachment = mockk<AddAttachment>()
     private val addInlineAttachment = mockk<AddInlineAttachment>()
+    private val isFeatureEnabled = MutableStateFlow(true)
 
     private val attachmentsManager = AttachmentsManager(
         context,
         addStandardAttachment,
-        addInlineAttachment
+        addInlineAttachment,
+        isFeatureEnabled
     )
 
     @Test

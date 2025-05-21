@@ -52,3 +52,11 @@ data object ReportAProblemEnabled : FeatureFlagDefinition(
     description = "Grants access to 'Report a Problem' feature.",
     defaultValue = false
 )
+
+data object InlineImagesComposerEnabled : FeatureFlagDefinition(
+    key = "inline_images_composer",
+    name = "Inline images composer",
+    category = FeatureFlagCategory.Composer,
+    description = "Allow to add attachments as inline images in composer",
+    defaultValue = false
+)

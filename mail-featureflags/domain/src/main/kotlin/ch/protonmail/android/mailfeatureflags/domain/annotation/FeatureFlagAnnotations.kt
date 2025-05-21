@@ -26,6 +26,10 @@ annotation class ComposerEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class InlineImagesInComposerEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class IsReportAProblemEnabled
 
 @Qualifier
