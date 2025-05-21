@@ -18,47 +18,24 @@
 
 package ch.protonmail.android.mailsettings.presentation.accountsettings.identity.usecase
 
-import android.content.Context
 import arrow.core.Either
-import arrow.core.getOrElse
-import arrow.core.raise.either
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.usecase.IsPaidUser
 import ch.protonmail.android.mailsettings.domain.model.MobileFooter
 import ch.protonmail.android.mailsettings.domain.repository.MobileFooterRepository
-import ch.protonmail.android.mailsettings.presentation.R
-import dagger.hilt.android.qualifiers.ApplicationContext
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
+@MissingRustApi(
+    """
+    Implementation kept for migration purposes. 
+    To re-implement, we need to wire it properly with the corresponding Rust SDK API.
+"""
+)
 class GetMobileFooter @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val isPaidUser: IsPaidUser,
     private val mobileFooterRepository: MobileFooterRepository
 ) {
 
-    private val freeUserMobileFooter: MobileFooter by lazy {
-        MobileFooter.FreeUserMobileFooter(
-            context.getString(R.string.mail_settings_identity_mobile_footer_default_free)
-        )
-    }
-
-    private val defaultMobileFooter: MobileFooter by lazy {
-        MobileFooter.PaidUserMobileFooter(
-            value = context.getString(R.string.mail_settings_identity_mobile_footer_default_free),
-            enabled = true
-        )
-    }
-
-    suspend operator fun invoke(userId: UserId): Either<DataError, MobileFooter> = either {
-        val isPaidUser = isPaidUser(userId).getOrElse {
-            raise(DataError.Local.Unknown)
-        }
-
-        if (!isPaidUser) {
-            return@either freeUserMobileFooter
-        }
-
-        mobileFooterRepository.getMobileFooter(userId).getOrElse { defaultMobileFooter }
-    }
+    suspend operator fun invoke(userId: UserId): Either<DataError, MobileFooter> =
+        mobileFooterRepository.getMobileFooter(userId)
 }

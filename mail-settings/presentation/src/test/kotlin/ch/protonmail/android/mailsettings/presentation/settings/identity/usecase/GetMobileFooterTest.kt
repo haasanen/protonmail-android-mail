@@ -18,34 +18,25 @@
 
 package ch.protonmail.android.mailsettings.presentation.settings.identity.usecase
 
-import android.content.Context
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.usecase.IsPaidUser
 import ch.protonmail.android.mailsettings.domain.model.MobileFooter
 import ch.protonmail.android.mailsettings.domain.repository.MobileFooterRepository
-import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.accountsettings.identity.usecase.GetMobileFooter
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
-import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.After
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 internal class GetMobileFooterTest {
 
-    private val context = mockk<Context>()
-    private val isPaidUser: IsPaidUser = mockk()
     private val mobileFooterRepository: MobileFooterRepository = mockk()
-    private val getMobileFooter = GetMobileFooter(context, isPaidUser, mobileFooterRepository)
+    private val getMobileFooter = GetMobileFooter(mobileFooterRepository)
 
     @After
     fun teardown() {
@@ -53,22 +44,9 @@ internal class GetMobileFooterTest {
     }
 
     @Test
-    fun `should return the free mobile footer when the user is not a paid user`() = runTest {
-        // Given
-        expectFreeUser()
-
-        // When
-        val result = getMobileFooter(BaseUserId)
-
-        // Then
-        assertTrue(result.getOrNull() is MobileFooter.FreeUserMobileFooter)
-    }
-
-    @Test
-    fun `should propagate the paid user mobile footer when the user is a paid user`() = runTest {
+    fun `should propagate the proper user mobile footer from the repository`() = runTest {
         // Given
         val expectedFooter = MobileFooter.PaidUserMobileFooter("footer", false).right()
-        expectPaidUser()
         coEvery { mobileFooterRepository.getMobileFooter(BaseUserId) } returns expectedFooter
 
         // When
@@ -79,55 +57,20 @@ internal class GetMobileFooterTest {
     }
 
     @Test
-    fun `should propagate the error when cannot determine if the user is paid or not`() = runTest {
+    fun `should propagate the error when the mobile footer can't be fetched from the repository`() = runTest {
         // Given
-        val expectedError = DataError.Local.Unknown.left()
-        coEvery { isPaidUser(BaseUserId) } returns expectedError
+        val expectedError = DataError.Local.NoDataCached.left()
+        coEvery { mobileFooterRepository.getMobileFooter(BaseUserId) } returns expectedError
 
         // When
         val result = getMobileFooter(BaseUserId)
 
         // Then
-        assertEquals(expectedError, result)
-    }
-
-    @Test
-    fun `should propagate the default footer when the mobile footer has never been set`() = runTest {
-        // Given
-        val expectedDefault = MobileFooter.PaidUserMobileFooter(BaseDefaultString, true)
-        expectPaidUserWithNoFooter()
-        coEvery {
-            context.getString(R.string.mail_settings_identity_mobile_footer_default_free)
-        } returns BaseDefaultString
-
-        // When
-        val result = getMobileFooter(BaseUserId).getOrNull()
-
-        // Then
-        assertNotNull(result)
-        assertEquals(result.enabled, expectedDefault.enabled)
-        assertEquals(result.value, expectedDefault.value)
-        verify(exactly = 1) { context.getString(R.string.mail_settings_identity_mobile_footer_default_free) }
-    }
-
-    private fun expectPaidUserWithNoFooter() {
-        val error = DataError.Local.NoDataCached.left()
-        coEvery { isPaidUser(BaseUserId) } returns true.right()
-        coEvery { mobileFooterRepository.getMobileFooter(BaseUserId) } returns error
-    }
-
-    private fun expectPaidUser() {
-        coEvery { isPaidUser(BaseUserId) } returns true.right()
-    }
-
-    private fun expectFreeUser() {
-        coEvery { isPaidUser(BaseUserId) } returns false.right()
-        every { context.getString(any()) } returns "Any string"
+        assertEquals(result, expectedError)
     }
 
     private companion object {
 
         val BaseUserId = UserId("123")
-        const val BaseDefaultString = "Default"
     }
 }
