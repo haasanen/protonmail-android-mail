@@ -66,7 +66,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.RecipientsState
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
-import ch.protonmail.android.mailcomposer.presentation.usecase.AttachmentsManager
+import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -115,7 +115,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val observeMessageAttachments: ObserveMessageAttachments,
     private val sendMessage: SendMessage,
     private val networkManager: NetworkManager,
-    private val attachmentsManager: AttachmentsManager,
+    private val addAttachment: AddAttachment,
     private val deleteAttachment: DeleteAttachment,
     private val openExistingDraft: OpenExistingDraft,
     private val createEmptyDraft: CreateEmptyDraft,
@@ -381,14 +381,14 @@ class ComposerViewModel @AssistedInject constructor(
     private fun onAttachmentsAdded(uriList: List<Uri>) {
         viewModelScope.launch {
             uriList.forEach { uri ->
-                attachmentsManager.addAttachment(uri).onLeft {
+                addAttachment(uri).onLeft {
                     Timber.e("Failed to add attachment: $it")
                     emitNewStateFor(ComposerEvent.AddAttachmentError(it))
                 }.onRight {
                     when (it) {
-                        is AttachmentsManager.AddAttachmentResult.InlineAttachmentAdded ->
+                        is AddAttachment.AddAttachmentResult.InlineAttachmentAdded ->
                             emitNewStateFor(ComposerEvent.InlineAttachmentAdded(it.cid))
-                        AttachmentsManager.AddAttachmentResult.StandardAttachmentAdded -> Unit
+                        AddAttachment.AddAttachmentResult.StandardAttachmentAdded -> Unit
                     }
                 }
             }

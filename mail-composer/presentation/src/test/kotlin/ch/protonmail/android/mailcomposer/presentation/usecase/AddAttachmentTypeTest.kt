@@ -3,10 +3,10 @@ package ch.protonmail.android.mailcomposer.presentation.usecase
 import android.content.Context
 import android.net.Uri
 import arrow.core.right
-import ch.protonmail.android.mailcomposer.domain.usecase.AddStandardAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.AddInlineAttachment
-import ch.protonmail.android.mailcomposer.presentation.usecase.AttachmentsManagerTypeTest.ExpectedAttachmentOperation.AddInlineAttachmentOp
-import ch.protonmail.android.mailcomposer.presentation.usecase.AttachmentsManagerTypeTest.ExpectedAttachmentOperation.AddStandardAttachmentOp
+import ch.protonmail.android.mailcomposer.domain.usecase.AddStandardAttachment
+import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachmentTypeTest.ExpectedAttachmentOperation.AddInlineAttachmentOp
+import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachmentTypeTest.ExpectedAttachmentOperation.AddStandardAttachmentOp
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(Parameterized::class)
-class AttachmentsManagerTypeTest(
+class AddAttachmentTypeTest(
     @Suppress("unused") private val testName: String,
     val mimeType: String?,
     val expected: ExpectedAttachmentOperation
@@ -29,7 +29,7 @@ class AttachmentsManagerTypeTest(
     private val addInlineAttachment = mockk<AddInlineAttachment>()
     private val isFeatureEnabled = MutableStateFlow(true)
 
-    private val attachmentsManager = AttachmentsManager(
+    private val addAttachment = AddAttachment(
         context,
         addStandardAttachment,
         addInlineAttachment,
@@ -47,7 +47,7 @@ class AttachmentsManagerTypeTest(
         }
 
         // When
-        attachmentsManager.addAttachment(fileUri = fileUri)
+        addAttachment(fileUri = fileUri)
 
         // Then
         when (expected) {
@@ -105,8 +105,8 @@ class AttachmentsManagerTypeTest(
     }
 
     sealed interface ExpectedAttachmentOperation {
-        object AddStandardAttachmentOp : ExpectedAttachmentOperation
-        object AddInlineAttachmentOp : ExpectedAttachmentOperation
+        data object AddStandardAttachmentOp : ExpectedAttachmentOperation
+        data object AddInlineAttachmentOp : ExpectedAttachmentOperation
     }
 
 }
