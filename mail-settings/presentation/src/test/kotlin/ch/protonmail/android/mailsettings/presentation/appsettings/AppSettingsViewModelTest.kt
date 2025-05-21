@@ -26,12 +26,10 @@ import ch.protonmail.android.mailsettings.domain.usecase.ObserveAppSettings
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.testdata.AppSettingsTestData
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
-import ch.protonmail.android.testdata.user.UserTestData
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.runTest
-import me.proton.core.user.domain.entity.User
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -41,8 +39,6 @@ internal class AppSettingsViewModelTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
-
-    private val userFlow = MutableSharedFlow<User?>()
 
     private val appSettingsFlow = MutableSharedFlow<AppSettings>()
     private val observeAppSettings = mockk<ObserveAppSettings> {
@@ -69,7 +65,6 @@ internal class AppSettingsViewModelTest {
         viewModel.state.test {
             // Given
             initialStateEmitted()
-            userFlow.emit(UserTestData.Primary)
 
             // When
             appSettingsFlow.emit(AppSettingsTestData.appSettings)

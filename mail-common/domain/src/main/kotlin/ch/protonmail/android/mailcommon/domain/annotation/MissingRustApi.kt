@@ -20,4 +20,4 @@ package ch.protonmail.android.mailcommon.domain.annotation
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-annotation class MissingRustApi
+annotation class MissingRustApi(val message: String = "")

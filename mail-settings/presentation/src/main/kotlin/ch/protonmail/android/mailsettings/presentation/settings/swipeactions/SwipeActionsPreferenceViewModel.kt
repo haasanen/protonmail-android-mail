@@ -20,6 +20,8 @@ package ch.protonmail.android.mailsettings.presentation.settings.swipeactions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.SwipeActionsPreferenceState.Loading
@@ -32,13 +34,11 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import me.proton.core.accountmanager.domain.AccountManager
-import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import javax.inject.Inject
 
 @HiltViewModel
 class SwipeActionsPreferenceViewModel @Inject constructor(
-    private val accountManager: AccountManager,
+    private val observePrimaryUserId: ObservePrimaryUserId,
     private val observeSwipeActionsPreference: ObserveSwipeActionsPreference,
     private val swipeActionPreferenceUiModelMapper: SwipeActionPreferenceUiModelMapper
 ) : ViewModel() {
@@ -52,11 +52,10 @@ class SwipeActionsPreferenceViewModel @Inject constructor(
             initialValue = initialState
         )
 
-    private fun observeState(): Flow<SwipeActionsPreferenceState> =
-        accountManager.getPrimaryUserId().flatMapLatest { userId ->
-            if (userId == null) flowOf(NotLoggedIn)
-            else observeSwipeActionsPreference(userId).mapToState()
-        }
+    private fun observeState(): Flow<SwipeActionsPreferenceState> = observePrimaryUserId().flatMapLatest { userId ->
+        if (userId == null) flowOf(NotLoggedIn)
+        else observeSwipeActionsPreference(userId).mapToState()
+    }
 
     private fun Flow<SwipeActionsPreference>.mapToState() =
         map { SwipeActionsPreferenceState.Data(swipeActionPreferenceUiModelMapper.toUiModel(it)) }

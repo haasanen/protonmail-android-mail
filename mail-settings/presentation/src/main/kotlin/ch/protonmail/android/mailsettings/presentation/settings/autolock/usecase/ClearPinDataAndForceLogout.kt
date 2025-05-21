@@ -18,23 +18,24 @@
 
 package ch.protonmail.android.mailsettings.presentation.settings.autolock.usecase
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.first
-import me.proton.core.accountmanager.domain.AccountManager
 import javax.inject.Inject
 
+@MissingRustApi(
+    """
+    The original implementation relied on AccountManager from proton-libs.
+    To re-implement, it we need to wire it properly with the corresponding Rust SDK API.
+    """
+)
 class ClearPinDataAndForceLogout @Inject constructor(
-    private val accountManager: AccountManager,
-    private val resetAutoLockDefaults: ResetAutoLockDefaults,
     @AppScope private val coroutineScope: CoroutineScope
 ) {
 
-    suspend operator fun invoke() = coroutineScope.async {
-        with(accountManager) {
-            getAccounts().first().forEach { disableAccount(it.userId) }
-        }
-        resetAutoLockDefaults()
-    }
+    /**
+     * Restores Auto lock defaults and logs out all accounts.
+     */
+    operator fun invoke() = coroutineScope.async { }
 }

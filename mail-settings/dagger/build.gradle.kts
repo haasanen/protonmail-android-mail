@@ -50,8 +50,6 @@ dependencies {
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-session:domain"))
 
-    implementation(project(":mail-common:data"))
-
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
 }

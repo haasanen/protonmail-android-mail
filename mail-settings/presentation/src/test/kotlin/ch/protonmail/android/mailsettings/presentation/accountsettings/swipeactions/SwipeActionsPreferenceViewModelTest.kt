@@ -20,6 +20,7 @@ package ch.protonmail.android.mailsettings.presentation.accountsettings.swipeact
 
 import androidx.compose.ui.graphics.Color
 import app.cash.turbine.test
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.SwipeActionPreferenceUiModel
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.SwipeActionPreferenceUiModelMapper
@@ -36,15 +37,14 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import me.proton.core.accountmanager.domain.AccountManager
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class SwipeActionsPreferenceViewModelTest {
 
-    private val accountManager: AccountManager = mockk {
-        every { getPrimaryUserId() } returns flowOf(userId)
+    private val observePrimaryUserId = mockk<ObservePrimaryUserId> {
+        every { this@mockk.invoke() } returns flowOf(userId)
     }
     private val observeSwipeActionsPreference: ObserveSwipeActionsPreference = mockk {
         every { this@mockk(any()) } returns flowOf(mockk())
@@ -59,7 +59,7 @@ internal class SwipeActionsPreferenceViewModelTest {
         Dispatchers.setMain(UnconfinedTestDispatcher())
 
         viewModel = SwipeActionsPreferenceViewModel(
-            accountManager = accountManager,
+            observePrimaryUserId = observePrimaryUserId,
             observeSwipeActionsPreference = observeSwipeActionsPreference,
             swipeActionPreferenceUiModelMapper = swipeActionPreferenceUiModelMapper
         )
@@ -94,7 +94,7 @@ internal class SwipeActionsPreferenceViewModelTest {
             mockk()
         }
         viewModel = SwipeActionsPreferenceViewModel(
-            accountManager = accountManager,
+            observePrimaryUserId = observePrimaryUserId,
             observeSwipeActionsPreference = observeSwipeActionsPreference,
             swipeActionPreferenceUiModelMapper = swipeActionPreferenceUiModelMapper
         )
