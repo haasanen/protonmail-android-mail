@@ -21,9 +21,13 @@ package ch.protonmail.android.mailsettings.data.local
 import ch.protonmail.android.mailcommon.data.mapper.LocalMailSettings
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsettings.data.usecase.CreateRustUserMailSettings
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LiveQueryCallback
@@ -35,42 +39,54 @@ class RustMailSettingsDataSource @Inject constructor(
     private val createRustMailSettings: CreateRustUserMailSettings
 ) : MailSettingsDataSource {
 
-    override fun observeMailSettings(userId: UserId): Flow<LocalMailSettings> = callbackFlow {
-        Timber.v("rust-settings: initializing mail settings live query")
+    override fun observeMailSettings(userId: UserId): Flow<LocalMailSettings> = Channel<Unit>().let { restartChannel ->
+        restartChannel
+            .receiveAsFlow()
+            .onStart { emit(Unit) }
+            .flatMapLatest {
+                callbackFlow {
+                    Timber.v("rust-settings: initializing mail settings live query")
+                    val session = userSessionRepository.getUserSession(userId)
+                    if (session == null) {
+                        Timber.e("rust-settings: trying to load settings with a null session")
+                        close()
+                        restartChannel.close()
+                        return@callbackFlow
+                    }
 
-        val session = userSessionRepository.getUserSession(userId)
-        if (session == null) {
-            Timber.e("rust-settings: trying to load settings with a null session")
-            close()
-            return@callbackFlow
-        }
+                    var watcher: SettingsWatcher? = null
+                    val settingsCallback = object : LiveQueryCallback {
+                        override fun onUpdate() {
+                            watcher?.settings?.let {
+                                // sending latest cached value while updating
+                                trySend(it)
+                            }
+                            // value is updated; we must re-create createRustMailSettings for the latest value
+                            restartChannel.trySend(Unit)
+                            Timber.v("rust-settings: mail settings updated: $it")
+                        }
+                    }
 
-        var watcher: SettingsWatcher? = null
-        val settingsCallback = object : LiveQueryCallback {
-            override fun onUpdate() {
-                watcher?.settings?.let {
-                    trySend(it)
-                    Timber.v("rust-settings: mail settings updated: $it")
+                    val watcherResult = createRustMailSettings(session, settingsCallback)
+                        .onLeft {
+                            close()
+                            Timber.e("rust-settings: failed creating settings watcher $it")
+                        }
+                        .onRight { settingsWatcher ->
+                            watcher = settingsWatcher
+                            Timber.v(
+                                "rust-settings: Setting initial value for mail settings" +
+                                    " ${settingsWatcher.settings} and watching for updates"
+                            )
+                            send(settingsWatcher.settings)
+                        }
+
+                    awaitClose {
+                        Timber.v("rust-settings: mail settings watcher disconnected: ${watcherResult.getOrNull()}")
+                        watcherResult.getOrNull()?.watchHandle?.disconnect()
+                        watcherResult.getOrNull()?.destroy()
+                    }
                 }
             }
-        }
-
-        val watcherResult = createRustMailSettings(session, settingsCallback)
-            .onLeft {
-                close()
-                Timber.e("rust-settings: failed creating settings watcher $it")
-            }
-            .onRight { settingsWatcher ->
-                watcher = settingsWatcher
-                Timber.v("rust-settings: Setting initial value for mail settings ${settingsWatcher.settings}")
-                send(settingsWatcher.settings)
-                Timber.d("rust-settings: mail settings watcher created")
-            }
-
-        awaitClose {
-            Timber.v("rust-settings: mail settings watcher disconnected: ${watcherResult.getOrNull()}")
-            watcherResult.getOrNull()?.watchHandle?.disconnect()
-            watcherResult.getOrNull()?.destroy()
-        }
     }
 }

@@ -60,8 +60,9 @@ class RustMailSettingsDataSourceTest {
         val mailSettingsCallbackSlot = slot<LiveQueryCallback>()
         val userSessionMock = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
-        val watcherMock = mockk<SettingsWatcher> {
+        val watcherMock = mockk<SettingsWatcher> (relaxed = true) {
             every { settings } returns expected
+            every { watchHandle } returns mockk(relaxed = true)
         }
         coEvery {
             createRustMailSettings(userSessionMock, capture(mailSettingsCallbackSlot))
@@ -73,8 +74,9 @@ class RustMailSettingsDataSourceTest {
             every { watcherMock.settings } returns expectedUpdated
             // When
             mailSettingsCallbackSlot.captured.onUpdate()
+            assertEquals(expectedUpdated, awaitItem()) // Cached value
 
-            // Then
+            // Then Updated value
             assertEquals(expectedUpdated, awaitItem())
         }
     }
