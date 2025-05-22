@@ -149,9 +149,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAc
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMoreActionBottomSheetContent
-import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxUpsellingBottomSheet
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
-import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.UpsellingBottomSheet
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.launch
@@ -342,21 +340,12 @@ fun MailboxScreen(
                     )
                 )
 
-                is UpsellingBottomSheetState -> {
-                    MailboxUpsellingBottomSheet(
-                        actions = UpsellingBottomSheet.Actions.Empty.copy(
-                            onDismiss = { viewModel.submit(MailboxViewAction.DismissBottomSheet) },
-                            onUpgrade = { message -> actions.showNormalSnackbar(message) },
-                            onError = { message -> actions.showErrorSnackbar(message) }
-                        )
-                    )
-                }
-
                 is ManageAccountSheetState -> AccountsSwitcherBottomSheetScreen(onEvent = {
                     onEvent(it)
                     showBottomSheet = false
                 })
 
+                is UpsellingBottomSheetState -> Unit
                 else -> Unit
             }
         }
