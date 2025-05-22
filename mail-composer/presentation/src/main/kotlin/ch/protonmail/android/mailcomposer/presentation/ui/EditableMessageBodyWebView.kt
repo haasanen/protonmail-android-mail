@@ -100,7 +100,8 @@ fun EditableMessageBodyWebView(
             webViewActions.onMessageBodyChanged,
             ::onWebViewResize,
             ::onCursorPositionChanged,
-            webViewActions.onInlineImageRemoved
+            webViewActions.onInlineImageRemoved,
+            { Timber.d("editor-webview: on inline imaged clicked: $it") }
         )
     }
 

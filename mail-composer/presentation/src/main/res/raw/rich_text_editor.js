@@ -2,11 +2,13 @@
 /*******************************************************************************
  * Event listeners
  ******************************************************************************/
+/* Listen for changes to the body and dispatches them to KT */
 document.getElementById('$EDITOR_ID').addEventListener('input', function(){
     var body = document.getElementById('$EDITOR_ID').innerHTML
     $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onBodyUpdated(body)
 });
 
+/* Listen for changes to the webview size and dispatches them to KT */
 const observer = new ResizeObserver(entries => {
 for (const entry of entries) {
     $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onWebViewSizeChanged()
@@ -14,6 +16,7 @@ for (const entry of entries) {
 });
 observer.observe(document.querySelector('body'));
 
+/* Listen for changes to the body where images are removed and dispatches them to KT */
 const removeInlineImageObserver = new MutationObserver(mutations => {
     mutations.forEach(mutation => {
         if (mutation.type === 'childList') {
@@ -30,6 +33,17 @@ const removeInlineImageObserver = new MutationObserver(mutations => {
     });
 });
 removeInlineImageObserver.observe(document.getElementById('$EDITOR_ID'), {childList: true, subtree: true});
+
+/* Listen for taps on images in the body that contains a "cid" (inline images) and dispatches the event to KT */
+document.getElementById('$EDITOR_ID').addEventListener('click', function(event) {
+    if (event.target.nodeName === 'IMG') {
+        const src = event.target.getAttribute('src');
+        if (src && src.startsWith('cid:')) {
+            const cid = src.substring(4);
+            $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onInlineImageTapped(cid)
+        }
+    }
+});
 
 
 /* Observes the cursor position and notifies kotlin through js interface. Invoked at script init (bottom of this file).*/

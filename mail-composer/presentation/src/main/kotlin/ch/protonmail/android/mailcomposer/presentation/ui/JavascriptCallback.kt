@@ -26,7 +26,8 @@ class JavascriptCallback(
     private val onMessageBodyChanged: (String) -> Unit,
     private val onEditorSizeChanged: () -> Unit,
     private val onCursorPositionChanged: (Float, Float) -> Unit,
-    private val onInlineImageRemoved: (String) -> Unit
+    private val onInlineImageRemoved: (String) -> Unit,
+    private val onInlineImageClicked: (String) -> Unit
 ) {
 
     @JavascriptInterface
@@ -47,5 +48,10 @@ class JavascriptCallback(
     @JavascriptInterface
     fun onInlineImageDeleted(contentId: String) {
         onInlineImageRemoved(contentId)
+    }
+
+    @JavascriptInterface
+    fun onInlineImageTapped(contentId: String) {
+        onInlineImageClicked(contentId)
     }
 }
