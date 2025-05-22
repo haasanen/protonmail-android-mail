@@ -18,19 +18,15 @@
 
 package ch.protonmail.android.legacymigration.data.local
 
+import ch.protonmail.android.legacymigration.data.local.rawSql.LegacyDbReader
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserInfo
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
+import junit.framework.TestCase.assertNull
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
-import me.proton.core.crypto.common.keystore.KeyStoreCrypto
-import me.proton.core.crypto.common.keystore.PlainByteArray
-import me.proton.core.crypto.common.keystore.decrypt
 import me.proton.core.domain.entity.UserId
-import me.proton.core.user.data.db.UserDatabase
-import me.proton.core.user.data.db.dao.UserDao
-import me.proton.core.user.data.entity.UserEntity
 import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -38,52 +34,46 @@ import kotlin.test.assertEquals
 class LegacyUserDataSourceImplTest {
 
     @get:Rule
-    val coroutineRule = MainDispatcherRule()
+    val mainDispatcherRule = MainDispatcherRule()
+    private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
 
-    private val keyStoreCrypto: KeyStoreCrypto = mockk()
-    private val userDao: UserDao = mockk()
-    private val userDatabase: UserDatabase = mockk {
-        every { userDao() } returns userDao
-    }
+    private val dbReader: LegacyDbReader = mockk()
 
     private val dataSource = LegacyUserDataSourceImpl(
-        db = userDatabase,
-        keyStoreCrypto = keyStoreCrypto
+        dbReader = dbReader,
+        dbCoroutineScope = testCoroutineScope
     )
 
+    private val userId = UserId("user123")
+
     @Test
-    fun `getUser maps UserEntity to LegacyUserInfo`() = runTest {
+    fun `getUser returns LegacyUserInfo when present`() = runTest {
         // Given
-        val userId = UserId("user123")
-        val decryptedBytes = "decrypted-pass".toByteArray()
-        val decryptedPassphrase = mockk<PlainByteArray> {
-            every { array } returns decryptedBytes
-        }
-
-        val userEntity = mockk<UserEntity> {
-            every { this@mockk.userId } returns userId
-            every { email } returns "user@example.com"
-            every { name } returns "User Name"
-            every { displayName } returns "User Display"
-            every { passphrase } returns mockk {
-                every { decrypt(keyStoreCrypto) } returns decryptedPassphrase
-            }
-        }
-
-        coEvery { userDao.getByUserId(userId) } returns userEntity
-
-        // When
-        val result = dataSource.getUser(userId)
-
-        // Then
-        val expected = LegacyUserInfo(
+        val userInfo = LegacyUserInfo(
             userId = userId,
             passPhrase = "decrypted-pass",
             email = "user@example.com",
             name = "User Name",
             displayName = "User Display"
         )
+        coEvery { dbReader.readLegacyUserInfo(userId) } returns userInfo
 
-        assertEquals(expected, result)
+        // When
+        val result = dataSource.getUser(userId)
+
+        // Then
+        assertEquals(userInfo, result)
+    }
+
+    @Test
+    fun `getUser returns null when not found`() = runTest {
+        // Given
+        coEvery { dbReader.readLegacyUserInfo(userId) } returns null
+
+        // When
+        val result = dataSource.getUser(userId)
+
+        // Then
+        assertNull(result)
     }
 }

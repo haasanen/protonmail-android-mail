@@ -18,28 +18,23 @@
 
 package ch.protonmail.android.legacymigration.data.local
 
+import ch.protonmail.android.legacymigration.data.local.rawSql.LegacyDbReader
+import ch.protonmail.android.legacymigration.domain.LegacyDBCoroutineScope
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserInfo
-import me.proton.core.crypto.common.keystore.KeyStoreCrypto
-import me.proton.core.crypto.common.keystore.decrypt
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
-import me.proton.core.user.data.db.UserDatabase
-import me.proton.core.user.data.entity.UserEntity
 import javax.inject.Inject
 
 class LegacyUserDataSourceImpl @Inject constructor(
-    db: UserDatabase,
-    private val keyStoreCrypto: KeyStoreCrypto
+    private val dbReader: LegacyDbReader,
+    @LegacyDBCoroutineScope private val dbCoroutineScope: CoroutineScope
+
 ) : LegacyUserDataSource {
 
-    private val userDao = db.userDao()
+    override suspend fun getUser(userId: UserId): LegacyUserInfo? = withContext(dbCoroutineScope.coroutineContext) {
+        dbReader.readLegacyUserInfo(userId)
+    }
 
-    override suspend fun getUser(userId: UserId): LegacyUserInfo? = userDao.getByUserId(userId)?.toLegacyUserInfo()
 
-    private fun UserEntity.toLegacyUserInfo() = LegacyUserInfo(
-        userId = userId,
-        passPhrase = passphrase?.decrypt(keyStoreCrypto)?.let { String(it.array) } ?: "",
-        email = email,
-        name = name,
-        displayName = displayName
-    )
 }
