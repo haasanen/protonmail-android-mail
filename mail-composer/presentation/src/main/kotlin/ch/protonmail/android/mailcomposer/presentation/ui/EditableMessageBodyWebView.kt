@@ -96,7 +96,12 @@ fun EditableMessageBodyWebView(
     }
 
     val javascriptCallback = remember {
-        JavascriptCallback(webViewActions.onMessageBodyChanged, ::onWebViewResize, ::onCursorPositionChanged)
+        JavascriptCallback(
+            webViewActions.onMessageBodyChanged,
+            ::onWebViewResize,
+            ::onCursorPositionChanged,
+            { Timber.d("editor-webview: on inline image removed $it") }
+        )
     }
 
     val contentLoadingFinished = remember { mutableStateOf(false) }

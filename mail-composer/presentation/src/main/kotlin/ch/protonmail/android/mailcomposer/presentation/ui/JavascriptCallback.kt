@@ -25,7 +25,8 @@ const val JAVASCRIPT_CALLBACK_INTERFACE_NAME = "MessageBodyInterface"
 class JavascriptCallback(
     private val onMessageBodyChanged: (String) -> Unit,
     private val onEditorSizeChanged: () -> Unit,
-    private val onCursorPositionChanged: (Float, Float) -> Unit
+    private val onCursorPositionChanged: (Float, Float) -> Unit,
+    private val onInlineImageRemoved: (String) -> Unit
 ) {
 
     @JavascriptInterface
@@ -41,5 +42,10 @@ class JavascriptCallback(
     @JavascriptInterface
     fun onCaretPositionChanged(position: Float, lineHeight: Float) {
         onCursorPositionChanged(position, lineHeight)
+    }
+
+    @JavascriptInterface
+    fun onInlineImageDeleted(contentId: String) {
+        onInlineImageRemoved(contentId)
     }
 }

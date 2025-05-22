@@ -14,6 +14,24 @@ for (const entry of entries) {
 });
 observer.observe(document.querySelector('body'));
 
+const removeInlineImageObserver = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+        if (mutation.type === 'childList') {
+            mutation.removedNodes.forEach(node => {
+                if (node.nodeName === 'IMG') {
+                    const src = node.getAttribute('src');
+                    if (src && src.startsWith('cid:')) {
+                        const cid = src.substring(4);
+                        $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onInlineImageDeleted(cid)
+                    }
+                }
+            });
+        }
+    });
+});
+removeInlineImageObserver.observe(document.getElementById('$EDITOR_ID'), {childList: true, subtree: true});
+
+
 /* Observes the cursor position and notifies kotlin through js interface. Invoked at script init (bottom of this file).*/
 function trackCursorPosition() {
     var editor = document.getElementById('$EDITOR_ID');
