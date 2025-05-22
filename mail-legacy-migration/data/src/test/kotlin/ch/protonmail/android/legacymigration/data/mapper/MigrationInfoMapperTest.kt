@@ -19,15 +19,10 @@
 package ch.protonmail.android.legacymigration.data.mapper
 
 import ch.protonmail.android.legacymigration.domain.model.AccountPasswordMode
+import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserAddressInfo
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserInfo
-import io.mockk.every
-import io.mockk.mockk
-import me.proton.core.account.domain.entity.Account
-import me.proton.core.account.domain.entity.AccountDetails
-import me.proton.core.account.domain.entity.SessionDetails
 import me.proton.core.domain.entity.UserId
-import me.proton.core.network.domain.session.Session
 import me.proton.core.network.domain.session.SessionId
 import me.proton.core.user.domain.entity.AddressId
 import kotlin.test.Test
@@ -42,8 +37,11 @@ class MigrationInfoMapperTest {
         // Given
         val userId = UserId("user-123")
         val sessionId = SessionId("session-abc")
-        val session = Session.Authenticated(
-            userId, sessionId, "", refreshToken = "refresh-token", emptyList<String>()
+        val sessionInfo = LegacySessionInfo(
+            userId = userId,
+            sessionId = sessionId,
+            refreshToken = "refresh-token",
+            twoPassModeEnabled = true
         )
 
         val user = LegacyUserInfo(
@@ -55,26 +53,15 @@ class MigrationInfoMapperTest {
         )
 
         val userAddress = LegacyUserAddressInfo(
+            userId = userId,
             addressId = AddressId("address-123"),
             email = "addr@proton.me",
-            order = 0,
-            userId = userId,
             displayName = "John A."
         )
-        val accountDetails = mockk<AccountDetails> {
-            every { this@mockk.session } returns mockk<SessionDetails> {
-                every { twoPassModeEnabled } returns true
-            }
-        }
-        val account = mockk<Account> {
-            every { this@mockk.userId } returns userId
-            every { this@mockk.details } returns accountDetails
-        }
 
         // When
         val result = mapper.mapToAccountMigrationInfo(
-            session = session,
-            account = account,
+            sessionInfo = sessionInfo,
             user = user,
             userAddress = userAddress,
             isPrimaryUser = true
@@ -91,5 +78,5 @@ class MigrationInfoMapperTest {
         assertEquals(true, result.isPrimaryUser)
         assertEquals(AccountPasswordMode.TWO, result.passwordMode)
     }
-
 }
+

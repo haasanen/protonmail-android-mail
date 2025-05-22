@@ -20,33 +20,32 @@ package ch.protonmail.android.legacymigration.data.mapper
 
 import ch.protonmail.android.legacymigration.domain.model.AccountMigrationInfo
 import ch.protonmail.android.legacymigration.domain.model.AccountPasswordMode
+import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserAddressInfo
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserInfo
-import me.proton.core.account.domain.entity.Account
-import me.proton.core.network.domain.session.Session
 import uniffi.proton_mail_uniffi.MigrationData
 import uniffi.proton_mail_uniffi.PasswordMode
 import javax.inject.Inject
 
 class MigrationInfoMapper @Inject constructor() {
     fun mapToAccountMigrationInfo(
-        session: Session,
-        account: Account,
+        sessionInfo: LegacySessionInfo,
         user: LegacyUserInfo,
         userAddress: LegacyUserAddressInfo,
         isPrimaryUser: Boolean
     ): AccountMigrationInfo {
         val userName = user.name ?: userAddress.email
         val displayName = user.displayName ?: user.name ?: userAddress.email
+
         return AccountMigrationInfo(
-            userId = account.userId,
+            userId = sessionInfo.userId,
             username = userName,
             primaryAddr = userAddress.email,
             displayName = displayName,
-            sessionId = session.sessionId,
-            refreshToken = session.refreshToken,
+            sessionId = sessionInfo.sessionId,
+            refreshToken = sessionInfo.refreshToken,
             keySecret = user.passPhrase,
-            passwordMode = if (account.details.session?.twoPassModeEnabled == true)
+            passwordMode = if (sessionInfo.twoPassModeEnabled)
                 AccountPasswordMode.TWO
             else
                 AccountPasswordMode.ONE,
