@@ -19,7 +19,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
     id("org.jetbrains.kotlin.plugin.compose")
     id("app-config-plugin")
 }
@@ -55,12 +54,10 @@ android {
 }
 
 dependencies {
-    kapt(libs.bundles.app.annotationProcessors)
     debugImplementation(libs.bundles.compose.debug)
 
     implementation(libs.bundles.module.presentation)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.constraintlayout.compose)
 
     implementation(project(":mail-contact:domain"))
     implementation(project(":mail-common:domain"))
