@@ -50,5 +50,4 @@ dependencies {
 
     implementation(project(":mail-bugreport:data"))
     implementation(project(":mail-bugreport:domain"))
-    implementation(project(":mail-common:domain"))
 }

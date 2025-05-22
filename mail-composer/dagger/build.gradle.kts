@@ -48,7 +48,6 @@ dependencies {
 
     implementation(project(":mail-composer:data"))
     implementation(project(":mail-composer:domain"))
-    implementation(project(":mail-composer:presentation"))
 
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-common:data"))
