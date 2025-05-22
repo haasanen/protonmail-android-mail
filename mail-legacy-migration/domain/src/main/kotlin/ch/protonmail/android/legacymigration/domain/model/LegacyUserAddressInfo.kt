@@ -25,6 +25,5 @@ data class LegacyUserAddressInfo(
     val userId: UserId,
     val addressId: AddressId,
     val email: String,
-    val displayName: String? = null,
-    val order: Int
+    val displayName: String? = null
 )
