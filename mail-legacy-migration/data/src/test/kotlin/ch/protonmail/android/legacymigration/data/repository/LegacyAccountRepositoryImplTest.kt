@@ -29,13 +29,12 @@ import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import me.proton.core.account.domain.entity.Account
 import me.proton.core.domain.entity.UserId
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.legacymigration.domain.model.AccountPasswordMode
+import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.data.wrapper.LoginFlowWrapper
@@ -45,14 +44,6 @@ import kotlin.test.assertFalse
 import org.junit.Rule
 import org.junit.Test
 import ch.protonmail.android.mailsession.domain.model.LoginError
-import me.proton.core.account.domain.entity.AccountDetails
-import me.proton.core.account.domain.entity.AccountMetadataDetails
-import me.proton.core.account.domain.entity.AccountState
-import me.proton.core.account.domain.entity.AccountType
-import me.proton.core.account.domain.entity.SessionDetails
-import me.proton.core.account.domain.entity.SessionState
-import me.proton.core.crypto.common.keystore.EncryptedByteArray
-import me.proton.core.network.domain.session.Session
 import me.proton.core.network.domain.session.SessionId
 import me.proton.core.user.domain.entity.AddressId
 
@@ -71,33 +62,12 @@ class LegacyAccountRepositoryImplTest {
     private val sessionId = SessionId("session123")
     private val username = "john.doe"
     private val email = "john.doe@protonmail.com"
-    private val session = Session.Authenticated(
-        userId = userId,
-        sessionId = sessionId,
-        accessToken = "access",
-        refreshToken = "refresh-token",
-        scopes = listOf("mail")
-    )
 
-    private val account = Account(
+    private val session = LegacySessionInfo(
         userId = userId,
-        username = username,
-        email = email,
-        state = AccountState.Ready,
         sessionId = sessionId,
-        sessionState = SessionState.Authenticated,
-        details = AccountDetails(
-            account = AccountMetadataDetails(1_708_000_000, emptyList()),
-            session = SessionDetails(
-                initialEventId = "event-001",
-                requiredAccountType = AccountType.Internal,
-                secondFactorEnabled = true,
-                twoPassModeEnabled = false,
-                passphrase = EncryptedByteArray(ByteArray(32)),
-                password = null,
-                fido2AuthenticationOptionsJson = "{}"
-            )
-        )
+        refreshToken = "refresh-token",
+        twoPassModeEnabled = false
     )
 
     private val user = LegacyUserInfo(
@@ -111,7 +81,6 @@ class LegacyAccountRepositoryImplTest {
     private val userAddress = LegacyUserAddressInfo(
         addressId = AddressId("address123"),
         email = email,
-        order = 0,
         userId = userId,
         displayName = "Johnny"
     )
@@ -124,7 +93,8 @@ class LegacyAccountRepositoryImplTest {
         sessionId = sessionId,
         refreshToken = "refresh-token",
         keySecret = "secret",
-        passwordMode = AccountPasswordMode.ONE
+        passwordMode = AccountPasswordMode.ONE,
+        isPrimaryUser = true
     )
 
     private val repository = LegacyAccountRepositoryImpl(
@@ -138,7 +108,7 @@ class LegacyAccountRepositoryImplTest {
     @Test
     fun `hasLegacyLoggedInAccounts returns true`() = runTest {
         // Given
-        every { accountDataSource.getSessions() } returns flowOf(listOf(session))
+        coEvery { accountDataSource.getSessions() } returns listOf(session)
 
         // When
         val result = repository.hasLegacyLoggedInAccounts()
@@ -150,7 +120,7 @@ class LegacyAccountRepositoryImplTest {
     @Test
     fun `hasLegacyLoggedInAccounts returns false`() = runTest {
         // Given
-        every { accountDataSource.getSessions() } returns flowOf(emptyList())
+        coEvery { accountDataSource.getSessions() } returns emptyList()
 
         // When
         val result = repository.hasLegacyLoggedInAccounts()
@@ -164,11 +134,13 @@ class LegacyAccountRepositoryImplTest {
         // Given
         coEvery { userDataSource.getUser(userId) } returns user
         coEvery { userAddressDataSource.getPrimaryUserAddress(userId) } returns userAddress
-        every { accountDataSource.getAccount(userId) } returns flowOf(account)
-        every { accountDataSource.getPrimaryUserId() } returns flowOf(userId)
+        coEvery { accountDataSource.getPrimaryUserId() } returns userId
         every {
             migrationInfoMapper.mapToAccountMigrationInfo(
-                session, account, user, userAddress, isPrimaryUser = true
+                sessionInfo = session,
+                user = user,
+                userAddress = userAddress,
+                isPrimaryUser = true
             )
         } returns accountInfo
 
@@ -202,21 +174,6 @@ class LegacyAccountRepositoryImplTest {
 
         // Then
         assertEquals(MigrationError.LegacyDbFailure.MissingUserAddress.left(), result)
-    }
-
-    @Test
-    fun `getLegacyAccountMigrationInfoFor fails with MissingAccount`() = runTest {
-        // Given
-        coEvery { userDataSource.getUser(userId) } returns user
-        coEvery { userAddressDataSource.getPrimaryUserAddress(userId) } returns userAddress
-        every { accountDataSource.getAccount(userId) } returns flowOf()
-        every { accountDataSource.getPrimaryUserId() } returns flowOf(userId)
-
-        // When
-        val result = repository.getLegacyAccountMigrationInfoFor(session)
-
-        // Then
-        assertEquals(MigrationError.LegacyDbFailure.MissingAccount.left(), result)
     }
 
     @Test

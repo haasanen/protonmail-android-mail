@@ -28,13 +28,12 @@ import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSource
 import ch.protonmail.android.legacymigration.data.mapper.MigrationInfoMapper
 import ch.protonmail.android.legacymigration.data.mapper.toMigrationData
 import ch.protonmail.android.legacymigration.domain.model.AccountMigrationInfo
+import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAccountRepository
-import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.model.LoginError
-import me.proton.core.network.domain.session.Session
 
 class LegacyAccountRepositoryImpl @Inject constructor(
     private val accountDataSource: LegacyAccountDataSource,
@@ -44,13 +43,10 @@ class LegacyAccountRepositoryImpl @Inject constructor(
     private val mailSessionRepository: MailSessionRepository
 ) : LegacyAccountRepository {
 
-    override suspend fun getAuthenticatedLegacySessions(): List<Session.Authenticated> = accountDataSource.getSessions()
-        .firstOrNull()
-        ?.filterIsInstance<Session.Authenticated>()
-        .orEmpty()
+    override suspend fun getAuthenticatedLegacySessions(): List<LegacySessionInfo> = accountDataSource.getSessions()
 
     override suspend fun getLegacyAccountMigrationInfoFor(
-        session: Session.Authenticated
+        session: LegacySessionInfo
     ): Either<MigrationError, AccountMigrationInfo> {
         val user = userDataSource.getUser(session.userId)
             ?: return MigrationError.LegacyDbFailure.MissingUser.left()
@@ -58,15 +54,11 @@ class LegacyAccountRepositoryImpl @Inject constructor(
         val userAddress = userAddressDataSource.getPrimaryUserAddress(session.userId)
             ?: return MigrationError.LegacyDbFailure.MissingUserAddress.left()
 
-        val account = accountDataSource.getAccount(session.userId).firstOrNull()
-            ?: return MigrationError.LegacyDbFailure.MissingAccount.left()
-
-        val primaryUserId = accountDataSource.getPrimaryUserId().firstOrNull()
+        val primaryUserId = accountDataSource.getPrimaryUserId()
         val isPrimaryUser = primaryUserId == session.userId
 
         return migrationInfoMapper.mapToAccountMigrationInfo(
-            session = session,
-            account = account,
+            sessionInfo = session,
             user = user,
             userAddress = userAddress,
             isPrimaryUser = isPrimaryUser

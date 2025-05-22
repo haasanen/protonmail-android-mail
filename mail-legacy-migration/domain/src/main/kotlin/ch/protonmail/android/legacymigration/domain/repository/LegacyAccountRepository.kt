@@ -20,15 +20,15 @@ package ch.protonmail.android.legacymigration.domain.repository
 
 import arrow.core.Either
 import ch.protonmail.android.legacymigration.domain.model.AccountMigrationInfo
+import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
-import me.proton.core.network.domain.session.Session
 
 interface LegacyAccountRepository {
 
-    suspend fun getAuthenticatedLegacySessions(): List<Session.Authenticated>
+    suspend fun getAuthenticatedLegacySessions(): List<LegacySessionInfo>
 
     suspend fun getLegacyAccountMigrationInfoFor(
-        session: Session.Authenticated
+        session: LegacySessionInfo
     ): Either<MigrationError, AccountMigrationInfo>
 
     suspend fun hasLegacyLoggedInAccounts(): Boolean
