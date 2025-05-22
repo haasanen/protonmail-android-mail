@@ -23,6 +23,7 @@ import arrow.core.right
 import ch.protonmail.android.legacymigration.domain.model.AccountMigrationInfo
 import ch.protonmail.android.legacymigration.domain.model.AccountPasswordMode
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
+import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAccountRepository
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -32,7 +33,6 @@ import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import me.proton.core.network.domain.session.Session
 import me.proton.core.network.domain.session.SessionId
 import kotlin.test.Test
 
@@ -46,20 +46,18 @@ class MigrateLegacyAccountsTest {
     private val sessionId1 = SessionId("session-id-1")
     private val sessionId2 = SessionId("session-id-2")
 
-    private val session1 = Session.Authenticated(
+    private val session1 = LegacySessionInfo(
         userId = userId1,
         sessionId = sessionId1,
-        accessToken = "access-token-1",
         refreshToken = "refresh-token-1",
-        scopes = listOf("scope1")
+        twoPassModeEnabled = true
     )
 
-    private val session2 = Session.Authenticated(
+    private val session2 = LegacySessionInfo(
         userId = userId2,
         sessionId = sessionId2,
-        accessToken = "access-token-2",
         refreshToken = "refresh-token-2",
-        scopes = listOf("scope1", "scope2")
+        twoPassModeEnabled = false
     )
 
     private val migrationInfo1 = AccountMigrationInfo(
@@ -100,6 +98,7 @@ class MigrateLegacyAccountsTest {
         coEvery { legacyAccountRepository.migrateLegacyAccount(migrationInfo1) } returns Unit.right()
         coEvery { legacyAccountRepository.migrateLegacyAccount(migrationInfo2) } returns Unit.right()
         coEvery { setPrimaryAccountAfterMigration(any()) } just Runs
+
         // When
         val result = migrateLegacyAccounts()
 
@@ -139,3 +138,4 @@ class MigrateLegacyAccountsTest {
         assertEquals(Unit.right(), result)
     }
 }
+
