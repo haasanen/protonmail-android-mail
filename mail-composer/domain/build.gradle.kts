@@ -54,6 +54,7 @@ dependencies {
     implementation(project(":mail-pagination:domain"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-settings:domain"))
+    implementation(project(":mail-featureflags:domain"))
 
     testImplementation(libs.bundles.test)
     // Used to access sample test data (here instead of test-data as shared with compose previews / android tests)
