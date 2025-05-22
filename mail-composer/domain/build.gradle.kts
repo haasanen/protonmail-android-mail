@@ -45,15 +45,10 @@ android {
 dependencies {
     implementation(libs.bundles.module.domain)
     implementation(libs.proton.core.user.domain)
-    implementation(libs.proton.core.mailSettings.domain)
 
     implementation(project(":mail-attachments:domain"))
     implementation(project(":mail-common:domain"))
-    implementation(project(":mail-label:domain"))
     implementation(project(":mail-message:domain"))
-    implementation(project(":mail-pagination:domain"))
-    implementation(project(":mail-session:domain"))
-    implementation(project(":mail-settings:domain"))
     implementation(project(":mail-featureflags:domain"))
 
     testImplementation(libs.bundles.test)
