@@ -42,7 +42,4 @@
     <string name="label_list_loading_error">Error loading label, please try again later</string>
     <string name="app_locked">App locked</string>
     <string name="use_pin_instead">Use PIN instead</string>
-    <string name="loading_mailbox">Loading your mailbox…</string>
-    <string name="loading_mailbox_subtitle">We’re almost there. Thanks for your patience!</string>
-
 </resources>
