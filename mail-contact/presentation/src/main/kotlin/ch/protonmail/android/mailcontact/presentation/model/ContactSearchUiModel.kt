@@ -20,8 +20,8 @@ package ch.protonmail.android.mailcontact.presentation.model
 
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 
 sealed interface ContactSearchUiModel {
 
@@ -33,11 +33,10 @@ sealed interface ContactSearchUiModel {
     ) : ContactSearchUiModel
 
     data class ContactGroup(
-        val id: LabelId,
+        val id: ContactGroupId,
         val name: String,
         val color: Color,
         val emailCount: Int
     ) : ContactSearchUiModel
-
 }
 

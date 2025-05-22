@@ -19,7 +19,7 @@
 package ch.protonmail.android.maillabel.domain.model
 
 import android.graphics.Color
-import ch.protonmail.android.maillabel.domain.extension.normalizeColorHex
+import ch.protonmail.android.uicomponents.utils.normalizeColorHex
 
 fun List<LabelWithSystemLabelId>.toDynamicSystemMailLabel(): List<MailLabel.System> = map {
     MailLabel.System(
