@@ -59,7 +59,6 @@ dependencies {
 
     implementation(libs.bundles.module.presentation)
     implementation(libs.androidx.constraintlayout.compose)
-    implementation(libs.jsoup)
     implementation(libs.proton.core.domain)
     implementation(libs.proton.core.user.domain)
 
@@ -70,18 +69,15 @@ dependencies {
     implementation(project(":mail-common:presentation"))
     implementation(project(":mail-contact:domain"))
     implementation(project(":mail-conversation:domain"))
-    implementation(project(":mail-featureflags:domain"))
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-message:presentation"))
     implementation(project(":mail-label:domain"))
     implementation(project(":mail-label:presentation"))
+    implementation(project(":mail-session:domain"))
     implementation(project(":mail-settings:domain"))
-    // Needed as PageType is a supertype of Message.
-    implementation(project(":mail-pagination:domain"))
-    implementation(project(":uicomponents"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
-    implementation(project(":mail-session:domain"))
+    implementation(project(":uicomponents"))
 
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))

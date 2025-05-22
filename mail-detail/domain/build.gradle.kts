@@ -43,19 +43,15 @@ android {
 
 dependencies {
     implementation(libs.bundles.module.domain)
-    implementation(libs.proton.core.mailSettings.domain)
     implementation(libs.proton.core.presentation)
     implementation(libs.proton.core.user.domain)
     implementation(libs.jsoup)
 
     implementation(project(":mail-attachments:domain"))
-    implementation(project(":mail-conversation:domain"))
-    implementation(project(":mail-message:domain"))
-    implementation(project(":mail-label:domain"))
     implementation(project(":mail-common:domain"))
-    // Needed as PageType is a supertype of Message.
-    implementation(project(":mail-pagination:domain"))
-    implementation(project(":mail-settings:domain"))
+    implementation(project(":mail-conversation:domain"))
+    implementation(project(":mail-label:domain"))
+    implementation(project(":mail-message:domain"))
 
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))

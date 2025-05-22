@@ -49,5 +49,4 @@ dependencies {
 
     implementation(project(":mail-detail:data"))
     implementation(project(":mail-detail:domain"))
-    implementation(project(":mail-detail:presentation"))
 }
