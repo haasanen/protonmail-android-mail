@@ -21,7 +21,6 @@ package ch.protonmail.android.mailcomposer.presentation.ui
 import java.io.ByteArrayInputStream
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.Uri
 import android.view.ViewGroup.LayoutParams
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -46,7 +45,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
@@ -204,8 +202,6 @@ private fun configureDarkLightMode(webView: WebView, isInDarkTheme: Boolean) {
 object EditableMessageBodyWebView {
 
     data class Actions(
-        val onMessageBodyLinkClicked: (uri: Uri) -> Unit,
-        val onAttachmentClicked: (attachmentId: AttachmentId) -> Unit,
         val loadEmbeddedImage: (contentId: String) -> EmbeddedImage?,
         val onMessageBodyChanged: (body: String) -> Unit,
         val onWebViewParamsChanged: (params: WebViewMeasures) -> Unit,

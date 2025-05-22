@@ -167,8 +167,6 @@ internal fun ComposerForm(
                     shouldRequestFocus = focusTextBody,
                     injectInlineAttachment = injectInlineAttachment,
                     webViewActions = EditableMessageBodyWebView.Actions(
-                        onMessageBodyLinkClicked = {},
-                        onAttachmentClicked = {},
                         loadEmbeddedImage = actions.loadEmbeddedImage,
                         onMessageBodyChanged = actions.onBodyChanged,
                         onWebViewParamsChanged = actions.onWebViewMeasuresChanged,
