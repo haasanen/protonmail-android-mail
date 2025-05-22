@@ -135,7 +135,6 @@ include(":design-system")
 include(":presentation-compose")
 
 include(":test:annotations")
-include(":test:idlingresources")
 include(":test:network-mocks")
 include(":test:robot:core")
 include(":test:robot:ksp:annotations")

@@ -83,7 +83,6 @@ import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.test.idlingresources.ComposerIdlingResource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -112,7 +111,6 @@ class ComposerViewModel @AssistedInject constructor(
     private val participantMapper: ParticipantMapper,
     private val reducer: ComposerReducer,
     private val isValidEmailAddress: IsValidEmailAddress,
-    private val composerIdlingResource: ComposerIdlingResource,
     private val observeMessageAttachments: ObserveMessageAttachments,
     private val sendMessage: SendMessage,
     private val networkManager: NetworkManager,
@@ -327,16 +325,10 @@ class ComposerViewModel @AssistedInject constructor(
         return DraftUiModel(this, draftDisplayBody)
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        composerIdlingResource.clear()
-    }
-
     @Suppress("ComplexMethod")
     internal fun submit(action: ComposerAction) {
         viewModelScope.launch {
             actionMutex.withLock {
-                composerIdlingResource.increment()
                 when (action) {
                     is ComposerAction.AttachmentsAdded -> onAttachmentsAdded(action.uriList)
                     is ComposerAction.DraftBodyChanged -> onDraftBodyChanged(action)
@@ -359,7 +351,6 @@ class ComposerViewModel @AssistedInject constructor(
                     is ComposerAction.DiscardDraftConfirmed -> onDiscardDraftConfirmed(action)
                     is ComposerAction.RemoveInlineImage -> onInlineImageRemoved(action)
                 }
-                composerIdlingResource.decrement()
             }
         }
     }

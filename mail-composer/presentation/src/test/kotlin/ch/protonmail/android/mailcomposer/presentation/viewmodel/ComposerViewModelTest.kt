@@ -82,7 +82,6 @@ import ch.protonmail.android.mailmessage.presentation.model.attachment.Attachmen
 import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.test.idlingresources.ComposerIdlingResource
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.composer.DraftFieldsTestData
@@ -132,7 +131,6 @@ class ComposerViewModelTest {
     private val getContactsMock = mockk<GetContacts>()
     private val participantMapperMock = mockk<ParticipantMapper>()
     private val observePrimaryUserIdMock = mockk<ObservePrimaryUserId>()
-    private val composerIdlingResource = spyk<ComposerIdlingResource>()
     private val isValidEmailAddressMock = mockk<IsValidEmailAddress>()
     private val savedStateHandle = mockk<SavedStateHandle>(relaxed = true)
     private val deleteAttachment = mockk<DeleteAttachment>()
@@ -165,7 +163,6 @@ class ComposerViewModelTest {
             participantMapperMock,
             reducer,
             isValidEmailAddressMock,
-            composerIdlingResource,
             observeMessageAttachments,
             sendMessageMock,
             networkManagerMock,
