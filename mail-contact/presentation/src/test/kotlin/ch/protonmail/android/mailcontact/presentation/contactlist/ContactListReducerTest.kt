@@ -21,13 +21,13 @@ package ch.protonmail.android.mailcontact.presentation.contactlist
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
+import ch.protonmail.android.mailcommon.presentation.model.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.GroupedContactListItemsUiModel
-import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized

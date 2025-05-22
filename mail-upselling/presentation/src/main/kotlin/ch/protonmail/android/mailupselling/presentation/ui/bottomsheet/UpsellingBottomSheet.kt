@@ -64,8 +64,6 @@ fun UpsellingBottomSheet(
 
 object UpsellingBottomSheet {
 
-    const val DELAY_SHOWING = 100L
-
     data class Actions(
         override val onError: (String) -> Unit,
         override val onUpgradeAttempt: (UpsellingTelemetryTargetPlanPayload) -> Unit,

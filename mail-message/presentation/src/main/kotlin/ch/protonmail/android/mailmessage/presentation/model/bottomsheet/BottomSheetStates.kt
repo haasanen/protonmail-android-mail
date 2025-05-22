@@ -21,9 +21,10 @@ package ch.protonmail.android.mailmessage.presentation.model.bottomsheet
 import androidx.compose.runtime.Stable
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
-import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
+import ch.protonmail.android.mailcommon.presentation.model.BottomSheetContentState
+import ch.protonmail.android.mailcommon.presentation.model.BottomSheetOperation
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -35,26 +36,6 @@ import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.ContactActionUiModel
 import kotlinx.collections.immutable.ImmutableList
 import me.proton.core.domain.entity.UserId
-
-data class BottomSheetState(
-    val contentState: BottomSheetContentState?,
-    val bottomSheetVisibilityEffect: Effect<BottomSheetVisibilityEffect> = Effect.empty()
-) {
-
-    fun isShowEffectWithoutContent() =
-        bottomSheetVisibilityEffect == Effect.of(BottomSheetVisibilityEffect.Show) && contentState == null
-}
-
-sealed interface BottomSheetVisibilityEffect {
-    data object Show : BottomSheetVisibilityEffect
-    data object Hide : BottomSheetVisibilityEffect
-}
-
-sealed interface BottomSheetContentState
-sealed interface BottomSheetOperation {
-    data object Requested : BottomSheetOperation
-    data object Dismiss : BottomSheetOperation
-}
 
 sealed interface MoveToBottomSheetState : BottomSheetContentState {
 

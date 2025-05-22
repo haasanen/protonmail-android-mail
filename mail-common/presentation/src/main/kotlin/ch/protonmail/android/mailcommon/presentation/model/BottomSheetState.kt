@@ -16,24 +16,27 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.presentation.reducer
+package ch.protonmail.android.mailcommon.presentation.model
 
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailcommon.presentation.model.BottomSheetState
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
-import javax.inject.Inject
 
-class UpsellingBottomSheetReducer @Inject constructor() {
+data class BottomSheetState(
+    val contentState: BottomSheetContentState?,
+    val bottomSheetVisibilityEffect: Effect<BottomSheetVisibilityEffect> = Effect.empty()
+) {
 
-    fun newStateFrom(
-        currentState: BottomSheetState?,
-        operation: UpsellingBottomSheetState.UpsellingBottomSheetOperation
-    ): BottomSheetState {
-        return when (operation) {
-            is UpsellingBottomSheetState.UpsellingBottomSheetEvent.Ready -> BottomSheetState(
-                contentState = UpsellingBottomSheetState.Requested,
-                bottomSheetVisibilityEffect = currentState?.bottomSheetVisibilityEffect ?: Effect.empty()
-            )
-        }
-    }
+    fun isShowEffectWithoutContent() =
+        bottomSheetVisibilityEffect == Effect.of(BottomSheetVisibilityEffect.Show) && contentState == null
+}
+
+sealed interface BottomSheetVisibilityEffect {
+    data object Show : BottomSheetVisibilityEffect
+    data object Hide : BottomSheetVisibilityEffect
+}
+
+interface BottomSheetContentState
+
+interface BottomSheetOperation {
+    data object Requested : BottomSheetOperation
+    data object Dismiss : BottomSheetOperation
 }
