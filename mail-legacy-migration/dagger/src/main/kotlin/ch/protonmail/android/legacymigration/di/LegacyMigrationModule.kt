@@ -18,6 +18,10 @@
 
 package ch.protonmail.android.legacymigration.di
 
+import android.content.Context
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.sqlite.db.SupportSQLiteOpenHelper
+import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import ch.protonmail.android.legacymigration.data.local.LegacyAccountDataSource
 import ch.protonmail.android.legacymigration.data.local.LegacyAccountDataSourceImpl
 import ch.protonmail.android.legacymigration.data.local.LegacyMigrationStatusLocalDataSource
@@ -29,6 +33,7 @@ import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSourceImpl
 import ch.protonmail.android.legacymigration.data.repository.LegacyAccountRepositoryImpl
 import ch.protonmail.android.legacymigration.data.repository.LegacyMigrationStatusRepositoryImpl
 import ch.protonmail.android.legacymigration.domain.LegacyDBCoroutineScope
+import ch.protonmail.android.legacymigration.domain.model.LegacyDatabase
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAccountRepository
 import ch.protonmail.android.legacymigration.domain.repository.LegacyMigrationStatusRepository
 import dagger.Module
@@ -36,6 +41,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dagger.Binds
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +50,29 @@ import kotlinx.coroutines.SupervisorJob
 @Module(includes = [LegacyMigrationModule.BindsModule::class])
 @InstallIn(SingletonComponent::class)
 object LegacyMigrationModule {
+
+    @Provides
+    @Singleton
+    fun provideSupportSQLiteDatabase(@ApplicationContext context: Context): SupportSQLiteDatabase {
+        val config = SupportSQLiteOpenHelper.Configuration.builder(context)
+            .name(LegacyDatabase.Name)
+            .callback(object : SupportSQLiteOpenHelper.Callback(1000) {
+                override fun onCreate(db: SupportSQLiteDatabase) {
+                    // no-op, legacy DB already exists
+                }
+
+                override fun onUpgrade(
+                    db: SupportSQLiteDatabase,
+                    oldVersion: Int,
+                    newVersion: Int
+                ) {
+                    // no migration — legacy only
+                }
+            })
+            .build()
+
+        return FrameworkSQLiteOpenHelperFactory().create(config).readableDatabase
+    }
 
     @Provides
     @Singleton
