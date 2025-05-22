@@ -19,8 +19,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    kotlin("plugin.serialization")
     id("app-config-plugin")
 }
 
@@ -44,7 +42,6 @@ android {
 }
 
 dependencies {
-    kapt(libs.bundles.app.annotationProcessors)
     compileOnly(libs.proton.rust.core)
 
     implementation(libs.bundles.module.data)
@@ -59,8 +56,6 @@ dependencies {
     implementation(project(":mail-composer:domain"))
     implementation(project(":mail-message:data"))
     implementation(project(":mail-message:domain"))
-    implementation(project(":mail-settings:domain"))
-    implementation(project(":mail-label:domain"))
 
     testImplementation(libs.proton.rust.core)
     testImplementation(libs.bundles.test)
