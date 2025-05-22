@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.mapper
 
 import android.content.Context
+import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
@@ -31,12 +32,19 @@ class MessageBannersUiModelMapper @Inject constructor(@ApplicationContext val co
         shouldShowPhishingBanner = messageBanners.contains(MessageBanner.PhishingAttempt),
         shouldShowSpamBanner = messageBanners.contains(MessageBanner.Spam),
         shouldShowBlockedSenderBanner = messageBanners.contains(MessageBanner.BlockedSender),
-        expirationBannerUiModel = toExpirationBannerUiModel(messageBanners)
+        expirationBannerUiModel = toExpirationBannerUiModel(messageBanners),
+        autoDeleteBannerUiModel = toAutoDeleteBannerUiModel(messageBanners)
     )
 
     private fun toExpirationBannerUiModel(messageBanners: List<MessageBanner>): ExpirationBannerUiModel {
         return messageBanners.filterIsInstance<MessageBanner.Expiry>().firstOrNull()?.let {
             ExpirationBannerUiModel.Expiration(expiresAt = it.expiresAt)
         } ?: ExpirationBannerUiModel.NoExpiration
+    }
+
+    private fun toAutoDeleteBannerUiModel(messageBanners: List<MessageBanner>): AutoDeleteBannerUiModel {
+        return messageBanners.filterIsInstance<MessageBanner.AutoDelete>().firstOrNull()?.let {
+            AutoDeleteBannerUiModel.AutoDelete(deletesAt = it.deletesAt)
+        } ?: AutoDeleteBannerUiModel.NoAutoDelete
     }
 }

@@ -30,7 +30,7 @@ private const val HOURS_IN_DAY: Int = 24
  *
  * Example: [X days, Y hours, Z minutes]
  */
-fun Duration.toFormattedDurationParts(resources: Resources): List<String> {
+fun Duration.toFormattedExpirationTime(resources: Resources): List<String> {
 
     if (!this.isPositive()) {
         return emptyList()
@@ -79,6 +79,52 @@ fun Duration.toFormattedDurationParts(resources: Resources): List<String> {
             )
         }
     } else if (this.inWholeMinutes < 1) {
+        listOf(
+            resources.getQuantityString(
+                R.plurals.expiration_seconds_full_word,
+                this.inWholeSeconds.toInt(),
+                this.inWholeSeconds.toInt()
+            )
+        )
+    } else emptyList()
+}
+
+fun Duration.toFormattedAutoDeleteTime(resources: Resources): List<String> {
+
+    if (!this.isPositive()) {
+        return emptyList()
+    }
+
+    return if (this.inWholeDays >= 1) {
+        listOf(
+            resources.getQuantityString(
+                R.plurals.expiration_days_full_word,
+                this.inWholeDays.toInt(),
+                this.inWholeDays.toInt()
+            )
+        )
+    } else if (this.inWholeHours >= 1) {
+        listOf(
+            resources.getQuantityString(
+                R.plurals.expiration_hours_full_word,
+                this.inWholeHours.toInt(),
+                this.inWholeHours.toInt()
+            ),
+            resources.getQuantityString(
+                R.plurals.expiration_minutes_full_word,
+                (this.inWholeMinutes - this.inWholeHours * MINUTES_IN_HOUR).toInt(),
+                (this.inWholeMinutes - this.inWholeHours * MINUTES_IN_HOUR).toInt()
+            )
+        )
+    } else if (this.inWholeMinutes >= 1) {
+        listOf(
+            resources.getQuantityString(
+                R.plurals.expiration_minutes_full_word,
+                this.inWholeMinutes.toInt(),
+                this.inWholeMinutes.toInt()
+            )
+        )
+    } else if (this.inWholeSeconds >= 1) {
         listOf(
             resources.getQuantityString(
                 R.plurals.expiration_seconds_full_word,

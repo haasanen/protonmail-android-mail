@@ -22,9 +22,12 @@ import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumInverted
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailcommon.presentation.model.string
+import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
-import ch.protonmail.android.maildetail.presentation.util.toFormattedDurationParts
+import ch.protonmail.android.maildetail.presentation.util.toFormattedAutoDeleteTime
+import ch.protonmail.android.maildetail.presentation.util.toFormattedExpirationTime
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -73,7 +76,7 @@ fun MessageBanners(
                     mutableStateOf(Duration.between(Instant.now(), uiModel.expiresAt).toKotlinDuration())
                 }
                 val formattedExpiration = expiresIn.value
-                    .toFormattedDurationParts(context.resources)
+                    .toFormattedExpirationTime(context.resources)
                     .joinToString(separator = ", ")
                 val expirationText = stringResource(
                     R.string.message_expiration_banner_text,
@@ -115,6 +118,38 @@ fun MessageBanners(
                 )
             }
         }
+        when (val uiModel = messageBannersUiModel.autoDeleteBannerUiModel) {
+            is AutoDeleteBannerUiModel.NoAutoDelete -> Unit
+            is AutoDeleteBannerUiModel.AutoDelete -> {
+                val context = LocalContext.current
+                val deletesIn = remember {
+                    mutableStateOf(Duration.between(Instant.now(), uiModel.deletesAt).toKotlinDuration())
+                }
+                val formattedExpiration = deletesIn.value
+                    .toFormattedAutoDeleteTime(context.resources)
+                    .joinToString(separator = ", ")
+                val autoDeleteText = stringResource(
+                    R.string.message_auto_delete_banner_text,
+                    formattedExpiration
+                )
+
+                LaunchedEffect(Unit) {
+                    repeat(deletesIn.value.inWholeSeconds.toInt()) {
+                        delay(1.seconds)
+                        deletesIn.value = deletesIn.value.minus(1.seconds).coerceAtLeast(1.seconds)
+                    }
+                }
+
+                ProtonBanner(
+                    icon = R.drawable.ic_proton_trash_clock,
+                    iconTint = ProtonTheme.colors.iconWeak,
+                    iconSize = ProtonDimens.IconSize.Medium,
+                    text = autoDeleteText,
+                    textStyle = ProtonTheme.typography.bodyMediumWeak,
+                    backgroundColor = ProtonTheme.colors.backgroundNorm
+                )
+            }
+        }
         if (messageBannersUiModel.shouldShowBlockedSenderBanner) {
             ProtonBannerWithButton(
                 bannerText = TextUiModel.TextRes(R.string.message_blocked_sender_banner_text).string(),
@@ -143,6 +178,9 @@ fun PreviewMessageBanners() {
                 shouldShowBlockedSenderBanner = true,
                 expirationBannerUiModel = ExpirationBannerUiModel.Expiration(
                     expiresAt = Instant.now()
+                ),
+                autoDeleteBannerUiModel = AutoDeleteBannerUiModel.AutoDelete(
+                    deletesAt = Instant.now()
                 )
             ),
             onMarkMessageAsLegitimate = {},

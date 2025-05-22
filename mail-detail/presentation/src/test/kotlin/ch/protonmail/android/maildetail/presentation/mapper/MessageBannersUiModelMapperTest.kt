@@ -21,6 +21,7 @@ package ch.protonmail.android.maildetail.presentation.mapper
 import java.time.Instant
 import android.content.Context
 import android.content.res.Resources
+import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import io.mockk.every
@@ -129,5 +130,30 @@ class MessageBannersUiModelMapperTest {
 
         // Then
         assertEquals(ExpirationBannerUiModel.NoExpiration, result.expirationBannerUiModel)
+    }
+
+    @Test
+    fun `should map to ui model with auto-delete banner when banners list contains it`() {
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            listOf(MessageBanner.AutoDelete(Instant.MAX))
+        )
+
+        // Then
+        assertEquals(
+            AutoDeleteBannerUiModel.AutoDelete(Instant.MAX),
+            result.autoDeleteBannerUiModel
+        )
+    }
+
+    @Test
+    fun `should map to ui model with no auto-delete banner when banners list does not contain it`() {
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            emptyList()
+        )
+
+        // Then
+        assertEquals(AutoDeleteBannerUiModel.NoAutoDelete, result.autoDeleteBannerUiModel)
     }
 }

@@ -19,6 +19,7 @@
 package ch.protonmail.android.testdata.maildetail
 
 import java.time.Instant
+import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 
@@ -28,18 +29,21 @@ object MessageBannersUiModelTestData {
         shouldShowPhishingBanner = true,
         shouldShowSpamBanner = true,
         shouldShowBlockedSenderBanner = true,
-        expirationBannerUiModel = ExpirationBannerUiModel.Expiration(Instant.MAX)
+        expirationBannerUiModel = ExpirationBannerUiModel.Expiration(Instant.MAX),
+        autoDeleteBannerUiModel = AutoDeleteBannerUiModel.AutoDelete(Instant.MAX)
     )
 
     fun build(
         shouldShowPhishingBanner: Boolean,
         shouldShowSpamBanner: Boolean,
         shouldShowBlockedSenderBanner: Boolean,
-        expirationBannerUiModel: ExpirationBannerUiModel
+        expirationBannerUiModel: ExpirationBannerUiModel,
+        autoDeleteBannerUiModel: AutoDeleteBannerUiModel
     ) = MessageBannersUiModel(
         shouldShowPhishingBanner = shouldShowPhishingBanner,
         shouldShowSpamBanner = shouldShowSpamBanner,
         shouldShowBlockedSenderBanner = shouldShowBlockedSenderBanner,
-        expirationBannerUiModel = expirationBannerUiModel
+        expirationBannerUiModel = expirationBannerUiModel,
+        autoDeleteBannerUiModel = autoDeleteBannerUiModel
     )
 }
