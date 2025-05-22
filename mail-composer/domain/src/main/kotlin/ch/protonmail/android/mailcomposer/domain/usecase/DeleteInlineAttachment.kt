@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
 import arrow.core.raise.either
-import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
@@ -30,8 +29,8 @@ class DeleteInlineAttachment @Inject constructor(
     private val attachmentRepository: AttachmentRepository
 ) {
 
-    suspend operator fun invoke(attachmentId: AttachmentId): Either<AttachmentDeleteError, Unit> = either {
-        attachmentRepository.deleteInlineAttachment(attachmentId)
+    suspend operator fun invoke(contentId: String): Either<AttachmentDeleteError, Unit> = either {
+        attachmentRepository.deleteInlineAttachment(contentId)
             .mapLeft {
                 when (it) {
                     DataError.Local.FailedToDeleteFile -> AttachmentDeleteError.FailedToDeleteFile
