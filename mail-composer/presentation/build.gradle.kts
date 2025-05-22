@@ -73,14 +73,10 @@ dependencies {
     implementation(project(":mail-contact:domain"))
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-message:presentation"))
-    implementation(project(":mail-pagination:domain"))
-    implementation(project(":mail-settings:domain"))
-    implementation(project(":mail-settings:presentation"))
     implementation(project(":test:idlingresources"))
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
-    implementation(project(":mail-label:domain"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-featureflags:domain"))
 
@@ -89,6 +85,5 @@ dependencies {
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))
-    testImplementation(project(":mail-detail:presentation"))
     androidTestImplementation(libs.bundles.test.androidTest)
 }
