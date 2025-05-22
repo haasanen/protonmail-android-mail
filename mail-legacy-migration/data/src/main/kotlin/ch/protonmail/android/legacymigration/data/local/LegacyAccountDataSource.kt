@@ -18,20 +18,15 @@
 
 package ch.protonmail.android.legacymigration.data.local
 
-import kotlinx.coroutines.flow.Flow
-import me.proton.core.account.domain.entity.Account
+import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
 import me.proton.core.domain.entity.UserId
-import me.proton.core.network.domain.session.Session
 import me.proton.core.network.domain.session.SessionId
 
 interface LegacyAccountDataSource {
 
-    fun getAccount(userId: UserId): Flow<Account?>
+    suspend fun getSession(sessionId: SessionId): LegacySessionInfo?
 
-    fun getSession(sessionId: SessionId): Flow<Session?>
+    suspend fun getPrimaryUserId(): UserId?
 
-    fun getPrimaryUserId(): Flow<UserId?>
-
-    fun getSessions(): Flow<List<Session>>
-
+    suspend fun getSessions(): List<LegacySessionInfo>
 }
