@@ -26,9 +26,12 @@ import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsState.Loading
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,6 +40,8 @@ class ThemeSettingsViewModel @Inject constructor(
     private val themeRepository: ThemeRepository
 ) : ViewModel() {
 
+    private val _effects = MutableStateFlow(ThemeSettingsEffects())
+    val effects = _effects.asStateFlow()
     val state: Flow<ThemeSettingsState> = themeRepository
         .observe()
         .mapLatest { currentTheme ->
@@ -51,7 +56,13 @@ class ThemeSettingsViewModel @Inject constructor(
             Loading
         )
 
-    fun onThemeSelected(theme: Theme) = viewModelScope.launch {
-        themeRepository.update(theme)
+    fun onThemeSelected(theme: Theme) {
+        // We need to close the dialog **before** updating the theme. Ahy?  Updating the theme will cause a
+        // recompose and if the dialog is open we will recompose the screen with the dim background which will cause
+        // a flicker effect as the theme changes, the dim is rendered and removed and the dialog closes
+        _effects.update { it.onCloseEffect() }
+        viewModelScope.launch {
+            themeRepository.update(theme)
+        }
     }
 }

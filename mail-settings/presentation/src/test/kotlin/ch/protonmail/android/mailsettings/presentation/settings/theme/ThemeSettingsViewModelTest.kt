@@ -20,6 +20,7 @@ package ch.protonmail.android.mailsettings.presentation.settings.theme
 
 import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.Theme.DARK
@@ -59,6 +60,20 @@ class ThemeSettingsViewModelTest {
 
         viewModel = ThemeSettingsViewModel(
             themeRepository
+        )
+    }
+
+    @Test
+    fun `close effect emitted when theme is updated`() = runTest {
+        // Given
+        coEvery { themeRepository.update(any()) } just Runs
+
+        // When
+        viewModel.onThemeSelected(LIGHT)
+        // then
+        assertEquals(
+            ThemeSettingsEffects(close = Effect.of(Unit)),
+            viewModel.effects.value
         )
     }
 
@@ -171,6 +186,7 @@ class ThemeSettingsViewModelTest {
     }
 
     companion object {
+
         private val systemDefaultTheme = TextUiModel(
             string.mail_settings_system_default
         )

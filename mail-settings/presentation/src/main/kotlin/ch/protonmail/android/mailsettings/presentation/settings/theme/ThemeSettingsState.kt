@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailsettings.presentation.settings.theme
 
 import androidx.compose.runtime.Immutable
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.Theme.DARK
@@ -39,6 +40,12 @@ sealed class ThemeSettingsState {
 
     data object Loading : ThemeSettingsState()
 }
+
+data class ThemeSettingsEffects(
+    val close: Effect<Unit> = Effect.empty()
+)
+
+internal fun ThemeSettingsEffects.onCloseEffect() = this.copy(close = Effect.of(Unit))
 
 internal fun Theme.toUiModel() = TextUiModel(nameStringResourceBy(this))
 

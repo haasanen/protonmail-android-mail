@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.compose.PickerDialog
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.presentation.R
@@ -39,6 +40,10 @@ fun ThemeSettingsDialog(
     onDismiss: () -> Unit,
     viewModel: ThemeSettingsViewModel = hiltViewModel()
 ) {
+    val effects = viewModel.effects.collectAsStateWithLifecycle().value
+    ConsumableLaunchedEffect(effects.close) {
+        onDismiss()
+    }
     when (
         val state = viewModel.state.collectAsStateWithLifecycle(Loading).value
     ) {
