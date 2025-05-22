@@ -18,36 +18,21 @@
 
 package ch.protonmail.android.legacymigration.data.local
 
+import ch.protonmail.android.legacymigration.data.local.rawSql.LegacyDbReader
+import ch.protonmail.android.legacymigration.domain.LegacyDBCoroutineScope
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserAddressInfo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
-import me.proton.core.user.data.db.AddressDatabase
-import me.proton.core.user.data.entity.AddressEntity
 import javax.inject.Inject
 
 class LegacyUserAddressDataSourceImpl @Inject constructor(
-    private val db: AddressDatabase
+    private val dbReader: LegacyDbReader,
+    @LegacyDBCoroutineScope private val dbCoroutineScope: CoroutineScope
 ) : LegacyUserAddressDataSource {
-    private val addressDao = db.addressDao()
 
-    override suspend fun getPrimaryUserAddress(userId: UserId): LegacyUserAddressInfo? {
-        val addressList = addressDao.getByUserId(userId)
-        if (addressList.isEmpty()) {
-            return null
+    override suspend fun getPrimaryUserAddress(userId: UserId): LegacyUserAddressInfo? =
+        withContext(dbCoroutineScope.coroutineContext) {
+            dbReader.readPrimaryAddress(userId)
         }
-
-        return addressList
-            .filter { it.enabled }
-            .minBy { it.order }
-            .toLegacyUserAddressInfo()
-    }
-
-    private fun AddressEntity.toLegacyUserAddressInfo(): LegacyUserAddressInfo {
-        return LegacyUserAddressInfo(
-            addressId = addressId,
-            email = email,
-            order = order,
-            userId = userId,
-            displayName = displayName
-        )
-    }
 }

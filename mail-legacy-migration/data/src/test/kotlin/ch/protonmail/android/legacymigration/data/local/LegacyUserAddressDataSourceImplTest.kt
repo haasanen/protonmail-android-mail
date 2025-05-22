@@ -18,39 +18,39 @@
 
 package ch.protonmail.android.legacymigration.data.local
 
+import ch.protonmail.android.legacymigration.data.local.rawSql.LegacyDbReader
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import me.proton.core.user.data.db.AddressDatabase
-import me.proton.core.user.data.db.dao.AddressDao
-import me.proton.core.user.data.entity.AddressEntity
 import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserAddressInfo
+import kotlinx.coroutines.CoroutineScope
 import me.proton.core.user.domain.entity.AddressId
 
 class LegacyUserAddressDataSourceImplTest {
 
     @get:Rule
-    val coroutineRule = MainDispatcherRule()
+    val mainDispatcherRule = MainDispatcherRule()
+    private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
 
-    private val addressDao: AddressDao = mockk()
-    private val addressDatabase: AddressDatabase = mockk {
-        every { addressDao() } returns addressDao
-    }
+    private val dbReader: LegacyDbReader = mockk()
 
-    private val dataSource = LegacyUserAddressDataSourceImpl(addressDatabase)
+    private val dataSource = LegacyUserAddressDataSourceImpl(
+        dbReader = dbReader,
+        dbCoroutineScope = testCoroutineScope
+    )
+
+    private val userId = UserId("user123")
 
     @Test
-    fun `getPrimaryUserAddress returns null when list is empty`() = runTest {
+    fun `getPrimaryUserAddress returns null when dbReader returns null`() = runTest {
         // Given
-        val userId = UserId("user123")
-        coEvery { addressDao.getByUserId(userId) } returns emptyList()
+        coEvery { dbReader.readPrimaryAddress(userId) } returns null
 
         // When
         val result = dataSource.getPrimaryUserAddress(userId)
@@ -60,47 +60,21 @@ class LegacyUserAddressDataSourceImplTest {
     }
 
     @Test
-    fun `getPrimaryUserAddress filters and maps lowest ordered enabled address`() = runTest {
+    fun `getPrimaryUserAddress returns mapped LegacyUserAddressInfo`() = runTest {
         // Given
-        val userId = UserId("user123")
-        val addr1 = mockk<AddressEntity> {
-            every { this@mockk.userId } returns userId
-            every { this@mockk.addressId } returns AddressId("ad1")
-            every { this@mockk.displayName } returns "Address 1"
-            every { this@mockk.email } returns "a1@example.com"
-            every { this@mockk.order } returns 2
-            every { this@mockk.enabled } returns true
-        }
-        val addr2 = mockk<AddressEntity> {
-            every { this@mockk.userId } returns userId
-            every { this@mockk.addressId } returns AddressId("ad2")
-            every { this@mockk.displayName } returns "Address 2"
-            every { this@mockk.email } returns "a2@example.com"
-            every { this@mockk.order } returns 1
-            every { this@mockk.enabled } returns true
-        }
-        val addr3 = mockk<AddressEntity> {
-            every { this@mockk.userId } returns userId
-            every { this@mockk.addressId } returns AddressId("ad3")
-            every { this@mockk.displayName } returns "Address 3"
-            every { this@mockk.email } returns "a3@example.com"
-            every { this@mockk.order } returns 3
-            every { this@mockk.enabled } returns false
-        }
-
-        coEvery { addressDao.getByUserId(userId) } returns listOf(addr1, addr2, addr3)
+        val expected = LegacyUserAddressInfo(
+            userId = userId,
+            addressId = AddressId("addr123"),
+            email = "a@example.com",
+            displayName = "My Address"
+        )
+        coEvery { dbReader.readPrimaryAddress(userId) } returns expected
 
         // When
         val result = dataSource.getPrimaryUserAddress(userId)
 
         // Then
-        val expected = LegacyUserAddressInfo(
-            addressId = addr2.addressId,
-            email = addr2.email,
-            order = addr2.order,
-            userId = addr2.userId,
-            displayName = addr2.displayName
-        )
         assertEquals(expected, result)
     }
 }
+
