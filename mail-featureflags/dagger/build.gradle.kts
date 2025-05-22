@@ -49,5 +49,4 @@ dependencies {
 
     implementation(project(":mail-featureflags:data"))
     implementation(project(":mail-featureflags:domain"))
-    implementation(project(":mail-featureflags:presentation"))
 }
