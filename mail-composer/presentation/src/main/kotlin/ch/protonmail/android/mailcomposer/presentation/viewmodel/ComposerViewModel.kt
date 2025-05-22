@@ -44,6 +44,7 @@ import ch.protonmail.android.mailcomposer.domain.model.hasAnyRecipient
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
+import ch.protonmail.android.mailcomposer.domain.usecase.DeleteInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.GetEmbeddedImage
@@ -117,6 +118,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val networkManager: NetworkManager,
     private val addAttachment: AddAttachment,
     private val deleteAttachment: DeleteAttachment,
+    private val deleteInlineAttachment: DeleteInlineAttachment,
     private val openExistingDraft: OpenExistingDraft,
     private val createEmptyDraft: CreateEmptyDraft,
     private val createDraftForAction: CreateDraftForAction,
@@ -355,6 +357,7 @@ class ComposerViewModel @AssistedInject constructor(
 
                     is ComposerAction.DiscardDraft -> emitNewStateFor(action)
                     is ComposerAction.DiscardDraftConfirmed -> onDiscardDraftConfirmed(action)
+                    is ComposerAction.RemoveInlineImage -> onInlineImageRemoved(action)
                 }
                 composerIdlingResource.decrement()
             }
@@ -402,6 +405,14 @@ class ComposerViewModel @AssistedInject constructor(
                     Timber.e("Failed to delete attachment: $it")
                     emitNewStateFor(ComposerEvent.DeleteAttachmentError)
                 }
+        }
+    }
+
+    private fun onInlineImageRemoved(action: ComposerAction.RemoveInlineImage) {
+        viewModelScope.launch {
+            deleteInlineAttachment(action.contentId)
+                .onLeft { Timber.w("Failed to delete inline attachment: $it") }
+                .onRight { Timber.d("Inline attachment ${action.contentId} removed!") }
         }
     }
 

@@ -56,6 +56,7 @@ class ComposerReducer @Inject constructor(
     private fun ComposerAction.newStateForAction(currentState: ComposerDraftState) = when (this) {
         is ComposerAction.DraftBodyChanged,
         is ComposerAction.AttachmentsAdded,
+        is ComposerAction.RemoveInlineImage,
         is ComposerAction.RemoveAttachment -> currentState
 
         is ComposerAction.SenderChanged -> updateSenderTo(currentState, this.sender)

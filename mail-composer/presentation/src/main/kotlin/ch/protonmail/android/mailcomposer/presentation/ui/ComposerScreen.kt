@@ -481,7 +481,8 @@ private fun buildActions(
     onHeaderPositioned = onHeaderPositioned,
     onWebViewPositioned = onWebViewPositioned,
     loadEmbeddedImage = onLoadEmbeddedImage,
-    onAttachmentRemoveRequested = { viewModel.submit(ComposerAction.RemoveAttachment(it)) }
+    onAttachmentRemoveRequested = { viewModel.submit(ComposerAction.RemoveAttachment(it)) },
+    onInlineImageRemoved = { viewModel.submit(ComposerAction.RemoveInlineImage(it)) }
 )
 
 object ComposerScreen {

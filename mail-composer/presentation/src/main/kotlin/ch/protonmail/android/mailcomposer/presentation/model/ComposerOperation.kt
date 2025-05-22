@@ -39,6 +39,7 @@ internal sealed interface ComposerAction : ComposerOperation {
 
     data class DraftBodyChanged(val draftBody: DraftBody) : ComposerAction
     data class RemoveAttachment(val attachmentId: AttachmentId) : ComposerAction
+    data class RemoveInlineImage(val contentId: String) : ComposerAction
 
     data object ChangeSenderRequested : ComposerAction
     data object OnAddAttachments : ComposerAction
