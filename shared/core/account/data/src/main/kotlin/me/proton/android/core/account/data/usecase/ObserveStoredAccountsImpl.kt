@@ -67,6 +67,7 @@ class ObserveStoredAccountsImpl @Inject constructor(
          */
         coroutineScope.launch {
             observeCoreSessions().collect {
+                refreshAccounts()
                 ensureWatchingAccounts()
             }
         }
@@ -82,14 +83,7 @@ class ObserveStoredAccountsImpl @Inject constructor(
                         object : LiveQueryCallback {
                             override fun onUpdate() {
                                 coroutineScope.launch {
-                                    when (val accountsResult = mailSession.getAccounts()) {
-                                        is MailSessionGetAccountsResult.Ok -> {
-                                            accountsMutableStateFlow.value = accountsResult.v1
-                                        }
-
-                                        is MailSessionGetAccountsResult.Error ->
-                                            accountsMutableStateFlow.value = emptyList()
-                                    }
+                                    refreshAccounts()
                                 }
                             }
                         }
@@ -104,6 +98,18 @@ class ObserveStoredAccountsImpl @Inject constructor(
                         accountsMutableStateFlow.value = emptyList()
                     }
                 }
+            }
+        }
+    }
+
+    private suspend fun refreshAccounts() {
+        when (val accountsResult = mailSession.getAccounts()) {
+            is MailSessionGetAccountsResult.Ok -> {
+                accountsMutableStateFlow.value = accountsResult.v1
+            }
+
+            is MailSessionGetAccountsResult.Error -> {
+                accountsMutableStateFlow.value = emptyList()
             }
         }
     }
