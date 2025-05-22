@@ -19,7 +19,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
     id("org.jetbrains.kotlin.plugin.compose")
     id("app-config-plugin")
 }
@@ -54,17 +53,5 @@ android {
 }
 
 dependencies {
-    kapt(libs.bundles.app.annotationProcessors)
 
-    implementation(libs.bundles.module.presentation)
-
-    implementation(project(":mail-common:domain"))
-    implementation(project(":mail-conversation:domain"))
-    implementation(project(":mail-detail:domain"))
-    implementation(project(":mail-message:domain"))
-
-    implementation(project(":design-system"))
-    implementation(project(":presentation-compose"))
-
-    testImplementation(libs.bundles.test)
 }
