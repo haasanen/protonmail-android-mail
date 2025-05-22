@@ -24,7 +24,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.Message
-import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
@@ -66,11 +65,6 @@ interface MessageRepository {
      * @return either the [Message] or a [DataError.Local]
      */
     fun observeMessage(userId: UserId, remoteMessageId: RemoteMessageId): Flow<Either<DataError, Message>>
-
-    /**
-     * Observe the list of [MessageAttachment] for a given [MessageId], for [userId]
-     */
-    fun observeMessageAttachments(userId: UserId, messageId: MessageId): Flow<List<MessageAttachment>>
 
     /**
      * Get the [MessageWithBody] for a given [MessageId], for [userId],

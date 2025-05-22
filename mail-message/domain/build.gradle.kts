@@ -47,13 +47,9 @@ dependencies {
     implementation(libs.kotlin.serialization.json)
 
     implementation(libs.proton.core.user.domain)
-    implementation(libs.proton.core.user.domain)
-    implementation(libs.proton.core.mailSendPreferences.domain)
-    implementation(libs.androidx.room.ktx)
 
     implementation(project(":mail-attachments:domain"))
     implementation(project(":mail-common:domain"))
-    implementation(project(":mail-contact:domain"))
     implementation(project(":mail-label:domain"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-pagination:domain"))

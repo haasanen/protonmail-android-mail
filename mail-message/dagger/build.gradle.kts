@@ -47,11 +47,6 @@ dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
 
-    implementation(project(":mail-common:data"))
-    implementation(project(":mail-common:domain"))
     implementation(project(":mail-message:data"))
     implementation(project(":mail-message:domain"))
-    implementation(project(":mail-message:presentation"))
-    implementation(project(":mail-label:data"))
-    implementation(project(":mail-label:domain"))
 }

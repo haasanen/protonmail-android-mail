@@ -20,11 +20,9 @@ package ch.protonmail.android.mailmessage.domain.usecase
 
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
-import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
@@ -110,20 +108,6 @@ class GetDecryptedMessageBodyTest(
 
     companion object {
 
-        private val mimeAttachmentId = AttachmentId("attachmentId")
-        private val mimeAttachmentContent = "mimeAttachmentContent".encodeToByteArray()
-        private val mimeMessageAttachment = MessageAttachment(
-            attachmentId = mimeAttachmentId,
-            name = "image.png",
-            size = mimeAttachmentContent.size.toLong(),
-            mimeType = "image/png",
-            disposition = "attachment",
-            keyPackets = null,
-            signature = null,
-            encSignature = null,
-            headers = emptyMap()
-        )
-
         private val testInputList = listOf(
             TestInput(
                 MimeType.Html,
@@ -131,8 +115,7 @@ class GetDecryptedMessageBodyTest(
             ),
             TestInput(
                 MimeType.MultipartMixed,
-                MessageWithBody(MessageTestData.message, MessageBodyTestData.multipartMixedMessageBody),
-                listOf(mimeMessageAttachment)
+                MessageWithBody(MessageTestData.message, MessageBodyTestData.multipartMixedMessageBody)
             )
         )
 
@@ -151,7 +134,6 @@ class GetDecryptedMessageBodyTest(
 
     data class TestInput(
         val mimeType: MimeType,
-        val messageWithBody: MessageWithBody,
-        val mimeAttachments: List<MessageAttachment> = emptyList()
+        val messageWithBody: MessageWithBody
     )
 }
