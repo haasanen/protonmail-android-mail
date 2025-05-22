@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maillabel.domain.extension
 
+import ch.protonmail.android.uicomponents.utils.normalizeColorHex
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

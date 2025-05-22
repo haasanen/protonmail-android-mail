@@ -20,13 +20,13 @@ package ch.protonmail.android.mailcontact.presentation
 
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
-import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
-import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
-import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
+import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.contact.ContactSample
+import ch.protonmail.android.uicomponents.utils.getHexStringFromColor
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals

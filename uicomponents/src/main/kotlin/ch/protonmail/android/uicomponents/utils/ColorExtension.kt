@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maillabel.domain.extension
+package ch.protonmail.android.uicomponents.utils
 
 fun String.normalizeColorHex(): String {
     val shortHexLength = 4 // eg. #fff
