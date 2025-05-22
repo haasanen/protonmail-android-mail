@@ -44,7 +44,6 @@ import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiMod
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.GroupedContactListItemsUiModelMapper
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
@@ -93,9 +92,6 @@ class ContactListViewModelTest {
     }
     private val observeGroupedContacts = mockk<ObserveGroupedContacts> {
         coEvery { this@mockk.invoke(any()) } returns flowOf(listOf(defaultTestGroupedContacts).right())
-    }
-    private val observeUpsellingVisibilityMock = mockk<ObserveUpsellingVisibility> {
-        every { this@mockk(any()) } returns flowOf(false)
     }
 
     private val deleteContact = mockk<DeleteContact> {
@@ -175,26 +171,6 @@ class ContactListViewModelTest {
             val actual = awaitItem()
             val expected = ContactListState.Loading(
                 errorLoading = Effect.of(TextUiModel(R.string.contact_list_loading_error))
-            )
-
-            assertEquals(expected, actual)
-        }
-    }
-
-    @Test
-    fun `when ObserveUpsellingVisibility is true then emit appropriate event`() = runTest {
-        // Given
-        expectContactsData()
-        coEvery { observeUpsellingVisibilityMock(any()) } returns flowOf(true)
-
-        // When
-        contactListViewModel.state.test {
-            // Then
-            val actual = awaitItem()
-            val expected = ContactListState.Loaded.Data(
-                groupedContacts = listOf(defaultTestGroupedContacts).map {
-                    groupedContactListItemsUiModelMapper.toUiModel(it)
-                }
             )
 
             assertEquals(expected, actual)
