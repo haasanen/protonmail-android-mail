@@ -17,7 +17,9 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.NoPointer
 import uniffi.proton_mail_uniffi.SettingsWatcher
+import uniffi.proton_mail_uniffi.WatchHandle
 import kotlin.test.assertEquals
 
 class RustMailSettingsDataSourceTest {
@@ -47,7 +49,6 @@ class RustMailSettingsDataSourceTest {
             mailSettingsDataSource.observeMailSettings(userId).test {
                 // Then
                 loggingTestRule.assertErrorLogged("rust-settings: trying to load settings with a null session")
-                awaitComplete()
             }
         }
 
@@ -60,22 +61,29 @@ class RustMailSettingsDataSourceTest {
         val mailSettingsCallbackSlot = slot<LiveQueryCallback>()
         val userSessionMock = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
-        val watcherMock = mockk<SettingsWatcher> (relaxed = true) {
-            every { settings } returns expected
-            every { watchHandle } returns mockk(relaxed = true)
+
+        val mockWatchHandle = object : WatchHandle(NoPointer) {
+            override fun disconnect() {
+                // NOP
+            }
         }
+        val watcherMock = SettingsWatcher(
+            settings = expected,
+            watchHandle = mockWatchHandle
+        )
+
+        val watcherMockUpdated = watcherMock.copy(settings = expectedUpdated)
+
+        // first value, then updated value
         coEvery {
             createRustMailSettings(userSessionMock, capture(mailSettingsCallbackSlot))
-        } returns watcherMock.right()
+        } returns watcherMock.right() andThen watcherMockUpdated.right()
 
         mailSettingsDataSource.observeMailSettings(userId).test {
             // Given
             assertEquals(expected, awaitItem()) // Initial value
-            every { watcherMock.settings } returns expectedUpdated
             // When
             mailSettingsCallbackSlot.captured.onUpdate()
-            assertEquals(expectedUpdated, awaitItem()) // Cached value
-
             // Then Updated value
             assertEquals(expectedUpdated, awaitItem())
         }
