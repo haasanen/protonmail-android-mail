@@ -18,7 +18,8 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.FilterChipDefaults
@@ -27,12 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.mapper.UnreadCountValueMapper
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.PreviewData.DummyUnreadCount
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
-import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
@@ -46,7 +45,7 @@ fun UnreadItemsFilter(
 ) {
     when (state) {
         is UnreadFilterState.Loading -> {
-            ProtonCenteredProgress(modifier = Modifier.size(MailDimens.ProgressDefaultSize))
+            Spacer(modifier = modifier.fillMaxWidth())
         }
 
         is UnreadFilterState.Data -> {
