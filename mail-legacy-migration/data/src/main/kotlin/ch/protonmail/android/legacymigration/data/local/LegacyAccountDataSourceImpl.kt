@@ -25,23 +25,47 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.session.SessionId
+import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class LegacyAccountDataSourceImpl @Inject constructor(
     private val dbReader: LegacyDbReader,
     @LegacyDBCoroutineScope private val dbCoroutineScope: CoroutineScope
 ) : LegacyAccountDataSource {
 
-    override suspend fun getSession(sessionId: SessionId): LegacySessionInfo? =
-        withContext(dbCoroutineScope.coroutineContext) {
-            dbReader.readLegacySessionInfo(sessionId)
-        }
+    override suspend fun getSession(sessionId: SessionId): LegacySessionInfo? = safeLegacyDbRead(
+        coroutineContext = dbCoroutineScope.coroutineContext,
+        description = "readLegacySessionInfo",
+        fallback = null
+    ) {
+        dbReader.readLegacySessionInfo(sessionId)
+    }
 
-    override suspend fun getPrimaryUserId(): UserId? = withContext(dbCoroutineScope.coroutineContext) {
+    override suspend fun getPrimaryUserId(): UserId? = safeLegacyDbRead(
+        coroutineContext = dbCoroutineScope.coroutineContext,
+        description = "readLatestPrimaryUserId",
+        fallback = null
+    ) {
         dbReader.readLatestPrimaryUserId()
     }
 
-    override suspend fun getSessions(): List<LegacySessionInfo> = withContext(dbCoroutineScope.coroutineContext) {
+    override suspend fun getSessions(): List<LegacySessionInfo> = safeLegacyDbRead(
+        coroutineContext = dbCoroutineScope.coroutineContext,
+        description = "readAuthenticatedSessions",
+        fallback = emptyList()
+    ) {
         dbReader.readAuthenticatedSessions()
     }
+}
+
+suspend inline fun <T> safeLegacyDbRead(
+    coroutineContext: CoroutineContext,
+    description: String,
+    fallback: T,
+    crossinline block: suspend () -> T
+): T = withContext(coroutineContext) {
+    runCatching { block() }
+        .onFailure { Timber.w(it, "Legacy migration: Failed db operation: $description") }
+        .getOrElse { fallback }
 }

@@ -22,7 +22,6 @@ import ch.protonmail.android.legacymigration.data.local.rawSql.LegacyDbReader
 import ch.protonmail.android.legacymigration.domain.LegacyDBCoroutineScope
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserInfo
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -32,9 +31,11 @@ class LegacyUserDataSourceImpl @Inject constructor(
 
 ) : LegacyUserDataSource {
 
-    override suspend fun getUser(userId: UserId): LegacyUserInfo? = withContext(dbCoroutineScope.coroutineContext) {
+    override suspend fun getUser(userId: UserId): LegacyUserInfo? = safeLegacyDbRead(
+        coroutineContext = dbCoroutineScope.coroutineContext,
+        description = "readLegacyUserInfo",
+        fallback = null
+    ) {
         dbReader.readLegacyUserInfo(userId)
     }
-
-
 }
