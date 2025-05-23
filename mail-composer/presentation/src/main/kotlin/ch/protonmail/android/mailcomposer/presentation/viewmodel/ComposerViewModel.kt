@@ -350,6 +350,7 @@ class ComposerViewModel @AssistedInject constructor(
                     is ComposerAction.DiscardDraft -> emitNewStateFor(action)
                     is ComposerAction.DiscardDraftConfirmed -> onDiscardDraftConfirmed(action)
                     is ComposerAction.RemoveInlineImage -> onInlineImageRemoved(action)
+                    is ComposerAction.OnInlineImageActionsRequested -> emitNewStateFor(action)
                 }
             }
         }

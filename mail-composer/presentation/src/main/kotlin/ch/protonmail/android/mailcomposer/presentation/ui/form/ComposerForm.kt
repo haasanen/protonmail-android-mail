@@ -171,7 +171,8 @@ internal fun ComposerForm(
                         onMessageBodyChanged = actions.onBodyChanged,
                         onWebViewParamsChanged = actions.onWebViewMeasuresChanged,
                         onBuildWebView = onBuildWebView(webViewCache),
-                        onInlineImageRemoved = actions.onInlineImageRemoved
+                        onInlineImageRemoved = actions.onInlineImageRemoved,
+                        onInlineImageClicked = actions.onInlineImageClicked
                     ),
                     modifier = maxWidthModifier
                         .testTag(ComposerTestTags.MessageBody)
@@ -207,6 +208,7 @@ internal object ComposerForm {
         val onWebViewPositioned: (boundsInWindow: Rect) -> Unit,
         val loadEmbeddedImage: (String) -> EmbeddedImage?,
         val onAttachmentRemoveRequested: (AttachmentId) -> Unit,
-        val onInlineImageRemoved: (String) -> Unit
+        val onInlineImageRemoved: (String) -> Unit,
+        val onInlineImageClicked: (String) -> Unit
     )
 }

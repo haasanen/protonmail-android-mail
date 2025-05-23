@@ -51,6 +51,7 @@ internal sealed interface ComposerAction : ComposerOperation {
     data object SendExpiringMessageToExternalRecipientsConfirmed : ComposerAction
     data object DiscardDraft : ComposerAction
     data object DiscardDraftConfirmed : ComposerAction
+    data object OnInlineImageActionsRequested : ComposerAction
 }
 
 sealed interface ComposerEvent : ComposerOperation {

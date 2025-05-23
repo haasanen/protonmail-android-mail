@@ -111,4 +111,6 @@
     <string name="discard_draft_dialog_confirm_button">Discard</string>
     <string name="discard_draft_dialog_dismiss_button">Cancel</string>
     <string name="discard_draft_error">Error discarding draft</string>
+    <string name="composer_remove_inline_image">Remove</string>
+    <string name="composer_send_as_attachment">Send as attachment</string>
 </resources>

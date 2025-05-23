@@ -38,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -84,6 +85,7 @@ import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.time.Duration
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
@@ -101,9 +103,11 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     val state by viewModel.state.collectAsState()
 
     val snackbarHostState = remember { ProtonSnackbarHostState() }
-    val bottomSheetType = rememberSaveable { mutableStateOf(BottomSheetType.ChangeSender) }
+    val bottomSheetType = rememberSaveable(stateSaver = BottomSheetType.Saver) {
+        mutableStateOf(BottomSheetType.ChangeSender)
+    }
     val bottomSheetState = rememberModalBottomSheetState()
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
     val attachmentSizeDialogState = remember { mutableStateOf(false) }
     val sendingErrorDialogState = remember { mutableStateOf<String?>(null) }
     val senderChangedNoticeDialogState = remember { mutableStateOf<String?>(null) }
@@ -154,7 +158,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         onDismissed = { showBottomSheet = false },
         dismissOnBack = true,
         sheetContent = bottomSheetHeightConstrainedContent {
-            when (bottomSheetType.value) {
+            when (val sheetType = bottomSheetType.value) {
                 BottomSheetType.ChangeSender -> ChangeSenderBottomSheetContent(
                     state.senderAddresses,
                     { sender -> viewModel.submit(ComposerAction.SenderChanged(sender)) }
@@ -163,6 +167,17 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 BottomSheetType.SetExpirationTime -> SetExpirationTimeBottomSheetContent(
                     expirationTime = state.messageExpiresIn,
                     onDoneClick = { viewModel.submit(ComposerAction.ExpirationTimeSet(it)) }
+                )
+
+                is BottomSheetType.InlineImageActions -> InlineImageActionsBottomSheetContent(
+                    contentId = sheetType.contentId,
+                    onTransformToAttachment = {
+                        showFeatureMissingSnackbar()
+                    },
+                    onRemove = {
+                        Timber.d("On remove inline image clicked")
+                        showFeatureMissingSnackbar()
+                    }
                 )
             }
         },
@@ -266,7 +281,11 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                                 visibleWebViewHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
                             },
                             onLoadEmbeddedImage = { contentId -> viewModel.loadEmbeddedImage(contentId) },
-                            showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
+                            showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
+                            onInlineImageClicked = { contentId ->
+                                bottomSheetType.value = BottomSheetType.InlineImageActions(contentId)
+                                viewModel.submit(ComposerAction.OnInlineImageActionsRequested)
+                            }
                         ),
                         senderEmail = state.fields.sender.email,
                         recipientsStateManager = recipientsStateManager,
@@ -467,7 +486,8 @@ private fun buildActions(
     onHeaderPositioned: (Rect, Float) -> Unit,
     onWebViewPositioned: (Rect) -> Unit,
     onLoadEmbeddedImage: (String) -> EmbeddedImage?,
-    showFeatureMissingSnackbar: () -> Unit
+    showFeatureMissingSnackbar: () -> Unit,
+    onInlineImageClicked: (String) -> Unit
 ): ComposerForm.Actions = ComposerForm.Actions(
     onBodyChanged = {
         viewModel.submit(ComposerAction.DraftBodyChanged(DraftBody(it)))
@@ -482,7 +502,8 @@ private fun buildActions(
     onWebViewPositioned = onWebViewPositioned,
     loadEmbeddedImage = onLoadEmbeddedImage,
     onAttachmentRemoveRequested = { viewModel.submit(ComposerAction.RemoveAttachment(it)) },
-    onInlineImageRemoved = { viewModel.submit(ComposerAction.RemoveInlineImage(it)) }
+    onInlineImageRemoved = { viewModel.submit(ComposerAction.RemoveInlineImage(it)) },
+    onInlineImageClicked = onInlineImageClicked
 )
 
 object ComposerScreen {
@@ -518,7 +539,39 @@ object ComposerScreen {
     }
 }
 
-private enum class BottomSheetType { ChangeSender, SetExpirationTime }
+private sealed interface BottomSheetType {
+    data object ChangeSender : BottomSheetType
+    data object SetExpirationTime : BottomSheetType
+    data class InlineImageActions(val contentId: String) : BottomSheetType
+
+    companion object {
+        private const val TYPE_KEY = "sheetTypeKey"
+        private const val CONTENT_ID_KEY = "inlineImageContentId"
+
+        val Saver = mapSaver(
+            save = { state: BottomSheetType ->
+                when (state) {
+                    is ChangeSender -> mapOf(TYPE_KEY to ChangeSender::class.simpleName)
+                    is InlineImageActions -> {
+                        mapOf(
+                            TYPE_KEY to InlineImageActions::class.simpleName,
+                            CONTENT_ID_KEY to state.contentId
+                        )
+                    }
+                    is SetExpirationTime -> mapOf(TYPE_KEY to SetExpirationTime::class.simpleName)
+                }
+            },
+            restore = { map ->
+                when (map[TYPE_KEY]) {
+                    ChangeSender::class.simpleName -> ChangeSender
+                    InlineImageActions::class.simpleName -> InlineImageActions(map[CONTENT_ID_KEY].toString())
+                    SetExpirationTime::class.simpleName -> SetExpirationTime
+                    else -> throw IllegalStateException("Attempting to restore invalid bottom sheet type")
+                }
+            }
+        )
+    }
+}
 
 private data class SendExpiringMessageDialogState(
     val isVisible: Boolean,

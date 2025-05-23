@@ -71,6 +71,7 @@ class ComposerReducer @Inject constructor(
         is ComposerAction.SendExpiringMessageToExternalRecipientsConfirmed -> currentState
         is ComposerAction.DiscardDraft -> updateStateForDiscardDraft(currentState)
         is ComposerAction.DiscardDraftConfirmed -> updateStateForDiscardDraftConfirmed(currentState)
+        is ComposerAction.OnInlineImageActionsRequested -> updateStateForInlineImgActionsRequested(currentState)
     }
 
     @Suppress("ComplexMethod", "LongMethod")
@@ -289,6 +290,9 @@ class ComposerReducer @Inject constructor(
         currentState.copy(isMessagePasswordSet = messagePassword != null)
 
     private fun updateStateForSetExpirationTimeRequested(currentState: ComposerDraftState) =
+        currentState.copy(changeBottomSheetVisibility = Effect.of(true))
+
+    private fun updateStateForInlineImgActionsRequested(currentState: ComposerDraftState) =
         currentState.copy(changeBottomSheetVisibility = Effect.of(true))
 
     private fun updateStateForExpirationTimeSet(currentState: ComposerDraftState) =

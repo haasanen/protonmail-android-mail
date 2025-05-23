@@ -99,7 +99,7 @@ fun EditableMessageBodyWebView(
             ::onWebViewResize,
             ::onCursorPositionChanged,
             webViewActions.onInlineImageRemoved,
-            { Timber.d("editor-webview: on inline imaged clicked: $it") }
+            webViewActions.onInlineImageClicked
         )
     }
 
@@ -206,7 +206,8 @@ object EditableMessageBodyWebView {
         val onMessageBodyChanged: (body: String) -> Unit,
         val onWebViewParamsChanged: (params: WebViewMeasures) -> Unit,
         val onBuildWebView: (Context) -> WebView,
-        val onInlineImageRemoved: (String) -> Unit
+        val onInlineImageRemoved: (String) -> Unit,
+        val onInlineImageClicked: (String) -> Unit
     )
 }
 
