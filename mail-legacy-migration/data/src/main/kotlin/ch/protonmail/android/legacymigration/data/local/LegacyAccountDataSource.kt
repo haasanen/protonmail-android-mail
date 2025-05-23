@@ -29,4 +29,6 @@ interface LegacyAccountDataSource {
     suspend fun getPrimaryUserId(): UserId?
 
     suspend fun getSessions(): List<LegacySessionInfo>
+
+    suspend fun legacyDbExists(): Boolean
 }

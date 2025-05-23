@@ -77,6 +77,8 @@ class LegacyAccountRepositoryImpl @Inject constructor(
         return loginFlowWrapper.migrate(accountMigrationInfo.toMigrationData())
             .mapLeft { it.toMigrationError() }
     }
+
+    override suspend fun legacyDbExists(): Boolean = accountDataSource.legacyDbExists()
 }
 
 fun LoginError.toMigrationError(): MigrationError.MigrateFailed = when (this) {

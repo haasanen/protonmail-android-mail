@@ -33,4 +33,6 @@ interface LegacyAccountRepository {
 
     suspend fun hasLegacyLoggedInAccounts(): Boolean
     suspend fun migrateLegacyAccount(accountMigrationInfo: AccountMigrationInfo): Either<MigrationError, Unit>
+
+    suspend fun legacyDbExists(): Boolean
 }

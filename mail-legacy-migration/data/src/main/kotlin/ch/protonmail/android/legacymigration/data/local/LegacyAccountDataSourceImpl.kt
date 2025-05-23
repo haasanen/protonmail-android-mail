@@ -18,9 +18,12 @@
 
 package ch.protonmail.android.legacymigration.data.local
 
+import android.content.Context
 import ch.protonmail.android.legacymigration.data.local.rawSql.LegacyDbReader
 import ch.protonmail.android.legacymigration.domain.LegacyDBCoroutineScope
+import ch.protonmail.android.legacymigration.domain.model.LegacyDatabase
 import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
@@ -31,7 +34,8 @@ import kotlin.coroutines.CoroutineContext
 
 class LegacyAccountDataSourceImpl @Inject constructor(
     private val dbReader: LegacyDbReader,
-    @LegacyDBCoroutineScope private val dbCoroutineScope: CoroutineScope
+    @LegacyDBCoroutineScope private val dbCoroutineScope: CoroutineScope,
+    @ApplicationContext private val context: Context
 ) : LegacyAccountDataSource {
 
     override suspend fun getSession(sessionId: SessionId): LegacySessionInfo? = safeLegacyDbRead(
@@ -56,6 +60,28 @@ class LegacyAccountDataSourceImpl @Inject constructor(
         fallback = emptyList()
     ) {
         dbReader.readAuthenticatedSessions()
+    }
+
+    override suspend fun legacyDbExists(): Boolean {
+        val dbFile = context.getDatabasePath(LegacyDatabase.Name)
+        if (!dbFile.exists()) {
+            Timber.d("Legacy migration: Db file does not exist!")
+            return false
+        }
+
+        return safeLegacyDbRead(
+            coroutineContext = dbCoroutineScope.coroutineContext,
+            description = "legacyDbHasExpectedTables",
+            fallback = false
+        ) {
+            dbReader.legacyDbHasExpectedTables().also { tablesExist ->
+                if (tablesExist) {
+                    Timber.d("Legacy migration: Legacy DB has expected tables")
+                } else {
+                    Timber.w("Legacy migration: Legacy DB missing expected tables")
+                }
+            }
+        }
     }
 }
 

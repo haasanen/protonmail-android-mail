@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.legacymigration.data.local
 
+import android.content.Context
 import io.mockk.mockk
 import org.junit.Rule
 import ch.protonmail.android.legacymigration.data.local.rawSql.LegacyDbReader
@@ -41,7 +42,8 @@ class LegacyAccountDataSourceImplTest {
 
     private val dataSource = LegacyAccountDataSourceImpl(
         dbReader = dbReader,
-        dbCoroutineScope = testCoroutineScope
+        dbCoroutineScope = testCoroutineScope,
+        context = mockk<Context>(relaxed = true)
     )
 
     private val userId1 = UserId("user1")

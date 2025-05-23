@@ -25,5 +25,6 @@ class HasLegacyLoggedInAccounts @Inject constructor(
     private val legacyAccountRepository: LegacyAccountRepository
 ) {
 
-    suspend operator fun invoke(): Boolean = legacyAccountRepository.hasLegacyLoggedInAccounts()
+    suspend operator fun invoke(): Boolean = legacyAccountRepository.legacyDbExists() &&
+        legacyAccountRepository.hasLegacyLoggedInAccounts()
 }

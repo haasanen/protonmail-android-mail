@@ -154,4 +154,20 @@ class LegacyDbReader @Inject constructor(
             } else null
         }
     }
+
+    fun legacyDbHasExpectedTables(): Boolean = runCatching {
+        tableExists("SessionEntity") &&
+            tableExists("UserEntity") &&
+            tableExists("AddressEntity") &&
+            tableExists("SessionDetailsEntity") &&
+            tableExists("AccountMetadataEntity")
+    }.getOrElse { false }
+
+    private fun tableExists(tableName: String): Boolean {
+        val cursor = db.query(
+            "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?",
+            arrayOf(tableName)
+        )
+        return cursor.use { it.moveToFirst() }
+    }
 }
