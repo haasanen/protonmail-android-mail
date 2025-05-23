@@ -23,5 +23,5 @@ set -e
 release_notes_file_path="$1"
 
 # Write a release notes file containing the branch name and the latest 5 commit messages.
-echo "BRANCH - $CI_COMMIT_BRANCH" > "$release_notes_file_path"
+echo "ET APP - BRANCH - $CI_COMMIT_BRANCH" > "$release_notes_file_path"
 git log --format="%h - %s%n%b" -n 5 >> "$release_notes_file_path"
