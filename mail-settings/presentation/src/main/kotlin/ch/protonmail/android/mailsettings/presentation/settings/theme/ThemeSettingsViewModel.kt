@@ -57,7 +57,7 @@ class ThemeSettingsViewModel @Inject constructor(
         )
 
     fun onThemeSelected(theme: Theme) {
-        // We need to close the dialog **before** updating the theme. Ahy?  Updating the theme will cause a
+        // We need to close the dialog **before** updating the theme. Why?  Updating the theme will cause a
         // recompose and if the dialog is open we will recompose the screen with the dim background which will cause
         // a flicker effect as the theme changes, the dim is rendered and removed and the dialog closes
         _effects.update { it.onCloseEffect() }
