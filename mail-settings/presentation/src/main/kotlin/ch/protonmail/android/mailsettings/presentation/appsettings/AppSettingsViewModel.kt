@@ -21,7 +21,7 @@ package ch.protonmail.android.mailsettings.presentation.appsettings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveAppSettings
+import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -30,15 +30,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class AppSettingsViewModel @Inject constructor(
-    observeAppSettings: ObserveAppSettings
+    appSettingsRepository: AppSettingsRepository
 ) : ViewModel() {
 
-    val state = observeAppSettings().map { appSettings ->
-        val uiModel = AppSettingsUiModelMapper.toUiModel(appSettings)
-        AppSettingsState.Data(uiModel)
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(stopTimeoutMillis),
-        AppSettingsState.Loading
-    )
+    val state = appSettingsRepository
+        .observeAppSettings()
+        .map { appSettings ->
+            val uiModel = AppSettingsUiModelMapper.toUiModel(appSettings)
+            AppSettingsState.Data(uiModel)
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(stopTimeoutMillis), AppSettingsState.Loading)
 }

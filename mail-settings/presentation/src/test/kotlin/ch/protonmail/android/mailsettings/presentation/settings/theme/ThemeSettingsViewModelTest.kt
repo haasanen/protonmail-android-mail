@@ -20,19 +20,18 @@ package ch.protonmail.android.mailsettings.presentation.settings.theme
 
 import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
+import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.Theme.DARK
 import ch.protonmail.android.mailsettings.domain.model.Theme.LIGHT
 import ch.protonmail.android.mailsettings.domain.model.Theme.SYSTEM_DEFAULT
-import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
+import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsState.Loading
-import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -46,10 +45,14 @@ import org.junit.Test
 class ThemeSettingsViewModelTest {
 
     private val themePreferenceFlow = MutableSharedFlow<Theme>()
-    private val themeRepository = mockk<ThemeRepository> {
+    private val appSettingsRepository = mockk<AppSettingsRepository> {
         coEvery {
-            this@mockk.observe()
+            this@mockk.observeTheme()
         } returns themePreferenceFlow
+
+        coEvery {
+            this@mockk.updateTheme(any())
+        } returns Unit.right()
     }
 
     private lateinit var viewModel: ThemeSettingsViewModel
@@ -59,14 +62,14 @@ class ThemeSettingsViewModelTest {
         Dispatchers.setMain(UnconfinedTestDispatcher())
 
         viewModel = ThemeSettingsViewModel(
-            themeRepository
+            appSettingsRepository
         )
     }
 
     @Test
     fun `close effect emitted when theme is updated`() = runTest {
         // Given
-        coEvery { themeRepository.update(any()) } just Runs
+        coEvery { appSettingsRepository.updateTheme(any()) } returns Unit.right()
 
         // When
         viewModel.onThemeSelected(LIGHT)
@@ -172,13 +175,13 @@ class ThemeSettingsViewModelTest {
     @Test
     fun `updates theme on repository when themeSelected`() = runTest {
         // Given
-        coEvery { themeRepository.update(any()) } just Runs
+        coEvery { appSettingsRepository.updateTheme(any()) } returns Unit.right()
 
         // When
         viewModel.onThemeSelected(LIGHT)
 
         // Then
-        coVerify { themeRepository.update(LIGHT) }
+        coVerify { appSettingsRepository.updateTheme(LIGHT) }
     }
 
     private suspend fun ReceiveTurbine<ThemeSettingsState>.initialStateEmitted() {

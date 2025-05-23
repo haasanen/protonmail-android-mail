@@ -22,7 +22,7 @@ import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveAppSettings
+import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.testdata.AppSettingsTestData
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -41,8 +41,8 @@ internal class AppSettingsViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val appSettingsFlow = MutableSharedFlow<AppSettings>()
-    private val observeAppSettings = mockk<ObserveAppSettings> {
-        every { this@mockk.invoke() } returns appSettingsFlow
+    private val observeAppSettings = mockk<AppSettingsRepository> {
+        every { this@mockk.observeAppSettings() } returns appSettingsFlow
     }
 
     private lateinit var viewModel: AppSettingsViewModel

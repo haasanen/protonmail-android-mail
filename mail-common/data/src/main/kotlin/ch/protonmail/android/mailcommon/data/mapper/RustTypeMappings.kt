@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcommon.data.mapper
 
 import uniffi.proton_mail_common.MessageBanner
 import uniffi.proton_mail_uniffi.AlmostAllMail
+import uniffi.proton_mail_uniffi.AppSettings
 import uniffi.proton_mail_uniffi.AttachmentMetadata
 import uniffi.proton_mail_uniffi.AttachmentMimeType
 import uniffi.proton_mail_uniffi.AvatarInformation
@@ -116,4 +117,5 @@ typealias LocalContactSuggestionKind = ContactSuggestionKind
 typealias LocalIssueReport = IssueReport
 typealias RemoteMessageId = RemoteId
 typealias LocalEmbeddedImageInfo = EmbeddedAttachmentInfo
+typealias LocalAppSettings = AppSettings
 typealias LocalAutoLockPin = List<UInt>

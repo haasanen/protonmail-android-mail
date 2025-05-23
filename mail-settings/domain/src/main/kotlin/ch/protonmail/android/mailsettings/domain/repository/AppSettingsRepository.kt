@@ -18,10 +18,15 @@
 
 package ch.protonmail.android.mailsettings.domain.repository
 
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import kotlinx.coroutines.flow.Flow
 
-interface ThemeRepository {
-    fun observe(): Flow<Theme>
-    suspend fun update(theme: Theme)
+interface AppSettingsRepository {
+
+    fun observeAppSettings(): Flow<AppSettings>
+    fun observeTheme(): Flow<Theme>
+    suspend fun updateTheme(theme: Theme): Either<DataError, Unit>
 }

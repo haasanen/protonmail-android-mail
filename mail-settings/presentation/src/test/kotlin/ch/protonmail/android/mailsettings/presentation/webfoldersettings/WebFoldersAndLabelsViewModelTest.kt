@@ -27,7 +27,7 @@ import ch.protonmail.android.mailsession.domain.model.SessionError
 import ch.protonmail.android.mailsession.domain.usecase.ForkSession
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
-import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
+import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.usecase.HandleCloseWebSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
@@ -70,7 +70,7 @@ class WebFoldersAndLabelsViewModelTest {
     private val forkSession = mockk<ForkSession> {
         coEvery { this@mockk(primaryUserId) } returns forkedSessionId.right()
     }
-    private val themeRepository = mockk<ThemeRepository>()
+    private val appSettingsRepository = mockk<AppSettingsRepository>()
     private val observeWebSettingsConfig = mockk<ObserveWebSettingsConfig> {
         every { this@mockk.invoke() } returns flowOf(testWebSettingsConfig)
     }
@@ -81,7 +81,7 @@ class WebFoldersAndLabelsViewModelTest {
     private fun buildViewModel() = WebFoldersAndLabelsViewModel(
         observePrimaryUserId = observePrimaryUserId,
         forkSession = forkSession,
-        themeRepository = themeRepository,
+        appSettingsRepository = appSettingsRepository,
         observeWebSettingsConfig = observeWebSettingsConfig,
         handleCloseWebSettings = handleCloseWebSettings
     )
@@ -90,7 +90,7 @@ class WebFoldersAndLabelsViewModelTest {
     fun `emits loading state when initialized`() = runTest {
         // Given
         every { observePrimaryUserId.invoke() } returns flowOf(null)
-        every { themeRepository.observe() } returns flowOf(testTheme)
+        every { appSettingsRepository.observeTheme() } returns flowOf(testTheme)
         val viewModel = buildViewModel()
 
         // When & Then
@@ -103,7 +103,7 @@ class WebFoldersAndLabelsViewModelTest {
     fun `emits Data state when valid data is provided`() = runTest {
         // Given
         every { observePrimaryUserId.invoke() } returns flowOf(primaryUserId)
-        every { themeRepository.observe() } returns flowOf(testTheme)
+        every { appSettingsRepository.observeTheme() } returns flowOf(testTheme)
         val viewModel = buildViewModel()
 
         // When
@@ -119,7 +119,7 @@ class WebFoldersAndLabelsViewModelTest {
     fun `emits Error state when user session fork fails`() = runTest {
         // Given
         every { observePrimaryUserId.invoke() } returns flowOf(primaryUserId)
-        every { themeRepository.observe() } returns flowOf(testTheme)
+        every { appSettingsRepository.observeTheme() } returns flowOf(testTheme)
         coEvery {
             forkSession(primaryUserId)
         } returns SessionError.Local.KeyChainError.left()
@@ -137,7 +137,7 @@ class WebFoldersAndLabelsViewModelTest {
     fun `Calls handleCloseWebSettings use case when settings page is closed`() = runTest {
         // Given
         every { observePrimaryUserId.invoke() } returns flowOf(primaryUserId)
-        every { themeRepository.observe() } returns flowOf(testTheme)
+        every { appSettingsRepository.observeTheme() } returns flowOf(testTheme)
         val viewModel = buildViewModel()
 
         // When

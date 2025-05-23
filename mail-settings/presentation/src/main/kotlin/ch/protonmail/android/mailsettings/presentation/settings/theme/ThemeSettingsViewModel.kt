@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailsettings.domain.model.Theme
-import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
+import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsState.Loading
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -37,13 +37,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ThemeSettingsViewModel @Inject constructor(
-    private val themeRepository: ThemeRepository
+    private val appSettingsRepository: AppSettingsRepository
 ) : ViewModel() {
 
     private val _effects = MutableStateFlow(ThemeSettingsEffects())
     val effects = _effects.asStateFlow()
-    val state: Flow<ThemeSettingsState> = themeRepository
-        .observe()
+
+    val state: Flow<ThemeSettingsState> = appSettingsRepository
+        .observeTheme()
         .mapLatest { currentTheme ->
             ThemeSettingsState.Data(
                 currentTheme,
@@ -62,7 +63,7 @@ class ThemeSettingsViewModel @Inject constructor(
         // a flicker effect as the theme changes, the dim is rendered and removed and the dialog closes
         _effects.update { it.onCloseEffect() }
         viewModelScope.launch {
-            themeRepository.update(theme)
+            appSettingsRepository.updateTheme(theme)
         }
     }
 }

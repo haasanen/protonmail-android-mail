@@ -26,7 +26,7 @@ import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.Theme.DARK
 import ch.protonmail.android.mailsettings.domain.model.Theme.LIGHT
 import ch.protonmail.android.mailsettings.domain.model.Theme.SYSTEM_DEFAULT
-import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
+import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
@@ -35,13 +35,13 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ThemeObserver @Inject constructor(
-    private val themeRepository: ThemeRepository,
+    private val appSettingsRepository: AppSettingsRepository,
     @ThemeObserverCoroutineScope
     private val coroutineScope: CoroutineScope
 ) {
 
     fun start() {
-        themeRepository.observe()
+        appSettingsRepository.observeTheme()
             .onEach { applyDefaultTheme(it) }
             .launchIn(coroutineScope)
     }

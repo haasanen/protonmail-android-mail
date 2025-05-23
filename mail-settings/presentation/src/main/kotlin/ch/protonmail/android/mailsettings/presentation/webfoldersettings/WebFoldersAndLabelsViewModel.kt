@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailsession.domain.usecase.ForkSession
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
+import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.usecase.HandleCloseWebSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
@@ -45,7 +45,7 @@ import javax.inject.Inject
 class WebFoldersAndLabelsViewModel @Inject constructor(
     private val observePrimaryUserId: ObservePrimaryUserId,
     private val forkSession: ForkSession,
-    private val themeRepository: ThemeRepository,
+    private val appSettingsRepository: AppSettingsRepository,
     private val observeWebSettingsConfig: ObserveWebSettingsConfig,
     private val handleCloseWebSettings: HandleCloseWebSettings
 ) : ViewModel() {
@@ -56,7 +56,7 @@ class WebFoldersAndLabelsViewModel @Inject constructor(
     init {
         combine(
             observePrimaryUserId().filterNotNull(),
-            themeRepository.observe(),
+            appSettingsRepository.observeTheme(),
             observeWebSettingsConfig()
         ) { userId, theme, webSettingsConfig ->
 

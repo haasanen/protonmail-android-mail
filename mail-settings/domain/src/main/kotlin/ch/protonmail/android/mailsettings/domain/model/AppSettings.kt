@@ -24,4 +24,22 @@ data class AppSettings(
     val customAppLanguage: String?,
     val hasDeviceContactsEnabled: Boolean,
     val theme: Theme
-)
+) {
+
+    companion object {
+
+        private val DEFAULT_THEME = Theme.SYSTEM_DEFAULT
+        private val DEFAULT_CUSTOM_LANGUAGE: String? = null
+        private const val DEFAULT_HAS_ALTERNATIVE_ROUTING = true
+        private const val DEFAULT_HAS_AUTOLOCK = false
+        private const val DEFAULT_HAS_DEVICE_CONTACTS_ENABLED = false
+
+        fun default() = AppSettings(
+            DEFAULT_HAS_AUTOLOCK,
+            DEFAULT_HAS_ALTERNATIVE_ROUTING,
+            DEFAULT_CUSTOM_LANGUAGE,
+            DEFAULT_HAS_DEVICE_CONTACTS_ENABLED,
+            DEFAULT_THEME
+        )
+    }
+}
