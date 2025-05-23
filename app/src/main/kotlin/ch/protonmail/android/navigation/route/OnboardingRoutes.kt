@@ -18,12 +18,10 @@
 
 package ch.protonmail.android.navigation.route
 
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import ch.protonmail.android.mailonboarding.presentation.OnboardingScreen
-import ch.protonmail.android.mailupselling.presentation.ui.onboarding.OnboardingUpsellScreen
 import ch.protonmail.android.navigation.model.Destination
 
 fun NavGraphBuilder.addOnboarding(navController: NavHostController, exitAction: () -> Unit) {
@@ -35,15 +33,6 @@ fun NavGraphBuilder.addOnboarding(navController: NavHostController, exitAction: 
                     popUpTo(Destination.Screen.Onboarding.MainScreen.route) { inclusive = true }
                 }
             }
-        )
-    }
-}
-
-fun NavGraphBuilder.addOnboardingUpselling(exitAction: () -> Unit) {
-    composable(route = Destination.Screen.Onboarding.Upselling.route) {
-        OnboardingUpsellScreen(
-            modifier = Modifier,
-            exitScreen = exitAction
         )
     }
 }

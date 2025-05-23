@@ -25,7 +25,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.route.addOnboarding
-import ch.protonmail.android.navigation.route.addOnboardingUpselling
 import io.sentry.compose.withSentryObservableEffect
 
 @Composable
@@ -44,6 +43,5 @@ fun Onboarding(onExitOnboarding: () -> Unit, modifier: Modifier = Modifier) {
         startDestination = Destination.Screen.Onboarding.MainScreen.route
     ) {
         addOnboarding(navController, exitAction)
-        addOnboardingUpselling(exitAction)
     }
 }

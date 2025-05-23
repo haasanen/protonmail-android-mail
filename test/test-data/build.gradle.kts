@@ -52,7 +52,6 @@ dependencies {
     implementation(libs.proton.core.featureFlag.domain)
     implementation(libs.proton.core.mailSettings.domain)
     implementation(libs.proton.core.network.domain)
-    implementation(libs.proton.core.plan.domain)
     implementation(libs.proton.core.presentation)
     implementation(libs.proton.core.user.domain)
 
