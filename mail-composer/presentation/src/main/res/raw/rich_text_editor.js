@@ -136,7 +136,7 @@ function focusEditor() {
 }
 
 function injectInlineImage(contentId) {
-    var editor = document.getElementById('$EDITOR_ID'); // Use the real ID here
+    var editor = document.getElementById('$EDITOR_ID');
 
     editor.focus();
 
@@ -162,5 +162,26 @@ function injectInlineImage(contentId) {
         selection.removeAllRanges();
         selection.addRange(range);
     }
+    // Dispatch an input updated event to ensure body is saved
+    editor.dispatchEvent(new Event('input'));
+}
+
+function stripInlineImage(contentId) {
+    var editor = document.getElementById('$EDITOR_ID');
+    const exactCidPattern = 'cid:' + contentId + '(?![0-9a-zA-Z])';
+    const cidMatcher = new RegExp(exactCidPattern);
+    const images = editor.getElementsByTagName('img');
+
+    for (const img of images) {
+        console.log("Checking image..." + img.src)
+        // Check src attribute for a match
+        if (cidMatcher.test(img.src)) {
+            console.log("Image was actually matched and removed ahaha")
+            img.remove();
+            break;
+        }
+    }
+    // Dispatch an input updated event to ensure body is saved
+    editor.dispatchEvent(new Event('input'));
 }
 

@@ -66,6 +66,7 @@ fun EditableMessageBodyWebView(
     messageBodyUiModel: DraftDisplayBodyUiModel,
     shouldRequestFocus: Effect<Unit>,
     injectInlineAttachment: Effect<String>,
+    stripInlineAttachment: Effect<String>,
     webViewActions: EditableMessageBodyWebView.Actions
 ) {
 
@@ -136,6 +137,14 @@ fun EditableMessageBodyWebView(
                 Timber.v("editor-webview: injected inline image with cid $contentId into webview")
             }
         }
+
+        ConsumableLaunchedEffect(stripInlineAttachment) { contentId ->
+            Timber.v("editor-webview: requested to strip inline image from composer... $contentId")
+            wv.evaluateJavascript("stripInlineImage('$contentId');") {
+                Timber.v("editor-webview: stripped inline image with cid $contentId from webview")
+            }
+        }
+
 
         if (contentLoadingFinished.value) {
             ConsumableLaunchedEffect(shouldRequestFocus) {

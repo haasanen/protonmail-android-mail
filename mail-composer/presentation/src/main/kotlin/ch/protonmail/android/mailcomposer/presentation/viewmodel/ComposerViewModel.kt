@@ -403,8 +403,11 @@ class ComposerViewModel @AssistedInject constructor(
     private fun onInlineImageRemoved(action: ComposerAction.RemoveInlineImage) {
         viewModelScope.launch {
             deleteInlineAttachment(action.contentId)
-                .onLeft { Timber.w("Failed to delete inline attachment: $it") }
-                .onRight { Timber.d("Inline attachment ${action.contentId} removed!") }
+                .onLeft { Timber.w("Failed to delete inline attachment: ${action.contentId} reason: $it") }
+                .onRight {
+                    Timber.d("Inline attachment ${action.contentId} removed!")
+                    emitNewStateFor(ComposerEvent.InlineAttachmentRemoved(action.contentId))
+                }
         }
     }
 

@@ -95,4 +95,5 @@ sealed interface ComposerEvent : ComposerOperation {
     data object DeleteAttachmentError : ComposerEvent
     data class AddAttachmentError(val error: AttachmentAddError) : ComposerEvent
     data class InlineAttachmentAdded(val contentId: String) : ComposerEvent
+    data class InlineAttachmentRemoved(val contentId: String) : ComposerEvent
 }

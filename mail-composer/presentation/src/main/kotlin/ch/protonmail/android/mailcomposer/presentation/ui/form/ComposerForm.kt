@@ -69,6 +69,7 @@ internal fun ComposerForm(
     actions: ComposerForm.Actions,
     formHeightPx: Float,
     injectInlineAttachment: Effect<String>,
+    stripInlineAttachment: Effect<String>,
     modifier: Modifier = Modifier
 ) {
 
@@ -166,6 +167,7 @@ internal fun ComposerForm(
                     messageBodyUiModel = bodyInitialValue,
                     shouldRequestFocus = focusTextBody,
                     injectInlineAttachment = injectInlineAttachment,
+                    stripInlineAttachment = stripInlineAttachment,
                     webViewActions = EditableMessageBodyWebView.Actions(
                         loadEmbeddedImage = actions.loadEmbeddedImage,
                         onMessageBodyChanged = actions.onBodyChanged,

@@ -21,10 +21,10 @@ package ch.protonmail.android.mailcomposer.presentation.reducer
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
-import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
@@ -163,8 +163,10 @@ class ComposerReducer @Inject constructor(
         is ComposerEvent.AddAttachmentError -> updateStateForAddAttachmentError(currentState, this.error)
         is ComposerEvent.DeleteAttachmentError -> updateStateForDeleteAttachmentError(currentState)
         is ComposerEvent.OnDraftBodyUpdated -> updateDraftBodyTo(currentState, this.draftBody, this.displayBodyUiModel)
-        is ComposerEvent.InlineAttachmentAdded -> currentState.copy(
-            injectInlineAttachment = Effect.of(this.contentId)
+        is ComposerEvent.InlineAttachmentAdded -> currentState.copy(injectInlineAttachment = Effect.of(this.contentId))
+        is ComposerEvent.InlineAttachmentRemoved -> currentState.copy(
+            stripInlineAttachment = Effect.of(this.contentId),
+            changeBottomSheetVisibility = Effect.of(false)
         )
     }
 

@@ -669,7 +669,8 @@ class ComposerReducerTest(
             confirmSendExpiringMessage = Effect.empty(),
             openImagePicker = Effect.empty(),
             confirmDiscardDraft = Effect.empty(),
-            injectInlineAttachment = Effect.empty()
+            injectInlineAttachment = Effect.empty(),
+            stripInlineAttachment = Effect.empty()
         )
 
         private fun aNotSubmittableState(
@@ -720,7 +721,8 @@ class ComposerReducerTest(
             openImagePicker = Effect.empty(),
             confirmDiscardDraft = Effect.empty(),
             focusTextBody = focusTextBody,
-            injectInlineAttachment = Effect.empty()
+            injectInlineAttachment = Effect.empty(),
+            stripInlineAttachment = Effect.empty()
         )
 
         @JvmStatic
