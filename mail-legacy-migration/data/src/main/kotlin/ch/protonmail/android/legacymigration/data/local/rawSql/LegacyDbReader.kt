@@ -36,14 +36,7 @@ class LegacyDbReader @Inject constructor(
 ) {
 
     fun readAuthenticatedSessions(): List<LegacySessionInfo> {
-        val cursor = db.query(
-            """
-        SELECT s.sessionId, s.userId, s.refreshToken, d.twoPassModeEnabled
-        FROM SessionEntity AS s
-        LEFT JOIN SessionDetailsEntity AS d ON s.sessionId = d.sessionId
-        WHERE s.userId IS NOT NULL AND s.userId != ''
-            """.trimIndent()
-        )
+        val cursor = db.query(SQL_READ_AUTHENTICATED_SESSIONS)
 
         val result = mutableListOf<LegacySessionInfo>()
 
@@ -73,15 +66,7 @@ class LegacyDbReader @Inject constructor(
     }
 
     fun readLegacySessionInfo(sessionId: SessionId): LegacySessionInfo? {
-        val cursor = db.query(
-            """
-            SELECT s.userId, s.refreshToken, d.twoPassModeEnabled
-            FROM SessionEntity AS s
-            LEFT JOIN SessionDetailsEntity AS d ON s.sessionId = d.sessionId
-            WHERE s.sessionId = ?
-            """.trimIndent(),
-            arrayOf(sessionId.id)
-        )
+        val cursor = db.query(SQL_READ_SESSION_INFO, arrayOf(sessionId.id))
 
         return cursor.use {
             if (it.moveToFirst()) {
@@ -104,19 +89,14 @@ class LegacyDbReader @Inject constructor(
     }
 
     fun readLatestPrimaryUserId(): UserId? {
-        val cursor = db.query(
-            "SELECT userId FROM AccountMetadataEntity WHERE product = 'mail' ORDER BY primaryAtUtc DESC LIMIT 1"
-        )
+        val cursor = db.query(SQL_READ_PRIMARY_USER_ID)
         return cursor.use {
             if (it.moveToFirst()) UserId(it.getString(0)) else null
         }
     }
 
     fun readLegacyUserInfo(userId: UserId): LegacyUserInfo? {
-        val cursor = db.query(
-            "SELECT passphrase, email, name, displayName FROM UserEntity WHERE userId = ?",
-            arrayOf(userId.id)
-        )
+        val cursor = db.query(SQL_READ_USER_INFO, arrayOf(userId.id))
         return cursor.use {
             if (it.moveToFirst()) {
                 val encryptedPassphrase = it.getBlob(0)
@@ -139,10 +119,7 @@ class LegacyDbReader @Inject constructor(
 
     @Suppress("MaxLineLength")
     fun readPrimaryAddress(userId: UserId): LegacyUserAddressInfo? {
-        val cursor = db.query(
-            "SELECT addressId, email, displayName FROM AddressEntity WHERE userId = ? AND enabled = 1 ORDER BY `order` ASC LIMIT 1",
-            arrayOf(userId.id)
-        )
+        val cursor = db.query(SQL_READ_PRIMARY_ADDRESS, arrayOf(userId.id))
         return cursor.use {
             if (it.moveToFirst()) {
                 LegacyUserAddressInfo(
@@ -164,10 +141,47 @@ class LegacyDbReader @Inject constructor(
     }.getOrElse { false }
 
     private fun tableExists(tableName: String): Boolean {
-        val cursor = db.query(
-            "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?",
-            arrayOf(tableName)
-        )
+        val cursor = db.query(SQL_CHECK_TABLE_EXISTS, arrayOf(tableName))
         return cursor.use { it.moveToFirst() }
+    }
+
+    companion object {
+        private const val SQL_READ_AUTHENTICATED_SESSIONS = """
+            SELECT s.sessionId, s.userId, s.refreshToken, d.twoPassModeEnabled
+            FROM SessionEntity AS s
+            LEFT JOIN SessionDetailsEntity AS d ON s.sessionId = d.sessionId
+            WHERE s.userId IS NOT NULL AND s.userId != ''
+        """
+
+        private const val SQL_READ_SESSION_INFO = """
+            SELECT s.userId, s.refreshToken, d.twoPassModeEnabled
+            FROM SessionEntity AS s
+            LEFT JOIN SessionDetailsEntity AS d ON s.sessionId = d.sessionId
+            WHERE s.sessionId = ?
+        """
+
+        private const val SQL_READ_PRIMARY_USER_ID = """
+            SELECT userId FROM AccountMetadataEntity
+            WHERE product = 'Mail'
+            ORDER BY primaryAtUtc DESC
+            LIMIT 1
+        """
+
+        private const val SQL_READ_USER_INFO = """
+            SELECT passphrase, email, name, displayName
+            FROM UserEntity
+            WHERE userId = ?
+        """
+
+        private const val SQL_READ_PRIMARY_ADDRESS = """
+            SELECT addressId, email, displayName
+            FROM AddressEntity
+            WHERE userId = ? AND enabled = 1
+            ORDER BY `order` ASC
+            LIMIT 1
+        """
+
+        private const val SQL_CHECK_TABLE_EXISTS =
+            "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?"
     }
 }
