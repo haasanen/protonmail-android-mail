@@ -62,8 +62,6 @@ dependencies {
     implementation(libs.proton.core.accountManager.presentation.compose)
 
     implementation(libs.proton.core.domain)
-    implementation(libs.proton.core.mailSettings.domain)
-    implementation(libs.proton.core.plan.presentationCompose)
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
@@ -72,11 +70,9 @@ dependencies {
     implementation(project(":mail-label:presentation"))
     implementation(project(":mail-mailbox:domain"))
     implementation(project(":mail-message:domain"))
-    implementation(project(":mail-settings:domain"))
+    implementation(project(":mail-session:domain"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
-    implementation(project(":shared:core:account-manager:presentation"))
-    implementation(project(":mail-session:domain"))
 
     testImplementation(libs.bundles.test)
     testImplementation(libs.proton.rust.core)
