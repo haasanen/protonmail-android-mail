@@ -27,6 +27,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.decode
@@ -71,6 +72,7 @@ import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsChooseAttachmentSourceEnabled
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Compose
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.ComposeToAddresses
@@ -88,12 +90,15 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -126,6 +131,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val getDraftId: GetDraftId,
     private val savedStateHandle: SavedStateHandle,
     private val getEmbeddedImage: GetEmbeddedImage,
+    @IsChooseAttachmentSourceEnabled private val chooseAttachmentSourceEnabled: Flow<Boolean>,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -136,6 +142,12 @@ class ComposerViewModel @AssistedInject constructor(
 
     private val mutableState = MutableStateFlow(ComposerDraftState.initial())
     val state: StateFlow<ComposerDraftState> = mutableState
+
+    val isChooseAttachmentSourceEnabled = chooseAttachmentSourceEnabled.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
+        initialValue = false
+    )
 
     init {
         viewModelScope.launch {

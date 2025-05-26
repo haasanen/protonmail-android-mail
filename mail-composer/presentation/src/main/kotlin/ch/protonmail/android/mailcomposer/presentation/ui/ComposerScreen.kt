@@ -100,6 +100,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         factory.create(recipientsStateManager)
     }
     val state by viewModel.state.collectAsState()
+    val isChooseAttachmentSourceEnabled by viewModel.isChooseAttachmentSourceEnabled.collectAsState()
 
     val snackbarHostState = remember { ProtonSnackbarHostState() }
     val bottomSheetType = rememberSaveable(stateSaver = BottomSheetType.Saver) {
@@ -177,6 +178,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 )
 
                 is BottomSheetType.AttachmentSources -> AttachmentSourceBottomSheetContent(
+                    isChooseAttachmentSourceEnabled = isChooseAttachmentSourceEnabled,
                     onCamera = {},
                     onFiles = {},
                     onPhotos = {}

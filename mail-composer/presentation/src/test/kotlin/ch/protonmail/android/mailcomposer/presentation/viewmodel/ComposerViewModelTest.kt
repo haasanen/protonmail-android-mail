@@ -153,6 +153,7 @@ class ComposerViewModelTest {
     }
     private val attachmentUiModelMapper = AttachmentMetadataUiModelMapper()
     private val reducer = ComposerReducer(attachmentUiModelMapper)
+    private val isAttachmentSourcesEnabled = flowOf(false)
 
     private val viewModel by lazy {
         ComposerViewModel(
@@ -178,6 +179,7 @@ class ComposerViewModelTest {
             getDraftId,
             savedStateHandle,
             getEmbeddedImage,
+            isAttachmentSourcesEnabled,
             observePrimaryUserIdMock
         )
     }
