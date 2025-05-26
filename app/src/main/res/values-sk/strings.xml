@@ -18,23 +18,24 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Odhlásiť sa</string>
-  <string name="dialog_sign_out_account_description">Naozaj sa chcete odhlásiť?</string>
-  <string name="dialog_sign_out_account_confirm">Áno</string>
-  <string name="dialog_sign_out_account_cancel">Nie</string>
-  <string name="dialog_remove_account_title">Odstrániť účet</string>
-  <string name="dialog_remove_account_description">Odhlásite sa a odstránite všetky informácie spojené s týmto účtom.</string>
+  <string name="dialog_sign_out_account_description">Údaje spojené s vaším účtom zostanú v tomto zariadení, pokiaľ sa nerozhodnete ich vymazať.</string>
+  <string name="dialog_sign_out_account_confirm">Odhlásiť sa</string>
+  <string name="dialog_sign_out_account_cancel">Zrušiť</string>
+  <string name="dialog_remove_account_title">Odstrániť účet?</string>
+  <string name="dialog_remove_account_description">Odstrániť všetky súvisiace údaje</string>
   <string name="dialog_remove_account_confirm">Odstrániť</string>
   <string name="dialog_remove_account_cancel">Zrušiť</string>
   <string name="feature_coming_soon">Funkcia už čoskoro…</string>
   <string name="mailbox_draft_saved">Koncept bol uložený</string>
   <string name="mailbox_draft_discard">Zahodiť</string>
+  <string name="mailbox_draft_discarded">Koncept zahodený</string>
   <string name="mailbox_message_sending">Odosiela sa správa…</string>
-  <string name="mailbox_message_sending_offline">Offline, správa vo fronte na odoslanie</string>
+  <string name="mailbox_message_sending_offline">Offline: správa vo fronte na odoslanie</string>
   <string name="mailbox_message_sending_success">Správa odoslaná</string>
   <string name="mailbox_message_sending_error">Chyba pri odosielaní správy</string>
   <string name="mailbox_message_sending_error_action">Prejsť do zložky Koncepty</string>
   <string name="mailbox_attachment_uploading_error">Chyba pri nahrávaní prílohy</string>
-  <string name="notification_switched_account">Switched to account %s</string>
+  <string name="notification_switched_account">Prepnuté na účet %s</string>
   <string name="label_saved">Štítok uložený</string>
   <string name="label_deleted">Štítok odstránený</string>
   <string name="label_list_loading_error">Chyba pri načítaní štítku, skúste to znova neskôr, prosím</string>

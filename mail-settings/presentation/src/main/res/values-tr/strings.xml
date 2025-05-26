@@ -21,69 +21,59 @@
   <string name="mail_settings_toolbar_button_content_description">Geri</string>
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Hesap ayarları</string>
-  <string name="mail_settings_app_settings">Uygulama ayarları</string>
+  <string name="mail_settings_email_settings">E-posta ayarları</string>
+  <string name="mail_settings_folder_and_label_settings">Klasör ve etiket ayarları</string>
+  <string name="mail_settings_privacy_and_security_settings">Gizlilik ve güvenlik ayarları</string>
+  <string name="mail_settings_preferences">Ayarlar</string>
+  <string name="mail_settings_app">Uygulama</string>
+  <string name="mail_settings_email">E-posta</string>
+  <string name="mail_settings_email_hint">E-posta ve e-posta kutusu ayarları</string>
+  <string name="mail_settings_folders_labels">Klasörler ve etiketler</string>
+  <string name="mail_settings_folders_labels_hint">E-posta kutusu düzeni</string>
+  <string name="mail_settings_spam_and_custom_filters">İstenmeyen ve özel e-posta süzgeçleri</string>
+  <string name="mail_settings_spam_and_custom_filters_hint">Otomatik işlemler ve sıralama</string>
+  <string name="mail_settings_privacy_and_security">Gizlilik ve güvenlik</string>
+  <string name="mail_settings_privacy_and_security_hint">E-posta izleme koruması</string>
+  <string name="mail_settings_app_hint">Mobil uygulama özelleştirmeleri</string>
   <string name="mail_settings_theme">Tema</string>
-  <string name="mail_settings_push_notifications">Anlık bildirimler</string>
   <string name="mail_settings_auto_lock">Otomatik kilitleme</string>
-  <string name="mail_settings_alternative_routing">Alternatif yöneltme</string>
+  <string name="mail_settings_alternative_routing">Alternatif yönlendirme</string>
   <string name="mail_settings_app_language">Uygulama dili</string>
   <string name="mail_settings_combined_contacts">Kişileri birleştirme</string>
-  <string name="mail_settings_local_cache">Yerel ön bellek</string>
-  <string name="mail_settings_local_cache_hint">Kullanılan alan: %s</string>
-  <string name="mail_settings_local_cache_clear_button">Verileri temizle</string>
   <string name="mail_settings_swipe_actions">Kaydırma işlemleri</string>
   <string name="mail_settings_combined_contacts_hint">E-posta adreslerinin, oturum açtığınız tüm hesaplardaki kişilerle otomatik olarak tamamlanması için bu özelliği açın.</string>
-  <string name="mail_settings_alternative_routing_hint">Açıldığında, uygulama Proton sitelerinin engellenmiş olması durumunda Proton ağına erişmek için alternatif ağ yöneltmesini dener. Güvenlik duvarlarını veya ağ sorunlarını aşmakta yararlı olabilir. Bağlantı güvenilirliğini artırmak için bu seçeneği açık tutmanız önerilir.</string>
+  <string name="mail_settings_alternative_routing_hint">Proton sitelerine erişimin engellenmiş olması durumunda, uygulama Proton ağına ulaşmak için alternatif ağ yöneltmesi kullanmayı dener. Güvenlik duvarlarını veya ağ sorunlarını aşmakta yararlı olabilir. Bağlantı güvenilirliğini artırmak için bu seçeneği açık tutmanız önerilir.</string>
+  <!-- App customization settings-->
+  <string name="mail_settings_app_customization_title">Uygulama özelleştirme</string>
+  <string name="mail_settings_app_customization_notification">Bildirimler</string>
+  <string name="mail_settings_app_customization_language">Dil</string>
+  <string name="mail_settings_app_customization_appearance">Görünüm</string>
+  <string name="mail_settings_app_customization_protection">Koruma</string>
+  <string name="mail_settings_app_customization_protection_enabled_description">Otomatik kilitleme etkin</string>
+  <string name="mail_settings_app_customization_protection_disabled_description">Otomatik kilitleme devre dışı</string>
+  <string name="mail_settings_app_customization_use_device_contacts">Cihaz kişilerini kullan</string>
+  <string name="mail_settings_app_customization_use_device_contacts_hint">Cihazınızdaki kişileri kullanarak e-posta adreslerini otomatik olarak tamamlayın.</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email">Sonraki e-postaya geçmek için kaydırın</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email_hint">Gelen kutunuzdaki bir sonraki veya önceki mesaja hızla geçin.</string>
+  <string name="mail_settings_app_customization_swipe_action">Kaydırma hareketi</string>
+  <string name="mail_settings_app_customization_swipe_action_hint">Sola veya sağa kaydırdığınızda silme veya arşivleme gibi hızlı eylemler ayarlayın.</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Araç çubuğunu özelleştir</string>
+  <string name="mail_settings_app_customization_alternative_routing">Alternatif yönlendirme</string>
+  <string name="mail_settings_app_customization_alternative_routing_hint">Proton siteleri engellenmişse, güvenlik duvarını veya ağ sorunlarını atlayın.</string>
+  <string name="mail_settings_app_customization_view_application_logs">Uygulama günlüklerini görüntüleyin</string>
+  <string name="mail_settings_app_customization_mail_experience_header">E-posta deneyimi</string>
+  <string name="mail_settings_app_customization_advanced_header">Gelişmiş</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Sistem varsayılanı</string>
   <string name="mail_settings_theme_light">Açık</string>
   <string name="mail_settings_theme_dark">Koyu</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Kullanılabilecek bir bilgi yok</string>
-  <string name="mail_settings_enabled">Açık</string>
-  <string name="mail_settings_disabled">Kullanım dışı</string>
-  <string name="mail_settings_allowed">İzin verildi</string>
-  <string name="mail_settings_denied">Reddedildi</string>
-  <string name="mail_settings_auto_detect">Otomatik algılama</string>
-  <string name="mail_settings_app_information">Uygulama bilgileri</string>
-  <string name="mail_settings_app_version">Uygulama sürümü</string>
   <string name="mail_settings_account">Hesap</string>
-  <!-- Account Settings items -->
-  <string name="mail_settings_subscription">Abonelik</string>
-  <string name="mail_settings_password_management">Parolayı değiştir</string>
-  <string name="mail_settings_recovery_email">Kurtarma e-posta adresi</string>
-  <string name="mail_settings_mailbox_size">Posta kutusu boyutu</string>
-  <string name="mail_settings_addresses">Adresler</string>
-  <string name="mail_settings_default_email_address">Varsayılan e-posta adresi</string>
-  <string name="mail_settings_display_name_and_signature">Görüntülenecek ad ve imza</string>
-  <string name="mail_settings_mailbox">Posta kutusu</string>
-  <string name="mail_settings_privacy">Gizlilik</string>
-  <string name="mail_settings_labels">Etiketler</string>
-  <string name="mail_settings_folders">Klasörler</string>
-  <string name="mail_settings_conversation_mode">Yazışma kipi</string>
   <string name="mail_settings_not_set">Ayarlanmamış</string>
   <string name="mail_settings_conversation_mode_hint">Aynı yazışmadaki e-postaları Gelen kutunuzda gruplayın ya da ayrı ayrı görüntüleyin</string>
-  <!-- Default email address settings -->
-  <string name="mail_settings_default_email_address_title">Varsayılan e-posta adresi</string>
-  <string name="mail_settings_default_email_address_inactive_addresses">Etkin olmayan adresler</string>
-  <string name="mail_settings_default_email_address_no_inactive_addresses">Etkin olmayan bir adres yok</string>
-  <string name="mail_settings_default_email_address_error_loading">Ayarlar yüklenirken sorun çıktı</string>
-  <string name="mail_settings_default_email_address_error_update">Ayarlar güncellenirken sorun çıktı</string>
-  <string name="mail_settings_default_email_address_error_update_subscription">Bu adresi varsayılan yapmak için ücretli bir tarifeye geçin</string>
-  <!-- Display name, signature, mobile footer -->
-  <string name="mail_settings_identity_title">Görüntülenecek ad ve imza</string>
-  <string name="mail_settings_identity_save_button">Kaydet</string>
-  <string name="mail_settings_identity_display_name">Görüntülenecek ad</string>
-  <string name="mail_settings_identity_display_name_hint">Görüntülenecek ad</string>
-  <string name="mail_settings_identity_signature">İmza</string>
-  <string name="mail_settings_identity_signature_hint">İmza</string>
-  <string name="mail_settings_identity_mobile_footer">Mobil imza</string>
-  <string name="mail_settings_identity_mobile_footer_subtext">Bu içerik imzanızın altına eklenir.</string>
-  <string name="mail_settings_identity_mobile_footer_hint">Mobil imza</string>
-  <string name="mail_settings_identity_mobile_footer_default_free">Proton Mail Android ile gönderildi</string>
-  <string name="mail_settings_identity_error_updating">Ayarlar güncellenirken sorun çıktı</string>
-  <string name="mail_settings_identity_error_loading">Ayarlar yüklenirken sorun çıktı</string>
   <!-- Privacy settings -->
+  <string name="mail_settings_privacy">Gizlilik</string>
   <string name="mail_settings_privacy_auto_show_remote_content">Uzak içerik otomatik olarak görüntülensin</string>
   <string name="mail_settings_privacy_auto_show_embedded_images">Gömülü görseller otomatik olarak görüntülensin</string>
   <string name="mail_settings_privacy_prevent_taking_screenshots">Ekran görüntüsü alınamasın</string>
@@ -97,20 +87,26 @@
   <string name="mail_settings_swipe_actions_subtitle">Sık kullanılan işlemler için kaydırma hareketlerini ayarlayın.</string>
   <string name="mail_settings_swipe_right_name">Soldan sağa</string>
   <string name="mail_settings_swipe_left_name">Sağdan sola</string>
-  <string name="mail_settings_swipe_action_archive_title">Arşiv</string>
+  <string name="mail_settings_swipe_action_none_title">Ayarlanmamış</string>
+  <string name="mail_settings_swipe_action_archive_title">Arşivle</string>
   <string name="mail_settings_swipe_action_read_title">Okunmamış</string>
   <string name="mail_settings_swipe_action_spam_title">İstenmeyen</string>
   <string name="mail_settings_swipe_action_star_title">Yıldız koy</string>
   <string name="mail_settings_swipe_action_trash_title">Çöpe at</string>
+  <string name="mail_settings_swipe_action_label_as_title">Şöyle etiketle…</string>
+  <string name="mail_settings_swipe_action_move_to_title">Şuraya taşı...</string>
+  <string name="mail_settings_swipe_action_none_description">Yok</string>
   <string name="mail_settings_swipe_action_archive_description">Arşivle</string>
   <string name="mail_settings_swipe_action_read_description">Okunmamış/okunmuş olarak işaretle</string>
   <string name="mail_settings_swipe_action_spam_description">İstenmeyen kutusuna taşı</string>
   <string name="mail_settings_swipe_action_star_description">Yıldız koy/kaldır</string>
   <string name="mail_settings_swipe_action_trash_description">Çöpe at</string>
+  <string name="mail_settings_swipe_action_label_as_description">Şöyle etiketle…</string>
+  <string name="mail_settings_swipe_action_move_to_description">Şuraya taşı...</string>
   <!-- Notification settings -->
   <string name="mail_settings_notifications_title">Anlık bildirimler</string>
-  <string name="mail_settings_notifications_extended_notifications_title">Genişletilmiş bildirimler</string>
-  <string name="mail_settings_notifications_extended_notifications_summary">Anlık bildirimlerde e-posta göndericisini görmek için bu özelliği açın.</string>
+  <string name="mail_settings_notifications_extended_notifications_title">Ayrıntılı bildirimler</string>
+  <string name="mail_settings_notifications_extended_notifications_summary">Anlık bildirimlerde e-posta göndericisini görüntüler.</string>
   <string name="mail_settings_notifications_notifications_settings">Bildirim ayarları</string>
   <string name="mail_settings_notifications_notifications_settings_hint">Sistem bildirimi ayarlarına git</string>
   <string name="mail_settings_notifications_update_error">Ayarlar güncellenirken sorun çıktı</string>
@@ -153,8 +149,6 @@
   <string name="mail_settings_pin_insertion_signout_dialog_cancel">Hayır</string>
   <string name="mail_settings_pin_insertion_created_success">PIN kodu oluşturuldu.</string>
   <string name="mail_settings_pin_insertion_changed_success">PIN kodu değiştirildi.</string>
-  <!-- Local storage -->
-  <string name="mail_settings_clearing_cached_data">Yerel ön bellek verileri temizleniyor…</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Bir sorun çıktı. Yeniden deneyin.</string>
   <!-- strings used for biometric enrollment -->

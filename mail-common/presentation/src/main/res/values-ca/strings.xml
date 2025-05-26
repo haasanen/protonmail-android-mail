@@ -19,11 +19,14 @@
 <resources>
   <string name="expiration_expired">Caducat</string>
   <string name="expiration_days_arg">%d d</string>
-  <string name="expiration_hours_arg">%dh</string>
-  <string name="expiration_minutes_arg">%d min</string>
+  <string name="expiration_hours_arg">%d h</string>
+  <string name="expiration_minutes_arg">%d m</string>
   <string name="retry">Reintenta</string>
   <string name="toolbar_back_content_description">Torna a la pantalla anterior</string>
   <string name="x_error_not_logged_in">No s\'ha iniciat la sessió</string>
+  <string name="action_customize_toolbar">Personalitza la barra d\'eines</string>
+  <string name="action_customize_toolbar_description">Personalitza la barra d\'eines</string>
+  <string name="action_customize_toolbar_content_description">Personalitza la barra d\'eines</string>
   <string name="action_reply">Respon</string>
   <string name="action_reply_all">Respon a tothom</string>
   <string name="action_forward">Reenvia</string>
@@ -52,6 +55,9 @@
   <string name="action_sender_emails_description">Estableix l\'acció per a correus electrònics futurs d\'aquest remitent</string>
   <string name="action_save_attachments_description">Desa els adjunts</string>
   <string name="action_more_description">Més</string>
+  <string name="action_inbox_description">Safata d\'entrada</string>
+  <string name="action_pin_description">Fixa</string>
+  <string name="action_unpin_description">No fixis</string>
   <string name="action_reply_content_description">Respon</string>
   <string name="action_reply_to_content_description">Respon a %s</string>
   <string name="action_reply_all_content_description">Respon a tothom</string>
@@ -66,6 +72,9 @@
   <string name="action_delete_content_description">Elimina</string>
   <string name="action_archive_content_description">Arxiva</string>
   <string name="action_spam_content_description">Correu brossa</string>
+  <string name="action_inbox_content_description">Safata d\'entrada</string>
+  <string name="action_pin_content_description">Fixa</string>
+  <string name="action_unpin_content_description">No fixis</string>
   <string name="action_view_in_light_mode_content_description">Mostra els missatges en mode clar</string>
   <string name="action_view_in_dark_mode_content_description">Mostra els missatges en mode fosc</string>
   <string name="action_print_content_description">Imprimeix</string>
@@ -115,4 +124,5 @@
   <string name="undo_button_label">Desfer</string>
   <string name="undo_success_message">S\'ha desfet l\'acció</string>
   <string name="undo_failure_message">No s\'ha pogut desfer l\'acció</string>
+  <string name="feature_coming_soon">Aquesta característica arribarà aviat…</string>
 </resources>

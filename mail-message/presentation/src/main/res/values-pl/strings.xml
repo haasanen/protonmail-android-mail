@@ -17,12 +17,19 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <plurals name="attachment_count_label">
-    <item quantity="one">%d plik</item>
-    <item quantity="few">%d pliki</item>
-    <item quantity="many">%d plików</item>
-    <item quantity="other">%d plików</item>
+  <plurals name="selected_count_title">
+    <item quantity="one">Wybrano %d</item>
+    <item quantity="few">%d wybrane</item>
+    <item quantity="many">%d wybranych</item>
+    <item quantity="other">Wybrano %d</item>
   </plurals>
+  <plurals name="attachment_count_label">
+    <item quantity="one">%d załącznik</item>
+    <item quantity="few">%d załączniki</item>
+    <item quantity="many">%d załączników</item>
+    <item quantity="other">%d załącznika</item>
+  </plurals>
+  <string name="attachments">załączniki</string>
   <string name="attachment_show_more_label">+%1$d więcej</string>
   <string name="attachment_permission_dialog_title">Uprawnienie jest wymagane</string>
   <string name="attachment_permission_dialog_message">Proton Mail potrzebuje dostępu do pamięci, aby pobrać załącznik.</string>
@@ -40,11 +47,19 @@
   <string name="attachment_type_document">Dokument</string>
   <string name="attachment_type_spreadsheet">Arkusz kalkulacyjny</string>
   <string name="attachment_type_presentation">Prezentacja</string>
+  <string name="attachment_type_calendar">Kalendarz</string>
+  <string name="attachment_type_code">Kod</string>
+  <string name="attachment_type_font">Czcionka</string>
+  <string name="attachment_type_key">Klucz</string>
+  <string name="attachment_type_keynote">Keynote</string>
+  <string name="attachment_type_numbers">Numbers</string>
+  <string name="attachment_type_pages">Pages</string>
+  <string name="attachment_type_word">Word</string>
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">Przenieś do...</string>
   <string name="bottom_sheet_done_action">Gotowe</string>
   <string name="bottom_sheet_archive_action">Również archiwizuj?</string>
-  <string name="bottom_sheet_label_as_title">Oznacz jako...</string>
+  <string name="bottom_sheet_label_as_title">Oznacz jako</string>
   <string name="bottom_sheet_more_header_message_from">Wiadomość od %s</string>
   <!-- Message body link actions -->
   <string name="message_link_long_click_copy">Kopiuj link</string>
@@ -62,6 +77,8 @@
   <string name="contact_actions_new_message_description">Napisz nową wiadomości do tego kontaktu</string>
   <string name="contact_actions_add_contact">Dodaj kontakt</string>
   <string name="contact_actions_add_contact_description">Zapisz odbiorcę w kontaktach</string>
+  <string name="contact_actions_block_contact">Zablokuj kontakt</string>
+  <string name="contact_actions_block_contact_description">Zablokuj kontakt</string>
   <string name="contact_actions_view_contact_details">Pokaż szczegóły kontaktu</string>
   <string name="contact_actions_view_contact_details_description">Pokaż szczegóły kontaktu</string>
   <!-- Device Contacts permission dialog -->

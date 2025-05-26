@@ -21,14 +21,24 @@
   <string name="onboarding_privacy_for_all_headline">人人享有隐私</string>
   <string name="onboarding_privacy_for_all_description">邀请更多人使用 Proton Mail，让大家都能享受到端到端加密带来的好处。</string>
   <!--  Onboarding 2  -->
-  <string name="onboarding_easily_up_to_date_headline">有条不紊</string>
+  <string name="onboarding_easily_up_to_date_headline">轻松更新</string>
   <string name="onboarding_easily_up_to_date_description">会话模式能帮助您轻松应对各方的往来邮件。</string>
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">干净利落，井井有条。</string>
   <string name="onboarding_neat_and_tidy_description">使用文件夹、标签和颜色打造与您一拍即合的完美邮箱。</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">从底层彻底革新</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">全新Proton Mail基于Rust架构完全重构，在性能表现、使用体验和系统扩展性上实现全方位升级。</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">全新收件箱正式开启</string>
+  <string name="onboarding_new_inbox_description">我们很高兴为您呈现焕然一新的视觉设计和更优质的使用体验。现在，您可以抢先预览全新升级的邮件列表和邮件内容界面。 </string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">您的意见至关重要</string>
+  <string name="onboarding_feedback_is_key_description">我们将在未来几个月内逐步推出所有功能。敬请继续测试应用并分享您的反馈，帮助我们进一步优化体验！</string>
   <!--  Onboarding actions  -->
-  <string name="onboarding_next">继续</string>
-  <string name="onboarding_get_started">立即体验</string>
-  <string name="onboarding_illustration_content_description">入职流程插画</string>
+  <string name="onboarding_next">下一步</string>
+  <string name="onboarding_get_started">开始测试</string>
+  <string name="onboarding_illustration_content_description">引导图示</string>
   <string name="onboarding_close_content_description">关闭</string>
+  <string name="onboarding_introducing_next_gen_app">隆重推出全新一代应用！</string>
 </resources>

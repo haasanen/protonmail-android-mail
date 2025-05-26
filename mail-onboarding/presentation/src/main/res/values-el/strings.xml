@@ -22,13 +22,23 @@
   <string name="onboarding_privacy_for_all_description">Προσκαλέστε άλλους στο Proton Mail, ώστε να μπορείτε όλοι να επωφεληθείτε από την κρυπτογράφηση από άκρο σε άκρο.</string>
   <!--  Onboarding 2  -->
   <string name="onboarding_easily_up_to_date_headline">Εύκολα ενημερωμένο</string>
-  <string name="onboarding_easily_up_to_date_description">Περάστε τα μηνύματα με νήματα στη λειτουργία συνομιλίας.</string>
+  <string name="onboarding_easily_up_to_date_description">Προσπελάστε με άνεση τα μηνύματα ενός νήματος στη λειτουργία συνομιλίας.</string>
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">Τακτοποιημένα</string>
   <string name="onboarding_neat_and_tidy_description">Αρχειοθετήστε, εφαρμόσετε ετικέτες και χρώματα στα μηνύματά σας, για να δημιουργήσετε τα τέλεια, προσαρμοσμένα εισερχόμενά σας.</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">Μεταμορφώθηκε από το μηδέν</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">Πλήρως επανασχεδιασμένο στην αρχιτεκτονική Rust, το νέο Proton Mail ανακατασκευάζεται για απόδοση, εμπειρία χρήστη και επεκτασιμότητα.</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">Νέα εισερχόμενα αποκαλυφτήκαν</string>
+  <string name="onboarding_new_inbox_description">Είμαστε ενθουσιασμένοι που αποκαλύπτουμε τη ζωντανή νέα σχεδίαση και τη βελτιωμένη εμπειρία χρήστη. Προς το παρόν, μπορείτε να κάνετε προεπισκόπηση των νέων προβολών λίστας και μηνυμάτων. </string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">Τα σχόλιά σας είναι πολύ σημαντικά</string>
+  <string name="onboarding_feedback_is_key_description">Θα κυκλοφορήσουμε όλες τις δυνατότητες τους επόμενους μήνες. Παρακαλούμε συνεχίστε να δοκιμάζετε την εφαρμογή και ενημερώστε μας πώς μπορούμε να την κάνουμε καλύτερη!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Επόμενο</string>
-  <string name="onboarding_get_started">Ξεκινήστε</string>
+  <string name="onboarding_get_started">Ξεκινήστε τη δοκιμή</string>
   <string name="onboarding_illustration_content_description">Απεικόνιση ενσωμάτωσης</string>
   <string name="onboarding_close_content_description">Κλείσιμο</string>
+  <string name="onboarding_introducing_next_gen_app">Παρουσιάζουμε την επόμενης γενιάς εφαρμογή μας!</string>
 </resources>

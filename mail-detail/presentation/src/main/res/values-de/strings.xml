@@ -40,10 +40,13 @@
   </plurals>
   <string name="hide_details">Details ausblenden</string>
   <string name="undisclosed_recipients">Verborgene Empfänger</string>
+  <string name="error_mark_as_read_failed">Der Vorgang „Als gelesen markieren“ ist fehlgeschlagen. Bitte versuche es erneut.</string>
   <string name="error_mark_as_unread_failed">Der Vorgang „Als ungelesen markieren“ ist fehlgeschlagen. Bitte versuche es erneut.</string>
   <string name="error_star_operation_failed">Der Vorgang „Markierung hinzufügen“ ist fehlgeschlagen. Bitte erneut versuchen.</string>
   <string name="error_unstar_operation_failed">Der Vorgang „Markierung entfernen“ ist fehlgeschlagen. Bitte erneut versuchen.</string>
   <string name="error_move_to_trash_failed">Verschieben in den Papierkorb fehlgeschlagen. Bitte versuche es erneut.</string>
+  <string name="message_moved">Nachricht verschoben</string>
+  <string name="message_moved_to">Nachricht verschoben nach %s</string>
   <string name="message_moved_to_trash">Nachricht in den Papierkorb verschoben</string>
   <string name="message_moved_to_archive">Nachricht ins Archiv verschoben</string>
   <string name="error_move_to_archive_failed">Verschieben ins Archiv fehlgeschlagen. Bitte versuche es erneut.</string>
@@ -53,6 +56,7 @@
   <string name="error_move_message_failed">Verschieben der Nachricht fehlgeschlagen. Bitte versuche es erneut.</string>
   <string name="conversation_moved_to_trash">Unterhaltung in den Papierkorb verschoben</string>
   <string name="conversation_moved_to_selected_destination">Unterhaltung nach „%1$s“ verschoben</string>
+  <string name="conversation_moved_to_spam">Unterhaltung in Spam verschoben</string>
   <string name="conversation_moved_to_archive">Unterhaltung ins Archiv verschoben</string>
   <string name="error_move_conversation_failed">Verschieben der Unterhaltung fehlgeschlagen. Bitte versuche es erneut.</string>
   <string name="error_loading_message">Etwas ist schief gelaufen. Bitte versuche es erneut.</string>
@@ -71,7 +75,12 @@
   <string name="message_body_embedded_images_banner_text">Das automatische Laden von eingebetteten Bildern ist ausgeschaltet. Dies kann in den Einstellungen geändert werden.</string>
   <string name="message_body_remote_content_banner_text">Das automatische Laden von externen Inhalten ist deaktiviert. Dies kann in den Einstellungen geändert werden.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Das automatische Laden von eingebetteten Bildern ist deaktiviert. Dies kann in den Einstellungen geändert werden.</string>
-  <string name="message_phishing_banner_text">Unser System hat diese Nachricht als Phishing-Versuch gekennzeichnet. Bitte überprüfe, ob sie seriös ist.</string>
+  <string name="message_phishing_banner_text">Diese Nachricht wurde entweder von unserem System oder von dir als verdächtig eingestuft. Wenn du glaubst, dass sie sicher ist, kennzeichne sie als seriös.</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">Als seriös kennzeichnen</string>
+  <string name="message_spam_banner_text">Diese Nachricht wurde als Spam gekennzeichnet, entweder durch unser System oder durch dich.</string>
+  <string name="message_spam_banner_not_spam_button">Kein Spam</string>
+  <string name="message_blocked_sender_banner_text">Dieser Absender wurde in der Vergangenheit bereits gesperrt.</string>
+  <string name="message_blocked_sender_button_text">Entsperren</string>
   <string name="message_expiration_banner_text">Diese Nachricht verfällt in %1$s</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Du bist dabei, die App zu verlassen und navigierst zu:</string>
@@ -84,6 +93,12 @@
   <string name="phishing_link_confirmation_dialog_content_part_2">﻿Fahre zu deiner Sicherheit nicht fort.</string>
   <string name="phishing_link_confirmation_dialog_button_go_back">Zurück (empfohlen)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">Warnung ignorieren und fortfahren</string>
+  <!-- Mark as legitimate confirmation dialog -->
+  <string name="mark_as_legitimate_phishing_dialog_title">Markierte als seriös bestätigen</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">Wir bitten um Entschuldigung. Dies könnte ein Fehler unsererseits gewesen sein. Bitte bestätigen, wenn diese E-Mail als seriös eingestuft werden soll.</string>
+  <string name="mark_as_legitimate_spam_dialog_title">Bestätigen, dass es sich nicht um Spam handelt</string>
+  <string name="mark_as_legitimate_spam_dialog_message">Wir bitten um Entschuldigung. Dies könnte ein Fehler unsererseits gewesen sein. Bitte bestätigen, dass diese E-Mail kein Spam ist.</string>
+  <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">Nachricht löschen</string>
   <string name="message_delete_dialog_message">Möchtest du diese Nachricht wirklich dauerhaft löschen?</string>
   <string name="message_deleted">Nachricht gelöscht</string>
@@ -98,7 +113,7 @@
   <string name="message_body_load_embedded_images_button_text">Eingebettete Bilder laden</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Externe und eingebettete Inhalte laden</string>
   <string name="message_report_phishing_dialog_title_offline">Achtung</string>
-  <string name="message_report_phishing_dialog_message_offline">This feature is only available online.</string>
+  <string name="message_report_phishing_dialog_message_offline">Diese Funktion ist nur mit einer Internetverbindung verfügbar.</string>
   <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Phishing-Bericht bestätigen</string>
   <string name="message_report_phishing_dialog_message">Das Melden einer Nachricht als Phishing-Versuch wird die Nachricht an uns senden, damit wir diese analysieren und unsere Filter verbessern können. Das bedeutet, dass wir den Inhalt der Nachricht vollständig einsehen können.</string>
@@ -111,4 +126,9 @@
   <string name="non_trashed_messages_banner">Diese Unterhaltung enthält nicht-gelöschte Nachrichten.</string>
   <string name="show">Anzeigen</string>
   <string name="hide">Ausblenden</string>
+  <string name="recipient_me">ich</string>
+  <string name="message_details_header_from">Von</string>
+  <string name="message_details_header_to">An</string>
+  <string name="message_details_header_cc">CC</string>
+  <string name="message_details_header_bcc">BCC</string>
 </resources>

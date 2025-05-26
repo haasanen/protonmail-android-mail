@@ -18,23 +18,24 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Deconectare</string>
-  <string name="dialog_sign_out_account_description">Sigur doriți să vă deconectați?</string>
-  <string name="dialog_sign_out_account_confirm">Da</string>
-  <string name="dialog_sign_out_account_cancel">Nu</string>
-  <string name="dialog_remove_account_title">Eliminare cont</string>
-  <string name="dialog_remove_account_description">Vă veți deconecta și veți elimina toate informațiile asociate cu acest cont.</string>
+  <string name="dialog_sign_out_account_description">Datele asociate contului vor rămâne pe acest dispozitiv dacă nu selectați să le ștergeți.</string>
+  <string name="dialog_sign_out_account_confirm">Deconectare</string>
+  <string name="dialog_sign_out_account_cancel">Anulare</string>
+  <string name="dialog_remove_account_title">Eliminați contul?</string>
+  <string name="dialog_remove_account_description">Eliminare toate datele asociate</string>
   <string name="dialog_remove_account_confirm">Eliminare</string>
   <string name="dialog_remove_account_cancel">Anulare</string>
   <string name="feature_coming_soon">Funcție disponibilă în curând…</string>
   <string name="mailbox_draft_saved">Ciornă salvată</string>
   <string name="mailbox_draft_discard">Aruncare</string>
+  <string name="mailbox_draft_discarded">Ciornă înlăturată</string>
   <string name="mailbox_message_sending">Se trimite mesajul…</string>
-  <string name="mailbox_message_sending_offline">Deconectat, mesajul va fi trimis ulterior.</string>
+  <string name="mailbox_message_sending_offline">Deconectat: mesajul va fi trimis ulterior.</string>
   <string name="mailbox_message_sending_success">Mesaj trimis</string>
   <string name="mailbox_message_sending_error">Eroare trimitere mesaj</string>
   <string name="mailbox_message_sending_error_action">Accesare Ciorne</string>
   <string name="mailbox_attachment_uploading_error">Eroare la încărcare atașament.</string>
-  <string name="notification_switched_account">Switched to account %s</string>
+  <string name="notification_switched_account">S-a comutat la contul %s</string>
   <string name="label_saved">Etichetă a fost salvată.</string>
   <string name="label_deleted">Etichetă a fost ștearsă.</string>
   <string name="label_list_loading_error">Eroare la încărcarea etichetei. Reîncercați mai târziu.</string>

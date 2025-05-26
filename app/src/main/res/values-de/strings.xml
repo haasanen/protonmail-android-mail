@@ -18,23 +18,24 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Abmelden</string>
-  <string name="dialog_sign_out_account_description">Bist du sicher, dass du dich abmelden möchtest?</string>
-  <string name="dialog_sign_out_account_confirm">Ja</string>
-  <string name="dialog_sign_out_account_cancel">Nein</string>
-  <string name="dialog_remove_account_title">Konto entfernen</string>
-  <string name="dialog_remove_account_description">Du wirst abgemeldet und alle Informationen, die mit diesem Konto verbunden sind, werden gelöscht.</string>
+  <string name="dialog_sign_out_account_description">Die mit deinem Konto verknüpften Daten verbleiben auf diesem Gerät, es sei denn, du entscheidest dich, sie zu löschen.</string>
+  <string name="dialog_sign_out_account_confirm">Abmelden</string>
+  <string name="dialog_sign_out_account_cancel">Abbrechen</string>
+  <string name="dialog_remove_account_title">Konto entfernen?</string>
+  <string name="dialog_remove_account_description">Alle verknüpften Daten entfernen</string>
   <string name="dialog_remove_account_confirm">Entfernen</string>
   <string name="dialog_remove_account_cancel">Abbrechen</string>
   <string name="feature_coming_soon">Funktion demnächst verfügbar…</string>
   <string name="mailbox_draft_saved">Entwurf gespeichert</string>
   <string name="mailbox_draft_discard">Verwerfen</string>
+  <string name="mailbox_draft_discarded">Entwurf verworfen</string>
   <string name="mailbox_message_sending">Nachricht wird gesendet…</string>
-  <string name="mailbox_message_sending_offline">Offline, die Nachricht ist in der Warteschlange für den Versand.</string>
+  <string name="mailbox_message_sending_offline">Offline: Nachricht in der Warteschlange bereit zum Senden</string>
   <string name="mailbox_message_sending_success">Nachricht gesendet</string>
   <string name="mailbox_message_sending_error">Fehler beim Senden der Nachricht</string>
   <string name="mailbox_message_sending_error_action">Zu den Entwürfen</string>
   <string name="mailbox_attachment_uploading_error">Fehler beim Hochladen des Anhangs.</string>
-  <string name="notification_switched_account">Switched to account %s</string>
+  <string name="notification_switched_account">Zu Konto „%s“ gewechselt</string>
   <string name="label_saved">Kategorie gespeichert</string>
   <string name="label_deleted">Kategorie gelöscht</string>
   <string name="label_list_loading_error">Fehler beim Laden der Kategorie. Bitte versuche es später erneut.</string>

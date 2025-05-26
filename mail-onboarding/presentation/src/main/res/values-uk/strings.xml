@@ -26,9 +26,19 @@
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">Простота й лаконічність</string>
   <string name="onboarding_neat_and_tidy_description">Файли, мітки та позначення повідомлень кольором для досконалої, індивідуальної поштової скриньки.</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">Transformed from the ground up</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">Completely reengineered on Rust architecture, the new Proton Mail is rebuilt for performance, user experience, and scalability.</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">New inbox unboxed</string>
+  <string name="onboarding_new_inbox_description">We’re excited to unveil the vibrant new design and improved user experience. For now, you can preview the new list and message views. </string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">Your feedback is key</string>
+  <string name="onboarding_feedback_is_key_description">We’re rolling out all the features in the next months. Please continue to test the app and let us know how we can make it better!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Далі</string>
-  <string name="onboarding_get_started">Розпочати</string>
+  <string name="onboarding_get_started">Start testing</string>
   <string name="onboarding_illustration_content_description">Ознайомча ілюстрація</string>
   <string name="onboarding_close_content_description">Закрити</string>
+  <string name="onboarding_introducing_next_gen_app">Introducing our next-gen app!</string>
 </resources>

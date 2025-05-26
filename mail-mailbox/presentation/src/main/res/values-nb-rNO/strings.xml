@@ -17,6 +17,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="mailbox_fab_compose_button_title">Skriv</string>
   <string name="mailbox_fab_compose_button_content_description">Skriv ny melding</string>
   <string name="mailbox_toolbar_exit_selection_mode_button_content_description">Avslutt valgmodus</string>
   <string name="mailbox_toolbar_menu_button_content_description">Meny</string>
@@ -28,19 +29,24 @@
     <item quantity="one">%d valgt</item>
     <item quantity="other">%d valgt</item>
   </plurals>
+  <plurals name="filter_unread_button_text">
+    <item quantity="one">Ulest %s</item>
+    <item quantity="other">Uleste %s</item>
+  </plurals>
   <string name="mailbox_default_recipient">(Ingen mottaker)</string>
   <string name="mailbox_default_sender">(Ingen avsender)</string>
   <string name="mailbox_error_message_offline">Du er i frakoblet modus, ikke i stand til å hente elementer.</string>
   <string name="mailbox_error_message_generic">Lasting av postboks mislyktes</string>
   <string name="mailbox_error_message_unexpected">Noe gikk uventet galt</string>
   <string name="mailbox_is_empty_title">Ingen meldinger</string>
-  <string name="mailbox_is_empty_description">Du er à jour</string>
+  <string name="trash_is_empty_title">Ingenting i papirkurven</string>
+  <string name="mailbox_is_empty_description">Det virker som du er à jour nå</string>
   <string name="mailbox_is_empty_no_unread_messages_title">Ingen uleste meldinger</string>
   <string name="mailbox_is_empty_folder_description">Denne mappen er tom</string>
   <string name="mailbox_is_empty_spam_description">Søppelpostmappen din er tom</string>
-  <string name="mailbox_is_empty_trash_description">Papirkurven er tom</string>
+  <string name="mailbox_is_empty_trash_description">Ser tomt ut her</string>
   <plurals name="mailbox_action_trash">
-    <item quantity="one">Meldingen flyttet til papirkurven</item>
+    <item quantity="one">Melding flyttet til papirkurven</item>
     <item quantity="other">%d meldinger flyttet til papirkurven</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation_dialog_title">
@@ -73,19 +79,25 @@
   <string name="mailbox_action_move_messages_failed">Flytteoperasjonen mislyktes</string>
   <string name="mailbox_action_move_messages_failed_retrieving_folders">Kunne ikke hente mapper</string>
   <string name="mailbox_action_trash_message">Melding flyttet til papirkurven</string>
-  <string name="mailbox_action_archive_message">Melding flyttet til arkiv</string>
+  <string name="mailbox_action_archive_message">Melding flyttet til arkivet</string>
   <string name="mailbox_action_spam_message">Melding flyttet til søppelpost</string>
   <string name="mailbox_search_placeholder_text">Søk i meldinger</string>
-  <string name="mailbox_search_no_results_title">Ingen resultater funnet</string>
-  <string name="mailbox_search_no_results_explanation">Søk dato, navn, e-postadresse eller emnelinje</string>
+  <string name="mailbox_search_no_results_title">Ingen treff</string>
+  <string name="mailbox_search_no_results_explanation">Du kan enten oppdatere søket eller nullstille det.</string>
   <string name="mailbox_action_button_clear_trash">Tøm papirkurven</string>
   <string name="mailbox_action_button_clear_spam">Tøm søppelpost</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Oppgrader for å få automatisk sletting av meldinger som har ligget i papirkurven eller søppelposten i mer enn 30 dager</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Lær mer</string>
+  <string name="mailbox_action_clear_trash_spam_banner_text">Meldinger i papirkurven eller søppelposten som har vært der lenger enn 30 dager, slettes automatisk.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Tøm papirkurvmappen</string>
   <string name="mailbox_action_clear_spam_dialog_title">Tøm søppelpostmappen</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">Er du sikker på at du vil slette alle meldinger i papirkurven permanent?</string>
   <string name="mailbox_action_clear_spam_dialog_body_message">Er du sikker på at du vil slette alle meldinger i søppelpostmappen permanent?</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Er du sikker på at du vil slette alle samtaler i søppelpostmappen permanent?</string>
-  <string name="mailbox_action_clear_operation_scheduled">"Tøm operasjon er planlagt"</string>
+  <string name="mailbox_action_clear_operation_scheduled">"Tømoperasjon er planlagt"</string>
+  <!-- Attachment download -->
+  <string name="mailbox_attachment_download_started">Åpner vedlegg…</string>
+  <string name="mailbox_attachment_download_error">Kan ikke åpne vedlegget. Prøv igjen.</string>
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">Advarsel</string>
   <string name="storage_first_limit_exceeded_warning_dialog_text">Lagringsplassen til Proton-kontoen din er mer enn 80% full. Frigjør plass eller oppgrader for mer lagringsplass.</string>
@@ -96,4 +108,21 @@
   <string name="storage_quota_over_dialog_title">Advarsel</string>
   <string name="storage_quota_over_dialog_text">Lagringsplassen til Proton-kontoen din er 100% full. Du vil ikke kunne sende eller motta e-post med mindre du permanent sletter noen e-poster eller oppgraderer for mer lagringsplass.</string>
   <string name="storage_quota_over_dialog_confirm_button">OK</string>
+  <string name="mailbox_action_delete_failed">Kunne ikke slette meldingen</string>
+  <string name="select_all">Velg alle</string>
+  <string name="deselect_all">Fjern merking for alle</string>
+  <!--    Expiry messages-->
+  <plurals name="expires_in_days">
+    <item quantity="one">Utløper om %d dag</item>
+    <item quantity="other">Utløper om %d dager</item>
+  </plurals>
+  <plurals name="expires_in_hours">
+    <item quantity="one">Utløper om %d time</item>
+    <item quantity="other">Utløper om %d timer</item>
+  </plurals>
+  <plurals name="expires_in_minutes">
+    <item quantity="one">Utløper om %d minutt</item>
+    <item quantity="other">Utløper om %d minutter</item>
+  </plurals>
+  <string name="expires_in_less_than_a_minute">Utløper om mindre enn et minutt</string>
 </resources>

@@ -26,9 +26,19 @@
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">Takaros</string>
   <string name="onboarding_neat_and_tidy_description">Rendezze el, címkézze fel és lássa el színkóddal üzeneteit, hogy létrehozza a saját tökéletes fiókját.</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">Teljesen átalakítva</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">A Rust architektúrára teljesen áttervezett új Proton Mail a teljesítmény, a felhasználói élmény és a skálázhatóság szem előtt tartásával épült újjá.</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">Új beérkezett üzenetek kicsomagolva</string>
+  <string name="onboarding_new_inbox_description">Izgatottan mutatjuk be az új, vibráló dizájnt és a továbbfejlesztett felhasználói élményt. Megtekintheti az új listanézet és üzenetnézet előzetesét. </string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">Az Ön visszajelzése kulcsfontosságú</string>
+  <string name="onboarding_feedback_is_key_description">A következő hónapokban bevezetjük az összes funkciót. Kérjük, folytassa az alkalmazás tesztelését, és tudassa velünk, hogyan tehetjük még jobbá!</string>
   <!--  Onboarding actions  -->
-  <string name="onboarding_next">Következő</string>
-  <string name="onboarding_get_started">Kezdés</string>
+  <string name="onboarding_next">Tovább</string>
+  <string name="onboarding_get_started">Tesztelés indítása</string>
   <string name="onboarding_illustration_content_description">Indulási illusztráció</string>
   <string name="onboarding_close_content_description">Bezárás</string>
+  <string name="onboarding_introducing_next_gen_app">Bemutatjuk új generációs alkalmazásunkat!</string>
 </resources>

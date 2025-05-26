@@ -26,9 +26,19 @@
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">整列</string>
   <string name="onboarding_neat_and_tidy_description">ファイルやラベルを使ったり、メッセージに色付けをしたりして、自分好みの受信トレイを作りましょう。</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">一から作り直しました</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">Rust アーキテクチャに完全に再設計されたこの新しいProtonMailは、パフォーマンス、ユーザーエクスペリエンス、スケーラビリティのために再構築されました。</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">新しい受信トレイが開封されました</string>
+  <string name="onboarding_new_inbox_description">鮮やかな新しいデザインと改善されたユーザーエクスペリエンスを発表できることを楽しみにしています。今のところ、新しいリストとメッセージビューをプレビューできます。 </string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">あなたのフィードバックは重要です</string>
+  <string name="onboarding_feedback_is_key_description">今後数ヶ月以内にすべての機能を展開しています。 アプリのテストを続けて、どのように改善できるかお知らせください!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">次へ</string>
-  <string name="onboarding_get_started">はじめましょう</string>
+  <string name="onboarding_get_started">テストを開始</string>
   <string name="onboarding_illustration_content_description">解説イラスト</string>
   <string name="onboarding_close_content_description">閉じる</string>
+  <string name="onboarding_introducing_next_gen_app">次世代のアプリをご紹介!</string>
 </resources>

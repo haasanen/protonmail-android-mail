@@ -23,5 +23,12 @@
   <string name="notification_title_text_new_message_fallback">Nova mensagem</string>
   <string name="notification_actions_archive_description">Arquivo</string>
   <string name="notification_actions_trash_description">Lixeira</string>
-  <string name="notification_actions_reply_description">Responder</string>
+  <string name="notification_actions_mark_as_read_description">Marcar como lida</string>
+  <!-- Push notification permissions BS -->
+  <string name="notification_permissions_bottomsheet_first_time_title">Não perca nenhum e-mail</string>
+  <string name="notification_permissions_bottomsheet_first_time_subtitle">As notificações ajudam você a se manter a par da sua caixa de entrada sem precisar verificar o aplicativo.</string>
+  <string name="notification_permissions_bottomsheet_second_time_title">Quer ficar a par de tudo?</string>
+  <string name="notification_permissions_bottomsheet_second_time_subtitle">Ative as notificações para saber quando você receber uma resposta ao seu e-mail.</string>
+  <string name="notification_permissions_bottomsheet_enable">Ativar as notificações push</string>
+  <string name="notification_permissions_bottomsheet_dismiss">Ignorar</string>
 </resources>

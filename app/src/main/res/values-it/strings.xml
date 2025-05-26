@@ -18,23 +18,24 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Esci dall\'account</string>
-  <string name="dialog_sign_out_account_description">Sei sicuro di voler uscire da questo account?</string>
+  <string name="dialog_sign_out_account_description">I dati associati al tuo account rimarranno su questo dispositivo a meno che tu non decida di eliminarli.</string>
   <string name="dialog_sign_out_account_confirm">Esci</string>
   <string name="dialog_sign_out_account_cancel">Annulla</string>
-  <string name="dialog_remove_account_title">Rimuovi l\'account</string>
-  <string name="dialog_remove_account_description">Sei sicuro di voler rimuovere questo account e tutte le informazioni associate a esso?</string>
+  <string name="dialog_remove_account_title">Rimuovi account?</string>
+  <string name="dialog_remove_account_description">Rimuovi le informazioni associate</string>
   <string name="dialog_remove_account_confirm">Rimuovi</string>
   <string name="dialog_remove_account_cancel">Annulla</string>
   <string name="feature_coming_soon">Funzionalità in arrivo…</string>
   <string name="mailbox_draft_saved">Bozza salvata</string>
   <string name="mailbox_draft_discard">Scarta</string>
+  <string name="mailbox_draft_discarded">Bozza scartata</string>
   <string name="mailbox_message_sending">Invio del messaggio in corso</string>
   <string name="mailbox_message_sending_offline">Nessuna connessione a Internet. Invio del messaggio sospeso.</string>
   <string name="mailbox_message_sending_success">Messaggio inviato</string>
   <string name="mailbox_message_sending_error">Invio del messaggio non riuscito</string>
   <string name="mailbox_message_sending_error_action">Vai alle bozze</string>
   <string name="mailbox_attachment_uploading_error">Caricamento dell\'allegato non riuscito</string>
-  <string name="notification_switched_account">Switched to account %s</string>
+  <string name="notification_switched_account">Account attuale: %s</string>
   <string name="label_saved">Etichetta salvata</string>
   <string name="label_deleted">Etichetta eliminata</string>
   <string name="label_list_loading_error">Caricamento dell\'etichetta non riuscito</string>

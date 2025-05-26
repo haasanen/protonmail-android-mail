@@ -18,24 +18,27 @@
   -->
 <resources>
   <string name="expiration_expired">Abgelaufen</string>
-  <string name="expiration_days_arg">%dt</string>
-  <string name="expiration_hours_arg">%dh</string>
-  <string name="expiration_minutes_arg">%dm</string>
+  <string name="expiration_days_arg">%d Tag(e)</string>
+  <string name="expiration_hours_arg">%d Stunde(n)</string>
+  <string name="expiration_minutes_arg">%d Minute(n)</string>
   <string name="retry">Wiederholen</string>
   <string name="toolbar_back_content_description">Zurück zum vorherigen Bildschirm</string>
   <string name="x_error_not_logged_in">Nicht angemeldet</string>
+  <string name="action_customize_toolbar">Symbolleiste anpassen</string>
+  <string name="action_customize_toolbar_description">Symbolleiste anpassen</string>
+  <string name="action_customize_toolbar_content_description">Symbolleiste anpassen</string>
   <string name="action_reply">Antworten</string>
   <string name="action_reply_all">Allen antworten</string>
   <string name="action_forward">Weiterleiten</string>
   <string name="action_reply_description">Antworten</string>
-  <string name="action_reply_to_description">Antwort an %s</string>
+  <string name="action_reply_to_description">Antwort auf %s</string>
   <string name="action_reply_all_description">Allen antworten</string>
   <string name="action_forward_description">Weiterleiten</string>
   <string name="action_mark_read_description">Als gelesen markieren</string>
   <string name="action_mark_unread_description">Als ungelesen markieren</string>
   <string name="action_star_description">Favorit</string>
   <string name="action_unstar_description">Kein Favorit</string>
-  <string name="action_label_description">Hinzufügen zu Kategorie</string>
+  <string name="action_label_description">Kategorisieren als</string>
   <string name="action_move_description">Verschieben nach</string>
   <string name="action_trash_description">In den Papierkorb verschieben</string>
   <string name="action_delete_description">Löschen</string>
@@ -52,8 +55,11 @@
   <string name="action_sender_emails_description">Aktion für zukünftige E-Mails von diesem Absender festlegen</string>
   <string name="action_save_attachments_description">Anhänge speichern</string>
   <string name="action_more_description">Mehr</string>
+  <string name="action_inbox_description">Posteingang</string>
+  <string name="action_pin_description">Anheften</string>
+  <string name="action_unpin_description">Loslösen</string>
   <string name="action_reply_content_description">Antworten</string>
-  <string name="action_reply_to_content_description">Antwort an %s</string>
+  <string name="action_reply_to_content_description">Antwort auf %s</string>
   <string name="action_reply_all_content_description">Allen antworten</string>
   <string name="action_forward_content_description">Weiterleiten</string>
   <string name="action_mark_read_content_description">Als gelesen markieren</string>
@@ -66,6 +72,9 @@
   <string name="action_delete_content_description">Löschen</string>
   <string name="action_archive_content_description">Archivieren</string>
   <string name="action_spam_content_description">Spam</string>
+  <string name="action_inbox_content_description">Posteingang</string>
+  <string name="action_pin_content_description">Anheften</string>
+  <string name="action_unpin_content_description">Loslösen</string>
   <string name="action_view_in_light_mode_content_description">Nachricht im hellen Modus anzeigen</string>
   <string name="action_view_in_dark_mode_content_description">Nachricht im dunklen Modus anzeigen</string>
   <string name="action_print_content_description">Drucken</string>
@@ -115,4 +124,5 @@
   <string name="undo_button_label">Rückgängig machen</string>
   <string name="undo_success_message">Vorgang wurde Rückgängig gemacht</string>
   <string name="undo_failure_message">Aktion konnte nicht rückgängig gemacht werden</string>
+  <string name="feature_coming_soon">Funktion demnächst verfügbar…</string>
 </resources>

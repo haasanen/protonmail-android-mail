@@ -20,4 +20,7 @@
   <string name="drawer_title_more">Plus</string>
   <string name="drawer_title_contacts">Contacts</string>
   <string name="drawer_title_subscription">Abonnement</string>
+  <string name="drawer_title_bug_report">Signaler un bug</string>
+  <string name="drawer_item_create_label">Créer un label</string>
+  <string name="drawer_item_create_folder">Créer un dossier</string>
 </resources>

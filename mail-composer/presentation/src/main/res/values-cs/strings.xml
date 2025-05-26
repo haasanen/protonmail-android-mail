@@ -21,20 +21,21 @@
   <string name="to_prefix">Komu:</string>
   <string name="cc_prefix">Kopie:</string>
   <string name="bcc_prefix">Skrytá kopie:</string>
-  <string name="subject_prefix">Předmět</string>
+  <string name="subject_prefix">Předmět: </string>
   <string name="compose_message_placeholder">Napsat e-mail</string>
   <string name="close_composer_content_description">Zavřít editor</string>
+  <string name="send_button_title">Odeslat</string>
   <string name="send_message_content_description">Odeslat zprávu</string>
   <string name="composer_expand_recipients_button">Zobrazit ostatní příjemce</string>
   <string name="composer_error_invalid_email">E-mailová adresa je neplatná</string>
   <string name="composer_error_invalid_sender">Adresa odesílatele je neplatná</string>
   <string name="change_sender_button_content_description">Změnit odesílatele</string>
-  <string name="composer_change_sender_paid_feature">Přejděte na placený tarif pro změnu adresy odesílatele</string>
+  <string name="composer_change_sender_paid_feature">Pro změnu adresy odesílatele přejděte na placený tarif</string>
   <string name="composer_error_change_sender_failed_getting_subscription">Nelze změnit odesílatele, protože selhalo získání uživatelského předplatného. Zkuste to znovu.</string>
-  <string name="composer_error_store_draft_sender_address">Sender address wasn\'t saved</string>
-  <string name="composer_error_store_draft_body">Draft email body wasn\'t saved</string>
+  <string name="composer_error_store_draft_sender_address">Selhalo uložení adresy odesílatele</string>
+  <string name="composer_error_store_draft_body">Selhalo uložení konceptu těla e-mailu</string>
   <string name="composer_error_duplicate_recipient">Duplicitní příjemci odebráni</string>
-  <string name="composer_error_store_draft_subject">Subject line wasn\'t saved</string>
+  <string name="composer_error_store_draft_subject">Selhalo uložení předmětu</string>
   <string name="composer_error_store_draft_recipients">Uložení příjemců tohoto konceptu selhalo</string>
   <string name="composer_error_loading_draft">Obsah tohoto návrhu není v tuto chvíli k dispozici. Úpravy přepíší veškerý již existující obsah.</string>
   <string name="composer_add_attachments_content_description">Přidat přílohy</string>
@@ -45,9 +46,13 @@
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">OK</string>
   <string name="composer_attachment_size_exceeded_dialog_title">Byl dosažen limit velikosti příloh</string>
   <string name="composer_attachment_size_exceeded_dialog_message">Velikost příloh je omezena na %1$s</string>
-  <string name="composer_attachment_encryption_failed_message">Opětovné zašifrování přílohy selhalo. Z bezpečnostních důvodů byly všechny přílohy odebrány.</string>
+  <string name="composer_attachment_encryption_failed_message">Šifrování přílohy selhalo. Z bezpečnostních důvodů byly všechny přílohy odebrány.</string>
+  <string name="composer_too_many_attachments_error">Překročen maximální počet příloh (100).</string>
+  <string name="composer_delete_attachment_error">Při mazání přílohy došlo k neočekávané chybě.</string>
+  <string name="composer_unexpected_attachments_error">V souvislosti s přílohami došlo k neočekávané chybě.</string>
   <string name="composer_warning_local_data_shown">Nejnovější verzi tohoto návrhu se nepodařilo načíst. Jakákoli změna přepíše její obsah.</string>
   <string name="composer_button_add_password">Přidat heslo</string>
+  <string name="composer_button_discard_draft">Zahodit koncept</string>
   <string name="composer_button_set_expiration">Nastavit dobu platnosti</string>
   <string name="composer_expiration_time_bottom_sheet_title">Vypršení zprávy</string>
   <string name="composer_expiration_time_bottom_sheet_done">Nastavit</string>
@@ -76,7 +81,7 @@
   <!-- Message sending error dialog -->
   <string name="message_sending_error_dialog_header">Chyba při odesílání</string>
   <string name="message_sending_error_dialog_button_dismiss">Zavřít</string>
-  <string name="message_sending_error_dialog_text_error">Your email cannot be sent to the address entered due to the following reason:</string>
+  <string name="message_sending_error_dialog_text_error">Váš e-mail nemůže být odeslán na zadanou e-mailovou adresu z následujícího důvodu:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Neexistují žádné důvěryhodné klíče: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Adresa neexistuje: %s</string>
   <string name="set_message_password_title">Šifrovat zprávu</string>
@@ -88,17 +93,24 @@
   <string name="set_message_password_supporting_text">4 až 21 znaků</string>
   <string name="set_message_password_supporting_error_text">Heslo musí mít délku 4 až 21 znaků</string>
   <string name="set_message_password_supporting_text_repeat">Hesla se musí shodovat</string>
-  <string name="set_message_password_supporting_error_text_repeat">Passwords do not match</string>
+  <string name="set_message_password_supporting_error_text_repeat">Hesla se neshodují</string>
   <string name="set_message_password_button_show">Zobrazit heslo</string>
   <string name="set_message_password_button_hide">Skrýt heslo</string>
   <string name="set_message_password_button_apply">Použít heslo</string>
   <string name="set_message_password_button_save_changes">Uložit změny</string>
   <string name="set_message_password_button_remove_password">Odstranit heslo</string>
   <string name="respondInline">Odpovědět v řádku</string>
+  <string name="subject_placeholder">Předmět</string>
   <plurals name="composer_recipient_suggestion_contacts">
     <item quantity="one">%d člen</item>
     <item quantity="few">%d členové</item>
     <item quantity="many">%d členů</item>
     <item quantity="other">%d členů</item>
   </plurals>
+  <!-- Discard draft dialog -->
+  <string name="discard_draft_dialog_title">Zahodit tuto zprávu?</string>
+  <string name="discard_draft_dialog_text">Váš koncept nebude uložen</string>
+  <string name="discard_draft_dialog_confirm_button">Zahodit</string>
+  <string name="discard_draft_dialog_dismiss_button">Zrušit</string>
+  <string name="discard_draft_error">Chyba při zahození konceptu</string>
 </resources>

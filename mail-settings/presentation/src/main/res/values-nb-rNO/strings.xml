@@ -21,69 +21,59 @@
   <string name="mail_settings_toolbar_button_content_description">Tilbake</string>
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Kontoinnstillinger</string>
-  <string name="mail_settings_app_settings">App-innstillinger</string>
+  <string name="mail_settings_email_settings">E-postinnstillinger</string>
+  <string name="mail_settings_folder_and_label_settings">Innstillinger for mappe og etikett</string>
+  <string name="mail_settings_privacy_and_security_settings">Innstillinger for personvern og sikkerhet</string>
+  <string name="mail_settings_preferences">Preferanser</string>
+  <string name="mail_settings_app">App</string>
+  <string name="mail_settings_email">E-post</string>
+  <string name="mail_settings_email_hint">Preferanser for e-post og postboks</string>
+  <string name="mail_settings_folders_labels">Mapper og etiketter</string>
+  <string name="mail_settings_folders_labels_hint">Organisering av postboks</string>
+  <string name="mail_settings_spam_and_custom_filters">Søppelpost og egendefinerte filtre</string>
+  <string name="mail_settings_spam_and_custom_filters_hint">Automatiske handlinger og sortering</string>
+  <string name="mail_settings_privacy_and_security">Personvern og sikkerhet</string>
+  <string name="mail_settings_privacy_and_security_hint">Sporingsbeskyttelse for e-post</string>
+  <string name="mail_settings_app_hint">Tilpasninger av mobilapp</string>
   <string name="mail_settings_theme">Tema</string>
-  <string name="mail_settings_push_notifications">Push-varsler</string>
   <string name="mail_settings_auto_lock">Autolås</string>
   <string name="mail_settings_alternative_routing">Alternativ ruting</string>
   <string name="mail_settings_app_language">App-språk</string>
   <string name="mail_settings_combined_contacts">Kombinerte kontakter</string>
-  <string name="mail_settings_local_cache">Lokal hurtigbuffer</string>
-  <string name="mail_settings_local_cache_hint">Plass brukt: %s</string>
-  <string name="mail_settings_local_cache_clear_button">Tøm data</string>
   <string name="mail_settings_swipe_actions">Sveipehandlinger</string>
   <string name="mail_settings_combined_contacts_hint">Aktiver denne funksjonen for å autofullføre e-postadresser ved hjelp av kontakter fra alle påloggede kontoer.</string>
   <string name="mail_settings_alternative_routing_hint">Denne innstillingen tillater appen å forsøke alternative nettverksruter for å nå Proton dersom Proton-nettsteder er blokkert. Det kan være nyttig for å komme rundt brannmurer og nettverksproblemer. Vi anbefaler å ha denne innstillingen på for mest pålitelighet.</string>
+  <!-- App customization settings-->
+  <string name="mail_settings_app_customization_title">Tilpasning av app</string>
+  <string name="mail_settings_app_customization_notification">Varsler</string>
+  <string name="mail_settings_app_customization_language">Språk</string>
+  <string name="mail_settings_app_customization_appearance">Utseende</string>
+  <string name="mail_settings_app_customization_protection">Beskyttelse</string>
+  <string name="mail_settings_app_customization_protection_enabled_description">Autolås aktivert</string>
+  <string name="mail_settings_app_customization_protection_disabled_description">Autolås deaktivert</string>
+  <string name="mail_settings_app_customization_use_device_contacts">Bruk enhetskontakter</string>
+  <string name="mail_settings_app_customization_use_device_contacts_hint">Autofullfør e-postadresser fra kontakter på enheten din.</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email">Sveip til neste e-post</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email_hint">Gå raskt til neste eller forrige melding i innboksen din.</string>
+  <string name="mail_settings_app_customization_swipe_action">Sveipehandling</string>
+  <string name="mail_settings_app_customization_swipe_action_hint">Angi raske handlinger, som slette eller arkivere, når du sveiper til venstre eller høyre.</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Tilpass verktøylinjen</string>
+  <string name="mail_settings_app_customization_alternative_routing">Alternativ ruting</string>
+  <string name="mail_settings_app_customization_alternative_routing_hint">Omgå brannmur eller nettverksproblemer i tilfelle Proton-nettsteder er blokkert.</string>
+  <string name="mail_settings_app_customization_view_application_logs">Vis applikasjonslogger</string>
+  <string name="mail_settings_app_customization_mail_experience_header">Mail-opplevelse</string>
+  <string name="mail_settings_app_customization_advanced_header">Avansert</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Systemstandard</string>
   <string name="mail_settings_theme_light">Lys</string>
   <string name="mail_settings_theme_dark">Mørk</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Ingen informasjon tilgjengelig</string>
-  <string name="mail_settings_enabled">Aktivert</string>
-  <string name="mail_settings_disabled">Deaktivert</string>
-  <string name="mail_settings_allowed">Tillatt</string>
-  <string name="mail_settings_denied">Nektet</string>
-  <string name="mail_settings_auto_detect">Oppdag automatisk</string>
-  <string name="mail_settings_app_information">App-informasjon</string>
-  <string name="mail_settings_app_version">App-versjon</string>
   <string name="mail_settings_account">Konto</string>
-  <!-- Account Settings items -->
-  <string name="mail_settings_subscription">Abonnement</string>
-  <string name="mail_settings_password_management">Endre passord</string>
-  <string name="mail_settings_recovery_email">E-post for gjenoppretting</string>
-  <string name="mail_settings_mailbox_size">Postboksstørrelse</string>
-  <string name="mail_settings_addresses">Adresser</string>
-  <string name="mail_settings_default_email_address">Standard e-postadresse</string>
-  <string name="mail_settings_display_name_and_signature">Visningsnavn og signatur</string>
-  <string name="mail_settings_mailbox">Postboks</string>
-  <string name="mail_settings_privacy">Personvern</string>
-  <string name="mail_settings_labels">Etiketter</string>
-  <string name="mail_settings_folders">Mapper</string>
-  <string name="mail_settings_conversation_mode">Samtalemodus</string>
   <string name="mail_settings_not_set">Ikke angitt</string>
   <string name="mail_settings_conversation_mode_hint">Grupper e-poster fra den samme samtalen i innboksen eller vis dem enkeltvis.</string>
-  <!-- Default email address settings -->
-  <string name="mail_settings_default_email_address_title">Standard e-postadresse</string>
-  <string name="mail_settings_default_email_address_inactive_addresses">Inaktive adresser</string>
-  <string name="mail_settings_default_email_address_no_inactive_addresses">Ingen inaktive adresser</string>
-  <string name="mail_settings_default_email_address_error_loading">Feil ved lasting av innstillinger</string>
-  <string name="mail_settings_default_email_address_error_update">Feil under oppdatering av innstillinger</string>
-  <string name="mail_settings_default_email_address_error_update_subscription">Oppgrader til en betalt plan for å kunne angi denne adressen som standard.</string>
-  <!-- Display name, signature, mobile footer -->
-  <string name="mail_settings_identity_title">Vis navn &amp; signatur</string>
-  <string name="mail_settings_identity_save_button">Lagre</string>
-  <string name="mail_settings_identity_display_name">Visningsnavn</string>
-  <string name="mail_settings_identity_display_name_hint">Visningsnavn</string>
-  <string name="mail_settings_identity_signature">Signatur</string>
-  <string name="mail_settings_identity_signature_hint">Signatur</string>
-  <string name="mail_settings_identity_mobile_footer">Mobilsignatur</string>
-  <string name="mail_settings_identity_mobile_footer_subtext">Dette legges til etter signaturen din.</string>
-  <string name="mail_settings_identity_mobile_footer_hint">Mobilsignatur</string>
-  <string name="mail_settings_identity_mobile_footer_default_free">Sendt fra Proton Mail Android</string>
-  <string name="mail_settings_identity_error_updating">Feil under oppdatering av innstillinger</string>
-  <string name="mail_settings_identity_error_loading">Feil ved lasting av innstillinger</string>
   <!-- Privacy settings -->
+  <string name="mail_settings_privacy">Personvern</string>
   <string name="mail_settings_privacy_auto_show_remote_content">Vis automatisk eksternt innhold</string>
   <string name="mail_settings_privacy_auto_show_embedded_images">Vis automatisk innebygde bilder</string>
   <string name="mail_settings_privacy_prevent_taking_screenshots">Forhindre at det blir tatt skjermbilder</string>
@@ -97,16 +87,22 @@
   <string name="mail_settings_swipe_actions_subtitle">Konfigurer sveipebevegelser for å få tilgang til de mest brukte handlingene.</string>
   <string name="mail_settings_swipe_right_name">Venstre til høyre</string>
   <string name="mail_settings_swipe_left_name">Høyre til venstre</string>
-  <string name="mail_settings_swipe_action_archive_title">Arkiver</string>
+  <string name="mail_settings_swipe_action_none_title">Ikke angitt</string>
+  <string name="mail_settings_swipe_action_archive_title">Arkiv</string>
   <string name="mail_settings_swipe_action_read_title">Ulest</string>
   <string name="mail_settings_swipe_action_spam_title">Søppelpost</string>
   <string name="mail_settings_swipe_action_star_title">Stjernemerk</string>
   <string name="mail_settings_swipe_action_trash_title">Papirkurv</string>
+  <string name="mail_settings_swipe_action_label_as_title">Merk som...</string>
+  <string name="mail_settings_swipe_action_move_to_title">Flytt til…</string>
+  <string name="mail_settings_swipe_action_none_description">Ingen</string>
   <string name="mail_settings_swipe_action_archive_description">Flytt til arkiv</string>
-  <string name="mail_settings_swipe_action_read_description">Marker som ulest/lest</string>
+  <string name="mail_settings_swipe_action_read_description">Merk som ulest/lest</string>
   <string name="mail_settings_swipe_action_spam_description">Flytt til søppelpost</string>
   <string name="mail_settings_swipe_action_star_description">Stjernemerk/fjern stjernemerking</string>
   <string name="mail_settings_swipe_action_trash_description">Flytt til papirkurven</string>
+  <string name="mail_settings_swipe_action_label_as_description">Merk som...</string>
+  <string name="mail_settings_swipe_action_move_to_description">Flytt til…</string>
   <!-- Notification settings -->
   <string name="mail_settings_notifications_title">Push-varsler</string>
   <string name="mail_settings_notifications_extended_notifications_title">Utvidede varsler</string>
@@ -138,7 +134,7 @@
   <string name="mail_settings_pin_insertion_button_confirm">Bekreft</string>
   <string name="mail_settings_pin_insertion_error_no_match">PIN-kodene samsvarer ikke.</string>
   <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="one">%s gjenstående forsøk</item>
+    <item quantity="one">%s gjenstående forsøk.</item>
     <item quantity="other">%s gjenstående forsøk.</item>
   </plurals>
   <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
@@ -153,8 +149,6 @@
   <string name="mail_settings_pin_insertion_signout_dialog_cancel">Nei</string>
   <string name="mail_settings_pin_insertion_created_success">PIN-kode opprettet</string>
   <string name="mail_settings_pin_insertion_changed_success">PIN-kode endret</string>
-  <!-- Local storage -->
-  <string name="mail_settings_clearing_cached_data">Tømmer lokalt hurtigbufrede data…</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">En feil oppstod. Prøv igjen.</string>
   <!-- strings used for biometric enrollment -->

@@ -18,26 +18,27 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Logga ut</string>
-  <string name="dialog_sign_out_account_description">Är du säker på att du vill logga ut?</string>
-  <string name="dialog_sign_out_account_confirm">Ja</string>
-  <string name="dialog_sign_out_account_cancel">Nej</string>
-  <string name="dialog_remove_account_title">Ta bort konto</string>
-  <string name="dialog_remove_account_description">Du kommer att logga ut och ta bort all information som är associerat till detta konto.</string>
+  <string name="dialog_sign_out_account_description">Data associerat med ditt konto kommer finnas kvar på denna enhet om du inte väljer att ta bort det.</string>
+  <string name="dialog_sign_out_account_confirm">Logga ut</string>
+  <string name="dialog_sign_out_account_cancel">Avbryt</string>
+  <string name="dialog_remove_account_title">Ta bort konto?</string>
+  <string name="dialog_remove_account_description">Ta bort all associerad data</string>
   <string name="dialog_remove_account_confirm">Ta bort</string>
   <string name="dialog_remove_account_cancel">Avbryt</string>
   <string name="feature_coming_soon">Funktion kommer snart…</string>
   <string name="mailbox_draft_saved">Utkast sparat</string>
   <string name="mailbox_draft_discard">Kasta</string>
+  <string name="mailbox_draft_discarded">Utkast kastat</string>
   <string name="mailbox_message_sending">Skickar meddelande…</string>
-  <string name="mailbox_message_sending_offline">Offline, meddelandet i kö för att skickas</string>
+  <string name="mailbox_message_sending_offline">Offline: meddelande köat för sändning</string>
   <string name="mailbox_message_sending_success">Meddelande skickat</string>
   <string name="mailbox_message_sending_error">Det gick inte att skicka meddelandet</string>
   <string name="mailbox_message_sending_error_action">Gå till utkast</string>
-  <string name="mailbox_attachment_uploading_error">Kunde inte ladda upp bilaga</string>
-  <string name="notification_switched_account">Switched to account %s</string>
+  <string name="mailbox_attachment_uploading_error">Fel vid uppladdning av bilaga</string>
+  <string name="notification_switched_account">Bytte till kontot %s</string>
   <string name="label_saved">Etikett sparad</string>
   <string name="label_deleted">Etikett borttagen</string>
-  <string name="label_list_loading_error">Gick inte ladda etikett, försök igen senare</string>
+  <string name="label_list_loading_error">Gick inte läsa in etikett, försök igen senare</string>
   <string name="app_locked">Appen är låst</string>
   <string name="use_pin_instead">Använd PIN-kod istället</string>
 </resources>

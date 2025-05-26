@@ -20,10 +20,13 @@
   <string name="expiration_expired">Expirado</string>
   <string name="expiration_days_arg">%d d</string>
   <string name="expiration_hours_arg">%d h</string>
-  <string name="expiration_minutes_arg">%d min</string>
+  <string name="expiration_minutes_arg">%d m</string>
   <string name="retry">Reintentar</string>
   <string name="toolbar_back_content_description">Volver a la pantalla anterior</string>
   <string name="x_error_not_logged_in">No se ha iniciado sesión.</string>
+  <string name="action_customize_toolbar">Personalizar la barra de herramientas</string>
+  <string name="action_customize_toolbar_description">Personalizar la barra de herramientas</string>
+  <string name="action_customize_toolbar_content_description">Personalizar la barra de herramientas</string>
   <string name="action_reply">Responder</string>
   <string name="action_reply_all">Responder a todos</string>
   <string name="action_forward">Reenviar</string>
@@ -52,6 +55,9 @@
   <string name="action_sender_emails_description">Definir acciones para futuros correos de este remitente</string>
   <string name="action_save_attachments_description">Guardar los adjuntos</string>
   <string name="action_more_description">Más</string>
+  <string name="action_inbox_description">Bandeja de entrada</string>
+  <string name="action_pin_description">Anclar</string>
+  <string name="action_unpin_description">Desanclar</string>
   <string name="action_reply_content_description">Responder</string>
   <string name="action_reply_to_content_description">Responder a %s</string>
   <string name="action_reply_all_content_description">Responder a todos</string>
@@ -66,6 +72,9 @@
   <string name="action_delete_content_description">Eliminar</string>
   <string name="action_archive_content_description">Archivar</string>
   <string name="action_spam_content_description">Spam</string>
+  <string name="action_inbox_content_description">Bandeja de entrada</string>
+  <string name="action_pin_content_description">Anclar</string>
+  <string name="action_unpin_content_description">Desanclar</string>
   <string name="action_view_in_light_mode_content_description">Ver mensaje en modo claro</string>
   <string name="action_view_in_dark_mode_content_description">Ver mensaje en modo oscuro</string>
   <string name="action_print_content_description">Imprimir</string>
@@ -115,4 +124,5 @@
   <string name="undo_button_label">Deshacer</string>
   <string name="undo_success_message">Se ha cancelado la acción.</string>
   <string name="undo_failure_message">Error al cancelar la acción</string>
+  <string name="feature_coming_soon">Funcionalidad disponible próximamente…</string>
 </resources>

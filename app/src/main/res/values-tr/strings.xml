@@ -18,23 +18,24 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Oturumu kapat</string>
-  <string name="dialog_sign_out_account_description">Oturumu kapatmak istediğinize emin misiniz?</string>
-  <string name="dialog_sign_out_account_confirm">Evet</string>
-  <string name="dialog_sign_out_account_cancel">Hayır</string>
-  <string name="dialog_remove_account_title">Hesabı kaldır</string>
-  <string name="dialog_remove_account_description">Oturumunuz kapatılacak ve bu hesapla ilişkili tüm bilgileriniz silinecek.</string>
+  <string name="dialog_sign_out_account_description">The data associateed to your account will remain on this device unless you select to delete it.</string>
+  <string name="dialog_sign_out_account_confirm">Sign out</string>
+  <string name="dialog_sign_out_account_cancel">Cancel</string>
+  <string name="dialog_remove_account_title">Remove account?</string>
+  <string name="dialog_remove_account_description">Remove all associated data</string>
   <string name="dialog_remove_account_confirm">Kaldır</string>
   <string name="dialog_remove_account_cancel">İptal</string>
   <string name="feature_coming_soon">Özellik yakında kullanılabilecek…</string>
   <string name="mailbox_draft_saved">Taslak kaydedildi</string>
   <string name="mailbox_draft_discard">Yok say</string>
+  <string name="mailbox_draft_discarded">Taslak silindi</string>
   <string name="mailbox_message_sending">İleti gönderiliyor…</string>
-  <string name="mailbox_message_sending_offline">Çevrim dışı. İleti gönderilmek üzere kuyruğa alındı</string>
+  <string name="mailbox_message_sending_offline">Çevrim dışı: İleti gönderilmek üzere sıraya alındı</string>
   <string name="mailbox_message_sending_success">İleti gönderildi</string>
   <string name="mailbox_message_sending_error">İleti gönderilirken sorun çıktı</string>
   <string name="mailbox_message_sending_error_action">Taslaklar kutusuna git</string>
   <string name="mailbox_attachment_uploading_error">Ek dosya yüklenirken sorun çıktı</string>
-  <string name="notification_switched_account">Switched to account %s</string>
+  <string name="notification_switched_account">%s hesabına geçildi</string>
   <string name="label_saved">Etiket kaydedldi</string>
   <string name="label_deleted">Etiket silindi</string>
   <string name="label_list_loading_error">Etiket yüklenirken sorun çıktı. Lütfen bir süre sonra yeniden deneyin</string>

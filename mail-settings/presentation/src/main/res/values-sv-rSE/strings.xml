@@ -21,75 +21,65 @@
   <string name="mail_settings_toolbar_button_content_description">Tillbaka</string>
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Kontoinställningar</string>
-  <string name="mail_settings_app_settings">App-inställningar</string>
+  <string name="mail_settings_email_settings">E-postinställningar</string>
+  <string name="mail_settings_folder_and_label_settings">Inställningar för mappar och etiketter</string>
+  <string name="mail_settings_privacy_and_security_settings">Inställningar för integritet och säkerhet</string>
+  <string name="mail_settings_preferences">Preferenser</string>
+  <string name="mail_settings_app">App</string>
+  <string name="mail_settings_email">E-post</string>
+  <string name="mail_settings_email_hint">E-post- och brevlådeinställningar</string>
+  <string name="mail_settings_folders_labels">Mappar och etiketter</string>
+  <string name="mail_settings_folders_labels_hint">Brevlådeorganisation</string>
+  <string name="mail_settings_spam_and_custom_filters">Skräppost och anpassade filter</string>
+  <string name="mail_settings_spam_and_custom_filters_hint">Automatiska åtgärder och sortering</string>
+  <string name="mail_settings_privacy_and_security">Integritet och säkerhet</string>
+  <string name="mail_settings_privacy_and_security_hint">E-postspårningsskydd</string>
+  <string name="mail_settings_app_hint">Anpassning av mobilapp</string>
   <string name="mail_settings_theme">Tema</string>
-  <string name="mail_settings_push_notifications">Push-notiser</string>
   <string name="mail_settings_auto_lock">Autolås</string>
   <string name="mail_settings_alternative_routing">Alternativ routing</string>
-  <string name="mail_settings_app_language">App-språk</string>
+  <string name="mail_settings_app_language">Appspråk</string>
   <string name="mail_settings_combined_contacts">Kombinerade kontakter</string>
-  <string name="mail_settings_local_cache">Lokal cache</string>
-  <string name="mail_settings_local_cache_hint">Använt utrymme: %s</string>
-  <string name="mail_settings_local_cache_clear_button">Rensa data</string>
   <string name="mail_settings_swipe_actions">Svepåtgärder</string>
   <string name="mail_settings_combined_contacts_hint">Aktivera denna funktion för att automatiskt slutföra e-postadresser med hjälp av kontakter från alla dina inloggade konton.</string>
-  <string name="mail_settings_alternative_routing_hint">Om Proton-webbplatser blockeras tillåter denna inställning appen att prova alternativ nätverksrouting för att nå Proton, vilket kan vara användbart för att kringgå brandväggar eller nätverksproblem: Vi rekommenderar att du håller denna inställning på för större tillförlitlighet.</string>
+  <string name="mail_settings_alternative_routing_hint">Om Proton-webbplatser blockeras tillåter denna inställning att appen försöker med alternativ nätverksdirigering för att nå Proton, vilket kan vara användbart för att kringgå brandväggar eller nätverksproblem. Vi rekommenderar att du behåller denna inställning aktiverad för större tillförlitlighet.</string>
+  <!-- App customization settings-->
+  <string name="mail_settings_app_customization_title">Appanpassning</string>
+  <string name="mail_settings_app_customization_notification">Aviseringar</string>
+  <string name="mail_settings_app_customization_language">Språk</string>
+  <string name="mail_settings_app_customization_appearance">Utseende</string>
+  <string name="mail_settings_app_customization_protection">Skydd</string>
+  <string name="mail_settings_app_customization_protection_enabled_description">Automatiskt lås aktiverat</string>
+  <string name="mail_settings_app_customization_protection_disabled_description">Automatiskt lås inaktiverat</string>
+  <string name="mail_settings_app_customization_use_device_contacts">Använd enhetens kontakter</string>
+  <string name="mail_settings_app_customization_use_device_contacts_hint">Komplettera e-postadresser automatiskt med hjälp av kontakter från din enhet.</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email">Svep till nästa e-postmeddelande</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email_hint">Flytta snabbt till nästa eller föregående meddelande i din inkorg.</string>
+  <string name="mail_settings_app_customization_swipe_action">Svepåtgärd</string>
+  <string name="mail_settings_app_customization_swipe_action_hint">Ställ in snabbåtgärder, som att ta bort eller arkivera, när du sveper vänster eller höger.</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Anpassa verktygsfält</string>
+  <string name="mail_settings_app_customization_alternative_routing">Alternativ routing</string>
+  <string name="mail_settings_app_customization_alternative_routing_hint">Kringgå brandvägg eller nätverksproblem om Proton-webbplatser är blockerade.</string>
+  <string name="mail_settings_app_customization_view_application_logs">Visa applikationsloggar</string>
+  <string name="mail_settings_app_customization_mail_experience_header">Mail-upplevelse</string>
+  <string name="mail_settings_app_customization_advanced_header">Avancerat</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Systemstandard</string>
   <string name="mail_settings_theme_light">Ljus</string>
   <string name="mail_settings_theme_dark">Mörk</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Ingen information tillgänglig</string>
-  <string name="mail_settings_enabled">Aktiverad</string>
-  <string name="mail_settings_disabled">Inaktiverad</string>
-  <string name="mail_settings_allowed">Tillåtet</string>
-  <string name="mail_settings_denied">Nekad</string>
-  <string name="mail_settings_auto_detect">Automatisk upptäckt</string>
-  <string name="mail_settings_app_information">App-information</string>
-  <string name="mail_settings_app_version">App-version</string>
   <string name="mail_settings_account">Konto</string>
-  <!-- Account Settings items -->
-  <string name="mail_settings_subscription">Prenumeration</string>
-  <string name="mail_settings_password_management">Ändra lösenord</string>
-  <string name="mail_settings_recovery_email">E-post för återställning</string>
-  <string name="mail_settings_mailbox_size">Brevlådestorlek</string>
-  <string name="mail_settings_addresses">Adresser</string>
-  <string name="mail_settings_default_email_address">Standard e-postadress</string>
-  <string name="mail_settings_display_name_and_signature">Visningsnamn och signatur</string>
-  <string name="mail_settings_mailbox">Brevlåda</string>
-  <string name="mail_settings_privacy">Integritet</string>
-  <string name="mail_settings_labels">Etiketter</string>
-  <string name="mail_settings_folders">Mappar</string>
-  <string name="mail_settings_conversation_mode">Konversationsläge</string>
   <string name="mail_settings_not_set">Inte inställd</string>
   <string name="mail_settings_conversation_mode_hint">Gruppera e-postmeddelanden i samma konversation tillsammans i din inkorg eller visa dem separat</string>
-  <!-- Default email address settings -->
-  <string name="mail_settings_default_email_address_title">Standard e-postadress</string>
-  <string name="mail_settings_default_email_address_inactive_addresses">Inaktiva adresser</string>
-  <string name="mail_settings_default_email_address_no_inactive_addresses">Inga inaktiva adresser</string>
-  <string name="mail_settings_default_email_address_error_loading">Fel vid laddning av inställningar</string>
-  <string name="mail_settings_default_email_address_error_update">Fel vid uppdatering av inställningar</string>
-  <string name="mail_settings_default_email_address_error_update_subscription">Uppgradera till ett betalt paket för att ställa in denna adress som standard</string>
-  <!-- Display name, signature, mobile footer -->
-  <string name="mail_settings_identity_title">Visa namn &amp; signatur</string>
-  <string name="mail_settings_identity_save_button">Spara</string>
-  <string name="mail_settings_identity_display_name">Visa namn</string>
-  <string name="mail_settings_identity_display_name_hint">Visa namn</string>
-  <string name="mail_settings_identity_signature">Signatur</string>
-  <string name="mail_settings_identity_signature_hint">Signatur</string>
-  <string name="mail_settings_identity_mobile_footer">Mobilsignatur</string>
-  <string name="mail_settings_identity_mobile_footer_subtext">Detta läggs till efter din signatur.</string>
-  <string name="mail_settings_identity_mobile_footer_hint">Mobilsignatur</string>
-  <string name="mail_settings_identity_mobile_footer_default_free">Skickat från Proton Mail Android</string>
-  <string name="mail_settings_identity_error_updating">Fel vid uppdatering av inställningar</string>
-  <string name="mail_settings_identity_error_loading">Fel vid laddning av inställningar</string>
   <!-- Privacy settings -->
+  <string name="mail_settings_privacy">Integritet</string>
   <string name="mail_settings_privacy_auto_show_remote_content">Visa fjärrinnehåll automatiskt</string>
   <string name="mail_settings_privacy_auto_show_embedded_images">Visa inbäddade bilder automatiskt</string>
-  <string name="mail_settings_privacy_prevent_taking_screenshots">Förhindra att ta skärmdumpar</string>
+  <string name="mail_settings_privacy_prevent_taking_screenshots">Förhindra tagning av skärmdumpar</string>
   <string name="mail_settings_privacy_request_link_confirmation">Begär länkbekräftelse</string>
   <string name="mail_settings_privacy_background_sync">Bakgrundssynkronisering</string>
-  <string name="mail_settings_privacy_background_sync_description">Om detta alternativ är aktiverat kommer appen synkroniseras med servern i bakgrunden. Inaktivering av denna funktion kommer även att inaktivera push-notiser.</string>
+  <string name="mail_settings_privacy_background_sync_description">Om det här alternativet är aktiverat synkroniseras appen med servern i bakgrunden. Om du inaktiverar den här funktionen inaktiveras även notifikationer.</string>
   <string name="mail_settings_privacy_error_updating">Fel vid uppdatering av inställningar</string>
   <string name="mail_settings_privacy_error_loading">Fel vid laddning av inställningar</string>
   <!-- Swipe Actions -->
@@ -97,20 +87,26 @@
   <string name="mail_settings_swipe_actions_subtitle">Ställ in svepgester för att komma åt de mest använda åtgärderna.</string>
   <string name="mail_settings_swipe_right_name">Vänster till höger</string>
   <string name="mail_settings_swipe_left_name">Höger till vänster</string>
+  <string name="mail_settings_swipe_action_none_title">Inte inställt</string>
   <string name="mail_settings_swipe_action_archive_title">Arkiv</string>
   <string name="mail_settings_swipe_action_read_title">Oläst</string>
   <string name="mail_settings_swipe_action_spam_title">Skräppost</string>
   <string name="mail_settings_swipe_action_star_title">Stjärnmärk</string>
   <string name="mail_settings_swipe_action_trash_title">Papperskorg</string>
+  <string name="mail_settings_swipe_action_label_as_title">Märk som…</string>
+  <string name="mail_settings_swipe_action_move_to_title">Flytta till…</string>
+  <string name="mail_settings_swipe_action_none_description">Ingen</string>
   <string name="mail_settings_swipe_action_archive_description">Flytta till arkiv</string>
   <string name="mail_settings_swipe_action_read_description">Markera som oläst/läst</string>
   <string name="mail_settings_swipe_action_spam_description">Flytta till skräppost</string>
   <string name="mail_settings_swipe_action_star_description">Stjärnmärk/ta bort stjärnmärking</string>
   <string name="mail_settings_swipe_action_trash_description">Flytta till papperskorgen</string>
+  <string name="mail_settings_swipe_action_label_as_description">Märk som…</string>
+  <string name="mail_settings_swipe_action_move_to_description">Flytta till…</string>
   <!-- Notification settings -->
-  <string name="mail_settings_notifications_title">Push-notiser</string>
+  <string name="mail_settings_notifications_title">Notifikationer</string>
   <string name="mail_settings_notifications_extended_notifications_title">Utökade aviseringar</string>
-  <string name="mail_settings_notifications_extended_notifications_summary">Slå på denna funktion för att se e-postens avsändare i push-notiserna.</string>
+  <string name="mail_settings_notifications_extended_notifications_summary">Aktivera funktionen för att se e-postens avsändare i notifikationerna.</string>
   <string name="mail_settings_notifications_notifications_settings">Aviseringsinställningar</string>
   <string name="mail_settings_notifications_notifications_settings_hint">Navigera till systemets aviseringsinställningar</string>
   <string name="mail_settings_notifications_update_error">Fel vid uppdatering av inställningar</string>
@@ -120,7 +116,7 @@
   <string name="mail_settings_auto_lock_item_title">Autolås app</string>
   <string name="mail_settings_auto_lock_item_description">Slå på denna funktion för att automatiskt låsa din app och använd en PIN-kod för att låsa upp den.</string>
   <string name="mail_settings_auto_lock_change_pin_description">Ändra PIN-kod</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Timer för autolås</string>
+  <string name="mail_settings_auto_lock_item_timer_title">Autolåstimer</string>
   <string name="mail_settings_auto_lock_immediately">Omedelbart</string>
   <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minuters inaktivitet</string>
   <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minuters inaktivitet</string>
@@ -128,10 +124,10 @@
   <string name="mail_settings_auto_lock_item_timer_description_one_day">1 dags inaktivitet</string>
   <string name="mail_settings_auto_lock_update_error">Fel vid uppdatering av inställningar</string>
   <string name="mail_settings_pin_insertion_input_title">Infoga PIN-kod</string>
-  <string name="mail_settings_pin_insertion_set_title">Ställ in PIN-kod</string>
+  <string name="mail_settings_pin_insertion_set_title">Välj PIN-kod</string>
   <string name="mail_settings_pin_insertion_confirm_title">Bekräfta PIN-kod</string>
   <string name="mail_settings_pin_insertion_lock_icon_description">Låsikon</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">Pin dot</string>
+  <string name="mail_settings_pin_insertion_pin_dot_description">Fästpunkt</string>
   <string name="mail_settings_pin_insertion_backspace_description">Backsteg</string>
   <string name="mail_settings_pin_insertion_biometric_description">Biometrisk autentisering</string>
   <string name="mail_settings_pin_insertion_button_create">Skapa</string>
@@ -142,10 +138,10 @@
     <item quantity="other">%s återstående försök.</item>
   </plurals>
   <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="one">%s återstående försök innan all data raderas av säkerhetsskäl</item>
-    <item quantity="other">%s återstående försök före all data raderas av säkerhetsskäl</item>
+    <item quantity="one">%s försök kvar innan data raderas av säkerhetsskäl</item>
+    <item quantity="other">%s försök kvar innan data raderas av säkerhetsskäl</item>
   </plurals>
-  <string name="mail_settings_pin_insertion_error_unknown">Det var ett fel att verifiera din PIN-kod.</string>
+  <string name="mail_settings_pin_insertion_error_unknown">Ett fel uppstod vid verifieringen av din PIN-kod.</string>
   <string name="mail_settings_pin_insertion_signout_text">Logga ut</string>
   <string name="mail_settings_pin_insertion_signout_dialog_title">Logga ut</string>
   <string name="mail_settings_pin_insertion_signout_dialog_description">Är du säker på att du vill logga ut?</string>
@@ -153,8 +149,6 @@
   <string name="mail_settings_pin_insertion_signout_dialog_cancel">Nej</string>
   <string name="mail_settings_pin_insertion_created_success">PIN-kod skapad.</string>
   <string name="mail_settings_pin_insertion_changed_success">PIN-kod ändrad.</string>
-  <!-- Local storage -->
-  <string name="mail_settings_clearing_cached_data">Rensar lokal cachad data…</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Ett fel uppstod. Försök igen.</string>
   <!-- strings used for biometric enrollment -->

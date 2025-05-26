@@ -18,12 +18,15 @@
   -->
 <resources>
   <string name="expiration_expired">已過期</string>
-  <string name="expiration_days_arg">%d 天</string>
-  <string name="expiration_hours_arg">%d 時</string>
-  <string name="expiration_minutes_arg">%d 分</string>
+  <string name="expiration_days_arg">%d天</string>
+  <string name="expiration_hours_arg">%d小時</string>
+  <string name="expiration_minutes_arg">%d分鐘</string>
   <string name="retry">重試</string>
   <string name="toolbar_back_content_description">回到前一個畫面</string>
   <string name="x_error_not_logged_in">尚未登入</string>
+  <string name="action_customize_toolbar">自訂工具列</string>
+  <string name="action_customize_toolbar_description">自訂工具列</string>
+  <string name="action_customize_toolbar_content_description">自訂工具列</string>
   <string name="action_reply">回覆</string>
   <string name="action_reply_all">回覆全部收件者</string>
   <string name="action_forward">轉發</string>
@@ -35,7 +38,7 @@
   <string name="action_mark_unread_description">標示為未讀取</string>
   <string name="action_star_description">標注星號</string>
   <string name="action_unstar_description">取消星號</string>
-  <string name="action_label_description">套用標籤</string>
+  <string name="action_label_description">加上標籤</string>
   <string name="action_move_description">移至</string>
   <string name="action_trash_description">移至垃圾桶</string>
   <string name="action_delete_description">刪除</string>
@@ -52,6 +55,9 @@
   <string name="action_sender_emails_description">設定動作套用於日後接獲寄件者傳送的電郵</string>
   <string name="action_save_attachments_description">儲存附件</string>
   <string name="action_more_description">更多</string>
+  <string name="action_inbox_description">收件匣</string>
+  <string name="action_pin_description">釘選</string>
+  <string name="action_unpin_description">取消釘選</string>
   <string name="action_reply_content_description">回覆</string>
   <string name="action_reply_to_content_description">回覆 %s</string>
   <string name="action_reply_all_content_description">回覆全部收件者</string>
@@ -60,12 +66,15 @@
   <string name="action_mark_unread_content_description">標記為未讀</string>
   <string name="action_star_content_description">加上星號</string>
   <string name="action_unstar_content_description">移除星號</string>
-  <string name="action_label_content_description">標記為</string>
+  <string name="action_label_content_description">加上標籤</string>
   <string name="action_move_content_description">移至</string>
   <string name="action_trash_content_description">丟到垃圾桶</string>
   <string name="action_delete_content_description">刪除</string>
   <string name="action_archive_content_description">封存</string>
   <string name="action_spam_content_description">垃圾郵件</string>
+  <string name="action_inbox_content_description">收件匣</string>
+  <string name="action_pin_content_description">釘選</string>
+  <string name="action_unpin_content_description">取消釘選</string>
   <string name="action_view_in_light_mode_content_description">以淺色模式檢視郵件訊息</string>
   <string name="action_view_in_dark_mode_content_description">以深色模式檢視郵件訊息</string>
   <string name="action_print_content_description">列印</string>
@@ -115,4 +124,5 @@
   <string name="undo_button_label">復原</string>
   <string name="undo_success_message">動作復原</string>
   <string name="undo_failure_message">動作復原失敗</string>
+  <string name="feature_coming_soon">全新功能即將大展身手...</string>
 </resources>

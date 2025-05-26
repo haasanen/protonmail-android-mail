@@ -17,6 +17,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="mailbox_fab_compose_button_title">Tulis</string>
   <string name="mailbox_fab_compose_button_content_description">Tulis pesan baru</string>
   <string name="mailbox_toolbar_exit_selection_mode_button_content_description">Keluar mode pemilihan</string>
   <string name="mailbox_toolbar_menu_button_content_description">Menu</string>
@@ -25,7 +26,10 @@
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">Hapus kueri pencarian</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">Masukkan kueri pencarian</string>
   <plurals name="mailbox_toolbar_selected_count">
-    <item quantity="other">%d Dipilih</item>
+    <item quantity="other">%d Terpilih</item>
+  </plurals>
+  <plurals name="filter_unread_button_text">
+    <item quantity="other">Belum dibaca %s</item>
   </plurals>
   <string name="mailbox_default_recipient">(Tanpa Penerima)</string>
   <string name="mailbox_default_sender">(Tanpa Pengirim)</string>
@@ -33,11 +37,12 @@
   <string name="mailbox_error_message_generic">Kotak pesan gagal dimuat</string>
   <string name="mailbox_error_message_unexpected">Terdapat kesalahan yang tidak terduga</string>
   <string name="mailbox_is_empty_title">Tidak ada pesan</string>
-  <string name="mailbox_is_empty_description">Anda sudah terkini</string>
+  <string name="trash_is_empty_title">Sampah kosong</string>
+  <string name="mailbox_is_empty_description">Sepertinya Anda telah membaca seisi kotak surat Anda untuk saat ini</string>
   <string name="mailbox_is_empty_no_unread_messages_title">Tidak ada pesan yang belum dibaca</string>
   <string name="mailbox_is_empty_folder_description">Folder ini kosong</string>
   <string name="mailbox_is_empty_spam_description">Folder spam Anda kosong</string>
-  <string name="mailbox_is_empty_trash_description">Sampah kosong</string>
+  <string name="mailbox_is_empty_trash_description">Sepertinya tidak ada apa-apa di sini</string>
   <plurals name="mailbox_action_trash">
     <item quantity="other">%d pesan dipindahkan ke Sampah</item>
   </plurals>
@@ -68,16 +73,22 @@
   <string name="mailbox_action_archive_message">Pesan dipindahkan ke arsip</string>
   <string name="mailbox_action_spam_message">Pesan dipindahkan ke spam</string>
   <string name="mailbox_search_placeholder_text">Cari pesan</string>
-  <string name="mailbox_search_no_results_title">Tidak ada hasil yang ditemukan</string>
-  <string name="mailbox_search_no_results_explanation">Cari tanggal, nama, alamat email, atau baris subjek</string>
+  <string name="mailbox_search_no_results_title">Tidak ada kecocokan</string>
+  <string name="mailbox_search_no_results_explanation">Anda dapat memperbarui atau menghapus kueri pencarian Anda.</string>
   <string name="mailbox_action_button_clear_trash">Kosongkan Sampah</string>
   <string name="mailbox_action_button_clear_spam">Kosongkan Spam</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Tingkatkan akun Anda untuk menghapus email yang telah berada di sampah atau spam selama lebih dari 30 hari secara otomatis</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Pelajari lebih lanjut</string>
+  <string name="mailbox_action_clear_trash_spam_banner_text">Pesan yang telah berada di sampah dan spam selama lebih dari 30 hari akan dihapus secara otomatis.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Kosongkan folder Sampah</string>
   <string name="mailbox_action_clear_spam_dialog_title">Kosongkan folder Spam</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">Apakah Anda yakin ingin menghapus seluruh pesan dalam folder Sampah Anda secara permanen?</string>
   <string name="mailbox_action_clear_spam_dialog_body_message">Apakah Anda yakin ingin menghapus seluruh pesan dalam folder Spam Anda secara permanen?</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Apakah Anda yakin ingin menghapus seluruh percakapan dalam folder Spam Anda secara permanen?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Tindakan pembersihan dijadwalkan"</string>
+  <!-- Attachment download -->
+  <string name="mailbox_attachment_download_started">Membuka lampiran…</string>
+  <string name="mailbox_attachment_download_error">Gagal membuka lampiran. Silakan coba lagi.</string>
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">Peringatan</string>
   <string name="storage_first_limit_exceeded_warning_dialog_text">Ruang penyimpanan akun Proton Anda telah lebih dari 80% penuh. Kosongkan ruang yang ada atau tingkatkan akun Anda untuk memperoleh lebih banyak ruang.</string>
@@ -88,4 +99,18 @@
   <string name="storage_quota_over_dialog_title">Peringatan</string>
   <string name="storage_quota_over_dialog_text">Ruang penyimpanan akun Proton Anda telah 100% penuh. Anda tidak akan dapat mengirim atau menerima email baru kecuali Anda menghapus beberapa email secara permanen atau meningkatkan akun untuk ruang penyimpanan yang lebih.</string>
   <string name="storage_quota_over_dialog_confirm_button">OK</string>
+  <string name="mailbox_action_delete_failed">Pesan gagal dihapus</string>
+  <string name="select_all">Pilih Semua</string>
+  <string name="deselect_all">Lepas Semua Pilihan</string>
+  <!--    Expiry messages-->
+  <plurals name="expires_in_days">
+    <item quantity="other">Kedaluwarsa dalam %d hari</item>
+  </plurals>
+  <plurals name="expires_in_hours">
+    <item quantity="other">Kedaluwarsa dalam %d jam</item>
+  </plurals>
+  <plurals name="expires_in_minutes">
+    <item quantity="other">Kedaluwarsa dalam %d menit</item>
+  </plurals>
+  <string name="expires_in_less_than_a_minute">Kedaluwarsa dalam kurang dari satu menit</string>
 </resources>

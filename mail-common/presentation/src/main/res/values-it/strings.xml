@@ -24,6 +24,9 @@
   <string name="retry">Riprova</string>
   <string name="toolbar_back_content_description">Torna alla schermata precedente</string>
   <string name="x_error_not_logged_in">Accesso non effettuato</string>
+  <string name="action_customize_toolbar">Barra degli strumenti</string>
+  <string name="action_customize_toolbar_description">Personalizza la barra degli strumenti</string>
+  <string name="action_customize_toolbar_content_description">Personalizza la barra degli strumenti</string>
   <string name="action_reply">Rispondi</string>
   <string name="action_reply_all">Rispondi a tutti</string>
   <string name="action_forward">Inoltra</string>
@@ -35,8 +38,8 @@
   <string name="action_mark_unread_description">Segna come non letto</string>
   <string name="action_star_description">Segna come importante</string>
   <string name="action_unstar_description">Segna come non importante</string>
-  <string name="action_label_description">Etichetta come...</string>
-  <string name="action_move_description">Sposta in...</string>
+  <string name="action_label_description">Etichetta l\'elemento</string>
+  <string name="action_move_description">Sposta l\'elemento</string>
   <string name="action_trash_description">Sposta nel cestino</string>
   <string name="action_delete_description">Elimina</string>
   <string name="action_archive_description">Sposta nell\'archivio</string>
@@ -52,6 +55,9 @@
   <string name="action_sender_emails_description">Imposta un\'azione per tutte le email future provenienti da questo mittente</string>
   <string name="action_save_attachments_description">Salva gli allegati</string>
   <string name="action_more_description">Altro</string>
+  <string name="action_inbox_description">Posta in arrivo</string>
+  <string name="action_pin_description">Fissa l\'elemento</string>
+  <string name="action_unpin_description">Non fissare l\'elemento</string>
   <string name="action_reply_content_description">Rispondi</string>
   <string name="action_reply_to_content_description">Rispondi a %s</string>
   <string name="action_reply_all_content_description">Rispondi a tutti</string>
@@ -60,12 +66,15 @@
   <string name="action_mark_unread_content_description">Segna come non letto</string>
   <string name="action_star_content_description">Segna come importante</string>
   <string name="action_unstar_content_description">Segna come non importante</string>
-  <string name="action_label_content_description">Etichetta come...</string>
-  <string name="action_move_content_description">Sposta in...</string>
+  <string name="action_label_content_description">Etichetta l\'elemento</string>
+  <string name="action_move_content_description">Sposta l\'elemento</string>
   <string name="action_trash_content_description">Sposta nel cestino</string>
   <string name="action_delete_content_description">Elimina</string>
   <string name="action_archive_content_description">Sposta nell\'archivio</string>
   <string name="action_spam_content_description">Sposta in spam</string>
+  <string name="action_inbox_content_description">Vai alla Posta in arrivo</string>
+  <string name="action_pin_content_description">Fissa l\'elemento</string>
+  <string name="action_unpin_content_description">Non fissare l\'elemento</string>
   <string name="action_view_in_light_mode_content_description">Visualizza in modalità chiara</string>
   <string name="action_view_in_dark_mode_content_description">Visualizza in modalità scura</string>
   <string name="action_print_content_description">Stampa</string>
@@ -115,4 +124,5 @@
   <string name="undo_button_label">Annulla</string>
   <string name="undo_success_message">Azione annullata</string>
   <string name="undo_failure_message">Annullamento dell\'azione non riuscito</string>
+  <string name="feature_coming_soon">Funzionalità in arrivo…</string>
 </resources>

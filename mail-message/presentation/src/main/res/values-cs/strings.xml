@@ -17,18 +17,25 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <plurals name="attachment_count_label">
-    <item quantity="one">%d soubor</item>
-    <item quantity="few">%d soubory</item>
-    <item quantity="many">%d souborů</item>
-    <item quantity="other">%d souborů</item>
+  <plurals name="selected_count_title">
+    <item quantity="one">Vybráno: %d</item>
+    <item quantity="few">Vybráno: %d</item>
+    <item quantity="many">Vybráno: %d</item>
+    <item quantity="other">Vybráno: %d</item>
   </plurals>
+  <plurals name="attachment_count_label">
+    <item quantity="one">%d příloha</item>
+    <item quantity="few">%d přílohy</item>
+    <item quantity="many">%d příloh</item>
+    <item quantity="other">%d příloh</item>
+  </plurals>
+  <string name="attachments">přílohy</string>
   <string name="attachment_show_more_label">+%1$d další(ch)</string>
   <string name="attachment_permission_dialog_title">Je vyžadováno oprávnění</string>
   <string name="attachment_permission_dialog_message">Proton Mail potřebuje ke stažení přílohy oprávnění k přístupu do vašeho úložiště.</string>
   <string name="attachment_permission_dialog_dismiss_button">OK</string>
   <string name="attachment_permission_dialog_action_button">Nastavení</string>
-  <string name="attachment_type_description">Soubor %1$s</string>
+  <string name="attachment_type_description">%1$s soubor</string>
   <!-- Attachment Types -->
   <string name="attachment_type_archive">Archiv</string>
   <string name="attachment_type_image">Obrázek</string>
@@ -40,11 +47,19 @@
   <string name="attachment_type_document">Dokument</string>
   <string name="attachment_type_spreadsheet">Tabulka</string>
   <string name="attachment_type_presentation">Prezentace</string>
+  <string name="attachment_type_calendar">Kalendář</string>
+  <string name="attachment_type_code">Kód</string>
+  <string name="attachment_type_font">Písmo</string>
+  <string name="attachment_type_key">Klíč</string>
+  <string name="attachment_type_keynote">Keynote</string>
+  <string name="attachment_type_numbers">Numbers</string>
+  <string name="attachment_type_pages">Pages</string>
+  <string name="attachment_type_word">Word</string>
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">Přesunout do...</string>
   <string name="bottom_sheet_done_action">Hotovo</string>
   <string name="bottom_sheet_archive_action">Také archivovat?</string>
-  <string name="bottom_sheet_label_as_title">Přidat štítek...</string>
+  <string name="bottom_sheet_label_as_title">Označit jako</string>
   <string name="bottom_sheet_more_header_message_from">Zpráva od %s</string>
   <!-- Message body link actions -->
   <string name="message_link_long_click_copy">Kopírovat odkaz</string>
@@ -62,6 +77,8 @@
   <string name="contact_actions_new_message_description">Napište novou zprávu pro tento kontakt</string>
   <string name="contact_actions_add_contact">Přidat kontakt</string>
   <string name="contact_actions_add_contact_description">Uložte tohoto příjemce jako kontakt</string>
+  <string name="contact_actions_block_contact">Zablokovat tento kontakt</string>
+  <string name="contact_actions_block_contact_description">Zablokovat tento kontakt</string>
   <string name="contact_actions_view_contact_details">Zobrazit detaily kontaktu</string>
   <string name="contact_actions_view_contact_details_description">Zobrazit detaily kontaktu</string>
   <!-- Device Contacts permission dialog -->

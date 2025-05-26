@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 Proton AG
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="app_name_mail">Proton Mail</string>
+  <string name="login_help_close">Stäng</string>
+  <string name="login_help_title">Hur kan vi hjälpa dig?</string>
+  <string name="login_help_forgot_username">Glömt användarnamn</string>
+  <string name="login_help_forgot_password">Glömt lösenord</string>
+  <string name="login_help_other_issues">Andra inloggningsproblem</string>
+  <string name="login_help_contact_needed">Behöver du fortfarande hjälp? Kontakta oss direkt.</string>
+  <string name="login_help_customer_support">Kundsupport</string>
+  <string name="welcome_subtitle_mail">Integritet. Säkerhet. Bekvämlighet. Krypterad e-post som ger dig full kontroll över dina personuppgifter.</string>
+  <string name="welcome_sign_in">Logga in</string>
+  <string name="welcome_sign_up">Skapa ett konto</string>
+  <string name="welcome_proton_privacy_by_default">Proton - Privacy by default</string>
+  <string name="auth_login">Logga in</string>
+  <string name="auth_login_close">Stäng</string>
+  <string name="auth_login_help">Hjälp</string>
+  <string name="auth_sign_in">Logga in</string>
+  <string name="auth_username">Användarnamn</string>
+  <string name="auth_email">E-post</string>
+  <string name="auth_password">Lösenord</string>
+  <string name="auth_username_placeholder">Användarnamn eller e-postadress</string>
+  <string name="auth_password_placeholder">Lösenord</string>
+  <string name="auth_login_assistive_text">Ange din e-postadress eller användarnamn för Proton.</string>
+  <string name="auth_account_details">Ange dina kontodetaljer för Proton.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Fel lösenord, lösenfras eller nyckelsalt.</string>
+  <string name="auth_login_error_invalid_action_human_verification_challenge">Mänsklig verifiering krävs.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Felaktiga inloggningsuppgifter. Försök igen.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Tvåfaktorsautentisering stöds inte.</string>
+  <string name="auth_second_factor_title">Tvåfaktorsautentisering</string>
+  <string name="auth_second_factor_authenticate">Autentisera</string>
+  <string name="auth_second_factor_totp_input_help">Ange den 6-siffriga koden.</string>
+  <string name="auth_second_factor_totp_input_label">Tvåfaktorskod</string>
+  <string name="auth_second_factor_recovery_help">Ange en återställningskod med 8 tecken.</string>
+  <string name="auth_second_factor_recovery_label">Återställningskod</string>
+  <string name="auth_second_factor_switch_to_recovery">Använd återställningskod</string>
+  <string name="auth_second_factor_switch_to_totp">Använd tvåfaktorskod</string>
+  <string name="auth_two_pass_title">Lås upp din brevlåda</string>
+  <string name="auth_two_pass_input_label">Lösenord för brevlåda</string>
+  <string name="auth_two_pass_unlock">Lås upp</string>
+  <string name="auth_two_pass_forgot_password">Glömt lösenord</string>
+  <string name="auth_two_pass_input_empty">Fältet för lösenord får inte vara tomt</string>
+  <string name="auth_signup_title">Skapa ett Proton-konto</string>
+  <string name="auth_signup_subtitle">Ett konto för alla Proton-tjänster</string>
+  <string name="auth_signup_username_assistive_text">Fältet för användarnamn får inte vara tomt.</string>
+  <string name="auth_signup_email_assistive_text">Fältet för e-postadress får inte vara tomt.</string>
+  <string name="auth_signup_next">Nästa</string>
+  <string name="auth_signup_email_username">Användarnamn eller e-postadress</string>
+  <string name="auth_signup_create_password">Skapa ett lösenord</string>
+  <string name="auth_signup_password">Lösenord</string>
+  <string name="auth_signup_repeat_password">Upprepa lösenord</string>
+  <string name="auth_signup_terms_privacy_conditions_footer">Genom att klicka på Nästa godkänner du Protons %1$s och %2$s</string>
+  <string name="auth_signup_terms_learn_more">Användarvillkor</string>
+  <string name="auth_signup_privacy_policy_learn_more">Integritetspolicy</string>
+  <string name="auth_signup_internal_footnote">Du behöver en Proton-adress för att kunna använda Proton Mail och Proton Calendar</string>
+  <string name="auth_signup_use_current_email">Använd din nuvarande e-postadress istället</string>
+  <string name="auth_signup_get_encrypted_email">Skaffa en ny krypterad e-postadress</string>
+  <string name="auth_signup_external_footnote">Med en Proton-adress kan du använda alla Protons tjänster</string>
+  <string name="auth_signup_recovery_skip">Hoppa över</string>
+  <string name="auth_signup_recovery_title">Ställ in återställningsmetod (valfritt)</string>
+  <string name="auth_signup_recovery_subtitle">Vi skickar återställningsinstruktioner till denna e-postadress eller telefonnummer om du blir utelåst från ditt konto.</string>
+  <string name="auth_signup_recovery_email">E-postadress</string>
+  <string name="auth_signup_recovery_phone">Telefon</string>
+  <string name="auth_signup_recovery_email_hint">E-postadress för återställning</string>
+  <string name="auth_signup_recovery_phone_hint">Telefonnummer för återställning</string>
+  <string name="auth_signup_phone_placeholder">XX XXX XX XX</string>
+  <string name="auth_signup_your_account_is_being_setup">Ditt konto håller på att skapas…</string>
+  <string name="auth_signup_please_wait">Det tar vanligtvis inte mer än en minut.</string>
+</resources>

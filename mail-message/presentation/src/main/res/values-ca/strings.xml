@@ -17,16 +17,21 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <plurals name="attachment_count_label">
-    <item quantity="one">%d fitxer</item>
-    <item quantity="other">%d fitxers</item>
+  <plurals name="selected_count_title">
+    <item quantity="one">%d seleccionat</item>
+    <item quantity="other">%d seleccionats</item>
   </plurals>
+  <plurals name="attachment_count_label">
+    <item quantity="one">%d adjunt</item>
+    <item quantity="other">%d adjunts</item>
+  </plurals>
+  <string name="attachments">adjunts</string>
   <string name="attachment_show_more_label">%1$d més</string>
   <string name="attachment_permission_dialog_title">Es requereix permís.</string>
   <string name="attachment_permission_dialog_message">Proton Mail necessita permís per accedir a l\'emmagatzematge per a descarregar l\'adjunt.</string>
   <string name="attachment_permission_dialog_dismiss_button">OK</string>
   <string name="attachment_permission_dialog_action_button">Preferències</string>
-  <string name="attachment_type_description">Tipus de fitxer: %1$s</string>
+  <string name="attachment_type_description">%1$s fitxer</string>
   <!-- Attachment Types -->
   <string name="attachment_type_archive">Arxiu</string>
   <string name="attachment_type_image">Imatge</string>
@@ -38,11 +43,19 @@
   <string name="attachment_type_document">Document</string>
   <string name="attachment_type_spreadsheet">Full de càlcul</string>
   <string name="attachment_type_presentation">Presentació</string>
+  <string name="attachment_type_calendar">Calendari</string>
+  <string name="attachment_type_code">Codi</string>
+  <string name="attachment_type_font">Font</string>
+  <string name="attachment_type_key">Clau</string>
+  <string name="attachment_type_keynote">Keynote</string>
+  <string name="attachment_type_numbers">Numbers</string>
+  <string name="attachment_type_pages">Pages</string>
+  <string name="attachment_type_word">Word</string>
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">Mou a...</string>
   <string name="bottom_sheet_done_action">Fet</string>
   <string name="bottom_sheet_archive_action">Voleu arxivar també?</string>
-  <string name="bottom_sheet_label_as_title">Etiqueta com a…</string>
+  <string name="bottom_sheet_label_as_title">Etiqueta com a</string>
   <string name="bottom_sheet_more_header_message_from">Missatge de %s</string>
   <!-- Message body link actions -->
   <string name="message_link_long_click_copy">Copia l\'enllaç</string>
@@ -60,6 +73,8 @@
   <string name="contact_actions_new_message_description">Comenceu a compondre un missatge nou per a aquest contacte</string>
   <string name="contact_actions_add_contact">Afegeix un contacte</string>
   <string name="contact_actions_add_contact_description">Desa aquest destinatari com a contacte</string>
+  <string name="contact_actions_block_contact">Bloca aquest contacte</string>
+  <string name="contact_actions_block_contact_description">Bloca aquest contacte</string>
   <string name="contact_actions_view_contact_details">Mostra el detalls del contacte</string>
   <string name="contact_actions_view_contact_details_description">Visualitza els detalls del contacte</string>
   <!-- Device Contacts permission dialog -->

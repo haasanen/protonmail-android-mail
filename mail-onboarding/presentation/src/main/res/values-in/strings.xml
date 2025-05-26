@@ -26,9 +26,19 @@
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">Rapi dan teratur</string>
   <string name="onboarding_neat_and_tidy_description">Arsipkan, labeli, dan warnai pesan Anda untuk menciptakan kotak masuk khusus yang sempurna bagi Anda.</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">Dirombak dari dasar</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">Dirancang ulang sepenuhnya pada arsitektur Rust, Proton Mail yang baru dibenahi untuk memberikan performa, pengalaman pengguna, dan ketahanan kinerja.</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">Kotak masuk yang baru</string>
+  <string name="onboarding_new_inbox_description">Kami dengan bangga menghadirkan desain baru yang dinamis dan pengalaman pengguna yang ditingkatkan. Untuk saat ini, Anda dapat mempratinjau daftar dan tampilan pesan kami yang baru. </string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">Tanggapan Anda adalah kunci</string>
+  <string name="onboarding_feedback_is_key_description">Kami akan meluncurkan seluruh fitur yang ada dalam beberapa bulan ke depan. Mohon terus uji aplikasi kami dan beri tahu kami bagaimana kami dapat membuat aplikasi ini menjadi lebih baik!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Selanjutnya</string>
-  <string name="onboarding_get_started">Mulai</string>
+  <string name="onboarding_get_started">Mulai uji coba</string>
   <string name="onboarding_illustration_content_description">Ilustrasi pengenalan</string>
   <string name="onboarding_close_content_description">Tutup</string>
+  <string name="onboarding_introducing_next_gen_app">Memperkenalkan aplikasi generasi terbaru kami!</string>
 </resources>

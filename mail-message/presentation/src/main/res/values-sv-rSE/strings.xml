@@ -17,10 +17,15 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <plurals name="attachment_count_label">
-    <item quantity="one">%d fil</item>
-    <item quantity="other">%d filer</item>
+  <plurals name="selected_count_title">
+    <item quantity="one">%d valt</item>
+    <item quantity="other">%d valda</item>
   </plurals>
+  <plurals name="attachment_count_label">
+    <item quantity="one">%d bilaga</item>
+    <item quantity="other">%d bilagor</item>
+  </plurals>
+  <string name="attachments">bilagor</string>
   <string name="attachment_show_more_label">+%1$d till</string>
   <string name="attachment_permission_dialog_title">Behörighet krävs</string>
   <string name="attachment_permission_dialog_message">Proton Mail behöver behörighet att komma åt ditt lagringsutrymme för att ladda ner bilagan.</string>
@@ -38,11 +43,19 @@
   <string name="attachment_type_document">Dokument</string>
   <string name="attachment_type_spreadsheet">Kalkylblad</string>
   <string name="attachment_type_presentation">Presentation</string>
+  <string name="attachment_type_calendar">Kalender</string>
+  <string name="attachment_type_code">Kod</string>
+  <string name="attachment_type_font">Typsnitt</string>
+  <string name="attachment_type_key">Nyckel</string>
+  <string name="attachment_type_keynote">Keynote</string>
+  <string name="attachment_type_numbers">Numbers</string>
+  <string name="attachment_type_pages">Pages</string>
+  <string name="attachment_type_word">Word</string>
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">Flytta till...</string>
   <string name="bottom_sheet_done_action">Klar</string>
   <string name="bottom_sheet_archive_action">Arkivera också?</string>
-  <string name="bottom_sheet_label_as_title">Märk som...</string>
+  <string name="bottom_sheet_label_as_title">Märk som</string>
   <string name="bottom_sheet_more_header_message_from">Meddelande från %s</string>
   <!-- Message body link actions -->
   <string name="message_link_long_click_copy">Kopiera länk</string>
@@ -60,6 +73,8 @@
   <string name="contact_actions_new_message_description">Börja skriva ett nytt meddelande för denna kontakt</string>
   <string name="contact_actions_add_contact">Lägg till kontakt</string>
   <string name="contact_actions_add_contact_description">Spara denna mottagare som en kontakt</string>
+  <string name="contact_actions_block_contact">Blockera denna kontakt</string>
+  <string name="contact_actions_block_contact_description">Blockera denna kontakt</string>
   <string name="contact_actions_view_contact_details">Visa kontaktdetaljer</string>
   <string name="contact_actions_view_contact_details_description">Visa detaljer om kontakten</string>
   <!-- Device Contacts permission dialog -->

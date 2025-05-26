@@ -17,7 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="mailbox_fab_compose_button_content_description">Нове повідомлення</string>
+  <string name="mailbox_fab_compose_button_title">Compose</string>
+  <string name="mailbox_fab_compose_button_content_description">Compose new message</string>
   <string name="mailbox_toolbar_exit_selection_mode_button_content_description">Вийти з режиму вибору</string>
   <string name="mailbox_toolbar_menu_button_content_description">Меню</string>
   <string name="mailbox_toolbar_search_button_content_description">Пошук</string>
@@ -30,22 +31,29 @@
     <item quantity="many">Вибрано %d</item>
     <item quantity="other">Вибрано %d</item>
   </plurals>
+  <plurals name="filter_unread_button_text">
+    <item quantity="one">Unread %s</item>
+    <item quantity="few">Unread %s</item>
+    <item quantity="many">Unread %s</item>
+    <item quantity="other">Unread %s</item>
+  </plurals>
   <string name="mailbox_default_recipient">(Немає отримувача)</string>
   <string name="mailbox_default_sender">(Немає відправника)</string>
   <string name="mailbox_error_message_offline">Не вдалося завантажити елементи, тому що ви офлайн</string>
   <string name="mailbox_error_message_generic">Не вдалося завантажити поштову скриньку</string>
   <string name="mailbox_error_message_unexpected">Щось пішло не так</string>
   <string name="mailbox_is_empty_title">Немає повідомлень</string>
-  <string name="mailbox_is_empty_description">Усе в актуальному стані</string>
+  <string name="trash_is_empty_title">Nothing in Trash</string>
+  <string name="mailbox_is_empty_description">Seems like you are all caught up for now</string>
   <string name="mailbox_is_empty_no_unread_messages_title">Немає непрочитаних повідомлень</string>
   <string name="mailbox_is_empty_folder_description">Ця тека порожня</string>
   <string name="mailbox_is_empty_spam_description">Тека зі спамом порожня</string>
-  <string name="mailbox_is_empty_trash_description">Смітник порожній</string>
+  <string name="mailbox_is_empty_trash_description">Looks empty over here</string>
   <plurals name="mailbox_action_trash">
-    <item quantity="one">Повідомлення переміщено до смітника</item>
-    <item quantity="few">%d повідомлення переміщено до смітника</item>
-    <item quantity="many">%d повідомлень переміщено до смітника</item>
-    <item quantity="other">%d повідомлень переміщено до смітника</item>
+    <item quantity="one">Message moved to Trash</item>
+    <item quantity="few">%d messages moved to Trash</item>
+    <item quantity="many">%d messages moved to Trash</item>
+    <item quantity="other">%d messages moved to Trash</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation_dialog_title">
     <item quantity="one">Видалити розмову</item>
@@ -60,16 +68,16 @@
     <item quantity="other">Видалити %d повідомлень</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation_dialog_message">
-    <item quantity="one">Ви дійсно бажаєте остаточно видалити цю розмову?</item>
-    <item quantity="few">Ви дійсно бажаєте остаточно видалити ці розмови?</item>
-    <item quantity="many">Ви дійсно бажаєте остаточно видалити ці розмови?</item>
-    <item quantity="other">Ви дійсно бажаєте остаточно видалити ці розмови?</item>
+    <item quantity="one">Ви дійсно хочете остаточно видалити цю розмову?</item>
+    <item quantity="few">Ви дійсно хочете остаточно видалити ці розмови?</item>
+    <item quantity="many">Ви дійсно хочете остаточно видалити ці розмови?</item>
+    <item quantity="other">Ви дійсно хочете остаточно видалити ці розмови?</item>
   </plurals>
   <plurals name="mailbox_action_delete_message_dialog_message">
-    <item quantity="one">Ви дійсно бажаєте остаточно видалити це повідомлення?</item>
-    <item quantity="few">Ви дійсно бажаєте остаточно видалити ці повідомлення?</item>
-    <item quantity="many">Ви дійсно бажаєте остаточно видалити ці повідомлення?</item>
-    <item quantity="other">Ви дійсно бажаєте остаточно видалити ці повідомлення?</item>
+    <item quantity="one">Ви дійсно хочете остаточно видалити це повідомлення?</item>
+    <item quantity="few">Ви дійсно хочете остаточно видалити ці повідомлення?</item>
+    <item quantity="many">Ви дійсно хочете остаточно видалити ці повідомлення?</item>
+    <item quantity="other">Ви дійсно хочете остаточно видалити ці повідомлення?</item>
   </plurals>
   <plurals name="mailbox_action_delete_message">
     <item quantity="one">Повідомлення остаточно видалено</item>
@@ -88,20 +96,26 @@
   <string name="mailbox_action_failed_retrieving_colors">Не вдалося отримати налаштування кольору</string>
   <string name="mailbox_action_move_messages_failed">Помилка операції переміщення</string>
   <string name="mailbox_action_move_messages_failed_retrieving_folders">Не вдалося отримати теки</string>
-  <string name="mailbox_action_trash_message">Повідомлення переміщено до смітника</string>
-  <string name="mailbox_action_archive_message">Повідомлення переміщено до архіву</string>
-  <string name="mailbox_action_spam_message">Повідомлення переміщено до спаму</string>
+  <string name="mailbox_action_trash_message">Message moved to trash</string>
+  <string name="mailbox_action_archive_message">Message moved to archive</string>
+  <string name="mailbox_action_spam_message">Message moved to spam</string>
   <string name="mailbox_search_placeholder_text">Пошук повідомлень</string>
-  <string name="mailbox_search_no_results_title">Нічого не знайдено</string>
-  <string name="mailbox_search_no_results_explanation">Пошук за датою, ім\'ям, електронною адресою або темою листа</string>
+  <string name="mailbox_search_no_results_title">No matches</string>
+  <string name="mailbox_search_no_results_explanation">You can either update your search query or clear it.</string>
   <string name="mailbox_action_button_clear_trash">Очистити смітник</string>
   <string name="mailbox_action_button_clear_spam">Очистити спам</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Upgrade to automatically delete messages that have been in trash or spam for more than 30 days</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Learn more</string>
+  <string name="mailbox_action_clear_trash_spam_banner_text">Messages in trash and spam for over 30 days will be automatically deleted.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Очистити теку смітника</string>
   <string name="mailbox_action_clear_spam_dialog_title">Очистити теку спаму</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">Ви дійсно хочете остаточно видалити всі повідомлення в теці «Смітник»?</string>
-  <string name="mailbox_action_clear_spam_dialog_body_message">Are you sure you want to permanently delete all messages in your Spam folder?</string>
-  <string name="mailbox_action_clear_spam_dialog_body_conversation">Are you sure you want to permanently delete all conversations in your Spam folder?</string>
+  <string name="mailbox_action_clear_spam_dialog_body_message">Ви дійсно хочете остаточно видалити всі повідомлення у теці «Спам»?</string>
+  <string name="mailbox_action_clear_spam_dialog_body_conversation">Ви дійсно хочете остаточно видалити всі розмови у теці «Спам»?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Заплановано операцію з очищення"</string>
+  <!-- Attachment download -->
+  <string name="mailbox_attachment_download_started">Opening attachment…</string>
+  <string name="mailbox_attachment_download_error">Unable to open the attachment. Please try again.</string>
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">Попередження</string>
   <string name="storage_first_limit_exceeded_warning_dialog_text">Сховище вашого облікового запису Proton заповнене більш ніж на 80%. Звільніть простір, або покращте тарифний план для отримання більшого сховища.</string>
@@ -112,4 +126,27 @@
   <string name="storage_quota_over_dialog_title">Попередження</string>
   <string name="storage_quota_over_dialog_text">Сховище вашого облікового запису Proton заповнене на 100%. Ви не зможете надсилати або отримувати електронні листи допоки ви назавжди не видалите деякі з них, або покращте тарифний план для отримання більшого сховища.</string>
   <string name="storage_quota_over_dialog_confirm_button">OK</string>
+  <string name="mailbox_action_delete_failed">Failed to delete message</string>
+  <string name="select_all">Select All</string>
+  <string name="deselect_all">Deselect All</string>
+  <!--    Expiry messages-->
+  <plurals name="expires_in_days">
+    <item quantity="one">Expires in %d day</item>
+    <item quantity="few">Expires in %d days</item>
+    <item quantity="many">Expires in %d days</item>
+    <item quantity="other">Expires in %d days</item>
+  </plurals>
+  <plurals name="expires_in_hours">
+    <item quantity="one">Expires in %d hour</item>
+    <item quantity="few">Expires in %d hours</item>
+    <item quantity="many">Expires in %d hours</item>
+    <item quantity="other">Expires in %d hours</item>
+  </plurals>
+  <plurals name="expires_in_minutes">
+    <item quantity="one">Expires in %d minute</item>
+    <item quantity="few">Expires in %d minutes</item>
+    <item quantity="many">Expires in %d minutes</item>
+    <item quantity="other">Expires in %d minutes</item>
+  </plurals>
+  <string name="expires_in_less_than_a_minute">Expires in less than a minute</string>
 </resources>

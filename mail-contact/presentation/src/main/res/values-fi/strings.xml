@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="contact_list_title">Yhteystiedot</string>
+  <string name="contact_list_loading_error">Virhe ladattaessa yhteystietoja. Yritä myöhemmin uudelleen.</string>
+  <string name="no_contacts">Yhteystietoja ei löytynyt</string>
+  <string name="no_contact_groups">Yhteystietoryhmiä ei löytynyt</string>
+  <string name="no_contacts_description">Paranna sähköpostikokemustasi luomalla uusi yhteystieto tai tuomalla olemassa olevia yhteystietoja.</string>
+  <string name="no_contact_groups_description">Paranna sähköpostikokemustasi luomalla uusi yhteystietoryhmä.</string>
+  <string name="no_contact_email">Sähköpostiosoitteita ei ole</string>
+  <string name="multiple_contact_emails">%1$s, +%2$d</string>
+  <plurals name="contact_group_details_member_count">
+    <item quantity="one">%1$d jäsen</item>
+    <item quantity="other">%1$d jäsentä</item>
+  </plurals>
+  <plurals name="contact_group_form_member_count">
+    <item quantity="one">Jäsen (%1$d)</item>
+    <item quantity="other">Jäsenet (%1$d)</item>
+  </plurals>
+  <string name="search_contacts_description">Etsi yhteystiedoista</string>
+  <string name="contact_search_no_results">Tuloksia ei löytynyt.</string>
+  <string name="contact_search_placeholder">Etsi yhteystietoa tai ryhmää</string>
+  <string name="contact_search_content_description">Etsi yhteystietoa tai ryhmää</string>
+  <string name="contact_search_arrow_back_content_description">Palaa yhteystietoihin</string>
+  <string name="add_contact">Lisää yhteystieto</string>
+  <string name="add_contact_group">Lisää yhteystietoryhmä</string>
+  <string name="add_contact_content_description">Lisää yhteystieto</string>
+  <string name="new_contact">Uusi yhteystieto</string>
+  <string name="new_group">Uusi ryhmä</string>
+  <string name="import_contact">Kopioi laitteen yhteystiedot</string>
+  <string name="contact_delete_dialog_title">Poistetaanko %1$s?</string>
+  <string name="contact_delete_dialog_text">Tämä yhteystieto poistetaan yhteystietoluettelostasi.</string>
+  <string name="contact_delete_dialog_cancel_button">Peruuta</string>
+  <string name="contact_delete_dialog_confirm_button">Poista</string>
+</resources>

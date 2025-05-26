@@ -21,69 +21,59 @@
   <string name="mail_settings_toolbar_button_content_description">Vissza</string>
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Fiók beállítások</string>
-  <string name="mail_settings_app_settings">Alkalmazás beállításai</string>
+  <string name="mail_settings_email_settings">E-mail beállítások</string>
+  <string name="mail_settings_folder_and_label_settings">Mappa és címke beállítások</string>
+  <string name="mail_settings_privacy_and_security_settings">Adatvédelem és biztonsági beállítások</string>
+  <string name="mail_settings_preferences">Beállítások</string>
+  <string name="mail_settings_app">Alkalmazás</string>
+  <string name="mail_settings_email">E-mail</string>
+  <string name="mail_settings_email_hint">E-mail és postafiók beállítások</string>
+  <string name="mail_settings_folders_labels">Mappák és címkék</string>
+  <string name="mail_settings_folders_labels_hint">Mailbox organization</string>
+  <string name="mail_settings_spam_and_custom_filters">Levélszemét és saját szűrők</string>
+  <string name="mail_settings_spam_and_custom_filters_hint">Automatikus műveletek és rendezés</string>
+  <string name="mail_settings_privacy_and_security">Adatvédelem és biztonság</string>
+  <string name="mail_settings_privacy_and_security_hint">E-mail követés elleni védelem</string>
+  <string name="mail_settings_app_hint">Mobilalkalmazás testreszabása</string>
   <string name="mail_settings_theme">Téma</string>
-  <string name="mail_settings_push_notifications">Azonnali értesítések</string>
   <string name="mail_settings_auto_lock">Automatikus zárolás</string>
   <string name="mail_settings_alternative_routing">Alternatív útválasztás</string>
   <string name="mail_settings_app_language">Alkalmazás nyelve</string>
   <string name="mail_settings_combined_contacts">Kombinált névjegyek</string>
-  <string name="mail_settings_local_cache">Helyi gyorsítótár</string>
-  <string name="mail_settings_local_cache_hint">Felhasznált hely: %s</string>
-  <string name="mail_settings_local_cache_clear_button">Adatok törlése</string>
   <string name="mail_settings_swipe_actions">Csúsztatási műveletek</string>
   <string name="mail_settings_combined_contacts_hint">Kapcsolja be ezt a funkciót, az e-mail címek automatikus kitöltéséhez az összes bejelentkezett fiók névjegyei alapján.</string>
   <string name="mail_settings_alternative_routing_hint">Ha a Proton szolgáltatásai le vannak tiltva, ezzel a beállítással az alkalmazás alternatív hálózati útvonalakat próbál meg használni, ami hasznos lehet tűzfalak megkerüléséhez vagy hálózati problémák megoldásához. Javasolt ezt a beállítást bekapcsolva a tartani nagyobb megbízhatóság érdekében.</string>
+  <!-- App customization settings-->
+  <string name="mail_settings_app_customization_title">App customization</string>
+  <string name="mail_settings_app_customization_notification">Notifications</string>
+  <string name="mail_settings_app_customization_language">Language</string>
+  <string name="mail_settings_app_customization_appearance">Appearance</string>
+  <string name="mail_settings_app_customization_protection">Protection</string>
+  <string name="mail_settings_app_customization_protection_enabled_description">Auto-lock enabled</string>
+  <string name="mail_settings_app_customization_protection_disabled_description">Auto-lock disabled</string>
+  <string name="mail_settings_app_customization_use_device_contacts">Use device contacts</string>
+  <string name="mail_settings_app_customization_use_device_contacts_hint">Auto-complete email addresses using contacts from your device.</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email">Swipe to next email</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email_hint">Quickly move to the next or previous message in your inbox.</string>
+  <string name="mail_settings_app_customization_swipe_action">Swipe action</string>
+  <string name="mail_settings_app_customization_swipe_action_hint">Set quick actions, such as delete or archive, when you swipe left or right.</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Customize toolbar</string>
+  <string name="mail_settings_app_customization_alternative_routing">Alternative routing</string>
+  <string name="mail_settings_app_customization_alternative_routing_hint">Bypass firewall or network issues in case Proton sites are blocked.</string>
+  <string name="mail_settings_app_customization_view_application_logs">View application logs</string>
+  <string name="mail_settings_app_customization_mail_experience_header">Mail experience</string>
+  <string name="mail_settings_app_customization_advanced_header">Advanced</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">A rendszer alapértelmezései</string>
   <string name="mail_settings_theme_light">Világos</string>
   <string name="mail_settings_theme_dark">Sötét</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Nincs elérhető leírás</string>
-  <string name="mail_settings_enabled">Engedélyezve</string>
-  <string name="mail_settings_disabled">Letiltva</string>
-  <string name="mail_settings_allowed">Engedélyezett</string>
-  <string name="mail_settings_denied">Tiltott</string>
-  <string name="mail_settings_auto_detect">Automatikus-észlelés</string>
-  <string name="mail_settings_app_information">Alkalmazás információk</string>
-  <string name="mail_settings_app_version">Alkalmazás verzió</string>
   <string name="mail_settings_account">Fiók</string>
-  <!-- Account Settings items -->
-  <string name="mail_settings_subscription">Előfizetés</string>
-  <string name="mail_settings_password_management">Jelszó módosítása</string>
-  <string name="mail_settings_recovery_email">Helyreállító e-mail</string>
-  <string name="mail_settings_mailbox_size">Postafiók mérete</string>
-  <string name="mail_settings_addresses">Címek</string>
-  <string name="mail_settings_default_email_address">Alapértelmezett e-mail cím</string>
-  <string name="mail_settings_display_name_and_signature">Megjelenített név és aláírás</string>
-  <string name="mail_settings_mailbox">Postafiók</string>
-  <string name="mail_settings_privacy">Adatvédelem</string>
-  <string name="mail_settings_labels">Címkék</string>
-  <string name="mail_settings_folders">Mappák</string>
-  <string name="mail_settings_conversation_mode">Beszélgetés-mód</string>
   <string name="mail_settings_not_set">Nincs megadva</string>
   <string name="mail_settings_conversation_mode_hint">A levelező csoportosítsa az e-maileket beszélgetésenként vagy jelenítse meg külön</string>
-  <!-- Default email address settings -->
-  <string name="mail_settings_default_email_address_title">Alapértelmezett e-mail cím</string>
-  <string name="mail_settings_default_email_address_inactive_addresses">Kikapcsolt címek</string>
-  <string name="mail_settings_default_email_address_no_inactive_addresses">Nincsenek kikapcsolt címek</string>
-  <string name="mail_settings_default_email_address_error_loading">Hiba az beállítások betöltése során</string>
-  <string name="mail_settings_default_email_address_error_update">Hiba az beállítások frissítése során</string>
-  <string name="mail_settings_default_email_address_error_update_subscription">Váltson fizetős csomagra, hogy ezt a címet is beállíthassa alapértelmezettként</string>
-  <!-- Display name, signature, mobile footer -->
-  <string name="mail_settings_identity_title">Megjelenített név és aláírás</string>
-  <string name="mail_settings_identity_save_button">Mentés</string>
-  <string name="mail_settings_identity_display_name">Megjelenített név</string>
-  <string name="mail_settings_identity_display_name_hint">Megjelenített név</string>
-  <string name="mail_settings_identity_signature">Aláírás</string>
-  <string name="mail_settings_identity_signature_hint">Aláírás</string>
-  <string name="mail_settings_identity_mobile_footer">Mobil aláírás</string>
-  <string name="mail_settings_identity_mobile_footer_subtext">Ez az aláírása után lett hozzáadva.</string>
-  <string name="mail_settings_identity_mobile_footer_hint">Mobil aláírás</string>
-  <string name="mail_settings_identity_mobile_footer_default_free">Proton Mail Android alkalmazásból küldve</string>
-  <string name="mail_settings_identity_error_updating">Hiba az beállítások frissítése során</string>
-  <string name="mail_settings_identity_error_loading">Hiba az beállítások betöltése során</string>
   <!-- Privacy settings -->
+  <string name="mail_settings_privacy">Adatvédelem</string>
   <string name="mail_settings_privacy_auto_show_remote_content">Távoli tartalom automatikus megjelenítése</string>
   <string name="mail_settings_privacy_auto_show_embedded_images">Beágyazott képek automatikus megjelenítése</string>
   <string name="mail_settings_privacy_prevent_taking_screenshots">Képernyőkép készítés megakadályozása</string>
@@ -97,18 +87,24 @@
   <string name="mail_settings_swipe_actions_subtitle">A leggyakrabban használt műveletekhez állítson be csúsztatás műveletet.</string>
   <string name="mail_settings_swipe_right_name">Balról jobbra</string>
   <string name="mail_settings_swipe_left_name">Jobbról balra</string>
+  <string name="mail_settings_swipe_action_none_title">Nincs beállítva</string>
   <string name="mail_settings_swipe_action_archive_title">Archiválás</string>
   <string name="mail_settings_swipe_action_read_title">Olvasatlan</string>
   <string name="mail_settings_swipe_action_spam_title">Levélszemét</string>
   <string name="mail_settings_swipe_action_star_title">Csillagozás</string>
   <string name="mail_settings_swipe_action_trash_title">Lomtár</string>
+  <string name="mail_settings_swipe_action_label_as_title">Címkézés, mint…</string>
+  <string name="mail_settings_swipe_action_move_to_title">Áthelyezés ide…</string>
+  <string name="mail_settings_swipe_action_none_description">Nincs</string>
   <string name="mail_settings_swipe_action_archive_description">Áthelyezés az archívumba</string>
   <string name="mail_settings_swipe_action_read_description">Megjelölés olvasatlanként/olvasottként</string>
   <string name="mail_settings_swipe_action_spam_description">Áthelyezés a levélszeméthez</string>
   <string name="mail_settings_swipe_action_star_description">Csillagozás/Vagy nem</string>
   <string name="mail_settings_swipe_action_trash_description">Áthelyezés a lomtárba</string>
+  <string name="mail_settings_swipe_action_label_as_description">Címkézés, mint…</string>
+  <string name="mail_settings_swipe_action_move_to_description">Áthelyezés ide…</string>
   <!-- Notification settings -->
-  <string name="mail_settings_notifications_title">Push értesítések</string>
+  <string name="mail_settings_notifications_title">Azonnali értesítések</string>
   <string name="mail_settings_notifications_extended_notifications_title">Bővített értesítések</string>
   <string name="mail_settings_notifications_extended_notifications_summary">Kapcsolja be ezt a funkciót, az e-mailek feladójának megjelenítéséhez az értesítésekben.</string>
   <string name="mail_settings_notifications_notifications_settings">Értesítési beállítások</string>
@@ -153,8 +149,6 @@
   <string name="mail_settings_pin_insertion_signout_dialog_cancel">Nem</string>
   <string name="mail_settings_pin_insertion_created_success">PIN kód sikeresen létrehozva.</string>
   <string name="mail_settings_pin_insertion_changed_success">PIN-kód sikeresen megváltoztatva.</string>
-  <!-- Local storage -->
-  <string name="mail_settings_clearing_cached_data">Gyorsítótár adatainak törlése…</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Hiba történt. Próbálja újra.</string>
   <!-- strings used for biometric enrollment -->

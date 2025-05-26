@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 Proton AG
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="app_name_mail">Proton Mail</string>
+  <string name="login_help_close">關閉</string>
+  <string name="login_help_title">我們可以提供什麼協助？</string>
+  <string name="login_help_forgot_username">忘記使用者名稱</string>
+  <string name="login_help_forgot_password">忘記密碼</string>
+  <string name="login_help_other_issues">其他登入問題</string>
+  <string name="login_help_contact_needed">仍然需要協助嗎？請直接與我們聯絡。</string>
+  <string name="login_help_customer_support">客服</string>
+  <string name="welcome_subtitle_mail">隱私、安全、方便。讓您可以完全掌控個人資料的加密電子郵件。</string>
+  <string name="welcome_sign_in">登入</string>
+  <string name="welcome_sign_up">建立帳號</string>
+  <string name="welcome_proton_privacy_by_default">Proton - Privacy by default</string>
+  <string name="auth_login">登入</string>
+  <string name="auth_login_close">關閉</string>
+  <string name="auth_login_help">說明</string>
+  <string name="auth_sign_in">登入</string>
+  <string name="auth_username">使用者名稱</string>
+  <string name="auth_email">電子郵件</string>
+  <string name="auth_password">密碼</string>
+  <string name="auth_username_placeholder">使用者名稱或電子郵件</string>
+  <string name="auth_password_placeholder">密碼</string>
+  <string name="auth_login_assistive_text">請輸入您的 Proton 電子郵件或使用者名稱。</string>
+  <string name="auth_account_details">輸入您的 Proton 帳號詳細資訊。</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">密碼、密碼片語或金鑰中的鹽錯誤。</string>
+  <string name="auth_login_error_invalid_action_human_verification_challenge">需要真人驗證。</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">登入憑證錯誤。請再試一次。</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">不支援的雙重驗證。</string>
+  <string name="auth_second_factor_title">雙重身分驗證</string>
+  <string name="auth_second_factor_authenticate">驗證</string>
+  <string name="auth_second_factor_totp_input_help">輸入 6 位數的代碼。</string>
+  <string name="auth_second_factor_totp_input_label">雙重身份驗證代碼</string>
+  <string name="auth_second_factor_recovery_help">輸入 8 個字元的復原代碼。</string>
+  <string name="auth_second_factor_recovery_label">復原代碼。</string>
+  <string name="auth_second_factor_switch_to_recovery">使用復原代碼</string>
+  <string name="auth_second_factor_switch_to_totp">使用雙重身份驗證代碼</string>
+  <string name="auth_two_pass_title">解鎖您的信箱</string>
+  <string name="auth_two_pass_input_label">信箱密碼</string>
+  <string name="auth_two_pass_unlock">解鎖</string>
+  <string name="auth_two_pass_forgot_password">忘記密碼</string>
+  <string name="auth_two_pass_input_empty">密碼不能為空</string>
+  <string name="auth_signup_title">建立您的 Proton 帳號</string>
+  <string name="auth_signup_subtitle">一個帳號即可使用所有 Proton 服務</string>
+  <string name="auth_signup_username_assistive_text">使用者名稱不能為空。</string>
+  <string name="auth_signup_email_assistive_text">電子郵件不能為空。</string>
+  <string name="auth_signup_next">下一步</string>
+  <string name="auth_signup_email_username">使用者名稱或電子郵件</string>
+  <string name="auth_signup_create_password">建立您的密碼</string>
+  <string name="auth_signup_password">密碼</string>
+  <string name="auth_signup_repeat_password">再次輸入密碼</string>
+  <string name="auth_signup_terms_privacy_conditions_footer">按下「下一步」即表示您同意 Proton 的 %1$s 與 %2$s</string>
+  <string name="auth_signup_terms_learn_more">服務條款</string>
+  <string name="auth_signup_privacy_policy_learn_more">隱私權政策</string>
+  <string name="auth_signup_internal_footnote">您需要 Proton 位址才能使用 Proton Mail 與 Proton Calendar</string>
+  <string name="auth_signup_use_current_email">改用您目前的電子郵件</string>
+  <string name="auth_signup_get_encrypted_email">取得新的加密電子郵件地址</string>
+  <string name="auth_signup_external_footnote">您可以透過 Proton 位址使用所有 Proton 服務</string>
+  <string name="auth_signup_recovery_skip">略過</string>
+  <string name="auth_signup_recovery_title">設定復原方式（選擇性）</string>
+  <string name="auth_signup_recovery_subtitle">若您的帳號被鎖定，我們會傳送復原說明到此電子郵件地址或電話號碼。</string>
+  <string name="auth_signup_recovery_email">電子郵件</string>
+  <string name="auth_signup_recovery_phone">電話</string>
+  <string name="auth_signup_recovery_email_hint">復原電子郵件</string>
+  <string name="auth_signup_recovery_phone_hint">復原電話號碼</string>
+  <string name="auth_signup_phone_placeholder">XX XXX XX XX</string>
+  <string name="auth_signup_your_account_is_being_setup">正在建立您的帳號……</string>
+  <string name="auth_signup_please_wait">通常只需一分鐘。</string>
+</resources>

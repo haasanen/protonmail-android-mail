@@ -20,4 +20,7 @@
   <string name="drawer_title_more">Diğer</string>
   <string name="drawer_title_contacts">Kişiler</string>
   <string name="drawer_title_subscription">Abonelik</string>
+  <string name="drawer_title_bug_report">Sorun bildireceğim</string>
+  <string name="drawer_item_create_label">Etiket oluştur</string>
+  <string name="drawer_item_create_folder">Klasör oluştur</string>
 </resources>

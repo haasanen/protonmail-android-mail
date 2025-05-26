@@ -17,11 +17,16 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <plurals name="attachment_count_label">
-    <item quantity="one">%d fájl</item>
-    <item quantity="other">%d fájl</item>
+  <plurals name="selected_count_title">
+    <item quantity="one">%d Kiválasztva</item>
+    <item quantity="other">%d Kiválasztva</item>
   </plurals>
-  <string name="attachment_show_more_label">+%1$d további</string>
+  <plurals name="attachment_count_label">
+    <item quantity="one">%d melléklet</item>
+    <item quantity="other">%d melléklet</item>
+  </plurals>
+  <string name="attachments">mellékletek</string>
+  <string name="attachment_show_more_label">+%1$d több</string>
   <string name="attachment_permission_dialog_title">Engedély szükséges</string>
   <string name="attachment_permission_dialog_message">A Proton Mailnek engedélyre van szüksége a tárolójához való hozzáféréshez, hogy letöltse a mellékletet.</string>
   <string name="attachment_permission_dialog_dismiss_button">OK</string>
@@ -38,28 +43,38 @@
   <string name="attachment_type_document">Dokumentum</string>
   <string name="attachment_type_spreadsheet">Munkafüzet</string>
   <string name="attachment_type_presentation">Prezentáció</string>
+  <string name="attachment_type_calendar">Naptár</string>
+  <string name="attachment_type_code">Kód</string>
+  <string name="attachment_type_font">Betűtípus</string>
+  <string name="attachment_type_key">Kulcs</string>
+  <string name="attachment_type_keynote">Keynote</string>
+  <string name="attachment_type_numbers">Numbers</string>
+  <string name="attachment_type_pages">Pages</string>
+  <string name="attachment_type_word">Word</string>
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">Áthelyezés...</string>
   <string name="bottom_sheet_done_action">Kész</string>
   <string name="bottom_sheet_archive_action">Archiválás is?</string>
-  <string name="bottom_sheet_label_as_title">Címkézés...</string>
+  <string name="bottom_sheet_label_as_title">Címkézés mint</string>
   <string name="bottom_sheet_more_header_message_from">Üzenetek tőle: %s</string>
   <!-- Message body link actions -->
   <string name="message_link_long_click_copy">Hivatkozás másolása</string>
-  <string name="message_link_long_click_copy_description">Szöveg Proton Mail-ről másolva</string>
-  <string name="message_link_long_click_share">Hivatkozás megosztása</string>
-  <string name="message_link_long_click_share_via">Link megosztása</string>
+  <string name="message_link_long_click_copy_description">Szöveg Proton Mailről másolva</string>
+  <string name="message_link_long_click_share">Link megosztása</string>
+  <string name="message_link_long_click_share_via">Hivatkozás megosztása:</string>
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">Cím másolása</string>
-  <string name="contact_actions_copy_address_description">Névjegy címének másolása</string>
+  <string name="contact_actions_copy_address_description">Cím másolása</string>
   <string name="contact_actions_copy_address_performed">Cím a vágólapra másolva</string>
   <string name="contact_actions_copy_name">Név másolása</string>
-  <string name="contact_actions_copy_name_description">Névjegy nevének másolása</string>
+  <string name="contact_actions_copy_name_description">Név másolása</string>
   <string name="contact_actions_copy_name_performed">Név a vágólapra másolva</string>
   <string name="contact_actions_new_message">Új üzenet</string>
-  <string name="contact_actions_new_message_description">Új üzenet írása ennek a névjegynek</string>
+  <string name="contact_actions_new_message_description">Új üzenet írása ennek a címzettnek</string>
   <string name="contact_actions_add_contact">Új névjegy</string>
-  <string name="contact_actions_add_contact_description">Mentse ezt a címzettet névjegyként</string>
+  <string name="contact_actions_add_contact_description">Címzett mentése névjegyként</string>
+  <string name="contact_actions_block_contact">Kapcsolat blokkolása</string>
+  <string name="contact_actions_block_contact_description">Névjegy letiltása</string>
   <string name="contact_actions_view_contact_details">Névjegy részletei</string>
   <string name="contact_actions_view_contact_details_description">Névjegy részleteinek megtekintése</string>
   <!-- Device Contacts permission dialog -->

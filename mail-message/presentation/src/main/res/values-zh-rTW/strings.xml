@@ -17,9 +17,13 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <plurals name="attachment_count_label">
-    <item quantity="other">%d 個檔案</item>
+  <plurals name="selected_count_title">
+    <item quantity="other">已選取 %d 個</item>
   </plurals>
+  <plurals name="attachment_count_label">
+    <item quantity="other">%d 個附件</item>
+  </plurals>
+  <string name="attachments">附件</string>
   <string name="attachment_show_more_label">+%1$d 更多</string>
   <string name="attachment_permission_dialog_title">需要權限</string>
   <string name="attachment_permission_dialog_message">Proton Mail 需要權限下載附件。</string>
@@ -37,11 +41,19 @@
   <string name="attachment_type_document">文件</string>
   <string name="attachment_type_spreadsheet">試算表</string>
   <string name="attachment_type_presentation">簡報</string>
+  <string name="attachment_type_calendar">行事曆</string>
+  <string name="attachment_type_code">程式碼</string>
+  <string name="attachment_type_font">字型</string>
+  <string name="attachment_type_key">金鑰</string>
+  <string name="attachment_type_keynote">Keynote</string>
+  <string name="attachment_type_numbers">Numbers</string>
+  <string name="attachment_type_pages">Pages</string>
+  <string name="attachment_type_word">Word</string>
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">移至...</string>
   <string name="bottom_sheet_done_action">完成</string>
   <string name="bottom_sheet_archive_action">同時封存?</string>
-  <string name="bottom_sheet_label_as_title">標籤為...</string>
+  <string name="bottom_sheet_label_as_title">加上標籤</string>
   <string name="bottom_sheet_more_header_message_from">郵件出處 %s</string>
   <!-- Message body link actions -->
   <string name="message_link_long_click_copy">複製連結</string>
@@ -51,20 +63,22 @@
   <!-- Contact Actions Bottom Sheet -->
   <string name="contact_actions_copy_address">複製電子郵件地址</string>
   <string name="contact_actions_copy_address_description">複製聯絡電子郵件位址</string>
-  <string name="contact_actions_copy_address_performed">位址已複製到剪貼簿</string>
+  <string name="contact_actions_copy_address_performed">地址已複製到剪貼簿</string>
   <string name="contact_actions_copy_name">複製名稱</string>
   <string name="contact_actions_copy_name_description">複製聯絡名稱</string>
   <string name="contact_actions_copy_name_performed">名稱已複製到剪貼簿</string>
   <string name="contact_actions_new_message">新訊息</string>
-  <string name="contact_actions_new_message_description">Start composing new message for this contact</string>
+  <string name="contact_actions_new_message_description">開始為此聯絡人撰寫新訊息</string>
   <string name="contact_actions_add_contact">新增聯絡人</string>
-  <string name="contact_actions_add_contact_description">Save this recipient as a contact</string>
+  <string name="contact_actions_add_contact_description">將此收件者儲存為聯絡人</string>
+  <string name="contact_actions_block_contact">封鎖此聯絡人</string>
+  <string name="contact_actions_block_contact_description">封鎖此聯絡人</string>
   <string name="contact_actions_view_contact_details">檢視聯絡人詳細資料</string>
   <string name="contact_actions_view_contact_details_description">瀏覽聯絡人詳細資料</string>
   <!-- Device Contacts permission dialog -->
   <string name="device_contacts_permission_dialog_title">需要權限</string>
-  <string name="device_contacts_permission_dialog_message">Proton Mail needs permission to read your contacts to suggest recipients.</string>
+  <string name="device_contacts_permission_dialog_message">Proton Mail 需要獲得讀取您的聯絡人的權限，才能提供收件者建議。</string>
   <string name="device_contacts_permission_dialog_dismiss_button">好</string>
   <string name="device_contacts_permission_dialog_action_button">請求授權</string>
-  <string name="device_contacts_permission_dialog_action_button_deny">婉拒</string>
+  <string name="device_contacts_permission_dialog_action_button_deny">拒絕</string>
 </resources>

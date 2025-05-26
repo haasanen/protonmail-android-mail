@@ -17,11 +17,17 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <plurals name="attachment_count_label">
-    <item quantity="one">%d fișier</item>
-    <item quantity="few">%d fișiere</item>
-    <item quantity="other">%d de fișiere</item>
+  <plurals name="selected_count_title">
+    <item quantity="one">Selectate: %d</item>
+    <item quantity="few">Selectate: %d</item>
+    <item quantity="other">Selectate: %d</item>
   </plurals>
+  <plurals name="attachment_count_label">
+    <item quantity="one">Atașamente: %d</item>
+    <item quantity="few">Atașamente: %d</item>
+    <item quantity="other">Atașamente: %d</item>
+  </plurals>
+  <string name="attachments">atașamente</string>
   <string name="attachment_show_more_label">+ încă %1$d</string>
   <string name="attachment_permission_dialog_title">Permisiune necesară</string>
   <string name="attachment_permission_dialog_message">Proton Mail are nevoie de permisiunea de a accesa spațiul de stocarea pentru a descărca atașamentul.</string>
@@ -39,11 +45,19 @@
   <string name="attachment_type_document">document</string>
   <string name="attachment_type_spreadsheet">foaie de calcul</string>
   <string name="attachment_type_presentation">prezentare</string>
+  <string name="attachment_type_calendar">Calendar</string>
+  <string name="attachment_type_code">Cod</string>
+  <string name="attachment_type_font">Font</string>
+  <string name="attachment_type_key">Cheie</string>
+  <string name="attachment_type_keynote">Keynote</string>
+  <string name="attachment_type_numbers">Numbers</string>
+  <string name="attachment_type_pages">Pages</string>
+  <string name="attachment_type_word">Word</string>
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">Mutare în...</string>
   <string name="bottom_sheet_done_action">Gata</string>
   <string name="bottom_sheet_archive_action">Și arhivare?</string>
-  <string name="bottom_sheet_label_as_title">Etichetare cu...</string>
+  <string name="bottom_sheet_label_as_title">Etichetare cu</string>
   <string name="bottom_sheet_more_header_message_from">Mesaj de la %s</string>
   <!-- Message body link actions -->
   <string name="message_link_long_click_copy">Copiere legătură web</string>
@@ -61,6 +75,8 @@
   <string name="contact_actions_new_message_description">Începeți compunerea unui mesaj pentru acest contact.</string>
   <string name="contact_actions_add_contact">Adăugare contact</string>
   <string name="contact_actions_add_contact_description">Salvare acest destinatar în contacte.</string>
+  <string name="contact_actions_block_contact">Blocare acest contact</string>
+  <string name="contact_actions_block_contact_description">Blocare acest contact</string>
   <string name="contact_actions_view_contact_details">Afișare detalii contact</string>
   <string name="contact_actions_view_contact_details_description">Afișare detalii contact.</string>
   <!-- Device Contacts permission dialog -->

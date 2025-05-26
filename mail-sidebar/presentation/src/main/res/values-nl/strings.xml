@@ -20,4 +20,7 @@
   <string name="drawer_title_more">Meer</string>
   <string name="drawer_title_contacts">Contacten</string>
   <string name="drawer_title_subscription">Abonnement</string>
+  <string name="drawer_title_bug_report">Meld een probleem</string>
+  <string name="drawer_item_create_label">Label aanmaken</string>
+  <string name="drawer_item_create_folder">Map aanmaken</string>
 </resources>

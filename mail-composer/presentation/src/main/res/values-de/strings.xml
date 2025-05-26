@@ -21,33 +21,38 @@
   <string name="to_prefix">An:</string>
   <string name="cc_prefix">CC:</string>
   <string name="bcc_prefix">BCC:</string>
-  <string name="subject_prefix">Betreff</string>
+  <string name="subject_prefix">Betreff: </string>
   <string name="compose_message_placeholder">E-Mail verfassen</string>
   <string name="close_composer_content_description">Verfassen-Fenster schließen</string>
+  <string name="send_button_title">Senden</string>
   <string name="send_message_content_description">Nachricht senden</string>
   <string name="composer_expand_recipients_button">Andere Empfänger anzeigen</string>
   <string name="composer_error_invalid_email">E-Mail-Adresse ist ungültig</string>
   <string name="composer_error_invalid_sender">Absenderadresse ist ungültig</string>
   <string name="change_sender_button_content_description">Absender ändern</string>
-  <string name="composer_change_sender_paid_feature">Upgrade auf ein kostenpflichtiges Abonnement, um die Absenderadresse zu ändern.</string>
+  <string name="composer_change_sender_paid_feature">Upgrade auf ein kostenpflichtiges Abonnement, um die Absenderadresse zu ändern</string>
   <string name="composer_error_change_sender_failed_getting_subscription">Fehler beim Ändern des Absenders, da das Abonnement des Benutzers nicht abgerufen werden konnte. Bitte versuche es erneut.</string>
-  <string name="composer_error_store_draft_sender_address">Das Speichern der Absenderadresse dieses Entwurfs ist fehlgeschlagen.</string>
-  <string name="composer_error_store_draft_body">Das Speichern des Inhalts dieses Entwurfs ist fehlgeschlagen.</string>
+  <string name="composer_error_store_draft_sender_address">Absenderadresse wurde nicht gespeichert</string>
+  <string name="composer_error_store_draft_body">E-Mail-Entwurf wurde nicht gespeichert</string>
   <string name="composer_error_duplicate_recipient">Doppelte Empfänger entfernt</string>
-  <string name="composer_error_store_draft_subject">Subject line wasn\'t saved</string>
+  <string name="composer_error_store_draft_subject">Betreffzeile wurde nicht gespeichert</string>
   <string name="composer_error_store_draft_recipients">Das Speichern der Empfänger dieses Entwurfs ist fehlgeschlagen</string>
   <string name="composer_error_loading_draft">Der Inhalt dieses Entwurfs ist zu diesem Zeitpunkt nicht verfügbar. Durch die Bearbeitung wird der bereits vorhandene Inhalt überschrieben.</string>
   <string name="composer_add_attachments_content_description">Anhänge hinzufügen</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importieren aus…</string>
   <string name="composer_error_loading_parent_message">Die Informationen der Nachricht konnten nicht geladen werden.</string>
   <string name="composer_original_message_quote">Ursprüngliche Nachricht</string>
-  <string name="composer_sender_quote">Am %s um %s schrieb &lt;%s&gt;:</string>
+  <string name="composer_sender_quote">Am %s schrieb %s &lt;%s&gt;:</string>
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">OK</string>
   <string name="composer_attachment_size_exceeded_dialog_title">Limit für Anhänge erreicht</string>
   <string name="composer_attachment_size_exceeded_dialog_message">Die maximale Größe für Anhänge beträgt %1$s</string>
-  <string name="composer_attachment_encryption_failed_message">Die erneute Verschlüsselung des Anhangs ist fehlgeschlagen. Aus Sicherheitsgründen wurden alle Anhänge entfernt.</string>
+  <string name="composer_attachment_encryption_failed_message">Die Verschlüsselung des Anhangs ist fehlgeschlagen. Aus Sicherheitsgründen wurden alle Anhänge entfernt.</string>
+  <string name="composer_too_many_attachments_error">Maximale Anzahl Anhänge (100) überschritten.</string>
+  <string name="composer_delete_attachment_error">Beim Löschen eines Anhangs ist ein unerwarteter Fehler aufgetreten.</string>
+  <string name="composer_unexpected_attachments_error">Es gab einen unerwarteten Fehler im Zusammenhang mit Anhängen.</string>
   <string name="composer_warning_local_data_shown">Die letzte Version dieses Entwurfs konnte nicht geladen werden. Jede Änderung wird den Inhalt überschreiben.</string>
   <string name="composer_button_add_password">Passwort hinzufügen</string>
+  <string name="composer_button_discard_draft">Entwurf verwerfen</string>
   <string name="composer_button_set_expiration">Ablaufdatum festlegen</string>
   <string name="composer_expiration_time_bottom_sheet_title">Gültigkeitsdauer der Nachricht</string>
   <string name="composer_expiration_time_bottom_sheet_done">Festlegen</string>
@@ -76,7 +81,7 @@
   <!-- Message sending error dialog -->
   <string name="message_sending_error_dialog_header">Sendefehler</string>
   <string name="message_sending_error_dialog_button_dismiss">Schließen</string>
-  <string name="message_sending_error_dialog_text_error">Your email cannot be sent to the address entered due to the following reason:</string>
+  <string name="message_sending_error_dialog_text_error">Deine E-Mail kann aus folgendem Grund nicht an die angegebene Adresse versendet werden:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Es gibt keine vertrauenswürdigen Schlüssel: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Adresse existiert nicht: %s</string>
   <string name="set_message_password_title">Nachricht verschlüsseln</string>
@@ -95,8 +100,15 @@
   <string name="set_message_password_button_save_changes">Änderungen speichern</string>
   <string name="set_message_password_button_remove_password">Passwort entfernen</string>
   <string name="respondInline">Eingebettet antworten</string>
+  <string name="subject_placeholder">Betreff</string>
   <plurals name="composer_recipient_suggestion_contacts">
     <item quantity="one">%d Mitglied</item>
     <item quantity="other">%d Mitglieder</item>
   </plurals>
+  <!-- Discard draft dialog -->
+  <string name="discard_draft_dialog_title">Diese Nachricht verwerfen?</string>
+  <string name="discard_draft_dialog_text">Dein Entwurf wird nicht gespeichert</string>
+  <string name="discard_draft_dialog_confirm_button">Verwerfen</string>
+  <string name="discard_draft_dialog_dismiss_button">Abbrechen</string>
+  <string name="discard_draft_error">Verwerfen des Entwurfs fehlgeschlagen</string>
 </resources>

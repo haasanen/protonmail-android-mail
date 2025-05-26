@@ -26,9 +26,19 @@
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">Net i ordenat</string>
   <string name="onboarding_neat_and_tidy_description">Classifiqueu els missatges amb carpetes, etiquetes i colors per a crear la vostra safata d\'entrada personalitzada perfecta.</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">Repensat des de zero.</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">Completament redissenyat en l\'arquitectura Rust, el nou Proton Mail s\'ha reconstruït pensant en el rendiment, l\'experiència d\'usuari i l\'escalabilitat.</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">La nova safata d’entrada ja és aquí</string>
+  <string name="onboarding_new_inbox_description">Estem emocionats de donar a conèixer el nou disseny vibrant i millores en l\'experiència d\'usuari. De moment, podeu previsualitzar les noves vistes de llistes i missatges. </string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">La vostra opinió és important</string>
+  <string name="onboarding_feedback_is_key_description">Desplegarem totes les funcionalitats en els pròxims mesos. Continueu provant l\'app i feu-nos saber com podem millorar-la!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Següent</string>
-  <string name="onboarding_get_started">Comença</string>
+  <string name="onboarding_get_started">Comenceu la prova</string>
   <string name="onboarding_illustration_content_description">Il·lustració de benvinguda</string>
   <string name="onboarding_close_content_description">Tanca</string>
+  <string name="onboarding_introducing_next_gen_app">Us presentem la nostra aplicació de nova generació!</string>
 </resources>

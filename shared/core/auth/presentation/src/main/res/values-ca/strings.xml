@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 Proton AG
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="app_name_mail">Proton Mail</string>
+  <string name="login_help_close">Tanca</string>
+  <string name="login_help_title">Com us podem ajudar?</string>
+  <string name="login_help_forgot_username">He oblidat el nom d\'usuari.</string>
+  <string name="login_help_forgot_password">He oblidat la contrasenya</string>
+  <string name="login_help_other_issues">Altres problemes d\'inici de sessió</string>
+  <string name="login_help_contact_needed">Encara necessiteu ajuda? Contacteu amb nosaltres directament.</string>
+  <string name="login_help_customer_support">Servei d\'atenció al client</string>
+  <string name="welcome_subtitle_mail">Privacitat. Seguretat. Comoditat. Correu electrònic xifrat que us dona control total sobre les vostres dades personals.</string>
+  <string name="welcome_sign_in">Inicia la sessió</string>
+  <string name="welcome_sign_up">Crea un compte</string>
+  <string name="welcome_proton_privacy_by_default">Proton - Privacy by default</string>
+  <string name="auth_login">Inicia la sessió</string>
+  <string name="auth_login_close">Tanca</string>
+  <string name="auth_login_help">Ajuda</string>
+  <string name="auth_sign_in">Inicia la sessió</string>
+  <string name="auth_username">Nom d\'usuari</string>
+  <string name="auth_email">Correu electrònic</string>
+  <string name="auth_password">Contrasenya</string>
+  <string name="auth_username_placeholder">Nom d\'usuari o correu electrònic</string>
+  <string name="auth_password_placeholder">Contrasenya</string>
+  <string name="auth_login_assistive_text">Introduïu el correu electrònic o el nom d\'usuari del Proton.</string>
+  <string name="auth_account_details">Introduïu els detalls del compte de Proton.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">La contrasenya, frase de contrasenya o sal de la clau no és correcte.</string>
+  <string name="auth_login_error_invalid_action_human_verification_challenge">Es necessita una verificació humana.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Credencials d\'inici de sessió incorrectes. Torneu-ho a provar.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">No s\'admet l\'autenticació de doble factor.</string>
+  <string name="auth_second_factor_title">Autenticació de doble factor</string>
+  <string name="auth_second_factor_authenticate">Autentica</string>
+  <string name="auth_second_factor_totp_input_help">Introduïu el codi de 6 dígits.</string>
+  <string name="auth_second_factor_totp_input_label">Codi de doble factor</string>
+  <string name="auth_second_factor_recovery_help">Introduïu un codi de recuperació de 8 caràcters.</string>
+  <string name="auth_second_factor_recovery_label">Codi de recuperació</string>
+  <string name="auth_second_factor_switch_to_recovery">Utilitza un codi de recuperació</string>
+  <string name="auth_second_factor_switch_to_totp">Utilitza un codi de doble factor</string>
+  <string name="auth_two_pass_title">Desbloquegeu la bústia de correu</string>
+  <string name="auth_two_pass_input_label">Contrasenya de la bústia de correu</string>
+  <string name="auth_two_pass_unlock">Desbloqueja</string>
+  <string name="auth_two_pass_forgot_password">He oblidat la contrasenya</string>
+  <string name="auth_two_pass_input_empty">La contrasenya no pot estar buida.</string>
+  <string name="auth_signup_title">Creeu el compte del Proton</string>
+  <string name="auth_signup_subtitle">Un compte per a tots els serveis de Proton</string>
+  <string name="auth_signup_username_assistive_text">El nom d\'usuari no pot estar en blanc.</string>
+  <string name="auth_signup_email_assistive_text">El correu electrònic no pot estar en blanc.</string>
+  <string name="auth_signup_next">Següent</string>
+  <string name="auth_signup_email_username">Nom d\'usuari o correu electrònic</string>
+  <string name="auth_signup_create_password">Creeu la contrasenya</string>
+  <string name="auth_signup_password">Contrasenya</string>
+  <string name="auth_signup_repeat_password">Repeteix la contrasenya</string>
+  <string name="auth_signup_terms_privacy_conditions_footer">En fer clic a Següent, accepteu els %1$s i %2$s de Proton.</string>
+  <string name="auth_signup_terms_learn_more">Termes i condicions</string>
+  <string name="auth_signup_privacy_policy_learn_more">Política de privacitat</string>
+  <string name="auth_signup_internal_footnote">Necessiteu una adreça del Proton per a utilitzar el Proton Mail i el Proton Calendar.</string>
+  <string name="auth_signup_use_current_email">Utilitzeu el vostre correu electrònic actual.</string>
+  <string name="auth_signup_get_encrypted_email">Obteniu una nova adreça de correu electrònic xifrada</string>
+  <string name="auth_signup_external_footnote">Amb una adreça de Proton, podeu utilitzar tots els serveis de Proton</string>
+  <string name="auth_signup_recovery_skip">Omet</string>
+  <string name="auth_signup_recovery_title">Establiu el mètode de recuperació (opcional)</string>
+  <string name="auth_signup_recovery_subtitle">Us enviarem instruccions de recuperació a aquest correu electrònic o número de telèfon si us quedeu sense accés al compte.</string>
+  <string name="auth_signup_recovery_email">Correu electrònic</string>
+  <string name="auth_signup_recovery_phone">Telèfon</string>
+  <string name="auth_signup_recovery_email_hint">Correu electrònic de recuperació</string>
+  <string name="auth_signup_recovery_phone_hint">Número de telèfon de recuperació</string>
+  <string name="auth_signup_phone_placeholder">XXX XX XX XX</string>
+  <string name="auth_signup_your_account_is_being_setup">S\'està creant el compte…</string>
+  <string name="auth_signup_please_wait">No sol tardar més d\'un minut.</string>
+</resources>

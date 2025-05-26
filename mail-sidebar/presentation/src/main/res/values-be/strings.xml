@@ -20,4 +20,7 @@
   <string name="drawer_title_more">Больш</string>
   <string name="drawer_title_contacts">Кантакты</string>
   <string name="drawer_title_subscription">Падпіска</string>
+  <string name="drawer_title_bug_report">Паведаміць аб праблеме</string>
+  <string name="drawer_item_create_label">Стварыць метку</string>
+  <string name="drawer_item_create_folder">Стварыць папку</string>
 </resources>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 Proton AG
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="app_name_mail">Proton Mail</string>
+  <string name="login_help_close">Закрыть</string>
+  <string name="login_help_title">Чем мы можем помочь?</string>
+  <string name="login_help_forgot_username">Забыли имя пользователя</string>
+  <string name="login_help_forgot_password">Забыли пароль</string>
+  <string name="login_help_other_issues">Другие проблемы со входом</string>
+  <string name="login_help_contact_needed">Все еще нужна помощь? Свяжитесь с нами напрямую.</string>
+  <string name="login_help_customer_support">Служба поддержки</string>
+  <string name="welcome_subtitle_mail">Конфиденциальность. Безопасность. Удобство. Зашифрованная электронная почта, которая даёт вам полный контроль над вашими личными данными.</string>
+  <string name="welcome_sign_in">Войти</string>
+  <string name="welcome_sign_up">Создать аккаунт</string>
+  <string name="welcome_proton_privacy_by_default">Proton - конфиденциальность по умолчанию</string>
+  <string name="auth_login">Войти</string>
+  <string name="auth_login_close">Закрыть</string>
+  <string name="auth_login_help">Справка</string>
+  <string name="auth_sign_in">Войти</string>
+  <string name="auth_username">Имя пользователя</string>
+  <string name="auth_email">Электронная почта</string>
+  <string name="auth_password">Пароль</string>
+  <string name="auth_username_placeholder">Имя пользователя или эл. почта</string>
+  <string name="auth_password_placeholder">Пароль</string>
+  <string name="auth_login_assistive_text">Введите свой адрес электронной почты или имя пользователя Proton.</string>
+  <string name="auth_account_details">Введите данные своего аккаунта Proton.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Неверный пароль, парольная фраза или ключ-соль.</string>
+  <string name="auth_login_error_invalid_action_human_verification_challenge">Требуется проверка пользователя.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Неверные учётные данные. Попробуйте еще раз.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Неподдерживаемый двухфакторный метод.</string>
+  <string name="auth_second_factor_title">Двухфакторная аутентификация</string>
+  <string name="auth_second_factor_authenticate">Аутентификация</string>
+  <string name="auth_second_factor_totp_input_help">Введите 6-значный код.</string>
+  <string name="auth_second_factor_totp_input_label">Код двухфакторной аутентификации</string>
+  <string name="auth_second_factor_recovery_help">Введите 8-значный код восстановления.</string>
+  <string name="auth_second_factor_recovery_label">Код восстановления</string>
+  <string name="auth_second_factor_switch_to_recovery">Использовать код восстановления</string>
+  <string name="auth_second_factor_switch_to_totp">Использовать код двухфакторной аутентификации</string>
+  <string name="auth_two_pass_title">Разблокируйте свой почтовый ящик</string>
+  <string name="auth_two_pass_input_label">Пароль почтового ящика</string>
+  <string name="auth_two_pass_unlock">Разблокировать</string>
+  <string name="auth_two_pass_forgot_password">Забыли пароль</string>
+  <string name="auth_two_pass_input_empty">Пароль не может быть пустым</string>
+  <string name="auth_signup_title">Создайте аккаунт Proton</string>
+  <string name="auth_signup_subtitle">Одна учетная запись для всех сервисов Proton</string>
+  <string name="auth_signup_username_assistive_text">Имя пользователя не должно быть пустым.</string>
+  <string name="auth_signup_email_assistive_text">Адрес электронной почты не должен быть пустым.</string>
+  <string name="auth_signup_next">Далее</string>
+  <string name="auth_signup_email_username">Имя пользователя или эл. почта</string>
+  <string name="auth_signup_create_password">Создайте свой пароль</string>
+  <string name="auth_signup_password">Пароль</string>
+  <string name="auth_signup_repeat_password">Повторите пароль</string>
+  <string name="auth_signup_terms_privacy_conditions_footer">Нажимая «Далее», вы соглашаетесь с %1$s и %2$s Proton.</string>
+  <string name="auth_signup_terms_learn_more">Условиями использования</string>
+  <string name="auth_signup_privacy_policy_learn_more">Политикой конфиденциальности</string>
+  <string name="auth_signup_internal_footnote">Вам понадобится адрес Proton, чтобы использовать Proton Mail и Proton Calendar</string>
+  <string name="auth_signup_use_current_email">Использовать текущую электронную почту</string>
+  <string name="auth_signup_get_encrypted_email">Получите новый зашифрованный адрес электронной почты</string>
+  <string name="auth_signup_external_footnote">Используя адрес Proton, вы можете пользоваться всеми сервисами Proton</string>
+  <string name="auth_signup_recovery_skip">Пропустить</string>
+  <string name="auth_signup_recovery_title">Установить способ восстановления (необязательно)</string>
+  <string name="auth_signup_recovery_subtitle">Мы отправим инструкции по восстановлению на этот адрес электронной почты или номер телефона, если вы не сможете войти в свой аккаунт.</string>
+  <string name="auth_signup_recovery_email">Электронная почта</string>
+  <string name="auth_signup_recovery_phone">Телефон</string>
+  <string name="auth_signup_recovery_email_hint">Электронная почта для восстановления</string>
+  <string name="auth_signup_recovery_phone_hint">Номер телефона для восстановления</string>
+  <string name="auth_signup_phone_placeholder">XX XXX XX XX</string>
+  <string name="auth_signup_your_account_is_being_setup">Аккаунт создаётся...</string>
+  <string name="auth_signup_please_wait">Обычно это занимает не больше минуты.</string>
+</resources>

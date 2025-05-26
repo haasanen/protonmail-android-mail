@@ -18,17 +18,20 @@
   -->
 <resources>
   <string name="expiration_expired">Пратэрмінавана</string>
-  <string name="expiration_days_arg">%d дз</string>
-  <string name="expiration_hours_arg">%dг</string>
+  <string name="expiration_days_arg">%d д</string>
+  <string name="expiration_hours_arg">%d г</string>
   <string name="expiration_minutes_arg">%d хв</string>
   <string name="retry">Паўтарыць</string>
   <string name="toolbar_back_content_description">Вярнуцца на папярэдні экран</string>
   <string name="x_error_not_logged_in">Уваход не выкананы</string>
+  <string name="action_customize_toolbar">Наладзіць панэль інструментаў</string>
+  <string name="action_customize_toolbar_description">Наладзіць панэль інструментаў</string>
+  <string name="action_customize_toolbar_content_description">Наладзіць панэль інструментаў</string>
   <string name="action_reply">Адказаць</string>
   <string name="action_reply_all">Адказаць усім</string>
   <string name="action_forward">Пераслаць</string>
   <string name="action_reply_description">Адказаць</string>
-  <string name="action_reply_to_description">Адказаць %s</string>
+  <string name="action_reply_to_description">Адказаць на %s</string>
   <string name="action_reply_all_description">Адказаць усім</string>
   <string name="action_forward_description">Пераслаць</string>
   <string name="action_mark_read_description">Пазначыць прачытаным</string>
@@ -52,8 +55,11 @@
   <string name="action_sender_emails_description">Задаць дзеянне для будучых лістоў ад гэтага адпраўніка</string>
   <string name="action_save_attachments_description">Захаваць далучэнні</string>
   <string name="action_more_description">Больш</string>
+  <string name="action_inbox_description">Уваходныя</string>
+  <string name="action_pin_description">Замацаваць</string>
+  <string name="action_unpin_description">Адмацаваць</string>
   <string name="action_reply_content_description">Адказаць</string>
-  <string name="action_reply_to_content_description">Адказаць %s</string>
+  <string name="action_reply_to_content_description">Адказаць на %s</string>
   <string name="action_reply_all_content_description">Адказаць усім</string>
   <string name="action_forward_content_description">Пераслаць</string>
   <string name="action_mark_read_content_description">Пазначыць прачытаным</string>
@@ -66,6 +72,9 @@
   <string name="action_delete_content_description">Выдаліць</string>
   <string name="action_archive_content_description">Архіваваць</string>
   <string name="action_spam_content_description">Спам</string>
+  <string name="action_inbox_content_description">Уваходныя</string>
+  <string name="action_pin_content_description">Замацаваць</string>
+  <string name="action_unpin_content_description">Адмацаваць</string>
   <string name="action_view_in_light_mode_content_description">Паглядзець паведамленні ў светлым рэжыме</string>
   <string name="action_view_in_dark_mode_content_description">Паглядзець паведамленні ў цёмным рэжыме</string>
   <string name="action_print_content_description">Друкаваць</string>
@@ -115,4 +124,5 @@
   <string name="undo_button_label">Адрабіць</string>
   <string name="undo_success_message">Дзеянне вернута</string>
   <string name="undo_failure_message">Збой вяртання дзеяння</string>
+  <string name="feature_coming_soon">Функцыя неўзабаве з\'явіцца…</string>
 </resources>

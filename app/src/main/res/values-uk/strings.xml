@@ -18,18 +18,19 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Вийти</string>
-  <string name="dialog_sign_out_account_description">Ви дійсно хочете вийти?</string>
-  <string name="dialog_sign_out_account_confirm">Так</string>
-  <string name="dialog_sign_out_account_cancel">Ні</string>
-  <string name="dialog_remove_account_title">Вилучити обліковий запис</string>
-  <string name="dialog_remove_account_description">Ви вийдете, а всі пов\'язані з цим обліковим записом дані буде вилучено.</string>
+  <string name="dialog_sign_out_account_description">The data associateed to your account will remain on this device unless you select to delete it.</string>
+  <string name="dialog_sign_out_account_confirm">Sign out</string>
+  <string name="dialog_sign_out_account_cancel">Cancel</string>
+  <string name="dialog_remove_account_title">Remove account?</string>
+  <string name="dialog_remove_account_description">Remove all associated data</string>
   <string name="dialog_remove_account_confirm">Вилучити</string>
   <string name="dialog_remove_account_cancel">Скасувати</string>
   <string name="feature_coming_soon">Функція невдовзі з\'явиться…</string>
   <string name="mailbox_draft_saved">Чернетку збережено</string>
   <string name="mailbox_draft_discard">Відхилити</string>
+  <string name="mailbox_draft_discarded">Draft discarded</string>
   <string name="mailbox_message_sending">Надсилання повідомлення…</string>
-  <string name="mailbox_message_sending_offline">Повідомлення поставлено в чергу через відсутність мережевого з\'єднання</string>
+  <string name="mailbox_message_sending_offline">Offline: message queued for sending</string>
   <string name="mailbox_message_sending_success">Повідомлення надіслано</string>
   <string name="mailbox_message_sending_error">Помилка надсилання повідомлення</string>
   <string name="mailbox_message_sending_error_action">Перейти до Чернеток</string>

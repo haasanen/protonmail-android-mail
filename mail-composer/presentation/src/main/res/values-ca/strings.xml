@@ -21,9 +21,10 @@
   <string name="to_prefix">Per a:</string>
   <string name="cc_prefix">Cc:</string>
   <string name="bcc_prefix">CCO:</string>
-  <string name="subject_prefix">Assumpte</string>
+  <string name="subject_prefix">Assumpte: </string>
   <string name="compose_message_placeholder">Escriure un correu electrònic</string>
   <string name="close_composer_content_description">Tancar l\'editor</string>
+  <string name="send_button_title">Envia</string>
   <string name="send_message_content_description">Envia missatge</string>
   <string name="composer_expand_recipients_button">Mostra els altres destinataris</string>
   <string name="composer_error_invalid_email">L\'adreça de correu electrònic no és vàlida</string>
@@ -31,10 +32,10 @@
   <string name="change_sender_button_content_description">Canvia el remitent</string>
   <string name="composer_change_sender_paid_feature">Milloreu a un pla de pagament per canviar l\'adreça del remitent.</string>
   <string name="composer_error_change_sender_failed_getting_subscription">No es pot canviar el remitent perquè no s\'ha pogut obtenir la subscripció de l\'usuari. Torna-ho a provar.</string>
-  <string name="composer_error_store_draft_sender_address">S\'ha produït un error en desar l\'adreça del remitent.</string>
-  <string name="composer_error_store_draft_body">S\'ha produït un error en desar el cos de l\'esborrany.</string>
-  <string name="composer_error_duplicate_recipient">Duplicated recipient(s) removed</string>
-  <string name="composer_error_store_draft_subject">S\'ha produït un error en desar l\'assumpte.</string>
+  <string name="composer_error_store_draft_sender_address">No s\'ha pogut desar l\'adreça del remitent.</string>
+  <string name="composer_error_store_draft_body">No s\'ha pogut desar el cos de l\'esborrany.</string>
+  <string name="composer_error_duplicate_recipient">S\'han eliminat un o més destinataris duplicats.</string>
+  <string name="composer_error_store_draft_subject">L\'assumpte no s\'ha desat</string>
   <string name="composer_error_store_draft_recipients">S\'ha produït un error en desar els destinataris de l\'esborrany.</string>
   <string name="composer_error_loading_draft">El contingut d\'aquest esborrany no està disponible en aquest moment. L\'edició substituirà qualsevol contingut preexistent.</string>
   <string name="composer_add_attachments_content_description">Afegiu fitxers adjunts</string>
@@ -44,10 +45,14 @@
   <string name="composer_sender_quote">El %s, %s &lt;%s&gt; va escriure:</string>
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">D\'acord</string>
   <string name="composer_attachment_size_exceeded_dialog_title">S\'ha assolit el límit de fitxers adjunts.</string>
-  <string name="composer_attachment_size_exceeded_dialog_message">El límit de mida per als adjunts és de %1$s.</string>
-  <string name="composer_attachment_encryption_failed_message">No s\'ha pogut tornar a xifrar el fitxer adjunt. Per motius de seguretat, s\'han eliminat tots els fitxers adjunts.</string>
+  <string name="composer_attachment_size_exceeded_dialog_message">El límit de mida dels adjunts és %1$s.</string>
+  <string name="composer_attachment_encryption_failed_message">Ha fallat el xifratge del fitxer adjunt. Per motius de seguretat, s\'han eliminat tots els fitxers adjunts.</string>
+  <string name="composer_too_many_attachments_error">S\'ha superat el nombre màxim de fitxers adjunts (100).</string>
+  <string name="composer_delete_attachment_error">S\'ha produït un error inesperat en suprimir un fitxer adjunt.</string>
+  <string name="composer_unexpected_attachments_error">S\'ha produït un error inesperat relacionat amb els fitxers adjunts.</string>
   <string name="composer_warning_local_data_shown">La darrera versió d\'aquest esborrany no s\'ha pogut carregar. Qualsevol canvi anul·larà el seu contingut.</string>
   <string name="composer_button_add_password">Afegeix una contrasenya</string>
+  <string name="composer_button_discard_draft">Descarta l\'esborrany</string>
   <string name="composer_button_set_expiration">Establiu el temps de caducitat</string>
   <string name="composer_expiration_time_bottom_sheet_title">Caducitat del missatge</string>
   <string name="composer_expiration_time_bottom_sheet_done">Estableix</string>
@@ -76,7 +81,7 @@
   <!-- Message sending error dialog -->
   <string name="message_sending_error_dialog_header">Error d\'enviament</string>
   <string name="message_sending_error_dialog_button_dismiss">Tanca</string>
-  <string name="message_sending_error_dialog_text_error">El vostre correu electrònic no es pot enviar a l\'adreça introduïda pel motiu següent:</string>
+  <string name="message_sending_error_dialog_text_error">El correu electrònic no es pot enviar a l\'adreça introduïda pel motiu següent:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">No hi ha claus de confiança: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">L\'adreça no existeix: %s</string>
   <string name="set_message_password_title">Xifra el missatge</string>
@@ -95,8 +100,15 @@
   <string name="set_message_password_button_save_changes">Desa els canvis</string>
   <string name="set_message_password_button_remove_password">Esborra la contrasenya</string>
   <string name="respondInline">Respon en línia</string>
+  <string name="subject_placeholder">Assumpte</string>
   <plurals name="composer_recipient_suggestion_contacts">
     <item quantity="one">%d membre</item>
     <item quantity="other">%d membres</item>
   </plurals>
+  <!-- Discard draft dialog -->
+  <string name="discard_draft_dialog_title">Voleu descartar aquest missatge?</string>
+  <string name="discard_draft_dialog_text">L\'esborrany no es desarà</string>
+  <string name="discard_draft_dialog_confirm_button">Descarta</string>
+  <string name="discard_draft_dialog_dismiss_button">Cancel·la</string>
+  <string name="discard_draft_error">S\'ha produït un error en descartar l\'esborrany</string>
 </resources>

@@ -23,5 +23,12 @@
   <string name="notification_title_text_new_message_fallback">Nou missatge</string>
   <string name="notification_actions_archive_description">Arxiva</string>
   <string name="notification_actions_trash_description">Paperera</string>
-  <string name="notification_actions_reply_description">Respon</string>
+  <string name="notification_actions_mark_as_read_description">Marca com a llegit</string>
+  <!-- Push notification permissions BS -->
+  <string name="notification_permissions_bottomsheet_first_time_title">No us perdeu cap correu electrònic</string>
+  <string name="notification_permissions_bottomsheet_first_time_subtitle">Les notificacions us ajuden a mantenir-vos al dia amb la safata d\'entrada sense haver de consultar l\'aplicació.</string>
+  <string name="notification_permissions_bottomsheet_second_time_title">Voleu mantenir-vos actualitzat?</string>
+  <string name="notification_permissions_bottomsheet_second_time_subtitle">Activeu les notificacions per saber quan rebeu una resposta al correu electrònic.</string>
+  <string name="notification_permissions_bottomsheet_enable">Activa les notificacions automàtiques</string>
+  <string name="notification_permissions_bottomsheet_dismiss">Descarta</string>
 </resources>

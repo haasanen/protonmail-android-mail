@@ -17,6 +17,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="mailbox_fab_compose_button_title">Nová zpráva</string>
   <string name="mailbox_fab_compose_button_content_description">Napsat novou zprávu</string>
   <string name="mailbox_toolbar_exit_selection_mode_button_content_description">Ukončit režim výběru</string>
   <string name="mailbox_toolbar_menu_button_content_description">Nabídka</string>
@@ -25,10 +26,16 @@
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">Vymazat vyhledávací dotaz</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">Zadejte vyhledávací dotaz</string>
   <plurals name="mailbox_toolbar_selected_count">
-    <item quantity="one">%d vybrán</item>
-    <item quantity="few">%d vybrány</item>
-    <item quantity="many">%d vybráno</item>
-    <item quantity="other">%d vybráno</item>
+    <item quantity="one">Vybráno: %d</item>
+    <item quantity="few">Vybráno: %d</item>
+    <item quantity="many">Vybráno: %d</item>
+    <item quantity="other">Vybráno: %d</item>
+  </plurals>
+  <plurals name="filter_unread_button_text">
+    <item quantity="one">Nepřečteno: %s</item>
+    <item quantity="few">Nepřečteno: %s</item>
+    <item quantity="many">Nepřečteno: %s</item>
+    <item quantity="other">Nepřečteno: %s</item>
   </plurals>
   <string name="mailbox_default_recipient">(Žádný příjemce)</string>
   <string name="mailbox_default_sender">(Žádný odesílatel)</string>
@@ -36,11 +43,12 @@
   <string name="mailbox_error_message_generic">Načítání e-mailové schránky selhalo</string>
   <string name="mailbox_error_message_unexpected">Něco se nečekaně zvrtlo</string>
   <string name="mailbox_is_empty_title">Žádné zprávy</string>
-  <string name="mailbox_is_empty_description">Vše je vyřízeno</string>
+  <string name="trash_is_empty_title">Koš je prázdný</string>
+  <string name="mailbox_is_empty_description">Zdá se, že prozatím nemáte co dohánět</string>
   <string name="mailbox_is_empty_no_unread_messages_title">Žádné nepřečtené zprávy</string>
   <string name="mailbox_is_empty_folder_description">Tato složka je prázdná</string>
   <string name="mailbox_is_empty_spam_description">Vaše složka spamu je prázdná</string>
-  <string name="mailbox_is_empty_trash_description">Koš je prázdný</string>
+  <string name="mailbox_is_empty_trash_description">Vypadá to tu prázdně</string>
   <plurals name="mailbox_action_trash">
     <item quantity="one">Zpráva přesunuta do koše</item>
     <item quantity="few">%d zprávy přesunuty do koše</item>
@@ -92,16 +100,22 @@
   <string name="mailbox_action_archive_message">Zpráva přesunuta do archivu</string>
   <string name="mailbox_action_spam_message">Zpráva přesunuta do spamu</string>
   <string name="mailbox_search_placeholder_text">Prohledat zprávy</string>
-  <string name="mailbox_search_no_results_title">Nebyly nalezeny žádné výsledky</string>
-  <string name="mailbox_search_no_results_explanation">Vyhledávání podle data, jména, e-mailové adresy nebo předmětu zprávy</string>
+  <string name="mailbox_search_no_results_title">Zadání nic neodpovídá</string>
+  <string name="mailbox_search_no_results_explanation">Můžete buď aktualizovat hledaný dotaz nebo jej smazat.</string>
   <string name="mailbox_action_button_clear_trash">Vyprázdnit koš</string>
   <string name="mailbox_action_button_clear_spam">Vysypat spam</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Navyšte svůj tarif pro automatické mazání zpráv, které jsou v koši nebo spamu déle než 30 dní</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Zjistit více</string>
+  <string name="mailbox_action_clear_trash_spam_banner_text">Zprávy, které byly v koši a spamu přes 30 dní, budou automaticky smazány.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Vysypat koš</string>
   <string name="mailbox_action_clear_spam_dialog_title">Vyprázdnit složku spam</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">Opravdu chcete trvale smazat všechny zprávy v koši?</string>
   <string name="mailbox_action_clear_spam_dialog_body_message">Opravdu chcete trvale smazat všechny zprávy ve spamu?</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Opravdu chcete trvale smazat všechny konverzace ve spamu?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Operace vyčištění je naplánována"</string>
+  <!-- Attachment download -->
+  <string name="mailbox_attachment_download_started">Otevírání přílohy…</string>
+  <string name="mailbox_attachment_download_error">Nelze otevřít přílohu. Zkuste to prosím znovu.</string>
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">Varování</string>
   <string name="storage_first_limit_exceeded_warning_dialog_text">Úložiště vašeho účtu Proton je zaplněno z více než 80 %. Uvolněte místo nebo navyšte na tarif s větším úložištěm.</string>
@@ -112,4 +126,27 @@
   <string name="storage_quota_over_dialog_title">Varování</string>
   <string name="storage_quota_over_dialog_text">Úložiště vašeho účtu Proton je na 100 % zaplněno. Nebudete moci odesílat ani přijímat e-maily, dokud trvale nesmažete některé e-maily nebo neprovedete navýšení na tarif s větším úložištěm.</string>
   <string name="storage_quota_over_dialog_confirm_button">OK</string>
+  <string name="mailbox_action_delete_failed">Smazání zprávy selhalo</string>
+  <string name="select_all">Vybrat vše</string>
+  <string name="deselect_all">Zrušit výběr všeho</string>
+  <!--    Expiry messages-->
+  <plurals name="expires_in_days">
+    <item quantity="one">Vyprší za %d den</item>
+    <item quantity="few">Vyprší za %d dny</item>
+    <item quantity="many">Vyprší za %d dnů</item>
+    <item quantity="other">Vyprší za %d dnů</item>
+  </plurals>
+  <plurals name="expires_in_hours">
+    <item quantity="one">Vyprší za %d hodinu</item>
+    <item quantity="few">Vyprší za %d hodiny</item>
+    <item quantity="many">Vyprší za %d hodin</item>
+    <item quantity="other">Vyprší za %d hodin</item>
+  </plurals>
+  <plurals name="expires_in_minutes">
+    <item quantity="one">Vyprší za %d minutu</item>
+    <item quantity="few">Vyprší za %d minuty</item>
+    <item quantity="many">Vyprší za %d minut</item>
+    <item quantity="other">Vyprší za %d minut</item>
+  </plurals>
+  <string name="expires_in_less_than_a_minute">Vyprší za méně než minutu</string>
 </resources>

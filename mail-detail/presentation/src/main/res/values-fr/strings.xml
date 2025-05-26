@@ -40,19 +40,23 @@
   </plurals>
   <string name="hide_details">Masquer les détails</string>
   <string name="undisclosed_recipients">Destinataires non divulgués</string>
+  <string name="error_mark_as_read_failed">Le marquage comme lu n\'a pas abouti. Nous vous invitons à réessayer.</string>
   <string name="error_mark_as_unread_failed">Le marquage comme non lu n\'a pas abouti. Nous vous invitons à réessayer.</string>
   <string name="error_star_operation_failed">Le marquage comme favori n\'a pas abouti. Nous vous invitons à réessayer.</string>
   <string name="error_unstar_operation_failed">Le marquage comme favori n\'a pas pu être retiré. Nous vous invitons à réessayer.</string>
   <string name="error_move_to_trash_failed">Le déplacement dans le dossier Corbeille n\'a pas abouti. Veuillez réessayer.</string>
+  <string name="message_moved">Le message a été déplacé.</string>
+  <string name="message_moved_to">Le message a été déplacé vers %s.</string>
   <string name="message_moved_to_trash">Le message a été déplacé dans le dossier Corbeille.</string>
   <string name="message_moved_to_archive">Le message a été déplacé dans le dossier Archives.</string>
   <string name="error_move_to_archive_failed">Le message n\'a pas pu être déplacé dans les archives. Merci de réessayer.</string>
   <string name="message_moved_to_spam">Le message a été déplacé dans le dossier Indésirables/spam.</string>
   <string name="error_move_to_spam_failed">Le message n\'a pas pu être déplacé dans le dossier Indésirables/spam. Merci de réessayer.</string>
-  <string name="message_moved_to_selected_destination">Le message a été déplacé dans %1$s.</string>
+  <string name="message_moved_to_selected_destination">Le message a été déplacé vers %1$s.</string>
   <string name="error_move_message_failed">Le message n\'a pas pu être déplacé. Veuillez réessayer.</string>
   <string name="conversation_moved_to_trash">La conversation a été déplacée dans le dossier Corbeille.</string>
-  <string name="conversation_moved_to_selected_destination">La conversation a été déplacée dans %1$s.</string>
+  <string name="conversation_moved_to_selected_destination">La conversation a été déplacée vers %1$s.</string>
+  <string name="conversation_moved_to_spam">La conversation a été déplacée dans le dossier Indésirables/spam.</string>
   <string name="conversation_moved_to_archive">La conversation a été déplacée dans le dossier Archives.</string>
   <string name="error_move_conversation_failed">La conversation n\'a pas pu être déplacée. Veuillez réessayer.</string>
   <string name="error_loading_message">Un problème est survenu, veuillez réessayer.</string>
@@ -71,7 +75,12 @@
   <string name="message_body_embedded_images_banner_text">Le chargement automatique des images intégrées est désactivé. Vous pouvez modifier cette option dans les paramètres.</string>
   <string name="message_body_remote_content_banner_text">Le chargement automatique du contenu distant est désactivé. Vous pouvez modifier cette option dans les paramètres.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Le chargement automatique des images intégrées et du contenu distant est désactivé. Vous pouvez modifier cette option dans les paramètres.</string>
-  <string name="message_phishing_banner_text">Notre système a signalé ce message comme étant une tentative de phishing/hameçonnage. Nous vous invitons à vérifier qu\'il est légitime.</string>
+  <string name="message_phishing_banner_text">Ce message a été signalé comme suspect, soit par notre système, soit par vous. Si vous estimez qu\'il est sûr, marquez-le comme légitime.</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">Marquer comme légitime</string>
+  <string name="message_spam_banner_text">Ce message a été signalé comme indésirable soit par notre système, soit par vous.</string>
+  <string name="message_spam_banner_not_spam_button">Non indésirables/spam</string>
+  <string name="message_blocked_sender_banner_text">Cet expéditeur a été bloqué par le passé.</string>
+  <string name="message_blocked_sender_button_text">Débloquer</string>
   <string name="message_expiration_banner_text">Ce message expirera dans %1$s.</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Vous êtes sur le point de quitter l\'application et de vous rendre sur :</string>
@@ -84,6 +93,12 @@
   <string name="phishing_link_confirmation_dialog_content_part_2">Pour votre sécurité, veuillez ne pas continuer.</string>
   <string name="phishing_link_confirmation_dialog_button_go_back">Revenir en arrière (recommandé)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">Ignorer l\'avertissement et continuer</string>
+  <!-- Mark as legitimate confirmation dialog -->
+  <string name="mark_as_legitimate_phishing_dialog_title">Confirmer le marquage comme légitime</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">Nous vous prions de nous excuser. Il peut s’agir d’une erreur de notre part. Veuillez confirmer si vous souhaitez marquer ce message comme légitime.</string>
+  <string name="mark_as_legitimate_spam_dialog_title">Confirmer que ce n\'est pas du spam</string>
+  <string name="mark_as_legitimate_spam_dialog_message">Nous vous prions de nous excuser. Il peut s’agir d’une erreur de notre part. Veuillez confirmer que ce message n\'est pas du spam.</string>
+  <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">Supprimer le message</string>
   <string name="message_delete_dialog_message">Voulez-vous vraiment supprimer définitivement ce message ?</string>
   <string name="message_deleted">Le message a été supprimé.</string>
@@ -111,4 +126,9 @@
   <string name="non_trashed_messages_banner">Cette conversation comporte des messages qui ne sont pas dans le dossier Corbeille.</string>
   <string name="show">Afficher</string>
   <string name="hide">Masquer</string>
+  <string name="recipient_me">moi</string>
+  <string name="message_details_header_from">De</string>
+  <string name="message_details_header_to">À</string>
+  <string name="message_details_header_cc">Cc</string>
+  <string name="message_details_header_bcc">Cci</string>
 </resources>

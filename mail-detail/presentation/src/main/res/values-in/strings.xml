@@ -38,10 +38,13 @@
   </plurals>
   <string name="hide_details">Sembunyikan rincian</string>
   <string name="undisclosed_recipients">Penerima yang dirahasiakan</string>
+  <string name="error_mark_as_read_failed">Operasi untuk menandai sebagai telah dibaca gagal. Silakan coba lagi.</string>
   <string name="error_mark_as_unread_failed">Tanda belum dibaca gagal disematkan. Silakan coba lagi.</string>
   <string name="error_star_operation_failed">Tanda bintang gagal disematkan. Silakan coba lagi.</string>
   <string name="error_unstar_operation_failed">Tanda bintang gagal dihapus. Silakan coba lagi.</string>
   <string name="error_move_to_trash_failed">Pemindahan ke sampah gagal. Silakan coba lagi.</string>
+  <string name="message_moved">Pesan dipindahkan</string>
+  <string name="message_moved_to">Pesan dipindahkan ke %s</string>
   <string name="message_moved_to_trash">Pesan dipindahkan ke Sampah</string>
   <string name="message_moved_to_archive">Pesan dipindahkan ke Arsip</string>
   <string name="error_move_to_archive_failed">Pemindahan ke arsip gagal. Silakan coba lagi.</string>
@@ -51,6 +54,7 @@
   <string name="error_move_message_failed">Pesan gagal dipindahkan. Silakan coba lagi.</string>
   <string name="conversation_moved_to_trash">Percakapan dipindahkan ke Sampah</string>
   <string name="conversation_moved_to_selected_destination">Percakapan dipindahkan ke %1$s</string>
+  <string name="conversation_moved_to_spam">Percakapan dipindahkan ke Spam</string>
   <string name="conversation_moved_to_archive">Percakapan dipindahkan ke Arsip</string>
   <string name="error_move_conversation_failed">Percakapan gagal dipindahkan. Silakan coba lagi.</string>
   <string name="error_loading_message">Terjadi suatu kesalahan. Silakan coba lagi.</string>
@@ -64,12 +68,17 @@
   <string name="please_go_back_online_to_load_messages">Anda sedang offline. Silakan sambungkan diri Anda ke internet untuk memuat pesan</string>
   <string name="decryption_error">Pesan gagal didekripsi.</string>
   <string name="detail_error_retrieving_message_body">Pesan tidak dapat diambil</string>
-  <string name="message_body_error_no_webview">Anda harus menginstal WebView untuk melihat konten pesan ini.</string>
+  <string name="message_body_error_no_webview">Anda harus memiliki WebView yang terpasang untuk melihat konten pesan ini.</string>
   <!-- Banners -->
   <string name="message_body_embedded_images_banner_text">Pemuatan otomatis gambar yang tersemat sedang dinonaktifkan. Hal ini dapat diubah pada menu pengaturan.</string>
-  <string name="message_body_remote_content_banner_text">Remote content tengah diatur untuk tidak dimuat secara otomatis. Hal ini dapat diubah pada menu pengaturan.</string>
-  <string name="message_body_embedded_and_remote_content_banner_text">Gambar tersemat dan remote content tengah diatur untuk tidak dimuat secara otomatis. Hal ini dapat diubah pada menu pengaturan.</string>
-  <string name="message_phishing_banner_text">Sistem kami menandai pesan ini sebagai phishing. Mohon periksa keabsahan pesan.</string>
+  <string name="message_body_remote_content_banner_text">Konten eksternal tengah diatur untuk tidak dimuat secara otomatis. Hal ini dapat diubah pada menu pengaturan.</string>
+  <string name="message_body_embedded_and_remote_content_banner_text">Gambar tersemat dan konten eksternal tengah diatur untuk tidak dimuat secara otomatis. Hal ini dapat diubah pada menu pengaturan.</string>
+  <string name="message_phishing_banner_text">Pesan ini ditandai sebagai mencurigakan, baik oleh sistem kami maupun oleh Anda. Jika Anda yakin itu aman, tandai sebagai sah.</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">Tandai sebagai sah</string>
+  <string name="message_spam_banner_text">Pesan ini telah ditandai sebagai spam, baik itu oleh sistem kami maupun oleh Anda.</string>
+  <string name="message_spam_banner_not_spam_button">Bukan Spam</string>
+  <string name="message_blocked_sender_banner_text">Pengirim ini telah diblokir di masa lalu.</string>
+  <string name="message_blocked_sender_button_text">Buka Blokir</string>
   <string name="message_expiration_banner_text">Pesan ini akan kedaluwarsa dalam %1$s</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Anda akan meninggalkan aplikasi dan mengunjungi:</string>
@@ -78,10 +87,16 @@
   <string name="external_link_confirmation_dialog_continue_button">Lanjut</string>
   <!-- Phishing link confirmation dialog -->
   <string name="phishing_link_confirmation_dialog_title">Peringatan: situs web ini terindikasi palsu</string>
-  <string name="phishing_link_confirmation_dialog_content_part_1">Tautan ini tertuju pada situs web yang dapat mencuri informasi pribadi Anda, seperti kata sandi dan rincian kartu kredit yang Anda miliki.</string>
+  <string name="phishing_link_confirmation_dialog_content_part_1">Tautan ini tertuju pada situs web yang dapat berupaya untuk mencuri informasi Anda, seperti kata sandi dan rincian kartu kredit yang Anda miliki.</string>
   <string name="phishing_link_confirmation_dialog_content_part_2">Demi keamanan Anda, jangan lanjutkan ke situs web ini.</string>
   <string name="phishing_link_confirmation_dialog_button_go_back">Kembali (disarankan)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">Abaikan peringatan dan lanjut</string>
+  <!-- Mark as legitimate confirmation dialog -->
+  <string name="mark_as_legitimate_phishing_dialog_title">Konfirmasi Tandai sebagai Sah</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">Kami mohon maaf. Hal ini mungkin merupakan kesalahan dari kami. Silakan konfirmasi apabila Anda ingin menandai email ini sebagai email yang sah.</string>
+  <string name="mark_as_legitimate_spam_dialog_title">Konfirmasi bukan Spam</string>
+  <string name="mark_as_legitimate_spam_dialog_message">Kami mohon maaf. Hal Ini mungkin merupakan kesalahan dari kami. Silakan konfirmasi bahwa email ini bukan spam.</string>
+  <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">Hapus pesan</string>
   <string name="message_delete_dialog_message">Apakah Anda yakin ingin menghapus pesan ini secara permanen?</string>
   <string name="message_deleted">Pesan dihapus</string>
@@ -92,11 +107,11 @@
   <string name="conversation_delete_dialog_title">Hapus percakapan</string>
   <string name="conversation_delete_dialog_message">Apakah Anda yakin ingin menghapus percakapan ini secara permanen?</string>
   <string name="conversation_deleted">Percakapan dihapus</string>
-  <string name="message_body_load_remote_content_button_text">Muat remote content</string>
+  <string name="message_body_load_remote_content_button_text">Muat konten eksternal</string>
   <string name="message_body_load_embedded_images_button_text">Muat gambar yang tersemat</string>
-  <string name="message_body_load_embedded_and_remote_content_button_text">Muat remote content dan gambar yang tersemat</string>
+  <string name="message_body_load_embedded_and_remote_content_button_text">Muat konten eksternal dan yang tersemat</string>
   <string name="message_report_phishing_dialog_title_offline">Perhatian</string>
-  <string name="message_report_phishing_dialog_message_offline">This feature is only available online.</string>
+  <string name="message_report_phishing_dialog_message_offline">Fitur ini hanya tersedia secara online.</string>
   <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Konfirmasi laporan phishing</string>
   <string name="message_report_phishing_dialog_message">Dengan melaporkan pesan sebagai upaya phishing, pesan tersebut akan dikirimkan kepada kami agar kami dapat menganalisanya dan meningkatkan filter kami. Hal ini berarti bahwa kami akan dapat melihat isi pesan tersebut secara utuh.</string>
@@ -109,4 +124,9 @@
   <string name="non_trashed_messages_banner">Percakapan ini berisi pesan yang tidak dibuang.</string>
   <string name="show">Tampilkan</string>
   <string name="hide">Sembunyikan</string>
+  <string name="recipient_me">saya</string>
+  <string name="message_details_header_from">Dari</string>
+  <string name="message_details_header_to">Ke</string>
+  <string name="message_details_header_cc">Cc</string>
+  <string name="message_details_header_bcc">Bcc</string>
 </resources>

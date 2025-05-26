@@ -17,6 +17,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="mailbox_fab_compose_button_title">Opstellen</string>
   <string name="mailbox_fab_compose_button_content_description">Nieuw bericht opstellen</string>
   <string name="mailbox_toolbar_exit_selection_mode_button_content_description">Verlaat selectiemodus</string>
   <string name="mailbox_toolbar_menu_button_content_description">Menu</string>
@@ -28,20 +29,25 @@
     <item quantity="one">%d Geselecteerd</item>
     <item quantity="other">%d Geselecteerd</item>
   </plurals>
+  <plurals name="filter_unread_button_text">
+    <item quantity="one">Ongelezen %s</item>
+    <item quantity="other">Ongelezen %s</item>
+  </plurals>
   <string name="mailbox_default_recipient">(Geen ontvanger)</string>
   <string name="mailbox_default_sender">(Geen afzender)</string>
   <string name="mailbox_error_message_offline">U bent offline, u kunt geen items ophalen</string>
   <string name="mailbox_error_message_generic">Postvak IN laden mislukt</string>
   <string name="mailbox_error_message_unexpected">Er is onverwacht iets fout gegaan</string>
   <string name="mailbox_is_empty_title">Geen berichten</string>
-  <string name="mailbox_is_empty_description">U bent helemaal bij</string>
+  <string name="trash_is_empty_title">Niets in Prullenbak</string>
+  <string name="mailbox_is_empty_description">Het lijkt erop dat u helemaal bij bent</string>
   <string name="mailbox_is_empty_no_unread_messages_title">Geen ongelezen berichten</string>
   <string name="mailbox_is_empty_folder_description">Deze map is leeg</string>
   <string name="mailbox_is_empty_spam_description">Uw spam map is leeg</string>
-  <string name="mailbox_is_empty_trash_description">Uw prullenbak is leeg</string>
+  <string name="mailbox_is_empty_trash_description">Het ziet er hier leeg uit</string>
   <plurals name="mailbox_action_trash">
-    <item quantity="one">Bericht verplaatst naar de prullenbak</item>
-    <item quantity="other">%d berichten verplaatst naar de prullenbak</item>
+    <item quantity="one">Bericht verplaatst naar Prullenbak</item>
+    <item quantity="other">%d berichten verplaatst naar Prullenbak</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation_dialog_title">
     <item quantity="one">Gesprek verwijderen</item>
@@ -49,7 +55,7 @@
   </plurals>
   <plurals name="mailbox_action_delete_message_dialog_title">
     <item quantity="one">Bericht verwijderen</item>
-    <item quantity="other">Verwijder %d berichten</item>
+    <item quantity="other">%d berichten verwijderen</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation_dialog_message">
     <item quantity="one">Weet u zeker dat u dit gesprek permanent wilt verwijderen?</item>
@@ -72,20 +78,26 @@
   <string name="mailbox_action_failed_retrieving_colors">Kan geen kleurinstellingen ophalen</string>
   <string name="mailbox_action_move_messages_failed">Verplaatsactie mislukt</string>
   <string name="mailbox_action_move_messages_failed_retrieving_folders">Kan geen mappen ophalen</string>
-  <string name="mailbox_action_trash_message">Bericht verplaatst naar de prullenbak</string>
+  <string name="mailbox_action_trash_message">Bericht verplaatst naar prullenbak</string>
   <string name="mailbox_action_archive_message">Bericht verplaatst naar archief</string>
   <string name="mailbox_action_spam_message">Bericht verplaatst naar spam</string>
   <string name="mailbox_search_placeholder_text">Doorzoek berichten</string>
-  <string name="mailbox_search_no_results_title">Geen resultaten</string>
-  <string name="mailbox_search_no_results_explanation">Zoek datum, naam, e-mailadres, of onderwerp</string>
+  <string name="mailbox_search_no_results_title">Geen overeenkomsten</string>
+  <string name="mailbox_search_no_results_explanation">U kunt uw zoekopdracht bewerken of wissen.</string>
   <string name="mailbox_action_button_clear_trash">Prullenbak leegmaken</string>
   <string name="mailbox_action_button_clear_spam">Spam leegmaken</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Upgrade om automatisch berichten te verwijderen die meer dan 30 dagen in de prullenbak of spam zitten</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Meer info</string>
+  <string name="mailbox_action_clear_trash_spam_banner_text">Berichten die meer dan 30 dagen in de prullenbak en spam zitten worden automatisch verwijderd.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Prullenbak leegmaken</string>
   <string name="mailbox_action_clear_spam_dialog_title">Spam-map leegmaken</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">Weet u zeker dat u alle berichten in de prullenbak definitief wilt verwijderen?</string>
   <string name="mailbox_action_clear_spam_dialog_body_message">Weet u zeker dat u alle berichten in de spam map definitief wilt verwijderen</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Weet u zeker dat u alle gesprekken in de spam map definitief wilt verwijderen?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Optie om op te ruimen is gepland"</string>
+  <!-- Attachment download -->
+  <string name="mailbox_attachment_download_started">Bijlage openen…</string>
+  <string name="mailbox_attachment_download_error">Kan de bijlage niet openen. Probeer het opnieuw.</string>
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">Waarschuwing</string>
   <string name="storage_first_limit_exceeded_warning_dialog_text">Uw Proton-account opslagruimte is meer dan 80% vol. Maak vrije ruimte of upgrade voor meer ruimte.</string>
@@ -96,4 +108,21 @@
   <string name="storage_quota_over_dialog_title">Waarschuwing</string>
   <string name="storage_quota_over_dialog_text">Uw Proton account opslag is 100% vol. U kunt niet langer mail versturen of ontvangen tenzij u een aantal mail berichten definitief verwijderd of upgrade voor meer opslagruimte.</string>
   <string name="storage_quota_over_dialog_confirm_button">OK</string>
+  <string name="mailbox_action_delete_failed">Het bericht verwijderen is mislukt</string>
+  <string name="select_all">Alles selecteren</string>
+  <string name="deselect_all">Alles deselecteren</string>
+  <!--    Expiry messages-->
+  <plurals name="expires_in_days">
+    <item quantity="one">Verloopt over %d dag</item>
+    <item quantity="other">Verloopt over %d dagen</item>
+  </plurals>
+  <plurals name="expires_in_hours">
+    <item quantity="one">Verloopt over %d uur</item>
+    <item quantity="other">Verloopt over %d uren</item>
+  </plurals>
+  <plurals name="expires_in_minutes">
+    <item quantity="one">Verloopt over %d minuut</item>
+    <item quantity="other">Verloopt over %d minuten</item>
+  </plurals>
+  <string name="expires_in_less_than_a_minute">Verloopt in minder dan één minuut</string>
 </resources>

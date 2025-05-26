@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 Proton AG
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="app_name_mail">Proton Mail</string>
+  <string name="login_help_close">Tutup</string>
+  <string name="login_help_title">Bagaimana kami dapat membantu Anda?</string>
+  <string name="login_help_forgot_username">Lupa nama pengguna</string>
+  <string name="login_help_forgot_password">Lupa kata sandi</string>
+  <string name="login_help_other_issues">Masalah masuk lainnya</string>
+  <string name="login_help_contact_needed">Masih butuh bantuan? Hubungi kami secara langsung.</string>
+  <string name="login_help_customer_support">Layanan dukungan</string>
+  <string name="welcome_subtitle_mail">Privasi. Keamanan. Kenyamanan. Email terenkripsi yang memberi Anda kendali penuh terhadap data pribadi Anda.</string>
+  <string name="welcome_sign_in">Masuk</string>
+  <string name="welcome_sign_up">Buat akun</string>
+  <string name="welcome_proton_privacy_by_default">Proton - Privacy by default</string>
+  <string name="auth_login">Masuk</string>
+  <string name="auth_login_close">Tutup</string>
+  <string name="auth_login_help">Bantuan</string>
+  <string name="auth_sign_in">Masuk</string>
+  <string name="auth_username">Nama pengguna</string>
+  <string name="auth_email">Email</string>
+  <string name="auth_password">Kata sandi</string>
+  <string name="auth_username_placeholder">Nama pengguna atau email</string>
+  <string name="auth_password_placeholder">Kata sandi</string>
+  <string name="auth_login_assistive_text">Silakan masukkan alamat email atau nama pengguna Proton Anda.</string>
+  <string name="auth_account_details">Masukkan rincian Akun Proton Anda.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Kata sandi, frasa sandi, atau salt kunci salah.</string>
+  <string name="auth_login_error_invalid_action_human_verification_challenge">Verifikasi manusia dibutuhkan.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Kredensial masuk salah. Silakan coba lagi.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Kode dua faktor tidak didukung</string>
+  <string name="auth_second_factor_title">Autentikasi dua-faktor</string>
+  <string name="auth_second_factor_authenticate">Autentikasi</string>
+  <string name="auth_second_factor_totp_input_help">Masukkan kode 6 digit Anda.</string>
+  <string name="auth_second_factor_totp_input_label">Kode dua faktor</string>
+  <string name="auth_second_factor_recovery_help">Masukkan kode pemulihan sepanjang 8 karakter.</string>
+  <string name="auth_second_factor_recovery_label">Kode pemulihan</string>
+  <string name="auth_second_factor_switch_to_recovery">Gunakan kode pemulihan</string>
+  <string name="auth_second_factor_switch_to_totp">Gunakan kode dua faktor</string>
+  <string name="auth_two_pass_title">Buka kunci kotak surat Anda</string>
+  <string name="auth_two_pass_input_label">Kata sandi kotak surat</string>
+  <string name="auth_two_pass_unlock">Buka kunci</string>
+  <string name="auth_two_pass_forgot_password">Lupa kata sandi</string>
+  <string name="auth_two_pass_input_empty">Kata sandi tidak boleh kosong</string>
+  <string name="auth_signup_title">Buat Akun Proton Anda</string>
+  <string name="auth_signup_subtitle">Satu akun untuk seluruh layanan Proton</string>
+  <string name="auth_signup_username_assistive_text">Nama pengguna tidak boleh kosong.</string>
+  <string name="auth_signup_email_assistive_text">Email tidak boleh kosong.</string>
+  <string name="auth_signup_next">Selanjutnya</string>
+  <string name="auth_signup_email_username">Nama pengguna atau email</string>
+  <string name="auth_signup_create_password">Buat kata sandi Anda</string>
+  <string name="auth_signup_password">Kata sandi</string>
+  <string name="auth_signup_repeat_password">Ulangi kata sandi</string>
+  <string name="auth_signup_terms_privacy_conditions_footer">Dengan mengeklik Selanjutnya, Anda menyatakan diri setuju terhadap %1$s dan %2$s Proton</string>
+  <string name="auth_signup_terms_learn_more">Syarat dan Ketentuan</string>
+  <string name="auth_signup_privacy_policy_learn_more">Kebijakan Privasi</string>
+  <string name="auth_signup_internal_footnote">Anda akan memerlukan alamat Proton untuk menggunakan Proton Mail dan Proton Calendar</string>
+  <string name="auth_signup_use_current_email">Gunakan email Anda saat ini</string>
+  <string name="auth_signup_get_encrypted_email">Dapatkan alamat email terenkripsi baru</string>
+  <string name="auth_signup_external_footnote">Dengan alamat Proton, Anda dapat menggunakan seluruh layanan Proton</string>
+  <string name="auth_signup_recovery_skip">Lewati</string>
+  <string name="auth_signup_recovery_title">Atur metode pemulihan (opsional)</string>
+  <string name="auth_signup_recovery_subtitle">Apabila Anda terkunci dari akun Anda, kami akan mengirimkan instruksi pemulihan kepada alamat email atau nomor telepon ini.</string>
+  <string name="auth_signup_recovery_email">Email</string>
+  <string name="auth_signup_recovery_phone">Telepon</string>
+  <string name="auth_signup_recovery_email_hint">Email pemulihan</string>
+  <string name="auth_signup_recovery_phone_hint">Nomor telepon pemulihan</string>
+  <string name="auth_signup_phone_placeholder">XXX-XXXXXXX</string>
+  <string name="auth_signup_your_account_is_being_setup">Akun Anda sedang dibuat…</string>
+  <string name="auth_signup_please_wait">Proses ini pada umumnya tidak akan memakan waktu lebih dari satu menit.</string>
+</resources>

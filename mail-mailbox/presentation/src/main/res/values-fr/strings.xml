@@ -17,6 +17,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="mailbox_fab_compose_button_title">Rédiger</string>
   <string name="mailbox_fab_compose_button_content_description">Nouveau message</string>
   <string name="mailbox_toolbar_exit_selection_mode_button_content_description">Quitter le mode sélection</string>
   <string name="mailbox_toolbar_menu_button_content_description">Menu</string>
@@ -25,8 +26,12 @@
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">Effacer la recherche</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">Saisir la recherche</string>
   <plurals name="mailbox_toolbar_selected_count">
-    <item quantity="one">Sélection : %d</item>
-    <item quantity="other">Sélection : %d</item>
+    <item quantity="one">%d sélectionnés</item>
+    <item quantity="other">%d sélectionnés</item>
+  </plurals>
+  <plurals name="filter_unread_button_text">
+    <item quantity="one">Non lu %s</item>
+    <item quantity="other">Non lus %s</item>
   </plurals>
   <string name="mailbox_default_recipient">(aucun destinataire)</string>
   <string name="mailbox_default_sender">(aucun expéditeur)</string>
@@ -34,11 +39,12 @@
   <string name="mailbox_error_message_generic">Le chargement de la messagerie n\'a pas abouti.</string>
   <string name="mailbox_error_message_unexpected">Une erreur imprévue s\'est produite.</string>
   <string name="mailbox_is_empty_title">Aucun message</string>
+  <string name="trash_is_empty_title">La corbeille est vide.</string>
   <string name="mailbox_is_empty_description">Vous êtes à jour.</string>
   <string name="mailbox_is_empty_no_unread_messages_title">Vous n\'avez aucun message non lu.</string>
   <string name="mailbox_is_empty_folder_description">Ce dossier est vide.</string>
   <string name="mailbox_is_empty_spam_description">Votre dossier Indésirables/spam est vide.</string>
-  <string name="mailbox_is_empty_trash_description">Le dossier Corbeille est vide.</string>
+  <string name="mailbox_is_empty_trash_description">Ça a l\'air vide par ici !</string>
   <plurals name="mailbox_action_trash">
     <item quantity="one">Le message a été déplacé dans le dossier Corbeille.</item>
     <item quantity="other">%d messages ont été déplacés dans le dossier Corbeille.</item>
@@ -61,31 +67,37 @@
   </plurals>
   <plurals name="mailbox_action_delete_message">
     <item quantity="one">Le message a été supprimé définitivement.</item>
-    <item quantity="other">%d messages ont été supprimés définitivement.</item>
+    <item quantity="other">%d messages ont été supprimés définitivement</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation">
     <item quantity="one">La conversation a été supprimée définitivement.</item>
-    <item quantity="other">%d conversations ont été supprimées définitivement.</item>
+    <item quantity="other">%d conversations ont été supprimées définitivement</item>
   </plurals>
   <string name="mailbox_action_label_messages_failed">L\'opération sur le label n\'a pas abouti.</string>
   <string name="mailbox_action_label_messages_failed_retrieving_labels">Les labels n\'ont pas pu être obtenus.</string>
   <string name="mailbox_action_failed_retrieving_colors">Les paramètres de couleur n\'ont pas pu être obtenus.</string>
   <string name="mailbox_action_move_messages_failed">Le déplacement n\'a pas abouti.</string>
   <string name="mailbox_action_move_messages_failed_retrieving_folders">Les dossiers n\'ont pas pu être obtenus.</string>
-  <string name="mailbox_action_trash_message">Le message a été déplacé dans le dossier Corbeille.</string>
-  <string name="mailbox_action_archive_message">Le message a été déplacé dans le dossier Archives.</string>
-  <string name="mailbox_action_spam_message">Le message a été déplacé dans le dossier Indésirables/spam.</string>
+  <string name="mailbox_action_trash_message">Message déplacé dans le dossier Corbeille</string>
+  <string name="mailbox_action_archive_message">Message déplacé dans le dossier Archives</string>
+  <string name="mailbox_action_spam_message">Message déplacé dans le dossier Indésirables/spam</string>
   <string name="mailbox_search_placeholder_text">Rechercher des messages.</string>
-  <string name="mailbox_search_no_results_title">Aucun résultat n\'a été trouvé.</string>
-  <string name="mailbox_search_no_results_explanation">Recherchez par date, nom, adresse e-mail ou objet du message.</string>
+  <string name="mailbox_search_no_results_title">Aucune correspondance.</string>
+  <string name="mailbox_search_no_results_explanation">Vous pouvez soit mettre à jour votre recherche, soit l\'effacer.</string>
   <string name="mailbox_action_button_clear_trash">Vider le dossier Corbeille</string>
   <string name="mailbox_action_button_clear_spam">Vider le dossier Indésirables/spam</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Changez d\'abonnement pour supprimer automatiquement les messages dans les dossiers Corbeille ou Indésirables/spam depuis plus de 30 jours</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">En savoir plus</string>
+  <string name="mailbox_action_clear_trash_spam_banner_text">Les messages dans les dossiers Corbeille et Indésirables/spam depuis plus de 30 jours seront automatiquement supprimés.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Vider le dossier Corbeille</string>
   <string name="mailbox_action_clear_spam_dialog_title">Vider le dossier Indésirables/spam</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">Voulez-vous vraiment supprimer définitivement tous les messages qui se trouvent dans le dossier Corbeille ?</string>
   <string name="mailbox_action_clear_spam_dialog_body_message">Voulez-vous vraiment supprimer définitivement tous les messages qui se trouvent dans le dossier Indésirables/spam ?</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Voulez-vous vraiment supprimer définitivement toutes les conversations qui se trouvent dans le dossier Indésirables/spam ?</string>
   <string name="mailbox_action_clear_operation_scheduled">"L'opération d'effacement est programmée."</string>
+  <!-- Attachment download -->
+  <string name="mailbox_attachment_download_started">Ouverture de la pièce jointe…</string>
+  <string name="mailbox_attachment_download_error">La pièce jointe n\'a pas pu être ouverte. Nous vous invitons à réessayer.</string>
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">Attention</string>
   <string name="storage_first_limit_exceeded_warning_dialog_text">Votre compte Proton a dépassé les 80 % de votre espace de stockage. Libérez de l\'espace ou changez d\'abonnement pour augmenter votre espace de stockage.</string>
@@ -96,4 +108,21 @@
   <string name="storage_quota_over_dialog_title">Attention</string>
   <string name="storage_quota_over_dialog_text">Votre compte Proton a atteint la limite d\'espace de stockage disponible. Vous ne pouvez plus envoyer ou recevoir de messages à moins de supprimer définitivement des messages ou de changer d\'abonnement pour augmenter votre espace de stockage.</string>
   <string name="storage_quota_over_dialog_confirm_button">OK</string>
+  <string name="mailbox_action_delete_failed">La suppression du message n\'a pas abouti.</string>
+  <string name="select_all">Tout sélectionner</string>
+  <string name="deselect_all">Tout désélectionner</string>
+  <!--    Expiry messages-->
+  <plurals name="expires_in_days">
+    <item quantity="one">Expire dans %d jour</item>
+    <item quantity="other">Expire dans %d jours</item>
+  </plurals>
+  <plurals name="expires_in_hours">
+    <item quantity="one">Expire dans %d heure</item>
+    <item quantity="other">Expire dans %d heures</item>
+  </plurals>
+  <plurals name="expires_in_minutes">
+    <item quantity="one">Expire dans %d minute</item>
+    <item quantity="other">Expire dans %d minutes</item>
+  </plurals>
+  <string name="expires_in_less_than_a_minute">Expire dans moins d\'une minute</string>
 </resources>

@@ -17,12 +17,19 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <plurals name="attachment_count_label">
-    <item quantity="one">%d datoteka</item>
-    <item quantity="two">%d datoteki</item>
-    <item quantity="few">%d datoteke</item>
-    <item quantity="other">%d datotek</item>
+  <plurals name="selected_count_title">
+    <item quantity="one">Izbrano: %d</item>
+    <item quantity="two">Izbrano: %d</item>
+    <item quantity="few">Izbrano: %d</item>
+    <item quantity="other">Izbrano: %d</item>
   </plurals>
+  <plurals name="attachment_count_label">
+    <item quantity="one">%d priponka</item>
+    <item quantity="two">%d priponki</item>
+    <item quantity="few">%d priponke</item>
+    <item quantity="other">%d priponk</item>
+  </plurals>
+  <string name="attachments">priponke</string>
   <string name="attachment_show_more_label">in še %1$d</string>
   <string name="attachment_permission_dialog_title">Potrebno je dovoljenje</string>
   <string name="attachment_permission_dialog_message">Za prenos priponke Proton Mail potrebuje dovoljenje za dostop do shrambe vaše naprave.</string>
@@ -40,11 +47,19 @@
   <string name="attachment_type_document">Dokument</string>
   <string name="attachment_type_spreadsheet">Preglednica</string>
   <string name="attachment_type_presentation">Predstavitev</string>
+  <string name="attachment_type_calendar">Koledar</string>
+  <string name="attachment_type_code">Koda</string>
+  <string name="attachment_type_font">Pisava</string>
+  <string name="attachment_type_key">Ključ</string>
+  <string name="attachment_type_keynote">Keynote</string>
+  <string name="attachment_type_numbers">Numbers</string>
+  <string name="attachment_type_pages">Pages</string>
+  <string name="attachment_type_word">Word</string>
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">Premakni v …</string>
   <string name="bottom_sheet_done_action">Končano</string>
   <string name="bottom_sheet_archive_action">Tudi arhiviraj?</string>
-  <string name="bottom_sheet_label_as_title">Označi kot ...</string>
+  <string name="bottom_sheet_label_as_title">Označi kot</string>
   <string name="bottom_sheet_more_header_message_from">Sporočilo od %s</string>
   <!-- Message body link actions -->
   <string name="message_link_long_click_copy">Kopiraj povezavo</string>
@@ -60,8 +75,10 @@
   <string name="contact_actions_copy_name_performed">Ime kopirano v odložišče</string>
   <string name="contact_actions_new_message">Novo sporočilo</string>
   <string name="contact_actions_new_message_description">Začnite sestavljati novo sporočilo za ta stik</string>
-  <string name="contact_actions_add_contact">Dodaj kontakt</string>
+  <string name="contact_actions_add_contact">Dodaj stik</string>
   <string name="contact_actions_add_contact_description">Shrani tega prejemnika kot stik</string>
+  <string name="contact_actions_block_contact">Blokiraj ta stik</string>
+  <string name="contact_actions_block_contact_description">Blokiraj ta stik</string>
   <string name="contact_actions_view_contact_details">Ogled podrobnosti stika</string>
   <string name="contact_actions_view_contact_details_description">Oglejte si podrobnosti stika</string>
   <!-- Device Contacts permission dialog -->

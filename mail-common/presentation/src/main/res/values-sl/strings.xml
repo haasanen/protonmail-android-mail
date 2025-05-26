@@ -19,16 +19,19 @@
 <resources>
   <string name="expiration_expired">Poteklo</string>
   <string name="expiration_days_arg">%dd</string>
-  <string name="expiration_hours_arg">%d u</string>
+  <string name="expiration_hours_arg">%d ur</string>
   <string name="expiration_minutes_arg">%d min</string>
   <string name="retry">Poskusite znova</string>
   <string name="toolbar_back_content_description">Nazaj na prejšnji zaslon</string>
   <string name="x_error_not_logged_in">Niste prijavljeni</string>
+  <string name="action_customize_toolbar">Prilagajanje orodne vrstice</string>
+  <string name="action_customize_toolbar_description">Prilagajanje orodne vrstice</string>
+  <string name="action_customize_toolbar_content_description">Prilagajanje orodne vrstice</string>
   <string name="action_reply">Odgovori</string>
   <string name="action_reply_all">Odgovori vsem</string>
   <string name="action_forward">Posreduj</string>
   <string name="action_reply_description">Odgovori</string>
-  <string name="action_reply_to_description">Odgovori %s</string>
+  <string name="action_reply_to_description">Odgovori na %s</string>
   <string name="action_reply_all_description">Odgovori vsem</string>
   <string name="action_forward_description">Posreduj</string>
   <string name="action_mark_read_description">Označi kot prebrano</string>
@@ -52,8 +55,11 @@
   <string name="action_sender_emails_description">Nastavi dejanje za prihodnja sporočila tega pošiljatelja</string>
   <string name="action_save_attachments_description">Shrani priponke</string>
   <string name="action_more_description">Več</string>
+  <string name="action_inbox_description">Prejeto</string>
+  <string name="action_pin_description">Pripni</string>
+  <string name="action_unpin_description">Odpni</string>
   <string name="action_reply_content_description">Odgovori</string>
-  <string name="action_reply_to_content_description">Odgovori %s</string>
+  <string name="action_reply_to_content_description">Odgovori na %s</string>
   <string name="action_reply_all_content_description">Odgovori vsem</string>
   <string name="action_forward_content_description">Posreduj</string>
   <string name="action_mark_read_content_description">Označi kot prebrano</string>
@@ -66,6 +72,9 @@
   <string name="action_delete_content_description">Izbriši</string>
   <string name="action_archive_content_description">Arhiviraj</string>
   <string name="action_spam_content_description">Neželena pošta</string>
+  <string name="action_inbox_content_description">Prejeto</string>
+  <string name="action_pin_content_description">Pripni</string>
+  <string name="action_unpin_content_description">Odpni</string>
   <string name="action_view_in_light_mode_content_description">Ogled sporočila v svetlem načinu</string>
   <string name="action_view_in_dark_mode_content_description">Ogled sporočila v temnem načinu</string>
   <string name="action_print_content_description">Natisni</string>
@@ -115,4 +124,5 @@
   <string name="undo_button_label">Razveljavi</string>
   <string name="undo_success_message">Dejanje razveljavljeno</string>
   <string name="undo_failure_message">Razveljavitev dejanja ni uspela</string>
+  <string name="feature_coming_soon">Funkcija bo kmalu na voljo ...</string>
 </resources>

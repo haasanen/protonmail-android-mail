@@ -21,69 +21,59 @@
   <string name="mail_settings_toolbar_button_content_description">Înapoi</string>
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Setări cont</string>
-  <string name="mail_settings_app_settings">Setări aplicație</string>
+  <string name="mail_settings_email_settings">Setări e-mail</string>
+  <string name="mail_settings_folder_and_label_settings">Setări foldere și etichete</string>
+  <string name="mail_settings_privacy_and_security_settings">Setări intimitate și securitate</string>
+  <string name="mail_settings_preferences">Preferințe</string>
+  <string name="mail_settings_app">Aplicație</string>
+  <string name="mail_settings_email">E-mail</string>
+  <string name="mail_settings_email_hint">Preferințe pentru mesaje și cont</string>
+  <string name="mail_settings_folders_labels">Foldere și etichete</string>
+  <string name="mail_settings_folders_labels_hint">Organizare mesaje</string>
+  <string name="mail_settings_spam_and_custom_filters">Filtre personale și mesaje nedorite</string>
+  <string name="mail_settings_spam_and_custom_filters_hint">Acțiuni automate și sortare</string>
+  <string name="mail_settings_privacy_and_security">Intimitate și securitate</string>
+  <string name="mail_settings_privacy_and_security_hint">Protejare e-mail împotriva urmăririi</string>
+  <string name="mail_settings_app_hint">Personalizare aplicație mobilă</string>
   <string name="mail_settings_theme">Tema</string>
-  <string name="mail_settings_push_notifications">Notificari instante</string>
   <string name="mail_settings_auto_lock">Autoblocare</string>
   <string name="mail_settings_alternative_routing">Rută alternativă</string>
   <string name="mail_settings_app_language">Limbă aplicație</string>
   <string name="mail_settings_combined_contacts">Contacte combinate</string>
-  <string name="mail_settings_local_cache">Buffer local</string>
-  <string name="mail_settings_local_cache_hint">Spațiu utilizat: %s</string>
-  <string name="mail_settings_local_cache_clear_button">Golire buffer</string>
   <string name="mail_settings_swipe_actions">Acțiuni de glisare</string>
   <string name="mail_settings_combined_contacts_hint">Activați funcția pentru autocompletarea adreselor de e-mail folosind contactele din toate conturile conectate.</string>
   <string name="mail_settings_alternative_routing_hint">În cazul în care serverele Proton sunt blocate, această setare permite aplicației să încerce accesarea printr-o rețea alternativă pentru a ajunge la Proton, ceea ce poate fi util pentru ocolirea paravanelor de protecție sau a problemelor de rețea. Se recomandă păstrarea acestei setări pentru o fiabilitate mai mare.</string>
+  <!-- App customization settings-->
+  <string name="mail_settings_app_customization_title">Personalizare aplicație</string>
+  <string name="mail_settings_app_customization_notification">Notificări</string>
+  <string name="mail_settings_app_customization_language">Limba</string>
+  <string name="mail_settings_app_customization_appearance">Aspect</string>
+  <string name="mail_settings_app_customization_protection">Protecție</string>
+  <string name="mail_settings_app_customization_protection_enabled_description">Autoblocare activată</string>
+  <string name="mail_settings_app_customization_protection_disabled_description">Autoblocare dezactivată</string>
+  <string name="mail_settings_app_customization_use_device_contacts">Folosire contacte din dispozitiv</string>
+  <string name="mail_settings_app_customization_use_device_contacts_hint">Completați automat adresele de e-mail folosind contactele din dispozitiv.</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email">Derulare la alt mesaj</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email_hint">Vă mutați rapid la mesajul următor sau anterior primit.</string>
+  <string name="mail_settings_app_customization_swipe_action">Acțiune glisare</string>
+  <string name="mail_settings_app_customization_swipe_action_hint">Configurați acțiuni rapide, precum ștergere sau arhivare, atunci când glisați spre stânga sau spre dreapta.</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Personalizare bară de unelte</string>
+  <string name="mail_settings_app_customization_alternative_routing">Direcționare alternativă</string>
+  <string name="mail_settings_app_customization_alternative_routing_hint">Ocoliți paravanele de protecție sau problemele de rețea în cazul în care site-urile Proton sunt blocate.</string>
+  <string name="mail_settings_app_customization_view_application_logs">Afișare jurnale aplicație</string>
+  <string name="mail_settings_app_customization_mail_experience_header">Experiență Mail</string>
+  <string name="mail_settings_app_customization_advanced_header">Avansat</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Implicit din sistem</string>
   <string name="mail_settings_theme_light">Albă</string>
   <string name="mail_settings_theme_dark">Neagră</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Nu există informații disponibile</string>
-  <string name="mail_settings_enabled">Activat</string>
-  <string name="mail_settings_disabled">Dezactivat</string>
-  <string name="mail_settings_allowed">Permis</string>
-  <string name="mail_settings_denied">Respins</string>
-  <string name="mail_settings_auto_detect">Autodetectare</string>
-  <string name="mail_settings_app_information">Informații aplicație</string>
-  <string name="mail_settings_app_version">Versiune aplicație</string>
   <string name="mail_settings_account">Cont</string>
-  <!-- Account Settings items -->
-  <string name="mail_settings_subscription">Abonament</string>
-  <string name="mail_settings_password_management">Schimbare parolă</string>
-  <string name="mail_settings_recovery_email">E-mail de recuperare</string>
-  <string name="mail_settings_mailbox_size">Mărime stocare mesaje</string>
-  <string name="mail_settings_addresses">Adrese</string>
-  <string name="mail_settings_default_email_address">Adresa de e-mail implicită</string>
-  <string name="mail_settings_display_name_and_signature">Numele afișat și semnătura</string>
-  <string name="mail_settings_mailbox">Mesaje</string>
-  <string name="mail_settings_privacy">Confidențialitate</string>
-  <string name="mail_settings_labels">Etichete</string>
-  <string name="mail_settings_folders">Foldere</string>
-  <string name="mail_settings_conversation_mode">Mod conversație</string>
   <string name="mail_settings_not_set">Nesetat</string>
   <string name="mail_settings_conversation_mode_hint">Grupare mesaje din aceeași conversație sau afișare separată</string>
-  <!-- Default email address settings -->
-  <string name="mail_settings_default_email_address_title">Adresa de e-mail implicită</string>
-  <string name="mail_settings_default_email_address_inactive_addresses">Adrese inactive</string>
-  <string name="mail_settings_default_email_address_no_inactive_addresses">Nu există adrese inactive</string>
-  <string name="mail_settings_default_email_address_error_loading">Eroare la încărcarea setărilor.</string>
-  <string name="mail_settings_default_email_address_error_update">Eroare la actualizarea setărilor.</string>
-  <string name="mail_settings_default_email_address_error_update_subscription">Treceți la un plan cu plată pentru a seta această adresă ca implicită.</string>
-  <!-- Display name, signature, mobile footer -->
-  <string name="mail_settings_identity_title">Nume afișat și semnătură</string>
-  <string name="mail_settings_identity_save_button">Salvare</string>
-  <string name="mail_settings_identity_display_name">Nume afișat</string>
-  <string name="mail_settings_identity_display_name_hint">Nume afișat</string>
-  <string name="mail_settings_identity_signature">Semnătura</string>
-  <string name="mail_settings_identity_signature_hint">Semnătura</string>
-  <string name="mail_settings_identity_mobile_footer">Semnătură mobil</string>
-  <string name="mail_settings_identity_mobile_footer_subtext">Acest mesaj este adăugat după semnătură.</string>
-  <string name="mail_settings_identity_mobile_footer_hint">Semnătură mobil</string>
-  <string name="mail_settings_identity_mobile_footer_default_free">Trimis cu Proton Mail pentru Android</string>
-  <string name="mail_settings_identity_error_updating">Eroare la actualizarea setărilor.</string>
-  <string name="mail_settings_identity_error_loading">Eroare la încărcarea setărilor.</string>
   <!-- Privacy settings -->
+  <string name="mail_settings_privacy">Confidențialitate</string>
   <string name="mail_settings_privacy_auto_show_remote_content">Afișare automată conținut extern</string>
   <string name="mail_settings_privacy_auto_show_embedded_images">Afișare automată imagini incluse</string>
   <string name="mail_settings_privacy_prevent_taking_screenshots">Împiedicare capturi de ecran</string>
@@ -97,16 +87,22 @@
   <string name="mail_settings_swipe_actions_subtitle">Configurare gesturi de glisare pentru a accesa cele mai utilizate acțiuni.</string>
   <string name="mail_settings_swipe_right_name">De la stânga la dreapta</string>
   <string name="mail_settings_swipe_left_name">De la dreapta la stânga</string>
+  <string name="mail_settings_swipe_action_none_title">Nesetat</string>
   <string name="mail_settings_swipe_action_archive_title">Arhivă</string>
   <string name="mail_settings_swipe_action_read_title">Necitite</string>
   <string name="mail_settings_swipe_action_spam_title">Nedorite</string>
   <string name="mail_settings_swipe_action_star_title">Cu stea</string>
   <string name="mail_settings_swipe_action_trash_title">Gunoi</string>
+  <string name="mail_settings_swipe_action_label_as_title">Etichetare ca…</string>
+  <string name="mail_settings_swipe_action_move_to_title">Mutare în…</string>
+  <string name="mail_settings_swipe_action_none_description">Niciuna</string>
   <string name="mail_settings_swipe_action_archive_description">Mutare în «Arhivă»</string>
   <string name="mail_settings_swipe_action_read_description">Marcare ca citit/necitit</string>
   <string name="mail_settings_swipe_action_spam_description">Mutare în «Nedorite»</string>
   <string name="mail_settings_swipe_action_star_description">Cu stea/Fără stea</string>
   <string name="mail_settings_swipe_action_trash_description">Mutare în «Gunoi»</string>
+  <string name="mail_settings_swipe_action_label_as_description">Etichetare ca…</string>
+  <string name="mail_settings_swipe_action_move_to_description">Mutare în…</string>
   <!-- Notification settings -->
   <string name="mail_settings_notifications_title">Notificări instante</string>
   <string name="mail_settings_notifications_extended_notifications_title">Notificări extinse</string>
@@ -138,9 +134,9 @@
   <string name="mail_settings_pin_insertion_button_confirm">Confirmare</string>
   <string name="mail_settings_pin_insertion_error_no_match">Codurile PIN nu coincid.</string>
   <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="one">Încercări rămase: %s.</item>
-    <item quantity="few">Încercări rămase: %s.</item>
-    <item quantity="other">Încercări rămase: %s.</item>
+    <item quantity="one">Încercări rămase: %s</item>
+    <item quantity="few">Încercări rămase: %s</item>
+    <item quantity="other">Încercări rămase: %s</item>
   </plurals>
   <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
     <item quantity="one">A mai rămas %s încercare până la ștergerea securizată a datelor.</item>
@@ -155,8 +151,6 @@
   <string name="mail_settings_pin_insertion_signout_dialog_cancel">Nu</string>
   <string name="mail_settings_pin_insertion_created_success">Codul PIN a fost creat.</string>
   <string name="mail_settings_pin_insertion_changed_success">Codul PIN a fost modificat.</string>
-  <!-- Local storage -->
-  <string name="mail_settings_clearing_cached_data">Se golesc datele din bufferul local…</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">A apărut o eroare. Mai încercați.</string>
   <!-- strings used for biometric enrollment -->

@@ -23,5 +23,12 @@
   <string name="notification_title_text_new_message_fallback">Novo sporočilo</string>
   <string name="notification_actions_archive_description">Arhiviraj</string>
   <string name="notification_actions_trash_description">V smetnjak</string>
-  <string name="notification_actions_reply_description">Odgovori</string>
+  <string name="notification_actions_mark_as_read_description">Označi kot prebrano</string>
+  <!-- Push notification permissions BS -->
+  <string name="notification_permissions_bottomsheet_first_time_title">Ne spreglejte sporočila</string>
+  <string name="notification_permissions_bottomsheet_first_time_subtitle">Obvestila vam omogočajo spremljati prispelo pošto, ne da bi morali preverjati v aplikaciji.</string>
+  <string name="notification_permissions_bottomsheet_second_time_title">Želite ostati na tekočem?</string>
+  <string name="notification_permissions_bottomsheet_second_time_subtitle">Vklopite obvestila, da boste vedeli, kdaj prejmete odgovor na e-pošto.</string>
+  <string name="notification_permissions_bottomsheet_enable">Omogoči potisna obvestila</string>
+  <string name="notification_permissions_bottomsheet_dismiss">Opusti</string>
 </resources>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 Proton AG
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="app_name_mail">Proton Mail</string>
+  <string name="login_help_close">Bezárás</string>
+  <string name="login_help_title">Miben segíthetünk?</string>
+  <string name="login_help_forgot_username">Elfelejtett felhasználónév</string>
+  <string name="login_help_forgot_password">Elfelejtett jelszó</string>
+  <string name="login_help_other_issues">Egyéb bejelentkezési problémák</string>
+  <string name="login_help_contact_needed">További segítségre van szüksége? Vegye fel velünk a kapcsolatot.</string>
+  <string name="login_help_customer_support">Ügyfélszolgálat</string>
+  <string name="welcome_subtitle_mail">Adatvédelem. Biztonság. Kényelem. A titkosított e-mail-el vegye át az irányítást a személyes adatai felett.</string>
+  <string name="welcome_sign_in">Bejelentkezés</string>
+  <string name="welcome_sign_up">Fiók létrehozása</string>
+  <string name="welcome_proton_privacy_by_default">Proton - Privacy by default</string>
+  <string name="auth_login">Bejelentkezés</string>
+  <string name="auth_login_close">Bezárás</string>
+  <string name="auth_login_help">Segítség</string>
+  <string name="auth_sign_in">Bejelentkezés</string>
+  <string name="auth_username">Felhasználónév</string>
+  <string name="auth_email">E-mail</string>
+  <string name="auth_password">Jelszó</string>
+  <string name="auth_username_placeholder">Felhasználónév vagy e-mail cím</string>
+  <string name="auth_password_placeholder">Jelszó</string>
+  <string name="auth_login_assistive_text">Kérem, adja meg a Proton e-mail címét vagy felhasználónevét.</string>
+  <string name="auth_account_details">Kérem, adja meg Proton fiókja részleteit.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Hibás jelszó, jelmondat vagy kulcssó.</string>
+  <string name="auth_login_error_invalid_action_human_verification_challenge">Emberi ellenőrzés szükséges.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Helytelen bejelentkezési adatok. Kérem, próbálja újra.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Az azonosítás második lépcsője nem támogatott.</string>
+  <string name="auth_second_factor_title">Kétlépcsős hitelesítés</string>
+  <string name="auth_second_factor_authenticate">Azonosítás</string>
+  <string name="auth_second_factor_totp_input_help">Írja be a 6 jegyű kódot.</string>
+  <string name="auth_second_factor_totp_input_label">Kétlépcsős kód</string>
+  <string name="auth_second_factor_recovery_help">Adja meg a 8 karakterből álló helyreállítási kódot.</string>
+  <string name="auth_second_factor_recovery_label">Helyreállítási kód</string>
+  <string name="auth_second_factor_switch_to_recovery">Helyreállítási kód használata</string>
+  <string name="auth_second_factor_switch_to_totp">Kétlépcsős kód használata</string>
+  <string name="auth_two_pass_title">Postafiókja feloldása</string>
+  <string name="auth_two_pass_input_label">E-mail jelszó</string>
+  <string name="auth_two_pass_unlock">Feloldás</string>
+  <string name="auth_two_pass_forgot_password">Elfelejtett jelszó</string>
+  <string name="auth_two_pass_input_empty">A jelszó nem lehet üres</string>
+  <string name="auth_signup_title">Hozzon létre egy Proton fiókot</string>
+  <string name="auth_signup_subtitle">Egy egységes fiók az összes Proton szolgáltatáshoz</string>
+  <string name="auth_signup_username_assistive_text">A felhasználónév nem lehet üres.</string>
+  <string name="auth_signup_email_assistive_text">Az e-mail nem lehet üres.</string>
+  <string name="auth_signup_next">Következő</string>
+  <string name="auth_signup_email_username">Felhasználónév vagy e-mail cím</string>
+  <string name="auth_signup_create_password">Hozza létre jelszavát</string>
+  <string name="auth_signup_password">Jelszó</string>
+  <string name="auth_signup_repeat_password">Ismételje meg a jelszót</string>
+  <string name="auth_signup_terms_privacy_conditions_footer">A Tovább gombra kattintva elfogadja a Proton %1$s-t és %2$s-t</string>
+  <string name="auth_signup_terms_learn_more">Szerződési feltételeket</string>
+  <string name="auth_signup_privacy_policy_learn_more">Adatvédelmi irányelvek</string>
+  <string name="auth_signup_internal_footnote">Szüksége lesz egy Proton címre a Proton Mail és Proton Calendar használatához</string>
+  <string name="auth_signup_use_current_email">Használja inkább a jelenlegi e-mail címemet</string>
+  <string name="auth_signup_get_encrypted_email">Szerezzen egy új titkosított e-mail címet</string>
+  <string name="auth_signup_external_footnote">Egy Proton címmel az összes Proton-szolgáltatást használhatod</string>
+  <string name="auth_signup_recovery_skip">Kihagyás</string>
+  <string name="auth_signup_recovery_title">Helyreállítási mód beállítása (opcionális)</string>
+  <string name="auth_signup_recovery_subtitle">Ha kizárja magát a fiókjából, erre az e-mail címre vagy telefonszámra küldünk helyreállítási utasításokat.</string>
+  <string name="auth_signup_recovery_email">E-mail</string>
+  <string name="auth_signup_recovery_phone">Telefonszám</string>
+  <string name="auth_signup_recovery_email_hint">Helyreállítási e-mail cím</string>
+  <string name="auth_signup_recovery_phone_hint">Telefonszám a helyreállításhoz</string>
+  <string name="auth_signup_phone_placeholder">XX XXX XX XX</string>
+  <string name="auth_signup_your_account_is_being_setup">A fiókod létrehozás alatt…</string>
+  <string name="auth_signup_please_wait">Általában nem tart tovább egy percnél.</string>
+</resources>

@@ -17,13 +17,17 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <plurals name="attachment_count_label">
-    <item quantity="other">%d berkas</item>
+  <plurals name="selected_count_title">
+    <item quantity="other">%d Terpilih</item>
   </plurals>
+  <plurals name="attachment_count_label">
+    <item quantity="other">%d lampiran</item>
+  </plurals>
+  <string name="attachments">lampiran</string>
   <string name="attachment_show_more_label">+%1$d lainnya</string>
   <string name="attachment_permission_dialog_title">Perizinan diperlukan</string>
   <string name="attachment_permission_dialog_message">Proton Mail memerlukan izin akses ke media penyimpanan Anda untuk mengunduh lampiran.</string>
-  <string name="attachment_permission_dialog_dismiss_button">OK</string>
+  <string name="attachment_permission_dialog_dismiss_button">Oke</string>
   <string name="attachment_permission_dialog_action_button">Pengaturan</string>
   <string name="attachment_type_description">%1$s berkas</string>
   <!-- Attachment Types -->
@@ -37,11 +41,19 @@
   <string name="attachment_type_document">Dokumen</string>
   <string name="attachment_type_spreadsheet">Lembar kerja</string>
   <string name="attachment_type_presentation">Presentasi</string>
+  <string name="attachment_type_calendar">Kalender</string>
+  <string name="attachment_type_code">Kode</string>
+  <string name="attachment_type_font">Font</string>
+  <string name="attachment_type_key">Kunci</string>
+  <string name="attachment_type_keynote">Keynote</string>
+  <string name="attachment_type_numbers">Numbers</string>
+  <string name="attachment_type_pages">Pages</string>
+  <string name="attachment_type_word">Word</string>
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">Pindahkan ke...</string>
   <string name="bottom_sheet_done_action">Selesai</string>
   <string name="bottom_sheet_archive_action">Arsipkan juga?</string>
-  <string name="bottom_sheet_label_as_title">Labeli sebagai...</string>
+  <string name="bottom_sheet_label_as_title">Labeli sebagai</string>
   <string name="bottom_sheet_more_header_message_from">Pesan dari %s</string>
   <!-- Message body link actions -->
   <string name="message_link_long_click_copy">Salin tautan</string>
@@ -59,6 +71,8 @@
   <string name="contact_actions_new_message_description">Mulai tulis pesan baru untuk kontak ini</string>
   <string name="contact_actions_add_contact">Tambah kontak</string>
   <string name="contact_actions_add_contact_description">Simpan penerima ini sebagai kontak</string>
+  <string name="contact_actions_block_contact">Blokir kontak ini</string>
+  <string name="contact_actions_block_contact_description">Blokir kontak ini</string>
   <string name="contact_actions_view_contact_details">Lihat rincian kontak</string>
   <string name="contact_actions_view_contact_details_description">Salin rincian kontak</string>
   <!-- Device Contacts permission dialog -->

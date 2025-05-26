@@ -26,9 +26,19 @@
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">Úhľadné a čisté</string>
   <string name="onboarding_neat_and_tidy_description">Pomocou súborov, štítkov a farebných kódov pre správy si prispôsobte schránku doručenej pošty.</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">Prepracované od základov</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">Nový Proton Mail je kompletne prepracovaný na architektúre Rust a ponúka výkon, používateľský zážitok a škálovateľnosť.</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">Odhalenie novej doručenej pošty</string>
+  <string name="onboarding_new_inbox_description">Sme nadšení, že môžeme predstaviť nový žiarivý dizajn a vylepšené používateľské prostredie. Zatiaľ si môžete prezrieť nové zobrazenie zoznamu a správ. </string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">Vaša spätná väzba je kľúčová</string>
+  <string name="onboarding_feedback_is_key_description">V nasledujúcich mesiacoch budeme zavádzať všetky nové funkcie. Pokračujte v testovaní aplikácie a dajte nám vedieť, ako ju môžeme vylepšiť!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Ďalej</string>
-  <string name="onboarding_get_started">Začať</string>
+  <string name="onboarding_get_started">Začať testovať</string>
   <string name="onboarding_illustration_content_description">Ukážka privítania</string>
   <string name="onboarding_close_content_description">Zavrieť</string>
+  <string name="onboarding_introducing_next_gen_app">Predstavujeme vám našu aplikáciu novej generácie!</string>
 </resources>

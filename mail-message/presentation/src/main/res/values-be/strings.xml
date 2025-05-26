@@ -17,18 +17,25 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <plurals name="attachment_count_label">
-    <item quantity="one">%d файл</item>
-    <item quantity="few">%d файлы</item>
-    <item quantity="many">%d файлаў</item>
-    <item quantity="other">%d файлаў</item>
+  <plurals name="selected_count_title">
+    <item quantity="one">%d выбраны</item>
+    <item quantity="few">%d выбрана</item>
+    <item quantity="many">%d выбрана</item>
+    <item quantity="other">%d выбрана</item>
   </plurals>
+  <plurals name="attachment_count_label">
+    <item quantity="one">%d далучэнне</item>
+    <item quantity="few">%d далучэнні</item>
+    <item quantity="many">%d далучэнняў</item>
+    <item quantity="other">%d далучэнняў</item>
+  </plurals>
+  <string name="attachments">далучэнні</string>
   <string name="attachment_show_more_label">+яшчэ %1$d</string>
   <string name="attachment_permission_dialog_title">Патрабуецца дазвол</string>
   <string name="attachment_permission_dialog_message">Proton Mail неабходны дазвол доступу да вашага сховішча, каб спампаваць далучэнне.</string>
-  <string name="attachment_permission_dialog_dismiss_button">Добра</string>
+  <string name="attachment_permission_dialog_dismiss_button">OK</string>
   <string name="attachment_permission_dialog_action_button">Налады</string>
-  <string name="attachment_type_description">Файл %1$s</string>
+  <string name="attachment_type_description">Тып файла: %1$s</string>
   <!-- Attachment Types -->
   <string name="attachment_type_archive">з архівам</string>
   <string name="attachment_type_image">Відарыс</string>
@@ -40,11 +47,19 @@
   <string name="attachment_type_document">з дакументам</string>
   <string name="attachment_type_spreadsheet">з электроннай табліцай</string>
   <string name="attachment_type_presentation">з прэзентацыяй</string>
+  <string name="attachment_type_calendar">Каляндар</string>
+  <string name="attachment_type_code">Код</string>
+  <string name="attachment_type_font">Шрыфт</string>
+  <string name="attachment_type_key">Ключ</string>
+  <string name="attachment_type_keynote">Keynote</string>
+  <string name="attachment_type_numbers">Numbers</string>
+  <string name="attachment_type_pages">Pages</string>
+  <string name="attachment_type_word">Word</string>
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">Перамясціць у...</string>
   <string name="bottom_sheet_done_action">Гатова</string>
   <string name="bottom_sheet_archive_action">Таксама архіваваць?</string>
-  <string name="bottom_sheet_label_as_title">Пазначыць як...</string>
+  <string name="bottom_sheet_label_as_title">Пазначыць як</string>
   <string name="bottom_sheet_more_header_message_from">Паведамленне ад %s</string>
   <!-- Message body link actions -->
   <string name="message_link_long_click_copy">Скапіяваць спасылку</string>
@@ -62,12 +77,14 @@
   <string name="contact_actions_new_message_description">Пачаць напісанне новага паведамлення для гэтага кантакту</string>
   <string name="contact_actions_add_contact">Дадаць кантакт</string>
   <string name="contact_actions_add_contact_description">Захаваць гэтага атрымальніка як кантакт</string>
+  <string name="contact_actions_block_contact">Заблакіраваць гэты кантакт</string>
+  <string name="contact_actions_block_contact_description">Заблакіраваць гэты кантакт</string>
   <string name="contact_actions_view_contact_details">Паглядзець кантактныя звесткі</string>
   <string name="contact_actions_view_contact_details_description">Паглядзець падрабязнасці кантакту</string>
   <!-- Device Contacts permission dialog -->
   <string name="device_contacts_permission_dialog_title">Патрабуецца дазвол</string>
   <string name="device_contacts_permission_dialog_message">Proton Mail неабходны дазвол на чытанне вашых кантактаў, каб прапаноўваць атрымальнікаў.</string>
-  <string name="device_contacts_permission_dialog_dismiss_button">Добра</string>
+  <string name="device_contacts_permission_dialog_dismiss_button">OK</string>
   <string name="device_contacts_permission_dialog_action_button">Запытаць дазвол</string>
   <string name="device_contacts_permission_dialog_action_button_deny">Забараніць</string>
 </resources>

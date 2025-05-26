@@ -21,69 +21,59 @@
   <string name="mail_settings_toolbar_button_content_description">Nazaj</string>
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Nastavitve računa</string>
-  <string name="mail_settings_app_settings">Nastavitve aplikacije</string>
+  <string name="mail_settings_email_settings">Nastavitve e-pošte</string>
+  <string name="mail_settings_folder_and_label_settings">Nastavitve za mape in oznake</string>
+  <string name="mail_settings_privacy_and_security_settings">Nastavitve zasebnosti in varnosti</string>
+  <string name="mail_settings_preferences">Nastavitve</string>
+  <string name="mail_settings_app">Aplikacija</string>
+  <string name="mail_settings_email">E-pošta</string>
+  <string name="mail_settings_email_hint">Nastavitve e-pošte in nabiralnika</string>
+  <string name="mail_settings_folders_labels">Mape in oznake</string>
+  <string name="mail_settings_folders_labels_hint">Organiziranje nabiralnika</string>
+  <string name="mail_settings_spam_and_custom_filters">Filtri za neželeno pošto in filtri po meri</string>
+  <string name="mail_settings_spam_and_custom_filters_hint">Samodejna dejanja in razvrščanje</string>
+  <string name="mail_settings_privacy_and_security">Zasebnost in varnost</string>
+  <string name="mail_settings_privacy_and_security_hint">Zaščita pred sledenjem v sporočilih</string>
+  <string name="mail_settings_app_hint">Prilagoditve mobilne aplikacije</string>
   <string name="mail_settings_theme">Tema</string>
-  <string name="mail_settings_push_notifications">Potisna obvestila</string>
   <string name="mail_settings_auto_lock">Samodejno zaklepanje</string>
   <string name="mail_settings_alternative_routing">Alternativno usmerjanje</string>
   <string name="mail_settings_app_language">Jezik aplikacije</string>
   <string name="mail_settings_combined_contacts">Združeni stiki</string>
-  <string name="mail_settings_local_cache">Krajevni predpomnilnik</string>
-  <string name="mail_settings_local_cache_hint">Uporabljen prostor: %s</string>
-  <string name="mail_settings_local_cache_clear_button">Počisti podatke</string>
   <string name="mail_settings_swipe_actions">Dejanja s potegom prsta</string>
   <string name="mail_settings_combined_contacts_hint">Vključite to možnost za samodejno dokončevanje e-poštnih naslovov z uporabo stikov vseh prijavljenih računov.</string>
   <string name="mail_settings_alternative_routing_hint">Če so spletna mesta Proton blokirana, ta nastavitev aplikaciji omogoča, da poskuša doseči Proton z alternativnim usmerjanjem omrežja, kar lahko pomaga zaobiti požarne zidove ali težave z omrežjem. Priporočamo, da je za večjo zanesljivost ta nastavitev vklopljena.</string>
+  <!-- App customization settings-->
+  <string name="mail_settings_app_customization_title">Prilagoditev aplikacije</string>
+  <string name="mail_settings_app_customization_notification">Obvestila</string>
+  <string name="mail_settings_app_customization_language">Jezik</string>
+  <string name="mail_settings_app_customization_appearance">Videz</string>
+  <string name="mail_settings_app_customization_protection">Zaščita</string>
+  <string name="mail_settings_app_customization_protection_enabled_description">Samodejno zaklepanje omogočeno</string>
+  <string name="mail_settings_app_customization_protection_disabled_description">Samodejno zaklepanje onemogočeno</string>
+  <string name="mail_settings_app_customization_use_device_contacts">Uporabi stike naprave</string>
+  <string name="mail_settings_app_customization_use_device_contacts_hint">Samodokončanje e-poštnih naslovov z uporabo stikov iz vaše naprave.</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email">Povlecite s prstom za naslednjo e-pošto</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email_hint">Hitro se premaknite na naslednje ali prejšnje sporočilo v mapi »Prejeto«.</string>
+  <string name="mail_settings_app_customization_swipe_action">Dejanja s potegom prsta</string>
+  <string name="mail_settings_app_customization_swipe_action_hint">Nastavite hitra dejanja, kot sta izbriši ali arhiviraj, ko povlečete s prstom levo ali desno.</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Prilagajanje orodne vrstice</string>
+  <string name="mail_settings_app_customization_alternative_routing">Alternativno usmerjanje</string>
+  <string name="mail_settings_app_customization_alternative_routing_hint">Izognite se požarnemu zidu ali težavam z omrežjem, če so spletna mesta Proton blokirana.</string>
+  <string name="mail_settings_app_customization_view_application_logs">Ogled dnevnikov aplikacije</string>
+  <string name="mail_settings_app_customization_mail_experience_header">Izkušnja z aplikacijo Mail</string>
+  <string name="mail_settings_app_customization_advanced_header">Napredno</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Sistemsko privzeto</string>
   <string name="mail_settings_theme_light">Svetla</string>
   <string name="mail_settings_theme_dark">Temna</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Informacije niso na voljo</string>
-  <string name="mail_settings_enabled">Omogočeno</string>
-  <string name="mail_settings_disabled">Onemogočeno</string>
-  <string name="mail_settings_allowed">Dovoljeno</string>
-  <string name="mail_settings_denied">Zavrnjeno</string>
-  <string name="mail_settings_auto_detect">Samodejno zaznavanje</string>
-  <string name="mail_settings_app_information">Podatki o aplikaciji</string>
-  <string name="mail_settings_app_version">Različica aplikacije</string>
   <string name="mail_settings_account">Račun</string>
-  <!-- Account Settings items -->
-  <string name="mail_settings_subscription">Naročnina</string>
-  <string name="mail_settings_password_management">Spremeni geslo</string>
-  <string name="mail_settings_recovery_email">E-poštni naslov za obnovitev</string>
-  <string name="mail_settings_mailbox_size">Velikost nabiralnika</string>
-  <string name="mail_settings_addresses">Naslovi</string>
-  <string name="mail_settings_default_email_address">Privzeti e-poštni naslov</string>
-  <string name="mail_settings_display_name_and_signature">Prikazno ime in podpis</string>
-  <string name="mail_settings_mailbox">Poštni predal</string>
-  <string name="mail_settings_privacy">Zasebnost</string>
-  <string name="mail_settings_labels">Oznake</string>
-  <string name="mail_settings_folders">Mape</string>
-  <string name="mail_settings_conversation_mode">Način pogovora</string>
   <string name="mail_settings_not_set">Ni nastavljeno</string>
   <string name="mail_settings_conversation_mode_hint">E-poštna sporočila v istem pogovoru lahko v mapi prejetih sporočil združite v skupine ali jih prikažete ločeno</string>
-  <!-- Default email address settings -->
-  <string name="mail_settings_default_email_address_title">Privzeti e-poštni naslov</string>
-  <string name="mail_settings_default_email_address_inactive_addresses">Nedejavni naslovi</string>
-  <string name="mail_settings_default_email_address_no_inactive_addresses">Ni nedejavnih naslovov</string>
-  <string name="mail_settings_default_email_address_error_loading">Napaka pri nalaganju nastavitev</string>
-  <string name="mail_settings_default_email_address_error_update">Napaka pri shranjevanju novih nastavitev</string>
-  <string name="mail_settings_default_email_address_error_update_subscription">Za nastavitev tega naslova kot privzetega nadgradite na plačljiv paket</string>
-  <!-- Display name, signature, mobile footer -->
-  <string name="mail_settings_identity_title">Prikazano ime &amp; podpis</string>
-  <string name="mail_settings_identity_save_button">Shrani</string>
-  <string name="mail_settings_identity_display_name">Prikazano ime</string>
-  <string name="mail_settings_identity_display_name_hint">Prikazano ime</string>
-  <string name="mail_settings_identity_signature">Podpis</string>
-  <string name="mail_settings_identity_signature_hint">Podpis</string>
-  <string name="mail_settings_identity_mobile_footer">Mobilni podpis</string>
-  <string name="mail_settings_identity_mobile_footer_subtext">This is added after your signature.</string>
-  <string name="mail_settings_identity_mobile_footer_hint">Mobile signature</string>
-  <string name="mail_settings_identity_mobile_footer_default_free">Poslano iz Proton Mail Android</string>
-  <string name="mail_settings_identity_error_updating">Napaka pri spreminjanju nastavitev</string>
-  <string name="mail_settings_identity_error_loading">Napaka pri nalaganju nastavitev</string>
   <!-- Privacy settings -->
+  <string name="mail_settings_privacy">Zasebnost</string>
   <string name="mail_settings_privacy_auto_show_remote_content">Samodejno prikaži oddaljeno vsebino</string>
   <string name="mail_settings_privacy_auto_show_embedded_images">Samodejno prikaži vdelane slike</string>
   <string name="mail_settings_privacy_prevent_taking_screenshots">Prepreči zajemanje posnetkov zaslona</string>
@@ -97,16 +87,22 @@
   <string name="mail_settings_swipe_actions_subtitle">Nastavite dejanja s potegom prsta za dostop do najbolj uporabljenih dejanj.</string>
   <string name="mail_settings_swipe_right_name">Z leve proti desni</string>
   <string name="mail_settings_swipe_left_name">Z desne proti levi</string>
+  <string name="mail_settings_swipe_action_none_title">Ni nastavljeno</string>
   <string name="mail_settings_swipe_action_archive_title">Arhiviraj</string>
   <string name="mail_settings_swipe_action_read_title">Neprebrano</string>
   <string name="mail_settings_swipe_action_spam_title">Neželena pošta</string>
   <string name="mail_settings_swipe_action_star_title">Zvezdica</string>
   <string name="mail_settings_swipe_action_trash_title">Smetnjak</string>
+  <string name="mail_settings_swipe_action_label_as_title">Označi kot …</string>
+  <string name="mail_settings_swipe_action_move_to_title">Premakni v …</string>
+  <string name="mail_settings_swipe_action_none_description">Brez</string>
   <string name="mail_settings_swipe_action_archive_description">Premakni v arhiv</string>
   <string name="mail_settings_swipe_action_read_description">Označi kot neprebrano/prebrano</string>
   <string name="mail_settings_swipe_action_spam_description">Premakni v neželeno pošto</string>
   <string name="mail_settings_swipe_action_star_description">Dodaj/odstrani zvezdico</string>
   <string name="mail_settings_swipe_action_trash_description">Premakni v smetnjak</string>
+  <string name="mail_settings_swipe_action_label_as_description">Označi kot …</string>
+  <string name="mail_settings_swipe_action_move_to_description">Premakni v …</string>
   <!-- Notification settings -->
   <string name="mail_settings_notifications_title">Potisna obvestila</string>
   <string name="mail_settings_notifications_extended_notifications_title">Razširjena obvestila</string>
@@ -139,7 +135,7 @@
   <string name="mail_settings_pin_insertion_error_no_match">Kodi PIN se ne ujemata.</string>
   <plurals name="mail_settings_pin_insertion_error_wrong_code">
     <item quantity="one">Še %s poskus.</item>
-    <item quantity="two">Še %s poskusa.</item>
+    <item quantity="two">Še %s poskusov.</item>
     <item quantity="few">Še %s poskusi.</item>
     <item quantity="other">Še %s poskusov.</item>
   </plurals>
@@ -157,8 +153,6 @@
   <string name="mail_settings_pin_insertion_signout_dialog_cancel">Ne</string>
   <string name="mail_settings_pin_insertion_created_success">Koda PIN je bila ustvarjena.</string>
   <string name="mail_settings_pin_insertion_changed_success">PIN koda je bila spremenjena.</string>
-  <!-- Local storage -->
-  <string name="mail_settings_clearing_cached_data">Brisanje lokalnih predpomnjenih podatkov …</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Prišlo je do napake. Poskusite znova.</string>
   <!-- strings used for biometric enrollment -->

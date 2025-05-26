@@ -23,5 +23,12 @@
   <string name="notification_title_text_new_message_fallback">Yeni ileti</string>
   <string name="notification_actions_archive_description">Arşiv</string>
   <string name="notification_actions_trash_description">Çöp</string>
-  <string name="notification_actions_reply_description">Yanıtla</string>
+  <string name="notification_actions_mark_as_read_description">Okunmuş olarak işaretle</string>
+  <!-- Push notification permissions BS -->
+  <string name="notification_permissions_bottomsheet_first_time_title">Hiçbir e-postayı kaçırmayın</string>
+  <string name="notification_permissions_bottomsheet_first_time_subtitle">Bildirimler, uygulamayı açmanıza gerek kalmadan gelen kutunuzu izlemenize yardımcı olur.</string>
+  <string name="notification_permissions_bottomsheet_second_time_title">Güncel kalmak ister misiniz?</string>
+  <string name="notification_permissions_bottomsheet_second_time_subtitle">E-postanıza yanıt verildiğini öğrenmek için bildirimleri açın.</string>
+  <string name="notification_permissions_bottomsheet_enable">Anlık bildirimleri aç</string>
+  <string name="notification_permissions_bottomsheet_dismiss">Yok say</string>
 </resources>

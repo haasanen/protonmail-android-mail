@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 Proton AG
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="app_name_mail">Proton Mail</string>
+  <string name="login_help_close">Chiudi</string>
+  <string name="login_help_title">Come possiamo aiutare?</string>
+  <string name="login_help_forgot_username">Nome utente dimenticato</string>
+  <string name="login_help_forgot_password">Password dimenticata</string>
+  <string name="login_help_other_issues">Altri problemi di accesso</string>
+  <string name="login_help_contact_needed">Ancora bisogno di aiuto? Contattaci direttamente.</string>
+  <string name="login_help_customer_support">Assistenza clienti</string>
+  <string name="welcome_subtitle_mail">Privacy. Sicurezza. Convenienza. Email crittografata che ti dà il pieno controllo dei tuoi dati personali.</string>
+  <string name="welcome_sign_in">Accedi</string>
+  <string name="welcome_sign_up">Crea un account</string>
+  <string name="welcome_proton_privacy_by_default">Proton - Privacy by default</string>
+  <string name="auth_login">Accesso</string>
+  <string name="auth_login_close">Chiudi</string>
+  <string name="auth_login_help">Aiuto</string>
+  <string name="auth_sign_in">Accedi</string>
+  <string name="auth_username">Nome utente</string>
+  <string name="auth_email">Indirizzo email</string>
+  <string name="auth_password">Password principale</string>
+  <string name="auth_username_placeholder">Nome utente o indirizzo email</string>
+  <string name="auth_password_placeholder">Password principale</string>
+  <string name="auth_login_assistive_text">Inserisci il nome utente o l\'indirizzo email dell\'account Proton</string>
+  <string name="auth_account_details">Inserisci le credenziali dell\'account Proton</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Password, Passphrase o salt chiave non valido</string>
+  <string name="auth_login_error_invalid_action_human_verification_challenge">Verifica umana necessaria</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Inserisci correttamente le credenziali</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Secondo fattore non supportato</string>
+  <string name="auth_second_factor_title">Autenticazione</string>
+  <string name="auth_second_factor_authenticate">Autentica</string>
+  <string name="auth_second_factor_totp_input_help">Inserisci il codice a 6 cifre del secondo fattore</string>
+  <string name="auth_second_factor_totp_input_label">Codice di verifica</string>
+  <string name="auth_second_factor_recovery_help">Inserisci un codice di recupero a 8 caratteri.</string>
+  <string name="auth_second_factor_recovery_label">Codice di recupero</string>
+  <string name="auth_second_factor_switch_to_recovery">Usa un codice di recupero</string>
+  <string name="auth_second_factor_switch_to_totp">Usa il codice di verifica</string>
+  <string name="auth_two_pass_title">Sblocco della casella di posta</string>
+  <string name="auth_two_pass_input_label">Password secondaria</string>
+  <string name="auth_two_pass_unlock">Sblocca</string>
+  <string name="auth_two_pass_forgot_password">Password dimenticata</string>
+  <string name="auth_two_pass_input_empty">Password necessaria</string>
+  <string name="auth_signup_title">Crea il tuo account Proton</string>
+  <string name="auth_signup_subtitle">Un account per tutti i servizi Proton</string>
+  <string name="auth_signup_username_assistive_text">Nome utente necessario</string>
+  <string name="auth_signup_email_assistive_text">Indirizzo email necessario</string>
+  <string name="auth_signup_next">Continua</string>
+  <string name="auth_signup_email_username">Nome utente o indirizzo email</string>
+  <string name="auth_signup_create_password">Impostazione della password</string>
+  <string name="auth_signup_password">Password principale</string>
+  <string name="auth_signup_repeat_password">Conferma della password</string>
+  <string name="auth_signup_terms_privacy_conditions_footer">Toccando \"Continua\", accetti %1$s e l\'%2$s di Proton</string>
+  <string name="auth_signup_terms_learn_more">Termini e condizioni</string>
+  <string name="auth_signup_privacy_policy_learn_more">Informativa sulla privacy</string>
+  <string name="auth_signup_internal_footnote">Crea un indirizzo email Proton per utilizzare Proton Mail e Proton Calendar</string>
+  <string name="auth_signup_use_current_email">Usa un altro indirizzo email</string>
+  <string name="auth_signup_get_encrypted_email">Ottieni un nuovo indirizzo email crittografato</string>
+  <string name="auth_signup_external_footnote">Un indirizzo email Proton consente di utilizzare tutti i servizi Proton</string>
+  <string name="auth_signup_recovery_skip">Salta</string>
+  <string name="auth_signup_recovery_title">Imposta un metodo di recupero (opzionale)</string>
+  <string name="auth_signup_recovery_subtitle">Invieremo le istruzioni per il recupero a questo indirizzo email o numero di telefono se non riesci ad accedere all\'account Proton</string>
+  <string name="auth_signup_recovery_email">Indirizzo email</string>
+  <string name="auth_signup_recovery_phone">Numero di telefono</string>
+  <string name="auth_signup_recovery_email_hint">Indirizzo email di recupero</string>
+  <string name="auth_signup_recovery_phone_hint">Numero di telefono di recupero</string>
+  <string name="auth_signup_phone_placeholder">XX XXX XXX XXXX</string>
+  <string name="auth_signup_your_account_is_being_setup">Creazione dell\'account in corso</string>
+  <string name="auth_signup_please_wait">Solitamente non richiede più di un minuto</string>
+</resources>

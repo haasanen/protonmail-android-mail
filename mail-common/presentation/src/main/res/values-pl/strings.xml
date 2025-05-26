@@ -18,17 +18,20 @@
   -->
 <resources>
   <string name="expiration_expired">Wygasła</string>
-  <string name="expiration_days_arg">%d d</string>
+  <string name="expiration_days_arg">%d d.</string>
   <string name="expiration_hours_arg">%d godz.</string>
   <string name="expiration_minutes_arg">%d min</string>
   <string name="retry">Spróbuj ponownie</string>
   <string name="toolbar_back_content_description">Powrót do poprzedniego ekranu</string>
   <string name="x_error_not_logged_in">Niezalogowano</string>
+  <string name="action_customize_toolbar">Dostosuj pasek narzędzi</string>
+  <string name="action_customize_toolbar_description">Dostosuj pasek narzędzi</string>
+  <string name="action_customize_toolbar_content_description">Dostosuj pasek narzędzi</string>
   <string name="action_reply">Odpowiedz</string>
   <string name="action_reply_all">Odpowiedz wszystkim</string>
   <string name="action_forward">Przekaż dalej</string>
   <string name="action_reply_description">Odpowiedz</string>
-  <string name="action_reply_to_description">Odpowiedz do %s</string>
+  <string name="action_reply_to_description">Odpowiedz %s</string>
   <string name="action_reply_all_description">Odpowiedz wszystkim</string>
   <string name="action_forward_description">Przekaż dalej</string>
   <string name="action_mark_read_description">Oznacz jako przeczytane</string>
@@ -37,10 +40,10 @@
   <string name="action_unstar_description">Usuń gwiazdkę</string>
   <string name="action_label_description">Oznacz jako</string>
   <string name="action_move_description">Przenieś do</string>
-  <string name="action_trash_description">Przenieś do Kosza</string>
+  <string name="action_trash_description">Przenieś do kosza</string>
   <string name="action_delete_description">Usuń</string>
   <string name="action_archive_description">Archiwizuj</string>
-  <string name="action_spam_description">Przenieś do Spamu</string>
+  <string name="action_spam_description">Przenieś do spamu</string>
   <string name="action_view_in_light_mode_description">Pokaż wiadomość w jasnym motywie</string>
   <string name="action_view_in_dark_mode_description">Pokaż wiadomość w ciemnym motywie</string>
   <string name="action_print_description">Drukuj</string>
@@ -52,8 +55,11 @@
   <string name="action_sender_emails_description">Ustaw akcję dla przyszłych wiadomości od tego nadawcy</string>
   <string name="action_save_attachments_description">Zapisz załączniki</string>
   <string name="action_more_description">Więcej</string>
+  <string name="action_inbox_description">Skrzynka odbiorcza</string>
+  <string name="action_pin_description">Przypnij</string>
+  <string name="action_unpin_description">Odepnij</string>
   <string name="action_reply_content_description">Odpowiedz</string>
-  <string name="action_reply_to_content_description">Odpowiedz do %s</string>
+  <string name="action_reply_to_content_description">Odpowiedz %s</string>
   <string name="action_reply_all_content_description">Odpowiedz wszystkim</string>
   <string name="action_forward_content_description">Przekaż dalej</string>
   <string name="action_mark_read_content_description">Oznacz jako przeczytane</string>
@@ -62,10 +68,13 @@
   <string name="action_unstar_content_description">Usuń gwiazdkę</string>
   <string name="action_label_content_description">Oznacz jako</string>
   <string name="action_move_content_description">Przenieś do</string>
-  <string name="action_trash_content_description">Przenieś do Kosza</string>
+  <string name="action_trash_content_description">Przenieś do kosza</string>
   <string name="action_delete_content_description">Usuń</string>
   <string name="action_archive_content_description">Archiwizuj</string>
   <string name="action_spam_content_description">Spam</string>
+  <string name="action_inbox_content_description">Skrzynka odbiorcza</string>
+  <string name="action_pin_content_description">Przypnij</string>
+  <string name="action_unpin_content_description">Odepnij</string>
   <string name="action_view_in_light_mode_content_description">Pokaż wiadomość w jasnym motywie</string>
   <string name="action_view_in_dark_mode_content_description">Pokaż wiadomość w ciemnym motywie</string>
   <string name="action_print_content_description">Drukuj</string>
@@ -115,4 +124,5 @@
   <string name="undo_button_label">Cofnij</string>
   <string name="undo_success_message">Akcja została cofnięta</string>
   <string name="undo_failure_message">Cofnięcie akcji nie powiodło się</string>
+  <string name="feature_coming_soon">Funkcja dostępna wkrótce…</string>
 </resources>

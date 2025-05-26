@@ -17,10 +17,15 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <plurals name="attachment_count_label">
-    <item quantity="one">%d αρχείο</item>
-    <item quantity="other">%d αρχεία</item>
+  <plurals name="selected_count_title">
+    <item quantity="one">%d Επιλεγμένο</item>
+    <item quantity="other">%d Επιλεγμένα</item>
   </plurals>
+  <plurals name="attachment_count_label">
+    <item quantity="one">%d συνημμένο</item>
+    <item quantity="other">%d συνημμένα</item>
+  </plurals>
+  <string name="attachments">συνημμένα</string>
   <string name="attachment_show_more_label">+%1$d επιπλέον</string>
   <string name="attachment_permission_dialog_title">Απαιτείται εξουσιοδότηση</string>
   <string name="attachment_permission_dialog_message">Το Proton Mail χρειάζεται άδεια πρόσβασης στον αποθηκευτικό σας χώρο για λήψη του συνημμένου.</string>
@@ -38,11 +43,19 @@
   <string name="attachment_type_document">Έγγραφο</string>
   <string name="attachment_type_spreadsheet">Υπολογιστικό φύλλο</string>
   <string name="attachment_type_presentation">Παρουσίαση</string>
+  <string name="attachment_type_calendar">Calendar</string>
+  <string name="attachment_type_code">Κώδικας</string>
+  <string name="attachment_type_font">Γραμματοσειρά</string>
+  <string name="attachment_type_key">Κλειδί</string>
+  <string name="attachment_type_keynote">Κεντρική ομιλία</string>
+  <string name="attachment_type_numbers">Νούμερα</string>
+  <string name="attachment_type_pages">Pages</string>
+  <string name="attachment_type_word">Word</string>
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">Μετακίνηση σε...</string>
   <string name="bottom_sheet_done_action">Ολοκληρώθηκε</string>
   <string name="bottom_sheet_archive_action">Επίσης αρχειοθέτηση;</string>
-  <string name="bottom_sheet_label_as_title">Ορίστε ετικέτα...</string>
+  <string name="bottom_sheet_label_as_title">Σήμανση με ετικέτα ως</string>
   <string name="bottom_sheet_more_header_message_from">Μήνυμα από %s</string>
   <!-- Message body link actions -->
   <string name="message_link_long_click_copy">Αντιγραφή συνδέσμου</string>
@@ -60,6 +73,8 @@
   <string name="contact_actions_new_message_description">Ξεκινήστε τη σύνταξη νέου μηνύματος για αυτήν την επαφή</string>
   <string name="contact_actions_add_contact">Προσθήκη επαφής</string>
   <string name="contact_actions_add_contact_description">Αποθήκευση αυτού του παραλήπτη ως επαφή</string>
+  <string name="contact_actions_block_contact">Αποκλεισμός αυτής της επαφής</string>
+  <string name="contact_actions_block_contact_description">Αποκλεισμός αυτής της επαφής</string>
   <string name="contact_actions_view_contact_details">Προβολή στοιχείων επαφής</string>
   <string name="contact_actions_view_contact_details_description">Προβολή λεπτομερειών της επαφής</string>
   <!-- Device Contacts permission dialog -->

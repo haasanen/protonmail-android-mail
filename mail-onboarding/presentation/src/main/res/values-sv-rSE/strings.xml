@@ -25,10 +25,20 @@
   <string name="onboarding_easily_up_to_date_description">Bläddra igenom trådade meddelanden i konversationsläge.</string>
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">Rent och snyggt</string>
-  <string name="onboarding_neat_and_tidy_description">Fil-, etikett- och färgkodsmeddelanden för att skapa din perfekta, anpassade inkorg.</string>
+  <string name="onboarding_neat_and_tidy_description">Sortera, märk och färgkoda meddelanden tills du får dina drömmars inkorg.</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">Omgjord från grunden</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">Nya Proton Mail har gjorts om från grunden med Rust-arkitektur för bästa möjliga prestanda, användarupplevelse och skalbarhet.</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">Ny inkorg uppackad</string>
+  <string name="onboarding_new_inbox_description">Vi är glada över att kunna presentera en livfull ny design och förbättrad användarupplevelse. För närvarande kan du förhandsgranska de nya list- och meddelandevyerna. </string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">Din feedback är viktig</string>
+  <string name="onboarding_feedback_is_key_description">Vi rullar ut alla funktioner under de kommande månaderna. Fortsätt gärna att testa vår app och berätta för oss hur vi kan göra den bättre!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Nästa</string>
-  <string name="onboarding_get_started">Kom igång</string>
+  <string name="onboarding_get_started">Börja testa</string>
   <string name="onboarding_illustration_content_description">Onboarding-illustration</string>
   <string name="onboarding_close_content_description">Stäng</string>
+  <string name="onboarding_introducing_next_gen_app">Vi presenterar den nya generationens app!</string>
 </resources>

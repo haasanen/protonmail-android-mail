@@ -20,9 +20,9 @@
   <string name="detail_error_loading_contacts">Încărcarea contactelor a eșuat.</string>
   <string name="detail_error_loading_conversation">Eșuare încărcare conversație.</string>
   <string name="detail_error_loading_messages">Încărcarea mesajelor a eșuat.</string>
-  <string name="error_mark_unread_failed">Marcarea ca necitit a eșuat. Mai reîncercați.</string>
+  <string name="error_mark_unread_failed">Marcarea ca necitit a eșuat. Reîncercați.</string>
   <plurals name="message_count_label_text">
-    <item quantity="one">Un mesaj</item>
+    <item quantity="one">%d mesaj</item>
     <item quantity="few">%d mesaje</item>
     <item quantity="other">%d de mesaje</item>
   </plurals>
@@ -36,28 +36,32 @@
   <string name="bcc">Ca:</string>
   <string name="date">Data:</string>
   <plurals name="attachment">
-    <item quantity="one">%d atașament</item>
-    <item quantity="few">%d atașamente</item>
-    <item quantity="other">%d de atașamente</item>
+    <item quantity="one">Fișiere atașate: %d</item>
+    <item quantity="few">Fișiere atașate: %d</item>
+    <item quantity="other">Fișiere atașate: %d</item>
   </plurals>
   <string name="hide_details">Ascundere detalii</string>
   <string name="undisclosed_recipients">Destinatari confidențiali</string>
+  <string name="error_mark_as_read_failed">Operația de marcare ca mesaj citit a eșuat. Reîncercați.</string>
   <string name="error_mark_as_unread_failed">Operația de marcare ca mesaj citit a eșuat. Reîncercați.</string>
-  <string name="error_star_operation_failed">Operația de marcare cu stea a eșuat. Mai reîncercați.</string>
-  <string name="error_unstar_operation_failed">Operația de eliminare stea a eșuat. Mai reîncercați.</string>
+  <string name="error_star_operation_failed">Operația de marcare cu stea a eșuat. Reîncercați.</string>
+  <string name="error_unstar_operation_failed">Operația de eliminare stea a eșuat. Reîncercați.</string>
   <string name="error_move_to_trash_failed">Mutarea în gunoi a eșuat. Reîncercați.</string>
+  <string name="message_moved">Mesajul a fost mutat.</string>
+  <string name="message_moved_to">Mesajul a fost mutat în «%s».</string>
   <string name="message_moved_to_trash">Mesajul a fost mutat în «Gunoi».</string>
   <string name="message_moved_to_archive">Mesajul a fost mutat în «Arhivă».</string>
   <string name="error_move_to_archive_failed">Mutarea în arhivă a eșuat. Reîncercați.</string>
   <string name="message_moved_to_spam">Mesaj mutat în «Nedorite».</string>
   <string name="error_move_to_spam_failed">Mutarea în mesaje nedorite a eșuat. Reîncercați.</string>
-  <string name="message_moved_to_selected_destination">Mesajul a fost mutat în %1$s.</string>
+  <string name="message_moved_to_selected_destination">Mesajul a fost mutat în «%1$s».</string>
   <string name="error_move_message_failed">Mutarea mesajului a eșuat. Reîncercați.</string>
   <string name="conversation_moved_to_trash">Conversația a fost mutată în «Gunoi».</string>
   <string name="conversation_moved_to_selected_destination">Conversația a fost mutată în «%1$s».</string>
+  <string name="conversation_moved_to_spam">Conversația a fost mutată în «Nedorite».</string>
   <string name="conversation_moved_to_archive">Conversația a fost mutată în «Arhivă».</string>
   <string name="error_move_conversation_failed">Mutarea conversației a eșuat. Reîncercați.</string>
-  <string name="error_loading_message">Ceva nu a funcționat bine. Mai încercați.</string>
+  <string name="error_loading_message">Ceva nu a funcționat bine. Reîncercați.</string>
   <string name="error_offline_loading_message">Nu aveți conexiune. Pentru a afișa conținutul acestui mesaj aveți nevoie de conexiune la internet.</string>
   <string name="error_get_attachment_failed">Eșuare preluare atașament.</string>
   <string name="error_attachment_download_in_progress">Descărcarea actuală trebuie să se încheie înainte de a începe alta.</string>
@@ -73,7 +77,12 @@
   <string name="message_body_embedded_images_banner_text">Încărcarea automată a imaginilor încorporate este dezactivată. Acest lucru poate fi schimbat în setări.</string>
   <string name="message_body_remote_content_banner_text">Încărcarea automată a conținutului de la distanță este dezactivată. Acest lucru poate fi schimbat în setări.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Încărcarea automată a imaginilor încorporate și conținutului de la distanță este dezactivată. Acest lucru poate fi schimbat în setări.</string>
-  <string name="message_phishing_banner_text">Sistemul nostru a marcat acest mesaj ca o încercare de înșelăciune. Verificați dacă este legitim.</string>
+  <string name="message_phishing_banner_text">Acest mesaj a fost marcat ca fiind suspect, fie de către sistemul nostru, fie de către dvs. Dacă îl considerați sigur, marcați-l ca legitim.</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">Marcare ca legitim</string>
+  <string name="message_spam_banner_text">Acest mesaj a fost semnalat ca nedorit, fie de către sistemul nostru, fie de către dumneavoastră.</string>
+  <string name="message_spam_banner_not_spam_button">Este legitim</string>
+  <string name="message_blocked_sender_banner_text">Acest expeditor a fost blocat în trecut.</string>
+  <string name="message_blocked_sender_button_text">Deblocare</string>
   <string name="message_expiration_banner_text">Acest mesaj va expira peste %1$s</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Urmează să părăsiți aplicația și să accesați:</string>
@@ -86,6 +95,12 @@
   <string name="phishing_link_confirmation_dialog_content_part_2">Din motive de securitate, nu continuați.</string>
   <string name="phishing_link_confirmation_dialog_button_go_back">Revenire (recomandat)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">Ignorare avertisment și continuare</string>
+  <!-- Mark as legitimate confirmation dialog -->
+  <string name="mark_as_legitimate_phishing_dialog_title">Confirmare marcare ca legitim</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">Ne cerem scuze. Este posibil să fi fost o eroare din partea noastră. Confirmați dacă doriți să marcați acest e-mail ca legitim.</string>
+  <string name="mark_as_legitimate_spam_dialog_title">Confirmare ca legitim</string>
+  <string name="mark_as_legitimate_spam_dialog_message">Ne cerem scuze. Este posibil să fi fost o eroare din partea noastră. Confirmați că acest e-mail este legitim.</string>
+  <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">Ștergere mesaj</string>
   <string name="message_delete_dialog_message">Sigur doriți să ștergeți definitiv acest mesaj?</string>
   <string name="message_deleted">Mesaj șters</string>
@@ -100,7 +115,7 @@
   <string name="message_body_load_embedded_images_button_text">Încărcare imagini incluse</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Încărcare conținut la distanță și încorporat</string>
   <string name="message_report_phishing_dialog_title_offline">Atenție</string>
-  <string name="message_report_phishing_dialog_message_offline">This feature is only available online.</string>
+  <string name="message_report_phishing_dialog_message_offline">Această funcție este disponibilă doar online.</string>
   <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Confirmare raport înșelăciune</string>
   <string name="message_report_phishing_dialog_message">Raportarea unui mesaj ca fiind o încercare de înșelăciune ne va trimite și nouă mesajul pentru a-l analiza și a îmbunătăți filtrele noastre. Aceasta înseamnă că vom putea vedea conținutul complet al mesajului.</string>
@@ -113,4 +128,9 @@
   <string name="non_trashed_messages_banner">Această conversație conține mesaje neșterse.</string>
   <string name="show">Afișare</string>
   <string name="hide">Ascundere</string>
+  <string name="recipient_me">eu</string>
+  <string name="message_details_header_from">De la</string>
+  <string name="message_details_header_to">Către</string>
+  <string name="message_details_header_cc">C</string>
+  <string name="message_details_header_bcc">Ca</string>
 </resources>

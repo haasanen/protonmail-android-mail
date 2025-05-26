@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 Proton AG
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="app_name_mail">Proton Mail</string>
+  <string name="login_help_close">Zavrieť</string>
+  <string name="login_help_title">Ako môžeme pomôcť?</string>
+  <string name="login_help_forgot_username">Zabudnuté používateľské meno</string>
+  <string name="login_help_forgot_password">Zabudnuté heslo</string>
+  <string name="login_help_other_issues">Iné problémy s prihlásením</string>
+  <string name="login_help_contact_needed">Stále potrebujete pomoc? Kontaktujte nás priamo.</string>
+  <string name="login_help_customer_support">Zákaznícka podpora</string>
+  <string name="welcome_subtitle_mail">Súkromie. Bezpečnosť. Pohodlie. Zašifrovaný email, ktorý vám dáva plnú kontrolu nad vašimi osobnými údajmi.</string>
+  <string name="welcome_sign_in">Prihlásiť sa</string>
+  <string name="welcome_sign_up">Vytvoriť účet</string>
+  <string name="welcome_proton_privacy_by_default">Proton - Privacy by default</string>
+  <string name="auth_login">Prihlásiť sa</string>
+  <string name="auth_login_close">Zavrieť</string>
+  <string name="auth_login_help">Nápoveda</string>
+  <string name="auth_sign_in">Prihlásiť sa</string>
+  <string name="auth_username">Používateľské meno</string>
+  <string name="auth_email">Email</string>
+  <string name="auth_password">Heslo</string>
+  <string name="auth_username_placeholder">Používateľské meno alebo email</string>
+  <string name="auth_password_placeholder">Heslo</string>
+  <string name="auth_login_assistive_text">Zadajte svoj Proton email alebo používateľské meno.</string>
+  <string name="auth_account_details">Zadajte podrobnosti o svojom Proton účte.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Nesprávne heslo, prístupová fráza alebo salt kľúč.</string>
+  <string name="auth_login_error_invalid_action_human_verification_challenge">Je potrebné overenie ľudským faktorom.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Nesprávne prihlasovacie údaje. Skúste to znova, prosím.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Nepodporovaný dvojfaktor.</string>
+  <string name="auth_second_factor_title">Dvojstupňové overenie</string>
+  <string name="auth_second_factor_authenticate">Overiť</string>
+  <string name="auth_second_factor_totp_input_help">Zadajte 6-miestny kód.</string>
+  <string name="auth_second_factor_totp_input_label">Kód pre dvojstupňové overenie</string>
+  <string name="auth_second_factor_recovery_help">Zadajte 8-miestny obnovovací kód.</string>
+  <string name="auth_second_factor_recovery_label">Obnovovací kód</string>
+  <string name="auth_second_factor_switch_to_recovery">Použiť obnovovací kód</string>
+  <string name="auth_second_factor_switch_to_totp">Použiť kód pre dvojstupňové overenie</string>
+  <string name="auth_two_pass_title">Odomknúť vašu poštovú schránku</string>
+  <string name="auth_two_pass_input_label">Heslo poštovej schránky</string>
+  <string name="auth_two_pass_unlock">Odomknúť</string>
+  <string name="auth_two_pass_forgot_password">Zabudnuté heslo</string>
+  <string name="auth_two_pass_input_empty">Heslo nemôže byť prázdne</string>
+  <string name="auth_signup_title">Vytvorte si Váš Proton účet</string>
+  <string name="auth_signup_subtitle">Jeden účet pre všetky Proton služby</string>
+  <string name="auth_signup_username_assistive_text">Používateľské meno nesmie byť prázdne.</string>
+  <string name="auth_signup_email_assistive_text">Email nesmie byť prázdny.</string>
+  <string name="auth_signup_next">Ďalej</string>
+  <string name="auth_signup_email_username">Používateľské meno alebo email</string>
+  <string name="auth_signup_create_password">Vytvorte si heslo</string>
+  <string name="auth_signup_password">Heslo</string>
+  <string name="auth_signup_repeat_password">Zopakovať heslo</string>
+  <string name="auth_signup_terms_privacy_conditions_footer">Kliknutím na tlačidlo Ďalej vyjadrujete súhlas so %1$s a %2$s Protonu</string>
+  <string name="auth_signup_terms_learn_more">Zmluvnými podmienkami používania</string>
+  <string name="auth_signup_privacy_policy_learn_more">Zásadami ochrany osobných údajov</string>
+  <string name="auth_signup_internal_footnote">Na používanie Proton Mail a Proton Calendar budete potrebovať adresu Proton</string>
+  <string name="auth_signup_use_current_email">Namiesto toho použite svoj aktuálny email</string>
+  <string name="auth_signup_get_encrypted_email">Získať novú zašifrovanú emailovú adresu</string>
+  <string name="auth_signup_external_footnote">S adresou Proton môžete využívať všetky služby Proton</string>
+  <string name="auth_signup_recovery_skip">Preskočiť</string>
+  <string name="auth_signup_recovery_title">Nastaviť spôsob obnovenia (voliteľné)</string>
+  <string name="auth_signup_recovery_subtitle">Na tento email alebo telefónne číslo vám odošleme pokyny na obnovenie, ak stratíte prístup k svojmu účtu.</string>
+  <string name="auth_signup_recovery_email">Email</string>
+  <string name="auth_signup_recovery_phone">Telefón</string>
+  <string name="auth_signup_recovery_email_hint">Email na obnovenie</string>
+  <string name="auth_signup_recovery_phone_hint">Telefónne číslo pre obnovenie</string>
+  <string name="auth_signup_phone_placeholder">+XXX XXX XXX XXX</string>
+  <string name="auth_signup_your_account_is_being_setup">Váš účet sa vytvára…</string>
+  <string name="auth_signup_please_wait">Zvyčajne to netrvá dlhšie ako minútu.</string>
+</resources>

@@ -21,69 +21,59 @@
   <string name="mail_settings_toolbar_button_content_description">Voltar</string>
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Definições de conta</string>
-  <string name="mail_settings_app_settings">Definições da aplicação</string>
+  <string name="mail_settings_email_settings">Definições de e-mail</string>
+  <string name="mail_settings_folder_and_label_settings">Definições das pastas e etiquetas</string>
+  <string name="mail_settings_privacy_and_security_settings">Definições de privacidade e segurança</string>
+  <string name="mail_settings_preferences">Preferências</string>
+  <string name="mail_settings_app">Aplicação</string>
+  <string name="mail_settings_email">E-mail</string>
+  <string name="mail_settings_email_hint">Preferências de e-mail e da caixa de correio</string>
+  <string name="mail_settings_folders_labels">Pastas e etiquetas</string>
+  <string name="mail_settings_folders_labels_hint">Organização da caixa de correio</string>
+  <string name="mail_settings_spam_and_custom_filters">Spam e filtros personalizados</string>
+  <string name="mail_settings_spam_and_custom_filters_hint">Ações automáticas e ordenação</string>
+  <string name="mail_settings_privacy_and_security">Privacidade e segurança</string>
+  <string name="mail_settings_privacy_and_security_hint">Proteção contra o rastreamento de e-mail</string>
+  <string name="mail_settings_app_hint">Personalizações da aplicação móvel</string>
   <string name="mail_settings_theme"> Tema</string>
-  <string name="mail_settings_push_notifications">Notificações push</string>
   <string name="mail_settings_auto_lock">Bloqueio automático</string>
   <string name="mail_settings_alternative_routing">Redirecionamento alternativo</string>
   <string name="mail_settings_app_language">Idioma da aplicação</string>
   <string name="mail_settings_combined_contacts">Contactos combinados</string>
-  <string name="mail_settings_local_cache">Cache local</string>
-  <string name="mail_settings_local_cache_hint">Espaço utilizado: %s</string>
-  <string name="mail_settings_local_cache_clear_button">Limpar dados</string>
   <string name="mail_settings_swipe_actions">Ações ao deslizar</string>
   <string name="mail_settings_combined_contacts_hint">Ative esta funcionalidade para preencher automaticamente endereços de e-mail utilizando contactos de todas as suas contas ligadas.</string>
   <string name="mail_settings_alternative_routing_hint">Caso as páginas do Proton estejam bloqueadas, esta definição permite à aplicação tentar redirecionar o tráfego para ligar ao Proton, o que pode ser útil para contornar firewalls ou problemas de rede. Recomendamos que mantenha esta definição para maior confiança.</string>
+  <!-- App customization settings-->
+  <string name="mail_settings_app_customization_title">Personalizações da aplicação</string>
+  <string name="mail_settings_app_customization_notification">Notificações</string>
+  <string name="mail_settings_app_customization_language">Idioma</string>
+  <string name="mail_settings_app_customization_appearance">Aspeto</string>
+  <string name="mail_settings_app_customization_protection">Proteção</string>
+  <string name="mail_settings_app_customization_protection_enabled_description">O bloqueio automático está ativado.</string>
+  <string name="mail_settings_app_customization_protection_disabled_description">O bloqueio automático está desativado.</string>
+  <string name="mail_settings_app_customization_use_device_contacts">Usar os contactos do dispositivo</string>
+  <string name="mail_settings_app_customization_use_device_contacts_hint">Preencha automaticamente os endereços de e-mail utilizando contactos do seu dispositivo.</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email">Passe para o próximo e-mail</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email_hint">Navegue rapidamente para a mensagem seguinte ou anterior na sua caixa de entrada.</string>
+  <string name="mail_settings_app_customization_swipe_action">Ação de deslizar</string>
+  <string name="mail_settings_app_customization_swipe_action_hint">Define ações rápidas, como eliminar ou arquivar, quando desliza para a esquerda ou para a direita.</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Personalizar a barra de ferramentas</string>
+  <string name="mail_settings_app_customization_alternative_routing">Redirecionamento alternativo</string>
+  <string name="mail_settings_app_customization_alternative_routing_hint">Evite bloqueios de firewalls ou de rede caso os sítios web da Proton estejam inacessíveis.</string>
+  <string name="mail_settings_app_customization_view_application_logs">Ver os registos da aplicação</string>
+  <string name="mail_settings_app_customization_mail_experience_header">Experiência de correio</string>
+  <string name="mail_settings_app_customization_advanced_header">Avançado</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Predefinição do sistema</string>
   <string name="mail_settings_theme_light">Claro</string>
   <string name="mail_settings_theme_dark">Escuro</string>
   <!-- Settings item states -->
-  <string name="mail_settings_no_information_available">Não há informação disponível</string>
-  <string name="mail_settings_enabled">Ativado</string>
-  <string name="mail_settings_disabled">Desativado</string>
-  <string name="mail_settings_allowed">Permitido</string>
-  <string name="mail_settings_denied">Recusado</string>
-  <string name="mail_settings_auto_detect">Auto-detetar</string>
-  <string name="mail_settings_app_information">Informação da aplicação</string>
-  <string name="mail_settings_app_version">Versão da aplicação</string>
+  <string name="mail_settings_no_information_available">Não há informação disponível.</string>
   <string name="mail_settings_account">Conta</string>
-  <!-- Account Settings items -->
-  <string name="mail_settings_subscription">Subscrição</string>
-  <string name="mail_settings_password_management">Alterar a palavra-passe</string>
-  <string name="mail_settings_recovery_email">Endereço de recuperação</string>
-  <string name="mail_settings_mailbox_size">Tamanho da caixa de correio</string>
-  <string name="mail_settings_addresses">Endereços</string>
-  <string name="mail_settings_default_email_address">Endereço de e-mail padrão</string>
-  <string name="mail_settings_display_name_and_signature">Nome a mostrar e assinatura</string>
-  <string name="mail_settings_mailbox">Caixa de correio</string>
-  <string name="mail_settings_privacy">Privacidade</string>
-  <string name="mail_settings_labels">Etiquetas</string>
-  <string name="mail_settings_folders">Pastas</string>
-  <string name="mail_settings_conversation_mode">Modo Conversação</string>
   <string name="mail_settings_not_set">Não definido</string>
-  <string name="mail_settings_conversation_mode_hint">Agrupe e-mails na mesma conversa na sua caixa de entrada ou veja-os separadamente</string>
-  <!-- Default email address settings -->
-  <string name="mail_settings_default_email_address_title">Endereço de e-mail padrão</string>
-  <string name="mail_settings_default_email_address_inactive_addresses">Endereços inativos</string>
-  <string name="mail_settings_default_email_address_no_inactive_addresses">Sem endereços inativos</string>
-  <string name="mail_settings_default_email_address_error_loading">Erro ao carregar as definições</string>
-  <string name="mail_settings_default_email_address_error_update">Erro ao atualizar as definições</string>
-  <string name="mail_settings_default_email_address_error_update_subscription">Subscreva um plano pago para poder definir o seu endereço como padrão.</string>
-  <!-- Display name, signature, mobile footer -->
-  <string name="mail_settings_identity_title">Nome a mostrar e assinatura</string>
-  <string name="mail_settings_identity_save_button">Guardar</string>
-  <string name="mail_settings_identity_display_name">Nome exibido</string>
-  <string name="mail_settings_identity_display_name_hint">Nome exibido</string>
-  <string name="mail_settings_identity_signature">Assinatura</string>
-  <string name="mail_settings_identity_signature_hint">Assinatura</string>
-  <string name="mail_settings_identity_mobile_footer">Assinatura móvel</string>
-  <string name="mail_settings_identity_mobile_footer_subtext">É adicionado depois da sua assinatura.</string>
-  <string name="mail_settings_identity_mobile_footer_hint">Assinatura móvel</string>
-  <string name="mail_settings_identity_mobile_footer_default_free">Enviado do Proton Mail para Android</string>
-  <string name="mail_settings_identity_error_updating">Erro ao atualizar as definições</string>
-  <string name="mail_settings_identity_error_loading">Erro ao carregar as definições</string>
+  <string name="mail_settings_conversation_mode_hint">Agrupe e-mails na mesma conversa na sua caixa de entrada ou consulte-os separadamente</string>
   <!-- Privacy settings -->
+  <string name="mail_settings_privacy">Privacidade</string>
   <string name="mail_settings_privacy_auto_show_remote_content">Mostrar automaticamente o conteúdo remoto</string>
   <string name="mail_settings_privacy_auto_show_embedded_images">Mostrar imagens incorporadas automaticamente</string>
   <string name="mail_settings_privacy_prevent_taking_screenshots">Impedir capturas de ecrã</string>
@@ -94,19 +84,25 @@
   <string name="mail_settings_privacy_error_loading">Erro ao carregar as definições</string>
   <!-- Swipe Actions -->
   <string name="mail_settings_swipe_actions_title">Ações de deslizar</string>
-  <string name="mail_settings_swipe_actions_subtitle">Defina gestos de deslize para aceder às acções mais utilizadas.</string>
+  <string name="mail_settings_swipe_actions_subtitle">Defina gestos de deslize para aceder às ações mais utilizadas.</string>
   <string name="mail_settings_swipe_right_name">Da esquerda para a direita</string>
   <string name="mail_settings_swipe_left_name">Da direita para a esquerda</string>
+  <string name="mail_settings_swipe_action_none_title">Não definido</string>
   <string name="mail_settings_swipe_action_archive_title">Arquivo</string>
   <string name="mail_settings_swipe_action_read_title">Não lida</string>
   <string name="mail_settings_swipe_action_spam_title">Spam</string>
   <string name="mail_settings_swipe_action_star_title">Estrela</string>
-  <string name="mail_settings_swipe_action_trash_title">Lixeira</string>
+  <string name="mail_settings_swipe_action_trash_title">Lixo</string>
+  <string name="mail_settings_swipe_action_label_as_title">Etiquetar como…</string>
+  <string name="mail_settings_swipe_action_move_to_title">Mover para…</string>
+  <string name="mail_settings_swipe_action_none_description">Nenhum</string>
   <string name="mail_settings_swipe_action_archive_description">Mover para o Arquivo</string>
   <string name="mail_settings_swipe_action_read_description">Marcar como não lido/lido</string>
   <string name="mail_settings_swipe_action_spam_description">Mover para spam</string>
   <string name="mail_settings_swipe_action_star_description">Adicionar/Remover estrela</string>
-  <string name="mail_settings_swipe_action_trash_description">Mover para a lixeira</string>
+  <string name="mail_settings_swipe_action_trash_description">Mover para o lixo</string>
+  <string name="mail_settings_swipe_action_label_as_description">Etiquetar como…</string>
+  <string name="mail_settings_swipe_action_move_to_description">Mover para…</string>
   <!-- Notification settings -->
   <string name="mail_settings_notifications_title">Notificações push</string>
   <string name="mail_settings_notifications_extended_notifications_title">Notificações estendidas</string>
@@ -118,7 +114,7 @@
   <!-- Auto lock -->
   <string name="mail_settings_auto_lock_title">Bloqueio automático</string>
   <string name="mail_settings_auto_lock_item_title">Bloqueio automático da aplicação</string>
-  <string name="mail_settings_auto_lock_item_description">Ative esta funcionalidade para bloquear automaticamente a sua aplicação e use o código PIN para a desbloquear.</string>
+  <string name="mail_settings_auto_lock_item_description">Ative esta funcionalidade para bloquear automaticamente a sua aplicação e utilize o código PIN para a desbloquear.</string>
   <string name="mail_settings_auto_lock_change_pin_description">Alterar o código PIN</string>
   <string name="mail_settings_auto_lock_item_timer_title">Temporizador do bloqueio automático</string>
   <string name="mail_settings_auto_lock_immediately">Imediatamente</string>
@@ -148,13 +144,11 @@
   <string name="mail_settings_pin_insertion_error_unknown">Ocorreu um erro ao verificar o seu código PIN.</string>
   <string name="mail_settings_pin_insertion_signout_text">Terminar sessão</string>
   <string name="mail_settings_pin_insertion_signout_dialog_title">Terminar sessão</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_description">Tem certeza de que deseja terminar a sessão?</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_description">Tem a certeza de que deseja terminar a sessão?</string>
   <string name="mail_settings_pin_insertion_signout_dialog_confirm">Sim</string>
   <string name="mail_settings_pin_insertion_signout_dialog_cancel">Não</string>
   <string name="mail_settings_pin_insertion_created_success">Código PIN criado com sucesso.</string>
   <string name="mail_settings_pin_insertion_changed_success">Código PIN alterado com sucesso.</string>
-  <!-- Local storage -->
-  <string name="mail_settings_clearing_cached_data">A limpar os dados locais em cache…</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Ocorreu um erro. Tente novamente mais tarde.</string>
   <!-- strings used for biometric enrollment -->

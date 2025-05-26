@@ -21,9 +21,10 @@
   <string name="to_prefix">À :</string>
   <string name="cc_prefix">Cc :</string>
   <string name="bcc_prefix">Cci :</string>
-  <string name="subject_prefix">Objet</string>
+  <string name="subject_prefix">Objet : </string>
   <string name="compose_message_placeholder">Écrire un message</string>
   <string name="close_composer_content_description">Fermer l\'éditeur</string>
+  <string name="send_button_title">Envoyer</string>
   <string name="send_message_content_description">Envoyer le message</string>
   <string name="composer_expand_recipients_button">Afficher les autres destinataires</string>
   <string name="composer_error_invalid_email">L\'adresse e-mail n\'est pas valide.</string>
@@ -45,9 +46,13 @@
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">OK</string>
   <string name="composer_attachment_size_exceeded_dialog_title">Limite de pièces jointes atteinte</string>
   <string name="composer_attachment_size_exceeded_dialog_message">La taille limite pour les pièces jointes est de %1$s.</string>
-  <string name="composer_attachment_encryption_failed_message">Chiffrer à nouveau la pièce jointe n\'a pas abouti. Pour des raisons de sécurité, toutes les pièces jointes ont été retirées.</string>
+  <string name="composer_attachment_encryption_failed_message">Le chiffrement de la pièce jointe n\'a pas abouti. Pour des raisons de sécurité, toutes les pièces jointes ont été retirées.</string>
+  <string name="composer_too_many_attachments_error">Le nombre maximal de pièces jointes (100) est dépassé.</string>
+  <string name="composer_delete_attachment_error">Une erreur inattendue s’est produite lors de la suppression d’une pièce jointe.</string>
+  <string name="composer_unexpected_attachments_error">Une erreur inattendue s’est produite concernant les pièces jointes.</string>
   <string name="composer_warning_local_data_shown">La dernière version de ce brouillon n\'a pas pu être chargée. Toute modification remplacera son contenu.</string>
   <string name="composer_button_add_password">Ajouter un mot de passe</string>
+  <string name="composer_button_discard_draft">Abandonner le brouillon</string>
   <string name="composer_button_set_expiration">Définir la date d\'expiration</string>
   <string name="composer_expiration_time_bottom_sheet_title">Expiration du message</string>
   <string name="composer_expiration_time_bottom_sheet_done">Définir</string>
@@ -69,7 +74,7 @@
   <string name="composer_sender_changed_original_address_disabled">L\'expéditeur sélectionné est désactivé. Votre message sera envoyé à partir de votre adresse par défaut.</string>
   <string name="composer_sender_changed_dialog_confirm_button">OK</string>
   <!-- Message sending without subject dialog -->
-  <string name="composer_send_without_subject_dialog_title">Envoi</string>
+  <string name="composer_send_without_subject_dialog_title">Rédiger</string>
   <string name="composer_send_without_subject_dialog_text">Envoyer le message sans objet ?</string>
   <string name="composer_send_without_subject_dialog_confirm_button">Oui</string>
   <string name="composer_send_without_subject_dialog_reject_button">Non</string>
@@ -95,8 +100,15 @@
   <string name="set_message_password_button_save_changes">Enregistrer les modifications</string>
   <string name="set_message_password_button_remove_password">Retirer le mot de passe</string>
   <string name="respondInline">Répondre dans le message</string>
+  <string name="subject_placeholder">Objet</string>
   <plurals name="composer_recipient_suggestion_contacts">
     <item quantity="one">%d membre</item>
     <item quantity="other">%d membres</item>
   </plurals>
+  <!-- Discard draft dialog -->
+  <string name="discard_draft_dialog_title">Abandonner ce message ?</string>
+  <string name="discard_draft_dialog_text">Votre brouillon ne sera pas enregistré.</string>
+  <string name="discard_draft_dialog_confirm_button">Abandonner</string>
+  <string name="discard_draft_dialog_dismiss_button">Annuler</string>
+  <string name="discard_draft_error">Erreur lors de l’abandon du brouillon</string>
 </resources>

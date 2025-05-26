@@ -44,10 +44,13 @@
   </plurals>
   <string name="hide_details">Skryť detaily</string>
   <string name="undisclosed_recipients">Skrytí príjemcovia</string>
+  <string name="error_mark_as_read_failed">Operácia označenia ako prečítaná zlyhala. Skúste to znova, prosím.</string>
   <string name="error_mark_as_unread_failed">Operácia označenia ako neprečítaná zlyhala. Skúste to znova.</string>
   <string name="error_star_operation_failed">Pridanie hviezdičky zlyhalo. Skúste to znova, prosím.</string>
   <string name="error_unstar_operation_failed">Odobratie hviezdičky zlyhalo. Skúste to znova, prosím.</string>
   <string name="error_move_to_trash_failed">Presun do koša zlyhal. Skúste to znova.</string>
+  <string name="message_moved">Správa presunutá</string>
+  <string name="message_moved_to">Správa presunutá do %s</string>
   <string name="message_moved_to_trash">Správa bola presunutá do koša</string>
   <string name="message_moved_to_archive">Správa bola presunutá do archívu</string>
   <string name="error_move_to_archive_failed">Presun do archívu zlyhal. Skúste to znova, prosím.</string>
@@ -56,7 +59,8 @@
   <string name="message_moved_to_selected_destination">Správa presunutá do %1$s</string>
   <string name="error_move_message_failed">Presun správy zlyhal. Skúste to znova.</string>
   <string name="conversation_moved_to_trash">Konverzácia bola presunutá do koša</string>
-  <string name="conversation_moved_to_selected_destination">Konverzácia bola presunutá do %1$s</string>
+  <string name="conversation_moved_to_selected_destination">Konverzácia presunutá do %1$s</string>
+  <string name="conversation_moved_to_spam">Konverzácia bola presunutá do spamu</string>
   <string name="conversation_moved_to_archive">Konverzácia bola presunutá do archívu</string>
   <string name="error_move_conversation_failed">Presun správy zlyhal. Skúste to znova.</string>
   <string name="error_loading_message">Niečo sa pokazilo, skúste to znova.</string>
@@ -75,7 +79,12 @@
   <string name="message_body_embedded_images_banner_text">Automatické načítanie vložených obrázkov je vypnuté. Toto je možné zmeniť v nastaveniach.</string>
   <string name="message_body_remote_content_banner_text">Automatické načítanie vzdialeného obsahu je vypnuté. Toto je možné zmeniť v nastaveniach.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Automatické načítanie vložených obrázkov a vzdialeného obsahu je vypnuté. Tie je možné zmeniť v nastaveniach.</string>
-  <string name="message_phishing_banner_text">Náš systém označil túto správu ako pokus o phishing. Potvrďte prosím, že ide o legitímnu správu.</string>
+  <string name="message_phishing_banner_text">Táto správa bola označená ako podozrivá, buď naším systémom, alebo vami. Ak si myslíte, že je bezpečná, označte ju ako legitímnu.</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">Označiť za legitímnu</string>
+  <string name="message_spam_banner_text">Táto správa bola označená ako spam, buď naším systémom alebo vami.</string>
+  <string name="message_spam_banner_not_spam_button">Nie je spam</string>
+  <string name="message_blocked_sender_banner_text">Tento odosielateľ bol v minulosti zablokovaný.</string>
+  <string name="message_blocked_sender_button_text">Odblokovať</string>
   <string name="message_expiration_banner_text">Táto správa vyprší za %1$s</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Chystáte sa opustiť aplikáciu a prejsť na:</string>
@@ -88,6 +97,12 @@
   <string name="phishing_link_confirmation_dialog_content_part_2">V záujme vašej bezpečnosti nepokračujte.</string>
   <string name="phishing_link_confirmation_dialog_button_go_back">Naspäť (odporúčané)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">Ignorovať varovanie a pokračovať</string>
+  <!-- Mark as legitimate confirmation dialog -->
+  <string name="mark_as_legitimate_phishing_dialog_title">Potvrďte označenie za legitímnu</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">Ospravedlňujeme sa. Mohla to byť chyba na našej strane. Potvrďte, prosím, či chcete tento email označiť ako legitímny.</string>
+  <string name="mark_as_legitimate_spam_dialog_title">Potvrďte, že nie je spam</string>
+  <string name="mark_as_legitimate_spam_dialog_message">Ospravedlňujeme sa. Mohla to byť chyba na našej strane. Potvrďte, prosím, že tento email nie je spam.</string>
+  <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">Odstrániť správu</string>
   <string name="message_delete_dialog_message">Naozaj chcete natrvalo vymazať túto správu?</string>
   <string name="message_deleted">Správa bola odstránená</string>
@@ -102,7 +117,7 @@
   <string name="message_body_load_embedded_images_button_text">Načítať vložené obrázky</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Načítať vzdialený obsah a vložené obrázky</string>
   <string name="message_report_phishing_dialog_title_offline">Upozornenie</string>
-  <string name="message_report_phishing_dialog_message_offline">This feature is only available online.</string>
+  <string name="message_report_phishing_dialog_message_offline">Tieto funkcie sú dostupné iba online.</string>
   <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Potvrdiť nahlásenie phishingu</string>
   <string name="message_report_phishing_dialog_message">Nahlásenie tejto správy ako pokusu o phishing odošle túto správu Nám, aby sme ju mohli analyzovať a zlepšiť tým Naše filtre. To znamená, že uvidíme kompletne celý obsah tejto správy.</string>
@@ -115,4 +130,9 @@
   <string name="non_trashed_messages_banner">Táto konverzácia obsahuje nevymazané správy.</string>
   <string name="show">Zobraziť</string>
   <string name="hide">Skryť</string>
+  <string name="recipient_me">ja</string>
+  <string name="message_details_header_from">Od</string>
+  <string name="message_details_header_to">Pre</string>
+  <string name="message_details_header_cc">Kópia (Cc)</string>
+  <string name="message_details_header_bcc">Skrytá kópia (Bcc)</string>
 </resources>

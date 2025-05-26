@@ -19,16 +19,26 @@
 <resources>
   <!--  Onboarding 1  -->
   <string name="onboarding_privacy_for_all_headline">Privacidad para todos</string>
-  <string name="onboarding_privacy_for_all_description">Invita a más personas a Proton Mail para beneficiar del cifrado de extremo a extremo.</string>
+  <string name="onboarding_privacy_for_all_description">Invita a otros a Proton Mail para que todos se beneficien del cifrado de extremo a extremo.</string>
   <!--  Onboarding 2  -->
   <string name="onboarding_easily_up_to_date_headline">Estar al día es más fácil</string>
   <string name="onboarding_easily_up_to_date_description">Consulta rápidamente los mensajes hilados en el modo de conversación.</string>
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">Limpio y ordenado</string>
   <string name="onboarding_neat_and_tidy_description">Archiva, etiqueta y clasifica por colores los mensajes para crear una perfecta y personalizada bandeja de entrada.</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">Rediseñado desde la base.</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">Rediseñada completamente en arquitectura Rust, la nueva aplicación Proton Mail está reconstruida para un mejor rendimiento, experiencia de usuario y escalabilidad.</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">Nueva bandeja de entrada por descubrir</string>
+  <string name="onboarding_new_inbox_description">Estamos emocionados por revelar un nuevo diseño vibrante y una experiencia de uso mejorada. Por ahora puedes previsualizar la nueva vista de lista y mensajes. </string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">Tu opinión es importante</string>
+  <string name="onboarding_feedback_is_key_description">Estamos desplegando todas las funciones en los próximos meses. Continúa probando la aplicación y coméntanos cómo podemos mejorar.</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Siguiente</string>
-  <string name="onboarding_get_started">Comenzar</string>
+  <string name="onboarding_get_started">Comenzar la prueba</string>
   <string name="onboarding_illustration_content_description">Ilustración de bienvenida</string>
   <string name="onboarding_close_content_description">Cerrar</string>
+  <string name="onboarding_introducing_next_gen_app">¡Presentando nuestra aplicación de próxima generación!</string>
 </resources>

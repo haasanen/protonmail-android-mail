@@ -21,70 +21,60 @@
   <string name="mail_settings_toolbar_button_content_description">Kembali</string>
   <!-- Settings items -->
   <string name="mail_settings_account_settings">Pengaturan akun</string>
-  <string name="mail_settings_app_settings">Pengaturan aplikasi</string>
+  <string name="mail_settings_email_settings">Pengaturan email</string>
+  <string name="mail_settings_folder_and_label_settings">Pengaturan folder dan label</string>
+  <string name="mail_settings_privacy_and_security_settings">Pengaturan privasi dan keamanan</string>
+  <string name="mail_settings_preferences">Preferensi</string>
+  <string name="mail_settings_app">Aplikasi</string>
+  <string name="mail_settings_email">Email</string>
+  <string name="mail_settings_email_hint">Preferensi email dan kotak surat</string>
+  <string name="mail_settings_folders_labels">Folder dan label</string>
+  <string name="mail_settings_folders_labels_hint">Penataan kotak surat</string>
+  <string name="mail_settings_spam_and_custom_filters">Filter spam dan filter khusus</string>
+  <string name="mail_settings_spam_and_custom_filters_hint">Tindakan dan penyortiran otomatis</string>
+  <string name="mail_settings_privacy_and_security">Privasi dan keamanan</string>
+  <string name="mail_settings_privacy_and_security_hint">Perlindungan pelacakan email</string>
+  <string name="mail_settings_app_hint">Kustomisasi aplikasi seluler</string>
   <string name="mail_settings_theme">Tema</string>
-  <string name="mail_settings_push_notifications">Notifikasi push</string>
   <string name="mail_settings_auto_lock">Kunci otomatis</string>
   <string name="mail_settings_alternative_routing">Pengalihan lalu lintas alternatif</string>
   <string name="mail_settings_app_language">Bahasa aplikasi</string>
   <string name="mail_settings_combined_contacts">Kontak gabungan</string>
-  <string name="mail_settings_local_cache">Cache lokal</string>
-  <string name="mail_settings_local_cache_hint">Ruang terpakai: %s</string>
-  <string name="mail_settings_local_cache_clear_button">Bersihkan data</string>
   <string name="mail_settings_swipe_actions">Tindakan gestur</string>
   <string name="mail_settings_combined_contacts_hint">Aktifkan fitur ini agar alamat email yang Anda ketik dapat dilengkapi secara otomatis dengan data kontak dari seluruh akun yang terhubung masuk.</string>
-  <string name="mail_settings_alternative_routing_hint">Apabila situs Proton diblokir, pengaturan ini akan memungkinkan aplikasi kami untuk dapat terhubung dengan Proton melalui lalu lintas jaringan alternatif, yang dapat berguna untuk melewati hadangan firewall atau masalah jaringan: Kami sarankan agar pengaturan ini selalu aktif untuk koneksi yang lebih andal.</string>
+  <string name="mail_settings_alternative_routing_hint">Apabila situs Proton diblokir, pengaturan ini akan memungkinkan aplikasi kami untuk mencoba terhubung dengan Proton melalui lalu lintas jaringan alternatif, yang dapat berguna untuk melewati hadangan firewall atau masalah jaringan. Kami sarankan agar pengaturan ini selalu aktif untuk koneksi yang lebih andal.</string>
+  <!-- App customization settings-->
+  <string name="mail_settings_app_customization_title">Penyesuaian aplikasi</string>
+  <string name="mail_settings_app_customization_notification">Notifikasi</string>
+  <string name="mail_settings_app_customization_language">Bahasa</string>
+  <string name="mail_settings_app_customization_appearance">Tampilan</string>
+  <string name="mail_settings_app_customization_protection">Perlindungan</string>
+  <string name="mail_settings_app_customization_protection_enabled_description">Kunci otomatis diaktifkan</string>
+  <string name="mail_settings_app_customization_protection_disabled_description">Kunci otomatis dinonaktifkan</string>
+  <string name="mail_settings_app_customization_use_device_contacts">Gunakan kontak perangkat</string>
+  <string name="mail_settings_app_customization_use_device_contacts_hint">Isi otomatis alamat email menggunakan kontak dari perangkat Anda.</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email">Geser ke email berikutnya</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email_hint">Berpindahlah ke pesan berikutnya atau sebelumnya pada kotak masuk Anda dengan cepat.</string>
+  <string name="mail_settings_app_customization_swipe_action">tindakan usap</string>
+  <string name="mail_settings_app_customization_swipe_action_hint">Atur tindakan cepat, seperti hapus atau Arsip, saat Anda geser ke kiri atau kanan.</string>
+  <string name="mail_settings_app_customization_customize_toolbar">Sesuaikan toolbar</string>
+  <string name="mail_settings_app_customization_alternative_routing">Perutean alternatif</string>
+  <string name="mail_settings_app_customization_alternative_routing_hint">Menangkal firewall atau masalah jaringan apabila situs Proton diblokir.</string>
+  <string name="mail_settings_app_customization_view_application_logs">Lihat catatan aplikasi</string>
+  <string name="mail_settings_app_customization_mail_experience_header">Pengalaman Mail</string>
+  <string name="mail_settings_app_customization_advanced_header">Lanjutan</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Bawaan sistem</string>
   <string name="mail_settings_theme_light">Terang</string>
   <string name="mail_settings_theme_dark">Gelap</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Tidak ada informasi yang tersedia</string>
-  <string name="mail_settings_enabled">Diaktifkan</string>
-  <string name="mail_settings_disabled">Dinonaktifkan</string>
-  <string name="mail_settings_allowed">Diizinkan</string>
-  <string name="mail_settings_denied">Ditolak</string>
-  <string name="mail_settings_auto_detect">Deteksi otomatis</string>
-  <string name="mail_settings_app_information">Informasi Aplikasi</string>
-  <string name="mail_settings_app_version">Versi aplikasi</string>
   <string name="mail_settings_account">Akun</string>
-  <!-- Account Settings items -->
-  <string name="mail_settings_subscription">Langganan</string>
-  <string name="mail_settings_password_management">Ubah kata sandi</string>
-  <string name="mail_settings_recovery_email">Alamat email pemulihan</string>
-  <string name="mail_settings_mailbox_size">Ukuran kotak surat</string>
-  <string name="mail_settings_addresses">Alamat</string>
-  <string name="mail_settings_default_email_address">Alamat email default</string>
-  <string name="mail_settings_display_name_and_signature">Nama tampilan dan tanda tangan</string>
-  <string name="mail_settings_mailbox">Kotak Surat</string>
-  <string name="mail_settings_privacy">Privasi</string>
-  <string name="mail_settings_labels">Label</string>
-  <string name="mail_settings_folders">Folder</string>
-  <string name="mail_settings_conversation_mode">Mode percakapan</string>
   <string name="mail_settings_not_set">Belum ditentukan</string>
   <string name="mail_settings_conversation_mode_hint">Tentukan apakah email yang terhubung dalam suatu rantai percakapan akan saling dikelompokkan atau ditampilkan secara terpisah</string>
-  <!-- Default email address settings -->
-  <string name="mail_settings_default_email_address_title">Alamat email bawaan</string>
-  <string name="mail_settings_default_email_address_inactive_addresses">Alamat yang tidak aktif</string>
-  <string name="mail_settings_default_email_address_no_inactive_addresses">Tidak ada alamat yang tidak aktif</string>
-  <string name="mail_settings_default_email_address_error_loading">Terdapat kesalahan dalam memuat pengaturan</string>
-  <string name="mail_settings_default_email_address_error_update">Terdapat kesalahan dalam memperbarui pengaturan</string>
-  <string name="mail_settings_default_email_address_error_update_subscription">Tingkatkan ke paket berbayar untuk mengatur alamat ini sebagai alamat bawaan</string>
-  <!-- Display name, signature, mobile footer -->
-  <string name="mail_settings_identity_title">Nama tampilan &amp; tanda tangan</string>
-  <string name="mail_settings_identity_save_button">Simpan</string>
-  <string name="mail_settings_identity_display_name">Nama tampilan</string>
-  <string name="mail_settings_identity_display_name_hint">Nama tampilan</string>
-  <string name="mail_settings_identity_signature">Tanda tangan</string>
-  <string name="mail_settings_identity_signature_hint">Tanda tangan</string>
-  <string name="mail_settings_identity_mobile_footer">Tanda tangan seluler</string>
-  <string name="mail_settings_identity_mobile_footer_subtext">Teks ini akan ditambahkan setelah tanda tangan Anda.</string>
-  <string name="mail_settings_identity_mobile_footer_hint">Tanda tangan seluler</string>
-  <string name="mail_settings_identity_mobile_footer_default_free">Dikirim dari Proton Mail Android</string>
-  <string name="mail_settings_identity_error_updating">Terdapat kesalahan dalam memperbarui pengaturan</string>
-  <string name="mail_settings_identity_error_loading">Terdapat kesalahan dalam memuat pengaturan</string>
   <!-- Privacy settings -->
-  <string name="mail_settings_privacy_auto_show_remote_content">Tampilkan remote content secara otomatis</string>
+  <string name="mail_settings_privacy">Privasi</string>
+  <string name="mail_settings_privacy_auto_show_remote_content">Tampilkan konten eksternal secara otomatis</string>
   <string name="mail_settings_privacy_auto_show_embedded_images">Tampilkan gambar yang tersemat secara otomatis</string>
   <string name="mail_settings_privacy_prevent_taking_screenshots">Cegah pengambilan tangkapan layar</string>
   <string name="mail_settings_privacy_request_link_confirmation">Minta tautan konfirmasi</string>
@@ -97,20 +87,26 @@
   <string name="mail_settings_swipe_actions_subtitle">Atur gestur usap untuk mengakses tindakan yang paling sering digunakan.</string>
   <string name="mail_settings_swipe_right_name">Kiri ke kanan</string>
   <string name="mail_settings_swipe_left_name">Kanan ke kiri</string>
+  <string name="mail_settings_swipe_action_none_title">Belum diatur</string>
   <string name="mail_settings_swipe_action_archive_title">Arsip</string>
   <string name="mail_settings_swipe_action_read_title">Belum dibaca</string>
   <string name="mail_settings_swipe_action_spam_title">Spam</string>
   <string name="mail_settings_swipe_action_star_title">Bintang</string>
   <string name="mail_settings_swipe_action_trash_title">Sampah</string>
+  <string name="mail_settings_swipe_action_label_as_title">Labeli sebagai…</string>
+  <string name="mail_settings_swipe_action_move_to_title">Pindahkan ke…</string>
+  <string name="mail_settings_swipe_action_none_description">Tidak ada</string>
   <string name="mail_settings_swipe_action_archive_description">Pindahkan ke arsip</string>
   <string name="mail_settings_swipe_action_read_description">Tandai belum/telah dibaca</string>
   <string name="mail_settings_swipe_action_spam_description">Pindahkan ke spam</string>
   <string name="mail_settings_swipe_action_star_description">Bintangi/hapus bintang</string>
   <string name="mail_settings_swipe_action_trash_description">Pindahkan ke sampah</string>
+  <string name="mail_settings_swipe_action_label_as_description">Labeli sebagai…</string>
+  <string name="mail_settings_swipe_action_move_to_description">Pindahkan ke…</string>
   <!-- Notification settings -->
   <string name="mail_settings_notifications_title">Notifikasi push</string>
   <string name="mail_settings_notifications_extended_notifications_title">Notifikasi terperinci</string>
-  <string name="mail_settings_notifications_extended_notifications_summary">Aktifkan fitur ini untuk menampilkan nama pengirim email dalam notifikasi push yang diterima.</string>
+  <string name="mail_settings_notifications_extended_notifications_summary">Aktifkan fitur ini untuk menampilkan nama pengirim email dalam notifikasi push.</string>
   <string name="mail_settings_notifications_notifications_settings">Pengaturan notifikasi</string>
   <string name="mail_settings_notifications_notifications_settings_hint">Tuju pengaturan notifikasi sistem</string>
   <string name="mail_settings_notifications_update_error">Terdapat kesalahan dalam memperbarui pengaturan</string>
@@ -151,8 +147,6 @@
   <string name="mail_settings_pin_insertion_signout_dialog_cancel">Tidak</string>
   <string name="mail_settings_pin_insertion_created_success">Kode PIN berhasil dibuat.</string>
   <string name="mail_settings_pin_insertion_changed_success">Kode PIN berhasil diubah.</string>
-  <!-- Local storage -->
-  <string name="mail_settings_clearing_cached_data">Membersihkan cache data lokal…</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Terdapat suatu kesalahan. Silakan coba lagi.</string>
   <!-- strings used for biometric enrollment -->

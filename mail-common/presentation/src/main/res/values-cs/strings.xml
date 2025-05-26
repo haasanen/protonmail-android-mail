@@ -24,18 +24,21 @@
   <string name="retry">Obnovit</string>
   <string name="toolbar_back_content_description">Zpět na předchozí obrazovku</string>
   <string name="x_error_not_logged_in">Nejste přihlášeni</string>
+  <string name="action_customize_toolbar">Přizpůsobit panel nástrojů</string>
+  <string name="action_customize_toolbar_description">Přizpůsobit panel nástrojů</string>
+  <string name="action_customize_toolbar_content_description">Přizpůsobit panel nástrojů</string>
   <string name="action_reply">Odpovědět</string>
   <string name="action_reply_all">Odpovědět všem</string>
   <string name="action_forward">Přeposlat</string>
   <string name="action_reply_description">Odpovědět</string>
-  <string name="action_reply_to_description">Odpovědět na %s</string>
+  <string name="action_reply_to_description">Odpovědět %s</string>
   <string name="action_reply_all_description">Odpovědět všem</string>
   <string name="action_forward_description">Přeposlat</string>
   <string name="action_mark_read_description">Označit jako přečtené</string>
   <string name="action_mark_unread_description">Označit jako nepřečtené</string>
   <string name="action_star_description">Označit hvězdičkou</string>
   <string name="action_unstar_description">Odebrat hvězdičku</string>
-  <string name="action_label_description">Přidat štítek</string>
+  <string name="action_label_description">Označit jako</string>
   <string name="action_move_description">Přesunout do</string>
   <string name="action_trash_description">Přesunout do koše</string>
   <string name="action_delete_description">Smazat</string>
@@ -52,8 +55,11 @@
   <string name="action_sender_emails_description">Nastavit akci pro budoucí e-maily od tohoto odesílatele</string>
   <string name="action_save_attachments_description">Uložit přílohy</string>
   <string name="action_more_description">Další</string>
+  <string name="action_inbox_description">Doručená pošta</string>
+  <string name="action_pin_description">Připnout</string>
+  <string name="action_unpin_description">Odepnout</string>
   <string name="action_reply_content_description">Odpovědět</string>
-  <string name="action_reply_to_content_description">Odpovědět na %s</string>
+  <string name="action_reply_to_content_description">Odpovědět %s</string>
   <string name="action_reply_all_content_description">Odpovědět všem</string>
   <string name="action_forward_content_description">Přeposlat</string>
   <string name="action_mark_read_content_description">Označit jako přečtené</string>
@@ -66,6 +72,9 @@
   <string name="action_delete_content_description">Odstranit</string>
   <string name="action_archive_content_description">Archivovat</string>
   <string name="action_spam_content_description">Spam</string>
+  <string name="action_inbox_content_description">Doručená pošta</string>
+  <string name="action_pin_content_description">Připnout</string>
+  <string name="action_unpin_content_description">Odepnout</string>
   <string name="action_view_in_light_mode_content_description">Zobrazit zprávu ve světlém režimu</string>
   <string name="action_view_in_dark_mode_content_description">Zobrazit zprávu v tmavém režimu</string>
   <string name="action_print_content_description">Tisk</string>
@@ -115,4 +124,5 @@
   <string name="undo_button_label">Zpět</string>
   <string name="undo_success_message">Akce vrácena</string>
   <string name="undo_failure_message">Vrácení selhalo</string>
+  <string name="feature_coming_soon">Funkce bude brzy k dispozici…</string>
 </resources>

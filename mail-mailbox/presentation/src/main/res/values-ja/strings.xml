@@ -17,7 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="mailbox_fab_compose_button_content_description">新しいメッセージを作成する</string>
+  <string name="mailbox_fab_compose_button_title">新規作成</string>
+  <string name="mailbox_fab_compose_button_content_description">新しいメッセージを作成</string>
   <string name="mailbox_toolbar_exit_selection_mode_button_content_description">選択モードを終了</string>
   <string name="mailbox_toolbar_menu_button_content_description">メニュー</string>
   <string name="mailbox_toolbar_search_button_content_description">検索</string>
@@ -25,27 +26,31 @@
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">検索クエリを消去</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">検索クエリを入力</string>
   <plurals name="mailbox_toolbar_selected_count">
-    <item quantity="other">%d個選択済み</item>
+    <item quantity="other">%d個が選択済み</item>
+  </plurals>
+  <plurals name="filter_unread_button_text">
+    <item quantity="other">%s件の未読</item>
   </plurals>
   <string name="mailbox_default_recipient">(宛先なし)</string>
   <string name="mailbox_default_sender">(差出人なし)</string>
-  <string name="mailbox_error_message_offline">インターネットに接続できないため、メールを取得できませんでした。</string>
+  <string name="mailbox_error_message_offline">オフラインのため、アイテムを取得できません。</string>
   <string name="mailbox_error_message_generic">メールボックスの読み込みに失敗しました</string>
   <string name="mailbox_error_message_unexpected">予期せぬ問題が発生しました</string>
   <string name="mailbox_is_empty_title">メッセージはありません</string>
-  <string name="mailbox_is_empty_description">最新です</string>
+  <string name="trash_is_empty_title">ゴミ箱には何もありません</string>
+  <string name="mailbox_is_empty_description">今のところ、すべて終わったようですね</string>
   <string name="mailbox_is_empty_no_unread_messages_title">未読メッセージはありません</string>
   <string name="mailbox_is_empty_folder_description">このフォルダーは空です</string>
   <string name="mailbox_is_empty_spam_description">迷惑メールフォルダーは空です</string>
-  <string name="mailbox_is_empty_trash_description">ごみ箱は空です</string>
+  <string name="mailbox_is_empty_trash_description">こちらは空のようです</string>
   <plurals name="mailbox_action_trash">
-    <item quantity="other">%d 個のメッセージをごみ箱に移動しました</item>
+    <item quantity="other">%d 件のメッセージをゴミ箱に移動しました</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation_dialog_title">
     <item quantity="other">%d 件の会話を削除</item>
   </plurals>
   <plurals name="mailbox_action_delete_message_dialog_title">
-    <item quantity="other">%d 件のメッセージを削除</item>
+    <item quantity="other">%d個のメッセージを削除</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation_dialog_message">
     <item quantity="other">この会話を完全に削除してよろしいですか？
@@ -66,20 +71,26 @@
   <string name="mailbox_action_failed_retrieving_colors">カラー設定の取得に失敗しました</string>
   <string name="mailbox_action_move_messages_failed">移動できませんでした</string>
   <string name="mailbox_action_move_messages_failed_retrieving_folders">フォルダーを取得できませんでした</string>
-  <string name="mailbox_action_trash_message">メッセージをごみ箱に移動する</string>
+  <string name="mailbox_action_trash_message">メッセージをごみ箱に移動しました</string>
   <string name="mailbox_action_archive_message">メッセージをアーカイブに移動しました</string>
-  <string name="mailbox_action_spam_message">件のメッセージが迷惑メールに移動されました</string>
+  <string name="mailbox_action_spam_message">メッセージを迷惑メールに移動しました</string>
   <string name="mailbox_search_placeholder_text">メッセージを検索</string>
-  <string name="mailbox_search_no_results_title">該当する項目がありません</string>
-  <string name="mailbox_search_no_results_explanation">日付、名前、メールアドレス、件名で検索</string>
+  <string name="mailbox_search_no_results_title">一致するものがありません</string>
+  <string name="mailbox_search_no_results_explanation">検索クエリを更新するか、消去することができます。</string>
   <string name="mailbox_action_button_clear_trash">ごみ箱を空にする</string>
   <string name="mailbox_action_button_clear_spam">迷惑メールを空にする</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_text">ゴミ箱・迷惑メールへ移動したメッセージを 30 日後に自動的に削除するには、アップグレードしましょう。</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">もっと詳しく</string>
+  <string name="mailbox_action_clear_trash_spam_banner_text">ごみ箱と迷惑メールに 30 日以上入っているメッセージは自動的に削除されます。</string>
   <string name="mailbox_action_clear_trash_dialog_title">ごみ箱フォルダーを空にする</string>
   <string name="mailbox_action_clear_spam_dialog_title">迷惑メールフォルダーを空にする</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">「ごみ箱」フォルダー内のすべてのメッセージを完全に削除してよろしいですか？</string>
   <string name="mailbox_action_clear_spam_dialog_body_message">「迷惑メール」フォルダー内のすべてのメッセージを完全に削除してよろしいですか？</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">「迷惑メール」フォルダー内のすべての会話を完全に削除してよろしいですか？</string>
   <string name="mailbox_action_clear_operation_scheduled">"クリア操作が予定されています"</string>
+  <!-- Attachment download -->
+  <string name="mailbox_attachment_download_started">Opening attachment…</string>
+  <string name="mailbox_attachment_download_error">Unable to open the attachment. Please try again.</string>
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">警告</string>
   <string name="storage_first_limit_exceeded_warning_dialog_text">Proton アカウントのストレージ使用率が 80% を超えています。容量を解放するか、ストレージ追加のためアップグレードしてください。</string>
@@ -90,4 +101,18 @@
   <string name="storage_quota_over_dialog_title">警告</string>
   <string name="storage_quota_over_dialog_text">Proton アカウントのストレージ使用率が 100% です。一部のメールを完全に削除するか、アップグレードしてストレージを追加するまで、メールの送受信はできません。</string>
   <string name="storage_quota_over_dialog_confirm_button">OK</string>
+  <string name="mailbox_action_delete_failed">メッセージの削除に失敗しました</string>
+  <string name="select_all">すべて選択</string>
+  <string name="deselect_all">全てを非選択</string>
+  <!--    Expiry messages-->
+  <plurals name="expires_in_days">
+    <item quantity="other">%d 日で期限切れ</item>
+  </plurals>
+  <plurals name="expires_in_hours">
+    <item quantity="other">%d 時間で期限切れ</item>
+  </plurals>
+  <plurals name="expires_in_minutes">
+    <item quantity="other">%d 分で期限切れ</item>
+  </plurals>
+  <string name="expires_in_less_than_a_minute">1分以内に期限切れになります</string>
 </resources>

@@ -19,16 +19,19 @@
 <resources>
   <string name="expiration_expired">만료됨</string>
   <string name="expiration_days_arg">%d일</string>
-  <string name="expiration_hours_arg">%d시</string>
+  <string name="expiration_hours_arg">%d시간</string>
   <string name="expiration_minutes_arg">%d분</string>
   <string name="retry">재시도</string>
   <string name="toolbar_back_content_description">이전 화면으로 돌아가기</string>
   <string name="x_error_not_logged_in">로그인하지 않음</string>
+  <string name="action_customize_toolbar">도구바 사용자화</string>
+  <string name="action_customize_toolbar_description">도구바 사용자화</string>
+  <string name="action_customize_toolbar_content_description">도구바 사용자화</string>
   <string name="action_reply">회신</string>
   <string name="action_reply_all">전체 회신</string>
   <string name="action_forward">전달</string>
   <string name="action_reply_description">답장</string>
-  <string name="action_reply_to_description">%s님에게 답장하기</string>
+  <string name="action_reply_to_description">%s에 답장</string>
   <string name="action_reply_all_description">전체 답장</string>
   <string name="action_forward_description">전달</string>
   <string name="action_mark_read_description">읽음으로 표시</string>
@@ -37,7 +40,7 @@
   <string name="action_unstar_description">별표 제거</string>
   <string name="action_label_description">라벨 추가</string>
   <string name="action_move_description">다음으로 이동</string>
-  <string name="action_trash_description">휴지통으로 이동합니다</string>
+  <string name="action_trash_description">휴지통으로 이동하기</string>
   <string name="action_delete_description">삭제</string>
   <string name="action_archive_description">보관 편지함</string>
   <string name="action_spam_description">스팸으로 이동</string>
@@ -52,8 +55,11 @@
   <string name="action_sender_emails_description">이 발신자의 향후 이메일에 대한 작업 설정</string>
   <string name="action_save_attachments_description">첨부 파일 저장</string>
   <string name="action_more_description">더보기</string>
+  <string name="action_inbox_description">받은 편지함</string>
+  <string name="action_pin_description">고정</string>
+  <string name="action_unpin_description">고정 해제</string>
   <string name="action_reply_content_description">답장</string>
-  <string name="action_reply_to_content_description">%s님에게 답장하기</string>
+  <string name="action_reply_to_content_description">%s에 답장</string>
   <string name="action_reply_all_content_description">전체 답장</string>
   <string name="action_forward_content_description">전달</string>
   <string name="action_mark_read_content_description">읽음으로 표시</string>
@@ -61,11 +67,14 @@
   <string name="action_star_content_description">별표 표시</string>
   <string name="action_unstar_content_description">별표 삭제</string>
   <string name="action_label_content_description">라벨 추가</string>
-  <string name="action_move_content_description">이동</string>
+  <string name="action_move_content_description">다음으로 이동</string>
   <string name="action_trash_content_description">휴지통</string>
   <string name="action_delete_content_description">삭제</string>
   <string name="action_archive_content_description">보관함</string>
   <string name="action_spam_content_description">스팸함</string>
+  <string name="action_inbox_content_description">받은 편지함</string>
+  <string name="action_pin_content_description">고정</string>
+  <string name="action_unpin_content_description">고정 해제</string>
   <string name="action_view_in_light_mode_content_description">밝은 테마로 보기</string>
   <string name="action_view_in_dark_mode_content_description">어두운 테마로 보기</string>
   <string name="action_print_content_description">인쇄</string>
@@ -115,4 +124,5 @@
   <string name="undo_button_label">실행 취소</string>
   <string name="undo_success_message">동작 되돌림</string>
   <string name="undo_failure_message">동작 되돌리기 실패</string>
+  <string name="feature_coming_soon">곧 출시될 기능입니다…</string>
 </resources>

@@ -23,7 +23,7 @@
   <string name="error_mark_unread_failed">Olvasatlanként megjelölés sikertelen. Próbálja meg újra.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d üzenet</item>
-    <item quantity="other">%d üzenet</item>
+    <item quantity="other">%d üzenet(ek)</item>
   </plurals>
   <string name="quick_reply_button_content_description">Válasz</string>
   <string name="quick_reply_all_button_content_description">Válasz mindenkinek</string>
@@ -35,15 +35,18 @@
   <string name="bcc">Titkos másolat:</string>
   <string name="date">Dátum:</string>
   <plurals name="attachment">
-    <item quantity="one">%d melléklet</item>
-    <item quantity="other">%d melléklet</item>
+    <item quantity="one">%d Melléklet</item>
+    <item quantity="other">%d Mellékletek</item>
   </plurals>
   <string name="hide_details">Részletek elrejtése</string>
   <string name="undisclosed_recipients">Meg nem nevezett címzettek</string>
+  <string name="error_mark_as_read_failed">Olvasottnak megjelölés művelet sikertelen. Kérjük, próbálja újra.</string>
   <string name="error_mark_as_unread_failed">Olvasatlanként megjelölés sikertelen. Próbálja újra.</string>
   <string name="error_star_operation_failed">Megcsillagozás sikertelen. Próbálja újra.</string>
   <string name="error_unstar_operation_failed">Csillag visszavonása sikertelen. Próbálja újra.</string>
   <string name="error_move_to_trash_failed">A lomtárba helyezés sikertelen. Próbálja újra.</string>
+  <string name="message_moved">Levél áthelyezve</string>
+  <string name="message_moved_to">Üzenet áthelyezve a %s mappába</string>
   <string name="message_moved_to_trash">Üzenet áthelyezve a lomtárba</string>
   <string name="message_moved_to_archive">Üzenet áthelyezve az archívumba</string>
   <string name="error_move_to_archive_failed">Az archívumba való áthelyezés sikertelen. Próbálja meg újra.</string>
@@ -52,7 +55,8 @@
   <string name="message_moved_to_selected_destination">Üzenet áthelyezve a %1$s mappába</string>
   <string name="error_move_message_failed">Az üzenet áthelyezése sikertelen. Próbálja újra.</string>
   <string name="conversation_moved_to_trash">A beszélgetés átkerült a lomtárba</string>
-  <string name="conversation_moved_to_selected_destination">A beszélgetés átkerült a %1$s</string>
+  <string name="conversation_moved_to_selected_destination">A beszélgetés átkerült a %1$s mappába</string>
+  <string name="conversation_moved_to_spam">Beszélgetés áthelyezve a levélszemétbe.</string>
   <string name="conversation_moved_to_archive">Beszélgetés áthelyezve az archívumba</string>
   <string name="error_move_conversation_failed">A beszélgetés áthelyezése sikertelen. Próbálja újra.</string>
   <string name="error_loading_message">Nem meghatározott hiba történt, kérjük próbálja meg újra.</string>
@@ -71,8 +75,13 @@
   <string name="message_body_embedded_images_banner_text">A beágyazott képek automatikus letöltése ki van kapcsolva. A beállításoknál lehet ezt megváltoztatni.</string>
   <string name="message_body_remote_content_banner_text">A távoli tartalom automatikus letöltése ki van kapcsolva. A beállításoknál lehet ezt megváltoztatni.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">A beágyazott képek és távoli tartalom automatikus letöltése ki van kapcsolva. A beállításoknál lehet ezt megváltoztatni.</string>
-  <string name="message_phishing_banner_text">A rendszerünk úgy érzékelte, hogy ez egy adathalász kísérlet. Kérjük ellenőrizze, hogy esetleg mégsem az.</string>
-  <string name="message_expiration_banner_text">Ez az üzenet lejár %1$s belül</string>
+  <string name="message_phishing_banner_text">This message was flagged as suspicious, either by our system or by you. If you believe it’s safe, mark it as legitimate.</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">Mark as legitimate</string>
+  <string name="message_spam_banner_text">This message was flagged as Spam, either by our system or by you.</string>
+  <string name="message_spam_banner_not_spam_button">Not Spam</string>
+  <string name="message_blocked_sender_banner_text">Ezt a feladót korábban blokkolták.</string>
+  <string name="message_blocked_sender_button_text">Blokk feloldása</string>
+  <string name="message_expiration_banner_text">Ez az üzenet le fog járni %1$s</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Elhagyja az alkalmazást és megnyitja ezt:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">Ne kérdezze újra</string>
@@ -84,6 +93,12 @@
   <string name="phishing_link_confirmation_dialog_content_part_2">A biztonsága érdekében ne folytassa.</string>
   <string name="phishing_link_confirmation_dialog_button_go_back">Vissza (ajánlott)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">Figyelmeztetés figyelmen kívül hagyása és folytatás</string>
+  <!-- Mark as legitimate confirmation dialog -->
+  <string name="mark_as_legitimate_phishing_dialog_title">Confirm mark as legitimate</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">We apologize. This might have been a mistake from our side. Please confirm if you want to mark this email as legitimate.</string>
+  <string name="mark_as_legitimate_spam_dialog_title">Confirm not Spam</string>
+  <string name="mark_as_legitimate_spam_dialog_message">We apologize. This might have been a mistake from our side. Please confirm this email is not Spam.</string>
+  <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">Üzenet törlése</string>
   <string name="message_delete_dialog_message">Biztos, hogy véglegesen törli ezt az üzenetet?</string>
   <string name="message_deleted">Üzenet törölve</string>
@@ -98,7 +113,7 @@
   <string name="message_body_load_embedded_images_button_text">Beágyazott képek betöltése</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Távoli, beágyazott tartalom betöltése</string>
   <string name="message_report_phishing_dialog_title_offline">Figyelem</string>
-  <string name="message_report_phishing_dialog_message_offline">This feature is only available online.</string>
+  <string name="message_report_phishing_dialog_message_offline">Ez a funkció csak online érhető el.</string>
   <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Erősítse meg az adathalász bejelentést</string>
   <string name="message_report_phishing_dialog_message">Az adathalász kísérletként megjelölt üzeneteket a rendszer hozzánk továbbítja, hogy kiértékelhessük és fejleszthessük a szűrőinket. Ebben az esetben az üzenet teljes szövegéhez hozzáférhetünk.</string>
@@ -111,4 +126,9 @@
   <string name="non_trashed_messages_banner">Ez a beszélgetés nem-törölt üzeneteket is tartalmaz.</string>
   <string name="show">Megjelenítés</string>
   <string name="hide">Elrejtés</string>
+  <string name="recipient_me">én</string>
+  <string name="message_details_header_from">Feladó</string>
+  <string name="message_details_header_to">Címzett</string>
+  <string name="message_details_header_cc">Másolat</string>
+  <string name="message_details_header_bcc">Titkos másolat</string>
 </resources>

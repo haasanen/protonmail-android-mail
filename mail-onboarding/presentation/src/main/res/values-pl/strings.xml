@@ -26,9 +26,19 @@
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">Schludna i uporządkowana</string>
   <string name="onboarding_neat_and_tidy_description">Utwórz perfekcyjną, niestandardową skrzynkę. Pliki, etykiety i wiadomości są oznaczone kolorami.</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">Stworzony od podstaw</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">Całkowicie przeprojektowany na podstawie architektury Rust. Nowy Proton Mail został przebudowany pod kątem wydajności, doświadczenia użytkownika i skalowalności.</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">Nowa skrzynka odbiorcza</string>
+  <string name="onboarding_new_inbox_description">Prezentujemy nowy wygląd i ulepszoną wygodę użytkowania. Na razie możesz wyświetlić podgląd nowych widoków listy i wiadomości. </string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">Twoja opinia jest najważniejsza</string>
+  <string name="onboarding_feedback_is_key_description">Wszystkie funkcje będziemy wprowadzać w ciągu najbliższych miesięcy. Kontynuuj testowanie aplikacji i daj nam znać, jak możemy ją ulepszyć!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Dalej</string>
-  <string name="onboarding_get_started">Rozpocznij</string>
+  <string name="onboarding_get_started">Rozpocznij testowanie</string>
   <string name="onboarding_illustration_content_description">Ilustracja wprowadzenia</string>
   <string name="onboarding_close_content_description">Zamknij</string>
+  <string name="onboarding_introducing_next_gen_app">Przedstawiamy aplikację nowej generacji!</string>
 </resources>

@@ -18,23 +18,24 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Logg av</string>
-  <string name="dialog_sign_out_account_description">Er du sikker på at du vil logge av?</string>
-  <string name="dialog_sign_out_account_confirm">Ja</string>
-  <string name="dialog_sign_out_account_cancel">Nei</string>
-  <string name="dialog_remove_account_title">Fjern konto</string>
-  <string name="dialog_remove_account_description">Du vil logges av og all informasjon forbundet med denne kontoen vil fjernes.</string>
+  <string name="dialog_sign_out_account_description">Dataene som er knyttet til kontoen din, forblir på denne enheten med mindre du velger å slette dem.</string>
+  <string name="dialog_sign_out_account_confirm">Logg av</string>
+  <string name="dialog_sign_out_account_cancel">Avbryt</string>
+  <string name="dialog_remove_account_title">Fjerne konto?</string>
+  <string name="dialog_remove_account_description">Fjern alle tilknyttede data</string>
   <string name="dialog_remove_account_confirm">Fjern</string>
   <string name="dialog_remove_account_cancel">Avbryt</string>
   <string name="feature_coming_soon">Denne funksjonen kommer snart ...</string>
   <string name="mailbox_draft_saved">Utkast lagret</string>
   <string name="mailbox_draft_discard">Forkast</string>
+  <string name="mailbox_draft_discarded">Utkast forkastet</string>
   <string name="mailbox_message_sending">Sender melding…</string>
-  <string name="mailbox_message_sending_offline">Frakoblet modus, melding satt i sendekø</string>
+  <string name="mailbox_message_sending_offline">Frakoblet: melding satt i sendekø</string>
   <string name="mailbox_message_sending_success">Melding sendt</string>
   <string name="mailbox_message_sending_error">Feil ved sending av melding</string>
   <string name="mailbox_message_sending_error_action">Gå til utkast</string>
   <string name="mailbox_attachment_uploading_error">Feil ved opplasting av vedlegg</string>
-  <string name="notification_switched_account">Switched to account %s</string>
+  <string name="notification_switched_account">Byttet til konto %s</string>
   <string name="label_saved">Etikett lagret</string>
   <string name="label_deleted">Etikett slettet</string>
   <string name="label_list_loading_error">Feil ved lasting av etikett. Prøv igjen senere.</string>

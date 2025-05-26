@@ -26,9 +26,19 @@
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">Просты і лаканічны</string>
   <string name="onboarding_neat_and_tidy_description">Файл, метка і пазначэнне паведамленняў колерам дапамогуць стварыць ідэальную паштовую скрыню, якая будзе пасаваць менавіта вам.</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">Цалкам перапрацаваны</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">Новая праграма Proton Mail цалкам перароблена для прадукцыйнасці, камфортнага выкарыстання і маштабавання. Усё гэта стала магчымым дзякуючы перапісванню праграмнага кода на архітэктуру Rust.</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">Прадстаўляем вам новую паштовую скрыню</string>
+  <string name="onboarding_new_inbox_description">Мы рады прадставіць новы яркі дызайн і палепшанае ўзаемадзеянне з карыстальнікам. У цяперашні час вы можаце рабіць папярэдні прагляд новага спіса і паведамленняў. </string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">Ваш водгук вельмі важны для нас</string>
+  <string name="onboarding_feedback_is_key_description">Разгортванне ўсіх новых функцый адбудзецца ў наступным месяцы. Працягвайце тэсціраваць праграму і паведамляйце нам, што можна палепшыць!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Далей</string>
-  <string name="onboarding_get_started">Пачаць працу</string>
+  <string name="onboarding_get_started">Пачніце тэсціраваць</string>
   <string name="onboarding_illustration_content_description">Ілюстрацыі для азнаямлення</string>
   <string name="onboarding_close_content_description">Закрыць</string>
+  <string name="onboarding_introducing_next_gen_app">Уводзіны ў новае пакаленне нашай праграмы!</string>
 </resources>

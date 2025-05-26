@@ -23,5 +23,12 @@
   <string name="notification_title_text_new_message_fallback">Nuovo messaggio</string>
   <string name="notification_actions_archive_description">Archivia</string>
   <string name="notification_actions_trash_description">Elimina</string>
-  <string name="notification_actions_reply_description">Rispondi</string>
+  <string name="notification_actions_mark_as_read_description">Segna come letto</string>
+  <!-- Push notification permissions BS -->
+  <string name="notification_permissions_bottomsheet_first_time_title">Non perdere alcun messaggio</string>
+  <string name="notification_permissions_bottomsheet_first_time_subtitle">Abilita le notifiche per tenere sotto controllo la casella di posta senza aprire l\'app</string>
+  <string name="notification_permissions_bottomsheet_second_time_title">Notifiche non abilitate</string>
+  <string name="notification_permissions_bottomsheet_second_time_subtitle">Abilita le notifiche push per sapere quando ricevi una risposta al messaggio</string>
+  <string name="notification_permissions_bottomsheet_enable">Abilita</string>
+  <string name="notification_permissions_bottomsheet_dismiss">Ignora</string>
 </resources>

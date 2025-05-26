@@ -18,23 +18,24 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Tanca la sessió</string>
-  <string name="dialog_sign_out_account_description">Segur que desitgeu tancar la sessió?</string>
-  <string name="dialog_sign_out_account_confirm">Sí</string>
-  <string name="dialog_sign_out_account_cancel">No</string>
-  <string name="dialog_remove_account_title">Esborra el compte</string>
-  <string name="dialog_remove_account_description">Es tancarà la sessió i s\'esborrarà tota la informació associada amb aquest compte.</string>
+  <string name="dialog_sign_out_account_description">Les dades associades al compte es mantindran en aquest dispositiu tret que seleccioneu suprimir-les.</string>
+  <string name="dialog_sign_out_account_confirm">Tanca la sessió</string>
+  <string name="dialog_sign_out_account_cancel">Cancel·la</string>
+  <string name="dialog_remove_account_title">Voleu esborrar el compte?</string>
+  <string name="dialog_remove_account_description">Esborra totes les dades associades</string>
   <string name="dialog_remove_account_confirm">Esborra</string>
   <string name="dialog_remove_account_cancel">Cancel·la</string>
   <string name="feature_coming_soon">Aquesta característica arribarà aviat…</string>
   <string name="mailbox_draft_saved">S\'ha desat l\'esborrany.</string>
   <string name="mailbox_draft_discard">Descarta</string>
+  <string name="mailbox_draft_discarded">Esborrany descartat</string>
   <string name="mailbox_message_sending">Enviant missatge…</string>
-  <string name="mailbox_message_sending_offline">Fora de línia, missatge a la cua per enviar</string>
+  <string name="mailbox_message_sending_offline">Fora de línia: el missatge és a la cua per enviar-se.</string>
   <string name="mailbox_message_sending_success">S\'ha enviat el missatge.</string>
   <string name="mailbox_message_sending_error">Error enviant el missatge</string>
   <string name="mailbox_message_sending_error_action">Aneu a Esborranys</string>
   <string name="mailbox_attachment_uploading_error">S\'ha produït un error en carregar l\'adjunt.</string>
-  <string name="notification_switched_account">S\'ha canviat al compte %s</string>
+  <string name="notification_switched_account">S\'ha canviat al compte %s.</string>
   <string name="label_saved">S\'ha desat l\'etiqueta.</string>
   <string name="label_deleted">S\'ha eliminat l\'etiqueta.</string>
   <string name="label_list_loading_error">S\'ha produït un error en carregar l\'etiqueta. Proveu de nou més tard.</string>

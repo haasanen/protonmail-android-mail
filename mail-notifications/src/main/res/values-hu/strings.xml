@@ -23,5 +23,12 @@
   <string name="notification_title_text_new_message_fallback">Új üzenet</string>
   <string name="notification_actions_archive_description">Archívum</string>
   <string name="notification_actions_trash_description">Lomtár</string>
-  <string name="notification_actions_reply_description">Válasz</string>
+  <string name="notification_actions_mark_as_read_description">Megjelölés olvasottként</string>
+  <!-- Push notification permissions BS -->
+  <string name="notification_permissions_bottomsheet_first_time_title">Ne hagyjon ki egyetlen e-mailt sem</string>
+  <string name="notification_permissions_bottomsheet_first_time_subtitle">Az értesítések segítenek szemmel tartani a beérkezett üzeneteket anélkül, hogy elővenné az alkalmazást.</string>
+  <string name="notification_permissions_bottomsheet_second_time_title">Szeretne naprakész maradni?</string>
+  <string name="notification_permissions_bottomsheet_second_time_subtitle">Kapcsolja be az értesítéseket, hogy tudja, mikor kap választ az e-mailjére.</string>
+  <string name="notification_permissions_bottomsheet_enable">Azonnali értesítések engedélyezése</string>
+  <string name="notification_permissions_bottomsheet_dismiss">Elvetés</string>
 </resources>

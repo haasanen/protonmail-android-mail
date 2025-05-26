@@ -17,7 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="mailbox_fab_compose_button_content_description">Escribir un mensaje nuevo</string>
+  <string name="mailbox_fab_compose_button_title">Redactar</string>
+  <string name="mailbox_fab_compose_button_content_description">Redactar mensaje nuevo</string>
   <string name="mailbox_toolbar_exit_selection_mode_button_content_description">Salir del modo de selección</string>
   <string name="mailbox_toolbar_menu_button_content_description">Menú</string>
   <string name="mailbox_toolbar_search_button_content_description">Buscar</string>
@@ -25,8 +26,12 @@
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">Borrar la consulta de búsqueda</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">Ingresar la consulta de búsqueda</string>
   <plurals name="mailbox_toolbar_selected_count">
-    <item quantity="one">%d seleccionado</item>
+    <item quantity="one">%d seleccionados</item>
     <item quantity="other">%d seleccionados</item>
+  </plurals>
+  <plurals name="filter_unread_button_text">
+    <item quantity="one">Sin leer %s</item>
+    <item quantity="other">Sin leer %s</item>
   </plurals>
   <string name="mailbox_default_recipient">(Sin destinatario)</string>
   <string name="mailbox_default_sender">(Sin remitente)</string>
@@ -34,14 +39,15 @@
   <string name="mailbox_error_message_generic">Error al cargar el buzón</string>
   <string name="mailbox_error_message_unexpected">Se produjo un error imprevisto.</string>
   <string name="mailbox_is_empty_title">Ningún mensaje</string>
-  <string name="mailbox_is_empty_description">Está al día.</string>
+  <string name="trash_is_empty_title">Nada en la papelera</string>
+  <string name="mailbox_is_empty_description">Parece que ya está al día por ahora.</string>
   <string name="mailbox_is_empty_no_unread_messages_title">No hay mensajes sin leer.</string>
   <string name="mailbox_is_empty_folder_description">Esta carpeta está vacía.</string>
   <string name="mailbox_is_empty_spam_description">La carpeta de spam está vacía.</string>
-  <string name="mailbox_is_empty_trash_description">La papelera está vacía.</string>
+  <string name="mailbox_is_empty_trash_description">Parece que está vacío por aquí</string>
   <plurals name="mailbox_action_trash">
-    <item quantity="one">Mensaje movido a la papelera</item>
-    <item quantity="other">%d mensajes movidos a la papelera</item>
+    <item quantity="one">Mensaje movido a la Papelera</item>
+    <item quantity="other">%d mensajes movidos a la Papelera</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation_dialog_title">
     <item quantity="one">Eliminar la conversación</item>
@@ -52,20 +58,20 @@
     <item quantity="other">Eliminar %d mensajes</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation_dialog_message">
-    <item quantity="one">¿Está seguro de que quiere eliminar permanentemente esta conversación?</item>
-    <item quantity="other">¿Está seguro de que quiere eliminar permanentemente estas conversaciones?</item>
+    <item quantity="one">¿En verdad desea eliminar esta conversación permanentemente?</item>
+    <item quantity="other">¿En verdad desea eliminar estas conversaciones permanentemente?</item>
   </plurals>
   <plurals name="mailbox_action_delete_message_dialog_message">
-    <item quantity="one">¿Está seguro de que quiere eliminar permanentemente este mensaje?</item>
-    <item quantity="other">¿Está seguro de que quiere eliminar permanentemente estos mensajes?</item>
+    <item quantity="one">¿En verdad desea eliminar este mensaje permanentemente?</item>
+    <item quantity="other">¿En verdad desea eliminar estos mensajes permanentemente?</item>
   </plurals>
   <plurals name="mailbox_action_delete_message">
     <item quantity="one">El mensaje fue eliminado permanentemente.</item>
-    <item quantity="other">%d mensajes fueron eliminados permanentemente.</item>
+    <item quantity="other">%d mensajes fueron eliminados permanentemente</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation">
     <item quantity="one">La conversación fue eliminada permanentemente.</item>
-    <item quantity="other">%d conversaciones fueron eliminadas permanentemente.</item>
+    <item quantity="other">%d conversaciones fueron eliminadas permanentemente</item>
   </plurals>
   <string name="mailbox_action_label_messages_failed">Error con la operación sobre la etiqueta</string>
   <string name="mailbox_action_label_messages_failed_retrieving_labels">Error al obtener las etiquetas</string>
@@ -73,19 +79,25 @@
   <string name="mailbox_action_move_messages_failed">Error en la operación de movimiento</string>
   <string name="mailbox_action_move_messages_failed_retrieving_folders">Error al obtener las carpetas</string>
   <string name="mailbox_action_trash_message">Mensaje movido a la papelera</string>
-  <string name="mailbox_action_archive_message">El mensaje fue movido a la carpeta Archivo.</string>
-  <string name="mailbox_action_spam_message">El mensaje fue movido a la carpeta Spam.</string>
+  <string name="mailbox_action_archive_message">Mensaje movido al archivo</string>
+  <string name="mailbox_action_spam_message">Mensaje movido a spam</string>
   <string name="mailbox_search_placeholder_text">Buscar mensajes</string>
-  <string name="mailbox_search_no_results_title">No se encontraron resultados.</string>
-  <string name="mailbox_search_no_results_explanation">Búsqueda por fecha, nombre, dirección de correo o asunto</string>
+  <string name="mailbox_search_no_results_title">Sin coincidencias</string>
+  <string name="mailbox_search_no_results_explanation">Puede actualizar la consulta de búsqueda o borrarla.</string>
   <string name="mailbox_action_button_clear_trash">Vaciar papelera</string>
   <string name="mailbox_action_button_clear_spam">Vaciar spam</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Mejore su plan para eliminar automáticamente los mensajes que hayan estado en la papelera o spam por más de 30 días</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Más información</string>
+  <string name="mailbox_action_clear_trash_spam_banner_text">Los mensajes en la papelera o spam por más de 30 días serán eliminados automáticamente.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Vaciar papelera</string>
   <string name="mailbox_action_clear_spam_dialog_title">Vaciar spam</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">¿En verdad desea eliminar permanentemente todos los mensajes en la papelera?</string>
   <string name="mailbox_action_clear_spam_dialog_body_message">¿En verdad desea eliminar permanentemente todos los mensajes en la carpeta Spam?</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">¿En verdad desea eliminar permanentemente todas las conversaciones en la carpeta Spam?</string>
   <string name="mailbox_action_clear_operation_scheduled">"La operación de borrado está programada"</string>
+  <!-- Attachment download -->
+  <string name="mailbox_attachment_download_started">Abriendo archivo adjunto…</string>
+  <string name="mailbox_attachment_download_error">No se puede abrir el archivo adjunto. Inténtelo de nuevo.</string>
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">Advertencia</string>
   <string name="storage_first_limit_exceeded_warning_dialog_text">El almacenamiento de la cuenta Proton está lleno en más de un 80%. Libere espacio o mejore para obtener más almacenamiento.</string>
@@ -96,4 +108,21 @@
   <string name="storage_quota_over_dialog_title">Advertencia</string>
   <string name="storage_quota_over_dialog_text">El almacenamiento de la cuenta Proton está al 100%. No podrá enviar ni recibir correos a menos que elimine permanentemente algunos correos o mejore para obtener más almacenamiento.</string>
   <string name="storage_quota_over_dialog_confirm_button">Aceptar</string>
+  <string name="mailbox_action_delete_failed">Error al eliminar el mensaje</string>
+  <string name="select_all">Seleccionar todo</string>
+  <string name="deselect_all">Deseleccionar todo</string>
+  <!--    Expiry messages-->
+  <plurals name="expires_in_days">
+    <item quantity="one">Expira en %d día</item>
+    <item quantity="other">Expira en %d días</item>
+  </plurals>
+  <plurals name="expires_in_hours">
+    <item quantity="one">Expira en %d hora</item>
+    <item quantity="other">Expira en %d horas</item>
+  </plurals>
+  <plurals name="expires_in_minutes">
+    <item quantity="one">Expira en %d minuto</item>
+    <item quantity="other">Expira en %d minutos</item>
+  </plurals>
+  <string name="expires_in_less_than_a_minute">Expira en menos de un minuto</string>
 </resources>

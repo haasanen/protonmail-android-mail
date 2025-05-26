@@ -19,7 +19,7 @@
 <resources>
   <string name="detail_error_loading_contacts">Misslyckades ladda kontakter</string>
   <string name="detail_error_loading_conversation">Misslyckades ladda konversation</string>
-  <string name="detail_error_loading_messages">Misslyckades att ladda meddelanden</string>
+  <string name="detail_error_loading_messages">Misslyckades ladda meddelanden</string>
   <string name="error_mark_unread_failed">Det gick inte att markera som oläst. Försök igen.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d meddelande</item>
@@ -40,10 +40,13 @@
   </plurals>
   <string name="hide_details">Dölj detaljer</string>
   <string name="undisclosed_recipients">Hemliga mottagare</string>
+  <string name="error_mark_as_read_failed">Åtgärden Markera som läst misslyckades. Försök igen.</string>
   <string name="error_mark_as_unread_failed">Åtgärd att markera som oläst misslyckades. Försök igen.</string>
   <string name="error_star_operation_failed">Det gick inte att stjärnmärka. Försök igen.</string>
   <string name="error_unstar_operation_failed">Det gick inte att ta bort stjärnmarkeringen. Försök igen.</string>
   <string name="error_move_to_trash_failed">Flytt till papperskorg misslyckades. Försök igen.</string>
+  <string name="message_moved">Meddelande flyttat</string>
+  <string name="message_moved_to">Meddelandet flyttat till %s</string>
   <string name="message_moved_to_trash">Meddelande flyttat till papperskorg</string>
   <string name="message_moved_to_archive">Meddelande flyttat till arkiv</string>
   <string name="error_move_to_archive_failed">Misslyckades att flytta till arkiv. Försök igen.</string>
@@ -53,6 +56,7 @@
   <string name="error_move_message_failed">Misslyckades att flytta meddelande. Försök igen.</string>
   <string name="conversation_moved_to_trash">Konversation flyttad till papperskorg</string>
   <string name="conversation_moved_to_selected_destination">Konversation flyttad till %1$s</string>
+  <string name="conversation_moved_to_spam">Konversation flyttad till skräppost</string>
   <string name="conversation_moved_to_archive">Konversation flyttad till arkiv</string>
   <string name="error_move_conversation_failed">Misslyckades att flytta konversation. Försök igen.</string>
   <string name="error_loading_message">Något gick fel, försök igen.</string>
@@ -68,10 +72,15 @@
   <string name="detail_error_retrieving_message_body">Kan inte hämta meddelande</string>
   <string name="message_body_error_no_webview">Du måste ha ett WebView installerat för att se innehållet i detta meddelande.</string>
   <!-- Banners -->
-  <string name="message_body_embedded_images_banner_text">Automatisk laddning av inbäddade bilder är avstängd. Detta kan ändras i inställningarna.</string>
-  <string name="message_body_remote_content_banner_text">Automatisk laddning av fjärrinnehåll är avstängd. Detta kan ändras i inställningarna.</string>
+  <string name="message_body_embedded_images_banner_text">Automatisk laddning av inbäddade bilder är avstängt. Detta kan ändras i inställningarna.</string>
+  <string name="message_body_remote_content_banner_text">Automatisk laddning av fjärrinnehåll är avstängt. Detta kan ändras i inställningarna.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Automatisk laddning av inbäddade bilder och fjärrinnehåll är avstängt. Dessa kan ändras i inställningarna.</string>
-  <string name="message_phishing_banner_text">Vårt system flaggade detta meddelande som ett nätfiskeförsök. Kontrollera att det är legitimt.</string>
+  <string name="message_phishing_banner_text">Detta meddelande flaggades som misstänkt, antingen av vårt system eller av dig. Om du tror att det är säkert, markera det som legitimt.</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">Markera som legitimt</string>
+  <string name="message_spam_banner_text">Detta meddelande flaggades som skräppost, antingen av vårt system eller av dig.</string>
+  <string name="message_spam_banner_not_spam_button">Inte skräppost</string>
+  <string name="message_blocked_sender_banner_text">Denna avsändare har blockerats tidigare.</string>
+  <string name="message_blocked_sender_button_text">Avblockera</string>
   <string name="message_expiration_banner_text">Detta meddelande kommer löpa ut om %1$s</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Du är på väg att lämna appen och navigera till:</string>
@@ -84,6 +93,12 @@
   <string name="phishing_link_confirmation_dialog_content_part_2">För din säkerhet, fortsätt inte.</string>
   <string name="phishing_link_confirmation_dialog_button_go_back">Gå tillbaka (rekommenderas)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">Ignorera varning och fortsätt</string>
+  <!-- Mark as legitimate confirmation dialog -->
+  <string name="mark_as_legitimate_phishing_dialog_title">Bekräfta markera som legitimt</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">Vi ber om ursäkt. Detta kan ha varit ett misstag från vår sida. Bekräfta om du vill markera detta e-postmeddelande som legitimt.</string>
+  <string name="mark_as_legitimate_spam_dialog_title">Bekräfta inte skräppost</string>
+  <string name="mark_as_legitimate_spam_dialog_message">Vi ber om ursäkt. Detta kan ha varit ett misstag från vår sida. Bekräfta att detta e-postmeddelande inte är skräppost.</string>
+  <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">Ta bort meddelande</string>
   <string name="message_delete_dialog_message">Är du säker på att du vill ta bort detta meddelande permanent?</string>
   <string name="message_deleted">Meddelande borttaget</string>
@@ -96,9 +111,9 @@
   <string name="conversation_deleted">Konversation borttagen</string>
   <string name="message_body_load_remote_content_button_text">Ladda fjärrinnehåll</string>
   <string name="message_body_load_embedded_images_button_text">Ladda inbäddade bilder</string>
-  <string name="message_body_load_embedded_and_remote_content_button_text">Ladda fjärr och inbäddat innehåll</string>
+  <string name="message_body_load_embedded_and_remote_content_button_text">Ladda fjärr- och inbäddat innehåll</string>
   <string name="message_report_phishing_dialog_title_offline">Uppmärksamhet</string>
-  <string name="message_report_phishing_dialog_message_offline">This feature is only available online.</string>
+  <string name="message_report_phishing_dialog_message_offline">Denna funktion är endast tillgänglig online.</string>
   <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Bekräfta nätfiskerapport</string>
   <string name="message_report_phishing_dialog_message">Att rapportera ett meddelande som ett nätfiskeförsök kommer skicka meddelandet till oss så att vi kan analysera det och förbättra våra filter. Detta innebär att vi kommer kunna se innehållet i meddelandet i sin helhet.</string>
@@ -111,4 +126,9 @@
   <string name="non_trashed_messages_banner">Denna konversation innehåller icke kastade meddelanden.</string>
   <string name="show">Visa</string>
   <string name="hide">Dölj</string>
+  <string name="recipient_me">jag</string>
+  <string name="message_details_header_from">Från</string>
+  <string name="message_details_header_to">Till</string>
+  <string name="message_details_header_cc">Kopia</string>
+  <string name="message_details_header_bcc">Hemlig kopia</string>
 </resources>

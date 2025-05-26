@@ -17,7 +17,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">通讯录加载失败</string>
+  <string name="detail_error_loading_contacts">联系人加载失败</string>
   <string name="detail_error_loading_conversation">会话加载失败</string>
   <string name="detail_error_loading_messages">邮件加载失败</string>
   <string name="error_mark_unread_failed">标为未读失败，请重试。</string>
@@ -38,22 +38,26 @@
   </plurals>
   <string name="hide_details">隐藏详情</string>
   <string name="undisclosed_recipients">匿名收件人</string>
+  <string name="error_mark_as_read_failed">标记为已读操作失败，请重试。</string>
   <string name="error_mark_as_unread_failed">标为未读失败，请重试。</string>
   <string name="error_star_operation_failed">添加星标失败，请重试。</string>
   <string name="error_unstar_operation_failed">取消星标失败，请重试。</string>
-  <string name="error_move_to_trash_failed">移至废件箱失败，请重试。</string>
-  <string name="message_moved_to_trash">邮件已移至废件箱</string>
-  <string name="message_moved_to_archive">邮件已存档</string>
-  <string name="error_move_to_archive_failed">Move to archive failed. Please retry.</string>
-  <string name="message_moved_to_spam">邮件已移至垃圾箱</string>
+  <string name="error_move_to_trash_failed">移至回收站失败，请重试。</string>
+  <string name="message_moved">邮件已移动</string>
+  <string name="message_moved_to">邮件已移动至 %s</string>
+  <string name="message_moved_to_trash">邮件已移至回收站</string>
+  <string name="message_moved_to_archive">邮件已归档</string>
+  <string name="error_move_to_archive_failed">移至归档失败，请重试。</string>
+  <string name="message_moved_to_spam">邮件已移至垃圾邮件</string>
   <string name="error_move_to_spam_failed">无法移动到垃圾邮件。请重试。</string>
-  <string name="message_moved_to_selected_destination">邮件已移至 %1$s</string>
-  <string name="error_move_message_failed">邮件移动失败，请重试。</string>
-  <string name="conversation_moved_to_trash">会话已移动到废件箱</string>
+  <string name="message_moved_to_selected_destination">消息已移动到 %1$s</string>
+  <string name="error_move_message_failed">转移邮件失败，请重试。</string>
+  <string name="conversation_moved_to_trash">会话已移至回收站</string>
   <string name="conversation_moved_to_selected_destination">会话已移至 %1$s</string>
-  <string name="conversation_moved_to_archive">会话已存档</string>
-  <string name="error_move_conversation_failed">会话移动失败，请重试。</string>
-  <string name="error_loading_message">出现错误。请重试。</string>
+  <string name="conversation_moved_to_spam">会话已移至垃圾邮件</string>
+  <string name="conversation_moved_to_archive">会话已归档</string>
+  <string name="error_move_conversation_failed">转移会话失败。请重试。</string>
+  <string name="error_loading_message">出错啦，请重试。</string>
   <string name="error_offline_loading_message">您已离线。请连接至网络以显示邮件内容。</string>
   <string name="error_get_attachment_failed">获取附件失败。</string>
   <string name="error_attachment_download_in_progress">当前附件下载完成后方可下载其他附件。</string>
@@ -62,19 +66,24 @@
   <string name="error_relabel_message_failed">重新标记消息失败，请重试</string>
   <string name="error_relabel_conversation_failed">重新标记对话失败，请重试</string>
   <string name="please_go_back_online_to_load_messages">您已离线。请连接至网络以加载邮件</string>
-  <string name="decryption_error">消息解密失败。</string>
+  <string name="decryption_error">邮件解密失败。</string>
   <string name="detail_error_retrieving_message_body">无法获取消息</string>
   <string name="message_body_error_no_webview">此邮件的内容需要安装 WebView 才能查看。</string>
   <!-- Banners -->
   <string name="message_body_embedded_images_banner_text">嵌入图片自动加载功能已关闭，可以在设置中开启。</string>
   <string name="message_body_remote_content_banner_text">外链内容自动加载功能已关闭，可以在设置中开启。</string>
   <string name="message_body_embedded_and_remote_content_banner_text">嵌入图片和外链内容自动加载功能已关闭，可以在设置中开启。</string>
-  <string name="message_phishing_banner_text">我们的系统已将此邮件认定为欺诈邮件，请确认其内容真实性。</string>
-  <string name="message_expiration_banner_text">此邮件将在%1$s后过期</string>
+  <string name="message_phishing_banner_text">我们的系统或您已将此邮件标记为可疑邮件。如果您认为它是安全的，请标记为合法。</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">标为非垃圾邮件</string>
+  <string name="message_spam_banner_text">此邮件被我们的系统或您标记为垃圾邮件。</string>
+  <string name="message_spam_banner_not_spam_button">不是垃圾邮件</string>
+  <string name="message_blocked_sender_banner_text">该发件人曾被拦截。</string>
+  <string name="message_blocked_sender_button_text">解除屏蔽</string>
+  <string name="message_expiration_banner_text">此信息将在 %1$s 后过期</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">您即将离开本应用并前往：</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">不再询问</string>
-  <string name="external_link_confirmation_dialog_cancel_button">关闭</string>
+  <string name="external_link_confirmation_dialog_cancel_button">取消</string>
   <string name="external_link_confirmation_dialog_continue_button">继续</string>
   <!-- Phishing link confirmation dialog -->
   <string name="phishing_link_confirmation_dialog_title">警告：疑似虚假网站</string>
@@ -82,21 +91,27 @@
   <string name="phishing_link_confirmation_dialog_content_part_2">为了您的安全，请不要继续操作。</string>
   <string name="phishing_link_confirmation_dialog_button_go_back">返回（推荐）</string>
   <string name="phishing_link_confirmation_dialog_button_continue">忽视警告并继续</string>
+  <!-- Mark as legitimate confirmation dialog -->
+  <string name="mark_as_legitimate_phishing_dialog_title">确认标为合法邮件</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">我们深表歉意，这可能是我们的失误。如果您想将此邮件标记为合法邮件，请确认。</string>
+  <string name="mark_as_legitimate_spam_dialog_title">确认不是垃圾邮件</string>
+  <string name="mark_as_legitimate_spam_dialog_message">我们深表歉意，这可能是我们的失误。如果您想将此邮件标记为非垃圾邮件，请确认。</string>
+  <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">删除邮件</string>
   <string name="message_delete_dialog_message">确定要永久删除此邮件吗？</string>
   <string name="message_deleted">邮件已删除</string>
   <string name="error_delete_message_failed">删除邮件失败</string>
   <string name="error_delete_message_failed_wrong_folder">消息位于不可以删除的位置。</string>
-  <string name="error_delete_conversation_failed">删除对话失败</string>
+  <string name="error_delete_conversation_failed">删除会话失败</string>
   <string name="error_delete_conversation_failed_wrong_folder">对话位于不可以删除的位置。</string>
-  <string name="conversation_delete_dialog_title">Delete conversation</string>
-  <string name="conversation_delete_dialog_message">Are you sure you want to permanently delete this conversation?</string>
+  <string name="conversation_delete_dialog_title">删除会话</string>
+  <string name="conversation_delete_dialog_message">您确定要永久删除此会话吗？</string>
   <string name="conversation_deleted">会话已删除</string>
   <string name="message_body_load_remote_content_button_text">加载外链内容</string>
   <string name="message_body_load_embedded_images_button_text">加载嵌入图像</string>
-  <string name="message_body_load_embedded_and_remote_content_button_text">加载远程及内嵌内容</string>
+  <string name="message_body_load_embedded_and_remote_content_button_text">加载远程及嵌入内容</string>
   <string name="message_report_phishing_dialog_title_offline">注意</string>
-  <string name="message_report_phishing_dialog_message_offline">This feature is only available online.</string>
+  <string name="message_report_phishing_dialog_message_offline">该功能仅在线可用。</string>
   <string name="message_report_phishing_dialog_confim_button_offline">好的</string>
   <string name="message_report_phishing_dialog_title">确认举报欺诈邮件</string>
   <string name="message_report_phishing_dialog_message">您举报的邮件会被上传，以便我们分析并改进过滤机制。这意味着我们将得知此邮件的所有内容。</string>
@@ -105,8 +120,13 @@
   <string name="open_on_protoncalendar_banner_title">在 Proton Calendar 中打开</string>
   <string name="open_on_protoncalendar_banner_description">安全加密日历</string>
   <string name="error_print_failed">打印失败</string>
-  <string name="trashed_messages_banner">This conversation contains trashed messages.</string>
-  <string name="non_trashed_messages_banner">This conversation contains non-trashed messages.</string>
+  <string name="trashed_messages_banner">当前会话包含已删除的邮件。</string>
+  <string name="non_trashed_messages_banner">当前会话不含已删除的邮件。</string>
   <string name="show">显示</string>
   <string name="hide">隐藏</string>
+  <string name="recipient_me">我</string>
+  <string name="message_details_header_from">发件人：</string>
+  <string name="message_details_header_to">收件人：</string>
+  <string name="message_details_header_cc">抄送</string>
+  <string name="message_details_header_bcc">密送</string>
 </resources>

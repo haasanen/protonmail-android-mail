@@ -38,19 +38,23 @@
   </plurals>
   <string name="hide_details">隱藏詳細資料</string>
   <string name="undisclosed_recipients">非公開收件者</string>
+  <string name="error_mark_as_read_failed">標記為已讀的操作失敗。請重試。</string>
   <string name="error_mark_as_unread_failed">標記為未讀的操作失敗。請重試。</string>
   <string name="error_star_operation_failed">加上星號操作失敗。請重試。</string>
   <string name="error_unstar_operation_failed">移除星號操作失敗。請重試。</string>
   <string name="error_move_to_trash_failed">郵件扔進垃圾桶失敗。請再試一次。</string>
+  <string name="message_moved">郵件已移動</string>
+  <string name="message_moved_to">訊息已移至 %s</string>
   <string name="message_moved_to_trash">郵件已移至垃圾桶</string>
   <string name="message_moved_to_archive">郵件訊息已移至封存檔</string>
   <string name="error_move_to_archive_failed">郵件移至封存失敗。請再試一次。</string>
   <string name="message_moved_to_spam">訊息移至垃圾郵件</string>
   <string name="error_move_to_spam_failed">郵件扔進垃圾訊息失敗。請再試一次。</string>
-  <string name="message_moved_to_selected_destination">郵件已移至 %1$s</string>
+  <string name="message_moved_to_selected_destination">訊息已移至 %1$s</string>
   <string name="error_move_message_failed">無法移動郵件。請再試一次。</string>
   <string name="conversation_moved_to_trash">無法將往來對話訊息丟進垃圾桶</string>
-  <string name="conversation_moved_to_selected_destination">往來對話已移至 %1$s</string>
+  <string name="conversation_moved_to_selected_destination">對話內容已移至 %1$s</string>
+  <string name="conversation_moved_to_spam">無法將往來對話訊息丟進垃圾郵件</string>
   <string name="conversation_moved_to_archive">往來對話訊息已移至封存檔</string>
   <string name="error_move_conversation_failed">無法移動往來對話。請再試一次。</string>
   <string name="error_loading_message">載入訊息時發生錯誤，請再試一次。</string>
@@ -69,7 +73,12 @@
   <string name="message_body_embedded_images_banner_text">已經關閉內嵌影像的自動載入。這可以在設定中變更。</string>
   <string name="message_body_remote_content_banner_text">已經關閉遠端內容的自動載入。這可以在設定中變更。</string>
   <string name="message_body_embedded_and_remote_content_banner_text">已經關閉內嵌影像與遠端內容的自動載入。這可以在設定中變更。</string>
-  <string name="message_phishing_banner_text">我們的系統已將此郵件認定為釣魚郵件。請檢查這是否正常郵件。</string>
+  <string name="message_phishing_banner_text">This message was flagged as suspicious, either by our system or by you. If you believe it’s safe, mark it as legitimate.</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">Mark as legitimate</string>
+  <string name="message_spam_banner_text">This message was flagged as Spam, either by our system or by you.</string>
+  <string name="message_spam_banner_not_spam_button">Not Spam</string>
+  <string name="message_blocked_sender_banner_text">此寄件者過去曾遭封鎖。</string>
+  <string name="message_blocked_sender_button_text">解除封鎖</string>
   <string name="message_expiration_banner_text">此郵件的有效期限尚餘 %1$s</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">您將離開應用程式並導覽到:</string>
@@ -80,8 +89,14 @@
   <string name="phishing_link_confirmation_dialog_title">警告：疑似假冒網站</string>
   <string name="phishing_link_confirmation_dialog_content_part_1">此連結指向的網站可能試圖竊取您的資訊，例如密碼或信用卡細節 。</string>
   <string name="phishing_link_confirmation_dialog_content_part_2">為了您的安全，不要繼續</string>
-  <string name="phishing_link_confirmation_dialog_button_go_back">返回（推薦）</string>
+  <string name="phishing_link_confirmation_dialog_button_go_back">返回(推薦)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">忽略警告並繼續</string>
+  <!-- Mark as legitimate confirmation dialog -->
+  <string name="mark_as_legitimate_phishing_dialog_title">Confirm mark as legitimate</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">We apologize. This might have been a mistake from our side. Please confirm if you want to mark this email as legitimate.</string>
+  <string name="mark_as_legitimate_spam_dialog_title">Confirm not Spam</string>
+  <string name="mark_as_legitimate_spam_dialog_message">We apologize. This might have been a mistake from our side. Please confirm this email is not Spam.</string>
+  <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">刪除訊息</string>
   <string name="message_delete_dialog_message">您確定要永久刪除此郵件嗎？</string>
   <string name="message_deleted">郵件已刪除</string>
@@ -96,7 +111,7 @@
   <string name="message_body_load_embedded_images_button_text">載入內嵌圖片</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">戴入遠端及內崁內容</string>
   <string name="message_report_phishing_dialog_title_offline">注意</string>
-  <string name="message_report_phishing_dialog_message_offline">This feature is only available online.</string>
+  <string name="message_report_phishing_dialog_message_offline">此功能僅在線上提供。</string>
   <string name="message_report_phishing_dialog_confim_button_offline">好</string>
   <string name="message_report_phishing_dialog_title">確認提報釣魚郵件</string>
   <string name="message_report_phishing_dialog_message">檢舉一封郵件帶有網路釣魚的企圖，將會把郵件傳送給我們，讓我們可以分析郵件並改進我們的篩選。這意味我們將能夠完全飽覽郵件的內容。</string>
@@ -109,4 +124,9 @@
   <string name="non_trashed_messages_banner">這對話內容含有非拉圾訊息。</string>
   <string name="show">顯示</string>
   <string name="hide">隱藏</string>
+  <string name="recipient_me">我</string>
+  <string name="message_details_header_from">寄件者</string>
+  <string name="message_details_header_to">收件者</string>
+  <string name="message_details_header_cc">副本</string>
+  <string name="message_details_header_bcc">密件副本</string>
 </resources>

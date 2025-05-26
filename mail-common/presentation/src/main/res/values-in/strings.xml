@@ -18,17 +18,20 @@
   -->
 <resources>
   <string name="expiration_expired">Kedaluwarsa</string>
-  <string name="expiration_days_arg">%d h</string>
+  <string name="expiration_days_arg">%d hari</string>
   <string name="expiration_hours_arg">%d j</string>
-  <string name="expiration_minutes_arg">%d mnt</string>
+  <string name="expiration_minutes_arg">%d jt</string>
   <string name="retry">Coba lagi</string>
   <string name="toolbar_back_content_description">Kembali ke layar sebelumnya</string>
   <string name="x_error_not_logged_in">Tidak masuk</string>
+  <string name="action_customize_toolbar">Sesuaikan toolbar</string>
+  <string name="action_customize_toolbar_description">Sesuaikan toolbar</string>
+  <string name="action_customize_toolbar_content_description">Sesuaikan toolbar</string>
   <string name="action_reply">Balas</string>
   <string name="action_reply_all">Balas semua</string>
   <string name="action_forward">Teruskan</string>
   <string name="action_reply_description">Balas</string>
-  <string name="action_reply_to_description">Balas %s</string>
+  <string name="action_reply_to_description">Balas ke %s</string>
   <string name="action_reply_all_description">Balas semua</string>
   <string name="action_forward_description">Teruskan</string>
   <string name="action_mark_read_description">Tandai dibaca</string>
@@ -52,8 +55,11 @@
   <string name="action_sender_emails_description">Tentukan tindakan untuk email dari pengirim ini ke depannya</string>
   <string name="action_save_attachments_description">Simpan lampiran</string>
   <string name="action_more_description">Lainnya</string>
+  <string name="action_inbox_description">Kotak masuk</string>
+  <string name="action_pin_description">Sematkan</string>
+  <string name="action_unpin_description">Lepas sematan</string>
   <string name="action_reply_content_description">Balas</string>
-  <string name="action_reply_to_content_description">Balas %s</string>
+  <string name="action_reply_to_content_description">Balas ke %s</string>
   <string name="action_reply_all_content_description">Balas semua</string>
   <string name="action_forward_content_description">Teruskan</string>
   <string name="action_mark_read_content_description">Tandai dibaca</string>
@@ -66,6 +72,9 @@
   <string name="action_delete_content_description">Hapus</string>
   <string name="action_archive_content_description">Arsipkan</string>
   <string name="action_spam_content_description">Spam</string>
+  <string name="action_inbox_content_description">Kotak masuk</string>
+  <string name="action_pin_content_description">Sematkan</string>
+  <string name="action_unpin_content_description">Lepas sematan</string>
   <string name="action_view_in_light_mode_content_description">Tampilkan pesan dalam mode terang</string>
   <string name="action_view_in_dark_mode_content_description">Tampilkan pesan dalam mode gelap</string>
   <string name="action_print_content_description">Cetak</string>
@@ -115,4 +124,5 @@
   <string name="undo_button_label">Urungkan</string>
   <string name="undo_success_message">Tindakan diurungkan</string>
   <string name="undo_failure_message">Tindakan gagal diurungkan</string>
+  <string name="feature_coming_soon">Fitur ini akan segera hadir…</string>
 </resources>

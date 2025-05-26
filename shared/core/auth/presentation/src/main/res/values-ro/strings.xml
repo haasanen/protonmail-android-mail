@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2024 Proton AG
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="app_name_mail">Proton Mail</string>
+  <string name="login_help_close">Închidere</string>
+  <string name="login_help_title">Cum vă putem ajuta?</string>
+  <string name="login_help_forgot_username">Am uitat numele de utilizator</string>
+  <string name="login_help_forgot_password">Am uitat parola</string>
+  <string name="login_help_other_issues">Alte probleme la conectare</string>
+  <string name="login_help_contact_needed">Încă aveți nevoie de ajutor? Contactați-ne direct.</string>
+  <string name="login_help_customer_support">Asistență clienți</string>
+  <string name="welcome_subtitle_mail">Confidențialitate. Securitate. Comoditate. E-mail criptat care vă oferă controlul asupra datelor personale.</string>
+  <string name="welcome_sign_in">Conectare</string>
+  <string name="welcome_sign_up">Creare cont</string>
+  <string name="welcome_proton_privacy_by_default">Proton - Privacy by default</string>
+  <string name="auth_login">Conectare</string>
+  <string name="auth_login_close">Închidere</string>
+  <string name="auth_login_help">Ajutor</string>
+  <string name="auth_sign_in">Conectare</string>
+  <string name="auth_username">Nume de utilizator</string>
+  <string name="auth_email">E-mail</string>
+  <string name="auth_password">Parola</string>
+  <string name="auth_username_placeholder">Utilizator sau e-mail</string>
+  <string name="auth_password_placeholder">Parola</string>
+  <string name="auth_login_assistive_text">Introduceți adresa de e-mail Proton sau numele de utilizator.</string>
+  <string name="auth_account_details">Introduceți detaliile contului Proton.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Parolă, frază sau cod cheie greșită.</string>
+  <string name="auth_login_error_invalid_action_human_verification_challenge">Este necesară verificarea ca persoană.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Date de conectare incorecte. Reîncercați.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Autentificare cu doi factori nesuportată.</string>
+  <string name="auth_second_factor_title">Autentificare cu doi factori</string>
+  <string name="auth_second_factor_authenticate">Autentificare</string>
+  <string name="auth_second_factor_totp_input_help">Introduceți codul din 6 cifre.</string>
+  <string name="auth_second_factor_totp_input_label">Cod A2F</string>
+  <string name="auth_second_factor_recovery_help">Introduceți codul din 8 caractere pentru recuperare.</string>
+  <string name="auth_second_factor_recovery_label">Cod de recuperare</string>
+  <string name="auth_second_factor_switch_to_recovery">Folosire cod de recuperare</string>
+  <string name="auth_second_factor_switch_to_totp">Folosire cod A2F</string>
+  <string name="auth_two_pass_title">Deblocare mesaje</string>
+  <string name="auth_two_pass_input_label">Parolă mesaje</string>
+  <string name="auth_two_pass_unlock">Deblocare</string>
+  <string name="auth_two_pass_forgot_password">Am uitat parola</string>
+  <string name="auth_two_pass_input_empty">Parola nu poate fi goală.</string>
+  <string name="auth_signup_title">Creare cont Proton</string>
+  <string name="auth_signup_subtitle">Un singur cont pentru toate serviciile Proton</string>
+  <string name="auth_signup_username_assistive_text">Numele de utilizator nu poate fi gol.</string>
+  <string name="auth_signup_email_assistive_text">Adresa de e-mail nu poate fi goală.</string>
+  <string name="auth_signup_next">Înainte</string>
+  <string name="auth_signup_email_username">Utilizator sau e-mail</string>
+  <string name="auth_signup_create_password">Creare parolă</string>
+  <string name="auth_signup_password">Parola</string>
+  <string name="auth_signup_repeat_password">Repetare parolă</string>
+  <string name="auth_signup_terms_privacy_conditions_footer">Făcând clic pe «Înainte», sunteți de acord cu %1$s și %2$s Proton</string>
+  <string name="auth_signup_terms_learn_more">Termenii și condițiile</string>
+  <string name="auth_signup_privacy_policy_learn_more">Politica de confidențialitate</string>
+  <string name="auth_signup_internal_footnote">Aveți nevoie de o adresă Proton pentru a utiliza Proton Mail și Proton Calendar</string>
+  <string name="auth_signup_use_current_email">Folosire adresă de e-mail actuală</string>
+  <string name="auth_signup_get_encrypted_email">Obțineți o adresă de e-mail criptată</string>
+  <string name="auth_signup_external_footnote">Cu o adresă Proton puteți accesa toate serviciile Proton</string>
+  <string name="auth_signup_recovery_skip">Omitere</string>
+  <string name="auth_signup_recovery_title">Setare metodă de recuperare (opțional)</string>
+  <string name="auth_signup_recovery_subtitle">Vă vom trimite instrucțiunile de recuperare la acest e-mail sau număr de telefon dacă nu vă puteți conecta la cont.</string>
+  <string name="auth_signup_recovery_email">E-mail</string>
+  <string name="auth_signup_recovery_phone">Telefon</string>
+  <string name="auth_signup_recovery_email_hint">E-mail de recuperare</string>
+  <string name="auth_signup_recovery_phone_hint">Număr de telefon de recuperare</string>
+  <string name="auth_signup_phone_placeholder">XXX XX XX XX</string>
+  <string name="auth_signup_your_account_is_being_setup">Vi se creează contul…</string>
+  <string name="auth_signup_please_wait">De obicei nu durează mai mult de un minut.</string>
+</resources>

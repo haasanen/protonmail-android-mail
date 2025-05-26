@@ -22,13 +22,23 @@
   <string name="onboarding_privacy_for_all_description">Başkalarını Proton Mail kullanmaya çağırın ve hepiniz uçtan uca şifrelemeden yararlanın.</string>
   <!--  Onboarding 2  -->
   <string name="onboarding_easily_up_to_date_headline">Kolayca güncel kalın</string>
-  <string name="onboarding_easily_up_to_date_description">Yazışma kipinde, ileti dizileri arasında hızla gezinin.</string>
+  <string name="onboarding_easily_up_to_date_description">Yazışma görünümünde, ileti dizileri arasında hızla gezinin.</string>
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">Temiz ve düzenli</string>
   <string name="onboarding_neat_and_tidy_description">Gelen kutunuzu düzenlemek için iletileri dosyalayın, etiketleyin ve renklendirin.</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">Sıfırdan dönüştürüldü</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">Rust mimarisi üzerinde tümüyle yeniden tasarlanan yeni Proton Mail, başarım, kullanıcı deneyimi ve ölçeklenebilirlik için yeniden yapıldı.</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">Yeni gelen kutusu açıldı</string>
+  <string name="onboarding_new_inbox_description">Canlı yeni tasarımı ve geliştirilmiş kullanıcı deneyimini tanıtmaktan heyecan duyuyoruz. Şimdilik yeni liste ve ileti görünümlerini ön izlemesine bakabilirsiniz. </string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">Geri bildiriminiz çok önemli</string>
+  <string name="onboarding_feedback_is_key_description">Önümüzdeki aylarda tüm özellikleri kullanıma sunacağız. Lütfen uygulamayı denemeyi sürdürün ve onu nasıl daha iyi yapabileceğimizi bize bildirin!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Sonraki</string>
-  <string name="onboarding_get_started">Başlayalım</string>
+  <string name="onboarding_get_started">Denemeye başlayın</string>
   <string name="onboarding_illustration_content_description">Başlama çizimi</string>
   <string name="onboarding_close_content_description">Kapat</string>
+  <string name="onboarding_introducing_next_gen_app">Yeni nesil uygulamamızla tanışın!</string>
 </resources>

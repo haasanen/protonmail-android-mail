@@ -26,9 +26,19 @@
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">Curată și ordonată</string>
   <string name="onboarding_neat_and_tidy_description">Clasificați, etichetați și atribuiți culori mesajelor ușurându-vă utilizarea.</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">Transformat din temelii</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">Complet reproiectat pe arhitectura Rust, noul Proton Mail este reconstruit pentru performanță, experiență de utilizare și scalabilitate.</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">Prezentare nouă cont</string>
+  <string name="onboarding_new_inbox_description">Suntem încântați să dezvăluim noul design vibrant și experiența îmbunătățită de utilizare. Pentru moment, puteți previzualiza noul format de liste și mesaje.</string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">Sugestiile primite sunt esențiale</string>
+  <string name="onboarding_feedback_is_key_description">Lansăm toate funcțiile în următoarele luni. Vă rugăm să continuați să testați aplicația și să ne spuneți cum o putem îmbunătăți!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Înainte</string>
-  <string name="onboarding_get_started">Începeți</string>
+  <string name="onboarding_get_started">Start testare</string>
   <string name="onboarding_illustration_content_description">Ilustrație de integrare</string>
   <string name="onboarding_close_content_description">Închidere</string>
+  <string name="onboarding_introducing_next_gen_app">Vă prezentăm noua aplicație!</string>
 </resources>

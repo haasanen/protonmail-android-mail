@@ -23,5 +23,12 @@
   <string name="notification_title_text_new_message_fallback">撰写邮件</string>
   <string name="notification_actions_archive_description">归档</string>
   <string name="notification_actions_trash_description">回收站</string>
-  <string name="notification_actions_reply_description">回复</string>
+  <string name="notification_actions_mark_as_read_description">标为已读</string>
+  <!-- Push notification permissions BS -->
+  <string name="notification_permissions_bottomsheet_first_time_title">不要错过电子邮件</string>
+  <string name="notification_permissions_bottomsheet_first_time_subtitle">通知功能可帮助您无需打开应用即可随时掌握收件箱的最新动态。</string>
+  <string name="notification_permissions_bottomsheet_second_time_title">想要随时获取最新消息吗？</string>
+  <string name="notification_permissions_bottomsheet_second_time_subtitle">开启通知以了解何时收到对您电子邮件的回复。</string>
+  <string name="notification_permissions_bottomsheet_enable">启用推送通知</string>
+  <string name="notification_permissions_bottomsheet_dismiss">忽略</string>
 </resources>

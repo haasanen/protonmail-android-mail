@@ -18,23 +18,24 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">로그아웃</string>
-  <string name="dialog_sign_out_account_description">정말로 로그아웃하시겠습니까?</string>
-  <string name="dialog_sign_out_account_confirm">예</string>
-  <string name="dialog_sign_out_account_cancel">아니오</string>
-  <string name="dialog_remove_account_title">계정 삭제</string>
-  <string name="dialog_remove_account_description">계정에서 로그아웃되며 계정과 관련된 모든 데이터가 삭제됩니다.</string>
+  <string name="dialog_sign_out_account_description">사용자 계정과 연관되어 있는 데이터를 삭제하도록 설정하지 않는 한 이 장치에 유지됩니다.</string>
+  <string name="dialog_sign_out_account_confirm">로그아웃</string>
+  <string name="dialog_sign_out_account_cancel">취소</string>
+  <string name="dialog_remove_account_title">계정을 삭제할까요?</string>
+  <string name="dialog_remove_account_description">관련된 모든 데이터 삭제</string>
   <string name="dialog_remove_account_confirm">제거</string>
   <string name="dialog_remove_account_cancel">취소</string>
   <string name="feature_coming_soon">곧 출시될 기능입니다…</string>
   <string name="mailbox_draft_saved">임시 저장됨</string>
   <string name="mailbox_draft_discard">저장 안 함</string>
+  <string name="mailbox_draft_discarded">임시 보관함 삭제됨</string>
   <string name="mailbox_message_sending">메시지를 보내는중…</string>
-  <string name="mailbox_message_sending_offline">오프라인, 메시지 전송 대기중</string>
+  <string name="mailbox_message_sending_offline">오프라인: 메시지 보내기 대기 중</string>
   <string name="mailbox_message_sending_success">메시지 보냄</string>
   <string name="mailbox_message_sending_error">메시지 전송 오류</string>
   <string name="mailbox_message_sending_error_action">임시 보관함으로 이동하기</string>
   <string name="mailbox_attachment_uploading_error">첨부 파일 업로드 중 오류</string>
-  <string name="notification_switched_account">Switched to account %s</string>
+  <string name="notification_switched_account">계정 %s(으)로 전환됨</string>
   <string name="label_saved">라벨을 저장했습니다.</string>
   <string name="label_deleted">라벨을 삭제했습니다.</string>
   <string name="label_list_loading_error">라벨 로드 중 오류 발생, 다시 시도하십시오.</string>

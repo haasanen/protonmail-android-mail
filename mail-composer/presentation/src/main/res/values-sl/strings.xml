@@ -21,20 +21,21 @@
   <string name="to_prefix">Za:</string>
   <string name="cc_prefix">Kp:</string>
   <string name="bcc_prefix">Skp:</string>
-  <string name="subject_prefix">Zadeva</string>
+  <string name="subject_prefix">Zadeva: </string>
   <string name="compose_message_placeholder">Sestavi sporočilo</string>
   <string name="close_composer_content_description">Zapri urejevalnik</string>
+  <string name="send_button_title">Pošlji</string>
   <string name="send_message_content_description">Pošlji sporočilo</string>
   <string name="composer_expand_recipients_button">Prikaži ostale prejemnike</string>
   <string name="composer_error_invalid_email">E-poštni naslov ni veljaven</string>
   <string name="composer_error_invalid_sender">Pošiljateljev naslov ni veljaven</string>
   <string name="change_sender_button_content_description">Spremeni pošiljatelja</string>
-  <string name="composer_change_sender_paid_feature">Za spremembo pošiljateljevega naslova nadgradite na plačljiv paket</string>
+  <string name="composer_change_sender_paid_feature">Nadgradite na plačljiv paket, da spremenite naslov pošiljatelja</string>
   <string name="composer_error_change_sender_failed_getting_subscription">Pošiljatelja ni mogoče spremeniti, ker pridobivanje uporabnikove naročnine ni uspelo. Poskusite znova.</string>
-  <string name="composer_error_store_draft_sender_address">Shranjevanje pošiljateljevega naslova za ta osnutek ni uspelo</string>
-  <string name="composer_error_store_draft_body">Shranjevanje telesa tega osnutka ni uspelo</string>
-  <string name="composer_error_duplicate_recipient">Duplicated recipient(s) removed</string>
-  <string name="composer_error_store_draft_subject">Shranjevanje zadeve tega osnutka ni uspelo</string>
+  <string name="composer_error_store_draft_sender_address">Pošiljateljev naslov ni bil shranjen</string>
+  <string name="composer_error_store_draft_body">Jedro sporočila ni bilo shranjeno</string>
+  <string name="composer_error_duplicate_recipient">Podvojeni prejemnik(i) odstranjen(i)</string>
+  <string name="composer_error_store_draft_subject">Zadeva sporočila ni bila shranjena</string>
   <string name="composer_error_store_draft_recipients">Shranjevanje prejemnikov tega osnutka ni uspelo</string>
   <string name="composer_error_loading_draft">Vsebina tega osnutka trenutno ni na voljo. Z urejanjem boste prepisali vso morebitno dosedanjo vsebino.</string>
   <string name="composer_add_attachments_content_description">Dodaj priponke</string>
@@ -45,9 +46,13 @@
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">V redu</string>
   <string name="composer_attachment_size_exceeded_dialog_title">Dosežena je omejitev velikosti priponk</string>
   <string name="composer_attachment_size_exceeded_dialog_message">Velikost priponk je omejena na %1$s</string>
-  <string name="composer_attachment_encryption_failed_message">Vnovično šifriranje priponk ni bilo uspešno. Iz varnostnih razlogov so bile vse priponke odstranjene.</string>
+  <string name="composer_attachment_encryption_failed_message">Šifriranje priponke ni uspelo. Iz varnostnih razlogov so bile vse priponke odstranjene.</string>
+  <string name="composer_too_many_attachments_error">Prekoračeno je največje število priponk (100).</string>
+  <string name="composer_delete_attachment_error">Pri brisanju priponke je prišlo do nepričakovane napake.</string>
+  <string name="composer_unexpected_attachments_error">Prišlo je do nepričakovane napake, povezane s priponkami.</string>
   <string name="composer_warning_local_data_shown">Zadnje različice tega osnutka ni bilo mogoče naložiti. Vsaka sprememba bo vplivala na njeno vsebino.</string>
   <string name="composer_button_add_password">Dodaj geslo</string>
+  <string name="composer_button_discard_draft">Zavrzi osnutek</string>
   <string name="composer_button_set_expiration">Nastavi čas poteka</string>
   <string name="composer_expiration_time_bottom_sheet_title">Potek veljavnosti sporočila</string>
   <string name="composer_expiration_time_bottom_sheet_done">Nastavi</string>
@@ -76,7 +81,7 @@
   <!-- Message sending error dialog -->
   <string name="message_sending_error_dialog_header">Napaka pri pošiljanju</string>
   <string name="message_sending_error_dialog_button_dismiss">Zapri</string>
-  <string name="message_sending_error_dialog_text_error">Your email cannot be sent to the address entered due to the following reason:</string>
+  <string name="message_sending_error_dialog_text_error">Vaše e-pošte ni mogoče poslati na vneseni naslov zaradi naslednjega razloga:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Ni zaupanja vrednih ključev: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Naslov ne obstaja: %s</string>
   <string name="set_message_password_title">Šifriraj sporočilo</string>
@@ -88,17 +93,24 @@
   <string name="set_message_password_supporting_text">4 do 21 znakov</string>
   <string name="set_message_password_supporting_error_text">Geslo mora biti dolgo najmanj 4 in največ 21 znakov</string>
   <string name="set_message_password_supporting_text_repeat">Gesli se morata ujemati</string>
-  <string name="set_message_password_supporting_error_text_repeat">Passwords do not match</string>
+  <string name="set_message_password_supporting_error_text_repeat">Gesli se ne ujemata.</string>
   <string name="set_message_password_button_show">Prikaži geslo</string>
   <string name="set_message_password_button_hide">Skrij geslo</string>
   <string name="set_message_password_button_apply">Nastavi geslo</string>
   <string name="set_message_password_button_save_changes">Shrani spremembe</string>
   <string name="set_message_password_button_remove_password">Odstrani geslo</string>
   <string name="respondInline">Odgovori v vrstici</string>
+  <string name="subject_placeholder">Zadeva</string>
   <plurals name="composer_recipient_suggestion_contacts">
-    <item quantity="one">%d member</item>
-    <item quantity="two">%d members</item>
-    <item quantity="few">%d members</item>
-    <item quantity="other">%d members</item>
+    <item quantity="one">%d član</item>
+    <item quantity="two">%d člana</item>
+    <item quantity="few">%d člani</item>
+    <item quantity="other">%d članov</item>
   </plurals>
+  <!-- Discard draft dialog -->
+  <string name="discard_draft_dialog_title">Zavrzi to sporočilo?</string>
+  <string name="discard_draft_dialog_text">Vaš osnutek ne bo shranjen.</string>
+  <string name="discard_draft_dialog_confirm_button">Zavrzi</string>
+  <string name="discard_draft_dialog_dismiss_button">Prekliči</string>
+  <string name="discard_draft_error">Napaka pri odstranjevanju osnutka</string>
 </resources>

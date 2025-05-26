@@ -23,5 +23,12 @@
   <string name="notification_title_text_new_message_fallback">Neue Nachricht</string>
   <string name="notification_actions_archive_description">Archivieren</string>
   <string name="notification_actions_trash_description">Papierkorb</string>
-  <string name="notification_actions_reply_description">Antworten</string>
+  <string name="notification_actions_mark_as_read_description">Als gelesen markieren</string>
+  <!-- Push notification permissions BS -->
+  <string name="notification_permissions_bottomsheet_first_time_title">Keine E-Mail verpassen</string>
+  <string name="notification_permissions_bottomsheet_first_time_subtitle">Benachrichtigungen helfen, den Überblick über den Posteingang zu behalten, ohne die App öffnen zu müssen.</string>
+  <string name="notification_permissions_bottomsheet_second_time_title">Möchtest du auf dem Laufenden bleiben?</string>
+  <string name="notification_permissions_bottomsheet_second_time_subtitle">Aktiviere Benachrichtigungen, damit du informiert wirst, wenn du eine Antwort auf deine E-Mail erhältst.</string>
+  <string name="notification_permissions_bottomsheet_enable">Push-Benachrichtigungen aktivieren</string>
+  <string name="notification_permissions_bottomsheet_dismiss">Ablehnen</string>
 </resources>

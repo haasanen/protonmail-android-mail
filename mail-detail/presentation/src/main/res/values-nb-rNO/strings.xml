@@ -20,7 +20,7 @@
   <string name="detail_error_loading_contacts">Feil ved lasting av kontakter</string>
   <string name="detail_error_loading_conversation">Feil ved lasting av samtale</string>
   <string name="detail_error_loading_messages">Feil ved lasting av meldinger</string>
-  <string name="error_mark_unread_failed">Merk som ulest mislyktes. Vennligst prøv på nytt.</string>
+  <string name="error_mark_unread_failed">Merk som ulest mislyktes. Prøv på nytt.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d melding</item>
     <item quantity="other">%d meldinger</item>
@@ -40,30 +40,34 @@
   </plurals>
   <string name="hide_details">Skjul detaljer</string>
   <string name="undisclosed_recipients">Ikke avslørte mottakere</string>
-  <string name="error_mark_as_unread_failed">Kunne ikke markere som ulest. Vennligst prøv på nytt.</string>
-  <string name="error_star_operation_failed">Kunne ikke legge til stjernemerke. Vennligst prøv på nytt.</string>
-  <string name="error_unstar_operation_failed">Kunne ikke fjerne stjernemerking. Vennligst prøv på nytt.</string>
+  <string name="error_mark_as_read_failed">Kunne ikke merke som lest. Prøv på nytt.</string>
+  <string name="error_mark_as_unread_failed">Kunne ikke merke som ulest. Prøv på nytt.</string>
+  <string name="error_star_operation_failed">Kunne ikke legge til stjernemerke. Prøv på nytt.</string>
+  <string name="error_unstar_operation_failed">Kunne ikke fjerne stjernemerking. Prøv på nytt.</string>
   <string name="error_move_to_trash_failed">Kunne ikke flytte til papirkurven. Prøv på nytt.</string>
+  <string name="message_moved">Meldingen er flyttet</string>
+  <string name="message_moved_to">Meldingen flyttet til %s</string>
   <string name="message_moved_to_trash">Melding flyttet til papirkurven</string>
   <string name="message_moved_to_archive">Melding flyttet til arkiv</string>
-  <string name="error_move_to_archive_failed">Flytting til arkiv mislyktes. Vennligst prøv på nytt.</string>
+  <string name="error_move_to_archive_failed">Flytting til arkiv mislyktes. Prøv på nytt.</string>
   <string name="message_moved_to_spam">Melding flyttet til søppelpost</string>
-  <string name="error_move_to_spam_failed">Flytt til søppelpost mislyktes. Vennligst prøv på nytt.</string>
-  <string name="message_moved_to_selected_destination">Melding flyttet til %1$s</string>
-  <string name="error_move_message_failed">Kunne ikke flytte melding. Vennligst prøv på nytt.</string>
+  <string name="error_move_to_spam_failed">Flytt til søppelpost mislyktes. Prøv på nytt.</string>
+  <string name="message_moved_to_selected_destination">Meldingen flyttet til %1$s</string>
+  <string name="error_move_message_failed">Kunne ikke flytte melding. Prøv på nytt.</string>
   <string name="conversation_moved_to_trash">Samtale flyttet til papirkurven</string>
-  <string name="conversation_moved_to_selected_destination">Samtale flyttet til %1$s</string>
+  <string name="conversation_moved_to_selected_destination">Samtalen flyttet til %1$s</string>
+  <string name="conversation_moved_to_spam">Samtale flyttet til søppelpost</string>
   <string name="conversation_moved_to_archive">Samtale flyttet til arkiv</string>
-  <string name="error_move_conversation_failed">Kunne ikke flytte samtale. Vennligst prøv på nytt.</string>
-  <string name="error_loading_message">Noe gikk galt. Vennligst prøv på nytt.</string>
+  <string name="error_move_conversation_failed">Kunne ikke flytte samtale. Prøv på nytt.</string>
+  <string name="error_loading_message">Noe gikk galt. Prøv på nytt.</string>
   <string name="error_offline_loading_message">Du er frakoblet. En internettforbindelse kreves for å vise innholdet i denne meldingen.</string>
   <string name="error_get_attachment_failed">Kunne ikke hente vedlegg.</string>
   <string name="error_attachment_download_in_progress">Gjeldende nedlasting må fullføres før du kan starte en ny.</string>
   <string name="error_get_attachment_not_enough_memory">Kunne ikke hente vedlegg på grunn av utilstrekkelig minne.</string>
   <string name="reload">Last inn på nytt</string>
-  <string name="error_relabel_message_failed">Kunne ikke endre merking av melding. Vennligst prøv på nytt.</string>
-  <string name="error_relabel_conversation_failed">Kunne ikke endre merking av samtale. Vennligst prøv på nytt.</string>
-  <string name="please_go_back_online_to_load_messages">Du er frakoblet. Vennligst koble til internett for å laste inn meldinger.</string>
+  <string name="error_relabel_message_failed">Kunne ikke endre merking av melding. Prøv på nytt.</string>
+  <string name="error_relabel_conversation_failed">Kunne ikke endre merking av samtale. Prøv på nytt.</string>
+  <string name="please_go_back_online_to_load_messages">Du er frakoblet. Koble til internett for å laste inn meldinger.</string>
   <string name="decryption_error">Kunne ikke dekryptere melding</string>
   <string name="detail_error_retrieving_message_body">Kan ikke hente melding</string>
   <string name="message_body_error_no_webview">Du må ha en WebView installert for å se innholdet i denne meldingen.</string>
@@ -71,7 +75,12 @@
   <string name="message_body_embedded_images_banner_text">Automatisk lasting av innebygde bilder er deaktivert. Dette kan endres i innstillingene.</string>
   <string name="message_body_remote_content_banner_text">Automatisk lasting av eksternt innhold er slått av. Dette kan endres i innstillingene.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Automatisk lasting av innebygde bilder og eksternt innhold er slått av. Dette kan endres i innstillingene.</string>
-  <string name="message_phishing_banner_text">Systemet vårt flagget denne meldingen som et forsøk på nettfisking. Vennligst kontroller at den er legitim.</string>
+  <string name="message_phishing_banner_text">Denne meldingen ble flagget som mistenkelig, enten av systemet vårt eller av deg. Hvis du mener den er trygg, merk den som legitim.</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">Merk som legitim</string>
+  <string name="message_spam_banner_text">Denne meldingen ble flagget som søppelpost, enten av systemet vårt eller av deg.</string>
+  <string name="message_spam_banner_not_spam_button">Ikke søppelpost</string>
+  <string name="message_blocked_sender_banner_text">Denne avsenderen har blitt blokkert tidligere.</string>
+  <string name="message_blocked_sender_button_text">Opphev blokkering</string>
   <string name="message_expiration_banner_text">Denne meldingen vil utløpe om %1$s.</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Du er i ferd med å forlate appen og navigere til:</string>
@@ -84,6 +93,12 @@
   <string name="phishing_link_confirmation_dialog_content_part_2">For din egen sikkerhet, ikke fortsett.</string>
   <string name="phishing_link_confirmation_dialog_button_go_back">Gå tilbake (anbefalt)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">Ignorer advarsel og fortsett</string>
+  <!-- Mark as legitimate confirmation dialog -->
+  <string name="mark_as_legitimate_phishing_dialog_title">Bekreft merk som legitimt</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">Vi beklager. Dette kan ha vært en feil fra vår side. Bekreft om du vil merke denne e-posten som legitim.</string>
+  <string name="mark_as_legitimate_spam_dialog_title">Bekreft ikke søppelpost</string>
+  <string name="mark_as_legitimate_spam_dialog_message">Vi beklager. Dette kan ha vært en feil fra vår side. Bekreft at denne e-posten ikke er søppelpost.</string>
+  <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">Slett melding</string>
   <string name="message_delete_dialog_message">Er du sikker på at du vil slette denne meldingen permanent?</string>
   <string name="message_deleted">Melding slettet</string>
@@ -98,7 +113,7 @@
   <string name="message_body_load_embedded_images_button_text">Last innebygde bilder</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Last inn eksternt og innebygd innhold</string>
   <string name="message_report_phishing_dialog_title_offline">Oppmerksomhet</string>
-  <string name="message_report_phishing_dialog_message_offline">This feature is only available online.</string>
+  <string name="message_report_phishing_dialog_message_offline">Denne funksjonen er kun tilgjengelig på nett.</string>
   <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Bekreft rapporten om nettfisking</string>
   <string name="message_report_phishing_dialog_message">Hvis du rapporterer en melding som et forsøk på nettfisking, sendes meldingen til oss, slik at vi kan analysere den og forbedre filtrene våre. Dette betyr at vi vil kunne se innholdet i meldingen i sin helhet.</string>
@@ -111,4 +126,9 @@
   <string name="non_trashed_messages_banner">Denne samtalen inneholder ikke meldinger i papirkurven.</string>
   <string name="show">Vis</string>
   <string name="hide">Skjul</string>
+  <string name="recipient_me">meg</string>
+  <string name="message_details_header_from">Fra</string>
+  <string name="message_details_header_to">Til</string>
+  <string name="message_details_header_cc">Kopi</string>
+  <string name="message_details_header_bcc">Blindkopi</string>
 </resources>

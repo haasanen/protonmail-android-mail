@@ -17,6 +17,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="mailbox_fab_compose_button_title">撰寫郵件</string>
   <string name="mailbox_fab_compose_button_content_description">撰寫新郵件</string>
   <string name="mailbox_toolbar_exit_selection_mode_button_content_description">退出選取模式</string>
   <string name="mailbox_toolbar_menu_button_content_description">選單</string>
@@ -25,7 +26,10 @@
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">清除搜尋欄</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">輸入搜索查詢</string>
   <plurals name="mailbox_toolbar_selected_count">
-    <item quantity="other">已選取 %d 個</item>
+    <item quantity="other">已選取 %d</item>
+  </plurals>
+  <plurals name="filter_unread_button_text">
+    <item quantity="other">未讀 %s</item>
   </plurals>
   <string name="mailbox_default_recipient">(無收件者)</string>
   <string name="mailbox_default_sender">(無寄件者)</string>
@@ -33,16 +37,17 @@
   <string name="mailbox_error_message_generic">載入電子信箱失敗</string>
   <string name="mailbox_error_message_unexpected">不明原因發生異常</string>
   <string name="mailbox_is_empty_title">沒有訊息</string>
-  <string name="mailbox_is_empty_description">您已擁有最即時更新</string>
+  <string name="trash_is_empty_title">垃圾桶內沒東西</string>
+  <string name="mailbox_is_empty_description">看來您目前沒有未讀的新郵件了</string>
   <string name="mailbox_is_empty_no_unread_messages_title">沒有未讀的訊息</string>
   <string name="mailbox_is_empty_folder_description">此資料夾目前是空的</string>
   <string name="mailbox_is_empty_spam_description">垃圾郵件資料夾是空的</string>
-  <string name="mailbox_is_empty_trash_description">垃圾桶是空的</string>
+  <string name="mailbox_is_empty_trash_description">本來無一物，何處惹塵埃</string>
   <plurals name="mailbox_action_trash">
-    <item quantity="other">%d 則訊息已移至垃圾桶</item>
+    <item quantity="other">%d 封郵件已移至垃圾桶</item>
   </plurals>
   <plurals name="mailbox_action_delete_conversation_dialog_title">
-    <item quantity="other">刪除 %d 篇對話</item>
+    <item quantity="other">刪除 %d 則往來對話</item>
   </plurals>
   <plurals name="mailbox_action_delete_message_dialog_title">
     <item quantity="other">刪除 %d 封訊息</item>
@@ -64,20 +69,26 @@
   <string name="mailbox_action_failed_retrieving_colors">無法取得顏色設定值</string>
   <string name="mailbox_action_move_messages_failed">無法進行移動操作</string>
   <string name="mailbox_action_move_messages_failed_retrieving_folders">無法擷取資料夾</string>
-  <string name="mailbox_action_trash_message">郵件丟進垃圾桶</string>
-  <string name="mailbox_action_archive_message">郵件訊息已移至封存檔</string>
-  <string name="mailbox_action_spam_message">訊息移至垃圾郵件</string>
+  <string name="mailbox_action_trash_message">郵件已移至垃圾桶</string>
+  <string name="mailbox_action_archive_message">郵件已移至封存</string>
+  <string name="mailbox_action_spam_message">郵件已移至垃圾郵件</string>
   <string name="mailbox_search_placeholder_text">搜尋訊息</string>
-  <string name="mailbox_search_no_results_title">未找到任何結果</string>
-  <string name="mailbox_search_no_results_explanation">搜尋日期、名稱、電子郵件位址或主旨</string>
+  <string name="mailbox_search_no_results_title">無相符項目</string>
+  <string name="mailbox_search_no_results_explanation">您可以更新您的搜尋內容或清除。</string>
   <string name="mailbox_action_button_clear_trash">清空垃圾桶</string>
   <string name="mailbox_action_button_clear_spam">清空垃圾郵件</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_text">升級以自動刪除在垃圾桶或垃圾郵件中存放超過 30 天的郵件</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">取得更多資訊</string>
+  <string name="mailbox_action_clear_trash_spam_banner_text">垃圾桶與垃圾郵件中的郵件超過 30 天後，將會自動刪除。</string>
   <string name="mailbox_action_clear_trash_dialog_title">清空垃圾桶</string>
   <string name="mailbox_action_clear_spam_dialog_title">清空垃圾郵件資料夾</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">您確定永久刪除所有垃圾資料夾的訊息嗎？</string>
-  <string name="mailbox_action_clear_spam_dialog_body_message">您確定永久刪除所有的垃圾郵件的訊息嗎？</string>
-  <string name="mailbox_action_clear_spam_dialog_body_conversation">您確定永久刪除所有垃圾郵件的對話內容嗎？</string>
+  <string name="mailbox_action_clear_spam_dialog_body_message">您確定要永久刪除垃圾郵件匣中的所有訊息嗎？</string>
+  <string name="mailbox_action_clear_spam_dialog_body_conversation">您確定永久刪除所有垃圾匣中的對話內容嗎？</string>
   <string name="mailbox_action_clear_operation_scheduled">"清除作業已排程"</string>
+  <!-- Attachment download -->
+  <string name="mailbox_attachment_download_started">正在開啟附件……</string>
+  <string name="mailbox_attachment_download_error">無法開啟附件。請再試一次。</string>
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">注意</string>
   <string name="storage_first_limit_exceeded_warning_dialog_text">您的 Proton 帳號儲存空間已超過 80% 滿。清理一下資料，或者升級以獲取更多空間。</string>
@@ -88,4 +99,18 @@
   <string name="storage_quota_over_dialog_title">注意</string>
   <string name="storage_quota_over_dialog_text">您的 Proton 帳號空間已經 100% 滿了。直到您永久刪除一些郵件或升級得到更多空間之前，您將無法收發信件。</string>
   <string name="storage_quota_over_dialog_confirm_button">好</string>
+  <string name="mailbox_action_delete_failed">刪除郵件失敗</string>
+  <string name="select_all">全選</string>
+  <string name="deselect_all">取消全選</string>
+  <!--    Expiry messages-->
+  <plurals name="expires_in_days">
+    <item quantity="other">將於%d天後過期</item>
+  </plurals>
+  <plurals name="expires_in_hours">
+    <item quantity="other">將於%d小時後過期</item>
+  </plurals>
+  <plurals name="expires_in_minutes">
+    <item quantity="other">將於%d分鐘後過期</item>
+  </plurals>
+  <string name="expires_in_less_than_a_minute">將於不到一分鐘內過期</string>
 </resources>

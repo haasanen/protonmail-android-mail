@@ -17,6 +17,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="mailbox_fab_compose_button_title">Verfassen</string>
   <string name="mailbox_fab_compose_button_content_description">Neue Nachricht verfassen</string>
   <string name="mailbox_toolbar_exit_selection_mode_button_content_description">Auswahlmodus beenden</string>
   <string name="mailbox_toolbar_menu_button_content_description">Menü</string>
@@ -28,17 +29,22 @@
     <item quantity="one">%d ausgewählt</item>
     <item quantity="other">%d ausgewählt</item>
   </plurals>
+  <plurals name="filter_unread_button_text">
+    <item quantity="one">Ungelesen %s</item>
+    <item quantity="other">Ungelesen %s</item>
+  </plurals>
   <string name="mailbox_default_recipient">(Kein Empfänger)</string>
   <string name="mailbox_default_sender">(Kein Absender)</string>
   <string name="mailbox_error_message_offline">Du bist offline und kannst keine Einträge abrufen.</string>
   <string name="mailbox_error_message_generic">Fehler beim Laden des Postfachs.</string>
   <string name="mailbox_error_message_unexpected">Etwas ging unerwartet schief</string>
   <string name="mailbox_is_empty_title">Keine Nachrichten</string>
-  <string name="mailbox_is_empty_description">Du bist auf den neusten Stand</string>
+  <string name="trash_is_empty_title">Papierkorb ist leer</string>
+  <string name="mailbox_is_empty_description">Es scheint, als wären alle Aufgaben erledigt</string>
   <string name="mailbox_is_empty_no_unread_messages_title">Keine ungelesenen Nachrichten</string>
   <string name="mailbox_is_empty_folder_description">Dieser Ordner ist leer</string>
   <string name="mailbox_is_empty_spam_description">Dein Spam-Ordner ist leer</string>
-  <string name="mailbox_is_empty_trash_description">Papierkorb ist leer</string>
+  <string name="mailbox_is_empty_trash_description">Hier sieht es leer aus</string>
   <plurals name="mailbox_action_trash">
     <item quantity="one">Nachricht in den Papierkorb verschoben</item>
     <item quantity="other">%d Nachrichten in den Papierkorb verschoben</item>
@@ -72,20 +78,26 @@
   <string name="mailbox_action_failed_retrieving_colors">Fehler beim Laden der Farbeinstellungen.</string>
   <string name="mailbox_action_move_messages_failed">Fehler beim Verschieben.</string>
   <string name="mailbox_action_move_messages_failed_retrieving_folders">Fehler beim Laden der Ordner.</string>
-  <string name="mailbox_action_trash_message">Nachricht wurde in den Papierkorb verschoben</string>
-  <string name="mailbox_action_archive_message">Nachricht wurde in das Archiv verschoben</string>
-  <string name="mailbox_action_spam_message">Nachricht wurde in den Spam-Ordner verschoben</string>
+  <string name="mailbox_action_trash_message">Nachricht in den Papierkorb verschoben</string>
+  <string name="mailbox_action_archive_message">Nachricht ins Archiv verschoben</string>
+  <string name="mailbox_action_spam_message">Nachricht in Spam verschoben</string>
   <string name="mailbox_search_placeholder_text">Nachrichten durchsuchen</string>
-  <string name="mailbox_search_no_results_title">Keine Ergebnisse gefunden</string>
-  <string name="mailbox_search_no_results_explanation">Suche nach Datum, Name, E-Mail-Adresse oder Betreff</string>
+  <string name="mailbox_search_no_results_title">Keine Treffer</string>
+  <string name="mailbox_search_no_results_explanation">Du kannst deine Suchanfrage entweder aktualisieren oder löschen.</string>
   <string name="mailbox_action_button_clear_trash">Papierkorb leeren</string>
   <string name="mailbox_action_button_clear_spam">Spam leeren</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Upgrade zum automatischen Löschen von Nachrichten, die sich seit mehr als 30 Tagen im Papierkorb oder im Spam befinden.</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Mehr erfahren</string>
+  <string name="mailbox_action_clear_trash_spam_banner_text">Nachrichten, die länger als 30 Tage im Papierkorb oder Spam liegen, werden automatisch gelöscht.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Papierkorb-Ordner leeren</string>
   <string name="mailbox_action_clear_spam_dialog_title">Spam-Ordner leeren</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">Bist du sicher, dass du alle Nachrichten in deinem Papierkorb dauerhaft löschen willst?</string>
   <string name="mailbox_action_clear_spam_dialog_body_message">Bist du sicher, dass du alle Nachrichten in deinem Spam-Ordner dauerhaft löschen willst?</string>
-  <string name="mailbox_action_clear_spam_dialog_body_conversation">Bist du sicher, dass du alle Konversationen in deinem Spam-Ordner dauerhaft löschen möchtest?</string>
+  <string name="mailbox_action_clear_spam_dialog_body_conversation">Bist du sicher, dass du alle Nachrichten in deinem Spam-Ordner dauerhaft löschen willst?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Lösche geplante Aufgabe"</string>
+  <!-- Attachment download -->
+  <string name="mailbox_attachment_download_started">Anhang wird geöffnet …</string>
+  <string name="mailbox_attachment_download_error">Der Anhang konnte nicht geöffnet werden. Bitte erneut versuchen.</string>
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">Warnung</string>
   <string name="storage_first_limit_exceeded_warning_dialog_text">Der Speicherplatz deines Proton-Kontos ist zu mehr als 80% belegt. Gib Speicherplatz frei oder upgrade für mehr Speicherplatz.</string>
@@ -96,4 +108,21 @@
   <string name="storage_quota_over_dialog_title">Warnung</string>
   <string name="storage_quota_over_dialog_text">Der Speicherplatz deines Proton-Kontos ist zu 100% belegt. Du kannst keine E-Mails mehr senden oder empfangen, es sei denn, du löschst einige E-Mails endgültig oder upgradest für mehr Speicherplatz.</string>
   <string name="storage_quota_over_dialog_confirm_button">OK</string>
+  <string name="mailbox_action_delete_failed">Nachricht konnte nicht gelöscht werden</string>
+  <string name="select_all">Alle auswählen</string>
+  <string name="deselect_all">Alle abwählen</string>
+  <!--    Expiry messages-->
+  <plurals name="expires_in_days">
+    <item quantity="one">Läuft in %d Tag ab</item>
+    <item quantity="other">Läuft in %d Tagen ab</item>
+  </plurals>
+  <plurals name="expires_in_hours">
+    <item quantity="one">Läuft in %d Stunde ab</item>
+    <item quantity="other">Läuft in %d Stunden ab</item>
+  </plurals>
+  <plurals name="expires_in_minutes">
+    <item quantity="one">Läuft in %d Minute ab</item>
+    <item quantity="other">Läuft in %d Minuten ab</item>
+  </plurals>
+  <string name="expires_in_less_than_a_minute">Läuft in weniger als einer Minute ab</string>
 </resources>

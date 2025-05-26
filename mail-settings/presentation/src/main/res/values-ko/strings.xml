@@ -21,69 +21,59 @@
   <string name="mail_settings_toolbar_button_content_description">돌아가기</string>
   <!-- Settings items -->
   <string name="mail_settings_account_settings">계정 설정</string>
-  <string name="mail_settings_app_settings">앱 설정</string>
+  <string name="mail_settings_email_settings">이메일 설정</string>
+  <string name="mail_settings_folder_and_label_settings">폴더 및 라벨 설정</string>
+  <string name="mail_settings_privacy_and_security_settings">개인정보 보호 및 보안 설정</string>
+  <string name="mail_settings_preferences">환경 설정</string>
+  <string name="mail_settings_app">앱</string>
+  <string name="mail_settings_email">이메일</string>
+  <string name="mail_settings_email_hint">이메일 및 메일함 환경 설정</string>
+  <string name="mail_settings_folders_labels">폴더 및 라벨</string>
+  <string name="mail_settings_folders_labels_hint">메일함 정리</string>
+  <string name="mail_settings_spam_and_custom_filters">스팸 및 커스텀 필터</string>
+  <string name="mail_settings_spam_and_custom_filters_hint">자동화 및 분류</string>
+  <string name="mail_settings_privacy_and_security">개인정보 및 보안</string>
+  <string name="mail_settings_privacy_and_security_hint">이메일 트래킹 보호</string>
+  <string name="mail_settings_app_hint">모바일 앱 사용자화</string>
   <string name="mail_settings_theme">테마</string>
-  <string name="mail_settings_push_notifications">푸시 알림</string>
   <string name="mail_settings_auto_lock">자동 잠금</string>
   <string name="mail_settings_alternative_routing">대체 라우팅</string>
   <string name="mail_settings_app_language">앱 언어</string>
   <string name="mail_settings_combined_contacts">병합된 연락처</string>
-  <string name="mail_settings_local_cache">로컬 캐시</string>
-  <string name="mail_settings_local_cache_hint">사용된 공간: %s</string>
-  <string name="mail_settings_local_cache_clear_button">데이터 지우기</string>
   <string name="mail_settings_swipe_actions">스와이프 동작</string>
   <string name="mail_settings_combined_contacts_hint">로그인된 모든 계정의 연락처를 사용하여 이메일 주소를 자동 완성하려면 이 기능을 켜십시오.</string>
   <string name="mail_settings_alternative_routing_hint">Proton 사이트가 차단되었을 경우 이 설정을 통한 대체 네트워크 라우팅으로 방화벽을 우회하거나 네트워크 문제가 발생했을 때 Proton에 접근할 수 있습니다. 더 나은 신뢰성을 위해 이 설정을 계속 켜두는 것을 권장합니다.</string>
+  <!-- App customization settings-->
+  <string name="mail_settings_app_customization_title">앱 사용자화</string>
+  <string name="mail_settings_app_customization_notification">알림</string>
+  <string name="mail_settings_app_customization_language">언어</string>
+  <string name="mail_settings_app_customization_appearance">외관</string>
+  <string name="mail_settings_app_customization_protection">보호</string>
+  <string name="mail_settings_app_customization_protection_enabled_description">자동 잠금 켬</string>
+  <string name="mail_settings_app_customization_protection_disabled_description">자동 잠금 끔</string>
+  <string name="mail_settings_app_customization_use_device_contacts">기기 연락처 사용</string>
+  <string name="mail_settings_app_customization_use_device_contacts_hint">기기 연락처를 사용하여 이메일 주소를 자동 완성합니다.</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email">다음 이메일로 쓸어넘기기</string>
+  <string name="mail_settings_app_customization_swipe_to_next_email_hint">받은 편지함의 다음 또는 이전 메시지로 빠르게 이동합니다.</string>
+  <string name="mail_settings_app_customization_swipe_action">스와이프 동작</string>
+  <string name="mail_settings_app_customization_swipe_action_hint">삭제나 보관과 같은 간편 작업을 좌우 스와이프 동작에 설정하세요.</string>
+  <string name="mail_settings_app_customization_customize_toolbar">툴바 사용자화</string>
+  <string name="mail_settings_app_customization_alternative_routing">대체 라우팅</string>
+  <string name="mail_settings_app_customization_alternative_routing_hint">Proton 사이트가 차단된 경우 방화벽이나 네트워크 문제를 우회합니다.</string>
+  <string name="mail_settings_app_customization_view_application_logs">어플리케이션 로그 보기</string>
+  <string name="mail_settings_app_customization_mail_experience_header">메일 경험</string>
+  <string name="mail_settings_app_customization_advanced_header">고급</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">시스템</string>
   <string name="mail_settings_theme_light">라이트</string>
   <string name="mail_settings_theme_dark">다크</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">사용 가능한 정보 없음</string>
-  <string name="mail_settings_enabled">활성화됨</string>
-  <string name="mail_settings_disabled">비활성화됨</string>
-  <string name="mail_settings_allowed">허용됨</string>
-  <string name="mail_settings_denied">거부됨</string>
-  <string name="mail_settings_auto_detect">자동 감지</string>
-  <string name="mail_settings_app_information">앱 정보</string>
-  <string name="mail_settings_app_version">앱 버전</string>
   <string name="mail_settings_account">계정</string>
-  <!-- Account Settings items -->
-  <string name="mail_settings_subscription">구독</string>
-  <string name="mail_settings_password_management">비밀번호 변경</string>
-  <string name="mail_settings_recovery_email">복구 이메일</string>
-  <string name="mail_settings_mailbox_size">메일함 크기</string>
-  <string name="mail_settings_addresses">주소</string>
-  <string name="mail_settings_default_email_address">기본 이메일 주소</string>
-  <string name="mail_settings_display_name_and_signature">이름과 서명 표시</string>
-  <string name="mail_settings_mailbox">메일함</string>
-  <string name="mail_settings_privacy">개인정보 보호</string>
-  <string name="mail_settings_labels">라벨</string>
-  <string name="mail_settings_folders">폴더함</string>
-  <string name="mail_settings_conversation_mode">대화 모드</string>
   <string name="mail_settings_not_set">미설정</string>
   <string name="mail_settings_conversation_mode_hint">받은 편지함에 있는 동일한 메일을 함께 그룹화하거나 별도로 표시</string>
-  <!-- Default email address settings -->
-  <string name="mail_settings_default_email_address_title">기본 이메일 주소</string>
-  <string name="mail_settings_default_email_address_inactive_addresses">비활성 주소</string>
-  <string name="mail_settings_default_email_address_no_inactive_addresses">비활성 주소 없음</string>
-  <string name="mail_settings_default_email_address_error_loading">설정 로딩 중 오류 발생</string>
-  <string name="mail_settings_default_email_address_error_update">설정 업데이트 오류</string>
-  <string name="mail_settings_default_email_address_error_update_subscription">이 주소를 기본값으로 설정하려면 유료 플랜으로 업그레이드 하십시오.</string>
-  <!-- Display name, signature, mobile footer -->
-  <string name="mail_settings_identity_title">표시 이름 &amp; 서명</string>
-  <string name="mail_settings_identity_save_button">저장</string>
-  <string name="mail_settings_identity_display_name">표시되는 이름</string>
-  <string name="mail_settings_identity_display_name_hint">표시되는 이름</string>
-  <string name="mail_settings_identity_signature">서명</string>
-  <string name="mail_settings_identity_signature_hint">서명</string>
-  <string name="mail_settings_identity_mobile_footer">모바일 서명</string>
-  <string name="mail_settings_identity_mobile_footer_subtext">서명 아래에 추가됩니다.</string>
-  <string name="mail_settings_identity_mobile_footer_hint">모바일 서명</string>
-  <string name="mail_settings_identity_mobile_footer_default_free">Android용 Proton Mail에서 발송됨</string>
-  <string name="mail_settings_identity_error_updating">설정 업데이트 중 오류</string>
-  <string name="mail_settings_identity_error_loading">설정 로딩 중 오류 발생</string>
   <!-- Privacy settings -->
+  <string name="mail_settings_privacy">개인정보 보호</string>
   <string name="mail_settings_privacy_auto_show_remote_content">자동으로 외부 콘텐츠 불러오기</string>
   <string name="mail_settings_privacy_auto_show_embedded_images">자동으로 삽입된 이미지 로드</string>
   <string name="mail_settings_privacy_prevent_taking_screenshots">스크린샷 촬영 방지</string>
@@ -97,16 +87,22 @@
   <string name="mail_settings_swipe_actions_subtitle">스와이프 제스처를 설정하여 가장 많이 사용하는 작업에 액세스하세요.</string>
   <string name="mail_settings_swipe_right_name">왼쪽에서 오른쪽으로</string>
   <string name="mail_settings_swipe_left_name">오른쪽에서 왼쪽으로</string>
+  <string name="mail_settings_swipe_action_none_title">미지정</string>
   <string name="mail_settings_swipe_action_archive_title">보관</string>
   <string name="mail_settings_swipe_action_read_title">읽지 않음</string>
   <string name="mail_settings_swipe_action_spam_title">스팸</string>
   <string name="mail_settings_swipe_action_star_title">별표</string>
   <string name="mail_settings_swipe_action_trash_title">휴지통</string>
+  <string name="mail_settings_swipe_action_label_as_title">라벨…</string>
+  <string name="mail_settings_swipe_action_move_to_title">다음으로 이동…</string>
+  <string name="mail_settings_swipe_action_none_description">없음</string>
   <string name="mail_settings_swipe_action_archive_description">보관함으로 이동</string>
   <string name="mail_settings_swipe_action_read_description">읽음/읽지 않음으로 표시</string>
   <string name="mail_settings_swipe_action_spam_description">스팸으로 이동</string>
   <string name="mail_settings_swipe_action_star_description">별표 표시/삭제</string>
   <string name="mail_settings_swipe_action_trash_description">휴지통으로 이동</string>
+  <string name="mail_settings_swipe_action_label_as_description">라벨…</string>
+  <string name="mail_settings_swipe_action_move_to_description">다음으로 이동…</string>
   <!-- Notification settings -->
   <string name="mail_settings_notifications_title">푸시 알림</string>
   <string name="mail_settings_notifications_extended_notifications_title">확장 알림</string>
@@ -151,8 +147,6 @@
   <string name="mail_settings_pin_insertion_signout_dialog_cancel">아니오</string>
   <string name="mail_settings_pin_insertion_created_success">PIN 코드를 성공적으로 생성했습니다.</string>
   <string name="mail_settings_pin_insertion_changed_success">PIN 코드를 성공적으로 변경했습니다.</string>
-  <!-- Local storage -->
-  <string name="mail_settings_clearing_cached_data">로컬 캐시 데이터 정리 중…</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">오류 발생. 다시 시도하세요.</string>
   <!-- strings used for biometric enrollment -->

@@ -18,18 +18,19 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Afmelden</string>
-  <string name="dialog_sign_out_account_description">Weet u zeker dat u zich wilt uitloggen?</string>
-  <string name="dialog_sign_out_account_confirm">Ja</string>
-  <string name="dialog_sign_out_account_cancel">Nee</string>
-  <string name="dialog_remove_account_title">Account Verwijderen</string>
-  <string name="dialog_remove_account_description">U zult worden afgemeld en verwijdert alle informatie verbonden met dit account.</string>
+  <string name="dialog_sign_out_account_description">De gegevens die aan uw account zijn gekoppeld blijven op dit apparaat tenzij u selecteert om het te verwijderen.</string>
+  <string name="dialog_sign_out_account_confirm">uitloggen</string>
+  <string name="dialog_sign_out_account_cancel">Annuleren</string>
+  <string name="dialog_remove_account_title">Account verwijderen?</string>
+  <string name="dialog_remove_account_description">Alle bijbehorende gegevens verwijderen</string>
   <string name="dialog_remove_account_confirm">Verwijderen</string>
   <string name="dialog_remove_account_cancel">Annuleren</string>
   <string name="feature_coming_soon">Functie binnenkort mogelijk</string>
   <string name="mailbox_draft_saved">Concept opgeslagen</string>
   <string name="mailbox_draft_discard">Negeren</string>
+  <string name="mailbox_draft_discarded">Concept verwijderd</string>
   <string name="mailbox_message_sending">Bericht wordt verzonden…</string>
-  <string name="mailbox_message_sending_offline">Offline, bericht geplaatst in wachtrij voor verzenden</string>
+  <string name="mailbox_message_sending_offline">Offline: bericht staat in de wachtrij voor verzending</string>
   <string name="mailbox_message_sending_success">Bericht verzonden</string>
   <string name="mailbox_message_sending_error">Fout bij verzenden bericht</string>
   <string name="mailbox_message_sending_error_action">Ga naar Concepten</string>

@@ -18,23 +18,24 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Kijelentkezés</string>
-  <string name="dialog_sign_out_account_description">Biztos, hogy ki szeretne jelentkezni?</string>
-  <string name="dialog_sign_out_account_confirm">Igen</string>
-  <string name="dialog_sign_out_account_cancel">Nem</string>
-  <string name="dialog_remove_account_title">Fiók eltávolítása</string>
-  <string name="dialog_remove_account_description">Kijelentkezik és eltávolítja a fiókkal kapcsolatos összes adatot.</string>
+  <string name="dialog_sign_out_account_description">The data associateed to your account will remain on this device unless you select to delete it.</string>
+  <string name="dialog_sign_out_account_confirm">Sign out</string>
+  <string name="dialog_sign_out_account_cancel">Cancel</string>
+  <string name="dialog_remove_account_title">Remove account?</string>
+  <string name="dialog_remove_account_description">Remove all associated data</string>
   <string name="dialog_remove_account_confirm">Eltávolítás</string>
   <string name="dialog_remove_account_cancel">Mégsem</string>
   <string name="feature_coming_soon">A funkció hamarosan érkezik...</string>
   <string name="mailbox_draft_saved">Piszkozat mentve</string>
   <string name="mailbox_draft_discard">Elvetés</string>
+  <string name="mailbox_draft_discarded">Piszkozat elvetve</string>
   <string name="mailbox_message_sending">Üzenet küldése…</string>
-  <string name="mailbox_message_sending_offline">Offline, az üzenet sorba van állítva küldésre</string>
+  <string name="mailbox_message_sending_offline">Offline: az üzenet sorba van állítva küldésre</string>
   <string name="mailbox_message_sending_success">Üzenet elküldve</string>
   <string name="mailbox_message_sending_error">Hiba az üzenet küldése közben</string>
   <string name="mailbox_message_sending_error_action">Ugrás a piszkozatokhoz</string>
   <string name="mailbox_attachment_uploading_error">Hiba mellékletek feltöltésénél</string>
-  <string name="notification_switched_account">Switched to account %s</string>
+  <string name="notification_switched_account">Átváltás %s fiókra</string>
   <string name="label_saved">Címke mentve</string>
   <string name="label_deleted">Címke törölve</string>
   <string name="label_list_loading_error">Hiba a címke betöltése során, próbálja újra később</string>

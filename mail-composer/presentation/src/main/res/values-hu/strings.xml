@@ -21,20 +21,21 @@
   <string name="to_prefix">Címzett:</string>
   <string name="cc_prefix">Másolat:</string>
   <string name="bcc_prefix">Titkos másolat:</string>
-  <string name="subject_prefix">Tárgy</string>
+  <string name="subject_prefix">Tárgy: </string>
   <string name="compose_message_placeholder">E-mail írása</string>
   <string name="close_composer_content_description">Szerkesztő bezárása</string>
+  <string name="send_button_title">Küldés</string>
   <string name="send_message_content_description">Üzenet küldése</string>
   <string name="composer_expand_recipients_button">Más címzettek megjelenítése</string>
   <string name="composer_error_invalid_email">Az e-mail cím érvénytelen</string>
   <string name="composer_error_invalid_sender">A küldő cím érvénytelen</string>
   <string name="change_sender_button_content_description">Feladó módosítása</string>
-  <string name="composer_change_sender_paid_feature">Váltson előfizetéses csomagra, a feladó címének megváltoztatásához</string>
+  <string name="composer_change_sender_paid_feature">Váltson előfizetéses csomagra a feladó címének megváltoztatásához</string>
   <string name="composer_error_change_sender_failed_getting_subscription">A feladó nem változtatható meg, mert az előfizetés betöltése nem sikerült. Próbálja újra.</string>
-  <string name="composer_error_store_draft_sender_address">Sender address wasn\'t saved</string>
-  <string name="composer_error_store_draft_body">Draft email body wasn\'t saved</string>
-  <string name="composer_error_duplicate_recipient">Duplicated recipient(s) removed</string>
-  <string name="composer_error_store_draft_subject">Subject line wasn\'t saved</string>
+  <string name="composer_error_store_draft_sender_address">A feladó címe nem lett elmentve</string>
+  <string name="composer_error_store_draft_body">Az e-mail vázlat nem lett elmentve</string>
+  <string name="composer_error_duplicate_recipient">Duplikált címzett(ek) eltávolítva</string>
+  <string name="composer_error_store_draft_subject">A tárgysor nem lett elmentve</string>
   <string name="composer_error_store_draft_recipients">A vázlat címzetteinek tárolása nem sikerült</string>
   <string name="composer_error_loading_draft">Ennek a piszkozatnak a tartalma jelenleg nem elérhető. Szerkesztése felülírja az esetlegesen már korábban hozzáadott tartalmat.</string>
   <string name="composer_add_attachments_content_description">Melléklet hozzáadása</string>
@@ -45,9 +46,13 @@
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">OK</string>
   <string name="composer_attachment_size_exceeded_dialog_title">Elérte a mellékletekre vonatkozó korlátot</string>
   <string name="composer_attachment_size_exceeded_dialog_message">A mellékletek maximális mérete %1$s</string>
-  <string name="composer_attachment_encryption_failed_message">A melléklet ismételt titkosítása nem sikerült. Biztonsági okokból minden melléklet eltávolításra került.</string>
+  <string name="composer_attachment_encryption_failed_message">A melléklet titkosítása sikertelen volt. Biztonsági okokból minden melléklet eltávolításra került.</string>
+  <string name="composer_too_many_attachments_error">Túllépve a mellékletek maximális száma (100).</string>
+  <string name="composer_delete_attachment_error">Váratlan hiba történt egy melléklet törlése közben.</string>
+  <string name="composer_unexpected_attachments_error">Váratlan hiba történt a mellékletekkel kapcsolatban.</string>
   <string name="composer_warning_local_data_shown">A vázlat legutóbbi változatának betöltése nem sikerült. Bármilyen változtatás felülírja a tartalmát.</string>
   <string name="composer_button_add_password">Jelszó hozzáadása</string>
+  <string name="composer_button_discard_draft">Piszkozat elvetése</string>
   <string name="composer_button_set_expiration">Időkorlát megadása</string>
   <string name="composer_expiration_time_bottom_sheet_title">Időkorlátos üzenet</string>
   <string name="composer_expiration_time_bottom_sheet_done">Beállítás</string>
@@ -76,7 +81,7 @@
   <!-- Message sending error dialog -->
   <string name="message_sending_error_dialog_header">Hiba a küldés közben</string>
   <string name="message_sending_error_dialog_button_dismiss">Bezárás</string>
-  <string name="message_sending_error_dialog_text_error">Your email cannot be sent to the address entered due to the following reason:</string>
+  <string name="message_sending_error_dialog_text_error">A megadott címre a következő ok miatt nem lehet elküldeni az e-mailt:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Nincs megbízható kulcs: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Cím nem létezik: %s</string>
   <string name="set_message_password_title">Üzenet titkosítása</string>
@@ -88,15 +93,22 @@
   <string name="set_message_password_supporting_text">4-től 21 karakter hosszúságig</string>
   <string name="set_message_password_supporting_error_text">A jelszónak legalább 4, és legfeljebb 21 karakter hosszúnak kell lennie</string>
   <string name="set_message_password_supporting_text_repeat">A jelszavaknak egyezniük kell</string>
-  <string name="set_message_password_supporting_error_text_repeat">Passwords do not match</string>
+  <string name="set_message_password_supporting_error_text_repeat">A jelszavak nem egyeznek</string>
   <string name="set_message_password_button_show">Jelszó megjelenítése</string>
   <string name="set_message_password_button_hide">Jelszó elrejtése</string>
   <string name="set_message_password_button_apply">Jelszó alkalmazása</string>
   <string name="set_message_password_button_save_changes">Mentés</string>
   <string name="set_message_password_button_remove_password">Jelszó eltávolítása</string>
   <string name="respondInline">Válaszolás az eredeti levélben</string>
+  <string name="subject_placeholder">Tárgy</string>
   <plurals name="composer_recipient_suggestion_contacts">
-    <item quantity="one">%d member</item>
-    <item quantity="other">%d members</item>
+    <item quantity="one">%d tag</item>
+    <item quantity="other">%d tag</item>
   </plurals>
+  <!-- Discard draft dialog -->
+  <string name="discard_draft_dialog_title">Elveti ezt az üzenetet?</string>
+  <string name="discard_draft_dialog_text">Az Ön piszkozata nem lesz elmentve</string>
+  <string name="discard_draft_dialog_confirm_button">Elvetés</string>
+  <string name="discard_draft_dialog_dismiss_button">Mégsem</string>
+  <string name="discard_draft_error">Hiba a piszkozat elvetése közben</string>
 </resources>

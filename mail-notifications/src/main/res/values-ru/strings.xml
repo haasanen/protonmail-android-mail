@@ -23,5 +23,12 @@
   <string name="notification_title_text_new_message_fallback">Новое сообщение</string>
   <string name="notification_actions_archive_description">Архив</string>
   <string name="notification_actions_trash_description">Корзина</string>
-  <string name="notification_actions_reply_description">Ответить</string>
+  <string name="notification_actions_mark_as_read_description">Отметить как прочитанное</string>
+  <!-- Push notification permissions BS -->
+  <string name="notification_permissions_bottomsheet_first_time_title">Не пропустите ни одного письма</string>
+  <string name="notification_permissions_bottomsheet_first_time_subtitle">Уведомления помогут вам следить за входящими, не проверяя приложение.</string>
+  <string name="notification_permissions_bottomsheet_second_time_title">Хотите оставаться в курсе событий?</string>
+  <string name="notification_permissions_bottomsheet_second_time_subtitle">Включите уведомления, чтобы знать, когда вы получите ответ на письмо.</string>
+  <string name="notification_permissions_bottomsheet_enable">Включить push-уведомления</string>
+  <string name="notification_permissions_bottomsheet_dismiss">Отклонить</string>
 </resources>

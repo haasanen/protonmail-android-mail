@@ -21,15 +21,16 @@
   <string name="to_prefix">Para:</string>
   <string name="cc_prefix">CC:</string>
   <string name="bcc_prefix">CCO:</string>
-  <string name="subject_prefix">Asunto</string>
+  <string name="subject_prefix">Asunto: </string>
   <string name="compose_message_placeholder">Escribir un correo</string>
   <string name="close_composer_content_description">Cerrar el editor</string>
+  <string name="send_button_title">Enviar</string>
   <string name="send_message_content_description">Enviar mensaje</string>
   <string name="composer_expand_recipients_button">Mostrar los otros destinatarios</string>
   <string name="composer_error_invalid_email">La dirección de correo electrónico no es válida.</string>
   <string name="composer_error_invalid_sender">La dirección del remitente no es válida.</string>
   <string name="change_sender_button_content_description">Cambiar el remitente</string>
-  <string name="composer_change_sender_paid_feature">Mejora a un plan de pago para cambiar la dirección de remitente</string>
+  <string name="composer_change_sender_paid_feature">Mejora a un plan de pago para cambiar la dirección del remitente.</string>
   <string name="composer_error_change_sender_failed_getting_subscription">No se puede cambiar el remitente porque no se ha podido obtener la suscripción del usuario. Intenta otra vez.</string>
   <string name="composer_error_store_draft_sender_address">Error al guardar la dirección del remitente</string>
   <string name="composer_error_store_draft_body">Error al guardar el cuerpo de este borrador</string>
@@ -45,9 +46,13 @@
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">Aceptar</string>
   <string name="composer_attachment_size_exceeded_dialog_title">Se ha alcanzado el límite de archivos adjuntos.</string>
   <string name="composer_attachment_size_exceeded_dialog_message">El límite del tamaño para los archivos adjuntos es de %1$s.</string>
-  <string name="composer_attachment_encryption_failed_message">Error al volver a cifrar el archivo adjunto. Por seguridad se han borrado todos los archivos adjuntos.</string>
+  <string name="composer_attachment_encryption_failed_message">Error al cifrar el archivo adjunto. Por motivos de seguridad, se han eliminado todos los archivos adjuntos.</string>
+  <string name="composer_too_many_attachments_error">Se ha excedido el número máximo de archivos adjuntos (100).</string>
+  <string name="composer_delete_attachment_error">Se ha producido un error inesperado al eliminar un archivo adjunto.</string>
+  <string name="composer_unexpected_attachments_error">Se ha producido un error inesperado relacionado con los archivos adjuntos.</string>
   <string name="composer_warning_local_data_shown">Error al cargar la última versión de este borrador. Cualquier cambio sobrescribirá su contenido.</string>
   <string name="composer_button_add_password">Añadir una contraseña</string>
+  <string name="composer_button_discard_draft">Descartar el borrador</string>
   <string name="composer_button_set_expiration">Establecer el tiempo de expiración</string>
   <string name="composer_expiration_time_bottom_sheet_title">Expiración del mensaje</string>
   <string name="composer_expiration_time_bottom_sheet_done">Establecer</string>
@@ -93,10 +98,17 @@
   <string name="set_message_password_button_hide">Ocultar la contraseña</string>
   <string name="set_message_password_button_apply">Aplicar la contraseña</string>
   <string name="set_message_password_button_save_changes">Guardar los cambios</string>
-  <string name="set_message_password_button_remove_password">Borrar la contraseña</string>
+  <string name="set_message_password_button_remove_password">Eliminar la contraseña</string>
   <string name="respondInline">Responder en línea</string>
+  <string name="subject_placeholder">Asunto</string>
   <plurals name="composer_recipient_suggestion_contacts">
     <item quantity="one">%d miembro</item>
     <item quantity="other">%d miembros</item>
   </plurals>
+  <!-- Discard draft dialog -->
+  <string name="discard_draft_dialog_title">¿Descartar este mensaje?</string>
+  <string name="discard_draft_dialog_text">Tu borrador no se guardará</string>
+  <string name="discard_draft_dialog_confirm_button">Descartar</string>
+  <string name="discard_draft_dialog_dismiss_button">Cancelar</string>
+  <string name="discard_draft_error">Error al descartar el borrador</string>
 </resources>

@@ -25,7 +25,7 @@
     <item quantity="one">%d паведамленне</item>
     <item quantity="few">%d паведамленні</item>
     <item quantity="many">%d паведамленняў</item>
-    <item quantity="other">%d паведамленні</item>
+    <item quantity="other">%d паведамленняў</item>
   </plurals>
   <string name="quick_reply_button_content_description">Адказаць</string>
   <string name="quick_reply_all_button_content_description">Адказаць усім</string>
@@ -44,10 +44,13 @@
   </plurals>
   <string name="hide_details">Схаваць падрабязнасці</string>
   <string name="undisclosed_recipients">Схаваныя атрымальнікі</string>
+  <string name="error_mark_as_read_failed">Не ўдалося пазначыць як прачытанае. Паўтарыце спробу.</string>
   <string name="error_mark_as_unread_failed">Не ўдалося пазначыць як непрачытанае. Паўтарыце спробу.</string>
   <string name="error_star_operation_failed">Не ўдалося дадаць зорачку. Паўтарыце спробу.</string>
   <string name="error_unstar_operation_failed">Не ўдалося выдаліць зорачку. Паўтарыце спробу.</string>
   <string name="error_move_to_trash_failed">Не ўдалося перамясціць у сметніцу. Паўтарыце спробу.</string>
+  <string name="message_moved">Паведамленне перамешчана</string>
+  <string name="message_moved_to">Паведамленне перамешчана ў %s</string>
   <string name="message_moved_to_trash">Паведамленне перамешчана ў Сметніцу</string>
   <string name="message_moved_to_archive">Паведамленне перамешчана ў Архіў</string>
   <string name="error_move_to_archive_failed">Збой пры перамяшчэнні ў архіў. Паўтарыце спробу.</string>
@@ -57,6 +60,7 @@
   <string name="error_move_message_failed">Не ўдалося перамясціць паведамленне. Паўтарыце спробу.</string>
   <string name="conversation_moved_to_trash">Размова перамешчана ў Сметніцу</string>
   <string name="conversation_moved_to_selected_destination">Размова перамешчана ў %1$s</string>
+  <string name="conversation_moved_to_spam">Размова перамешчана ў Спам</string>
   <string name="conversation_moved_to_archive">Размова перамешчана ў Архіў</string>
   <string name="error_move_conversation_failed">Не ўдалося перамясціць размову. Паўтарыце спробу.</string>
   <string name="error_loading_message">Нешта пайшло не так. Паспрабуйце яшчэ раз.</string>
@@ -75,7 +79,12 @@
   <string name="message_body_embedded_images_banner_text">Аўтаматычная загрузка ўбудаваных відарысаў выключана. Гэта можна змяніць у наладах.</string>
   <string name="message_body_remote_content_banner_text">Аўтаматычная загрузка аддаленага змесціва выключана. Гэта можна змяніць у наладах.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Аўтаматычная загрузка ўбудаваных відарысаў і аддаленага змесціва выключана. Гэта можна змяніць у наладах.</string>
-  <string name="message_phishing_banner_text">Наша сістэма пазначыла гэта паведамленне як спробу фішынгу. Праверце яго надзейнасць</string>
+  <string name="message_phishing_banner_text">Вы самі або наша сістэма пазначылі гэта паведамленне як падазронае. Калі вы перакананыя ў яго бяспецы, то пазначце яго як надзейнае.</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">Пазначыць як надзейнае</string>
+  <string name="message_spam_banner_text">Вы самі або наша сістэма пазначылі гэта паведамленне як спам.</string>
+  <string name="message_spam_banner_not_spam_button">Не спам</string>
+  <string name="message_blocked_sender_banner_text">Гэты адпраўнік быў заблакіраваны ў мінулым.</string>
+  <string name="message_blocked_sender_button_text">Разблакіраваць</string>
   <string name="message_expiration_banner_text">Тэрмін дзеяння гэтага паведамлення міне праз %1$s</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Вы збіраецеся выйсці з праграмы і перайсці ў:</string>
@@ -88,6 +97,12 @@
   <string name="phishing_link_confirmation_dialog_content_part_2">Не працягвайце, каб захаваць бяспеку.</string>
   <string name="phishing_link_confirmation_dialog_button_go_back">Вярнуцца (рэкамендуецца)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">Ігнараваць папярэджанне і працягнуць</string>
+  <!-- Mark as legitimate confirmation dialog -->
+  <string name="mark_as_legitimate_phishing_dialog_title">Пацвердзіць пазначанае як надзейнае</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">Прыносім прабачэнні. Верагодна, што гэта наша памылка. Пацвердзіце, ці хочаце вы пазначыць гэты ліст як надзейны.</string>
+  <string name="mark_as_legitimate_spam_dialog_title">Пацвердзіць, што гэта не спам</string>
+  <string name="mark_as_legitimate_spam_dialog_message">Прыносім прабачэнні. Верагодна, што гэта наша памылка. Пацвердзіце, што гэты ліст не з\'яўляецца спамам.</string>
+  <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">Выдаліць паведамленне</string>
   <string name="message_delete_dialog_message">Вы сапраўды хочаце незваротна выдаліць гэта паведамленне?</string>
   <string name="message_deleted">Паведамленне выдалена</string>
@@ -102,8 +117,8 @@
   <string name="message_body_load_embedded_images_button_text">Загружаць убудаваныя відарысы</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Загружаць аддаленае і ўбудаванае змесціва</string>
   <string name="message_report_phishing_dialog_title_offline">Увага</string>
-  <string name="message_report_phishing_dialog_message_offline">This feature is only available online.</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">Добра</string>
+  <string name="message_report_phishing_dialog_message_offline">Гэта функцыя даступна толькі падчас знаходжання ў сетцы.</string>
+  <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Пацвердзіць скаргу на фішынг</string>
   <string name="message_report_phishing_dialog_message">Адпраўляючы скаргу пра спробу фішынгу, вы адправіце гэта паведамленне нам, каб мы маглі прааналізаваць яго і палепшыць нашы фільтры. Гэта азначае, што мы зможам цалкам убачыць змесціва гэтага паведамлення.</string>
   <string name="message_report_phishing_dialog_confim_button">Пацвердзіць</string>
@@ -115,4 +130,9 @@
   <string name="non_trashed_messages_banner">Гэта размова змяшчае паведамленні, якія не былі выдалены.</string>
   <string name="show">Паказаць</string>
   <string name="hide">Схаваць</string>
+  <string name="recipient_me">я</string>
+  <string name="message_details_header_from">Ад</string>
+  <string name="message_details_header_to">Каму</string>
+  <string name="message_details_header_cc">Копія</string>
+  <string name="message_details_header_bcc">Схаваная копія</string>
 </resources>

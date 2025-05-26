@@ -18,23 +18,24 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">登出</string>
-  <string name="dialog_sign_out_account_description">您確定要登出嗎？</string>
-  <string name="dialog_sign_out_account_confirm">是</string>
-  <string name="dialog_sign_out_account_cancel">否</string>
-  <string name="dialog_remove_account_title">移除帳號</string>
-  <string name="dialog_remove_account_description">您將登出，與此帳號相關的所有資訊都會被移除。</string>
+  <string name="dialog_sign_out_account_description">The data associateed to your account will remain on this device unless you select to delete it.</string>
+  <string name="dialog_sign_out_account_confirm">Sign out</string>
+  <string name="dialog_sign_out_account_cancel">Cancel</string>
+  <string name="dialog_remove_account_title">Remove account?</string>
+  <string name="dialog_remove_account_description">Remove all associated data</string>
   <string name="dialog_remove_account_confirm">移除</string>
   <string name="dialog_remove_account_cancel">取消</string>
   <string name="feature_coming_soon">全新功能即將大展身手...</string>
   <string name="mailbox_draft_saved">草稿已儲存</string>
   <string name="mailbox_draft_discard">放棄</string>
+  <string name="mailbox_draft_discarded">已放棄草稿</string>
   <string name="mailbox_message_sending">傳送郵件訊息...</string>
-  <string name="mailbox_message_sending_offline">未連線，郵件佇列等候傳送</string>
+  <string name="mailbox_message_sending_offline">未連線：郵件佇列等候傳送</string>
   <string name="mailbox_message_sending_success">郵件已傳送</string>
   <string name="mailbox_message_sending_error">傳送郵件時發生錯誤</string>
   <string name="mailbox_message_sending_error_action">前往草稿資料夾</string>
   <string name="mailbox_attachment_uploading_error">上載附件出現錯誤</string>
-  <string name="notification_switched_account">Switched to account %s</string>
+  <string name="notification_switched_account">已切換至帳號 %s</string>
   <string name="label_saved">已儲存標籤</string>
   <string name="label_deleted">已刪除標籤</string>
   <string name="label_list_loading_error">載入標籤時發生錯誤，請稍後再試。</string>

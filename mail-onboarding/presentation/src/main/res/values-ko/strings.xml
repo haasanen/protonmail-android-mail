@@ -26,9 +26,19 @@
   <!--  Onboarding 3  -->
   <string name="onboarding_neat_and_tidy_headline">단정하고 깔끔한.</string>
   <string name="onboarding_neat_and_tidy_description">폴더, 라벨 및 색상 코드 메시지를 사용하여 맞춤형 메일함을 만들어보세요.</string>
+  <!--  New Onboarding 1  -->
+  <string name="onboarding_rebuilt_from_ground_up_headline">기초부터 완전히 새로워지다</string>
+  <string name="onboarding_rebuilt_from_ground_up_description">Proton Mail이 성능, 사용자 경험 및 확장성을 위해 Rust 아키택처를 기반으로 완전히 재설계되었어요.</string>
+  <!--  New Onboarding 2  -->
+  <string name="onboarding_new_inbox_headline">새로운 받은 편지함 개봉박두</string>
+  <string name="onboarding_new_inbox_description">새롭고 산뜻한 디자인과 개선된 사용자 경험을 마침내 선보이게 되었어요. 새로운 목록과 메시지 미리보기를 확인해 보세요. </string>
+  <!--  New Onboarding 3  -->
+  <string name="onboarding_feedback_is_key_headline">회원님의 피드백이 중요합니다</string>
+  <string name="onboarding_feedback_is_key_description">앞으로 몇 달 안에 모든 기능이 출시될 예정입니다. 앱을 계속 테스트해 주시고 개선할 수 있는 방법을 알려주세요!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">다음</string>
-  <string name="onboarding_get_started">시작하기</string>
+  <string name="onboarding_get_started">테스트 시작</string>
   <string name="onboarding_illustration_content_description">온보딩 일러스트레이션</string>
   <string name="onboarding_close_content_description">닫기</string>
+  <string name="onboarding_introducing_next_gen_app">차세대 앱을 소개합니다!</string>
 </resources>

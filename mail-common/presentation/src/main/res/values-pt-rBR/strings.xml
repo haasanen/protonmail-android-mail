@@ -24,18 +24,21 @@
   <string name="retry">Tentar novamente</string>
   <string name="toolbar_back_content_description">Voltar para a tela anterior</string>
   <string name="x_error_not_logged_in">Sessão não iniciada</string>
+  <string name="action_customize_toolbar">Personalizar barra de ferramentas</string>
+  <string name="action_customize_toolbar_description">Personalizar barra de ferramentas</string>
+  <string name="action_customize_toolbar_content_description">Personalizar barra de ferramentas</string>
   <string name="action_reply">Responder</string>
   <string name="action_reply_all">Responder a todos</string>
   <string name="action_forward">Encaminhar</string>
   <string name="action_reply_description">Responder</string>
-  <string name="action_reply_to_description">Responder a %s</string>
+  <string name="action_reply_to_description">Responder para %s</string>
   <string name="action_reply_all_description">Responder a todos</string>
   <string name="action_forward_description">Encaminhar</string>
   <string name="action_mark_read_description">Marcar como lida</string>
   <string name="action_mark_unread_description">Marcar como não lida</string>
   <string name="action_star_description">Favorito</string>
   <string name="action_unstar_description">Remover favorito</string>
-  <string name="action_label_description">Rotular como</string>
+  <string name="action_label_description">Marcar como</string>
   <string name="action_move_description">Mover para</string>
   <string name="action_trash_description">Mover para a lixeira</string>
   <string name="action_delete_description">Excluir</string>
@@ -52,8 +55,11 @@
   <string name="action_sender_emails_description">Definir ações para futuros e-mails deste remetente</string>
   <string name="action_save_attachments_description">Salvar anexos</string>
   <string name="action_more_description">Mais</string>
+  <string name="action_inbox_description">Caixa de entrada</string>
+  <string name="action_pin_description">Fixar</string>
+  <string name="action_unpin_description">Desafixar</string>
   <string name="action_reply_content_description">Responder</string>
-  <string name="action_reply_to_content_description">Responder a %s</string>
+  <string name="action_reply_to_content_description">Responder para %s</string>
   <string name="action_reply_all_content_description">Responder a todos</string>
   <string name="action_forward_content_description">Encaminhar</string>
   <string name="action_mark_read_content_description">Marcar como lida</string>
@@ -66,6 +72,9 @@
   <string name="action_delete_content_description">Excluir</string>
   <string name="action_archive_content_description">Arquivo</string>
   <string name="action_spam_content_description">Spam</string>
+  <string name="action_inbox_content_description">Caixa de entrada</string>
+  <string name="action_pin_content_description">Fixar</string>
+  <string name="action_unpin_content_description">Desafixar</string>
   <string name="action_view_in_light_mode_content_description">Ver mensagem no modo claro</string>
   <string name="action_view_in_dark_mode_content_description">Ver mensagem no modo escuro</string>
   <string name="action_print_content_description">Imprimir</string>
@@ -115,4 +124,5 @@
   <string name="undo_button_label">Desfazer</string>
   <string name="undo_success_message">Ação revertida</string>
   <string name="undo_failure_message">Falha ao reverter a ação</string>
+  <string name="feature_coming_soon">Este recurso chegará em breve…</string>
 </resources>

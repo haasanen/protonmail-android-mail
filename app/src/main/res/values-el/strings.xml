@@ -18,23 +18,24 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Αποσύνδεση</string>
-  <string name="dialog_sign_out_account_description">Είστε βέβαιοι ότι θέλετε να αποσυνδεθείτε;</string>
-  <string name="dialog_sign_out_account_confirm">Ναι</string>
-  <string name="dialog_sign_out_account_cancel">Όχι</string>
-  <string name="dialog_remove_account_title">Αφαίρεση Λογαριασμού</string>
-  <string name="dialog_remove_account_description">Πρόκειται να αποσυνδεθείτε και να αφαιρέσετε όλες τις πληροφορίες που σχετίζονται με αυτόν τον λογαριασμό.</string>
+  <string name="dialog_sign_out_account_description">Τα δεδομένα που σχετίζονται με τον λογαριασμό σας θα παραμείνουν σε αυτήν τη συσκευή, εκτός εάν επιλέξετε να τα διαγράψετε.</string>
+  <string name="dialog_sign_out_account_confirm">Αποσύνδεση</string>
+  <string name="dialog_sign_out_account_cancel">Ακύρωση</string>
+  <string name="dialog_remove_account_title">Αφαίρεση λογαριασμού?</string>
+  <string name="dialog_remove_account_description">Κατάργηση όλων των σχετικών δεδομένων</string>
   <string name="dialog_remove_account_confirm">Αφαίρεση</string>
   <string name="dialog_remove_account_cancel">Ακύρωση</string>
   <string name="feature_coming_soon">Η δυνατότητα θα είναι διαθέσιμη σύντομα…</string>
   <string name="mailbox_draft_saved">Το πρόχειρο αποθηκεύτηκε</string>
   <string name="mailbox_draft_discard">Απόρριψη</string>
+  <string name="mailbox_draft_discarded">Το πρόχειρο απορρίφθηκε</string>
   <string name="mailbox_message_sending">Γίνεται αποστολή μηνύματος…</string>
-  <string name="mailbox_message_sending_offline">Εκτός σύνδεσης, το μήνυμα τέθηκε σε αναμονή για αποστολή</string>
+  <string name="mailbox_message_sending_offline">Εκτός σύνδεσης: το μήνυμα τέθηκε σε αναμονή για αποστολή</string>
   <string name="mailbox_message_sending_success">Το μήνυμα στάλθηκε</string>
   <string name="mailbox_message_sending_error">Σφάλμα κατά την αποστολή του μηνύματος</string>
   <string name="mailbox_message_sending_error_action">Μετάβαση στα Πρόχειρα</string>
   <string name="mailbox_attachment_uploading_error">Σφάλμα κατά τη μεταφόρτωση συνημμένου</string>
-  <string name="notification_switched_account">Switched to account %s</string>
+  <string name="notification_switched_account">Μετάβαση στον λογαριασμό %s</string>
   <string name="label_saved">Η ετικέτα αποθηκεύτηκε</string>
   <string name="label_deleted">Η ετικέτα διαγράφηκε</string>
   <string name="label_list_loading_error">Σφάλμα φόρτωσης ετικέτας, παρακαλούμε δοκιμάστε ξανά αργότερα</string>
