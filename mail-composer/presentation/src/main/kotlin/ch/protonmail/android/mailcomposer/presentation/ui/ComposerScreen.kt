@@ -175,6 +175,12 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     },
                     onRemove = { viewModel.submit(ComposerAction.RemoveInlineImage(it)) }
                 )
+
+                is BottomSheetType.AttachmentSources -> AttachmentSourceBottomSheetContent(
+                    onCamera = {},
+                    onFiles = {},
+                    onPhotos = {}
+                )
             }
         },
         sheetState = bottomSheetState
@@ -539,6 +545,7 @@ object ComposerScreen {
 private sealed interface BottomSheetType {
     data object ChangeSender : BottomSheetType
     data object SetExpirationTime : BottomSheetType
+    data object AttachmentSources : BottomSheetType
     data class InlineImageActions(val contentId: String) : BottomSheetType
 
     companion object {
@@ -556,6 +563,7 @@ private sealed interface BottomSheetType {
                         )
                     }
                     is SetExpirationTime -> mapOf(TYPE_KEY to SetExpirationTime::class.simpleName)
+                    is AttachmentSources -> mapOf(TYPE_KEY to AttachmentSources::class.simpleName)
                 }
             },
             restore = { map ->
@@ -563,6 +571,7 @@ private sealed interface BottomSheetType {
                     ChangeSender::class.simpleName -> ChangeSender
                     InlineImageActions::class.simpleName -> InlineImageActions(map[CONTENT_ID_KEY].toString())
                     SetExpirationTime::class.simpleName -> SetExpirationTime
+                    AttachmentSources::class.simpleName -> AttachmentSources
                     else -> throw IllegalStateException("Attempting to restore invalid bottom sheet type")
                 }
             }
