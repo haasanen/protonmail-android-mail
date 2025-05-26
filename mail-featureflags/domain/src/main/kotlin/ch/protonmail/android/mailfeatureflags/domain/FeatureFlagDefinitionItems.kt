@@ -44,3 +44,11 @@ data object InlineImagesComposerEnabled : FeatureFlagDefinition(
     description = "Allow to add attachments as inline images in composer",
     defaultValue = false
 )
+
+data object ChooseAttachmentSourceEnabled : FeatureFlagDefinition(
+    key = "choose_attachment_source_enabled",
+    name = "Choose attachments source in composer",
+    category = FeatureFlagCategory.Composer,
+    description = "Allow to choose where to add attachments from (eg. camera, photos, files)",
+    defaultValue = false
+)

@@ -22,6 +22,10 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class IsChooseAttachmentSourceEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class InlineImagesInComposerEnabled
 
 @Qualifier
