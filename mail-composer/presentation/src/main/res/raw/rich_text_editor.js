@@ -148,15 +148,17 @@ function injectInlineImage(contentId) {
         img.src = "cid:" + contentId;
         img.style = "max-width: 100%;";
         range.insertNode(img);
-
-        // Insert a line break after the image
-        const br = document.createElement('br');
         range.setStartAfter(img);
         range.collapse(true);
+
+        // Insert a blank line after the image
+        const br = document.createElement('br');
+        const br1 = document.createElement('br');
+        range.insertNode(br1);
         range.insertNode(br);
 
         // Move the cursor after the <br>
-        range.setStartAfter(br);
+        range.setStartAfter(br1);
         range.collapse(true);
 
         selection.removeAllRanges();
