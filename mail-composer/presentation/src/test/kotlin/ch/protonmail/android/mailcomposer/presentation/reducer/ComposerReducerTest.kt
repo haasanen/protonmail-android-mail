@@ -580,7 +580,7 @@ class ComposerReducerTest(
         )
 
         private val AttachmentSourcesToAttachFromFile = TestTransition(
-            name = "Should opem file picker and dismiss bottom sheet when attach from files is selected",
+            name = "Should open file picker and dismiss bottom sheet when attach from files is selected",
             currentState = aNotSubmittableState(
                 bottomSheetVisibility = Effect.of(true)
             ),
@@ -681,6 +681,7 @@ class ComposerReducerTest(
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
             openFilesPicker = Effect.empty(),
+            openCamera = Effect.empty(),
             confirmDiscardDraft = Effect.empty(),
             injectInlineAttachment = Effect.empty(),
             stripInlineAttachment = Effect.empty()
@@ -732,6 +733,7 @@ class ComposerReducerTest(
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
             openFilesPicker = Effect.empty(),
+            openCamera = Effect.empty(),
             confirmDiscardDraft = Effect.empty(),
             focusTextBody = focusTextBody,
             injectInlineAttachment = Effect.empty(),

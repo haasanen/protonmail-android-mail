@@ -83,12 +83,11 @@ import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.time.Duration
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Suppress("UseComposableActions")
 @Composable
 fun ComposerScreen(actions: ComposerScreen.Actions) {
@@ -144,7 +143,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         onDiscardDraftClicked = { viewModel.submit(ComposerAction.DiscardDraft) }
     )
 
-    val imagePicker = rememberLauncherForActivityResult(
+    val filesPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
         onResult = { uris ->
             viewModel.submit(ComposerAction.AttachmentsAdded(uris))
@@ -152,8 +151,21 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     )
 
     ConsumableLaunchedEffect(effect = state.openFilesPicker) {
-        imagePicker.launch("*/*")
+        filesPicker.launch("*/*")
     }
+
+    CameraPicturePicker(
+        state.openCamera,
+        onCaptured = { uri ->
+            Timber.v("camera: image from take picture composable, uri: $uri")
+            viewModel.submit(ComposerAction.AttachmentsAdded(listOf(uri)))
+        },
+        onError = { localisedError ->
+            scope.launch {
+                snackbarHostState.showSnackbar(type = ProtonSnackbarType.ERROR, message = localisedError)
+            }
+        }
+    )
 
     ProtonModalBottomSheetLayout(
         showBottomSheet = showBottomSheet,
@@ -181,7 +193,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
 
                 is BottomSheetType.AttachmentSources -> AttachmentSourceBottomSheetContent(
                     isChooseAttachmentSourceEnabled = isChooseAttachmentSourceEnabled,
-                    onCamera = { Timber.d("add attachment from camera requested") },
+                    onCamera = { viewModel.submit(ComposerAction.OnAttachFromCamera) },
                     onFiles = { viewModel.submit(ComposerAction.OnAttachFromFiles) },
                     onPhotos = { Timber.d("add attachment from photos requested") }
                 )
