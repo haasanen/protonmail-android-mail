@@ -72,6 +72,7 @@ class ComposerReducer @Inject constructor(
         is ComposerAction.DiscardDraft -> updateStateForDiscardDraft(currentState)
         is ComposerAction.DiscardDraftConfirmed -> updateStateForDiscardDraftConfirmed(currentState)
         is ComposerAction.OnInlineImageActionsRequested -> updateStateForInlineImgActionsRequested(currentState)
+        is ComposerAction.OnAttachFromFiles -> updateStateForAttachFromFile(currentState)
     }
 
     @Suppress("ComplexMethod", "LongMethod")
@@ -306,7 +307,12 @@ class ComposerReducer @Inject constructor(
     ) = currentState.copy(messageExpiresIn = messageExpirationTime?.expiresIn ?: Duration.ZERO)
 
     private fun updateForOnAddAttachments(currentState: ComposerDraftState) = currentState.copy(
-        openFilesPicker = Effect.of(Unit)
+        changeBottomSheetVisibility = Effect.of(true)
+    )
+
+    private fun updateStateForAttachFromFile(currentState: ComposerDraftState) = currentState.copy(
+        openFilesPicker = Effect.of(Unit),
+        changeBottomSheetVisibility = Effect.of(false)
     )
 
     private fun updateStateForDiscardDraft(currentState: ComposerDraftState) = currentState.copy(

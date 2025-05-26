@@ -757,7 +757,7 @@ class ComposerViewModelTest {
     }
 
     @Test
-    fun `emits state with an effect to open the file picker when add attachments action is submitted`() = runTest {
+    fun `emits state with an effect to show the atts sources when add attachments action is submitted`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
@@ -774,7 +774,7 @@ class ComposerViewModelTest {
 
         // Then
         val actual = viewModel.state.value
-        assertEquals(Unit, actual.openFilesPicker.consume())
+        assertEquals(true, actual.changeBottomSheetVisibility.consume())
     }
 
     @Test

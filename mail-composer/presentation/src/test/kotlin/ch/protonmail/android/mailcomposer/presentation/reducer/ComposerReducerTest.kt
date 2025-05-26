@@ -145,7 +145,7 @@ class ComposerReducerTest(
             expectedState = aNotSubmittableState(
                 error = Effect.empty(),
                 senderAddresses = addresses.map { SenderUiModel(it.email) },
-                changeSenderBottomSheetVisibility = Effect.of(true)
+                bottomSheetVisibility = Effect.of(true)
             )
         )
 
@@ -166,7 +166,7 @@ class ComposerReducerTest(
                 expectedState = aNotSubmittableState(
                     sender = this,
                     error = Effect.empty(),
-                    changeSenderBottomSheetVisibility = Effect.of(false)
+                    bottomSheetVisibility = Effect.of(false)
                 )
             )
         }
@@ -370,11 +370,11 @@ class ComposerReducerTest(
         )
 
         private val EmptyToBottomSheetOpened = TestTransition(
-            name = "Should open the file picker when add attachments action is chosen",
+            name = "Should show the bottom sheet when add attachments action is chosen",
             currentState = ComposerDraftState.initial(),
             operation = ComposerAction.OnAddAttachments,
             expectedState = ComposerDraftState.initial().copy(
-                openFilesPicker = Effect.of(Unit)
+                changeBottomSheetVisibility = Effect.of(true)
             )
         )
 
@@ -579,6 +579,18 @@ class ComposerReducerTest(
             )
         )
 
+        private val AttachmentSourcesToAttachFromFile = TestTransition(
+            name = "Should opem file picker and dismiss bottom sheet when attach from files is selected",
+            currentState = aNotSubmittableState(
+                bottomSheetVisibility = Effect.of(true)
+            ),
+            operation = ComposerAction.OnAttachFromFiles,
+            expectedState = ComposerDraftState.initial().copy(
+                changeBottomSheetVisibility = Effect.of(false),
+                openFilesPicker = Effect.of(Unit)
+            )
+        )
+
 
         private val transitions = listOf(
             EmptyToSubmittableToField,
@@ -623,7 +635,8 @@ class ComposerReducerTest(
             EmptyToAttachmentUnexpectedError,
             DraftBodyChangedActionShouldDoNothing,
             LoadingDraftAndBodyShouldBeFocused,
-            EmptyToInjectInlineAttachment
+            EmptyToInjectInlineAttachment,
+            AttachmentSourcesToAttachFromFile
         )
 
         private fun aSubmittableState(
@@ -678,7 +691,7 @@ class ComposerReducerTest(
             error: Effect<TextUiModel> = Effect.empty(),
             premiumFeatureMessage: Effect<TextUiModel> = Effect.empty(),
             senderAddresses: List<SenderUiModel> = emptyList(),
-            changeSenderBottomSheetVisibility: Effect<Boolean> = Effect.empty(),
+            bottomSheetVisibility: Effect<Boolean> = Effect.empty(),
             draftBody: String = "",
             draftDisplayBodyUiModel: DraftDisplayBodyUiModel = DraftDisplayBodyUiModel(""),
             closeComposer: Effect<Unit> = Effect.empty(),
@@ -701,7 +714,7 @@ class ComposerReducerTest(
             error = error,
             isSubmittable = false,
             senderAddresses = senderAddresses,
-            changeBottomSheetVisibility = changeSenderBottomSheetVisibility,
+            changeBottomSheetVisibility = bottomSheetVisibility,
             closeComposer = closeComposer,
             closeComposerWithDraftSaved = closeComposerWithDraftSaved,
             closeComposerWithMessageSending = Effect.empty(),

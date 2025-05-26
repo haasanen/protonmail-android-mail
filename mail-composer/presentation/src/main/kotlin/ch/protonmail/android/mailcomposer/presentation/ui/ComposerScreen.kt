@@ -85,6 +85,7 @@ import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.time.Duration
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
@@ -128,6 +129,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
 
     val bottomBarActions = ComposerBottomBar.Actions(
         onAddAttachmentsClick = {
+            bottomSheetType.value = BottomSheetType.AttachmentSources
             viewModel.submit(ComposerAction.OnAddAttachments)
         },
         onSetMessagePasswordClick = {
@@ -179,9 +181,9 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
 
                 is BottomSheetType.AttachmentSources -> AttachmentSourceBottomSheetContent(
                     isChooseAttachmentSourceEnabled = isChooseAttachmentSourceEnabled,
-                    onCamera = {},
-                    onFiles = {},
-                    onPhotos = {}
+                    onCamera = { Timber.d("add attachment from camera requested") },
+                    onFiles = { viewModel.submit(ComposerAction.OnAttachFromFiles) },
+                    onPhotos = { Timber.d("add attachment from photos requested") }
                 )
             }
         },
