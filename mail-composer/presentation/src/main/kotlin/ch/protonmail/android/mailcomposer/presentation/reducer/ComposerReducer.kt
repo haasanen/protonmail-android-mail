@@ -306,7 +306,7 @@ class ComposerReducer @Inject constructor(
     ) = currentState.copy(messageExpiresIn = messageExpirationTime?.expiresIn ?: Duration.ZERO)
 
     private fun updateForOnAddAttachments(currentState: ComposerDraftState) = currentState.copy(
-        openImagePicker = Effect.of(Unit)
+        openFilesPicker = Effect.of(Unit)
     )
 
     private fun updateStateForDiscardDraft(currentState: ComposerDraftState) = currentState.copy(

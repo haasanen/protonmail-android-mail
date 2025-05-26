@@ -148,7 +148,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         }
     )
 
-    ConsumableLaunchedEffect(effect = state.openImagePicker) {
+    ConsumableLaunchedEffect(effect = state.openFilesPicker) {
         imagePicker.launch("*/*")
     }
 

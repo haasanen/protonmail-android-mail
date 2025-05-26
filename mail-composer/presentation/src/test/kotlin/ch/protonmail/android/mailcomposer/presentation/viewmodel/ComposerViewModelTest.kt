@@ -772,7 +772,7 @@ class ComposerViewModelTest {
 
         // Then
         val actual = viewModel.state.value
-        assertEquals(Unit, actual.openImagePicker.consume())
+        assertEquals(Unit, actual.openFilesPicker.consume())
     }
 
     @Test

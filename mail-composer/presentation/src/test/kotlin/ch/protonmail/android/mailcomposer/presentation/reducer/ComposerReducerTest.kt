@@ -374,7 +374,7 @@ class ComposerReducerTest(
             currentState = ComposerDraftState.initial(),
             operation = ComposerAction.OnAddAttachments,
             expectedState = ComposerDraftState.initial().copy(
-                openImagePicker = Effect.of(Unit)
+                openFilesPicker = Effect.of(Unit)
             )
         )
 
@@ -667,7 +667,7 @@ class ComposerReducerTest(
             isMessagePasswordSet = false,
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
-            openImagePicker = Effect.empty(),
+            openFilesPicker = Effect.empty(),
             confirmDiscardDraft = Effect.empty(),
             injectInlineAttachment = Effect.empty(),
             stripInlineAttachment = Effect.empty()
@@ -718,7 +718,7 @@ class ComposerReducerTest(
             senderChangedNotice = senderChangedNotice,
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
-            openImagePicker = Effect.empty(),
+            openFilesPicker = Effect.empty(),
             confirmDiscardDraft = Effect.empty(),
             focusTextBody = focusTextBody,
             injectInlineAttachment = Effect.empty(),
