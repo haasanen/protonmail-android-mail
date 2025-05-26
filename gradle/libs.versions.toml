@@ -217,6 +217,7 @@ proton-core-utilKotlin = { module = "me.proton.core:util-kotlin", version.ref = 
 proton-core-utilAndroidDateTime = { module = "me.proton.core:util-android-datetime", version.ref = "proton-core" }
 proton-core-utilAndroidDagger = { module = "me.proton.core:util-android-dagger", version.ref = "proton-core" }
 proton-core-utilAndroidStrictMode = { module = "me.proton.core:util-android-strict-mode", version.ref = "proton-core" }
+proton-core-utilAndroidDevice = { module = "me.proton.core:util-android-device", version.ref = "proton-core" }
 proton-core-testAndroid = { module = "me.proton.core:test-android", version.ref = "proton-core" }
 proton-core-testKotlin = { module = "me.proton.core:test-kotlin", version.ref = "proton-core" }
 proton-core-testAndroidInstrumented = { module = "me.proton.core:test-android-instrumented", version.ref = "proton-core" }

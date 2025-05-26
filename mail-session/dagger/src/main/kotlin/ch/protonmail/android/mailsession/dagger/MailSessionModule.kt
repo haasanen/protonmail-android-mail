@@ -20,6 +20,7 @@ package ch.protonmail.android.mailsession.dagger
 
 import android.content.Context
 import ch.protonmail.android.mailsession.data.database.getDatabaseBaseDirectory
+import ch.protonmail.android.mailsession.data.deviceinfo.AndroidDeviceInfoProvider
 import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObserver
 import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObserverImpl
 import ch.protonmail.android.mailsession.data.keychain.AndroidKeyChain
@@ -42,6 +43,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import uniffi.proton_mail_uniffi.DeviceInfoProvider
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.OsKeyChain
 import javax.inject.Singleton
@@ -72,6 +74,10 @@ object MailSessionModule {
         @Binds
         @Singleton
         fun bindOsKeyChain(impl: AndroidKeyChain): OsKeyChain
+
+        @Binds
+        @Singleton
+        fun bindDeviceInfoProvider(impl: AndroidDeviceInfoProvider): DeviceInfoProvider
 
         @Binds
         @Singleton

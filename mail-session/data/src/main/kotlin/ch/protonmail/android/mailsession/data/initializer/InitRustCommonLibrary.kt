@@ -30,6 +30,7 @@ import me.proton.android.core.humanverification.domain.ChallengeNotifierCallback
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ApiConfig
 import uniffi.proton_mail_uniffi.CreateMailSessionResult
+import uniffi.proton_mail_uniffi.DeviceInfoProvider
 import uniffi.proton_mail_uniffi.MailSessionParams
 import uniffi.proton_mail_uniffi.OsKeyChain
 import uniffi.proton_mail_uniffi.createMailSession
@@ -42,6 +43,7 @@ class InitRustCommonLibrary @Inject constructor(
     @DatabasesBaseDirectory private val databasesBaseDirectory: File,
     @RustLogsFileHandler private val rustLogsFileHandler: LogsFileHandler,
     private val challengeNotifierCallback: ChallengeNotifierCallback,
+    private val deviceInfoProvider: DeviceInfoProvider,
     private val rustApiConfig: RustApiConfig,
     private val keyChain: OsKeyChain
 ) {
@@ -68,7 +70,7 @@ class InitRustCommonLibrary @Inject constructor(
         )
         Timber.d("rust-session: Initializing the Rust Lib with $sessionParams")
 
-        when (val result = createMailSession(sessionParams, keyChain, challengeNotifierCallback, null)) {
+        when (val result = createMailSession(sessionParams, keyChain, challengeNotifierCallback, deviceInfoProvider)) {
             is CreateMailSessionResult.Error -> {
                 Timber.e("rust-session: Critical error! Failed creating Mail session. Reason: ${result.v1}")
             }
