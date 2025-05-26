@@ -130,6 +130,8 @@ fun EditableMessageBodyWebView(
         LaunchedEffect(wv) {
             Timber.d("editor-webview: setting initial value on webview (should happen only once!)")
             wv.loadDataWithBaseURL(null, messageBodyUiModel.value, MimeType.Html.value, "utf-8", null)
+
+            wv.ignoreLongTapOnImages()
         }
         ConsumableLaunchedEffect(injectInlineAttachment) { contentId ->
             Timber.v("editor-webview: requested injecting inline image into composer... $contentId")
@@ -198,6 +200,14 @@ fun EditableMessageBodyWebView(
             }
         )
     }
+}
+
+private fun WebView.ignoreLongTapOnImages() = this.setOnLongClickListener { view ->
+    val imageTypes = listOf(WebView.HitTestResult.IMAGE_TYPE, WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE)
+    val result = (view as WebView).hitTestResult
+    val longTappedViewIsImage = imageTypes.contains(result.type)
+
+    return@setOnLongClickListener longTappedViewIsImage
 }
 
 private fun configureDarkLightMode(webView: WebView, isInDarkTheme: Boolean) {
