@@ -30,6 +30,8 @@ import ch.protonmail.android.legacymigration.data.local.LegacyUserAddressDataSou
 import ch.protonmail.android.legacymigration.data.local.LegacyUserAddressDataSourceImpl
 import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSource
 import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSourceImpl
+import ch.protonmail.android.legacymigration.data.local.autolock.LegacyAutoLockLocalDataSource
+import ch.protonmail.android.legacymigration.data.local.autolock.LegacyAutoLockLocalDataSourceImpl
 import ch.protonmail.android.legacymigration.data.repository.LegacyAccountRepositoryImpl
 import ch.protonmail.android.legacymigration.data.repository.LegacyMigrationStatusRepositoryImpl
 import ch.protonmail.android.legacymigration.domain.LegacyDBCoroutineScope
@@ -107,5 +109,8 @@ object LegacyMigrationModule {
             impl: LegacyMigrationStatusRepositoryImpl
         ): LegacyMigrationStatusRepository
 
+        @Binds
+        @Singleton
+        fun bindLegacyAutoLockLocalDataSource(impl: LegacyAutoLockLocalDataSourceImpl): LegacyAutoLockLocalDataSource
     }
 }
