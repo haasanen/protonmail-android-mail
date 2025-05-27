@@ -116,3 +116,4 @@ typealias LocalContactSuggestionKind = ContactSuggestionKind
 typealias LocalIssueReport = IssueReport
 typealias RemoteMessageId = RemoteId
 typealias LocalEmbeddedImageInfo = EmbeddedAttachmentInfo
+typealias LocalAutoLockPin = List<UInt>
