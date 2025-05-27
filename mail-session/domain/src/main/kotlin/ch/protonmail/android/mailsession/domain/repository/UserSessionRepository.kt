@@ -19,6 +19,8 @@
 package ch.protonmail.android.mailsession.domain.repository
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
+import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinError
 import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
@@ -55,6 +57,8 @@ interface UserSessionRepository {
     suspend fun forkSession(userId: UserId): Either<SessionError, ForkedSessionId>
 
     suspend fun setPrimaryAccount(userId: UserId)
+
+    suspend fun setAutoLockPinCode(autoLockPin: AutoLockPin): Either<SetAutoLockPinError, Unit>
 }
 
 fun UserSessionRepository.onAccountState(state: AccountState, initialState: Boolean = true): Flow<Account> =

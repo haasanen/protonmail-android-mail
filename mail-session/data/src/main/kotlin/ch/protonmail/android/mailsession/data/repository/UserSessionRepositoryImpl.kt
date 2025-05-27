@@ -19,8 +19,13 @@
 package ch.protonmail.android.mailsession.data.repository
 
 import arrow.core.Either
+import arrow.core.flatMap
 import arrow.core.left
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinError
 import ch.protonmail.android.mailsession.data.mapper.toAccount
+import ch.protonmail.android.mailsession.data.mapper.toLocalAutoLockPin
 import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
 import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountState
@@ -121,6 +126,14 @@ class UserSessionRepositoryImpl @Inject constructor(
 
     override suspend fun setPrimaryAccount(userId: UserId) {
         mailSession.setPrimaryAccount(userId.toLocalUserId())
+    }
+
+    override suspend fun setAutoLockPinCode(autoLockPin: AutoLockPin): Either<SetAutoLockPinError, Unit> {
+        return autoLockPin.toLocalAutoLockPin().mapLeft { _ ->
+            SetAutoLockPinError.Other(DataError.Local.TypeConversionError)
+        }.flatMap { localPin ->
+            mailSession.setAutoLockPinCode(localPin)
+        }
     }
 }
 

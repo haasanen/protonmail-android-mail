@@ -21,9 +21,11 @@ package ch.protonmail.android.mailsession.data.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalAutoLockPin
 import ch.protonmail.android.mailcommon.data.mapper.LocalUserId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailsession.data.mapper.toAutoLockPinError
 import ch.protonmail.android.mailsession.domain.model.LoginError
 import ch.protonmail.android.mailsession.domain.model.toLoginError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -36,6 +38,7 @@ import uniffi.proton_mail_uniffi.MailSessionGetAccountsResult
 import uniffi.proton_mail_uniffi.MailSessionGetPrimaryAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
+import uniffi.proton_mail_uniffi.MailSessionSetPinCodeResult
 import uniffi.proton_mail_uniffi.MailSessionUserContextFromSessionResult
 import uniffi.proton_mail_uniffi.MailSessionWatchAccountsResult
 import uniffi.proton_mail_uniffi.StoredAccount
@@ -101,6 +104,12 @@ class MailSessionWrapper(private val mailSession: MailSession) {
     suspend fun logoutAccount(userId: LocalUserId) = mailSession.logoutAccount(userId)
 
     suspend fun setPrimaryAccount(userId: LocalUserId) = mailSession.setPrimaryAccount(userId)
+
+    suspend fun setAutoLockPinCode(localAutoLockPin: LocalAutoLockPin) =
+        when (val result = mailSession.setPinCode(localAutoLockPin)) {
+            is MailSessionSetPinCodeResult.Ok -> Unit.right()
+            is MailSessionSetPinCodeResult.Error -> result.v1.toAutoLockPinError().left()
+        }
 
     fun registerDeviceTask() = mailSession.registerDeviceTask()
 
