@@ -34,6 +34,12 @@ sealed interface MigrationError {
     data object LoginFlowFailed : MigrationError
     data object Unknown : MigrationError
 
+    sealed interface AutoLockFailure {
+        data object FailedToReadAutoLockPin : MigrationError
+        data object FailedToDecryptAutoLockPin : MigrationError
+        data object FailedToSetAutoLockPin : MigrationError
+    }
+
     // Error during migration with specific known reason
     sealed interface MigrateFailed : MigrationError {
         data object InvalidCredentials : MigrateFailed
