@@ -4,22 +4,23 @@
  *
  * Proton Mail is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation), either version 3 of the License), or
  * (at your option) any later version.
  *
- * Proton Mail is distributed in the hope that it will be useful,
+ * Proton Mail is distributed in the hope that it will be useful),
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+ * along with Proton Mail. If not), see <https://www.gnu.org/licenses/>.
  */
 
 package ch.protonmail.android.mailsettings.presentation.settings.language
 
 import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.presentation.settings.language.LanguageSettingsState.Loading
@@ -32,6 +33,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -65,8 +67,12 @@ class LanguageSettingsViewModelTest {
                 languagePreferenceFlow.emit(null)
 
                 // Then
-                val expected = allAppLanguagesWithSelected(null)
-                assertEquals(LanguageSettingsState.Data(true, expected), awaitItem())
+                val expected = LanguageSettingsState.Data(
+                    SystemDefaultLanguage,
+                    appLanguagesSortedByLangNameAlphabetically()
+                )
+
+                assertEquals(expected, awaitItem())
             }
         }
 
@@ -80,8 +86,12 @@ class LanguageSettingsViewModelTest {
             languagePreferenceFlow.emit(AppLanguage.CATALAN)
 
             // Then
-            val expected = allAppLanguagesWithSelected(AppLanguage.CATALAN)
-            assertEquals(LanguageSettingsState.Data(false, expected), awaitItem())
+            val expected = LanguageSettingsState.Data(
+                UserSelectedLanguage(AppLanguage.CATALAN),
+                appLanguagesSortedByLangNameAlphabetically()
+            )
+
+            assertEquals(expected, awaitItem())
         }
     }
 
@@ -91,7 +101,7 @@ class LanguageSettingsViewModelTest {
         justRun { languageRepository.save(AppLanguage.DANISH) }
 
         // When
-        viewModel.onLanguageSelected(AppLanguage.DANISH)
+        viewModel.onLanguageSelected(UserSelectedLanguage(AppLanguage.DANISH))
 
         // Then
         verify { languageRepository.save(AppLanguage.DANISH) }
@@ -103,48 +113,54 @@ class LanguageSettingsViewModelTest {
         justRun { languageRepository.clear() }
 
         // When
-        viewModel.onSystemDefaultSelected()
+        viewModel.onLanguageSelected(SystemDefaultLanguage)
 
         // Then
         verify { languageRepository.clear() }
     }
 
-    private fun allAppLanguagesWithSelected(selectedLang: AppLanguage?) =
-        appLanguagesSortedByLangNameAlphabetically().map { language ->
-            LanguageUiModel(
-                language = language,
-                isSelected = language == selectedLang,
-                name = language.langName
-            )
-        }
+    @Test
+    fun `close effect emitted when theme is updated`() = runTest {
+        // Given
+        justRun { languageRepository.save(AppLanguage.DANISH) }
+
+        // When
+        viewModel.onLanguageSelected(UserSelectedLanguage(AppLanguage.DANISH))
+        // then
+        Assert.assertEquals(
+            LanguageSettingsEffects(close = Effect.of(Unit)),
+            viewModel.effects.value
+        )
+    }
 
     private fun appLanguagesSortedByLangNameAlphabetically() = listOf(
-        AppLanguage.INDONESIAN,
-        AppLanguage.CATALAN,
-        AppLanguage.DANISH,
-        AppLanguage.GERMAN,
-        AppLanguage.ENGLISH,
-        AppLanguage.SPANISH,
-        AppLanguage.FRENCH,
-        AppLanguage.CROATIAN,
-        AppLanguage.ITALIAN,
-        AppLanguage.HUNGARIAN,
-        AppLanguage.DUTCH,
-        AppLanguage.POLISH,
-        AppLanguage.BRAZILIAN,
-        AppLanguage.PORTUGUESE,
-        AppLanguage.ROMANIAN,
-        AppLanguage.SWEDISH,
-        AppLanguage.KABYLIAN,
-        AppLanguage.TURKISH,
-        AppLanguage.ICELANDIC,
-        AppLanguage.CZECH,
-        AppLanguage.GREEK,
-        AppLanguage.RUSSIAN,
-        AppLanguage.UKRAINIAN,
-        AppLanguage.JAPANESE,
-        AppLanguage.CHINESE_SIMPLIFIED,
-        AppLanguage.CHINESE_TRADITIONAL
+        SystemDefaultLanguage,
+        UserSelectedLanguage(AppLanguage.INDONESIAN),
+        UserSelectedLanguage(AppLanguage.CATALAN),
+        UserSelectedLanguage(AppLanguage.DANISH),
+        UserSelectedLanguage(AppLanguage.GERMAN),
+        UserSelectedLanguage(AppLanguage.ENGLISH),
+        UserSelectedLanguage(AppLanguage.SPANISH),
+        UserSelectedLanguage(AppLanguage.FRENCH),
+        UserSelectedLanguage(AppLanguage.CROATIAN),
+        UserSelectedLanguage(AppLanguage.ITALIAN),
+        UserSelectedLanguage(AppLanguage.HUNGARIAN),
+        UserSelectedLanguage(AppLanguage.DUTCH),
+        UserSelectedLanguage(AppLanguage.POLISH),
+        UserSelectedLanguage(AppLanguage.BRAZILIAN),
+        UserSelectedLanguage(AppLanguage.PORTUGUESE),
+        UserSelectedLanguage(AppLanguage.ROMANIAN),
+        UserSelectedLanguage(AppLanguage.SWEDISH),
+        UserSelectedLanguage(AppLanguage.KABYLIAN),
+        UserSelectedLanguage(AppLanguage.TURKISH),
+        UserSelectedLanguage(AppLanguage.ICELANDIC),
+        UserSelectedLanguage(AppLanguage.CZECH),
+        UserSelectedLanguage(AppLanguage.GREEK),
+        UserSelectedLanguage(AppLanguage.RUSSIAN),
+        UserSelectedLanguage(AppLanguage.UKRAINIAN),
+        UserSelectedLanguage(AppLanguage.JAPANESE),
+        UserSelectedLanguage(AppLanguage.CHINESE_SIMPLIFIED),
+        UserSelectedLanguage(AppLanguage.CHINESE_TRADITIONAL)
     )
 
     private suspend fun ReceiveTurbine<LanguageSettingsState>.initialStateEmitted() {

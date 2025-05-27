@@ -20,16 +20,19 @@ package ch.protonmail.android.mailsettings.presentation.settings.language
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.presentation.settings.language.LanguageSettingsState.Loading
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,12 +40,19 @@ class LanguageSettingsViewModel @Inject constructor(
     private val languageRepository: AppLanguageRepository
 ) : ViewModel() {
 
+    private val _effects = MutableStateFlow(LanguageSettingsEffects())
+    val effects = _effects.asStateFlow()
+
     val state: Flow<LanguageSettingsState> = languageRepository
         .observe()
         .mapLatest { selectedLang ->
-            val languages = getAppLanguageUiModels(selectedLang).sortedBy { it.name }
-            val isSystemDefault = selectedLang == null
-            LanguageSettingsState.Data(isSystemDefault, languages)
+            LanguageSettingsState.Data(
+                currentLanguage = selectedLang.toUiModel(),
+                languagesChoices = listOf(SystemDefaultLanguage) +
+                    AppLanguage.entries
+                        .sortedBy { it.langName }
+                        .map { it.toUiModel() }
+            )
         }
         .stateIn(
             viewModelScope,
@@ -50,20 +60,17 @@ class LanguageSettingsViewModel @Inject constructor(
             Loading
         )
 
-    fun onLanguageSelected(language: AppLanguage) = viewModelScope.launch {
-        languageRepository.save(language)
+    fun onLanguageSelected(language: LanguageChoice) {
+        // We need to close the dialog **before** updating the language. Why?  Updating the language will cause a
+        // recompose and if the dialog is open we will recompose the screen with the dim background which will cause
+        // a flicker effect as the theme changes, the dim is rendered and removed and the dialog closes
+        _effects.update { it.onCloseEffect() }
+        viewModelScope.launch {
+            when (language) {
+                is SystemDefaultLanguage -> languageRepository.clear()
+                is UserSelectedLanguage -> languageRepository.save(language.appLanguage)
+            }
+        }
     }
-
-    fun onSystemDefaultSelected() = viewModelScope.launch {
-        languageRepository.clear()
-    }
-
-    private fun getAppLanguageUiModels(selectedAppLanguage: AppLanguage?) = AppLanguage.values().map {
-        LanguageUiModel(
-            language = it,
-            isSelected = it == selectedAppLanguage,
-            name = it.langName
-        )
-    }
-
 }
+

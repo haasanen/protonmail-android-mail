@@ -18,20 +18,48 @@
 
 package ch.protonmail.android.mailsettings.presentation.settings.language
 
+import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
+import ch.protonmail.android.mailsettings.presentation.R
+
+sealed interface LanguageChoice {
+
+    val textUiModel: TextUiModel
+}
+
+data class UserSelectedLanguage(val appLanguage: AppLanguage) : LanguageChoice {
+
+    override val textUiModel = TextUiModel(appLanguage.langName)
+}
+
+data object SystemDefaultLanguage : LanguageChoice {
+
+    override val textUiModel = TextUiModel(R.string.mail_settings_app_language)
+}
 
 sealed class LanguageSettingsState {
 
     data class Data(
-        val isSystemDefault: Boolean,
-        val languages: List<LanguageUiModel>
-    ) : LanguageSettingsState()
+        private val currentLanguage: LanguageChoice,
+        val languagesChoices: List<LanguageChoice>
+    ) : LanguageSettingsState() {
+
+        val languageChoiceUiTextModels = languagesChoices.map { it.textUiModel }
+        val selectedLanguageUiModel = currentLanguage.textUiModel
+    }
 
     data object Loading : LanguageSettingsState()
 }
 
-data class LanguageUiModel(
-    val language: AppLanguage,
-    val isSelected: Boolean,
-    val name: String
+data class LanguageSettingsEffects(
+    val close: Effect<Unit> = Effect.empty()
 )
+
+internal fun LanguageSettingsEffects.onCloseEffect() = this.copy(close = Effect.of(Unit))
+
+internal fun AppLanguage?.toUiModel() = this?.let { UserSelectedLanguage(it) } ?: SystemDefaultLanguage
+
+internal fun LanguageSettingsState.Data.languageFor(choice: TextUiModel) =
+    languagesChoices.first { it.textUiModel == choice }
+

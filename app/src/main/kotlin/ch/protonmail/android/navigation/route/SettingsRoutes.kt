@@ -36,7 +36,7 @@ import ch.protonmail.android.mailsettings.presentation.settings.alternativerouti
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.ui.AutoLockSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.ui.pin.AutoLockPinScreen
 import ch.protonmail.android.mailsettings.presentation.settings.combinedcontacts.CombinedContactsSettingScreen
-import ch.protonmail.android.mailsettings.presentation.settings.language.LanguageSettingsScreen
+import ch.protonmail.android.mailsettings.presentation.settings.language.LanguageSettingsDialog
 import ch.protonmail.android.mailsettings.presentation.settings.notifications.ui.PushNotificationsSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.privacy.PrivacySettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen
@@ -175,10 +175,10 @@ internal fun NavGraphBuilder.addEditSwipeActionsSettings(navController: NavHostC
 }
 
 internal fun NavGraphBuilder.addLanguageSettings(navController: NavHostController) {
-    composable(route = Screen.LanguageSettings.route) {
-        LanguageSettingsScreen(
+    dialog(route = Screen.LanguageSettings.route) {
+        LanguageSettingsDialog(
             modifier = Modifier,
-            onBackClick = { navController.navigateBack() }
+            onDismiss = { navController.navigateBack() }
         )
     }
 }
