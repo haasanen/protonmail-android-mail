@@ -25,7 +25,7 @@ import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockEnabledE
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockEncryptedAttemptPendingStatus
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockEncryptedInterval
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockEncryptedLastForegroundMillis
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockEncryptedPin
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockEncryptedPin
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockEncryptedRemainingAttempts
 import kotlinx.coroutines.flow.Flow
 

@@ -22,7 +22,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockInsertionMode
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockPin
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.GetRemainingAutoLockAttempts
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.biometric.ObserveAutoLockBiometricsState
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.ObserveAutoLockPinValue

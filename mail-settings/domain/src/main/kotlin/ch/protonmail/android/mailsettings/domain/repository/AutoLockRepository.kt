@@ -23,7 +23,7 @@ import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockAttemptP
 import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsPreference
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockInterval
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockLastForegroundMillis
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockPin
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockPreference
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockRemainingAttempts
 import kotlinx.coroutines.flow.Flow

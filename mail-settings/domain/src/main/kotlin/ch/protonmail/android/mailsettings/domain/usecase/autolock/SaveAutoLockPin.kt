@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailsettings.domain.usecase.autolock
 
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockPin
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailsettings.domain.repository.AutoLockRepository
 import javax.inject.Inject
 

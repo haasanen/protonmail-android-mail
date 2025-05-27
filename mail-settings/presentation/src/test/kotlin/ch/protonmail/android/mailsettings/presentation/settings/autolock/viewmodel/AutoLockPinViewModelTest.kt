@@ -25,7 +25,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockInsertionMode
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockPin
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockRemainingAttempts
 import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsState
 import ch.protonmail.android.mailsettings.domain.repository.AutoLockPreferenceError

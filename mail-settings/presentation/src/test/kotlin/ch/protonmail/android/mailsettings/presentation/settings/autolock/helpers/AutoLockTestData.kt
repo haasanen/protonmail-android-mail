@@ -20,7 +20,7 @@ package ch.protonmail.android.mailsettings.presentation.settings.autolock.helper
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockPin
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.pin.AutoLockPinState
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.pin.BiometricPinUiModel

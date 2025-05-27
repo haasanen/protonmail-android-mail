@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.domain.model.autolock
+package ch.protonmail.android.mailcommon.domain.model.autolock
 
 import kotlinx.serialization.Serializable
 

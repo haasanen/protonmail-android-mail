@@ -20,7 +20,7 @@ package ch.protonmail.android.mailsettings.domain.usecase.autolock
 
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockPin
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailsettings.domain.repository.AutoLockPreferenceError
 import ch.protonmail.android.mailsettings.domain.repository.AutoLockRepository
 import io.mockk.every

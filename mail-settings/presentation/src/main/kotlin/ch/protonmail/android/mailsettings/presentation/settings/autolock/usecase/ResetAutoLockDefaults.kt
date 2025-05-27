@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailsettings.presentation.settings.autolock.usecase
 
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockPin
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.SaveAutoLockPin
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.ToggleAutoLockAttemptPendingStatus
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.ToggleAutoLockEnabled
