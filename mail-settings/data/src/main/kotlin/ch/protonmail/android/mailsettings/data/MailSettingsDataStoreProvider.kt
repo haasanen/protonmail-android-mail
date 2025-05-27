@@ -28,9 +28,6 @@ class MailSettingsDataStoreProvider @Inject constructor(
     context: Context
 ) {
 
-    private val Context.autoLockDataStore: DataStore<Preferences> by preferencesDataStore(
-        name = "autoLockPrefDataStore"
-    )
     private val Context.alternativeRoutingDataStore: DataStore<Preferences> by preferencesDataStore(
         name = "alternativeRoutingPrefDataStore"
     )
@@ -55,7 +52,6 @@ class MailSettingsDataStoreProvider @Inject constructor(
     private val Context.notificationsDataStore: DataStore<Preferences> by preferencesDataStore(
         name = "notificationsPrefDataStore"
     )
-    val autoLockDataStore = context.autoLockDataStore
     val alternativeRoutingDataStore = context.alternativeRoutingDataStore
     val combinedContactsDataStore = context.combinedContactsDataStore
     val themeDataStore = context.themeDataStore
