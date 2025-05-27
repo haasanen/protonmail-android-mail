@@ -113,7 +113,7 @@ class RustSendingStatusDataSourceImplTest {
 
         val testDraftSendResult = LocalDraftSendResult(
             messageId = LocalMessageIdSample.AugWeatherForecast,
-            timestamp = System.currentTimeMillis(),
+            timestamp = System.currentTimeMillis().toULong(),
             error = DraftSendStatus.Failure(DraftSendFailure.Other(LocalProtonError.Network)),
             origin = DraftSendResultOrigin.SEND
         )
@@ -176,7 +176,7 @@ class RustSendingStatusDataSourceImplTest {
         val unseenResults = listOf(
             LocalDraftSendResult(
                 messageId = testLocalMessageId,
-                timestamp = System.currentTimeMillis(),
+                timestamp = System.currentTimeMillis().toULong(),
                 error = DraftSendStatus.Failure(DraftSendFailure.Other(LocalProtonError.Network)),
                 origin = DraftSendResultOrigin.SEND
             )
