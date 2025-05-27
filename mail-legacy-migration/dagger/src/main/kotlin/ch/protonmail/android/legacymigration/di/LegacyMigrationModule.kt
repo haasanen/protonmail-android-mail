@@ -33,10 +33,12 @@ import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSourceImpl
 import ch.protonmail.android.legacymigration.data.local.autolock.LegacyAutoLockLocalDataSource
 import ch.protonmail.android.legacymigration.data.local.autolock.LegacyAutoLockLocalDataSourceImpl
 import ch.protonmail.android.legacymigration.data.repository.LegacyAccountRepositoryImpl
+import ch.protonmail.android.legacymigration.data.repository.LegacyAutoLockRepositoryImpl
 import ch.protonmail.android.legacymigration.data.repository.LegacyMigrationStatusRepositoryImpl
 import ch.protonmail.android.legacymigration.domain.LegacyDBCoroutineScope
 import ch.protonmail.android.legacymigration.domain.model.LegacyDatabase
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAccountRepository
+import ch.protonmail.android.legacymigration.domain.repository.LegacyAutoLockRepository
 import ch.protonmail.android.legacymigration.domain.repository.LegacyMigrationStatusRepository
 import dagger.Module
 import dagger.Provides
@@ -108,6 +110,10 @@ object LegacyMigrationModule {
         fun bindLegacyMigrationStatusRepository(
             impl: LegacyMigrationStatusRepositoryImpl
         ): LegacyMigrationStatusRepository
+
+        @Binds
+        @Singleton
+        fun bindLegacyAutoLockRepository(impl: LegacyAutoLockRepositoryImpl): LegacyAutoLockRepository
 
         @Binds
         @Singleton
