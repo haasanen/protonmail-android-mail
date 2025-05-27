@@ -1,0 +1,131 @@
+/*
+ * Copyright (c) 2022 Proton Technologies AG
+ * This file is part of Proton Technologies AG and Proton Mail.
+ *
+ * Proton Mail is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Proton Mail is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.protonmail.android.legacymigration.domain.usecase
+
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.legacymigration.domain.model.MigrationError
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import kotlin.test.Test
+import io.mockk.coVerifySequence
+
+class MigrateLegacyApplicationTest {
+
+    private val migrateLegacyAccounts = mockk<MigrateLegacyAccounts>()
+    private val shouldMigrateLegacyAccount = mockk<ShouldMigrateLegacyAccount>()
+    private val destroyLegacyDatabases = mockk<DestroyLegacyDatabases>(relaxUnitFun = true)
+    private val shouldMigrateAutoLockPin = mockk<ShouldMigrateAutoLockPin>()
+    private val migrateLegacyAutoLockPinCode = mockk<MigrateLegacyAutoLockPinCode>()
+
+    private val migrateLegacyApplication = MigrateLegacyApplication(
+        migrateLegacyAccounts = migrateLegacyAccounts,
+        shouldMigrateLegacyAccount = shouldMigrateLegacyAccount,
+        destroyLegacyDatabases = destroyLegacyDatabases,
+        shouldMigrateAutoLockPin = shouldMigrateAutoLockPin,
+        migrateLegacyAutoLockPinCode = migrateLegacyAutoLockPinCode
+    )
+
+    @Test
+    fun `should migrate account and auto-lock pin when both are required`() = runTest {
+        // Given
+        coEvery { shouldMigrateLegacyAccount() } returns true
+        coEvery { migrateLegacyAccounts() } returns Unit.right()
+        coEvery { shouldMigrateAutoLockPin() } returns true
+        coEvery { migrateLegacyAutoLockPinCode() } returns Unit.right()
+
+        // When
+        migrateLegacyApplication()
+
+        // Then
+        coVerifySequence {
+            shouldMigrateLegacyAccount()
+            migrateLegacyAccounts()
+            destroyLegacyDatabases()
+            shouldMigrateAutoLockPin()
+            migrateLegacyAutoLockPinCode()
+        }
+    }
+
+    @Test
+    fun `should skip account migration and only migrate auto-lock pin`() = runTest {
+        // Given
+        coEvery { shouldMigrateLegacyAccount() } returns false
+        coEvery { shouldMigrateAutoLockPin() } returns true
+        coEvery { migrateLegacyAutoLockPinCode() } returns Unit.right()
+
+        // When
+        migrateLegacyApplication()
+
+        // Then
+        coVerifySequence {
+            shouldMigrateLegacyAccount()
+            destroyLegacyDatabases()
+            shouldMigrateAutoLockPin()
+            migrateLegacyAutoLockPinCode()
+        }
+
+        coVerify(exactly = 0) { migrateLegacyAccounts() }
+    }
+
+    @Test
+    fun `should skip auto-lock pin migration when not needed`() = runTest {
+        // Given
+        coEvery { shouldMigrateLegacyAccount() } returns true
+        coEvery { migrateLegacyAccounts() } returns Unit.right()
+        coEvery { shouldMigrateAutoLockPin() } returns false
+
+        // When
+        migrateLegacyApplication()
+
+        // Then
+        coVerifySequence {
+            shouldMigrateLegacyAccount()
+            migrateLegacyAccounts()
+            destroyLegacyDatabases()
+            shouldMigrateAutoLockPin()
+        }
+
+        coVerify(exactly = 0) { migrateLegacyAutoLockPinCode() }
+    }
+
+    @Test
+    fun `should not throw on failures and still continue`() = runTest {
+        // Given
+        coEvery { shouldMigrateLegacyAccount() } returns true
+        coEvery { migrateLegacyAccounts() } returns listOf(MigrationError.MigrateFailed.InvalidCredentials).left()
+        coEvery { shouldMigrateAutoLockPin() } returns true
+        coEvery { migrateLegacyAutoLockPinCode() } returns MigrationError.AutoLockFailure.FailedToSetAutoLockPin.left()
+
+        // When
+        migrateLegacyApplication()
+
+        // Then
+        coVerifySequence {
+            shouldMigrateLegacyAccount()
+            migrateLegacyAccounts()
+            shouldMigrateAutoLockPin()
+            migrateLegacyAutoLockPinCode()
+        }
+
+        coVerify(exactly = 0) { destroyLegacyDatabases() }
+    }
+}

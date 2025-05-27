@@ -19,10 +19,8 @@
 package ch.protonmail.android.navigation
 
 import app.cash.turbine.test
-import ch.protonmail.android.legacymigration.domain.usecase.MigrateLegacyAccounts
 import ch.protonmail.android.legacymigration.domain.usecase.ObserveLegacyMigrationStatus
 import ch.protonmail.android.legacymigration.domain.usecase.SetLegacyMigrationStatus
-import ch.protonmail.android.legacymigration.domain.usecase.ShouldMigrateLegacyAccount
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionOrchestrator
 import ch.protonmail.android.mailsession.domain.model.Account
@@ -43,9 +41,8 @@ import me.proton.android.core.payment.presentation.PaymentOrchestrator
 import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import arrow.core.right
 import ch.protonmail.android.legacymigration.domain.model.LegacyMigrationStatus
-import ch.protonmail.android.legacymigration.domain.usecase.DestroyLegacyDatabases
+import ch.protonmail.android.legacymigration.domain.usecase.MigrateLegacyApplication
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 @ExperimentalCoroutinesApi
@@ -61,9 +58,7 @@ class LauncherViewModelTest {
     private val notificationsPermissionOrchestrator = mockk<NotificationsPermissionOrchestrator>(relaxUnitFun = true)
     private val observeLegacyMigrationStatus = mockk<ObserveLegacyMigrationStatus>()
     private val setLegacyMigrationStatus = mockk<SetLegacyMigrationStatus>(relaxUnitFun = true)
-    private val migrateLegacyAccounts = mockk<MigrateLegacyAccounts>()
-    private val shouldMigrateLegacyAccountMock = mockk<ShouldMigrateLegacyAccount>()
-    private val destroyLegacyDatabases = mockk<DestroyLegacyDatabases>()
+    private val migrateLegacyApplication = mockk<MigrateLegacyApplication>(relaxUnitFun = true)
 
     private lateinit var viewModel: LauncherViewModel
 
@@ -77,25 +72,20 @@ class LauncherViewModelTest {
     @Test
     fun `state should be AccountNeeded when userSession is not available`() =
         runTest(mainDispatcherRule.testDispatcher) {
-            // Given
             every { observeLegacyMigrationStatus() } returns flowOf(LegacyMigrationStatus.Done)
             every { userSessionRepository.observeAccounts() } returns flowOf(emptyList())
 
-            // When
             viewModel = LauncherViewModel(
                 authOrchestrator,
                 paymentOrchestrator,
                 setPrimaryAccount,
                 userSessionRepository,
                 notificationsPermissionOrchestrator,
-                destroyLegacyDatabases,
                 observeLegacyMigrationStatus,
                 setLegacyMigrationStatus,
-                migrateLegacyAccounts,
-                shouldMigrateLegacyAccountMock
+                migrateLegacyApplication
             )
 
-            // Then
             viewModel.state.test {
                 assertEquals(LauncherState.AccountNeeded, awaitItem())
             }
@@ -103,114 +93,53 @@ class LauncherViewModelTest {
 
     @Test
     fun `state should be PrimaryExist when userSession is available`() = runTest(mainDispatcherRule.testDispatcher) {
-        // Given
         every { observeLegacyMigrationStatus() } returns flowOf(LegacyMigrationStatus.Done)
-        every { userSessionRepository.observeAccounts() } returns flowOf(
-            listOf(
-                readyAccount
-            )
-        )
+        every { userSessionRepository.observeAccounts() } returns flowOf(listOf(readyAccount))
 
-        // When
         viewModel = LauncherViewModel(
             authOrchestrator,
             paymentOrchestrator,
             setPrimaryAccount,
             userSessionRepository,
             notificationsPermissionOrchestrator,
-            destroyLegacyDatabases,
             observeLegacyMigrationStatus,
             setLegacyMigrationStatus,
-            migrateLegacyAccounts,
-            shouldMigrateLegacyAccountMock
+            migrateLegacyApplication
         )
 
-        // Then
         viewModel.state.test {
             assertEquals(LauncherState.PrimaryExist, awaitItem())
         }
     }
 
     @Test
-    fun `migration is triggered when status is NotDone and account needs migration`() =
-        runTest(mainDispatcherRule.testDispatcher) {
+    fun `migration is triggered when status is NotDone`() = runTest(mainDispatcherRule.testDispatcher) {
+        val migrationStatusFlow = MutableSharedFlow<LegacyMigrationStatus>()
+        every { observeLegacyMigrationStatus() } returns migrationStatusFlow
+        every { userSessionRepository.observeAccounts() } returns flowOf(listOf(readyAccount))
+        coEvery { migrateLegacyApplication() } returns Unit
 
-            // Given
-            val migrationStatusFlow = MutableSharedFlow<LegacyMigrationStatus>()
-            every { observeLegacyMigrationStatus() } returns migrationStatusFlow
-            coEvery { shouldMigrateLegacyAccountMock() } returns true
-            coEvery { migrateLegacyAccounts() } returns Unit.right()
-            coEvery { destroyLegacyDatabases() } returns Unit
-            every {
-                userSessionRepository.observeAccounts()
-            } returns flowOf(listOf(readyAccount))
+        viewModel = LauncherViewModel(
+            authOrchestrator,
+            paymentOrchestrator,
+            setPrimaryAccount,
+            userSessionRepository,
+            notificationsPermissionOrchestrator,
+            observeLegacyMigrationStatus,
+            setLegacyMigrationStatus,
+            migrateLegacyApplication
+        )
 
-            // When
-            viewModel = LauncherViewModel(
-                authOrchestrator,
-                paymentOrchestrator,
-                setPrimaryAccount,
-                userSessionRepository,
-                notificationsPermissionOrchestrator,
-                destroyLegacyDatabases,
-                observeLegacyMigrationStatus,
-                setLegacyMigrationStatus,
-                migrateLegacyAccounts,
-                shouldMigrateLegacyAccountMock
-            )
+        viewModel.state.test {
+            skipItems(1)
+            migrationStatusFlow.emit(LegacyMigrationStatus.NotDone)
 
-            // Then
-            viewModel.state.test {
-                skipItems(1)
-                migrationStatusFlow.emit(LegacyMigrationStatus.NotDone)
-                assertEquals(LauncherState.MigrationInProgress, awaitItem())
-
-                assertEquals(LauncherState.PrimaryExist, awaitItem())
-                cancelAndIgnoreRemainingEvents()
-            }
-
-            coVerify(exactly = 1) { migrateLegacyAccounts() }
-            coVerify(exactly = 1) { destroyLegacyDatabases() }
-            coVerify { setLegacyMigrationStatus(LegacyMigrationStatus.Done) }
+            assertEquals(LauncherState.MigrationInProgress, awaitItem())
+            assertEquals(LauncherState.PrimaryExist, awaitItem())
+            cancelAndIgnoreRemainingEvents()
         }
 
-    @Test
-    fun `migration is skipped when shouldMigrateLegacyAccount returns false`() =
-        runTest(mainDispatcherRule.testDispatcher) {
-
-            // Given
-            val migrationStatusFlow = MutableSharedFlow<LegacyMigrationStatus>()
-            every { observeLegacyMigrationStatus() } returns migrationStatusFlow
-            coEvery { destroyLegacyDatabases() } returns Unit
-            coEvery { shouldMigrateLegacyAccountMock() } returns false
-            every { userSessionRepository.observeAccounts() } returns flowOf(emptyList())
-
-            // When
-            viewModel = LauncherViewModel(
-                authOrchestrator,
-                paymentOrchestrator,
-                setPrimaryAccount,
-                userSessionRepository,
-                notificationsPermissionOrchestrator,
-                destroyLegacyDatabases,
-                observeLegacyMigrationStatus,
-                setLegacyMigrationStatus,
-                migrateLegacyAccounts,
-                shouldMigrateLegacyAccountMock
-            )
-
-            // Then
-            viewModel.state.test {
-                skipItems(1)
-                migrationStatusFlow.emit(LegacyMigrationStatus.NotDone)
-                assertEquals(LauncherState.MigrationInProgress, awaitItem())
-
-                assertEquals(LauncherState.AccountNeeded, awaitItem())
-                cancelAndIgnoreRemainingEvents()
-            }
-
-            coVerify(exactly = 0) { migrateLegacyAccounts() }
-            coVerify(exactly = 1) { destroyLegacyDatabases() }
-            coVerify { setLegacyMigrationStatus(LegacyMigrationStatus.Done) }
-        }
+        coVerify(exactly = 1) { migrateLegacyApplication() }
+        coVerify(exactly = 1) { setLegacyMigrationStatus(LegacyMigrationStatus.Done) }
+    }
 }

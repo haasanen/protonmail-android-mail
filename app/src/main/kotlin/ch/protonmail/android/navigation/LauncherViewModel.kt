@@ -22,9 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.legacymigration.domain.usecase.MigrateLegacyAccounts
 import ch.protonmail.android.legacymigration.domain.usecase.ObserveLegacyMigrationStatus
-import ch.protonmail.android.legacymigration.domain.usecase.ShouldMigrateLegacyAccount
 import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionOrchestrator
 import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
 import ch.protonmail.android.mailsession.data.mapper.toUserId
@@ -59,10 +57,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import ch.protonmail.android.legacymigration.domain.model.LegacyMigrationStatus
-import ch.protonmail.android.legacymigration.domain.usecase.DestroyLegacyDatabases
+import ch.protonmail.android.legacymigration.domain.usecase.MigrateLegacyApplication
 import ch.protonmail.android.legacymigration.domain.usecase.SetLegacyMigrationStatus
 import kotlinx.coroutines.flow.first
-import timber.log.Timber
 
 @HiltViewModel
 @SuppressWarnings("NotImplementedDeclaration", "UnusedPrivateMember")
@@ -72,11 +69,9 @@ class LauncherViewModel @Inject constructor(
     private val setPrimaryAccount: SetPrimaryAccount,
     private val userSessionRepository: UserSessionRepository,
     private val notificationsPermissionOrchestrator: NotificationsPermissionOrchestrator,
-    private val destroyLegacyDatabases: DestroyLegacyDatabases,
     private val observeLegacyMigrationStatus: ObserveLegacyMigrationStatus,
     private val setLegacyMigrationStatus: SetLegacyMigrationStatus,
-    private val migrateLegacyAccounts: MigrateLegacyAccounts,
-    private val shouldMigrateLegacyAccount: ShouldMigrateLegacyAccount
+    private val migrateLegacyApplication: MigrateLegacyApplication
 ) : ViewModel() {
 
     private val mutableState = MutableStateFlow(Processing)
@@ -88,21 +83,7 @@ class LauncherViewModel @Inject constructor(
                 LegacyMigrationStatus.NotDone -> {
                     mutableState.value = MigrationInProgress
 
-                    val shouldMigrateAccount = shouldMigrateLegacyAccount()
-
-                    if (shouldMigrateAccount) {
-                        migrateLegacyAccounts()
-                            .onLeft {
-                                Timber.e("Legacy migration: Failed to migrate legacy accounts")
-                            }
-                            .onRight {
-                                Timber.d("Legacy migration: Successfully migrated legacy accounts")
-                                destroyLegacyDatabases()
-                            }
-                    } else {
-                        Timber.d("Legacy migration: No legacy account to migrate")
-                        destroyLegacyDatabases()
-                    }
+                    migrateLegacyApplication()
 
                     setLegacyMigrationStatus(LegacyMigrationStatus.Done)
                     observeStoredAccounts(afterMigration = true)
