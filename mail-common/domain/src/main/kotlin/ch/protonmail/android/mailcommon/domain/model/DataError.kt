@@ -28,6 +28,8 @@ sealed interface DataError {
      */
     sealed interface Local : DataError {
 
+        data object TypeConversionError : Local
+
         data object DecryptionError : Local
 
         data object EncryptionError : Local
