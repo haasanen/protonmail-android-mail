@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Auto lock -->
+  <string name="mail_settings_auto_lock_title">自动锁定</string>
+  <string name="mail_settings_auto_lock_item_title">自动锁定程序</string>
+  <string name="mail_settings_auto_lock_item_description">开启后程序可自动锁定，需要输入 PIN 码才能使用。</string>
+  <string name="mail_settings_auto_lock_change_pin_description">更改 PIN 码</string>
+  <string name="mail_settings_auto_lock_item_timer_title">自动锁定时间</string>
+  <string name="mail_settings_auto_lock_immediately">立刻</string>
+  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">五分钟内无操作</string>
+  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">十五分钟内无操作</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_hour">一小时内无操作</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_day">一天内无操作</string>
+  <string name="mail_settings_auto_lock_update_error">更新设置时出现错误</string>
+  <string name="mail_settings_pin_insertion_input_title">输入 PIN 码</string>
+  <string name="mail_settings_pin_insertion_set_title">设置 PIN 码</string>
+  <string name="mail_settings_pin_insertion_confirm_title">确认 PIN 码</string>
+  <string name="mail_settings_pin_insertion_lock_icon_description">锁定图标</string>
+  <string name="mail_settings_pin_insertion_pin_dot_description">固定点</string>
+  <string name="mail_settings_pin_insertion_backspace_description">退格键</string>
+  <string name="mail_settings_pin_insertion_biometric_description">生物识别认证</string>
+  <string name="mail_settings_pin_insertion_button_create">创建</string>
+  <string name="mail_settings_pin_insertion_button_confirm">确认</string>
+  <string name="mail_settings_pin_insertion_error_no_match">两次输入的 PIN 码不一致。</string>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code">
+    <item quantity="other">剩余 %s 次尝试</item>
+  </plurals>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
+    <item quantity="other">若再输错 %s 次数据将被清除！</item>
+  </plurals>
+  <string name="mail_settings_pin_insertion_error_unknown">验证 PIN 码失败</string>
+  <string name="mail_settings_pin_insertion_signout_text">登出</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_title">登出</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_description">你确定要登出吗？</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_confirm">是</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_cancel">否</string>
+  <string name="mail_settings_pin_insertion_created_success">PIN 码创建成功。</string>
+  <string name="mail_settings_pin_insertion_changed_success">PIN 码更改成功。</string>
+  <!-- Error messages -->
+  <string name="mail_settings_generic_error_message">出错了，请重试。</string>
+  <!-- strings used for biometric enrollment -->
+  <string name="no_biometric_data_enrolled">没有可用的生物识别信息</string>
+  <string name="log_in_using_biometric_credential">使用您的生物识别凭证解锁</string>
+  <string name="unlock_using_biometrics">用生物识别解锁</string>
+  <string name="biometric_error_hw_not_available">生物识别硬件不可用。</string>
+</resources>

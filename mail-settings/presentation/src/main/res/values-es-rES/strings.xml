@@ -111,49 +111,6 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Navegar a los ajustes de notificaciones del sistema</string>
   <string name="mail_settings_notifications_update_error">Error al actualizar los ajustes</string>
   <string name="mail_settings_notifications_loading_error">Error al cargar los ajustes</string>
-  <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Bloqueo automático</string>
-  <string name="mail_settings_auto_lock_item_title">Bloqueo automático de la aplicación</string>
-  <string name="mail_settings_auto_lock_item_description">Activa esta función para bloquear automáticamente tu aplicación y utilizar un código PIN para desbloquearla.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Cambiar el código PIN</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Tiempo de bloqueo automático</string>
-  <string name="mail_settings_auto_lock_immediately">Inmediatamente</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minutos de inactividad</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minutos de inactividad</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 hora de inactividad</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 día de inactividad</string>
-  <string name="mail_settings_auto_lock_update_error">Error al actualizar los ajustes</string>
-  <string name="mail_settings_pin_insertion_input_title">Ingresa el código PIN</string>
-  <string name="mail_settings_pin_insertion_set_title">Definir el código PIN</string>
-  <string name="mail_settings_pin_insertion_confirm_title">Confirmar el código PIN</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">Icono de bloqueo</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">Código PIN de puntos</string>
-  <string name="mail_settings_pin_insertion_backspace_description">Retroceso</string>
-  <string name="mail_settings_pin_insertion_biometric_description">Autenticación biométrica</string>
-  <string name="mail_settings_pin_insertion_button_create">Crear</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Confirmar</string>
-  <string name="mail_settings_pin_insertion_error_no_match">Los códigos PIN no coinciden.</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="one">%s intento restante</item>
-    <item quantity="other">%s intentos restantes</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="one">%s intento restante antes de borrar los datos seguros.</item>
-    <item quantity="other">%s intentos restantes antes de borrar los datos seguros.</item>
-  </plurals>
-  <string name="mail_settings_pin_insertion_error_unknown">Se ha producido un error al verificar tu código PIN.</string>
-  <string name="mail_settings_pin_insertion_signout_text">Cerrar sesión</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_title">Cerrar sesión</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_description">¿Estás seguro de que quieres cerrar la sesión?</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Sí</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_cancel">No</string>
-  <string name="mail_settings_pin_insertion_created_success">El código PIN ha sido creado.</string>
-  <string name="mail_settings_pin_insertion_changed_success">Se ha cambiado el código PIN.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Se ha producido un error. Inténtalo de nuevo.</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">No hay datos biométricos registrados.</string>
-  <string name="log_in_using_biometric_credential">Desbloquear usando las credenciales biométricas</string>
-  <string name="unlock_using_biometrics">Desbloquear usando los datos biométricos</string>
-  <string name="biometric_error_hw_not_available">El sensor biométrico no está disponible.</string>
 </resources>

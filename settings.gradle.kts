@@ -115,6 +115,10 @@ include(":mail-settings:data")
 include(":mail-settings:domain")
 include(":mail-settings:presentation")
 
+include(":mail-pin-lock:dagger")
+include(":mail-pin-lock:domain")
+include(":mail-pin-lock:presentation")
+
 include(":mail-sidebar:dagger")
 include(":mail-sidebar:data")
 include(":mail-sidebar:domain")

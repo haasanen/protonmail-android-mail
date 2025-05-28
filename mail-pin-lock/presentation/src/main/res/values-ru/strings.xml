@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Auto lock -->
+  <string name="mail_settings_auto_lock_title">Автоблокировка</string>
+  <string name="mail_settings_auto_lock_item_title">Автоблокировка приложения</string>
+  <string name="mail_settings_auto_lock_item_description">Включите эту функцию, чтобы автоматически заблокировать приложение и использовать PIN для его разблокировки.</string>
+  <string name="mail_settings_auto_lock_change_pin_description">Изменить PIN-код</string>
+  <string name="mail_settings_auto_lock_item_timer_title">Таймер автоблокировки</string>
+  <string name="mail_settings_auto_lock_immediately">Немедленно</string>
+  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 минут бездействия</string>
+  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 минут бездействия</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 час бездействия</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 день бездействия</string>
+  <string name="mail_settings_auto_lock_update_error">Ошибка сохранения настроек</string>
+  <string name="mail_settings_pin_insertion_input_title">Вставьте PIN-код</string>
+  <string name="mail_settings_pin_insertion_set_title">Установите PIN-код</string>
+  <string name="mail_settings_pin_insertion_confirm_title">Подтвердите PIN-код</string>
+  <string name="mail_settings_pin_insertion_lock_icon_description">Значок блокировки</string>
+  <string name="mail_settings_pin_insertion_pin_dot_description">Точка PIN-кода</string>
+  <string name="mail_settings_pin_insertion_backspace_description">Backspace</string>
+  <string name="mail_settings_pin_insertion_biometric_description">Биометрическая аутентификация</string>
+  <string name="mail_settings_pin_insertion_button_create">Создать</string>
+  <string name="mail_settings_pin_insertion_button_confirm">Подтвердить</string>
+  <string name="mail_settings_pin_insertion_error_no_match">PIN-коды не совпадают.</string>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code">
+    <item quantity="one">Осталась %s попытка.</item>
+    <item quantity="few">Остались %s попытки.</item>
+    <item quantity="many">Осталось %s попыток.</item>
+    <item quantity="other">Осталось %s попытки.</item>
+  </plurals>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
+    <item quantity="one">Осталась %s попытка до безопасного стирания данных.</item>
+    <item quantity="few">Остались %s попытки до безопасного стирания данных.</item>
+    <item quantity="many">Осталось %s попыток до безопасного стирания данных.</item>
+    <item quantity="other">Осталось %s попытки до безопасного стирания данных.</item>
+  </plurals>
+  <string name="mail_settings_pin_insertion_error_unknown">Произошла ошибка при проверке PIN-кода.</string>
+  <string name="mail_settings_pin_insertion_signout_text">Выйти</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_title">Выйти</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_description">Вы уверены, что хотите выйти?</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Да</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_cancel">Нет</string>
+  <string name="mail_settings_pin_insertion_created_success">PIN-код создан</string>
+  <string name="mail_settings_pin_insertion_changed_success">PIN-код изменён</string>
+  <!-- Error messages -->
+  <string name="mail_settings_generic_error_message">Произошла ошибка. Попробуйте ещё раз.</string>
+  <!-- strings used for biometric enrollment -->
+  <string name="no_biometric_data_enrolled">Нет зарегистрированных биометрических данных</string>
+  <string name="log_in_using_biometric_credential">Разблокировать с помощью ваших биометрических данных</string>
+  <string name="unlock_using_biometrics">Разблокировать с помощью биометрических данных</string>
+  <string name="biometric_error_hw_not_available">Биометрическое оборудование недоступно.</string>
+</resources>

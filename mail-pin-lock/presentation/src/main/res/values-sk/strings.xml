@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Auto lock -->
+  <string name="mail_settings_auto_lock_title">Automatické uzamknutie</string>
+  <string name="mail_settings_auto_lock_item_title">Autom. uzamknutie aplikácie</string>
+  <string name="mail_settings_auto_lock_item_description">Zapnutím tejto funkcie aplikáciu automaticky uzamknete a odomknete ju pomocou PIN kódu.</string>
+  <string name="mail_settings_auto_lock_change_pin_description">Zmeniť PIN kód</string>
+  <string name="mail_settings_auto_lock_item_timer_title">Časovač autom. zámku</string>
+  <string name="mail_settings_auto_lock_immediately">Okamžite</string>
+  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 min. nečinnosti</string>
+  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 min. nečinnosti</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 h nečinnosti</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 deň nečinnosti</string>
+  <string name="mail_settings_auto_lock_update_error">Chyba pri aktualizácii nastavení</string>
+  <string name="mail_settings_pin_insertion_input_title">Zadajte PIN kód</string>
+  <string name="mail_settings_pin_insertion_set_title">Nastaviť PIN kód</string>
+  <string name="mail_settings_pin_insertion_confirm_title">Potvrdiť PIN kód</string>
+  <string name="mail_settings_pin_insertion_lock_icon_description">Ikona zámku</string>
+  <string name="mail_settings_pin_insertion_pin_dot_description">Bodky PIN kódu</string>
+  <string name="mail_settings_pin_insertion_backspace_description">Vymazať</string>
+  <string name="mail_settings_pin_insertion_biometric_description">Biometrické overenie</string>
+  <string name="mail_settings_pin_insertion_button_create">Vytvoriť</string>
+  <string name="mail_settings_pin_insertion_button_confirm">Potvrdiť</string>
+  <string name="mail_settings_pin_insertion_error_no_match">PIN kódy sa nezhodujú.</string>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code">
+    <item quantity="one">Zostáva %s pokus.</item>
+    <item quantity="few">Zostávajú %s pokusy.</item>
+    <item quantity="many">Zostáva %s pokusov.</item>
+    <item quantity="other">Zostáva %s pokusov.</item>
+  </plurals>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
+    <item quantity="one">Zostáva %s pokus pred bezpečným zmazaním dát.</item>
+    <item quantity="few">Zostávajú %s pokusy pred bezpečným zmazaním dát.</item>
+    <item quantity="many">Zostáva %s pokusov pred bezpečným zmazaním dát.</item>
+    <item quantity="other">Zostáva %s pokusov do bezpečného vymazania údajov.</item>
+  </plurals>
+  <string name="mail_settings_pin_insertion_error_unknown">Pri overovaní PIN kódu došlo k chybe.</string>
+  <string name="mail_settings_pin_insertion_signout_text">Odhlásiť sa</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_title">Odhlásiť sa</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_description">Naozaj sa chcete odhlásiť?</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Áno</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_cancel">Nie</string>
+  <string name="mail_settings_pin_insertion_created_success">PIN kód úspešne vytvorený.</string>
+  <string name="mail_settings_pin_insertion_changed_success">PIN kód úspešne zmenený.</string>
+  <!-- Error messages -->
+  <string name="mail_settings_generic_error_message">Vyskytla sa chyba. Skúste znova.</string>
+  <!-- strings used for biometric enrollment -->
+  <string name="no_biometric_data_enrolled">Nie sú zapísané žiadne biometrické údaje</string>
+  <string name="log_in_using_biometric_credential">Odomknite pomocou svojich biometrických údajov</string>
+  <string name="unlock_using_biometrics">Odomknúť pomocou biometrie</string>
+  <string name="biometric_error_hw_not_available">Biometrický hardvér nie je k dispozícii.</string>
+</resources>

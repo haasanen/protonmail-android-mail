@@ -26,7 +26,7 @@ import androidx.biometric.BiometricPrompt
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockInsertionMode
+import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockInsertionMode
 import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.BiometricPromptCallback
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen

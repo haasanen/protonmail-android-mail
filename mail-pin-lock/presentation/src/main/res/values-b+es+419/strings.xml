@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Auto lock -->
+  <string name="mail_settings_auto_lock_title">Bloqueo automático</string>
+  <string name="mail_settings_auto_lock_item_title">Bloqueo automático de la aplicación</string>
+  <string name="mail_settings_auto_lock_item_description">Active esta función para bloquear automáticamente la aplicación y usar un código PIN para desbloquearla.</string>
+  <string name="mail_settings_auto_lock_change_pin_description">Cambiar código PIN</string>
+  <string name="mail_settings_auto_lock_item_timer_title">Tiempo de bloqueo automático</string>
+  <string name="mail_settings_auto_lock_immediately">Inmediatamente</string>
+  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">tras 5 minutos de inactividad</string>
+  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">tras 15 minutos de inactividad</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_hour">tras 1 hora de inactividad</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_day">tras 1 día de inactividad</string>
+  <string name="mail_settings_auto_lock_update_error">Error al actualizar los ajustes</string>
+  <string name="mail_settings_pin_insertion_input_title">Ingresar código PIN</string>
+  <string name="mail_settings_pin_insertion_set_title">Establecer código PIN</string>
+  <string name="mail_settings_pin_insertion_confirm_title">Confirmar código PIN</string>
+  <string name="mail_settings_pin_insertion_lock_icon_description">Ícono de bloqueo</string>
+  <string name="mail_settings_pin_insertion_pin_dot_description">Código PIN de puntos</string>
+  <string name="mail_settings_pin_insertion_backspace_description">Retroceder</string>
+  <string name="mail_settings_pin_insertion_biometric_description">Autenticación biométrica</string>
+  <string name="mail_settings_pin_insertion_button_create">Crear</string>
+  <string name="mail_settings_pin_insertion_button_confirm">Confirmar</string>
+  <string name="mail_settings_pin_insertion_error_no_match">Los códigos PIN no coinciden.</string>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code">
+    <item quantity="one">%s intento restante.</item>
+    <item quantity="other">%s intentos restantes</item>
+  </plurals>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
+    <item quantity="one">%s intento restante antes de borrar los datos seguros.</item>
+    <item quantity="other">%s intentos restantes antes de borrar los datos seguros.</item>
+  </plurals>
+  <string name="mail_settings_pin_insertion_error_unknown">Ocurrió un error al verificar el código PIN.</string>
+  <string name="mail_settings_pin_insertion_signout_text">Cerrar sesión</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_title">Cerrar sesión</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_description">¿Está seguro de que quiere la cerrar sesión?</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Sí</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_cancel">No</string>
+  <string name="mail_settings_pin_insertion_created_success">Se creó el código PIN.</string>
+  <string name="mail_settings_pin_insertion_changed_success">Se cambió el código PIN.</string>
+
+  <!-- Error messages -->
+  <string name="mail_settings_generic_error_message">Ocurrió un error, intente de nuevo.</string>
+
+  <!-- strings used for biometric enrollment -->
+  <string name="no_biometric_data_enrolled">No hay datos biométricos registrados.</string>
+  <string name="log_in_using_biometric_credential">Desbloquear usando las credenciales biométricas</string>
+  <string name="unlock_using_biometrics">Desbloquear usando los datos biométricos</string>
+  <string name="biometric_error_hw_not_available">El sensor biométrico no está disponible.</string>
+</resources>

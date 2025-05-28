@@ -111,47 +111,6 @@
   <string name="mail_settings_notifications_notifications_settings_hint">시스템 알림 설정으로 이동</string>
   <string name="mail_settings_notifications_update_error">설정 업데이트 실패</string>
   <string name="mail_settings_notifications_loading_error">설정 로딩 중 오류 발생</string>
-  <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">자동 잠금</string>
-  <string name="mail_settings_auto_lock_item_title">앱 자동 잠금</string>
-  <string name="mail_settings_auto_lock_item_description">이 기능을 활성화하여 앱을 자동 잠금하고 PIN 코드를 통한 잠금 해제를 사용할 수 있습니다.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">PIN 코드 변경</string>
-  <string name="mail_settings_auto_lock_item_timer_title">자동 잠금 타이머</string>
-  <string name="mail_settings_auto_lock_immediately">즉시</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5분 경과시</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15분 경과시</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1시간 경과시</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1일 경과시</string>
-  <string name="mail_settings_auto_lock_update_error">설정 업데이트 중 실패</string>
-  <string name="mail_settings_pin_insertion_input_title">PIN 코드 입력</string>
-  <string name="mail_settings_pin_insertion_set_title">PIN 코드 지정</string>
-  <string name="mail_settings_pin_insertion_confirm_title">PIN 코드 확인</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">잠금 아이콘</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">PIN 도트</string>
-  <string name="mail_settings_pin_insertion_backspace_description">뒤로가기</string>
-  <string name="mail_settings_pin_insertion_biometric_description">생체정보 인증</string>
-  <string name="mail_settings_pin_insertion_button_create">생성</string>
-  <string name="mail_settings_pin_insertion_button_confirm">확정</string>
-  <string name="mail_settings_pin_insertion_error_no_match">PIN 코드가 일치하지 않습니다.</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="other">%s회 남은 시도.</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="other">보안 데이터 삭제까지 %s회 남았습니다.</item>
-  </plurals>
-  <string name="mail_settings_pin_insertion_error_unknown">PIN 코드를 확인하는데 오류가 발생했습니다.</string>
-  <string name="mail_settings_pin_insertion_signout_text">로그아웃</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_title">로그아웃</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_description">정말로 로그아웃하시겠습니까?</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_confirm">예</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_cancel">아니오</string>
-  <string name="mail_settings_pin_insertion_created_success">PIN 코드를 성공적으로 생성했습니다.</string>
-  <string name="mail_settings_pin_insertion_changed_success">PIN 코드를 성공적으로 변경했습니다.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">오류 발생. 다시 시도하세요.</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">등록 된 생체 인증 데이터가 없습니다</string>
-  <string name="log_in_using_biometric_credential">생체 인증을 사용하여 잠금해제</string>
-  <string name="unlock_using_biometrics">생체 인식을 사용하여 잠금 해제</string>
-  <string name="biometric_error_hw_not_available">생체 인증 하드웨어를 사용할 수 없습니다.</string>
 </resources>

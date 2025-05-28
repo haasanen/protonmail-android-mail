@@ -111,49 +111,6 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Sistem bildirimi ayarlarına git</string>
   <string name="mail_settings_notifications_update_error">Ayarlar güncellenirken sorun çıktı</string>
   <string name="mail_settings_notifications_loading_error">Ayarlar yüklenirken sorun çıktı</string>
-  <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Otomatik kilitleme</string>
-  <string name="mail_settings_auto_lock_item_title">Uygulama otomatik kilitlensin</string>
-  <string name="mail_settings_auto_lock_item_description">Uygulamanızı otomatik olarak kilitlemek için bu özelliği açın ve kilidini açmak için bir PIN kodu kullanın.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">PIN kodunu değiştir</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Otomatik kilit süresi</string>
-  <string name="mail_settings_auto_lock_immediately">Hemen</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 dakika hareketsizlik</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 dakika hareketsizlik</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 saat hareketsizlik</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 gün hareketsizlik</string>
-  <string name="mail_settings_auto_lock_update_error">Ayarlar güncellenirken sorun çıktı</string>
-  <string name="mail_settings_pin_insertion_input_title">PIN kodunu yazın</string>
-  <string name="mail_settings_pin_insertion_set_title">PIN kodu ayarla</string>
-  <string name="mail_settings_pin_insertion_confirm_title">PIN kodu onayı</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">Kilit simgesi</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">PIN noktası</string>
-  <string name="mail_settings_pin_insertion_backspace_description">Geriye silme tuşu</string>
-  <string name="mail_settings_pin_insertion_biometric_description">Biyometrik kimlik doğrulama</string>
-  <string name="mail_settings_pin_insertion_button_create">Ekle</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Onayla</string>
-  <string name="mail_settings_pin_insertion_error_no_match">PIN kodu ile onayı aynı değil.</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="one">%s deneme hakkı kaldı.</item>
-    <item quantity="other">%s deneme hakkı kaldı.</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="one">Güvenli verilerin silinmesinden önce %s deneme hakkınız kaldı.</item>
-    <item quantity="other">Güvenli verilerin silinmesinden önce %s deneme hakkınız kaldı.</item>
-  </plurals>
-  <string name="mail_settings_pin_insertion_error_unknown">PIN kodunuz doğrulanırken bir sorun çıktı.</string>
-  <string name="mail_settings_pin_insertion_signout_text">Oturumu kapat</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_title">Oturumu kapat</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_description">Oturumu kapatmak istediğinize emin misiniz?</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Evet</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_cancel">Hayır</string>
-  <string name="mail_settings_pin_insertion_created_success">PIN kodu oluşturuldu.</string>
-  <string name="mail_settings_pin_insertion_changed_success">PIN kodu değiştirildi.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Bir sorun çıktı. Yeniden deneyin.</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">Kaydedilmiş bir biyometrik veri yok</string>
-  <string name="log_in_using_biometric_credential">Kilidi açmak için biyometrik kimlik doğrulama bilgilerinizi kullanın</string>
-  <string name="unlock_using_biometrics">Kilidi biyometrik veriyle aç</string>
-  <string name="biometric_error_hw_not_available">Biyometrik donanımı kullanılamıyor.</string>
 </resources>

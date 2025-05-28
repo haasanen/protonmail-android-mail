@@ -111,51 +111,6 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Accesați setările notificărilor de sistem</string>
   <string name="mail_settings_notifications_update_error">Eroare la actualizarea setărilor.</string>
   <string name="mail_settings_notifications_loading_error">Eroare la încărcarea setărilor.</string>
-  <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Autoblocare</string>
-  <string name="mail_settings_auto_lock_item_title">Autoblocare aplicație</string>
-  <string name="mail_settings_auto_lock_item_description">Activați funcția pentru a bloca automat aplicația și a folosi un cod PIN pentru deblocare.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Schimbare cod PIN</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Timp autoblocare</string>
-  <string name="mail_settings_auto_lock_immediately">Imediat</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minute de inactivitate</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minute de inactivitate</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">o oră de inactivitate</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">o zi de inactivitate</string>
-  <string name="mail_settings_auto_lock_update_error">Eroare la actualizarea setărilor.</string>
-  <string name="mail_settings_pin_insertion_input_title">Inserați codul PIN</string>
-  <string name="mail_settings_pin_insertion_set_title">Setare cod PIN</string>
-  <string name="mail_settings_pin_insertion_confirm_title">Confirmare cod PIN</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">Pictogramă blocare</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">Ascundere PIN</string>
-  <string name="mail_settings_pin_insertion_backspace_description">Backspace</string>
-  <string name="mail_settings_pin_insertion_biometric_description">Autentificare biometrică</string>
-  <string name="mail_settings_pin_insertion_button_create">Creare</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Confirmare</string>
-  <string name="mail_settings_pin_insertion_error_no_match">Codurile PIN nu coincid.</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="one">Încercări rămase: %s</item>
-    <item quantity="few">Încercări rămase: %s</item>
-    <item quantity="other">Încercări rămase: %s</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="one">A mai rămas %s încercare până la ștergerea securizată a datelor.</item>
-    <item quantity="few">Au mai rămas %s încercări până la ștergerea securizată a datelor.</item>
-    <item quantity="other">Au mai rămas %s de încercări până la ștergerea securizată a datelor.</item>
-  </plurals>
-  <string name="mail_settings_pin_insertion_error_unknown">A apărut o eroare la verificarea codului PIN.</string>
-  <string name="mail_settings_pin_insertion_signout_text">Deconectare</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_title">Deconectare</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_description">Sigur doriți să vă deconectați?</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Da</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_cancel">Nu</string>
-  <string name="mail_settings_pin_insertion_created_success">Codul PIN a fost creat.</string>
-  <string name="mail_settings_pin_insertion_changed_success">Codul PIN a fost modificat.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">A apărut o eroare. Mai încercați.</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">Nu există date biometrice</string>
-  <string name="log_in_using_biometric_credential">Deblocare folosind acreditările biometrice</string>
-  <string name="unlock_using_biometrics">Deblocare folosind date biometrice</string>
-  <string name="biometric_error_hw_not_available">Dizpozitiv biometric nedisponibil.</string>
 </resources>

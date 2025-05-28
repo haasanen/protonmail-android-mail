@@ -34,8 +34,8 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockInsertionMode
-import ch.protonmail.android.mailsettings.presentation.settings.autolock.ui.pin.AutoLockPinScreen.AutoLockPinModeKey
+import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockInsertionMode
+import ch.protonmail.android.mailpinlock.presentation.pin.ui.AutoLockPinScreen.AutoLockPinModeKey
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen.SWIPE_DIRECTION_KEY
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.serialize

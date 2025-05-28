@@ -111,47 +111,6 @@
   <string name="mail_settings_notifications_notifications_settings_hint">システムの通知設定に移動します</string>
   <string name="mail_settings_notifications_update_error">設定更新エラー</string>
   <string name="mail_settings_notifications_loading_error">設定の読み込みエラー</string>
-  <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">自動ロック</string>
-  <string name="mail_settings_auto_lock_item_title">自動アプリロック</string>
-  <string name="mail_settings_auto_lock_item_description">この機能を有効にするとアプリは自動でロックされます。PINコードを使用してロックを解除できます。</string>
-  <string name="mail_settings_auto_lock_change_pin_description">PINコードを変更する</string>
-  <string name="mail_settings_auto_lock_item_timer_title">自動ロックタイマー</string>
-  <string name="mail_settings_auto_lock_immediately">即時</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 分間未使用の場合</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 分間未使用の場合</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 時間未使用の場合</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 日間未使用の場合</string>
-  <string name="mail_settings_auto_lock_update_error">設定更新エラー</string>
-  <string name="mail_settings_pin_insertion_input_title">PIN コードを入力</string>
-  <string name="mail_settings_pin_insertion_set_title">PIN コードを設定</string>
-  <string name="mail_settings_pin_insertion_confirm_title">PINコードを確認</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">ロックアイコン</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">Pinドット</string>
-  <string name="mail_settings_pin_insertion_backspace_description">バックスペース</string>
-  <string name="mail_settings_pin_insertion_biometric_description">生体認証</string>
-  <string name="mail_settings_pin_insertion_button_create">作成</string>
-  <string name="mail_settings_pin_insertion_button_confirm">確認</string>
-  <string name="mail_settings_pin_insertion_error_no_match">PINコードが一致しません。</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="other">残りの試行回数は %s 回です。</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="other">完全なデータ抹消まで残り%s回です。</item>
-  </plurals>
-  <string name="mail_settings_pin_insertion_error_unknown">PIN コードの確認中にエラーが発生しました。</string>
-  <string name="mail_settings_pin_insertion_signout_text">サインアウト</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_title">サインアウト</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_description">サインアウトしてよろしいですか？</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_confirm">はい</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_cancel">いいえ</string>
-  <string name="mail_settings_pin_insertion_created_success">PIN コードが正常に作成されました。</string>
-  <string name="mail_settings_pin_insertion_changed_success">PIN コードが正常に変更されました。</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">エラーが発生しました。再度お試しください。</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">生体認証データが登録されていません</string>
-  <string name="log_in_using_biometric_credential">生体認証によるロック解除</string>
-  <string name="unlock_using_biometrics">生体認証によるロック解除</string>
-  <string name="biometric_error_hw_not_available">生体認証ハードウェアは使用できません。</string>
 </resources>
