@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.HorizontalDivider
@@ -41,6 +42,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import ch.protonmail.android.design.compose.component.VerticalSpacer
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -81,7 +83,7 @@ internal fun BugReportTextField(
             color = ProtonTheme.colors.interactionWeakNorm
         ) {
             BasicTextField(
-                inputState,
+                state = inputState,
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(horizontal = ProtonDimens.Spacing.Medium, vertical = ProtonDimens.Spacing.Standard)
@@ -104,7 +106,8 @@ internal fun BugReportTextField(
                             )
                         }
                     }
-                }
+                },
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
             )
         }
         HorizontalDivider(
