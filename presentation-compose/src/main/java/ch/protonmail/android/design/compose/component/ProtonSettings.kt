@@ -415,7 +415,7 @@ fun ProtonSettingsToggleItem(
                 hint?.let {
                     Text(
                         text = hint,
-                        color = ProtonTheme.colors.textHint,
+                        color = ProtonTheme.colors.textWeak,
                         style = ProtonTheme.typography.bodyMediumNorm
                     )
                 }

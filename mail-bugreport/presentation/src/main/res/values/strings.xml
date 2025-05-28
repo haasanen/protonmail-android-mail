@@ -48,7 +48,7 @@
     <string name="report_a_problem_include_errors_description">A log shows all actions that led to an error.\nWe use it only to help fix bugs.</string>
     <string name="report_a_problem_summary_title">Summary (required)</string>
     <string name="report_a_problem_summary_description">Example: The Mail app crashes when opening emails with large attachments.</string>
-    <string name="report_a_problem_field_length_error">This field must be more than 10 characters long.</string>
+    <string name="report_a_problem_field_length_error">This field must be more than 10 characters</string>
     <string name="report_a_problem_expected_results_title">Expected results</string>
     <string name="report_a_problem_expected_results_description">Example: Opening the email should show the message content and the attachments.</string>
     <string name="report_a_problem_repro_steps_title">Steps to reproduce</string>

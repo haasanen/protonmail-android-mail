@@ -67,6 +67,11 @@ internal fun BugReportTextField(
         else -> ProtonTheme.colors.textWeak
     }
 
+    val dividerThickness = when {
+        isFocused -> ProtonDimens.Spacing.ExtraTiny + ProtonDimens.Spacing.Tiny
+        else -> ProtonDimens.Spacing.ExtraTiny
+    }
+
     Column {
         Text(text = title, style = ProtonTheme.typography.titleMediumNorm)
         VerticalSpacer()
@@ -112,7 +117,7 @@ internal fun BugReportTextField(
         }
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
-            thickness = ProtonDimens.Spacing.Tiny,
+            thickness = dividerThickness,
             color = dividerColor
         )
 
