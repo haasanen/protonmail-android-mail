@@ -528,4 +528,42 @@ class RustMessageRepositoryImplTest {
             assertEquals(expectedError.left(), result)
         }
     }
+
+    @Test
+    fun `delete all messages in location should call rust data source and return unit when successful`() {
+        runTest {
+            // Given
+            val labelId = LabelIdSample.Trash
+
+            coEvery {
+                rustMessageDataSource.deleteAllMessagesInLocation(userId, labelId.toLocalLabelId())
+            } returns Unit.right()
+
+            // When
+            val result = repository.deleteAllMessagesInLocation(userId, labelId)
+
+            // Then
+            coVerify { rustMessageDataSource.deleteAllMessagesInLocation(userId, labelId.toLocalLabelId()) }
+            assertEquals(Unit.right(), result)
+        }
+    }
+
+    @Test
+    fun `delete all messages in location should call rust data source and return error when failing`() {
+        runTest {
+            // Given
+            val labelId = LabelIdSample.Trash
+            val expectedError = DataError.Local.Unknown
+
+            coEvery {
+                rustMessageDataSource.deleteAllMessagesInLocation(userId, labelId.toLocalLabelId())
+            } returns expectedError.left()
+
+            // When
+            val result = repository.deleteAllMessagesInLocation(userId, labelId)
+
+            // Then
+            assertEquals(expectedError.left(), result)
+        }
+    }
 }

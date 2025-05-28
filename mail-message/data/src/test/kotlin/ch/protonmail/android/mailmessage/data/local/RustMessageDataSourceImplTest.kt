@@ -24,6 +24,8 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
@@ -31,6 +33,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageAct
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
+import ch.protonmail.android.mailmessage.data.usecase.RustDeleteAllMessagesInLabel
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustLabelMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessageAsLegitimate
@@ -97,6 +100,7 @@ class RustMessageDataSourceImplTest {
     private val rustMarkMessageAsLegitimate = mockk<RustMarkMessageAsLegitimate>()
     private val rustUnblockAddress = mockk<RustUnblockAddress>()
     private val rustReportPhishing = mockk<RustReportPhishing>()
+    private val rustDeleteAllMessagesInLabel = mockk<RustDeleteAllMessagesInLabel>()
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -121,6 +125,7 @@ class RustMessageDataSourceImplTest {
         rustMarkMessageAsLegitimate,
         rustUnblockAddress,
         rustReportPhishing,
+        rustDeleteAllMessagesInLabel,
         testDispatcher
     )
 
@@ -887,4 +892,59 @@ class RustMessageDataSourceImplTest {
         // Then
         assertEquals(expectedError.left(), result)
     }
+
+    @Test
+    fun `should delete all messages in location when session is available and use case returns success`() =
+        runTest(testDispatcher) {
+            // Given
+            val userId = UserIdTestData.userId
+            val labelId = LabelIdSample.Trash.toLocalLabelId()
+            val mailSession = mockk<MailUserSessionWrapper>()
+
+            coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+            coEvery { rustDeleteAllMessagesInLabel(mailSession, labelId) } returns Unit.right()
+
+            // When
+            val result = dataSource.deleteAllMessagesInLocation(userId, labelId)
+
+            // Then
+            coVerify { rustDeleteAllMessagesInLabel(mailSession, labelId) }
+            assertEquals(Unit.right(), result)
+        }
+
+    @Test
+    fun `delete all messages in location should return error when session is not available`() =
+        runTest(testDispatcher) {
+            // Given
+            val userId = UserIdTestData.userId
+            val labelId = LabelIdSample.Trash.toLocalLabelId()
+
+            coEvery { userSessionRepository.getUserSession(userId) } returns null
+
+            // When
+            val result = dataSource.deleteAllMessagesInLocation(userId, labelId)
+
+            // Then
+            coVerify(exactly = 0) { rustDeleteAllMessagesInLabel(any(), any()) }
+            assertEquals(DataError.Local.NoUserSession.left(), result)
+        }
+
+    @Test
+    fun `delete all messages in location should return error when operation was unsuccessful`() =
+        runTest(testDispatcher) {
+            // Given
+            val userId = UserIdTestData.userId
+            val labelId = LabelIdSample.Trash.toLocalLabelId()
+            val mailSession = mockk<MailUserSessionWrapper>()
+
+            coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+            coEvery { rustDeleteAllMessagesInLabel(mailSession, labelId) } returns DataError.Local.Unknown.left()
+
+            // When
+            val result = dataSource.deleteAllMessagesInLocation(userId, labelId)
+
+            // Then
+            coVerify { rustDeleteAllMessagesInLabel(mailSession, labelId) }
+            assertEquals(DataError.Local.Unknown.left(), result)
+        }
 }

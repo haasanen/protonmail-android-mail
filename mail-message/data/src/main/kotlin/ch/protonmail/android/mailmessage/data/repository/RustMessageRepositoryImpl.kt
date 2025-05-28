@@ -183,9 +183,8 @@ class RustMessageRepositoryImpl @Inject constructor(
         currentLabelId: LabelId
     ): Either<DataError, Unit> = rustMessageDataSource.deleteMessages(userId, messageIds.map { it.toLocalMessageId() })
 
-    override suspend fun deleteMessages(userId: UserId, labelId: LabelId) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun deleteAllMessagesInLocation(userId: UserId, labelId: LabelId): Either<DataError, Unit> =
+        rustMessageDataSource.deleteAllMessagesInLocation(userId, labelId.toLocalLabelId())
 
     // Mailbox requires this function to be implemented
     override fun observeClearLabelOperation(userId: UserId, labelId: LabelId): Flow<Boolean> = flowOf(false)

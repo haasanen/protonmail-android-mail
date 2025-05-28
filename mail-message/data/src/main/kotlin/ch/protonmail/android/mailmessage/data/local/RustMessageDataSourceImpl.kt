@@ -38,6 +38,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageAct
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
+import ch.protonmail.android.mailmessage.data.usecase.RustDeleteAllMessagesInLabel
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustLabelMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessageAsLegitimate
@@ -85,6 +86,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustMarkMessageAsLegitimate: RustMarkMessageAsLegitimate,
     private val rustUnblockAddress: RustUnblockAddress,
     private val rustReportPhishing: RustReportPhishing,
+    private val rustDeleteAllMessagesInLabel: RustDeleteAllMessagesInLabel,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RustMessageDataSource {
 
@@ -371,5 +373,16 @@ class RustMessageDataSourceImpl @Inject constructor(
             }
 
             return@withContext rustReportPhishing(mailbox, messageId)
+        }
+
+    override suspend fun deleteAllMessagesInLocation(userId: UserId, labelId: LocalLabelId): Either<DataError, Unit> =
+        withContext(ioDispatcher) {
+            val session = userSessionRepository.getUserSession(userId)
+            if (session == null) {
+                Timber.e("rust-message: trying to delete all messages in location with a null session")
+                return@withContext DataError.Local.NoUserSession.left()
+            }
+
+            rustDeleteAllMessagesInLabel(session, labelId)
         }
 }

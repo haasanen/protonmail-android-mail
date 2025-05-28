@@ -18,21 +18,15 @@
 
 package ch.protonmail.android.mailmessage.domain.usecase
 
-import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import javax.inject.Inject
 
-class DeleteMessages @Inject constructor(
+class DeleteAllMessagesInLocation @Inject constructor(
     private val messageRepository: MessageRepository
 ) {
 
-    suspend operator fun invoke(
-        userId: UserId,
-        messageIds: List<MessageId>,
-        currentLabelId: LabelId
-    ): Either<DataError, Unit> = messageRepository.deleteMessages(userId, messageIds, currentLabelId)
+    suspend operator fun invoke(userId: UserId, labelId: LabelId) =
+        messageRepository.deleteAllMessagesInLocation(userId, labelId)
 }

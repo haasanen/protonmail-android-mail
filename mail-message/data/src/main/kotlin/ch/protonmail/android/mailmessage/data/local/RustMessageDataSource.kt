@@ -34,6 +34,7 @@ import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
 
+@Suppress("ComplexInterface", "TooManyFunctions")
 interface RustMessageDataSource {
 
     suspend fun getMessage(userId: UserId, messageId: LocalMessageId): Either<DataError, LocalMessageMetadata>
@@ -110,4 +111,6 @@ interface RustMessageDataSource {
     suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit>
 
     suspend fun reportPhishing(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit>
+
+    suspend fun deleteAllMessagesInLocation(userId: UserId, labelId: LocalLabelId): Either<DataError, Unit>
 }
