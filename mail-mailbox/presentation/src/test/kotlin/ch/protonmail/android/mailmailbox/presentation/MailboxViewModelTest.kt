@@ -63,6 +63,7 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType.Conversation
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType.Message
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
+import ch.protonmail.android.mailmailbox.domain.model.SpamOrTrash
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
@@ -86,6 +87,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxRed
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import ch.protonmail.android.mailmessage.domain.usecase.DeleteAllMessagesInLocation
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
 import ch.protonmail.android.mailmessage.domain.usecase.HandleAvatarImageLoadingFailure
@@ -252,6 +254,8 @@ class MailboxViewModelTest {
         every { this@mockk() } returns flowOf()
     }
 
+    private val deleteAllMessagesInLocation = mockk<DeleteAllMessagesInLocation>()
+
     private val mailboxViewModel by lazy {
         MailboxViewModel(
             mailboxPagerFactory = pagerFactory,
@@ -287,6 +291,7 @@ class MailboxViewModelTest {
             handleAvatarImageLoadingFailure = handleAvatarImageLoadingFailure,
             observeAvatarImageStates = observeAvatarImageStates,
             observePrimaryAccountAvatarItem = observePrimaryAccountAvatarItem,
+            deleteAllMessagesInLocation = deleteAllMessagesInLocation,
             getAttachmentIntentValues = getAttachmentIntentValues
         )
     }
@@ -322,6 +327,7 @@ class MailboxViewModelTest {
                 unreadFilterState = UnreadFilterState.Loading,
                 bottomAppBarState = BottomBarState.Data.Hidden(emptyList<ActionUiModel>().toImmutableList()),
                 deleteDialogState = DeleteDialogState.Hidden,
+                clearAllDialogState = DeleteDialogState.Hidden,
                 bottomSheetState = null,
                 actionResult = Effect.empty(),
                 error = Effect.empty()
@@ -3005,6 +3011,33 @@ class MailboxViewModelTest {
                 MailboxEvent.AttachmentErrorEvent
             )
         }
+    }
+
+    @Test
+    fun `should show confirmation dialog for clearing all messages from a location`() = runTest {
+        // Given
+        every { selectedMailLabelId.flow } returns MutableStateFlow<MailLabelId>(MailLabelTestData.trashSystemLabel.id)
+
+        // When
+        mailboxViewModel.submit(MailboxViewAction.ClearAll)
+
+        // Then
+        verify { mailboxReducer.newStateFrom(any(), MailboxEvent.ClearAll(SpamOrTrash.Trash)) }
+    }
+
+    @Test
+    fun `should clear all messages from a location when the action was confirmed`() = runTest {
+        // Given
+        every { selectedMailLabelId.flow } returns MutableStateFlow<MailLabelId>(MailLabelTestData.trashSystemLabel.id)
+        coEvery {
+            deleteAllMessagesInLocation(userId, MailLabelTestData.trashSystemLabel.id.labelId)
+        } returns Unit.right()
+
+        // When
+        mailboxViewModel.submit(MailboxViewAction.ClearAllConfirmed)
+
+        // Then
+        coVerify { deleteAllMessagesInLocation(userId, MailLabelTestData.trashSystemLabel.id.labelId) }
     }
 
     private fun returnExpectedStateForBottomBarEvent(

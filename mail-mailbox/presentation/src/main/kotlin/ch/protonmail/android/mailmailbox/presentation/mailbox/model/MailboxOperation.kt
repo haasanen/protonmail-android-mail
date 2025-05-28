@@ -26,10 +26,12 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
+import ch.protonmail.android.mailmailbox.domain.model.SpamOrTrash
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingActionMessage
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingBottomAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingBottomSheet
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingDeleteDialog
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingClearAllDialog
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingErrorBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingMailboxList
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingTopAppBar
@@ -45,6 +47,7 @@ internal sealed interface MailboxOperation {
     sealed interface AffectingBottomAppBar
     sealed interface AffectingActionMessage
     sealed interface AffectingDeleteDialog
+    sealed interface AffectingClearAllDialog
     sealed interface AffectingBottomSheet
     sealed interface AffectingErrorBar
 }
@@ -143,6 +146,10 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     object CustomizeToolbar : MailboxViewAction
 
     data class RequestAttachment(val attachmentId: AttachmentIdUiModel) : MailboxViewAction
+
+    data object ClearAll : MailboxViewAction
+    data object ClearAllConfirmed : MailboxViewAction, AffectingClearAllDialog
+    data object ClearAllDismissed : MailboxViewAction, AffectingClearAllDialog
 }
 
 internal sealed interface MailboxEvent : MailboxOperation {
@@ -252,6 +259,8 @@ internal sealed interface MailboxEvent : MailboxOperation {
     data class AttachmentReadyEvent(
         val openAttachmentIntentValues: OpenAttachmentIntentValues
     ) : MailboxEvent, AffectingMailboxList
+
+    data class ClearAll(val spamOrTrash: SpamOrTrash) : MailboxEvent, AffectingClearAllDialog
 }
 
 

@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.maillabel.presentation.text
+import ch.protonmail.android.mailmailbox.domain.model.SpamOrTrash
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
@@ -75,6 +76,9 @@ internal class MailboxReducerTest(
     private val deleteDialogReducer: MailboxDeleteDialogReducer = mockk {
         every { newStateFrom(any()) } returns reducedState.deleteDialogState
     }
+    private val clearAllDialogReducer: MailboxClearAllDialogReducer = mockk {
+        every { newStateFrom(any()) } returns reducedState.clearAllDialogState
+    }
     private val bottomSheetReducer: BottomSheetReducer = mockk {
         every { newStateFrom(any(), any()) } returns reducedState.bottomSheetState
     }
@@ -85,6 +89,7 @@ internal class MailboxReducerTest(
         bottomAppBarReducer,
         actionMessageReducer,
         deleteDialogReducer,
+        clearAllDialogReducer,
         bottomSheetReducer
     )
 
@@ -139,6 +144,12 @@ internal class MailboxReducerTest(
             assertEquals(currentState.deleteDialogState, nextState.deleteDialogState)
         }
 
+        if (shouldReduceClearAllDialog) {
+            verify { clearAllDialogReducer.newStateFrom(operation as MailboxOperation.AffectingClearAllDialog) }
+        } else {
+            assertEquals(currentState.clearAllDialogState, nextState.clearAllDialogState)
+        }
+
         if (shouldReduceBottomAppBarState) {
             verify {
                 bottomAppBarReducer.newStateFrom(currentState.bottomAppBarState, any())
@@ -181,6 +192,7 @@ internal class MailboxReducerTest(
             bottomAppBarState = BottomBarState.Loading,
             actionResult = Effect.empty(),
             deleteDialogState = DeleteDialogState.Hidden,
+            clearAllDialogState = DeleteDialogState.Hidden,
             bottomSheetState = null,
             error = Effect.empty()
         )
@@ -194,6 +206,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -204,6 +217,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -214,6 +228,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -224,6 +239,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -234,6 +250,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -244,6 +261,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -254,6 +272,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -264,6 +283,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -274,6 +294,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -284,6 +305,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -294,6 +316,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -304,6 +327,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -314,6 +338,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -324,6 +349,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -334,6 +360,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -344,6 +371,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -354,6 +382,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -364,6 +393,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -374,6 +404,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -384,6 +415,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -394,7 +426,30 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
+            ),
+            TestInput(
+                MailboxViewAction.ClearAllConfirmed,
+                shouldReduceMailboxListState = false,
+                shouldReduceTopAppBarState = false,
+                shouldReduceUnreadFilterState = false,
+                shouldReduceBottomAppBarState = false,
+                shouldReduceActionMessage = false,
+                shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = true,
+                shouldReduceBottomSheetState = false
+            ),
+            TestInput(
+                MailboxViewAction.ClearAllDismissed,
+                shouldReduceMailboxListState = false,
+                shouldReduceTopAppBarState = false,
+                shouldReduceUnreadFilterState = false,
+                shouldReduceBottomAppBarState = false,
+                shouldReduceActionMessage = false,
+                shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = true,
+                shouldReduceBottomSheetState = false
             )
         )
 
@@ -410,6 +465,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -422,6 +478,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -434,6 +491,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -447,6 +505,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -457,6 +516,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -467,6 +527,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -477,6 +538,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -487,6 +549,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = true,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -497,6 +560,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = true,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -507,6 +571,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = true,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -517,6 +582,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -527,6 +593,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = true,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
@@ -537,6 +604,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = true,
+                shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
             ),
             TestInput(
@@ -548,7 +616,19 @@ internal class MailboxReducerTest(
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
                 shouldReduceBottomSheetState = false,
+                shouldReduceClearAllDialog = false,
                 errorBarState = Effect.of(TextUiModel(R.string.mailbox_action_label_messages_failed))
+            ),
+            TestInput(
+                MailboxEvent.ClearAll(SpamOrTrash.Spam),
+                shouldReduceMailboxListState = false,
+                shouldReduceTopAppBarState = false,
+                shouldReduceUnreadFilterState = false,
+                shouldReduceBottomAppBarState = false,
+                shouldReduceActionMessage = false,
+                shouldReduceDeleteDialog = false,
+                shouldReduceBottomSheetState = false,
+                shouldReduceClearAllDialog = true
             )
         )
 
@@ -574,6 +654,7 @@ internal class MailboxReducerTest(
         val shouldReduceBottomAppBarState: Boolean,
         val shouldReduceActionMessage: Boolean,
         val shouldReduceDeleteDialog: Boolean,
+        val shouldReduceClearAllDialog: Boolean,
         val shouldReduceBottomSheetState: Boolean,
         val errorBarState: Effect<TextUiModel> = Effect.empty()
     )

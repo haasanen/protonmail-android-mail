@@ -45,6 +45,7 @@ class MailboxReducer @Inject constructor(
     private val bottomAppBarReducer: BottomBarReducer,
     private val actionMessageReducer: MailboxActionMessageReducer,
     private val deleteDialogReducer: MailboxDeleteDialogReducer,
+    private val clearAllDialogReducer: MailboxClearAllDialogReducer,
     private val bottomSheetReducer: BottomSheetReducer
 ) {
 
@@ -55,6 +56,7 @@ class MailboxReducer @Inject constructor(
             unreadFilterState = currentState.toNewUnreadFilterStateFrom(operation),
             bottomAppBarState = currentState.toNewBottomAppBarStateFrom(operation),
             deleteDialogState = currentState.toNewDeleteActionStateFrom(operation),
+            clearAllDialogState = currentState.toNewClearAllDialogStateFrom(operation),
             bottomSheetState = currentState.toNewBottomSheetState(operation),
             actionResult = currentState.toNewActionMessageStateFrom(operation),
             error = currentState.toNewErrorBarState(operation)
@@ -117,6 +119,14 @@ class MailboxReducer @Inject constructor(
             deleteDialogReducer.newStateFrom(operation)
         } else {
             deleteDialogState
+        }
+    }
+
+    private fun MailboxState.toNewClearAllDialogStateFrom(operation: MailboxOperation): DeleteDialogState {
+        return if (operation is MailboxOperation.AffectingClearAllDialog) {
+            clearAllDialogReducer.newStateFrom(operation)
+        } else {
+            clearAllDialogState
         }
     }
 

@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
 import android.content.res.Configuration
+import android.view.MotionEvent
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.ReportDrawn
@@ -249,7 +250,10 @@ fun MailboxScreen(
         },
         onOpenUpsellingPage = { viewModel.submit(MailboxViewAction.RequestUpsellingBottomSheet) },
         onCloseUpsellingPage = { viewModel.submit(MailboxViewAction.DismissBottomSheet) },
-        onAttachmentClicked = { viewModel.submit(MailboxViewAction.RequestAttachment(it)) }
+        onAttachmentClicked = { viewModel.submit(MailboxViewAction.RequestAttachment(it)) },
+        onClearAll = { viewModel.submit(MailboxViewAction.ClearAll) },
+        onClearAllConfirmed = { viewModel.submit(MailboxViewAction.ClearAllConfirmed) },
+        onClearAllDismissed = { viewModel.submit(MailboxViewAction.ClearAllDismissed) }
     )
 
     mailboxState.bottomSheetState?.let {
@@ -394,6 +398,8 @@ fun MailboxScreen(
     }
 
     DeleteDialog(state = mailboxState.deleteDialogState, actions.deleteConfirmed, actions.deleteDialogDismissed)
+
+    DeleteDialog(state = mailboxState.clearAllDialogState, actions.onClearAllConfirmed, actions.onClearAllDismissed)
 
     Scaffold(
         modifier = modifier.testTag(MailboxScreenTestTags.Root),
@@ -792,7 +798,7 @@ private fun MailboxItemsList(
             .testTag(MailboxScreenTestTags.List)
             .fillMaxSize()
             .pointerInteropFilter { event ->
-                if (!userTapped && event.action == android.view.MotionEvent.ACTION_DOWN) {
+                if (!userTapped && event.action == MotionEvent.ACTION_DOWN) {
                     userTapped = true
                 }
                 false // Allow the event to propagate
@@ -804,7 +810,7 @@ private fun MailboxItemsList(
                 ClearAllOperationBanner(
                     actions = ClearAllOperationBanner.Actions(
                         onUpselling = actions.showMissingFeature,
-                        onClearAll = actions.showMissingFeature
+                        onClearAll = actions.onClearAll
                     )
                 )
             }
@@ -1113,7 +1119,10 @@ object MailboxScreen {
         val onExitSearchMode: () -> Unit,
         val onOpenUpsellingPage: () -> Unit,
         val onCloseUpsellingPage: () -> Unit,
-        val onAccountAvatarClicked: () -> Unit
+        val onAccountAvatarClicked: () -> Unit,
+        val onClearAll: () -> Unit,
+        val onClearAllConfirmed: () -> Unit,
+        val onClearAllDismissed: () -> Unit
     ) {
 
         companion object {
@@ -1168,7 +1177,10 @@ object MailboxScreen {
                 onAccountAvatarClicked = {},
                 showMissingFeature = {},
                 onAttachmentClicked = {},
-                onAttachmentReady = {}
+                onAttachmentReady = {},
+                onClearAll = {},
+                onClearAllConfirmed = {},
+                onClearAllDismissed = {}
             )
         }
     }

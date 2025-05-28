@@ -67,6 +67,7 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
+import ch.protonmail.android.mailmailbox.domain.model.SpamOrTrash
 import ch.protonmail.android.mailmailbox.domain.model.toMailboxItemType
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
@@ -85,6 +86,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxRed
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
+import ch.protonmail.android.mailmessage.domain.usecase.DeleteAllMessagesInLocation
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
 import ch.protonmail.android.mailmessage.domain.usecase.HandleAvatarImageLoadingFailure
@@ -165,7 +167,8 @@ class MailboxViewModel @Inject constructor(
     private val handleAvatarImageLoadingFailure: HandleAvatarImageLoadingFailure,
     private val observeAvatarImageStates: ObserveAvatarImageStates,
     private val observePrimaryAccountAvatarItem: ObservePrimaryAccountAvatarItem,
-    private val getAttachmentIntentValues: GetAttachmentIntentValues
+    private val getAttachmentIntentValues: GetAttachmentIntentValues,
+    private val deleteAllMessagesInLocation: DeleteAllMessagesInLocation
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId().filterNotNull()
@@ -323,6 +326,9 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.DeselectAll -> handleDeselectAllAction()
                 is MailboxViewAction.CustomizeToolbar -> handleCustomizeToolbar(viewAction)
                 is MailboxViewAction.RequestAttachment -> handleRequestAttachment(viewAction)
+                is MailboxViewAction.ClearAll -> handleClearAll()
+                is MailboxViewAction.ClearAllConfirmed -> handleClearAllConfirmed(viewAction)
+                is MailboxViewAction.ClearAllDismissed -> emitNewStateFrom(viewAction)
             }
         }
     }
@@ -923,6 +929,23 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
+    private fun handleClearAll() = viewModelScope.launch {
+        val spamOrTrash = when (val label = observeCurrentMailLabel().first()) {
+            is MailLabel.System -> when (label.systemLabelId) {
+                SystemLabelId.Trash -> SpamOrTrash.Trash
+                SystemLabelId.Spam -> SpamOrTrash.Spam
+                else -> null
+            }
+            else -> null
+        }
+        spamOrTrash?.let { emitNewStateFrom(MailboxEvent.ClearAll(spamOrTrash = it)) }
+    }
+
+    private fun handleClearAllConfirmed(action: MailboxViewAction.ClearAllConfirmed) = viewModelScope.launch {
+        deleteAllMessagesInLocation(primaryUserId.first(), selectedMailLabelId.flow.first().labelId)
+        emitNewStateFrom(action)
+    }
+
     private suspend fun handleStarAction(viewAction: MailboxViewAction) {
         val selectionModeDataState = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
         if (selectionModeDataState == null) {
@@ -1089,6 +1112,7 @@ class MailboxViewModel @Inject constructor(
             unreadFilterState = UnreadFilterState.Loading,
             bottomAppBarState = BottomBarState.Data.Hidden(emptyList<ActionUiModel>().toImmutableList()),
             deleteDialogState = DeleteDialogState.Hidden,
+            clearAllDialogState = DeleteDialogState.Hidden,
             bottomSheetState = null,
             actionResult = Effect.empty(),
             error = Effect.empty()

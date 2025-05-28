@@ -68,6 +68,7 @@ object MailboxStateSampleData {
         bottomAppBarState = BottomBarState.Loading,
         actionResult = Effect.empty(),
         deleteDialogState = DeleteDialogState.Hidden,
+        clearAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
         error = Effect.empty()
     )
@@ -100,6 +101,7 @@ object MailboxStateSampleData {
         ),
         actionResult = Effect.empty(),
         deleteDialogState = DeleteDialogState.Hidden,
+        clearAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
         error = Effect.empty()
     )
@@ -132,6 +134,7 @@ object MailboxStateSampleData {
         ),
         actionResult = Effect.empty(),
         deleteDialogState = DeleteDialogState.Hidden,
+        clearAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
         error = Effect.empty()
     )
@@ -177,6 +180,7 @@ object MailboxStateSampleData {
         ),
         actionResult = Effect.empty(),
         deleteDialogState = DeleteDialogState.Hidden,
+        clearAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = bottomSheetState,
         error = error
     )
