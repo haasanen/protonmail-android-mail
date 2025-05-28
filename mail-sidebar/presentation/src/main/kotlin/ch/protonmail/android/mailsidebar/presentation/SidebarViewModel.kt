@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsReportAProblemEnabled
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -35,7 +34,6 @@ import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -53,8 +51,7 @@ class SidebarViewModel @Inject constructor(
     private val updateLabelExpandedState: UpdateLabelExpandedState,
     observePrimaryUserId: ObservePrimaryUserId,
     observeMailLabels: ObserveMailLabels,
-    observeUnreadCounters: ObserveUnreadCounters,
-    @IsReportAProblemEnabled private val reportAProblemEnabled: Flow<Boolean>
+    observeUnreadCounters: ObserveUnreadCounters
 ) : ViewModel() {
 
     private val initialState = State.Disabled
@@ -63,12 +60,6 @@ class SidebarViewModel @Inject constructor(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = null
-    )
-
-    val isReportAProblemEnabled = reportAProblemEnabled.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
-        initialValue = false
     )
 
     val state: StateFlow<State> = primaryUser.flatMapLatest { userId ->

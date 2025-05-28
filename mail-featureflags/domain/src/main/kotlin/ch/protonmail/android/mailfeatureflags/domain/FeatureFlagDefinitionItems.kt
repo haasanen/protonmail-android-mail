@@ -37,14 +37,6 @@ data object DebugInspectDbEnabled : FeatureFlagDefinition(
     defaultValue = true
 )
 
-data object ReportAProblemEnabled : FeatureFlagDefinition(
-    key = "report_a_problem",
-    name = "Report A Problem",
-    category = FeatureFlagCategory.Settings,
-    description = "Grants access to 'Report a Problem' feature.",
-    defaultValue = false
-)
-
 data object InlineImagesComposerEnabled : FeatureFlagDefinition(
     key = "inline_images_composer",
     name = "Inline images composer",

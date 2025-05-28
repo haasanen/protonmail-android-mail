@@ -24,11 +24,9 @@ import ch.protonmail.android.mailfeatureflags.domain.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.InlineImagesComposerEnabled
-import ch.protonmail.android.mailfeatureflags.domain.ReportAProblemEnabled
 import ch.protonmail.android.mailfeatureflags.domain.UseV6CssInjectionDefinition
 import ch.protonmail.android.mailfeatureflags.domain.annotation.InlineImagesInComposerEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsReportAProblemEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.V6CssInjectionEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import dagger.Module
@@ -52,17 +50,6 @@ object FeatureFlagsModule {
     @InlineImagesInComposerEnabled
     fun provideInlineImagesComposerEnabled(resolver: FeatureFlagResolver) =
         resolver.observeFeatureFlag(InlineImagesComposerEnabled.key)
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideReportAProblemDefinition(): FeatureFlagDefinition = ReportAProblemEnabled
-
-    @Provides
-    @Singleton
-    @IsReportAProblemEnabled
-    fun provideReportAProblemEnabled(resolver: FeatureFlagResolver) =
-        resolver.observeFeatureFlag(ReportAProblemEnabled.key)
 
     @Provides
     @IntoSet

@@ -97,8 +97,7 @@ class SidebarViewModelTest {
             updateLabelExpandedState = updateLabelExpandedState,
             observePrimaryUserId = observePrimaryUserId,
             observeMailLabels = observeMailboxLabels,
-            observeUnreadCounters = observeUnreadCounters,
-            reportAProblemEnabled = flowOf(false)
+            observeUnreadCounters = observeUnreadCounters
         )
     }
 
