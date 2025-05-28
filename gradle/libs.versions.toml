@@ -43,7 +43,6 @@ androidx-test-uiautomator = "2.3.0"
 androidx-tracing = "1.2.0"
 androidx-webkit = "1.13.0"
 androidx-work = "2.10.0"
-android-golib = "2.8.2" # Can be removed once core library declares it as its own dependency, see !1891 (proton-libs).
 arrow-core = "1.2.4"
 cash-turbine = "1.2.0"
 coil = "2.7.0"
@@ -153,7 +152,6 @@ androidx-tracing-perfetto = { module = "androidx.tracing:tracing-perfetto", vers
 androidx-tracing-perfetto-binary = { module = "androidx.tracing:tracing-perfetto-binary", version.ref = "androidx-perfetto" }
 androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "androidx-webkit" }
 androidx-work-runtimeKtx = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
-android-golib = { module = "me.proton.crypto:android-golib", version.ref = "android-golib" }
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow-core" }
 cash-turbine = { module = "app.cash.turbine:turbine", version.ref = "cash-turbine" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
@@ -247,7 +245,6 @@ appLibs = [
     "androidx-work-runtimeKtx",
     "android-material",
     "androidx-compose-material3",
-    "android-golib",
     "arrow-core",
     "timber",
     "kotlinx-immutableCollections",
