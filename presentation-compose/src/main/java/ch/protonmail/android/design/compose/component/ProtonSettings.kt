@@ -39,6 +39,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.RadioButton
@@ -92,6 +93,7 @@ fun ProtonSettingsList(modifier: Modifier = Modifier, content: LazyListScope.() 
  * By default, shows a back icon and the given title
  * @param onBackClick callback to handle back icon click
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProtonSettingsTopBar(
     modifier: Modifier = Modifier,

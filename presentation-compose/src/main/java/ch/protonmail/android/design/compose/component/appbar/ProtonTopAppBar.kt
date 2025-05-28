@@ -29,9 +29,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -92,7 +93,8 @@ fun ProtonMediumTopAppBar(
     navigationIcon: @Composable (() -> Unit),
     actions: @Composable RowScope.() -> Unit = {},
     backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
-    contentColor: Color = ProtonTheme.colors.textNorm
+    contentColor: Color = ProtonTheme.colors.textNorm,
+    scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     MediumTopAppBar(
         title = title,
@@ -105,7 +107,8 @@ fun ProtonMediumTopAppBar(
             navigationIconContentColor = contentColor,
             titleContentColor = contentColor,
             actionIconContentColor = contentColor
-        )
+        ),
+        scrollBehavior = scrollBehavior
     )
 }
 

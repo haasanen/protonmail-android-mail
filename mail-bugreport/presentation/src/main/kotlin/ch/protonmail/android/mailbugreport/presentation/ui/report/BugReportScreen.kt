@@ -20,11 +20,13 @@ package ch.protonmail.android.mailbugreport.presentation.ui.report
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -54,6 +57,7 @@ fun BugReportScreen(onBack: () -> Unit, onSuccess: (String) -> Unit) {
     BugReportScreenImpl(onBack, onSuccess)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BugReportScreenImpl(
     onBack: () -> Unit,
@@ -66,6 +70,7 @@ private fun BugReportScreenImpl(
     val states by viewModel.states.collectAsStateWithLifecycle()
     var shouldIncludeLogs by remember { mutableStateOf(false) }
     var shouldShowExitDialog by remember { mutableStateOf(false) }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val actions = BugReportScreen.Actions(
         onBack = { viewModel.close() },
@@ -89,6 +94,7 @@ private fun BugReportScreenImpl(
     }
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             ProtonMediumTopAppBar(
                 title = { Text(text = stringResource(R.string.report_a_problem_title)) },
@@ -108,7 +114,8 @@ private fun BugReportScreenImpl(
                             actions.onSubmit(shouldIncludeLogs)
                         }
                     )
-                }
+                },
+                scrollBehavior = scrollBehavior
             )
         },
         snackbarHost = { DismissableSnackbarHost(protonSnackbarHostState = snackbarHostState) },
