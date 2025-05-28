@@ -166,7 +166,7 @@ fun EditableMessageBodyWebView(
 
         AndroidView(
             factory = { context ->
-                val childView = webViewActions.onBuildWebView.invoke(context).apply {
+                webViewActions.onBuildWebView.invoke(context).apply {
                     this.settings.builtInZoomControls = true
                     this.settings.displayZoomControls = false
                     this.settings.javaScriptEnabled = true
@@ -181,18 +181,6 @@ fun EditableMessageBodyWebView(
 
                     webView = this
                 }
-
-                // Workaround a crash on certain devices that expect WebView to be
-                // wrapped in a ViewGroup.
-                // b/243567497
-                val parentLayout = FrameLayout(context)
-                parentLayout.layoutParams = LayoutParams(
-                    width,
-                    height
-                )
-                parentLayout.addView(childView)
-
-                parentLayout
             },
             modifier = Modifier
                 .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
