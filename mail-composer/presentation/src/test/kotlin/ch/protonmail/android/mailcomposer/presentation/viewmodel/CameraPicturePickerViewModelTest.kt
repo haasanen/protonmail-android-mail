@@ -1,14 +1,16 @@
 package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
 import java.io.File
-import java.io.IOException
 import java.time.LocalDate
 import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
 import app.cash.turbine.test
-import ch.protonmail.android.mailcommon.data.file.FileHelper
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatLocalDate
+import ch.protonmail.android.mailcomposer.domain.repository.CameraTempImageRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -33,15 +35,14 @@ class CameraPicturePickerViewModelTest {
     private val nowDateMock = LocalDate.ofEpochDay(1_748_427_600) // 20 May 2025 10:20
     private val context = mockk<Context>(relaxed = true)
     private val formatLocalDate = mockk<FormatLocalDate>()
-    private val fileFactory = mockk<FileHelper.FileFactory>()
+    private val fileRepository = mockk<CameraTempImageRepository>()
     private val fileMock = mockk<File>()
     private val uriMock = mockk<Uri>()
 
     private val viewModel = CameraPicturePickerViewModel(
         context,
-        testDispatcher,
         formatLocalDate,
-        fileFactory
+        fileRepository
     )
 
     @BeforeTest
@@ -78,10 +79,7 @@ class CameraPicturePickerViewModelTest {
     @Test
     fun `emits file uri of generated temp file when camera permission granted`() = runTest(testDispatcher) {
         // Given
-        val filename = "camera-capture-$FAKE_FORMATTED_DATE.jpg"
-        coEvery {
-            fileFactory.fileFrom(FileHelper.Folder(FAKE_CACHE_PATH), FileHelper.Filename(filename))
-        } returns fileMock
+        coEvery { fileRepository.getFile(expectedFilename) } returns fileMock.right()
 
         // When
         viewModel.onPermissionGranted()
@@ -97,9 +95,7 @@ class CameraPicturePickerViewModelTest {
     @Test
     fun `emits file error when generating temp file fails`() = runTest(testDispatcher) {
         // Given
-        coEvery {
-            fileFactory.fileFrom(FileHelper.Folder(FAKE_CACHE_PATH), FileHelper.Filename(expectedFilename))
-        } throws IOException("Cache is full")
+        coEvery { fileRepository.getFile(expectedFilename) } returns DataError.Local.FailedToStoreFile.left()
 
         // When
         viewModel.onPermissionGranted()

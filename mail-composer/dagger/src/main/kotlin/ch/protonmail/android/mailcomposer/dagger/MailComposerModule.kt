@@ -27,6 +27,7 @@ import ch.protonmail.android.composer.data.local.RustDraftDataSourceImpl
 import ch.protonmail.android.composer.data.local.RustSendingStatusDataSource
 import ch.protonmail.android.composer.data.local.RustSendingStatusDataSourceImpl
 import ch.protonmail.android.composer.data.repository.AttachmentRepositoryImpl
+import ch.protonmail.android.composer.data.repository.CameraTempImageFileRepository
 import ch.protonmail.android.composer.data.repository.ContactsPermissionRepositoryImpl
 import ch.protonmail.android.composer.data.repository.DraftRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessageExpirationTimeRepositoryImpl
@@ -34,6 +35,7 @@ import ch.protonmail.android.composer.data.repository.MessagePasswordRepositoryI
 import ch.protonmail.android.composer.data.repository.MessageRepositoryImpl
 import ch.protonmail.android.composer.data.repository.SendingStatusRepositoryImpl
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
+import ch.protonmail.android.mailcomposer.domain.repository.CameraTempImageRepository
 import ch.protonmail.android.mailcomposer.domain.repository.ContactsPermissionRepository
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
@@ -74,6 +76,10 @@ abstract class MailComposerModule {
     abstract fun bindsMessageExpirationTimeRepository(
         impl: MessageExpirationTimeRepositoryImpl
     ): MessageExpirationTimeRepository
+
+    @Binds
+    @Reusable
+    abstract fun bindsCameraTempImageRepository(impl: CameraTempImageFileRepository): CameraTempImageRepository
 
     @Binds
     @ViewModelScoped

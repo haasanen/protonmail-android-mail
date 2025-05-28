@@ -25,25 +25,21 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailcommon.data.file.FileHelper
-import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatLocalDate
+import ch.protonmail.android.mailcomposer.domain.repository.CameraTempImageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class CameraPicturePickerViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    @IODispatcher private val ioDispatcher: CoroutineDispatcher,
     private val formatLocalDate: FormatLocalDate,
-    private val fileFactory: FileHelper.FileFactory
+    private val cameraTempImageRepository: CameraTempImageRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<State>(State.Initial)
@@ -51,9 +47,7 @@ class CameraPicturePickerViewModel @Inject constructor(
 
     fun onPermissionGranted() {
         viewModelScope.launch {
-            withContext(ioDispatcher) {
-                generateFileForCapture()
-            }
+            generateFileForCapture()
         }
     }
 
@@ -74,14 +68,12 @@ class CameraPicturePickerViewModel @Inject constructor(
         }
     }
 
-    private fun getTempImageFile(): File? {
+    private suspend fun getTempImageFile(): File? {
         val date = formatLocalDate(LocalDate.now())
         val extension = ".jpg"
         val fileName = "camera-capture-$date$extension"
 
-        return runCatching {
-            fileFactory.fileFrom(FileHelper.Folder(context.cacheDir.absolutePath), FileHelper.Filename(fileName))
-        }.getOrNull()
+        return cameraTempImageRepository.getFile(fileName).getOrNull()
     }
 
     sealed interface State {
