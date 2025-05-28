@@ -21,32 +21,27 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
-import ch.protonmail.android.maillabel.domain.model.isTrashOrSpam
-import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
+import ch.protonmail.android.mailmailbox.domain.model.AutoDeleteState
+import ch.protonmail.android.mailmailbox.domain.usecase.GetAutoDeleteBanner
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.ClearAllStateUiModelMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllStateUiModel
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveAutoDeleteSpamAndTrashEnabled
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 @HiltViewModel
 internal class ClearAllOperationViewModel @Inject constructor(
     private val observePrimaryUserId: ObservePrimaryUserId,
-    private val observeMailLabels: ObserveMailLabels,
     private val selectedMailLabelId: SelectedMailLabelId,
-    private val observeAutoDeleteSpamAndTrashEnabled: ObserveAutoDeleteSpamAndTrashEnabled
+    private val getAutoDeleteBanner: GetAutoDeleteBanner
 ) : ViewModel() {
 
     val state: StateFlow<ClearAllStateUiModel> = observeClearAllState().stateIn(
@@ -58,24 +53,27 @@ internal class ClearAllOperationViewModel @Inject constructor(
     private fun observeClearAllState(): Flow<ClearAllStateUiModel> = observePrimaryUserId()
         .filterNotNull()
         .flatMapLatest { userId ->
-            observeCurrentMailLabel(userId).map { mailLabel ->
-                Pair(userId, mailLabel)
+            selectedMailLabelId.flow.map { mailLabelId ->
+                Pair(userId, mailLabelId.labelId)
             }
         }
-        .flatMapLatest { (userId, mailLabel) ->
-            val eligibleLabel = mailLabel.takeIf { it?.isTrashOrSpam() == true }
-                ?: return@flatMapLatest flowOf(ClearAllStateUiModel.Hidden)
-
-            observeAutoDeleteSpamAndTrashEnabled(userId).map { isEnabled ->
-                val clearState = if (isEnabled) ClearAllState.ClearAllActionBanner else ClearAllState.UpsellBanner
-                ClearAllStateUiModelMapper.toUiModel(clearState, eligibleLabel)
-            }
+        .map { (userId, labelId) ->
+            val clearState = getAutoDeleteBanner(userId, labelId).fold(
+                ifLeft = { ClearAllState.Hidden },
+                ifRight = {
+                    when (it.state) {
+                        AutoDeleteState.AutoDeleteUpsell -> ClearAllState.UpsellBanner
+                        AutoDeleteState.AutoDeleteDisabled -> ClearAllState.ClearAllActionBanner(
+                            isAutoDeleteEnabled = false,
+                            spamOrTrash = it.folder
+                        )
+                        AutoDeleteState.AutoDeleteEnabled -> ClearAllState.ClearAllActionBanner(
+                            isAutoDeleteEnabled = true,
+                            spamOrTrash = it.folder
+                        )
+                    }
+                }
+            )
+            ClearAllStateUiModelMapper.toUiModel(clearState)
         }
-
-    private fun observeCurrentMailLabel(userId: UserId) = combine(
-        observeMailLabels(userId),
-        selectedMailLabelId.flow
-    ) { mailLabels, selectedLabel ->
-        mailLabels.allById[selectedLabel]
-    }
 }

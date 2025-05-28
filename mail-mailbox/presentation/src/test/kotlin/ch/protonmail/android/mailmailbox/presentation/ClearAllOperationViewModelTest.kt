@@ -19,17 +19,22 @@
 package ch.protonmail.android.mailmailbox.presentation
 
 import app.cash.turbine.test
+import arrow.core.right
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
+import ch.protonmail.android.mailmailbox.domain.model.AutoDeleteBanner
+import ch.protonmail.android.mailmailbox.domain.model.AutoDeleteState
+import ch.protonmail.android.mailmailbox.domain.model.SpamOrTrash
+import ch.protonmail.android.mailmailbox.domain.usecase.GetAutoDeleteBanner
 import ch.protonmail.android.mailmailbox.presentation.mailbox.ClearAllOperationViewModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllStateUiModel
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveAutoDeleteSpamAndTrashEnabled
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
@@ -41,7 +46,6 @@ import me.proton.core.domain.entity.UserId
 import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 internal class ClearAllOperationViewModelTest {
@@ -61,36 +65,11 @@ internal class ClearAllOperationViewModelTest {
     private val selectedMailLabelId = mockk<SelectedMailLabelId> {
         every { this@mockk.flow } returns selectedMailLabelIdFlow
     }
-    private val observeAutoDeleteSpamAndTrashEnabled = mockk<ObserveAutoDeleteSpamAndTrashEnabled>()
+    private val getAutoDeleteBanner = mockk<GetAutoDeleteBanner>()
 
     @AfterTest
     fun teardown() {
         unmockkAll()
-    }
-
-    @Test
-    fun `should emit hidden state on startup`() = runTest {
-        // Given
-        val expectedState = ClearAllStateUiModel.Hidden
-
-        // When + Then
-        viewModel().state.test {
-            assertEquals(expectedState, awaitItem())
-        }
-    }
-
-    @Test
-    fun `should emit hidden state when the current label is not spam or trash`() = runTest {
-        // Given
-        val expectedState = ClearAllStateUiModel.Hidden
-        every { observeMailLabels.invoke(userId) } returns flowOf(archiveMailLabels)
-        every { selectedMailLabelId.flow } returns
-            MutableStateFlow(MailLabelId.System(archiveSystemLabelId.labelId))
-
-        // When + Then
-        viewModel().state.test {
-            assertEquals(expectedState, awaitItem())
-        }
     }
 
     @Test
@@ -99,7 +78,9 @@ internal class ClearAllOperationViewModelTest {
         every { observeMailLabels.invoke(userId) } returns flowOf(spamMailLabels)
         every { selectedMailLabelId.flow } returns
             MutableStateFlow(MailLabelId.System(spamSystemLabelId.labelId))
-        every { observeAutoDeleteSpamAndTrashEnabled(userId) } returns flowOf(false)
+        coEvery {
+            getAutoDeleteBanner(userId, spamSystemLabelId.labelId)
+        } returns AutoDeleteBanner(AutoDeleteState.AutoDeleteUpsell, SpamOrTrash.Spam).right()
 
         // When + Then
         viewModel().state.test {
@@ -113,7 +94,9 @@ internal class ClearAllOperationViewModelTest {
         every { observeMailLabels.invoke(userId) } returns flowOf(spamMailLabels)
         every { selectedMailLabelId.flow } returns
             MutableStateFlow(MailLabelId.System(spamSystemLabelId.labelId))
-        every { observeAutoDeleteSpamAndTrashEnabled(userId) } returns flowOf(true)
+        coEvery {
+            getAutoDeleteBanner(userId, spamSystemLabelId.labelId)
+        } returns AutoDeleteBanner(AutoDeleteState.AutoDeleteEnabled, SpamOrTrash.Spam).right()
 
         // When + Then
         viewModel().state.test {
@@ -123,28 +106,14 @@ internal class ClearAllOperationViewModelTest {
 
     private fun viewModel() = ClearAllOperationViewModel(
         observePrimaryUserId,
-        observeMailLabels,
         selectedMailLabelId,
-        observeAutoDeleteSpamAndTrashEnabled
+        getAutoDeleteBanner
     )
 
     private companion object {
 
         val userId = UserId("user-id")
-        val archiveSystemLabelId = SystemLabelId.Archive
         val spamSystemLabelId = SystemLabelId.Spam
-
-        val archiveMailLabels = MailLabels(
-            system = listOf(
-                MailLabel.System(
-                    id = MailLabelId.System(archiveSystemLabelId.labelId),
-                    systemLabelId = archiveSystemLabelId,
-                    order = 1
-                )
-            ),
-            folders = emptyList(),
-            labels = emptyList()
-        )
 
         val spamMailLabels = MailLabels(
             system = listOf(

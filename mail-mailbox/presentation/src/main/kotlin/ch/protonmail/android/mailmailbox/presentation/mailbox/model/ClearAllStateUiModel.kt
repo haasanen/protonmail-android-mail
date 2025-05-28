@@ -35,7 +35,5 @@ sealed interface ClearAllStateUiModel {
             val buttonText: TextUiModel,
             @DrawableRes val icon: Int
         ) : Visible
-
-        data class InfoBanner(val text: TextUiModel) : Visible
     }
 }

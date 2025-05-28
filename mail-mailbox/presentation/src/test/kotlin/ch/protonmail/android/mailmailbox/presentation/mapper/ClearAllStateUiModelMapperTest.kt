@@ -19,14 +19,11 @@
 package ch.protonmail.android.mailmailbox.presentation.mapper
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.mailmailbox.domain.model.SpamOrTrash
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.ClearAllStateUiModelMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllStateUiModel
-import io.mockk.mockk
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import kotlin.test.Test
@@ -36,13 +33,12 @@ import kotlin.test.assertEquals
 internal class ClearAllStateUiModelMapperTest(
     @Suppress("unused") private val testName: String,
     private val state: ClearAllState,
-    private val mailLabel: MailLabel,
     private val expectedState: ClearAllStateUiModel
 ) {
 
     @Test
     fun `maps to the correct state`() {
-        val actual = ClearAllStateUiModelMapper.toUiModel(state, mailLabel)
+        val actual = ClearAllStateUiModelMapper.toUiModel(state)
         assertEquals(expectedState, actual)
     }
 
@@ -54,42 +50,28 @@ internal class ClearAllStateUiModelMapperTest(
             icon = R.drawable.ic_upsell_mail_plus
         )
 
-        private val inProgressModel = ClearAllStateUiModel.Visible.InfoBanner(
-            TextUiModel(R.string.mailbox_action_clear_operation_scheduled)
-        )
-
-        private val actionWithTrash = ClearAllStateUiModel.Visible.ClearAllBannerWithButton(
-            bannerText = TextUiModel(R.string.mailbox_action_clear_trash_spam_banner_text),
+        private val actionWithTrashAndAutoDeleteOn = ClearAllStateUiModel.Visible.ClearAllBannerWithButton(
+            bannerText = TextUiModel(R.string.mailbox_action_auto_delete_on_clear_trash_spam_banner_text),
             buttonText = TextUiModel(R.string.mailbox_action_button_clear_trash),
             icon = R.drawable.ic_proton_trash_clock
         )
 
-        private val actionWithSpam = ClearAllStateUiModel.Visible.ClearAllBannerWithButton(
-            bannerText = TextUiModel(R.string.mailbox_action_clear_trash_spam_banner_text),
+        private val actionWithSpamAndAutoDeleteOn = ClearAllStateUiModel.Visible.ClearAllBannerWithButton(
+            bannerText = TextUiModel(R.string.mailbox_action_auto_delete_on_clear_trash_spam_banner_text),
             buttonText = TextUiModel(R.string.mailbox_action_button_clear_spam),
             icon = R.drawable.ic_proton_trash_clock
         )
-        private val actionWithUnsupported = ClearAllStateUiModel.Visible.ClearAllBannerWithButton(
-            bannerText = TextUiModel(R.string.mailbox_action_clear_trash_spam_banner_text),
-            buttonText = TextUiModel.Text(""),
+
+        private val actionWithTrashAndAutoDeleteOff = ClearAllStateUiModel.Visible.ClearAllBannerWithButton(
+            bannerText = TextUiModel(R.string.mailbox_action_auto_delete_off_clear_trash_spam_banner_text),
+            buttonText = TextUiModel(R.string.mailbox_action_button_clear_trash),
             icon = R.drawable.ic_proton_trash_clock
         )
 
-        private val trashMailLabel = MailLabel.System(
-            id = MailLabelId.System(SystemLabelId.Trash.labelId),
-            systemLabelId = SystemLabelId.Trash,
-            order = 1
-        )
-
-        private val spamMailLabel = MailLabel.System(
-            id = MailLabelId.System(SystemLabelId.Spam.labelId),
-            systemLabelId = SystemLabelId.Spam,
-            order = 1
-        )
-        private val inboxMailLabel = MailLabel.System(
-            id = MailLabelId.System(SystemLabelId.Inbox.labelId),
-            systemLabelId = SystemLabelId.Inbox,
-            order = 1
+        private val actionWithSpamAndAutoDeleteOff = ClearAllStateUiModel.Visible.ClearAllBannerWithButton(
+            bannerText = TextUiModel(R.string.mailbox_action_auto_delete_off_clear_trash_spam_banner_text),
+            buttonText = TextUiModel(R.string.mailbox_action_button_clear_spam),
+            icon = R.drawable.ic_proton_trash_clock
         )
 
         @JvmStatic
@@ -98,44 +80,32 @@ internal class ClearAllStateUiModelMapperTest(
             arrayOf(
                 "hidden state maps to hidden ui model",
                 ClearAllState.Hidden,
-                mockk<MailLabel>(),
                 ClearAllStateUiModel.Hidden
-            ),
-            arrayOf(
-                "pending state maps to pending ui model",
-                ClearAllState.ClearAllInProgress,
-                mockk<MailLabel>(),
-                inProgressModel
             ),
             arrayOf(
                 "upsell state maps to upsell ui model",
                 ClearAllState.UpsellBanner,
-                mockk<MailLabel>(),
                 upsellWithLinkModel
             ),
             arrayOf(
                 "clearable state maps to clear button ui model (trash)",
-                ClearAllState.ClearAllActionBanner,
-                trashMailLabel,
-                actionWithTrash
+                ClearAllState.ClearAllActionBanner(isAutoDeleteEnabled = true, spamOrTrash = SpamOrTrash.Trash),
+                actionWithTrashAndAutoDeleteOn
             ),
             arrayOf(
                 "clearable state maps to clear button ui model (spam)",
-                ClearAllState.ClearAllActionBanner,
-                spamMailLabel,
-                actionWithSpam
+                ClearAllState.ClearAllActionBanner(isAutoDeleteEnabled = true, spamOrTrash = SpamOrTrash.Spam),
+                actionWithSpamAndAutoDeleteOn
             ),
             arrayOf(
-                "clearable state maps to clear button ui model (inbox)",
-                ClearAllState.ClearAllActionBanner,
-                inboxMailLabel,
-                actionWithUnsupported
+                "clearable state maps to clear button ui model (trash)",
+                ClearAllState.ClearAllActionBanner(isAutoDeleteEnabled = false, spamOrTrash = SpamOrTrash.Trash),
+                actionWithTrashAndAutoDeleteOff
             ),
             arrayOf(
-                "clearable state maps to clear button ui model (non system label)",
-                ClearAllState.ClearAllActionBanner,
-                mockk<MailLabel.Custom>(),
-                actionWithUnsupported
+                "clearable state maps to clear button ui model (spam)",
+                ClearAllState.ClearAllActionBanner(isAutoDeleteEnabled = false, spamOrTrash = SpamOrTrash.Spam),
+                actionWithSpamAndAutoDeleteOff
             )
         )
     }

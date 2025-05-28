@@ -800,7 +800,14 @@ private fun MailboxItemsList(
     ) {
 
         if (state is MailboxListState.Data.ViewMode && !state.searchState.isInSearch()) {
-            item { ClearAllOperationBanner(showMissingFeatureSnackbar = actions.showMissingFeature) }
+            item {
+                ClearAllOperationBanner(
+                    actions = ClearAllOperationBanner.Actions(
+                        onUpselling = actions.showMissingFeature,
+                        onClearAll = actions.showMissingFeature
+                    )
+                )
+            }
         }
 
         items(
