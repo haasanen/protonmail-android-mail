@@ -50,7 +50,7 @@ dependencies {
     implementation(libs.bundles.module.legacyCore)
 
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.sqlite)
 
     implementation(project(":mail-session:data"))
     implementation(project(":mail-session:domain"))

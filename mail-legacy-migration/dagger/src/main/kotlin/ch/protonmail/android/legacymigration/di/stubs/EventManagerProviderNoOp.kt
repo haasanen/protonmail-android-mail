@@ -16,17 +16,19 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.di
+package ch.protonmail.android.legacymigration.di.stubs
 
-import me.proton.core.eventmanager.data.EventManagerQueryMapProvider
+import me.proton.core.domain.entity.UserId
 import me.proton.core.eventmanager.domain.EventManagerConfig
-import javax.inject.Inject
+import me.proton.core.eventmanager.domain.EventManagerProvider
 
-class MailEventManagerQueryMapProvider @Inject constructor() : EventManagerQueryMapProvider {
+/**
+ * This class is only provided for bindings required by transitive dependencies brought by the legacy Core library.
+ * No usage is expected.
+ */
+object EventManagerProviderNoOp : EventManagerProvider, LegacyDeprecated {
 
-    override suspend fun getQueryMap(config: EventManagerConfig): Map<String, String> = when (config) {
-        is EventManagerConfig.Core -> mapOf("MessageCounts" to "1", "ConversationCounts" to "1")
-        else -> emptyMap()
-    }
+    override suspend fun get(config: EventManagerConfig) = throwUnsupported()
 
+    override suspend fun getAll(userId: UserId) = throwUnsupported()
 }

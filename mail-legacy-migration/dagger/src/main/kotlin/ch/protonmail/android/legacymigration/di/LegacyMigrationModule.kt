@@ -40,16 +40,16 @@ import ch.protonmail.android.legacymigration.domain.model.LegacyDatabase
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAccountRepository
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAutoLockRepository
 import ch.protonmail.android.legacymigration.domain.repository.LegacyMigrationStatusRepository
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import dagger.Binds
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Singleton
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import javax.inject.Singleton
 
 @Module(includes = [LegacyMigrationModule.BindsModule::class])
 @InstallIn(SingletonComponent::class)

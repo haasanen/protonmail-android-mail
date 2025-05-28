@@ -59,7 +59,6 @@ dependencies {
     debugImplementation(libs.bundles.compose.debug)
 
     implementation(libs.bundles.module.presentation)
-    implementation(libs.proton.core.accountManager.presentation.compose)
 
     implementation(libs.proton.core.domain)
 

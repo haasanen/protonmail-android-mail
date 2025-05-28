@@ -27,7 +27,8 @@ androidx-paging = "3.3.6"
 androidx-paging-compose = "3.3.6"
 androidx-perfetto = "1.0.0"
 androidx-profile-installer = "1.4.1"
-androidx-room = "2.7.0-alpha10"
+androidx-room = "2.7.1"
+androidx-sqlite = "2.5.1"
 androidx-startup-runtime = "1.1.1"
 androidx-splashscreen = "1.0.1"
 androidx-test-androidjunit = "1.2.1"
@@ -131,8 +132,8 @@ androidx-paging-common = { module = "androidx.paging:paging-common", version.ref
 androidx-paging-testing = { module = "androidx.paging:paging-testing", version.ref = "androidx-paging-compose" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "androidx-paging-compose" }
 androidx-profileinstaller = { module = "androidx.profileinstaller:profileinstaller", version.ref = "androidx-profile-installer" }
-androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
-androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
+androidx-sqlite = { module = "androidx.sqlite:sqlite-framework", version.ref = "androidx-sqlite" }
+androidx-room-compiler = { module = "androidx.room:room-compiler-processing", version.ref = "androidx-room" } # See https://github.com/google/dagger/issues/4693
 androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime", version.ref = "androidx-startup-runtime" }
 androidx-test-androidjunit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-androidjunit" }
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test-core" }
@@ -193,62 +194,33 @@ plumber = { module = "com.squareup.leakcanary:plumber-android", version.ref = "l
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 # Proton Core libraries
-proton-core-account-dagger = { module = "me.proton.core:account-dagger", version.ref = "proton-core" }
-proton-core-account-data = { module = "me.proton.core:account-data", version.ref = "proton-core" }
+proton-core-auth-domain = { module = "me.proton.core:auth-domain", version.ref = "proton-core" }
 proton-core-account-domain = { module = "me.proton.core:account-domain", version.ref = "proton-core" }
-proton-core-accountManager-dagger = { module = "me.proton.core:account-manager-dagger", version.ref = "proton-core" }
 proton-core-accountManager-presentation-compose = { module = "me.proton.core:account-manager-presentation-compose", version.ref = "proton-core" }
-proton-core-accountRecovery-dagger = { module = "me.proton.core:account-recovery-dagger", version.ref = "proton-core" }
 proton-core-accountRecoveryTest = { module = "me.proton.core:account-recovery-test", version.ref = "proton-core" }
-proton-core-auth-dagger = { module = "me.proton.core:auth-dagger", version.ref = "proton-core" }
-proton-core-authTest = { module = "me.proton.core:auth-test", version.ref = "proton-core" }
-proton-core-authFido-dagger = { module = "me.proton.core:auth-fido-dagger", version.ref = "proton-core" }
-proton-core-biometric-dagger = { module = "me.proton.core:biometric-dagger", version.ref = "proton-core" }
-proton-core-challenge-dagger = { module = "me.proton.core:challenge-dagger", version.ref = "proton-core" }
 proton-core-challenge-data = { module = "me.proton.core:challenge-data", version.ref = "proton-core" }
 proton-core-challenge-domain = { module = "me.proton.core:challenge-domain", version.ref = "proton-core" }
 proton-core-challenge-presentation = { module = "me.proton.core:challenge-presentation-compose", version.ref = "proton-core" }
 proton-core-configuration-data = { module = "me.proton.core:configuration-data", version.ref = "proton-core" }
 proton-core-configuration-dagger-static = { module = "me.proton.core:configuration-dagger-staticdefaults", version.ref = "proton-core" }
 proton-core-configuration-dagger-contentProvider = { module = "me.proton.core:configuration-dagger-content-resolver", version.ref = "proton-core" }
+proton-core-featureFlag-domain = { module = "me.proton.core:feature-flag-domain", version.ref = "proton-core" }
 proton-core-crypto = { module = "me.proton.core:crypto", version.ref = "proton-core" }
 proton-core-domain = { module = "me.proton.core:domain", version.ref = "proton-core" }
-proton-core-deviceMigration-dagger = { module = "me.proton.core:device-migration-dagger", version.ref = "proton-core" }
-proton-core-eventManager-dagger = { module = "me.proton.core:event-manager-dagger", version.ref = "proton-core" }
-proton-core-featureFlag-dagger = { module = "me.proton.core:feature-flag-dagger", version.ref = "proton-core" }
-proton-core-featureFlag-domain = { module = "me.proton.core:feature-flag-domain", version.ref = "proton-core" }
-proton-core-humanVerification-dagger = { module = "me.proton.core:human-verification-dagger", version.ref = "proton-core" }
-proton-core-key-dagger = { module = "me.proton.core:key-dagger", version.ref = "proton-core" }
+proton-core-eventManager-domain = { module = "me.proton.core:event-manager-domain", version.ref = "proton-core" }
 proton-core-key-domain = { module = "me.proton.core:key-domain", version.ref = "proton-core" }
-proton-core-keyTransparency-dagger = { module = "me.proton.core:key-transparency-dagger", version.ref = "proton-core" }
-proton-core-keyTransparency-data = { module = "me.proton.core:key-transparency-data", version.ref = "proton-core" }
-proton-core-mailSettings-dagger = { module = "me.proton.core:mail-settings-dagger", version.ref = "proton-core" }
 proton-core-mailSettings-domain = { module = "me.proton.core:mail-settings-domain", version.ref = "proton-core" }
-proton-core-network-dagger = { module = "me.proton.core:network-dagger", version.ref = "proton-core" }
-proton-core-network-data = { module = "me.proton.core:network-data", version.ref = "proton-core" }
 proton-core-network-domain = { module = "me.proton.core:network-domain", version.ref = "proton-core" }
-proton-core-notification-dagger = { module = "me.proton.core:notification-dagger", version.ref = "proton-core" }
-proton-core-observability-dagger = { module = "me.proton.core:observability-dagger", version.ref = "proton-core" }
 proton-core-pass-validator = { module = "me.proton.core:pass-validator", version.ref = "proton-core" }
-proton-core-payment-dagger = { module = "me.proton.core:payment-dagger", version.ref = "proton-core" }
-proton-core-paymentIap-dagger = { module = "me.proton.core:payment-iap-dagger", version.ref = "proton-core" }
-proton-core-plan-dagger = { module = "me.proton.core:plan-dagger", version.ref = "proton-core" }
 proton-core-presentation = { module = "me.proton.core:presentation", version.ref = "proton-core" }
 proton-core-presentationCompose = { module = "me.proton.core:presentation-compose", version.ref = "proton-core" }
 proton-core-proguardRules = { module = "me.proton.core:proguard-rules", version.ref = "proton-core" }
-proton-core-push-dagger = { module = "me.proton.core:push-dagger", version.ref = "proton-core" }
-proton-core-push-data = { module = "me.proton.core:push-data", version.ref = "proton-core" }
-proton-core-telemetry-dagger = { module = "me.proton.core:telemetry-dagger", version.ref = "proton-core" }
-proton-core-user-dagger = { module = "me.proton.core:user-dagger", version.ref = "proton-core" }
 proton-core-user-data = { module = "me.proton.core:user-data", version.ref = "proton-core" }
 proton-core-user-domain = { module = "me.proton.core:user-domain", version.ref = "proton-core" }
-proton-core-userRecovery-dagger = { module = "me.proton.core:user-recovery-dagger", version.ref = "proton-core" }
 proton-core-userRecoveryTest = { module = "me.proton.core:user-recovery-test", version.ref = "proton-core" }
-proton-core-userSettings-dagger = { module = "me.proton.core:user-settings-dagger", version.ref = "proton-core" }
 proton-core-utilKotlin = { module = "me.proton.core:util-kotlin", version.ref = "proton-core" }
 proton-core-utilAndroidDateTime = { module = "me.proton.core:util-android-datetime", version.ref = "proton-core" }
 proton-core-utilAndroidDagger = { module = "me.proton.core:util-android-dagger", version.ref = "proton-core" }
-proton-core-utilAndroidSentry = { module = "me.proton.core:util-android-sentry", version.ref = "proton-core" }
 proton-core-utilAndroidStrictMode = { module = "me.proton.core:util-android-strict-mode", version.ref = "proton-core" }
 proton-core-testRule = { module = "me.proton.core:test-rule", version.ref = "proton-core" }
 proton-core-testAndroid = { module = "me.proton.core:test-android", version.ref = "proton-core" }
@@ -272,7 +244,6 @@ appLibs = [
     "androidx-paging-compose",
     "androidx-paging-runtime",
     "androidx-profileinstaller",
-    "androidx-room-ktx",
     "androidx-work-runtimeKtx",
     "android-material",
     "androidx-compose-material3",
@@ -325,7 +296,6 @@ module-presentation = [
 
 module-data = [
     "androidx-datastore-preferences",
-    "androidx-room-ktx",
     "androidx-work-runtimeKtx",
     "arrow-core",
     "dagger-hilt-android",
@@ -388,36 +358,12 @@ test-androidTest = [
 ]
 
 module-legacyCore = [
-    "proton-core-account-data",
-    "proton-core-account-dagger",
-    "proton-core-accountManager-dagger",
-    "proton-core-accountRecovery-dagger",
-    "proton-core-auth-dagger",
-    "proton-core-authFido-dagger",
-    "proton-core-biometric-dagger",
-    "proton-core-challenge-dagger",
-    "proton-core-deviceMigration-dagger",
-    "proton-core-eventManager-dagger",
-    "proton-core-featureFlag-dagger",
-    "proton-core-humanVerification-dagger",
-    "proton-core-key-dagger",
-    "proton-core-keyTransparency-dagger",
-    "proton-core-keyTransparency-data",
-    "proton-core-mailSettings-dagger",
-    "proton-core-network-dagger",
-    "proton-core-notification-dagger",
-    "proton-core-observability-dagger",
-    "proton-core-payment-dagger",
-    "proton-core-paymentIap-dagger",
-    "proton-core-plan-dagger",
-    "proton-core-push-dagger",
-    "proton-core-push-data",
-    "proton-core-telemetry-dagger",
-    "proton-core-user-dagger",
-    "proton-core-userRecovery-dagger",
-    "proton-core-userSettings-dagger",
+    "proton-core-auth-domain",
     "proton-core-configuration-data",
+    "proton-core-eventManager-domain",
+    "proton-core-featureFlag-domain",
+    "proton-core-mailSettings-domain",
+    "proton-core-user-domain",
     "proton-core-utilAndroidDagger",
-    "proton-core-utilAndroidSentry",
     "proton-core-utilAndroidStrictMode",
 ]

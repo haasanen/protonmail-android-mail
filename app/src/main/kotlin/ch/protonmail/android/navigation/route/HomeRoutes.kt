@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import ch.protonmail.android.MainActivity
+import ch.protonmail.android.design.compose.navigation.get
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.feature.account.RemoveAccountDialog
 import ch.protonmail.android.feature.account.SignOutAccountDialog
@@ -41,7 +42,6 @@ import ch.protonmail.android.mailsettings.presentation.appsettings.AppSettingsSc
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsScreen
 import ch.protonmail.android.navigation.model.Destination
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
-import me.proton.core.compose.navigation.get
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.takeIfNotBlank
 

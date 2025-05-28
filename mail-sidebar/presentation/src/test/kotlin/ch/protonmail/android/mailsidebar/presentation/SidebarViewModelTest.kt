@@ -39,7 +39,6 @@ import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.E
 import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.Select
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
-import ch.protonmail.android.testdata.user.UserTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -52,10 +51,8 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import me.proton.core.domain.entity.UserId
-import me.proton.core.payment.domain.PaymentManager
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.Ignore
 import kotlin.test.assertEquals
 
 class SidebarViewModelTest {
@@ -81,9 +78,6 @@ class SidebarViewModelTest {
 
     private val observeUnreadCounters = mockk<ObserveUnreadCounters> {
         coEvery { this@mockk.invoke(any()) } returns flowOf(emptyList<UnreadCounter>())
-    }
-    private val paymentManager = mockk<PaymentManager> {
-        coEvery { this@mockk.isSubscriptionAvailable(userId = any()) } returns false
     }
 
     private lateinit var sidebarViewModel: SidebarViewModel
@@ -123,49 +117,6 @@ class SidebarViewModelTest {
     }
 
     @Test
-    @Ignore("can change subscription is hardcoded awaiting for account to expose it through rust lib")
-    fun `state is can change subscriptions when payment manager subscription available is true`() = runTest {
-        sidebarViewModel.state.test {
-            // Initial state is Disabled.
-            assertEquals(Disabled, awaitItem())
-
-            // Given
-            coEvery { paymentManager.isSubscriptionAvailable(UserIdTestData.userId) } returns true
-            primaryUserId.emit(UserIdTestData.Primary)
-
-            // Then
-            val actual = awaitItem() as Enabled
-            val expected = Enabled(
-                selectedMailLabelId = MailLabelId.System(SystemLabelId.Inbox.labelId),
-                canChangeSubscription = true,
-                mailLabels = MailLabelsUiModel.Loading
-            )
-            assertEquals(expected, actual)
-        }
-    }
-
-    @Test
-    fun `state is can't change subscription when payment manager subscription available is false`() = runTest {
-        sidebarViewModel.state.test {
-            // Initial state is Disabled.
-            assertEquals(Disabled, awaitItem())
-
-            // Given
-            coEvery { paymentManager.isSubscriptionAvailable(UserIdTestData.adminUserId) } returns false
-            primaryUserId.emit(UserIdTestData.adminUserId)
-
-            // Then
-            val actual = awaitItem() as Enabled
-            val expected = Enabled(
-                selectedMailLabelId = MailLabelId.System(SystemLabelId.Inbox.labelId),
-                canChangeSubscription = false,
-                mailLabels = MailLabelsUiModel.Loading
-            )
-            assertEquals(expected, actual)
-        }
-    }
-
-    @Test
     fun `onSidebarLabelAction Select Archive, set selectedMailLabelId`() = runTest {
         // When
         sidebarViewModel.submit(LabelAction(Select(MailLabelTestData.archiveSystemLabel.id)))
@@ -184,7 +135,7 @@ class SidebarViewModelTest {
         sidebarViewModel.submit(LabelAction(Collapse(mailLabelId)))
 
         // Then
-        coVerify { updateLabelExpandedState.invoke(UserTestData.Primary.userId, mailLabelId, false) }
+        coVerify { updateLabelExpandedState.invoke(UserIdTestData.Primary, mailLabelId, false) }
     }
 
     @Test
@@ -197,6 +148,6 @@ class SidebarViewModelTest {
         sidebarViewModel.submit(LabelAction(Expand(mailLabelId)))
 
         // Then
-        coVerify { updateLabelExpandedState.invoke(UserTestData.Primary.userId, mailLabelId, true) }
+        coVerify { updateLabelExpandedState.invoke(UserIdTestData.Primary, mailLabelId, true) }
     }
 }

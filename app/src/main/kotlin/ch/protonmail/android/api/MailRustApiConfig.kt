@@ -22,14 +22,13 @@ import ch.protonmail.android.BuildConfig
 import ch.protonmail.android.mailsession.domain.model.RustApiConfig
 import ch.protonmail.android.useragent.BuildUserAgent
 import me.proton.core.configuration.EnvironmentConfigurationDefaults
-import me.proton.core.network.data.di.BaseProtonApiUrl
 import okhttp3.HttpUrl
 import uniffi.proton_mail_uniffi.ApiEnvId
 import javax.inject.Inject
 
 class MailRustApiConfig @Inject constructor(
     private val buildUserAgent: BuildUserAgent,
-    @BaseProtonApiUrl private val baseApiUrl: HttpUrl
+    private val baseApiUrl: HttpUrl
 ) : RustApiConfig {
 
     override val isDebug: Boolean

@@ -22,6 +22,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.network.NetworkManager
+import ch.protonmail.android.mailcommon.domain.network.NetworkStatus
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -46,8 +48,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
-import me.proton.core.network.domain.NetworkManager
-import me.proton.core.network.domain.NetworkStatus
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext

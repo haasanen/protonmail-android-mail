@@ -71,13 +71,6 @@ android {
         testInstrumentationRunner = AppConfiguration.testInstrumentationRunner.get()
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments["room.schemaLocation"] = "$projectDir/schemas"
-                arguments["room.incremental"] = "true"
-            }
-        }
-
         protonEnvironment {
             apiPrefix = "mail-api"
         }
@@ -296,7 +289,6 @@ dependencies {
     androidTestImplementation(libs.bundles.test.androidTest)
     androidTestImplementation(libs.proton.core.accountManager.presentation.compose)
     androidTestImplementation(libs.proton.core.accountRecoveryTest)
-    androidTestImplementation(libs.proton.core.authTest)
     androidTestImplementation(libs.proton.core.userRecoveryTest)
     androidTestImplementation(libs.proton.core.testRule)
     androidTestImplementation(project(":test:annotations"))

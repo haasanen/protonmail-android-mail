@@ -23,6 +23,8 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.network.NetworkManager
+import ch.protonmail.android.mailcommon.domain.network.NetworkStatus
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -53,8 +55,6 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import me.proton.core.domain.entity.UserId
-import me.proton.core.network.domain.NetworkManager
-import me.proton.core.network.domain.NetworkStatus
 import org.junit.Test
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

@@ -62,7 +62,6 @@ dependencies {
     implementation(libs.bundles.module.presentation)
     implementation(libs.accompanist.permissions)
     implementation(libs.accompanist.webview)
-    implementation(libs.proton.core.network.domain)
     implementation(libs.proton.core.user.domain)
 
     implementation(project(":mail-attachments:domain"))

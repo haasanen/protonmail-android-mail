@@ -47,7 +47,7 @@ dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
     implementation(libs.bundles.module.legacyCore)
-    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.sqlite)
 
     implementation(project(":mail-legacy-migration:data"))
     implementation(project(":mail-legacy-migration:domain"))

@@ -28,6 +28,7 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWith
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.network.NetworkManager
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -104,7 +105,6 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
-import me.proton.core.network.domain.NetworkManager
 import me.proton.core.util.kotlin.serialize
 import org.junit.Rule
 import kotlin.test.AfterTest

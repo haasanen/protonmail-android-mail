@@ -47,11 +47,7 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.kotlinx.immutableCollections)
 
-    implementation(libs.proton.core.account.domain)
-    implementation(libs.proton.core.domain)
-    implementation(libs.proton.core.featureFlag.domain)
     implementation(libs.proton.core.mailSettings.domain)
-    implementation(libs.proton.core.network.domain)
     implementation(libs.proton.core.presentation)
     implementation(libs.proton.core.user.domain)
 

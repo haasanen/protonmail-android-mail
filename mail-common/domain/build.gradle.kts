@@ -45,7 +45,6 @@ android {
 dependencies {
     implementation(libs.bundles.module.domain)
     implementation(libs.proton.core.key.domain)
-    implementation(libs.proton.core.network.data)
     implementation(libs.proton.core.user.domain)
 
     testImplementation(libs.bundles.test)

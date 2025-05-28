@@ -16,11 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcommon.data.dagger
+package ch.protonmail.android.mailcommon.dagger
 
+import ch.protonmail.android.mailcommon.data.network.NetworkManagerImpl
 import ch.protonmail.android.mailcommon.data.system.BuildVersionProviderImpl
 import ch.protonmail.android.mailcommon.data.system.ContentValuesProviderImpl
 import ch.protonmail.android.mailcommon.data.system.DeviceCapabilitiesImpl
+import ch.protonmail.android.mailcommon.domain.network.NetworkManager
 import ch.protonmail.android.mailcommon.domain.system.BuildVersionProvider
 import ch.protonmail.android.mailcommon.domain.system.ContentValuesProvider
 import ch.protonmail.android.mailcommon.domain.system.DeviceCapabilities
@@ -45,5 +47,8 @@ object MailCommonDataModule {
 
         @Binds
         fun bindContentValuesProvider(impl: ContentValuesProviderImpl): ContentValuesProvider
+
+        @Binds
+        fun bindNetworkManager(impl: NetworkManagerImpl): NetworkManager
     }
 }

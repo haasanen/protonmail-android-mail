@@ -29,9 +29,8 @@ import dagger.hilt.components.SingletonComponent
 import io.sentry.SentryLevel
 import io.sentry.SentryOptions
 import io.sentry.android.core.SentryAndroid
+import io.sentry.android.timber.SentryTimberIntegration
 import me.proton.core.configuration.EnvironmentConfigurationDefaults
-import me.proton.core.util.android.sentry.TimberLoggerIntegration
-import me.proton.core.util.android.sentry.project.AccountSentryHubBuilder
 
 class SentryInitializer : Initializer<Unit> {
 
@@ -41,7 +40,7 @@ class SentryInitializer : Initializer<Unit> {
             options.release = BuildConfig.VERSION_NAME
             options.environment = EnvironmentConfigurationDefaults.host
             options.addIntegration(
-                TimberLoggerIntegration(
+                SentryTimberIntegration(
                     minEventLevel = SentryLevel.WARNING,
                     minBreadcrumbLevel = SentryLevel.INFO
                 )
@@ -54,11 +53,6 @@ class SentryInitializer : Initializer<Unit> {
         )
         entryPoint.observer().start()
 
-        entryPoint.accountSentryHubBuilder().invoke(
-            sentryDsn = BuildConfig.ACCOUNT_SENTRY_DSN
-        ) { options ->
-            options.isEnableUncaughtExceptionHandler = false
-        }
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()
@@ -66,7 +60,6 @@ class SentryInitializer : Initializer<Unit> {
     @EntryPoint
     @InstallIn(SingletonComponent::class)
     interface SentryInitializerEntryPoint {
-        fun accountSentryHubBuilder(): AccountSentryHubBuilder
         fun observer(): SentryUserObserver
     }
 }

@@ -16,24 +16,11 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.di
+package ch.protonmail.android.legacymigration.di.stubs
 
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import me.proton.core.configuration.EnvironmentConfiguration
-import me.proton.core.humanverification.presentation.HumanVerificationApiHost
-import me.proton.core.humanverification.presentation.utils.HumanVerificationVersion
+internal interface LegacyDeprecated {
 
-@Module
-@InstallIn(SingletonComponent::class)
-object HumanVerificationModule {
-
-    @Provides
-    @HumanVerificationApiHost
-    fun provideHumanVerificationApiHost(envConfig: EnvironmentConfiguration): String = "https://${envConfig.hv3Host}/"
-
-    @Provides
-    fun provideHumanVerificationVersion() = HumanVerificationVersion.HV3
+    fun throwUnsupported(): Nothing {
+        throw UnsupportedOperationException("This class shall not be used (part of legacy core).")
+    }
 }

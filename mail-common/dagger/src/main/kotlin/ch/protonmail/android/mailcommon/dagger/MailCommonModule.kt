@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailcommon.dagger
 
 import android.content.Context
-import ch.protonmail.android.mailcommon.data.dagger.MailCommonDataModule
 import ch.protonmail.android.mailcommon.data.repository.AppLocaleRepositoryImpl
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.domain.coroutines.DefaultDispatcher
