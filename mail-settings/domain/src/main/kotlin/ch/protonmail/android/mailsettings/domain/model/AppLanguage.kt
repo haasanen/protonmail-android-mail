@@ -51,7 +51,7 @@ enum class AppLanguage(val langName: String, val langTag: String) {
     CHINESE_TRADITIONAL("繁體中文", "zh-TW");
 
     companion object {
-        private val map = values().associateBy { it.langTag }
+        private val map = entries.associateBy { it.langTag }
         fun fromTag(tag: String?): AppLanguage? = map[tag]
     }
 }

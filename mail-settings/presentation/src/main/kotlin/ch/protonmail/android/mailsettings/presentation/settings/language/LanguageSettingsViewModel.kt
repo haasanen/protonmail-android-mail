@@ -50,7 +50,6 @@ class LanguageSettingsViewModel @Inject constructor(
                 currentLanguage = selectedLang.toUiModel(),
                 languagesChoices = listOf(SystemDefaultLanguage) +
                     AppLanguage.entries
-                        .sortedBy { it.langName }
                         .map { it.toUiModel() }
             )
         }

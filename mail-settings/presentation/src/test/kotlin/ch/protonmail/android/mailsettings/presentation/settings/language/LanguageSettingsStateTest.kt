@@ -38,14 +38,14 @@ class LanguageSettingsStateTest {
             SystemDefaultLanguage,
             listOf(
                 UserSelectedLanguage(AppLanguage.FRENCH),
-                UserSelectedLanguage(AppLanguage.DANISH),
+                UserSelectedLanguage(AppLanguage.CATALAN),
                 UserSelectedLanguage(AppLanguage.ENGLISH)
             )
         )
 
         assertEquals(
-            UserSelectedLanguage(AppLanguage.DANISH),
-            data.languageFor(TextUiModel(AppLanguage.DANISH.langName))
+            UserSelectedLanguage(AppLanguage.CATALAN),
+            data.languageFor(TextUiModel(AppLanguage.CATALAN.langName))
         )
 
         assertEquals(

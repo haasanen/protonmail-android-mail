@@ -57,24 +57,23 @@ class LanguageSettingsViewModelTest {
     }
 
     @Test
-    fun `state has alphabetically ordered languages with Default selected when no language preference is saved`() =
-        runTest {
-            viewModel.state.test {
-                // Given
-                initialStateEmitted()
+    fun `state has ordered languages with Default selected when no language preference is saved`() = runTest {
+        viewModel.state.test {
+            // Given
+            initialStateEmitted()
 
-                // When
-                languagePreferenceFlow.emit(null)
+            // When
+            languagePreferenceFlow.emit(null)
 
-                // Then
-                val expected = LanguageSettingsState.Data(
-                    SystemDefaultLanguage,
-                    appLanguagesSortedByLangNameAlphabetically()
-                )
+            // Then
+            val expected = LanguageSettingsState.Data(
+                SystemDefaultLanguage,
+                appLanguagesSorted()
+            )
 
-                assertEquals(expected, awaitItem())
-            }
+            assertEquals(expected, awaitItem())
         }
+    }
 
     @Test
     fun `state has languages list with preferred language selected when a preference is saved`() = runTest {
@@ -88,7 +87,7 @@ class LanguageSettingsViewModelTest {
             // Then
             val expected = LanguageSettingsState.Data(
                 UserSelectedLanguage(AppLanguage.CATALAN),
-                appLanguagesSortedByLangNameAlphabetically()
+                appLanguagesSorted()
             )
 
             assertEquals(expected, awaitItem())
@@ -98,13 +97,13 @@ class LanguageSettingsViewModelTest {
     @Test
     fun `onLanguageSelected saves selected lang in repository`() = runTest {
         // Given
-        justRun { languageRepository.save(AppLanguage.DANISH) }
+        justRun { languageRepository.save(AppLanguage.CATALAN) }
 
         // When
-        viewModel.onLanguageSelected(UserSelectedLanguage(AppLanguage.DANISH))
+        viewModel.onLanguageSelected(UserSelectedLanguage(AppLanguage.CATALAN))
 
         // Then
-        verify { languageRepository.save(AppLanguage.DANISH) }
+        verify { languageRepository.save(AppLanguage.CATALAN) }
     }
 
     @Test
@@ -122,10 +121,10 @@ class LanguageSettingsViewModelTest {
     @Test
     fun `close effect emitted when theme is updated`() = runTest {
         // Given
-        justRun { languageRepository.save(AppLanguage.DANISH) }
+        justRun { languageRepository.save(AppLanguage.CATALAN) }
 
         // When
-        viewModel.onLanguageSelected(UserSelectedLanguage(AppLanguage.DANISH))
+        viewModel.onLanguageSelected(UserSelectedLanguage(AppLanguage.CATALAN))
         // then
         Assert.assertEquals(
             LanguageSettingsEffects(close = Effect.of(Unit)),
@@ -133,31 +132,35 @@ class LanguageSettingsViewModelTest {
         )
     }
 
-    private fun appLanguagesSortedByLangNameAlphabetically() = listOf(
+    // Ordering is defined by L18N team
+    private fun appLanguagesSorted() = listOf(
         SystemDefaultLanguage,
-        UserSelectedLanguage(AppLanguage.INDONESIAN),
-        UserSelectedLanguage(AppLanguage.CATALAN),
-        UserSelectedLanguage(AppLanguage.DANISH),
-        UserSelectedLanguage(AppLanguage.GERMAN),
         UserSelectedLanguage(AppLanguage.ENGLISH),
-        UserSelectedLanguage(AppLanguage.SPANISH),
+        UserSelectedLanguage(AppLanguage.GERMAN),
         UserSelectedLanguage(AppLanguage.FRENCH),
-        UserSelectedLanguage(AppLanguage.CROATIAN),
-        UserSelectedLanguage(AppLanguage.ITALIAN),
-        UserSelectedLanguage(AppLanguage.HUNGARIAN),
         UserSelectedLanguage(AppLanguage.DUTCH),
+        UserSelectedLanguage(AppLanguage.SPANISH),
+        UserSelectedLanguage(AppLanguage.SPANISH_LATIN_AMERICA),
+        UserSelectedLanguage(AppLanguage.ITALIAN),
         UserSelectedLanguage(AppLanguage.POLISH),
-        UserSelectedLanguage(AppLanguage.BRAZILIAN),
+        UserSelectedLanguage(AppLanguage.PORTUGUESE_BRAZILIAN),
+        UserSelectedLanguage(AppLanguage.RUSSIAN),
+        UserSelectedLanguage(AppLanguage.TURKISH),
+        UserSelectedLanguage(AppLanguage.CATALAN),
+        UserSelectedLanguage(AppLanguage.CZECH),
+        UserSelectedLanguage(AppLanguage.FINNISH),
+        UserSelectedLanguage(AppLanguage.HUNGARIAN),
+        UserSelectedLanguage(AppLanguage.INDONESIAN),
+        UserSelectedLanguage(AppLanguage.NORWEGIAN_BOKMAL),
         UserSelectedLanguage(AppLanguage.PORTUGUESE),
         UserSelectedLanguage(AppLanguage.ROMANIAN),
+        UserSelectedLanguage(AppLanguage.SLOVAK),
+        UserSelectedLanguage(AppLanguage.SLOVENIAN),
         UserSelectedLanguage(AppLanguage.SWEDISH),
-        UserSelectedLanguage(AppLanguage.KABYLIAN),
-        UserSelectedLanguage(AppLanguage.TURKISH),
-        UserSelectedLanguage(AppLanguage.ICELANDIC),
-        UserSelectedLanguage(AppLanguage.CZECH),
         UserSelectedLanguage(AppLanguage.GREEK),
-        UserSelectedLanguage(AppLanguage.RUSSIAN),
+        UserSelectedLanguage(AppLanguage.BELARUSIAN),
         UserSelectedLanguage(AppLanguage.UKRAINIAN),
+        UserSelectedLanguage(AppLanguage.KOREAN),
         UserSelectedLanguage(AppLanguage.JAPANESE),
         UserSelectedLanguage(AppLanguage.CHINESE_SIMPLIFIED),
         UserSelectedLanguage(AppLanguage.CHINESE_TRADITIONAL)
