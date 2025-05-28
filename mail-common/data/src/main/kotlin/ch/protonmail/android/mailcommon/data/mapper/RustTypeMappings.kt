@@ -18,7 +18,10 @@
 
 package ch.protonmail.android.mailcommon.data.mapper
 
+import uniffi.proton_mail_common.AutoDeleteBanner
+import uniffi.proton_mail_common.AutoDeleteState
 import uniffi.proton_mail_common.MessageBanner
+import uniffi.proton_mail_common.SpamOrTrash
 import uniffi.proton_mail_uniffi.AlmostAllMail
 import uniffi.proton_mail_uniffi.AppSettings
 import uniffi.proton_mail_uniffi.AttachmentMetadata
@@ -119,3 +122,6 @@ typealias RemoteMessageId = RemoteId
 typealias LocalEmbeddedImageInfo = EmbeddedAttachmentInfo
 typealias LocalAppSettings = AppSettings
 typealias LocalAutoLockPin = List<UInt>
+typealias LocalAutoDeleteBanner = AutoDeleteBanner
+typealias LocalAutoDeleteState = AutoDeleteState
+typealias LocalSpamOrTrash = SpamOrTrash

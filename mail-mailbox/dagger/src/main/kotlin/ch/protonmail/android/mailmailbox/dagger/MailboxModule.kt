@@ -20,8 +20,10 @@ package ch.protonmail.android.mailmailbox.dagger
 
 import ch.protonmail.android.mailmailbox.data.local.RustPrefetchDataSource
 import ch.protonmail.android.mailmailbox.data.local.RustPrefetchDataSourceImpl
+import ch.protonmail.android.mailmailbox.data.repository.MailboxBannersRepositoryImpl
 import ch.protonmail.android.mailmailbox.data.repository.PrefetchRepositoryImpl
 import ch.protonmail.android.mailmailbox.data.repository.UnreadCountersRepositoryImpl
+import ch.protonmail.android.mailmailbox.domain.repository.MailboxBannersRepository
 import ch.protonmail.android.mailmailbox.domain.repository.PrefetchRepository
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxItems
@@ -55,6 +57,10 @@ object MailboxModule {
         @Binds
         @Reusable
         fun bindsUnreadCountRepository(impl: UnreadCountersRepositoryImpl): UnreadCountersRepository
+
+        @Binds
+        @Reusable
+        fun bindsMailboxBannersRepository(impl: MailboxBannersRepositoryImpl): MailboxBannersRepository
     }
 }
 
