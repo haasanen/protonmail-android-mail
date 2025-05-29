@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailsession.domain.repository
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinError
 import ch.protonmail.android.mailsession.domain.model.Account
@@ -59,6 +60,8 @@ interface UserSessionRepository {
     suspend fun setPrimaryAccount(userId: UserId)
 
     suspend fun setAutoLockPinCode(autoLockPin: AutoLockPin): Either<SetAutoLockPinError, Unit>
+
+    suspend fun setBiometricAppProtection(): Either<DataError, Unit>
 }
 
 fun UserSessionRepository.onAccountState(state: AccountState, initialState: Boolean = true): Flow<Account> =

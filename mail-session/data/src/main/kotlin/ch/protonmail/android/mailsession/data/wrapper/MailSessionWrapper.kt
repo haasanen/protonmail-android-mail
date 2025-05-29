@@ -38,6 +38,7 @@ import uniffi.proton_mail_uniffi.MailSessionGetAccountsResult
 import uniffi.proton_mail_uniffi.MailSessionGetPrimaryAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
+import uniffi.proton_mail_uniffi.MailSessionSetBiometricsAppProtectionResult
 import uniffi.proton_mail_uniffi.MailSessionSetPinCodeResult
 import uniffi.proton_mail_uniffi.MailSessionUserContextFromSessionResult
 import uniffi.proton_mail_uniffi.MailSessionWatchAccountsResult
@@ -110,6 +111,11 @@ class MailSessionWrapper(private val mailSession: MailSession) {
             is MailSessionSetPinCodeResult.Ok -> Unit.right()
             is MailSessionSetPinCodeResult.Error -> result.v1.toAutoLockPinError().left()
         }
+
+    suspend fun setBiometricAppProtection() = when (val result = mailSession.setBiometricsAppProtection()) {
+        is MailSessionSetBiometricsAppProtectionResult.Ok -> Unit.right()
+        is MailSessionSetBiometricsAppProtectionResult.Error -> result.v1.toDataError().left()
+    }
 
     fun registerDeviceTask() = mailSession.registerDeviceTask()
 

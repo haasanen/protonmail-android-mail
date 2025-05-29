@@ -135,5 +135,7 @@ class UserSessionRepositoryImpl @Inject constructor(
             mailSession.setAutoLockPinCode(localPin)
         }
     }
+
+    override suspend fun setBiometricAppProtection(): Either<DataError, Unit> = mailSession.setBiometricAppProtection()
 }
 
