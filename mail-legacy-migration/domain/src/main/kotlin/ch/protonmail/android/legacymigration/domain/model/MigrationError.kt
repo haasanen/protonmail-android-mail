@@ -37,6 +37,11 @@ sealed interface MigrationError {
     sealed interface AutoLockFailure {
         data object FailedToReadAutoLockEnabled : MigrationError
         data object FailedToDecryptAutoLockEnabled : MigrationError
+
+        data object FailedToReadBiometricPreference : MigrationError
+        data object FailedToDecryptBiometricPreference : MigrationError
+        data object FailedToSetBiometricPreference : MigrationError
+
         data object FailedToReadAutoLockPin : MigrationError
         data object FailedToDecryptAutoLockPin : MigrationError
         data object FailedToSetAutoLockPin : MigrationError
