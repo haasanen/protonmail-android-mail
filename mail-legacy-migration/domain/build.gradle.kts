@@ -54,4 +54,5 @@ dependencies {
     implementation(project(":mail-session:domain"))
 
     testImplementation(libs.bundles.test)
+    testImplementation(project(":test:utils"))
 }
