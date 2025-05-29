@@ -26,10 +26,12 @@ import ch.protonmail.android.mailbugreport.domain.LogsExportFeatureSetting
 import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.annotations.AppLogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.annotations.LogsExportFeatureSettingValue
+import ch.protonmail.android.util.TimberLogger
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
+import me.proton.core.util.kotlin.CoreLogger
 import timber.log.Timber
 import javax.inject.Provider
 
@@ -39,6 +41,9 @@ class LoggerInitializer : Initializer<Unit> {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
+
+        // Forward Core Logs to Timber, using TimberLogger.
+        CoreLogger.set(TimberLogger)
 
         val accessors = EntryPointAccessors.fromApplication(
             context.applicationContext,
