@@ -21,6 +21,7 @@ package ch.protonmail.android.legacymigration.data.repository
 import arrow.core.Either
 import ch.protonmail.android.legacymigration.data.local.autolock.LegacyAutoLockLocalDataSource
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPin
+import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPreference
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAutoLockRepository
 import jakarta.inject.Inject
@@ -29,6 +30,9 @@ import kotlinx.coroutines.flow.Flow
 class LegacyAutoLockRepositoryImpl @Inject constructor(
     private val legacyAutoLockLocalDataSource: LegacyAutoLockLocalDataSource
 ) : LegacyAutoLockRepository {
+
+    override suspend fun autoLockEnabled(): Either<MigrationError, LegacyAutoLockPreference> =
+        legacyAutoLockLocalDataSource.autoLockEnabled()
 
     override suspend fun hasAutoLockPinCode(): Boolean = legacyAutoLockLocalDataSource.hasAutoLockPinCode()
 

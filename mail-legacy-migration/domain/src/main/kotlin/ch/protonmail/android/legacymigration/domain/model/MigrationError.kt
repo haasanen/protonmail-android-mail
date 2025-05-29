@@ -35,6 +35,8 @@ sealed interface MigrationError {
     data object Unknown : MigrationError
 
     sealed interface AutoLockFailure {
+        data object FailedToReadAutoLockEnabled : MigrationError
+        data object FailedToDecryptAutoLockEnabled : MigrationError
         data object FailedToReadAutoLockPin : MigrationError
         data object FailedToDecryptAutoLockPin : MigrationError
         data object FailedToSetAutoLockPin : MigrationError

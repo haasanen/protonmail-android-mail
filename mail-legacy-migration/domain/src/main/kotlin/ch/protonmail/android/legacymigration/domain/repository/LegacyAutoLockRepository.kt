@@ -20,10 +20,12 @@ package ch.protonmail.android.legacymigration.domain.repository
 
 import arrow.core.Either
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPin
+import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPreference
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import kotlinx.coroutines.flow.Flow
 
 interface LegacyAutoLockRepository {
+    suspend fun autoLockEnabled(): Either<MigrationError, LegacyAutoLockPreference>
     suspend fun hasAutoLockPinCode(): Boolean
     fun observeAutoLockPinCode(): Flow<Either<MigrationError, LegacyAutoLockPin>>
 }

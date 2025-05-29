@@ -23,6 +23,7 @@ import arrow.core.Either
 import arrow.core.left
 import ch.protonmail.android.legacymigration.data.usecase.DecryptLegacySerializableValue
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPin
+import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPreference
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -36,7 +37,25 @@ class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
 ) : LegacyAutoLockLocalDataSource {
 
     private val dataStore = dataStoreProvider.legacyAutoLockDataStore
+    private val hasAutoLockKey = stringPreferencesKey(LEGACY_AUTO_LOCK_ENABLED_PREF_KEY)
     private val pinKey = stringPreferencesKey(LEGACY_PIN_CODE_PREF_KEY)
+    override suspend fun autoLockEnabled(): Either<MigrationError, LegacyAutoLockPreference> {
+        return runCatching {
+            dataStore.data.first()[hasAutoLockKey]
+        }.fold(
+            onSuccess = { encryptedValue ->
+                encryptedValue?.let {
+                    decryptLegacySerializableValue<LegacyAutoLockPreference>(encryptedValue)
+                        .mapLeft { MigrationError.AutoLockFailure.FailedToDecryptAutoLockEnabled }
+                }
+                    ?: MigrationError.AutoLockFailure.FailedToReadAutoLockEnabled.left()
+
+            },
+            onFailure = {
+                MigrationError.AutoLockFailure.FailedToReadAutoLockEnabled.left()
+            }
+        )
+    }
 
     override suspend fun hasAutoLockPinCode(): Boolean = runCatching {
         dataStore.data.first()[pinKey]?.isNotEmpty() == true
@@ -60,5 +79,6 @@ class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
 
     private companion object {
         const val LEGACY_PIN_CODE_PREF_KEY = "pinCodePrefKey"
+        const val LEGACY_AUTO_LOCK_ENABLED_PREF_KEY = "hasAutoLockPrefKey"
     }
 }
