@@ -31,12 +31,15 @@ import uniffi.proton_mail_uniffi.PinSetError
 import uniffi.proton_mail_uniffi.PinSetErrorReason
 
 fun AutoLockPin.toLocalAutoLockPin(): Either<DataError, LocalAutoLockPin> {
-    val digitsOnly = value.filter { it.isDigit() }
-
-    return if (digitsOnly.isNotEmpty()) {
-        digitsOnly.map { it.digitToInt().toUInt() }.right()
+    return if (value.isNotEmpty()) {
+        try {
+            value.map { it.digitToInt().toUInt() }.right()
+        } catch (e: NumberFormatException) {
+            Timber.e(e, "Invalid digit in AutoLockPin: $value")
+            DataError.Local.TypeConversionError.left()
+        }
     } else {
-        Timber.e("AutoLockPin contains no digits: $value")
+        Timber.e("AutoLockPin is empty")
         DataError.Local.TypeConversionError.left()
     }
 }

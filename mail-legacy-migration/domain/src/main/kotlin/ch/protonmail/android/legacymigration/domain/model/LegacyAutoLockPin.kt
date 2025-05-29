@@ -19,8 +19,11 @@
 package ch.protonmail.android.legacymigration.domain.model
 
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
+import kotlinx.serialization.Serializable
 
-data class LegacyAutoLockPin(val value: String)
+@JvmInline
+@Serializable
+value class LegacyAutoLockPin(val value: String)
 
 fun LegacyAutoLockPin.toAutoLockPin(): AutoLockPin = AutoLockPin(
     value = value
