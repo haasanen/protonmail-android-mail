@@ -22,6 +22,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import arrow.core.Either
 import arrow.core.left
 import ch.protonmail.android.legacymigration.data.usecase.DecryptLegacySerializableValue
+import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockBiometricsPreference
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPin
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPreference
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
@@ -39,6 +40,8 @@ class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
     private val dataStore = dataStoreProvider.legacyAutoLockDataStore
     private val hasAutoLockKey = stringPreferencesKey(LEGACY_AUTO_LOCK_ENABLED_PREF_KEY)
     private val pinKey = stringPreferencesKey(LEGACY_PIN_CODE_PREF_KEY)
+    private val autoLockBiometricsKey = stringPreferencesKey(LEGACY_AUTO_LOCK_BIOMETRICS_PREF_KEY)
+
     override suspend fun autoLockEnabled(): Either<MigrationError, LegacyAutoLockPreference> {
         return runCatching {
             dataStore.data.first()[hasAutoLockKey]
@@ -77,8 +80,30 @@ class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
             }
     }
 
+    override suspend fun hasAutoLockBiometricPreference(): Boolean = runCatching {
+        dataStore.data.first()[autoLockBiometricsKey]?.isNotEmpty() == true
+    }.getOrDefault(false)
+
+    @Suppress("MaxLineLength")
+    override fun observeAutoLockBiometricsPreference(): Flow<Either<MigrationError, LegacyAutoLockBiometricsPreference>> {
+        return dataStore.data
+            .map { prefs ->
+                prefs[autoLockBiometricsKey]
+                    ?.takeIf { it.isNotEmpty() }
+                    ?.let { encryptedValue ->
+                        decryptLegacySerializableValue<LegacyAutoLockBiometricsPreference>(encryptedValue)
+                            .mapLeft { MigrationError.AutoLockFailure.FailedToDecryptBiometricPreference }
+                    }
+                    ?: MigrationError.AutoLockFailure.FailedToReadBiometricPreference.left()
+            }
+            .catch {
+                emit(MigrationError.AutoLockFailure.FailedToReadBiometricPreference.left())
+            }
+    }
+
     private companion object {
         const val LEGACY_PIN_CODE_PREF_KEY = "pinCodePrefKey"
+        const val LEGACY_AUTO_LOCK_BIOMETRICS_PREF_KEY = "autoLockBiometricsKey"
         const val LEGACY_AUTO_LOCK_ENABLED_PREF_KEY = "hasAutoLockPrefKey"
     }
 }

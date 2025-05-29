@@ -31,6 +31,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.legacymigration.data.local.autolock.LegacyAutoLockLocalDataSourceImpl
 import ch.protonmail.android.legacymigration.data.usecase.DecryptLegacySerializableValue
+import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockBiometricsPreference
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPin
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPreference
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
@@ -160,6 +161,59 @@ class LegacyAutoLockLocalDataSourceImplTest {
 
         // When
         val result = dataSource.hasAutoLockPinCode()
+
+        // Then
+        assertFalse(result)
+    }
+
+    @Test
+    fun `observeAutoLockBiometricsPreference emits decrypted value when key exists`() = runTest {
+        // Given
+        val encrypted = "encryptedBio"
+        val decryptedJson = "\"true\""
+        val expected = LegacyAutoLockBiometricsPreference(true)
+
+        every { preferences[biometricKey] } returns encrypted
+        coEvery { keyStoreCrypto.decrypt(encrypted) } returns decryptedJson
+
+        // When / Then
+        dataSource.observeAutoLockBiometricsPreference().test {
+            assertEquals(expected.right(), awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `observeAutoLockBiometricsPreference emits failure when key is missing`() = runTest {
+        // Given
+        every { preferences[biometricKey] } returns null
+
+        // When / Then
+        dataSource.observeAutoLockBiometricsPreference().test {
+            assertEquals(MigrationError.AutoLockFailure.FailedToReadBiometricPreference.left(), awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `hasAutoLockBiometricPreference returns true when value is present`() = runTest {
+        // Given
+        every { preferences[biometricKey] } returns "encryptedBiometric"
+
+        // When
+        val result = dataSource.hasAutoLockBiometricPreference()
+
+        // Then
+        assertTrue(result)
+    }
+
+    @Test
+    fun `hasAutoLockBiometricPreference returns false when key is missing`() = runTest {
+        // Given
+        every { preferences[biometricKey] } returns null
+
+        // When
+        val result = dataSource.hasAutoLockBiometricPreference()
 
         // Then
         assertFalse(result)
