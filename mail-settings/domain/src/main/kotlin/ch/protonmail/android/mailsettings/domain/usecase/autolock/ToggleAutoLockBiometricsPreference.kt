@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailsettings.domain.usecase.autolock
 
-import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsPreference
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockBiometricsPreference
 import ch.protonmail.android.mailsettings.domain.repository.AutoLockRepository
 import javax.inject.Inject
 

@@ -28,7 +28,7 @@ import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockEncrypte
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockEncryptedLastForegroundMillis
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockEncryptedPin
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockEncryptedRemainingAttempts
-import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsEncryptedValue
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockBiometricsEncryptedValue
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject

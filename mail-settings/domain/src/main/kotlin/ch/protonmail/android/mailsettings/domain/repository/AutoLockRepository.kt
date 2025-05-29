@@ -20,7 +20,7 @@ package ch.protonmail.android.mailsettings.domain.repository
 
 import arrow.core.Either
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockAttemptPendingStatus
-import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsPreference
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockBiometricsPreference
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockInterval
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockLastForegroundMillis
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin

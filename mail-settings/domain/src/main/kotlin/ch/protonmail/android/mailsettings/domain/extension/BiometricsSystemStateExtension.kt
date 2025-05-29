@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailsettings.domain.extension
 
 import arrow.core.Either
-import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsPreference
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockBiometricsPreference
 import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsState
 import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.BiometricsSystemState
 import ch.protonmail.android.mailsettings.domain.repository.AutoLockPreferenceError
