@@ -27,7 +27,9 @@ class MigrateLegacyApplication @Inject constructor(
     private val destroyLegacyDatabases: DestroyLegacyDatabases,
     private val shouldMigrateAutoLockPin: ShouldMigrateAutoLockPin,
     private val migrateLegacyAutoLockPinCode: MigrateLegacyAutoLockPinCode,
-    private val isLegacyAutoLockEnabled: IsLegacyAutoLockEnabled
+    private val isLegacyAutoLockEnabled: IsLegacyAutoLockEnabled,
+    private val shouldMigrateAutoLockBiometricPreference: ShouldMigrateAutoLockBiometricPreference,
+    private val migrateLegacyAutoLockBiometricPreference: MigrateLegacyAutoLockBiometricPreference
 ) {
     suspend operator fun invoke() {
 
@@ -56,6 +58,19 @@ class MigrateLegacyApplication @Inject constructor(
                     }
             } else {
                 Timber.d("Legacy migration: No legacy auto-lock pin code to migrate")
+            }
+
+            if (shouldMigrateAutoLockBiometricPreference()) {
+                migrateLegacyAutoLockBiometricPreference()
+                    .onLeft { error ->
+                        Timber.e("Legacy migration: Failed to migrate legacy auto-lock biometric preference: $error")
+                    }
+                    .onRight {
+                        Timber.d("Legacy migration: Successfully migrated legacy auto-lock biometric preference")
+                    }
+            } else {
+                Timber.d("Legacy migration: No legacy auto lock biometric preference to migrate")
+
             }
         } else {
             Timber.d("Legacy migration: Legacy auto-lock is not enabled, skipping migration")
