@@ -35,13 +35,15 @@ class MigrateLegacyApplicationTest {
     private val destroyLegacyDatabases = mockk<DestroyLegacyDatabases>(relaxUnitFun = true)
     private val shouldMigrateAutoLockPin = mockk<ShouldMigrateAutoLockPin>()
     private val migrateLegacyAutoLockPinCode = mockk<MigrateLegacyAutoLockPinCode>()
+    private val isLegacyAutoLockEnabled = mockk<IsLegacyAutoLockEnabled>()
 
     private val migrateLegacyApplication = MigrateLegacyApplication(
-        migrateLegacyAccounts = migrateLegacyAccounts,
-        shouldMigrateLegacyAccount = shouldMigrateLegacyAccount,
-        destroyLegacyDatabases = destroyLegacyDatabases,
-        shouldMigrateAutoLockPin = shouldMigrateAutoLockPin,
-        migrateLegacyAutoLockPinCode = migrateLegacyAutoLockPinCode
+        migrateLegacyAccounts,
+        shouldMigrateLegacyAccount,
+        destroyLegacyDatabases,
+        shouldMigrateAutoLockPin,
+        migrateLegacyAutoLockPinCode,
+        isLegacyAutoLockEnabled
     )
 
     @Test
@@ -49,6 +51,7 @@ class MigrateLegacyApplicationTest {
         // Given
         coEvery { shouldMigrateLegacyAccount() } returns true
         coEvery { migrateLegacyAccounts() } returns Unit.right()
+        coEvery { isLegacyAutoLockEnabled() } returns true
         coEvery { shouldMigrateAutoLockPin() } returns true
         coEvery { migrateLegacyAutoLockPinCode() } returns Unit.right()
 
@@ -60,6 +63,7 @@ class MigrateLegacyApplicationTest {
             shouldMigrateLegacyAccount()
             migrateLegacyAccounts()
             destroyLegacyDatabases()
+            isLegacyAutoLockEnabled()
             shouldMigrateAutoLockPin()
             migrateLegacyAutoLockPinCode()
         }
@@ -69,6 +73,7 @@ class MigrateLegacyApplicationTest {
     fun `should skip account migration and only migrate auto-lock pin`() = runTest {
         // Given
         coEvery { shouldMigrateLegacyAccount() } returns false
+        coEvery { isLegacyAutoLockEnabled() } returns true
         coEvery { shouldMigrateAutoLockPin() } returns true
         coEvery { migrateLegacyAutoLockPinCode() } returns Unit.right()
 
@@ -79,6 +84,7 @@ class MigrateLegacyApplicationTest {
         coVerifySequence {
             shouldMigrateLegacyAccount()
             destroyLegacyDatabases()
+            isLegacyAutoLockEnabled()
             shouldMigrateAutoLockPin()
             migrateLegacyAutoLockPinCode()
         }
@@ -92,6 +98,7 @@ class MigrateLegacyApplicationTest {
         coEvery { shouldMigrateLegacyAccount() } returns true
         coEvery { migrateLegacyAccounts() } returns Unit.right()
         coEvery { shouldMigrateAutoLockPin() } returns false
+        coEvery { isLegacyAutoLockEnabled() } returns true
 
         // When
         migrateLegacyApplication()
@@ -112,6 +119,7 @@ class MigrateLegacyApplicationTest {
         // Given
         coEvery { shouldMigrateLegacyAccount() } returns true
         coEvery { migrateLegacyAccounts() } returns listOf(MigrationError.MigrateFailed.InvalidCredentials).left()
+        coEvery { isLegacyAutoLockEnabled() } returns true
         coEvery { shouldMigrateAutoLockPin() } returns true
         coEvery { migrateLegacyAutoLockPinCode() } returns MigrationError.AutoLockFailure.FailedToSetAutoLockPin.left()
 
@@ -122,6 +130,7 @@ class MigrateLegacyApplicationTest {
         coVerifySequence {
             shouldMigrateLegacyAccount()
             migrateLegacyAccounts()
+            isLegacyAutoLockEnabled()
             shouldMigrateAutoLockPin()
             migrateLegacyAutoLockPinCode()
         }

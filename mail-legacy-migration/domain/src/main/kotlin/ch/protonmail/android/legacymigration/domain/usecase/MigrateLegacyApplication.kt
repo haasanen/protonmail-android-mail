@@ -25,8 +25,9 @@ class MigrateLegacyApplication @Inject constructor(
     private val migrateLegacyAccounts: MigrateLegacyAccounts,
     private val shouldMigrateLegacyAccount: ShouldMigrateLegacyAccount,
     private val destroyLegacyDatabases: DestroyLegacyDatabases,
-    val shouldMigrateAutoLockPin: ShouldMigrateAutoLockPin,
-    private val migrateLegacyAutoLockPinCode: MigrateLegacyAutoLockPinCode
+    private val shouldMigrateAutoLockPin: ShouldMigrateAutoLockPin,
+    private val migrateLegacyAutoLockPinCode: MigrateLegacyAutoLockPinCode,
+    private val isLegacyAutoLockEnabled: IsLegacyAutoLockEnabled
 ) {
     suspend operator fun invoke() {
 
@@ -44,16 +45,20 @@ class MigrateLegacyApplication @Inject constructor(
             destroyLegacyDatabases()
         }
 
-        if (shouldMigrateAutoLockPin()) {
-            migrateLegacyAutoLockPinCode()
-                .onLeft {
-                    Timber.e("Legacy migration: Failed to migrate legacy auto-lock pin code")
-                }
-                .onRight {
-                    Timber.d("Legacy migration: Successfully migrated legacy auto-lock pin code")
-                }
+        if (isLegacyAutoLockEnabled()) {
+            if (shouldMigrateAutoLockPin()) {
+                migrateLegacyAutoLockPinCode()
+                    .onLeft { error ->
+                        Timber.e("Legacy migration: Failed to migrate legacy auto-lock pin code: $error")
+                    }
+                    .onRight {
+                        Timber.d("Legacy migration: Successfully migrated legacy auto-lock pin code")
+                    }
+            } else {
+                Timber.d("Legacy migration: No legacy auto-lock pin code to migrate")
+            }
         } else {
-            Timber.d("Legacy migration: No legacy auto-lock pin code to migrate")
+            Timber.d("Legacy migration: Legacy auto-lock is not enabled, skipping migration")
         }
     }
 }
