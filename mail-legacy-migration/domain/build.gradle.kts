@@ -22,6 +22,7 @@ plugins {
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
     id("app-config-plugin")
+    kotlin("plugin.serialization")
 }
 
 android {

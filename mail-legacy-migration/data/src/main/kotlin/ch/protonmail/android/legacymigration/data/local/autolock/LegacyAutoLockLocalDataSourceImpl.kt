@@ -21,19 +21,18 @@ package ch.protonmail.android.legacymigration.data.local.autolock
 import androidx.datastore.preferences.core.stringPreferencesKey
 import arrow.core.Either
 import arrow.core.left
-import arrow.core.right
+import ch.protonmail.android.legacymigration.data.usecase.DecryptLegacySerializableValue
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPin
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import me.proton.core.crypto.common.keystore.KeyStoreCrypto
 import javax.inject.Inject
 
 class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
     private val dataStoreProvider: LegacyAutoLockDataStoreProvider,
-    private val keyStoreCrypto: KeyStoreCrypto
+    private val decryptLegacySerializableValue: DecryptLegacySerializableValue
 ) : LegacyAutoLockLocalDataSource {
 
     private val dataStore = dataStoreProvider.legacyAutoLockDataStore
@@ -48,8 +47,10 @@ class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
             .map { prefs ->
                 prefs[pinKey]
                     ?.takeIf { it.isNotEmpty() }
-                    ?.let { runCatching { LegacyAutoLockPin(keyStoreCrypto.decrypt(it)) }.getOrElse { null } }
-                    ?.right()
+                    ?.let { encryptedPin ->
+                        decryptLegacySerializableValue<LegacyAutoLockPin>(encryptedPin)
+                            .mapLeft { MigrationError.AutoLockFailure.FailedToReadAutoLockPin }
+                    }
                     ?: MigrationError.AutoLockFailure.FailedToReadAutoLockPin.left()
             }
             .catch {
