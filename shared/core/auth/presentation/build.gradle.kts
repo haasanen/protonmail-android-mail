@@ -63,6 +63,8 @@ dependencies {
     implementation(libs.proton.core.challenge.domain)
     implementation(libs.proton.core.challenge.presentation)
     implementation(libs.proton.core.account.domain)
+    implementation(libs.proton.core.fido.domain)
+    implementation(libs.proton.core.fido.play)
     implementation(libs.proton.core.domain)
     implementation(libs.proton.core.pass.validator.presentation)
     implementation(libs.proton.core.presentation)
@@ -74,6 +76,8 @@ dependencies {
 
     implementation(project(":design-system"))
     implementation(project(":mail-session:domain"))
+    implementation(project(":mail-settings:domain"))
+    implementation(project(":shared:core:account:domain"))
     implementation(project(":shared:core:auth:data"))
     implementation(project(":shared:core:device-migration:presentation"))
 

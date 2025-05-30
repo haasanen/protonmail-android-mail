@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.auth.presentation.secondfactor.fido2.keys
+package me.proton.android.core.auth.presentation.secondfactor.fido.keys
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement

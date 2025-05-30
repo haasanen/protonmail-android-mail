@@ -180,7 +180,7 @@ internal fun NavGraphBuilder.addRemoveAccountDialog(navController: NavHostContro
     }
 }
 
-internal fun NavGraphBuilder.addSettings(navController: NavHostController) {
+internal fun NavGraphBuilder.addSettings(navController: NavHostController, activityActions: MainActivity.Actions) {
     composable(route = Destination.Screen.Settings.route) {
         ProtonInvertedTheme {
             MainSettingsScreen(
@@ -203,6 +203,7 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController) {
                     onPrivacyAndSecuritySettingsClicked = {
                         navController.navigate(Destination.Screen.PrivacyAndSecuritySettings.route)
                     },
+                    onSecurityKeysClicked = activityActions.openSecurityKeys,
                     onBackClick = {
                         navController.navigateBack()
                     }

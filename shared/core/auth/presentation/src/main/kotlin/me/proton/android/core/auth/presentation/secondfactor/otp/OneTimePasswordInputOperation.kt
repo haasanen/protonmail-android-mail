@@ -22,7 +22,6 @@ sealed interface OneTimePasswordInputOperation
 
 sealed interface OneTimePasswordInputAction : OneTimePasswordInputOperation {
     data class Load(val unused: Long = System.currentTimeMillis()) : OneTimePasswordInputAction
-    data object Close : OneTimePasswordInputAction
     data class Authenticate(
         val code: String,
         val mode: OneTimePasswordInputMode,

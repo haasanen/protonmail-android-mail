@@ -21,7 +21,10 @@ package me.proton.android.core.auth.presentation.secondfactor
 sealed interface SecondFactorInputState {
     data object Idle : SecondFactorInputState
     data object Closed : SecondFactorInputState
-    data object Error : SecondFactorInputState
+    sealed interface Error : SecondFactorInputState {
+        data class LoginFlow(val error: String?) : Error
+        data object SecondFactor : Error
+    }
 
     data class Loading(
         val selectedTab: SecondFactorTab,

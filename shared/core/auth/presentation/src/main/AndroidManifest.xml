@@ -38,6 +38,10 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".secondfactor.fido.keys.SecurityKeysActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".twopass.TwoPassActivity"
             android:windowSoftInputMode="adjustResize" />
 

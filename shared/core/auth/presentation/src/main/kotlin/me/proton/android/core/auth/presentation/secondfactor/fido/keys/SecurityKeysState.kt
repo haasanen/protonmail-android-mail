@@ -16,10 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.auth.presentation.secondfactor.fido2.keys
+package me.proton.android.core.auth.presentation.secondfactor.fido.keys
 
-sealed interface SecurityKeysOperation
-
-sealed interface SecurityKeysAction : SecurityKeysOperation {
-    data class Load(val unused: Long = System.currentTimeMillis()) : SecurityKeysAction
+sealed interface SecurityKeysState {
+    data object Loading : SecurityKeysState
+    data class Success(val keys: List<Fido2RegisteredKey>) : SecurityKeysState
+    sealed interface Error : SecurityKeysState {
+        data object Session : Error
+        data class General(val throwable: Throwable?) : Error
+    }
 }

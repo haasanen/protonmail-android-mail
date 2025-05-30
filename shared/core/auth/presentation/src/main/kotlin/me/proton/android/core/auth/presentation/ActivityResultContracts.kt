@@ -30,6 +30,7 @@ import me.proton.android.core.auth.presentation.login.LoginInput
 import me.proton.android.core.auth.presentation.login.LoginOutput
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorActivity
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg
+import me.proton.android.core.auth.presentation.secondfactor.fido.keys.SecurityKeysActivity
 import me.proton.android.core.auth.presentation.signup.SignUpActivity
 import me.proton.android.core.auth.presentation.signup.SignupOutput
 import me.proton.android.core.auth.presentation.twopass.TwoPassActivity
@@ -117,5 +118,16 @@ object StartSignUp : ActivityResultContract<Unit, SignupOutput?>() {
         }
 
         else -> null
+    }
+}
+
+object StartSecurityKeys : ActivityResultContract<Unit, Boolean>() {
+
+    override fun createIntent(context: Context, input: Unit) = Intent(context, SecurityKeysActivity::class.java)
+
+
+    override fun parseResult(resultCode: Int, intent: Intent?): Boolean = when (resultCode) {
+        Activity.RESULT_OK -> true
+        else -> false
     }
 }

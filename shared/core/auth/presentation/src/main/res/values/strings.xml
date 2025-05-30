@@ -43,7 +43,9 @@
 
     <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problem signing you in. Please try again.</string>
     <string name="auth_login_error_invalid_action_human_verification_challenge">A human verification is needed.</string>
-    <string name="auth_login_error_invalid_action_invalid_credentials">Incorrect username or password. Please try again.</string>
+    <string name="auth_login_error_invalid_action_invalid_credentials">Incorrect login credentials. Please try again.</string>
+    <string name="auth_login_error_invalid_action_unsupported_tfa">Unsupported two factor.</string>
+    <string name="auth_login_general_error">An error occurred.</string>
 
     <string name="auth_second_factor_title">Two-factor authentication</string>
     <string name="auth_second_factor_subtitle">Your account has several 2FA mechanisms configured. Please pick how you want to confirm your identity.</string>
@@ -135,6 +137,12 @@
     </plurals>
     <string name="common_error_something_went_wrong">Something went wrong. Please try again.</string>
 
+    <string name="auth_fido_config_error">Error retrieving stored keys.</string>
+    <string name="auth_fido_reading_key_error">Error reading security key.</string>
+    <string name="auth_fido_submit_key_error">Error submitting key data.</string>
+    <string name="auth_fido_reading_key_progress">Reading security key.</string>
+    <string name="auth_fido_authenticating_in_progress">Authenticating with security key.</string>
+    <string name="auth_fido_security_key">Security Key</string>
 
     <plurals name="password_validator_min_length_error">
         <item quantity="one">Password must contain at least 1 character</item>

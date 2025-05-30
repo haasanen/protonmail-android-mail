@@ -609,7 +609,7 @@ fun Home(
                         addSetMessagePassword(navController)
                         addSignOutAccountDialog(navController)
                         addRemoveAccountDialog(navController)
-                        addSettings(navController)
+                        addSettings(navController, activityActions)
                         addAppSettings(navController, showFeatureMissingSnackbar = { showFeatureMissingSnackbar() })
                         // settings
                         addWebAccountSettings(navController)

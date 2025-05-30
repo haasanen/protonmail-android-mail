@@ -27,13 +27,16 @@ import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.android.core.auth.presentation.secondfactor.fido2.Fido2InputForm
+import kotlinx.coroutines.flow.StateFlow
+import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputAction
+import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputForm
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputForm
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonDimens.DefaultSpacing
+import me.proton.core.compose.theme.ProtonTheme
 
 @Suppress("UseComposableActions")
 @Composable
@@ -45,8 +48,15 @@ fun SecondFactorTabContent(
     onClose: () -> Unit,
     onError: (String?) -> Unit,
     onSuccess: () -> Unit,
+    externalAction: StateFlow<Fido2InputAction?>,
+    onEmitAction: (Fido2InputAction?) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(selectedTab) {
+        if (selectedTab != SecondFactorTab.SecurityKey) {
+            onEmitAction(null)
+        }
+    }
     Column(modifier = modifier) {
         if (tabs.shouldShowTabs()) {
             TabRow(
@@ -87,9 +97,11 @@ fun SecondFactorTabContent(
             SecondFactorTab.SecurityKey -> {
                 Fido2InputForm(
                     modifier = Modifier.padding(top = ProtonDimens.MediumSpacing),
-                    onClose = onClose,
                     onSuccess = onSuccess,
-                    onError = onError
+                    onError = onError,
+                    onClose = onClose,
+                    externalAction = externalAction,
+                    onEmitAction = onEmitAction
                 )
             }
 

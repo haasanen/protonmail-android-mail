@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.auth.presentation.secondfactor.fido2.keys
+package me.proton.android.core.auth.presentation.secondfactor.fido.keys
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -68,7 +68,9 @@ fun SecurityKeysList(
 ) {
     when (state) {
         is SecurityKeysState.Loading -> SecurityKeysInfoProcessing()
-        is SecurityKeysState.Error -> SecurityKeyError(state.throwable?.message)
+        is SecurityKeysState.Error.General -> SecurityKeyError(state.throwable?.message)
+        is SecurityKeysState.Error.Session ->
+            SecurityKeyError(stringResource(id = R.string.auth_fido_security_keys_error))
         is SecurityKeysState.Success -> SecurityKeysList(
             modifier = modifier,
             onManageSecurityKeysClicked = onManageSecurityKeysClicked,
@@ -186,7 +188,7 @@ internal fun SecurityKeysListPreviewWithStateError() {
         SecurityKeysList(
             onManageSecurityKeysClicked = {},
             onAddSecurityKeyClicked = {},
-            state = SecurityKeysState.Error(
+            state = SecurityKeysState.Error.General(
                 Error("Test error")
             )
         )

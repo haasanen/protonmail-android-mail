@@ -26,12 +26,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import me.proton.android.core.auth.presentation.LogTag
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
+import me.proton.android.core.auth.presentation.secondfactor.getAccountById
+import me.proton.android.core.auth.presentation.secondfactor.getSessionsForAccount
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Authenticate
-import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Close
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Load
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Awaiting2Pass
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Closed
@@ -40,18 +40,13 @@ import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePassword
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Loading
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.LoggedIn
 import me.proton.core.compose.viewmodel.BaseViewModel
-import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_account_uniffi.LoginError
 import uniffi.proton_account_uniffi.LoginFlow
 import uniffi.proton_account_uniffi.LoginFlowSubmitTotpResult
 import uniffi.proton_mail_uniffi.MailSession
-import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
-import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
 import uniffi.proton_mail_uniffi.MailSessionToUserSessionResult
 import uniffi.proton_mail_uniffi.ProtonError
-import uniffi.proton_mail_uniffi.StoredAccount
-import uniffi.proton_mail_uniffi.StoredSession
 import javax.inject.Inject
 
 @HiltViewModel
@@ -74,7 +69,6 @@ class OneTimePasswordInputViewModel @Inject constructor(
     override fun onAction(action: OneTimePasswordInputAction): Flow<OneTimePasswordInputState> {
         return when (action) {
             is Load -> onLoad()
-            is Close -> onClose()
             is Authenticate -> onValidateAndAuthenticate(action)
         }
     }
@@ -98,7 +92,7 @@ class OneTimePasswordInputViewModel @Inject constructor(
 
     private fun onAuthenticate(action: Authenticate): Flow<OneTimePasswordInputState> = flow {
         emit(Loading)
-        val session = getSession(getAccount(userId))?.firstOrNull()
+        val session = sessionInterface.getSessionsForAccount(sessionInterface.getAccountById(userId))?.firstOrNull()
         val loginFlow =
             session?.let { sessionInterface.resumeLoginFlow(userId, session.sessionId()) }
         when (loginFlow) {
@@ -142,29 +136,5 @@ class OneTimePasswordInputViewModel @Inject constructor(
                 is MailSessionToUserSessionResult.Ok -> emit(LoggedIn)
             }
         }
-    }
-
-    private suspend fun getSession(account: StoredAccount?): List<StoredSession>? {
-        if (account == null) {
-            return null
-        }
-
-        return when (val result = sessionInterface.getAccountSessions(account)) {
-            is MailSessionGetAccountSessionsResult.Error -> {
-                CoreLogger.e(LogTag.LOGIN, result.v1.toString())
-                null
-            }
-
-            is MailSessionGetAccountSessionsResult.Ok -> result.v1
-        }
-    }
-
-    private suspend fun getAccount(userId: String) = when (val result = sessionInterface.getAccount(userId)) {
-        is MailSessionGetAccountResult.Error -> {
-            CoreLogger.e(LogTag.LOGIN, result.v1.toString())
-            null
-        }
-
-        is MailSessionGetAccountResult.Ok -> result.v1
     }
 }

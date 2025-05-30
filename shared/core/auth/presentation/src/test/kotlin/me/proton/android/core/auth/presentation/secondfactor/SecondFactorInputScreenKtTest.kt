@@ -11,8 +11,8 @@ import com.android.resources.ScreenOrientation
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
-import me.proton.android.core.auth.presentation.secondfactor.fido2.Fido2InputState
-import me.proton.android.core.auth.presentation.secondfactor.fido2.Fido2InputViewModel
+import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputState
+import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputViewModel
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputViewModel
 import me.proton.core.compose.theme.ProtonTheme
@@ -51,7 +51,9 @@ class SecondFactorInputScreenKtTest(
                         state = SecondFactorInputState.Loading(
                             selectedTab = SecondFactorTab.Otp,
                             tabs = listOf(SecondFactorTab.Otp)
-                        )
+                        ),
+                        externalAction = MutableStateFlow(null),
+                        onEmitAction = {}
                     )
                 }
             }
@@ -79,7 +81,9 @@ class SecondFactorInputScreenKtTest(
                         state = SecondFactorInputState.Loading(
                             selectedTab = SecondFactorTab.SecurityKey,
                             tabs = listOf(SecondFactorTab.SecurityKey, SecondFactorTab.Otp)
-                        )
+                        ),
+                        externalAction = MutableStateFlow(null),
+                        onEmitAction = {}
                     )
                 }
             }

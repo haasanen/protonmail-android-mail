@@ -22,6 +22,9 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import com.android.resources.NightMode
 import com.android.resources.ScreenOrientation
+import me.proton.android.core.auth.presentation.R
+import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputContent
+import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputState
 import me.proton.core.compose.theme.ProtonTheme
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -39,8 +42,10 @@ class Fido2InputFormKtTest(config: DeviceConfig) {
     fun `idle state`() {
         paparazzi.snapshot {
             ProtonTheme {
-                Fido2InputForm(
-                    state = Fido2InputState.Idle
+                Fido2InputContent(
+                    state = Fido2InputState.Idle,
+                    onAuthenticate = {},
+                    fido2Logo = R.drawable.ic_fido2
                 )
             }
         }

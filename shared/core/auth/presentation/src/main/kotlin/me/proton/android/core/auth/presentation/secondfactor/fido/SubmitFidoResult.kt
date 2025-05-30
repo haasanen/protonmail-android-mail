@@ -16,10 +16,14 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.auth.presentation.secondfactor.fido2.keys
+package me.proton.android.core.auth.presentation.secondfactor.fido
 
-sealed interface SecurityKeysState {
-    data object Loading : SecurityKeysState
-    data class Success(val keys: List<Fido2RegisteredKey>) : SecurityKeysState
-    data class Error(val throwable: Throwable?) : SecurityKeysState
+import uniffi.proton_account_uniffi.LoginFlow
+import uniffi.proton_mail_uniffi.ProtonError
+
+sealed class SubmitFidoResult {
+    data class Success(val loginFlow: LoginFlow) : SubmitFidoResult()
+    data class Error(val error: ProtonError) : SubmitFidoResult()
+    data class GeneralError(val message: String) : SubmitFidoResult()
+    data object SessionClosed : SubmitFidoResult()
 }

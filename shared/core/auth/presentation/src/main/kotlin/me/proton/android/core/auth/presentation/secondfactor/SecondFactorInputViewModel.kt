@@ -18,12 +18,15 @@
 
 package me.proton.android.core.auth.presentation.secondfactor
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import me.proton.android.core.auth.presentation.LogTag
+import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputAction.Close
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputAction.Load
@@ -33,18 +36,14 @@ import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputSt
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Idle
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Loading
 import me.proton.core.compose.viewmodel.BaseViewModel
-import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_mail_uniffi.MailSession
-import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
-import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
-import uniffi.proton_mail_uniffi.MailSessionUserSessionFromStoredSessionResult
-import uniffi.proton_mail_uniffi.MailUserSessionUserSettingsResult
-import uniffi.proton_mail_uniffi.StoredAccount
-import uniffi.proton_mail_uniffi.StoredSession
+import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
+import uniffi.proton_mail_uniffi.ProtonError
 import javax.inject.Inject
 
 @HiltViewModel
 class SecondFactorInputViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val savedStateHandle: SavedStateHandle,
     private val sessionInterface: MailSession
 ) : BaseViewModel<SecondFactorInputAction, SecondFactorInputState>(
@@ -53,11 +52,12 @@ class SecondFactorInputViewModel @Inject constructor(
 ) {
 
     private val userId by lazy { savedStateHandle.getUserId() }
+
     private val allAvailableTabs = listOf(SecondFactorTab.SecurityKey, SecondFactorTab.Otp)
     private var userAvailableTabs: List<SecondFactorTab> = emptyList()
 
     override suspend fun FlowCollector<SecondFactorInputState>.onError(throwable: Throwable) {
-        emit(Error)
+        emit(Error.SecondFactor)
     }
 
     override fun onAction(action: SecondFactorInputAction): Flow<SecondFactorInputState> {
@@ -69,38 +69,52 @@ class SecondFactorInputViewModel @Inject constructor(
     }
 
     private fun onLoad(): Flow<SecondFactorInputState> = flow {
-        val session = getSession(getAccount(userId))?.firstOrNull()
-        val userSettings = when (val result = session?.let { sessionInterface.userSessionFromStoredSession(session) }) {
-            null -> null
-            is MailSessionUserSessionFromStoredSessionResult.Error -> null
-            is MailSessionUserSessionFromStoredSessionResult.Ok -> result.v1.userSettings()
+        val account = sessionInterface.getAccountById(userId)
+        if (account == null) {
+            emitAll(onClose())
+            return@flow
         }
 
-        val registeredKeys = when (userSettings) {
-            null -> null
-            is MailUserSessionUserSettingsResult.Error -> emptyList()
-            is MailUserSessionUserSettingsResult.Ok -> userSettings.v1.twoFactorAuth.registeredKeys
+        val session = sessionInterface.getSessionsForAccount(account)?.firstOrNull()
+        if (session == null) {
+            emitAll(onClose())
+            return@flow
         }
 
-        val hasSecurityKeys = registeredKeys?.isNotEmpty() ?: false
+        when (val loginFlow = sessionInterface.resumeLoginFlow(userId, session.sessionId())) {
+            is MailSessionResumeLoginFlowResult.Error -> emitAll(onError(loginFlow.v1))
+            is MailSessionResumeLoginFlowResult.Ok -> {
+                userAvailableTabs = determineAvailableTabs(loginFlow)
+                val defaultTab = getDefaultTab()
 
-        userAvailableTabs = if (hasSecurityKeys) {
+                emit(Loading(selectedTab = defaultTab, tabs = userAvailableTabs))
+            }
+        }
+    }
+
+    private fun determineAvailableTabs(loginFlow: MailSessionResumeLoginFlowResult.Ok): List<SecondFactorTab> {
+        val securityKeys = loginFlow.v1.getFidoDetails()?.registeredKeys ?: emptyList()
+        val hasSecurityKeys = securityKeys.isNotEmpty()
+
+        return if (hasSecurityKeys) {
             allAvailableTabs
         } else {
             listOf(SecondFactorTab.Otp)
         }
+    }
 
-        val defaultTab = if (userAvailableTabs.contains(SecondFactorTab.SecurityKey)) {
-            SecondFactorTab.SecurityKey
-        } else {
-            SecondFactorTab.Otp
-        }
-
-        emit(Loading(selectedTab = defaultTab, tabs = userAvailableTabs))
+    private fun getDefaultTab(): SecondFactorTab = if (userAvailableTabs.contains(SecondFactorTab.SecurityKey)) {
+        SecondFactorTab.SecurityKey
+    } else {
+        SecondFactorTab.Otp
     }
 
     private fun onSelectTab(index: Int): Flow<SecondFactorInputState> = flow {
-        val selectedTab = userAvailableTabs.getOrElse(index) { SecondFactorTab.Otp }
+        if (index < 0 || index >= userAvailableTabs.size) {
+            return@flow
+        }
+
+        val selectedTab = userAvailableTabs[index]
         emit(Loading(selectedTab = selectedTab, tabs = userAvailableTabs))
     }
 
@@ -109,27 +123,13 @@ class SecondFactorInputViewModel @Inject constructor(
         emit(Closed)
     }
 
-    private suspend fun getSession(account: StoredAccount?): List<StoredSession>? {
-        if (account == null) {
-            return null
+    private fun onError(error: ProtonError): Flow<SecondFactorInputState> = flow {
+        val errorMessage = error.getErrorMessage(context)
+        emit(Error.LoginFlow(errorMessage))
+
+        when (error) {
+            is ProtonError.Unexpected -> emitAll(onClose())
+            else -> Unit
         }
-
-        return when (val result = sessionInterface.getAccountSessions(account)) {
-            is MailSessionGetAccountSessionsResult.Error -> {
-                CoreLogger.e(LogTag.LOGIN, result.v1.toString())
-                null
-            }
-
-            is MailSessionGetAccountSessionsResult.Ok -> result.v1
-        }
-    }
-
-    private suspend fun getAccount(userId: String) = when (val result = sessionInterface.getAccount(userId)) {
-        is MailSessionGetAccountResult.Error -> {
-            CoreLogger.e(LogTag.LOGIN, result.v1.toString())
-            null
-        }
-
-        is MailSessionGetAccountResult.Ok -> result.v1
     }
 }

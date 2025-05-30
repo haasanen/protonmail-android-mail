@@ -132,7 +132,8 @@ fun MainSettingsScreen(
             AccountSettingsItem(
                 modifier = Modifier.testTag(SettingsScreenTestTags.AccountSettingsItem),
                 accountInfo = state.accountInfoUiModel,
-                onAccountClicked = actions.onAccountClick
+                onAccountClicked = actions.onAccountClick,
+                onSecurityKeysClicked = actions.onSecurityKeysClicked
             )
 
             Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Medium))
@@ -181,7 +182,6 @@ fun MainSettingsScreen(
                     )
                     SettingsItemDivider()
 
-
                     ProtonMainSettingsItem(
                         name = stringResource(id = string.mail_settings_app),
                         iconRes = R.drawable.ic_proton_mobile,
@@ -215,10 +215,11 @@ fun SettingsItemDivider() {
 fun AccountSettingsItem(
     modifier: Modifier = Modifier,
     accountInfo: AccountInformationUiModel?,
-    onAccountClicked: () -> Unit
+    onAccountClicked: () -> Unit,
+    onSecurityKeysClicked: () -> Unit
 ) {
     val header = accountInfo?.name
-        ?: stringResource(id = R.string.mail_settings_no_information_available)
+        ?: stringResource(id = string.mail_settings_no_information_available)
     val hint = accountInfo?.email ?: ""
 
     Card(
@@ -261,6 +262,13 @@ fun AccountSettingsItem(
                 )
             }
         )
+        SettingsItemDivider()
+
+        ProtonMainSettingsItem(
+            name = stringResource(id = string.mail_settings_fido_keys),
+            iconRes = R.drawable.ic_proton_key,
+            onClick = onSecurityKeysClicked
+        )
     }
 }
 
@@ -273,6 +281,7 @@ object MainSettingsScreen {
         val onFolderAndLabelSettingsClicked: () -> Unit,
         val onSpamFilterSettingsClicked: () -> Unit,
         val onPrivacyAndSecuritySettingsClicked: () -> Unit,
+        val onSecurityKeysClicked: () -> Unit,
         val onBackClick: () -> Unit
     )
 }

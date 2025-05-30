@@ -213,7 +213,7 @@ class LauncherViewModel @Inject constructor(
     }
 
     private fun onOpenSecurityKeys() {
-        TODO("ET - Not yet implemented")
+        authOrchestrator.startSecurityKeys()
     }
 
     private fun onSignIn(userId: UserId?) = viewModelScope.launch {

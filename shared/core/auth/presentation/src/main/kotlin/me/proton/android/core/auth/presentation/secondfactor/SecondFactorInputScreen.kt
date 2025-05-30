@@ -46,6 +46,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
+import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputAction
 import me.proton.core.compose.component.appbar.ProtonTopAppBar
 import me.proton.core.compose.theme.LocalColors
 import me.proton.core.compose.theme.LocalTypography
@@ -60,12 +61,10 @@ fun SecondFactorInputScreen(
     onError: (String?) -> Unit,
     onSuccess: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SecondFactorInputViewModel = hiltViewModel(),
-    externalAction: StateFlow<SecondFactorInputAction?> = MutableStateFlow(null)
+    externalAction: StateFlow<Fido2InputAction?> = MutableStateFlow(null),
+    onEmitAction: (Fido2InputAction?) -> Unit,
+    viewModel: SecondFactorInputViewModel = hiltViewModel()
 ) {
-    val action by externalAction.collectAsStateWithLifecycle()
-    action?.let { viewModel.perform(it) }
-
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     BackHandler(enabled = true) {
@@ -79,7 +78,9 @@ fun SecondFactorInputScreen(
         onError = onError,
         onSuccess = onSuccess,
         onBackClicked = { viewModel.perform(SecondFactorInputAction.Close) },
-        onTabSelected = { viewModel.perform(SecondFactorInputAction.SelectTab(it)) }
+        onTabSelected = { viewModel.perform(SecondFactorInputAction.SelectTab(it)) },
+        onEmitAction = onEmitAction,
+        externalAction = externalAction
     )
 }
 
@@ -91,7 +92,9 @@ fun SecondFactorInputScreen(
     onError: (String?) -> Unit = {},
     onSuccess: () -> Unit = {},
     onBackClicked: () -> Unit = {},
-    onTabSelected: (Int) -> Unit = {}
+    onTabSelected: (Int) -> Unit = {},
+    externalAction: StateFlow<Fido2InputAction?>,
+    onEmitAction: (Fido2InputAction?) -> Unit
 ) {
     LaunchedEffect(state) {
         when (state) {
@@ -113,6 +116,8 @@ fun SecondFactorInputScreen(
                 onSuccess = onSuccess,
                 selectedTabIndex = actualSelectedTabIndex,
                 selectedTab = state.selectedTab,
+                onEmitAction = onEmitAction,
+                externalAction = externalAction,
                 tabs = state.tabs
             )
         }
@@ -131,7 +136,9 @@ fun SecondFactorInputScaffold(
     onTabSelected: (Int) -> Unit = {},
     selectedTabIndex: Int = 0,
     selectedTab: SecondFactorTab,
-    tabs: List<SecondFactorTab>
+    tabs: List<SecondFactorTab>,
+    externalAction: StateFlow<Fido2InputAction?>,
+    onEmitAction: (Fido2InputAction?) -> Unit
 ) {
     Scaffold(
         modifier = modifier,
@@ -177,6 +184,8 @@ fun SecondFactorInputScaffold(
                     onClose = onClose,
                     onError = onError,
                     onSuccess = onSuccess,
+                    onEmitAction = onEmitAction,
+                    externalAction = externalAction,
                     modifier = Modifier.padding(top = DefaultSpacing)
                 )
             }
@@ -207,7 +216,9 @@ fun SecondFactorInputScreenPreview() {
                 selectedTab = SecondFactorTab.SecurityKey,
                 tabs = listOf(SecondFactorTab.SecurityKey, SecondFactorTab.Otp)
             ),
-            onTabSelected = {}
+            onTabSelected = {},
+            onEmitAction = {},
+            externalAction = MutableStateFlow(null)
         )
     }
 }
@@ -227,7 +238,9 @@ fun SecondFactorInputScreenOtpOnlyPreview() {
                 selectedTab = SecondFactorTab.Otp,
                 tabs = listOf(SecondFactorTab.Otp)
             ),
-            onTabSelected = {}
+            onTabSelected = {},
+            externalAction = MutableStateFlow(null),
+            onEmitAction = {}
         )
     }
 }
