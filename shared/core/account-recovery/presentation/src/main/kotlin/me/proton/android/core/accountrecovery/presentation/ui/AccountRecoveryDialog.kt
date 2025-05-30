@@ -64,7 +64,7 @@ import me.proton.core.presentation.utils.launchOnScreenView
 import me.proton.core.util.kotlin.exhaustive
 import kotlin.time.Duration.Companion.milliseconds
 
-internal const val PASSWORD_FIELD_TAG = "PASSWORD_FIELD_TAG"
+internal const val PASSWORD_FIELD_TAG = "PASSWORD_FIELD_TAG" // gitleaks:allow
 
 @Suppress("UseComposableActions")
 @Composable
