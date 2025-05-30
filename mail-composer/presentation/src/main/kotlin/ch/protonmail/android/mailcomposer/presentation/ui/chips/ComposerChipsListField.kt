@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.delete
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -51,6 +52,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUi
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionState
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionsList
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerChipsListViewModel
+import ch.protonmail.android.uicomponents.chips.ChipsListState
 import ch.protonmail.android.uicomponents.chips.ChipsListTextField
 import ch.protonmail.android.uicomponents.chips.ChipsTestTags
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
@@ -81,6 +83,56 @@ fun ComposerChipsListField(
         listState.updateItems(chipsList)
     }
 
+    ChipsListContent(
+        label,
+        modifier,
+        focusRequester,
+        focusOnClick,
+        actions,
+        contactSuggestionState,
+        textFieldState,
+        listState,
+        chevronIconContent
+    )
+
+    BackHandler(contactSuggestionState.areSuggestionsExpanded) {
+        actions.onSuggestionsDismissed()
+    }
+
+    ConsumableLaunchedEffect(state.listChanged) {
+        actions.onListChanged(it)
+    }
+
+    ConsumableLaunchedEffect(state.suggestionsTermTyped) {
+        actions.onSuggestionTermTyped(it)
+    }
+
+    ConsumableTextEffect(state.duplicateRemovalWarning) {
+        Toast.makeText(context, it, Toast.LENGTH_LONG).apply {
+            setGravity(Gravity.BOTTOM, 0, 0)
+        }.show()
+    }
+
+    ConsumableTextEffect(state.invalidEntryWarning) {
+        Toast.makeText(context, it, Toast.LENGTH_LONG).apply {
+            setGravity(Gravity.BOTTOM, 0, 0)
+        }.show()
+    }
+}
+
+@Composable
+private fun ChipsListContent(
+    label: String,
+    modifier: Modifier = Modifier,
+    focusRequester: FocusRequester? = null,
+    focusOnClick: Boolean = true,
+    actions: ComposerChipsListField.Actions,
+    contactSuggestionState: ContactSuggestionState,
+    textFieldState: TextFieldState,
+    listState: ChipsListState,
+    chevronIconContent: @Composable () -> Unit = {}
+) {
+
     val interactionSource = remember { MutableInteractionSource() }
     val chipsListActions = remember {
         ChipsListTextField.Actions(
@@ -101,9 +153,6 @@ fun ComposerChipsListField(
         )
     }
 
-    BackHandler(contactSuggestionState.areSuggestionsExpanded) {
-        actions.onSuggestionsDismissed()
-    }
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -177,25 +226,6 @@ fun ComposerChipsListField(
         }
     }
 
-    ConsumableLaunchedEffect(state.listChanged) {
-        actions.onListChanged(it)
-    }
-
-    ConsumableLaunchedEffect(state.suggestionsTermTyped) {
-        actions.onSuggestionTermTyped(it)
-    }
-
-    ConsumableTextEffect(state.duplicateRemovalWarning) {
-        Toast.makeText(context, it, Toast.LENGTH_LONG).apply {
-            setGravity(Gravity.BOTTOM, 0, 0)
-        }.show()
-    }
-
-    ConsumableTextEffect(state.invalidEntryWarning) {
-        Toast.makeText(context, it, Toast.LENGTH_LONG).apply {
-            setGravity(Gravity.BOTTOM, 0, 0)
-        }.show()
-    }
 }
 
 object ComposerChipsListField {

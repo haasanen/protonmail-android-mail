@@ -26,9 +26,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.Text
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,8 +47,8 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.uicomponents.chips.icons.LeadingChipIcon
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
-import ch.protonmail.android.uicomponents.chips.item.inputChipColor
 import ch.protonmail.android.uicomponents.chips.item.inputChipBorder
+import ch.protonmail.android.uicomponents.chips.item.inputChipColor
 import ch.protonmail.android.uicomponents.chips.item.suggestionChipColor
 import ch.protonmail.android.uicomponents.chips.item.suggestionsTextStyle
 import ch.protonmail.android.uicomponents.chips.item.textStyle
@@ -157,7 +157,6 @@ internal fun UnFocusedChipsList(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Preview(showBackground = true)
 @Composable
 private fun FocusedChipsListPreview() {
@@ -181,7 +180,6 @@ private fun FocusedChipsListPreview() {
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Preview(showBackground = true)
 @Composable
 private fun UnfocusedValidChipsListPreview() {
