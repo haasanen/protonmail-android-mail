@@ -19,8 +19,8 @@
 package protonmail.android.mailpinlock.presentation.autolock
 
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailpinlock.presentation.autolock.ResetAutoLockDefaults
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.SaveAutoLockPin
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.ToggleAutoLockAttemptPendingStatus
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.ToggleAutoLockEnabled
@@ -30,6 +30,7 @@ import io.mockk.coVerifySequence
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import protonmail.android.mailpinlock.presentation.autolock.ResetAutoLockDefaultsTest.ExpectedDefaults.AutoLockPin
 
 internal class ResetAutoLockDefaultsTest {
 
@@ -50,7 +51,7 @@ internal class ResetAutoLockDefaultsTest {
         // Given
         coEvery { toggleAutoLockEnabled(ExpectedDefaults.AutoLockPreference) } returns Unit.right()
         coEvery { updateRemainingAutoLockAttempts(ExpectedDefaults.AutoLockRemainingAttempts) } returns Unit.right()
-        coEvery { saveAutoLockPin(ExpectedDefaults.AutoLockPin) } returns Unit.right()
+        coEvery { saveAutoLockPin(AutoLockPin) } returns Unit.right()
         coEvery { toggleAutoLockPendingAttemptStatus(ExpectedDefaults.AutoLockPendingStatus) } returns Unit.right()
 
         // When
@@ -59,7 +60,7 @@ internal class ResetAutoLockDefaultsTest {
         // Then
         coVerifySequence {
             toggleAutoLockEnabled(ExpectedDefaults.AutoLockPreference)
-            saveAutoLockPin(ExpectedDefaults.AutoLockPin)
+            saveAutoLockPin(AutoLockPin)
             updateRemainingAutoLockAttempts(ExpectedDefaults.AutoLockRemainingAttempts)
             toggleAutoLockPendingAttemptStatus(ExpectedDefaults.AutoLockPendingStatus)
         }

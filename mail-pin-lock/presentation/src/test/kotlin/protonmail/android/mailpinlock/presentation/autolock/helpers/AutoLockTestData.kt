@@ -18,8 +18,10 @@
 
 package protonmail.android.mailpinlock.presentation.autolock.helpers
 
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.pin.AutoLockPinState
 import ch.protonmail.android.mailpinlock.presentation.pin.BiometricPinUiModel
 import ch.protonmail.android.mailpinlock.presentation.pin.ConfirmButtonUiModel
@@ -29,8 +31,6 @@ import ch.protonmail.android.mailpinlock.presentation.pin.PinInsertionUiModel
 import ch.protonmail.android.mailpinlock.presentation.pin.PinVerificationRemainingAttempts
 import ch.protonmail.android.mailpinlock.presentation.pin.SignOutUiModel
 import ch.protonmail.android.mailpinlock.presentation.pin.TopBarUiModel
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockPin
-import ch.protonmail.android.mailsettings.presentation.R
 
 internal object AutoLockTestData {
 

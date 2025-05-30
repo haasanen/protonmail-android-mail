@@ -34,6 +34,7 @@ import ch.protonmail.android.mailpinlock.presentation.autolock.mapper.AutoLockBi
 import ch.protonmail.android.mailpinlock.presentation.autolock.mapper.AutoLockIntervalsUiModelMapper
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockInterval
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
+import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockPreference
 import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsState
 import ch.protonmail.android.mailsettings.domain.repository.AutoLockPreferenceError
@@ -44,7 +45,6 @@ import ch.protonmail.android.mailsettings.domain.usecase.autolock.ToggleAutoLock
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.ToggleAutoLockEnabled
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.UpdateAutoLockInterval
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.biometric.ObserveAutoLockBiometricsState
-import ch.protonmail.android.mailsettings.presentation.R
 import io.mockk.called
 import io.mockk.coEvery
 import io.mockk.coVerify
