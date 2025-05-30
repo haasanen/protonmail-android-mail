@@ -63,7 +63,7 @@ fun OneTimePasswordInputForm(
     OneTimePasswordInputForm(
         state = state,
         modifier = modifier,
-        onAuthenticate = { viewModel.submit(it) },
+        onAuthenticate = { viewModel.perform(it) },
         onError = onError,
         onSuccess = onSuccess,
         onClose = onClose
@@ -99,7 +99,7 @@ fun OneTimePasswordInputForm(
         twoFactorCodeFocusRequester.requestFocus()
     }
 
-    Column(modifier = modifier) {
+    Column(modifier = modifier.padding(top = ProtonDimens.DefaultSpacing)) {
         if (mode == OneTimePasswordInputMode.Totp) {
             ProtonOutlinedTextFieldWithError(
                 text = code,

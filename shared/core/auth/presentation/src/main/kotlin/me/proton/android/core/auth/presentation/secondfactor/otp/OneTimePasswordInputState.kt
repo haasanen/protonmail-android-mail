@@ -26,7 +26,7 @@ sealed interface OneTimePasswordInputState {
     data object LoggedIn : OneTimePasswordInputState
     sealed interface Error : OneTimePasswordInputState {
         data object Validation : Error
-        data class LoginFlow(val error: String) : Error
+        data class LoginFlow(val error: String?) : Error
     }
 
     val isLoading: Boolean

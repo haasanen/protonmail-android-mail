@@ -24,4 +24,5 @@
     <string name="sign_up_url_privacy_policy" translatable="false">https://proton.me/legal/privacy</string>
     <string name="human_verification_manual_verification_link">https://proton.me/support/contact</string>
     <string name="human_verification_help_link">https://proton.me/support/human-verification</string>
+    <string name="second_factor_security_key_link" translatable="false">https://proton.me/support/two-factor-authentication-2fa</string>
 </resources>

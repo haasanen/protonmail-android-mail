@@ -18,13 +18,7 @@
 
 package me.proton.android.core.auth.presentation.secondfactor
 
-sealed interface SecondFactorInputState {
-    data object Idle : SecondFactorInputState
-    data object Closed : SecondFactorInputState
-    data object Error : SecondFactorInputState
+fun List<SecondFactorTab>.actualTabIndex(selectedTab: SecondFactorTab): Int =
+    indexOf(selectedTab).takeIf { it >= 0 } ?: 0
 
-    data class Loading(
-        val selectedTab: SecondFactorTab,
-        val tabs: List<SecondFactorTab>
-    ) : SecondFactorInputState
-}
+fun List<SecondFactorTab>.shouldShowTabs(): Boolean = size > 1

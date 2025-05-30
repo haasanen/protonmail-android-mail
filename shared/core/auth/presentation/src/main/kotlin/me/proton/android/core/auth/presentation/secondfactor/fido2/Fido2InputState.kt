@@ -16,15 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.auth.presentation.secondfactor
+package me.proton.android.core.auth.presentation.secondfactor.fido2
 
-sealed interface SecondFactorInputState {
-    data object Idle : SecondFactorInputState
-    data object Closed : SecondFactorInputState
-    data object Error : SecondFactorInputState
-
-    data class Loading(
-        val selectedTab: SecondFactorTab,
-        val tabs: List<SecondFactorTab>
-    ) : SecondFactorInputState
+sealed interface Fido2InputState {
+    data object Idle : Fido2InputState
+    data object ReadingSecurityKey : Fido2InputState
+    data object LoggedIn : Fido2InputState
+    data object Closed : Fido2InputState
+    data class Error(val error: String?) : Fido2InputState
 }

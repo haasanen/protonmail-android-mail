@@ -16,10 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.auth.presentation.secondfactor
+package me.proton.android.core.auth.presentation.secondfactor.fido2
 
-sealed interface SecondFactorInputOperation
+sealed interface Fido2InputOperation
 
-sealed interface SecondFactorInputAction : SecondFactorInputOperation {
-    data object Close : SecondFactorInputAction
+sealed interface Fido2InputAction : Fido2InputOperation {
+    data class Load(val unused: Long = System.currentTimeMillis()) : Fido2InputAction
+    data object Close : Fido2InputAction
+    data class Authenticate(val unused: Long = System.currentTimeMillis()) : Fido2InputAction
 }

@@ -18,13 +18,20 @@
 
 package me.proton.android.core.auth.presentation.secondfactor
 
-sealed interface SecondFactorInputState {
-    data object Idle : SecondFactorInputState
-    data object Closed : SecondFactorInputState
-    data object Error : SecondFactorInputState
+sealed interface SecondFactorOperation
 
-    data class Loading(
-        val selectedTab: SecondFactorTab,
-        val tabs: List<SecondFactorTab>
-    ) : SecondFactorInputState
+sealed interface SecondFactorInputAction : SecondFactorOperation {
+    data object Load : SecondFactorInputAction
+    data object Close : SecondFactorInputAction
+    data class SelectTab(val index: Int) : SecondFactorInputAction
+}
+
+enum class SecondFactorTab(val value: Int) {
+    SecurityKey(0),
+    Otp(1);
+
+    companion object {
+
+        val map = entries.associateBy { it.value }
+    }
 }

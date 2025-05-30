@@ -46,6 +46,9 @@
     <string name="auth_login_error_invalid_action_unsupported_tfa">Unsupported two factor.</string>
 
     <string name="auth_second_factor_title">Two-factor authentication</string>
+    <string name="auth_second_factor_subtitle">Your account has several 2FA mechanisms configured. Please pick how you want to confirm your identity.</string>
+    <string name="auth_second_factor_tab_security_key">Security Key</string>
+    <string name="auth_second_factor_tab_otp">One-time Code</string>
     <string name="auth_second_factor_authenticate">Authenticate</string>
     <string name="auth_second_factor_totp_input_help">Enter the 6-digit code.</string>
     <string name="auth_second_factor_totp_input_label">Two-factor code</string>
@@ -53,6 +56,8 @@
     <string name="auth_second_factor_recovery_label">Recovery code</string>
     <string name="auth_second_factor_switch_to_recovery">Use recovery code</string>
     <string name="auth_second_factor_switch_to_totp">Use two-factor code</string>
+    <string name="auth_second_factor_insert_security_key">Present a security key linked to your Proton Account. </string>
+    <string name="auth_second_factor_insert_security_key_link">Learn more</string>
     <string name="auth_two_pass_title">Unlock your mailbox</string>
     <string name="auth_two_pass_input_label">Mailbox password</string>
     <string name="auth_two_pass_unlock">Unlock</string>

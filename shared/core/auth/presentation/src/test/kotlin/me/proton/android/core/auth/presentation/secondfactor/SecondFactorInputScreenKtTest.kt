@@ -11,6 +11,8 @@ import com.android.resources.ScreenOrientation
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
+import me.proton.android.core.auth.presentation.secondfactor.fido2.Fido2InputState
+import me.proton.android.core.auth.presentation.secondfactor.fido2.Fido2InputViewModel
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputViewModel
 import me.proton.core.compose.theme.ProtonTheme
@@ -29,7 +31,7 @@ class SecondFactorInputScreenKtTest(
     val paparazzi = Paparazzi(deviceConfig = config)
 
     @Test
-    fun `idle state`() {
+    fun `otp only state`() {
         val fakeViewModelStore = mockk<ViewModelStore> {
             every { this@mockk[any()] } answers {
                 if (firstArg<String>().endsWith(OneTimePasswordInputViewModel::class.java.name)) {
@@ -45,7 +47,40 @@ class SecondFactorInputScreenKtTest(
         paparazzi.snapshot {
             CompositionLocalProvider(LocalViewModelStoreOwner provides fakeViewModelStoreOwner) {
                 ProtonTheme {
-                    SecondFactorInputScreen(state = SecondFactorInputState.Idle)
+                    SecondFactorInputScreen(
+                        state = SecondFactorInputState.Loading(
+                            selectedTab = SecondFactorTab.Otp,
+                            tabs = listOf(SecondFactorTab.Otp)
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `fido and otp state`() {
+        val fakeViewModelStore = mockk<ViewModelStore> {
+            every { this@mockk[any()] } answers {
+                if (firstArg<String>().endsWith(Fido2InputViewModel::class.java.name)) {
+                    mockk<Fido2InputViewModel> {
+                        every { state } returns MutableStateFlow(Fido2InputState.Idle)
+                    }
+                } else null
+            }
+        }
+        val fakeViewModelStoreOwner = mockk<ViewModelStoreOwner> {
+            every { viewModelStore } returns fakeViewModelStore
+        }
+        paparazzi.snapshot {
+            CompositionLocalProvider(LocalViewModelStoreOwner provides fakeViewModelStoreOwner) {
+                ProtonTheme {
+                    SecondFactorInputScreen(
+                        state = SecondFactorInputState.Loading(
+                            selectedTab = SecondFactorTab.SecurityKey,
+                            tabs = listOf(SecondFactorTab.SecurityKey, SecondFactorTab.Otp)
+                        )
+                    )
                 }
             }
         }

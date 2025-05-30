@@ -38,9 +38,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.LocalTypography
 import me.proton.core.compose.theme.ProtonDimens
+import me.proton.core.compose.theme.ProtonTheme
 
 @Composable
 fun LoginHelpItem(
@@ -78,7 +78,7 @@ fun LoginHelpItem(
                 painter = icon,
                 contentDescription = null,
                 modifier = Modifier.size(ProtonDimens.DefaultIconSize),
-                colorFilter = ColorFilter.tint(LocalColors.current.iconNorm)
+                colorFilter = ColorFilter.tint(ProtonTheme.colors.iconNorm)
             )
             Column(
                 modifier = Modifier

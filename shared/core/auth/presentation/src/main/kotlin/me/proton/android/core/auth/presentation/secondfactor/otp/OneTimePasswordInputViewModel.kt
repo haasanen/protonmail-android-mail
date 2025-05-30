@@ -20,32 +20,25 @@ package me.proton.android.core.auth.presentation.secondfactor.otp
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.LogTag
 import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Authenticate
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Close
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Load
-import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Awaiting2Pass
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Idle
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Closed
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Error
-import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Idle
-import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Loading
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.LoggedIn
-import me.proton.core.compose.viewmodel.stopTimeoutMillis
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Loading
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Awaiting2Pass
+import me.proton.core.compose.viewmodel.BaseViewModel
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_account_uniffi.LoginError
 import uniffi.proton_account_uniffi.LoginFlow
@@ -67,22 +60,23 @@ class OneTimePasswordInputViewModel @Inject constructor(
     private val context: Context,
     private val savedStateHandle: SavedStateHandle,
     private val sessionInterface: MailSession
-) : ViewModel() {
+) : BaseViewModel<OneTimePasswordInputAction, OneTimePasswordInputState>(
+    initialState = Idle,
+    initialAction = Load()
+) {
 
     private val userId by lazy { savedStateHandle.getUserId() }
 
-    private val mutableAction = MutableStateFlow<OneTimePasswordInputAction>(Load())
+    override suspend fun FlowCollector<OneTimePasswordInputState>.onError(throwable: Throwable) {
+        emit(Error.LoginFlow(throwable.message))
+    }
 
-    val state: StateFlow<OneTimePasswordInputState> = mutableAction.flatMapLatest { action ->
-        when (action) {
+    override fun onAction(action: OneTimePasswordInputAction): Flow<OneTimePasswordInputState> {
+        return when (action) {
             is Load -> onLoad()
             is Close -> onClose()
             is Authenticate -> onValidateAndAuthenticate(action)
         }
-    }.stateIn(viewModelScope, WhileSubscribed(stopTimeoutMillis), Idle)
-
-    fun submit(action: OneTimePasswordInputAction) = viewModelScope.launch {
-        mutableAction.emit(action)
     }
 
     private fun onLoad(): Flow<OneTimePasswordInputState> = flow {

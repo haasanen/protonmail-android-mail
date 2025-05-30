@@ -21,6 +21,7 @@
 package me.proton.android.core.auth.presentation.secondfactor
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -32,9 +33,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,12 +46,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
-import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputForm
 import me.proton.core.compose.component.appbar.ProtonTopAppBar
 import me.proton.core.compose.theme.LocalColors
 import me.proton.core.compose.theme.LocalTypography
-import me.proton.core.compose.theme.ProtonDimens
+import me.proton.core.compose.theme.ProtonDimens.DefaultSpacing
 import me.proton.core.compose.theme.ProtonTheme
+import me.proton.core.compose.theme.ProtonTypography
+import me.proton.core.compose.theme.defaultSmallWeak
 
 @Composable
 fun SecondFactorInputScreen(
@@ -60,16 +64,22 @@ fun SecondFactorInputScreen(
     externalAction: StateFlow<SecondFactorInputAction?> = MutableStateFlow(null)
 ) {
     val action by externalAction.collectAsStateWithLifecycle()
-    action?.let { viewModel.submit(it) }
+    action?.let { viewModel.perform(it) }
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    BackHandler(enabled = true) {
+        viewModel.perform(SecondFactorInputAction.Close)
+    }
+
     SecondFactorInputScreen(
         state = state,
         modifier = modifier,
         onClose = onClose,
         onError = onError,
         onSuccess = onSuccess,
-        onBackClicked = { viewModel.submit(SecondFactorInputAction.Close) }
+        onBackClicked = { viewModel.perform(SecondFactorInputAction.Close) },
+        onTabSelected = { viewModel.perform(SecondFactorInputAction.SelectTab(it)) }
     )
 }
 
@@ -80,21 +90,35 @@ fun SecondFactorInputScreen(
     onClose: () -> Unit = {},
     onError: (String?) -> Unit = {},
     onSuccess: () -> Unit = {},
-    onBackClicked: () -> Unit = {}
+    onBackClicked: () -> Unit = {},
+    onTabSelected: (Int) -> Unit = {}
 ) {
     LaunchedEffect(state) {
         when (state) {
-            is SecondFactorInputState.Close -> onClose()
-            is SecondFactorInputState.Idle -> Unit
+            is SecondFactorInputState.Closed -> onClose()
+            else -> Unit
         }
     }
-    SecondFactorInputScaffold(
-        modifier = modifier,
-        onBackClicked = onBackClicked,
-        onClose = onClose,
-        onError = onError,
-        onSuccess = onSuccess
-    )
+
+    when (state) {
+        is SecondFactorInputState.Loading -> {
+            val actualSelectedTabIndex = state.tabs.actualTabIndex(selectedTab = state.selectedTab)
+
+            SecondFactorInputScaffold(
+                modifier = modifier,
+                onBackClicked = onBackClicked,
+                onTabSelected = onTabSelected,
+                onClose = onClose,
+                onError = onError,
+                onSuccess = onSuccess,
+                selectedTabIndex = actualSelectedTabIndex,
+                selectedTab = state.selectedTab,
+                tabs = state.tabs
+            )
+        }
+
+        else -> Unit
+    }
 }
 
 @Composable
@@ -103,7 +127,11 @@ fun SecondFactorInputScaffold(
     onBackClicked: () -> Unit = {},
     onClose: () -> Unit = {},
     onError: (String?) -> Unit = {},
-    onSuccess: () -> Unit = {}
+    onSuccess: () -> Unit = {},
+    onTabSelected: (Int) -> Unit = {},
+    selectedTabIndex: Int = 0,
+    selectedTab: SecondFactorTab,
+    tabs: List<SecondFactorTab>
 ) {
     Scaffold(
         modifier = modifier,
@@ -124,19 +152,43 @@ fun SecondFactorInputScaffold(
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            Column(modifier = Modifier.padding(ProtonDimens.DefaultSpacing)) {
+            Column(modifier = Modifier.padding(DefaultSpacing)) {
                 Text(
                     style = LocalTypography.current.headline,
                     text = stringResource(R.string.auth_second_factor_title)
                 )
-                OneTimePasswordInputForm(
+
+                if (tabs.size > 1) {
+                    Text(
+                        text = stringResource(R.string.auth_second_factor_subtitle),
+                        style = ProtonTypography.Default.defaultSmallWeak,
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = DefaultSpacing)
+                    )
+                }
+
+                SecondFactorTabContent(
+                    selectedTab = selectedTab,
+                    selectedTabIndex = selectedTabIndex,
+                    tabs = tabs,
+                    onTabSelected = onTabSelected,
+                    onClose = onClose,
                     onError = onError,
                     onSuccess = onSuccess,
-                    onClose = onClose,
-                    modifier = Modifier.padding(top = ProtonDimens.MediumSpacing)
+                    modifier = Modifier.padding(top = DefaultSpacing)
                 )
             }
         }
+    }
+}
+
+@Composable
+fun SecondFactorTab.localizedLabel(): String {
+    return when (this) {
+        SecondFactorTab.SecurityKey -> stringResource(R.string.auth_second_factor_tab_security_key)
+        SecondFactorTab.Otp -> stringResource(R.string.auth_second_factor_tab_otp)
     }
 }
 
@@ -151,7 +203,31 @@ fun SecondFactorInputScaffold(
 fun SecondFactorInputScreenPreview() {
     ProtonTheme {
         SecondFactorInputScreen(
-            state = SecondFactorInputState.Idle
+            state = SecondFactorInputState.Loading(
+                selectedTab = SecondFactorTab.SecurityKey,
+                tabs = listOf(SecondFactorTab.SecurityKey, SecondFactorTab.Otp)
+            ),
+            onTabSelected = {}
+        )
+    }
+}
+
+@Preview(name = "Light mode")
+@Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
+@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Tablet", device = Devices.PIXEL_C)
+@Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
+@Composable
+@Preview
+fun SecondFactorInputScreenOtpOnlyPreview() {
+    ProtonTheme {
+        SecondFactorInputScreen(
+            state = SecondFactorInputState.Loading(
+                selectedTab = SecondFactorTab.Otp,
+                tabs = listOf(SecondFactorTab.Otp)
+            ),
+            onTabSelected = {}
         )
     }
 }
