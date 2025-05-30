@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.uitest.e2e.composer.drafts
 
-import ch.protonmail.android.di.ServerProofModule
 import ch.protonmail.android.networkmocks.mockwebserver.combineWith
 import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.uitest.MockedNetworkTest
@@ -30,22 +29,13 @@ import ch.protonmail.android.uitest.robot.composer.section.recipients.bccRecipie
 import ch.protonmail.android.uitest.robot.composer.section.recipients.ccRecipientSection
 import ch.protonmail.android.uitest.robot.composer.section.recipients.toRecipientSection
 import ch.protonmail.android.uitest.robot.composer.section.topAppBarSection
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
-import io.mockk.mockk
-import me.proton.core.auth.domain.usecase.ValidateServerProof
 import org.junit.Before
 import org.junit.Test
 
 @RegressionTest
 @HiltAndroidTest
-@UninstallModules(ServerProofModule::class)
 internal class ComposerDraftsInvalidRecipientsTests : MockedNetworkTest(), ComposerDraftsTests {
-
-    @JvmField
-    @BindValue
-    val serverProofValidation: ValidateServerProof = mockk(relaxUnitFun = true)
 
     private val invalidEmailAddress = "test@aa"
 

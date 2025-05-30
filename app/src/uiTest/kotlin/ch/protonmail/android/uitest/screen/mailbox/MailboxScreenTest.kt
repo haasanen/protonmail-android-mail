@@ -48,7 +48,6 @@ import ch.protonmail.android.uitest.models.mailbox.MailboxListItemEntry
 import ch.protonmail.android.uitest.models.mailbox.ParticipantEntry
 import ch.protonmail.android.uitest.robot.mailbox.MailboxRobot
 import ch.protonmail.android.uitest.robot.mailbox.mailboxRobot
-import ch.protonmail.android.uitest.robot.mailbox.section.emptyListSection
 import ch.protonmail.android.uitest.robot.mailbox.section.listSection
 import ch.protonmail.android.uitest.robot.mailbox.section.progressListSection
 import ch.protonmail.android.uitest.robot.mailbox.section.verify
@@ -59,7 +58,6 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.flowOf
-import org.junit.Ignore
 import org.junit.Test
 
 @RegressionTest
@@ -88,12 +86,10 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
             currentMailLabel = MailLabelTestData.inboxSystemLabel,
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
-            offlineEffect = Effect.empty(),
             refreshErrorEffect = Effect.empty(),
             refreshRequested = false,
             swipeActions = null,
             searchState = MailboxSearchStateSampleData.NotSearching,
-            clearState = MailboxListState.Data.ClearState.Hidden,
             shouldShowFab = true,
             avatarImagesUiModel = AvatarImagesUiModel.Empty
         )
@@ -114,12 +110,10 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
             currentMailLabel = MailLabelTestData.inboxSystemLabel,
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
-            offlineEffect = Effect.empty(),
             refreshErrorEffect = Effect.empty(),
             refreshRequested = false,
             swipeActions = null,
             searchState = MailboxSearchStateSampleData.NotSearching,
-            clearState = MailboxListState.Data.ClearState.Hidden,
             shouldShowFab = true,
             avatarImagesUiModel = AvatarImagesUiModel.Empty
         )
@@ -136,55 +130,6 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
         val robot = setupScreen(state = mailboxState, items = listOf(item))
 
         robot.listSection { verify { listItemsAreShown(mailboxItem) } }
-    }
-
-    @Test
-    @Ignore(
-        """
-            The current version of the paging library doesn't allow us to test this in the same way. 
-            Wee need to find an alternative
-        """
-    ) // MAILANDR-330
-    fun givenLoadingCompletedWhenNoItemThenEmptyMailboxIsDisplayed() {
-        val mailboxListState = MailboxListState.Data.ViewMode(
-            currentMailLabel = MailLabelTestData.inboxSystemLabel,
-            openItemEffect = Effect.empty(),
-            scrollToMailboxTop = Effect.empty(),
-            offlineEffect = Effect.empty(),
-            refreshErrorEffect = Effect.empty(),
-            refreshRequested = false,
-            swipeActions = null,
-            searchState = MailboxSearchStateSampleData.NotSearching,
-            clearState = MailboxListState.Data.ClearState.Hidden,
-            shouldShowFab = true,
-            avatarImagesUiModel = AvatarImagesUiModel.Empty
-        )
-        val mailboxState = MailboxStateSampleData.Loading.copy(mailboxListState = mailboxListState)
-        val robot = setupScreen(state = mailboxState)
-
-        robot.emptyListSection { verify { isShown() } }
-    }
-
-    @Test
-    @Ignore("How to verify SwipeRefresh is refreshing?") // MAILANDR-330
-    fun givenEmptyMailboxIsDisplayedWhenSwipeDownThenRefreshIsTriggered() {
-        val mailboxListState = MailboxListState.Data.ViewMode(
-            currentMailLabel = MailLabelTestData.inboxSystemLabel,
-            openItemEffect = Effect.empty(),
-            scrollToMailboxTop = Effect.empty(),
-            offlineEffect = Effect.empty(),
-            refreshErrorEffect = Effect.empty(),
-            refreshRequested = false,
-            swipeActions = null,
-            searchState = MailboxSearchStateSampleData.NotSearching,
-            clearState = MailboxListState.Data.ClearState.Hidden,
-            shouldShowFab = true,
-            avatarImagesUiModel = AvatarImagesUiModel.Empty
-        )
-        val mailboxState = MailboxStateSampleData.Loading.copy(mailboxListState = mailboxListState)
-        val robot = setupScreen(state = mailboxState)
-
-        // TODO
     }
 
     @Test
@@ -208,12 +153,10 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
                     currentMailLabel = systemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = scrollToTopEffect,
-                    offlineEffect = Effect.empty(),
                     refreshErrorEffect = Effect.empty(),
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden,
                     shouldShowFab = true,
                     avatarImagesUiModel = AvatarImagesUiModel.Empty
                 ),

@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.uitest.e2e.composer.sending
 
-import ch.protonmail.android.di.ServerProofModule
 import ch.protonmail.android.networkmocks.mockwebserver.combineWith
 import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.test.annotations.suite.SmokeTest
@@ -37,11 +36,7 @@ import ch.protonmail.android.uitest.robot.composer.section.composerAlertDialogSe
 import ch.protonmail.android.uitest.robot.composer.section.topAppBarSection
 import ch.protonmail.android.uitest.robot.mailbox.mailboxRobot
 import ch.protonmail.android.uitest.util.StringUtils
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
-import io.mockk.mockk
-import me.proton.core.auth.domain.usecase.ValidateServerProof
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -49,14 +44,9 @@ import org.junit.Test
 @RegressionTest
 @HiltAndroidTest
 @TestingNotes("Scope to be expanded once MAILANDR-988 is addressed.")
-@UninstallModules(ServerProofModule::class)
 internal class ComposerSendMessageToProtonTests : MockedNetworkTest(
     loginType = LoginTestUserTypes.Paid.FancyCapybara
 ), ComposerTests {
-
-    @JvmField
-    @BindValue
-    val serverProofValidation: ValidateServerProof = mockk(relaxUnitFun = true)
 
     private val protonRecipient = "royalcat@proton.black"
     private val subject = "A subject"

@@ -18,34 +18,23 @@
 
 package ch.protonmail.android.uitest.e2e.settings
 
-import ch.protonmail.android.di.ServerProofModule
 import ch.protonmail.android.networkmocks.mockwebserver.combineWith
 import ch.protonmail.android.test.annotations.suite.RegressionTest
+import ch.protonmail.android.test.utils.ComposeTestRuleHolder
 import ch.protonmail.android.uitest.MockedNetworkTest
 import ch.protonmail.android.uitest.helpers.core.navigation.Destination
 import ch.protonmail.android.uitest.helpers.core.navigation.navigator
 import ch.protonmail.android.uitest.helpers.network.mockNetworkDispatcher
 import ch.protonmail.android.uitest.robot.menu.MenuRobot
-import ch.protonmail.android.uitest.robot.settings.account.verify
 import ch.protonmail.android.uitest.robot.settings.swipeactions.verify
 import ch.protonmail.android.uitest.robot.settings.verify
-import ch.protonmail.android.test.utils.ComposeTestRuleHolder
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
-import io.mockk.mockk
-import me.proton.core.auth.domain.usecase.ValidateServerProof
 import org.junit.Before
 import org.junit.Test
 
 @RegressionTest
-@UninstallModules(ServerProofModule::class)
 @HiltAndroidTest
 internal class SettingsFlowTest : MockedNetworkTest() {
-
-    @JvmField
-    @BindValue
-    val serverProofValidation: ValidateServerProof = mockk(relaxUnitFun = true)
 
     private val menuRobot = MenuRobot()
 

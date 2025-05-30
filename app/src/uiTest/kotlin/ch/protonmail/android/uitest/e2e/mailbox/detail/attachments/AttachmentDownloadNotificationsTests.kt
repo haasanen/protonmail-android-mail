@@ -19,7 +19,6 @@
 package ch.protonmail.android.uitest.e2e.mailbox.detail.attachments
 
 import androidx.test.filters.SdkSuppress
-import ch.protonmail.android.di.ServerProofModule
 import ch.protonmail.android.networkmocks.mockwebserver.combineWith
 import ch.protonmail.android.networkmocks.mockwebserver.requests.MimeType
 import ch.protonmail.android.networkmocks.mockwebserver.requests.get
@@ -47,23 +46,14 @@ import ch.protonmail.android.uitest.robot.helpers.section.deviceSoftKeys
 import ch.protonmail.android.uitest.robot.helpers.section.intents
 import ch.protonmail.android.uitest.robot.helpers.section.notificationsSection
 import ch.protonmail.android.uitest.robot.helpers.section.verify
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
-import io.mockk.mockk
-import me.proton.core.auth.domain.usecase.ValidateServerProof
 import org.junit.Test
 
 @RegressionTest
 @SdkSuppress(maxSdkVersion = 31)
-@UninstallModules(ServerProofModule::class)
 @HiltAndroidTest
 internal class AttachmentDownloadNotificationsTests :
     MockedNetworkTest(loginType = LoginTestUserTypes.Paid.FancyCapybara) {
-
-    @JvmField
-    @BindValue
-    val serverProofValidation: ValidateServerProof = mockk(relaxUnitFun = true)
 
     private val expectedNotification = NotificationEntry(
         title = "Downloading attachment",

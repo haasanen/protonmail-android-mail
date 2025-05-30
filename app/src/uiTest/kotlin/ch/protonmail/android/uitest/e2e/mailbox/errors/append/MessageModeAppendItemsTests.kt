@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.uitest.e2e.mailbox.errors.append
 
-import ch.protonmail.android.di.ServerProofModule
 import ch.protonmail.android.networkmocks.mockwebserver.combineWith
 import ch.protonmail.android.networkmocks.mockwebserver.requests.MockPriority
 import ch.protonmail.android.networkmocks.mockwebserver.requests.get
@@ -36,23 +35,14 @@ import ch.protonmail.android.uitest.helpers.network.mockNetworkDispatcher
 import ch.protonmail.android.uitest.models.avatar.AvatarInitial
 import ch.protonmail.android.uitest.models.mailbox.MailboxListItemEntry
 import ch.protonmail.android.uitest.models.mailbox.ParticipantEntry
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
-import io.mockk.mockk
-import me.proton.core.auth.domain.usecase.ValidateServerProof
 import org.junit.Ignore
 import org.junit.Test
 
 @SmokeTest
 @HiltAndroidTest
 @Ignore("To be enabled again when MAILANDR-1162 is addressed.")
-@UninstallModules(ServerProofModule::class)
 internal class MessageModeAppendItemsTests : MockedNetworkTest(), MailboxAppendItemsTests {
-
-    @JvmField
-    @BindValue
-    val serverProofValidation: ValidateServerProof = mockk(relaxUnitFun = true)
 
     override val lastExpectedMailboxItem = MailboxListItemEntry(
         index = 101,

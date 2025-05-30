@@ -20,7 +20,6 @@ package ch.protonmail.android.uitest.e2e.composer.attachments
 
 import java.time.Instant
 import androidx.test.filters.SdkSuppress
-import ch.protonmail.android.di.ServerProofModule
 import ch.protonmail.android.networkmocks.mockwebserver.combineWith
 import ch.protonmail.android.networkmocks.mockwebserver.requests.post
 import ch.protonmail.android.networkmocks.mockwebserver.requests.respondWith
@@ -43,26 +42,17 @@ import ch.protonmail.android.uitest.robot.composer.section.recipients.toRecipien
 import ch.protonmail.android.uitest.robot.composer.section.subjectSection
 import ch.protonmail.android.uitest.robot.composer.section.topAppBarSection
 import ch.protonmail.android.uitest.robot.mailbox.mailboxRobot
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import io.mockk.every
-import io.mockk.mockk
-import me.proton.core.auth.domain.usecase.ValidateServerProof
 import org.junit.Before
 import kotlin.test.Test
 
 @RegressionTest
 @HiltAndroidTest
 @SdkSuppress(minSdkVersion = 30, maxSdkVersion = 32)
-@UninstallModules(ServerProofModule::class)
 internal class ComposerSendMessageWithAttachmentsTests :
     MockedNetworkTest(loginType = LoginTestUserTypes.Paid.FancyCapybara),
     ComposerAttachmentsTests {
-
-    @JvmField
-    @BindValue
-    val serverProofValidation: ValidateServerProof = mockk(relaxUnitFun = true)
 
     private val protonRecipient = "sleepykoala@proton.black"
     private val subject = "Test subject"

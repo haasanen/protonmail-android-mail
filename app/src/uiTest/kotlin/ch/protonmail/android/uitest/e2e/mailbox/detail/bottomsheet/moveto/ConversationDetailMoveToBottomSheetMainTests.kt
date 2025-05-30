@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.uitest.e2e.mailbox.detail.bottomsheet.moveto
 
-import ch.protonmail.android.di.ServerProofModule
 import ch.protonmail.android.networkmocks.mockwebserver.combineWith
 import ch.protonmail.android.networkmocks.mockwebserver.requests.get
 import ch.protonmail.android.networkmocks.mockwebserver.requests.ignoreQueryParams
@@ -37,21 +36,12 @@ import ch.protonmail.android.uitest.robot.detail.section.bottomBarSection
 import ch.protonmail.android.uitest.robot.detail.section.messageBodySection
 import ch.protonmail.android.uitest.robot.detail.section.moveToBottomSheetSection
 import ch.protonmail.android.uitest.robot.detail.section.verify
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
-import io.mockk.mockk
-import me.proton.core.auth.domain.usecase.ValidateServerProof
 import org.junit.Test
 
 @RegressionTest
 @HiltAndroidTest
-@UninstallModules(ServerProofModule::class)
 internal class ConversationDetailMoveToBottomSheetMainTests : MockedNetworkTest() {
-
-    @JvmField
-    @BindValue
-    val serverProofValidation: ValidateServerProof = mockk(relaxUnitFun = true)
 
     @Test
     @TestId("185409")

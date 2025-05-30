@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.uitest.e2e.mailbox.selection
 
-import ch.protonmail.android.di.ServerProofModule
 import ch.protonmail.android.networkmocks.mockwebserver.combineWith
 import ch.protonmail.android.networkmocks.mockwebserver.requests.get
 import ch.protonmail.android.networkmocks.mockwebserver.requests.ignoreQueryParams
@@ -37,23 +36,14 @@ import ch.protonmail.android.uitest.robot.bottombar.verify
 import ch.protonmail.android.uitest.robot.mailbox.MailboxRobot
 import ch.protonmail.android.uitest.robot.mailbox.mailboxRobot
 import ch.protonmail.android.uitest.robot.mailbox.section.listSection
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
-import io.mockk.mockk
-import me.proton.core.auth.domain.usecase.ValidateServerProof
 import org.junit.Test
 
 @RegressionTest
 @HiltAndroidTest
-@UninstallModules(ServerProofModule::class)
 internal class SelectionModeBottomBarActionsTests : MockedNetworkTest(
     loginType = LoginTestUserTypes.Paid.FancyCapybara
 ) {
-
-    @JvmField
-    @BindValue
-    val serverProofValidation: ValidateServerProof = mockk(relaxUnitFun = true)
 
     @Test
     @TestId("216624")

@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.uitest.di
 
-import ch.protonmail.android.di.NetworkConfigModule
+import ch.protonmail.android.di.BaseUrlModule
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
@@ -27,21 +27,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.proton.core.configuration.EnvironmentConfiguration
-import me.proton.core.network.data.di.BaseProtonApiUrl
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.mockwebserver.MockWebServer
 
 /**
- * A test module used to override the [BaseProtonApiUrl] in UI Tests.
+ * A test module used to override the base Http Url in UI Tests.
  */
 @Module
-@TestInstallIn(components = [SingletonComponent::class], replaces = [NetworkConfigModule::class])
+@TestInstallIn(components = [SingletonComponent::class], replaces = [BaseUrlModule::class])
 object NetworkConfigTestModule {
 
     @Provides
-    @BaseProtonApiUrl
-    fun provideBaseProtonApiUrl(
+    fun provideHttpUrl(
         @LocalhostApi localhostApi: Boolean,
         mockWebServer: MockWebServer,
         envConfig: EnvironmentConfiguration
@@ -56,7 +54,6 @@ object NetworkConfigTestModule {
                 }
             }
         } else {
-            // This is a temporary solution until we come up with an efficient environment switch.
             envConfig.baseUrl.toHttpUrl()
         }
     }

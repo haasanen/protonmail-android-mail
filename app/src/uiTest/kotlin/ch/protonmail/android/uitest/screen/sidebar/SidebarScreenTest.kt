@@ -27,8 +27,10 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.unit.dp
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
@@ -40,10 +42,7 @@ import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import ch.protonmail.android.uitest.util.onNodeWithText
 import dagger.hilt.android.testing.HiltAndroidTest
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
-import ch.protonmail.android.maillabel.R as label
 import me.proton.core.presentation.compose.R as core
 
 private const val APP_VERSION_FOOTER = "Proton Mail 6.0.0-alpha+test"
@@ -74,22 +73,6 @@ internal class SidebarScreenTest : HiltInstrumentedTest() {
     }
 
     @Test
-    fun labelsAreOnlyDisplayingTitleEmptyItemsAndAddItem() {
-        setupScreenWithState(emptyLabelsSidebarState())
-
-        listOf(
-            label.string.label_title_labels,
-            label.string.label_title_folders,
-            label.string.label_title_create_folder,
-            label.string.label_title_create_label
-        ).forEach {
-            composeTestRule
-                .onNodeWithText(it)
-                .assertIsDisplayed()
-        }
-    }
-
-    @Test
     fun labelsAndFoldersAreDisplayed() {
         setupScreenWithState(someLabelsSidebarState())
 
@@ -116,7 +99,6 @@ internal class SidebarScreenTest : HiltInstrumentedTest() {
 
     private fun showSubscriptionSidebarState() = buildSidebarState(isSubscriptionVisible = true)
     private fun hideSubscriptionSidebarState() = buildSidebarState(isSubscriptionVisible = false)
-    private fun emptyLabelsSidebarState() = buildSidebarState(mailLabels = MailLabelsUiModel.Loading)
     private fun someLabelsSidebarState() = buildSidebarState(
         mailLabels = MailLabelsUiModel(
             systemLabels = emptyList(),

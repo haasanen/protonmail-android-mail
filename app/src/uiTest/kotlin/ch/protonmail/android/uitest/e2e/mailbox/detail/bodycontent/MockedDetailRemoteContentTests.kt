@@ -19,7 +19,6 @@
 package ch.protonmail.android.uitest.e2e.mailbox.detail.bodycontent
 
 import arrow.core.right
-import ch.protonmail.android.di.ServerProofModule
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
@@ -49,11 +48,9 @@ import ch.protonmail.android.uitest.robot.detail.section.messageHeaderSection
 import ch.protonmail.android.uitest.robot.detail.section.verify
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.unmockkAll
-import me.proton.core.auth.domain.usecase.ValidateServerProof
 import org.junit.Before
 import org.junit.Test
 
@@ -63,15 +60,10 @@ import org.junit.Test
  */
 @RegressionTest
 @HiltAndroidTest
-@UninstallModules(ServerProofModule::class)
 internal class MockedDetailRemoteContentTests : MockedNetworkTest(loginType = LoginTestUserTypes.Paid.FancyCapybara) {
 
     private val expectedBodyText = "Various img elements"
     private val expectedBodyTextLastMessage = "Various img elements (2)"
-
-    @JvmField
-    @BindValue
-    val serverProofValidation: ValidateServerProof = mockk(relaxUnitFun = true)
 
     @JvmField
     @BindValue // GetDecryptedMessageBody needs to be mocked to make sure content is passed as expected to the WebView.
@@ -232,9 +224,11 @@ internal class MockedDetailRemoteContentTests : MockedNetworkTest(loginType = Lo
 
         return DecryptedMessageBody(
             MessageId("html-message-id"),
-            String(content),
-            MimeType.Html,
-            emptyList()
+            value = String(content),
+            isUnread = false,
+            mimeType = MimeType.Html,
+            banners = emptyList(),
+            hasQuotedText = false
         )
     }
 

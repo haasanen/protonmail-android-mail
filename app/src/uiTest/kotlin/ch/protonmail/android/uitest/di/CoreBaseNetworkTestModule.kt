@@ -24,11 +24,10 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dagger.hilt.testing.TestInstallIn
 import io.mockk.spyk
-import me.proton.core.network.dagger.CoreBaseNetworkModule
 import me.proton.core.network.data.NetworkManager
 import me.proton.core.network.data.di.SharedOkHttpClient
 import me.proton.core.network.domain.NetworkManager
@@ -46,8 +45,8 @@ import javax.net.ssl.X509TrustManager
  * The provided [NetworkManager] is the same as the one currently used in production code.
  */
 @Module
-@TestInstallIn(components = [SingletonComponent::class], replaces = [CoreBaseNetworkModule::class])
-class CoreBaseNetworkTestModule {
+@InstallIn(SingletonComponent::class)
+class BaseNetworkTestModule {
 
     private val testX509TrustManager = object : X509TrustManager {
         override fun checkClientTrusted(p0: Array<out X509Certificate>?, p1: String?) = Unit

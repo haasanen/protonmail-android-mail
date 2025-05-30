@@ -194,8 +194,6 @@ robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectr
 # Proton Core libraries
 proton-core-auth-domain = { module = "me.proton.core:auth-domain", version.ref = "proton-core" }
 proton-core-account-domain = { module = "me.proton.core:account-domain", version.ref = "proton-core" }
-proton-core-accountManager-presentation-compose = { module = "me.proton.core:account-manager-presentation-compose", version.ref = "proton-core" }
-proton-core-accountRecoveryTest = { module = "me.proton.core:account-recovery-test", version.ref = "proton-core" }
 proton-core-challenge-data = { module = "me.proton.core:challenge-data", version.ref = "proton-core" }
 proton-core-challenge-domain = { module = "me.proton.core:challenge-domain", version.ref = "proton-core" }
 proton-core-challenge-presentation = { module = "me.proton.core:challenge-presentation-compose", version.ref = "proton-core" }
@@ -215,12 +213,10 @@ proton-core-presentationCompose = { module = "me.proton.core:presentation-compos
 proton-core-proguardRules = { module = "me.proton.core:proguard-rules", version.ref = "proton-core" }
 proton-core-user-data = { module = "me.proton.core:user-data", version.ref = "proton-core" }
 proton-core-user-domain = { module = "me.proton.core:user-domain", version.ref = "proton-core" }
-proton-core-userRecoveryTest = { module = "me.proton.core:user-recovery-test", version.ref = "proton-core" }
 proton-core-utilKotlin = { module = "me.proton.core:util-kotlin", version.ref = "proton-core" }
 proton-core-utilAndroidDateTime = { module = "me.proton.core:util-android-datetime", version.ref = "proton-core" }
 proton-core-utilAndroidDagger = { module = "me.proton.core:util-android-dagger", version.ref = "proton-core" }
 proton-core-utilAndroidStrictMode = { module = "me.proton.core:util-android-strict-mode", version.ref = "proton-core" }
-proton-core-testRule = { module = "me.proton.core:test-rule", version.ref = "proton-core" }
 proton-core-testAndroid = { module = "me.proton.core:test-android", version.ref = "proton-core" }
 proton-core-testKotlin = { module = "me.proton.core:test-kotlin", version.ref = "proton-core" }
 proton-core-testAndroidInstrumented = { module = "me.proton.core:test-android-instrumented", version.ref = "proton-core" }
@@ -351,7 +347,6 @@ test-androidTest = [
     "kotlin-test",
     "kotlin-test-junit",
     "mockk-android",
-    "proton-core-testAndroidInstrumented"
 ]
 
 module-legacyCore = [

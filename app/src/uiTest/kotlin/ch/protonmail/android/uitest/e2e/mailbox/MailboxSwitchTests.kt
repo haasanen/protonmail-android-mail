@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.uitest.e2e.mailbox
 
-import ch.protonmail.android.di.ServerProofModule
 import ch.protonmail.android.networkmocks.mockwebserver.combineWith
 import ch.protonmail.android.networkmocks.mockwebserver.requests.get
 import ch.protonmail.android.networkmocks.mockwebserver.requests.respondWith
@@ -38,21 +37,12 @@ import ch.protonmail.android.uitest.robot.mailbox.mailboxRobot
 import ch.protonmail.android.uitest.robot.mailbox.section.listSection
 import ch.protonmail.android.uitest.robot.mailbox.section.verify
 import ch.protonmail.android.uitest.robot.menu.menuRobot
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
-import io.mockk.mockk
-import me.proton.core.auth.domain.usecase.ValidateServerProof
 import org.junit.Test
 
 @SmokeTest
 @HiltAndroidTest
-@UninstallModules(ServerProofModule::class)
 internal class MailboxSwitchTests : MockedNetworkTest() {
-
-    @JvmField
-    @BindValue
-    val serverProofValidation: ValidateServerProof = mockk(relaxUnitFun = true)
 
     private val expectedFirstSentItem = MailboxListItemEntry(
         index = 0,

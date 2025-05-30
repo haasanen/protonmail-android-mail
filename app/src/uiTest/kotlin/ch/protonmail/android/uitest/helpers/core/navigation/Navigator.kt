@@ -20,7 +20,6 @@ package ch.protonmail.android.uitest.helpers.core.navigation
 
 import androidx.test.espresso.Espresso
 import ch.protonmail.android.test.ksp.annotations.AsDsl
-import ch.protonmail.android.uitest.helpers.login.MockedLoginTestUsers
 import ch.protonmail.android.uitest.robot.common.section.fullscreenLoaderSection
 import ch.protonmail.android.uitest.robot.composer.composerRobot
 import ch.protonmail.android.uitest.robot.mailbox.mailboxRobot
@@ -28,17 +27,12 @@ import ch.protonmail.android.uitest.robot.mailbox.section.listSection
 import ch.protonmail.android.uitest.robot.mailbox.section.topAppBarSection
 import ch.protonmail.android.uitest.robot.menu.menuRobot
 import ch.protonmail.android.uitest.util.ActivityScenarioHolder
-import ch.protonmail.android.uitest.util.extensions.waitUntilSignInScreenIsGone
-import me.proton.core.test.android.robots.auth.AddAccountRobot
-import me.proton.core.test.android.robots.auth.login.LoginRobot
 
 /**
  * An abstraction to help navigating the app in UI tests to reduce the overall verbosity.
  */
 @AsDsl
 internal class Navigator {
-
-    private val addAccountRobot = AddAccountRobot()
 
     /**
      * Triggers the launch of the app and waits for an idle state (via Espresso).
@@ -111,10 +105,6 @@ internal class Navigator {
         }
     }
 
-    private fun login() {
-        addAccountRobot
-            .signIn()
-            .loginUser<LoginRobot>(MockedLoginTestUsers.defaultLoginUser)
-            .waitUntilSignInScreenIsGone()
+    private fun login() { /* no-op for now */
     }
 }

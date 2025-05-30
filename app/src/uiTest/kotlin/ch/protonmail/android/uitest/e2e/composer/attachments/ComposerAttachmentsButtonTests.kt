@@ -20,7 +20,6 @@ package ch.protonmail.android.uitest.e2e.composer.attachments
 
 import java.time.Instant
 import androidx.test.filters.SdkSuppress
-import ch.protonmail.android.di.ServerProofModule
 import ch.protonmail.android.networkmocks.mockwebserver.combineWith
 import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.uitest.MockedNetworkTest
@@ -36,23 +35,14 @@ import ch.protonmail.android.uitest.robot.detail.section.verify
 import ch.protonmail.android.uitest.robot.helpers.deviceRobot
 import ch.protonmail.android.uitest.robot.helpers.section.intents
 import ch.protonmail.android.uitest.robot.helpers.section.verify
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
-import io.mockk.mockk
-import me.proton.core.auth.domain.usecase.ValidateServerProof
 import org.junit.Before
 import org.junit.Test
 
 @RegressionTest
 @SdkSuppress(minSdkVersion = 30, maxSdkVersion = 32)
 @HiltAndroidTest
-@UninstallModules(ServerProofModule::class)
 internal class ComposerAttachmentsButtonTests : MockedNetworkTest(), ComposerAttachmentsTests {
-
-    @JvmField
-    @BindValue
-    val serverProofValidation: ValidateServerProof = mockk(relaxUnitFun = true)
 
     private lateinit var attachmentName: String
     private val defaultExpectedEntry: AttachmentDetailItemEntry

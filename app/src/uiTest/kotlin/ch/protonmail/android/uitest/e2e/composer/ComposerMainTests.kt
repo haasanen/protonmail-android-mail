@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.uitest.e2e.composer
 
-import ch.protonmail.android.di.ServerProofModule
 import ch.protonmail.android.networkmocks.mockwebserver.combineWith
 import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.uitest.MockedNetworkTest
@@ -42,22 +41,13 @@ import ch.protonmail.android.uitest.robot.composer.verify
 import ch.protonmail.android.uitest.robot.mailbox.mailboxRobot
 import ch.protonmail.android.uitest.robot.mailbox.verify
 import ch.protonmail.android.uitest.util.UiDeviceHolder.uiDevice
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
-import io.mockk.mockk
-import me.proton.core.auth.domain.usecase.ValidateServerProof
 import org.junit.Before
 import org.junit.Test
 
 @RegressionTest
 @HiltAndroidTest
-@UninstallModules(ServerProofModule::class)
 internal class ComposerMainTests : MockedNetworkTest(loginType = LoginTestUserTypes.Paid.FancyCapybara), ComposerTests {
-
-    @JvmField
-    @BindValue
-    val serverProofValidation: ValidateServerProof = mockk(relaxUnitFun = true)
 
     @Before
     fun setMockDispatcher() {

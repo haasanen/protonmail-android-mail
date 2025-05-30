@@ -27,7 +27,6 @@ import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilit
 import ch.protonmail.android.maildetail.presentation.sample.MessageDetailBodyUiModelSample
 import ch.protonmail.android.maildetail.presentation.ui.MessageBody
 import ch.protonmail.android.maildetail.presentation.ui.MessageBodyTestTags
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.ui.MessageBodyWebViewTestTags
 import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest
@@ -66,7 +65,7 @@ class MessageBodyTest : HiltInstrumentedTest() {
                         onOpenInProtonCalendar = { _ -> },
                         onPrint = { _ -> }
                     ),
-                    expandCollapseMode = MessageBodyExpandCollapseMode.NotApplicable
+                    onMessageBodyLoaded = { _, _ -> }
                 )
             }
         }
@@ -104,7 +103,7 @@ class MessageBodyTest : HiltInstrumentedTest() {
                         onOpenInProtonCalendar = { _ -> },
                         onPrint = { _ -> }
                     ),
-                    expandCollapseMode = MessageBodyExpandCollapseMode.NotApplicable
+                    onMessageBodyLoaded = { _, _ -> }
                 )
             }
         }
