@@ -114,4 +114,12 @@
     <string name="auth_signup_countries_search">Search country</string>
     <string name="auth_login_error_invalid_action_cannot_setup_user">Could not setup the user.</string>
     <string name="auth_login_error_invalid_action_cannot_setup_address">Could not setup the address.</string>
+    <string name="auth_fido_security_keys_error">Error fetching security keys, please try again.</string>
+    <string name="auth_fido_security_keys_title">Security keys</string>
+    <string name="auth_fido_manage_security_keys_info">To manage, add, or remove security keys, please use the Proton web application. %s</string>
+    <string name="auth_fido_security_keys_empty_list">There are no security keys registered to your account. To add a security key use the Proton web application. %s</string>
+    <string name="auth_fido_security_keys_registered">These are the security keys registered to your account.</string>
+    <string name="auth_fido_manage_security_keys">Manage security keys</string>
+    <string name="auth_fido_add_security_key">Add security key</string>
+    <string name="auth_fido_security_keys_learn_more">Learn more</string>
 </resources>

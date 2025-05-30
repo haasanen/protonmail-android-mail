@@ -25,4 +25,5 @@
     <string name="human_verification_manual_verification_link">https://proton.me/support/contact</string>
     <string name="human_verification_help_link">https://proton.me/support/human-verification</string>
     <string name="second_factor_security_key_link" translatable="false">https://proton.me/support/two-factor-authentication-2fa</string>
+    <string name="security_keys_learn_more_link">https://proton.me/support/2fa-security-key</string>
 </resources>

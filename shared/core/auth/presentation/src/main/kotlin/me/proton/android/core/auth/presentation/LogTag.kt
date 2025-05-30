@@ -22,4 +22,5 @@ object LogTag {
     const val LOGIN = "core.auth.presentation.login"
     const val SIGNUP = "core.auth.presentation.signup"
     const val SESSION = "core.auth.presentation.session"
+    const val SECURITY_KEYS = "core.auth.presentation.fido2.securitykeys"
 }
