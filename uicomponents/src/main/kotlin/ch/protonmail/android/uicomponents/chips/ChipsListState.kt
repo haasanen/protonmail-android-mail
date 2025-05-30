@@ -102,21 +102,16 @@ class ChipsListState(
         items.add(chipContent)
     }
 
-    fun onDelete() {
-        if (typedText.value.isEmpty()) {
-            items.removeLastOrNull()
-        }
-        onListChanged(items)
-    }
-
-    fun onDelete(index: Int) {
-        items.removeAt(index)
+    fun onDelete(chipItem: ChipItem) {
+        items.remove(chipItem)
         onListChanged(items)
     }
 
     fun setFocusState(focused: Boolean) {
         focusedState.value = focused
     }
+
+    fun getChipItemAt(index: Int) = items.toList()[index]
 
     private fun clearTypedText() {
         typedText.value = EmptyString

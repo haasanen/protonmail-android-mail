@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui.chips
 
+import android.content.ClipData
 import android.view.Gravity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -31,24 +32,34 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.delete
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.platform.toClipEntry
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
+import ch.protonmail.android.mailcomposer.presentation.ui.RecipientChipActionsBottomSheetContent
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionState
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionsList
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerChipsListViewModel
@@ -57,8 +68,10 @@ import ch.protonmail.android.uicomponents.chips.ChipsListTextField
 import ch.protonmail.android.uicomponents.chips.ChipsTestTags
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.thenIf
+import kotlinx.coroutines.launch
 import me.proton.core.util.kotlin.takeIfNotBlank
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ComposerChipsListField(
     label: String,
@@ -74,26 +87,74 @@ fun ComposerChipsListField(
     // We use the `label` String as key, as it's stable and won't change throughout the whole lifecycle.
     val composerChipsListViewModel = hiltViewModel<ComposerChipsListViewModel>(key = label)
     val context = LocalContext.current
+    val clipboardManager = LocalClipboard.current
 
     val state by composerChipsListViewModel.state.collectAsStateWithLifecycle()
     val listState = state.listState
     val textFieldState = composerChipsListViewModel.textFieldState
 
+    val coroutineScope = rememberCoroutineScope()
+    val bottomSheetState = rememberModalBottomSheetState()
+    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var bottomSheetData by rememberSaveable { mutableStateOf<ChipItem?>(null) }
+
+    bottomSheetData?.let {
+        LaunchedEffect(bottomSheetData) {
+            showBottomSheet = true
+            bottomSheetState.show()
+        }
+    }
+
+    fun resetBottomSheetState() {
+        coroutineScope.launch {
+            showBottomSheet = false
+            bottomSheetState.hide()
+            bottomSheetData = null
+        }
+    }
+
     LaunchedEffect(chipsList) {
         listState.updateItems(chipsList)
     }
 
-    ChipsListContent(
-        label,
-        modifier,
-        focusRequester,
-        focusOnClick,
-        actions,
-        contactSuggestionState,
-        textFieldState,
-        listState,
-        chevronIconContent
-    )
+    ProtonModalBottomSheetLayout(
+        showBottomSheet = showBottomSheet,
+        onDismissed = { resetBottomSheetState() },
+        dismissOnBack = true,
+        sheetState = bottomSheetState,
+        sheetContent = {
+            bottomSheetData?.let { data ->
+                RecipientChipActionsBottomSheetContent(
+                    chipItem = ChipItem.Valid(data.value),
+                    onCopy = { chipItem ->
+                        coroutineScope.launch {
+                            clipboardManager.setClipEntry(
+                                ClipData.newPlainText(chipItem.value, chipItem.value).toClipEntry()
+                            )
+                        }
+                        resetBottomSheetState()
+                    },
+                    onRemove = { chipItem ->
+                        listState.onDelete(chipItem)
+                        resetBottomSheetState()
+                    }
+                )
+            }
+        }
+    ) {
+        ChipsListContent(
+            label = label,
+            modifier = modifier,
+            focusRequester = focusRequester,
+            focusOnClick = focusOnClick,
+            actions = actions,
+            onChipItemClicked = { chipItem -> bottomSheetData = chipItem },
+            contactSuggestionState = contactSuggestionState,
+            textFieldState = textFieldState,
+            listState = listState,
+            chevronIconContent = chevronIconContent
+        )
+    }
 
     BackHandler(contactSuggestionState.areSuggestionsExpanded) {
         actions.onSuggestionsDismissed()
@@ -127,6 +188,7 @@ private fun ChipsListContent(
     focusRequester: FocusRequester? = null,
     focusOnClick: Boolean = true,
     actions: ComposerChipsListField.Actions,
+    onChipItemClicked: (ChipItem) -> Unit,
     contactSuggestionState: ContactSuggestionState,
     textFieldState: TextFieldState,
     listState: ChipsListState,
@@ -144,7 +206,10 @@ private fun ChipsListContent(
                     actions.onSuggestionsDismissed()
                 }
             },
-            onItemClicked = { },
+            onItemClicked = { index ->
+                val chipItem = listState.getChipItemAt(index)
+                onChipItemClicked(chipItem)
+            },
             onTriggerChipCreation = {
                 listState.createChip()
                 textFieldState.edit { delete(0, length) }

@@ -50,7 +50,6 @@ class ComposerChipsListViewModel @Inject constructor() : ViewModel() {
     init {
         viewModelScope.launch { observe() }
     }
-
     private suspend fun observe() = snapshotFlow { textFieldState.text }
         .collectLatest {
             // This is not ideal, but it's due to how the existing Chips state works.
