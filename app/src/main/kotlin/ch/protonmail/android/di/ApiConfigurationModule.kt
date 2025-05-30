@@ -20,7 +20,11 @@ object ApiConfigurationModule {
     @Singleton
     fun provideRustApiConfig(buildUserAgent: BuildUserAgent, httpUrl: HttpUrl): RustApiConfig =
         MailRustApiConfig(buildUserAgent, httpUrl)
+}
 
+@Module
+@InstallIn(SingletonComponent::class)
+object BaseUrlModule {
     @Provides
     @Singleton
     fun provideProtonApiUrl(envConfig: EnvironmentConfiguration): HttpUrl = envConfig.baseUrl.toHttpUrl()
