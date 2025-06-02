@@ -170,7 +170,7 @@ fun MailboxScreen(
 
     val mailboxListItems = viewModel.items.collectAsLazyPagingItems()
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     BackHandler(mailboxState.mailboxListState is MailboxListState.Data.SelectionMode) {
         viewModel.submit(MailboxViewAction.ExitSelectionMode)
