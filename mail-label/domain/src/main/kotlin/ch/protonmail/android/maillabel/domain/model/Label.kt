@@ -71,16 +71,3 @@ data class NewLabel(
     val isExpanded: Boolean?,
     val isSticky: Boolean?
 )
-
-/**
- * Representing a Label to update.
- */
-data class UpdateLabel(
-    val labelId: LabelId,
-    val parentId: LabelId?,
-    val name: String,
-    val color: String,
-    val isNotified: Boolean?,
-    val isExpanded: Boolean?,
-    val isSticky: Boolean?
-)
