@@ -50,6 +50,13 @@ class AddAttachment @Inject constructor(
             .map { AddAttachmentResult.InlineAttachmentAdded(it) }
     }
 
+    suspend fun forcingStandardDisposition(
+        fileUri: Uri
+    ): Either<AttachmentAddError, AddAttachmentResult.StandardAttachmentAdded> {
+        return addStandardAttachment(fileUri)
+            .map { AddAttachmentResult.StandardAttachmentAdded }
+    }
+
     private fun imageMimeTypes() = listOf(
         "image/jpg",
         "image/webp",

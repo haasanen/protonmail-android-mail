@@ -147,7 +147,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     val filesPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
         onResult = { uris ->
-            viewModel.submit(ComposerAction.AttachmentsAdded(uris))
+            viewModel.submit(ComposerAction.FileAttachmentsAdded(uris))
         }
     )
 

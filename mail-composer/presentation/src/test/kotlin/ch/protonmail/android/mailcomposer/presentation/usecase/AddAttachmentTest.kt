@@ -105,4 +105,20 @@ class AddAttachmentTest {
         assertEquals(expected.right(), actual)
     }
 
+    @Test
+    fun `adds any attachments as standard when force standard disposition called`() = runTest {
+        // Given
+        val fileUri = mockk<Uri>()
+        val expected = AddAttachment.AddAttachmentResult.StandardAttachmentAdded
+        coEvery { context.contentResolver.getType(fileUri) } returns "image/jpeg"
+        coEvery { addStandardAttachment(fileUri) } returns Unit.right()
+
+        // When
+        val actual = addAttachment.forcingStandardDisposition(fileUri)
+
+        // Then
+        assertEquals(expected.right(), actual)
+    }
+
+
 }

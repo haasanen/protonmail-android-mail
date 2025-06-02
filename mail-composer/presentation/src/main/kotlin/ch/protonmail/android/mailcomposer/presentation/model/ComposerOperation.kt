@@ -33,6 +33,7 @@ import kotlin.time.Duration
 sealed interface ComposerOperation
 
 internal sealed interface ComposerAction : ComposerOperation {
+    data class FileAttachmentsAdded(val uriList: List<Uri>) : ComposerAction
     data class AttachmentsAdded(val uriList: List<Uri>) : ComposerAction
     data class SenderChanged(val sender: SenderUiModel) : ComposerAction
     data class ExpirationTimeSet(val duration: Duration) : ComposerAction

@@ -343,6 +343,7 @@ class ComposerViewModel @AssistedInject constructor(
             actionMutex.withLock {
                 when (action) {
                     is ComposerAction.AttachmentsAdded -> onAttachmentsAdded(action.uriList)
+                    is ComposerAction.FileAttachmentsAdded -> onFileAttachmentsAdded(action.uriList)
                     is ComposerAction.DraftBodyChanged -> onDraftBodyChanged(action)
                     is ComposerAction.SenderChanged -> TODO()
                     is ComposerAction.ChangeSenderRequested -> TODO()
@@ -400,6 +401,17 @@ class ComposerViewModel @AssistedInject constructor(
                             emitNewStateFor(ComposerEvent.InlineAttachmentAdded(it.cid))
                         AddAttachment.AddAttachmentResult.StandardAttachmentAdded -> Unit
                     }
+                }
+            }
+        }
+    }
+
+    private fun onFileAttachmentsAdded(uriList: List<Uri>) {
+        viewModelScope.launch {
+            uriList.forEach { uri ->
+                addAttachment.forcingStandardDisposition(uri).onLeft {
+                    Timber.e("Failed to add standard attachment: $it")
+                    emitNewStateFor(ComposerEvent.AddAttachmentError(it))
                 }
             }
         }
