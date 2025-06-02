@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Telefonszám</string>
   <string name="auth_signup_recovery_email_hint">Helyreállítási e-mail cím</string>
   <string name="auth_signup_recovery_phone_hint">Telefonszám a helyreállításhoz</string>
+  <string name="auth_signup_recovery_select_country">Select Country</string>
   <string name="auth_signup_phone_placeholder">XX XXX XX XX</string>
+  <string name="auth_signup_skip_recovery_title">Skip recovery method?</string>
+  <string name="auth_signup_skip_recovery_description">A recovery method will help you access your account in case you forget your password or get locked out of your account.</string>
+  <string name="auth_signup_skip_recovery">Skip</string>
+  <string name="auth_signup_set_recovery">Set recovery method</string>
   <string name="auth_signup_your_account_is_being_setup">A fiókod létrehozás alatt…</string>
   <string name="auth_signup_please_wait">Általában nem tart tovább egy percnél.</string>
+  <string name="auth_signup_congratulations_subtitle">Your Proton account was successfully created.\nEnjoy the world of privacy.</string>
+  <string name="auth_signup_congratulations_title">Congratulations!</string>
+  <string name="auth_signup_start_using_proton">Start using Proton</string>
+  <string name="auth_signup_validation_password">Password must not be empty.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">Passwords do not match.</string>
+  <string name="auth_signup_validation_password_input_invalid">Password input invalid.</string>
+  <string name="auth_signup_validation_username">Username must not be blank.</string>
+  <string name="auth_signup_validation_email">Email must not be blank.</string>
+  <string name="auth_signup_validation_username_input_invalid">Username input invalid.</string>
+  <string name="auth_signup_validation_email_input_invalid">Username input invalid.</string>
+  <string name="auth_signup_countries_search">Search country</string>
 </resources>

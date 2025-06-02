@@ -40,6 +40,8 @@
   <string name="composer_error_loading_draft">Le contenu de ce brouillon n\'est pas disponible pour l\'instant. Sa modification remplacera tout contenu déjà existant.</string>
   <string name="composer_add_attachments_content_description">Ajouter des pièces jointes</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importer depuis…</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">Depuis votre bibliothèque de photos</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Prendre une nouvelle photo</string>
   <string name="composer_error_loading_parent_message">Les informations du message n\'ont pas pu être chargées.</string>
   <string name="composer_original_message_quote">Message d\'origine</string>
   <string name="composer_sender_quote">Le %s, %s &lt;%s&gt; a écrit :</string>
@@ -50,6 +52,7 @@
   <string name="composer_too_many_attachments_error">Le nombre maximal de pièces jointes (100) est dépassé.</string>
   <string name="composer_delete_attachment_error">Une erreur inattendue s’est produite lors de la suppression d’une pièce jointe.</string>
   <string name="composer_unexpected_attachments_error">Une erreur inattendue s’est produite concernant les pièces jointes.</string>
+  <string name="composer_attach_capture_from_camera_error">La capture d\'une pièce jointe depuis l\'appareil photo n\'est pas possible pour l\'instant.</string>
   <string name="composer_warning_local_data_shown">La dernière version de ce brouillon n\'a pas pu être chargée. Toute modification remplacera son contenu.</string>
   <string name="composer_button_add_password">Ajouter un mot de passe</string>
   <string name="composer_button_discard_draft">Abandonner le brouillon</string>
@@ -111,4 +114,6 @@
   <string name="discard_draft_dialog_confirm_button">Abandonner</string>
   <string name="discard_draft_dialog_dismiss_button">Annuler</string>
   <string name="discard_draft_error">Erreur lors de l’abandon du brouillon</string>
+  <string name="composer_remove_inline_image">Retirer</string>
+  <string name="composer_send_as_attachment">Envoyer comme pièce jointe</string>
 </resources>

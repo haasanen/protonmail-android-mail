@@ -17,13 +17,13 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="payment_error_title">Ein Fehler ist aufgetreten</string>
+  <string name="payment_error_title">Etwas ist schiefgelaufen</string>
   <string name="payment_error_description">Diese Seite konnte nicht geladen werden. Bitte die Seite aktualisieren oder die Internetverbindung überprüfen.</string>
   <string name="payment_purchase_button_get">Hol dir %1$s</string>
   <string name="payment_purchase_button_subscribed">Abonniert auf %1$s</string>
   <string name="payment_purchase_button_product_not_found">Produkt im Shop nicht gefunden</string>
   <string name="payment_pay_monthly">Monatlich bezahlen</string>
-  <string name="payment_pay_annually">Jährliche bezahlen</string>
+  <string name="payment_pay_annually">Jährlich bezahlen</string>
   <string name="payment_pay_biennially">Zweijährlich bezahlen</string>
   <plurals name="payment_pay_other">
     <item quantity="one">Für %d Monat zahlen</item>

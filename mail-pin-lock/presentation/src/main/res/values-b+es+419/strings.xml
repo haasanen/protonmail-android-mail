@@ -17,6 +17,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
+  <string name="mail_pin_lock_toolbar_button_content_description">Atrás</string>
   <!-- Auto lock -->
   <string name="mail_settings_auto_lock_title">Bloqueo automático</string>
   <string name="mail_settings_auto_lock_item_title">Bloqueo automático de la aplicación</string>
@@ -55,10 +56,8 @@
   <string name="mail_settings_pin_insertion_signout_dialog_cancel">No</string>
   <string name="mail_settings_pin_insertion_created_success">Se creó el código PIN.</string>
   <string name="mail_settings_pin_insertion_changed_success">Se cambió el código PIN.</string>
-
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Ocurrió un error, intente de nuevo.</string>
-
   <!-- strings used for biometric enrollment -->
   <string name="no_biometric_data_enrolled">No hay datos biométricos registrados.</string>
   <string name="log_in_using_biometric_credential">Desbloquear usando las credenciales biométricas</string>

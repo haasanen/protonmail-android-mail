@@ -25,7 +25,7 @@
   <string name="report_a_problem_include_errors_description">Loki näyttää virheeseen johtaneet toiminnot.\nKäytämme sitä vain vikojen korjaamiseen.</string>
   <string name="report_a_problem_summary_title">Yhteenveto (pakollinen)</string>
   <string name="report_a_problem_summary_description">Esimerkki: Mail-sovellus kaatuu avattaessa suuria liitteitä sisältäviä sähköposteja.</string>
-  <string name="report_a_problem_field_length_error">Tämän kentän sisällön on oltava enemmän, kuin 10 merkkiä.</string>
+  <string name="report_a_problem_field_length_error">This field must be more than 10 characters</string>
   <string name="report_a_problem_expected_results_title">Odotetut tulokset</string>
   <string name="report_a_problem_expected_results_description">Esimerkki: Sähköpostin avaamisen pitäisi näyttää viestin sisältö ja liitteet.</string>
   <string name="report_a_problem_repro_steps_title">Toistamiseen vaadittavat vaiheet</string>

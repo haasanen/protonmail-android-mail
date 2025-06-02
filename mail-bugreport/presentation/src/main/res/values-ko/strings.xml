@@ -25,7 +25,7 @@
   <string name="report_a_problem_include_errors_description">로그는 오류로 이어지는 모든 작업을 보여줍니다.\n당사는 로그를 버그 수정에 한해 사용합니다.</string>
   <string name="report_a_problem_summary_title">요약 (필수)</string>
   <string name="report_a_problem_summary_description">예시: 메일 앱이 대용량 첨부 파일의 이메일을 열 때 충돌합니다.</string>
-  <string name="report_a_problem_field_length_error">입력란에는 최소 10자 이상이여야 합니다.</string>
+  <string name="report_a_problem_field_length_error">이 입력란에는 최소 10자 이상 입력되어야 합니다.</string>
   <string name="report_a_problem_expected_results_title">예상된 결과</string>
   <string name="report_a_problem_expected_results_description">예시: 이메일을 열면 메시지 내용과 첨부 파일이 표시됩니다.</string>
   <string name="report_a_problem_repro_steps_title">재현 단계</string>

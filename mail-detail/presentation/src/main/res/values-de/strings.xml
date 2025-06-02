@@ -75,8 +75,8 @@
   <string name="message_body_embedded_images_banner_text">Das automatische Laden von eingebetteten Bildern ist ausgeschaltet. Dies kann in den Einstellungen geändert werden.</string>
   <string name="message_body_remote_content_banner_text">Das automatische Laden von externen Inhalten ist deaktiviert. Dies kann in den Einstellungen geändert werden.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Das automatische Laden von eingebetteten Bildern ist deaktiviert. Dies kann in den Einstellungen geändert werden.</string>
-  <string name="message_phishing_banner_text">Diese Nachricht wurde entweder von unserem System oder von dir als verdächtig eingestuft. Wenn du glaubst, dass sie sicher ist, kennzeichne sie als seriös.</string>
-  <string name="message_phishing_banner_mark_as_legitimate_button">Als seriös kennzeichnen</string>
+  <string name="message_phishing_banner_text">Diese Nachricht wurde entweder von unserem System oder von dir als verdächtig eingestuft. Wenn du glaubst, dass sie sicher ist, kennzeichne sie als legitim.</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">Als legitim kennzeichnen</string>
   <string name="message_spam_banner_text">Diese Nachricht wurde als Spam gekennzeichnet, entweder durch unser System oder durch dich.</string>
   <string name="message_spam_banner_not_spam_button">Kein Spam</string>
   <string name="message_blocked_sender_banner_text">Dieser Absender wurde in der Vergangenheit bereits gesperrt.</string>
@@ -94,7 +94,7 @@
   <string name="phishing_link_confirmation_dialog_button_go_back">Zurück (empfohlen)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">Warnung ignorieren und fortfahren</string>
   <!-- Mark as legitimate confirmation dialog -->
-  <string name="mark_as_legitimate_phishing_dialog_title">Markierte als seriös bestätigen</string>
+  <string name="mark_as_legitimate_phishing_dialog_title">Markierte als legitim bestätigen</string>
   <string name="mark_as_legitimate_phishing_dialog_message">Wir bitten um Entschuldigung. Dies könnte ein Fehler unsererseits gewesen sein. Bitte bestätigen, wenn diese E-Mail als seriös eingestuft werden soll.</string>
   <string name="mark_as_legitimate_spam_dialog_title">Bestätigen, dass es sich nicht um Spam handelt</string>
   <string name="mark_as_legitimate_spam_dialog_message">Wir bitten um Entschuldigung. Dies könnte ein Fehler unsererseits gewesen sein. Bitte bestätigen, dass diese E-Mail kein Spam ist.</string>

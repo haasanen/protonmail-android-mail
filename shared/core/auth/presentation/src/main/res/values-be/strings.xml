@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Тэлефон</string>
   <string name="auth_signup_recovery_email_hint">Электронная пошта для аднаўлення доступу</string>
   <string name="auth_signup_recovery_phone_hint">Нумар тэлефона для аднаўлення доступу</string>
+  <string name="auth_signup_recovery_select_country">Выберыце краіну</string>
   <string name="auth_signup_phone_placeholder">XXX XX XXX XXXX</string>
+  <string name="auth_signup_skip_recovery_title">Прапусціць спосаб аднаўлення?</string>
+  <string name="auth_signup_skip_recovery_description">Спосаб аднаўлення дапаможа атрымаць доступ да вашага ўліковага запісу ў выпадку, калі вы забудзеце пароль або заблакіруеце ўліковы запіс.</string>
+  <string name="auth_signup_skip_recovery">Прапусціць</string>
+  <string name="auth_signup_set_recovery">Задаць спосаб аднаўлення</string>
   <string name="auth_signup_your_account_is_being_setup">Адбываецца стварэнне вашага ўліковага запісу…</string>
   <string name="auth_signup_please_wait">Звычайна гэта доўжыцца не больш за хвіліну.</string>
+  <string name="auth_signup_congratulations_subtitle">Ваш уліковы запіс Proton паспяхова створаны.\nДалучайцеся да свету прыватнасці.</string>
+  <string name="auth_signup_congratulations_title">Віншуем!</string>
+  <string name="auth_signup_start_using_proton">Пачаць выкарыстоўваць Proton</string>
+  <string name="auth_signup_validation_password">Пароль не можа быць пустым.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">Паролі не супадаюць.</string>
+  <string name="auth_signup_validation_password_input_invalid">Няправільны ўвод пароля.</string>
+  <string name="auth_signup_validation_username">Поле з імем карыстальніка не можа быць пустым.</string>
+  <string name="auth_signup_validation_email">Электронны ліст не можа быць пустым.</string>
+  <string name="auth_signup_validation_username_input_invalid">Няправільны ўвод імя карыстальніка.</string>
+  <string name="auth_signup_validation_email_input_invalid">Памылковы ўвод імя карыстальніка.</string>
+  <string name="auth_signup_countries_search">Пошук краіны</string>
 </resources>

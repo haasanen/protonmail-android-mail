@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">電話</string>
   <string name="auth_signup_recovery_email_hint">回復用メールアドレス</string>
   <string name="auth_signup_recovery_phone_hint">回復用の電話番号</string>
+  <string name="auth_signup_recovery_select_country">国を選択</string>
   <string name="auth_signup_phone_placeholder">XX XXX XX XX</string>
+  <string name="auth_signup_skip_recovery_title">回復手段の設定をスキップしますか?</string>
+  <string name="auth_signup_skip_recovery_description">パスワードを忘れたり、アカウントにアクセスできなくなった場合に、回復手段を使ってアカウントにアクセスできるようにします。</string>
+  <string name="auth_signup_skip_recovery">スキップ</string>
+  <string name="auth_signup_set_recovery">回復手段を設定</string>
   <string name="auth_signup_your_account_is_being_setup">アカウントを作成しています…</string>
   <string name="auth_signup_please_wait">通常1分以内に完了します。</string>
+  <string name="auth_signup_congratulations_subtitle">あなたの Proton アカウントは正常に作成されました。\nプライバシーの世界をお楽しみください！</string>
+  <string name="auth_signup_congratulations_title">おめでとうございます</string>
+  <string name="auth_signup_start_using_proton">Proton を始める</string>
+  <string name="auth_signup_validation_password">パスワードは空にできません。</string>
+  <string name="auth_signup_validation_passwords_do_not_match">パスワードが一致しません。</string>
+  <string name="auth_signup_validation_password_input_invalid">パスワード入力が無効です。</string>
+  <string name="auth_signup_validation_username">ユーザー名は空にできません。</string>
+  <string name="auth_signup_validation_email">メールアドレスは空にできません。</string>
+  <string name="auth_signup_validation_username_input_invalid">ユーザー名入力が無効です。</string>
+  <string name="auth_signup_validation_email_input_invalid">ユーザー名入力が無効です。</string>
+  <string name="auth_signup_countries_search">国を検索</string>
 </resources>

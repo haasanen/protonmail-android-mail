@@ -25,7 +25,7 @@
   <string name="report_a_problem_include_errors_description">程序日志将显示导致错误的所有操作。\n我们将只使用其修复错误。</string>
   <string name="report_a_problem_summary_title">摘要（必填）</string>
   <string name="report_a_problem_summary_description">例如：打开带有大附件的电子邮件时，邮箱应用将会崩溃。</string>
-  <string name="report_a_problem_field_length_error">字段长度必须超过 10 个字符。</string>
+  <string name="report_a_problem_field_length_error">字段长度必须超过 10 个字符</string>
   <string name="report_a_problem_expected_results_title">预期结果</string>
   <string name="report_a_problem_expected_results_description">例如：打开电子邮件时应显示信件内容和附件。</string>
   <string name="report_a_problem_repro_steps_title">重现步骤</string>

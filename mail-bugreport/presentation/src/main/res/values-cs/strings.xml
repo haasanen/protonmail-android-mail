@@ -25,7 +25,7 @@
   <string name="report_a_problem_include_errors_description">Log zobrazuje všechny akce, které vedly k chybě.\nPoužíváme jej pouze k opravě chyb.</string>
   <string name="report_a_problem_summary_title">Shrnutí (povinné)</string>
   <string name="report_a_problem_summary_description">Příklad: Aplikace Mail padá při otevírání e-mailů s velkými přílohami.</string>
-  <string name="report_a_problem_field_length_error">Toto pole musí obsahovat více než 10 znaků.</string>
+  <string name="report_a_problem_field_length_error">Toto pole musí obsahovat více než 10 znaků</string>
   <string name="report_a_problem_expected_results_title">Očekávané výsledky</string>
   <string name="report_a_problem_expected_results_description">Příklad: Po otevření e-mailu by se měl zobrazit obsah zprávy a přílohy.</string>
   <string name="report_a_problem_repro_steps_title">Kroky k reprodukci</string>

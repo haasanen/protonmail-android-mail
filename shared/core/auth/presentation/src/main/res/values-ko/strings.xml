@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">전화번호</string>
   <string name="auth_signup_recovery_email_hint">복구 이메일</string>
   <string name="auth_signup_recovery_phone_hint">복구 전화번호</string>
+  <string name="auth_signup_recovery_select_country">국가 선택</string>
   <string name="auth_signup_phone_placeholder">XXX XXXX XXXX</string>
+  <string name="auth_signup_skip_recovery_title">복구 방법을 건너뛰시겠어요?</string>
+  <string name="auth_signup_skip_recovery_description">복구 방법은 비밀번호를 잊어버렸거나 계정이 잠긴 경우 계정에 접근하는 데 도움이 됩니다.</string>
+  <string name="auth_signup_skip_recovery">건너뛰기</string>
+  <string name="auth_signup_set_recovery">복구 방법 설정</string>
   <string name="auth_signup_your_account_is_being_setup">회원님의 계정이 곧 생성됩니다…</string>
   <string name="auth_signup_please_wait">일반적으로 1분 이상 소요되지 않습니다.</string>
+  <string name="auth_signup_congratulations_subtitle">Proton 계정이 성공적으로 생성되었어요.\n프라이버시의 세계를 즐겨보세요.</string>
+  <string name="auth_signup_congratulations_title">축하드려요!</string>
+  <string name="auth_signup_start_using_proton">Proton 사용 시작</string>
+  <string name="auth_signup_validation_password">비밀번호는 비워둘 수 없습니다.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">비밀번호가 일치하지 않습니다.</string>
+  <string name="auth_signup_validation_password_input_invalid">비밀번호 입력이 유효하지 않습니다.</string>
+  <string name="auth_signup_validation_username">사용자 이름은 비워둘 수 없습니다.</string>
+  <string name="auth_signup_validation_email">이메일은 비워 둘 수 없습니다.</string>
+  <string name="auth_signup_validation_username_input_invalid">사용자 이름 입력이 유효하지 않습니다.</string>
+  <string name="auth_signup_validation_email_input_invalid">사용자 이름 입력이 유효하지 않습니다.</string>
+  <string name="auth_signup_countries_search">국가 검색</string>
 </resources>

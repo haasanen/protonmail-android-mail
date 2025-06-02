@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Telefoon</string>
   <string name="auth_signup_recovery_email_hint">Herstel-e-mailadres</string>
   <string name="auth_signup_recovery_phone_hint">Herstel-telefoonnummer</string>
+  <string name="auth_signup_recovery_select_country">Selecteer land</string>
   <string name="auth_signup_phone_placeholder">XXXXXXXXXX</string>
+  <string name="auth_signup_skip_recovery_title">Herstelmethode overslaan?</string>
+  <string name="auth_signup_skip_recovery_description">Een herstelmethode zal u helpen om toegang te krijgen tot uw account in het geval u uw wachtwoord vergeet of van uw account wordt afgesloten.</string>
+  <string name="auth_signup_skip_recovery">Overslaan</string>
+  <string name="auth_signup_set_recovery">Herstelmethode instellen</string>
   <string name="auth_signup_your_account_is_being_setup">Uw account wordt aangemaakt...</string>
   <string name="auth_signup_please_wait">Meestal duurt het niet meer dan een minuut.</string>
+  <string name="auth_signup_congratulations_subtitle">Uw Proton account is succesvol aangemaakt.\nGeniet van de wereld van privacy.</string>
+  <string name="auth_signup_congratulations_title">Gefeliciteerd!</string>
+  <string name="auth_signup_start_using_proton">Aan de slag met Proton</string>
+  <string name="auth_signup_validation_password">Het wachtwoord mag niet leeg zijn.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">Wachtwoorden komen niet overeen.</string>
+  <string name="auth_signup_validation_password_input_invalid">Wachtwoordinvoer ongeldig.</string>
+  <string name="auth_signup_validation_username">De gebruikersnaam mag niet leeg zijn.</string>
+  <string name="auth_signup_validation_email">E-mail mag niet leeg zijn.</string>
+  <string name="auth_signup_validation_username_input_invalid">Gebruikersnaam invoer ongeldig.</string>
+  <string name="auth_signup_validation_email_input_invalid">Gebruikersnaam invoer ongeldig.</string>
+  <string name="auth_signup_countries_search">Zoek land</string>
 </resources>

@@ -73,10 +73,10 @@
   <string name="message_body_embedded_images_banner_text">埋め込み画像の自動読み込みはオフになっています。これは設定で変更できます。</string>
   <string name="message_body_remote_content_banner_text">リモートコンテンツの自動読み込みはオフになっています。これは設定で変更できます。</string>
   <string name="message_body_embedded_and_remote_content_banner_text">埋め込み画像やリモートコンテンツの自動読み込みはオフになっています。これらは設定で変更できます。</string>
-  <string name="message_phishing_banner_text">This message was flagged as suspicious, either by our system or by you. If you believe it’s safe, mark it as legitimate.</string>
-  <string name="message_phishing_banner_mark_as_legitimate_button">Mark as legitimate</string>
-  <string name="message_spam_banner_text">This message was flagged as Spam, either by our system or by you.</string>
-  <string name="message_spam_banner_not_spam_button">Not Spam</string>
+  <string name="message_phishing_banner_text">このメッセージは、当社のシステムまたはお客様によって不審なメッセージとしてマークされました。安全であると判断した場合は、正当なメッセージとしてマークしましょう。</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">正当なものとしてマーク</string>
+  <string name="message_spam_banner_text">このメールは、当社のシステムまたはあなた自身によって迷惑メールとされました。</string>
+  <string name="message_spam_banner_not_spam_button">スパムではない</string>
   <string name="message_blocked_sender_banner_text">この差出人は過去にブロックされています。</string>
   <string name="message_blocked_sender_button_text">ブロックを解除する</string>
   <string name="message_expiration_banner_text">このメッセージは %1$s後に失効します</string>
@@ -92,10 +92,10 @@
   <string name="phishing_link_confirmation_dialog_button_go_back">戻る (推奨)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">警告を無視して続行</string>
   <!-- Mark as legitimate confirmation dialog -->
-  <string name="mark_as_legitimate_phishing_dialog_title">Confirm mark as legitimate</string>
-  <string name="mark_as_legitimate_phishing_dialog_message">We apologize. This might have been a mistake from our side. Please confirm if you want to mark this email as legitimate.</string>
-  <string name="mark_as_legitimate_spam_dialog_title">Confirm not Spam</string>
-  <string name="mark_as_legitimate_spam_dialog_message">We apologize. This might have been a mistake from our side. Please confirm this email is not Spam.</string>
+  <string name="mark_as_legitimate_phishing_dialog_title">詐欺ではないと確認</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">大変申し訳ございません。こちら側の間違いだったと思うならば、このメールが詐欺ではないとしてよろしいかご確認ください。</string>
+  <string name="mark_as_legitimate_spam_dialog_title">迷惑メールではないと確認</string>
+  <string name="mark_as_legitimate_spam_dialog_message">大変申し訳ございません。これがこちら側の間違いだったと思うならば、このメールを正当なメールとしてよろしいかご確認ください。</string>
   <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">メッセージを削除する</string>
   <string name="message_delete_dialog_message">このメッセージを完全に削除してよろしいですか？</string>

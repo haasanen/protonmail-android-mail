@@ -40,6 +40,8 @@
   <string name="composer_error_loading_draft">Наразі вміст цієї чернетки недоступний. Редагування перезапише будь-який попередній вміст.</string>
   <string name="composer_add_attachments_content_description">Додати вкладення</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Імпортувати з…</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">From your photo library</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Take a new photo</string>
   <string name="composer_error_loading_parent_message">Неможливо завантажити інформацію про повідомлення</string>
   <string name="composer_original_message_quote">Оригінальне повідомлення</string>
   <string name="composer_sender_quote">%s, %s &lt;%s&gt; пише:</string>
@@ -50,6 +52,7 @@
   <string name="composer_too_many_attachments_error">Maximum number of attachments (100) exceeded.</string>
   <string name="composer_delete_attachment_error">There was an unexpected error while deleting an attachment.</string>
   <string name="composer_unexpected_attachments_error">There was an unexpected error related with attachments.</string>
+  <string name="composer_attach_capture_from_camera_error">Capturing an attachment from camera isn\'t possible at this time</string>
   <string name="composer_warning_local_data_shown">Не вдалося завантажити останню версію цієї чернетки. Будь-які зміни перезапишуть її.</string>
   <string name="composer_button_add_password">Додати пароль</string>
   <string name="composer_button_discard_draft">Відкинути чернетку</string>
@@ -113,4 +116,6 @@
   <string name="discard_draft_dialog_confirm_button">Discard</string>
   <string name="discard_draft_dialog_dismiss_button">Cancel</string>
   <string name="discard_draft_error">Error discarding draft</string>
+  <string name="composer_remove_inline_image">Remove</string>
+  <string name="composer_send_as_attachment">Send as attachment</string>
 </resources>

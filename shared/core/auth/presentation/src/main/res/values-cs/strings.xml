@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Telefon</string>
   <string name="auth_signup_recovery_email_hint">E-mail pro obnovení</string>
   <string name="auth_signup_recovery_phone_hint">Telefonní číslo pro obnovení</string>
+  <string name="auth_signup_recovery_select_country">Vyberte zemi</string>
   <string name="auth_signup_phone_placeholder">+420 XXX XXX XXX</string>
+  <string name="auth_signup_skip_recovery_title">Přeskočit metodu obnovení?</string>
+  <string name="auth_signup_skip_recovery_description">Metoda obnovení vám pomůže získat přístup k účtu v případě, že zapomenete heslo nebo se z účtu odhlásíte.</string>
+  <string name="auth_signup_skip_recovery">Přeskočit</string>
+  <string name="auth_signup_set_recovery">Nastavit metodu obnovení</string>
   <string name="auth_signup_your_account_is_being_setup">Váš účet se vytváří…</string>
   <string name="auth_signup_please_wait">Obvykle to netrvá déle než minutu.</string>
+  <string name="auth_signup_congratulations_subtitle">Váš účet Proton byl úspěšně vytvořen.\nUžívejte si svět soukromí.</string>
+  <string name="auth_signup_congratulations_title">Blahopřejeme!</string>
+  <string name="auth_signup_start_using_proton">Začněte používat Proton</string>
+  <string name="auth_signup_validation_password">Heslo nesmí být prázdné.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">Hesla se neshodují.</string>
+  <string name="auth_signup_validation_password_input_invalid">Neplatné zadání hesla.</string>
+  <string name="auth_signup_validation_username">Uživatelské jméno nesmí být prázdné.</string>
+  <string name="auth_signup_validation_email">E-mail nesmí být prázdný.</string>
+  <string name="auth_signup_validation_username_input_invalid">Neplatné zadání uživatelského jména.</string>
+  <string name="auth_signup_validation_email_input_invalid">Neplatné zadání uživatelského jména.</string>
+  <string name="auth_signup_countries_search">Vyhledat zemi</string>
 </resources>

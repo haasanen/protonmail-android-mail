@@ -40,6 +40,8 @@
   <string name="composer_error_loading_draft">Το περιεχόμενο αυτού του πρόχειρου δεν είναι διαθέσιμο προς το παρόν. Η επεξεργασία θα αντικαταστήσει τυχόν προϋπάρχον περιεχόμενο.</string>
   <string name="composer_add_attachments_content_description">Προσθήκη συνημμένων</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Εισαγωγή από…</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">Από τη βιβλιοθήκη φωτογραφιών σας</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Λήψη νέας φωτογραφίας</string>
   <string name="composer_error_loading_parent_message">Δεν ήταν δυνατή η φόρτωση των πληροφοριών του μηνύματος</string>
   <string name="composer_original_message_quote">Αρχικό Μήνυμα</string>
   <string name="composer_sender_quote">Την %s, %s ο/η &lt;%s&gt; έγραψε:</string>
@@ -50,6 +52,7 @@
   <string name="composer_too_many_attachments_error">Υπέρβαση μέγιστου αριθμού συνημμένων (100).</string>
   <string name="composer_delete_attachment_error">Παρουσιάστηκε ένα μη αναμενόμενο σφάλμα κατά τη διαγραφή ενός συνημμένου.</string>
   <string name="composer_unexpected_attachments_error">Παρουσιάστηκε ένα μη αναμενόμενο σφάλμα που σχετίζεται με τα συνημμένα.</string>
+  <string name="composer_attach_capture_from_camera_error">Η λήψη συνημμένου από την κάμερα δεν είναι δυνατή αυτή τη στιγμή.</string>
   <string name="composer_warning_local_data_shown">Απέτυχε η φόρτωση της τελευταίας έκδοσης αυτού του προχείρου. Οποιαδήποτε αλλαγή θα υπερισχύει του περιεχομένου της.</string>
   <string name="composer_button_add_password">Προσθήκη κωδικού πρόσβασης</string>
   <string name="composer_button_discard_draft">Απόρριψη πρόχειρου</string>
@@ -111,4 +114,6 @@
   <string name="discard_draft_dialog_confirm_button">Απόρριψη</string>
   <string name="discard_draft_dialog_dismiss_button">Ακύρωση</string>
   <string name="discard_draft_error">Σφάλμα κατά την απόρριψη του πρόχειρου</string>
+  <string name="composer_remove_inline_image">Αφαίρεση</string>
+  <string name="composer_send_as_attachment">Αποστολή ως συνημμένο</string>
 </resources>

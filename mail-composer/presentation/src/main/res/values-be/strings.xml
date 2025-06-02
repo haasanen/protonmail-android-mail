@@ -40,6 +40,8 @@
   <string name="composer_error_loading_draft">Змесціва гэтага чарнавіка недаступна ў цяперашні час. Рэдагаванне перавызначыць любое змесціва, якое было створана да гэтага.</string>
   <string name="composer_add_attachments_content_description">Дадаць далучэнні</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Імпартаваць з…</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">З вашай фотатэкі</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Зрабіць новую фатаграфію</string>
   <string name="composer_error_loading_parent_message">Немагчыма загрузіць звесткі паведамлення</string>
   <string name="composer_original_message_quote">Арыгінальнае паведамленне</string>
   <string name="composer_sender_quote">%s, %s &lt;%s&gt; напісаў(-ла):</string>
@@ -50,6 +52,7 @@
   <string name="composer_too_many_attachments_error">Перавышана максімальная колькасць далучэнняў (100).</string>
   <string name="composer_delete_attachment_error">Узнікла нечаканая памылка пры выдаленні далучэння.</string>
   <string name="composer_unexpected_attachments_error">Узнікла нечаканая памылка, якая звязана з далучэннямі.</string>
+  <string name="composer_attach_capture_from_camera_error">Захоп далучэння з камеры у цяперашні час немагчымы</string>
   <string name="composer_warning_local_data_shown">Збой загрузкі апошняй версіі гэтага чарнавіка. Любыя змены перавызначаць яго змесцівам.</string>
   <string name="composer_button_add_password">Дадаць пароль</string>
   <string name="composer_button_discard_draft">Скасаваць чарнавік</string>
@@ -109,8 +112,10 @@
   </plurals>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">Скасаваць гэта паведамленне?</string>
-  <string name="discard_draft_dialog_text">Ваш чарнавік не будзе скасаваны</string>
+  <string name="discard_draft_dialog_text">Ваш чарнавік не будзе захаваны</string>
   <string name="discard_draft_dialog_confirm_button">Скасаваць</string>
   <string name="discard_draft_dialog_dismiss_button">Скасаваць</string>
   <string name="discard_draft_error">Памылка пры скасаванні чарнавіка</string>
+  <string name="composer_remove_inline_image">Выдаліць</string>
+  <string name="composer_send_as_attachment">Адправіць як далучэнне</string>
 </resources>

@@ -40,6 +40,8 @@
   <string name="composer_error_loading_draft">Содержимое этого черновика в данный момент недоступно. Изменение приведет к замене всего ранее существовавшего содержимого.</string>
   <string name="composer_add_attachments_content_description">Добавить вложения</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Импортировать из…</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">From your photo library</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Take a new photo</string>
   <string name="composer_error_loading_parent_message">Не удалось загрузить информацию сообщения</string>
   <string name="composer_original_message_quote">Оригинальное Сообщение</string>
   <string name="composer_sender_quote">%s, %s &lt;%s&gt; пишет:</string>
@@ -50,6 +52,7 @@
   <string name="composer_too_many_attachments_error">Превышено максимальное количество вложений (100).</string>
   <string name="composer_delete_attachment_error">При удалении вложения произошла непредвиденная ошибка.</string>
   <string name="composer_unexpected_attachments_error">Произошла непредвиденная ошибка, связанная с вложениями.</string>
+  <string name="composer_attach_capture_from_camera_error">Capturing an attachment from camera isn\'t possible at this time</string>
   <string name="composer_warning_local_data_shown">Последняя версия этого черновика не загрузилась. Любые изменения заменят его содержимое.</string>
   <string name="composer_button_add_password">Добавить пароль</string>
   <string name="composer_button_discard_draft">Отменить черновик</string>
@@ -111,6 +114,8 @@
   <string name="discard_draft_dialog_title">Отменить это сообщение?</string>
   <string name="discard_draft_dialog_text">Черновик не будет сохранен</string>
   <string name="discard_draft_dialog_confirm_button">Не сохранять</string>
-  <string name="discard_draft_dialog_dismiss_button">Отмена</string>
+  <string name="discard_draft_dialog_dismiss_button">Отменить</string>
   <string name="discard_draft_error">Ошибка при удалении черновика</string>
+  <string name="composer_remove_inline_image">Remove</string>
+  <string name="composer_send_as_attachment">Send as attachment</string>
 </resources>

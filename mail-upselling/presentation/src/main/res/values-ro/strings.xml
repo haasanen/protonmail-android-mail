@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Upselling -->
+  <string name="upselling_button_item_content_description">Buton modificare plan</string>
+  <string name="upselling_close_button_content_description">Buton închidere</string>
+  <!-- Upselling: Mailbox -->
+  <string name="upselling_mailbox_plus_description_override">Pentru a debloca mai mult spațiu de stocare și funcții premium</string>
+  <string name="upselling_mailbox_plus_title">Treceți la Mail Plus</string>
+  <!-- Upselling: Contact Groups -->
+  <string name="upselling_contact_groups_plus_description_override">Trimiteți cu ușurință mesaje unui grup și bucurați-vă de alte funcții premium cu Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_title">Grupați-vă contactele</string>
+  <!-- Upselling: Labels -->
+  <string name="upselling_labels_plus_description_override">Obțineți-le alături de alte funcții premium când treceți la Mail Plus.</string>
+  <string name="upselling_labels_plus_title">Doriți mai multe etichete sau foldere?</string>
+  <!-- Upselling: Folders -->
+  <string name="upselling_folders_plus_description_override">Obțineți-le alături de alte funcții premium când treceți la Mail Plus.</string>
+  <string name="upselling_folders_plus_title">Doriți mai multe etichete sau foldere?</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_mobile_signature_plus_description_override">Utilizați propria semnătură pe dispozitive mobile și bucurați-vă de alte funcții premium cu Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_title">Personalizați-vă semnătura</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_auto_delete_plus_description_override">Bucurați-vă de o interfață mai ordonată și beneficiați de alte funcții premium cu Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_title">Goliți mesajele vechi din folderele gunoi și nedorite</string>
+  <!-- Mail Plus -->
+  <string name="upselling_plus_feature_storage">15 GiB spațiu de stocare</string>
+  <string name="upselling_plus_feature_email_addresses">10 adrese de e-mail</string>
+  <string name="upselling_plus_feature_custom_domain">Suport pentru domeniu personal de e-mail</string>
+  <string name="upselling_plus_feature_desktop_app">Aplicație nouă Proton Mail pentru desktop</string>
+  <string name="upselling_plus_feature_folders_labels">Foldere, etichete și filtre nelimitate</string>
+  <string name="upselling_plus_feature_plus_7_features">Peste 7 funcții premium</string>
+  <!-- Unlimited -->
+  <string name="upselling_unlimited_description_override">Abonamentul premium complet</string>
+  <string name="upselling_unlimited_feature_storage">500 GiB spațiu de stocare cu conservare fotografii</string>
+  <string name="upselling_unlimited_feature_mail_calendar">Toate funcțiile cu plată de la Mail și Calendar</string>
+  <string name="upselling_unlimited_feature_vpn">VPN (peste 90 de țări)</string>
+  <string name="upselling_unlimited_feature_drive">Stocare securizată în cloud</string>
+  <string name="upselling_unlimited_feature_pass">Manager criptat de parole</string>
+  <!-- Onboarding Upselling -->
+  <string name="upselling_onboarding_premium_value_included">Funcții premium incluse</string>
+  <string name="upselling_onboarding_feature_e2e">Criptare bilaterală</string>
+  <string name="upselling_onboarding_feature_folders_labels">Foldere și etichete nelimitate</string>
+  <string name="upselling_onboarding_free_feature_storage">1 GiB spațiu de stocare și o adresă de e-mail</string>
+  <string name="upselling_onboarding_plus_feature_storage">15 GiB spațiu de stocare</string>
+  <string name="upselling_onboarding_plus_feature_email_addresses">10 adrese de e-mail suplimentare pentru tine</string>
+  <string name="upselling_onboarding_plus_feature_email_domains">Suport pentru un domeniu personal de e-mail</string>
+  <string name="upselling_onboarding_plus_feature_aliases">10 aliasuri hide-my-email</string>
+  <string name="upselling_onboarding_plus_feature_customer_support">Asistență clienți prioritară</string>
+  <string name="upselling_onboarding_unlimited_feature_storage">500 GiB spațiu de stocare</string>
+  <string name="upselling_onboarding_unlimited_feature_email_addresses">15 adrese de e-mail suplimentare pentru tine</string>
+  <string name="upselling_onboarding_unlimited_feature_email_domains">Suport pentru 3 domenii personale de e-mail</string>
+  <string name="upselling_onboarding_unlimited_feature_aliases">Aliasuri nelimitate hide-my-email</string>
+  <string name="upselling_onboarding_unlimited_feature_customer_support">Asistență dedicată clienți</string>
+  <string name="upselling_onboarding_unlimited_feature_vpn">VPN rapid și privat</string>
+  <string name="upselling_onboarding_unlimited_feature_pass">Manager de parole criptat</string>
+  <string name="upselling_onboarding_unlimited_feature_drive">Stocare în cloud criptată pentru fotografii și documente</string>
+  <string name="upselling_onboarding_unlimited_feature_sentinel">Protecție avansată a contului</string>
+  <!-- Other UI Items -->
+  <string name="upselling_discount_tag">ECONOMISIȚI %s%%</string>
+  <string name="upselling_month">/lună</string>
+  <string name="upselling_get_button">Obțineți %s</string>
+  <plurals name="upselling_month">
+    <item quantity="one">%d lună</item>
+    <item quantity="few">%d luni</item>
+    <item quantity="other">%d de luni</item>
+  </plurals>
+  <!-- Errors -->
+  <string name="upselling_unable_retrieve_options">Imposibil de preluat opțiunile de modificare a planului.</string>
+  <string name="upselling_snackbar_error_no_user_id">A apărut o eroare.</string>
+  <string name="upselling_snackbar_error_no_subscriptions">Imposibil de preluat abonamentele.</string>
+  <!-- Snackbar texts -->
+  <string name="upselling_snackbar_upgrade_in_progress">Modificarea abonamentului este în desfășurare…</string>
+  <string name="upselling_snackbar_upgrade_error_generic">A apărut o eroare în timpul modificării abonamentului.</string>
+  <string name="upselling_snackbar_upgrade_error_recoverable">A apărut o eroare. Mai încercați.</string>
+  <!-- Upselling: Onboarding -->
+  <string name="upselling_onboarding_title">Alegeți un plan</string>
+  <string name="upselling_onboarding_switcher_monthly">Lunar</string>
+  <string name="upselling_onboarding_switcher_annual">Anual</string>
+  <string name="upselling_onboarding_best_value">Cea mai bună valoare</string>
+  <string name="upselling_onboarding_month">/lună</string>
+  <string name="upselling_onboarding_year">/an</string>
+  <plurals name="upselling_onboarding_more_features">
+    <item quantity="one">Încă %d funcție</item>
+    <item quantity="few">Încă %d funcții</item>
+    <item quantity="other">Încă %d de funcții</item>
+  </plurals>
+  <string name="upselling_onboarding_billing_monthly">Facturat cu %s %s lunar</string>
+  <string name="upselling_onboarding_billing_annual">Facturat cu %s %s la 12 luni</string>
+  <string name="upselling_onboarding_get_plan">Luați %s</string>
+  <string name="upselling_onboarding_continue_with_proton_free">Continuare cu Proton Free</string>
+  <string name="upselling_onboarding_save_label">Economisiți %s %%</string>
+</resources>

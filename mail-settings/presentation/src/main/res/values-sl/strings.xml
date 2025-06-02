@@ -64,9 +64,9 @@
   <string name="mail_settings_app_customization_mail_experience_header">Izkušnja z aplikacijo Mail</string>
   <string name="mail_settings_app_customization_advanced_header">Napredno</string>
   <!-- Theme settings -->
-  <string name="mail_settings_system_default">Sistemsko privzeto</string>
-  <string name="mail_settings_theme_light">Svetla</string>
-  <string name="mail_settings_theme_dark">Temna</string>
+  <string name="mail_settings_system_default">System</string>
+  <string name="mail_settings_theme_light">Light mode</string>
+  <string name="mail_settings_theme_dark">Dark mode</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Informacije niso na voljo</string>
   <string name="mail_settings_account">Račun</string>
@@ -111,6 +111,53 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Odprite nastavitve obvestil operacijskega sistema</string>
   <string name="mail_settings_notifications_update_error">Napaka pri shranjevanju novih nastavitev</string>
   <string name="mail_settings_notifications_loading_error">Napaka pri nalaganju nastavitev</string>
+  <!-- Auto lock -->
+  <string name="mail_settings_auto_lock_title">Samodejno zaklepanje</string>
+  <string name="mail_settings_auto_lock_item_title">Samodejno zakleni aplikacijo</string>
+  <string name="mail_settings_auto_lock_item_description">Vklopite to funkcijo, da samodejno zaklenete aplikacijo in jo odklenete s kodo PIN.</string>
+  <string name="mail_settings_auto_lock_change_pin_description">Spremeni kodo PIN</string>
+  <string name="mail_settings_auto_lock_item_timer_title">Časovnik samodejnega zaklepanja</string>
+  <string name="mail_settings_auto_lock_immediately">Takoj</string>
+  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minut neaktivnosti</string>
+  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minut neaktivnosti</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 ura neaktivnosti</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 dan neaktivnosti</string>
+  <string name="mail_settings_auto_lock_update_error">Napaka pri nalaganju nastavitev</string>
+  <string name="mail_settings_pin_insertion_input_title">Vnesite kodo PIN</string>
+  <string name="mail_settings_pin_insertion_set_title">Nastavi kodo PIN</string>
+  <string name="mail_settings_pin_insertion_confirm_title">Potrdi PIN kodo</string>
+  <string name="mail_settings_pin_insertion_lock_icon_description">Ikona ključavnice</string>
+  <string name="mail_settings_pin_insertion_pin_dot_description">Pin pika</string>
+  <string name="mail_settings_pin_insertion_backspace_description">Vračalka</string>
+  <string name="mail_settings_pin_insertion_biometric_description">Biometrična overitev</string>
+  <string name="mail_settings_pin_insertion_button_create">Ustvari</string>
+  <string name="mail_settings_pin_insertion_button_confirm">Potrdi</string>
+  <string name="mail_settings_pin_insertion_error_no_match">Kodi PIN se ne ujemata.</string>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code">
+    <item quantity="one">Še %s poskus.</item>
+    <item quantity="two">Še %s poskusov.</item>
+    <item quantity="few">Še %s poskusi.</item>
+    <item quantity="other">Še %s poskusov.</item>
+  </plurals>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
+    <item quantity="one">Še %s poskus do varnega izbrisa vseh podatkov.</item>
+    <item quantity="two">Še %s poskusa do varnega izbrisa vseh podatkov.</item>
+    <item quantity="few">Še %s poskusi do varnega izbrisa vseh podatkov.</item>
+    <item quantity="other">Še %s poskusov do varnega izbrisa vseh podatkov.</item>
+  </plurals>
+  <string name="mail_settings_pin_insertion_error_unknown">Pri preverjanju kode PIN je prišlo do napake.</string>
+  <string name="mail_settings_pin_insertion_signout_text">Odjava</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_title">Odjava</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_description">Ali ste prepričani, da se želite izpisati?</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Da</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_cancel">Ne</string>
+  <string name="mail_settings_pin_insertion_created_success">Koda PIN je bila ustvarjena.</string>
+  <string name="mail_settings_pin_insertion_changed_success">PIN koda je bila spremenjena.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Prišlo je do napake. Poskusite znova.</string>
+  <!-- strings used for biometric enrollment -->
+  <string name="no_biometric_data_enrolled">Vpis biometričnih podatkov ni bil opravljen</string>
+  <string name="log_in_using_biometric_credential">Odklepanje z biometričnimi poverilnicami</string>
+  <string name="unlock_using_biometrics">Odklepanje z uporabo biometrije</string>
+  <string name="biometric_error_hw_not_available">Strojna oprema za biometrične podatke ni na voljo.</string>
 </resources>

@@ -64,9 +64,9 @@
   <string name="mail_settings_app_customization_mail_experience_header">Досвед працы з электроннай поштай</string>
   <string name="mail_settings_app_customization_advanced_header">Дадатковыя</string>
   <!-- Theme settings -->
-  <string name="mail_settings_system_default">Адпаведна сістэме</string>
-  <string name="mail_settings_theme_light">Светлая</string>
-  <string name="mail_settings_theme_dark">Цёмная</string>
+  <string name="mail_settings_system_default">Сістэмная</string>
+  <string name="mail_settings_theme_light">Светлы рэжым</string>
+  <string name="mail_settings_theme_dark">Цёмны рэжым</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Інфармацыя адсутнічае</string>
   <string name="mail_settings_account">Уліковы запіс</string>
@@ -111,6 +111,53 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Перайсці ў сістэмныя налады апавяшчэнняў</string>
   <string name="mail_settings_notifications_update_error">Памылка абнаўлення налад</string>
   <string name="mail_settings_notifications_loading_error">Памылка загрузкі налад</string>
-  
+  <!-- Auto lock -->
+  <string name="mail_settings_auto_lock_title">Аўтаблакіроўка</string>
+  <string name="mail_settings_auto_lock_item_title">Аўтаблакіроўка праграмы</string>
+  <string name="mail_settings_auto_lock_item_description">Уключыце гэту функцыю, каб аўтаматычна блакіраваць праграму і ўжываць PIN-код для яе разблакіроўкі.</string>
+  <string name="mail_settings_auto_lock_change_pin_description">Змяніць PIN-код</string>
+  <string name="mail_settings_auto_lock_item_timer_title">Час аўтаблакіроўкі</string>
+  <string name="mail_settings_auto_lock_immediately">Неадкладна</string>
+  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 хвілін бяздзейнасці</string>
+  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 хвілін бяздзейнасці</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 гадзіна бяздзейнасці</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 дзень бяздзейнасці</string>
+  <string name="mail_settings_auto_lock_update_error">Памылка абнаўлення налад</string>
+  <string name="mail_settings_pin_insertion_input_title">Уставіць PIN-код</string>
+  <string name="mail_settings_pin_insertion_set_title">Задаць PIN-код</string>
+  <string name="mail_settings_pin_insertion_confirm_title">Пацвердзіць PIN-код</string>
+  <string name="mail_settings_pin_insertion_lock_icon_description">Значок блакіроўкі</string>
+  <string name="mail_settings_pin_insertion_pin_dot_description">PIN кропкамі</string>
+  <string name="mail_settings_pin_insertion_backspace_description">Backspace</string>
+  <string name="mail_settings_pin_insertion_biometric_description">Біяметрычная аўтэнтыфікацыя</string>
+  <string name="mail_settings_pin_insertion_button_create">Стварыць</string>
+  <string name="mail_settings_pin_insertion_button_confirm">Пацвердзіць</string>
+  <string name="mail_settings_pin_insertion_error_no_match">PIN-коды не супадаюць.</string>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code">
+    <item quantity="one">Засталася %s спроба.</item>
+    <item quantity="few">Засталося %s спробы.</item>
+    <item quantity="many">Засталося %s спроб.</item>
+    <item quantity="other">Засталося %s спроб.</item>
+  </plurals>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
+    <item quantity="one">Засталася %s спроба, пакуль абароненыя даныя не будуць сцёртыя.</item>
+    <item quantity="few">Засталося %s спробы, пакуль абароненыя даныя не будуць сцёртыя.</item>
+    <item quantity="many">Засталося %s спроб, пакуль абароненыя даныя не будуць сцёртыя.</item>
+    <item quantity="other">Засталося %s спроб, пакуль абароненыя даныя не будуць сцёртыя.</item>
+  </plurals>
+  <string name="mail_settings_pin_insertion_error_unknown">Адбылася памылка падчас праверкі вашага PIN-кода.</string>
+  <string name="mail_settings_pin_insertion_signout_text">Выйсці</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_title">Выйсці</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_description">Вы сапраўды хочаце выйсці?</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Так</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_cancel">Не</string>
+  <string name="mail_settings_pin_insertion_created_success">PIN-код паспяхова створаны.</string>
+  <string name="mail_settings_pin_insertion_changed_success">PIN-код паспяхова зменены.</string>
+  <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Адбылася памылка. Паспрабуйце яшчэ раз.</string>
+  <!-- strings used for biometric enrollment -->
+  <string name="no_biometric_data_enrolled">Няма зарэгістраваных біяметрычных даных</string>
+  <string name="log_in_using_biometric_credential">Разблакіраваць з дапамогай вашых біяметрычных даных</string>
+  <string name="unlock_using_biometrics">Разблакіраваць з дапамогай біяметрычных даных</string>
+  <string name="biometric_error_hw_not_available">Адсутнічае біяметрычнае абсталяванне.</string>
 </resources>

@@ -25,7 +25,7 @@
   <string name="report_a_problem_include_errors_description">Un registre mostra totes les accions que han provocat un error.\nL\'utilitzem només per ajudar a solucionar errors.</string>
   <string name="report_a_problem_summary_title">Resum (obligatori)</string>
   <string name="report_a_problem_summary_description">Exemple: l\'aplicació Mail es bloca quan s\'obren correus electrònics amb fitxers adjunts grans.</string>
-  <string name="report_a_problem_field_length_error">Aquest camp ha de tenir més de 10 caràcters.</string>
+  <string name="report_a_problem_field_length_error">Aquest camp ha de tenir més de 10 caràcters</string>
   <string name="report_a_problem_expected_results_title">Resultats esperats</string>
   <string name="report_a_problem_expected_results_description">Exemple: l\'obertura del correu electrònic hauria de mostrar el contingut del missatge i els adjunts.</string>
   <string name="report_a_problem_repro_steps_title">Passos per a reproduir</string>

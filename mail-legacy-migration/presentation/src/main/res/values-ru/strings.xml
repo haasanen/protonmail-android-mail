@@ -18,5 +18,5 @@
   -->
 <resources>
   <string name="loading_mailbox">Loading your mailbox…</string>
-  <string name="loading_mailbox_subtitle">We’re almost there. Thanks for your patience!</string>
+  <string name="loading_mailbox_subtitle">Мы почти закончили. Спасибо за ваше терпение!</string>
 </resources>

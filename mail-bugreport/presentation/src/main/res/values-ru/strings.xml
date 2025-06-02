@@ -25,7 +25,7 @@
   <string name="report_a_problem_include_errors_description">Журнал показывает все действия, которые привели к ошибке.\nМы используем его только для того, чтобы помочь исправить ошибки.</string>
   <string name="report_a_problem_summary_title">Сводка (обязательно)</string>
   <string name="report_a_problem_summary_description">Пример: Приложение Mail аварийно завершает работу при открытии электронных писем с большими вложениями.</string>
-  <string name="report_a_problem_field_length_error">Поле должно содержать более 10 символов.</string>
+  <string name="report_a_problem_field_length_error">Поле должно содержать более 10 символов</string>
   <string name="report_a_problem_expected_results_title">Ожидаемые результаты</string>
   <string name="report_a_problem_expected_results_description">Пример: При открытии электронного письма должно отображаться содержимое сообщения и вложения.</string>
   <string name="report_a_problem_repro_steps_title">Повторить шаги</string>

@@ -40,6 +40,8 @@
   <string name="composer_error_loading_draft">Conținutul acestei ciorne nu este disponibil momentan. Editarea va înlocui orice conținut preexistent.</string>
   <string name="composer_add_attachments_content_description">Adăugare atașamente</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importare din…</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">Din galeria de imagini</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Fotografie nouă</string>
   <string name="composer_error_loading_parent_message">Nu s-au putut încărca informațiile mesajului.</string>
   <string name="composer_original_message_quote">Mesaj original</string>
   <string name="composer_sender_quote">%s, %s &lt;%s&gt; a scris:</string>
@@ -50,6 +52,7 @@
   <string name="composer_too_many_attachments_error">S-a depășit numărul maxim de atașamente (100).</string>
   <string name="composer_delete_attachment_error">A apărut o eroare neașteptată în timpul ștergerii unui atașament.</string>
   <string name="composer_unexpected_attachments_error">A apărut o eroare neașteptată legată de atașamente.</string>
+  <string name="composer_attach_capture_from_camera_error">Capturarea unui atașament de la cameră nu este posibilă în acest moment.</string>
   <string name="composer_warning_local_data_shown">Nu s-a încărcat ultima versiune a acestei ciorne. Orice modificare va anula conținutul acesteia.</string>
   <string name="composer_button_add_password">Adăugare parolă</string>
   <string name="composer_button_discard_draft">Aruncare ciornă</string>
@@ -112,4 +115,6 @@
   <string name="discard_draft_dialog_confirm_button">Înlăturare</string>
   <string name="discard_draft_dialog_dismiss_button">Anulare</string>
   <string name="discard_draft_error">Eroare la înlăturarea ciornei.</string>
+  <string name="composer_remove_inline_image">Eliminare</string>
+  <string name="composer_send_as_attachment">Trimitere ca atașament</string>
 </resources>

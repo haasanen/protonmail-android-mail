@@ -64,9 +64,9 @@
   <string name="mail_settings_app_customization_mail_experience_header">Mail-opplevelse</string>
   <string name="mail_settings_app_customization_advanced_header">Avansert</string>
   <!-- Theme settings -->
-  <string name="mail_settings_system_default">Systemstandard</string>
-  <string name="mail_settings_theme_light">Lys</string>
-  <string name="mail_settings_theme_dark">Mørk</string>
+  <string name="mail_settings_system_default">System</string>
+  <string name="mail_settings_theme_light">Lys modus</string>
+  <string name="mail_settings_theme_dark">Mørk modus</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Ingen informasjon tilgjengelig</string>
   <string name="mail_settings_account">Konto</string>
@@ -111,6 +111,49 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Naviger til systemvarslingsinnstillinger</string>
   <string name="mail_settings_notifications_update_error">Feil under oppdatering av innstillinger</string>
   <string name="mail_settings_notifications_loading_error">Feil ved lasting av innstillinger</string>
+  <!-- Auto lock -->
+  <string name="mail_settings_auto_lock_title">Autolås</string>
+  <string name="mail_settings_auto_lock_item_title">Autolås app</string>
+  <string name="mail_settings_auto_lock_item_description">Slå på denne funksjonen for å låse appen automatisk, og bruk en PIN-kode for å låse den opp.</string>
+  <string name="mail_settings_auto_lock_change_pin_description">Endre PIN-koden</string>
+  <string name="mail_settings_auto_lock_item_timer_title">Tidtaker for autolås</string>
+  <string name="mail_settings_auto_lock_immediately">Umiddelbart</string>
+  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minutter med inaktivitet</string>
+  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minutter med inaktivitet</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 time med inaktivitet</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 dag med inaktivitet</string>
+  <string name="mail_settings_auto_lock_update_error">Feil under oppdatering av innstillinger</string>
+  <string name="mail_settings_pin_insertion_input_title">Sett inn PIN-kode</string>
+  <string name="mail_settings_pin_insertion_set_title">Angi PIN-kode</string>
+  <string name="mail_settings_pin_insertion_confirm_title">Bekreft PIN-kode</string>
+  <string name="mail_settings_pin_insertion_lock_icon_description">Låseikon</string>
+  <string name="mail_settings_pin_insertion_pin_dot_description">Fest prikk</string>
+  <string name="mail_settings_pin_insertion_backspace_description">Bakovertast</string>
+  <string name="mail_settings_pin_insertion_biometric_description">Biometrisk autentisering</string>
+  <string name="mail_settings_pin_insertion_button_create">Opprett</string>
+  <string name="mail_settings_pin_insertion_button_confirm">Bekreft</string>
+  <string name="mail_settings_pin_insertion_error_no_match">PIN-kodene samsvarer ikke.</string>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code">
+    <item quantity="one">%s gjenstående forsøk.</item>
+    <item quantity="other">%s gjenstående forsøk.</item>
+  </plurals>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
+    <item quantity="one">%s gjenværende forsøk til sikker datasletting</item>
+    <item quantity="other">%s gjenværende forsøk til sikker datasletting</item>
+  </plurals>
+  <string name="mail_settings_pin_insertion_error_unknown">Det oppstod en feil under bekreftelse av PIN-koden.</string>
+  <string name="mail_settings_pin_insertion_signout_text">Logg av</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_title">Logg av</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_description">Er du sikker på at du vil logge av?</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Ja</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_cancel">Nei</string>
+  <string name="mail_settings_pin_insertion_created_success">PIN-kode opprettet</string>
+  <string name="mail_settings_pin_insertion_changed_success">PIN-kode endret</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">En feil oppstod. Prøv igjen.</string>
+  <!-- strings used for biometric enrollment -->
+  <string name="no_biometric_data_enrolled">Ingen biometriske data registrert</string>
+  <string name="log_in_using_biometric_credential">Lås opp med din biometriske legitimasjon.</string>
+  <string name="unlock_using_biometrics">Lås opp ved hjelp av biometri</string>
+  <string name="biometric_error_hw_not_available">Biometrisk maskinvare er ikke tilgjengelig.</string>
 </resources>

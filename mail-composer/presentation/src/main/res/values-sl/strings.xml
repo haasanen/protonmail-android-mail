@@ -40,6 +40,8 @@
   <string name="composer_error_loading_draft">Vsebina tega osnutka trenutno ni na voljo. Z urejanjem boste prepisali vso morebitno dosedanjo vsebino.</string>
   <string name="composer_add_attachments_content_description">Dodaj priponke</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Uvozi iz ...</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">From your photo library</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Take a new photo</string>
   <string name="composer_error_loading_parent_message">Podatkov sporočila ni bilo mogoče naložiti</string>
   <string name="composer_original_message_quote">Izvorno sporočilo</string>
   <string name="composer_sender_quote">Dne %s je %s &lt;%s&gt; napisal/-a:</string>
@@ -50,6 +52,7 @@
   <string name="composer_too_many_attachments_error">Prekoračeno je največje število priponk (100).</string>
   <string name="composer_delete_attachment_error">Pri brisanju priponke je prišlo do nepričakovane napake.</string>
   <string name="composer_unexpected_attachments_error">Prišlo je do nepričakovane napake, povezane s priponkami.</string>
+  <string name="composer_attach_capture_from_camera_error">Capturing an attachment from camera isn\'t possible at this time</string>
   <string name="composer_warning_local_data_shown">Zadnje različice tega osnutka ni bilo mogoče naložiti. Vsaka sprememba bo vplivala na njeno vsebino.</string>
   <string name="composer_button_add_password">Dodaj geslo</string>
   <string name="composer_button_discard_draft">Zavrzi osnutek</string>
@@ -113,4 +116,6 @@
   <string name="discard_draft_dialog_confirm_button">Zavrzi</string>
   <string name="discard_draft_dialog_dismiss_button">Prekliči</string>
   <string name="discard_draft_error">Napaka pri odstranjevanju osnutka</string>
+  <string name="composer_remove_inline_image">Remove</string>
+  <string name="composer_send_as_attachment">Send as attachment</string>
 </resources>

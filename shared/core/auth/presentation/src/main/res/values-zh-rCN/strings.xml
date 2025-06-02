@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">辅助电话</string>
   <string name="auth_signup_recovery_email_hint">恢复邮箱</string>
   <string name="auth_signup_recovery_phone_hint">恢复电话号码</string>
+  <string name="auth_signup_recovery_select_country">选择国家/地区</string>
   <string name="auth_signup_phone_placeholder">XX XXX XX XX</string>
+  <string name="auth_signup_skip_recovery_title">跳过设置恢复方法？</string>
+  <string name="auth_signup_skip_recovery_description">如果忘记密码或被锁定，恢复方法可帮助您访问账户。</string>
+  <string name="auth_signup_skip_recovery">跳过</string>
+  <string name="auth_signup_set_recovery">设置恢复方法</string>
   <string name="auth_signup_your_account_is_being_setup">您的帐户正在创建…</string>
   <string name="auth_signup_please_wait">通常只需不到一分钟。</string>
+  <string name="auth_signup_congratulations_subtitle">您的 Proton 账户已成功创建。\n请尽情享受隐私世界。</string>
+  <string name="auth_signup_congratulations_title">恭喜！</string>
+  <string name="auth_signup_start_using_proton">开始使用 Proton</string>
+  <string name="auth_signup_validation_password">密码不能为空。</string>
+  <string name="auth_signup_validation_passwords_do_not_match">密码不一致。</string>
+  <string name="auth_signup_validation_password_input_invalid">密码输入无效。</string>
+  <string name="auth_signup_validation_username">用户名不能为空。</string>
+  <string name="auth_signup_validation_email">邮箱地址不能为空。</string>
+  <string name="auth_signup_validation_username_input_invalid">用户名输入无效。</string>
+  <string name="auth_signup_validation_email_input_invalid">用户名输入无效。</string>
+  <string name="auth_signup_countries_search">搜索国家/地区</string>
 </resources>

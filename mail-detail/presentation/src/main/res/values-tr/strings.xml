@@ -75,10 +75,10 @@
   <string name="message_body_embedded_images_banner_text">Eklenmiş görselleri otomatik olarak yükleme seçeneği kapalı. Bu seçeneği ayarlardan değiştirebilirsiniz.</string>
   <string name="message_body_remote_content_banner_text">Uzak görselleri otomatik olarak yükleme seçeneği kapalı. Bu seçeneği ayarlardan değiştirebilirsiniz.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">Eklenmiş ve uzak görselleri otomatik olarak yükleme seçeneği kapalı. Bu seçenekleri ayarlardan değiştirebilirsiniz.</string>
-  <string name="message_phishing_banner_text">Bu mesaj, sistemimiz veya siz tarafından şüpheli olarak işaretlendi. Güvenli olduğunu düşünüyorsanız, meşru olarak işaretleyin.</string>
-  <string name="message_phishing_banner_mark_as_legitimate_button">Meşru olarak işaretle</string>
-  <string name="message_spam_banner_text">Bu mesaj, sistemimiz veya siz tarafından istenmeyen posta olarak işaretlendi.</string>
-  <string name="message_spam_banner_not_spam_button">İstenmeyen posta değil</string>
+  <string name="message_phishing_banner_text">Bu ileti, sistemimiz veya sizin tarafınızdan şüpheli olarak işaretlenmiş. Güvenli olduğunu düşünüyorsanız, sorunsuz olarak işaretleyin.</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">Sorunsuz olarak işaretle</string>
+  <string name="message_spam_banner_text">Bu ileti, sistemimiz veya sizin tarafınızdan istenmeyen olarak işaretlenmiş.</string>
+  <string name="message_spam_banner_not_spam_button">İstenmeyen değil</string>
   <string name="message_blocked_sender_banner_text">Bu gönderici geçmişte engellenmiş.</string>
   <string name="message_blocked_sender_button_text">Engellemeyi kaldır</string>
   <string name="message_expiration_banner_text">Bu ileti %1$s içinde silinecek</string>
@@ -94,10 +94,10 @@
   <string name="phishing_link_confirmation_dialog_button_go_back">Geri dön (önerilir)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">Uyarıyı yok sayıp ilerle</string>
   <!-- Mark as legitimate confirmation dialog -->
-  <string name="mark_as_legitimate_phishing_dialog_title">İşaretin meşru olduğunu onayla</string>
-  <string name="mark_as_legitimate_phishing_dialog_message">Özür dileriz. Bu bizim tarafımızdan bir hata olabilir. Bu e-postayı meşru olarak işaretlemek istiyorsanız lütfen onaylayın.</string>
-  <string name="mark_as_legitimate_spam_dialog_title">İstenmeyen posta olmadığını onayla</string>
-  <string name="mark_as_legitimate_spam_dialog_message">Özür dileriz. Bu bizim tarafımızdan yapılan bir hata olabilir. Lütfen bu e-postanın istenmeyen e-posta olmadığını onaylayın.</string>
+  <string name="mark_as_legitimate_phishing_dialog_title">Sorunsuz olarak işaretlemeyi onayla</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">Özür dileriz. Sorun bizden kaynaklanmış olabilir. Lütfen bu e-postayı sorunsuz olarak işaretlemek istediğinizi onaylayın.</string>
+  <string name="mark_as_legitimate_spam_dialog_title">İstenmeyen olmadığını onayla</string>
+  <string name="mark_as_legitimate_spam_dialog_message">Özür dileriz. Sorun bizden kaynaklanmış olabilir. Lütfen bu e-postayı istenmeyen değil olarak işaretlemek istediğinizi onaylayın.</string>
   <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">İletiyi sil</string>
   <string name="message_delete_dialog_message">Bu iletiyi kalıcı olarak silmek istediğinize emin misiniz?</string>

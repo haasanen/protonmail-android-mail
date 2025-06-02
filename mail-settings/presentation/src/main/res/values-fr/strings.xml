@@ -64,9 +64,9 @@
   <string name="mail_settings_app_customization_mail_experience_header">Expérience de messagerie</string>
   <string name="mail_settings_app_customization_advanced_header">Avancés</string>
   <!-- Theme settings -->
-  <string name="mail_settings_system_default">Identique au système</string>
-  <string name="mail_settings_theme_light">Clair</string>
-  <string name="mail_settings_theme_dark">Sombre</string>
+  <string name="mail_settings_system_default">Système</string>
+  <string name="mail_settings_theme_light">Mode Clair</string>
+  <string name="mail_settings_theme_dark">Thème sombre</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Aucune information disponible</string>
   <string name="mail_settings_account">Compte</string>
@@ -111,6 +111,49 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Accédez aux paramètres de notification du système.</string>
   <string name="mail_settings_notifications_update_error">Une erreur s\'est produite lors de la mise à jour des paramètres.</string>
   <string name="mail_settings_notifications_loading_error">Une erreur s\'est produite lors du chargement des paramètres.</string>
+  <!-- Auto lock -->
+  <string name="mail_settings_auto_lock_title">Verrouillage automatique</string>
+  <string name="mail_settings_auto_lock_item_title">Verrouillage automatique de l\'application</string>
+  <string name="mail_settings_auto_lock_item_description">Activez cette fonctionnalité pour verrouiller automatiquement votre application et utiliser un code PIN pour la déverrouiller.</string>
+  <string name="mail_settings_auto_lock_change_pin_description">Modifier le code PIN</string>
+  <string name="mail_settings_auto_lock_item_timer_title">Délai de verrouillage automatique</string>
+  <string name="mail_settings_auto_lock_immediately">Immédiatement</string>
+  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minutes d\'inactivité</string>
+  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minutes d\'inactivité</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 heure d\'inactivité</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 jour d\'inactivité</string>
+  <string name="mail_settings_auto_lock_update_error">Une erreur s\'est produite pendant la mise à jour des paramètres.</string>
+  <string name="mail_settings_pin_insertion_input_title">Saisir le code PIN</string>
+  <string name="mail_settings_pin_insertion_set_title">Définir le code PIN</string>
+  <string name="mail_settings_pin_insertion_confirm_title">Confirmez le code PIN</string>
+  <string name="mail_settings_pin_insertion_lock_icon_description">Icône de verrouillage</string>
+  <string name="mail_settings_pin_insertion_pin_dot_description">Code PIN sous forme de points</string>
+  <string name="mail_settings_pin_insertion_backspace_description">Retour arrière</string>
+  <string name="mail_settings_pin_insertion_biometric_description">Authentification biométrique</string>
+  <string name="mail_settings_pin_insertion_button_create">Créer</string>
+  <string name="mail_settings_pin_insertion_button_confirm">Confirmer</string>
+  <string name="mail_settings_pin_insertion_error_no_match">Les codes PIN ne correspondent pas.</string>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code">
+    <item quantity="one">Il reste %s tentative.</item>
+    <item quantity="other">Il reste %s tentatives.</item>
+  </plurals>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
+    <item quantity="one">Il reste %s tentative avant l’effacement des données sécurisées.</item>
+    <item quantity="other">Il reste %s tentatives avant l’effacement des données sécurisées.</item>
+  </plurals>
+  <string name="mail_settings_pin_insertion_error_unknown">Une erreur s\'est produite lors de la vérification de votre code PIN.</string>
+  <string name="mail_settings_pin_insertion_signout_text">Se déconnecter</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_title">Se déconnecter</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_description">Voulez-vous vraiment vous déconnecter ?</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Oui</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_cancel">Non</string>
+  <string name="mail_settings_pin_insertion_created_success">Le code PIN a été créé.</string>
+  <string name="mail_settings_pin_insertion_changed_success">Le code PIN a été modifié.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Une erreur est survenue. Veuillez réessayer.</string>
+  <!-- strings used for biometric enrollment -->
+  <string name="no_biometric_data_enrolled">Aucune donnée biométrique enregistrée</string>
+  <string name="log_in_using_biometric_credential">Déverrouiller à l\'aide de vos identifiants biométriques</string>
+  <string name="unlock_using_biometrics">Déverrouiller en utilisant la biométrie</string>
+  <string name="biometric_error_hw_not_available">Le capteur biométrique n\'est pas disponible.</string>
 </resources>

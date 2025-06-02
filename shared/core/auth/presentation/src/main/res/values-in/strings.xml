@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Telepon</string>
   <string name="auth_signup_recovery_email_hint">Email pemulihan</string>
   <string name="auth_signup_recovery_phone_hint">Nomor telepon pemulihan</string>
+  <string name="auth_signup_recovery_select_country">Pilih Negara</string>
   <string name="auth_signup_phone_placeholder">XXX-XXXXXXX</string>
+  <string name="auth_signup_skip_recovery_title">Lewati metode pemulihan?</string>
+  <string name="auth_signup_skip_recovery_description">Metode pemulihan akan membantu Anda untuk mengakses akun Anda seandainya Anda lupa kata sandi atau terkunci dari akun Anda.</string>
+  <string name="auth_signup_skip_recovery">Lewati</string>
+  <string name="auth_signup_set_recovery">Atur metode pemulihan</string>
   <string name="auth_signup_your_account_is_being_setup">Akun Anda sedang dibuat…</string>
   <string name="auth_signup_please_wait">Proses ini pada umumnya tidak akan memakan waktu lebih dari satu menit.</string>
+  <string name="auth_signup_congratulations_subtitle">Akun Proton Anda berhasil dibuat.\nNikmati dunia privasi.</string>
+  <string name="auth_signup_congratulations_title">Selamat!</string>
+  <string name="auth_signup_start_using_proton">Mulai menggunakan Proton</string>
+  <string name="auth_signup_validation_password">Kata sandi tidak boleh kosong.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">Kata sandi tidak cocok.</string>
+  <string name="auth_signup_validation_password_input_invalid">Masukan kata sandi tidak valid.</string>
+  <string name="auth_signup_validation_username">Nama pengguna tidak boleh kosong.</string>
+  <string name="auth_signup_validation_email">Email tidak boleh kosong.</string>
+  <string name="auth_signup_validation_username_input_invalid">Masukan nama pengguna tidak valid.</string>
+  <string name="auth_signup_validation_email_input_invalid">Masukan nama pengguna tidak valid.</string>
+  <string name="auth_signup_countries_search">Cari negara</string>
 </resources>

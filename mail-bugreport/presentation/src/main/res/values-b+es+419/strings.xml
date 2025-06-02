@@ -25,14 +25,14 @@
   <string name="report_a_problem_include_errors_description">Un registro muestra todas las acciones que llevaron a un error.\nLo usamos solo como ayuda para corregir errores.</string>
   <string name="report_a_problem_summary_title">Resumen (requerido)</string>
   <string name="report_a_problem_summary_description">Ejemplo: La aplicación Mail se bloquea al abrir correos electrónicos con archivos adjuntos grandes.</string>
-  <string name="report_a_problem_field_length_error">Este campo debe tener más de 10 caracteres.</string>
+  <string name="report_a_problem_field_length_error">Este campo debe contener más de 10 caracteres</string>
   <string name="report_a_problem_expected_results_title">Resultados esperados</string>
   <string name="report_a_problem_expected_results_description">Ejemplo: Al abrir el correo electrónico debería aparecer el contenido del mensaje y los archivos adjuntos.</string>
   <string name="report_a_problem_repro_steps_title">Pasos para reproducir</string>
-  <string name="report_a_problem_repro_steps_description">Ejemplo:\n1. Encuentre un correo electrónico con un archivo adjunto grande (ej: vídeo)\n2. Abra el correo electrónico\n3. Espere a que se cargue el correo electrónico</string>
+  <string name="report_a_problem_repro_steps_description">Ejemplo:\n1. Encuentre un correo electrónico con un archivo adjunto grande (ej: video)\n2. Abra el correo electrónico\n3. Espere a que se cargue el correo electrónico</string>
   <string name="report_a_problem_actual_results_title">Resultados actuales</string>
   <string name="report_a_problem_actual_results_description">Ejemplo: La aplicación Mail se bloquea al abrir correos electrónicos con archivos adjuntos grandes.</string>
-  <string name="report_a_problem_leave_dialog_description_1">¿Seguro que quiere salir de esta pantalla?</string>
+  <string name="report_a_problem_leave_dialog_description_1">¿En verdad desea salir de esta pantalla?</string>
   <string name="report_a_problem_leave_dialog_description_2">Cualquier información que haya ingresado se perderá.</string>
   <string name="report_a_problem_leave_dialog_cancel_btn">Cancelar</string>
   <string name="report_a_problem_leave_dialog_close_btn">Cerrar</string>

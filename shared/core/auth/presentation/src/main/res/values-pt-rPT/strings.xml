@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Telefone</string>
   <string name="auth_signup_recovery_email_hint">Endereço de recuperação</string>
   <string name="auth_signup_recovery_phone_hint">Número de telefone de recuperação</string>
+  <string name="auth_signup_recovery_select_country">Selecione um país</string>
   <string name="auth_signup_phone_placeholder">XXX XXX XXXX</string>
+  <string name="auth_signup_skip_recovery_title">Ignorar o método de recuperação?</string>
+  <string name="auth_signup_skip_recovery_description">Um método de recuperação irá ajudá-lo a aceder à sua conta caso se esqueça da sua palavra-passe, ou seja bloqueado da sua conta.</string>
+  <string name="auth_signup_skip_recovery">Ignorar</string>
+  <string name="auth_signup_set_recovery">Definir um método de recuperação</string>
   <string name="auth_signup_your_account_is_being_setup">A sua conta está a ser criada…</string>
   <string name="auth_signup_please_wait">Normalmente, não demora mais do que um minuto.</string>
+  <string name="auth_signup_congratulations_subtitle">A sua conta Proton foi criada.\nDesfrute do mundo da privacidade.</string>
+  <string name="auth_signup_congratulations_title">Parabéns!</string>
+  <string name="auth_signup_start_using_proton">Comece a utilizar o Proton</string>
+  <string name="auth_signup_validation_password">A palavra-passe não pode ser vazia.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">As palavras-passe não correspondem.</string>
+  <string name="auth_signup_validation_password_input_invalid">A palavra-passe introduzida não é válida.</string>
+  <string name="auth_signup_validation_username">O nome de utilizador não pode estar em branco.</string>
+  <string name="auth_signup_validation_email">O e-mail não pode estar em branco.</string>
+  <string name="auth_signup_validation_username_input_invalid">O nome de utilizador introduzido não é válido.</string>
+  <string name="auth_signup_validation_email_input_invalid">O nome de utilizador introduzido não é válido.</string>
+  <string name="auth_signup_countries_search">Pesquisar um país</string>
 </resources>

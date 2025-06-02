@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Telèfon</string>
   <string name="auth_signup_recovery_email_hint">Correu electrònic de recuperació</string>
   <string name="auth_signup_recovery_phone_hint">Número de telèfon de recuperació</string>
+  <string name="auth_signup_recovery_select_country">Seleccioneu un país</string>
   <string name="auth_signup_phone_placeholder">XXX XX XX XX</string>
+  <string name="auth_signup_skip_recovery_title">Voleu ometre el mètode de recuperació?</string>
+  <string name="auth_signup_skip_recovery_description">Un mètode de recuperació us ajudarà a accedir al vostre compte si oblideu la contrasenya o no podeu entrar al compte.</string>
+  <string name="auth_signup_skip_recovery">Omet</string>
+  <string name="auth_signup_set_recovery">Estableix un mètode de recuperació</string>
   <string name="auth_signup_your_account_is_being_setup">S\'està creant el compte…</string>
   <string name="auth_signup_please_wait">No sol tardar més d\'un minut.</string>
+  <string name="auth_signup_congratulations_subtitle">S\'ha creat el vostre compte de Proton.\nGaudiu del món de la privacitat.</string>
+  <string name="auth_signup_congratulations_title">Felicitats!</string>
+  <string name="auth_signup_start_using_proton">Comenceu a utilitzar Proton</string>
+  <string name="auth_signup_validation_password">La contrasenya no pot estar buida.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">Les contrasenyes no coincideixen.</string>
+  <string name="auth_signup_validation_password_input_invalid">La contrasenya introduïda no és vàlida.</string>
+  <string name="auth_signup_validation_username">El nom d\'usuari no pot estar en blanc.</string>
+  <string name="auth_signup_validation_email">El correu electrònic no pot estar en blanc.</string>
+  <string name="auth_signup_validation_username_input_invalid">El nom d\'usuari introduït no és vàlid.</string>
+  <string name="auth_signup_validation_email_input_invalid">El nom d\'usuari introduït no és valido.</string>
+  <string name="auth_signup_countries_search">Cerca un país</string>
 </resources>

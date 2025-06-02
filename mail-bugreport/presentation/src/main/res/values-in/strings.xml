@@ -25,7 +25,7 @@
   <string name="report_a_problem_include_errors_description">Log menampilkan seluruh tindakan yang memicu terjadinya kesalahan.\nKami hanya akan menggunakan log ini untuk membantu memperbaiki bug yang ada.</string>
   <string name="report_a_problem_summary_title">Ringkasan masalah (dibutuhkan)</string>
   <string name="report_a_problem_summary_description">Contoh: Aplikasi Mail mengalami crash pada saat membuka email dengan lampiran yang besar.</string>
-  <string name="report_a_problem_field_length_error">Kolom ini harus mengandung lebih dari 10 karakter.</string>
+  <string name="report_a_problem_field_length_error">Kolom ini harus mengandung lebih dari 10 karakter</string>
   <string name="report_a_problem_expected_results_title">Hasil yang diharapkan</string>
   <string name="report_a_problem_expected_results_description">Contoh: Membuka email ini akan menampilkan isi pesan beserta dengan lampirannya.</string>
   <string name="report_a_problem_repro_steps_title">Langkah-langkah untuk memicu masalah</string>

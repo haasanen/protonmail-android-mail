@@ -25,7 +25,7 @@
   <string name="report_a_problem_include_errors_description">Ένα αρχείο καταγραφής δείχνει όλες τις ενέργειες που οδήγησαν σε ένα λάθος.\nΤο χρησιμοποιούμε μόνο για να επιδιορθώσουμε σφάλματα.</string>
   <string name="report_a_problem_summary_title">Περίληψη (απαιτείται)</string>
   <string name="report_a_problem_summary_description">Παράδειγμα: Η εφαρμογή Mail διακόπτεται κατά το άνοιγμα μηνυμάτων ηλεκτρονικού ταχυδρομείου με μεγάλα συνημμένα.</string>
-  <string name="report_a_problem_field_length_error">Αυτό το πεδίο πρέπει να αποτελείται από περισσότερους από 10 χαρακτήρες.</string>
+  <string name="report_a_problem_field_length_error">Αυτό το πεδίο πρέπει να αποτελείται από περισσότερους από 10 χαρακτήρες</string>
   <string name="report_a_problem_expected_results_title">Αναμενόμενα αποτελέσματα</string>
   <string name="report_a_problem_expected_results_description">Παράδειγμα: Το άνοιγμα του μηνύματος ηλεκτρονικού ταχυδρομείου θα πρέπει να εμφανίζει το περιεχόμενο του μηνύματος και τα συνημμένα.</string>
   <string name="report_a_problem_repro_steps_title">Βήματα αναπαραγωγής</string>

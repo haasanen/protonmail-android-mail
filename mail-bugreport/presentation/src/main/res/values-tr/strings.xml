@@ -25,7 +25,7 @@
   <string name="report_a_problem_include_errors_description">Günlük, soruna yol açan tüm işlemleri gösterir. \nBunu yalnızca hataları düzeltmek için kullanırız.</string>
   <string name="report_a_problem_summary_title">Özet (zorunlu)</string>
   <string name="report_a_problem_summary_description">Örnek: Mail uygulaması büyük ek dosyaları olan e-postaları açarken çöküyor.</string>
-  <string name="report_a_problem_field_length_error">Bu alana yazılan içerik 10 karakterden uzun olmalıdır.</string>
+  <string name="report_a_problem_field_length_error">This field must be more than 10 characters</string>
   <string name="report_a_problem_expected_results_title">Beklenen sonuçlar</string>
   <string name="report_a_problem_expected_results_description">Örnek: E-posta açıldığında ileti içeriği ve ek dosyalar görüntülenmelidir.</string>
   <string name="report_a_problem_repro_steps_title">Yeniden oluşturma adımları</string>

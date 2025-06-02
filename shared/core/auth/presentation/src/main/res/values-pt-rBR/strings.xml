@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Telefone</string>
   <string name="auth_signup_recovery_email_hint">E-mail de recuperação</string>
   <string name="auth_signup_recovery_phone_hint">Telefone de recuperação</string>
+  <string name="auth_signup_recovery_select_country">Selecione o país</string>
   <string name="auth_signup_phone_placeholder">XX XXX XX XX</string>
+  <string name="auth_signup_skip_recovery_title">Pular o método de recuperação?</string>
+  <string name="auth_signup_skip_recovery_description">Um método de recuperação te ajudará a acessar sua conta caso você esqueça sua senha ou tenha seu acesso a sua conta bloqueado.</string>
+  <string name="auth_signup_skip_recovery">Pular</string>
+  <string name="auth_signup_set_recovery">Definir o método de recuperação</string>
   <string name="auth_signup_your_account_is_being_setup">Sua conta está sendo criada…</string>
   <string name="auth_signup_please_wait">Normalmente, isso não leva mais de um minuto.</string>
+  <string name="auth_signup_congratulations_subtitle">Sua conta da Proton foi criada.\nAproveite o mundo da privacidade.</string>
+  <string name="auth_signup_congratulations_title">Parabéns!</string>
+  <string name="auth_signup_start_using_proton">Iniciar usando o Proton</string>
+  <string name="auth_signup_validation_password">A senha não pode ser vazia.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">As senhas não correspondem.</string>
+  <string name="auth_signup_validation_password_input_invalid">Inserção de senha inválida.</string>
+  <string name="auth_signup_validation_username">Nome de usuário não pode ficar em branco.</string>
+  <string name="auth_signup_validation_email">E-mail não pode ficar em branco.</string>
+  <string name="auth_signup_validation_username_input_invalid">Entrada de nome de usuário inválida.</string>
+  <string name="auth_signup_validation_email_input_invalid">Inserção de nome de usuário inválida.</string>
+  <string name="auth_signup_countries_search">Procurar país</string>
 </resources>

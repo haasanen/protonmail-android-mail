@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Τηλέφωνο</string>
   <string name="auth_signup_recovery_email_hint">Διεύθυνση ανάκτησης</string>
   <string name="auth_signup_recovery_phone_hint">Αριθμός τηλεφώνου ανάκτησης</string>
+  <string name="auth_signup_recovery_select_country">Επιλέξτε χώρα</string>
   <string name="auth_signup_phone_placeholder">XX XXX XX XX</string>
+  <string name="auth_signup_skip_recovery_title">Παράλειψη μεθόδου ανάκτησης;</string>
+  <string name="auth_signup_skip_recovery_description">Μια μέθοδος ανάκτησης θα σας βοηθήσει να αποκτήσετε πρόσβαση στον λογαριασμό σας σε περίπτωση που ξεχάσετε τον κωδικό πρόσβασης ή κλειδωθείτε από τον λογαριασμό σας.</string>
+  <string name="auth_signup_skip_recovery">Παράλειψη</string>
+  <string name="auth_signup_set_recovery">Ορισμός μεθόδου ανάκτησης</string>
   <string name="auth_signup_your_account_is_being_setup">Ο λογαριασμός σας δημιουγείται…</string>
   <string name="auth_signup_please_wait">Συνήθως δεν διαρκεί περισσότερο από ένα λεπτό.</string>
+  <string name="auth_signup_congratulations_subtitle">Ο Proton λογαριασμός σας δημιουργήθηκε επιτυχώς.\nΑπολαύστε τον κόσμο της ιδιωτικότητας.</string>
+  <string name="auth_signup_congratulations_title">Συγχαρητήρια!</string>
+  <string name="auth_signup_start_using_proton">Ξεκινήστε να χρησιμοποιείτε το Proton</string>
+  <string name="auth_signup_validation_password">Ο κωδικός πρόσβασης δεν μπορεί να είναι κενός.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">Οι κωδικοί πρόσβασης δεν ταιριάζουν.</string>
+  <string name="auth_signup_validation_password_input_invalid">Μη έγκυρη εισαγωγή κωδικού.</string>
+  <string name="auth_signup_validation_username">Το Όνομα Χρήστη δεν πρέπει να είναι κενό.</string>
+  <string name="auth_signup_validation_email">Το Email δεν πρέπει να είναι κενό.</string>
+  <string name="auth_signup_validation_username_input_invalid">Μη έγκυρη εισαγωγή ονόματος χρήστη.</string>
+  <string name="auth_signup_validation_email_input_invalid">Μη έγκυρη εισαγωγή ονόματος χρήστη.</string>
+  <string name="auth_signup_countries_search">Αναζήτηση χώρας</string>
 </resources>

@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Telefon</string>
   <string name="auth_signup_recovery_email_hint">E-mail de recuperare</string>
   <string name="auth_signup_recovery_phone_hint">Număr de telefon de recuperare</string>
+  <string name="auth_signup_recovery_select_country">Selectați țara</string>
   <string name="auth_signup_phone_placeholder">XXX XX XX XX</string>
+  <string name="auth_signup_skip_recovery_title">Omiteți metoda de recuperare?</string>
+  <string name="auth_signup_skip_recovery_description">O metodă de recuperare vă ajută să accesați contul în cazul în care vă uitați parola și nu vă mai puteți conecta la cont.</string>
+  <string name="auth_signup_skip_recovery">Omitere</string>
+  <string name="auth_signup_set_recovery">Setare metodă de recuperare</string>
   <string name="auth_signup_your_account_is_being_setup">Vi se creează contul…</string>
   <string name="auth_signup_please_wait">De obicei nu durează mai mult de un minut.</string>
+  <string name="auth_signup_congratulations_subtitle">Contul Proton a fost creat.\nBucurați-vă de lumea confidențialității.</string>
+  <string name="auth_signup_congratulations_title">Felicitări!</string>
+  <string name="auth_signup_start_using_proton">Începeți să utilizați Proton</string>
+  <string name="auth_signup_validation_password">Parola nu poate fi goală.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">Parolele nu sunt identice.</string>
+  <string name="auth_signup_validation_password_input_invalid">Parola introdusă nu e validă.</string>
+  <string name="auth_signup_validation_username">Numele de utilizator nu poate fi gol.</string>
+  <string name="auth_signup_validation_email">Adresa de e-mail nu poate fi goală.</string>
+  <string name="auth_signup_validation_username_input_invalid">Numele de utilizator introdus nu e valid.</string>
+  <string name="auth_signup_validation_email_input_invalid">Adresa de e-mail introdusă nu e validă.</string>
+  <string name="auth_signup_countries_search">Căutare țară</string>
 </resources>

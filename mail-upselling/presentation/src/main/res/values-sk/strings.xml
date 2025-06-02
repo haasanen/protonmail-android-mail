@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Upselling -->
+  <string name="upselling_button_item_content_description">Tlačidlo aktualizácie</string>
+  <string name="upselling_close_button_content_description">Tlačidlo na zatvorenie</string>
+  <!-- Upselling: Mailbox -->
+  <string name="upselling_mailbox_plus_description_override">Na odomknutie väčšieho úložiska a prémiových funkcií</string>
+  <string name="upselling_mailbox_plus_title">Upgradovať na Mail Plus</string>
+  <!-- Upselling: Contact Groups -->
+  <string name="upselling_contact_groups_plus_description_override">Jednoducho posielajte emaily skupine a užívajte si ďalšie prémiové funkcie s Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_title">Zoskupujte svoje kontakty</string>
+  <!-- Upselling: Labels -->
+  <string name="upselling_labels_plus_description_override">Získate ich a ďalšie prémiové funkcie po upgradovaní na Mail Plus.</string>
+  <string name="upselling_labels_plus_title">Potrebujete viac štítkov alebo priečinkov?</string>
+  <!-- Upselling: Folders -->
+  <string name="upselling_folders_plus_description_override">Získate ich a ďalšie prémiové funkcie, keď upgradujete na Mail Plus.</string>
+  <string name="upselling_folders_plus_title">Potrebujete viac štítkov alebo priečinkov?</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_mobile_signature_plus_description_override">Používajte vlastný mobilný podpis a užívajte si ďalšie prémiové funkcie s Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_title">Prispôsobte si svoj podpis</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_auto_delete_plus_description_override">Vychutnajte si prehľadnejšiu poštovú schránku a využívajte ďalšie prémiové funkcie s Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_title">Vymazať staré položky z koša a spamu</string>
+  <!-- Mail Plus -->
+  <string name="upselling_plus_feature_storage">15 GB úložného priestoru</string>
+  <string name="upselling_plus_feature_email_addresses">10 emailových adries</string>
+  <string name="upselling_plus_feature_custom_domain">Podpora vlastnej emailovej domény</string>
+  <string name="upselling_plus_feature_desktop_app">Nová desktopová aplikácia Proton Mail</string>
+  <string name="upselling_plus_feature_folders_labels">Neobmedzený počet priečinkov, štítkov, filtrov</string>
+  <string name="upselling_plus_feature_plus_7_features">+7 prémiových funkcií</string>
+  <!-- Unlimited -->
+  <string name="upselling_unlimited_description_override">Vaše komplexné prémiové predplatné</string>
+  <string name="upselling_unlimited_feature_storage">500 GB úložného priestoru so zálohovaním fotografií</string>
+  <string name="upselling_unlimited_feature_mail_calendar">Všetky platené funkcie pošty a kalendára</string>
+  <string name="upselling_unlimited_feature_vpn">VPN (90+ krajín)</string>
+  <string name="upselling_unlimited_feature_drive">Bezpečné cloudové úložisko</string>
+  <string name="upselling_unlimited_feature_pass">Šifrovaný správca hesiel</string>
+  <!-- Onboarding Upselling -->
+  <string name="upselling_onboarding_premium_value_included">Vrátane prémiovej hodnoty</string>
+  <string name="upselling_onboarding_feature_e2e">Šifrovanie end-to-end</string>
+  <string name="upselling_onboarding_feature_folders_labels">Neobmedzené množstvo priečinkov a štítkov</string>
+  <string name="upselling_onboarding_free_feature_storage">1 GB úložisko a 1 emailová adresa</string>
+  <string name="upselling_onboarding_plus_feature_storage">15 GB úložisko</string>
+  <string name="upselling_onboarding_plus_feature_email_addresses">10 ďalších emailových adries pre vás</string>
+  <string name="upselling_onboarding_plus_feature_email_domains">Podpora pre 1 vlastnú emailovú doménu</string>
+  <string name="upselling_onboarding_plus_feature_aliases">10 hide-my-email aliasov</string>
+  <string name="upselling_onboarding_plus_feature_customer_support">Prioritná zákaznícka podpora</string>
+  <string name="upselling_onboarding_unlimited_feature_storage">500 GB úložisko</string>
+  <string name="upselling_onboarding_unlimited_feature_email_addresses">15 ďalších emailových adries pre vás</string>
+  <string name="upselling_onboarding_unlimited_feature_email_domains">Podpora pre 3 vlastné emailové domény</string>
+  <string name="upselling_onboarding_unlimited_feature_aliases">Neobmedzený počet hide-my-email aliasov</string>
+  <string name="upselling_onboarding_unlimited_feature_customer_support">Účinná zákaznícka podpora</string>
+  <string name="upselling_onboarding_unlimited_feature_vpn">Ultra rýchly a súkromný VPN</string>
+  <string name="upselling_onboarding_unlimited_feature_pass">Šifrovaný správca hesiel</string>
+  <string name="upselling_onboarding_unlimited_feature_drive">Šifrované cloudové úložisko pre fotografie a dokumenty</string>
+  <string name="upselling_onboarding_unlimited_feature_sentinel">Rozšírená ochrana účtu</string>
+  <!-- Other UI Items -->
+  <string name="upselling_discount_tag">UŠETRÍTE %s%%</string>
+  <string name="upselling_month">/mesiac</string>
+  <string name="upselling_get_button">Získať %s</string>
+  <plurals name="upselling_month">
+    <item quantity="one">%d mesiac</item>
+    <item quantity="few">%d mesiace</item>
+    <item quantity="many">%d mesiacov</item>
+    <item quantity="other">%d mesiacov</item>
+  </plurals>
+  <!-- Errors -->
+  <string name="upselling_unable_retrieve_options">Nie je možné načítať možnosti aktualizácie.</string>
+  <string name="upselling_snackbar_error_no_user_id">Vyskytla sa chyba.</string>
+  <string name="upselling_snackbar_error_no_subscriptions">Nie je možné načítať predplatné.</string>
+  <!-- Snackbar texts -->
+  <string name="upselling_snackbar_upgrade_in_progress">Prebieha aktualizácia predplatného...</string>
+  <string name="upselling_snackbar_upgrade_error_generic">Počas aktualizácie vášho predplatného došlo k chybe.</string>
+  <string name="upselling_snackbar_upgrade_error_recoverable">Vyskytla sa chyba. Skúste to znova, prosím.</string>
+  <!-- Upselling: Onboarding -->
+  <string name="upselling_onboarding_title">Vyberte si plán</string>
+  <string name="upselling_onboarding_switcher_monthly">Mesačne</string>
+  <string name="upselling_onboarding_switcher_annual">Ročne</string>
+  <string name="upselling_onboarding_best_value">Najlepšia ponuka</string>
+  <string name="upselling_onboarding_month">/mesiac</string>
+  <string name="upselling_onboarding_year">/rok</string>
+  <plurals name="upselling_onboarding_more_features">
+    <item quantity="one">%d ďalšia funkcia</item>
+    <item quantity="few">%d ďalšie funkcie</item>
+    <item quantity="many">%d ďalších funkcií</item>
+    <item quantity="other">%d ďalších funkcií</item>
+  </plurals>
+  <string name="upselling_onboarding_billing_monthly">Fakturované %s %s každý mesiac</string>
+  <string name="upselling_onboarding_billing_annual">Fakturované %s %s každých 12 mesiacov</string>
+  <string name="upselling_onboarding_get_plan">Získajte %s</string>
+  <string name="upselling_onboarding_continue_with_proton_free">Pokračovať s Proton Free</string>
+  <string name="upselling_onboarding_save_label">Ušetrite %s%%</string>
+</resources>

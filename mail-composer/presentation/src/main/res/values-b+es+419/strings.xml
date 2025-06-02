@@ -40,6 +40,8 @@
   <string name="composer_error_loading_draft">El contenido de este borrador no está disponible en este momento. Editarlo sobrescribirá cualquier contenido preexistente.</string>
   <string name="composer_add_attachments_content_description">Agregar archivo adjunto</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importar desde…</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">Desde su biblioteca de fotos</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Tomar una nueva foto</string>
   <string name="composer_error_loading_parent_message">No se pudo cargar la información del mensaje</string>
   <string name="composer_original_message_quote">Mensaje original</string>
   <string name="composer_sender_quote">El %s, %s &lt;%s&gt; escribió:</string>
@@ -50,6 +52,7 @@
   <string name="composer_too_many_attachments_error">Se excedió el número máximo de archivos adjuntos (100).</string>
   <string name="composer_delete_attachment_error">Se produjo un error inesperado al eliminar un archivo adjunto.</string>
   <string name="composer_unexpected_attachments_error">Se produjo un error inesperado relacionado con los archivos adjuntos.</string>
+  <string name="composer_attach_capture_from_camera_error">No es posible capturar un archivo adjunto desde la cámara en este momento.</string>
   <string name="composer_warning_local_data_shown">Error al cargar la última versión de este borrador. Cualquier cambio sobrescribirá su contenido.</string>
   <string name="composer_button_add_password">Agregar una contraseña</string>
   <string name="composer_button_discard_draft">Descartar el borrador</string>
@@ -111,4 +114,6 @@
   <string name="discard_draft_dialog_confirm_button">Descartar</string>
   <string name="discard_draft_dialog_dismiss_button">Cancelar</string>
   <string name="discard_draft_error">Error al descartar el borrador</string>
+  <string name="composer_remove_inline_image">Borrar</string>
+  <string name="composer_send_as_attachment">Enviar como adjunto</string>
 </resources>

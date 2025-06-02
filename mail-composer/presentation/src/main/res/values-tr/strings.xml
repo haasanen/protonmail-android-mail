@@ -40,6 +40,8 @@
   <string name="composer_error_loading_draft">Bu taslağın içeriği şu anda kullanılamıyor. Düzenleme daha önce var olan içerikleri değiştirecek.</string>
   <string name="composer_add_attachments_content_description">Dosyalar ekle</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Şuradan içe aktar…</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">From your photo library</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Take a new photo</string>
   <string name="composer_error_loading_parent_message">İleti bilgileri yüklenemedi</string>
   <string name="composer_original_message_quote">Özgün ileti</string>
   <string name="composer_sender_quote">%s zamanında, %s &lt;%s&gt; şunu yazdı:</string>
@@ -50,6 +52,7 @@
   <string name="composer_too_many_attachments_error">En fazla ek dosya sayısına (100) ulaşıldı.</string>
   <string name="composer_delete_attachment_error">Bir ek dosya silinirken beklenmeyen bir sorun çıktı.</string>
   <string name="composer_unexpected_attachments_error">Ek dosyalarla ilgili beklenmeyen bir sorun çıktı.</string>
+  <string name="composer_attach_capture_from_camera_error">Capturing an attachment from camera isn\'t possible at this time</string>
   <string name="composer_warning_local_data_shown">Taslağın son sürümü yüklenemedi. Yapılmış değişiklikler geçersiz olacak.</string>
   <string name="composer_button_add_password">Parola ekle</string>
   <string name="composer_button_discard_draft">Taslağı sil</string>
@@ -111,4 +114,6 @@
   <string name="discard_draft_dialog_confirm_button">Sil</string>
   <string name="discard_draft_dialog_dismiss_button">İptal</string>
   <string name="discard_draft_error">Taslak silinirken sorun çıktı</string>
+  <string name="composer_remove_inline_image">Kaldır</string>
+  <string name="composer_send_as_attachment">Ek dosya olarak gönder</string>
 </resources>

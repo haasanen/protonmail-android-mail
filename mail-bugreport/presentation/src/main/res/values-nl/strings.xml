@@ -25,7 +25,7 @@
   <string name="report_a_problem_include_errors_description">Een logboek toont alle acties die leidden tot een fout.\nWij gebruiken het alleen om te helpen bij het oplossen van bugs.</string>
   <string name="report_a_problem_summary_title">Samenvatting (verplicht)</string>
   <string name="report_a_problem_summary_description">Voorbeeld: De Mail-app crasht bij het openen van e-mails met grote bijlagen.</string>
-  <string name="report_a_problem_field_length_error">Dit veld moet meer dan 10 tekens bevatten.</string>
+  <string name="report_a_problem_field_length_error">Dit veld moet meer dan 10 tekens bevatten</string>
   <string name="report_a_problem_expected_results_title">Verwachte resultaten</string>
   <string name="report_a_problem_expected_results_description">Voorbeeld: Bij het openen van de e-mail moeten de inhoud van het bericht en de bijlagen worden weergegeven.</string>
   <string name="report_a_problem_repro_steps_title">Stappen om te reproduceren</string>

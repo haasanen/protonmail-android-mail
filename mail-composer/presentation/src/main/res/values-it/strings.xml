@@ -40,6 +40,8 @@
   <string name="composer_error_loading_draft">Contenuto della bozza momentaneamente non disponibile. Modificarla sovrascriverà qualsiasi contenuto già esistente.</string>
   <string name="composer_add_attachments_content_description">Aggiungi degli allegati</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importa da...</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">Dalla tua galleria fotografica</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Scatta una nuova foto</string>
   <string name="composer_error_loading_parent_message">Caricamento delle informazioni del messaggio non riuscito</string>
   <string name="composer_original_message_quote">Messaggio originale</string>
   <string name="composer_sender_quote">%s, %s &lt;%s&gt; ha scritto:</string>
@@ -50,6 +52,7 @@
   <string name="composer_too_many_attachments_error">Limite di 100 allegati superato</string>
   <string name="composer_delete_attachment_error">Eliminazione dell\'allegato non riuscita</string>
   <string name="composer_unexpected_attachments_error">Si è verificato un errore</string>
+  <string name="composer_attach_capture_from_camera_error">Non è possibile acquisire un allegato dalla fotocamera in questo momento</string>
   <string name="composer_warning_local_data_shown">Caricamento dell\'ultima versione della bozza non riuscito. Qualsiasi modifica sovrascriverà il suo contenuto.</string>
   <string name="composer_button_add_password">Aggiungi una password</string>
   <string name="composer_button_discard_draft">Scarta</string>
@@ -111,4 +114,6 @@
   <string name="discard_draft_dialog_confirm_button">Scarta</string>
   <string name="discard_draft_dialog_dismiss_button">Annulla</string>
   <string name="discard_draft_error">Scartamento della bozza non riuscito</string>
+  <string name="composer_remove_inline_image">Rimuovi</string>
+  <string name="composer_send_as_attachment">Invia come allegato</string>
 </resources>

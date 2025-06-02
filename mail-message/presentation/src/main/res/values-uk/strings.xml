@@ -54,7 +54,7 @@
   <string name="attachment_type_keynote">Примітка</string>
   <string name="attachment_type_numbers">Цифри</string>
   <string name="attachment_type_pages">Сторінки</string>
-  <string name="attachment_type_word">Слово</string>
+  <string name="attachment_type_word">Word</string>
   <!-- Bottom Sheet -->
   <string name="bottom_sheet_move_to_title">Перемістити...</string>
   <string name="bottom_sheet_done_action">Готово</string>

@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Telefon</string>
   <string name="auth_signup_recovery_email_hint">E-post for gjenoppretting</string>
   <string name="auth_signup_recovery_phone_hint">Telefonnummer for gjenoppretting</string>
+  <string name="auth_signup_recovery_select_country">Velg land</string>
   <string name="auth_signup_phone_placeholder">XX XXX XX XXX</string>
+  <string name="auth_signup_skip_recovery_title">Hoppe over gjenopprettingsmetode?</string>
+  <string name="auth_signup_skip_recovery_description">En gjenopprettingsmetode vil hjelpe deg med å få tilgang til kontoen i tilfelle du glemmer passordet eller blir utestengt fra kontoen din.</string>
+  <string name="auth_signup_skip_recovery">Hopp over</string>
+  <string name="auth_signup_set_recovery">Angi gjenopprettingsmetode</string>
   <string name="auth_signup_your_account_is_being_setup">Din konto opprettes …</string>
   <string name="auth_signup_please_wait">Det tar vanligvis ikke lenger enn ett minutt.</string>
+  <string name="auth_signup_congratulations_subtitle">Din Proton-konto ble opprettet.\nNyt en verden med personvern.</string>
+  <string name="auth_signup_congratulations_title">Gratulerer!</string>
+  <string name="auth_signup_start_using_proton">Begynn å bruke Proton</string>
+  <string name="auth_signup_validation_password">Passordet kan ikke være tomt.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">Passordene samsvarer ikke.</string>
+  <string name="auth_signup_validation_password_input_invalid">Passordinndata ugyldig.</string>
+  <string name="auth_signup_validation_username">Brukernavn kan ikke være tomt.</string>
+  <string name="auth_signup_validation_email">E-post kan ikke være tomt.</string>
+  <string name="auth_signup_validation_username_input_invalid">Brukernavninndata ugyldig.</string>
+  <string name="auth_signup_validation_email_input_invalid">Brukernavninndata ugyldig.</string>
+  <string name="auth_signup_countries_search">Søk etter land</string>
 </resources>

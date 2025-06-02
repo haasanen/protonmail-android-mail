@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Telefon</string>
   <string name="auth_signup_recovery_email_hint">E-postadress för återställning</string>
   <string name="auth_signup_recovery_phone_hint">Telefonnummer för återställning</string>
+  <string name="auth_signup_recovery_select_country">Välj land</string>
   <string name="auth_signup_phone_placeholder">XX XXX XX XX</string>
+  <string name="auth_signup_skip_recovery_title">Hoppa över återställningsmetod?</string>
+  <string name="auth_signup_skip_recovery_description">En återställningsmetod hjälper dig att komma åt ditt konto om du glömmer ditt lösenord eller blir utelåst från ditt konto.</string>
+  <string name="auth_signup_skip_recovery">Hoppa över</string>
+  <string name="auth_signup_set_recovery">Ställ in återställningsmetod</string>
   <string name="auth_signup_your_account_is_being_setup">Ditt konto håller på att skapas…</string>
   <string name="auth_signup_please_wait">Det tar vanligtvis inte mer än en minut.</string>
+  <string name="auth_signup_congratulations_subtitle">Ditt Proton-konto har skapats.\nNjut av en värld av integritet.</string>
+  <string name="auth_signup_congratulations_title">Grattis!</string>
+  <string name="auth_signup_start_using_proton">Börja använda Proton</string>
+  <string name="auth_signup_validation_password">Lösenord kan inte vara tomt.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">Lösenorden matchar inte.</string>
+  <string name="auth_signup_validation_password_input_invalid">Ogiltig lösenordsinmatning.</string>
+  <string name="auth_signup_validation_username">Användarnamn kan inte vara tomt.</string>
+  <string name="auth_signup_validation_email">E-post kan inte vara tomt.</string>
+  <string name="auth_signup_validation_username_input_invalid">Ogiltig användarnamnsinmatning.</string>
+  <string name="auth_signup_validation_email_input_invalid">Ogiltig användarnamnsinmatning.</string>
+  <string name="auth_signup_countries_search">Sök land</string>
 </resources>

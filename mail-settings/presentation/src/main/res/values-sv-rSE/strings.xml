@@ -64,9 +64,9 @@
   <string name="mail_settings_app_customization_mail_experience_header">Mail-upplevelse</string>
   <string name="mail_settings_app_customization_advanced_header">Avancerat</string>
   <!-- Theme settings -->
-  <string name="mail_settings_system_default">Systemstandard</string>
-  <string name="mail_settings_theme_light">Ljus</string>
-  <string name="mail_settings_theme_dark">Mörk</string>
+  <string name="mail_settings_system_default">System</string>
+  <string name="mail_settings_theme_light">Light mode</string>
+  <string name="mail_settings_theme_dark">Dark mode</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Ingen information tillgänglig</string>
   <string name="mail_settings_account">Konto</string>
@@ -111,6 +111,49 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Navigera till systemets aviseringsinställningar</string>
   <string name="mail_settings_notifications_update_error">Fel vid uppdatering av inställningar</string>
   <string name="mail_settings_notifications_loading_error">Fel vid laddning av inställningar</string>
+  <!-- Auto lock -->
+  <string name="mail_settings_auto_lock_title">Autolås</string>
+  <string name="mail_settings_auto_lock_item_title">Autolås app</string>
+  <string name="mail_settings_auto_lock_item_description">Slå på denna funktion för att automatiskt låsa din app och använd en PIN-kod för att låsa upp den.</string>
+  <string name="mail_settings_auto_lock_change_pin_description">Ändra PIN-kod</string>
+  <string name="mail_settings_auto_lock_item_timer_title">Autolåstimer</string>
+  <string name="mail_settings_auto_lock_immediately">Omedelbart</string>
+  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minuters inaktivitet</string>
+  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minuters inaktivitet</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 timmes inaktivitet</string>
+  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 dags inaktivitet</string>
+  <string name="mail_settings_auto_lock_update_error">Fel vid uppdatering av inställningar</string>
+  <string name="mail_settings_pin_insertion_input_title">Infoga PIN-kod</string>
+  <string name="mail_settings_pin_insertion_set_title">Välj PIN-kod</string>
+  <string name="mail_settings_pin_insertion_confirm_title">Bekräfta PIN-kod</string>
+  <string name="mail_settings_pin_insertion_lock_icon_description">Låsikon</string>
+  <string name="mail_settings_pin_insertion_pin_dot_description">Fästpunkt</string>
+  <string name="mail_settings_pin_insertion_backspace_description">Backsteg</string>
+  <string name="mail_settings_pin_insertion_biometric_description">Biometrisk autentisering</string>
+  <string name="mail_settings_pin_insertion_button_create">Skapa</string>
+  <string name="mail_settings_pin_insertion_button_confirm">Bekräfta</string>
+  <string name="mail_settings_pin_insertion_error_no_match">PIN-koder matchar inte.</string>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code">
+    <item quantity="one">%s återstående försök.</item>
+    <item quantity="other">%s återstående försök.</item>
+  </plurals>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
+    <item quantity="one">%s försök kvar innan data raderas av säkerhetsskäl</item>
+    <item quantity="other">%s försök kvar innan data raderas av säkerhetsskäl</item>
+  </plurals>
+  <string name="mail_settings_pin_insertion_error_unknown">Ett fel uppstod vid verifieringen av din PIN-kod.</string>
+  <string name="mail_settings_pin_insertion_signout_text">Logga ut</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_title">Logga ut</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_description">Är du säker på att du vill logga ut?</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Ja</string>
+  <string name="mail_settings_pin_insertion_signout_dialog_cancel">Nej</string>
+  <string name="mail_settings_pin_insertion_created_success">PIN-kod skapad.</string>
+  <string name="mail_settings_pin_insertion_changed_success">PIN-kod ändrad.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Ett fel uppstod. Försök igen.</string>
+  <!-- strings used for biometric enrollment -->
+  <string name="no_biometric_data_enrolled">Inga biometriska data registrerade</string>
+  <string name="log_in_using_biometric_credential">Lås upp med dina biometriska uppgifter</string>
+  <string name="unlock_using_biometrics">Lås upp med biometri</string>
+  <string name="biometric_error_hw_not_available">Biometrisk hårdvara inte tillgänglig.</string>
 </resources>

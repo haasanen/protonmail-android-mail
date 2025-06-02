@@ -73,9 +73,9 @@
   <string name="message_body_embedded_images_banner_text">첨부한 이미지를 자동으로 불러오는 기능이 꺼져 있습니다. 설정에서 변경할 수 있습니다.</string>
   <string name="message_body_remote_content_banner_text">서버 콘텐츠를 자동으로 불러오는 기능이 꺼져 있습니다. 설정에서 변경할 수 있습니다.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">임베디드 이미지와 외부 콘텐츠의 자동 불러오기가 꺼져 있습니다. 설정에서 변경할 수 있습니다.</string>
-  <string name="message_phishing_banner_text">해당 메시지는 저희 시스템 또는 귀하에 의해 의심스러운 메시지로 표시되었습니다. 안전하다고 판단되시면 스팸이 아님으로 표시하십시오.</string>
+  <string name="message_phishing_banner_text">해당 메시지는 시스템 또는 회원님의 설정에 의해 의심스러운 메시지로 표시되었습니다. 안전하다고 판단되시면 스팸이 아님으로 표시해 주세요.</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">스팸이 아님으로 표시</string>
-  <string name="message_spam_banner_text">이 메시지는 저희 시스템 또는 귀하에 의해 스팸으로 분류되었습니다.</string>
+  <string name="message_spam_banner_text">이 메시지는 시스템 또는 사용자에 의해 스팸으로 분류되었습니다.</string>
   <string name="message_spam_banner_not_spam_button">스팸 아님</string>
   <string name="message_blocked_sender_banner_text">이 전송자는 기존에 차단된 기록이 존재합니다.</string>
   <string name="message_blocked_sender_button_text">차단 해제</string>

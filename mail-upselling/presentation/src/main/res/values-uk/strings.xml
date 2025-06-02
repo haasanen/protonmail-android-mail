@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Upselling -->
+  <string name="upselling_button_item_content_description">Кнопка покращення</string>
+  <string name="upselling_close_button_content_description">Кнопка закриття</string>
+  <!-- Upselling: Mailbox -->
+  <string name="upselling_mailbox_plus_description_override">Щоб розблокувати більше сховище та преміальні функції</string>
+  <string name="upselling_mailbox_plus_title">Передплатити Mail Plus</string>
+  <!-- Upselling: Contact Groups -->
+  <string name="upselling_contact_groups_plus_description_override">Надсилайте листи групі контактів та користуйтеся іншими преміальними функціями Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_title">Створюйте групи контактів</string>
+  <!-- Upselling: Labels -->
+  <string name="upselling_labels_plus_description_override">Отримайте їх та інші преміальні функції, перейшовши на Mail Plus.</string>
+  <string name="upselling_labels_plus_title">Потрібно більше міток чи тек?</string>
+  <!-- Upselling: Folders -->
+  <string name="upselling_folders_plus_description_override">Отримайте їх та інші преміальні функції, перейшовши на Mail Plus.</string>
+  <string name="upselling_folders_plus_title">Потрібно більше міток чи тек?</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_mobile_signature_plus_description_override">Використовуйте власний мобільний підпис і користуйтеся іншими преміальними функціями Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_title">Налаштуйте свій підпис</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_auto_delete_plus_description_override">Оцініть чистішу поштову скриньку й переваги інших преміальних функцій Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_title">Очистьте смітник і спам</string>
+  <!-- Mail Plus -->
+  <string name="upselling_plus_feature_storage">15 ГБ сховища</string>
+  <string name="upselling_plus_feature_email_addresses">10 адрес електронної пошти</string>
+  <string name="upselling_plus_feature_custom_domain">Підтримка власних доменів електронної пошти</string>
+  <string name="upselling_plus_feature_desktop_app">Нова програма Proton Mail для комп\'ютера</string>
+  <string name="upselling_plus_feature_folders_labels">Необмежена кількість тек, міток і фільтрів</string>
+  <string name="upselling_plus_feature_plus_7_features">+7 преміальних функцій</string>
+  <!-- Unlimited -->
+  <string name="upselling_unlimited_description_override">Преміальна передплата з усіма можливостями</string>
+  <string name="upselling_unlimited_feature_storage">500 ГБ сховища з резервним копіюванням фотографій</string>
+  <string name="upselling_unlimited_feature_mail_calendar">Усі платні функції Proton Mail і Calendar</string>
+  <string name="upselling_unlimited_feature_vpn">VPN (90+ країн)</string>
+  <string name="upselling_unlimited_feature_drive">Безпечне хмарне сховище</string>
+  <string name="upselling_unlimited_feature_pass">Зашифрований менеджер паролів</string>
+  <!-- Onboarding Upselling -->
+  <string name="upselling_onboarding_premium_value_included">Усі переваги преміум</string>
+  <string name="upselling_onboarding_feature_e2e">Наскрізне шифрування</string>
+  <string name="upselling_onboarding_feature_folders_labels">Необмежена кількість тек і міток</string>
+  <string name="upselling_onboarding_free_feature_storage">1 ГБ сховища й 1 адреса електронної пошти</string>
+  <string name="upselling_onboarding_plus_feature_storage">15 ГБ сховища</string>
+  <string name="upselling_onboarding_plus_feature_email_addresses">10 додаткових адрес електронної пошти</string>
+  <string name="upselling_onboarding_plus_feature_email_domains">Підтримка 1 власного домену електронної пошти</string>
+  <string name="upselling_onboarding_plus_feature_aliases">10 псевдонімів Hide-my-email</string>
+  <string name="upselling_onboarding_plus_feature_customer_support">Пріоритетна підтримка клієнтів</string>
+  <string name="upselling_onboarding_unlimited_feature_storage">500 ГБ сховища</string>
+  <string name="upselling_onboarding_unlimited_feature_email_addresses">15 додаткових адрес електронної пошти</string>
+  <string name="upselling_onboarding_unlimited_feature_email_domains">Підтримка 3 власних доменів електронної пошти</string>
+  <string name="upselling_onboarding_unlimited_feature_aliases">Необмежена кількість псевдонімів Hide-my-email</string>
+  <string name="upselling_onboarding_unlimited_feature_customer_support">Спеціалізована клієнтська підтримка</string>
+  <string name="upselling_onboarding_unlimited_feature_vpn">Ультра швидка та приватна VPN</string>
+  <string name="upselling_onboarding_unlimited_feature_pass">Зашифрований менеджер паролів</string>
+  <string name="upselling_onboarding_unlimited_feature_drive">Зашифроване хмарне сховище для фотографій і документів</string>
+  <string name="upselling_onboarding_unlimited_feature_sentinel">Розширений захист облікового запису</string>
+  <!-- Other UI Items -->
+  <string name="upselling_discount_tag">ЗАОЩАДЬТЕ %s%%</string>
+  <string name="upselling_month">/місяць</string>
+  <string name="upselling_get_button">Отримати %s</string>
+  <plurals name="upselling_month">
+    <item quantity="one">%d місяць</item>
+    <item quantity="few">%d місяці</item>
+    <item quantity="many">%d місяців</item>
+    <item quantity="other">%d місяців</item>
+  </plurals>
+  <!-- Errors -->
+  <string name="upselling_unable_retrieve_options">Не вдалося отримати параметри покращення.</string>
+  <string name="upselling_snackbar_error_no_user_id">Сталася помилка.</string>
+  <string name="upselling_snackbar_error_no_subscriptions">Не вдається отримати інформацію про передплати.</string>
+  <!-- Snackbar texts -->
+  <string name="upselling_snackbar_upgrade_in_progress">Триває оновлення передплати…</string>
+  <string name="upselling_snackbar_upgrade_error_generic">Під час оновлення передплати сталася помилка.</string>
+  <string name="upselling_snackbar_upgrade_error_recoverable">Виникла помилка. Спробуйте ще раз.</string>
+  <!-- Upselling: Onboarding -->
+  <string name="upselling_onboarding_title">Вибрати план</string>
+  <string name="upselling_onboarding_switcher_monthly">Щомісяця</string>
+  <string name="upselling_onboarding_switcher_annual">Річний</string>
+  <string name="upselling_onboarding_best_value">Найвигідніший</string>
+  <string name="upselling_onboarding_month">/місяць</string>
+  <string name="upselling_onboarding_year">/рік</string>
+  <plurals name="upselling_onboarding_more_features">
+    <item quantity="one">ще %d функція</item>
+    <item quantity="few">ще %d функції</item>
+    <item quantity="many">ще %d функцій</item>
+    <item quantity="other">ще %d функцій</item>
+  </plurals>
+  <string name="upselling_onboarding_billing_monthly">Списання %s %s щомісяця</string>
+  <string name="upselling_onboarding_billing_annual">Списання %s %s кожні 12 місяців</string>
+  <string name="upselling_onboarding_get_plan">Отримати %s</string>
+  <string name="upselling_onboarding_continue_with_proton_free">Продовжити з Proton Free</string>
+  <string name="upselling_onboarding_save_label">Заощадьте %s%%</string>
+</resources>

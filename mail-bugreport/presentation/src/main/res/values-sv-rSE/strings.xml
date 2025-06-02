@@ -25,7 +25,7 @@
   <string name="report_a_problem_include_errors_description">En logg visar alla åtgärder som ledde till ett fel.\nVi använder den bara för att hjälpa till att åtgärda fel.</string>
   <string name="report_a_problem_summary_title">Sammanfattning (obligatoriskt)</string>
   <string name="report_a_problem_summary_description">Exempel: Mail-appen kraschar vid öppning av e-postmeddelanden med stora bilagor.</string>
-  <string name="report_a_problem_field_length_error">Detta fält måste innehålla mer än 10 tecken.</string>
+  <string name="report_a_problem_field_length_error">Detta fält måste innehålla mer än 10 tecken</string>
   <string name="report_a_problem_expected_results_title">Förväntade resultat</string>
   <string name="report_a_problem_expected_results_description">Exempel: När du öppnar e-postmeddelandet ska meddelandeinnehållet och bilagorna visas.</string>
   <string name="report_a_problem_repro_steps_title">Steg för att återskapa</string>

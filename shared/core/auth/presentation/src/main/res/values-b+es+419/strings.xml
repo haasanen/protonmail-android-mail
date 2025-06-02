@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Teléfono</string>
   <string name="auth_signup_recovery_email_hint">Correo electrónico de recuperación</string>
   <string name="auth_signup_recovery_phone_hint">Número telefónico de recuperación</string>
+  <string name="auth_signup_recovery_select_country">Seleccionar un país</string>
   <string name="auth_signup_phone_placeholder">XX XXX XX XX</string>
+  <string name="auth_signup_skip_recovery_title">¿Omitir el método de recuperación?</string>
+  <string name="auth_signup_skip_recovery_description">Un método de recuperación le ayudará a acceder a la cuenta en caso de que olvide la contraseña o no pueda entrar en la cuenta.</string>
+  <string name="auth_signup_skip_recovery">Omitir</string>
+  <string name="auth_signup_set_recovery">Establecer un método de recuperación</string>
   <string name="auth_signup_your_account_is_being_setup">Se está creando su cuenta…</string>
   <string name="auth_signup_please_wait">Usualmente no tarda más de un minuto.</string>
+  <string name="auth_signup_congratulations_subtitle">Su cuenta de Proton ha sido creada correctamente.\nDisfrute el mundo de la privacidad.</string>
+  <string name="auth_signup_congratulations_title">¡Enhorabuena!</string>
+  <string name="auth_signup_start_using_proton">Comenzar con Proton</string>
+  <string name="auth_signup_validation_password">La contraseña no debe estar vacía.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">Las contraseñas no coinciden.</string>
+  <string name="auth_signup_validation_password_input_invalid">La contraseña ingresada no es válida.</string>
+  <string name="auth_signup_validation_username">El nombre de usuario no puede estar vacío.</string>
+  <string name="auth_signup_validation_email">El correo electrónico no puede estar vacío.</string>
+  <string name="auth_signup_validation_username_input_invalid">El nombre de usuario ingresado no es válido.</string>
+  <string name="auth_signup_validation_email_input_invalid">El nombre de usuario ingresado no es válido.</string>
+  <string name="auth_signup_countries_search">Buscar un país</string>
 </resources>

@@ -40,6 +40,8 @@
   <string name="composer_error_loading_draft">目前無法擷取該草稿的內容。編輯將覆寫任何預先存在的內容。</string>
   <string name="composer_add_attachments_content_description">新增附件</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">匯入自……</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">From your photo library</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Take a new photo</string>
   <string name="composer_error_loading_parent_message">無法載入訊息資訊</string>
   <string name="composer_original_message_quote">原始訊息</string>
   <string name="composer_sender_quote">在 %s，%s &lt;%s&gt; 寫道：</string>
@@ -50,6 +52,7 @@
   <string name="composer_too_many_attachments_error">超過附件數量上限 (100)。</string>
   <string name="composer_delete_attachment_error">刪除附件時發生意外錯誤。</string>
   <string name="composer_unexpected_attachments_error">有與附件相關的意外錯誤。</string>
+  <string name="composer_attach_capture_from_camera_error">Capturing an attachment from camera isn\'t possible at this time</string>
   <string name="composer_warning_local_data_shown">此草稿的最新版本無法載入。任何變更將覆蓋其內容。</string>
   <string name="composer_button_add_password">新增密碼</string>
   <string name="composer_button_discard_draft">捨棄草稿</string>
@@ -110,4 +113,6 @@
   <string name="discard_draft_dialog_confirm_button">放棄</string>
   <string name="discard_draft_dialog_dismiss_button">取消</string>
   <string name="discard_draft_error">放棄草稿時發生錯誤</string>
+  <string name="composer_remove_inline_image">Remove</string>
+  <string name="composer_send_as_attachment">Send as attachment</string>
 </resources>

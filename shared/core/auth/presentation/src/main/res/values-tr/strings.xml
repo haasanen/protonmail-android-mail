@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Telefon</string>
   <string name="auth_signup_recovery_email_hint">Kurtarma e-posta adresi</string>
   <string name="auth_signup_recovery_phone_hint">Kurtarma telefonu numarası</string>
+  <string name="auth_signup_recovery_select_country">Ülke seçin</string>
   <string name="auth_signup_phone_placeholder">XX XXX XXXXXXX</string>
+  <string name="auth_signup_skip_recovery_title">Kurtarma yöntemi atlansın mı?</string>
+  <string name="auth_signup_skip_recovery_description">Kurtarma yöntemi, parolanızı unuttuğunuzda ya da oturum açamadığınızda hesabınıza erişmenizi sağlar.</string>
+  <string name="auth_signup_skip_recovery">Atla</string>
+  <string name="auth_signup_set_recovery">Kurtarma yöntemini ayarla</string>
   <string name="auth_signup_your_account_is_being_setup">Hesabınız oluşturuluyor…</string>
   <string name="auth_signup_please_wait">Genellikle bir dakikadan kısa sürer.</string>
+  <string name="auth_signup_congratulations_subtitle">Proton hesabınız açıldı.\nGizliliğe saygı duyulan bir dünyanın tadını çıkarın.</string>
+  <string name="auth_signup_congratulations_title">Tebrikler!</string>
+  <string name="auth_signup_start_using_proton">Proton kullanmaya başlayın</string>
+  <string name="auth_signup_validation_password">Parola boş olamaz.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">Parola ile onayı aynı değil.</string>
+  <string name="auth_signup_validation_password_input_invalid">Yazılan parola geçersiz.</string>
+  <string name="auth_signup_validation_username">Kullanıcı adı boş olamaz.</string>
+  <string name="auth_signup_validation_email">E-posta adresi boş olamaz.</string>
+  <string name="auth_signup_validation_username_input_invalid">Yazılan kullanıcı adı geçersiz.</string>
+  <string name="auth_signup_validation_email_input_invalid">Yazılan kullanıcı adı geçersiz.</string>
+  <string name="auth_signup_countries_search">Ülke ara</string>
 </resources>

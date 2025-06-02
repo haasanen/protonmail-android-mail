@@ -25,7 +25,7 @@
   <string name="report_a_problem_include_errors_description">Um registro mostra todas as ações que levaram a um erro.\nNós o usamos apenas para ajudar a corrigir erros.</string>
   <string name="report_a_problem_summary_title">Resumo (obrigatório)</string>
   <string name="report_a_problem_summary_description">Exemplo: O aplicativo do Mail trava ao abrir e-mails com anexos grandes.</string>
-  <string name="report_a_problem_field_length_error">Este campo deve ter mais de 10 caracteres.</string>
+  <string name="report_a_problem_field_length_error">O campo deve ter pelo menos 10 caracteres</string>
   <string name="report_a_problem_expected_results_title">Resultados esperados</string>
   <string name="report_a_problem_expected_results_description">Exemplo: Quando você abrir o e-mail, o conteúdo da mensagem e os anexos serão exibidos.</string>
   <string name="report_a_problem_repro_steps_title">Etapas para reproduzir</string>

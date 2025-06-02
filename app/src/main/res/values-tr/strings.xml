@@ -18,11 +18,11 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Oturumu kapat</string>
-  <string name="dialog_sign_out_account_description">The data associateed to your account will remain on this device unless you select to delete it.</string>
-  <string name="dialog_sign_out_account_confirm">Sign out</string>
-  <string name="dialog_sign_out_account_cancel">Cancel</string>
-  <string name="dialog_remove_account_title">Remove account?</string>
-  <string name="dialog_remove_account_description">Remove all associated data</string>
+  <string name="dialog_sign_out_account_description">Hesabınızla ilişkili veriler, silmeyi seçmediğiniz sürece bu aygıtta kalır.</string>
+  <string name="dialog_sign_out_account_confirm">Oturumu kapat</string>
+  <string name="dialog_sign_out_account_cancel">İptal</string>
+  <string name="dialog_remove_account_title">Hesap kaldırılsın mı?</string>
+  <string name="dialog_remove_account_description">İlişkili tüm verileri kaldır</string>
   <string name="dialog_remove_account_confirm">Kaldır</string>
   <string name="dialog_remove_account_cancel">İptal</string>
   <string name="feature_coming_soon">Özellik yakında kullanılabilecek…</string>

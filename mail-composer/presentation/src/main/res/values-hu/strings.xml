@@ -40,6 +40,8 @@
   <string name="composer_error_loading_draft">Ennek a piszkozatnak a tartalma jelenleg nem elérhető. Szerkesztése felülírja az esetlegesen már korábban hozzáadott tartalmat.</string>
   <string name="composer_add_attachments_content_description">Melléklet hozzáadása</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importálás innen…</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">From your photo library</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Take a new photo</string>
   <string name="composer_error_loading_parent_message">Az üzenet adatainak betöltése nem sikerült</string>
   <string name="composer_original_message_quote">Eredeti üzenet</string>
   <string name="composer_sender_quote">%s-kor, %s&lt;%s&gt; ezt írta:</string>
@@ -50,6 +52,7 @@
   <string name="composer_too_many_attachments_error">Túllépve a mellékletek maximális száma (100).</string>
   <string name="composer_delete_attachment_error">Váratlan hiba történt egy melléklet törlése közben.</string>
   <string name="composer_unexpected_attachments_error">Váratlan hiba történt a mellékletekkel kapcsolatban.</string>
+  <string name="composer_attach_capture_from_camera_error">Capturing an attachment from camera isn\'t possible at this time</string>
   <string name="composer_warning_local_data_shown">A vázlat legutóbbi változatának betöltése nem sikerült. Bármilyen változtatás felülírja a tartalmát.</string>
   <string name="composer_button_add_password">Jelszó hozzáadása</string>
   <string name="composer_button_discard_draft">Piszkozat elvetése</string>
@@ -111,4 +114,6 @@
   <string name="discard_draft_dialog_confirm_button">Elvetés</string>
   <string name="discard_draft_dialog_dismiss_button">Mégsem</string>
   <string name="discard_draft_error">Hiba a piszkozat elvetése közben</string>
+  <string name="composer_remove_inline_image">Remove</string>
+  <string name="composer_send_as_attachment">Send as attachment</string>
 </resources>

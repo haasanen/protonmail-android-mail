@@ -79,7 +79,23 @@
   <string name="auth_signup_recovery_phone">Telefonnummer</string>
   <string name="auth_signup_recovery_email_hint">E-Mail-Adresse für die Wiederherstellung</string>
   <string name="auth_signup_recovery_phone_hint">Telefonnummer für die Wiederherstellung</string>
+  <string name="auth_signup_recovery_select_country">Land wählen</string>
   <string name="auth_signup_phone_placeholder">XX XXX XX XX</string>
+  <string name="auth_signup_skip_recovery_title">Wiederherstellungsmethode überspringen?</string>
+  <string name="auth_signup_skip_recovery_description">Eine Wiederherstellungsmethode hilft dir, auf dein Konto zuzugreifen, falls du dein Passwort vergessen hast oder aus deinem Konto ausgesperrt wurdest.</string>
+  <string name="auth_signup_skip_recovery">Überspringen</string>
+  <string name="auth_signup_set_recovery">Wiederherstellungsmethode festlegen</string>
   <string name="auth_signup_your_account_is_being_setup">Dein Konto wird erstellt …</string>
   <string name="auth_signup_please_wait">Das dauert normalerweise nicht länger als eine Minute.</string>
+  <string name="auth_signup_congratulations_subtitle">Dein Proton-Konto wurde erfolgreich erstellt.\nGenieße die Welt der Privatsphäre.</string>
+  <string name="auth_signup_congratulations_title">Herzlichen Glückwunsch!</string>
+  <string name="auth_signup_start_using_proton">Beginne Proton zu nutzen</string>
+  <string name="auth_signup_validation_password">Passwort darf nicht leer sein.</string>
+  <string name="auth_signup_validation_passwords_do_not_match">Passwörter stimmen nicht überein.</string>
+  <string name="auth_signup_validation_password_input_invalid">Passworteingabe ungültig.</string>
+  <string name="auth_signup_validation_username">Benutzername darf nicht leer sein.</string>
+  <string name="auth_signup_validation_email">E-Mail-Adresse darf nicht leer sein.</string>
+  <string name="auth_signup_validation_username_input_invalid">Benutzernameeingabe ungültig.</string>
+  <string name="auth_signup_validation_email_input_invalid">Benutzernameeingabe ungültig.</string>
+  <string name="auth_signup_countries_search">Land suchen</string>
 </resources>

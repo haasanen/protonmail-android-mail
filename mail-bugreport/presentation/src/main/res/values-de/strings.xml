@@ -19,13 +19,13 @@
 <resources>
   <!-- Report a problem flow -->
   <string name="report_a_problem_title">Ein Problem melden</string>
-  <string name="report_a_problem_submit_button">Senden</string>
+  <string name="report_a_problem_submit_button">Absenden</string>
   <string name="report_a_problem_disclaimer_e2ee">Berichte sind nicht Ende-zu-Ende-verschlüsselt.\nBitte keine sensiblen Daten angeben.</string>
   <string name="report_a_problem_include_errors_title">Protokolle hinzufügen</string>
   <string name="report_a_problem_include_errors_description">Ein Protokoll enthält alle Aktionen, die zu einem Fehler geführt haben.\nEs wird nur zur Behebung von Fehlern verwendet.</string>
   <string name="report_a_problem_summary_title">Zusammenfassung (erforderlich)</string>
   <string name="report_a_problem_summary_description">Beispiel: Die Mail-App stürzt beim Öffnen von E-Mails mit großen Anhängen ab.</string>
-  <string name="report_a_problem_field_length_error">Dieses Feld muss mehr als 10 Zeichen enthalten.</string>
+  <string name="report_a_problem_field_length_error">Dieses Feld muss mehr als 10 Zeichen enthalten</string>
   <string name="report_a_problem_expected_results_title">Erwartete Ergebnisse</string>
   <string name="report_a_problem_expected_results_description">Beispiel: Beim Öffnen der E-Mail sollten der Inhalt der Nachricht und die Anhänge angezeigt werden.</string>
   <string name="report_a_problem_repro_steps_title">Schritte zum Reproduzieren</string>

@@ -40,6 +40,8 @@
   <string name="composer_error_loading_draft">この下書きの内容は現時点では利用できません。編集すると既存の内容が上書きされます。</string>
   <string name="composer_add_attachments_content_description">添付ファイルの追加</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">インポート...</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">From your photo library</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Take a new photo</string>
   <string name="composer_error_loading_parent_message">メッセージの情報を読み込めませんでした</string>
   <string name="composer_original_message_quote">元のメッセージ</string>
   <string name="composer_sender_quote">%s、%s &lt;%s&gt; 書きました：</string>
@@ -50,6 +52,7 @@
   <string name="composer_too_many_attachments_error">添付ファイルの最大数（100個）を超えました。</string>
   <string name="composer_delete_attachment_error">添付ファイルの削除中に予期しないエラーが発生しました。</string>
   <string name="composer_unexpected_attachments_error">添付ファイルに関連して、予期しないエラーが発生しました。</string>
+  <string name="composer_attach_capture_from_camera_error">Capturing an attachment from camera isn\'t possible at this time</string>
   <string name="composer_warning_local_data_shown">この下書きの最新バージョンの読み込みに失敗しました。変更するとコンテンツが上書きされます。</string>
   <string name="composer_button_add_password">パスワードを追加</string>
   <string name="composer_button_discard_draft">下書きを破棄する</string>
@@ -110,4 +113,6 @@
   <string name="discard_draft_dialog_confirm_button">破棄</string>
   <string name="discard_draft_dialog_dismiss_button">取消</string>
   <string name="discard_draft_error">下書きを破棄できません</string>
+  <string name="composer_remove_inline_image">削除</string>
+  <string name="composer_send_as_attachment">Send as attachment</string>
 </resources>
