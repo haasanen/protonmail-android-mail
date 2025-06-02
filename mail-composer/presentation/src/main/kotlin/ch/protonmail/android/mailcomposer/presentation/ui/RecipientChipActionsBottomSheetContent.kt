@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
@@ -95,9 +97,9 @@ fun RecipientChipActionsBottomSheetContent(
             ) { action, onClick ->
                 ActionGroupItem(
                     modifier = Modifier,
-                    icon = action.getIconRes(),
-                    description = stringResource(action.getDescriptionRes()),
-                    contentDescription = stringResource(action.getDescriptionRes()),
+                    icon = action.icon,
+                    description = stringResource(action.description),
+                    contentDescription = stringResource(action.description),
                     onClick = onClick
                 )
             }
@@ -105,16 +107,9 @@ fun RecipientChipActionsBottomSheetContent(
     }
 }
 
-private enum class Actions { Copy, Remove }
-
-private fun Actions.getIconRes() = when (this) {
-    Actions.Copy -> R.drawable.ic_proton_squares
-    Actions.Remove -> R.drawable.ic_proton_trash
-}
-
-private fun Actions.getDescriptionRes() = when (this) {
-    Actions.Copy -> R.string.composer_copy_recipient_action_item
-    Actions.Remove -> R.string.composer_remove_recipient_action_item
+private enum class Actions(@DrawableRes val icon: Int, @StringRes val description: Int) {
+    Copy(R.drawable.ic_proton_squares, R.string.composer_copy_recipient_action_item),
+    Remove(R.drawable.ic_proton_trash, R.string.composer_remove_recipient_action_item)
 }
 
 @Preview(showBackground = true)

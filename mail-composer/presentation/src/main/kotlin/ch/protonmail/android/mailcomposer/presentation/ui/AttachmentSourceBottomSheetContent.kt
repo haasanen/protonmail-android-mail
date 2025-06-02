@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
@@ -100,9 +102,9 @@ fun AttachmentSourceBottomSheetContent(
             ) { action, onClick ->
                 ActionGroupItem(
                     modifier = Modifier,
-                    icon = action.getIconRes(),
-                    description = stringResource(action.getDescriptionRes()),
-                    contentDescription = stringResource(action.getDescriptionRes()),
+                    icon = action.icon,
+                    description = stringResource(action.description),
+                    contentDescription = stringResource(action.description),
                     onClick = onClick
                 )
             }
@@ -110,18 +112,10 @@ fun AttachmentSourceBottomSheetContent(
     }
 }
 
-private enum class Sources { Camera, Files, Photos }
-
-private fun Sources.getIconRes() = when (this) {
-    Sources.Camera -> R.drawable.ic_proton_camera
-    Sources.Files -> R.drawable.ic_proton_folder_open
-    Sources.Photos -> R.drawable.ic_proton_image
-}
-
-private fun Sources.getDescriptionRes() = when (this) {
-    Sources.Camera -> R.string.composer_add_attachments_bottom_sheet_from_camera
-    Sources.Files -> R.string.composer_add_attachments_bottom_sheet_import_from
-    Sources.Photos -> R.string.composer_add_attachments_bottom_sheet_from_photos
+private enum class Sources(@DrawableRes val icon: Int, @StringRes val description: Int) {
+    Camera(R.drawable.ic_proton_camera, R.string.composer_add_attachments_bottom_sheet_from_camera),
+    Files(R.drawable.ic_proton_folder_open, R.string.composer_add_attachments_bottom_sheet_import_from),
+    Photos(R.drawable.ic_proton_image, R.string.composer_add_attachments_bottom_sheet_from_photos)
 }
 
 @Preview(showBackground = true)
