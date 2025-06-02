@@ -74,6 +74,7 @@ class ComposerReducer @Inject constructor(
         is ComposerAction.OnInlineImageActionsRequested -> updateStateForInlineImgActionsRequested(currentState)
         is ComposerAction.OnAttachFromFiles -> updateStateForAttachFromFile(currentState)
         is ComposerAction.OnAttachFromCamera -> updateStateForAttachFromCamera(currentState)
+        is ComposerAction.OnAttachFromPhotos -> updateStateForAttachFromPhotos(currentState)
     }
 
     @Suppress("ComplexMethod", "LongMethod")
@@ -318,6 +319,11 @@ class ComposerReducer @Inject constructor(
 
     private fun updateStateForAttachFromCamera(currentState: ComposerDraftState) = currentState.copy(
         openCamera = Effect.of(Unit),
+        changeBottomSheetVisibility = Effect.of(false)
+    )
+
+    private fun updateStateForAttachFromPhotos(currentState: ComposerDraftState) = currentState.copy(
+        openPhotosPicker = Effect.of(Unit),
         changeBottomSheetVisibility = Effect.of(false)
     )
 

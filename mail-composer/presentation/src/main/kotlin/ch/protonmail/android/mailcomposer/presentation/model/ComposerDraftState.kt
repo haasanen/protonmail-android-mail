@@ -53,6 +53,7 @@ data class ComposerDraftState(
     val confirmSendExpiringMessage: Effect<List<Participant>>,
     val openFilesPicker: Effect<Unit>,
     val openCamera: Effect<Unit>,
+    val openPhotosPicker: Effect<Unit>,
     val confirmDiscardDraft: Effect<Unit>,
     val injectInlineAttachment: Effect<String>,
     val stripInlineAttachment: Effect<String>
@@ -93,6 +94,7 @@ data class ComposerDraftState(
             confirmSendExpiringMessage = Effect.empty(),
             openFilesPicker = Effect.empty(),
             openCamera = Effect.empty(),
+            openPhotosPicker = Effect.empty(),
             confirmDiscardDraft = Effect.empty(),
             injectInlineAttachment = Effect.empty(),
             stripInlineAttachment = Effect.empty()

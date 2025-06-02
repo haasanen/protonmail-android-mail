@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcomposer.presentation.ui
 import android.text.format.Formatter
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -150,8 +151,19 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         }
     )
 
+    val mediaPicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia(),
+        onResult = { uris ->
+            viewModel.submit(ComposerAction.AttachmentsAdded(uris))
+        }
+    )
+
     ConsumableLaunchedEffect(effect = state.openFilesPicker) {
         filesPicker.launch("*/*")
+    }
+
+    ConsumableLaunchedEffect(effect = state.openPhotosPicker) {
+        mediaPicker.launch(PickVisualMediaRequest())
     }
 
     CameraPicturePicker(
@@ -195,7 +207,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     isChooseAttachmentSourceEnabled = isChooseAttachmentSourceEnabled,
                     onCamera = { viewModel.submit(ComposerAction.OnAttachFromCamera) },
                     onFiles = { viewModel.submit(ComposerAction.OnAttachFromFiles) },
-                    onPhotos = { Timber.d("add attachment from photos requested") }
+                    onPhotos = { viewModel.submit(ComposerAction.OnAttachFromPhotos) }
                 )
             }
         },

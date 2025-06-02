@@ -365,6 +365,7 @@ class ComposerViewModel @AssistedInject constructor(
                     is ComposerAction.OnInlineImageActionsRequested -> emitNewStateFor(action)
                     is ComposerAction.OnAttachFromFiles -> emitNewStateFor(action)
                     is ComposerAction.OnAttachFromCamera -> emitNewStateFor(action)
+                    is ComposerAction.OnAttachFromPhotos -> emitNewStateFor(action)
                 }
             }
         }

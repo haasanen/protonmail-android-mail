@@ -44,6 +44,7 @@ internal sealed interface ComposerAction : ComposerOperation {
     data object ChangeSenderRequested : ComposerAction
     data object OnAddAttachments : ComposerAction
     data object OnAttachFromFiles : ComposerAction
+    data object OnAttachFromPhotos : ComposerAction
     data object OnAttachFromCamera : ComposerAction
     data object OnCloseComposer : ComposerAction
     data object OnSendMessage : ComposerAction

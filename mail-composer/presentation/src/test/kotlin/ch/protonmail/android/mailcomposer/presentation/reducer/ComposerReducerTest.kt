@@ -591,6 +591,18 @@ class ComposerReducerTest(
             )
         )
 
+        private val AttachmentSourcesToAttachFromPhotos = TestTransition(
+            name = "Should open photos picker and dismiss bottom sheet when attach from files is selected",
+            currentState = aNotSubmittableState(
+                bottomSheetVisibility = Effect.of(true)
+            ),
+            operation = ComposerAction.OnAttachFromPhotos,
+            expectedState = ComposerDraftState.initial().copy(
+                changeBottomSheetVisibility = Effect.of(false),
+                openPhotosPicker = Effect.of(Unit)
+            )
+        )
+
 
         private val transitions = listOf(
             EmptyToSubmittableToField,
@@ -636,7 +648,8 @@ class ComposerReducerTest(
             DraftBodyChangedActionShouldDoNothing,
             LoadingDraftAndBodyShouldBeFocused,
             EmptyToInjectInlineAttachment,
-            AttachmentSourcesToAttachFromFile
+            AttachmentSourcesToAttachFromFile,
+            AttachmentSourcesToAttachFromPhotos
         )
 
         private fun aSubmittableState(
@@ -682,6 +695,7 @@ class ComposerReducerTest(
             confirmSendExpiringMessage = Effect.empty(),
             openFilesPicker = Effect.empty(),
             openCamera = Effect.empty(),
+            openPhotosPicker = Effect.empty(),
             confirmDiscardDraft = Effect.empty(),
             injectInlineAttachment = Effect.empty(),
             stripInlineAttachment = Effect.empty()
@@ -734,6 +748,7 @@ class ComposerReducerTest(
             confirmSendExpiringMessage = Effect.empty(),
             openFilesPicker = Effect.empty(),
             openCamera = Effect.empty(),
+            openPhotosPicker = Effect.empty(),
             confirmDiscardDraft = Effect.empty(),
             focusTextBody = focusTextBody,
             injectInlineAttachment = Effect.empty(),
