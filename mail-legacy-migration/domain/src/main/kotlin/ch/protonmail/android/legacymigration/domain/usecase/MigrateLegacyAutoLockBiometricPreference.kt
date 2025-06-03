@@ -40,7 +40,6 @@ class MigrateLegacyAutoLockBiometricPreference @Inject constructor(
                 Timber.e("Legacy migration: Failed to read auto-lock biometric preference from legacy repository.")
                 return MigrationError.AutoLockFailure.FailedToReadBiometricPreference.left()
             }
-        Timber.d("Legacy migration: Read auto-lock biometric preference: $biometricPreference")
 
         return biometricPreference
             .mapLeft { MigrationError.AutoLockFailure.FailedToReadBiometricPreference }
