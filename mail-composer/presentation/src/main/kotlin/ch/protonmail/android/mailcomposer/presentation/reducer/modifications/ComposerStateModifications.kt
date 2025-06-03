@@ -24,8 +24,8 @@ internal interface ComposerStateModification<T> {
 }
 
 internal data class ComposerStateModifications(
-    val mainModification: MainStateModification? = null
-//    val attachmentsModification: AttachmentsStateModification? = null,
+    val mainModification: MainStateModification? = null,
+    val attachmentsModification: AttachmentsStateModification? = null
 //    val accessoriesModification: AccessoriesStateModification? = null,
 //    val effectsModification: EffectsStateModification? = null
 )
