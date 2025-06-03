@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.mailpinlock.presentation.autolock
 
-import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsState
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockInterval
+import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState
+import ch.protonmail.android.mailpinlock.model.AutoLockInterval
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockPreference
 
 sealed interface AutoLockSettingsOperation
@@ -30,10 +30,6 @@ sealed interface AutoLockSettingsViewAction : AutoLockSettingsOperation {
     ) : AutoLockSettingsViewAction
 
     data class ToggleAutoLockPreference(val newValue: Boolean) : AutoLockSettingsViewAction
-
-    data class UpdateAutoLockInterval(val interval: AutoLockInterval) : AutoLockSettingsViewAction
-
-    data class ToggleIntervalDropDownVisibility(val value: Boolean) : AutoLockSettingsViewAction
 }
 
 sealed interface AutoLockSettingsEvent : AutoLockSettingsOperation {
@@ -53,12 +49,4 @@ sealed interface AutoLockSettingsEvent : AutoLockSettingsOperation {
         data class AutoLockIntervalsDropDownToggled(val newValue: Boolean) : Update
         data class AutoLockBiometricsToggled(val newValue: Boolean) : Update
     }
-
-    object AutoLockBiometricsEnrollmentError : AutoLockSettingsEvent
-    object AutoLockBiometricsHwError : AutoLockSettingsEvent
-
-    object UpdateError : AutoLockSettingsEvent
-
-    object ForcePinCreation : AutoLockSettingsEvent
-    object ChangePinLockRequested : AutoLockSettingsEvent
 }

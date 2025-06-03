@@ -19,16 +19,16 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Back</string>
   <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">自動ロック</string>
-  <string name="mail_settings_auto_lock_item_title">自動アプリロック</string>
-  <string name="mail_settings_auto_lock_item_description">この機能を有効にするとアプリは自動でロックされます。PINコードを使用してロックを解除できます。</string>
-  <string name="mail_settings_auto_lock_change_pin_description">PINコードを変更する</string>
-  <string name="mail_settings_auto_lock_item_timer_title">自動ロックタイマー</string>
-  <string name="mail_settings_auto_lock_immediately">即時</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 分間未使用の場合</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 分間未使用の場合</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 時間未使用の場合</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 日間未使用の場合</string>
+  <string name="mail_pinlock_settings_title">自動ロック</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">自動アプリロック</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">この機能を有効にするとアプリは自動でロックされます。PINコードを使用してロックを解除できます。</string>
+  <string name="mail_pinlock_settings_change_pin_description">PINコードを変更する</string>
+  <string name="mail_pinlock_settings_change_interval_title">自動ロックタイマー</string>
+  <string name="mail_pinlock_settings_autolock_immediately">即時</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 分間未使用の場合</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 分間未使用の場合</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">1 時間未使用の場合</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">1 日間未使用の場合</string>
   <string name="mail_settings_auto_lock_update_error">設定更新エラー</string>
   <string name="mail_settings_pin_insertion_input_title">PIN コードを入力</string>
   <string name="mail_settings_pin_insertion_set_title">PIN コードを設定</string>

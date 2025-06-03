@@ -49,7 +49,6 @@ dependencies {
     implementation(libs.bundles.module.data)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.hilt.work)
-    implementation(libs.androidx.biometrics)
     implementation(libs.proton.core.user.data)
     implementation(libs.proton.core.user.domain)
     implementation(libs.proton.core.mailSettings.domain)
@@ -59,6 +58,7 @@ dependencies {
     implementation(project(":mail-settings:domain"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-session:data"))
+    implementation(project(":mail-pin-lock:domain"))
 
     testImplementation(libs.proton.rust.core)
     testImplementation(project(":test:utils"))

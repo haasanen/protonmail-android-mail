@@ -32,7 +32,7 @@ import ch.protonmail.android.mailpinlock.presentation.pin.mapper.AutoLockBiometr
 import ch.protonmail.android.mailpinlock.presentation.pin.mapper.AutoLockPinErrorUiMapper
 import ch.protonmail.android.mailpinlock.presentation.pin.mapper.AutoLockPinStepUiMapper
 import ch.protonmail.android.mailpinlock.presentation.pin.mapper.AutoLockSuccessfulOperationUiMapper
-import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsState
+import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState
 import ch.protonmail.android.mailsettings.presentation.R
 import org.junit.Test
 import org.junit.runner.RunWith

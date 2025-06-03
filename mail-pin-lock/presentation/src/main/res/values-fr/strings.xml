@@ -19,16 +19,16 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Retour</string>
   <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Verrouillage automatique</string>
-  <string name="mail_settings_auto_lock_item_title">Verrouillage automatique de l\'application</string>
-  <string name="mail_settings_auto_lock_item_description">Activez cette fonctionnalité pour verrouiller automatiquement votre application et utiliser un code PIN pour la déverrouiller.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Modifier le code PIN</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Délai de verrouillage automatique</string>
-  <string name="mail_settings_auto_lock_immediately">Immédiatement</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minutes d\'inactivité</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minutes d\'inactivité</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 heure d\'inactivité</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 jour d\'inactivité</string>
+  <string name="mail_pinlock_settings_title">Verrouillage automatique</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">Verrouillage automatique de l\'application</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Activez cette fonctionnalité pour verrouiller automatiquement votre application et utiliser un code PIN pour la déverrouiller.</string>
+  <string name="mail_pinlock_settings_change_pin_description">Modifier le code PIN</string>
+  <string name="mail_pinlock_settings_change_interval_title">Délai de verrouillage automatique</string>
+  <string name="mail_pinlock_settings_autolock_immediately">Immédiatement</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minutes d\'inactivité</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minutes d\'inactivité</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">1 heure d\'inactivité</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">1 jour d\'inactivité</string>
   <string name="mail_settings_auto_lock_update_error">Une erreur s\'est produite pendant la mise à jour des paramètres.</string>
   <string name="mail_settings_pin_insertion_input_title">Saisir le code PIN</string>
   <string name="mail_settings_pin_insertion_set_title">Définir le code PIN</string>

@@ -21,6 +21,7 @@ package ch.protonmail.android.mailsettings.domain.repository
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
+import ch.protonmail.android.mailsettings.domain.model.AppSettingsDiff
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import kotlinx.coroutines.flow.Flow
 
@@ -29,4 +30,5 @@ interface AppSettingsRepository {
     fun observeAppSettings(): Flow<AppSettings>
     fun observeTheme(): Flow<Theme>
     suspend fun updateTheme(theme: Theme): Either<DataError, Unit>
+    suspend fun updateAppSettings(diff: AppSettingsDiff): Either<DataError, Unit>
 }

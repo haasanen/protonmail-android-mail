@@ -19,16 +19,16 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Torna</string>
   <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Bloqueig automàtic</string>
-  <string name="mail_settings_auto_lock_item_title">Bloqueig automàtic de l\'aplicació</string>
-  <string name="mail_settings_auto_lock_item_description">Activeu aquesta funcionalitat per bloquejar automàticament la vostra aplicació i utilitzar un codi PIN per desbloquejar-la.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Canvia el codi PIN</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Temps de bloqueig automàtic</string>
-  <string name="mail_settings_auto_lock_immediately">Immediatament</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minuts d\'inactivitat</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minuts d\'inactivitat</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 hora d\'inactivitat</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 dia d\'inactivitat</string>
+  <string name="mail_pinlock_settings_title">Bloqueig automàtic</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">Bloqueig automàtic de l\'aplicació</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Activeu aquesta funcionalitat per bloquejar automàticament la vostra aplicació i utilitzar un codi PIN per desbloquejar-la.</string>
+  <string name="mail_pinlock_settings_change_pin_description">Canvia el codi PIN</string>
+  <string name="mail_pinlock_settings_change_interval_title">Temps de bloqueig automàtic</string>
+  <string name="mail_pinlock_settings_autolock_immediately">Immediatament</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minuts d\'inactivitat</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minuts d\'inactivitat</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">1 hora d\'inactivitat</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">1 dia d\'inactivitat</string>
   <string name="mail_settings_auto_lock_update_error">S\'ha produït un error en actualitzar les preferències.</string>
   <string name="mail_settings_pin_insertion_input_title">Introduïu el codi PIN</string>
   <string name="mail_settings_pin_insertion_set_title">Estableix el codi PIN</string>

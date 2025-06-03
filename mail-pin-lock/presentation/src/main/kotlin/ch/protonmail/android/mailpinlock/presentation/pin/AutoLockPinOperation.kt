@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailpinlock.presentation.pin
 
-import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsState
+import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState
 
 sealed interface AutoLockPinOperation
 

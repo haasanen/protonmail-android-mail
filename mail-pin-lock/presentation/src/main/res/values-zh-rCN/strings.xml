@@ -19,16 +19,16 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">返回</string>
   <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">自动锁定</string>
-  <string name="mail_settings_auto_lock_item_title">自动锁定程序</string>
-  <string name="mail_settings_auto_lock_item_description">开启后程序可自动锁定，需要输入 PIN 码才能使用。</string>
-  <string name="mail_settings_auto_lock_change_pin_description">更改 PIN 码</string>
-  <string name="mail_settings_auto_lock_item_timer_title">自动锁定时间</string>
-  <string name="mail_settings_auto_lock_immediately">立刻</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">五分钟内无操作</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">十五分钟内无操作</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">一小时内无操作</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">一天内无操作</string>
+  <string name="mail_pinlock_settings_title">自动锁定</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">自动锁定程序</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">开启后程序可自动锁定，需要输入 PIN 码才能使用。</string>
+  <string name="mail_pinlock_settings_change_pin_description">更改 PIN 码</string>
+  <string name="mail_pinlock_settings_change_interval_title">自动锁定时间</string>
+  <string name="mail_pinlock_settings_autolock_immediately">立刻</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">五分钟内无操作</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">十五分钟内无操作</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">一小时内无操作</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">一天内无操作</string>
   <string name="mail_settings_auto_lock_update_error">更新设置时出现错误</string>
   <string name="mail_settings_pin_insertion_input_title">输入 PIN 码</string>
   <string name="mail_settings_pin_insertion_set_title">设置 PIN 码</string>

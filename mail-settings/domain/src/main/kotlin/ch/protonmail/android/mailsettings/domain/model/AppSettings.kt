@@ -18,24 +18,29 @@
 
 package ch.protonmail.android.mailsettings.domain.model
 
+import ch.protonmail.android.mailpinlock.model.AutoLockInterval
+import ch.protonmail.android.mailpinlock.model.Protection
+
 data class AppSettings(
-    val hasAutoLock: Boolean,
+    val autolockInterval: AutoLockInterval,
+    val autolockProtection: Protection,
     val hasAlternativeRouting: Boolean,
     val customAppLanguage: String?,
     val hasDeviceContactsEnabled: Boolean,
     val theme: Theme
 ) {
+    val hasAutoLock = autolockProtection != Protection.None
 
     companion object {
 
         private val DEFAULT_THEME = Theme.SYSTEM_DEFAULT
         private val DEFAULT_CUSTOM_LANGUAGE: String? = null
         private const val DEFAULT_HAS_ALTERNATIVE_ROUTING = true
-        private const val DEFAULT_HAS_AUTOLOCK = false
         private const val DEFAULT_HAS_DEVICE_CONTACTS_ENABLED = false
 
         fun default() = AppSettings(
-            DEFAULT_HAS_AUTOLOCK,
+            AutoLockInterval.default(),
+            Protection.default(),
             DEFAULT_HAS_ALTERNATIVE_ROUTING,
             DEFAULT_CUSTOM_LANGUAGE,
             DEFAULT_HAS_DEVICE_CONTACTS_ENABLED,

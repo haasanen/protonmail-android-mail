@@ -35,5 +35,6 @@ android {
 dependencies {
     api(project(":mail-pin-lock:dagger"))
     api(project(":mail-pin-lock:domain"))
+    api(project(":mail-pin-lock:data"))
     api(project(":mail-pin-lock:presentation"))
 }

@@ -19,16 +19,46 @@
 package ch.protonmail.android.mailsettings.data.mapper
 
 import ch.protonmail.android.mailcommon.data.mapper.LocalAppSettings
+import ch.protonmail.android.mailcommon.data.mapper.LocalAutolock
+import ch.protonmail.android.mailcommon.data.mapper.LocalProtection
+import ch.protonmail.android.mailpinlock.model.AutoLockInterval
+import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailsettings.data.mapper.LocalMapperThemeConstants.defaultThemeFallback
 import ch.protonmail.android.mailsettings.data.mapper.LocalMapperThemeConstants.themeAppearanceLookup
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
+import ch.protonmail.android.mailsettings.domain.model.AppSettingsDiff
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AppAppearance
-import uniffi.proton_mail_uniffi.AppSettingsDiff
+import uniffi.proton_mail_uniffi.AppProtection
 import uniffi.proton_mail_uniffi.AutoLock.Always
 import uniffi.proton_mail_uniffi.AutoLock.Minutes
+import uniffi.proton_mail_uniffi.AutoLock.Never
+import uniffi.proton_mail_uniffi.AppSettingsDiff as LocalAppSettingsDiff
+
+
+fun AppSettingsDiff.toAppDiff(): LocalAppSettingsDiff {
+
+    fun setTheme(theme: Theme) = themeAppearanceLookup.getOrElse(theme, {
+        Timber.e("invalid Theme provided - mapping not currently supported in rust $this")
+        defaultThemeFallback
+    })
+
+    fun setAutolockInteval(interval: AutoLockInterval) =
+        when (interval) {
+            AutoLockInterval.Immediately -> Always
+            AutoLockInterval.Never -> Never
+            else -> Minutes(interval.duration.inWholeMinutes.toUByte())
+        }
+
+    return LocalAppSettingsDiff(
+        autoLock = interval?.let { setAutolockInteval(it) },
+        useCombineContacts = null, // not implemented
+        useAlternativeRouting = null, // not implemented
+        appearance = theme?.let { setTheme(it) }
+    )
+}
 
 private object LocalMapperThemeConstants {
 
@@ -41,21 +71,25 @@ private object LocalMapperThemeConstants {
     val defaultThemeFallback = AppAppearance.SYSTEM
 }
 
-// When creating a diff we should leave unchanged values empty
-fun Theme.toLocalAppDiff() = AppSettingsDiff(
-    autoLock = null,
-    useCombineContacts = null,
-    useAlternativeRouting = null,
-    appearance = themeAppearanceLookup.getOrElse(this, {
-        Timber.e("invalid Theme provided - mapping not currently supported in rust $this")
-        defaultThemeFallback
-    })
-)
-
 fun AppAppearance.toTheme() = themeAppearanceLookup.entries.first { it.value == this }.key
 
+fun LocalAutolock.toAutolockInterval() =
+    when (this) {
+        is Never -> AutoLockInterval.Never
+        is Always -> AutoLockInterval.Immediately
+        is Minutes -> AutoLockInterval.fromMinutes(this.v1.toLong())
+    }
+
+fun LocalProtection.toProtection() =
+    when (this) {
+        AppProtection.NONE -> Protection.None
+        AppProtection.BIOMETRICS -> Protection.Biometrics
+        AppProtection.PIN -> Protection.Pin
+    }
+
 fun LocalAppSettings.toAppSettings(customLanguage: AppLanguage? = null) = AppSettings(
-    hasAutoLock = autoLock is Always || autoLock is Minutes,
+    autolockProtection = protection.toProtection(),
+    autolockInterval = autoLock.toAutolockInterval(),
     hasAlternativeRouting = useAlternativeRouting,
     theme = appearance.toTheme(),
     customAppLanguage = customLanguage?.langName,

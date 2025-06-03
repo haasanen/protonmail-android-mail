@@ -22,9 +22,10 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsettings.data.local.RustAppSettingsDataSource
+import ch.protonmail.android.mailsettings.data.mapper.toAppDiff
 import ch.protonmail.android.mailsettings.data.mapper.toAppSettings
-import ch.protonmail.android.mailsettings.data.mapper.toLocalAppDiff
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
+import ch.protonmail.android.mailsettings.domain.model.AppSettingsDiff
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
@@ -65,18 +66,20 @@ class AppSettingsRepository @Inject constructor(
 
     override fun observeTheme(): Flow<Theme> = observeAppSettings().map { it.theme }
 
-
     private fun getLatestRustAppSettings() = flow {
         emit(rustAppSettingsDataSource.getAppSettings(mailSessionRepository.getMailSession().getRustMailSession()))
     }
 
-    override suspend fun updateTheme(theme: Theme): Either<DataError, Unit> =
+    override suspend fun updateAppSettings(diff: AppSettingsDiff): Either<DataError, Unit> =
         rustAppSettingsDataSource.updateAppSettings(
             mailSessionRepository.getMailSession().getRustMailSession(),
-            theme.toLocalAppDiff()
+            diff.toAppDiff()
         ).onLeft { error ->
             Timber.e("Was not able to update theme $error")
         }.onRight {
             restartTrigger.emit(Unit)
         }
+
+    override suspend fun updateTheme(theme: Theme): Either<DataError, Unit> =
+        updateAppSettings(AppSettingsDiff(theme = theme))
 }

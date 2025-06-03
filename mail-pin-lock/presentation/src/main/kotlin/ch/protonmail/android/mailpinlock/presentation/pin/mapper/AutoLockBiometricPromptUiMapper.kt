@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailpinlock.presentation.pin.mapper
 
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsState
+import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState
 import javax.inject.Inject
 
 class AutoLockBiometricPromptUiMapper @Inject constructor() {

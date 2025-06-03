@@ -32,6 +32,7 @@ import ch.protonmail.android.mailbugreport.presentation.ui.report.BugReportScree
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailfeatureflags.presentation.ui.FeatureFlagOverridesScreen
 import ch.protonmail.android.mailpinlock.presentation.autolock.ui.AutoLockSettingsScreen
+import ch.protonmail.android.mailpinlock.presentation.autolock.ui.AutolockIntervalDialog
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.AutoLockPinScreen
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
 import ch.protonmail.android.mailsettings.presentation.settings.alternativerouting.AlternativeRoutingSettingScreen
@@ -141,11 +142,16 @@ internal fun NavGraphBuilder.addPrivacySettings(navController: NavHostController
 
 internal fun NavGraphBuilder.addAutoLockSettings(navController: NavHostController) {
     composable(route = Screen.AutoLockSettings.route) {
-        AutoLockSettingsScreen(
-            modifier = Modifier,
-            onBackClick = { navController.navigateBack() },
-            onPinScreenNavigation = { navController.navigate(Screen.AutoLockPinScreen(it)) }
-        )
+        ProtonInvertedTheme {
+            AutoLockSettingsScreen(
+                modifier = Modifier,
+                actions = AutoLockSettingsScreen.Actions(
+                    onPinScreenNavigation = {},//{ navController.navigate(Screen.AutoLockPinScreen(it)) },
+                    onBackClick = { navController.navigateBack() },
+                    onChangeIntervalClick = { navController.navigate(Screen.AutolockInterval.route) }
+                )
+            )
+        }
     }
 }
 
@@ -196,6 +202,15 @@ internal fun NavGraphBuilder.addSwipeActionsSettings(navController: NavHostContr
                     navController.navigate(Screen.EditSwipeActionSettings(SwipeActionDirection.RIGHT))
                 }
             )
+        )
+    }
+}
+
+internal fun NavGraphBuilder.addAutolockIntervalSettings(navController: NavHostController) {
+    dialog(route = Screen.AutolockInterval.route) {
+        AutolockIntervalDialog(
+            modifier = Modifier,
+            onDismiss = { navController.navigateBack() }
         )
     }
 }

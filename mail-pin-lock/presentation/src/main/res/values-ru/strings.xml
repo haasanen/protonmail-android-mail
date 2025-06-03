@@ -19,16 +19,16 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Back</string>
   <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Автоблокировка</string>
-  <string name="mail_settings_auto_lock_item_title">Автоблокировка приложения</string>
-  <string name="mail_settings_auto_lock_item_description">Включите эту функцию, чтобы автоматически заблокировать приложение и использовать PIN для его разблокировки.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Изменить PIN-код</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Таймер автоблокировки</string>
-  <string name="mail_settings_auto_lock_immediately">Немедленно</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 минут бездействия</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 минут бездействия</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 час бездействия</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 день бездействия</string>
+  <string name="mail_pinlock_settings_title">Автоблокировка</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">Автоблокировка приложения</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Включите эту функцию, чтобы автоматически заблокировать приложение и использовать PIN для его разблокировки.</string>
+  <string name="mail_pinlock_settings_change_pin_description">Изменить PIN-код</string>
+  <string name="mail_pinlock_settings_change_interval_title">Таймер автоблокировки</string>
+  <string name="mail_pinlock_settings_autolock_immediately">Немедленно</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 минут бездействия</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 минут бездействия</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">1 час бездействия</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">1 день бездействия</string>
   <string name="mail_settings_auto_lock_update_error">Ошибка сохранения настроек</string>
   <string name="mail_settings_pin_insertion_input_title">Вставьте PIN-код</string>
   <string name="mail_settings_pin_insertion_set_title">Установите PIN-код</string>

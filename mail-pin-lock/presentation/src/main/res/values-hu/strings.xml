@@ -19,16 +19,16 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Back</string>
   <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Automatikus lezárás</string>
-  <string name="mail_settings_auto_lock_item_title">Alkalmazás automatikus lezárása</string>
-  <string name="mail_settings_auto_lock_item_description">Kapcsolja be ezt a funkciót az alkalmazás automatikus lezárásához és használjon PIN-kódot a feloldáshoz.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">PIN kód megváltoztatása</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Automatikus zárolás időzítése</string>
-  <string name="mail_settings_auto_lock_immediately">Azonnal</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 perc inaktivitás</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 perc inaktivitás</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 óra inaktivitás</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 nap inaktivitás</string>
+  <string name="mail_pinlock_settings_title">Automatikus lezárás</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">Alkalmazás automatikus lezárása</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Kapcsolja be ezt a funkciót az alkalmazás automatikus lezárásához és használjon PIN-kódot a feloldáshoz.</string>
+  <string name="mail_pinlock_settings_change_pin_description">PIN kód megváltoztatása</string>
+  <string name="mail_pinlock_settings_change_interval_title">Automatikus zárolás időzítése</string>
+  <string name="mail_pinlock_settings_autolock_immediately">Azonnal</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 perc inaktivitás</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 perc inaktivitás</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">1 óra inaktivitás</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">1 nap inaktivitás</string>
   <string name="mail_settings_auto_lock_update_error">Hiba az beállítások frissítése során</string>
   <string name="mail_settings_pin_insertion_input_title">PIN kód megadása</string>
   <string name="mail_settings_pin_insertion_set_title">PIN kód beállítása</string>

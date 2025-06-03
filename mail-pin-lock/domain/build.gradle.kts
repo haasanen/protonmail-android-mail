@@ -44,6 +44,8 @@ android {
 
 dependencies {
     implementation(libs.bundles.module.domain)
+    implementation(project(":mail-common:domain"))
+    testImplementation(libs.proton.rust.core)
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
 }

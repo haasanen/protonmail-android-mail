@@ -19,16 +19,16 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Back</string>
   <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Autolås</string>
-  <string name="mail_settings_auto_lock_item_title">Autolås app</string>
-  <string name="mail_settings_auto_lock_item_description">Slå på denna funktion för att automatiskt låsa din app och använd en PIN-kod för att låsa upp den.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Ändra PIN-kod</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Autolåstimer</string>
-  <string name="mail_settings_auto_lock_immediately">Omedelbart</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minuters inaktivitet</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minuters inaktivitet</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 timmes inaktivitet</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 dags inaktivitet</string>
+  <string name="mail_pinlock_settings_title">Autolås</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">Autolås app</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Slå på denna funktion för att automatiskt låsa din app och använd en PIN-kod för att låsa upp den.</string>
+  <string name="mail_pinlock_settings_change_pin_description">Ändra PIN-kod</string>
+  <string name="mail_pinlock_settings_change_interval_title">Autolåstimer</string>
+  <string name="mail_pinlock_settings_autolock_immediately">Omedelbart</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minuters inaktivitet</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minuters inaktivitet</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">1 timmes inaktivitet</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">1 dags inaktivitet</string>
   <string name="mail_settings_auto_lock_update_error">Fel vid uppdatering av inställningar</string>
   <string name="mail_settings_pin_insertion_input_title">Infoga PIN-kod</string>
   <string name="mail_settings_pin_insertion_set_title">Välj PIN-kod</string>

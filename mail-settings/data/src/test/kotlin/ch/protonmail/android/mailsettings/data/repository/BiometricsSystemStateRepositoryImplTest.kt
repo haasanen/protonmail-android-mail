@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailsettings.data.repository
 
-import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.BiometricsSystemState
+import ch.protonmail.android.mailpinlock.model.BiometricsSystemState
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic

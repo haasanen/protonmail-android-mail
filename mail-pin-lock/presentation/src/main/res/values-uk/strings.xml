@@ -19,16 +19,16 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Back</string>
   <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Автоблокування</string>
-  <string name="mail_settings_auto_lock_item_title">Автоблокування програми</string>
-  <string name="mail_settings_auto_lock_item_description">Увімкніть цю функцію, щоб автоматично блокувати програму і використовувати PIN-код для розблокування.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Змінити PIN-код</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Таймер автоблокування</string>
-  <string name="mail_settings_auto_lock_immediately">Негайно</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 хвилин</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 хвилин</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 година</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 день</string>
+  <string name="mail_pinlock_settings_title">Автоблокування</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">Автоблокування програми</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Увімкніть цю функцію, щоб автоматично блокувати програму і використовувати PIN-код для розблокування.</string>
+  <string name="mail_pinlock_settings_change_pin_description">Змінити PIN-код</string>
+  <string name="mail_pinlock_settings_change_interval_title">Таймер автоблокування</string>
+  <string name="mail_pinlock_settings_autolock_immediately">Негайно</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 хвилин</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 хвилин</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">1 година</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">1 день</string>
   <string name="mail_settings_auto_lock_update_error">Помилка оновлення налаштувань</string>
   <string name="mail_settings_pin_insertion_input_title">Вставте PIN-код</string>
   <string name="mail_settings_pin_insertion_set_title">Встановити PIN-код</string>

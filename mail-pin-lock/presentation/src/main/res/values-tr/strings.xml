@@ -19,16 +19,16 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Back</string>
   <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Otomatik kilitleme</string>
-  <string name="mail_settings_auto_lock_item_title">Uygulama otomatik kilitlensin</string>
-  <string name="mail_settings_auto_lock_item_description">Uygulamanızı otomatik olarak kilitlemek için bu özelliği açın ve kilidini açmak için bir PIN kodu kullanın.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">PIN kodunu değiştir</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Otomatik kilit süresi</string>
-  <string name="mail_settings_auto_lock_immediately">Hemen</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 dakika hareketsizlik</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 dakika hareketsizlik</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 saat hareketsizlik</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 gün hareketsizlik</string>
+  <string name="mail_pinlock_settings_title">Otomatik kilitleme</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">Uygulama otomatik kilitlensin</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Uygulamanızı otomatik olarak kilitlemek için bu özelliği açın ve kilidini açmak için bir PIN kodu kullanın.</string>
+  <string name="mail_pinlock_settings_change_pin_description">PIN kodunu değiştir</string>
+  <string name="mail_pinlock_settings_change_interval_title">Otomatik kilit süresi</string>
+  <string name="mail_pinlock_settings_autolock_immediately">Hemen</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 dakika hareketsizlik</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 dakika hareketsizlik</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">1 saat hareketsizlik</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">1 gün hareketsizlik</string>
   <string name="mail_settings_auto_lock_update_error">Ayarlar güncellenirken sorun çıktı</string>
   <string name="mail_settings_pin_insertion_input_title">PIN kodunu yazın</string>
   <string name="mail_settings_pin_insertion_set_title">PIN kodu ayarla</string>

@@ -17,54 +17,54 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="mail_pin_lock_toolbar_button_content_description">Back</string>
-  <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Automatyczna blokada</string>
-  <string name="mail_settings_auto_lock_item_title">Automatyczna blokada aplikacji</string>
-  <string name="mail_settings_auto_lock_item_description">Włączenie tej funkcji zablokuje aplikację. Wymagane będzie użycie kodu PIN, aby ją odblokować.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Zmień kod PIN</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Automatyczne blokowanie</string>
-  <string name="mail_settings_auto_lock_immediately">Natychmiast</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minut bezczynności</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minut bezczynności</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 godzina bezczynności</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 dzień bezczynności</string>
-  <string name="mail_settings_auto_lock_update_error">Wystąpił błąd podczas aktualizowania ustawień</string>
-  <string name="mail_settings_pin_insertion_input_title">Wpisz kod PIN</string>
-  <string name="mail_settings_pin_insertion_set_title">Ustaw kod PIN</string>
-  <string name="mail_settings_pin_insertion_confirm_title">Potwierdź kod PIN</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">Ikona kłódki</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">Kropka</string>
-  <string name="mail_settings_pin_insertion_backspace_description">Usuń</string>
-  <string name="mail_settings_pin_insertion_biometric_description">Uwierzytelnianie biometryczne</string>
-  <string name="mail_settings_pin_insertion_button_create">Utwórz</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Potwierdź</string>
-  <string name="mail_settings_pin_insertion_error_no_match">Kody PIN nie pasują do siebie.</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="one">Pozostała %s próba.</item>
-    <item quantity="few">Pozostały %s próby.</item>
-    <item quantity="many">Pozostało %s prób.</item>
-    <item quantity="other">Pozostało %s prób.</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="one">Pozostała %s próba do bezpiecznego wymazania danych.</item>
-    <item quantity="few">Pozostały %s próby do bezpiecznego wymazania danych.</item>
-    <item quantity="many">Pozostało %s prób do bezpiecznego wymazania danych.</item>
-    <item quantity="other">Pozostało %s prób do bezpiecznego wymazania danych.</item>
-  </plurals>
-  <string name="mail_settings_pin_insertion_error_unknown">Wystąpił błąd podczas weryfikowania kodu PIN.</string>
-  <string name="mail_settings_pin_insertion_signout_text">Wyloguj</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_title">Wyloguj</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_description">Czy na pewno chcesz się wylogować?</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Tak</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_cancel">Nie</string>
-  <string name="mail_settings_pin_insertion_created_success">Kod PIN został utworzony.</string>
-  <string name="mail_settings_pin_insertion_changed_success">Kod PIN został zmieniony.</string>
-  <!-- Error messages -->
-  <string name="mail_settings_generic_error_message">Wystąpił błąd. Spróbuj ponownie.</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">Brak zapisanych danych biometrycznych</string>
-  <string name="log_in_using_biometric_credential">Odblokuj za pomocą biometrii</string>
-  <string name="unlock_using_biometrics">Odblokuj za pomocą biometrii</string>
-  <string name="biometric_error_hw_not_available">Sprzęt biometryczny nie jest dostępny.</string>
+ <string name="mail_pin_lock_toolbar_button_content_description">Back</string>
+    <!-- Auto lock -->
+ <string name="mail_pinlock_settings_title">Automatyczna blokada</string>
+ <string name="mail_pinlock_settings_toggle_autolock_title">Automatyczna blokada aplikacji</string>
+ <string name="mail_pinlock_settings_toggle_autolock_description">Włączenie tej funkcji zablokuje aplikację. Wymagane będzie użycie kodu PIN, aby ją odblokować.</string>
+ <string name="mail_pinlock_settings_change_pin_description">Zmień kod PIN</string>
+ <string name="mail_pinlock_settings_change_interval_title">Automatyczne blokowanie</string>
+ <string name="mail_pinlock_settings_autolock_immediately">Natychmiast</string>
+ <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minut bezczynności</string>
+ <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minut bezczynności</string>
+ <string name="mail_pinlock_settings_autolock_description_one_hour">1 godzina bezczynności</string>
+ <string name="mail_pinlock_settings_autolock_description_one_day">1 dzień bezczynności</string>
+ <string name="mail_settings_auto_lock_update_error">Wystąpił błąd podczas aktualizowania ustawień</string>
+ <string name="mail_settings_pin_insertion_input_title">Wpisz kod PIN</string>
+ <string name="mail_settings_pin_insertion_set_title">Ustaw kod PIN</string>
+ <string name="mail_settings_pin_insertion_confirm_title">Potwierdź kod PIN</string>
+ <string name="mail_settings_pin_insertion_lock_icon_description">Ikona kłódki</string>
+ <string name="mail_settings_pin_insertion_pin_dot_description">Kropka</string>
+ <string name="mail_settings_pin_insertion_backspace_description">Usuń</string>
+ <string name="mail_settings_pin_insertion_biometric_description">Uwierzytelnianie biometryczne</string>
+ <string name="mail_settings_pin_insertion_button_create">Utwórz</string>
+ <string name="mail_settings_pin_insertion_button_confirm">Potwierdź</string>
+ <string name="mail_settings_pin_insertion_error_no_match">Kody PIN nie pasują do siebie.</string>
+ <plurals name="mail_settings_pin_insertion_error_wrong_code">
+  <item quantity="one">Pozostała %s próba.</item>
+  <item quantity="few">Pozostały %s próby.</item>
+  <item quantity="many">Pozostało %s prób.</item>
+  <item quantity="other">Pozostało %s prób.</item>
+ </plurals>
+ <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
+  <item quantity="one">Pozostała %s próba do bezpiecznego wymazania danych.</item>
+  <item quantity="few">Pozostały %s próby do bezpiecznego wymazania danych.</item>
+  <item quantity="many">Pozostało %s prób do bezpiecznego wymazania danych.</item>
+  <item quantity="other">Pozostało %s prób do bezpiecznego wymazania danych.</item>
+ </plurals>
+ <string name="mail_settings_pin_insertion_error_unknown">Wystąpił błąd podczas weryfikowania kodu PIN.</string>
+ <string name="mail_settings_pin_insertion_signout_text">Wyloguj</string>
+ <string name="mail_settings_pin_insertion_signout_dialog_title">Wyloguj</string>
+ <string name="mail_settings_pin_insertion_signout_dialog_description">Czy na pewno chcesz się wylogować?</string>
+ <string name="mail_settings_pin_insertion_signout_dialog_confirm">Tak</string>
+ <string name="mail_settings_pin_insertion_signout_dialog_cancel">Nie</string>
+ <string name="mail_settings_pin_insertion_created_success">Kod PIN został utworzony.</string>
+ <string name="mail_settings_pin_insertion_changed_success">Kod PIN został zmieniony.</string>
+ <!-- Error messages -->
+ <string name="mail_settings_generic_error_message">Wystąpił błąd. Spróbuj ponownie.</string>
+ <!-- strings used for biometric enrollment -->
+ <string name="no_biometric_data_enrolled">Brak zapisanych danych biometrycznych</string>
+ <string name="log_in_using_biometric_credential">Odblokuj za pomocą biometrii</string>
+ <string name="unlock_using_biometrics">Odblokuj za pomocą biometrii</string>
+ <string name="biometric_error_hw_not_available">Sprzęt biometryczny nie jest dostępny.</string>
 </resources>

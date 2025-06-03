@@ -19,16 +19,16 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Terug</string>
   <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Automatisch vergrendelen</string>
-  <string name="mail_settings_auto_lock_item_title">Programma automatisch vergrendelen</string>
-  <string name="mail_settings_auto_lock_item_description">Schakel deze functie in om het programma automatisch te vergrendelen en gebruik een Pincode om te ontgrendelen.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Wijzig pincode</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Timer automatisch vergrendelen</string>
-  <string name="mail_settings_auto_lock_immediately">Onmiddellijk</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minuten inactiviteit</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minuten inactiviteit</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 uur inactiviteit</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 dag inactiviteit</string>
+  <string name="mail_pinlock_settings_title">Automatisch vergrendelen</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">Programma automatisch vergrendelen</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Schakel deze functie in om het programma automatisch te vergrendelen en gebruik een Pincode om te ontgrendelen.</string>
+  <string name="mail_pinlock_settings_change_pin_description">Wijzig pincode</string>
+  <string name="mail_pinlock_settings_change_interval_title">Timer automatisch vergrendelen</string>
+  <string name="mail_pinlock_settings_autolock_immediately">Onmiddellijk</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minuten inactiviteit</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minuten inactiviteit</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">1 uur inactiviteit</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">1 dag inactiviteit</string>
   <string name="mail_settings_auto_lock_update_error">Fout bij het bijwerken van instellingen</string>
   <string name="mail_settings_pin_insertion_input_title">Pincode invoeren</string>
   <string name="mail_settings_pin_insertion_set_title">Pincode instellen</string>

@@ -27,9 +27,7 @@ import ch.protonmail.android.mailsettings.data.local.MailSettingsDataSource
 import ch.protonmail.android.mailsettings.data.local.RustMailSettingsDataSource
 import ch.protonmail.android.mailsettings.data.repository.AlternativeRoutingRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.AppLanguageRepositoryImpl
-import ch.protonmail.android.mailsettings.data.repository.AutoLockRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.BackgroundSyncSettingRepositoryImpl
-import ch.protonmail.android.mailsettings.data.repository.BiometricsSystemStateRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.CombinedContactsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.LocalStorageDataRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.MobileFooterRepositoryImpl
@@ -38,16 +36,12 @@ import ch.protonmail.android.mailsettings.data.repository.PreventScreenshotsRepo
 import ch.protonmail.android.mailsettings.data.repository.RustMailSettingsRepository
 import ch.protonmail.android.mailsettings.data.repository.local.AlternativeRoutingLocalDataSource
 import ch.protonmail.android.mailsettings.data.repository.local.AlternativeRoutingLocalDataSourceImpl
-import ch.protonmail.android.mailsettings.data.repository.local.AutoLockLocalDataSource
-import ch.protonmail.android.mailsettings.data.repository.local.AutoLockLocalDataSourceImpl
 import ch.protonmail.android.mailsettings.data.repository.local.MobileFooterLocalDataSource
 import ch.protonmail.android.mailsettings.data.repository.local.MobileFooterLocalDataSourceImpl
 import ch.protonmail.android.mailsettings.domain.repository.AlternativeRoutingRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
-import ch.protonmail.android.mailsettings.domain.repository.AutoLockRepository
 import ch.protonmail.android.mailsettings.domain.repository.BackgroundSyncSettingRepository
-import ch.protonmail.android.mailsettings.domain.repository.BiometricsSystemStateRepository
 import ch.protonmail.android.mailsettings.domain.repository.CombinedContactsRepository
 import ch.protonmail.android.mailsettings.domain.repository.LocalStorageDataRepository
 import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
@@ -150,18 +144,6 @@ object SettingsModule {
         @Reusable
         fun bindLocalDataRepository(impl: LocalStorageDataRepositoryImpl): LocalStorageDataRepository
 
-        @Binds
-        @Reusable
-        fun bindAutoLockRepository(impl: AutoLockRepositoryImpl): AutoLockRepository
-
-        @Binds
-        @Singleton
-        fun bindAutoLockLocalDataSource(impl: AutoLockLocalDataSourceImpl): AutoLockLocalDataSource
-
-        @Binds
-        fun bindBiometricsSystemStateRepository(
-            impl: BiometricsSystemStateRepositoryImpl
-        ): BiometricsSystemStateRepository
 
         @Binds
         fun bindsMailSettingsDataSource(impl: RustMailSettingsDataSource): MailSettingsDataSource

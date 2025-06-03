@@ -19,16 +19,16 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Πίσω</string>
   <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Αυτόματο κλείδωμα</string>
-  <string name="mail_settings_auto_lock_item_title">Αυτόματο κλείδωμα εφαρμογής</string>
-  <string name="mail_settings_auto_lock_item_description">Ενεργοποιήστε αυτήν τη λειτουργία για να κλειδώσετε αυτόματα την εφαρμογή σας και χρησιμοποιήστε έναν κωδικό PIN για να την ξεκλειδώσετε.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Αλλάξτε κωδικό PIN</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Χρονικό όριο αυτόματου κλειδώματος</string>
-  <string name="mail_settings_auto_lock_immediately">Άμεσα</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 λεπτά αδράνειας</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 λεπτά αδράνειας</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 ώρα αδράνειας</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 ημέρα αδράνειας</string>
+  <string name="mail_pinlock_settings_title">Αυτόματο κλείδωμα</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">Αυτόματο κλείδωμα εφαρμογής</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Ενεργοποιήστε αυτήν τη λειτουργία για να κλειδώσετε αυτόματα την εφαρμογή σας και χρησιμοποιήστε έναν κωδικό PIN για να την ξεκλειδώσετε.</string>
+  <string name="mail_pinlock_settings_change_pin_description">Αλλάξτε κωδικό PIN</string>
+  <string name="mail_pinlock_settings_change_interval_title">Χρονικό όριο αυτόματου κλειδώματος</string>
+  <string name="mail_pinlock_settings_autolock_immediately">Άμεσα</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 λεπτά αδράνειας</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 λεπτά αδράνειας</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">1 ώρα αδράνειας</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">1 ημέρα αδράνειας</string>
   <string name="mail_settings_auto_lock_update_error">Σφάλμα κατά την ενημέρωση ρυθμίσεων</string>
   <string name="mail_settings_pin_insertion_input_title">Εισαγωγή κωδικού ΡΙΝ</string>
   <string name="mail_settings_pin_insertion_set_title">Ορισμός κωδικού PIN</string>

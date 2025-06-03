@@ -46,15 +46,9 @@ import ch.protonmail.android.mailpinlock.presentation.pin.mapper.AutoLockPinStep
 import ch.protonmail.android.mailpinlock.presentation.pin.mapper.AutoLockSuccessfulOperationUiMapper
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.AutoLockPinScreen
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockRemainingAttempts
-import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsState
+import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState
 import ch.protonmail.android.mailsettings.domain.repository.AutoLockPreferenceError
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.GetRemainingAutoLockAttempts
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.ObserveAutoLockPinValue
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.SaveAutoLockPin
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.ToggleAutoLockAttemptPendingStatus
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.ToggleAutoLockEnabled
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.UpdateLastForegroundMillis
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.UpdateRemainingAutoLockAttempts
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.biometric.GetCurrentAutoLockBiometricState
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.biometric.ObserveAutoLockBiometricsState
 import io.mockk.called

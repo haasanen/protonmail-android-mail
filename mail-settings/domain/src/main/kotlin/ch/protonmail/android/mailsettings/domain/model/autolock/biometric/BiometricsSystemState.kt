@@ -18,8 +18,3 @@
 
 package ch.protonmail.android.mailsettings.domain.model.autolock.biometric
 
-sealed interface BiometricsSystemState {
-    object BiometricEnrolled : BiometricsSystemState
-    object BiometricNotEnrolled : BiometricsSystemState
-    object BiometricNotAvailable : BiometricsSystemState
-}

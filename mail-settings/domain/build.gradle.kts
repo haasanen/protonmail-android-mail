@@ -50,6 +50,7 @@ dependencies {
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-session:domain"))
+    implementation(project(":mail-pin-lock:domain"))
 
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))

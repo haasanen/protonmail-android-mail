@@ -24,7 +24,7 @@ import android.content.Intent
 import android.os.Bundle
 import ch.protonmail.android.LockScreenActivity
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.ShouldPresentPinInsertionScreen
+import ch.protonmail.android.mailpinlock.domain.usecase.ShouldPresentPinInsertionScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest

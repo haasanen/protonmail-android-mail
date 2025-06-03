@@ -19,16 +19,16 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Назад</string>
   <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Аўтаблакіроўка</string>
-  <string name="mail_settings_auto_lock_item_title">Аўтаблакіроўка праграмы</string>
-  <string name="mail_settings_auto_lock_item_description">Уключыце гэту функцыю, каб аўтаматычна блакіраваць праграму і ўжываць PIN-код для яе разблакіроўкі.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Змяніць PIN-код</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Час аўтаблакіроўкі</string>
-  <string name="mail_settings_auto_lock_immediately">Неадкладна</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 хвілін бяздзейнасці</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 хвілін бяздзейнасці</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 гадзіна бяздзейнасці</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 дзень бяздзейнасці</string>
+  <string name="mail_pinlock_settings_title">Аўтаблакіроўка</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">Аўтаблакіроўка праграмы</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Уключыце гэту функцыю, каб аўтаматычна блакіраваць праграму і ўжываць PIN-код для яе разблакіроўкі.</string>
+  <string name="mail_pinlock_settings_change_pin_description">Змяніць PIN-код</string>
+  <string name="mail_pinlock_settings_change_interval_title">Час аўтаблакіроўкі</string>
+  <string name="mail_pinlock_settings_autolock_immediately">Неадкладна</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 хвілін бяздзейнасці</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 хвілін бяздзейнасці</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">1 гадзіна бяздзейнасці</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">1 дзень бяздзейнасці</string>
   <string name="mail_settings_auto_lock_update_error">Памылка абнаўлення налад</string>
   <string name="mail_settings_pin_insertion_input_title">Уставіць PIN-код</string>
   <string name="mail_settings_pin_insertion_set_title">Задаць PIN-код</string>

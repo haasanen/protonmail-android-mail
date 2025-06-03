@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2022 Proton Technologies AG
   ~ This file is part of Proton Technologies AG and Proton Mail.
   ~
@@ -17,50 +16,50 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="mail_pin_lock_toolbar_button_content_description">Back</string>
-  <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Automaattilukitus</string>
-  <string name="mail_settings_auto_lock_item_title">Lukitse sovellus automaattisesti</string>
-  <string name="mail_settings_auto_lock_item_description">Käytä ominaisuutta, jos haluat että sovellus lukkiutuu automaattisesti ja pyytää avattaessa PIN-koodia.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Vaihda PIN-koodi</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Automaattisen lukituksen viive</string>
-  <string name="mail_settings_auto_lock_immediately">Välittömästi</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minuutin toimettomuuden kuluttua</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minuutin toimettomuuden kuluttua</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">Tunnin toimettomuuden kuluttua</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">Vuorokauden toimettomuuden kuluttua</string>
-  <string name="mail_settings_auto_lock_update_error">Virhe päivitettäessä asetuksia</string>
-  <string name="mail_settings_pin_insertion_input_title">Syötä PIN-koodi</string>
-  <string name="mail_settings_pin_insertion_set_title">Aseta PIN-koodi</string>
-  <string name="mail_settings_pin_insertion_confirm_title">Vahvista PIN-koodi</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">Lukkokuvake</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">PIN-koodin täplä</string>
-  <string name="mail_settings_pin_insertion_backspace_description">Askelpalautin</string>
-  <string name="mail_settings_pin_insertion_biometric_description">Biometrinen todennus</string>
-  <string name="mail_settings_pin_insertion_button_create">Luo</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Vahvista</string>
-  <string name="mail_settings_pin_insertion_error_no_match">PIN-koodit eivät täsmää.</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="one">%s yritys jäljellä.</item>
-    <item quantity="other">%s yritystä jäljellä.</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="one">%s yritys jäljellä ennen kuin tiedot tuhotaan.</item>
-    <item quantity="other">%s yritystä jäljellä ennen kuin tiedot tuhotaan.</item>
-  </plurals>
-  <string name="mail_settings_pin_insertion_error_unknown">Virhe vahvistettaessa PIN-koodiasi.</string>
-  <string name="mail_settings_pin_insertion_signout_text">Kirjaudu ulos</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_title">Kirjaudu ulos</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_description">Haluatko varmasti kirjautua ulos?</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Kyllä</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_cancel">En</string>
-  <string name="mail_settings_pin_insertion_created_success">PIN-koodi luotiin.</string>
-  <string name="mail_settings_pin_insertion_changed_success">PIN-koodi vaihdettiin.</string>
-  <!-- Error messages -->
-  <string name="mail_settings_generic_error_message">Tapahtui virhe. Yritä uudelleen.</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">Biometriatietoja ei ole liitetty</string>
-  <string name="log_in_using_biometric_credential">Avaa biometrisillä tunnistetiedoillasi</string>
-  <string name="unlock_using_biometrics">Avaa biometrialla</string>
-  <string name="biometric_error_hw_not_available">Biometrialaitteita ei ole käytettävissä.</string>
+    <string name="mail_pin_lock_toolbar_button_content_description">Back</string>
+    <!-- Auto lock -->
+    <string name="mail_pinlock_settings_title">Automaattilukitus</string>
+    <string name="mail_pinlock_settings_toggle_autolock_title">Lukitse sovellus automaattisesti</string>
+    <string name="mail_pinlock_settings_toggle_autolock_description">Käytä ominaisuutta, jos haluat että sovellus lukkiutuu automaattisesti ja pyytää avattaessa PIN-koodia.</string>
+    <string name="mail_pinlock_settings_change_pin_description">Vaihda PIN-koodi</string>
+    <string name="mail_pinlock_settings_change_interval_title">Automaattisen lukituksen viive</string>
+    <string name="mail_pinlock_settings_autolock_immediately">Välittömästi</string>
+    <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minuutin toimettomuuden kuluttua</string>
+    <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minuutin toimettomuuden kuluttua</string>
+    <string name="mail_pinlock_settings_autolock_description_one_hour">Tunnin toimettomuuden kuluttua</string>
+    <string name="mail_pinlock_settings_autolock_description_one_day">Vuorokauden toimettomuuden kuluttua</string>
+    <string name="mail_settings_auto_lock_update_error">Virhe päivitettäessä asetuksia</string>
+    <string name="mail_settings_pin_insertion_input_title">Syötä PIN-koodi</string>
+    <string name="mail_settings_pin_insertion_set_title">Aseta PIN-koodi</string>
+    <string name="mail_settings_pin_insertion_confirm_title">Vahvista PIN-koodi</string>
+    <string name="mail_settings_pin_insertion_lock_icon_description">Lukkokuvake</string>
+    <string name="mail_settings_pin_insertion_pin_dot_description">PIN-koodin täplä</string>
+    <string name="mail_settings_pin_insertion_backspace_description">Askelpalautin</string>
+    <string name="mail_settings_pin_insertion_biometric_description">Biometrinen todennus</string>
+    <string name="mail_settings_pin_insertion_button_create">Luo</string>
+    <string name="mail_settings_pin_insertion_button_confirm">Vahvista</string>
+    <string name="mail_settings_pin_insertion_error_no_match">PIN-koodit eivät täsmää.</string>
+    <plurals name="mail_settings_pin_insertion_error_wrong_code">
+        <item quantity="one">%s yritys jäljellä.</item>
+        <item quantity="other">%s yritystä jäljellä.</item>
+    </plurals>
+    <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
+        <item quantity="one">%s yritys jäljellä ennen kuin tiedot tuhotaan.</item>
+        <item quantity="other">%s yritystä jäljellä ennen kuin tiedot tuhotaan.</item>
+    </plurals>
+    <string name="mail_settings_pin_insertion_error_unknown">Virhe vahvistettaessa PIN-koodiasi.</string>
+    <string name="mail_settings_pin_insertion_signout_text">Kirjaudu ulos</string>
+    <string name="mail_settings_pin_insertion_signout_dialog_title">Kirjaudu ulos</string>
+    <string name="mail_settings_pin_insertion_signout_dialog_description">Haluatko varmasti kirjautua ulos?</string>
+    <string name="mail_settings_pin_insertion_signout_dialog_confirm">Kyllä</string>
+    <string name="mail_settings_pin_insertion_signout_dialog_cancel">En</string>
+    <string name="mail_settings_pin_insertion_created_success">PIN-koodi luotiin.</string>
+    <string name="mail_settings_pin_insertion_changed_success">PIN-koodi vaihdettiin.</string>
+    <!-- Error messages -->
+    <string name="mail_settings_generic_error_message">Tapahtui virhe. Yritä uudelleen.</string>
+    <!-- strings used for biometric enrollment -->
+    <string name="no_biometric_data_enrolled">Biometriatietoja ei ole liitetty</string>
+    <string name="log_in_using_biometric_credential">Avaa biometrisillä tunnistetiedoillasi</string>
+    <string name="unlock_using_biometrics">Avaa biometrialla</string>
+    <string name="biometric_error_hw_not_available">Biometrialaitteita ei ole käytettävissä.</string>
 </resources>

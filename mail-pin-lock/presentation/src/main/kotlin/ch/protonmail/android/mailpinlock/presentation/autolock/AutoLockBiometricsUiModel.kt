@@ -27,6 +27,4 @@ data class AutoLockBiometricsUiModel(
     val enabled: Boolean,
     val biometricsEnrolled: Boolean,
     val biometricsHwAvailable: Boolean,
-    val biometricsEnrollmentError: Effect<TextUiModel> = Effect.empty(),
-    val biometricsHwError: Effect<TextUiModel> = Effect.empty()
 )

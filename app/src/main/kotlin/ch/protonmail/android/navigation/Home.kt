@@ -82,6 +82,7 @@ import ch.protonmail.android.navigation.route.addAlternativeRoutingSetting
 import ch.protonmail.android.navigation.route.addAppSettings
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen
 import ch.protonmail.android.navigation.route.addAutoLockSettings
+import ch.protonmail.android.navigation.route.addAutolockIntervalSettings
 import ch.protonmail.android.navigation.route.addBugReporting
 import ch.protonmail.android.navigation.route.addCombinedContactsSetting
 import ch.protonmail.android.navigation.route.addComposer
@@ -556,6 +557,7 @@ fun Home(
                         )
                         addSwipeActionsSettings(navController)
                         addThemeSettings(navController)
+                        addAutolockIntervalSettings(navController)
                         addNotificationsSettings(navController)
                         addExportLogsSettings(navController)
                         addFeatureFlagsOverrides(navController)

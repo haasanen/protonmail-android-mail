@@ -19,7 +19,7 @@
 package protonmail.android.mailpinlock.presentation.pin.mapper
 
 import ch.protonmail.android.mailpinlock.presentation.pin.mapper.AutoLockBiometricPromptUiMapper
-import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsState
+import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState
 import org.junit.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull

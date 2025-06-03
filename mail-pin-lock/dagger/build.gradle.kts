@@ -45,6 +45,7 @@ android {
 
 dependencies {
     implementation(project(":mail-pin-lock:domain"))
+    implementation(project(":mail-pin-lock:data"))
 
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)

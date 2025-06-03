@@ -20,110 +20,57 @@ package ch.protonmail.android.mailpinlock.presentation.autolock
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import arrow.core.getOrElse
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockInterval
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockPreference
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.biometric.ObserveAutoLockBiometricsState
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.ObserveAutoLockEnabled
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.ObserveAutoLockPinValue
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.ObserveSelectedAutoLockInterval
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.ToggleAutoLockBiometricsPreference
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.ToggleAutoLockEnabled
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.UpdateAutoLockInterval
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
+import ch.protonmail.android.mailpinlock.domain.AutolockRepository
+import ch.protonmail.android.mailpinlock.presentation.autolock.mapper.AutolockSettingsUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AutoLockSettingsViewModel @Inject constructor(
-    observeAutoLockEnabled: ObserveAutoLockEnabled,
-    observeSelectedAutoLockInterval: ObserveSelectedAutoLockInterval,
-    observeAutoLockBiometricsState: ObserveAutoLockBiometricsState,
-    private val observeAutoLockPinValue: ObserveAutoLockPinValue,
-    private val toggleAutoLockEnabled: ToggleAutoLockEnabled,
-    private val toggleAutoLockBiometricsPreference: ToggleAutoLockBiometricsPreference,
-    private val updateAutoLockInterval: UpdateAutoLockInterval,
-    private val reducer: AutoLockSettingsReducer
+    private val autolockRepository: AutolockRepository
 ) : ViewModel() {
 
-    private val mutableState = MutableStateFlow<AutoLockSettingsState>(AutoLockSettingsState.Loading)
-    val state = mutableState.asStateFlow()
+    private val _effects = MutableStateFlow(AutoLockSettingsEffects())
+    val effects = _effects.asStateFlow()
 
-    init {
-        combine(
-            observeAutoLockEnabled(),
-            observeSelectedAutoLockInterval(),
-            observeAutoLockBiometricsState()
-        ) { enabled, interval, biometrics ->
-            val isEnabled = enabled.getOrElse { AutoLockPreference(false) }
-            val lockInterval = interval.getOrElse { AutoLockInterval.Immediately }
-
-            emitNewStateFrom(AutoLockSettingsEvent.Data.Loaded(isEnabled, lockInterval, biometrics))
-        }.launchIn(viewModelScope)
-    }
+    val state = autolockRepository
+        .observeAppLock()
+        .map { autolock ->
+            val uiModel = AutolockSettingsUiMapper.toUiModel(autolock)
+            AutolockSettingsUiState.Data(settings = uiModel)
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(stopTimeoutMillis), AutolockSettingsUiState.Loading)
 
     internal fun submit(action: AutoLockSettingsViewAction) {
         viewModelScope.launch {
             when (action) {
                 is AutoLockSettingsViewAction.ToggleAutoLockPreference -> updateAutoLockEnabledValue(action.newValue)
-                is AutoLockSettingsViewAction.ToggleIntervalDropDownVisibility ->
-                    updateAutoLockDropDownVisible(action.value)
 
-                is AutoLockSettingsViewAction.UpdateAutoLockInterval -> updateAutoLockIntervalValue(action.interval)
-
-                is AutoLockSettingsViewAction.ToggleAutoLockBiometricsPreference ->
-                    handleToggleAutoLockBiometricsPreference(action)
+                // TODO inegrate the biometrics
+                //is AutoLockSettingsViewAction.ToggleAutoLockBiometricsPreference ->
+                // updateBiometricsEnabledValue(action.autoLockBiometricsUiModel)
+                else -> {}
             }
         }
     }
 
-    private fun updateAutoLockDropDownVisible(newValue: Boolean) {
-        emitNewStateFrom(AutoLockSettingsEvent.Update.AutoLockIntervalsDropDownToggled(newValue))
+    private suspend fun updateAutoLockEnabledValue(enabled: Boolean) {
+        // if turn off autolock - go to pin flow verify and turn off
+        // if turn on autolock - go to pin flow to set pin
     }
 
-    private suspend fun updateAutoLockEnabledValue(newValue: Boolean) {
-        if (newValue) {
-            observeAutoLockPinValue().firstOrNull()?.getOrNull()?.value?.takeIf { it.isNotEmpty() }
-                ?: return emitNewStateFrom(AutoLockSettingsEvent.ForcePinCreation)
+    private suspend fun updateBiometricsEnabledValue(enabled: Boolean) {
+        if (enabled) {
+            // both go to pin flow, need to confirm pin if disabling
+            // open pin verify flow
         }
-
-        toggleAutoLockEnabled(newValue)
-            .onRight { emitNewStateFrom(AutoLockSettingsEvent.Update.AutoLockPreferenceEnabled(newValue)) }
-            .onLeft { emitNewStateFrom(AutoLockSettingsEvent.UpdateError) }
-    }
-
-    private suspend fun handleToggleAutoLockBiometricsPreference(
-        action: AutoLockSettingsViewAction.ToggleAutoLockBiometricsPreference
-    ) {
-        val biometricsUiModel = action.autoLockBiometricsUiModel
-        return if (!biometricsUiModel.biometricsHwAvailable) {
-            emitNewStateFrom(AutoLockSettingsEvent.AutoLockBiometricsHwError)
-        } else if (!biometricsUiModel.biometricsEnrolled) {
-            emitNewStateFrom(AutoLockSettingsEvent.AutoLockBiometricsEnrollmentError)
-        } else {
-            updateAutoLockBiometricsPreference(!biometricsUiModel.enabled)
-        }
-    }
-
-    private suspend fun updateAutoLockBiometricsPreference(enabled: Boolean) {
-
-        toggleAutoLockBiometricsPreference(enabled)
-            .onRight { emitNewStateFrom(AutoLockSettingsEvent.Update.AutoLockBiometricsToggled(enabled)) }
-            .onLeft { emitNewStateFrom(AutoLockSettingsEvent.UpdateError) }
-    }
-
-    private suspend fun updateAutoLockIntervalValue(interval: AutoLockInterval) = updateAutoLockInterval(interval)
-        .onRight { emitNewStateFrom(AutoLockSettingsEvent.Update.AutoLockIntervalSet(interval)) }
-        .onLeft { emitNewStateFrom(AutoLockSettingsEvent.UpdateError) }
-
-
-    private fun emitNewStateFrom(event: AutoLockSettingsEvent) = mutableState.update {
-        reducer.newStateFrom(it, event)
     }
 }
+

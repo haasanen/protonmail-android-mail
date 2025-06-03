@@ -20,7 +20,7 @@ package ch.protonmail.android.mailpinlock.presentation.pin.mapper
 
 import ch.protonmail.android.mailpinlock.presentation.pin.PinInsertionStep
 import ch.protonmail.android.mailpinlock.presentation.pin.BiometricPinUiModel
-import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.AutoLockBiometricsState
+import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState
 import javax.inject.Inject
 
 class AutoLockBiometricPinUiMapper @Inject constructor() {
