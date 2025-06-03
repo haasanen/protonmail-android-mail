@@ -79,7 +79,6 @@ internal class MainStateModificationTest(
                         sender = SenderUiModel(draftUiModel.draftFields.sender.value),
                         body = draftUiModel.draftFields.body.value,
                         displayBody = draftUiModel.draftDisplayBodyUiModel
-
                     )
                 )
             ),
