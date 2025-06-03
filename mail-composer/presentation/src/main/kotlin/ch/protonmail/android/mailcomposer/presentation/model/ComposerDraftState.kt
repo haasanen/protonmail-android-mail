@@ -117,7 +117,15 @@ data class ComposerFields(
     val sender: SenderUiModel,
     val displayBody: DraftDisplayBodyUiModel,
     val body: String
-)
+) {
+    companion object {
+        val initial = ComposerFields(
+            sender = SenderUiModel(""),
+            displayBody = DraftDisplayBodyUiModel(""),
+            body = ""
+        )
+    }
+}
 
 enum class ContactSuggestionsField {
     TO,
