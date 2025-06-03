@@ -27,7 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonErrorMessage
-import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.design.compose.component.ProtonSettingsDetailsAppBar
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.websettings.SettingWebView
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsScreenActions
@@ -67,7 +67,7 @@ fun WebEmailSettingScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            ProtonSettingsTopBar(
+            ProtonSettingsDetailsAppBar(
                 title = stringResource(id = R.string.mail_settings_email_settings),
                 onBackClick = actions.onBackClick
             )
