@@ -47,6 +47,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -99,7 +100,8 @@ fun ProtonSettingsTopBar(
     modifier: Modifier = Modifier,
     title: String,
     actions: @Composable RowScope.() -> Unit = {},
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     ProtonMediumTopAppBar(
         modifier = modifier.fillMaxWidth(),
@@ -109,7 +111,8 @@ fun ProtonSettingsTopBar(
             IconButton(onClick = onBackClick) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.presentation_back))
             }
-        }
+        },
+        scrollBehavior = scrollBehavior
     )
 }
 
@@ -462,6 +465,7 @@ fun ProtonSettingsRadioItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(
     name = "Proton settings top bar light mode",
     showBackground = true,

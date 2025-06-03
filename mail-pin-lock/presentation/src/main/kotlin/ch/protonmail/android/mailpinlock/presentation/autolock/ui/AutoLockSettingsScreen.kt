@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailpinlock.presentation.autolock.ui
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,16 +27,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
+import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockInsertionMode
 import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockSettingsState
 import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockSettingsViewAction
 import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockSettingsViewModel
-import ch.protonmail.android.mailpinlock.presentation.R
+import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 
 @Composable
 fun AutoLockSettingsScreen(
@@ -65,6 +66,7 @@ fun AutoLockSettingsScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AutoLockSettingsScreen(
     modifier: Modifier = Modifier,
