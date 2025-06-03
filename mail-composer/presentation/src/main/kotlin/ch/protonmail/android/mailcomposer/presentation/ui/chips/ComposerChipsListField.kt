@@ -214,7 +214,8 @@ private fun ChipsListContent(
                 listState.createChip()
                 textFieldState.edit { delete(0, length) }
                 actions.onSuggestionsDismissed()
-            }
+            },
+            onDeleteLastItem = { listState.onDelete() }
         )
     }
 

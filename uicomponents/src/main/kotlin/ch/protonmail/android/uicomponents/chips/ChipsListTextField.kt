@@ -1,6 +1,8 @@
 package ch.protonmail.android.uicomponents.chips
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +28,9 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
@@ -42,6 +47,7 @@ import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
 import ch.protonmail.android.uicomponents.thenIf
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ChipsListTextField(
     state: ChipsListState,
@@ -121,6 +127,15 @@ fun ChipsListTextField(
                 .padding(vertical = ProtonDimens.Spacing.Large)
                 .padding(start = ProtonDimens.Spacing.Standard)
                 .padding(end = ProtonDimens.Spacing.Large)
+                .onPreviewKeyEvent { keyEvent ->
+                    if (keyEvent.key == Key.Backspace) {
+                        actions.onDeleteLastItem()
+                        bringRectIntoView(rect)
+                        true
+                    } else {
+                        false
+                    }
+                }
                 .onFocusChanged { actions.onFocusChanged(it) },
             state = textFieldState,
             keyboardOptions = keyboardOptions,
@@ -141,6 +156,7 @@ object ChipsListTextField {
     data class Actions(
         val onFocusChanged: (focusChange: FocusState) -> Unit,
         val onItemClicked: (index: Int) -> Unit,
+        val onDeleteLastItem: () -> Unit,
         val onTriggerChipCreation: () -> Unit
     )
 }
