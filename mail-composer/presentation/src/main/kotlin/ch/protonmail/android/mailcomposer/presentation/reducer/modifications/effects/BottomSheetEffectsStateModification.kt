@@ -16,18 +16,21 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.presentation.reducer.modifications
+package ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects
 
-import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.EffectsStateModification
+import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 
-internal interface ComposerStateModification<T> {
+internal sealed interface BottomSheetEffectsStateModification : EffectsStateModification {
+    data object ShowBottomSheet : EffectsStateModification {
 
-    fun apply(state: T): T
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
+            state.copy(changeBottomSheetVisibility = Effect.of(true))
+    }
+
+    data object HideBottomSheet : EffectsStateModification {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
+            state.copy(changeBottomSheetVisibility = Effect.of(false))
+    }
 }
-
-internal data class ComposerStateModifications(
-    val mainModification: MainStateModification? = null,
-    val attachmentsModification: AttachmentsStateModification? = null,
-    val accessoriesModification: AccessoriesStateModification? = null,
-    val effectsModification: EffectsStateModification? = null
-)

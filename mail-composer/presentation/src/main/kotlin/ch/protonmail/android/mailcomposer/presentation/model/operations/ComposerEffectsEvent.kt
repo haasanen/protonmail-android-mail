@@ -62,12 +62,16 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
         override fun toStateModifications(): ComposerStateModifications = ComposerStateModifications(
             effectsModification = when (this) {
                 is Error -> RecoverableError.AttachmentsStore(error)
-                is OnAddRequest -> ContentEffectsStateModifications.OnAddAttachmentRequested
+                OnAddFileRequest -> ContentEffectsStateModifications.OnAddAttachmentFileRequested
+                OnAddFromCameraRequest -> ContentEffectsStateModifications.OnAddAttachmentCameraRequested
+                OnAddMediaRequest -> ContentEffectsStateModifications.OnAddAttachmentPhotosRequested
             }
         )
 
         data class Error(val error: AttachmentAddError) : AttachmentEvent
-        data object OnAddRequest : AttachmentEvent
+        data object OnAddFileRequest : AttachmentEvent
+        data object OnAddMediaRequest : AttachmentEvent
+        data object OnAddFromCameraRequest : AttachmentEvent
     }
 
     sealed interface ComposerControlEvent : EffectsEvent {

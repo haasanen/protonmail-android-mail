@@ -22,44 +22,47 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AccessoriesStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.BottomSheetEffectsStateModification
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
 import kotlin.time.Duration
 
 internal sealed interface CompositeEvent : ComposerStateEvent {
 
     override fun toStateModifications(): ComposerStateModifications = when (this) {
         is DraftContentReady -> ComposerStateModifications(
-            mainModification = MainStateModification.OnDraftReady(draftUiModel)
-//            effectsModification = ContentEffectsStateModifications.DraftContentReady(
-//                senderValidationResult,
-//                isDataRefreshed,
-//                forceBodyFocus
-//            )
+            mainModification = MainStateModification.OnDraftReady(draftUiModel),
+            effectsModification = ContentEffectsStateModifications.DraftContentReady(
+                fields = draftUiModel,
+                isDataRefresh = isDataRefreshed,
+                forceBodyFocus = bodyShouldTakeFocus
+            )
         )
 
         is SenderAddressesListReady -> ComposerStateModifications(
-            mainModification = MainStateModification.SendersListReady(sendersList)
-//            effectsModification = BottomSheetEffectsStateModification.ShowBottomSheet
+            mainModification = MainStateModification.SendersListReady(sendersList),
+            effectsModification = BottomSheetEffectsStateModification.ShowBottomSheet
         )
 
         is OnSendWithEmptySubject -> ComposerStateModifications(
-            mainModification = MainStateModification.UpdateLoading(ComposerState.LoadingType.None)
-//            effectsModification = ConfirmationsEffectsStateModification.SendNoSubjectConfirmationRequested
+            mainModification = MainStateModification.UpdateLoading(ComposerState.LoadingType.None),
+            effectsModification = ConfirmationsEffectsStateModification.SendNoSubjectConfirmationRequested
         )
 
         is SetExpirationDismissed -> ComposerStateModifications(
-//            effectsModification = BottomSheetEffectsStateModification.HideBottomSheet,
-//            accessoriesModification = AccessoriesStateModification.MessageExpirationUpdated(expiration)
+            effectsModification = BottomSheetEffectsStateModification.HideBottomSheet,
+            accessoriesModification = AccessoriesStateModification.MessageExpirationUpdated(expiration)
         )
 
         is UserChangedSender -> ComposerStateModifications(
-            mainModification = MainStateModification.UpdateSender(newSender)
-//            effectsModification = BottomSheetEffectsStateModification.HideBottomSheet
+            mainModification = MainStateModification.UpdateSender(newSender),
+            effectsModification = BottomSheetEffectsStateModification.HideBottomSheet
         )
     }
 
-    // Replaces the existing PrefillDraftDataReceived
     data class DraftContentReady(
         val draftUiModel: DraftUiModel,
         val isDataRefreshed: Boolean,
