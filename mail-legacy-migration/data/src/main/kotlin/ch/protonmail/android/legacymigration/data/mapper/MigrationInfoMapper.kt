@@ -23,8 +23,8 @@ import ch.protonmail.android.legacymigration.domain.model.AccountPasswordMode
 import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserAddressInfo
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserInfo
-import uniffi.proton_mail_uniffi.MigrationData
-import uniffi.proton_mail_uniffi.PasswordMode
+import uniffi.proton_account_uniffi.MigrationData
+import uniffi.proton_account_uniffi.PasswordMode
 import javax.inject.Inject
 
 class MigrationInfoMapper @Inject constructor() {

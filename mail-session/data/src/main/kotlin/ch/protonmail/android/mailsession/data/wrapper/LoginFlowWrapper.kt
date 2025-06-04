@@ -25,7 +25,7 @@ import ch.protonmail.android.mailsession.domain.model.LoginError
 import ch.protonmail.android.mailsession.domain.model.toLoginError
 import uniffi.proton_mail_uniffi.LoginFlow
 import uniffi.proton_mail_uniffi.LoginFlowMigrateResult
-import uniffi.proton_mail_uniffi.MigrationData
+import uniffi.proton_account_uniffi.MigrationData
 
 class LoginFlowWrapper(private val loginFlow: LoginFlow) {
     suspend fun migrate(data: MigrationData): Either<LoginError, Unit> = when (val result = loginFlow.migrate(data)) {
