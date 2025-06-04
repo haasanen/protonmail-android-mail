@@ -33,6 +33,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
+import ch.protonmail.android.mailcomposer.presentation.model.ScheduleSendOptionsUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
@@ -58,6 +59,7 @@ class ComposerReducer @Inject constructor(
         is ComposerAction.AttachmentsAdded,
         is ComposerAction.FileAttachmentsAdded,
         is ComposerAction.RemoveInlineImage,
+        is ComposerAction.OnScheduleSendRequested,
         is ComposerAction.RemoveAttachment -> currentState
 
         is ComposerAction.SenderChanged -> updateSenderTo(currentState, this.sender)
@@ -172,7 +174,20 @@ class ComposerReducer @Inject constructor(
             stripInlineAttachment = Effect.of(this.contentId),
             changeBottomSheetVisibility = Effect.of(false)
         )
+
+        is ComposerEvent.ErrorGetScheduleSendOptions -> currentState.copy(
+            error = Effect.of(TextUiModel(R.string.composer_error_retrieving_schedule_send_options))
+        )
+        is ComposerEvent.ScheduleSendOptionsData -> updateStateForScheduleSendOptions(currentState, this.options)
     }
+
+    private fun updateStateForScheduleSendOptions(
+        currentState: ComposerDraftState,
+        options: ScheduleSendOptionsUiModel
+    ): ComposerDraftState = currentState.copy(
+        scheduleSendOptions = options,
+        changeBottomSheetVisibility = Effect.of(true)
+    )
 
     private fun updateStateForDeleteAttachmentError(currentState: ComposerDraftState): ComposerDraftState =
         currentState.copy(error = Effect.of(TextUiModel(R.string.composer_delete_attachment_error)))

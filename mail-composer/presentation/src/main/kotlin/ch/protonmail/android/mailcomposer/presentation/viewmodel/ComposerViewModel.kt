@@ -71,6 +71,7 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
+import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsChooseAttachmentSourceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ScheduleSendEnabled
@@ -132,6 +133,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val getDraftId: GetDraftId,
     private val savedStateHandle: SavedStateHandle,
     private val getEmbeddedImage: GetEmbeddedImage,
+    private val getFormattedScheduleSendOptions: GetFormattedScheduleSendOptions,
     @IsChooseAttachmentSourceEnabled private val chooseAttachmentSourceEnabled: Flow<Boolean>,
     @ScheduleSendEnabled private val scheduleSendEnabled: Flow<Boolean>,
     observePrimaryUserId: ObservePrimaryUserId
@@ -375,12 +377,19 @@ class ComposerViewModel @AssistedInject constructor(
                     is ComposerAction.OnAttachFromFiles -> emitNewStateFor(action)
                     is ComposerAction.OnAttachFromCamera -> emitNewStateFor(action)
                     is ComposerAction.OnAttachFromPhotos -> emitNewStateFor(action)
+                    is ComposerAction.OnScheduleSendRequested -> onScheduleSendRequested()
                 }
             }
         }
     }
 
     fun loadEmbeddedImage(contentId: String): EmbeddedImage? = getEmbeddedImage(contentId).getOrNull()
+
+    private suspend fun onScheduleSendRequested() {
+        getFormattedScheduleSendOptions()
+            .onLeft { emitNewStateFor(ComposerEvent.ErrorGetScheduleSendOptions) }
+            .onRight { emitNewStateFor(ComposerEvent.ScheduleSendOptionsData(it)) }
+    }
 
     private fun observeAttachments() {
         viewModelScope.launch {

@@ -49,6 +49,7 @@ internal sealed interface ComposerAction : ComposerOperation {
     data object OnAttachFromCamera : ComposerAction
     data object OnCloseComposer : ComposerAction
     data object OnSendMessage : ComposerAction
+    data object OnScheduleSendRequested : ComposerAction
     data object OnSetExpirationTimeRequested : ComposerAction
     data object ConfirmSendingWithoutSubject : ComposerAction
     data object RejectSendingWithoutSubject : ComposerAction
@@ -82,6 +83,7 @@ sealed interface ComposerEvent : ComposerOperation {
         val draftBody: DraftBody,
         val displayBodyUiModel: DraftDisplayBodyUiModel
     ) : ComposerEvent
+    data class ScheduleSendOptionsData(val options: ScheduleSendOptionsUiModel) : ComposerEvent
 
     data object ErrorLoadingDefaultSenderAddress : ComposerEvent
     data object ErrorFreeUserCannotChangeSender : ComposerEvent
@@ -100,4 +102,5 @@ sealed interface ComposerEvent : ComposerOperation {
     data class AddAttachmentError(val error: AttachmentAddError) : ComposerEvent
     data class InlineAttachmentAdded(val contentId: String) : ComposerEvent
     data class InlineAttachmentRemoved(val contentId: String) : ComposerEvent
+    data object ErrorGetScheduleSendOptions : ComposerEvent
 }

@@ -210,6 +210,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     onFiles = { viewModel.submit(ComposerAction.OnAttachFromFiles) },
                     onPhotos = { viewModel.submit(ComposerAction.OnAttachFromPhotos) }
                 )
+
+                is BottomSheetType.ScheduleSendOptions -> Text("options are ${state.scheduleSendOptions}")
             }
         },
         sheetState = bottomSheetState
@@ -226,7 +228,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                         viewModel.submit(ComposerAction.OnSendMessage)
                     },
                     onScheduleSendClick = {
-                        Timber.d("schedule send requested")
+                        bottomSheetType.value = BottomSheetType.ScheduleSendOptions
+                        viewModel.submit(ComposerAction.OnScheduleSendRequested)
                     },
                     isSendMessageEnabled = state.isSubmittable,
                     isScheduleSendFeatureFlagEnabled = isScheduleSendEnabled
@@ -579,6 +582,7 @@ private sealed interface BottomSheetType {
     data object ChangeSender : BottomSheetType
     data object SetExpirationTime : BottomSheetType
     data object AttachmentSources : BottomSheetType
+    data object ScheduleSendOptions : BottomSheetType
     data class InlineImageActions(val contentId: String) : BottomSheetType
 
     companion object {
@@ -597,6 +601,7 @@ private sealed interface BottomSheetType {
                     }
                     is SetExpirationTime -> mapOf(TYPE_KEY to SetExpirationTime::class.simpleName)
                     is AttachmentSources -> mapOf(TYPE_KEY to AttachmentSources::class.simpleName)
+                    is ScheduleSendOptions -> mapOf(TYPE_KEY to ScheduleSendOptions::class.simpleName)
                 }
             },
             restore = { map ->
@@ -605,6 +610,7 @@ private sealed interface BottomSheetType {
                     InlineImageActions::class.simpleName -> InlineImageActions(map[CONTENT_ID_KEY].toString())
                     SetExpirationTime::class.simpleName -> SetExpirationTime
                     AttachmentSources::class.simpleName -> AttachmentSources
+                    ScheduleSendOptions::class.simpleName -> ScheduleSendOptions
                     else -> throw IllegalStateException("Attempting to restore invalid bottom sheet type")
                 }
             }

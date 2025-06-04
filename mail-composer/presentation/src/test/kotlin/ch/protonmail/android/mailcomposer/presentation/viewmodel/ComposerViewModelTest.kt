@@ -70,6 +70,7 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
+import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -144,6 +145,7 @@ class ComposerViewModelTest {
     private val discardDraft = mockk<DiscardDraft>()
     private val getDraftId = mockk<GetDraftId>()
     private val getEmbeddedImage = mockk<GetEmbeddedImage>()
+    private val getFormattedScheduleSendOptions = mockk<GetFormattedScheduleSendOptions>()
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<MessageBodyWithType>()
@@ -154,6 +156,7 @@ class ComposerViewModelTest {
     private val attachmentUiModelMapper = AttachmentMetadataUiModelMapper()
     private val reducer = ComposerReducer(attachmentUiModelMapper)
     private val isAttachmentSourcesEnabled = flowOf(false)
+    private val isScheduleSendEnabled = flowOf(false)
 
     private val viewModel by lazy {
         ComposerViewModel(
@@ -179,7 +182,9 @@ class ComposerViewModelTest {
             getDraftId,
             savedStateHandle,
             getEmbeddedImage,
+            getFormattedScheduleSendOptions,
             isAttachmentSourcesEnabled,
+            isScheduleSendEnabled,
             observePrimaryUserIdMock
         )
     }

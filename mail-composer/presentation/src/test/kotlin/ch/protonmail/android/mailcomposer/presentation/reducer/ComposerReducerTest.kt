@@ -45,6 +45,8 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
+import ch.protonmail.android.mailcomposer.presentation.model.InstantWithFormattedTime
+import ch.protonmail.android.mailcomposer.presentation.model.ScheduleSendOptionsUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
@@ -61,6 +63,7 @@ import org.junit.runners.Parameterized
 import kotlin.test.assertEquals
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
+import kotlin.time.Instant
 
 @RunWith(Parameterized::class)
 class ComposerReducerTest(
@@ -698,7 +701,12 @@ class ComposerReducerTest(
             openPhotosPicker = Effect.empty(),
             confirmDiscardDraft = Effect.empty(),
             injectInlineAttachment = Effect.empty(),
-            stripInlineAttachment = Effect.empty()
+            stripInlineAttachment = Effect.empty(),
+            scheduleSendOptions = ScheduleSendOptionsUiModel(
+                tomorrow = InstantWithFormattedTime(Instant.DISTANT_PAST, ""),
+                monday = InstantWithFormattedTime(Instant.DISTANT_PAST, ""),
+                isCustomTimeOptionAvailable = false
+            )
         )
 
         private fun aNotSubmittableState(
@@ -752,7 +760,12 @@ class ComposerReducerTest(
             confirmDiscardDraft = Effect.empty(),
             focusTextBody = focusTextBody,
             injectInlineAttachment = Effect.empty(),
-            stripInlineAttachment = Effect.empty()
+            stripInlineAttachment = Effect.empty(),
+            scheduleSendOptions = ScheduleSendOptionsUiModel(
+                tomorrow = InstantWithFormattedTime(Instant.DISTANT_PAST, ""),
+                monday = InstantWithFormattedTime(Instant.DISTANT_PAST, ""),
+                isCustomTimeOptionAvailable = false
+            )
         )
 
         @JvmStatic
