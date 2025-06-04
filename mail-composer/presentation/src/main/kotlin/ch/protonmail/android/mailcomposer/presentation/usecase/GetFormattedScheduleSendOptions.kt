@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.usecase.GetAppLocale
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
 import ch.protonmail.android.mailcomposer.domain.usecase.GetScheduleSendOptions
+import ch.protonmail.android.mailcomposer.presentation.model.InstantWithFormattedTime
 import ch.protonmail.android.mailcomposer.presentation.model.ScheduleSendOptionsUiModel
 import javax.inject.Inject
 import kotlin.time.Instant
@@ -38,15 +39,15 @@ class GetFormattedScheduleSendOptions @Inject constructor(
     suspend operator fun invoke(): Either<DataError, ScheduleSendOptionsUiModel> =
         getScheduleSendOptions().map { it.toUiModel() }
 
-    private fun Instant.format(): String {
+    private fun Instant.toInstantWithFormattedTime(): InstantWithFormattedTime {
         val date = Date.from(this.toJavaInstant())
         val formatter = SimpleDateFormat("dd MMM 'at' HH:mm", getAppLocale())
-        return formatter.format(date)
+        return InstantWithFormattedTime(this, formatter.format(date))
     }
 
     private fun ScheduleSendOptions.toUiModel() = ScheduleSendOptionsUiModel(
-        tomorrowTimeFormatted = this.tomorrowTime.format(),
-        mondayTimeFormatted = this.mondayTime.format(),
+        tomorrow = this.tomorrowTime.toInstantWithFormattedTime(),
+        monday = this.mondayTime.toInstantWithFormattedTime(),
         isCustomTimeOptionAvailable = this.isCustomTimeOptionAvailable
     )
 }

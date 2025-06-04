@@ -24,6 +24,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import kotlin.time.Duration
+import kotlin.time.Instant
 
 data class ComposerDraftState(
     val fields: ComposerFields,
@@ -75,7 +76,11 @@ data class ComposerDraftState(
             error = Effect.empty(),
             isSubmittable = isSubmittable,
             senderAddresses = emptyList(),
-            scheduleSendOptions = ScheduleSendOptionsUiModel("", "", false),
+            scheduleSendOptions = ScheduleSendOptionsUiModel(
+                tomorrow = InstantWithFormattedTime(Instant.DISTANT_PAST, ""),
+                monday = InstantWithFormattedTime(Instant.DISTANT_PAST, ""),
+                isCustomTimeOptionAvailable = false
+            ),
             changeBottomSheetVisibility = Effect.empty(),
             closeComposer = Effect.empty(),
             closeComposerWithDraftSaved = Effect.empty(),

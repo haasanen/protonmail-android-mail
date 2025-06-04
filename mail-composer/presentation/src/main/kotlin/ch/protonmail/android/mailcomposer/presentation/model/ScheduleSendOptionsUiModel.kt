@@ -18,8 +18,15 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model
 
+import kotlin.time.Instant
+
 data class ScheduleSendOptionsUiModel(
-    val tomorrowTimeFormatted: String,
-    val mondayTimeFormatted: String,
+    val tomorrow: InstantWithFormattedTime,
+    val monday: InstantWithFormattedTime,
     val isCustomTimeOptionAvailable: Boolean
+)
+
+data class InstantWithFormattedTime(
+    val instant: Instant,
+    val formatted: String
 )
