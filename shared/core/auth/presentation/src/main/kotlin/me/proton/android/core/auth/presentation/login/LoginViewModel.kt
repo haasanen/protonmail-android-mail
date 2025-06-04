@@ -35,12 +35,12 @@ import me.proton.core.challenge.data.frame.ChallengeFrame
 import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
 import me.proton.core.util.kotlin.serialize
 import uniffi.proton_mail_uniffi.LoginError
-import uniffi.proton_mail_uniffi.LoginFlowToUserContextResult
 import uniffi.proton_mail_uniffi.LoginFlowUserIdResult
 import uniffi.proton_mail_uniffi.LoginScreenId
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
 import uniffi.proton_mail_uniffi.VoidLoginResult
+import uniffi.proton_mail_uniffi.MailSessionToUserContextResult
 import uniffi.proton_mail_uniffi.recordLoginScreenView
 import javax.inject.Inject
 
@@ -127,9 +127,9 @@ class LoginViewModel @Inject internal constructor(
     private fun onTwoFa(userId: String): LoginViewState.Awaiting2fa = LoginViewState.Awaiting2fa(userId)
 
     private suspend fun onLoggedIn(userId: String): LoginViewState {
-        return when (val result = getLoginFlow().toUserContext()) {
-            is LoginFlowToUserContextResult.Error -> LoginViewState.Error.LoginFlow("${result.v1}")
-            is LoginFlowToUserContextResult.Ok -> LoginViewState.LoggedIn(userId)
+        return when (val result = sessionInterface.toUserContext(getLoginFlow())) {
+            is MailSessionToUserContextResult.Error -> LoginViewState.Error.LoginFlow("${result.v1}")
+            is MailSessionToUserContextResult.Ok -> LoginViewState.LoggedIn(userId)
         }
     }
 

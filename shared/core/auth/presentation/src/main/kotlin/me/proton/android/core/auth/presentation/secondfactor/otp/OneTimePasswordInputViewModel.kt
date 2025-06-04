@@ -49,11 +49,11 @@ import me.proton.core.compose.viewmodel.stopTimeoutMillis
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_mail_uniffi.LoginError
 import uniffi.proton_mail_uniffi.LoginFlow
-import uniffi.proton_mail_uniffi.LoginFlowToUserContextResult
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
+import uniffi.proton_mail_uniffi.MailSessionToUserContextResult
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
@@ -132,9 +132,9 @@ class OneTimePasswordInputViewModel @Inject constructor(
     private fun onSuccess(loginFlow: LoginFlow): Flow<OneTimePasswordInputState> = flow {
         when (loginFlow.isAwaitingMailboxPassword()) {
             true -> emit(Awaiting2Pass)
-            false -> when (val result = loginFlow.toUserContext()) {
-                is LoginFlowToUserContextResult.Error -> emitAll(onError(result.v1))
-                is LoginFlowToUserContextResult.Ok -> emit(LoggedIn)
+            false -> when (val result = sessionInterface.toUserContext(loginFlow)) {
+                is MailSessionToUserContextResult.Error -> emitAll(onError(result.v1))
+                is MailSessionToUserContextResult.Ok -> emit(LoggedIn)
             }
         }
     }
