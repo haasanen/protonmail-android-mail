@@ -211,7 +211,12 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     onPhotos = { viewModel.submit(ComposerAction.OnAttachFromPhotos) }
                 )
 
-                is BottomSheetType.ScheduleSendOptions -> Text("options are ${state.scheduleSendOptions}")
+                is BottomSheetType.ScheduleSendOptions -> ScheduleSendBottomSheetContent(
+                    optionsUiModel = state.scheduleSendOptions,
+                    onScheduleSendConfirmed = {
+                        Timber.d("Schedule send confirmed, to happen at $it")
+                    }
+                )
             }
         },
         sheetState = bottomSheetState
