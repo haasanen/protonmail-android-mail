@@ -130,7 +130,7 @@ fun Recipient.toSingleRecipientEntry() = SingleRecipientEntry(
 )
 
 fun LocalDraftSendResult.toMessageSendingStatus(): MessageSendingStatus = when (val status = this.error) {
-    is DraftSendStatus.Success -> this.toMessageSendingStatusForSuccess(status.v1.toLong())
+    is DraftSendStatus.Success -> this.toMessageSendingStatusForSuccess(status.secondsUntilCancel.toLong())
     is DraftSendStatus.Failure -> this.toMessageSendingStatusForFailure(status.v1)
 }
 
