@@ -25,8 +25,8 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
-import uniffi.proton_mail_common.MailTheme
-import uniffi.proton_mail_common.ThemeOpts
+import uniffi.proton_mail_uniffi.MailTheme
+import uniffi.proton_mail_uniffi.ThemeOpts
 import uniffi.proton_mail_uniffi.AvailableActionsForMessageResult
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.availableActionsForMessage

@@ -18,10 +18,10 @@
 
 package ch.protonmail.android.mailcommon.data.mapper
 
-import uniffi.proton_mail_common.AutoDeleteBanner
-import uniffi.proton_mail_common.AutoDeleteState
-import uniffi.proton_mail_common.MessageBanner
-import uniffi.proton_mail_common.SpamOrTrash
+import uniffi.proton_mail_uniffi.AutoDeleteBanner
+import uniffi.proton_mail_uniffi.AutoDeleteState
+import uniffi.proton_mail_uniffi.MessageBanner
+import uniffi.proton_mail_uniffi.SpamOrTrash
 import uniffi.proton_mail_uniffi.AlmostAllMail
 import uniffi.proton_mail_uniffi.AppSettings
 import uniffi.proton_mail_uniffi.AttachmentMetadata

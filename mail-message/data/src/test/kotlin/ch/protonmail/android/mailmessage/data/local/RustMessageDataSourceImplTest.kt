@@ -61,9 +61,9 @@ import io.mockk.verify
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import uniffi.proton_mail_common.BodyOutput
-import uniffi.proton_mail_common.MessageBanner
-import uniffi.proton_mail_common.TransformOpts
+import uniffi.proton_mail_uniffi.BodyOutput
+import uniffi.proton_mail_uniffi.MessageBanner
+import uniffi.proton_mail_uniffi.TransformOpts
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.CustomFolderAction
 import uniffi.proton_mail_uniffi.Id

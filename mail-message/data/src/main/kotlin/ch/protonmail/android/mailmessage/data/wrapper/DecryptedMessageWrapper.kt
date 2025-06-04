@@ -25,8 +25,8 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import timber.log.Timber
-import uniffi.proton_mail_common.BodyOutput
-import uniffi.proton_mail_common.TransformOpts
+import uniffi.proton_mail_uniffi.BodyOutput
+import uniffi.proton_mail_uniffi.TransformOpts
 import uniffi.proton_mail_uniffi.BodyOutputResult
 import uniffi.proton_mail_uniffi.DecryptedMessage
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo

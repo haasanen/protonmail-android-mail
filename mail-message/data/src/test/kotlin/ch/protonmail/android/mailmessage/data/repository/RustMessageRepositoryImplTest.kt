@@ -48,9 +48,9 @@ import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Test
-import uniffi.proton_mail_common.BodyOutput
-import uniffi.proton_mail_common.MessageBanner
-import uniffi.proton_mail_common.TransformOpts
+import uniffi.proton_mail_uniffi.BodyOutput
+import uniffi.proton_mail_uniffi.MessageBanner
+import uniffi.proton_mail_uniffi.TransformOpts
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 

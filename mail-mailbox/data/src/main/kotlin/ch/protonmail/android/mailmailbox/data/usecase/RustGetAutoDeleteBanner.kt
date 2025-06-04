@@ -25,7 +25,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
-import uniffi.proton_mail_common.AutoDeleteBanner
+import uniffi.proton_mail_uniffi.AutoDeleteBanner
 import uniffi.proton_mail_uniffi.GetAutoDeleteBannerResult
 import uniffi.proton_mail_uniffi.getAutoDeleteBanner
 import javax.inject.Inject
