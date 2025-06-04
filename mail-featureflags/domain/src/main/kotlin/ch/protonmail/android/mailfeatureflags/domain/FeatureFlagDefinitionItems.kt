@@ -52,3 +52,11 @@ data object ChooseAttachmentSourceEnabled : FeatureFlagDefinition(
     description = "Allow to choose where to add attachments from (eg. camera, photos, files)",
     defaultValue = false
 )
+
+data object ScheduledSendEnabled : FeatureFlagDefinition(
+    key = "schedule_send_enabled",
+    name = "Schedule send",
+    category = FeatureFlagCategory.Composer,
+    description = "Allow to schedule messages for sending at a later time",
+    defaultValue = false
+)

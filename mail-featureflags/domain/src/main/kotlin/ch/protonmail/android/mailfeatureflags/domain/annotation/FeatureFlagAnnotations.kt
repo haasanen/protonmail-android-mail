@@ -22,6 +22,10 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class ScheduleSendEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class IsChooseAttachmentSourceEnabled
 
 @Qualifier
