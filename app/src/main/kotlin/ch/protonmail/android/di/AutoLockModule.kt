@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.di
 
-import ch.protonmail.android.mailsettings.domain.handler.ForegroundAwareAutoLockHandler
 import dagger.Module
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -30,8 +29,5 @@ internal interface AutoLockModule {
 
     @EntryPoint
     @InstallIn(SingletonComponent::class)
-    interface EntryPointModule {
-
-        fun autoLockHandler(): ForegroundAwareAutoLockHandler
-    }
+    interface EntryPointModule
 }

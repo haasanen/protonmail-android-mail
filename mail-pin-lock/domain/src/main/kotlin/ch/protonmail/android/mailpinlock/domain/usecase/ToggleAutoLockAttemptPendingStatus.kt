@@ -16,13 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.domain.usecase.autolock
+package ch.protonmail.android.mailpinlock.domain.usecase
 
-import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockAttemptPendingStatus
 import javax.inject.Inject
 
+// TODO pin convert to rust
 class ToggleAutoLockAttemptPendingStatus @Inject constructor() {
 
     suspend operator fun invoke(value: Boolean) = false
-        //autoLockRepository.updateAutoLockAttemptPendingStatus(AutoLockAttemptPendingStatus(value))
+    // autoLockRepository.updateAutoLockAttemptPendingStatus(AutoLockAttemptPendingStatus(value))
 }

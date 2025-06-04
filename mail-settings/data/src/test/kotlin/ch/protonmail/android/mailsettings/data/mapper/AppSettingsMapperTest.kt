@@ -69,18 +69,18 @@ class AppSettingsMapperTest {
     @Test
     fun `when map LocalAppSettings then Autolock is mapped`() {
         assertTrue(
-            localAppSettings.copy(autoLock = AutoLock.Always)
+            localAppSettings.copy(protection = AppProtection.PIN)
                 .toAppSettings()
                 .hasAutoLock
         )
 
         assertTrue(
-            localAppSettings.copy(autoLock = AutoLock.Minutes(UByte.MIN_VALUE))
+            localAppSettings.copy(protection = AppProtection.BIOMETRICS)
                 .toAppSettings()
                 .hasAutoLock
         )
         assertFalse(
-            localAppSettings.copy(autoLock = AutoLock.Never)
+            localAppSettings.copy(protection = AppProtection.NONE)
                 .toAppSettings()
                 .hasAutoLock
         )

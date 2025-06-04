@@ -24,16 +24,12 @@ import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockInsertionMode
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.AutoLockPinScreen
-import ch.protonmail.android.mailsettings.domain.usecase.autolock.ToggleAutoLockAttemptPendingStatus
+import ch.protonmail.android.mailpinlock.domain.usecase.ToggleAutoLockAttemptPendingStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.proton.core.util.kotlin.deserialize
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel

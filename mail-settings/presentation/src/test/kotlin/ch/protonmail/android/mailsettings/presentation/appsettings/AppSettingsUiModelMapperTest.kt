@@ -19,9 +19,11 @@
 package ch.protonmail.android.mailsettings.presentation.appsettings
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.presentation.R
+import ch.protonmail.android.mailsettings.presentation.testdata.AppSettingsTestData
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import kotlin.test.Test
@@ -42,19 +44,13 @@ internal class AppSettingsUiModelMapperTest(
 
     companion object {
 
-        val baseAppSettings = AppSettings(
-            hasAutoLock = false,
-            hasAlternativeRouting = false,
-            customAppLanguage = null,
-            hasDeviceContactsEnabled = false,
-            theme = Theme.SYSTEM_DEFAULT
-        )
+        val baseAppSettings = AppSettingsTestData.appSettings
 
         val baseUiModel = AppSettingsUiModel(
             autoLockEnabled = false,
-            alternativeRoutingEnabled = false,
+            alternativeRoutingEnabled = true,
             customLanguage = null,
-            deviceContactsEnabled = false,
+            deviceContactsEnabled = true,
             theme = TextUiModel.TextRes(R.string.mail_settings_system_default)
         )
 
@@ -82,9 +78,19 @@ internal class AppSettingsUiModelMapperTest(
                 baseUiModel.copy(customLanguage = "Custom language")
             ),
             arrayOf(
-                "to app settings with auto lock enabled",
-                baseAppSettings.copy(hasAutoLock = true),
+                "to app settings with pin lock enabled",
+                baseAppSettings.copy(autolockProtection = Protection.Pin),
                 baseUiModel.copy(autoLockEnabled = true)
+            ),
+            arrayOf(
+                "to app settings with biometrics lock enabled",
+                baseAppSettings.copy(autolockProtection = Protection.Biometrics),
+                baseUiModel.copy(autoLockEnabled = true)
+            ),
+            arrayOf(
+                "to app settings with no lock enabled",
+                baseAppSettings,
+                baseUiModel.copy(autoLockEnabled = false)
             ),
             arrayOf(
                 "to app settings with alternative routing enabled",

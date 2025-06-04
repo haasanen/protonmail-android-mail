@@ -18,13 +18,16 @@
 
 package ch.protonmail.android.mailsettings.presentation.testdata
 
+import ch.protonmail.android.mailpinlock.model.AutoLockInterval
+import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.Theme
 
 object AppSettingsTestData {
 
     val appSettings = AppSettings(
-        hasAutoLock = false,
+        autolockProtection = Protection.None,
+        autolockInterval = AutoLockInterval.Never,
         hasAlternativeRouting = true,
         customAppLanguage = null,
         hasDeviceContactsEnabled = true,

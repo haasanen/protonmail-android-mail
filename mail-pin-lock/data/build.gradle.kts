@@ -59,4 +59,9 @@ dependencies {
 
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
+
+    testImplementation(libs.proton.rust.core)
+    testImplementation(project(":test:utils"))
+    testImplementation(project(":test:test-data"))
+    testImplementation(libs.bundles.test)
 }

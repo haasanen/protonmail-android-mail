@@ -73,6 +73,7 @@ dependencies {
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
 
+    testImplementation(project(":mail-pin-lock:domain"))
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))

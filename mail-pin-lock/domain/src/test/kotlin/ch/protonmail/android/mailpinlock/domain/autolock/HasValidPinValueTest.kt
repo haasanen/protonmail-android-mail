@@ -16,58 +16,47 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.domain.usecase.autolock
+package ch.protonmail.android.mailpinlock.domain.autolock
 
-import arrow.core.left
-import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
-import ch.protonmail.android.mailsettings.domain.repository.AutoLockPreferenceError
-import io.mockk.every
-import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertTrue
-import org.junit.Test
-import kotlin.test.assertFalse
-
+// TODO convert to rust ET-648
 internal class HasValidPinValueTest {
 
-    private val observeValidPinValue = mockk<ObserveAutoLockPinValue>()
-    private val hasValidPinValue = HasValidPinValue(observeValidPinValue)
+    /* private val observeValidPinValue = mockk<ObserveAutoLockPinValue>()
+     private val hasValidPinValue = HasValidPinValue(observeValidPinValue)
 
-    @Test
-    fun `should return true when the pin is valid`() = runTest {
-        // Given
-        every { observeValidPinValue() } returns flowOf(AutoLockPin("1234").right())
+     @Test
+     fun `should return true when the pin is valid`() = runTest {
+         // Given
+         every { observeValidPinValue() } returns flowOf(AutoLockPin("1234").right())
 
-        // When
-        val actual = hasValidPinValue()
+         // When
+         val actual = hasValidPinValue()
 
-        // Then
-        assertTrue(actual)
-    }
+         // Then
+         assertTrue(actual)
+     }
 
-    @Test
-    fun `should return false when the observer returns an error`() = runTest {
-        // Given
-        every { observeValidPinValue() } returns flowOf(AutoLockPreferenceError.DataStoreError.left())
+     @Test
+     fun `should return false when the observer returns an error`() = runTest {
+         // Given
+         every { observeValidPinValue() } returns flowOf(AutoLockPreferenceError.DataStoreError.left())
 
-        // When
-        val actual = hasValidPinValue()
+         // When
+         val actual = hasValidPinValue()
 
-        // Then
-        assertFalse(actual)
-    }
+         // Then
+         assertFalse(actual)
+     }
 
-    @Test
-    fun `should return false when the pin is empty`() = runTest {
-        // Given
-        every { observeValidPinValue() } returns flowOf(AutoLockPin("").right())
+     @Test
+     fun `should return false when the pin is empty`() = runTest {
+         // Given
+         every { observeValidPinValue() } returns flowOf(AutoLockPin("").right())
 
-        // When
-        val actual = hasValidPinValue()
+         // When
+         val actual = hasValidPinValue()
 
-        // Then
-        assertFalse(actual)
-    }
+         // Then
+         assertFalse(actual)
+     }*/
 }

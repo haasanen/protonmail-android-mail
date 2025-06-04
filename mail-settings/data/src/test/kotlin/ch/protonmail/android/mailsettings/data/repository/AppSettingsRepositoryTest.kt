@@ -22,11 +22,14 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailpinlock.model.AutoLockInterval
+import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.data.wrapper.MailSessionWrapper
 import ch.protonmail.android.mailsettings.data.local.RustAppSettingsDataSource
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
+import ch.protonmail.android.mailsettings.domain.model.AppSettingsDiff
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
@@ -77,7 +80,8 @@ class AppSettingsRepositoryTest {
     )
 
     private val expectedAppSettings = AppSettings(
-        hasAutoLock = true,
+        autolockInterval = AutoLockInterval.Immediately,
+        autolockProtection = Protection.Pin,
         hasAlternativeRouting = true,
         customAppLanguage = AppLanguage.FRENCH.langName,
         hasDeviceContactsEnabled = true,
@@ -152,6 +156,47 @@ class AppSettingsRepositoryTest {
             assertEquals(expectedInitialAppSettings, awaitItem())
 
             appSettingsRepository.updateTheme(expectedUpdatedTheme)
+
+            assertEquals(expectedUpdatedAppSettings, awaitItem())
+        }
+    }
+
+    @Test
+    fun `when theme is updated via appDiff  then appSettings observer is also updated`() = runTest {
+        // Given
+        val expectedInitialAppSettings = expectedAppSettings
+        val expectedUpdatedTheme = Theme.DARK
+        val expectedUpdatedAppSettings = expectedAppSettings.copy(theme = expectedUpdatedTheme)
+
+        coEvery {
+            appSettingsDataSource.getAppSettings(any())
+        } returns mockAppSettings.right() andThen mockAppSettings.copy(AppAppearance.DARK_MODE).right()
+        // When
+        appSettingsRepository.observeAppSettings().test {
+            assertEquals(expectedInitialAppSettings, awaitItem())
+
+            appSettingsRepository.updateAppSettings(AppSettingsDiff(theme = expectedUpdatedTheme))
+
+            assertEquals(expectedUpdatedAppSettings, awaitItem())
+        }
+    }
+
+    @Test
+    fun `when interval is updated via appDiff then appSettings observer is also updated`() = runTest {
+        // Given
+        val expectedInitialAppSettings = expectedAppSettings
+        val expectedUpdatedInterval = AutoLockInterval.FifteenMinutes
+        val expectedUpdatedAppSettings = expectedAppSettings.copy(autolockInterval = expectedUpdatedInterval)
+        val minutes = 15L
+        coEvery {
+            appSettingsDataSource.getAppSettings(any())
+        } returns mockAppSettings.right() andThen mockAppSettings.copy(autoLock = AutoLock.Minutes(minutes.toUByte()))
+            .right()
+        // When
+        appSettingsRepository.observeAppSettings().test {
+            assertEquals(expectedInitialAppSettings, awaitItem())
+
+            appSettingsRepository.updateAppSettings(AppSettingsDiff(interval = expectedUpdatedInterval))
 
             assertEquals(expectedUpdatedAppSettings, awaitItem())
         }
