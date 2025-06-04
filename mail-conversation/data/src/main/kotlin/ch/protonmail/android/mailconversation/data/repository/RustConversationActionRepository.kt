@@ -34,6 +34,9 @@ import ch.protonmail.android.mailmessage.data.mapper.toAllBottomBarActions
 import ch.protonmail.android.mailmessage.data.mapper.toLabelAsActions
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toMailLabels
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
@@ -98,5 +101,24 @@ class RustConversationActionRepository @Inject constructor(
         Timber.v("rust-conversation: All bottombar actions: $allActions \n for convo $conversationIds")
 
         return allActions.map { it.toAllBottomBarActions() }
+    }
+
+    override fun observeAllBottomBarActions(
+        userId: UserId,
+        labelId: LabelId,
+        conversationId: ConversationId
+    ): Flow<Either<DataError, AllBottomBarActions>> {
+        return rustConversationDataSource.observeConversation(
+            userId = userId,
+            conversationId = conversationId.toLocalConversationId(),
+            labelId = labelId.toLocalLabelId()
+        ).mapLatest { conversationResult ->
+            conversationResult.fold(
+                ifLeft = { error -> Either.Left(error) },
+                ifRight = { conversation ->
+                    getAllBottomBarActions(userId, labelId, listOf(conversationId))
+                }
+            )
+        }.distinctUntilChanged()
     }
 }

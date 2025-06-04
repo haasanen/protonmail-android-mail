@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.domain
 
 import app.cash.turbine.test
+import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
@@ -26,20 +27,22 @@ import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailconversation.domain.usecase.GetAllConversationBottomBarActions
+import ch.protonmail.android.mailconversation.domain.usecase.ObserveAllConversationBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
 internal class ObserveDetailBottomBarActionsTest {
 
-    private val getAllConversationBottomBarActions = mockk<GetAllConversationBottomBarActions>()
+    private val observeAllConversationBottomBarActions = mockk<ObserveAllConversationBottomBarActions>()
 
-    private val observeDetailActions = ObserveDetailBottomBarActions(getAllConversationBottomBarActions)
+    private val observeDetailActions = ObserveDetailBottomBarActions(observeAllConversationBottomBarActions)
 
     @Test
     fun `returns visible bottom bar actions when use case succeeds`() = runTest {
@@ -52,8 +55,8 @@ internal class ObserveDetailBottomBarActionsTest {
             visibleActions = listOf(Action.Spam, Action.Archive)
         )
         coEvery {
-            getAllConversationBottomBarActions(userId, labelId, listOf(conversationId))
-        } returns allActions.right()
+            observeAllConversationBottomBarActions(userId, labelId, conversationId)
+        } returns flowOf(allActions.right())
 
         // When
         observeDetailActions(userId, labelId, conversationId).test {
@@ -65,13 +68,50 @@ internal class ObserveDetailBottomBarActionsTest {
     }
 
     @Test
+    fun `returns updated bottom bar actions when use new data is available`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val labelId = LabelIdSample.Trash
+        val conversationId = ConversationIdSample.Invoices
+
+        val flow = MutableSharedFlow<Either<DataError, AllBottomBarActions>>()
+
+        coEvery {
+            observeAllConversationBottomBarActions(userId, labelId, conversationId)
+        } returns flow
+
+        val actionsSet = AllBottomBarActions(
+            visibleActions = listOf(Action.Spam, Action.Archive),
+            hiddenActions = listOf(Action.Star, Action.Label)
+        )
+
+        val firstExpectedSet = listOf(Action.Spam, Action.Archive)
+
+        val finalActionsSet = AllBottomBarActions(
+            visibleActions = listOf(Action.Star, Action.Label),
+            hiddenActions = listOf(Action.Spam, Action.Archive)
+        )
+
+        val finalExpectedSet = listOf(Action.Star, Action.Label)
+
+        // When + Then
+        observeDetailActions(userId, labelId, conversationId).test {
+            flow.emit(actionsSet.right())
+            assertEquals(firstExpectedSet.right(), awaitItem())
+
+            flow.emit(finalActionsSet.right())
+            assertEquals(finalExpectedSet.right(), awaitItem())
+        }
+    }
+
+    @Test
     fun `returns error when failing to get available actions`() = runTest {
         // Given
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
         val conversationId = ConversationIdSample.Invoices
         val error = DataError.Local.Unknown.left()
-        coEvery { getAllConversationBottomBarActions(userId, labelId, listOf(conversationId)) } returns error
+        coEvery { observeDetailActions(userId, labelId, conversationId) } returns flowOf(error)
 
         // When
         observeDetailActions(userId, labelId, conversationId).test {
@@ -80,5 +120,4 @@ internal class ObserveDetailBottomBarActionsTest {
             awaitComplete()
         }
     }
-
 }

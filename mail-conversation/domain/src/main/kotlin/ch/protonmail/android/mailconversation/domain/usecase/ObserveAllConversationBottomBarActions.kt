@@ -16,29 +16,21 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maildetail.domain.usecase
+package ch.protonmail.android.mailconversation.domain.usecase
 
-import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.domain.usecase.ObserveAllConversationBottomBarActions
+import ch.protonmail.android.mailconversation.domain.repository.ConversationActionRepository
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class ObserveDetailBottomBarActions @Inject constructor(
-    private val observeAllConversationBottomBarActions: ObserveAllConversationBottomBarActions
+class ObserveAllConversationBottomBarActions @Inject constructor(
+    private val actionRepository: ConversationActionRepository
 ) {
 
     operator fun invoke(
         userId: UserId,
         labelId: LabelId,
         conversationId: ConversationId
-    ): Flow<Either<DataError, List<Action>>> = observeAllConversationBottomBarActions(userId, labelId, conversationId)
-        .map { eitherResult ->
-            eitherResult.map { allBottomBarActions -> allBottomBarActions.visibleActions }
-        }
+    ) = actionRepository.observeAllBottomBarActions(userId, labelId, conversationId)
 }
