@@ -24,12 +24,14 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
+import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.domain.entity.UserId
+import kotlin.time.Instant
 
 interface DraftRepository {
 
@@ -39,10 +41,12 @@ interface DraftRepository {
     suspend fun createDraft(userId: UserId, action: DraftAction): Either<DataError, DraftFields>
     suspend fun discardDraft(userId: UserId, messageId: MessageId): Either<DataError, Unit>
     suspend fun send(): Either<DataError, Unit>
+    suspend fun scheduleSend(time: Instant): Either<DataError, Unit>
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>
     suspend fun saveSubject(subject: Subject): Either<SaveDraftError, Unit>
     suspend fun saveBody(body: DraftBody): Either<SaveDraftError, Unit>
     suspend fun updateToRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     suspend fun updateCcRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     suspend fun updateBccRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
+    fun getScheduleSendOptions(): Either<DataError, ScheduleSendOptions>
 }

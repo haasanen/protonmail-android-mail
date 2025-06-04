@@ -35,6 +35,7 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
+import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
 import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
@@ -49,13 +50,21 @@ import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.DraftSaveError
 import uniffi.proton_mail_uniffi.DraftSaveErrorReason
+import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 import uniffi.proton_mail_uniffi.DraftSendErrorReason
 import uniffi.proton_mail_uniffi.DraftSendFailure
 import uniffi.proton_mail_uniffi.DraftSendStatus
 import uniffi.proton_mail_uniffi.DraftSyncStatus
 import uniffi.proton_mail_uniffi.SingleRecipientEntry
 import kotlin.time.DurationUnit
+import kotlin.time.Instant
 import kotlin.time.toDuration
+
+fun DraftScheduleSendOptions.toScheduleSendOptions() = ScheduleSendOptions(
+    tomorrowTime = Instant.fromEpochSeconds(this.tomorrowTime.toLong()),
+    mondayTime = Instant.fromEpochSeconds(this.mondayTime.toLong()),
+    isCustomTimeOptionAvailable = this.isCustomOptionAvailable
+)
 
 fun LocalDraftWithSyncStatus.toDraftFieldsWithSyncStatus() = when (this) {
     is LocalDraftWithSyncStatus.Local -> DraftFieldsWithSyncStatus.Local(this.localDraft.toDraftFields())

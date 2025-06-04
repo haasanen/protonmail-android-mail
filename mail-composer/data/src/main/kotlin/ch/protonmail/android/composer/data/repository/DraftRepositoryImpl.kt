@@ -23,11 +23,13 @@ import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.composer.data.mapper.toDraftFields
 import ch.protonmail.android.composer.data.mapper.toDraftFieldsWithSyncStatus
 import ch.protonmail.android.composer.data.mapper.toEmbeddedImage
+import ch.protonmail.android.composer.data.mapper.toScheduleSendOptions
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
+import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -36,6 +38,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
+import kotlin.time.Instant
 
 class DraftRepositoryImpl @Inject constructor(
     private val draftDataSource: RustDraftDataSource
@@ -68,7 +71,13 @@ class DraftRepositoryImpl @Inject constructor(
     override suspend fun updateBccRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit> =
         draftDataSource.updateBccRecipients(recipients)
 
+    override fun getScheduleSendOptions(): Either<DataError, ScheduleSendOptions> =
+        draftDataSource.getScheduleSendOptions().map { it.toScheduleSendOptions() }
+
     override suspend fun send(): Either<DataError, Unit> = draftDataSource.send()
+
+    override suspend fun scheduleSend(time: Instant): Either<DataError, Unit> =
+        draftDataSource.scheduleSend(time.epochSeconds)
 
     override suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
         draftDataSource.undoSend(userId, messageId)

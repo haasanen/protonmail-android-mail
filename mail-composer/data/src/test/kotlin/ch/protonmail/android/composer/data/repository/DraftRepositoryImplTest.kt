@@ -9,6 +9,7 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
+import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -17,8 +18,10 @@ import ch.protonmail.android.testdata.composer.LocalDraftTestData
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Instant
 
 class DraftRepositoryImplTest {
 
@@ -190,6 +193,68 @@ class DraftRepositoryImplTest {
 
         // When
         val actual = draftRepository.send()
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `returns success when get schedule send options succeeds`() = runTest {
+        // Given
+        val tomorrowTime = 123uL
+        val mondayTime = 456uL
+        val localOptions = DraftScheduleSendOptions(tomorrowTime, mondayTime, false)
+        val expected = ScheduleSendOptions(
+            Instant.fromEpochSeconds(tomorrowTime.toLong()),
+            Instant.fromEpochSeconds(mondayTime.toLong()),
+            isCustomTimeOptionAvailable = false
+        )
+        coEvery { draftDataSource.getScheduleSendOptions() } returns localOptions.right()
+
+        // When
+        val actual = draftRepository.getScheduleSendOptions()
+
+        // Then
+        assertEquals(expected.right(), actual)
+    }
+
+    @Test
+    fun `returns error when get schedule send options fails`() = runTest {
+        // Given
+        val expected = DataError.Local.Unknown
+        coEvery { draftDataSource.getScheduleSendOptions() } returns expected.left()
+
+        // When
+        val actual = draftRepository.getScheduleSendOptions()
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `returns success when schedule send succeeds`() = runTest {
+        // Given
+        val timestamp = 123L
+        val time = Instant.fromEpochSeconds(timestamp)
+        coEvery { draftDataSource.scheduleSend(timestamp) } returns Unit.right()
+
+        // When
+        val actual = draftRepository.scheduleSend(time)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `returns error when schedule send fails`() = runTest {
+        // Given
+        val timestamp = 123L
+        val time = Instant.fromEpochSeconds(timestamp)
+        val expected = DataError.Local.Unknown
+        coEvery { draftDataSource.scheduleSend(timestamp) } returns expected.left()
+
+        // When
+        val actual = draftRepository.scheduleSend(time)
 
         // Then
         assertEquals(expected.left(), actual)
