@@ -182,7 +182,7 @@ class MigrateLegacyApplicationTest {
     fun `should not throw on failures and still continue`() = runTest {
         // Given
         coEvery { shouldMigrateLegacyAccount() } returns true
-        coEvery { migrateLegacyAccounts() } returns listOf(MigrationError.MigrateFailed.InvalidCredentials).left()
+        coEvery { migrateLegacyAccounts() } returns listOf(MigrationError.MigrateFailed.AuthenticationFailure).left()
         coEvery { isLegacyAutoLockEnabled() } returns true
         coEvery { shouldMigrateAutoLockPin() } returns true
         coEvery { migrateLegacyAutoLockPinCode() } returns MigrationError.AutoLockFailure.FailedToSetAutoLockPin.left()

@@ -82,8 +82,8 @@ class LegacyAccountRepositoryImpl @Inject constructor(
 }
 
 fun LoginError.toMigrationError(): MigrationError.MigrateFailed = when (this) {
-    is LoginError.InvalidCredentials -> MigrationError.MigrateFailed.InvalidCredentials
-    is LoginError.UnsupportedTwoFactorAuthentication -> MigrationError.MigrateFailed.UnsupportedTwoFactorAuth
-    is LoginError.CannotUnlockUserKey -> MigrationError.MigrateFailed.CantUnlockUserKey
-    is LoginError.Other -> MigrationError.MigrateFailed.Other(error)
+    is LoginError.ApiFailure -> MigrationError.MigrateFailed.ApiFailure
+    is LoginError.InternalError -> MigrationError.MigrateFailed.InternalError
+    is LoginError.AuthenticationFailure -> MigrationError.MigrateFailed.AuthenticationFailure
+    is LoginError.Unknown -> MigrationError.MigrateFailed.Unknown
 }

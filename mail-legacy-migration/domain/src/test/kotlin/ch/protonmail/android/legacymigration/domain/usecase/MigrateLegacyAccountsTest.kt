@@ -83,7 +83,6 @@ class MigrateLegacyAccountsTest {
     )
 
     private val legacyDbError: MigrationError = MigrationError.LegacyDbFailure.MissingUser
-    private val migrateFailError: MigrationError = MigrationError.MigrateFailed.InvalidCredentials
 
     private val migrateLegacyAccounts = MigrateLegacyAccounts(
         legacyAccountRepository, setPrimaryAccountAfterMigration

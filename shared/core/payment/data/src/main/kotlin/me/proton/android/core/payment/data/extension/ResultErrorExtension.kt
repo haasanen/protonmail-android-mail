@@ -30,18 +30,19 @@ import uniffi.proton_mail_uniffi.ProtonError.SessionExpired
 import uniffi.proton_mail_uniffi.ProtonError.Unexpected
 import uniffi.proton_mail_uniffi.SessionErrorReason
 import uniffi.proton_mail_uniffi.UnexpectedError
-import uniffi.proton_mail_uniffi.UserApiServiceError
-import uniffi.proton_mail_uniffi.UserApiServiceError.BadGateway
-import uniffi.proton_mail_uniffi.UserApiServiceError.BadRequest
-import uniffi.proton_mail_uniffi.UserApiServiceError.InternalServerError
-import uniffi.proton_mail_uniffi.UserApiServiceError.NotFound
-import uniffi.proton_mail_uniffi.UserApiServiceError.NotImplemented
-import uniffi.proton_mail_uniffi.UserApiServiceError.OtherHttpError
-import uniffi.proton_mail_uniffi.UserApiServiceError.ServiceUnavailable
-import uniffi.proton_mail_uniffi.UserApiServiceError.TooManyRequest
-import uniffi.proton_mail_uniffi.UserApiServiceError.Unauthorized
-import uniffi.proton_mail_uniffi.UserApiServiceError.UnprocessableEntity
 import uniffi.proton_mail_uniffi.UserSessionError
+import uniffi.uniffi_common.UserApiServiceError.BadGateway
+import uniffi.uniffi_common.UserApiServiceError.InternalServerError
+import uniffi.uniffi_common.UserApiServiceError.NotFound
+import uniffi.uniffi_common.UserApiServiceError.NotImplemented
+import uniffi.uniffi_common.UserApiServiceError.OtherHttpError
+import uniffi.uniffi_common.UserApiServiceError.ServiceUnavailable
+import uniffi.uniffi_common.UserApiServiceError.Unauthorized
+import uniffi.uniffi_common.UserApiServiceError.UnprocessableEntity
+import uniffi.uniffi_common.UserApiServiceError.Internal
+import uniffi.uniffi_common.UserApiServiceError.OtherNetwork
+import uniffi.uniffi_common.UserApiServiceError.TooManyRequests
+import uniffi.uniffi_common.UserApiServiceError
 
 fun UserSessionError.getErrorMessage(context: Context) = when (this) {
     is UserSessionError.Other -> this.v1.getErrorMessage(context)
@@ -63,16 +64,18 @@ fun ProtonError.getErrorMessage(context: Context) = when (this) {
 }
 
 fun UserApiServiceError.getErrorMessage() = when (this) {
-    is BadRequest -> v1
+    is UserApiServiceError.BadRequest -> v1
     is OtherHttpError -> v2
     is BadGateway -> v1
     is InternalServerError -> v1
     is NotFound -> v1
     is NotImplemented -> v1
     is ServiceUnavailable -> v1
-    is TooManyRequest -> v1
     is Unauthorized -> v1
     is UnprocessableEntity -> v1
+    is Internal -> v1
+    is OtherNetwork -> v1
+    is TooManyRequests -> v1
 }
 
 fun UnexpectedError.getErrorMessage() = when (this) {

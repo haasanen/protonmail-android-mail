@@ -23,8 +23,8 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailsession.domain.model.LoginError
 import ch.protonmail.android.mailsession.domain.model.toLoginError
-import uniffi.proton_mail_uniffi.LoginFlow
-import uniffi.proton_mail_uniffi.LoginFlowMigrateResult
+import uniffi.proton_account_uniffi.LoginFlow
+import uniffi.proton_account_uniffi.LoginFlowMigrateResult
 import uniffi.proton_account_uniffi.MigrationData
 
 class LoginFlowWrapper(private val loginFlow: LoginFlow) {

@@ -18,8 +18,6 @@
 
 package ch.protonmail.android.legacymigration.domain.model
 
-import ch.protonmail.android.mailcommon.domain.model.DataError
-
 sealed interface MigrationError {
     sealed interface LegacyDbFailure {
         data object MissingPrimaryUserId : MigrationError
@@ -49,9 +47,9 @@ sealed interface MigrationError {
 
     // Error during migration with specific known reason
     sealed interface MigrateFailed : MigrationError {
-        data object InvalidCredentials : MigrateFailed
-        data object UnsupportedTwoFactorAuth : MigrateFailed
-        data object CantUnlockUserKey : MigrateFailed
-        data class Other(val error: DataError) : MigrateFailed
+        data object ApiFailure : MigrateFailed
+        data object InternalError : MigrateFailed
+        data object AuthenticationFailure : MigrateFailed
+        data object Unknown : MigrateFailed
     }
 }

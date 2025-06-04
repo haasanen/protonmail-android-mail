@@ -47,8 +47,10 @@ import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePassword
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.LoggedIn
 import me.proton.core.compose.viewmodel.stopTimeoutMillis
 import me.proton.core.util.kotlin.CoreLogger
-import uniffi.proton_mail_uniffi.LoginError
-import uniffi.proton_mail_uniffi.LoginFlow
+import uniffi.proton_account_uniffi.LoginError
+import uniffi.proton_account_uniffi.LoginFlow
+import uniffi.proton_account_uniffi.LoginFlowSubmitTotpResult
+import uniffi.proton_mail_uniffi.MailLoginError
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
@@ -57,7 +59,6 @@ import uniffi.proton_mail_uniffi.MailSessionToUserContextResult
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
-import uniffi.proton_mail_uniffi.VoidLoginResult
 import javax.inject.Inject
 
 @HiltViewModel
@@ -111,22 +112,26 @@ class OneTimePasswordInputViewModel @Inject constructor(
             is MailSessionResumeLoginFlowResult.Error -> emitAll(onError(loginFlow.v1))
             is MailSessionResumeLoginFlowResult.Ok -> {
                 when (val submit = loginFlow.v1.submitTotp(action.code)) {
-                    is VoidLoginResult.Error -> emitAll(onError(submit.v1))
-                    is VoidLoginResult.Ok -> emitAll(onSuccess(loginFlow.v1))
+                    is LoginFlowSubmitTotpResult.Error -> emitAll(onError(submit.v1))
+                    is LoginFlowSubmitTotpResult.Ok -> emitAll(onSuccess(loginFlow.v1))
                 }
             }
         }
     }
 
-    private fun onError(error: LoginError): Flow<OneTimePasswordInputState> = flow {
+    private fun onError(error: MailLoginError): Flow<OneTimePasswordInputState> = flow {
         emit(Error.LoginFlow(error.getErrorMessage(context)))
 
-        when ((error as? LoginError.Other)?.v1) {
+        when ((error as? MailLoginError.Other)?.v1) {
             ProtonError.SessionExpired,
             is ProtonError.Unexpected -> emitAll(onClose())
 
             else -> Unit
         }
+    }
+
+    private fun onError(error: LoginError): Flow<OneTimePasswordInputState> = flow {
+        emit(Error.LoginFlow(error.getErrorMessage()))
     }
 
     private fun onSuccess(loginFlow: LoginFlow): Flow<OneTimePasswordInputState> = flow {

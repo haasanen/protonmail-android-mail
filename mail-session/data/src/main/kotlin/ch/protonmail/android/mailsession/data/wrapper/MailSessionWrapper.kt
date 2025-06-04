@@ -26,7 +26,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalUserId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.data.mapper.toAutoLockPinError
-import ch.protonmail.android.mailsession.domain.model.LoginError
+import ch.protonmail.android.mailsession.domain.model.MailLoginError
 import ch.protonmail.android.mailsession.domain.model.toLoginError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.BackgroundExecutionCallback
@@ -121,7 +121,7 @@ class MailSessionWrapper(private val mailSession: MailSession) {
 
     fun startBackgroundTask(callback: BackgroundExecutionCallback) = mailSession.startBackgroundExecution(callback)
 
-    suspend fun newLoginFlow(): Either<LoginError, LoginFlowWrapper> {
+    suspend fun newLoginFlow(): Either<MailLoginError, LoginFlowWrapper> {
         return when (val result = mailSession.newLoginFlow()) {
             is MailSessionNewLoginFlowResult.Ok -> LoginFlowWrapper(result.v1).right()
             is MailSessionNewLoginFlowResult.Error -> result.v1.toLoginError().left()

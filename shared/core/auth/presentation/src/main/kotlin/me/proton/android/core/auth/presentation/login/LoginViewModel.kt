@@ -34,12 +34,13 @@ import me.proton.android.core.auth.presentation.challenge.GetChallengePayload
 import me.proton.core.challenge.data.frame.ChallengeFrame
 import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
 import me.proton.core.util.kotlin.serialize
-import uniffi.proton_mail_uniffi.LoginError
-import uniffi.proton_mail_uniffi.LoginFlowUserIdResult
+import uniffi.proton_account_uniffi.LoginError
+import uniffi.proton_account_uniffi.LoginFlowLoginResult
+import uniffi.proton_account_uniffi.LoginFlowUserIdResult
 import uniffi.proton_mail_uniffi.LoginScreenId
+import uniffi.proton_mail_uniffi.MailLoginError
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
-import uniffi.proton_mail_uniffi.VoidLoginResult
 import uniffi.proton_mail_uniffi.MailSessionToUserContextResult
 import uniffi.proton_mail_uniffi.recordLoginScreenView
 import javax.inject.Inject
@@ -93,8 +94,8 @@ class LoginViewModel @Inject internal constructor(
         val payloadJson = payload.serialize()
         val result = getLoginFlow().login(email = username, password = password, fingerprintPayload = payloadJson)
         when (result) {
-            is VoidLoginResult.Error -> onError(result.v1)
-            is VoidLoginResult.Ok -> onSuccess()
+            is LoginFlowLoginResult.Error -> onError(result.v1)
+            is LoginFlowLoginResult.Ok -> onSuccess()
         }
     }
 
@@ -102,12 +103,18 @@ class LoginViewModel @Inject internal constructor(
         mutableState.emit(getLoginViewState())
     }
 
+    private suspend fun onError(error: MailLoginError) {
+        mutableState.emit(getError(error))
+    }
+
     private suspend fun onError(error: LoginError) {
         mutableState.emit(getError(error))
     }
 
-    private fun getError(error: LoginError): LoginViewState =
+    private fun getError(error: MailLoginError): LoginViewState =
         LoginViewState.Error.LoginFlow(error.getErrorMessage(context))
+
+    private fun getError(error: LoginError): LoginViewState = LoginViewState.Error.LoginFlow(error.getErrorMessage())
 
     private suspend fun getLoginViewState(): LoginViewState {
         val userId = when (val result = getLoginFlow().userId()) {

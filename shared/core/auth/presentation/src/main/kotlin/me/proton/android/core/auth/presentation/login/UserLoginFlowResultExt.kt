@@ -21,8 +21,9 @@ import android.content.Context
 import me.proton.android.core.auth.presentation.LogTag
 import me.proton.android.core.auth.presentation.R
 import me.proton.core.util.kotlin.CoreLogger
-import uniffi.proton_mail_uniffi.LoginError
+import uniffi.proton_account_uniffi.LoginError
 import uniffi.proton_mail_uniffi.LoginErrorReason
+import uniffi.proton_mail_uniffi.MailLoginError
 import uniffi.proton_mail_uniffi.OtherErrorReason
 import uniffi.proton_mail_uniffi.OtherErrorReason.InvalidParameter
 import uniffi.proton_mail_uniffi.OtherErrorReason.Other
@@ -33,21 +34,44 @@ import uniffi.proton_mail_uniffi.ProtonError.ServerError
 import uniffi.proton_mail_uniffi.ProtonError.SessionExpired
 import uniffi.proton_mail_uniffi.ProtonError.Unexpected
 import uniffi.proton_mail_uniffi.UnexpectedError
-import uniffi.proton_mail_uniffi.UserApiServiceError
-import uniffi.proton_mail_uniffi.UserApiServiceError.BadGateway
-import uniffi.proton_mail_uniffi.UserApiServiceError.BadRequest
-import uniffi.proton_mail_uniffi.UserApiServiceError.InternalServerError
-import uniffi.proton_mail_uniffi.UserApiServiceError.NotFound
-import uniffi.proton_mail_uniffi.UserApiServiceError.NotImplemented
-import uniffi.proton_mail_uniffi.UserApiServiceError.OtherHttpError
-import uniffi.proton_mail_uniffi.UserApiServiceError.ServiceUnavailable
-import uniffi.proton_mail_uniffi.UserApiServiceError.TooManyRequest
-import uniffi.proton_mail_uniffi.UserApiServiceError.Unauthorized
-import uniffi.proton_mail_uniffi.UserApiServiceError.UnprocessableEntity
+import uniffi.uniffi_common.UserApiServiceError.BadGateway
+import uniffi.uniffi_common.UserApiServiceError.BadRequest
+import uniffi.uniffi_common.UserApiServiceError.InternalServerError
+import uniffi.uniffi_common.UserApiServiceError.NotFound
+import uniffi.uniffi_common.UserApiServiceError.NotImplemented
+import uniffi.uniffi_common.UserApiServiceError.OtherHttpError
+import uniffi.uniffi_common.UserApiServiceError.ServiceUnavailable
+import uniffi.uniffi_common.UserApiServiceError.Unauthorized
+import uniffi.uniffi_common.UserApiServiceError.UnprocessableEntity
+import uniffi.uniffi_common.UserApiServiceError.Internal
+import uniffi.uniffi_common.UserApiServiceError.OtherNetwork
+import uniffi.uniffi_common.UserApiServiceError.TooManyRequests
+import uniffi.uniffi_common.UserApiServiceError
 
-fun LoginError.getErrorMessage(context: Context) = when (this) {
-    is LoginError.Other -> this.v1.getErrorMessage(context)
-    is LoginError.Reason -> this.v1.getErrorMessage(context)
+fun MailLoginError.getErrorMessage(context: Context) = when (this) {
+    is MailLoginError.Other -> this.v1.getErrorMessage(context)
+    is MailLoginError.Reason -> this.v1.getErrorMessage(context)
+}
+
+fun LoginError.getErrorMessage(): String = when (this) {
+    is LoginError.FlowLogin -> v1.getErrorMessage()
+    is LoginError.FlowTotp -> v1.getErrorMessage()
+    is LoginError.FlowFido -> v1.getErrorMessage()
+    is LoginError.UserFetch -> v1.getErrorMessage()
+    is LoginError.KeySecretSaltFetch -> v1.getErrorMessage()
+
+    is LoginError.KeySecretAuthUpdate -> v1
+    is LoginError.KeySecretDerivation -> v1
+    is LoginError.ServerProof -> v1
+    is LoginError.SrpProof -> v1
+    is LoginError.AuthStore -> v1
+    is LoginError.Other -> v1
+
+    LoginError.InvalidState -> "LoginError.InvalidState"
+    LoginError.MissingPrimaryKey -> "LoginError.MissingPrimaryKey"
+    LoginError.KeySecretDecryption -> "LoginError.KeySecretDecryption"
+    LoginError.UnsupportedTfa -> "LoginError.UnsupportedTfa"
+    LoginError.WrongMailboxPassword -> "LoginError.WrongMailboxPassword"
 }
 
 @Suppress("MaxLineLength")
@@ -65,9 +89,11 @@ fun UserApiServiceError.getErrorMessage() = when (this) {
     is NotFound -> v1
     is NotImplemented -> v1
     is ServiceUnavailable -> v1
-    is TooManyRequest -> v1
     is Unauthorized -> v1
     is UnprocessableEntity -> v1
+    is Internal -> v1
+    is OtherNetwork -> v1
+    is TooManyRequests -> v1
 }
 
 fun UnexpectedError.getErrorMessage() = when (this) {

@@ -38,12 +38,13 @@ import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.data.wrapper.LoginFlowWrapper
+import ch.protonmail.android.mailsession.domain.model.LoginError
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.test.assertFalse
 import org.junit.Rule
 import org.junit.Test
-import ch.protonmail.android.mailsession.domain.model.LoginError
+import ch.protonmail.android.mailsession.domain.model.MailLoginError
 import me.proton.core.network.domain.session.SessionId
 import me.proton.core.user.domain.entity.AddressId
 
@@ -195,7 +196,7 @@ class LegacyAccountRepositoryImplTest {
         // Given
         coEvery {
             mailSessionRepository.getMailSession().newLoginFlow()
-        } returns LoginError.InvalidCredentials.left()
+        } returns MailLoginError.InvalidCredentials.left()
 
         // When
         val result = repository.migrateLegacyAccount(accountInfo)
@@ -209,12 +210,12 @@ class LegacyAccountRepositoryImplTest {
         // Given
         val wrapper = mockk<LoginFlowWrapper>()
         coEvery { mailSessionRepository.getMailSession().newLoginFlow() } returns wrapper.right()
-        coEvery { wrapper.migrate(any()) } returns LoginError.UnsupportedTwoFactorAuthentication.left()
+        coEvery { wrapper.migrate(any()) } returns LoginError.AuthenticationFailure.left()
 
         // When
         val result = repository.migrateLegacyAccount(accountInfo)
 
         // Then
-        assertEquals(MigrationError.MigrateFailed.UnsupportedTwoFactorAuth.left(), result)
+        assertEquals(MigrationError.MigrateFailed.AuthenticationFailure.left(), result)
     }
 }

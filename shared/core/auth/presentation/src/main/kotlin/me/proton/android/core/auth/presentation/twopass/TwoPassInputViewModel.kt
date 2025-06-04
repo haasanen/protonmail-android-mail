@@ -41,8 +41,10 @@ import me.proton.core.compose.viewmodel.stopTimeoutMillis
 import me.proton.core.presentation.utils.InputValidationResult
 import me.proton.core.presentation.utils.ValidationType
 import me.proton.core.util.kotlin.CoreLogger
-import uniffi.proton_mail_uniffi.LoginError
-import uniffi.proton_mail_uniffi.LoginFlow
+import uniffi.proton_account_uniffi.LoginError
+import uniffi.proton_account_uniffi.LoginFlow
+import uniffi.proton_account_uniffi.LoginFlowSubmitMailboxPasswordResult
+import uniffi.proton_mail_uniffi.MailLoginError
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
@@ -50,7 +52,6 @@ import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
 import uniffi.proton_mail_uniffi.MailSessionToUserContextResult
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
-import uniffi.proton_mail_uniffi.VoidLoginResult
 import javax.inject.Inject
 
 @HiltViewModel
@@ -104,15 +105,19 @@ class TwoPassInputViewModel @Inject constructor(
             is MailSessionResumeLoginFlowResult.Error -> emitAll(onError(loginFlow.v1))
             is MailSessionResumeLoginFlowResult.Ok -> {
                 when (val submit = loginFlow.v1.submitMailboxPassword(action.mailboxPassword)) {
-                    is VoidLoginResult.Error -> emitAll(onError(submit.v1))
-                    is VoidLoginResult.Ok -> emitAll(onSuccess(loginFlow.v1))
+                    is LoginFlowSubmitMailboxPasswordResult.Error -> emitAll(onError(submit.v1))
+                    is LoginFlowSubmitMailboxPasswordResult.Ok -> emitAll(onSuccess(loginFlow.v1))
                 }
             }
         }
     }
 
-    private fun onError(error: LoginError): Flow<TwoPassInputState> = flow {
+    private fun onError(error: MailLoginError): Flow<TwoPassInputState> = flow {
         emit(Error.LoginFlow(error.getErrorMessage(context)))
+    }
+
+    private fun onError(error: LoginError): Flow<TwoPassInputState> = flow {
+        emit(Error.LoginFlow(error.getErrorMessage()))
     }
 
     private fun onSuccess(loginFlow: LoginFlow): Flow<TwoPassInputState> = flow {

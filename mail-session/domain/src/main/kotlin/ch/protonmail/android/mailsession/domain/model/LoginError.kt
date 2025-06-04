@@ -15,28 +15,46 @@
  * You should have received a copy of the GNU General Public License
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
+
 package ch.protonmail.android.mailsession.domain.model
 
-import ch.protonmail.android.mailcommon.data.mapper.toDataError
-import ch.protonmail.android.mailcommon.domain.model.DataError
-import uniffi.proton_mail_uniffi.LoginErrorReason
-import uniffi.proton_mail_uniffi.LoginError as LocalLoginError
+import uniffi.proton_account_uniffi.LoginError as LocalLoginError
 
 sealed interface LoginError {
-    data object InvalidCredentials : LoginError
-    data object UnsupportedTwoFactorAuthentication : LoginError
-    data object CannotUnlockUserKey : LoginError
-    data class Other(val error: DataError) : LoginError
+    data object ApiFailure : LoginError
+    data object InternalError : LoginError
+    data object AuthenticationFailure : LoginError
+    data object Unknown : LoginError
 }
-
 
 fun LocalLoginError.toLoginError(): LoginError {
     return when (this) {
-        is LocalLoginError.Reason -> when (this.v1) {
-            LoginErrorReason.INVALID_CREDENTIALS -> LoginError.InvalidCredentials
-            LoginErrorReason.UNSUPPORTED_TFA -> LoginError.UnsupportedTwoFactorAuthentication
-            LoginErrorReason.CANT_UNLOCK_USER_KEY -> LoginError.CannotUnlockUserKey
-        }
-        is LocalLoginError.Other -> LoginError.Other(this.v1.toDataError())
+        // 1. API-related failures
+        is LocalLoginError.FlowLogin,
+        is LocalLoginError.FlowTotp,
+        is LocalLoginError.FlowFido,
+        is LocalLoginError.UserFetch,
+        is LocalLoginError.KeySecretSaltFetch ->
+            LoginError.ApiFailure
+
+        // 2. Internal data/state issues
+        is LocalLoginError.KeySecretAuthUpdate,
+        is LocalLoginError.KeySecretDerivation,
+        is LocalLoginError.ServerProof,
+        is LocalLoginError.SrpProof,
+        is LocalLoginError.AuthStore,
+        is LocalLoginError.Other ->
+            LoginError.InternalError
+
+        // 3. Login-specific validation failures
+        LocalLoginError.InvalidState,
+        LocalLoginError.MissingPrimaryKey,
+        LocalLoginError.KeySecretDecryption,
+        LocalLoginError.UnsupportedTfa,
+        LocalLoginError.WrongMailboxPassword ->
+            LoginError.AuthenticationFailure
+
+        // 4. Fallback
+        else -> LoginError.Unknown
     }
 }
