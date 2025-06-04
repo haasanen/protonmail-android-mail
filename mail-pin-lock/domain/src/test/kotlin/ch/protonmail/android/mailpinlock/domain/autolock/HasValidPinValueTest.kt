@@ -18,7 +18,9 @@
 
 package ch.protonmail.android.mailpinlock.domain.autolock
 
-// TODO convert to rust ET-648
+
+// TODO ET-6548  pin convert to rust
+@Suppress("ForbiddenComment")
 internal class HasValidPinValueTest {
 
     /* private val observeValidPinValue = mockk<ObserveAutoLockPinValue>()

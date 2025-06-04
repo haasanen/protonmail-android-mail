@@ -35,7 +35,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class AutolockIntervalViewModel @Inject constructor(
     private val autolockRepository: AutolockRepository
@@ -50,7 +49,8 @@ class AutolockIntervalViewModel @Inject constructor(
             AutolockIntervalState.Data(
                 autolock.autolockInterval,
                 AutoLockInterval.entries.sortedBy { it.duration }
-                    .toMutableList().apply { this.removeAt(this.lastIndex) }
+                    .toMutableList()
+                    .apply { this.removeAt(this.lastIndex) } // we don't show never, that's autolock off
                     .associateWith { it.toTextUiModel() }
             )
         }

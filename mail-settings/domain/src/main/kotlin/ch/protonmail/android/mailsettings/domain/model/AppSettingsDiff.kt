@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
-
 package ch.protonmail.android.mailsettings.domain.model
+
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval
 
 data class AppSettingsDiff(val theme: Theme? = null, val interval: AutoLockInterval? = null)

@@ -60,7 +60,6 @@ class MainInitializer : Initializer<Unit> {
         ThemeObserverInitializer::class.java,
         NotificationInitializer::class.java,
         NotificationHandlersInitializer::class.java,
-        AutoLockHandlerInitializer::class.java,
         RustMailCommonInitializer::class.java,
         ChallengeInitializer::class.java,
         BackgroundExecutionInitializer::class.java,

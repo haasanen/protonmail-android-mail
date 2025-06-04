@@ -140,13 +140,15 @@ internal fun NavGraphBuilder.addPrivacySettings(navController: NavHostController
     }
 }
 
+@Suppress("ForbiddenComment")
 internal fun NavGraphBuilder.addAutoLockSettings(navController: NavHostController) {
     composable(route = Screen.AutoLockSettings.route) {
         ProtonInvertedTheme {
             AutoLockSettingsScreen(
                 modifier = Modifier,
                 actions = AutoLockSettingsScreen.Actions(
-                    onPinScreenNavigation = {},//{ navController.navigate(Screen.AutoLockPinScreen(it)) },
+                    // TODO ET-6548 { navController.navigate(Screen.AutoLockPinScreen(it)) },
+                    onPinScreenNavigation = {},
                     onBackClick = { navController.navigateBack() },
                     onChangeIntervalClick = { navController.navigate(Screen.AutolockInterval.route) }
                 )

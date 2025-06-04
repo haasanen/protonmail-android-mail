@@ -16,12 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("unused")
+
 package ch.protonmail.android.mailpinlock.presentation.autolock
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailpinlock.presentation.R
-
 
 sealed class AutolockSettingsUiState {
     data class Data(val settings: AutolockSettings) : AutolockSettingsUiState()

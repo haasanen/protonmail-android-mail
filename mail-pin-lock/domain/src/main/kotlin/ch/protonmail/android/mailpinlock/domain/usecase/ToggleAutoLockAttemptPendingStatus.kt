@@ -20,9 +20,11 @@ package ch.protonmail.android.mailpinlock.domain.usecase
 
 import javax.inject.Inject
 
-// TODO pin convert to rust
+@Suppress("ForbiddenComment")
+// TODO ET-6548  pin convert to rust
 class ToggleAutoLockAttemptPendingStatus @Inject constructor() {
 
-    suspend operator fun invoke(value: Boolean) = false
+    val isPending = false
+    suspend operator fun invoke(value: Boolean) = isPending
     // autoLockRepository.updateAutoLockAttemptPendingStatus(AutoLockAttemptPendingStatus(value))
 }

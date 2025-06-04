@@ -37,7 +37,6 @@ import uniffi.proton_mail_uniffi.AutoLock.Minutes
 import uniffi.proton_mail_uniffi.AutoLock.Never
 import uniffi.proton_mail_uniffi.AppSettingsDiff as LocalAppSettingsDiff
 
-
 fun AppSettingsDiff.toAppDiff(): LocalAppSettingsDiff {
 
     fun setTheme(theme: Theme) = themeAppearanceLookup.getOrElse(theme, {
@@ -45,12 +44,11 @@ fun AppSettingsDiff.toAppDiff(): LocalAppSettingsDiff {
         defaultThemeFallback
     })
 
-    fun setAutolockInteval(interval: AutoLockInterval) =
-        when (interval) {
-            AutoLockInterval.Immediately -> Always
-            AutoLockInterval.Never -> Never
-            else -> Minutes(interval.duration.inWholeMinutes.toUByte())
-        }
+    fun setAutolockInteval(interval: AutoLockInterval) = when (interval) {
+        AutoLockInterval.Immediately -> Always
+        AutoLockInterval.Never -> Never
+        else -> Minutes(interval.duration.inWholeMinutes.toUByte())
+    }
 
     return LocalAppSettingsDiff(
         autoLock = interval?.let { setAutolockInteval(it) },
@@ -73,19 +71,17 @@ private object LocalMapperThemeConstants {
 
 fun AppAppearance.toTheme() = themeAppearanceLookup.entries.first { it.value == this }.key
 
-fun LocalAutolock.toAutolockInterval() =
-    when (this) {
-        is Never -> AutoLockInterval.Never
-        is Always -> AutoLockInterval.Immediately
-        is Minutes -> AutoLockInterval.fromMinutes(this.v1.toLong())
-    }
+fun LocalAutolock.toAutolockInterval() = when (this) {
+    is Never -> AutoLockInterval.Never
+    is Always -> AutoLockInterval.Immediately
+    is Minutes -> AutoLockInterval.fromMinutes(this.v1.toLong())
+}
 
-fun LocalProtection.toProtection() =
-    when (this) {
-        AppProtection.NONE -> Protection.None
-        AppProtection.BIOMETRICS -> Protection.Biometrics
-        AppProtection.PIN -> Protection.Pin
-    }
+fun LocalProtection.toProtection() = when (this) {
+    AppProtection.NONE -> Protection.None
+    AppProtection.BIOMETRICS -> Protection.Biometrics
+    AppProtection.PIN -> Protection.Pin
+}
 
 fun LocalAppSettings.toAppSettings(customLanguage: AppLanguage? = null) = AppSettings(
     autolockProtection = protection.toProtection(),

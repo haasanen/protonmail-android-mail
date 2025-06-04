@@ -19,12 +19,10 @@
 package ch.protonmail.android.mailpinlock.presentation.autolock
 
 import androidx.compose.runtime.Stable
-import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
 @Stable
 data class AutoLockBiometricsUiModel(
     val enabled: Boolean,
     val biometricsEnrolled: Boolean,
-    val biometricsHwAvailable: Boolean,
+    val biometricsHwAvailable: Boolean
 )

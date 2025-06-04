@@ -19,13 +19,12 @@
 package ch.protonmail.android.mailpinlock.model
 
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 data class Autolock(
-    val autolockInterval: AutoLockInterval = AutoLockInterval.Never,
+    val autolockInterval: AutoLockInterval = AutoLockInterval.Immediately,
     val protectionType: Protection = Protection.None,
     val biometricsState: AutoLockBiometricsState = AutoLockBiometricsState.BiometricsNotAvailable
 ) {
@@ -42,7 +41,7 @@ enum class AutoLockInterval(val duration: Duration) {
     FifteenMinutes(15.minutes),
     OneHour(1.hours),
     OneDay(24.hours),
-    Never(36_000.days);
+    Never(Duration.INFINITE);
 
     companion object {
 

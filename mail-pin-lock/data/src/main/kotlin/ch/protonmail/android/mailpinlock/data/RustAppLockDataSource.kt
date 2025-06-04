@@ -34,5 +34,4 @@ class RustAppLockDataSource @Inject constructor() : AppLockDataSource {
             is MailSessionShouldAutoLockResult.Error -> result.v1.toDataError().left()
             is MailSessionShouldAutoLockResult.Ok -> result.v1.right()
         }
-
 }

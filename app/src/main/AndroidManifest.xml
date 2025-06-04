@@ -166,11 +166,6 @@
                 tools:node="remove" />
 
             <meta-data
-                android:name="ch.protonmail.android.initializer.AutoLockHandlerInitializer"
-                android:value="androidx.startup"
-                tools:node="remove" />
-
-            <meta-data
                 android:name="androidx.lifecycle.ProcessLifecycleInitializer"
                 android:value="androidx.startup" />
 
@@ -238,15 +233,6 @@
             tools:node="merge" />
 
         <receiver android:name=".mailnotifications.data.local.PushNotificationActionsBroadcastReceiver" />
-
-        <receiver
-            android:name=".mailsettings.presentation.settings.autolock.broadcastreceiver.TimeSetBroadcastReceiver"
-            android:exported="false">
-
-            <intent-filter>
-                <action android:name="android.intent.action.TIME_SET" />
-            </intent-filter>
-        </receiver>
 
         <activity
             android:name=".MainActivity"

@@ -30,6 +30,7 @@ import ch.protonmail.android.mailpinlock.presentation.pin.mapper.AutoLockSuccess
 import io.mockk.mockk
 
 // TODO currently being refactored ET-648
+@Suppress("ForbiddenComment", "unused")
 internal class AutoLockPinViewModelTest {
 
     /*    private val observeAutoLockBiometricsState = mockk<ObserveAutoLockBiometricsState>()

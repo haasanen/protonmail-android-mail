@@ -20,13 +20,15 @@ package ch.protonmail.android.mailpinlock.domain.usecase
 
 import javax.inject.Inject
 
-// TODO convert to rust
+@Suppress("ForbiddenComment")
+// TODO ET-6548 convert to rust
 class HasValidPinValue @Inject constructor(
-   // private val observeAutoLockPinValue: ObserveAutoLockPinValue
+    // private val observeAutoLockPinValue: ObserveAutoLockPinValue
 ) {
 
-    // rust
-    suspend operator fun invoke() = false /*observeAutoLockPinValue()
+    private val isValid = false
+    suspend operator fun invoke() = isValid
+    /*observeAutoLockPinValue()
         .first()
         .getOrNull()
         ?.value

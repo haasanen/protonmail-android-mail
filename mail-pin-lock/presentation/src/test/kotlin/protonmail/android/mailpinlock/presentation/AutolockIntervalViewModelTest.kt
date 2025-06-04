@@ -16,23 +16,5 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.initializer
+package protonmail.android.mailpinlock.presentation
 
-import android.content.Context
-import androidx.startup.Initializer
-import ch.protonmail.android.di.AutoLockModule
-import dagger.hilt.android.EntryPointAccessors
-
-internal class AutoLockHandlerInitializer : Initializer<Unit> {
-
-    override fun create(context: Context) {
-        EntryPointAccessors.fromApplication(
-            context.applicationContext,
-            AutoLockModule.EntryPointModule::class.java
-        ).autoLockHandler().handle()
-    }
-
-    override fun dependencies(): List<Class<out Initializer<*>>> = listOf(
-        AppInBackgroundCheckerInitializer::class.java
-    )
-}

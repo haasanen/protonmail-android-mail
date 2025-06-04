@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@Suppress("RedundantSuspendModifier", "ControlFlowWithEmptyBody")
 @HiltViewModel
 class AutoLockSettingsViewModel @Inject constructor(
     private val autolockRepository: AutolockRepository
@@ -48,13 +49,14 @@ class AutoLockSettingsViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(stopTimeoutMillis), AutolockSettingsUiState.Loading)
 
+    @Suppress("ForbiddenComment")
     internal fun submit(action: AutoLockSettingsViewAction) {
         viewModelScope.launch {
             when (action) {
                 is AutoLockSettingsViewAction.ToggleAutoLockPreference -> updateAutoLockEnabledValue(action.newValue)
 
-                // TODO inegrate the biometrics
-                //is AutoLockSettingsViewAction.ToggleAutoLockBiometricsPreference ->
+                // TODO ET-6548 integrate the biometrics and pin
+                // is AutoLockSettingsViewAction.ToggleAutoLockBiometricsPreference ->
                 // updateBiometricsEnabledValue(action.autoLockBiometricsUiModel)
                 else -> {}
             }
@@ -66,7 +68,9 @@ class AutoLockSettingsViewModel @Inject constructor(
         // if turn on autolock - go to pin flow to set pin
     }
 
+    @Suppress("unused")
     private suspend fun updateBiometricsEnabledValue(enabled: Boolean) {
+        // ET-6548
         if (enabled) {
             // both go to pin flow, need to confirm pin if disabling
             // open pin verify flow

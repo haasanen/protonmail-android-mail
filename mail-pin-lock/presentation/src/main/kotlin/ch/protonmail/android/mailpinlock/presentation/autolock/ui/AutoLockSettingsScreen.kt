@@ -39,7 +39,6 @@ import ch.protonmail.android.design.compose.component.ProtonAppSettingsItemInver
 import ch.protonmail.android.design.compose.component.ProtonAppSettingsItemNorm
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonMainSettingsIcon
-import ch.protonmail.android.design.compose.component.ProtonSettingsDetailsAppBar
 import ch.protonmail.android.design.compose.component.ProtonSettingsToggleItem
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
@@ -62,7 +61,6 @@ import ch.protonmail.android.mailpinlock.presentation.autolock.ProtectionType
 import ch.protonmail.android.mailpinlock.presentation.autolock.ui.AutoLockSettingsScreen.Actions
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AutoLockSettingsScreen(
@@ -84,10 +82,10 @@ fun AutoLockSettingsScreen(
         effects.updateError
     )
     ConsumableLaunchedEffect(effects.forceOpenPinCreation) {
-        //onPinScreenNavigation(AutoLockInsertionMode.CreatePin)
+        // ET-6548 onPinScreenNavigation(AutoLockInsertionMode.CreatePin)
     }
     ConsumableLaunchedEffect(effects.forceOpenPinCreation) {
-        //onPinScreenNavigation(AutoLockInsertionMode.ChangePin)
+        // ET-6548 onPinScreenNavigation(AutoLockInsertionMode.ChangePin)
     }
 
     when (val uiState = state) {
@@ -109,8 +107,7 @@ fun AutoLockSettingsScreen(
                             .padding(horizontal = ProtonDimens.Spacing.Large),
                         settings = uiState.settings,
                         submitAction = { viewModel.submit(it) },
-                        onChangeIntervalNavigation = actions.onChangeIntervalClick,
-                        onPinScreenNavigation = actions.onPinScreenNavigation
+                        actions = actions
                     )
                 }
             )
@@ -122,9 +119,8 @@ fun AutoLockSettingsScreen(
 private fun AutolockSettingScreen(
     modifier: Modifier = Modifier,
     settings: AutolockSettings,
-    submitAction: (AutoLockSettingsViewAction) -> Unit,
-    onPinScreenNavigation: () -> Unit = {},
-    onChangeIntervalNavigation: () -> Unit = {}
+    actions: Actions,
+    submitAction: (AutoLockSettingsViewAction) -> Unit
 ) {
     Column(modifier = modifier) {
         AutolockOnOffToggle(
@@ -142,10 +138,10 @@ private fun AutolockSettingScreen(
                     containerColor = ProtonTheme.colors.backgroundInvertedSecondary
                 )
             ) {
-                ChangePinOption(onClickChangePin = onPinScreenNavigation)
+                ChangePinOption(onClickChangePin = actions.onPinScreenNavigation)
                 ChangeIntervalOption(
                     selectedChoice = settings.selectedUiInterval,
-                    onClickChangeInterval = onChangeIntervalNavigation
+                    onClickChangeInterval = actions.onChangeIntervalClick
                 )
                 if (settings.biometricsAvailable) {
                     BiometricsOnOffToggle(
@@ -278,7 +274,7 @@ fun PreviewAutolockSettingScreenEnabled() {
             protectionType = ProtectionType.Biometrics,
             biometricsAvailable = true
         ),
-        onPinScreenNavigation = {},
+        actions = Actions(),
         submitAction = {}
     )
 }
@@ -293,7 +289,7 @@ fun PreviewAutolockSettingScreenDisabled() {
             protectionType = ProtectionType.None,
             biometricsAvailable = false
         ),
-        onPinScreenNavigation = {},
+        actions = Actions(),
         submitAction = {}
     )
 }
@@ -301,8 +297,8 @@ fun PreviewAutolockSettingScreenDisabled() {
 object AutoLockSettingsScreen {
 
     data class Actions(
-        val onChangeIntervalClick: () -> Unit,
-        val onBackClick: () -> Unit,
-        val onPinScreenNavigation: () -> Unit = {},
+        val onChangeIntervalClick: () -> Unit = {},
+        val onBackClick: () -> Unit = {},
+        val onPinScreenNavigation: () -> Unit = {}
     )
 }

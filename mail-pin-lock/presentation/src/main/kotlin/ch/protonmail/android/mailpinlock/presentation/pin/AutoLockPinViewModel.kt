@@ -22,9 +22,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
+import ch.protonmail.android.mailpinlock.domain.usecase.ToggleAutoLockAttemptPendingStatus
 import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockInsertionMode
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.AutoLockPinScreen
-import ch.protonmail.android.mailpinlock.domain.usecase.ToggleAutoLockAttemptPendingStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,15 +32,16 @@ import kotlinx.coroutines.launch
 import me.proton.core.util.kotlin.deserialize
 import javax.inject.Inject
 
+@Suppress("unused", "UseExpressionBody", "RedundantSuspendModifier")
 @HiltViewModel
 class AutoLockPinViewModel @Inject constructor(
-   // private val observeAutoLockPin: ObserveAutoLockPinValue,
-  //  private val toggleAutoLockEnabled: ToggleAutoLockEnabled,
-  //  private val updateRemainingAutoLockAttempts: UpdateRemainingAutoLockAttempts,
-  //  private val saveAutoLockPin: SaveAutoLockPin,
+    // private val observeAutoLockPin: ObserveAutoLockPinValue,
+    //  private val toggleAutoLockEnabled: ToggleAutoLockEnabled,
+    //  private val updateRemainingAutoLockAttempts: UpdateRemainingAutoLockAttempts,
+    //  private val saveAutoLockPin: SaveAutoLockPin,
     private val clearPinDataAndForceLogout: ClearPinDataAndForceLogout,
     private val toggleAutoLockAttemptStatus: ToggleAutoLockAttemptPendingStatus,
-  //  private val updateAutoLockLastForegroundMillis: UpdateLastForegroundMillis,
+    //  private val updateAutoLockLastForegroundMillis: UpdateLastForegroundMillis,
     private val reducer: AutoLockPinReducer,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -63,19 +64,19 @@ class AutoLockPinViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-          /*  val remainingAttempts = getRemainingAutoLockAttempts().getOrNull()?.value?.let {
-                PinVerificationRemainingAttempts(it)
-            } ?: PinVerificationRemainingAttempts.Default
+            /*  val remainingAttempts = getRemainingAutoLockAttempts().getOrNull()?.value?.let {
+                  PinVerificationRemainingAttempts(it)
+              } ?: PinVerificationRemainingAttempts.Default
 
-            toggleAutoLockAttemptStatus(value = true)
+              toggleAutoLockAttemptStatus(value = true)
 
-            val currentBiometricsState = getCurrentAutoLockBiometricState()
-            emitNewStateFrom(AutoLockPinEvent.Data.Loaded(step, remainingAttempts, currentBiometricsState))
+              val currentBiometricsState = getCurrentAutoLockBiometricState()
+              emitNewStateFrom(AutoLockPinEvent.Data.Loaded(step, remainingAttempts, currentBiometricsState))
 
-            observeAutoLockBiometricsState()
-                .onEach {
-                    emitNewStateFrom(AutoLockPinEvent.Update.BiometricStateChanged(it))
-                }*/
+              observeAutoLockBiometricsState()
+                  .onEach {
+                      emitNewStateFrom(AutoLockPinEvent.Update.BiometricStateChanged(it))
+                  }*/
         }
     }
 
@@ -123,15 +124,15 @@ class AutoLockPinViewModel @Inject constructor(
 
         val autoLockPin = AutoLockPin(insertedPin.toString())
 
-     /*   saveAutoLockPin(autoLockPin).mapLeft {
-            Timber.e("Unable to save auto pin lock value. - $it")
-            return emitNewStateFrom(AutoLockPinEvent.Update.Error.UnknownError)
-        }
+        /*   saveAutoLockPin(autoLockPin).mapLeft {
+               Timber.e("Unable to save auto pin lock value. - $it")
+               return emitNewStateFrom(AutoLockPinEvent.Update.Error.UnknownError)
+           }
 
-        toggleAutoLockEnabled(newValue = true).mapLeft {
-            Timber.e("Unable to enable pin lock. - $it")
-            return emitNewStateFrom(AutoLockPinEvent.Update.Error.UnknownError)
-        }*/
+           toggleAutoLockEnabled(newValue = true).mapLeft {
+               Timber.e("Unable to enable pin lock. - $it")
+               return emitNewStateFrom(AutoLockPinEvent.Update.Error.UnknownError)
+           }*/
 
         emitNewStateFrom(AutoLockPinEvent.Update.OperationCompleted)
     }
@@ -155,24 +156,24 @@ class AutoLockPinViewModel @Inject constructor(
         remainingAttempts: PinVerificationRemainingAttempts,
         continuation: () -> Unit
     ) {
-       /* val storedPin = observeAutoLockPin().firstOrNull()?.getOrNull()
-            ?: return emitNewStateFrom(AutoLockPinEvent.Update.Error.UnknownError)
+        /* val storedPin = observeAutoLockPin().firstOrNull()?.getOrNull()
+             ?: return emitNewStateFrom(AutoLockPinEvent.Update.Error.UnknownError)
 
-        if (!storedPin.matches(insertedPin)) {
-            if (remainingAttempts.value <= 1) {
-                clearPinDataAndForceLogout().await()
-                emitNewStateFrom(AutoLockPinEvent.Update.OperationAborted)
-                return
-            }
+         if (!storedPin.matches(insertedPin)) {
+             if (remainingAttempts.value <= 1) {
+                 clearPinDataAndForceLogout().await()
+                 emitNewStateFrom(AutoLockPinEvent.Update.OperationAborted)
+                 return
+             }
 
-            val decrementedRemainingAttempts = remainingAttempts.decrement()
+             val decrementedRemainingAttempts = remainingAttempts.decrement()
 
-            updateRemainingAutoLockAttempts(decrementedRemainingAttempts.value).onLeft {
-                Timber.e("Unable to update remaining auto lock attempts. - $it")
-            }
+             updateRemainingAutoLockAttempts(decrementedRemainingAttempts.value).onLeft {
+                 Timber.e("Unable to update remaining auto lock attempts. - $it")
+             }
 
-            return emitNewStateFrom(AutoLockPinEvent.Update.Error.WrongPinCode(decrementedRemainingAttempts))*/
-        }
+             return emitNewStateFrom(AutoLockPinEvent.Update.Error.WrongPinCode(decrementedRemainingAttempts))*/
+    }
 
     /*    updateRemainingAutoLockAttempts(PinVerificationRemainingAttempts.MaxAttempts).onLeft {
             Timber.e("Unable to reset remaining auto lock attempts. - $it")
@@ -189,48 +190,48 @@ class AutoLockPinViewModel @Inject constructor(
         continuation()*/
 
     private suspend fun onBiometricAuthenticationSucceeded() {
-       /* updateRemainingAutoLockAttempts(PinVerificationRemainingAttempts.MaxAttempts).onLeft {
-            Timber.e("Unable to reset remaining auto lock attempts. - $it")
-        }
+        /* updateRemainingAutoLockAttempts(PinVerificationRemainingAttempts.MaxAttempts).onLeft {
+             Timber.e("Unable to reset remaining auto lock attempts. - $it")
+         }
 
-        toggleAutoLockAttemptStatus(value = false).onLeft {
-            Timber.e("Unable to reset pending lock attempt. - $it")
-        }
+         toggleAutoLockAttemptStatus(value = false).onLeft {
+             Timber.e("Unable to reset pending lock attempt. - $it")
+         }
 
-        updateAutoLockLastForegroundMillis(Long.MAX_VALUE).onLeft {
-            Timber.e("Unable to update last foreground millis - $it")
-        }*/
+         updateAutoLockLastForegroundMillis(Long.MAX_VALUE).onLeft {
+             Timber.e("Unable to update last foreground millis - $it")
+         }*/
         emitNewStateFrom(AutoLockPinEvent.Update.VerificationCompleted)
     }
 
     private suspend fun onPerformConfirm() {
-      /*  val state = state.value as? AutoLockPinState.DataLoaded ?: return
-        val currentStep = state.pinInsertionState.step
-        val remainingAttempts = state.pinInsertionState.remainingAttempts
-        val insertedPin = state.pinInsertionState.pinInsertionUiModel.currentPin
+        /*  val state = state.value as? AutoLockPinState.DataLoaded ?: return
+          val currentStep = state.pinInsertionState.step
+          val remainingAttempts = state.pinInsertionState.remainingAttempts
+          val insertedPin = state.pinInsertionState.pinInsertionUiModel.currentPin
 
-        when (currentStep) {
-            PinInsertionStep.PinChange -> handlePinChangeConfirmation(insertedPin, remainingAttempts)
-            PinInsertionStep.PinInsertion -> handlePinInsertion(insertedPin)
-            PinInsertionStep.PinConfirmation -> handlePinConfirmed(insertedPin)
-            PinInsertionStep.PinVerification -> handlePinVerification(insertedPin, remainingAttempts)
-        }*/
+          when (currentStep) {
+              PinInsertionStep.PinChange -> handlePinChangeConfirmation(insertedPin, remainingAttempts)
+              PinInsertionStep.PinInsertion -> handlePinInsertion(insertedPin)
+              PinInsertionStep.PinConfirmation -> handlePinConfirmed(insertedPin)
+              PinInsertionStep.PinVerification -> handlePinVerification(insertedPin, remainingAttempts)
+          }*/
     }
 
     private fun onPinDigitRemoved() {
-      /*  val state = state.value as? AutoLockPinState.DataLoaded ?: return
-        val currentPin =
-            state.pinInsertionState.pinInsertionUiModel.currentPin.takeIf { it.isNotEmpty() } ?: return
+        /*  val state = state.value as? AutoLockPinState.DataLoaded ?: return
+          val currentPin =
+              state.pinInsertionState.pinInsertionUiModel.currentPin.takeIf { it.isNotEmpty() } ?: return
 
-        emitNewStateFrom(AutoLockPinEvent.Update.PinValueChanged(currentPin.deleteLastDigit()))*/
+          emitNewStateFrom(AutoLockPinEvent.Update.PinValueChanged(currentPin.deleteLastDigit()))*/
     }
 
     private fun onPinDigitAdded(action: AutoLockPinViewAction.AddPinDigit) {
-      /*  val state = state.value as? AutoLockPinState.DataLoaded ?: return
-        val currentPin = state.pinInsertionState.pinInsertionUiModel.currentPin
-        if (currentPin.isMaxLength()) return
+        /*  val state = state.value as? AutoLockPinState.DataLoaded ?: return
+          val currentPin = state.pinInsertionState.pinInsertionUiModel.currentPin
+          if (currentPin.isMaxLength()) return
 
-        emitNewStateFrom(AutoLockPinEvent.Update.PinValueChanged(currentPin.appendDigit(action.addition)))*/
+          emitNewStateFrom(AutoLockPinEvent.Update.PinValueChanged(currentPin.appendDigit(action.addition)))*/
     }
 
     private fun onSignOutRequested() {
@@ -238,15 +239,19 @@ class AutoLockPinViewModel @Inject constructor(
     }
 
     private suspend fun onSignOutConfirmed() {
-      /*  clearPinDataAndForceLogout().await()
-        emitNewStateFrom(AutoLockPinEvent.Update.SignOutConfirmed)*/
+        /*  clearPinDataAndForceLogout().await()
+          emitNewStateFrom(AutoLockPinEvent.Update.SignOutConfirmed)*/
     }
 
     private fun onSignOutCanceled() {
         emitNewStateFrom(AutoLockPinEvent.Update.SignOutCanceled)
     }
 
-    private fun emitNewStateFrom(event: AutoLockPinEvent){}/* = mutableState.update {
+    @Suppress("EmptyFunctionBlock")
+    private fun emitNewStateFrom(event: AutoLockPinEvent) {
+    }
+
+    /* ET-6548 = mutableState.update {
         reducer.newStateFrom(it, event)
     }
 */
