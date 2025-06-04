@@ -102,6 +102,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     }
     val state by viewModel.state.collectAsState()
     val isChooseAttachmentSourceEnabled by viewModel.isChooseAttachmentSourceEnabled.collectAsState()
+    val isScheduleSendEnabled by viewModel.isScheduleSendEnabled.collectAsState()
 
     val snackbarHostState = remember { ProtonSnackbarHostState() }
     val bottomSheetType = rememberSaveable(stateSaver = BottomSheetType.Saver) {
@@ -224,7 +225,11 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     onSendMessageComposerClick = {
                         viewModel.submit(ComposerAction.OnSendMessage)
                     },
-                    isSendMessageButtonEnabled = state.isSubmittable
+                    onScheduleSendClick = {
+                        Timber.d("schedule send requested")
+                    },
+                    isSendMessageEnabled = state.isSubmittable,
+                    isScheduleSendFeatureFlagEnabled = isScheduleSendEnabled
                 )
             },
             bottomBar = {

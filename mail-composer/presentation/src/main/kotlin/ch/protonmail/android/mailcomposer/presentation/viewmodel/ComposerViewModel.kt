@@ -73,6 +73,7 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsChooseAttachmentSourceEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.ScheduleSendEnabled
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Compose
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.ComposeToAddresses
@@ -132,6 +133,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val getEmbeddedImage: GetEmbeddedImage,
     @IsChooseAttachmentSourceEnabled private val chooseAttachmentSourceEnabled: Flow<Boolean>,
+    @ScheduleSendEnabled private val scheduleSendEnabled: Flow<Boolean>,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -144,6 +146,12 @@ class ComposerViewModel @AssistedInject constructor(
     val state: StateFlow<ComposerDraftState> = mutableState
 
     val isChooseAttachmentSourceEnabled = chooseAttachmentSourceEnabled.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
+        initialValue = false
+    )
+
+    val isScheduleSendEnabled = scheduleSendEnabled.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
         initialValue = false

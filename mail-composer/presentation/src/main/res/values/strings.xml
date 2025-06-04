@@ -118,4 +118,5 @@
     <string name="composer_send_as_attachment">Send as attachment</string>
     <string name="composer_remove_recipient_action_item">Remove</string>
     <string name="composer_copy_recipient_action_item">Copy</string>
+    <string name="schedule_send_content_description">Schedule send</string>
 </resources>

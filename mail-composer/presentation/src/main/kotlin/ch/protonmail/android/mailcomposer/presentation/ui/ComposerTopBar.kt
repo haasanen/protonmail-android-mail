@@ -18,14 +18,15 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -35,18 +36,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.mailcomposer.presentation.R
-import ch.protonmail.android.uicomponents.thenIf
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcomposer.presentation.R
+import ch.protonmail.android.uicomponents.thenIf
 
 @Composable
 @Suppress("UseComposableActions")
 internal fun ComposerTopBar(
     onCloseComposerClick: () -> Unit,
     onSendMessageComposerClick: () -> Unit,
-    isSendMessageButtonEnabled: Boolean
+    onScheduleSendClick: () -> Unit,
+    isSendMessageEnabled: Boolean,
+    isScheduleSendFeatureFlagEnabled: Boolean
 ) {
     ProtonTopAppBar(
         modifier = Modifier.testTag(ComposerTestTags.TopAppBar),
@@ -69,12 +72,30 @@ internal fun ComposerTopBar(
             Row(
                 modifier = Modifier.padding(end = ProtonDimens.Spacing.Medium)
             ) {
+                if (isScheduleSendFeatureFlagEnabled) {
+                    IconButton(
+                        modifier = Modifier
+                            .size(ProtonDimens.IconSize.ExtraLarge)
+                            .thenIf(!isSendMessageEnabled) { semantics { disabled() } },
+                        enabled = isSendMessageEnabled,
+                        onClick = onScheduleSendClick,
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = ProtonTheme.colors.textAccent,
+                            disabledContentColor = ProtonTheme.colors.brandMinus20
+                        )
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_proton_clock_paper_plane),
+                            contentDescription = stringResource(R.string.schedule_send_content_description)
+                        )
+                    }
+                }
                 Button(
                     onClick = onSendMessageComposerClick,
-                    enabled = isSendMessageButtonEnabled,
+                    enabled = isSendMessageEnabled,
                     modifier = Modifier
                         .testTag(ComposerTestTags.SendButton)
-                        .thenIf(!isSendMessageButtonEnabled) { semantics { disabled() } },
+                        .thenIf(!isSendMessageEnabled) { semantics { disabled() } },
                     shape = ProtonTheme.shapes.huge,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = ProtonTheme.colors.interactionBrandWeakNorm,
@@ -104,7 +125,9 @@ private fun ComposerTopBarPreviewSendButtonDisabled() {
         ComposerTopBar(
             onCloseComposerClick = {},
             onSendMessageComposerClick = {},
-            isSendMessageButtonEnabled = false
+            onScheduleSendClick = {},
+            isSendMessageEnabled = false,
+            isScheduleSendFeatureFlagEnabled = true
         )
     }
 }
@@ -117,8 +140,23 @@ private fun ComposerTopBarPreviewSendButtonEnabled() {
         ComposerTopBar(
             onCloseComposerClick = {},
             onSendMessageComposerClick = {},
-            isSendMessageButtonEnabled = true
+            onScheduleSendClick = {},
+            isSendMessageEnabled = true,
+            isScheduleSendFeatureFlagEnabled = true
         )
     }
 }
 
+@Preview
+@Composable
+private fun PreviewScheduleSendDisabled() {
+    ProtonTheme {
+        ComposerTopBar(
+            onCloseComposerClick = {},
+            onSendMessageComposerClick = {},
+            onScheduleSendClick = {},
+            isSendMessageEnabled = true,
+            isScheduleSendFeatureFlagEnabled = false
+        )
+    }
+}
