@@ -46,13 +46,15 @@ import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
 import uniffi.proton_mail_uniffi.DraftSaveError
 import uniffi.proton_mail_uniffi.DraftSaveErrorReason
+import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
+import uniffi.proton_mail_uniffi.DraftScheduleSendOptionsResult
 import uniffi.proton_mail_uniffi.DraftSendError
 import uniffi.proton_mail_uniffi.DraftSendErrorReason
 import uniffi.proton_mail_uniffi.DraftSyncStatus
-import uniffi.proton_mail_uniffi.VoidDraftSaveResult
-import uniffi.proton_mail_uniffi.VoidDraftSendResult
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
 import uniffi.proton_mail_uniffi.ProtonError
+import uniffi.proton_mail_uniffi.VoidDraftSaveResult
+import uniffi.proton_mail_uniffi.VoidDraftSendResult
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -648,6 +650,77 @@ class RustDraftDataSourceImplTest {
 
         // When
         val actual = dataSource.getEmbeddedImage(contentId = cid)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `get schedule send options returns schedule options when successful`() = runTest {
+        // Given
+        val scheduleSendOptions = DraftScheduleSendOptions(
+            tomorrowTime = 123uL,
+            mondayTime = 456uL,
+            isCustomOptionAvailable = false
+        )
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.scheduleSendOptions() } returns DraftScheduleSendOptionsResult.Ok(
+            scheduleSendOptions
+        )
+
+        // When
+        val actual = dataSource.getScheduleSendOptions()
+
+        // Then
+        assertEquals(scheduleSendOptions.right(), actual)
+    }
+
+    @Test
+    fun `get schedule send options returns DataError when unsuccessful`() = runTest {
+        // Given
+        val expected = DataError.Remote.Http(NetworkError.NoNetwork)
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.scheduleSendOptions() } returns DraftScheduleSendOptionsResult.Error(
+            ProtonError.Network
+        )
+
+        // When
+        val actual = dataSource.getScheduleSendOptions()
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `schedule send returns success when successful`() = runTest {
+        // Given
+        val timestamp = 1234L
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.scheduleSend(timestamp.toULong()) } returns VoidDraftSendResult.Ok
+
+        // When
+        val actual = dataSource.scheduleSend(timestamp)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `schedule send returns DataError when unsuccessful`() = runTest {
+        // Given
+        val timestamp = 1234L
+        val expected = DataError.Local.SendDraftError.InvalidRecipient
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.scheduleSend(timestamp.toULong()) } returns VoidDraftSendResult.Error(
+            DraftSendError.Reason(DraftSendErrorReason.NoRecipients)
+        )
+
+        // When
+        val actual = dataSource.scheduleSend(timestamp)
 
         // Then
         assertEquals(expected.left(), actual)

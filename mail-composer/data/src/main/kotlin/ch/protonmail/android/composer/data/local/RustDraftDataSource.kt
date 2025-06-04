@@ -30,6 +30,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 
 interface RustDraftDataSource {
 
@@ -41,10 +42,12 @@ interface RustDraftDataSource {
     suspend fun saveBody(body: DraftBody): Either<SaveDraftError, Unit>
     suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>>
     suspend fun send(): Either<DataError, Unit>
+    suspend fun scheduleSend(timestamp: Long): Either<DataError, Unit>
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>
     suspend fun attachmentList(): Either<DataError, AttachmentsWrapper>
     suspend fun updateToRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     suspend fun updateCcRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     suspend fun updateBccRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo>
+    fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions>
 }

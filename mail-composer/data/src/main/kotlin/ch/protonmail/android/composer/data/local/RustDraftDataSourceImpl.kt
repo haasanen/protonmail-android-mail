@@ -63,6 +63,8 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
+import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
+import uniffi.proton_mail_uniffi.DraftScheduleSendOptionsResult
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
@@ -188,6 +190,13 @@ class RustDraftDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun scheduleSend(timestamp: Long): Either<DataError, Unit> = withValidRustDraftWrapper {
+        when (val result = it.scheduleSend(timestamp.toULong())) {
+            is VoidDraftSendResult.Error -> result.v1.toDataError().left()
+            VoidDraftSendResult.Ok -> Unit.right()
+        }
+    }
+
     override suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit> {
         Timber.d("rust-draft: Undo sending draft...")
         val session = userSessionRepository.getUserSession(userId)
@@ -214,6 +223,16 @@ class RustDraftDataSourceImpl @Inject constructor(
         return when (val result = rustDraftWrapper.embeddedImage(contentId)) {
             is EmbeddedAttachmentInfoResult.Error -> result.v1.toDataError().left()
             is EmbeddedAttachmentInfoResult.Ok -> result.v1.right()
+        }
+    }
+
+    override fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions> {
+        val rustDraftWrapper: DraftWrapper = draftWrapperStateFlow.value
+            ?: return DataError.Local.NoDataCached.left()
+
+        return when (val result = rustDraftWrapper.scheduleSendOptions()) {
+            is DraftScheduleSendOptionsResult.Error -> result.v1.toDataError().left()
+            is DraftScheduleSendOptionsResult.Ok -> result.v1.right()
         }
     }
 

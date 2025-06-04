@@ -18,7 +18,9 @@
 
 package ch.protonmail.android.composer.data.wrapper
 
+import uniffi.proton_core_common.UnixTimestamp
 import uniffi.proton_mail_uniffi.Draft
+import uniffi.proton_mail_uniffi.DraftScheduleSendOptionsResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
 
@@ -49,4 +51,8 @@ class DraftWrapper(private val rustDraft: Draft) {
     suspend fun setSubject(subject: String): VoidDraftSaveResult = rustDraft.setSubject(subject)
 
     suspend fun setBody(body: String): VoidDraftSaveResult = rustDraft.setBody(body)
+
+    fun scheduleSendOptions(): DraftScheduleSendOptionsResult = rustDraft.scheduleSendOptions()
+
+    suspend fun scheduleSend(timestamp: UnixTimestamp) = rustDraft.schedule(timestamp)
 }
