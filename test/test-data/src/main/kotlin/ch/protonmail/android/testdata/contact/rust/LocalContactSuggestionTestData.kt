@@ -33,16 +33,19 @@ object LocalContactSuggestionTestData {
         color = AvatarInformationSample.avatarSample.color
     )
 
+    private const val CONTACT_NAME = "contact being suggested"
     val contactSuggestion = LocalContactSuggestion(
         key = ContactIdTestData.contactSuggestionId.id,
-        name = "contact being suggested",
+        name = CONTACT_NAME,
         avatarInformation = localAvatar,
         kind = ContactSuggestionKind.ContactItem(
             ContactEmailItem(
                 id = Id(7uL),
                 email = "contact suggestion email",
                 isProton = false,
-                lastUsedTime = 0uL
+                lastUsedTime = 0uL,
+                name = CONTACT_NAME,
+                avatarInformation = localAvatar
             )
         )
     )
@@ -57,13 +60,17 @@ object LocalContactSuggestionTestData {
                     id = Id(8uL),
                     email = "contactgroup@first.email",
                     isProton = false,
-                    lastUsedTime = 0uL
+                    lastUsedTime = 0uL,
+                    name = "Contact Group First",
+                    avatarInformation = localAvatar
                 ),
                 ContactEmailItem(
                     id = Id(9uL),
                     email = "contactgroup@second.email",
                     isProton = false,
-                    lastUsedTime = 0uL
+                    lastUsedTime = 0uL,
+                    name = "Contact Group Second",
+                    avatarInformation = localAvatar
                 )
             )
         )

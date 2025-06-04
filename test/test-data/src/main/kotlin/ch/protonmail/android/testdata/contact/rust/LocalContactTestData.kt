@@ -35,46 +35,55 @@ object LocalContactTestData {
     val contactId2 = LocalContactId(103u)
     val contactGroupId1 = LocalContactGroupId(105u)
     val contactGroupId2 = LocalContactGroupId(107u)
-
+    private val avatar1 = AvatarInformation(
+        text = "A",
+        color = "#FF5733"
+    )
+    private const val NAME1 = "Alice Johnson"
     val contact1 = LocalContactItemTypeContact(
         ContactItem(
             id = contactId1,
-            name = "Alice Johnson",
-            avatarInformation = AvatarInformation(
-                text = "A",
-                color = "#FF5733"
-            ),
+            name = NAME1,
+            avatarInformation = avatar1,
             emails = listOf(
                 ContactEmailItem(
                     id = Id(101u),
                     email = "alice.johnson@example.com",
                     isProton = false,
-                    lastUsedTime = 0uL
+                    lastUsedTime = 0uL,
+                    name = NAME1,
+                    avatarInformation = avatar1
                 ),
                 ContactEmailItem(
                     id = Id(102u),
                     email = "alice.work@example.com",
                     isProton = false,
-                    lastUsedTime = 0uL
+                    lastUsedTime = 0uL,
+                    name = NAME1,
+                    avatarInformation = avatar1
                 )
             )
         )
     )
 
+    private val avatar2 = AvatarInformation(
+        text = "B",
+        color = "#33AFFF"
+    )
+    private const val NAME2 = "Bob Smith"
     val contact2 = LocalContactItemTypeContact(
         ContactItem(
             id = contactId2,
-            name = "Bob Smith",
-            avatarInformation = AvatarInformation(
-                text = "B",
-                color = "#33AFFF"
-            ),
+            name = NAME2,
+            avatarInformation = avatar2,
             emails = listOf(
                 ContactEmailItem(
                     id = Id(104u),
                     email = "bob.smith@example.com",
                     isProton = false,
-                    lastUsedTime = 0uL
+                    lastUsedTime = 0uL,
+                    name = NAME2,
+                    avatarInformation = avatar2
                 )
             )
         )
@@ -85,19 +94,14 @@ object LocalContactTestData {
             id = contactGroupId1,
             name = "A Family",
             avatarColor = "#FFD700",
-            contacts = listOf(
-                ContactItem(
-                    id = Id(106u),
-                    name = "family",
-                    avatarInformation = AvatarInformation("Fam", "#rrr"),
-                    emails = listOf(
-                        ContactEmailItem(
-                            id = Id(1u),
-                            "family@example.com",
-                            isProton = false,
-                            lastUsedTime = 0uL
-                        )
-                    )
+            contactEmails = listOf(
+                ContactEmailItem(
+                    id = Id(1u),
+                    "family@example.com",
+                    isProton = false,
+                    lastUsedTime = 0uL,
+                    name = "Family",
+                    avatarInformation = AvatarInformation("Fam", "#FFD700")
                 )
             )
         )
@@ -108,25 +112,22 @@ object LocalContactTestData {
             id = contactGroupId2,
             name = "B Work Colleagues",
             avatarColor = "#8A2BE2",
-            contacts = listOf(
-                ContactItem(
-                    id = Id(106u),
-                    name = "family",
-                    avatarInformation = AvatarInformation("Fam", "#rrr"),
-                    emails = listOf(
-                        ContactEmailItem(
-                            id = Id(1u),
-                            email = "work@example.com",
-                            isProton = false,
-                            lastUsedTime = 0uL
-                        ),
-                        ContactEmailItem(
-                            id = Id(1u),
-                            email = "team@example.com",
-                            isProton = false,
-                            lastUsedTime = 0uL
-                        )
-                    )
+            contactEmails = listOf(
+                ContactEmailItem(
+                    id = Id(1u),
+                    email = "work@example.com",
+                    isProton = false,
+                    lastUsedTime = 0uL,
+                    name = "Work",
+                    avatarInformation = AvatarInformation("Wk", "#8A2BE2")
+                ),
+                ContactEmailItem(
+                    id = Id(1u),
+                    email = "team@example.com",
+                    isProton = false,
+                    lastUsedTime = 0uL,
+                    name = "Team",
+                    avatarInformation = AvatarInformation("Tm", "#8A2BE2")
                 )
             )
         )
