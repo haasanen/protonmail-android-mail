@@ -885,7 +885,6 @@ class ComposerViewModelTest {
         expectUpdateRecipientsSucceeds(listOf(expectedRecipient), emptyList(), emptyList())
         expectObservedMessageAttachments()
         expectAddressValidation(expectedRecipient.address, true)
-        expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
             DraftFieldsTestData.EmptyDraftWithPrimarySender
@@ -1153,7 +1152,7 @@ class ComposerViewModelTest {
     }
 
     private fun expectNoFileShareVia() {
-        every { savedStateHandle.get<String>(ComposerScreen.DraftActionForShareKey) } returns null
+        every { savedStateHandle.get<String>(ComposerScreen.SerializedDraftActionKey) } returns null
     }
 
     private fun expectNoInputDraftMessageId() {

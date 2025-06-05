@@ -323,7 +323,10 @@ class ComposerViewModel @AssistedInject constructor(
                 }
                 .onLeft { emitNewStateFor(EffectsEvent.LoadingEvent.OnParentLoadingFailed) }
 
-            is PrefillForShare -> prefillForShareDraftAction(draftAction)
+            is PrefillForShare -> {
+                prefillForNewDraft()
+                prefillForShareDraftAction(draftAction)
+            }
         }
     }
 

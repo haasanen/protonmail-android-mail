@@ -22,7 +22,6 @@ import ch.protonmail.android.feature.account.SignOutAccountDialog.USER_ID_KEY
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsViewItemMode
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsPeekView.ApplicationLogsViewMode
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.DraftActionForShareKey
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.DraftMessageIdKey
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.SerializedDraftActionKey
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
@@ -71,10 +70,10 @@ sealed class Destination(val route: String) {
             operator fun invoke(messageId: MessageId) = route.replace(DraftMessageIdKey.wrap(), messageId.id)
         }
 
-        object ShareFileComposer : Destination("composer/share/${DraftActionForShareKey.wrap()}") {
+        object ShareFileComposer : Destination("composer/share/${SerializedDraftActionKey.wrap()}") {
 
             operator fun invoke(draftAction: DraftAction) = route.replace(
-                DraftActionForShareKey.wrap(),
+                SerializedDraftActionKey.wrap(),
                 draftAction.serialize()
             )
         }
