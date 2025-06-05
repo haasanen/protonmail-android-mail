@@ -9,6 +9,7 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmessage.domain.repository.MessageActionRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import ch.protonmail.android.testdata.message.MessageThemeOptionsTestData
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -24,6 +25,7 @@ class GetMessageAvailableActionsTest {
     @Test
     fun `returns available actions when repo succeeds`() = runTest {
         // Given
+        val themeOptions = MessageThemeOptionsTestData.darkOverrideLight
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
         val messageId = MessageIdSample.AlphaAppQAReport
@@ -33,10 +35,12 @@ class GetMessageAvailableActionsTest {
             listOf(Action.Spam, Action.Archive),
             listOf(Action.ViewHeaders)
         )
-        coEvery { actionRepository.getAvailableActions(userId, labelId, messageId) } returns expected.right()
+        coEvery {
+            actionRepository.getAvailableActions(userId, labelId, messageId, themeOptions)
+        } returns expected.right()
 
         // When
-        val actual = getMessageAvailableActions(userId, labelId, messageId)
+        val actual = getMessageAvailableActions(userId, labelId, messageId, themeOptions)
 
         // Then
         assertEquals(expected.right(), actual)
@@ -45,14 +49,15 @@ class GetMessageAvailableActionsTest {
     @Test
     fun `returns error when repository fails to get available actions`() = runTest {
         // Given
+        val themeOptions = MessageThemeOptionsTestData.darkOverrideLight
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
         val messageId = MessageIdSample.AlphaAppQAReport
         val expected = DataError.Local.Unknown.left()
-        coEvery { actionRepository.getAvailableActions(userId, labelId, messageId) } returns expected
+        coEvery { actionRepository.getAvailableActions(userId, labelId, messageId, themeOptions) } returns expected
 
         // When
-        val actual = getMessageAvailableActions(userId, labelId, messageId)
+        val actual = getMessageAvailableActions(userId, labelId, messageId, themeOptions)
 
         // Then
         assertEquals(expected, actual)

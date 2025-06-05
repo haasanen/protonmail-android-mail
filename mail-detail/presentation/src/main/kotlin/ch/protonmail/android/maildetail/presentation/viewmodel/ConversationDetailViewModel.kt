@@ -696,7 +696,10 @@ class ConversationDetailViewModel @Inject constructor(
 
             val userId = primaryUserId.first()
             val labelId = openedFromLocation
-            val moreActions = getMoreActionsBottomSheetData.forMessage(userId, labelId, initialEvent.messageId)
+
+            val moreActions = getMoreActionsBottomSheetData.forMessage(
+                userId, labelId, initialEvent.messageId, initialEvent.themeOptions
+            )
                 ?: return@launch
             emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
         }

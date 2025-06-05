@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.ui.header
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
@@ -27,6 +28,8 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 
 @Composable
 fun MessageDetailHeaderActions(
@@ -34,6 +37,8 @@ fun MessageDetailHeaderActions(
     uiModel: MessageDetailHeaderUiModel,
     actions: MessageDetailHeader.Actions
 ) {
+    val isSystemInDarkTheme = isSystemInDarkTheme()
+
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Small)
@@ -44,7 +49,15 @@ fun MessageDetailHeaderActions(
             ReplyActionButton(action = { actions.onReply(MessageId(uiModel.messageIdUiModel.id)) })
         }
 
-        MoreActionButton(action = { actions.onMore(MessageId(uiModel.messageIdUiModel.id)) })
+        MoreActionButton(action = {
+            actions.onMore(
+                MessageId(uiModel.messageIdUiModel.id),
+                MessageThemeOptions(
+                    currentTheme = if (isSystemInDarkTheme) MessageTheme.Dark else MessageTheme.Light,
+                    themeOverride = uiModel.themeOverride
+                )
+            )
+        })
     }
 }
 

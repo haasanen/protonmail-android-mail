@@ -50,6 +50,7 @@ import ch.protonmail.android.maildetail.presentation.ui.footer.MessageDetailFoot
 import ch.protonmail.android.maildetail.presentation.ui.header.MessageDetailHeader
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 
 @Composable
@@ -231,7 +232,7 @@ object ConversationDetailItem {
         val onForward: (MessageId) -> Unit,
         val onScrollRequestCompleted: () -> Unit,
         val onBodyExpandCollapseButtonClicked: (MessageIdUiModel) -> Unit,
-        val onMoreMessageActionsClick: (MessageId) -> Unit,
+        val onMoreMessageActionsClick: (MessageId, MessageThemeOptions) -> Unit,
         val onLoadRemoteContent: (MessageId) -> Unit,
         val onLoadEmbeddedImages: (MessageId) -> Unit,
         val onLoadRemoteAndEmbeddedContent: (MessageId) -> Unit,

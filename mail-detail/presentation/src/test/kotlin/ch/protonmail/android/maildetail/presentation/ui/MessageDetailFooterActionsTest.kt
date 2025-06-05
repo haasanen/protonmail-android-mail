@@ -43,7 +43,7 @@ internal class MessageDetailFooterActionsTest {
             onReply = replyLambda,
             onReplyAll = replyAllLambda,
             onForward = forwardLambda,
-            onMoreMessageActionsClick = {},
+            onMoreMessageActionsClick = { _, _ -> },
             onLoadRemoteContent = {},
             onLoadEmbeddedImages = {},
             onLoadRemoteAndEmbeddedContent = {},

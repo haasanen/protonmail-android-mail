@@ -31,9 +31,11 @@ import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
+import ch.protonmail.android.mailmessage.data.mapper.toLocalThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import ch.protonmail.android.testdata.label.rust.LocalLabelAsActionTestData
+import ch.protonmail.android.testdata.message.MessageThemeOptionsTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -61,6 +63,8 @@ class RustMessageActionRepositoryTest {
     @Test
     fun `get available actions should return supported available actions when data source exposes them`() = runTest {
         // Given
+        val themeOptions = MessageThemeOptionsTestData.darkOverrideLight
+        val rustThemeOpts = themeOptions.toLocalThemeOptions()
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
         val messageId = MessageId("1")
@@ -80,12 +84,13 @@ class RustMessageActionRepositoryTest {
             rustMessageDataSource.getAvailableActions(
                 userId,
                 labelId.toLocalLabelId(),
-                messageId.toLocalMessageId()
+                messageId.toLocalMessageId(),
+                rustThemeOpts
             )
         } returns rustAvailableActions.right()
 
         // When
-        val result = repository.getAvailableActions(userId, labelId, messageId)
+        val result = repository.getAvailableActions(userId, labelId, messageId, themeOptions)
 
         // Then
         val expected = AvailableActions(
@@ -100,6 +105,8 @@ class RustMessageActionRepositoryTest {
     @Test
     fun `get available actions should return error when data source fails`() = runTest {
         // Given
+        val themeOptions = MessageThemeOptionsTestData.darkOverrideLight
+        val rustThemeOpts = themeOptions.toLocalThemeOptions()
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
         val messageId = MessageId("1")
@@ -108,12 +115,13 @@ class RustMessageActionRepositoryTest {
             rustMessageDataSource.getAvailableActions(
                 userId,
                 labelId.toLocalLabelId(),
-                messageId.toLocalMessageId()
+                messageId.toLocalMessageId(),
+                rustThemeOpts
             )
         } returns expectedError.left()
 
         // When
-        val result = repository.getAvailableActions(userId, labelId, messageId)
+        val result = repository.getAvailableActions(userId, labelId, messageId, themeOptions)
 
         // Then
         assertEquals(expectedError.left(), result)

@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmessage.presentation.ui.bottomsheet
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -154,7 +153,6 @@ fun DetailMoreActionsBottomSheetContent(
             ActionGroup(
                 modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
                 items = genericActions
-                    .filter { shouldSkipActionItem(it, isSystemInDarkTheme()).not() }
                     .toImmutableList(),
                 onItemClicked = { actionUiModel ->
                     resolveCallbackForAction(uiModel.messageIdInConversation, actionUiModel.action, actionCallbacks)
@@ -341,9 +339,6 @@ private fun callbackForAction(
         { Timber.d("Action not handled $action.") }
     }
 }
-
-private fun shouldSkipActionItem(actionItem: ActionUiModel, isSystemInDarkTheme: Boolean): Boolean =
-    !isSystemInDarkTheme && actionItem.action in arrayOf(Action.ViewInLightMode, Action.ViewInDarkMode)
 
 object DetailMoreActionsBottomSheetContent {
 

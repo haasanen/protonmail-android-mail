@@ -78,6 +78,7 @@ import ch.protonmail.android.maildetail.presentation.ui.common.SingleLineRecipie
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.maillabel.presentation.ui.LabelsList
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import kotlinx.collections.immutable.ImmutableList
 
@@ -594,7 +595,7 @@ object MessageDetailHeader {
         val onReply: (MessageId) -> Unit,
         val onReplyAll: (MessageId) -> Unit,
         val onShowFeatureMissingSnackbar: () -> Unit,
-        val onMore: (MessageId) -> Unit,
+        val onMore: (MessageId, MessageThemeOptions) -> Unit,
         val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
         val onAvatarImageLoadFailed: () -> Unit,
@@ -608,7 +609,7 @@ object MessageDetailHeader {
                 onReply = {},
                 onReplyAll = {},
                 onShowFeatureMissingSnackbar = {},
-                onMore = {},
+                onMore = { _, _ -> },
                 onAvatarClicked = { _, _ -> },
                 onAvatarImageLoadRequested = { },
                 onAvatarImageLoadFailed = { },

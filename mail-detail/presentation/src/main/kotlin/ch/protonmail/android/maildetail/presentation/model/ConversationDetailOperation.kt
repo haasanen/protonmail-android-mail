@@ -43,6 +43,7 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBot
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
 import kotlinx.collections.immutable.ImmutableList
 
@@ -179,7 +180,7 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     object DismissBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
 
     object RequestConversationLabelAsBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
-    data class RequestMessageMoreActionsBottomSheet(val messageId: MessageId) :
+    data class RequestMessageMoreActionsBottomSheet(val messageId: MessageId, val themeOptions: MessageThemeOptions) :
         ConversationDetailViewAction, AffectingBottomSheet
 
     data object RequestConversationMoreActionsBottomSheet : ConversationDetailViewAction, AffectingBottomSheet

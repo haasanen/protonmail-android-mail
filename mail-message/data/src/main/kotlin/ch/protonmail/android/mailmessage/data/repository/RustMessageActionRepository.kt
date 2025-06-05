@@ -31,8 +31,10 @@ import ch.protonmail.android.mailmessage.data.mapper.toAllBottomBarActions
 import ch.protonmail.android.mailmessage.data.mapper.toAvailableActions
 import ch.protonmail.android.mailmessage.data.mapper.toLabelAsActions
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
+import ch.protonmail.android.mailmessage.data.mapper.toLocalThemeOptions
 import ch.protonmail.android.mailmessage.data.mapper.toMailLabels
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.repository.MessageActionRepository
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -45,12 +47,14 @@ class RustMessageActionRepository @Inject constructor(
     override suspend fun getAvailableActions(
         userId: UserId,
         labelId: LabelId,
-        messageId: MessageId
+        messageId: MessageId,
+        messageThemeOptions: MessageThemeOptions
     ): Either<DataError, AvailableActions> {
         val availableActions = rustMessageDataSource.getAvailableActions(
             userId,
             labelId.toLocalLabelId(),
-            messageId.toLocalMessageId()
+            messageId.toLocalMessageId(),
+            messageThemeOptions.toLocalThemeOptions()
         )
         Timber.v("rust-message: Available actions: $availableActions \n for messages $messageId")
 

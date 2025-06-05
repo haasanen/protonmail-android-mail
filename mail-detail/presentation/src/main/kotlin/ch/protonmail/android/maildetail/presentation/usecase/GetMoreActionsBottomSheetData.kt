@@ -25,6 +25,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvai
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent
@@ -42,8 +43,11 @@ class GetMoreActionsBottomSheetData @Inject constructor(
     suspend fun forMessage(
         userId: UserId,
         labelId: LabelId,
-        messageId: MessageId
-    ): DetailMoreActionsBottomSheetEvent.DataLoaded? = getMessageAvailableActions(userId, labelId, messageId).map {
+        messageId: MessageId,
+        messageThemeOptions: MessageThemeOptions
+    ): DetailMoreActionsBottomSheetEvent.DataLoaded? = getMessageAvailableActions(
+        userId, labelId, messageId, messageThemeOptions
+    ).map {
         buildBottomSheetActionData(userId, messageId, it)
     }.getOrNull()
 

@@ -17,6 +17,7 @@ import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.testdata.action.AvailableActionsTestData
 import ch.protonmail.android.testdata.conversation.ConversationTestData.conversation
+import ch.protonmail.android.testdata.message.MessageThemeOptionsTestData
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -42,18 +43,19 @@ class GetMoreActionsBottomSheetDataTest {
     @Test
     fun `should return bottom sheet more actions data when all operations succeeded for message`() = runTest {
         // Given
+        val themeOptions = MessageThemeOptionsTestData.darkOverrideLight
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Archive.labelId
         val messageId = MessageIdSample.PlainTextMessage
         val message = MessageSample.Invoice
         val availableActions = AvailableActionsTestData.replyActionsOnly
         coEvery {
-            getMessageAvailableActions(userId, labelId, messageId)
+            getMessageAvailableActions(userId, labelId, messageId, themeOptions)
         } returns availableActions.right()
         coEvery { observeMessage(userId, messageId) } returns flowOf(message.right())
 
         // When
-        val actual = getMoreBottomSheetData.forMessage(userId, labelId, messageId)
+        val actual = getMoreBottomSheetData.forMessage(userId, labelId, messageId, themeOptions)
 
         // Then
         val expected = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
@@ -69,17 +71,18 @@ class GetMoreActionsBottomSheetDataTest {
     @Test
     fun `should return empty bottom sheet action data when observing labels failed for message`() = runTest {
         // Given
+        val themeOptions = MessageThemeOptionsTestData.darkOverrideLight
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Archive.labelId
         val messageId = MessageIdSample.PlainTextMessage
         val message = MessageSample.Invoice
         coEvery {
-            getMessageAvailableActions(userId, labelId, messageId)
+            getMessageAvailableActions(userId, labelId, messageId, themeOptions)
         } returns DataError.Local.NoDataCached.left()
         coEvery { observeMessage(userId, messageId) } returns flowOf(message.right())
 
         // When
-        val actual = getMoreBottomSheetData.forMessage(userId, labelId, messageId)
+        val actual = getMoreBottomSheetData.forMessage(userId, labelId, messageId, themeOptions)
 
         // Then
         assertNull(actual)

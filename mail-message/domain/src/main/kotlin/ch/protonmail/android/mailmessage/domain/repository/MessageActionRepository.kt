@@ -26,6 +26,7 @@ import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import me.proton.core.domain.entity.UserId
 
 interface MessageActionRepository {
@@ -33,7 +34,8 @@ interface MessageActionRepository {
     suspend fun getAvailableActions(
         userId: UserId,
         labelId: LabelId,
-        messageId: MessageId
+        messageId: MessageId,
+        messageThemeOptions: MessageThemeOptions
     ): Either<DataError, AvailableActions>
 
     suspend fun getSystemMoveToLocations(

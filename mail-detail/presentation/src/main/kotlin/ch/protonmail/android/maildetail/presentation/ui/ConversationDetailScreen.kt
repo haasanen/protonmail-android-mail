@@ -115,6 +115,7 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBot
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
@@ -440,8 +441,13 @@ fun ConversationDetailScreen(
                 onBodyExpandCollapseButtonClicked = {
                     viewModel.submit(ConversationDetailViewAction.ExpandOrCollapseMessageBody(it))
                 },
-                onMoreMessageActionsClick = { messageId ->
-                    viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
+                onMoreMessageActionsClick = { messageId, themeOptions ->
+                    viewModel.submit(
+                        ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
+                            messageId,
+                            themeOptions
+                        )
+                    )
                 },
                 onLoadRemoteContent = {
                     viewModel.submit(ConversationDetailViewAction.LoadRemoteContent(MessageIdUiModel(it.id)))
@@ -993,7 +999,7 @@ object ConversationDetailScreen {
         val onReplyAll: (MessageId) -> Unit,
         val onForward: (MessageId) -> Unit,
         val onBodyExpandCollapseButtonClicked: (MessageIdUiModel) -> Unit,
-        val onMoreMessageActionsClick: (MessageId) -> Unit,
+        val onMoreMessageActionsClick: (MessageId, MessageThemeOptions) -> Unit,
         val onLoadRemoteContent: (MessageId) -> Unit,
         val onLoadEmbeddedImages: (MessageId) -> Unit,
         val onLoadRemoteAndEmbeddedContent: (MessageId) -> Unit,
@@ -1042,7 +1048,7 @@ object ConversationDetailScreen {
                 onReplyAll = {},
                 onForward = {},
                 onBodyExpandCollapseButtonClicked = {},
-                onMoreMessageActionsClick = {},
+                onMoreMessageActionsClick = { _, _ -> },
                 onLoadRemoteContent = {},
                 onLoadEmbeddedImages = {},
                 onLoadRemoteAndEmbeddedContent = {},

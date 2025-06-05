@@ -25,7 +25,6 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
-import uniffi.proton_mail_uniffi.MailTheme
 import uniffi.proton_mail_uniffi.ThemeOpts
 import uniffi.proton_mail_uniffi.AvailableActionsForMessageResult
 import uniffi.proton_mail_uniffi.MessageAvailableActions
@@ -36,9 +35,9 @@ class GetRustAvailableMessageActions @Inject constructor() {
 
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
-        messageId: LocalMessageId
+        messageId: LocalMessageId,
+        themeOpts: ThemeOpts
     ): Either<DataError, MessageAvailableActions> {
-        val themeOpts = ThemeOpts(MailTheme.DARK_MODE)
         return when (val result = availableActionsForMessage(mailbox.getRustMailbox(), themeOpts, messageId)) {
             is AvailableActionsForMessageResult.Error -> result.v1.toDataError().left()
             is AvailableActionsForMessageResult.Ok -> result.v1.right()

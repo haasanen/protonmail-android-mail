@@ -58,6 +58,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.ThemeOpts
 import uniffi.proton_mail_uniffi.TransformOpts
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
@@ -238,14 +239,15 @@ class RustMessageDataSourceImpl @Inject constructor(
     override suspend fun getAvailableActions(
         userId: UserId,
         labelId: LocalLabelId,
-        messageId: LocalMessageId
+        messageId: LocalMessageId,
+        themeOpts: ThemeOpts
     ): Either<DataError, MessageAvailableActions> = withContext(ioDispatcher) {
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get available actions for null Mailbox! failing")
             return@withContext DataError.Local.NoDataCached.left()
         }
-        return@withContext getRustAvailableMessageActions(mailbox, messageId)
+        return@withContext getRustAvailableMessageActions(mailbox, messageId, themeOpts)
     }
 
     override suspend fun getAllAvailableBottomBarActions(

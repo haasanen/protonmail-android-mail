@@ -33,6 +33,7 @@ import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
+import uniffi.proton_mail_uniffi.ThemeOpts
 
 @Suppress("ComplexInterface", "TooManyFunctions")
 interface RustMessageDataSource {
@@ -69,7 +70,8 @@ interface RustMessageDataSource {
     suspend fun getAvailableActions(
         userId: UserId,
         labelId: LocalLabelId,
-        messageId: LocalMessageId
+        messageId: LocalMessageId,
+        themeOpts: ThemeOpts
     ): Either<DataError, MessageAvailableActions>
 
     suspend fun getAvailableSystemMoveToActions(
