@@ -44,6 +44,18 @@ internal sealed interface ContentEffectsStateModifications : EffectsStateModific
             state.copy(openFilesPicker = Effect.of(Unit))
     }
 
+    data class OnInlineAttachmentAdded(val contentId: String) : EffectsStateModification {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
+            state.copy(injectInlineAttachment = Effect.of(contentId))
+    }
+
+    data class OnInlineAttachmentRemoved(val contentId: String) : EffectsStateModification {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
+            state.copy(stripInlineAttachment = Effect.of(contentId))
+    }
+
     data class DraftContentReady(
         val fields: DraftUiModel,
         val isDataRefresh: Boolean,

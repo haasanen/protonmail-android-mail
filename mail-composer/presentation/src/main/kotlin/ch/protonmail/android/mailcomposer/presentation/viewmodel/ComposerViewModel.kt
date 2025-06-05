@@ -28,12 +28,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.decode
 import ch.protonmail.android.mailcommon.domain.model.hasEmailData
 import ch.protonmail.android.mailcommon.domain.network.NetworkManager
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
@@ -58,16 +60,21 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
-import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
-import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerEvent
-import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
+import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
+import ch.protonmail.android.mailcomposer.presentation.model.ComposerStates
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsState
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
-import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
+import ch.protonmail.android.mailcomposer.presentation.model.operations.AttachmentsEvent
+import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction2
+import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerStateEvent
+import ch.protonmail.android.mailcomposer.presentation.model.operations.CompositeEvent
+import ch.protonmail.android.mailcomposer.presentation.model.operations.EffectsEvent
+import ch.protonmail.android.mailcomposer.presentation.model.operations.MainEvent
+import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerStateReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
@@ -92,18 +99,19 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import me.proton.core.util.kotlin.deserialize
 import me.proton.core.util.kotlin.takeIfNotEmpty
 import timber.log.Timber
@@ -116,7 +124,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val updateRecipients: UpdateRecipients,
     private val getContacts: GetContacts,
     private val participantMapper: ParticipantMapper,
-    private val reducer: ComposerReducer,
+    private val composerStateReducer: ComposerStateReducer,
     private val isValidEmailAddress: IsValidEmailAddress,
     private val observeMessageAttachments: ObserveMessageAttachments,
     private val sendMessage: SendMessage,
@@ -141,11 +149,20 @@ class ComposerViewModel @AssistedInject constructor(
 
     internal val subjectTextField = TextFieldState()
 
-    private val actionMutex = Mutex()
     private val primaryUserId = observePrimaryUserId().filterNotNull()
+    private val composerActionsChannel = Channel<ComposerAction2>(Channel.BUFFERED)
 
-    private val mutableState = MutableStateFlow(ComposerDraftState.initial())
-    val state: StateFlow<ComposerDraftState> = mutableState
+    private val mutableComposerStates = MutableStateFlow(
+        ComposerStates(
+            main = ComposerState.Main.initial(),
+            attachments = ComposerState.Attachments.initial(),
+            accessories = ComposerState.Accessories.initial(),
+            effects = ComposerState.Effects.initial()
+        )
+    )
+
+    internal val composerStates = mutableComposerStates.asStateFlow()
+
 
     val isChooseAttachmentSourceEnabled = chooseAttachmentSourceEnabled.stateIn(
         scope = viewModelScope,
@@ -166,6 +183,7 @@ class ComposerViewModel @AssistedInject constructor(
             observeAttachments()
             observeComposerSubject()
             observeComposerRecipients()
+            processActions()
         }
     }
 
@@ -206,7 +224,7 @@ class ComposerViewModel @AssistedInject constructor(
         // Theoretically we can restore the draft from local storage, but it's not guaranteed that its content is
         // up to date and we don't know if it should overwrite the remote state.
         Timber.tag("ComposerViewModel").d("Restored Composer instance - navigating back.")
-        emitNewStateFor(ComposerAction.OnCloseComposer)
+        emitNewStateFor(EffectsEvent.ComposerControlEvent.OnCloseRequest)
     }
 
     private fun prefillForComposeToAction(recipients: List<RecipientUiModel>) {
@@ -218,21 +236,19 @@ class ComposerViewModel @AssistedInject constructor(
     private suspend fun prefillForNewDraft() {
         // Emitting also for "empty draft" as now signature is returned with the init body, effectively
         // making this the same as other prefill cases (eg. "reply" or "fw")
-        emitNewStateFor(ComposerEvent.OpenDraft)
+        emitNewStateFor(MainEvent.InitialLoadingToggled)
 
         createEmptyDraft(primaryUserId())
             .onRight { draftFields ->
                 emitNewStateFor(
-                    ComposerEvent.PrefillDraftDataReceived(
+                    CompositeEvent.DraftContentReady(
                         draftUiModel = draftFields.toDraftUiModel(),
                         isDataRefreshed = true,
-                        isBlockedSendingFromPmAddress = false,
-                        isBlockedSendingFromDisabledAddress = false,
                         bodyShouldTakeFocus = false
                     )
                 )
             }
-            .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingDefaultSenderAddress) }
+            .onLeft { emitNewStateFor(EffectsEvent.LoadingEvent.OnSenderAddressLoadingFailed) }
     }
 
     private suspend fun prefillForShareDraftAction(shareDraftAction: PrefillForShare) {
@@ -248,7 +264,9 @@ class ComposerViewModel @AssistedInject constructor(
             val draftFields = prepareDraftFieldsFor(fileShareInfo)
             initComposerFields(draftFields)
             emitNewStateFor(
-                ComposerEvent.PrefillDataReceivedViaShare(draftFields.toDraftUiModel())
+                CompositeEvent.DraftContentReady(
+                    draftUiModel = draftFields.toDraftUiModel(), isDataRefreshed = true, bodyShouldTakeFocus = false
+                )
             )
         }
     }
@@ -288,7 +306,7 @@ class ComposerViewModel @AssistedInject constructor(
     // hardcoding values for isBlockedSendingFromPmAddress / isBlockedSendingFromDisabledAddress
     private suspend fun prefillForDraftAction(draftAction: DraftAction) {
         Timber.d("Opening composer for draft action $draftAction")
-        emitNewStateFor(ComposerEvent.OpenDraft)
+        emitNewStateFor(MainEvent.InitialLoadingToggled)
         val focusDraftBody = draftAction is Reply || draftAction is ReplyAll
         when (draftAction) {
             Compose -> prefillForNewDraft()
@@ -304,16 +322,14 @@ class ComposerViewModel @AssistedInject constructor(
                 .onRight { draftFields ->
                     initComposerFields(draftFields)
                     emitNewStateFor(
-                        ComposerEvent.PrefillDraftDataReceived(
+                        CompositeEvent.DraftContentReady(
                             draftUiModel = draftFields.toDraftUiModel(),
                             isDataRefreshed = true,
-                            isBlockedSendingFromPmAddress = false,
-                            isBlockedSendingFromDisabledAddress = false,
                             bodyShouldTakeFocus = focusDraftBody
                         )
                     )
                 }
-                .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingParentMessageData) }
+                .onLeft { emitNewStateFor(EffectsEvent.LoadingEvent.OnParentLoadingFailed) }
 
             is PrefillForShare -> prefillForShareDraftAction(draftAction)
         }
@@ -321,23 +337,21 @@ class ComposerViewModel @AssistedInject constructor(
 
     private suspend fun prefillWithExistingDraft(inputDraftId: String) {
         Timber.d("Opening composer with $inputDraftId")
-        emitNewStateFor(ComposerEvent.OpenDraft)
+        emitNewStateFor(MainEvent.InitialLoadingToggled)
 
         openExistingDraft(primaryUserId(), MessageId(inputDraftId))
             .onRight { draftFieldsWithSyncStatus ->
                 val draftFields = draftFieldsWithSyncStatus.draftFields
                 initComposerFields(draftFields)
                 emitNewStateFor(
-                    ComposerEvent.PrefillDraftDataReceived(
+                    CompositeEvent.DraftContentReady(
                         draftUiModel = draftFields.toDraftUiModel(),
                         isDataRefreshed = draftFieldsWithSyncStatus is DraftFieldsWithSyncStatus.Remote,
-                        isBlockedSendingFromPmAddress = false,
-                        isBlockedSendingFromDisabledAddress = false,
                         bodyShouldTakeFocus = draftFields.hasAnyRecipient()
                     )
                 )
             }
-            .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingDraftData) }
+            .onLeft { emitNewStateFor(EffectsEvent.DraftEvent.OnDraftLoadingFailed) }
     }
 
     private fun DraftFields.toDraftUiModel(): DraftUiModel {
@@ -347,39 +361,59 @@ class ComposerViewModel @AssistedInject constructor(
         return DraftUiModel(this, draftDisplayBody)
     }
 
-    @Suppress("ComplexMethod")
-    internal fun submit(action: ComposerAction) {
+    internal fun submit(action: ComposerAction2) {
         viewModelScope.launch {
-            actionMutex.withLock {
-                when (action) {
-                    is ComposerAction.AttachmentsAdded -> onAttachmentsAdded(action.uriList)
-                    is ComposerAction.FileAttachmentsAdded -> onFileAttachmentsAdded(action.uriList)
-                    is ComposerAction.DraftBodyChanged -> onDraftBodyChanged(action)
-                    is ComposerAction.SenderChanged -> TODO()
-                    is ComposerAction.ChangeSenderRequested -> TODO()
+            composerActionsChannel.send(action)
+            logViewModelAction(action, "Enqueued")
+        }
+    }
 
-                    is ComposerAction.OnAddAttachments -> emitNewStateFor(action)
-                    is ComposerAction.OnCloseComposer -> emitNewStateFor(onCloseComposer(action))
-                    is ComposerAction.OnSendMessage -> emitNewStateFor(handleOnSendMessage())
-                    is ComposerAction.ConfirmSendingWithoutSubject -> emitNewStateFor(onSendMessage())
-                    is ComposerAction.RejectSendingWithoutSubject -> emitNewStateFor(action)
-                    is ComposerAction.RemoveAttachment -> onAttachmentsRemoved(action)
-                    is ComposerAction.OnSetExpirationTimeRequested -> TODO()
-                    is ComposerAction.ExpirationTimeSet -> TODO()
-                    is ComposerAction.SendExpiringMessageToExternalRecipientsConfirmed -> emitNewStateFor(
-                        onSendMessage()
-                    )
+    private suspend fun processActions() {
+        composerActionsChannel.consumeEach { action ->
+            logViewModelAction(action, "Executing")
+            when (action) {
+                is ComposerAction2.ChangeSender -> TODO()
+                is ComposerAction2.SetSenderAddress -> TODO()
 
-                    is ComposerAction.DiscardDraft -> emitNewStateFor(action)
-                    is ComposerAction.DiscardDraftConfirmed -> onDiscardDraftConfirmed(action)
-                    is ComposerAction.RemoveInlineImage -> onInlineImageRemoved(action)
-                    is ComposerAction.OnInlineImageActionsRequested -> emitNewStateFor(action)
-                    is ComposerAction.OnAttachFromFiles -> emitNewStateFor(action)
-                    is ComposerAction.OnAttachFromCamera -> emitNewStateFor(action)
-                    is ComposerAction.OnAttachFromPhotos -> emitNewStateFor(action)
-                    is ComposerAction.OnScheduleSendRequested -> onScheduleSendRequested()
-                }
+                is ComposerAction2.OpenExpirationSettings -> TODO()
+
+                is ComposerAction2.SetMessageExpiration -> TODO()
+
+                is ComposerAction2.AddAttachmentsRequested ->
+                    emitNewStateFor(EffectsEvent.AttachmentEvent.OnAttachFromOptionsRequest)
+
+                is ComposerAction2.OpenCameraPicker ->
+                    emitNewStateFor(EffectsEvent.AttachmentEvent.OnAddFromCameraRequest)
+
+                is ComposerAction2.OpenPhotosPicker -> emitNewStateFor(EffectsEvent.AttachmentEvent.OnAddMediaRequest)
+                is ComposerAction2.OpenFilePicker -> emitNewStateFor(EffectsEvent.AttachmentEvent.OnAddFileRequest)
+
+                is ComposerAction2.AddFileAttachments -> onFileAttachmentsAdded(action.uriList)
+                is ComposerAction2.AddAttachments -> onAttachmentsAdded(action.uriList)
+                is ComposerAction2.RemoveAttachment -> onAttachmentsRemoved(action.attachmentId)
+                is ComposerAction2.RemoveInlineAttachment -> onInlineImageRemoved(action.contentId)
+                is ComposerAction2.InlineImageActionsRequested ->
+                    emitNewStateFor(EffectsEvent.AttachmentEvent.OnInlineImageActionsRequested)
+
+                is ComposerAction2.CloseComposer -> onCloseComposer()
+                is ComposerAction2.SendMessage -> handleOnSendMessage()
+
+                is ComposerAction2.CancelSendWithNoSubject ->
+                    emitNewStateFor(EffectsEvent.SendEvent.OnCancelSendNoSubject)
+
+                is ComposerAction2.ConfirmSendWithNoSubject -> onSendMessage()
+
+                is ComposerAction2.CancelSendExpirationSetToExternal -> TODO()
+
+                is ComposerAction2.ConfirmSendExpirationSetToExternal -> onSendMessage()
+
+                is ComposerAction2.ClearSendingError -> TODO()
+
+                is ComposerAction2.DraftBodyChanged -> onDraftBodyChanged(action.draftBody)
+                is ComposerAction2.DiscardDraftRequested -> emitNewStateFor(EffectsEvent.DraftEvent.OnDiscardDraftRequested)
+                is ComposerAction2.DiscardDraftConfirmed -> onDiscardDraftConfirmed()
             }
+            logViewModelAction(action, "Completed.")
         }
     }
 
@@ -396,9 +430,9 @@ class ComposerViewModel @AssistedInject constructor(
             observeMessageAttachments().onEach { result ->
                 result.onLeft {
                     Timber.e("Failed to observe message attachments: $it")
-                    emitNewStateFor(ComposerEvent.ErrorLoadingDraftData)
+                    emitNewStateFor(EffectsEvent.DraftEvent.OnDraftLoadingFailed)
                 }.onRight { attachments ->
-                    emitNewStateFor(ComposerEvent.OnAttachmentsUpdated(attachments))
+                    emitNewStateFor(AttachmentsEvent.OnListChanged(attachments))
                 }
             }.launchIn(this)
         }
@@ -411,11 +445,12 @@ class ComposerViewModel @AssistedInject constructor(
             uriList.forEach { uri ->
                 addAttachment(uri).onLeft {
                     Timber.e("Failed to add attachment: $it")
-                    emitNewStateFor(ComposerEvent.AddAttachmentError(it))
+                    emitNewStateFor(EffectsEvent.AttachmentEvent.AddAttachmentError(it))
                 }.onRight {
                     when (it) {
                         is AddAttachment.AddAttachmentResult.InlineAttachmentAdded ->
-                            emitNewStateFor(ComposerEvent.InlineAttachmentAdded(it.cid))
+                            emitNewStateFor(EffectsEvent.AttachmentEvent.InlineAttachmentAdded(it.cid))
+
                         AddAttachment.AddAttachmentResult.StandardAttachmentAdded -> Unit
                     }
                 }
@@ -428,97 +463,96 @@ class ComposerViewModel @AssistedInject constructor(
             uriList.forEach { uri ->
                 addAttachment.forcingStandardDisposition(uri).onLeft {
                     Timber.e("Failed to add standard attachment: $it")
-                    emitNewStateFor(ComposerEvent.AddAttachmentError(it))
+                    emitNewStateFor(EffectsEvent.AttachmentEvent.AddAttachmentError(it))
                 }
             }
         }
     }
 
-    private fun onAttachmentsRemoved(action: ComposerAction.RemoveAttachment) {
+    private fun onAttachmentsRemoved(attachmentId: AttachmentId) {
         viewModelScope.launch {
-            deleteAttachment(action.attachmentId)
+            deleteAttachment(attachmentId)
                 .onLeft {
                     Timber.e("Failed to delete attachment: $it")
-                    emitNewStateFor(ComposerEvent.DeleteAttachmentError)
+                    emitNewStateFor(EffectsEvent.AttachmentEvent.AddAttachmentError(AttachmentAddError.Unknown))
                 }
         }
     }
 
-    private fun onInlineImageRemoved(action: ComposerAction.RemoveInlineImage) {
+    private fun onInlineImageRemoved(contentId: String) {
         viewModelScope.launch {
-            deleteInlineAttachment(action.contentId)
-                .onLeft { Timber.w("Failed to delete inline attachment: ${action.contentId} reason: $it") }
+            deleteInlineAttachment(contentId)
+                .onLeft { Timber.w("Failed to delete inline attachment: $contentId reason: $it") }
                 .onRight {
-                    Timber.d("Inline attachment ${action.contentId} removed!")
-                    emitNewStateFor(ComposerEvent.InlineAttachmentRemoved(action.contentId))
+                    Timber.d("Inline attachment $contentId removed!")
+                    emitNewStateFor(EffectsEvent.AttachmentEvent.InlineAttachmentRemoved(contentId))
                 }
         }
     }
 
-    private suspend fun onCloseComposer(action: ComposerAction.OnCloseComposer): ComposerOperation {
-        emitNewStateFor(ComposerEvent.OnMessageSending)
+    private suspend fun onCloseComposer() {
+        emitNewStateFor(MainEvent.CoreLoadingToggled)
 
-        return getDraftId().fold(
-            ifLeft = { action },
-            ifRight = { ComposerEvent.OnCloseWithDraftSaved(it) }
+        val event = getDraftId().fold(
+            ifLeft = { EffectsEvent.ComposerControlEvent.OnCloseRequest },
+            ifRight = { EffectsEvent.ComposerControlEvent.OnCloseRequestWithDraft(it) }
+        )
+        emitNewStateFor(event)
+    }
+
+    private suspend fun handleOnSendMessage() {
+        emitNewStateFor(MainEvent.CoreLoadingToggled)
+
+        if (subjectTextField.text.isBlank()) {
+            emitNewStateFor(EffectsEvent.SendEvent.OnCancelSendNoSubject)
+        }
+        onSendMessage()
+    }
+
+    private suspend fun onSendMessage() {
+        sendMessage().fold(
+            ifLeft = {
+                Timber.w("composer: Send message failed. Error: $it")
+                ComposerEvent.OnSendingError(TextUiModel(it.toString()))
+            },
+            ifRight = {
+                if (networkManager.isConnectedToNetwork()) {
+                    emitNewStateFor(EffectsEvent.SendEvent.OnSendMessage)
+                } else {
+                    emitNewStateFor(EffectsEvent.SendEvent.OnOfflineSendMessage)
+                }
+            }
         )
     }
 
-    private suspend fun handleOnSendMessage(): ComposerOperation {
-        emitNewStateFor(ComposerEvent.OnMessageSending)
-
-        if (subjectTextField.text.isBlank()) {
-            return ComposerEvent.ConfirmEmptySubject
-        }
-        return onSendMessage()
-    }
-
-    private suspend fun onSendMessage(): ComposerOperation = sendMessage().fold(
-        ifLeft = {
-            Timber.w("composer: Send message failed. Error: $it")
-            ComposerEvent.OnSendingError(TextUiModel(it.toString()))
-        },
-        ifRight = {
-            return if (networkManager.isConnectedToNetwork()) {
-                ComposerAction.OnSendMessage
-            } else {
-                ComposerEvent.OnSendMessageOffline
-            }
-        }
-    )
-
-    private fun onDiscardDraftConfirmed(action: ComposerAction.DiscardDraftConfirmed) {
+    private fun onDiscardDraftConfirmed() {
         viewModelScope.launch {
             getDraftId().fold(
-                ifLeft = { emitNewStateFor(ComposerEvent.ErrorDiscardingDraft) },
+                ifLeft = { emitNewStateFor(EffectsEvent.ErrorEvent.OnDiscardDraftError) },
                 ifRight = {
                     discardDraft(primaryUserId(), it)
-                    emitNewStateFor(action)
+                    emitNewStateFor(EffectsEvent.ComposerControlEvent.OnCloseRequest)
                 }
             )
         }
     }
 
-    private suspend fun onSubjectChanged(subject: Subject) = storeDraftWithSubject(subject).onLeft {
-        emitNewStateFor(ComposerEvent.ErrorStoringDraftSubject)
-        savedStateHandle[ComposerScreen.HasSavedDraftKey] = true
-    }
+    private suspend fun onSubjectChanged(subject: Subject) = storeDraftWithSubject(subject)
+        .onRight { savedStateHandle[ComposerScreen.HasSavedDraftKey] = true }
 
-    private suspend fun onDraftBodyChanged(action: ComposerAction.DraftBodyChanged) {
-        val updatedDraftBody = action.draftBody
+    private suspend fun onDraftBodyChanged(updatedDraftBody: DraftBody) {
         val draftDisplayBody = buildDraftDisplayBody(MessageBodyWithType(updatedDraftBody.value, MimeTypeUiModel.Html))
-        emitNewStateFor(ComposerEvent.OnDraftBodyUpdated(updatedDraftBody, draftDisplayBody))
+        emitNewStateFor(MainEvent.OnDraftBodyUpdated(updatedDraftBody, draftDisplayBody))
 
-        storeDraftWithBody(
-            updatedDraftBody
-        ).onLeft { emitNewStateFor(ComposerEvent.ErrorStoringDraftBody) }
+        storeDraftWithBody(updatedDraftBody)
+            .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreBodyError) }
 
         savedStateHandle[ComposerScreen.HasSavedDraftKey] = true
     }
 
     private suspend fun primaryUserId() = primaryUserId.first()
 
-    private fun currentSenderEmail() = SenderEmail(state.value.fields.sender.email)
+    private fun currentSenderEmail() = SenderEmail(composerStates.value.main.fields.sender.email)
 
     private suspend fun contactsOrEmpty() = getContacts(primaryUserId()).getOrElse { emptyList() }
 
@@ -535,10 +569,9 @@ class ComposerViewModel @AssistedInject constructor(
             recipients.toRecipients.toRecipients(),
             recipients.ccRecipients.toRecipients(),
             recipients.bccRecipients.toRecipients()
-        ).fold(
-            ifLeft = { emitNewStateFor(ComposerEvent.ErrorStoringDraftRecipients) },
-            ifRight = { emitNewStateFor(ComposerEvent.RecipientsUpdated(recipientsStateManager.hasValidRecipients())) }
-        )
+        ).onRight {
+            emitNewStateFor(MainEvent.RecipientsChanged(recipientsStateManager.hasValidRecipients()))
+        }
 
         savedStateHandle[ComposerScreen.HasSavedDraftKey] = true
     }
@@ -552,9 +585,8 @@ class ComposerViewModel @AssistedInject constructor(
         )
     }
 
-    private fun emitNewStateFor(operation: ComposerOperation) {
-        val currentState = state.value
-        mutableState.value = reducer.newStateFrom(currentState, operation)
+    private fun emitNewStateFor(event: ComposerStateEvent) {
+        mutableComposerStates.update { composerStateReducer.reduceNewState(it, event) }
     }
 
     private fun ComposeToAddresses.extractRecipients(): List<RecipientUiModel> {
@@ -574,6 +606,12 @@ class ComposerViewModel @AssistedInject constructor(
             append(text)
             if (resetRange) selection = TextRange.Zero
         }
+    }
+
+    private fun logViewModelAction(action: ComposerAction2, message: String) {
+        Timber
+            .tag("ComposerViewModel")
+            .d("Action ${action::class.java.simpleName} ${System.identityHashCode(action)} - $message")
     }
 
     @AssistedFactory

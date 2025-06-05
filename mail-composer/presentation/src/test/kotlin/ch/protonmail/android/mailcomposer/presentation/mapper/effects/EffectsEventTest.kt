@@ -73,7 +73,7 @@ internal class EffectsEventTest(
             ),
             arrayOf(
                 "AttachmentEventError to modification",
-                EffectsEvent.AttachmentEvent.Error(attachmentError),
+                EffectsEvent.AttachmentEvent.AddAttachmentError(attachmentError),
                 ComposerStateModifications(effectsModification = RecoverableError.AttachmentsStore(attachmentError))
             ),
             arrayOf(

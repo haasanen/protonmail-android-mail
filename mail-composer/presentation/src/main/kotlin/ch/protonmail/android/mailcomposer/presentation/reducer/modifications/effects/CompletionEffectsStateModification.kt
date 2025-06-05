@@ -20,13 +20,18 @@ package ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ef
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 
 internal sealed interface CompletionEffectsStateModification : EffectsStateModification {
-    data class CloseComposer(val hasSavedDraft: Boolean) : EffectsStateModification {
+    sealed interface CloseComposer : EffectsStateModification {
 
-        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
-            if (hasSavedDraft) state.copy(closeComposerWithDraftSaved = Effect.of(Unit))
-            else state.copy(closeComposer = Effect.of(Unit))
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = when (this) {
+            is CloseComposerNoDraft -> state.copy(closeComposer = Effect.of(Unit))
+            is CloseComposerDraftSaved -> state.copy(closeComposerWithDraftSaved = Effect.of(draftId))
+        }
+
+        data object CloseComposerNoDraft : CloseComposer
+        data class CloseComposerDraftSaved(val draftId: MessageId) : CloseComposer
     }
 
     sealed interface SendMessage : EffectsStateModification {

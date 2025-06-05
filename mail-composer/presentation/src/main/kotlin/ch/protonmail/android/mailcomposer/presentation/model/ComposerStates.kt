@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.model
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import kotlinx.collections.immutable.ImmutableList
@@ -92,7 +93,7 @@ sealed interface ComposerState {
         val recipientValidationError: Effect<TextUiModel>,
         val changeBottomSheetVisibility: Effect<Boolean>,
         val closeComposer: Effect<Unit>,
-        val closeComposerWithDraftSaved: Effect<Unit>,
+        val closeComposerWithDraftSaved: Effect<MessageId>,
         val closeComposerWithMessageSending: Effect<Unit>,
         val closeComposerWithMessageSendingOffline: Effect<Unit>,
         val confirmSendingWithoutSubject: Effect<Unit>,

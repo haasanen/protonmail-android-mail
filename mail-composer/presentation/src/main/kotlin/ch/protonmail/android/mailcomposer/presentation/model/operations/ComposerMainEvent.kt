@@ -18,9 +18,12 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model.operations
 
+import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
+import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification.UpdateBody
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification.UpdateLoading
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification.UpdateSender
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification.UpdateSubmittable
@@ -34,6 +37,7 @@ internal sealed interface MainEvent : ComposerStateEvent {
             is LoadingDismissed -> UpdateLoading(ComposerState.LoadingType.None)
             is SenderChanged -> UpdateSender(newSender)
             is RecipientsChanged -> UpdateSubmittable(areSubmittable)
+            is OnDraftBodyUpdated -> UpdateBody(draftBody, displayBodyUiModel)
         }
     )
 
@@ -42,4 +46,8 @@ internal sealed interface MainEvent : ComposerStateEvent {
     data object LoadingDismissed : MainEvent
     data class RecipientsChanged(val areSubmittable: Boolean) : MainEvent
     data class SenderChanged(val newSender: SenderEmail) : MainEvent
+    data class OnDraftBodyUpdated(
+        val draftBody: DraftBody,
+        val displayBodyUiModel: DraftDisplayBodyUiModel
+    ) : MainEvent
 }

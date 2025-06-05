@@ -101,7 +101,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     val viewModel = hiltViewModel<ComposerViewModel, ComposerViewModel.Factory> { factory ->
         factory.create(recipientsStateManager)
     }
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.composerStates.collectAsState()
     val isChooseAttachmentSourceEnabled by viewModel.isChooseAttachmentSourceEnabled.collectAsState()
     val isScheduleSendEnabled by viewModel.isScheduleSendEnabled.collectAsState()
 
@@ -160,16 +160,16 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         }
     )
 
-    ConsumableLaunchedEffect(effect = state.openFilesPicker) {
+    ConsumableLaunchedEffect(effect = state.effects.openFilesPicker) {
         filesPicker.launch("*/*")
     }
 
-    ConsumableLaunchedEffect(effect = state.openPhotosPicker) {
+    ConsumableLaunchedEffect(effect = state.effects.openPhotosPicker) {
         mediaPicker.launch(PickVisualMediaRequest())
     }
 
     CameraPicturePicker(
-        state.openCamera,
+        state.effects.openCamera,
         onCaptured = { uri ->
             Timber.v("camera: image from take picture composable, uri: $uri")
             viewModel.submit(ComposerAction.AttachmentsAdded(listOf(uri)))
@@ -188,12 +188,12 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         sheetContent = bottomSheetHeightConstrainedContent {
             when (val sheetType = bottomSheetType.value) {
                 BottomSheetType.ChangeSender -> ChangeSenderBottomSheetContent(
-                    state.senderAddresses,
+                    state.main.senderAddresses,
                     { sender -> viewModel.submit(ComposerAction.SenderChanged(sender)) }
                 )
 
                 BottomSheetType.SetExpirationTime -> SetExpirationTimeBottomSheetContent(
-                    expirationTime = state.messageExpiresIn,
+                    expirationTime = state.accessories.messageExpiresIn,
                     onDoneClick = { viewModel.submit(ComposerAction.ExpirationTimeSet(it)) }
                 )
 

@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.LoadingError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.UnrecoverableError
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 
 internal sealed interface EffectsEvent : ComposerStateEvent {
@@ -38,10 +39,12 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
         override fun toStateModifications(): ComposerStateModifications = ComposerStateModifications(
             effectsModification = when (this) {
                 is OnDraftLoadingFailed -> LoadingError.DraftContent
+                is OnDiscardDraftRequested -> ConfirmationsEffectsStateModification.DiscardDraftConfirmationRequested
             }
         )
 
         data object OnDraftLoadingFailed : DraftEvent
+        data object OnDiscardDraftRequested : DraftEvent
     }
 
     sealed interface LoadingEvent : EffectsEvent {
@@ -61,14 +64,23 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
 
         override fun toStateModifications(): ComposerStateModifications = ComposerStateModifications(
             effectsModification = when (this) {
-                is Error -> RecoverableError.AttachmentsStore(error)
+                is AddAttachmentError -> RecoverableError.AttachmentsStore(error)
                 OnAddFileRequest -> ContentEffectsStateModifications.OnAddAttachmentFileRequested
                 OnAddFromCameraRequest -> ContentEffectsStateModifications.OnAddAttachmentCameraRequested
                 OnAddMediaRequest -> ContentEffectsStateModifications.OnAddAttachmentPhotosRequested
+                is InlineAttachmentAdded -> ContentEffectsStateModifications.OnInlineAttachmentAdded(contentId)
+                is InlineAttachmentRemoved -> ContentEffectsStateModifications.OnInlineAttachmentRemoved(contentId)
+                is OnAttachFromOptionsRequest -> BottomSheetEffectsStateModification.ShowBottomSheet
+                is OnInlineImageActionsRequested -> BottomSheetEffectsStateModification.ShowBottomSheet
             }
         )
 
-        data class Error(val error: AttachmentAddError) : AttachmentEvent
+        data class AddAttachmentError(val error: AttachmentAddError) : AttachmentEvent
+        data class InlineAttachmentAdded(val contentId: String) : AttachmentEvent
+        data class InlineAttachmentRemoved(val contentId: String) : AttachmentEvent
+
+        data object OnInlineImageActionsRequested : AttachmentEvent
+        data object OnAttachFromOptionsRequest : AttachmentEvent
         data object OnAddFileRequest : AttachmentEvent
         data object OnAddMediaRequest : AttachmentEvent
         data object OnAddFromCameraRequest : AttachmentEvent
@@ -78,12 +90,15 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
 
         override fun toStateModifications(): ComposerStateModifications = ComposerStateModifications(
             effectsModification = when (this) {
-                is OnCloseRequest -> CompletionEffectsStateModification.CloseComposer(hasDraftSaved)
-                is OnComposerRestored -> CompletionEffectsStateModification.CloseComposer(false)
+                is OnCloseRequest -> CompletionEffectsStateModification.CloseComposer.CloseComposerNoDraft
+                is OnComposerRestored -> CompletionEffectsStateModification.CloseComposer.CloseComposerNoDraft
+                is OnCloseRequestWithDraft ->
+                    CompletionEffectsStateModification.CloseComposer.CloseComposerDraftSaved(this.draftId)
             }
         )
 
-        data class OnCloseRequest(val hasDraftSaved: Boolean) : ComposerControlEvent
+        data object OnCloseRequest : ComposerControlEvent
+        data class OnCloseRequestWithDraft(val draftId: MessageId) : ComposerControlEvent
         data object OnComposerRestored : ComposerControlEvent
     }
 
@@ -94,12 +109,16 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
                 OnSenderChangeFreeUserError -> RecoverableError.SenderChange.FreeUser
                 OnSenderChangePermissionsError -> RecoverableError.SenderChange.UnknownPermissions
                 OnSetExpirationError -> RecoverableError.Expiration
+                OnDiscardDraftError -> RecoverableError.DiscardDraftFailed
+                OnStoreBodyError -> RecoverableError.SaveBodyFailed
             }
         )
 
         data object OnSenderChangeFreeUserError : ErrorEvent
         data object OnSenderChangePermissionsError : ErrorEvent
         data object OnSetExpirationError : ErrorEvent
+        data object OnDiscardDraftError : ErrorEvent
+        data object OnStoreBodyError : ErrorEvent
     }
 
     sealed interface SendEvent : EffectsEvent {

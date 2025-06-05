@@ -43,4 +43,10 @@ internal sealed interface ConfirmationsEffectsStateModification : EffectsStateMo
         override fun apply(state: ComposerState.Effects): ComposerState.Effects =
             state.copy(confirmSendExpiringMessage = Effect.of(externalRecipients))
     }
+
+    data object DiscardDraftConfirmationRequested : EffectsStateModification {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
+            state.copy(confirmDiscardDraft = Effect.of(Unit))
+    }
 }

@@ -18,8 +18,10 @@
 
 package ch.protonmail.android.mailcomposer.presentation.reducer.modifications
 
+import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
+import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import kotlinx.collections.immutable.toImmutableList
@@ -61,4 +63,13 @@ internal sealed interface MainStateModification : ComposerStateModification<Comp
         override fun apply(state: ComposerState.Main): ComposerState.Main = state.copy(isSubmittable = isSubmittable)
     }
 
+    data class UpdateBody(
+        val draftBody: DraftBody,
+        val draftDisplayBody: DraftDisplayBodyUiModel
+    ) : MainStateModification {
+
+        override fun apply(state: ComposerState.Main): ComposerState.Main = state.copy(
+            fields = state.fields.copy(body = draftBody.value, displayBody = draftDisplayBody)
+        )
+    }
 }
