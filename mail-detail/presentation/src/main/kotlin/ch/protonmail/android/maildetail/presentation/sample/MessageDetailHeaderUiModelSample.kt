@@ -62,6 +62,7 @@ object MessageDetailHeaderUiModelSample {
         size = "6.35 KB",
         encryptionPadlock = 0,
         encryptionInfo = "",
-        messageIdUiModel = MessageIdUiModel("id")
+        messageIdUiModel = MessageIdUiModel("id"),
+        themeOverride = null
     )
 }

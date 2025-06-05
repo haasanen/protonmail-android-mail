@@ -82,6 +82,7 @@ object MessageDetailHeaderUiModelTestData {
         size = "12 MB",
         encryptionPadlock = R.drawable.ic_proton_lock,
         encryptionInfo = "End-to-end encrypted and signed message",
-        messageIdUiModel = MessageIdUiModel("id")
+        messageIdUiModel = MessageIdUiModel("id"),
+        themeOverride = null
     )
 }

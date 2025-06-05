@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import kotlinx.collections.immutable.ImmutableList
 
 @Stable
@@ -46,5 +47,6 @@ data class MessageDetailHeaderUiModel(
     val size: String,
     @DrawableRes val encryptionPadlock: Int,
     val encryptionInfo: String,
-    val messageIdUiModel: MessageIdUiModel
+    val messageIdUiModel: MessageIdUiModel,
+    val themeOverride: MessageTheme?
 )
