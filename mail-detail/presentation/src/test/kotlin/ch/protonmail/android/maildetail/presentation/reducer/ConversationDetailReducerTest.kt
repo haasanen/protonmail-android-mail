@@ -43,8 +43,8 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomShe
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.presentation.mapper.MailLabelTextMapper
-import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import io.mockk.Called
 import io.mockk.coVerify
@@ -238,8 +238,8 @@ class ConversationDetailReducerTest(
                 BottomSheet
             ),
             ConversationDetailViewAction.SwitchViewMode(
-                MessageId(messageId.id), ViewModePreference.LightMode
-            ) affects listOf(BottomSheet, Messages),
+                MessageId(messageId.id), MessageTheme.Dark, MessageTheme.Light
+            ) affects listOf(BottomSheet),
             ConversationDetailViewAction.MarkMessageUnread(MessageId(messageId.id)) affects listOf(BottomSheet),
             ConversationDetailViewAction.RequestMessageLabelAsBottomSheet(MessageId(messageId.id)) affects BottomSheet,
             ConversationDetailViewAction.MoveMessage.System.Trash(MessageId(messageId.id)) affects listOf(BottomSheet),

@@ -23,14 +23,8 @@ import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
-import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
-import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
@@ -252,26 +246,6 @@ class ConversationDetailMessagesReducerTest(
                     messages = listOf(
                         ConversationDetailMessageUiModelSample.invoiceExpandedWithAttachments(4),
                         ConversationDetailMessageUiModelSample.SepWeatherForecast
-                    ).toImmutableList()
-                )
-            ),
-            Input(
-                currentState = ConversationDetailsMessagesState.Data(
-                    messages = listOf(
-                        ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded
-                    ).toImmutableList()
-                ),
-                operation = ConversationDetailViewAction.SwitchViewMode(
-                    MessageIdSample.AugWeatherForecast, ViewModePreference.LightMode
-                ),
-                expectedState = ConversationDetailsMessagesState.Data(
-                    messages = listOf(
-                        ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded.copy(
-                            messageBodyUiModel =
-                            ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded.messageBodyUiModel.copy(
-                                viewModePreference = ViewModePreference.LightMode
-                            )
-                        )
                     ).toImmutableList()
                 )
             )

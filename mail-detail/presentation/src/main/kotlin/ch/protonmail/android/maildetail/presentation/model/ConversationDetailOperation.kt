@@ -42,7 +42,7 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomShe
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
 import kotlinx.collections.immutable.ImmutableList
 
@@ -213,8 +213,9 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     data class OpenInProtonCalendar(val messageId: MessageId) : ConversationDetailViewAction
     data class SwitchViewMode(
         val messageId: MessageId,
-        val viewModePreference: ViewModePreference
-    ) : ConversationDetailViewAction, AffectingBottomSheet, AffectingMessages
+        val currentTheme: MessageTheme,
+        val overrideTheme: MessageTheme
+    ) : ConversationDetailViewAction, AffectingBottomSheet
 
     data class MarkMessageUnread(
         val messageId: MessageId

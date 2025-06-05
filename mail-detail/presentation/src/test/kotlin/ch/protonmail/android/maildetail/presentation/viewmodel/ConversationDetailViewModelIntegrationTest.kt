@@ -138,6 +138,7 @@ import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyErr
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
@@ -172,6 +173,7 @@ import ch.protonmail.android.testdata.action.AvailableActionsTestData
 import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.message.MessageAttachmentMetadataTestData
+import ch.protonmail.android.testdata.message.MessageThemeOptionsTestData
 import io.mockk.Called
 import io.mockk.clearMocks
 import io.mockk.coEvery
@@ -392,7 +394,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val reducer = ConversationDetailReducer(
         bottomBarReducer = BottomBarReducer(),
         metadataReducer = ConversationDetailMetadataReducer(),
-        messagesReducer = ConversationDetailMessagesReducer(injectCssIntoDecryptedMessageBody),
+        messagesReducer = ConversationDetailMessagesReducer(),
         bottomSheetReducer = BottomSheetReducer(
             mailboxMoreActionsBottomSheetReducer = MailboxMoreActionsBottomSheetReducer(),
             detailMoreActionsBottomSheetReducer = DetailMoreActionsBottomSheetReducer(
@@ -556,7 +558,12 @@ class ConversationDetailViewModelIntegrationTest {
         )
         val messageId = MessageId(messages.first().messageId.id)
         val transformations =
-            MessageBodyTransformations(showQuotedText = false, hideEmbeddedImages = null, hideRemoteContent = null)
+            MessageBodyTransformations(
+                showQuotedText = false,
+                hideEmbeddedImages = null,
+                hideRemoteContent = null,
+                messageThemeOptions = null
+            )
         coEvery { getDecryptedMessageBody.invoke(userId, any(), transformations) } returns DecryptedMessageBody(
             messageId = messageId,
             value = EmailBodyTestSamples.BodyWithProtonMailQuote,
@@ -1321,19 +1328,22 @@ class ConversationDetailViewModelIntegrationTest {
     fun `verify bottom sheet with data is emitted when more actions bottom sheet is requested and loading succeeds`() =
         runTest {
             // Given
+            val themeOptions = MessageThemeOptionsTestData.darkNoOverride
             val messageId = MessageId("messageId")
             val labelId = SystemLabelId.Archive.labelId
             coEvery {
                 observeMessage(userId = userId, messageId = messageId)
             } returns flowOf(MessageSample.AugWeatherForecast.right())
             coEvery {
-                getMessageAvailableActions(userId, labelId, messageId)
+                getMessageAvailableActions(userId, labelId, messageId, themeOptions)
             } returns AvailableActionsTestData.replyActionsOnly.right()
 
             // When
             val viewModel = buildConversationDetailViewModel()
             viewModel.state.test {
-                viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
+                viewModel.submit(
+                    ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId, themeOptions)
+                )
                 advanceUntilIdle()
 
                 // Then
@@ -1347,6 +1357,8 @@ class ConversationDetailViewModelIntegrationTest {
             // Given
             val messageId = MessageId("messageId")
             val labelId = SystemLabelId.Archive.labelId
+            val themeOptions = MessageThemeOptionsTestData.darkNoOverride
+
             coEvery {
                 observeMessage(
                     userId = userId,
@@ -1354,13 +1366,15 @@ class ConversationDetailViewModelIntegrationTest {
                 )
             } returns flowOf(DataError.Local.NoDataCached.left())
             coEvery {
-                getMessageAvailableActions(userId, labelId, messageId)
+                getMessageAvailableActions(userId, labelId, messageId, themeOptions)
             } returns AvailableActionsTestData.replyActionsOnly.right()
 
             // When
             val viewModel = buildConversationDetailViewModel()
             viewModel.state.test {
-                viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
+                viewModel.submit(
+                    ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId, themeOptions)
+                )
                 advanceUntilIdle()
 
                 // Then
@@ -1487,6 +1501,10 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `emit the correct state when switching of view mode has been requested`() = runTest {
         // Given
+        val expandedMessageId = MessageSample.Invoice.messageId
+        val transformations = MessageBodyTransformations.MessageDetailsDefaults.copy(
+            messageThemeOptions = MessageThemeOptionsTestData.darkOverrideLight
+        )
         val messages = ConversationMessages(
             nonEmptyListOf(
                 MessageSample.AugWeatherForecast,
@@ -1496,13 +1514,24 @@ class ConversationDetailViewModelIntegrationTest {
             MessageSample.AugWeatherForecast.messageId
         )
         coEvery { observeConversationMessages(userId, any(), any()) } returns flowOf(messages.right())
+        coEvery {
+            getDecryptedMessageBody.invoke(userId, expandedMessageId, transformations)
+        } returns DecryptedMessageBody(
+            messageId = expandedMessageId,
+            value = EmailBodyTestSamples.BodyWithoutQuotes,
+            mimeType = MimeType.Html,
+            isUnread = false,
+            hasQuotedText = false,
+            banners = emptyList(),
+            transformations = transformations
 
+        ).right()
         // When
         val viewModel = buildConversationDetailViewModel()
 
         viewModel.submit(
             ExpandMessage(
-                messageIdUiModelMapper.toUiModel(MessageSample.Invoice.messageId)
+                messageIdUiModelMapper.toUiModel(expandedMessageId)
             )
         )
 
@@ -1511,15 +1540,18 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.submit(
                 ConversationDetailViewAction.SwitchViewMode(
-                    MessageSample.Invoice.messageId,
-                    ViewModePreference.LightMode
+                    expandedMessageId,
+                    MessageTheme.Dark,
+                    MessageTheme.Light
                 )
             )
+
+            skipItems(1)
 
             // then
             val state = awaitItem().messagesState as ConversationDetailsMessagesState.Data
             val expandedMessage = state.messages.find {
-                it.messageId.id == MessageSample.Invoice.messageId.id
+                it.messageId.id == expandedMessageId.id
             } as Expanded
             val actual = expandedMessage.messageBodyUiModel.viewModePreference
             assertEquals(ViewModePreference.LightMode, actual)
@@ -1531,6 +1563,7 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should close bottom sheet, collapse message and call use case when marking a message as unread`() = runTest {
         // Given
+        val themeOptions = MessageThemeOptionsTestData.darkNoOverride
         val messages = ConversationMessages(
             nonEmptyListOf(
                 MessageSample.AugWeatherForecast,
@@ -1546,7 +1579,7 @@ class ConversationDetailViewModelIntegrationTest {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
         coEvery {
-            getMessageAvailableActions(userId, labelId, messageId)
+            getMessageAvailableActions(userId, labelId, messageId, themeOptions)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
             markMessageAsUnread(userId, messageId)
@@ -1566,7 +1599,7 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.submit(
                 ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
-                    messageId
+                    messageId, themeOptions
                 )
             )
             skipItems(2)
@@ -1595,6 +1628,7 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should exit screen when marking the only message as unread`() = runTest {
         // Given
+        val themeOptions = MessageThemeOptionsTestData.darkNoOverride
         val messages = ConversationMessages(
             nonEmptyListOf(
                 MessageSample.Invoice
@@ -1608,7 +1642,7 @@ class ConversationDetailViewModelIntegrationTest {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
         coEvery {
-            getMessageAvailableActions(userId, labelId, messageId)
+            getMessageAvailableActions(userId, labelId, messageId, themeOptions)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
             markMessageAsUnread(userId, messageId)
@@ -1628,7 +1662,7 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.submit(
                 ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
-                    messageId
+                    messageId, themeOptions
                 )
             )
             skipItems(2)
@@ -1648,6 +1682,7 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should close bottom sheet and call use case when moving a message to trash`() = runTest {
         // Given
+        val themeOptions = MessageThemeOptionsTestData.darkNoOverride
         val messageId = MessageSample.Invoice.messageId
         val messages = ConversationMessages(
             nonEmptyListOf(
@@ -1664,7 +1699,7 @@ class ConversationDetailViewModelIntegrationTest {
         } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Trash) } returns Unit.right()
         coEvery {
-            getMessageAvailableActions(userId, labelId, messageId)
+            getMessageAvailableActions(userId, labelId, messageId, themeOptions)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
             getMessagesInSameExclusiveLocation(userId, conversationId, messageId, any()) // labelId here is not strict
@@ -1677,7 +1712,7 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
 
-            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
+            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId, themeOptions))
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Trash(messageId))
 
@@ -1694,6 +1729,7 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should close bottom sheet and call use case when moving a message to archive`() = runTest {
         // Given
+        val themeOptions = MessageThemeOptionsTestData.darkNoOverride
         val messageId = MessageSample.Invoice.messageId
         val messages = ConversationMessages(
             nonEmptyListOf(
@@ -1709,7 +1745,7 @@ class ConversationDetailViewModelIntegrationTest {
         } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Archive) } returns Unit.right()
         coEvery {
-            getMessageAvailableActions(userId, filterByLocationLabelId, messageId)
+            getMessageAvailableActions(userId, filterByLocationLabelId, messageId, themeOptions)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
             getMessagesInSameExclusiveLocation(userId, conversationId, messageId, any()) // labelId here is not strict
@@ -1723,7 +1759,7 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
 
-            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
+            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId, themeOptions))
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Archive(messageId))
 
@@ -1740,6 +1776,7 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should close bottom sheet and call use case when moving a message to spam`() = runTest {
         // Given
+        val themeOptions = MessageThemeOptionsTestData.darkNoOverride
         val messageId = MessageSample.Invoice.messageId
         val messages = ConversationMessages(
             nonEmptyListOf(
@@ -1756,7 +1793,7 @@ class ConversationDetailViewModelIntegrationTest {
         } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Spam) } returns Unit.right()
         coEvery {
-            getMessageAvailableActions(userId, labelId, messageId)
+            getMessageAvailableActions(userId, labelId, messageId, themeOptions)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
             getMessagesInSameExclusiveLocation(userId, conversationId, messageId, any()) // labelId here is not strict
@@ -1769,7 +1806,7 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
 
-            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
+            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId, themeOptions))
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Spam(messageId))
 
@@ -1786,6 +1823,7 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should request message move to bottom sheet`() = runTest {
         // Given
+        val themeOptions = MessageThemeOptionsTestData.darkNoOverride
         val messageId = MessageSample.Invoice.messageId
         val messages = ConversationMessages(
             nonEmptyListOf(
@@ -1810,7 +1848,7 @@ class ConversationDetailViewModelIntegrationTest {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
         coEvery {
-            getMessageAvailableActions(userId, labelId, messageId)
+            getMessageAvailableActions(userId, labelId, messageId, themeOptions)
         } returns AvailableActionsTestData.replyActionsOnly.right()
         coEvery {
             getMessagesInSameExclusiveLocation(userId, conversationId, messageId, any()) // labelId here is not strict
@@ -1824,7 +1862,7 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
 
-            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
+            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId, themeOptions))
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.RequestMessageMoveToBottomSheet(messageId))
             advanceUntilIdle()

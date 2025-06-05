@@ -98,6 +98,8 @@ import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -1602,6 +1604,60 @@ class ConversationDetailViewModelTest {
 
             // then
             assertEquals(TextUiModel(string.error_move_to_archive_failed), awaitItem().error.consume())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `should request message body with theme override when SwitchViewMode is invoked`() = runTest {
+        // Given
+        val messageId = MessageIdSample.Invoice
+        val currentTheme = MessageTheme.Light
+        val overrideTheme = MessageTheme.Dark
+
+        val messages = nonEmptyListOf(InvoiceWithLabelExpanded).toImmutableList()
+        coEvery {
+            conversationMessageMapper.toUiModel(
+                message = any(),
+                avatarImageState = any(),
+                primaryUserAddress = primaryUserAddress,
+                decryptedMessageBody = any()
+            )
+        } returns messages.first()
+        coEvery {
+            reducer.newStateFrom(
+                currentState = any(),
+                operation = any()
+            )
+        } returns ConversationDetailState.Loading.copy(
+            messagesState = ConversationDetailsMessagesState.Data(messages)
+        )
+
+        // When
+        viewModel.state.test {
+            initialStateEmitted()
+            advanceUntilIdle()
+
+            viewModel.submit(
+                ConversationDetailViewAction.SwitchViewMode(
+                    messageId = messageId,
+                    currentTheme = currentTheme,
+                    overrideTheme = overrideTheme
+                )
+            )
+            advanceUntilIdle()
+
+            // Then
+            val expected = MessageBodyTransformations.MessageDetailsDefaults.copy(
+                messageThemeOptions = MessageThemeOptions(
+                    currentTheme = currentTheme,
+                    themeOverride = overrideTheme
+                )
+            )
+
+            coVerify(exactly = 1) {
+                getDecryptedMessageBody(userId, MessageId(messageId.id), expected)
+            }
             cancelAndIgnoreRemainingEvents()
         }
     }

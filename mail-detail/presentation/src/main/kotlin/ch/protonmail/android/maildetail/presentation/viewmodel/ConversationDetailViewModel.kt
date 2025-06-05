@@ -103,6 +103,7 @@ import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformationsOverride
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
@@ -306,9 +307,10 @@ class ConversationDetailViewModel @Inject constructor(
             is ScrollRequestCompleted,
             is ConversationDetailViewAction.ReportPhishing,
             is ConversationDetailViewAction.ReportPhishingDismissed,
-            is ConversationDetailViewAction.SwitchViewMode,
             is ConversationDetailViewAction.MarkMessageAsLegitimate,
             is ConversationDetailViewAction.MarkMessageAsLegitimateDismissed -> directlyHandleViewAction(action)
+
+            is ConversationDetailViewAction.SwitchViewMode -> handleSwitchViewMode(action)
 
             is ConversationDetailViewAction.OnAvatarImageLoadRequested ->
                 handleOnAvatarImageLoadRequested(action.avatar)
@@ -348,6 +350,17 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
+    private fun handleSwitchViewMode(action: ConversationDetailViewAction.SwitchViewMode) {
+        viewModelScope.launch {
+            val overrideTheme = when (action.overrideTheme) {
+                MessageTheme.Light -> MessageBodyTransformationsOverride.ViewInLightMode(action.currentTheme)
+                MessageTheme.Dark -> MessageBodyTransformationsOverride.ViewInDarkMode(action.currentTheme)
+            }
+            emitNewStateFrom(action)
+            setOrRefreshMessageBody(MessageIdUiModel(action.messageId.id), overrideTheme)
+        }
+
+    }
     fun loadEmbeddedImage(messageId: MessageId?, contentId: String) = messageId?.let {
         runBlocking {
             getEmbeddedImageAvoidDuplicatedExecution(

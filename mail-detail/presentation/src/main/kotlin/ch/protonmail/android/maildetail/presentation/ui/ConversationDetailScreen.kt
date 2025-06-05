@@ -22,6 +22,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -113,7 +114,7 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBot
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetScreen
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
@@ -142,6 +143,10 @@ fun ConversationDetailScreen(
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     var showBottomSheet by remember { mutableStateOf(false) }
+    val currentAppTheme = if (isSystemInDarkTheme())
+        MessageTheme.Dark
+    else
+        MessageTheme.Light
 
     state.bottomSheetState?.let {
         // Avoids a "jumping" of the bottom sheet
@@ -284,12 +289,20 @@ fun ConversationDetailScreen(
                         },
                         onViewInLightMode = {
                             viewModel.submit(
-                                ConversationDetailViewAction.SwitchViewMode(it, ViewModePreference.LightMode)
+                                ConversationDetailViewAction.SwitchViewMode(
+                                    messageId = it,
+                                    currentTheme = currentAppTheme,
+                                    overrideTheme = MessageTheme.Light
+                                )
                             )
                         },
                         onViewInDarkMode = {
                             viewModel.submit(
-                                ConversationDetailViewAction.SwitchViewMode(it, ViewModePreference.DarkMode)
+                                ConversationDetailViewAction.SwitchViewMode(
+                                    messageId = it,
+                                    currentTheme = currentAppTheme,
+                                    overrideTheme = MessageTheme.Dark
+                                )
                             )
                         },
                         onMoveToTrash = { viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Trash(it)) },
