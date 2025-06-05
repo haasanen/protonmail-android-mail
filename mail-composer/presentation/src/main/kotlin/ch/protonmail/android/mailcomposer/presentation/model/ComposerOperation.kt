@@ -86,15 +86,12 @@ sealed interface ComposerEvent : ComposerOperation {
     data class ScheduleSendOptionsData(val options: ScheduleSendOptionsUiModel) : ComposerEvent
 
     data object ErrorLoadingDefaultSenderAddress : ComposerEvent
-    data object ErrorFreeUserCannotChangeSender : ComposerEvent
-    data object ErrorVerifyingPermissionsToChangeSender : ComposerEvent
     data object ErrorStoringDraftBody : ComposerEvent
     data object ErrorStoringDraftRecipients : ComposerEvent
     data object ErrorStoringDraftSubject : ComposerEvent
     data object OnSendMessageOffline : ComposerEvent
     data object ErrorLoadingDraftData : ComposerEvent
     data object ErrorLoadingParentMessageData : ComposerEvent
-    data object ErrorSettingExpirationTime : ComposerEvent
     data object ConfirmEmptySubject : ComposerEvent
     data object ErrorDiscardingDraft : ComposerEvent
     data object OnMessageSending : ComposerEvent

@@ -35,25 +35,12 @@ fun ReportPhishingDialog(
 ) {
     if (state is ReportPhishingDialogState.Shown) {
         when (state) {
-            ReportPhishingDialogState.Shown.ShowOfflineHint -> ReportPhishingOfflineHintDialog(onDismiss)
             is ReportPhishingDialogState.Shown.ShowConfirmation -> ReportPhishingDialog(
                 onDismiss = onDismiss,
                 onConfirm = { onConfirm(state.messageId) }
             )
         }
     }
-}
-
-@Composable
-private fun ReportPhishingOfflineHintDialog(onDismiss: () -> Unit) {
-    ProtonAlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            ProtonAlertDialogButton(R.string.message_report_phishing_dialog_confim_button_offline) { onDismiss() }
-        },
-        title = stringResource(id = R.string.message_report_phishing_dialog_title_offline),
-        text = { ProtonAlertDialogText(R.string.message_report_phishing_dialog_message_offline) }
-    )
 }
 
 @Composable

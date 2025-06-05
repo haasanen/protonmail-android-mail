@@ -85,11 +85,6 @@ class ComposerReducer @Inject constructor(
 
         is ComposerEvent.DefaultSenderReceived -> updateSenderTo(currentState, this.sender)
         is ComposerEvent.ErrorLoadingDefaultSenderAddress -> updateStateToSenderError(currentState)
-        is ComposerEvent.ErrorVerifyingPermissionsToChangeSender -> currentState.copy(
-            error = Effect.of(TextUiModel(R.string.composer_error_change_sender_failed_getting_subscription))
-        )
-
-        is ComposerEvent.ErrorFreeUserCannotChangeSender -> updateStateToPaidFeatureMessage(currentState)
 
         is ComposerEvent.ErrorStoringDraftBody -> currentState.copy(
             error = Effect.of(TextUiModel(R.string.composer_error_store_draft_body))
@@ -147,10 +142,6 @@ class ComposerReducer @Inject constructor(
         is ComposerEvent.OnMessagePasswordUpdated -> updateStateForMessagePassword(currentState, this.messagePassword)
         is ComposerEvent.ConfirmEmptySubject -> currentState.copy(
             confirmSendingWithoutSubject = Effect.of(Unit)
-        )
-
-        is ComposerEvent.ErrorSettingExpirationTime -> currentState.copy(
-            error = Effect.of(TextUiModel(R.string.composer_error_setting_expiration_time))
         )
 
         is ComposerEvent.OnMessageExpirationTimeUpdated -> updateStateForMessageExpirationTime(
@@ -288,9 +279,6 @@ class ComposerReducer @Inject constructor(
 
     private fun updateStateForSendMessageOffline(currentState: ComposerDraftState) =
         currentState.copy(closeComposerWithMessageSendingOffline = Effect.of(Unit))
-
-    private fun updateStateToPaidFeatureMessage(currentState: ComposerDraftState) =
-        currentState.copy(premiumFeatureMessage = Effect.of(TextUiModel(R.string.composer_change_sender_paid_feature)))
 
     private fun updateStateToSenderError(currentState: ComposerDraftState) = currentState.copy(
         fields = currentState.fields.copy(sender = SenderUiModel("")),

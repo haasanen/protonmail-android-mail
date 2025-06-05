@@ -19,34 +19,21 @@
 package ch.protonmail.android.maildetail.presentation.ui
 
 import android.net.Uri
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
-import ch.protonmail.android.design.compose.component.ProtonSolidButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilitiesProvider
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.maildetail.presentation.R
-import ch.protonmail.android.maildetail.presentation.model.MessageBodyState
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
@@ -131,54 +118,6 @@ internal fun MessageBodyNoWebView(modifier: Modifier = Modifier) {
             .padding(ProtonDimens.Spacing.ExtraLarge),
         text = stringResource(id = R.string.message_body_error_no_webview)
     )
-}
-
-@Composable
-internal fun MessageBodyLoadingError(
-    modifier: Modifier = Modifier,
-    messageBodyState: MessageBodyState.Error.Data,
-    onReload: () -> Unit
-) {
-    val isNetworkError = messageBodyState.isNetworkError
-    val errorMessage = stringResource(
-        if (isNetworkError) {
-            R.string.error_offline_loading_message
-        } else {
-            R.string.error_loading_message
-        }
-    )
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(ProtonTheme.colors.backgroundNorm)
-            .padding(horizontal = ProtonDimens.Spacing.ExtraLarge, vertical = MailDimens.ExtraLargeSpacing),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            modifier = Modifier
-                .size(MailDimens.ErrorIconBoxSize)
-                .background(ProtonTheme.colors.backgroundSecondary, ProtonTheme.shapes.large)
-                .padding(ProtonDimens.Spacing.ExtraLarge),
-            painter = painterResource(id = R.drawable.ic_proton_exclamation_circle),
-            contentDescription = NO_CONTENT_DESCRIPTION,
-            tint = ProtonTheme.colors.iconHint
-        )
-        Text(
-            modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
-            text = errorMessage,
-            textAlign = TextAlign.Center,
-            style = ProtonTheme.typography.bodyMediumWeak
-        )
-        if (!isNetworkError) {
-            ProtonSolidButton(
-                modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
-                onClick = { onReload() }
-            ) {
-                Text(text = stringResource(id = R.string.reload))
-            }
-        }
-    }
 }
 
 @Composable

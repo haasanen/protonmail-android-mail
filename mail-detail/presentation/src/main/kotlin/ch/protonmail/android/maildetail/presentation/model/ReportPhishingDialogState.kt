@@ -25,7 +25,6 @@ sealed interface ReportPhishingDialogState {
     object Hidden : ReportPhishingDialogState
 
     sealed interface Shown : ReportPhishingDialogState {
-        object ShowOfflineHint : Shown
         data class ShowConfirmation(val messageId: MessageId) : Shown
     }
 }

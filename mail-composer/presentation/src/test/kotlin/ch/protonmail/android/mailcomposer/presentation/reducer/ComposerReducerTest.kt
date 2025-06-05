@@ -131,16 +131,6 @@ class ComposerReducerTest(
             expectedState = aNotSubmittableState(error = Effect.empty())
         )
 
-        private val EmptyToUpgradePlan = TestTransition(
-            name = "Should generate a state showing 'upgrade plan' message when free user tries to change sender",
-            currentState = ComposerDraftState.initial(),
-            operation = ComposerEvent.ErrorFreeUserCannotChangeSender,
-            expectedState = aNotSubmittableState(
-                premiumFeatureMessage = Effect.of(TextUiModel(R.string.composer_change_sender_paid_feature)),
-                error = Effect.empty()
-            )
-        )
-
         private val EmptyToSenderAddressesList = TestTransition(
             name = "Should generate a state showing change sender bottom sheet when paid tries to change sender",
             currentState = ComposerDraftState.initial(),
@@ -149,15 +139,6 @@ class ComposerReducerTest(
                 error = Effect.empty(),
                 senderAddresses = addresses.map { SenderUiModel(it.email) },
                 bottomSheetVisibility = Effect.of(true)
-            )
-        )
-
-        private val EmptyToErrorWhenUserPlanUnknown = TestTransition(
-            name = "Should generate an error state when failing to determine if user can change sender",
-            currentState = ComposerDraftState.initial(),
-            operation = ComposerEvent.ErrorVerifyingPermissionsToChangeSender,
-            expectedState = aNotSubmittableState(
-                error = Effect.of(TextUiModel(R.string.composer_error_change_sender_failed_getting_subscription))
             )
         )
 
@@ -477,15 +458,6 @@ class ComposerReducerTest(
             expectedState = ComposerDraftState.initial().copy(changeBottomSheetVisibility = Effect.of(false))
         )
 
-        private val EmptyToErrorSettingExpirationTime = TestTransition(
-            name = "Should update state to an error when setting expiration time failed",
-            currentState = ComposerDraftState.initial(),
-            operation = ComposerEvent.ErrorSettingExpirationTime,
-            expectedState = ComposerDraftState.initial().copy(
-                error = Effect.of(TextUiModel(R.string.composer_error_setting_expiration_time))
-            )
-        )
-
         private val EmptyToMessageExpirationTimeUpdated = TestTransition(
             name = "Should update state with message expiration time",
             currentState = ComposerDraftState.initial(),
@@ -611,9 +583,7 @@ class ComposerReducerTest(
             EmptyToSubmittableToField,
             EmptyToNotSubmittableToField,
             SubmittableToNotSubmittableEmptyToField,
-            EmptyToUpgradePlan,
             EmptyToSenderAddressesList,
-            EmptyToErrorWhenUserPlanUnknown,
             EmptyToUpdatedSender,
             EmptyToChangeSubjectError,
             EmptyToUpdatedDraftBody,
@@ -637,7 +607,6 @@ class ComposerReducerTest(
             SubmittableToRejectEmptySubject,
             EmptyToSetExpirationTimeRequested,
             EmptyToExpirationTimeSet,
-            EmptyToErrorSettingExpirationTime,
             EmptyToMessageExpirationTimeUpdated,
             EmptyToConfirmSendExpiringMessage,
             SubmittableToDiscardDraft,

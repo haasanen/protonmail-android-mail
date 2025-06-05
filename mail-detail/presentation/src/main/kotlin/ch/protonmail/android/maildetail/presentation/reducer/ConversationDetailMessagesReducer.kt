@@ -47,9 +47,6 @@ class ConversationDetailMessagesReducer @Inject constructor(
         currentState: ConversationDetailsMessagesState,
         operation: ConversationDetailOperation.AffectingMessages
     ): ConversationDetailsMessagesState = when (operation) {
-        ConversationDetailEvent.ErrorLoadingContacts -> Error(
-            message = TextUiModel(string.detail_error_loading_contacts)
-        )
 
         is ConversationDetailEvent.ErrorLoadingMessages -> Error(
             message = TextUiModel(string.detail_error_loading_messages)
