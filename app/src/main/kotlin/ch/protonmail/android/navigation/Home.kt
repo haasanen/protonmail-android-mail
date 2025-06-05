@@ -36,7 +36,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -143,7 +142,7 @@ fun Home(
     val notificationsPermissionsState by notificationsPermissionViewModel.state.collectAsStateWithLifecycle()
 
     var bottomSheetType: BottomSheetType by remember { mutableStateOf(BottomSheetType.Onboarding) }
-    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     ConsumableLaunchedEffect(state.navigateToEffect) {
         viewModel.navigateTo(navController, it)

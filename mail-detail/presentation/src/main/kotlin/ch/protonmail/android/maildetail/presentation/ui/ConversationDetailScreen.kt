@@ -49,7 +49,6 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -142,7 +141,7 @@ fun ConversationDetailScreen(
     val isSystemBackButtonClickEnabled = remember { mutableStateOf(true) }
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
-    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     state.bottomSheetState?.let {
         // Avoids a "jumping" of the bottom sheet
