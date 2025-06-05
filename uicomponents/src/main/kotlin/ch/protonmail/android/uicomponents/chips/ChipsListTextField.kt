@@ -7,16 +7,13 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,12 +22,13 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
@@ -45,7 +43,6 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
 import ch.protonmail.android.uicomponents.thenIf
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -63,24 +60,12 @@ fun ChipsListTextField(
     val localDensity = LocalDensity.current
     var textMaxWidth by remember { mutableStateOf(Dp.Unspecified) }
 
-    val rect by remember { mutableStateOf(Rect.Zero) }
-
-    val bringIntoViewRequester = remember { BringIntoViewRequester() }
-    val coroutineScope = rememberCoroutineScope()
     val keyboardOptions = remember {
         KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Email,
             imeAction = ImeAction.Next,
             autoCorrectEnabled = false
         )
-    }
-
-    // Similar to what we do for the Message body, we need to ensure
-    // that the cursor is always on screen when the user types.
-    fun bringRectIntoView(rect: Rect) = coroutineScope.launch { bringIntoViewRequester.bringIntoView(rect) }
-
-    LaunchedEffect(textFieldState.text) {
-        bringRectIntoView(rect)
     }
 
     FlowRow(
@@ -128,9 +113,11 @@ fun ChipsListTextField(
                 .padding(start = ProtonDimens.Spacing.Standard)
                 .padding(end = ProtonDimens.Spacing.Large)
                 .onPreviewKeyEvent { keyEvent ->
-                    if (keyEvent.key == Key.Backspace) {
+                    if (keyEvent.key == Key.Backspace &&
+                        keyEvent.type == KeyEventType.KeyDown &&
+                        textFieldState.text.isEmpty()
+                    ) {
                         actions.onDeleteLastItem()
-                        bringRectIntoView(rect)
                         true
                     } else {
                         false
