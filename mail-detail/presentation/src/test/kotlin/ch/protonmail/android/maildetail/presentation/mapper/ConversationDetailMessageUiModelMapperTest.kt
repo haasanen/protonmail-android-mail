@@ -35,12 +35,14 @@ import ch.protonmail.android.maildetail.presentation.sample.MessageLocationUiMod
 import ch.protonmail.android.maildetail.presentation.viewmodel.EmailBodyTestSamples
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
 import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
+import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.maildetail.MessageBannersUiModelTestData.messageBannersUiModel
 import io.mockk.coEvery
@@ -185,7 +187,8 @@ internal class ConversationDetailMessageUiModelMapperTest {
             isUnread = true,
             MimeType.Html,
             hasQuotedText = false,
-            banners = emptyList()
+            banners = emptyList(),
+            transformations = MessageBodyTransformations.MessageDetailsDefaults
         )
         val avatarImageState = AvatarImageState.NoImageAvailable
 
@@ -202,7 +205,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         assertEquals(result.messageId.id, message.messageId.id)
         coVerify {
             messageDetailHeaderUiModelMapper.toUiModel(
-                message, primaryUserAddress, avatarImageState
+                message, primaryUserAddress, avatarImageState, ViewModePreference.ThemeDefault
             )
         }
         coVerify { messageBodyUiModelMapper.toUiModel(decryptedMessageBody) }

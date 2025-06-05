@@ -31,7 +31,9 @@ import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
+import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import javax.inject.Inject
@@ -92,7 +94,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             messageDetailHeaderUiModel = messageDetailHeaderUiModelMapper.toUiModel(
                 message,
                 primaryUserAddress,
-                avatarImageState
+                avatarImageState,
+                decryptedMessageBody.transformations.messageThemeOptions?.themeOverride.toViewModePreference()
             ),
             messageDetailFooterUiModel = messageDetailFooterUiModelMapper.toUiModel(message),
             messageBannersUiModel = messageBannersUiModelMapper.toUiModel(decryptedMessageBody.banners),
@@ -111,7 +114,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             messageDetailHeaderUiModel = messageDetailHeaderUiModelMapper.toUiModel(
                 message,
                 null,
-                avatarImageState
+                avatarImageState,
+                messageUiModel.messageBodyUiModel.viewModePreference
             )
         )
     }
@@ -154,4 +158,12 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         }.toImmutableList()
 
     private fun Message.hasUndisclosedRecipients() = (toList + ccList + bccList).isEmpty()
+}
+
+fun MessageTheme?.toViewModePreference(): ViewModePreference {
+    return when (this) {
+        MessageTheme.Light -> ViewModePreference.LightMode
+        MessageTheme.Dark -> ViewModePreference.DarkMode
+        null -> ViewModePreference.ThemeDefault
+    }
 }

@@ -37,7 +37,9 @@ import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
+import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -59,7 +61,8 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
     fun toUiModel(
         message: Message,
         primaryUserAddress: String?,
-        avatarImageState: AvatarImageState
+        avatarImageState: AvatarImageState,
+        viewModePreference: ViewModePreference
     ): MessageDetailHeaderUiModel {
         return MessageDetailHeaderUiModel(
             avatar = detailAvatarUiModelMapper(message.avatarInformation, message.sender),
@@ -91,10 +94,18 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
             size = Formatter.formatShortFileSize(context, message.size),
             encryptionPadlock = R.drawable.ic_proton_lock,
             encryptionInfo = "End-to-end encrypted and signed message",
-            messageIdUiModel = toMessageUiModel(message.messageId)
+            messageIdUiModel = toMessageUiModel(message.messageId),
+            themeOverride = viewModePreference.toThemeOverride()
         )
     }
 
+    private fun ViewModePreference.toThemeOverride(): MessageTheme? {
+        return when (this) {
+            ViewModePreference.ThemeDefault -> null
+            ViewModePreference.LightMode -> MessageTheme.Light
+            ViewModePreference.DarkMode -> MessageTheme.Dark
+        }
+    }
     private fun Message.hasNonCalendarAttachments() = numAttachments > attachmentCount.calendar
 
     private fun Message.hasUndisclosedRecipients() = (toList + ccList + bccList).isEmpty()

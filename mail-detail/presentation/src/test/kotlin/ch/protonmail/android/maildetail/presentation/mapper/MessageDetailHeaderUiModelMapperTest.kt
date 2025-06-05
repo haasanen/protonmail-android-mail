@@ -40,9 +40,11 @@ import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelSample
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.Message
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
 import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
+import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.message.MessageTestData
 import io.mockk.coEvery
@@ -103,7 +105,8 @@ class MessageDetailHeaderUiModelMapperTest {
         size = "12 MB",
         encryptionPadlock = ic_proton_lock,
         encryptionInfo = "End-to-end encrypted and signed message",
-        messageIdUiModel = MessageIdUiModel(message.messageId.id)
+        messageIdUiModel = MessageIdUiModel(message.messageId.id),
+        themeOverride = null
     )
 
     private val colorMapper: ColorMapper = mockk {
@@ -189,7 +192,8 @@ class MessageDetailHeaderUiModelMapperTest {
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
             primaryUserAddress = primaryUserAddress,
-            avatarImageState = AvatarImageState.NoImageAvailable
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            viewModePreference = ViewModePreference.ThemeDefault
         )
         // Then
         assertEquals(expectedResult, result)
@@ -207,7 +211,8 @@ class MessageDetailHeaderUiModelMapperTest {
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
             primaryUserAddress = primaryUserAddress,
-            avatarImageState = AvatarImageState.NoImageAvailable
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            viewModePreference = ViewModePreference.ThemeDefault
         )
         // Then
         assertEquals(expectedResult, result)
@@ -222,7 +227,8 @@ class MessageDetailHeaderUiModelMapperTest {
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
             primaryUserAddress = primaryUserAddress,
-            avatarImageState = AvatarImageState.NoImageAvailable
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            viewModePreference = ViewModePreference.ThemeDefault
         )
         // Then
         assertEquals(expectedResult, result)
@@ -245,7 +251,8 @@ class MessageDetailHeaderUiModelMapperTest {
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
             primaryUserAddress = primaryUserAddress,
-            avatarImageState = AvatarImageState.NoImageAvailable
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            viewModePreference = ViewModePreference.ThemeDefault
         )
         // Then
         assertEquals(expectedResult, result)
@@ -270,7 +277,10 @@ class MessageDetailHeaderUiModelMapperTest {
 
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
-            input, primaryUserAddress, avatarImageState
+            message = input,
+            primaryUserAddress = primaryUserAddress,
+            avatarImageState = avatarImageState,
+            viewModePreference = ViewModePreference.ThemeDefault
         )
 
         // Then
@@ -287,7 +297,10 @@ class MessageDetailHeaderUiModelMapperTest {
 
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
-            input, primaryUserAddress, AvatarImageState.NoImageAvailable
+            message = input,
+            primaryUserAddress = primaryUserAddress,
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            viewModePreference = ViewModePreference.ThemeDefault
         )
 
         // Then
@@ -304,10 +317,41 @@ class MessageDetailHeaderUiModelMapperTest {
 
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
-            input, primaryUserAddress, AvatarImageState.NoImageAvailable
+            message = input,
+            primaryUserAddress = primaryUserAddress,
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            viewModePreference = ViewModePreference.ThemeDefault
         )
 
         // Then
         assertFalse(result.sender.shouldShowAddressInRed)
+    }
+
+    @Test
+    fun `when view mode is LightMode, themeOverride is set to Light`() = runTest {
+        // When
+        val result = messageDetailHeaderUiModelMapper.toUiModel(
+            message = message,
+            primaryUserAddress = primaryUserAddress,
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            viewModePreference = ViewModePreference.LightMode
+        )
+
+        // Then
+        assertEquals(MessageTheme.Light, result.themeOverride)
+    }
+
+    @Test
+    fun `when view mode is DarkMode, themeOverride is set to Dark`() = runTest {
+        // When
+        val result = messageDetailHeaderUiModelMapper.toUiModel(
+            message = message,
+            primaryUserAddress = primaryUserAddress,
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            viewModePreference = ViewModePreference.DarkMode
+        )
+
+        // Then
+        assertEquals(MessageTheme.Dark, result.themeOverride)
     }
 }

@@ -49,16 +49,12 @@ class MessageBodyUiModelMapper @Inject constructor(
         val hasExpandCollapseButton = existingMessageBodyUiModel?.shouldShowExpandCollapseButton == true ||
             decryptedMessageBody.hasQuotedText
 
-        val messageBodyWithType = MessageBodyWithType(
-            messageBody,
-            decryptedMessageBody.mimeType.toMimeTypeUiModel()
-        )
-
-        val viewModePreference = existingMessageBodyUiModel?.viewModePreference ?: ViewModePreference.ThemeDefault
+        val viewModePreference =
+            decryptedMessageBody.transformations.messageThemeOptions?.themeOverride.toViewModePreference()
 
         return MessageBodyUiModel(
             messageId = decryptedMessageBody.messageId,
-            messageBody = originalMessageBody,
+            messageBody = messageBody,
             mimeType = decryptedMessageBody.mimeType.toMimeTypeUiModel(),
             shouldShowEmbeddedImagesBanner = hasEmbeddedImagesBlocked,
             shouldShowRemoteContentBanner = hasRemoteContentBlocked,
@@ -89,4 +85,5 @@ class MessageBodyUiModelMapper @Inject constructor(
         MimeType.PlainText -> MimeTypeUiModel.PlainText
         MimeType.Html, MimeType.MultipartMixed -> MimeTypeUiModel.Html
     }
+
 }
