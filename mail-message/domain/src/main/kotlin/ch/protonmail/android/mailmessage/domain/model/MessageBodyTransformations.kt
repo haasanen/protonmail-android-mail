@@ -21,7 +21,8 @@ package ch.protonmail.android.mailmessage.domain.model
 data class MessageBodyTransformations(
     val showQuotedText: Boolean,
     val hideEmbeddedImages: Boolean?,
-    val hideRemoteContent: Boolean?
+    val hideRemoteContent: Boolean?,
+    val messageThemeOptions: MessageThemeOptions?
 ) {
 
     companion object {
@@ -29,13 +30,15 @@ data class MessageBodyTransformations(
         val MessageDetailsDefaults = MessageBodyTransformations(
             showQuotedText = false,
             hideEmbeddedImages = null,
-            hideRemoteContent = null
+            hideRemoteContent = null,
+            messageThemeOptions = null
         )
 
         val AttachmentDefaults = MessageBodyTransformations(
             showQuotedText = false,
             hideEmbeddedImages = false,
-            hideRemoteContent = false
+            hideRemoteContent = false,
+            messageThemeOptions = null
         )
     }
 }

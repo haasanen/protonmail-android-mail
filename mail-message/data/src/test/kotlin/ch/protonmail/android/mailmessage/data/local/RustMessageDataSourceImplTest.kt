@@ -70,10 +70,12 @@ import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.LabelColor
+import uniffi.proton_mail_uniffi.MailTheme
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
+import uniffi.proton_mail_uniffi.ThemeOpts
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -172,7 +174,7 @@ class RustMessageDataSourceImplTest {
         val mailSession = mockk<MailUserSessionWrapper>()
         val messageId = LocalMessageIdSample.AugWeatherForecast
         val mailbox = mockk<MailboxWrapper>()
-        val transformOpts = mockk<TransformOpts>()
+        val transformOpts = mockk<TransformOpts>(relaxed = true)
         val bodyBanners = emptyList<MessageBanner>()
         val bodyOutput = BodyOutput(
             "message body",
@@ -478,6 +480,7 @@ class RustMessageDataSourceImplTest {
     @Test
     fun `get available actions should return available message actions`() = runTest(testDispatcher) {
         // Given
+        val themeOptions = ThemeOpts(MailTheme.DARK_MODE)
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
         val mailbox = mockk<MailboxWrapper>()
@@ -485,10 +488,10 @@ class RustMessageDataSourceImplTest {
         val expected = MessageAvailableActions(emptyList(), emptyList(), emptyList(), emptyList())
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustAvailableMessageActions(mailbox, messageId) } returns expected.right()
+        coEvery { getRustAvailableMessageActions(mailbox, messageId, themeOptions) } returns expected.right()
 
         // When
-        val result = dataSource.getAvailableActions(userId, labelId, messageId)
+        val result = dataSource.getAvailableActions(userId, labelId, messageId, themeOptions)
 
         // Then
         assertEquals(expected.right(), result)

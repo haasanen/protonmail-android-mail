@@ -56,6 +56,12 @@ class GetDecryptedMessageBodyTest(
     fun `when repository gets message body and decryption is successful then the decrypted message body is returned`() =
         runTest {
             // Given
+            val transformations = MessageBodyTransformations(
+                showQuotedText = false,
+                hideEmbeddedImages = false,
+                hideRemoteContent = false,
+                messageThemeOptions = null
+            )
             val expected = DecryptedMessageBody(
                 messageId = messageId,
                 value = testInput.messageWithBody.messageBody.body,
@@ -63,7 +69,8 @@ class GetDecryptedMessageBodyTest(
                 hasQuotedText = false,
                 isUnread = false,
                 banners = emptyList(),
-                attachments = testInput.messageWithBody.message.attachments
+                attachments = testInput.messageWithBody.message.attachments,
+                transformations = transformations
             ).right()
             coEvery {
                 messageRepository.getMessageWithBody(

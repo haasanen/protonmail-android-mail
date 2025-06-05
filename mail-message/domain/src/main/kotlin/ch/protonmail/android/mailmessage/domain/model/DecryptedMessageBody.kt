@@ -27,5 +27,6 @@ data class DecryptedMessageBody(
     val mimeType: MimeType,
     val hasQuotedText: Boolean,
     val banners: List<MessageBanner>,
-    val attachments: List<AttachmentMetadata> = emptyList()
+    val attachments: List<AttachmentMetadata> = emptyList(),
+    val transformations: MessageBodyTransformations = MessageBodyTransformations.MessageDetailsDefaults
 )

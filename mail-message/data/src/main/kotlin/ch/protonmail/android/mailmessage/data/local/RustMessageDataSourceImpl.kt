@@ -29,6 +29,7 @@ import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.data.mapper.toLocalThemeOptions
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
@@ -134,7 +135,8 @@ class RustMessageDataSourceImpl @Inject constructor(
                 val transformOptions = TransformOpts(
                     showBlockQuote = transformations.showQuotedText,
                     hideRemoteImages = transformations.hideRemoteContent,
-                    hideEmbeddedImages = transformations.hideEmbeddedImages
+                    hideEmbeddedImages = transformations.hideEmbeddedImages,
+                    theme = transformations.messageThemeOptions?.toLocalThemeOptions()
                 )
 
                 decryptedMessage.body(transformOptions).map { decryptedBody ->

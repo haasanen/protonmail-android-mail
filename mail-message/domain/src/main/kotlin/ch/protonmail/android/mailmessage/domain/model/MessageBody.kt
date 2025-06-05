@@ -25,7 +25,8 @@ data class MessageBody(
     val body: String,
     val hasQuotedText: Boolean,
     val banners: List<MessageBanner>,
-    val mimeType: MimeType
+    val mimeType: MimeType,
+    val transformations: MessageBodyTransformations
 )
 
 enum class MimeType(val value: String) {

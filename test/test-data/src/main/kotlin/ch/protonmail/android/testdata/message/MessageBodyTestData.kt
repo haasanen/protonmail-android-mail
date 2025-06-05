@@ -19,6 +19,7 @@
 package ch.protonmail.android.testdata.message
 
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.testdata.message.MessageTestData.RAW_MESSAGE_ID
@@ -46,6 +47,7 @@ object MessageBodyTestData {
         body = body,
         hasQuotedText = false,
         mimeType = mimeType,
-        banners = emptyList()
+        banners = emptyList(),
+        transformations = MessageBodyTransformations(false, false, false, null)
     )
 }

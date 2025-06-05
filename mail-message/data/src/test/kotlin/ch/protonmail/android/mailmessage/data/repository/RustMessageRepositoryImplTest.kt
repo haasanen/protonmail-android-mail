@@ -176,7 +176,7 @@ class RustMessageRepositoryImplTest {
         val userId = UserIdTestData.userId
         val messageId = LocalMessageIdSample.AugWeatherForecast.toMessageId()
         val localMessage = LocalMessageTestData.AugWeatherForecast
-        val transformOpts = mockk<TransformOpts>()
+        val transformOpts = mockk<TransformOpts>(relaxed = true)
         val bodyBanners = emptyList<MessageBanner>()
         val bodyOutput = BodyOutput(
             "message body",

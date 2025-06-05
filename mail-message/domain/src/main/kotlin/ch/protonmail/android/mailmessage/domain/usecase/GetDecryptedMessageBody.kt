@@ -61,7 +61,8 @@ class GetDecryptedMessageBody @Inject constructor(
                     mimeType = messageBody.mimeType,
                     hasQuotedText = messageBody.hasQuotedText,
                     banners = messageBody.banners,
-                    attachments = attachments
+                    attachments = attachments,
+                    transformations = messageBody.transformations
                 ).right()
             }
     }

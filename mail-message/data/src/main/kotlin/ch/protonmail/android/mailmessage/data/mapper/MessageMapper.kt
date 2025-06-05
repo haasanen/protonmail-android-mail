@@ -55,6 +55,7 @@ import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
@@ -159,7 +160,8 @@ fun BodyOutput.toMessageBody(messageId: MessageId, mimeType: LocalMimeType) = Me
     body = this.body,
     hasQuotedText = this.hadBlockquote,
     banners = this.bodyBanners.map { it.toMessageBanner() },
-    mimeType = mimeType.toAndroidMimeType()
+    mimeType = mimeType.toAndroidMimeType(),
+    transformations = this.transformOpts.toMessageBodyTransformations()
 )
 
 fun LocalConversationMessages.toConversationMessagesWithMessageToOpen(): Either<DataError, ConversationMessages> {
@@ -175,6 +177,14 @@ fun LocalConversationMessages.toConversationMessagesWithMessageToOpen(): Either<
 fun RemoteMessageId.toRemoteMessageId(): RustRemoteMessageId = RustRemoteMessageId(this.id)
 fun RustRemoteMessageId.toRemoteMessageId(): RemoteMessageId = RemoteMessageId(this.value)
 
+fun TransformOpts.toMessageBodyTransformations(): MessageBodyTransformations {
+    return MessageBodyTransformations(
+        showQuotedText = this.showBlockQuote,
+        hideEmbeddedImages = this.hideEmbeddedImages,
+        hideRemoteContent = this.hideRemoteImages,
+        messageThemeOptions = this.theme?.toMessageThemeOptions()
+    )
+}
 
 fun MessageThemeOptions.toLocalThemeOptions(): ThemeOpts = ThemeOpts(
     currentTheme = currentTheme.toMailTheme(),

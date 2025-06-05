@@ -44,7 +44,8 @@ internal class MessageBodyTransformationsMapperTest(
         private val baseTransformation = MessageBodyTransformations(
             showQuotedText = false,
             hideEmbeddedImages = null,
-            hideRemoteContent = null
+            hideRemoteContent = null,
+            messageThemeOptions = null
         )
 
         @JvmStatic
