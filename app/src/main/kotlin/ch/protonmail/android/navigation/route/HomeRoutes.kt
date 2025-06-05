@@ -111,6 +111,8 @@ internal fun NavGraphBuilder.addComposer(
     showDraftSavedSnackbar: (messageId: MessageId) -> Unit,
     showMessageSendingSnackbar: () -> Unit,
     showMessageSendingOfflineSnackbar: () -> Unit,
+    showMessageSchedulingSnackbar: () -> Unit,
+    showMessageSchedulingOfflineSnackbar: () -> Unit,
     showDraftDiscardedSnackbar: () -> Unit
 ) {
     val actions = ComposerScreen.Actions(
@@ -121,6 +123,8 @@ internal fun NavGraphBuilder.addComposer(
         showDraftSavedSnackbar = showDraftSavedSnackbar,
         showMessageSendingSnackbar = showMessageSendingSnackbar,
         showMessageSendingOfflineSnackbar = showMessageSendingOfflineSnackbar,
+        showMessageSchedulingSnackbar = { showMessageSchedulingSnackbar() },
+        showMessageSchedulingOfflineSnackbar = { showMessageSchedulingOfflineSnackbar() },
         showDraftDiscardedSnackbar = showDraftDiscardedSnackbar
     )
     composable(route = Destination.Screen.Composer.route) { ComposerScreen(actions) }

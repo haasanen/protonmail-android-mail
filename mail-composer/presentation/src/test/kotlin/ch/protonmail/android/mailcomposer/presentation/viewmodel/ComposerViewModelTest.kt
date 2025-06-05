@@ -52,6 +52,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.GetEmbeddedImage
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
+import ch.protonmail.android.mailcomposer.domain.usecase.ScheduleSendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
@@ -144,6 +145,7 @@ class ComposerViewModelTest {
     private val getDraftId = mockk<GetDraftId>()
     private val getEmbeddedImage = mockk<GetEmbeddedImage>()
     private val getFormattedScheduleSendOptions = mockk<GetFormattedScheduleSendOptions>()
+    private val scheduleSendMessage = mockk<ScheduleSendMessage>()
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<MessageBodyWithType>()
@@ -180,6 +182,7 @@ class ComposerViewModelTest {
             savedStateHandle,
             getEmbeddedImage,
             getFormattedScheduleSendOptions,
+            scheduleSendMessage,
             isAttachmentSourcesEnabled,
             isScheduleSendEnabled,
             observePrimaryUserIdMock

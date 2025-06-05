@@ -221,6 +221,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     optionsUiModel = composerStates.accessories.scheduleSendOptions,
                     onScheduleSendConfirmed = {
                         Timber.d("Schedule send confirmed, to happen at $it")
+                        viewModel.submit(ComposerAction.OnScheduleSend(it))
                     }
                 )
             }
@@ -504,6 +505,18 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         actions.showMessageSendingOfflineSnackbar()
     }
 
+    ConsumableLaunchedEffect(effect = effectsState.closeComposerWithScheduleSending) {
+        dismissKeyboard(context, view, keyboardController)
+        actions.onCloseComposerClick()
+        actions.showMessageSchedulingSnackbar()
+    }
+
+    ConsumableLaunchedEffect(effect = effectsState.closeComposerWithScheduleSendingOffline) {
+        dismissKeyboard(context, view, keyboardController)
+        actions.onCloseComposerClick()
+        actions.showMessageSchedulingOfflineSnackbar()
+    }
+
     ConsumableTextEffect(effect = effectsState.sendingErrorEffect) {
         sendingErrorDialogState.value = it
     }
@@ -578,6 +591,8 @@ object ComposerScreen {
         val showDraftSavedSnackbar: (MessageId) -> Unit,
         val showMessageSendingSnackbar: () -> Unit,
         val showMessageSendingOfflineSnackbar: () -> Unit,
+        val showMessageSchedulingSnackbar: () -> Unit,
+        val showMessageSchedulingOfflineSnackbar: () -> Unit,
         val showDraftDiscardedSnackbar: () -> Unit
     ) {
 
@@ -590,6 +605,8 @@ object ComposerScreen {
                 showDraftSavedSnackbar = {},
                 showMessageSendingSnackbar = {},
                 showMessageSendingOfflineSnackbar = {},
+                showMessageSchedulingSnackbar = {},
+                showMessageSchedulingOfflineSnackbar = {},
                 showDraftDiscardedSnackbar = {}
             )
         }

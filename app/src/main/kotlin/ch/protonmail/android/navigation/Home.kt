@@ -202,6 +202,17 @@ fun Home(
         snackbarHostNormState.showSnackbar(message = sendingMessageText, type = ProtonSnackbarType.NORM)
     }
 
+    val schedulingMessageText = stringResource(id = R.string.mailbox_message_scheduling)
+    fun showMessageSchedulingSnackbar() = scope.launch {
+        snackbarHostNormState.showSnackbar(message = schedulingMessageText, type = ProtonSnackbarType.NORM)
+    }
+
+    val schedulingMessageOfflineText = stringResource(id = R.string.mailbox_message_scheduling_offline)
+    fun showMessageSchedulingOfflineSnackbar() = scope.launch {
+        snackbarHostNormState.showSnackbar(message = schedulingMessageOfflineText, type = ProtonSnackbarType.NORM)
+    }
+
+
     val undoActionText = stringResource(id = R.string.undo_button_label)
     val messageSentText = stringResource(id = R.string.mailbox_message_sending_success)
     fun showMessageSentWithUndoSnackbar(messageId: MessageId) = scope.launch {
@@ -508,6 +519,8 @@ fun Home(
                             showDraftSavedSnackbar = { showDraftSavedSnackbar(it) },
                             showMessageSendingSnackbar = { showMessageSendingSnackbar() },
                             showMessageSendingOfflineSnackbar = { showMessageSendingOfflineSnackbar() },
+                            showMessageSchedulingSnackbar = { showMessageSchedulingSnackbar() },
+                            showMessageSchedulingOfflineSnackbar = { showMessageSchedulingOfflineSnackbar() },
                             showDraftDiscardedSnackbar = { showDraftDiscardedSnackbar() }
                         )
 

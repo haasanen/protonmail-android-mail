@@ -53,6 +53,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.GetEmbeddedImage
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
+import ch.protonmail.android.mailcomposer.domain.usecase.ScheduleSendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
@@ -112,6 +113,7 @@ import kotlinx.coroutines.launch
 import me.proton.core.util.kotlin.deserialize
 import me.proton.core.util.kotlin.takeIfNotEmpty
 import timber.log.Timber
+import kotlin.time.Instant
 
 @Suppress("LargeClass", "LongParameterList", "TooManyFunctions", "UnusedPrivateMember")
 @HiltViewModel(assistedFactory = ComposerViewModel.Factory::class)
@@ -139,6 +141,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val getEmbeddedImage: GetEmbeddedImage,
     private val getFormattedScheduleSendOptions: GetFormattedScheduleSendOptions,
+    private val scheduleSend: ScheduleSendMessage,
     @IsChooseAttachmentSourceEnabled private val chooseAttachmentSourceEnabled: Flow<Boolean>,
     @ScheduleSendEnabled private val scheduleSendEnabled: Flow<Boolean>,
     observePrimaryUserId: ObservePrimaryUserId
@@ -412,6 +415,7 @@ class ComposerViewModel @AssistedInject constructor(
 
                 is ComposerAction.DiscardDraftConfirmed -> onDiscardDraftConfirmed()
                 is ComposerAction.OnScheduleSendRequested -> onScheduleSendRequested()
+                is ComposerAction.OnScheduleSend -> handleOnScheduleSendMessage(action.time)
             }
             logViewModelAction(action, "Completed.")
         }
@@ -526,30 +530,26 @@ class ComposerViewModel @AssistedInject constructor(
         )
     }
 
-    private suspend fun handleOnSendMessage() {
-        emitNewStateFor(ComposerEvent.OnMessageSending)
+    private suspend fun handleOnScheduleSendMessage(time: Instant) {
+        emitNewStateFor(MainEvent.CoreLoadingToggled)
 
         if (subjectTextField.text.isBlank()) {
-            emitNewStateFor(ComposerEvent.ConfirmEmptySubject)
+            emitNewStateFor(CompositeEvent.OnSendWithEmptySubject)
             return
         }
 
-        onSendMessage()
+        onScheduleSend(time)
     }
 
-    private suspend fun onSendMessage() = sendMessage().fold(
-        ifLeft = {
-            Timber.w("composer: Send message failed. Error: $it")
-            emitNewStateFor(ComposerEvent.OnSendingError(TextUiModel(it.toString())))
-        },
-        ifRight = {
+    private suspend fun onScheduleSend(time: Instant) = scheduleSend(time)
+        .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnSendMessageError) }
+        .onRight {
             if (networkManager.isConnectedToNetwork()) {
-                emitNewStateFor(ComposerAction.OnSendMessage)
+                emitNewStateFor(EffectsEvent.SendEvent.OnScheduleSendMessage)
             } else {
-                emitNewStateFor(ComposerEvent.OnSendMessageOffline)
+                emitNewStateFor(EffectsEvent.SendEvent.OnOfflineScheduleSendMessage)
             }
         }
-    )
 
     private fun onDiscardDraftConfirmed() {
         viewModelScope.launch {

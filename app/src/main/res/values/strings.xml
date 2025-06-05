@@ -40,4 +40,6 @@
     <string name="label_deleted">Label deleted</string>
     <string name="app_locked">App locked</string>
     <string name="use_pin_instead">Use PIN instead</string>
+    <string name="mailbox_message_scheduling">Scheduling message…</string>
+    <string name="mailbox_message_scheduling_offline">Offline: message queued for scheduling</string>
 </resources>
