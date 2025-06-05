@@ -46,9 +46,11 @@ internal class AppSettingsViewModel @Inject constructor(
         viewModelScope.launch {
             when (intent) {
                 is ToggleAlternativeRouting -> updateAlternativeRouting(intent.value)
+                is ToggleUseDeviceContacts -> updateUseDeviceContacts(intent.value)
             }
         }
     }
 
     private suspend fun updateAlternativeRouting(value: Boolean) = appSettingsRepository.updateAlternativeRouting(value)
+    private suspend fun updateUseDeviceContacts(value: Boolean) = appSettingsRepository.updateUseCombineContacts(value)
 }

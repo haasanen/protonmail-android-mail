@@ -260,4 +260,26 @@ class AppSettingsRepositoryTest {
             assertEquals(expectedUpdatedAppSettings, awaitItem())
         }
     }
+
+    @Test
+    fun `when useDeviceContacts is updated via appDiff then appSettings observer is also updated`() = runTest {
+        // Given
+        val expectedInitialAppSettings = expectedAppSettings
+        val expectedUpdatedDeviceContacts = false
+        val expectedUpdatedAppSettings = expectedAppSettings.copy(hasDeviceContactsEnabled = false)
+
+        coEvery {
+            appSettingsDataSource.getAppSettings(any())
+        } returns mockAppSettings.right() andThen
+            mockAppSettings.copy(useCombineContacts = expectedUpdatedAppSettings.hasDeviceContactsEnabled)
+                .right()
+        // When
+        appSettingsRepository.observeAppSettings().test {
+            assertEquals(expectedInitialAppSettings, awaitItem())
+
+            appSettingsRepository.updateAppSettings(AppSettingsDiff(combineContacts = expectedUpdatedDeviceContacts))
+
+            assertEquals(expectedUpdatedAppSettings, awaitItem())
+        }
+    }
 }

@@ -77,7 +77,7 @@ class AppSettingsRepository @Inject constructor(
             mailSessionRepository.getMailSession().getRustMailSession(),
             diff.toAppDiff()
         ).onLeft { error ->
-            Timber.e("Was not able to update theme $error")
+            Timber.e("Was not able to update app setting using the diff $error")
         }.onRight {
             restartTrigger.emit(Unit)
         }
@@ -88,4 +88,6 @@ class AppSettingsRepository @Inject constructor(
     override suspend fun updateAlternativeRouting(value: Boolean): Either<DataError, Unit> =
         updateAppSettings(AppSettingsDiff(alternativeRouting = value))
 
+    override suspend fun updateUseCombineContacts(value: Boolean): Either<DataError, Unit> =
+        updateAppSettings(AppSettingsDiff(combineContacts = value))
 }

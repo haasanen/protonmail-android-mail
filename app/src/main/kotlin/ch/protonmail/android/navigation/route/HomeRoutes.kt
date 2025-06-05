@@ -215,7 +215,6 @@ internal fun NavGraphBuilder.addAppSettings(navController: NavHostController, sh
                         navController.navigate(Destination.Screen.LanguageSettings.route)
                     },
                     onSwipeToNextEmailClick = showFeatureMissingSnackbar,
-                    onCombinedContactsClick = showFeatureMissingSnackbar,
                     onSwipeActionsClick = showFeatureMissingSnackbar,
                     onViewApplicationLogsClick = showFeatureMissingSnackbar,
                     onCustomizeToolbarClick = showFeatureMissingSnackbar,

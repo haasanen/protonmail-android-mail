@@ -51,8 +51,8 @@ fun AppSettingsDiff.toAppDiff(): LocalAppSettingsDiff {
 
     return LocalAppSettingsDiff(
         autoLock = interval?.let { setAutolockInteval(it) },
-        useCombineContacts = null, // not implemented
-        useAlternativeRouting = alternativeRouting, // not implemented
+        useCombineContacts = combineContacts,
+        useAlternativeRouting = alternativeRouting,
         appearance = theme?.let { setTheme(it) }
     )
 }

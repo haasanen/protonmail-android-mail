@@ -119,6 +119,28 @@ internal class AppSettingsViewModelTest {
         }
     }
 
+    @Test
+    fun `on new value received for userDeviceContacts THEN state is updated`() = runTest {
+        viewModel.state.test {
+            // Given
+            initialStateEmitted()
+
+            // When
+            appSettingsFlow.emit(AppSettingsTestData.appSettings)
+
+            // Then
+            val expectedFirstValue = true
+            val actual = awaitItem() as AppSettingsState.Data
+            assertEquals(expectedFirstValue, actual.settings.deviceContactsEnabled)
+
+            val expectedSecondValue = false
+            appSettingsFlow.emit(AppSettingsTestData.appSettings.copy(hasDeviceContactsEnabled = expectedSecondValue))
+
+            val actualUpdatedData = awaitItem() as AppSettingsState.Data
+            assertEquals(expectedSecondValue, actualUpdatedData.settings.deviceContactsEnabled)
+        }
+    }
+
 
     private suspend fun ReceiveTurbine<AppSettingsState>.initialStateEmitted() {
         awaitItem() as AppSettingsState.Loading

@@ -135,9 +135,7 @@ private fun AppSettingsScreenContent(
 
                 UseDeviceContactsSettingsItem(
                     useDeviceContacts = state.settings.deviceContactsEnabled,
-                    onToggle = {
-                        actions.onCombinedContactsClick()
-                    }
+                    onIntent = onIntent
                 )
 
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Medium))
@@ -283,7 +281,7 @@ private fun ProtectionSettingsItem(
 private fun UseDeviceContactsSettingsItem(
     modifier: Modifier = Modifier,
     useDeviceContacts: Boolean,
-    onToggle: (Boolean) -> Unit = {}
+    onIntent: (AppSettingsIntent) -> Unit
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -299,7 +297,7 @@ private fun UseDeviceContactsSettingsItem(
             name = stringResource(id = R.string.mail_settings_app_customization_use_device_contacts),
             hint = stringResource(id = R.string.mail_settings_app_customization_use_device_contacts_hint),
             value = useDeviceContacts,
-            onToggle = onToggle
+            onToggle = { onIntent(ToggleUseDeviceContacts(it)) }
         )
     }
 }
@@ -416,7 +414,6 @@ object AppSettingsScreen {
         val onPushNotificationsClick: () -> Unit,
         val onAutoLockClick: () -> Unit,
         val onAppLanguageClick: () -> Unit,
-        val onCombinedContactsClick: () -> Unit,
         val onSwipeToNextEmailClick: () -> Unit,
         val onSwipeActionsClick: () -> Unit,
         val onCustomizeToolbarClick: () -> Unit,
