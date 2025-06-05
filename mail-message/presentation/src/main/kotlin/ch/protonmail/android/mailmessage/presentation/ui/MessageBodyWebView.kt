@@ -246,20 +246,12 @@ private fun configureDarkLightMode(
     isInDarkTheme: Boolean,
     viewModePreference: ViewModePreference
 ) {
-    if (isInDarkTheme) {
-        configureDarkLightModeWhenInDarkTheme(webView, viewModePreference)
-    } else {
+    if (isInDarkTheme && viewModePreference == ViewModePreference.LightMode) {
         webView.showInLightMode()
     }
+    // In other cases, media query in Html content will be used to render correctly
 }
 
-private fun configureDarkLightModeWhenInDarkTheme(webView: WebView, viewModePreference: ViewModePreference) {
-    if (viewModePreference == ViewModePreference.LightMode) {
-        webView.showInLightMode()
-    } else {
-        webView.showInDarkMode()
-    }
-}
 
 @Composable
 private fun ExpandCollapseBodyButton(modifier: Modifier = Modifier, onClick: () -> Unit) {

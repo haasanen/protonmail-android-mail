@@ -34,11 +34,14 @@ fun WebView.showInDarkMode() {
 }
 
 fun WebView.showInLightMode() {
+
     if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
         WebSettingsCompat.setAlgorithmicDarkeningAllowed(
             this.settings, false
         )
-    } else if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+    }
+
+    if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
         WebSettingsCompat.setForceDark(this.settings, WebSettingsCompat.FORCE_DARK_OFF)
     }
 }
