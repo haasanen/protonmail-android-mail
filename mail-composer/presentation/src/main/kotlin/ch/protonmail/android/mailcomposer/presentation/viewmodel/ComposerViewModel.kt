@@ -526,6 +526,31 @@ class ComposerViewModel @AssistedInject constructor(
         )
     }
 
+    private suspend fun handleOnSendMessage() {
+        emitNewStateFor(ComposerEvent.OnMessageSending)
+
+        if (subjectTextField.text.isBlank()) {
+            emitNewStateFor(ComposerEvent.ConfirmEmptySubject)
+            return
+        }
+
+        onSendMessage()
+    }
+
+    private suspend fun onSendMessage() = sendMessage().fold(
+        ifLeft = {
+            Timber.w("composer: Send message failed. Error: $it")
+            emitNewStateFor(ComposerEvent.OnSendingError(TextUiModel(it.toString())))
+        },
+        ifRight = {
+            if (networkManager.isConnectedToNetwork()) {
+                emitNewStateFor(ComposerAction.OnSendMessage)
+            } else {
+                emitNewStateFor(ComposerEvent.OnSendMessageOffline)
+            }
+        }
+    )
+
     private fun onDiscardDraftConfirmed() {
         viewModelScope.launch {
             getDraftId().fold(

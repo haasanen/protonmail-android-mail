@@ -87,6 +87,7 @@ import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.composer.DraftFieldsTestData
 import ch.protonmail.android.testdata.contact.ContactSample
+import io.mockk.Called
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.coVerifyOrder
@@ -977,6 +978,43 @@ class ComposerViewModelTest {
         coVerify { discardDraft(expectedUserId, expectedMessageId) }
     }
 
+    @Test
+    fun `should show warning when send button is clicked while subject is empty`() = runTest {
+        // Given
+        val expectedSubject = Subject("")
+        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        val expectedDraftBody = DraftBody("I am plaintext")
+        val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
+        val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
+        val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
+        val expectedMessageId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
+        mockParticipantMapper()
+        expectNetworkManagerIsConnected()
+        expectNoInputDraftAction()
+        expectStoreDraftSubjectSucceeds(expectedSubject)
+        expectObservedMessageAttachments()
+        expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
+        expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedMessageId) {
+            DraftFields(
+                sender = expectedSenderEmail,
+                subject = expectedSubject,
+                body = expectedDraftBody,
+                recipientsTo = recipientsTo,
+                recipientsCc = recipientsCc,
+                recipientsBcc = recipientsBcc
+            )
+        }
+        expectUpdateRecipientsSucceeds(recipientsTo.value, recipientsCc.value, recipientsBcc.value)
+
+        // When
+        viewModel.submit(ComposerAction.SendMessage)
+
+        // Then
+        coVerify { sendMessageMock wasNot Called }
+        assertEquals(Effect.of(Unit), viewModel.composerStates.value.effects.confirmSendingWithoutSubject)
+    }
 
     @BeforeTest
     fun setUp() {
