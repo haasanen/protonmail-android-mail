@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmessage.data.mapper
 
 import java.time.Instant
+import android.os.Build
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
@@ -55,6 +56,8 @@ import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.model.Recipient
@@ -62,8 +65,11 @@ import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import me.proton.core.user.domain.entity.AddressId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.BodyOutput
+import uniffi.proton_mail_uniffi.MailTheme
 import uniffi.proton_mail_uniffi.MessageRecipient
 import uniffi.proton_mail_uniffi.MessageSender
+import uniffi.proton_mail_uniffi.ThemeOpts
+import uniffi.proton_mail_uniffi.TransformOpts
 import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId as RustRemoteMessageId
 
 fun LocalAvatarInformation.toAvatarInformation(): AvatarInformation {
@@ -168,6 +174,41 @@ fun LocalConversationMessages.toConversationMessagesWithMessageToOpen(): Either<
 
 fun RemoteMessageId.toRemoteMessageId(): RustRemoteMessageId = RustRemoteMessageId(this.id)
 fun RustRemoteMessageId.toRemoteMessageId(): RemoteMessageId = RemoteMessageId(this.value)
+
+
+fun MessageThemeOptions.toLocalThemeOptions(): ThemeOpts = ThemeOpts(
+    currentTheme = currentTheme.toMailTheme(),
+    themeOverride = themeOverride?.toMailTheme(),
+    supportsDarkModeViaMediaQuery = if (themeOverride == MessageTheme.Light) {
+        // If the themeOverride is Light and the html style contains media query for dark mode,
+        // then we cannot tell WebView to render in light mode, so we set this to false.
+        false
+    } else {
+        // Media query for dark mode is supported on Android 10 and above.
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+    }
+)
+
+fun ThemeOpts.toMessageThemeOptions(): MessageThemeOptions {
+    return MessageThemeOptions(
+        currentTheme = currentTheme.toMessageTheme(),
+        themeOverride = themeOverride?.toMessageTheme()
+    )
+}
+
+fun MessageTheme.toMailTheme(): MailTheme {
+    return when (this) {
+        MessageTheme.Light -> MailTheme.LIGHT_MODE
+        MessageTheme.Dark -> MailTheme.DARK_MODE
+    }
+}
+
+fun MailTheme.toMessageTheme(): MessageTheme {
+    return when (this) {
+        MailTheme.LIGHT_MODE -> MessageTheme.Light
+        MailTheme.DARK_MODE -> MessageTheme.Dark
+    }
+}
 
 private fun LocalMessageBanner.toMessageBanner(): MessageBanner {
     fun ULong.toInstant() = Instant.ofEpochSecond(this.toLong())
