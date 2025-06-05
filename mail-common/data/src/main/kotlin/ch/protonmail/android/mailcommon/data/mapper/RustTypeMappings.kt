@@ -45,6 +45,7 @@ import uniffi.proton_mail_uniffi.GroupedContacts
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IssueReport
 import uniffi.proton_mail_uniffi.LabelAsAction
+import uniffi.proton_mail_uniffi.MailLoginError
 import uniffi.proton_mail_uniffi.MailSettings
 import uniffi.proton_mail_uniffi.Message
 import uniffi.proton_mail_uniffi.MessageButtons
@@ -125,3 +126,6 @@ typealias LocalAutoLockPin = List<UInt>
 typealias LocalAutoDeleteBanner = AutoDeleteBanner
 typealias LocalAutoDeleteState = AutoDeleteState
 typealias LocalSpamOrTrash = SpamOrTrash
+typealias LocalMailLoginError = MailLoginError
+typealias LocalMailLoginErrorReason = MailLoginError.Reason
+typealias LocalMailLoginErrorOther = MailLoginError.Other

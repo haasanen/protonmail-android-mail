@@ -17,10 +17,12 @@
  */
 package ch.protonmail.android.mailsession.domain.model
 
+import ch.protonmail.android.mailcommon.data.mapper.LocalMailLoginError
+import ch.protonmail.android.mailcommon.data.mapper.LocalMailLoginErrorOther
+import ch.protonmail.android.mailcommon.data.mapper.LocalMailLoginErrorReason
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import uniffi.proton_mail_uniffi.LoginErrorReason
-import uniffi.proton_mail_uniffi.MailLoginError as LocalMailLoginError
 
 sealed interface MailLoginError {
     data object InvalidCredentials : MailLoginError
@@ -32,11 +34,11 @@ sealed interface MailLoginError {
 
 fun LocalMailLoginError.toLoginError(): MailLoginError {
     return when (this) {
-        is LocalMailLoginError.Reason -> when (this.v1) {
+        is LocalMailLoginErrorReason -> when (this.v1) {
             LoginErrorReason.INVALID_CREDENTIALS -> MailLoginError.InvalidCredentials
             LoginErrorReason.UNSUPPORTED_TFA -> MailLoginError.UnsupportedTwoFactorAuthentication
             LoginErrorReason.CANT_UNLOCK_USER_KEY -> MailLoginError.CannotUnlockUserKey
         }
-        is LocalMailLoginError.Other -> MailLoginError.Other(this.v1.toDataError())
+        is LocalMailLoginErrorOther -> MailLoginError.Other(this.v1.toDataError())
     }
 }
