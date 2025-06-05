@@ -21,6 +21,7 @@ package ch.protonmail.android.mailpinlock.data
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalAppSettings
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailpinlock.domain.BiometricsSystemStateRepository
 import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState
@@ -93,7 +94,7 @@ class AutolockRepositoryTest {
             appLockDataSource = appLockDataSource
         )
 
-    private val mockAppSettings = uniffi.proton_mail_uniffi.AppSettings(
+    private val mockAppSettings = LocalAppSettings(
         AppAppearance.LIGHT_MODE,
         AppProtection.PIN,
         AutoLock.Always,
