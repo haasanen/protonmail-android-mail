@@ -24,7 +24,9 @@ import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsettings.data.local.RustAppSettingsDataSource
 import ch.protonmail.android.mailsettings.data.mapper.toAppDiff
 import ch.protonmail.android.mailsettings.data.mapper.toAppSettings
+import ch.protonmail.android.mailsettings.data.mapper.toLocalAppDiff
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
+import ch.protonmail.android.mailsettings.domain.model.AppSettingsDiff
 import ch.protonmail.android.mailsettings.domain.model.AppSettingsDiff
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
@@ -82,4 +84,8 @@ class AppSettingsRepository @Inject constructor(
 
     override suspend fun updateTheme(theme: Theme): Either<DataError, Unit> =
         updateAppSettings(AppSettingsDiff(theme = theme))
+
+    override suspend fun updateAlternativeRouting(value: Boolean): Either<DataError, Unit> =
+        updateAppSettings(AppSettingsDiff(alternativeRouting = value))
+
 }

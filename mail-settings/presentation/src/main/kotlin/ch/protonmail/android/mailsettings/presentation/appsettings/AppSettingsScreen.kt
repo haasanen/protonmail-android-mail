@@ -71,7 +71,8 @@ private fun AppSettingsScreenContent(
             AppSettingsScreenContent(
                 modifier = modifier,
                 actions = actions,
-                state = state
+                state = state,
+                onIntent = { viewModel.submit(it) }
             )
         }
 
@@ -83,7 +84,8 @@ private fun AppSettingsScreenContent(
 private fun AppSettingsScreenContent(
     modifier: Modifier = Modifier,
     actions: AppSettingsScreen.Actions,
-    state: AppSettingsState.Data
+    state: AppSettingsState.Data,
+    onIntent: (AppSettingsIntent) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -152,7 +154,8 @@ private fun AppSettingsScreenContent(
                 MainSettingsHeader(titleRes = R.string.mail_settings_app_customization_advanced_header)
                 AdvancedSettingsItem(
                     alternativeRouting = state.settings.alternativeRoutingEnabled,
-                    actions = actions
+                    actions = actions,
+                    onIntent = onIntent
                 )
 
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Jumbo))
@@ -366,7 +369,8 @@ private fun MailExperienceSettingsItem(
 private fun AdvancedSettingsItem(
     modifier: Modifier = Modifier,
     alternativeRouting: Boolean,
-    actions: AppSettingsScreen.Actions
+    actions: AppSettingsScreen.Actions,
+    onIntent: (AppSettingsIntent) -> Unit
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -383,7 +387,7 @@ private fun AdvancedSettingsItem(
                 name = stringResource(id = R.string.mail_settings_app_customization_alternative_routing),
                 hint = stringResource(id = R.string.mail_settings_app_customization_alternative_routing_hint),
                 value = alternativeRouting,
-                onToggle = { actions.onAlternativeRoutingClick() }
+                onToggle = { onIntent(ToggleAlternativeRouting(it)) }
             )
 
             SettingsItemDivider()
@@ -411,7 +415,6 @@ object AppSettingsScreen {
         val onThemeClick: () -> Unit,
         val onPushNotificationsClick: () -> Unit,
         val onAutoLockClick: () -> Unit,
-        val onAlternativeRoutingClick: () -> Unit,
         val onAppLanguageClick: () -> Unit,
         val onCombinedContactsClick: () -> Unit,
         val onSwipeToNextEmailClick: () -> Unit,
@@ -431,7 +434,8 @@ fun PreviewAppCustomizationScreenLight() {
     ProtonInvertedTheme {
         AppSettingsScreenContent(
             actions = AppSettingsScreenPreviewData.Actions,
-            state = AppSettingsScreenPreviewData.Data
+            state = AppSettingsScreenPreviewData.Data,
+            onIntent = { }
         )
     }
 }
@@ -446,7 +450,8 @@ fun PreviewAppCustomizationScreenDark() {
     ProtonInvertedTheme {
         AppSettingsScreenContent(
             actions = AppSettingsScreenPreviewData.Actions,
-            state = AppSettingsScreenPreviewData.Data
+            state = AppSettingsScreenPreviewData.Data,
+            onIntent = { }
         )
     }
 }

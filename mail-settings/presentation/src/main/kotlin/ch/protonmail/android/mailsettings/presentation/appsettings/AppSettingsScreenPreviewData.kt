@@ -37,7 +37,6 @@ internal object AppSettingsScreenPreviewData {
         onThemeClick = {},
         onPushNotificationsClick = {},
         onAutoLockClick = {},
-        onAlternativeRoutingClick = {},
         onAppLanguageClick = {},
         onCombinedContactsClick = {},
         onSwipeToNextEmailClick = {},

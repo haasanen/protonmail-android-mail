@@ -31,4 +31,5 @@ interface AppSettingsRepository {
     fun observeTheme(): Flow<Theme>
     suspend fun updateTheme(theme: Theme): Either<DataError, Unit>
     suspend fun updateAppSettings(diff: AppSettingsDiff): Either<DataError, Unit>
+    suspend fun updateAlternativeRouting(value: Boolean): Either<DataError, Unit>
 }

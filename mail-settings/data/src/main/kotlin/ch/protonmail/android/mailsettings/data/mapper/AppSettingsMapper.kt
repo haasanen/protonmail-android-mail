@@ -27,7 +27,6 @@ import ch.protonmail.android.mailsettings.data.mapper.LocalMapperThemeConstants.
 import ch.protonmail.android.mailsettings.data.mapper.LocalMapperThemeConstants.themeAppearanceLookup
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
-import ch.protonmail.android.mailsettings.domain.model.AppSettingsDiff
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AppAppearance
@@ -53,7 +52,7 @@ fun AppSettingsDiff.toAppDiff(): LocalAppSettingsDiff {
     return LocalAppSettingsDiff(
         autoLock = interval?.let { setAutolockInteval(it) },
         useCombineContacts = null, // not implemented
-        useAlternativeRouting = null, // not implemented
+        useAlternativeRouting = alternativeRouting, // not implemented
         appearance = theme?.let { setTheme(it) }
     )
 }

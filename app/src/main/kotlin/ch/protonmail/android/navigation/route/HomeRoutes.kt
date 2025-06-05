@@ -211,7 +211,6 @@ internal fun NavGraphBuilder.addAppSettings(navController: NavHostController, sh
                     onAutoLockClick = {
                         navController.navigate(Destination.Screen.AutoLockSettings.route)
                     },
-                    onAlternativeRoutingClick = showFeatureMissingSnackbar,
                     onAppLanguageClick = {
                         navController.navigate(Destination.Screen.LanguageSettings.route)
                     },

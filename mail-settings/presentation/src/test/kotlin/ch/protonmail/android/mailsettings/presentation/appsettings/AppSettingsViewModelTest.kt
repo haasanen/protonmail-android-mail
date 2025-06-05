@@ -20,12 +20,15 @@ package ch.protonmail.android.mailsettings.presentation.appsettings
 
 import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
+import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.testdata.AppSettingsTestData
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -43,6 +46,7 @@ internal class AppSettingsViewModelTest {
     private val appSettingsFlow = MutableSharedFlow<AppSettings>()
     private val observeAppSettings = mockk<AppSettingsRepository> {
         every { this@mockk.observeAppSettings() } returns appSettingsFlow
+        coEvery { this@mockk.updateAlternativeRouting(any()) } returns Unit.right()
     }
 
     private lateinit var viewModel: AppSettingsViewModel
@@ -81,6 +85,40 @@ internal class AppSettingsViewModelTest {
             assertEquals(expected, actual.settings)
         }
     }
+
+    @Test
+    fun `on Toggle alternative routing then update alternative routing via repository`() = runTest {
+        viewModel.state.test {
+            // Given
+            initialStateEmitted()
+
+            viewModel.submit(ToggleAlternativeRouting(true))
+            coVerify { observeAppSettings.updateAlternativeRouting(true) }
+        }
+    }
+
+    @Test
+    fun `on new value received for alternativeRoutingEnabled THEN state is updated`() = runTest {
+        viewModel.state.test {
+            // Given
+            initialStateEmitted()
+
+            // When
+            appSettingsFlow.emit(AppSettingsTestData.appSettings)
+
+            // Then
+            val expectedFirstValue = true
+            val actual = awaitItem() as AppSettingsState.Data
+            assertEquals(expectedFirstValue, actual.settings.alternativeRoutingEnabled)
+
+            val expectedSecondValue = false
+            appSettingsFlow.emit(AppSettingsTestData.appSettings.copy(hasAlternativeRouting = expectedSecondValue))
+
+            val actualUpdatedData = awaitItem() as AppSettingsState.Data
+            assertEquals(expectedSecondValue, actualUpdatedData.settings.alternativeRoutingEnabled)
+        }
+    }
+
 
     private suspend fun ReceiveTurbine<AppSettingsState>.initialStateEmitted() {
         awaitItem() as AppSettingsState.Loading

@@ -19,4 +19,4 @@ package ch.protonmail.android.mailsettings.domain.model
 
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval
 
-data class AppSettingsDiff(val theme: Theme? = null, val interval: AutoLockInterval? = null)
+data class AppSettingsDiff(val theme: Theme? = null, val interval: AutoLockInterval? = null, val alternativeRouting: Boolean? = null)

@@ -32,3 +32,6 @@ internal data class AppSettingsUiModel(
     val theme: TextUiModel,
     val deviceContactsEnabled: Boolean
 )
+
+internal sealed interface AppSettingsIntent
+data class ToggleAlternativeRouting(val value: Boolean) : AppSettingsIntent

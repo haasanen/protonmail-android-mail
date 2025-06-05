@@ -26,11 +26,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 internal class AppSettingsViewModel @Inject constructor(
-    appSettingsRepository: AppSettingsRepository
+    val appSettingsRepository: AppSettingsRepository
 ) : ViewModel() {
 
     val state = appSettingsRepository
@@ -40,4 +41,14 @@ internal class AppSettingsViewModel @Inject constructor(
             AppSettingsState.Data(uiModel)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(stopTimeoutMillis), AppSettingsState.Loading)
+
+    internal fun submit(intent: AppSettingsIntent) {
+        viewModelScope.launch {
+            when (intent) {
+                is ToggleAlternativeRouting -> updateAlternativeRouting(intent.value)
+            }
+        }
+    }
+
+    private suspend fun updateAlternativeRouting(value: Boolean) = appSettingsRepository.updateAlternativeRouting(value)
 }

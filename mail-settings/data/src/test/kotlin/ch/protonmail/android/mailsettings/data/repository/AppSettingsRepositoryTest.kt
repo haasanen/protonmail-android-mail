@@ -218,4 +218,46 @@ class AppSettingsRepositoryTest {
             )
         }
     }
+
+    @Test
+    fun `when theme is updated via appDiff  then appSettings observer is also updated`() = runTest {
+        // Given
+        val expectedInitialAppSettings = expectedAppSettings
+        val expectedUpdatedTheme = Theme.DARK
+        val expectedUpdatedAppSettings = expectedAppSettings.copy(theme = expectedUpdatedTheme)
+
+        coEvery {
+            appSettingsDataSource.getAppSettings(any())
+        } returns mockAppSettings.right() andThen mockAppSettings.copy(AppAppearance.DARK_MODE).right()
+        // When
+        appSettingsRepository.observeAppSettings().test {
+            assertEquals(expectedInitialAppSettings, awaitItem())
+
+            appSettingsRepository.updateAppSettings(AppSettingsDiff(theme = expectedUpdatedTheme))
+
+            assertEquals(expectedUpdatedAppSettings, awaitItem())
+        }
+    }
+
+    @Test
+    fun `when alternativeRouting is updated via appDiff  then appSettings observer is also updated`() = runTest {
+        // Given
+        val expectedInitialAppSettings = expectedAppSettings
+        val expectedUpdatedRouting = false
+        val expectedUpdatedAppSettings = expectedAppSettings.copy(hasAlternativeRouting = false)
+
+        coEvery {
+            appSettingsDataSource.getAppSettings(any())
+        } returns mockAppSettings.right() andThen
+            mockAppSettings.copy(useAlternativeRouting = expectedUpdatedAppSettings.hasAlternativeRouting)
+                .right()
+        // When
+        appSettingsRepository.observeAppSettings().test {
+            assertEquals(expectedInitialAppSettings, awaitItem())
+
+            appSettingsRepository.updateAppSettings(AppSettingsDiff(alternativeRouting = expectedUpdatedRouting))
+
+            assertEquals(expectedUpdatedAppSettings, awaitItem())
+        }
+    }
 }
