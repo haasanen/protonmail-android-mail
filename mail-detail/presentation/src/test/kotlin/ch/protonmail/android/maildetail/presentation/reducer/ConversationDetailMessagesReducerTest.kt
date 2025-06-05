@@ -29,7 +29,6 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
-import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.collections.immutable.toImmutableList
@@ -46,21 +45,9 @@ class ConversationDetailMessagesReducerTest(
     private val input: Input
 ) {
 
-    private val injectCssIntoDecryptedMessageBody = mockk<InjectCssIntoDecryptedMessageBody> {
-        coEvery {
-            this@mockk.invoke(
-                MessageBodyWithType(
-                    ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded.messageBodyUiModel.messageBody,
-                    ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded.messageBodyUiModel.mimeType
-                ),
-                ViewModePreference.LightMode
-            )
-        } returns ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded.messageBodyUiModel.messageBody
-    }
-
     @Test
     fun test() = runTest {
-        val reducer = ConversationDetailMessagesReducer(injectCssIntoDecryptedMessageBody)
+        val reducer = ConversationDetailMessagesReducer()
         val result = reducer.newStateFrom(input.currentState, input.operation)
         assertEquals(input.expectedState, result, testName)
     }

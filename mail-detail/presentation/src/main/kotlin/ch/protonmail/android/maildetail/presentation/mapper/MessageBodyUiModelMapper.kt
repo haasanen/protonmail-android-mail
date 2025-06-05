@@ -28,12 +28,10 @@ import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
-import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
 import javax.inject.Inject
 
 class MessageBodyUiModelMapper @Inject constructor(
-    private val attachmentGroupUiModelMapper: AttachmentGroupUiModelMapper,
-    private val injectCssIntoDecryptedMessageBody: InjectCssIntoDecryptedMessageBody
+    private val attachmentGroupUiModelMapper: AttachmentGroupUiModelMapper
 ) {
 
     suspend fun toUiModel(
@@ -56,7 +54,6 @@ class MessageBodyUiModelMapper @Inject constructor(
             decryptedMessageBody.mimeType.toMimeTypeUiModel()
         )
 
-        val originalMessageBody = injectCssIntoDecryptedMessageBody(messageBodyWithType)
         val viewModePreference = existingMessageBodyUiModel?.viewModePreference ?: ViewModePreference.ThemeDefault
 
         return MessageBodyUiModel(

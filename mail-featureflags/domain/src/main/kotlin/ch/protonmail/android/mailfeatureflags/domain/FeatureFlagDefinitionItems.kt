@@ -26,7 +26,7 @@ data object UseV6CssInjectionDefinition : FeatureFlagDefinition(
     name = "Enforce V6 CSS injection",
     category = FeatureFlagCategory.Details,
     description = "Applies V6 CSS injection on the Rust-provided message body.",
-    defaultValue = true
+    defaultValue = false
 )
 
 data object DebugInspectDbEnabled : FeatureFlagDefinition(

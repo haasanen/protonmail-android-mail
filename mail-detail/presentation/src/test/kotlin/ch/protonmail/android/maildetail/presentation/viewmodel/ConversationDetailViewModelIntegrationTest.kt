@@ -379,8 +379,7 @@ class ConversationDetailViewModelIntegrationTest {
         messageDetailFooterUiModelMapper = MessageDetailFooterUiModelMapper(),
         messageBannersUiModelMapper = MessageBannersUiModelMapper(context),
         messageBodyUiModelMapper = MessageBodyUiModelMapper(
-            attachmentGroupUiModelMapper = attachmentGroupUiModelMapper,
-            injectCssIntoDecryptedMessageBody = injectCssIntoDecryptedMessageBody
+            attachmentGroupUiModelMapper = attachmentGroupUiModelMapper
         ),
         participantUiModelMapper = ParticipantUiModelMapper(resolveParticipantName),
         messageIdUiModelMapper = messageIdUiModelMapper,

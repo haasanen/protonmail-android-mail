@@ -26,14 +26,11 @@ import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentGroupUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
-import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
 import ch.protonmail.android.testdata.message.MessageBodyTestData
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -81,13 +78,8 @@ class MessageBodyUiModelMapperTest {
         )
     }
 
-    private val injectCssIntoDecryptedMessageBody = mockk<InjectCssIntoDecryptedMessageBody> {
-        coEvery { this@mockk.invoke(any()) } returns decryptedMessageBody
-    }
-
     private val messageBodyUiModelMapper = MessageBodyUiModelMapper(
-        attachmentGroupUiModelMapper = attachmentGroupUiModelMapper,
-        injectCssIntoDecryptedMessageBody = injectCssIntoDecryptedMessageBody
+        attachmentGroupUiModelMapper = attachmentGroupUiModelMapper
     )
 
     @Test
@@ -259,11 +251,6 @@ class MessageBodyUiModelMapperTest {
     @Test
     fun `HTML message body is correctly mapped to a message body ui model`() = runTest {
         // Given
-        val decryptedMessageBodyWithType = MessageBodyWithType(decryptedMessageBody, MimeTypeUiModel.Html)
-
-        coEvery {
-            injectCssIntoDecryptedMessageBody(decryptedMessageBodyWithType)
-        } returns decryptedMessageBodyWithCss
         val messageId = MessageIdSample.build()
         val messageBody = DecryptedMessageBody(
             messageId = messageId,
@@ -275,7 +262,7 @@ class MessageBodyUiModelMapperTest {
         )
         val expected = MessageBodyUiModel(
             messageId = messageId,
-            messageBody = decryptedMessageBodyWithCss,
+            messageBody = decryptedMessageBody,
             mimeType = MimeTypeUiModel.Html,
             shouldShowEmbeddedImagesBanner = false,
             shouldShowRemoteContentBanner = false,
@@ -465,7 +452,7 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = false,
             shouldShowOpenInProtonCalendar = false,
             attachments = null,
-            viewModePreference = ViewModePreference.DarkMode
+            viewModePreference = ViewModePreference.ThemeDefault
         )
 
         // When

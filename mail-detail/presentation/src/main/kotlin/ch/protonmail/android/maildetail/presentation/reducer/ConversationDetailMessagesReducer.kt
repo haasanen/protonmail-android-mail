@@ -23,24 +23,17 @@ import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState.Data
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState.Error
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
-import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
-import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
-import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
 import kotlinx.collections.immutable.toImmutableList
 import javax.inject.Inject
 
 @Suppress("ComplexMethod")
-class ConversationDetailMessagesReducer @Inject constructor(
-    private val injectCssIntoDecryptedMessageBody: InjectCssIntoDecryptedMessageBody
-) {
+class ConversationDetailMessagesReducer @Inject constructor() {
 
     @Suppress("LongMethod")
     suspend fun newStateFrom(
@@ -97,9 +90,6 @@ class ConversationDetailMessagesReducer @Inject constructor(
                 operation.expandCollapseMode
             )
 
-        is ConversationDetailViewAction.SwitchViewMode -> {
-            currentState.toNewStateForSwitchViewMode(operation.messageId, operation.viewModePreference)
-        }
     }
 
     private fun ConversationDetailsMessagesState.toNewStateForNoNetworkError() = when (this) {
@@ -235,34 +225,5 @@ class ConversationDetailMessagesReducer @Inject constructor(
                 }
             )
         )
-    }
-
-    private suspend fun ConversationDetailsMessagesState.toNewStateForSwitchViewMode(
-        messageId: MessageId,
-        viewModePreference: ViewModePreference
-    ): ConversationDetailsMessagesState {
-        return when (this) {
-            is ConversationDetailsMessagesState.Data -> this.copy(
-                messages = messages.map {
-                    if (it is ConversationDetailMessageUiModel.Expanded && it.messageId.id == messageId.id) {
-                        it.copy(
-                            messageBodyUiModel = it.messageBodyUiModel.copy(
-                                messageBody = injectCssIntoDecryptedMessageBody(
-                                    MessageBodyWithType(
-                                        it.messageBodyUiModel.messageBody,
-                                        it.messageBodyUiModel.mimeType
-                                    ),
-                                    viewModePreference
-                                ),
-                                viewModePreference = viewModePreference
-                            )
-                        )
-                    } else {
-                        it
-                    }
-                }.toImmutableList()
-            )
-            else -> this
-        }
     }
 }
