@@ -24,6 +24,8 @@ import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformationsOverride.LoadRemoteContent
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformationsOverride.LoadRemoteContentAndEmbeddedImages
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformationsOverride.ToggleQuotedText
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 
 object MessageBodyTransformationsMapper {
 
@@ -42,6 +44,24 @@ object MessageBodyTransformationsMapper {
                 )
 
                 ToggleQuotedText -> transformations.copy(showQuotedText = !transformations.showQuotedText)
+
+                is MessageBodyTransformationsOverride.ViewInLightMode -> {
+                    transformations.copy(
+                        messageThemeOptions = MessageThemeOptions(
+                            currentTheme = override.currentTheme,
+                            themeOverride = MessageTheme.Light
+                        )
+                    )
+                }
+
+                is MessageBodyTransformationsOverride.ViewInDarkMode -> {
+                    transformations.copy(
+                        messageThemeOptions = MessageThemeOptions(
+                            currentTheme = override.currentTheme,
+                            themeOverride = MessageTheme.Dark
+                        )
+                    )
+                }
             }
         } ?: transformations
     }

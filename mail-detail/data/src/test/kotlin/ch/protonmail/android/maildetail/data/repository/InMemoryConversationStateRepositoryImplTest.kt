@@ -25,6 +25,7 @@ import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationSt
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessageState.Expanded
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessageState.Expanding
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -93,7 +94,8 @@ class InMemoryConversationStateRepositoryImplTest {
             mimeType = MimeType.Html,
             hasQuotedText = false,
             isUnread = false,
-            banners = emptyList()
+            banners = emptyList(),
+            transformations = MessageBodyTransformations(false, false, false, null)
         )
 
         // When
@@ -119,7 +121,8 @@ class InMemoryConversationStateRepositoryImplTest {
             mimeType = MimeType.Html,
             hasQuotedText = false,
             isUnread = false,
-            banners = emptyList()
+            banners = emptyList(),
+            transformations = MessageBodyTransformations(false, false, false, null)
         )
 
         // When

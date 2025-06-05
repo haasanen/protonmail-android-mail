@@ -48,4 +48,6 @@ sealed interface MessageBodyTransformationsOverride {
     data object LoadEmbeddedImages : MessageBodyTransformationsOverride
     data object LoadRemoteContent : MessageBodyTransformationsOverride
     data object LoadRemoteContentAndEmbeddedImages : MessageBodyTransformationsOverride
+    data class ViewInLightMode(val currentTheme: MessageTheme) : MessageBodyTransformationsOverride
+    data class ViewInDarkMode(val currentTheme: MessageTheme) : MessageBodyTransformationsOverride
 }

@@ -20,6 +20,8 @@ package ch.protonmail.android.mailmessage.domain.mapper
 
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformationsOverride
+import ch.protonmail.android.mailmessage.domain.model.MessageTheme
+import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -74,6 +76,28 @@ internal class MessageBodyTransformationsMapperTest(
                 baseTransformation,
                 MessageBodyTransformationsOverride.ToggleQuotedText,
                 baseTransformation.copy(showQuotedText = !baseTransformation.showQuotedText)
+            ),
+            arrayOf(
+                "overrides theme with light mode",
+                baseTransformation,
+                MessageBodyTransformationsOverride.ViewInLightMode(MessageTheme.Dark),
+                baseTransformation.copy(
+                    messageThemeOptions = MessageThemeOptions(
+                        currentTheme = MessageTheme.Dark,
+                        themeOverride = MessageTheme.Light
+                    )
+                )
+            ),
+            arrayOf(
+                "overrides theme with dark mode",
+                baseTransformation,
+                MessageBodyTransformationsOverride.ViewInDarkMode(MessageTheme.Dark),
+                baseTransformation.copy(
+                    messageThemeOptions = MessageThemeOptions(
+                        currentTheme = MessageTheme.Dark,
+                        themeOverride = MessageTheme.Dark
+                    )
+                )
             )
         )
     }
