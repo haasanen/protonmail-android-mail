@@ -106,10 +106,15 @@ private fun AppSettingsScreenContent(
             ) {
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
 
-                NotificationLanguageSettingsItem(
+                NotificationSettingsItem(
                     notificationStatus = "On",
+                    onNotificationClick = { launchNotificationSettingsIntent(context) }
+                )
+
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
+
+                LanguageSettingsItem(
                     language = state.settings.customLanguage ?: "English",
-                    onNotificationClick = { launchNotificationSettingsIntent(context) },
                     onLanguageClick = actions.onAppLanguageClick
                 )
 
@@ -143,7 +148,7 @@ private fun AppSettingsScreenContent(
                 MainSettingsHeader(titleRes = R.string.mail_settings_app_customization_mail_experience_header)
 
                 MailExperienceSettingsItem(
-                    swipeToNextEmail = true,
+                    swipeToNextEmail = false, // not implemented coming soon
                     actions = actions
                 )
 
@@ -169,12 +174,10 @@ private fun launchNotificationSettingsIntent(context: Context) {
 }
 
 @Composable
-private fun NotificationLanguageSettingsItem(
+private fun NotificationSettingsItem(
     modifier: Modifier = Modifier,
     notificationStatus: String,
-    language: String,
-    onNotificationClick: () -> Unit = {},
-    onLanguageClick: () -> Unit = {}
+    onNotificationClick: () -> Unit = {}
 ) {
 
     Card(
@@ -198,22 +201,38 @@ private fun NotificationLanguageSettingsItem(
                     )
                 }
             )
-
-            SettingsItemDivider()
-
-            ProtonAppSettingsItemInvert(
-                name = stringResource(id = R.string.mail_settings_app_customization_language),
-                hint = language,
-                onClick = onLanguageClick,
-                icon = {
-                    ProtonMainSettingsIcon(
-                        iconRes = R.drawable.ic_proton_arrow_out_over_square,
-                        contentDescription = stringResource(id = R.string.mail_settings_app_customization_language),
-                        tint = ProtonTheme.colors.iconHint
-                    )
-                }
-            )
         }
+    }
+}
+
+@Composable
+private fun LanguageSettingsItem(
+    modifier: Modifier = Modifier,
+    language: String,
+    onLanguageClick: () -> Unit = {}
+) {
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = ProtonTheme.shapes.extraLarge,
+        elevation = CardDefaults.cardElevation(),
+        colors = CardDefaults.cardColors().copy(
+            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+        )
+    ) {
+
+        ProtonAppSettingsItemInvert(
+            name = stringResource(id = R.string.mail_settings_app_customization_language),
+            hint = language,
+            onClick = onLanguageClick,
+            icon = {
+                ProtonMainSettingsIcon(
+                    iconRes = R.drawable.ic_proton_arrow_out_over_square,
+                    contentDescription = stringResource(id = R.string.mail_settings_app_customization_language),
+                    tint = ProtonTheme.colors.iconHint
+                )
+            }
+        )
     }
 }
 
@@ -324,23 +343,6 @@ private fun MailExperienceSettingsItem(
                 value = swipeToNextEmail,
                 onToggle = {
                     actions.onSwipeToNextEmailClick()
-                }
-            )
-
-            SettingsItemDivider()
-
-            ProtonAppSettingsItemNorm(
-                name = stringResource(id = R.string.mail_settings_app_customization_swipe_action),
-                hint = stringResource(id = R.string.mail_settings_app_customization_swipe_action_hint),
-                onClick = { actions.onSwipeActionsClick() },
-                icon = {
-                    ProtonMainSettingsIcon(
-                        iconRes = R.drawable.ic_proton_chevron_right,
-                        contentDescription = stringResource(
-                            id = R.string.mail_settings_app_customization_swipe_action_hint
-                        ),
-                        tint = ProtonTheme.colors.iconHint
-                    )
                 }
             )
 

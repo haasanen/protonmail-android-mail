@@ -26,7 +26,7 @@
   <string name="mail_settings_privacy_and_security_settings">Gizlilik ve güvenlik ayarları</string>
   <string name="mail_settings_preferences">Ayarlar</string>
   <string name="mail_settings_app">Uygulama</string>
-  <string name="mail_settings_email">E-posta</string>
+  <string name="mail_settings_mailbox">E-posta</string>
   <string name="mail_settings_email_hint">E-posta ve e-posta kutusu ayarları</string>
   <string name="mail_settings_folders_labels">Klasörler ve etiketler</string>
   <string name="mail_settings_folders_labels_hint">E-posta kutusu düzeni</string>

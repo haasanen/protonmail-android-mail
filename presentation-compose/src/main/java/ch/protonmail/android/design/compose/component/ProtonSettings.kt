@@ -166,18 +166,16 @@ fun ProtonMainSettingsItem(
     modifier: Modifier = Modifier,
     name: String,
     @DrawableRes iconRes: Int,
-    hint: String,
     isClickable: Boolean = true,
     onClick: () -> Unit = {}
 ) {
     ProtonMainSettingsItem(
         modifier = modifier,
         name = name,
-        hint = hint,
         icon = {
             ProtonMainSettingsIcon(
                 iconRes = iconRes,
-                contentDescription = hint,
+                contentDescription = name,
                 tint = ProtonTheme.colors.textNorm
             )
         },
@@ -191,7 +189,7 @@ fun ProtonMainSettingsItem(
     modifier: Modifier = Modifier,
     name: String,
     icon: @Composable () -> Unit,
-    hint: String,
+    hint: @Composable () -> Unit = {},
     isClickable: Boolean = true,
     onClick: () -> Unit = {}
 ) {
@@ -222,24 +220,19 @@ fun ProtonMainSettingsItem(
                 color = ProtonTheme.colors.textWeak,
                 style = ProtonTheme.typography.bodyLargeWeak
             )
-            Text(
-                modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
-                text = hint,
-                color = ProtonTheme.colors.textHint,
-                style = ProtonTheme.typography.bodyMedium
-            )
-
+            hint()
         }
 
         Icon(
             modifier = Modifier
                 .padding(start = ProtonDimens.Spacing.Large),
             painter = painterResource(id = R.drawable.ic_proton_chevron_right),
-            contentDescription = hint,
+            contentDescription = name,
             tint = ProtonTheme.colors.iconDisabled
         )
     }
 }
+
 
 @Composable
 fun ProtonAppSettingsItemInvert(

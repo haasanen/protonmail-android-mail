@@ -26,7 +26,7 @@
   <string name="mail_settings_privacy_and_security_settings">隐私和安全设置</string>
   <string name="mail_settings_preferences">偏好设置</string>
   <string name="mail_settings_app">应用</string>
-  <string name="mail_settings_email">电子邮箱</string>
+  <string name="mail_settings_mailbox">电子邮箱</string>
   <string name="mail_settings_email_hint">电子邮件和邮箱首选项</string>
   <string name="mail_settings_folders_labels">文件夹和标签</string>
   <string name="mail_settings_folders_labels_hint">邮箱管理</string>

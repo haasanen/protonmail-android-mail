@@ -24,9 +24,11 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -123,12 +125,13 @@ fun MainSettingsScreen(
                 .testTag(SettingsScreenTestTags.SettingsList)
                 .padding(contentPadding)
         ) {
-            MainSettingsHeader(titleRes = string.mail_settings_account)
             AccountSettingsItem(
                 modifier = Modifier.testTag(SettingsScreenTestTags.AccountSettingsItem),
                 accountInfo = state.accountInfoUiModel,
                 onAccountClicked = actions.onAccountClick
             )
+
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Medium))
 
             MainSettingsHeader(titleRes = string.mail_settings_preferences)
 
@@ -144,9 +147,8 @@ fun MainSettingsScreen(
 
                 Column {
                     ProtonMainSettingsItem(
-                        name = stringResource(id = string.mail_settings_email),
+                        name = stringResource(id = string.mail_settings_mailbox),
                         iconRes = R.drawable.ic_proton_envelopes,
-                        hint = stringResource(id = string.mail_settings_email_hint),
                         onClick = actions.onEmailSettingsClick
                     )
                     SettingsItemDivider()
@@ -155,7 +157,6 @@ fun MainSettingsScreen(
                     ProtonMainSettingsItem(
                         name = stringResource(id = string.mail_settings_folders_labels),
                         iconRes = R.drawable.ic_proton_folder_open,
-                        hint = stringResource(id = string.mail_settings_folders_labels_hint),
                         onClick = actions.onFolderAndLabelSettingsClicked
                     )
                     SettingsItemDivider()
@@ -164,7 +165,6 @@ fun MainSettingsScreen(
                     ProtonMainSettingsItem(
                         name = stringResource(id = string.mail_settings_spam_and_custom_filters),
                         iconRes = R.drawable.ic_proton_sliders,
-                        hint = stringResource(id = string.mail_settings_spam_and_custom_filters_hint),
                         onClick = actions.onSpamFilterSettingsClicked
                     )
                     SettingsItemDivider()
@@ -173,7 +173,6 @@ fun MainSettingsScreen(
                     ProtonMainSettingsItem(
                         name = stringResource(id = string.mail_settings_privacy_and_security),
                         iconRes = R.drawable.ic_proton_shield_2_bolt,
-                        hint = stringResource(id = string.mail_settings_privacy_and_security_hint),
                         onClick = actions.onPrivacyAndSecuritySettingsClicked
                     )
                     SettingsItemDivider()
@@ -182,7 +181,6 @@ fun MainSettingsScreen(
                     ProtonMainSettingsItem(
                         name = stringResource(id = string.mail_settings_app),
                         iconRes = R.drawable.ic_proton_mobile,
-                        hint = stringResource(id = string.mail_settings_app_hint),
                         onClick = actions.onAppSettingsClick
                     )
                     SettingsItemDivider()
@@ -231,7 +229,14 @@ fun AccountSettingsItem(
         ProtonMainSettingsItem(
             modifier = modifier,
             name = header,
-            hint = hint,
+            hint = {
+                Text(
+                    modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
+                    text = hint,
+                    color = ProtonTheme.colors.textHint,
+                    style = ProtonTheme.typography.bodyMedium
+                )
+            },
             icon = {
                 accountInfo?.avatarUiModel?.let {
                     Avatar(

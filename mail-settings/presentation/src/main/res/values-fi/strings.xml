@@ -26,7 +26,7 @@
   <string name="mail_settings_privacy_and_security_settings">Yksityisyys- ja suojausasetukset</string>
   <string name="mail_settings_preferences">Asetukset</string>
   <string name="mail_settings_app">Sovellus</string>
-  <string name="mail_settings_email">Sähköpostiosoite</string>
+  <string name="mail_settings_mailbox">Sähköpostiosoite</string>
   <string name="mail_settings_email_hint">Sähköpostin ja postilaatikon asetukset</string>
   <string name="mail_settings_folders_labels">Kansiot ja tunnisteet</string>
   <string name="mail_settings_folders_labels_hint">Postilaatikon järjestely</string>

@@ -26,7 +26,7 @@
   <string name="mail_settings_privacy_and_security_settings">Ρυθμίσεις απορρήτου και ασφάλειας</string>
   <string name="mail_settings_preferences">Προτιμήσεις</string>
   <string name="mail_settings_app">Εφαρμογή</string>
-  <string name="mail_settings_email">Email</string>
+  <string name="mail_settings_mailbox">Email</string>
   <string name="mail_settings_email_hint">Ρυθμίσεις ηλεκτρονικού ταχυδρομείου και γραμματοκιβωτίου</string>
   <string name="mail_settings_folders_labels">Φάκελοι και ετικέτες</string>
   <string name="mail_settings_folders_labels_hint">Οργάνωση γραμματοκιβωτίου</string>

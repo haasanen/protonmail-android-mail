@@ -26,7 +26,7 @@
   <string name="mail_settings_privacy_and_security_settings">Setări intimitate și securitate</string>
   <string name="mail_settings_preferences">Preferințe</string>
   <string name="mail_settings_app">Aplicație</string>
-  <string name="mail_settings_email">E-mail</string>
+  <string name="mail_settings_mailbox">E-mail</string>
   <string name="mail_settings_email_hint">Preferințe pentru mesaje și cont</string>
   <string name="mail_settings_folders_labels">Foldere și etichete</string>
   <string name="mail_settings_folders_labels_hint">Organizare mesaje</string>

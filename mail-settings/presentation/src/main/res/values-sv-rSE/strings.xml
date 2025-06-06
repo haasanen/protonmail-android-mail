@@ -26,7 +26,7 @@
   <string name="mail_settings_privacy_and_security_settings">Inställningar för integritet och säkerhet</string>
   <string name="mail_settings_preferences">Preferenser</string>
   <string name="mail_settings_app">App</string>
-  <string name="mail_settings_email">E-post</string>
+  <string name="mail_settings_mailbox">E-post</string>
   <string name="mail_settings_email_hint">E-post- och brevlådeinställningar</string>
   <string name="mail_settings_folders_labels">Mappar och etiketter</string>
   <string name="mail_settings_folders_labels_hint">Brevlådeorganisation</string>
