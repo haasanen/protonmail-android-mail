@@ -47,6 +47,7 @@ internal class AppSettingsViewModelTest {
     private val observeAppSettings = mockk<AppSettingsRepository> {
         every { this@mockk.observeAppSettings() } returns appSettingsFlow
         coEvery { this@mockk.updateAlternativeRouting(any()) } returns Unit.right()
+        coEvery { this@mockk.updateUseCombineContacts(any()) } returns Unit.right()
     }
 
     private lateinit var viewModel: AppSettingsViewModel
@@ -98,7 +99,7 @@ internal class AppSettingsViewModelTest {
     }
 
     @Test
-    fun `on Toggle device contacts then update device contacts via repository`() = runTest {
+    fun `on Toggle combined contacts then update device contacts via repository`() = runTest {
         viewModel.state.test {
             // Given
             initialStateEmitted()
@@ -131,7 +132,7 @@ internal class AppSettingsViewModelTest {
     }
 
     @Test
-    fun `on new value received for userDeviceContacts THEN state is updated`() = runTest {
+    fun `on new value received for CombinedContacts THEN state is updated`() = runTest {
         viewModel.state.test {
             // Given
             initialStateEmitted()
