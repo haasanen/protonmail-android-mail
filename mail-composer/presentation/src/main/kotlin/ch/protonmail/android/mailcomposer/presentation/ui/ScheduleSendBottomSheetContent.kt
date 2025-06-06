@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -93,8 +95,12 @@ fun ScheduleSendBottomSheetContent(
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
+            val context = LocalContext.current
+            fun showFeatureMissingToast() {
+                Toast.makeText(context, "Feature coming soon...", Toast.LENGTH_SHORT).show()
+            }
             CustomTimeOption(
-                onOptionClicked = {}
+                onOptionClicked = ::showFeatureMissingToast
             )
 
         }
