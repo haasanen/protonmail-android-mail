@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailsettings.data.mapper
 
 import ch.protonmail.android.mailcommon.data.mapper.LocalAppSettings
+import ch.protonmail.android.mailcommon.data.mapper.LocalAppSettingsDiff
 import ch.protonmail.android.mailcommon.data.mapper.LocalAutolock
 import ch.protonmail.android.mailcommon.data.mapper.LocalProtection
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval
@@ -27,6 +28,7 @@ import ch.protonmail.android.mailsettings.data.mapper.LocalMapperThemeConstants.
 import ch.protonmail.android.mailsettings.data.mapper.LocalMapperThemeConstants.themeAppearanceLookup
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
+import ch.protonmail.android.mailsettings.domain.model.AppSettingsDiff
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AppAppearance
@@ -34,7 +36,6 @@ import uniffi.proton_mail_uniffi.AppProtection
 import uniffi.proton_mail_uniffi.AutoLock.Always
 import uniffi.proton_mail_uniffi.AutoLock.Minutes
 import uniffi.proton_mail_uniffi.AutoLock.Never
-import uniffi.proton_mail_uniffi.AppSettingsDiff as LocalAppSettingsDiff
 
 fun AppSettingsDiff.toAppDiff(): LocalAppSettingsDiff {
 
@@ -88,6 +89,6 @@ fun LocalAppSettings.toAppSettings(customLanguage: AppLanguage? = null) = AppSet
     hasAlternativeRouting = useAlternativeRouting,
     theme = appearance.toTheme(),
     customAppLanguage = customLanguage?.langName,
-    hasCombinedContactsEnabled = useCombineContacts // This should be device contacts, not combined contacts.
+    hasCombinedContactsEnabled = useCombineContacts
 )
 

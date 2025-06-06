@@ -58,16 +58,15 @@ class AutolockRepositoryTest {
     val loggingTestRule = LoggingTestRule()
 
     private val mockMailSession = mockk<MailSession>()
+    private val mockMailSessionWrapper = mockk<MailSessionWrapper> {
+        every { this@mockk.getRustMailSession() } returns mockMailSession
+    }
     private val appSettingsDataSource = mockk<RustAppSettingsDataSource> {
-        coEvery { this@mockk.updateAppSettings(mockMailSession, any()) } returns Unit.right()
+        coEvery { this@mockk.updateAppSettings(mockMailSessionWrapper, any()) } returns Unit.right()
     }
     private val appLockDataSource = mockk<AppLockDataSource>()
     private val appLanguageRepository = mockk<AppLanguageRepository> {
         every { this@mockk.observe() } returns flowOf(AppLanguage.FRENCH)
-    }
-
-    private val mockMailSessionWrapper = mockk<MailSessionWrapper> {
-        every { this@mockk.getRustMailSession() } returns mockMailSession
     }
 
     private val mailSessionRepository = mockk<MailSessionRepository> {
@@ -107,7 +106,7 @@ class AutolockRepositoryTest {
         autolockProtection = Protection.Pin,
         hasAlternativeRouting = true,
         customAppLanguage = AppLanguage.FRENCH.langName,
-        hasDeviceContactsEnabled = true,
+        hasCombinedContactsEnabled = true,
         theme = Theme.LIGHT
     )
 
@@ -157,7 +156,7 @@ class AutolockRepositoryTest {
         val updatedAppSettings = mockAppSettings.copy(autoLock = AutoLock.Minutes(15L.toUByte()))
         // Given
         coEvery {
-            appSettingsDataSource.getAppSettings(mockMailSession)
+            appSettingsDataSource.getAppSettings(mockMailSessionWrapper)
         } returns mockAppSettings.right() andThen updatedAppSettings.right()
         // When
 

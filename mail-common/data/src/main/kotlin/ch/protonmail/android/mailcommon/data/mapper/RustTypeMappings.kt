@@ -25,6 +25,7 @@ import uniffi.proton_mail_uniffi.SpamOrTrash
 import uniffi.proton_mail_uniffi.AlmostAllMail
 import uniffi.proton_mail_uniffi.AppProtection
 import uniffi.proton_mail_uniffi.AppSettings
+import uniffi.proton_mail_uniffi.AppSettingsDiff
 import uniffi.proton_mail_uniffi.AttachmentMetadata
 import uniffi.proton_mail_uniffi.AttachmentMimeType
 import uniffi.proton_mail_uniffi.AutoLock
@@ -124,6 +125,7 @@ typealias LocalIssueReport = IssueReport
 typealias RemoteMessageId = RemoteId
 typealias LocalEmbeddedImageInfo = EmbeddedAttachmentInfo
 typealias LocalAppSettings = AppSettings
+typealias LocalAppSettingsDiff = AppSettingsDiff
 typealias LocalAutolock = AutoLock
 typealias LocalProtection = AppProtection
 typealias LocalAutoLockPin = List<UInt>

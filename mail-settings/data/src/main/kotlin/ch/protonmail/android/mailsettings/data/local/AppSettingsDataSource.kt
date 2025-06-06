@@ -20,12 +20,15 @@ package ch.protonmail.android.mailsettings.data.local
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailsession.data.wrapper.MailSessionWrapper
 import uniffi.proton_mail_uniffi.AppSettings
 import uniffi.proton_mail_uniffi.AppSettingsDiff
-import uniffi.proton_mail_uniffi.MailSession
 
 interface AppSettingsDataSource {
 
-    suspend fun getAppSettings(mailSession: MailSession): Either<DataError, AppSettings>
-    suspend fun updateAppSettings(mailSession: MailSession, appSettingsDiff: AppSettingsDiff): Either<DataError, Unit>
+    suspend fun getAppSettings(mailSession: MailSessionWrapper): Either<DataError, AppSettings>
+    suspend fun updateAppSettings(
+        mailSession: MailSessionWrapper,
+        appSettingsDiff: AppSettingsDiff
+    ): Either<DataError, Unit>
 }

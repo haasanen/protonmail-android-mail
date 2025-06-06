@@ -21,6 +21,7 @@ package ch.protonmail.android.mailsettings.data.local
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailsession.data.wrapper.MailSessionWrapper
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -44,29 +45,34 @@ class RustAppSettingsDataSourceTest {
         useAlternativeRouting = true
     )
 
+    val mailSession = mockk<MailSession> {
+        coEvery { this@mockk.getAppSettings() } returns MailSessionGetAppSettingsResult.Ok(mockAppSettings)
+    }
+
+    val mailSessionWrapper = mockk<MailSessionWrapper> {
+        coEvery { this@mockk.getRustMailSession() } returns mailSession
+    }
+
+
     private val sut = RustAppSettingsDataSource()
 
     @Test
     fun `when getAppSettings then returns AppSettings right`() = runTest {
-        val mailSession = mockk<MailSession> {
-            coEvery { this@mockk.getAppSettings() } returns MailSessionGetAppSettingsResult.Ok(mockAppSettings)
-        }
-        val result = sut.getAppSettings(mailSession)
+
+        val result = sut.getAppSettings(mailSessionWrapper)
         assertEquals(mockAppSettings.right(), result)
     }
 
     @Test
     fun `when getAppSettings and error then returns mapped error`() = runTest {
         val expectedError = DataError.Local.Unknown
-        val mailSession = mockk<MailSession> {
-            coEvery { this@mockk.getAppSettings() } returns
-                MailSessionGetAppSettingsResult.Error(
-                    UserSessionError.Reason(
-                        UNKNOWN_LABEL
-                    )
+        coEvery { mailSession.getAppSettings() } returns
+            MailSessionGetAppSettingsResult.Error(
+                UserSessionError.Reason(
+                    UNKNOWN_LABEL
                 )
-        }
-        val result = sut.getAppSettings(mailSession)
+            )
+        val result = sut.getAppSettings(mailSessionWrapper)
         assertEquals(expectedError.left(), result)
     }
 }

@@ -85,7 +85,7 @@ private fun AppSettingsScreenContent(
     modifier: Modifier = Modifier,
     actions: AppSettingsScreen.Actions,
     state: AppSettingsState.Data,
-    onIntent: (AppSettingsIntent) -> Unit
+    onIntent: (AppSettingsAction) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -281,7 +281,7 @@ private fun ProtectionSettingsItem(
 private fun UseCombinedContactsSettingsItem(
     modifier: Modifier = Modifier,
     useCombinedContacts: Boolean,
-    onIntent: (AppSettingsIntent) -> Unit
+    onIntent: (AppSettingsAction) -> Unit
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -368,7 +368,7 @@ private fun AdvancedSettingsItem(
     modifier: Modifier = Modifier,
     alternativeRouting: Boolean,
     actions: AppSettingsScreen.Actions,
-    onIntent: (AppSettingsIntent) -> Unit
+    onIntent: (AppSettingsAction) -> Unit
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),

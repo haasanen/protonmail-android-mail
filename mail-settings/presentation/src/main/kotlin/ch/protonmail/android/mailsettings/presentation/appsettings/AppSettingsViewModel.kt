@@ -42,7 +42,7 @@ internal class AppSettingsViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(stopTimeoutMillis), AppSettingsState.Loading)
 
-    internal fun submit(intent: AppSettingsIntent) {
+    internal fun submit(intent: AppSettingsAction) {
         viewModelScope.launch {
             when (intent) {
                 is ToggleAlternativeRouting -> updateAlternativeRouting(intent.value)

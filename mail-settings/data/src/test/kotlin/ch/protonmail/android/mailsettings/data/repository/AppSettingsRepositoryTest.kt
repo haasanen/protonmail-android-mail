@@ -29,7 +29,6 @@ import ch.protonmail.android.mailsession.data.wrapper.MailSessionWrapper
 import ch.protonmail.android.mailsettings.data.local.RustAppSettingsDataSource
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
-import ch.protonmail.android.mailsettings.domain.model.AppSettingsDiff
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
@@ -46,27 +45,14 @@ import org.junit.Test
 import uniffi.proton_mail_uniffi.AppAppearance
 import uniffi.proton_mail_uniffi.AppProtection
 import uniffi.proton_mail_uniffi.AutoLock
-import uniffi.proton_mail_uniffi.MailSession
 
 class AppSettingsRepositoryTest {
 
     @get:Rule
     val loggingTestRule = LoggingTestRule()
 
-    private val mockMailSession = mockk<MailSession>()
-    private val appSettingsDataSource = mockk<RustAppSettingsDataSource> {
-        coEvery { this@mockk.updateAppSettings(mockMailSession, any()) } returns Unit.right()
-    }
     private val appLanguageRepository = mockk<AppLanguageRepository> {
         every { this@mockk.observe() } returns flowOf(AppLanguage.FRENCH)
-    }
-
-    private val mockMailSessionWrapper = mockk<MailSessionWrapper> {
-        every { this@mockk.getRustMailSession() } returns mockMailSession
-    }
-
-    private val mailSessionRepository = mockk<MailSessionRepository> {
-        every { this@mockk.getMailSession() } returns mockMailSessionWrapper
     }
 
     private lateinit var appSettingsRepository: AppSettingsRepository
@@ -88,6 +74,17 @@ class AppSettingsRepositoryTest {
         theme = Theme.LIGHT
     )
 
+    private val mockMailSessionWrapper = mockk<MailSessionWrapper>()
+
+    private val mailSessionRepository = mockk<MailSessionRepository> {
+        every { this@mockk.getMailSession() } returns mockMailSessionWrapper
+    }
+
+    private val appSettingsDataSource = mockk<RustAppSettingsDataSource> {
+        coEvery { this@mockk.updateAppSettings(mockMailSessionWrapper, any()) } returns Unit.right()
+        coEvery { this@mockk.getAppSettings(mockMailSessionWrapper) } returns mockAppSettings.right()
+    }
+
     @Before
     fun setUp() {
         appSettingsRepository =
@@ -99,7 +96,7 @@ class AppSettingsRepositoryTest {
     fun `returns theme when observed`() = runTest {
         // Given
         coEvery {
-            appSettingsDataSource.getAppSettings(any())
+            appSettingsDataSource.getAppSettings(mockMailSessionWrapper)
         } returns mockAppSettings.right()
         // When
         appSettingsRepository.observeTheme().test {
@@ -112,7 +109,7 @@ class AppSettingsRepositoryTest {
     fun `returns language when observed`() = runTest {
         // Given
         coEvery {
-            appSettingsDataSource.getAppSettings(any())
+            appSettingsDataSource.getAppSettings(mockMailSessionWrapper)
         } returns mockAppSettings.right()
         // When
         appSettingsRepository.observeAppSettings().test {
@@ -128,7 +125,7 @@ class AppSettingsRepositoryTest {
         val updatedAppSettings = mockAppSettings.copy(AppAppearance.DARK_MODE)
         val expectedUpdatedTheme = Theme.DARK
         coEvery {
-            appSettingsDataSource.getAppSettings(any())
+            appSettingsDataSource.getAppSettings(mockMailSessionWrapper)
         } returns mockAppSettings.right() andThen updatedAppSettings.right()
         // When
         appSettingsRepository.observeTheme().test {
@@ -149,7 +146,7 @@ class AppSettingsRepositoryTest {
         val expectedUpdatedAppSettings = expectedAppSettings.copy(theme = expectedUpdatedTheme)
 
         coEvery {
-            appSettingsDataSource.getAppSettings(any())
+            appSettingsDataSource.getAppSettings(mockMailSessionWrapper)
         } returns mockAppSettings.right() andThen mockAppSettings.copy(AppAppearance.DARK_MODE).right()
         // When
         appSettingsRepository.observeAppSettings().test {
@@ -162,41 +159,21 @@ class AppSettingsRepositoryTest {
     }
 
     @Test
-    fun `when theme is updated via appDiff  then appSettings observer is also updated`() = runTest {
-        // Given
-        val expectedInitialAppSettings = expectedAppSettings
-        val expectedUpdatedTheme = Theme.DARK
-        val expectedUpdatedAppSettings = expectedAppSettings.copy(theme = expectedUpdatedTheme)
-
-        coEvery {
-            appSettingsDataSource.getAppSettings(any())
-        } returns mockAppSettings.right() andThen mockAppSettings.copy(AppAppearance.DARK_MODE).right()
-        // When
-        appSettingsRepository.observeAppSettings().test {
-            assertEquals(expectedInitialAppSettings, awaitItem())
-
-            appSettingsRepository.updateAppSettings(AppSettingsDiff(theme = expectedUpdatedTheme))
-
-            assertEquals(expectedUpdatedAppSettings, awaitItem())
-        }
-    }
-
-    @Test
-    fun `when interval is updated via appDiff then appSettings observer is also updated`() = runTest {
+    fun `when interval is updated then appSettings observer is also updated`() = runTest {
         // Given
         val expectedInitialAppSettings = expectedAppSettings
         val expectedUpdatedInterval = AutoLockInterval.FifteenMinutes
         val expectedUpdatedAppSettings = expectedAppSettings.copy(autolockInterval = expectedUpdatedInterval)
         val minutes = 15L
         coEvery {
-            appSettingsDataSource.getAppSettings(any())
+            appSettingsDataSource.getAppSettings(mockMailSessionWrapper)
         } returns mockAppSettings.right() andThen mockAppSettings.copy(autoLock = AutoLock.Minutes(minutes.toUByte()))
             .right()
         // When
         appSettingsRepository.observeAppSettings().test {
             assertEquals(expectedInitialAppSettings, awaitItem())
 
-            appSettingsRepository.updateAppSettings(AppSettingsDiff(interval = expectedUpdatedInterval))
+            appSettingsRepository.updateInterval(interval = expectedUpdatedInterval)
 
             assertEquals(expectedUpdatedAppSettings, awaitItem())
         }
@@ -208,7 +185,7 @@ class AppSettingsRepositoryTest {
         val error = DataError.Local.Unknown
         val expectedSettings = AppSettings.default()
         coEvery {
-            appSettingsDataSource.getAppSettings(any())
+            appSettingsDataSource.getAppSettings(mockMailSessionWrapper)
         } returns error.left()
         // When
         appSettingsRepository.observeAppSettings().test {
@@ -220,34 +197,14 @@ class AppSettingsRepositoryTest {
     }
 
     @Test
-    fun `when theme is updated via appDiff  then appSettings observer is also updated`() = runTest {
-        // Given
-        val expectedInitialAppSettings = expectedAppSettings
-        val expectedUpdatedTheme = Theme.DARK
-        val expectedUpdatedAppSettings = expectedAppSettings.copy(theme = expectedUpdatedTheme)
-
-        coEvery {
-            appSettingsDataSource.getAppSettings(any())
-        } returns mockAppSettings.right() andThen mockAppSettings.copy(AppAppearance.DARK_MODE).right()
-        // When
-        appSettingsRepository.observeAppSettings().test {
-            assertEquals(expectedInitialAppSettings, awaitItem())
-
-            appSettingsRepository.updateAppSettings(AppSettingsDiff(theme = expectedUpdatedTheme))
-
-            assertEquals(expectedUpdatedAppSettings, awaitItem())
-        }
-    }
-
-    @Test
-    fun `when alternativeRouting is updated via appDiff  then appSettings observer is also updated`() = runTest {
+    fun `when alternativeRouting is updated  then appSettings observer is also updated`() = runTest {
         // Given
         val expectedInitialAppSettings = expectedAppSettings
         val expectedUpdatedRouting = false
         val expectedUpdatedAppSettings = expectedAppSettings.copy(hasAlternativeRouting = false)
 
         coEvery {
-            appSettingsDataSource.getAppSettings(any())
+            appSettingsDataSource.getAppSettings(mockMailSessionWrapper)
         } returns mockAppSettings.right() andThen
             mockAppSettings.copy(useAlternativeRouting = expectedUpdatedAppSettings.hasAlternativeRouting)
                 .right()
@@ -255,21 +212,21 @@ class AppSettingsRepositoryTest {
         appSettingsRepository.observeAppSettings().test {
             assertEquals(expectedInitialAppSettings, awaitItem())
 
-            appSettingsRepository.updateAppSettings(AppSettingsDiff(alternativeRouting = expectedUpdatedRouting))
+            appSettingsRepository.updateAlternativeRouting(expectedUpdatedRouting)
 
             assertEquals(expectedUpdatedAppSettings, awaitItem())
         }
     }
 
     @Test
-    fun `when useDeviceContacts is updated via appDiff then appSettings observer is also updated`() = runTest {
+    fun `when useDeviceContacts is updated then appSettings observer is also updated`() = runTest {
         // Given
         val expectedInitialAppSettings = expectedAppSettings
         val expectedUpdatedDeviceContacts = false
         val expectedUpdatedAppSettings = expectedAppSettings.copy(hasCombinedContactsEnabled = false)
 
         coEvery {
-            appSettingsDataSource.getAppSettings(any())
+            appSettingsDataSource.getAppSettings(mockMailSessionWrapper)
         } returns mockAppSettings.right() andThen
             mockAppSettings.copy(useCombineContacts = expectedUpdatedAppSettings.hasCombinedContactsEnabled)
                 .right()
@@ -277,7 +234,7 @@ class AppSettingsRepositoryTest {
         appSettingsRepository.observeAppSettings().test {
             assertEquals(expectedInitialAppSettings, awaitItem())
 
-            appSettingsRepository.updateAppSettings(AppSettingsDiff(combineContacts = expectedUpdatedDeviceContacts))
+            appSettingsRepository.updateUseCombineContacts(expectedUpdatedDeviceContacts)
 
             assertEquals(expectedUpdatedAppSettings, awaitItem())
         }

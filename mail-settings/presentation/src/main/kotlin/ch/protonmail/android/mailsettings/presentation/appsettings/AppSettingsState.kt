@@ -33,6 +33,6 @@ internal data class AppSettingsUiModel(
     val deviceContactsEnabled: Boolean
 )
 
-internal sealed interface AppSettingsIntent
-data class ToggleAlternativeRouting(val value: Boolean) : AppSettingsIntent
-data class ToggleUseCombinedContacts(val value: Boolean) : AppSettingsIntent
+internal sealed interface AppSettingsAction
+data class ToggleAlternativeRouting(val value: Boolean) : AppSettingsAction
+data class ToggleUseCombinedContacts(val value: Boolean) : AppSettingsAction

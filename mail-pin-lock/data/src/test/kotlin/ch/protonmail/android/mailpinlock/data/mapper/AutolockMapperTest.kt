@@ -35,7 +35,7 @@ class AutolockMapperTest {
         autolockInterval = AutoLockInterval.FifteenMinutes,
         autolockProtection = Protection.Biometrics,
         customAppLanguage = "en",
-        hasDeviceContactsEnabled = true,
+        hasCombinedContactsEnabled = true,
         hasAlternativeRouting = false
     )
 

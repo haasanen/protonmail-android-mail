@@ -30,7 +30,6 @@ import ch.protonmail.android.mailpinlock.model.AutoLockInterval
 import ch.protonmail.android.mailpinlock.model.Autolock
 import ch.protonmail.android.mailsession.data.mapper.toLocalAutoLockPin
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
-import ch.protonmail.android.mailsettings.domain.model.AppSettingsDiff
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -51,7 +50,7 @@ class AutolockRepository @Inject constructor(
     }
 
     override suspend fun updateAutolockInterval(interval: AutoLockInterval): Either<DataError, Unit> =
-        appSettingsRepository.updateAppSettings(AppSettingsDiff(interval = interval))
+        appSettingsRepository.updateInterval(interval = interval)
 
     // note this exists in UserSessionRepositoryImpl for dealing with legacy pin codes, maybe it should all be moved
     // to once place
