@@ -98,6 +98,17 @@ internal class AppSettingsViewModelTest {
     }
 
     @Test
+    fun `on Toggle device contacts then update device contacts via repository`() = runTest {
+        viewModel.state.test {
+            // Given
+            initialStateEmitted()
+
+            viewModel.submit(ToggleUseCombinedContacts(true))
+            coVerify { observeAppSettings.updateUseCombineContacts(true) }
+        }
+    }
+
+    @Test
     fun `on new value received for alternativeRoutingEnabled THEN state is updated`() = runTest {
         viewModel.state.test {
             // Given
@@ -134,7 +145,7 @@ internal class AppSettingsViewModelTest {
             assertEquals(expectedFirstValue, actual.settings.deviceContactsEnabled)
 
             val expectedSecondValue = false
-            appSettingsFlow.emit(AppSettingsTestData.appSettings.copy(hasDeviceContactsEnabled = expectedSecondValue))
+            appSettingsFlow.emit(AppSettingsTestData.appSettings.copy(hasCombinedContactsEnabled = expectedSecondValue))
 
             val actualUpdatedData = awaitItem() as AppSettingsState.Data
             assertEquals(expectedSecondValue, actualUpdatedData.settings.deviceContactsEnabled)

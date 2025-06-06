@@ -31,7 +31,7 @@ internal object AppSettingsUiModelMapper {
             alternativeRoutingEnabled = appSettings.hasAlternativeRouting,
             customLanguage = appSettings.customAppLanguage,
             theme = appSettings.theme.toTextUiModel(),
-            deviceContactsEnabled = appSettings.hasDeviceContactsEnabled
+            deviceContactsEnabled = appSettings.hasCombinedContactsEnabled
         )
     }
 

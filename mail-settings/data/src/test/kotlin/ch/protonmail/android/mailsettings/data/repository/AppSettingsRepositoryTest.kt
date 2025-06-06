@@ -84,7 +84,7 @@ class AppSettingsRepositoryTest {
         autolockProtection = Protection.Pin,
         hasAlternativeRouting = true,
         customAppLanguage = AppLanguage.FRENCH.langName,
-        hasDeviceContactsEnabled = true,
+        hasCombinedContactsEnabled = true,
         theme = Theme.LIGHT
     )
 
@@ -266,12 +266,12 @@ class AppSettingsRepositoryTest {
         // Given
         val expectedInitialAppSettings = expectedAppSettings
         val expectedUpdatedDeviceContacts = false
-        val expectedUpdatedAppSettings = expectedAppSettings.copy(hasDeviceContactsEnabled = false)
+        val expectedUpdatedAppSettings = expectedAppSettings.copy(hasCombinedContactsEnabled = false)
 
         coEvery {
             appSettingsDataSource.getAppSettings(any())
         } returns mockAppSettings.right() andThen
-            mockAppSettings.copy(useCombineContacts = expectedUpdatedAppSettings.hasDeviceContactsEnabled)
+            mockAppSettings.copy(useCombineContacts = expectedUpdatedAppSettings.hasCombinedContactsEnabled)
                 .right()
         // When
         appSettingsRepository.observeAppSettings().test {

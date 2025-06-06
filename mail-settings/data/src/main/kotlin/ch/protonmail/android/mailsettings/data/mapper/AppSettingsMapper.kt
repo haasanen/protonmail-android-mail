@@ -88,6 +88,6 @@ fun LocalAppSettings.toAppSettings(customLanguage: AppLanguage? = null) = AppSet
     hasAlternativeRouting = useAlternativeRouting,
     theme = appearance.toTheme(),
     customAppLanguage = customLanguage?.langName,
-    hasDeviceContactsEnabled = useCombineContacts // This should be device contacts, not combined contacts.
+    hasCombinedContactsEnabled = useCombineContacts // This should be device contacts, not combined contacts.
 )
 

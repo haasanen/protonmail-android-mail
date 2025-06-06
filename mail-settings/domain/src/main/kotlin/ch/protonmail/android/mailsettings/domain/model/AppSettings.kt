@@ -26,7 +26,7 @@ data class AppSettings(
     val autolockProtection: Protection,
     val hasAlternativeRouting: Boolean,
     val customAppLanguage: String?,
-    val hasDeviceContactsEnabled: Boolean,
+    val hasCombinedContactsEnabled: Boolean,
     val theme: Theme
 ) {
     val hasAutoLock = autolockProtection != Protection.None

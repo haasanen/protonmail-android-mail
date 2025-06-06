@@ -30,7 +30,7 @@ object AppSettingsTestData {
         autolockInterval = AutoLockInterval.Never,
         hasAlternativeRouting = true,
         customAppLanguage = null,
-        hasDeviceContactsEnabled = true,
+        hasCombinedContactsEnabled = true,
         theme = Theme.SYSTEM_DEFAULT
     )
 }

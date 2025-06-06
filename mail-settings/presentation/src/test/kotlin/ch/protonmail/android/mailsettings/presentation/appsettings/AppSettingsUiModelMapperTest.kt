@@ -99,7 +99,7 @@ internal class AppSettingsUiModelMapperTest(
             ),
             arrayOf(
                 "to app settings with device contacts enabled",
-                baseAppSettings.copy(hasDeviceContactsEnabled = true),
+                baseAppSettings.copy(hasCombinedContactsEnabled = true),
                 baseUiModel.copy(deviceContactsEnabled = true)
             )
         )

@@ -35,4 +35,4 @@ internal data class AppSettingsUiModel(
 
 internal sealed interface AppSettingsIntent
 data class ToggleAlternativeRouting(val value: Boolean) : AppSettingsIntent
-data class ToggleUseDeviceContacts(val value: Boolean) : AppSettingsIntent
+data class ToggleUseCombinedContacts(val value: Boolean) : AppSettingsIntent

@@ -133,8 +133,8 @@ private fun AppSettingsScreenContent(
 
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
 
-                UseDeviceContactsSettingsItem(
-                    useDeviceContacts = state.settings.deviceContactsEnabled,
+                UseCombinedContactsSettingsItem(
+                    useCombinedContacts = state.settings.deviceContactsEnabled,
                     onIntent = onIntent
                 )
 
@@ -278,9 +278,9 @@ private fun ProtectionSettingsItem(
 }
 
 @Composable
-private fun UseDeviceContactsSettingsItem(
+private fun UseCombinedContactsSettingsItem(
     modifier: Modifier = Modifier,
-    useDeviceContacts: Boolean,
+    useCombinedContacts: Boolean,
     onIntent: (AppSettingsIntent) -> Unit
 ) {
     Card(
@@ -294,10 +294,10 @@ private fun UseDeviceContactsSettingsItem(
 
         ProtonSettingsToggleItem(
             modifier = Modifier.padding(ProtonDimens.Spacing.Large),
-            name = stringResource(id = R.string.mail_settings_app_customization_use_device_contacts),
-            hint = stringResource(id = R.string.mail_settings_app_customization_use_device_contacts_hint),
-            value = useDeviceContacts,
-            onToggle = { onIntent(ToggleUseDeviceContacts(it)) }
+            name = stringResource(id = R.string.mail_settings_combined_contacts),
+            hint = stringResource(id = R.string.mail_settings_combined_contacts_hint),
+            value = useCombinedContacts,
+            onToggle = { onIntent(ToggleUseCombinedContacts(it)) }
         )
     }
 }
