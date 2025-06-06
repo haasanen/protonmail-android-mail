@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserSample
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.usecase.FormatFullDate
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
@@ -101,6 +102,7 @@ class HomeViewModelTest {
 
     private val undoSendMessage = mockk<UndoSendMessage>(relaxUnitFun = true)
     private val markMessageSendingStatusesAsSeen = mockk<MarkMessageSendingStatusesAsSeen>(relaxUnitFun = true)
+    private val formatFullDate = mockk<FormatFullDate>()
 
     private val homeViewModel by lazy {
         HomeViewModel(
@@ -109,6 +111,7 @@ class HomeViewModelTest {
             discardDraft,
             undoSendMessage,
             markMessageSendingStatusesAsSeen,
+            formatFullDate,
             observePrimaryUserId,
             shareIntentObserver
         )

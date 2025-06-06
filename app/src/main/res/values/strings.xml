@@ -42,4 +42,5 @@
     <string name="use_pin_instead">Use PIN instead</string>
     <string name="mailbox_message_scheduling">Scheduling message…</string>
     <string name="mailbox_message_scheduling_offline">Offline: message queued for scheduling</string>
+    <string name="mailbox_message_scheduled_for_sending_success">This message will be sent on %1$s</string>
 </resources>

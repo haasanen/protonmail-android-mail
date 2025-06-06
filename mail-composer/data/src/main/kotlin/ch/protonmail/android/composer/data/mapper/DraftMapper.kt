@@ -53,6 +53,7 @@ import uniffi.proton_mail_uniffi.DraftSaveErrorReason
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 import uniffi.proton_mail_uniffi.DraftSendErrorReason
 import uniffi.proton_mail_uniffi.DraftSendFailure
+import uniffi.proton_mail_uniffi.DraftSendResultOrigin
 import uniffi.proton_mail_uniffi.DraftSendStatus
 import uniffi.proton_mail_uniffi.DraftSyncStatus
 import uniffi.proton_mail_uniffi.SingleRecipientEntry
@@ -130,18 +131,40 @@ fun Recipient.toSingleRecipientEntry() = SingleRecipientEntry(
 )
 
 fun LocalDraftSendResult.toMessageSendingStatus(): MessageSendingStatus = when (val status = this.error) {
-    is DraftSendStatus.Success -> this.toMessageSendingStatusForSuccess(status.secondsUntilCancel.toLong())
+    is DraftSendStatus.Success -> this.toMessageSendingStatusForSuccess(status)
     is DraftSendStatus.Failure -> this.toMessageSendingStatusForFailure(status.v1)
 }
 
-private fun LocalDraftSendResult.toMessageSendingStatusForSuccess(timeRemainingForUndo: Long): MessageSendingStatus {
-    return if (timeRemainingForUndo > 0) {
-        MessageSendingStatus.MessageSentUndoable(
-            messageId = this.messageId.toMessageId(),
-            timeRemainingForUndo = timeRemainingForUndo.toDuration(DurationUnit.SECONDS)
-        )
-    } else {
-        MessageSendingStatus.MessageSentFinal(this.messageId.toMessageId())
+private fun LocalDraftSendResult.toMessageSendingStatusForSuccess(
+    status: DraftSendStatus.Success
+): MessageSendingStatus = when (this.origin) {
+    DraftSendResultOrigin.SAVE,
+    DraftSendResultOrigin.SAVE_BEFORE_SEND,
+    DraftSendResultOrigin.ATTACHMENT_UPLOAD -> MessageSendingStatus.NoStatus(this.messageId.toMessageId())
+
+    DraftSendResultOrigin.SEND -> {
+        val timeRemainingForUndo = status.secondsUntilCancel.toInt()
+        if (timeRemainingForUndo > 0) {
+            MessageSendingStatus.MessageSentUndoable(
+                messageId = this.messageId.toMessageId(),
+                timeRemainingForUndo = timeRemainingForUndo.toDuration(DurationUnit.SECONDS)
+            )
+        } else {
+            MessageSendingStatus.MessageSentFinal(this.messageId.toMessageId())
+        }
+    }
+
+    DraftSendResultOrigin.SCHEDULE_SEND -> {
+        val timeRemainingForUndo = status.secondsUntilCancel.toInt()
+        val deliveryTime = status.deliveryTime.toLong()
+        if (timeRemainingForUndo > 0) {
+            MessageSendingStatus.MessageScheduledUndoable(
+                messageId = this.messageId.toMessageId(),
+                deliveryTime = Instant.fromEpochSeconds(deliveryTime)
+            )
+        } else {
+            MessageSendingStatus.MessageSentFinal(this.messageId.toMessageId())
+        }
     }
 }
 
@@ -151,14 +174,17 @@ private fun LocalDraftSendResult.toMessageSendingStatusForFailure(error: DraftSe
             messageId = this.messageId.toMessageId(),
             reason = error.v1.toSendErrorReason()
         )
+
         is DraftSendFailure.Other -> MessageSendingStatus.SendMessageError(
             messageId = this.messageId.toMessageId(),
             reason = SendErrorReason.OtherDataError(error.v1.toDataError())
         )
+
         is DraftSendFailure.Save -> MessageSendingStatus.SendMessageError(
             messageId = this.messageId.toMessageId(),
             reason = error.v1.toSendErrorReason()
         )
+
         is DraftSendFailure.Send -> MessageSendingStatus.SendMessageError(
             messageId = this.messageId.toMessageId(),
             reason = error.v1.toSendErrorReason()
@@ -169,6 +195,7 @@ private fun LocalDraftSendResult.toMessageSendingStatusForFailure(error: DraftSe
 fun DraftSaveErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
     is DraftSaveErrorReason.MessageAlreadySent,
     is DraftSaveErrorReason.MessageIsNotADraft -> SendErrorReason.ErrorNoMessage.AlreadySent
+
     is DraftSaveErrorReason.AddressDisabled ->
         SendErrorReason.ErrorWithMessage.AddressDisabled(v1)
 
@@ -187,6 +214,7 @@ fun DraftAttachmentUploadErrorReason.toSendErrorReason(): SendErrorReason = when
     DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST,
     DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST_ON_SERVER,
     DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT -> SendErrorReason.ErrorNoMessage.AlreadySent
+
     DraftAttachmentUploadErrorReason.CRYPTO -> SendErrorReason.ErrorNoMessage.AttachmentCryptoFailure
     DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE -> SendErrorReason.ErrorNoMessage.AttachmentTooLarge
     DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS -> SendErrorReason.ErrorNoMessage.TooManyAttachments
@@ -226,6 +254,7 @@ fun DraftSaveError.toSaveDraftError(): SaveDraftError = when (this) {
         is DraftSaveErrorReason.MessageAlreadySent,
         is DraftSaveErrorReason.MessageDoesNotExist,
         is DraftSaveErrorReason.MessageIsNotADraft -> SaveDraftError.MessageIsNotADraft
+
         is DraftSaveErrorReason.AddressDisabled -> SaveDraftError.AddressDisabled(reason.v1)
         is DraftSaveErrorReason.AddressDoesNotHavePrimaryKey -> SaveDraftError.AddressDoesNotHavePrimaryKey(reason.v1)
         is DraftSaveErrorReason.RecipientEmailInvalid -> SaveDraftError.InvalidRecipient(reason.v1)

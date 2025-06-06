@@ -215,12 +215,17 @@ fun Home(
 
     val undoActionText = stringResource(id = R.string.undo_button_label)
     val messageSentText = stringResource(id = R.string.mailbox_message_sending_success)
-    fun showMessageSentWithUndoSnackbar(messageId: MessageId) = scope.launch {
+    val messageScheduledText = stringResource(id = R.string.mailbox_message_scheduled_for_sending_success)
+    fun showMessageSentWithUndoSnackbar(
+        messageId: MessageId,
+        message: String = messageSentText,
+        duration: SnackbarDuration = SnackbarDuration.Indefinite
+    ) = scope.launch {
         val result = snackbarHostNormState.showSnackbar(
             type = ProtonSnackbarType.NORM,
-            message = messageSentText,
+            message = message,
             actionLabel = undoActionText,
-            duration = SnackbarDuration.Indefinite
+            duration = duration
         )
         when (result) {
             SnackbarResult.ActionPerformed -> viewModel.undoSendMessage(messageId)
@@ -284,6 +289,16 @@ fun Home(
                     hideMessageSentSnackbar()
                     viewModel.confirmMessageAsSeen(sendingStatus.messageId)
                 }
+            }
+
+            is MessageSendingStatus.MessageScheduledUndoable -> {
+                val formattedDate = viewModel.formatTime(sendingStatus.deliveryTime)
+                showMessageSentWithUndoSnackbar(
+                    sendingStatus.messageId,
+                    messageScheduledText.format(formattedDate),
+                    SnackbarDuration.Long
+                )
+                viewModel.confirmMessageAsSeen(sendingStatus.messageId)
             }
         }
     }

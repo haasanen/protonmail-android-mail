@@ -29,6 +29,7 @@ import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.encode
 import ch.protonmail.android.mailcommon.domain.model.isNotEmpty
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.usecase.FormatFullDate
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.MarkMessageSendingStatusesAsSeen
@@ -53,6 +54,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.time.Instant
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -61,6 +63,7 @@ class HomeViewModel @Inject constructor(
     private val discardDraft: DiscardDraft,
     private val undoSendMessage: UndoSendMessage,
     private val markMessageSendingStatusesAsSeen: MarkMessageSendingStatusesAsSeen,
+    private val formatFullDate: FormatFullDate,
     observePrimaryUserId: ObservePrimaryUserId,
     shareIntentObserver: ShareIntentObserver
 ) : ViewModel() {
@@ -143,6 +146,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun recordViewOfMailboxScreen() = recordMailboxScreenView()
+
+    fun formatTime(time: Instant) = formatFullDate(time)
 
     private fun emitNewStateFor(messageSendingStatus: MessageSendingStatus) {
         if (messageSendingStatus is MessageSendingStatus.NoStatus) {

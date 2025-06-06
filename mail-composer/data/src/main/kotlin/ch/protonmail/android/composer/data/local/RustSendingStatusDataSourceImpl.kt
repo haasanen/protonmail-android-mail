@@ -80,7 +80,7 @@ class RustSendingStatusDataSourceImpl @Inject constructor(
 
         awaitClose {
             watchHandle?.destroy()
-            Timber.d("rust-draft: system labels watcher destroyed")
+            Timber.d("rust-draft: draft send result watcher destroyed")
         }
 
     }

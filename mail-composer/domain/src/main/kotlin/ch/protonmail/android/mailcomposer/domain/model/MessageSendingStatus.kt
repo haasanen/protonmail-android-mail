@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcomposer.domain.model
 
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlin.time.Duration
+import kotlin.time.Instant
 
 sealed interface MessageSendingStatus {
     val messageId: MessageId
@@ -31,6 +32,11 @@ sealed interface MessageSendingStatus {
 
     data class MessageSentFinal(
         override val messageId: MessageId
+    ) : MessageSendingStatus
+
+    data class MessageScheduledUndoable(
+        override val messageId: MessageId,
+        val deliveryTime: Instant
     ) : MessageSendingStatus
 
     data class SendMessageError(
