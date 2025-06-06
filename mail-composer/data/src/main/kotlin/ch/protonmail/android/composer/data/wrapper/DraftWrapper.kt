@@ -18,9 +18,9 @@
 
 package ch.protonmail.android.composer.data.wrapper
 
-import uniffi.proton_core_common.UnixTimestamp
 import uniffi.proton_mail_uniffi.Draft
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptionsResult
+import uniffi.proton_mail_uniffi.UnixTimestamp
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
 
