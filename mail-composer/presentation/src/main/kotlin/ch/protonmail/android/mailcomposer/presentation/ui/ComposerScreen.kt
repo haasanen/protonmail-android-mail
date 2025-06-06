@@ -74,9 +74,10 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenMeasures
-import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
+import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
+import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction2
 import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
@@ -101,7 +102,11 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     val viewModel = hiltViewModel<ComposerViewModel, ComposerViewModel.Factory> { factory ->
         factory.create(recipientsStateManager)
     }
-    val state by viewModel.composerStates.collectAsState()
+    val composerStates by viewModel.composerStates.collectAsState()
+    val mainState = composerStates.main
+    val attachmentsState = composerStates.attachments
+    val accessoriesState = composerStates.accessories
+    val effectsState = composerStates.effects
     val isChooseAttachmentSourceEnabled by viewModel.isChooseAttachmentSourceEnabled.collectAsState()
     val isScheduleSendEnabled by viewModel.isScheduleSendEnabled.collectAsState()
 
@@ -132,7 +137,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     val bottomBarActions = ComposerBottomBar.Actions(
         onAddAttachmentsClick = {
             bottomSheetType.value = BottomSheetType.AttachmentSources
-            viewModel.submit(ComposerAction.OnAddAttachments)
+            viewModel.submit(ComposerAction2.AddAttachmentsRequested)
         },
         onSetMessagePasswordClick = {
             showFeatureMissingSnackbar()
@@ -140,39 +145,39 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         },
         onSetExpirationTimeClick = {
             // bottomSheetType.value = BottomSheetType.SetExpirationTime
-            // viewModel.submit(ComposerAction.OnSetExpirationTimeRequested)
+            // viewModel.submit(ComposerAction2.OnSetExpirationTimeRequested)
             showFeatureMissingSnackbar()
         },
-        onDiscardDraftClicked = { viewModel.submit(ComposerAction.DiscardDraft) }
+        onDiscardDraftClicked = { viewModel.submit(ComposerAction2.DiscardDraftRequested) }
     )
 
     val filesPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
         onResult = { uris ->
-            viewModel.submit(ComposerAction.FileAttachmentsAdded(uris))
+            viewModel.submit(ComposerAction2.AddFileAttachments(uris))
         }
     )
 
     val mediaPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(),
         onResult = { uris ->
-            viewModel.submit(ComposerAction.AttachmentsAdded(uris))
+            viewModel.submit(ComposerAction2.AddAttachments(uris))
         }
     )
 
-    ConsumableLaunchedEffect(effect = state.effects.openFilesPicker) {
+    ConsumableLaunchedEffect(effect = effectsState.openFilesPicker) {
         filesPicker.launch("*/*")
     }
 
-    ConsumableLaunchedEffect(effect = state.effects.openPhotosPicker) {
+    ConsumableLaunchedEffect(effect = effectsState.openPhotosPicker) {
         mediaPicker.launch(PickVisualMediaRequest())
     }
 
     CameraPicturePicker(
-        state.effects.openCamera,
+        effectsState.openCamera,
         onCaptured = { uri ->
             Timber.v("camera: image from take picture composable, uri: $uri")
-            viewModel.submit(ComposerAction.AttachmentsAdded(listOf(uri)))
+            viewModel.submit(ComposerAction2.AddAttachments(listOf(uri)))
         },
         onError = { localisedError ->
             scope.launch {
@@ -188,13 +193,13 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         sheetContent = bottomSheetHeightConstrainedContent {
             when (val sheetType = bottomSheetType.value) {
                 BottomSheetType.ChangeSender -> ChangeSenderBottomSheetContent(
-                    state.main.senderAddresses,
-                    { sender -> viewModel.submit(ComposerAction.SenderChanged(sender)) }
+                    mainState.senderAddresses,
+                    { sender -> viewModel.submit(ComposerAction2.SetSenderAddress(sender)) }
                 )
 
                 BottomSheetType.SetExpirationTime -> SetExpirationTimeBottomSheetContent(
-                    expirationTime = state.accessories.messageExpiresIn,
-                    onDoneClick = { viewModel.submit(ComposerAction.ExpirationTimeSet(it)) }
+                    expirationTime = accessoriesState.messageExpiresIn,
+                    onDoneClick = { viewModel.submit(ComposerAction2.SetMessageExpiration(it)) }
                 )
 
                 is BottomSheetType.InlineImageActions -> InlineImageActionsBottomSheetContent(
@@ -202,14 +207,14 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     onTransformToAttachment = {
                         Toast.makeText(context, featureMissingSnackbarMessage, Toast.LENGTH_SHORT).show()
                     },
-                    onRemove = { viewModel.submit(ComposerAction.RemoveInlineImage(it)) }
+                    onRemove = { viewModel.submit(ComposerAction2.RemoveInlineAttachment(it)) }
                 )
 
                 is BottomSheetType.AttachmentSources -> AttachmentSourceBottomSheetContent(
                     isChooseAttachmentSourceEnabled = isChooseAttachmentSourceEnabled,
-                    onCamera = { viewModel.submit(ComposerAction.OnAttachFromCamera) },
-                    onFiles = { viewModel.submit(ComposerAction.OnAttachFromFiles) },
-                    onPhotos = { viewModel.submit(ComposerAction.OnAttachFromPhotos) }
+                    onCamera = { viewModel.submit(ComposerAction2.OpenCameraPicker) },
+                    onFiles = { viewModel.submit(ComposerAction2.OpenFilePicker) },
+                    onPhotos = { viewModel.submit(ComposerAction2.OpenPhotosPicker) }
                 )
 
                 is BottomSheetType.ScheduleSendOptions -> ScheduleSendBottomSheetContent(
@@ -228,23 +233,23 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             topBar = {
                 ComposerTopBar(
                     onCloseComposerClick = {
-                        viewModel.submit(ComposerAction.OnCloseComposer)
+                        viewModel.submit(ComposerAction2.CloseComposer)
                     },
                     onSendMessageComposerClick = {
-                        viewModel.submit(ComposerAction.OnSendMessage)
+                        viewModel.submit(ComposerAction2.SendMessage)
                     },
                     onScheduleSendClick = {
                         bottomSheetType.value = BottomSheetType.ScheduleSendOptions
                         viewModel.submit(ComposerAction.OnScheduleSendRequested)
                     },
-                    isSendMessageEnabled = state.isSubmittable,
+                    isSendMessageEnabled = mainState.isSubmittable,
                     isScheduleSendFeatureFlagEnabled = isScheduleSendEnabled
                 )
             },
             bottomBar = {
                 ComposerBottomBar(
-                    isMessagePasswordSet = state.isMessagePasswordSet,
-                    isMessageExpirationTimeSet = state.messageExpiresIn != Duration.ZERO,
+                    isMessagePasswordSet = accessoriesState.isMessagePasswordSet,
+                    isMessageExpirationTimeSet = accessoriesState.messageExpiresIn != Duration.ZERO,
                     actions = bottomBarActions
                 )
             },
@@ -255,7 +260,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 )
             }
         ) { paddingValues ->
-            if (state.isLoading) {
+            if (mainState.loadingType == ComposerState.LoadingType.Initial) {
                 @Suppress("MagicNumber")
                 Surface(
                     modifier = Modifier
@@ -288,7 +293,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 var formHeightPx by remember { mutableStateOf(0f) }
 
 
-                if (state.showSendingLoading) {
+                if (mainState.loadingType == ComposerState.LoadingType.Save) {
                     LoadingIndicator(preventBackNavigation = true)
                 }
 
@@ -306,7 +311,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     // right "initial values" from state when displayed
                     ComposerForm(
                         modifier = Modifier.testTag(ComposerTestTags.ComposerForm),
-                        changeFocusToField = state.changeFocusToField,
+                        changeFocusToField = effectsState.changeFocusToField,
                         actions = buildActions(
                             viewModel = viewModel,
                             onWebViewMeasuresChanged = { webViewParams ->
@@ -328,18 +333,18 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                             showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
                             onInlineImageClicked = { contentId ->
                                 bottomSheetType.value = BottomSheetType.InlineImageActions(contentId)
-                                viewModel.submit(ComposerAction.OnInlineImageActionsRequested)
+                                viewModel.submit(ComposerAction2.InlineImageActionsRequested)
                             }
                         ),
-                        senderEmail = state.fields.sender.email,
+                        senderEmail = mainState.fields.sender.email,
                         recipientsStateManager = recipientsStateManager,
                         subjectTextField = viewModel.subjectTextField,
-                        bodyInitialValue = state.fields.displayBody,
-                        attachments = state.attachments,
-                        focusTextBody = state.focusTextBody,
+                        bodyInitialValue = mainState.fields.displayBody,
+                        attachments = attachmentsState.uiModel,
+                        focusTextBody = effectsState.focusTextBody,
                         formHeightPx = formHeightPx,
-                        injectInlineAttachment = state.injectInlineAttachment,
-                        stripInlineAttachment = state.stripInlineAttachment
+                        injectInlineAttachment = effectsState.injectInlineAttachment,
+                        stripInlineAttachment = effectsState.stripInlineAttachment
                     )
                 }
             }
@@ -350,11 +355,11 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
 
         SendingWithEmptySubjectDialog(
             onConfirmClicked = {
-                viewModel.submit(ComposerAction.ConfirmSendingWithoutSubject)
+                viewModel.submit(ComposerAction2.ConfirmSendWithNoSubject)
                 sendWithoutSubjectDialogState.value = false
             },
             onDismissClicked = {
-                viewModel.submit(ComposerAction.RejectSendingWithoutSubject)
+                viewModel.submit(ComposerAction2.CancelSendWithNoSubject)
                 sendWithoutSubjectDialogState.value = false
             }
         )
@@ -364,7 +369,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         SendExpiringMessageDialog(
             externalRecipients = sendExpiringMessageDialogState.value.externalParticipants,
             onConfirmClicked = {
-                viewModel.submit(ComposerAction.SendExpiringMessageToExternalRecipientsConfirmed)
+                viewModel.submit(ComposerAction2.ConfirmSendExpirationSetToExternal)
                 sendExpiringMessageDialogState.value = sendExpiringMessageDialogState.value.copy(isVisible = false)
             },
             onDismissClicked = {
@@ -388,7 +393,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 ProtonAlertDialogButton(
                     titleResId = R.string.discard_draft_dialog_confirm_button
                 ) {
-                    viewModel.submit(ComposerAction.DiscardDraftConfirmed)
+                    viewModel.submit(ComposerAction2.DiscardDraftConfirmed)
                     discardDraftDialogState.value = false
                     actions.showDraftDiscardedSnackbar()
                 }
@@ -443,24 +448,24 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         )
     }
 
-    ConsumableTextEffect(effect = state.premiumFeatureMessage) { message ->
+    ConsumableTextEffect(effect = effectsState.premiumFeatureMessage) { message ->
         snackbarHostState.showSnackbar(type = ProtonSnackbarType.NORM, message = message)
     }
 
-    ConsumableTextEffect(effect = state.error) { error ->
+    ConsumableTextEffect(effect = effectsState.error) { error ->
         snackbarHostState.showSnackbar(type = ProtonSnackbarType.ERROR, message = error)
     }
 
-    ConsumableTextEffect(effect = state.warning) { warning ->
+    ConsumableTextEffect(effect = effectsState.warning) { warning ->
         snackbarHostState.showSnackbar(type = ProtonSnackbarType.WARNING, message = warning)
     }
 
     val errorAttachmentEncryption = stringResource(id = R.string.composer_attachment_encryption_failed_message)
-    ConsumableLaunchedEffect(effect = state.attachmentsEncryptionFailed) {
+    ConsumableLaunchedEffect(effect = effectsState.attachmentsEncryptionFailed) {
         snackbarHostState.showSnackbar(type = ProtonSnackbarType.ERROR, message = errorAttachmentEncryption)
     }
 
-    ConsumableLaunchedEffect(effect = state.changeBottomSheetVisibility) { show ->
+    ConsumableLaunchedEffect(effect = effectsState.changeBottomSheetVisibility) { show ->
         if (show) {
             dismissKeyboard(context, view, keyboardController)
             bottomSheetState.show()
@@ -471,55 +476,57 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         showBottomSheet = show
     }
 
-    ConsumableLaunchedEffect(effect = state.closeComposer) {
+    ConsumableLaunchedEffect(effect = effectsState.closeComposer) {
         dismissKeyboard(context, view, keyboardController)
         actions.onCloseComposerClick()
     }
 
-    ConsumableLaunchedEffect(effect = state.closeComposerWithDraftSaved) {
+    ConsumableLaunchedEffect(effect = effectsState.closeComposerWithDraftSaved) {
         dismissKeyboard(context, view, keyboardController)
         actions.onCloseComposerClick()
         actions.showDraftSavedSnackbar(it)
     }
 
-    ConsumableLaunchedEffect(effect = state.closeComposerWithMessageSending) {
+    ConsumableLaunchedEffect(effect = effectsState.closeComposerWithMessageSending) {
         dismissKeyboard(context, view, keyboardController)
         actions.onCloseComposerClick()
         actions.showMessageSendingSnackbar()
     }
 
-    ConsumableLaunchedEffect(effect = state.closeComposerWithMessageSendingOffline) {
+    ConsumableLaunchedEffect(effect = effectsState.closeComposerWithMessageSendingOffline) {
         dismissKeyboard(context, view, keyboardController)
         actions.onCloseComposerClick()
         actions.showMessageSendingOfflineSnackbar()
     }
 
-    ConsumableTextEffect(effect = state.sendingErrorEffect) {
+    ConsumableTextEffect(effect = effectsState.sendingErrorEffect) {
         sendingErrorDialogState.value = it
     }
 
-    ConsumableTextEffect(effect = state.senderChangedNotice) {
+    ConsumableTextEffect(effect = effectsState.senderChangedNotice) {
         senderChangedNoticeDialogState.value = it
     }
 
-    ConsumableLaunchedEffect(effect = state.attachmentsFileSizeExceeded) { attachmentSizeDialogState.value = true }
+    ConsumableLaunchedEffect(effect = effectsState.attachmentsFileSizeExceeded) {
+        attachmentSizeDialogState.value = true
+    }
 
-    ConsumableLaunchedEffect(effect = state.confirmSendingWithoutSubject) {
+    ConsumableLaunchedEffect(effect = effectsState.confirmSendingWithoutSubject) {
         sendWithoutSubjectDialogState.value = true
     }
 
-    ConsumableLaunchedEffect(effect = state.confirmSendExpiringMessage) {
+    ConsumableLaunchedEffect(effect = effectsState.confirmSendExpiringMessage) {
         sendExpiringMessageDialogState.value = SendExpiringMessageDialogState(
             isVisible = true, externalParticipants = it
         )
     }
 
-    ConsumableLaunchedEffect(effect = state.confirmDiscardDraft) {
+    ConsumableLaunchedEffect(effect = effectsState.confirmDiscardDraft) {
         discardDraftDialogState.value = true
     }
 
     BackHandler(true) {
-        viewModel.submit(ComposerAction.OnCloseComposer)
+        viewModel.submit(ComposerAction2.CloseComposer)
     }
 
 }
@@ -535,19 +542,19 @@ private fun buildActions(
     onInlineImageClicked: (String) -> Unit
 ): ComposerForm.Actions = ComposerForm.Actions(
     onBodyChanged = {
-        viewModel.submit(ComposerAction.DraftBodyChanged(DraftBody(it)))
+        viewModel.submit(ComposerAction2.DraftBodyChanged(DraftBody(it)))
     },
     onChangeSender = {
         showFeatureMissingSnackbar()
         // setBottomSheetType(BottomSheetType.ChangeSender)
-        // viewModel.submit(ComposerAction.ChangeSenderRequested)
+        // viewModel.submit(ComposerAction2.ChangeSenderRequested)
     },
     onWebViewMeasuresChanged = onWebViewMeasuresChanged,
     onHeaderPositioned = onHeaderPositioned,
     onWebViewPositioned = onWebViewPositioned,
     loadEmbeddedImage = onLoadEmbeddedImage,
-    onAttachmentRemoveRequested = { viewModel.submit(ComposerAction.RemoveAttachment(it)) },
-    onInlineImageRemoved = { viewModel.submit(ComposerAction.RemoveInlineImage(it)) },
+    onAttachmentRemoveRequested = { viewModel.submit(ComposerAction2.RemoveAttachment(it)) },
+    onInlineImageRemoved = { viewModel.submit(ComposerAction2.RemoveInlineAttachment(it)) },
     onInlineImageClicked = onInlineImageClicked
 )
 
@@ -592,6 +599,7 @@ private sealed interface BottomSheetType {
     data class InlineImageActions(val contentId: String) : BottomSheetType
 
     companion object {
+
         private const val TYPE_KEY = "sheetTypeKey"
         private const val CONTENT_ID_KEY = "inlineImageContentId"
 
@@ -605,6 +613,7 @@ private sealed interface BottomSheetType {
                             CONTENT_ID_KEY to state.contentId
                         )
                     }
+
                     is SetExpirationTime -> mapOf(TYPE_KEY to SetExpirationTime::class.simpleName)
                     is AttachmentSources -> mapOf(TYPE_KEY to AttachmentSources::class.simpleName)
                     is ScheduleSendOptions -> mapOf(TYPE_KEY to ScheduleSendOptions::class.simpleName)

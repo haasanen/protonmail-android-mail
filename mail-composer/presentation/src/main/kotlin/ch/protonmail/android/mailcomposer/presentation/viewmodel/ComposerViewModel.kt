@@ -410,7 +410,8 @@ class ComposerViewModel @AssistedInject constructor(
                 is ComposerAction2.ClearSendingError -> TODO()
 
                 is ComposerAction2.DraftBodyChanged -> onDraftBodyChanged(action.draftBody)
-                is ComposerAction2.DiscardDraftRequested -> emitNewStateFor(EffectsEvent.DraftEvent.OnDiscardDraftRequested)
+                is ComposerAction2.DiscardDraftRequested ->
+                    emitNewStateFor(EffectsEvent.DraftEvent.OnDiscardDraftRequested)
                 is ComposerAction2.DiscardDraftConfirmed -> onDiscardDraftConfirmed()
             }
             logViewModelAction(action, "Completed.")

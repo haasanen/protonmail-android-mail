@@ -21,7 +21,6 @@ package ch.protonmail.android.mailcomposer.presentation.model.operations
 import android.net.Uri
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
-import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import kotlin.time.Duration
 
@@ -53,10 +52,7 @@ internal sealed interface ComposerAction2 : ComposerStateOperation {
     data class RemoveAttachment(val attachmentId: AttachmentId) : ComposerAction2
     data class RemoveInlineAttachment(val contentId: String) : ComposerAction2
 
-    data class DraftBodyChanged(
-        val draftBody: DraftBody,
-        val draftDisplayBody: DraftDisplayBodyUiModel
-    ) : ComposerAction2
+    data class DraftBodyChanged(val draftBody: DraftBody) : ComposerAction2
 
     data object DiscardDraftRequested : ComposerAction2
     data object DiscardDraftConfirmed : ComposerAction2
