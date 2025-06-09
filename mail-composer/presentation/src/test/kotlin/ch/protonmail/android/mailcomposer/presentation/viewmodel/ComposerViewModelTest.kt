@@ -58,7 +58,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
-import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerFields
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
@@ -96,7 +95,6 @@ import io.mockk.mockkStatic
 import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.unmockkAll
-import io.mockk.unmockkObject
 import io.mockk.unmockkStatic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -991,7 +989,6 @@ class ComposerViewModelTest {
     @AfterTest
     fun tearDown() {
         unmockkAll()
-        unmockkObject(ComposerDraftState.Companion)
         unmockkStatic(android.graphics.Color::parseColor)
     }
 
