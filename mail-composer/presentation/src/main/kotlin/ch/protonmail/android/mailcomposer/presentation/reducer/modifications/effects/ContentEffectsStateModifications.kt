@@ -28,20 +28,26 @@ internal sealed interface ContentEffectsStateModifications : EffectsStateModific
 
     data object OnAddAttachmentCameraRequested : EffectsStateModification {
 
-        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
-            state.copy(openCamera = Effect.of(Unit))
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
+            openCamera = Effect.of(Unit),
+            changeBottomSheetVisibility = Effect.of(false)
+        )
     }
 
     data object OnAddAttachmentPhotosRequested : EffectsStateModification {
 
-        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
-            state.copy(openPhotosPicker = Effect.of(Unit))
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
+            openPhotosPicker = Effect.of(Unit),
+            changeBottomSheetVisibility = Effect.of(false)
+        )
     }
 
     data object OnAddAttachmentFileRequested : EffectsStateModification {
 
-        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
-            state.copy(openFilesPicker = Effect.of(Unit))
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
+            openFilesPicker = Effect.of(Unit),
+            changeBottomSheetVisibility = Effect.of(false)
+        )
     }
 
     data class OnInlineAttachmentAdded(val contentId: String) : EffectsStateModification {
@@ -52,8 +58,10 @@ internal sealed interface ContentEffectsStateModifications : EffectsStateModific
 
     data class OnInlineAttachmentRemoved(val contentId: String) : EffectsStateModification {
 
-        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
-            state.copy(stripInlineAttachment = Effect.of(contentId))
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
+            stripInlineAttachment = Effect.of(contentId),
+            changeBottomSheetVisibility = Effect.of(false)
+        )
     }
 
     data class DraftContentReady(

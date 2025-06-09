@@ -151,22 +151,28 @@ internal class EffectsStateModificationTest(
                 initialState.copy(sendingErrorEffect = Effect.of(TextUiModel.Text("Test error")))
             ),
             arrayOf(
-                "shows file picker",
+                "shows file picker and hides bottom sheet",
                 initialState,
                 ContentEffectsStateModifications.OnAddAttachmentFileRequested,
-                initialState.copy(openFilesPicker = Effect.of(Unit))
+                initialState.copy(
+                    openFilesPicker = Effect.of(Unit),
+                    changeBottomSheetVisibility = Effect.of(false)
+                )
             ),
             arrayOf(
-                "shows media picker",
+                "shows media picker and hides bottom sheet",
                 initialState,
                 ContentEffectsStateModifications.OnAddAttachmentPhotosRequested,
-                initialState.copy(openPhotosPicker = Effect.of(Unit))
+                initialState.copy(
+                    openPhotosPicker = Effect.of(Unit),
+                    changeBottomSheetVisibility = Effect.of(false)
+                )
             ),
             arrayOf(
-                "shows camera to grab pic",
+                "shows camera to grab pic and hides bottom sheet",
                 initialState,
                 ContentEffectsStateModifications.OnAddAttachmentCameraRequested,
-                initialState.copy(openCamera = Effect.of(Unit))
+                initialState.copy(openCamera = Effect.of(Unit), changeBottomSheetVisibility = Effect.of(false))
             ),
             arrayOf(
                 "handles draft content ready with valid sender",
@@ -234,6 +240,15 @@ internal class EffectsStateModificationTest(
                 initialState,
                 ConfirmationsEffectsStateModification.ShowExternalExpiringRecipients(externalRecipients),
                 initialState.copy(confirmSendExpiringMessage = Effect.of(externalRecipients))
+            ),
+            arrayOf(
+                "removes inline attachments and hide bottomsheet",
+                initialState,
+                ContentEffectsStateModifications.OnInlineAttachmentRemoved("cid-123"),
+                initialState.copy(
+                    stripInlineAttachment = Effect.of("cid-123"),
+                    changeBottomSheetVisibility = Effect.of(false)
+                )
             )
         )
     }
