@@ -504,7 +504,8 @@ class ComposerViewModel @AssistedInject constructor(
         emitNewStateFor(MainEvent.CoreLoadingToggled)
 
         if (subjectTextField.text.isBlank()) {
-            emitNewStateFor(EffectsEvent.SendEvent.OnCancelSendNoSubject)
+            emitNewStateFor(CompositeEvent.OnSendWithEmptySubject)
+            return
         }
         onSendMessage()
     }
