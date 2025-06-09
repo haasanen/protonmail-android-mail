@@ -77,7 +77,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenMeasur
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
-import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction2
+import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
@@ -137,7 +137,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     val bottomBarActions = ComposerBottomBar.Actions(
         onAddAttachmentsClick = {
             bottomSheetType.value = BottomSheetType.AttachmentSources
-            viewModel.submit(ComposerAction2.AddAttachmentsRequested)
+            viewModel.submit(ComposerAction.AddAttachmentsRequested)
         },
         onSetMessagePasswordClick = {
             showFeatureMissingSnackbar()
@@ -148,20 +148,20 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             // viewModel.submit(ComposerAction2.OnSetExpirationTimeRequested)
             showFeatureMissingSnackbar()
         },
-        onDiscardDraftClicked = { viewModel.submit(ComposerAction2.DiscardDraftRequested) }
+        onDiscardDraftClicked = { viewModel.submit(ComposerAction.DiscardDraftRequested) }
     )
 
     val filesPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
         onResult = { uris ->
-            viewModel.submit(ComposerAction2.AddFileAttachments(uris))
+            viewModel.submit(ComposerAction.AddFileAttachments(uris))
         }
     )
 
     val mediaPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(),
         onResult = { uris ->
-            viewModel.submit(ComposerAction2.AddAttachments(uris))
+            viewModel.submit(ComposerAction.AddAttachments(uris))
         }
     )
 
@@ -177,7 +177,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         effectsState.openCamera,
         onCaptured = { uri ->
             Timber.v("camera: image from take picture composable, uri: $uri")
-            viewModel.submit(ComposerAction2.AddAttachments(listOf(uri)))
+            viewModel.submit(ComposerAction.AddAttachments(listOf(uri)))
         },
         onError = { localisedError ->
             scope.launch {
@@ -194,12 +194,12 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             when (val sheetType = bottomSheetType.value) {
                 BottomSheetType.ChangeSender -> ChangeSenderBottomSheetContent(
                     mainState.senderAddresses,
-                    { sender -> viewModel.submit(ComposerAction2.SetSenderAddress(sender)) }
+                    { sender -> viewModel.submit(ComposerAction.SetSenderAddress(sender)) }
                 )
 
                 BottomSheetType.SetExpirationTime -> SetExpirationTimeBottomSheetContent(
                     expirationTime = accessoriesState.messageExpiresIn,
-                    onDoneClick = { viewModel.submit(ComposerAction2.SetMessageExpiration(it)) }
+                    onDoneClick = { viewModel.submit(ComposerAction.SetMessageExpiration(it)) }
                 )
 
                 is BottomSheetType.InlineImageActions -> InlineImageActionsBottomSheetContent(
@@ -207,14 +207,14 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     onTransformToAttachment = {
                         Toast.makeText(context, featureMissingSnackbarMessage, Toast.LENGTH_SHORT).show()
                     },
-                    onRemove = { viewModel.submit(ComposerAction2.RemoveInlineAttachment(it)) }
+                    onRemove = { viewModel.submit(ComposerAction.RemoveInlineAttachment(it)) }
                 )
 
                 is BottomSheetType.AttachmentSources -> AttachmentSourceBottomSheetContent(
                     isChooseAttachmentSourceEnabled = isChooseAttachmentSourceEnabled,
-                    onCamera = { viewModel.submit(ComposerAction2.OpenCameraPicker) },
-                    onFiles = { viewModel.submit(ComposerAction2.OpenFilePicker) },
-                    onPhotos = { viewModel.submit(ComposerAction2.OpenPhotosPicker) }
+                    onCamera = { viewModel.submit(ComposerAction.OpenCameraPicker) },
+                    onFiles = { viewModel.submit(ComposerAction.OpenFilePicker) },
+                    onPhotos = { viewModel.submit(ComposerAction.OpenPhotosPicker) }
                 )
 
                 is BottomSheetType.ScheduleSendOptions -> Unit
@@ -234,10 +234,10 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             topBar = {
                 ComposerTopBar(
                     onCloseComposerClick = {
-                        viewModel.submit(ComposerAction2.CloseComposer)
+                        viewModel.submit(ComposerAction.CloseComposer)
                     },
                     onSendMessageComposerClick = {
-                        viewModel.submit(ComposerAction2.SendMessage)
+                        viewModel.submit(ComposerAction.SendMessage)
                     },
                     onScheduleSendClick = {
                         bottomSheetType.value = BottomSheetType.ScheduleSendOptions
@@ -334,7 +334,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                             showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
                             onInlineImageClicked = { contentId ->
                                 bottomSheetType.value = BottomSheetType.InlineImageActions(contentId)
-                                viewModel.submit(ComposerAction2.InlineImageActionsRequested)
+                                viewModel.submit(ComposerAction.InlineImageActionsRequested)
                             }
                         ),
                         senderEmail = mainState.fields.sender.email,
@@ -356,11 +356,11 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
 
         SendingWithEmptySubjectDialog(
             onConfirmClicked = {
-                viewModel.submit(ComposerAction2.ConfirmSendWithNoSubject)
+                viewModel.submit(ComposerAction.ConfirmSendWithNoSubject)
                 sendWithoutSubjectDialogState.value = false
             },
             onDismissClicked = {
-                viewModel.submit(ComposerAction2.CancelSendWithNoSubject)
+                viewModel.submit(ComposerAction.CancelSendWithNoSubject)
                 sendWithoutSubjectDialogState.value = false
             }
         )
@@ -370,7 +370,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         SendExpiringMessageDialog(
             externalRecipients = sendExpiringMessageDialogState.value.externalParticipants,
             onConfirmClicked = {
-                viewModel.submit(ComposerAction2.ConfirmSendExpirationSetToExternal)
+                viewModel.submit(ComposerAction.ConfirmSendExpirationSetToExternal)
                 sendExpiringMessageDialogState.value = sendExpiringMessageDialogState.value.copy(isVisible = false)
             },
             onDismissClicked = {
@@ -394,7 +394,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 ProtonAlertDialogButton(
                     titleResId = R.string.discard_draft_dialog_confirm_button
                 ) {
-                    viewModel.submit(ComposerAction2.DiscardDraftConfirmed)
+                    viewModel.submit(ComposerAction.DiscardDraftConfirmed)
                     discardDraftDialogState.value = false
                     actions.showDraftDiscardedSnackbar()
                 }
@@ -532,7 +532,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     }
 
     BackHandler(true) {
-        viewModel.submit(ComposerAction2.CloseComposer)
+        viewModel.submit(ComposerAction.CloseComposer)
     }
 
 }
@@ -548,7 +548,7 @@ private fun buildActions(
     onInlineImageClicked: (String) -> Unit
 ): ComposerForm.Actions = ComposerForm.Actions(
     onBodyChanged = {
-        viewModel.submit(ComposerAction2.DraftBodyChanged(DraftBody(it)))
+        viewModel.submit(ComposerAction.DraftBodyChanged(DraftBody(it)))
     },
     onChangeSender = {
         showFeatureMissingSnackbar()
@@ -559,8 +559,8 @@ private fun buildActions(
     onHeaderPositioned = onHeaderPositioned,
     onWebViewPositioned = onWebViewPositioned,
     loadEmbeddedImage = onLoadEmbeddedImage,
-    onAttachmentRemoveRequested = { viewModel.submit(ComposerAction2.RemoveAttachment(it)) },
-    onInlineImageRemoved = { viewModel.submit(ComposerAction2.RemoveInlineAttachment(it)) },
+    onAttachmentRemoveRequested = { viewModel.submit(ComposerAction.RemoveAttachment(it)) },
+    onInlineImageRemoved = { viewModel.submit(ComposerAction.RemoveInlineAttachment(it)) },
     onInlineImageClicked = onInlineImageClicked
 )
 

@@ -65,6 +65,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiM
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerStateReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
@@ -109,7 +110,6 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction2 as ComposerAction
 
 class ComposerViewModelTest {
 

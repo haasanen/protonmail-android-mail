@@ -67,7 +67,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsState
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.operations.AttachmentsEvent
-import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction2
+import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerStateEvent
 import ch.protonmail.android.mailcomposer.presentation.model.operations.CompositeEvent
 import ch.protonmail.android.mailcomposer.presentation.model.operations.EffectsEvent
@@ -148,7 +148,7 @@ class ComposerViewModel @AssistedInject constructor(
     internal val subjectTextField = TextFieldState()
 
     private val primaryUserId = observePrimaryUserId().filterNotNull()
-    private val composerActionsChannel = Channel<ComposerAction2>(Channel.BUFFERED)
+    private val composerActionsChannel = Channel<ComposerAction>(Channel.BUFFERED)
 
     private val mutableComposerStates = MutableStateFlow(
         ComposerStates(
@@ -359,7 +359,7 @@ class ComposerViewModel @AssistedInject constructor(
         return DraftUiModel(this, draftDisplayBody)
     }
 
-    internal fun submit(action: ComposerAction2) {
+    internal fun submit(action: ComposerAction) {
         viewModelScope.launch {
             composerActionsChannel.send(action)
             logViewModelAction(action, "Enqueued")
@@ -370,48 +370,48 @@ class ComposerViewModel @AssistedInject constructor(
         composerActionsChannel.consumeEach { action ->
             logViewModelAction(action, "Executing")
             when (action) {
-                is ComposerAction2.ChangeSender -> TODO()
-                is ComposerAction2.SetSenderAddress -> TODO()
+                is ComposerAction.ChangeSender -> TODO()
+                is ComposerAction.SetSenderAddress -> TODO()
 
-                is ComposerAction2.OpenExpirationSettings -> TODO()
+                is ComposerAction.OpenExpirationSettings -> TODO()
 
-                is ComposerAction2.SetMessageExpiration -> TODO()
+                is ComposerAction.SetMessageExpiration -> TODO()
 
-                is ComposerAction2.AddAttachmentsRequested ->
+                is ComposerAction.AddAttachmentsRequested ->
                     emitNewStateFor(EffectsEvent.AttachmentEvent.OnAttachFromOptionsRequest)
 
-                is ComposerAction2.OpenCameraPicker ->
+                is ComposerAction.OpenCameraPicker ->
                     emitNewStateFor(EffectsEvent.AttachmentEvent.OnAddFromCameraRequest)
 
-                is ComposerAction2.OpenPhotosPicker -> emitNewStateFor(EffectsEvent.AttachmentEvent.OnAddMediaRequest)
-                is ComposerAction2.OpenFilePicker -> emitNewStateFor(EffectsEvent.AttachmentEvent.OnAddFileRequest)
+                is ComposerAction.OpenPhotosPicker -> emitNewStateFor(EffectsEvent.AttachmentEvent.OnAddMediaRequest)
+                is ComposerAction.OpenFilePicker -> emitNewStateFor(EffectsEvent.AttachmentEvent.OnAddFileRequest)
 
-                is ComposerAction2.AddFileAttachments -> onFileAttachmentsAdded(action.uriList)
-                is ComposerAction2.AddAttachments -> onAttachmentsAdded(action.uriList)
-                is ComposerAction2.RemoveAttachment -> onAttachmentsRemoved(action.attachmentId)
-                is ComposerAction2.RemoveInlineAttachment -> onInlineImageRemoved(action.contentId)
-                is ComposerAction2.InlineImageActionsRequested ->
+                is ComposerAction.AddFileAttachments -> onFileAttachmentsAdded(action.uriList)
+                is ComposerAction.AddAttachments -> onAttachmentsAdded(action.uriList)
+                is ComposerAction.RemoveAttachment -> onAttachmentsRemoved(action.attachmentId)
+                is ComposerAction.RemoveInlineAttachment -> onInlineImageRemoved(action.contentId)
+                is ComposerAction.InlineImageActionsRequested ->
                     emitNewStateFor(EffectsEvent.AttachmentEvent.OnInlineImageActionsRequested)
 
-                is ComposerAction2.CloseComposer -> onCloseComposer()
-                is ComposerAction2.SendMessage -> handleOnSendMessage()
+                is ComposerAction.CloseComposer -> onCloseComposer()
+                is ComposerAction.SendMessage -> handleOnSendMessage()
 
-                is ComposerAction2.CancelSendWithNoSubject ->
+                is ComposerAction.CancelSendWithNoSubject ->
                     emitNewStateFor(EffectsEvent.SendEvent.OnCancelSendNoSubject)
 
-                is ComposerAction2.ConfirmSendWithNoSubject -> onSendMessage()
+                is ComposerAction.ConfirmSendWithNoSubject -> onSendMessage()
 
-                is ComposerAction2.CancelSendExpirationSetToExternal -> TODO()
+                is ComposerAction.CancelSendExpirationSetToExternal -> TODO()
 
-                is ComposerAction2.ConfirmSendExpirationSetToExternal -> onSendMessage()
+                is ComposerAction.ConfirmSendExpirationSetToExternal -> onSendMessage()
 
-                is ComposerAction2.ClearSendingError -> TODO()
+                is ComposerAction.ClearSendingError -> TODO()
 
-                is ComposerAction2.DraftBodyChanged -> onDraftBodyChanged(action.draftBody)
-                is ComposerAction2.DiscardDraftRequested ->
+                is ComposerAction.DraftBodyChanged -> onDraftBodyChanged(action.draftBody)
+                is ComposerAction.DiscardDraftRequested ->
                     emitNewStateFor(EffectsEvent.DraftEvent.OnDiscardDraftRequested)
 
-                is ComposerAction2.DiscardDraftConfirmed -> onDiscardDraftConfirmed()
+                is ComposerAction.DiscardDraftConfirmed -> onDiscardDraftConfirmed()
             }
             logViewModelAction(action, "Completed.")
         }
@@ -604,7 +604,7 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    private fun logViewModelAction(action: ComposerAction2, message: String) {
+    private fun logViewModelAction(action: ComposerAction, message: String) {
         Timber
             .tag("ComposerViewModel")
             .d("Action ${action::class.java.simpleName} ${System.identityHashCode(action)} - $message")
