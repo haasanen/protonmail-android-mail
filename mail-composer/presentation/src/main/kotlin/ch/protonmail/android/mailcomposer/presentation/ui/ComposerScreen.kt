@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import android.text.format.Formatter
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -199,7 +200,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 is BottomSheetType.InlineImageActions -> InlineImageActionsBottomSheetContent(
                     contentId = sheetType.contentId,
                     onTransformToAttachment = {
-                        showFeatureMissingSnackbar()
+                        Toast.makeText(context, featureMissingSnackbarMessage, Toast.LENGTH_SHORT).show()
                     },
                     onRemove = { viewModel.submit(ComposerAction.RemoveInlineImage(it)) }
                 )
