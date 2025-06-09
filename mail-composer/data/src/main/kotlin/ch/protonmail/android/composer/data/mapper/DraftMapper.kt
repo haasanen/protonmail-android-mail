@@ -167,7 +167,6 @@ private fun LocalDraftSendResult.toMessageSendingStatusForFailure(error: DraftSe
 }
 
 fun DraftSaveErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
-    is DraftSaveErrorReason.AlreadySent,
     is DraftSaveErrorReason.MessageAlreadySent,
     is DraftSaveErrorReason.MessageIsNotADraft -> SendErrorReason.ErrorNoMessage.AlreadySent
     is DraftSaveErrorReason.AddressDisabled ->
@@ -175,9 +174,6 @@ fun DraftSaveErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
 
     is DraftSaveErrorReason.AddressDoesNotHavePrimaryKey ->
         SendErrorReason.ErrorWithMessage.AddressDoesNotHavePrimaryKey(v1)
-
-    is DraftSaveErrorReason.UnknownRecipientValidationError ->
-        SendErrorReason.ErrorWithMessage.RecipientEmailInvalid(v1)
 
     is DraftSaveErrorReason.RecipientEmailInvalid -> SendErrorReason.ErrorWithMessage.RecipientEmailInvalid(v1)
 
@@ -216,9 +212,6 @@ fun DraftSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
     is DraftSendErrorReason.ProtonRecipientDoesNotExist ->
         SendErrorReason.ErrorWithMessage.ProtonRecipientDoesNotExist(v1)
 
-    is DraftSendErrorReason.UnknownRecipientValidationError ->
-        SendErrorReason.ErrorWithMessage.UnknownRecipientValidationError(v1)
-
     is DraftSendErrorReason.AddressDisabled ->
         SendErrorReason.ErrorWithMessage.AddressDisabled(v1)
 
@@ -229,13 +222,11 @@ fun DraftSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
 fun DraftSaveError.toSaveDraftError(): SaveDraftError = when (this) {
     is DraftSaveError.Other -> SaveDraftError.Other(this.v1.toDataError())
     is DraftSaveError.Reason -> when (val reason = this.v1) {
-        is DraftSaveErrorReason.AlreadySent,
         is DraftSaveErrorReason.MessageAlreadySent,
         is DraftSaveErrorReason.MessageDoesNotExist,
         is DraftSaveErrorReason.MessageIsNotADraft -> SaveDraftError.MessageIsNotADraft
         is DraftSaveErrorReason.AddressDisabled -> SaveDraftError.AddressDisabled(reason.v1)
         is DraftSaveErrorReason.AddressDoesNotHavePrimaryKey -> SaveDraftError.AddressDoesNotHavePrimaryKey(reason.v1)
-        is DraftSaveErrorReason.UnknownRecipientValidationError -> SaveDraftError.InvalidRecipient(reason.v1)
         is DraftSaveErrorReason.RecipientEmailInvalid -> SaveDraftError.InvalidRecipient(reason.v1)
         is DraftSaveErrorReason.ProtonRecipientDoesNotExist -> SaveDraftError.InvalidRecipient(reason.v1)
     }

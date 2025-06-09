@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import uniffi.proton_mail_uniffi.ActionError
 import uniffi.proton_mail_uniffi.ActionErrorReason
+import uniffi.proton_mail_uniffi.ContextReason
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadError
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 import uniffi.proton_mail_uniffi.DraftDiscardError
@@ -35,15 +36,14 @@ import uniffi.proton_mail_uniffi.DraftUndoSendErrorReason
 import uniffi.proton_mail_uniffi.EventError
 import uniffi.proton_mail_uniffi.EventErrorReason
 import uniffi.proton_mail_uniffi.ProtonError
-import uniffi.proton_mail_uniffi.SessionErrorReason
-import uniffi.proton_mail_uniffi.UserSessionError
+import uniffi.proton_mail_uniffi.UserContextError
 
-fun UserSessionError.toDataError(): DataError = when (this) {
-    is UserSessionError.Other -> this.v1.toDataError()
-    is UserSessionError.Reason -> when (this.v1) {
-        SessionErrorReason.UNKNOWN_LABEL,
-        SessionErrorReason.DUPLICATE_CONTEXT,
-        SessionErrorReason.USER_CONTEXT_NOT_INITIALIZED -> DataError.Local.Unknown
+fun UserContextError.toDataError(): DataError = when (this) {
+    is UserContextError.Other -> this.v1.toDataError()
+    is UserContextError.Reason -> when (this.v1) {
+        ContextReason.UNKNOWN_LABEL,
+        ContextReason.DUPLICATE_CONTEXT,
+        ContextReason.USER_CONTEXT_NOT_INITIALIZED -> DataError.Local.Unknown
     }
 }
 
@@ -64,7 +64,6 @@ fun DraftSendError.toDataError(): DataError = when (this) {
         is DraftSendErrorReason.MessageIsNotADraft -> DataError.Local.SendDraftError.AlreadySent
         is DraftSendErrorReason.AddressDisabled,
         is DraftSendErrorReason.AddressDoesNotHavePrimaryKey -> DataError.Local.SendDraftError.InvalidSenderAddress
-        is DraftSendErrorReason.UnknownRecipientValidationError,
         is DraftSendErrorReason.RecipientEmailInvalid,
         is DraftSendErrorReason.ProtonRecipientDoesNotExist,
         is DraftSendErrorReason.NoRecipients -> DataError.Local.SendDraftError.InvalidRecipient
@@ -129,6 +128,5 @@ fun ProtonError.toDataError(): DataError = when (this) {
     is ProtonError.Network -> DataError.Remote.Http(NetworkError.NoNetwork)
     is ProtonError.OtherReason -> DataError.Local.Unknown
     is ProtonError.ServerError -> DataError.Remote.Http(NetworkError.ServerError)
-    is ProtonError.SessionExpired -> DataError.Remote.Http(NetworkError.Unauthorized)
     is ProtonError.Unexpected -> DataError.Local.Unknown
 }

@@ -30,10 +30,10 @@ import org.junit.Test
 import uniffi.proton_mail_uniffi.AppAppearance
 import uniffi.proton_mail_uniffi.AppProtection
 import uniffi.proton_mail_uniffi.AutoLock
+import uniffi.proton_mail_uniffi.ContextReason
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAppSettingsResult
-import uniffi.proton_mail_uniffi.SessionErrorReason.UNKNOWN_LABEL
-import uniffi.proton_mail_uniffi.UserSessionError
+import uniffi.proton_mail_uniffi.UserContextError
 
 class RustAppSettingsDataSourceTest {
 
@@ -68,8 +68,8 @@ class RustAppSettingsDataSourceTest {
         val expectedError = DataError.Local.Unknown
         coEvery { mailSession.getAppSettings() } returns
             MailSessionGetAppSettingsResult.Error(
-                UserSessionError.Reason(
-                    UNKNOWN_LABEL
+                UserContextError.Reason(
+                    ContextReason.UNKNOWN_LABEL
                 )
             )
         val result = sut.getAppSettings(mailSessionWrapper)

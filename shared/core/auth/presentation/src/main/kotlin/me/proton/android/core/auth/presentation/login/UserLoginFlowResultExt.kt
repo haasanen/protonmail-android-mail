@@ -31,22 +31,21 @@ import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.ProtonError.Network
 import uniffi.proton_mail_uniffi.ProtonError.OtherReason
 import uniffi.proton_mail_uniffi.ProtonError.ServerError
-import uniffi.proton_mail_uniffi.ProtonError.SessionExpired
 import uniffi.proton_mail_uniffi.ProtonError.Unexpected
 import uniffi.proton_mail_uniffi.UnexpectedError
+import uniffi.uniffi_common.UserApiServiceError
 import uniffi.uniffi_common.UserApiServiceError.BadGateway
 import uniffi.uniffi_common.UserApiServiceError.BadRequest
+import uniffi.uniffi_common.UserApiServiceError.Internal
 import uniffi.uniffi_common.UserApiServiceError.InternalServerError
 import uniffi.uniffi_common.UserApiServiceError.NotFound
 import uniffi.uniffi_common.UserApiServiceError.NotImplemented
 import uniffi.uniffi_common.UserApiServiceError.OtherHttpError
+import uniffi.uniffi_common.UserApiServiceError.OtherNetwork
 import uniffi.uniffi_common.UserApiServiceError.ServiceUnavailable
+import uniffi.uniffi_common.UserApiServiceError.TooManyRequests
 import uniffi.uniffi_common.UserApiServiceError.Unauthorized
 import uniffi.uniffi_common.UserApiServiceError.UnprocessableEntity
-import uniffi.uniffi_common.UserApiServiceError.Internal
-import uniffi.uniffi_common.UserApiServiceError.OtherNetwork
-import uniffi.uniffi_common.UserApiServiceError.TooManyRequests
-import uniffi.uniffi_common.UserApiServiceError
 
 fun MailLoginError.getErrorMessage(context: Context) = when (this) {
     is MailLoginError.Other -> this.v1.getErrorMessage(context)
@@ -60,7 +59,6 @@ fun LoginError.getErrorMessage(): String = when (this) {
     is LoginError.UserFetch -> v1.getErrorMessage()
     is LoginError.KeySecretSaltFetch -> v1.getErrorMessage()
 
-    is LoginError.KeySecretAuthUpdate -> v1
     is LoginError.KeySecretDerivation -> v1
     is LoginError.ServerProof -> v1
     is LoginError.SrpProof -> v1
@@ -70,7 +68,6 @@ fun LoginError.getErrorMessage(): String = when (this) {
     LoginError.InvalidState -> "LoginError.InvalidState"
     LoginError.MissingPrimaryKey -> "LoginError.MissingPrimaryKey"
     LoginError.KeySecretDecryption -> "LoginError.KeySecretDecryption"
-    LoginError.UnsupportedTfa -> "LoginError.UnsupportedTfa"
     LoginError.WrongMailboxPassword -> "LoginError.WrongMailboxPassword"
 }
 
@@ -126,5 +123,4 @@ private fun ProtonError.getErrorMessage(context: Context) = when (this) {
     is ServerError -> v1.getErrorMessage()
     is Unexpected -> v1.getErrorMessage()
     is Network -> context.getString(R.string.presentation_general_connection_error)
-    is SessionExpired -> context.getString(R.string.presentation_error_general)
 }

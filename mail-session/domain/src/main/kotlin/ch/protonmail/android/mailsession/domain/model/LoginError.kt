@@ -38,7 +38,6 @@ fun LocalLoginError.toLoginError(): LoginError {
             LoginError.ApiFailure
 
         // 2. Internal data/state issues
-        is LocalLoginError.KeySecretAuthUpdate,
         is LocalLoginError.KeySecretDerivation,
         is LocalLoginError.ServerProof,
         is LocalLoginError.SrpProof,
@@ -50,7 +49,6 @@ fun LocalLoginError.toLoginError(): LoginError {
         LocalLoginError.InvalidState,
         LocalLoginError.MissingPrimaryKey,
         LocalLoginError.KeySecretDecryption,
-        LocalLoginError.UnsupportedTfa,
         LocalLoginError.WrongMailboxPassword ->
             LoginError.AuthenticationFailure
 

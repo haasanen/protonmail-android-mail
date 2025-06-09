@@ -21,6 +21,7 @@ import android.content.Context
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.getPrimarySession
 import dagger.hilt.android.qualifiers.ApplicationContext
+import me.proton.android.core.payment.data.extension.getErrorMessage
 import me.proton.android.core.payment.data.model.toProductDetail
 import me.proton.android.core.payment.data.model.toSubscriptionDetail
 import me.proton.android.core.payment.domain.PaymentException
@@ -29,7 +30,6 @@ import me.proton.android.core.payment.domain.SubscriptionManager
 import me.proton.android.core.payment.domain.model.ProductDetail
 import me.proton.android.core.payment.domain.model.Purchase
 import me.proton.android.core.payment.domain.model.SubscriptionDetail
-import me.proton.android.core.payment.data.extension.getErrorMessage
 import uniffi.proton_mail_uniffi.GetPaymentsPlansOptions
 import uniffi.proton_mail_uniffi.GoogleRecurringReceiptDetails
 import uniffi.proton_mail_uniffi.MailUserSession
@@ -41,7 +41,7 @@ import uniffi.proton_mail_uniffi.NewSubscription
 import uniffi.proton_mail_uniffi.NewSubscriptionValues
 import uniffi.proton_mail_uniffi.PaymentReceipt
 import uniffi.proton_mail_uniffi.PaymentToken
-import uniffi.proton_mail_uniffi.UserSessionError
+import uniffi.proton_mail_uniffi.UserContextError
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -52,7 +52,7 @@ class SubscriptionManagerRust @Inject constructor(
     private val sessionRepository: UserSessionRepository
 ) : SubscriptionManager {
 
-    private fun UserSessionError.throwException(): Nothing {
+    private fun UserContextError.throwException(): Nothing {
         throw PaymentException(DEVELOPER_ERROR, getErrorMessage(context))
     }
 

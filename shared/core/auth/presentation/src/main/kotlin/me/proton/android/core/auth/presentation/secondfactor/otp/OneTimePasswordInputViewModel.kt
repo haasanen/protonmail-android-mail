@@ -123,7 +123,6 @@ class OneTimePasswordInputViewModel @Inject constructor(
         emit(Error.LoginFlow(error.getErrorMessage(context)))
 
         when ((error as? MailLoginError.Other)?.v1) {
-            ProtonError.SessionExpired,
             is ProtonError.Unexpected -> emitAll(onClose())
 
             else -> Unit

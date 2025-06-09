@@ -19,6 +19,7 @@ package me.proton.android.core.payment.data.extension
 
 import android.content.Context
 import me.proton.android.core.payment.presentation.R
+import uniffi.proton_mail_uniffi.ContextReason
 import uniffi.proton_mail_uniffi.OtherErrorReason
 import uniffi.proton_mail_uniffi.OtherErrorReason.InvalidParameter
 import uniffi.proton_mail_uniffi.OtherErrorReason.Other
@@ -26,33 +27,31 @@ import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.ProtonError.Network
 import uniffi.proton_mail_uniffi.ProtonError.OtherReason
 import uniffi.proton_mail_uniffi.ProtonError.ServerError
-import uniffi.proton_mail_uniffi.ProtonError.SessionExpired
 import uniffi.proton_mail_uniffi.ProtonError.Unexpected
-import uniffi.proton_mail_uniffi.SessionErrorReason
 import uniffi.proton_mail_uniffi.UnexpectedError
-import uniffi.proton_mail_uniffi.UserSessionError
+import uniffi.proton_mail_uniffi.UserContextError
+import uniffi.uniffi_common.UserApiServiceError
 import uniffi.uniffi_common.UserApiServiceError.BadGateway
+import uniffi.uniffi_common.UserApiServiceError.Internal
 import uniffi.uniffi_common.UserApiServiceError.InternalServerError
 import uniffi.uniffi_common.UserApiServiceError.NotFound
 import uniffi.uniffi_common.UserApiServiceError.NotImplemented
 import uniffi.uniffi_common.UserApiServiceError.OtherHttpError
+import uniffi.uniffi_common.UserApiServiceError.OtherNetwork
 import uniffi.uniffi_common.UserApiServiceError.ServiceUnavailable
+import uniffi.uniffi_common.UserApiServiceError.TooManyRequests
 import uniffi.uniffi_common.UserApiServiceError.Unauthorized
 import uniffi.uniffi_common.UserApiServiceError.UnprocessableEntity
-import uniffi.uniffi_common.UserApiServiceError.Internal
-import uniffi.uniffi_common.UserApiServiceError.OtherNetwork
-import uniffi.uniffi_common.UserApiServiceError.TooManyRequests
-import uniffi.uniffi_common.UserApiServiceError
 
-fun UserSessionError.getErrorMessage(context: Context) = when (this) {
-    is UserSessionError.Other -> this.v1.getErrorMessage(context)
-    is UserSessionError.Reason -> this.v1.getErrorMessage()
+fun UserContextError.getErrorMessage(context: Context) = when (this) {
+    is UserContextError.Other -> this.v1.getErrorMessage(context)
+    is UserContextError.Reason -> this.v1.getErrorMessage()
 }
 
-fun SessionErrorReason.getErrorMessage() = when (this) {
-    SessionErrorReason.UNKNOWN_LABEL -> "UNKNOWN_LABEL"
-    SessionErrorReason.DUPLICATE_CONTEXT -> "DUPLICATE_CONTEXT"
-    SessionErrorReason.USER_CONTEXT_NOT_INITIALIZED -> "USER_CONTEXT_NOT_INITIALIZED"
+fun ContextReason.getErrorMessage() = when (this) {
+    ContextReason.UNKNOWN_LABEL -> "UNKNOWN_LABEL"
+    ContextReason.DUPLICATE_CONTEXT -> "DUPLICATE_CONTEXT"
+    ContextReason.USER_CONTEXT_NOT_INITIALIZED -> "USER_CONTEXT_NOT_INITIALIZED"
 }
 
 fun ProtonError.getErrorMessage(context: Context) = when (this) {
@@ -60,7 +59,6 @@ fun ProtonError.getErrorMessage(context: Context) = when (this) {
     is ServerError -> v1.getErrorMessage()
     is Unexpected -> v1.getErrorMessage()
     is Network -> context.getString(R.string.presentation_general_connection_error)
-    is SessionExpired -> context.getString(R.string.presentation_error_general)
 }
 
 fun UserApiServiceError.getErrorMessage() = when (this) {
