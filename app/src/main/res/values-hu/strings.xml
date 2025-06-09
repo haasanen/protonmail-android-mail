@@ -18,11 +18,11 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Kijelentkezés</string>
-  <string name="dialog_sign_out_account_description">The data associateed to your account will remain on this device unless you select to delete it.</string>
-  <string name="dialog_sign_out_account_confirm">Sign out</string>
-  <string name="dialog_sign_out_account_cancel">Cancel</string>
-  <string name="dialog_remove_account_title">Remove account?</string>
-  <string name="dialog_remove_account_description">Remove all associated data</string>
+  <string name="dialog_sign_out_account_description">A fiókjához társított adatok ezen az eszköz maradnak, amíg nem választja a törlésüket.</string>
+  <string name="dialog_sign_out_account_confirm">Kijelentkezés</string>
+  <string name="dialog_sign_out_account_cancel">Mégsem</string>
+  <string name="dialog_remove_account_title">Fiók törlése?</string>
+  <string name="dialog_remove_account_description">Az összes kapcsolódó adat eltávolítása</string>
   <string name="dialog_remove_account_confirm">Eltávolítás</string>
   <string name="dialog_remove_account_cancel">Mégsem</string>
   <string name="feature_coming_soon">A funkció hamarosan érkezik...</string>

@@ -82,6 +82,7 @@
   <string name="message_blocked_sender_banner_text">Tämä lähettäjä on estetty aiemmin.</string>
   <string name="message_blocked_sender_button_text">Poista esto</string>
   <string name="message_expiration_banner_text">Viesti on asetettu tuhoutumaan kun on kulunut %1$s</string>
+  <string name="message_auto_delete_banner_text">This message will be automatically deleted in %1$s</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Olet poistumassa sovelluksesta avaamassa kohdetta:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">Älä kysy uudelleen</string>

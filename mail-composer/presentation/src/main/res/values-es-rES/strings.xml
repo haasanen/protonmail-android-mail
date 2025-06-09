@@ -116,4 +116,13 @@
   <string name="discard_draft_error">Error al descartar el borrador</string>
   <string name="composer_remove_inline_image">Eliminar</string>
   <string name="composer_send_as_attachment">Enviar como adjunto</string>
+  <string name="composer_remove_recipient_action_item">Eliminar</string>
+  <string name="composer_copy_recipient_action_item">Copiar</string>
+  <string name="schedule_send_content_description">Programar el envío</string>
+  <string name="composer_error_retrieving_schedule_send_options">Error al generar las horas para «Programar el envío»</string>
+  <string name="composer_schedule_send_content_description">Programar el envío</string>
+  <string name="composer_schedule_send_tomorrow_title">Mañana</string>
+  <string name="composer_schedule_send_monday_title">Lunes</string>
+  <string name="composer_schedule_send_custom_title">Personalizado</string>
+  <string name="composer_schedule_send_custom_description">Seleccionar hora y fecha</string>
 </resources>

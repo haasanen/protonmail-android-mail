@@ -17,14 +17,15 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="mail_pin_lock_toolbar_button_content_description">Back</string>
+  <string name="mail_pin_lock_toolbar_button_content_description">Tillbaka</string>
   <!-- Auto lock -->
-  <string name="mail_pinlock_settings_title">Autolås</string>
-  <string name="mail_pinlock_settings_toggle_autolock_title">Autolås app</string>
-  <string name="mail_pinlock_settings_toggle_autolock_description">Slå på denna funktion för att automatiskt låsa din app och använd en PIN-kod för att låsa upp den.</string>
+  <string name="mail_pinlock_settings_title">Skydd</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">Auto lock app</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Enable this feature to automatically lock your app and secure it with a PIN code.</string>
   <string name="mail_pinlock_settings_change_pin_description">Ändra PIN-kod</string>
-  <string name="mail_pinlock_settings_change_interval_title">Autolåstimer</string>
+  <string name="mail_pinlock_settings_change_interval_title">Auto lock timer</string>
   <string name="mail_pinlock_settings_autolock_immediately">Omedelbart</string>
+  <string name="mail_pinlock_settings_autolock_never">Aldrig</string>
   <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minuters inaktivitet</string>
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minuters inaktivitet</string>
   <string name="mail_pinlock_settings_autolock_description_one_hour">1 timmes inaktivitet</string>

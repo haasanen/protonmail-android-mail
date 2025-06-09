@@ -116,4 +116,13 @@
   <string name="discard_draft_error">Fout bij het weggooien van concept</string>
   <string name="composer_remove_inline_image">Verwijderen</string>
   <string name="composer_send_as_attachment">Verzenden als bijlage</string>
+  <string name="composer_remove_recipient_action_item">Verwijderen</string>
+  <string name="composer_copy_recipient_action_item">Kopiëren</string>
+  <string name="schedule_send_content_description">Ingepland versturen</string>
+  <string name="composer_error_retrieving_schedule_send_options">Generating the times to \"schedule send\" at failed</string>
+  <string name="composer_schedule_send_content_description">Ingepland versturen</string>
+  <string name="composer_schedule_send_tomorrow_title">Morgen</string>
+  <string name="composer_schedule_send_monday_title">Maandag</string>
+  <string name="composer_schedule_send_custom_title">Aangepast</string>
+  <string name="composer_schedule_send_custom_description">Kies tijd en datum</string>
 </resources>

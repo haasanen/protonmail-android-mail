@@ -115,4 +115,13 @@
   <string name="discard_draft_error">放棄草稿時發生錯誤</string>
   <string name="composer_remove_inline_image">Remove</string>
   <string name="composer_send_as_attachment">Send as attachment</string>
+  <string name="composer_remove_recipient_action_item">Remove</string>
+  <string name="composer_copy_recipient_action_item">Copy</string>
+  <string name="schedule_send_content_description">Schedule send</string>
+  <string name="composer_error_retrieving_schedule_send_options">Generating the times to \"schedule send\" at failed</string>
+  <string name="composer_schedule_send_content_description">Schedule send</string>
+  <string name="composer_schedule_send_tomorrow_title">Tomorrow</string>
+  <string name="composer_schedule_send_monday_title">Monday</string>
+  <string name="composer_schedule_send_custom_title">Custom</string>
+  <string name="composer_schedule_send_custom_description">Pick time and date</string>
 </resources>

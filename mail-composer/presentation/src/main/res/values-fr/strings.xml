@@ -116,4 +116,13 @@
   <string name="discard_draft_error">Erreur lors de l’abandon du brouillon</string>
   <string name="composer_remove_inline_image">Retirer</string>
   <string name="composer_send_as_attachment">Envoyer comme pièce jointe</string>
+  <string name="composer_remove_recipient_action_item">Retirer</string>
+  <string name="composer_copy_recipient_action_item">Copier</string>
+  <string name="schedule_send_content_description">Programmer l\'envoi</string>
+  <string name="composer_error_retrieving_schedule_send_options">La génération des heures pour « Programmer l\'envoi » n\'a pas abouti.</string>
+  <string name="composer_schedule_send_content_description">Programmer l\'envoi</string>
+  <string name="composer_schedule_send_tomorrow_title">Demain</string>
+  <string name="composer_schedule_send_monday_title">Lundi</string>
+  <string name="composer_schedule_send_custom_title">Personnaliser</string>
+  <string name="composer_schedule_send_custom_description">Choisir l\'heure et la date</string>
 </resources>

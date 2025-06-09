@@ -19,12 +19,13 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Πίσω</string>
   <!-- Auto lock -->
-  <string name="mail_pinlock_settings_title">Αυτόματο κλείδωμα</string>
+  <string name="mail_pinlock_settings_title">Προστασία</string>
   <string name="mail_pinlock_settings_toggle_autolock_title">Αυτόματο κλείδωμα εφαρμογής</string>
-  <string name="mail_pinlock_settings_toggle_autolock_description">Ενεργοποιήστε αυτήν τη λειτουργία για να κλειδώσετε αυτόματα την εφαρμογή σας και χρησιμοποιήστε έναν κωδικό PIN για να την ξεκλειδώσετε.</string>
-  <string name="mail_pinlock_settings_change_pin_description">Αλλάξτε κωδικό PIN</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Ενεργοποιήστε αυτήν τη δυνατότητα για να κλειδώσετε αυτόματα την εφαρμογή σας και να την ασφαλίσετε με κωδικό PIN.</string>
+  <string name="mail_pinlock_settings_change_pin_description">Αλλαγή κωδικού PIN</string>
   <string name="mail_pinlock_settings_change_interval_title">Χρονικό όριο αυτόματου κλειδώματος</string>
   <string name="mail_pinlock_settings_autolock_immediately">Άμεσα</string>
+  <string name="mail_pinlock_settings_autolock_never">Ποτέ</string>
   <string name="mail_pinlock_settings_autolock_description_five_minutes">5 λεπτά αδράνειας</string>
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 λεπτά αδράνειας</string>
   <string name="mail_pinlock_settings_autolock_description_one_hour">1 ώρα αδράνειας</string>

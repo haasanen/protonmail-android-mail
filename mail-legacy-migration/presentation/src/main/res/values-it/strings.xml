@@ -17,6 +17,6 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="loading_mailbox">Caricamento della casella di posta…</string>
-  <string name="loading_mailbox_subtitle">Ci siamo quasi. Grazie per la pazienza!</string>
+  <string name="loading_mailbox">Caricamento in corso</string>
+  <string name="loading_mailbox_subtitle">Quasi completato. Grazie per la pazienza!</string>
 </resources>

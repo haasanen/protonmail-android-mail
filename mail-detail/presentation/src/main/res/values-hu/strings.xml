@@ -75,13 +75,14 @@
   <string name="message_body_embedded_images_banner_text">A beágyazott képek automatikus letöltése ki van kapcsolva. A beállításoknál lehet ezt megváltoztatni.</string>
   <string name="message_body_remote_content_banner_text">A távoli tartalom automatikus letöltése ki van kapcsolva. A beállításoknál lehet ezt megváltoztatni.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">A beágyazott képek és távoli tartalom automatikus letöltése ki van kapcsolva. A beállításoknál lehet ezt megváltoztatni.</string>
-  <string name="message_phishing_banner_text">This message was flagged as suspicious, either by our system or by you. If you believe it’s safe, mark it as legitimate.</string>
-  <string name="message_phishing_banner_mark_as_legitimate_button">Mark as legitimate</string>
-  <string name="message_spam_banner_text">This message was flagged as Spam, either by our system or by you.</string>
-  <string name="message_spam_banner_not_spam_button">Not Spam</string>
+  <string name="message_phishing_banner_text">Ez az üzenet gyanúsnak lett megjelölve, akár a rendszerünk, akár Ön által. Ha úgy gondolja, hogy biztonságos, jelölje meg legitimnek.</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">Jelölje meg jogosnak</string>
+  <string name="message_spam_banner_text">Ez az üzenet levélszemétnek lett megjelölve, akár a rendszerünk, akár Ön által.</string>
+  <string name="message_spam_banner_not_spam_button">Nem levélszemét</string>
   <string name="message_blocked_sender_banner_text">Ezt a feladót korábban blokkolták.</string>
   <string name="message_blocked_sender_button_text">Blokk feloldása</string>
   <string name="message_expiration_banner_text">Ez az üzenet le fog járni %1$s</string>
+  <string name="message_auto_delete_banner_text">Ez az üzenet automatikusan törlődik %1$s múlva</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Elhagyja az alkalmazást és megnyitja ezt:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">Ne kérdezze újra</string>
@@ -94,10 +95,10 @@
   <string name="phishing_link_confirmation_dialog_button_go_back">Vissza (ajánlott)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">Figyelmeztetés figyelmen kívül hagyása és folytatás</string>
   <!-- Mark as legitimate confirmation dialog -->
-  <string name="mark_as_legitimate_phishing_dialog_title">Confirm mark as legitimate</string>
-  <string name="mark_as_legitimate_phishing_dialog_message">We apologize. This might have been a mistake from our side. Please confirm if you want to mark this email as legitimate.</string>
-  <string name="mark_as_legitimate_spam_dialog_title">Confirm not Spam</string>
-  <string name="mark_as_legitimate_spam_dialog_message">We apologize. This might have been a mistake from our side. Please confirm this email is not Spam.</string>
+  <string name="mark_as_legitimate_phishing_dialog_title">Jóváhagyás: jelölje meg jogosnak</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">Elnézést kérünk. Lehet, hogy ez a mi hibánk volt. Kérjük, erősítse meg, ha ezt az e-mailt jogosnak szeretné jelölni.</string>
+  <string name="mark_as_legitimate_spam_dialog_title">Ez nem levélszemét, jóváhagyva</string>
+  <string name="mark_as_legitimate_spam_dialog_message">Elnézést kérünk. Lehet, hogy ez a mi hibánk volt. Kérjük, erősítse meg, hogy ez az e-mail nem levélszemét.</string>
   <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">Üzenet törlése</string>
   <string name="message_delete_dialog_message">Biztos, hogy véglegesen törli ezt az üzenetet?</string>

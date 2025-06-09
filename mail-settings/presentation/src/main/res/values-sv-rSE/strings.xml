@@ -65,8 +65,8 @@
   <string name="mail_settings_app_customization_advanced_header">Avancerat</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">System</string>
-  <string name="mail_settings_theme_light">Light mode</string>
-  <string name="mail_settings_theme_dark">Dark mode</string>
+  <string name="mail_settings_theme_light">Ljust läge</string>
+  <string name="mail_settings_theme_dark">Mörkt läge</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Ingen information tillgänglig</string>
   <string name="mail_settings_account">Konto</string>

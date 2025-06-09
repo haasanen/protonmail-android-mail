@@ -41,7 +41,7 @@
   <string name="composer_add_attachments_content_description">Afegiu fitxers adjunts</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importar des de…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Des de la vostra biblioteca fotogràfica</string>
-  <string name="composer_add_attachments_bottom_sheet_from_camera">Feu una nova foto</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Fes una foto nova</string>
   <string name="composer_error_loading_parent_message">No s\'ha pogut carregar la informació del missatge.</string>
   <string name="composer_original_message_quote">Missatge original</string>
   <string name="composer_sender_quote">El %s, %s &lt;%s&gt; va escriure:</string>
@@ -116,4 +116,13 @@
   <string name="discard_draft_error">S\'ha produït un error en descartar l\'esborrany</string>
   <string name="composer_remove_inline_image">Esborra</string>
   <string name="composer_send_as_attachment">Envia com a adjunt</string>
+  <string name="composer_remove_recipient_action_item">Esborra</string>
+  <string name="composer_copy_recipient_action_item">Copia</string>
+  <string name="schedule_send_content_description">Planifica l\'enviament</string>
+  <string name="composer_error_retrieving_schedule_send_options">S\'ha produït un error en generar els horaris per «programar l\'enviament».</string>
+  <string name="composer_schedule_send_content_description">Planifica l\'enviament</string>
+  <string name="composer_schedule_send_tomorrow_title">Demà</string>
+  <string name="composer_schedule_send_monday_title">Dilluns</string>
+  <string name="composer_schedule_send_custom_title">Personalitza</string>
+  <string name="composer_schedule_send_custom_description">Trieu l\'hora i la data</string>
 </resources>

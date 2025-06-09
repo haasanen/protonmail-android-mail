@@ -116,4 +116,13 @@
   <string name="discard_draft_error">Det gick inte kasta utkast</string>
   <string name="composer_remove_inline_image">Ta bort</string>
   <string name="composer_send_as_attachment">Skicka som bilaga</string>
+  <string name="composer_remove_recipient_action_item">Ta bort</string>
+  <string name="composer_copy_recipient_action_item">Kopiera</string>
+  <string name="schedule_send_content_description">Schemalägg sändning</string>
+  <string name="composer_error_retrieving_schedule_send_options">Generating the times to \"schedule send\" at failed</string>
+  <string name="composer_schedule_send_content_description">Schemalägg sändning</string>
+  <string name="composer_schedule_send_tomorrow_title">Imorgon</string>
+  <string name="composer_schedule_send_monday_title">Måndag</string>
+  <string name="composer_schedule_send_custom_title">Anpassad</string>
+  <string name="composer_schedule_send_custom_description">Välj tid och datum</string>
 </resources>

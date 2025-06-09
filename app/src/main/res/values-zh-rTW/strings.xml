@@ -18,11 +18,11 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">登出</string>
-  <string name="dialog_sign_out_account_description">The data associateed to your account will remain on this device unless you select to delete it.</string>
-  <string name="dialog_sign_out_account_confirm">Sign out</string>
-  <string name="dialog_sign_out_account_cancel">Cancel</string>
-  <string name="dialog_remove_account_title">Remove account?</string>
-  <string name="dialog_remove_account_description">Remove all associated data</string>
+  <string name="dialog_sign_out_account_description">與您的帳號相關連的資料仍保留在此裝置上，唯有您可選擇刪除它。</string>
+  <string name="dialog_sign_out_account_confirm">登出</string>
+  <string name="dialog_sign_out_account_cancel">取消</string>
+  <string name="dialog_remove_account_title">移除帳號？</string>
+  <string name="dialog_remove_account_description">移除所有相關聯的資料</string>
   <string name="dialog_remove_account_confirm">移除</string>
   <string name="dialog_remove_account_cancel">取消</string>
   <string name="feature_coming_soon">全新功能即將大展身手...</string>

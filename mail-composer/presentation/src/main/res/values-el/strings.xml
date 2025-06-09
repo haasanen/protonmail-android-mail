@@ -116,4 +116,13 @@
   <string name="discard_draft_error">Σφάλμα κατά την απόρριψη του πρόχειρου</string>
   <string name="composer_remove_inline_image">Αφαίρεση</string>
   <string name="composer_send_as_attachment">Αποστολή ως συνημμένο</string>
+  <string name="composer_remove_recipient_action_item">Αφαίρεση</string>
+  <string name="composer_copy_recipient_action_item">Αντιγραφή</string>
+  <string name="schedule_send_content_description">Προγραμματισμός αποστολής</string>
+  <string name="composer_error_retrieving_schedule_send_options">Η δημιουργία ωρών για \"προγραμματισμένη αποστολή\" απέτυχε</string>
+  <string name="composer_schedule_send_content_description">Προγραμματισμός αποστολής</string>
+  <string name="composer_schedule_send_tomorrow_title">Αύριο</string>
+  <string name="composer_schedule_send_monday_title">Δευτέρα</string>
+  <string name="composer_schedule_send_custom_title">Προσαρμοσμένο</string>
+  <string name="composer_schedule_send_custom_description">Επιλέξτε ώρα και ημερομηνία</string>
 </resources>

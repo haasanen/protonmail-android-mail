@@ -115,4 +115,13 @@
   <string name="discard_draft_error">임시 보관 삭제 중 오류</string>
   <string name="composer_remove_inline_image">삭제</string>
   <string name="composer_send_as_attachment">첨부 파일로 보내기</string>
+  <string name="composer_remove_recipient_action_item">제거</string>
+  <string name="composer_copy_recipient_action_item">복사</string>
+  <string name="schedule_send_content_description">예약 전송</string>
+  <string name="composer_error_retrieving_schedule_send_options">실패 시 \"전송 예약\" 시간 생성</string>
+  <string name="composer_schedule_send_content_description">예약 전송</string>
+  <string name="composer_schedule_send_tomorrow_title">내일</string>
+  <string name="composer_schedule_send_monday_title">월요일</string>
+  <string name="composer_schedule_send_custom_title">사용자 정의</string>
+  <string name="composer_schedule_send_custom_description">시간 및 날짜 선택</string>
 </resources>

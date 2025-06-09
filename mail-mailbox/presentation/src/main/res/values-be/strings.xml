@@ -106,7 +106,8 @@
   <string name="mailbox_action_button_clear_spam">Ачысціць спам</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Палепшыце свой тарыфны план, каб аўтаматычна выдаляць паведамленні, якія знаходзяцца ў папках сметніца або спам больш за 30 дзён</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Даведацца больш</string>
-  <string name="mailbox_action_clear_trash_spam_banner_text">Паведамленні, якія знаходзяцца ў папках сметніца і спам больш за 30 дзён будуць выдаляцца аўтаматычна.</string>
+  <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Паведамленні, якія знаходзяцца ў папках \"Сметніца\" і \"Спам\" больш за 30 дзён будуць выдаляцца аўтаматычна.</string>
+  <string name="mailbox_action_auto_delete_off_clear_trash_spam_banner_text">Аўтавыдаленне выключана. Паведамленні ў папках \"Сметніца\" і \"Спам\" будуць захоўвацца там, пакуль вы не выдаліце іх уручную.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Ачысціць папку Сметніцы</string>
   <string name="mailbox_action_clear_spam_dialog_title">Ачысціць папку Спам</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">Вы сапраўды хочаце незваротна выдаліць усе паведамленні з папкі Сметніца?</string>

@@ -64,9 +64,9 @@
   <string name="mail_settings_app_customization_mail_experience_header">Opcje poczty</string>
   <string name="mail_settings_app_customization_advanced_header">Zaawansowane</string>
   <!-- Theme settings -->
-  <string name="mail_settings_system_default">System</string>
-  <string name="mail_settings_theme_light">Light mode</string>
-  <string name="mail_settings_theme_dark">Dark mode</string>
+  <string name="mail_settings_system_default">Systemowy</string>
+  <string name="mail_settings_theme_light">Jasny</string>
+  <string name="mail_settings_theme_dark">Ciemny</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Brak dostępnych informacji</string>
   <string name="mail_settings_account">Konto</string>

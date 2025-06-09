@@ -116,4 +116,13 @@
   <string name="discard_draft_error">Feil ved forkasting av utkast</string>
   <string name="composer_remove_inline_image">Fjern</string>
   <string name="composer_send_as_attachment">Send som vedlegg</string>
+  <string name="composer_remove_recipient_action_item">Fjern</string>
+  <string name="composer_copy_recipient_action_item">Kopier</string>
+  <string name="schedule_send_content_description">Planlegg sending</string>
+  <string name="composer_error_retrieving_schedule_send_options">Generering av tidspunkter for \"Planlegg sending\" mislyktes.</string>
+  <string name="composer_schedule_send_content_description">Planlegg sending</string>
+  <string name="composer_schedule_send_tomorrow_title">I morgen</string>
+  <string name="composer_schedule_send_monday_title">Mandag</string>
+  <string name="composer_schedule_send_custom_title">Tilpasset</string>
+  <string name="composer_schedule_send_custom_description">Velg klokkeslett og dato</string>
 </resources>

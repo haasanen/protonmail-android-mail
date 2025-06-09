@@ -86,6 +86,7 @@
   <string name="message_blocked_sender_banner_text">Tento odosielateľ bol v minulosti zablokovaný.</string>
   <string name="message_blocked_sender_button_text">Odblokovať</string>
   <string name="message_expiration_banner_text">Táto správa vyprší za %1$s</string>
+  <string name="message_auto_delete_banner_text">Táto správa bude automaticky vymazaná o %1$s</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Chystáte sa opustiť aplikáciu a prejsť na:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">Viac sa nepýtať</string>

@@ -116,4 +116,13 @@
   <string name="discard_draft_error">Verwerfen des Entwurfs fehlgeschlagen</string>
   <string name="composer_remove_inline_image">Entfernen</string>
   <string name="composer_send_as_attachment">Als Anhang senden</string>
+  <string name="composer_remove_recipient_action_item">Entfernen</string>
+  <string name="composer_copy_recipient_action_item">Kopieren</string>
+  <string name="schedule_send_content_description">Senden planen</string>
+  <string name="composer_error_retrieving_schedule_send_options">Das Generierung der Zeiten für das „geplante Senden“ ist fehlgeschlagen</string>
+  <string name="composer_schedule_send_content_description">Senden planen</string>
+  <string name="composer_schedule_send_tomorrow_title">Morgen</string>
+  <string name="composer_schedule_send_monday_title">Montag</string>
+  <string name="composer_schedule_send_custom_title">Benutzerdefiniert</string>
+  <string name="composer_schedule_send_custom_description">Datum und Uhrzeit auswählen</string>
 </resources>

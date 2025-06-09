@@ -19,16 +19,17 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Back</string>
   <!-- Auto lock -->
-  <string name="mail_pinlock_settings_title">Samodejno zaklepanje</string>
-  <string name="mail_pinlock_settings_toggle_autolock_title">Samodejno zakleni aplikacijo</string>
-  <string name="mail_pinlock_settings_toggle_autolock_description">Vklopite to funkcijo, da samodejno zaklenete aplikacijo in jo odklenete s kodo PIN.</string>
-  <string name="mail_pinlock_settings_change_pin_description">Spremeni kodo PIN</string>
-  <string name="mail_pinlock_settings_change_interval_title">Časovnik samodejnega zaklepanja</string>
-  <string name="mail_pinlock_settings_autolock_immediately">Takoj</string>
-  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minut neaktivnosti</string>
-  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minut neaktivnosti</string>
-  <string name="mail_pinlock_settings_autolock_description_one_hour">1 ura neaktivnosti</string>
-  <string name="mail_pinlock_settings_autolock_description_one_day">1 dan neaktivnosti</string>
+  <string name="mail_pinlock_settings_title">Protection</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">Auto lock app</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Enable this feature to automatically lock your app and secure it with a PIN code.</string>
+  <string name="mail_pinlock_settings_change_pin_description">Change PIN code</string>
+  <string name="mail_pinlock_settings_change_interval_title">Auto lock timer</string>
+  <string name="mail_pinlock_settings_autolock_immediately">Immediately</string>
+  <string name="mail_pinlock_settings_autolock_never">Never</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minutes inactivity</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minutes inactivity</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">1 hour inactivity</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">1 day inactivity</string>
   <string name="mail_settings_auto_lock_update_error">Napaka pri nalaganju nastavitev</string>
   <string name="mail_settings_pin_insertion_input_title">Vnesite kodo PIN</string>
   <string name="mail_settings_pin_insertion_set_title">Nastavi kodo PIN</string>

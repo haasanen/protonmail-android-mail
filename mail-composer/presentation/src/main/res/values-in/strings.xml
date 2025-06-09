@@ -115,4 +115,13 @@
   <string name="discard_draft_error">Terdapat kesalahan dalam membuang draf</string>
   <string name="composer_remove_inline_image">Hapus</string>
   <string name="composer_send_as_attachment">Kirim sebagai lampiran</string>
+  <string name="composer_remove_recipient_action_item">Hapus</string>
+  <string name="composer_copy_recipient_action_item">Salin</string>
+  <string name="schedule_send_content_description">Jadwalkan pengiriman</string>
+  <string name="composer_error_retrieving_schedule_send_options">Waktu \"jadwalkan pengiriman\" gagal dihasilkan</string>
+  <string name="composer_schedule_send_content_description">Jadwalkan pengiriman</string>
+  <string name="composer_schedule_send_tomorrow_title">Besok</string>
+  <string name="composer_schedule_send_monday_title">Senin</string>
+  <string name="composer_schedule_send_custom_title">Sesuaikan</string>
+  <string name="composer_schedule_send_custom_description">Pilih waktu dan tanggal</string>
 </resources>

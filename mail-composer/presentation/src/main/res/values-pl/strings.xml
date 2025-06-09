@@ -40,8 +40,8 @@
   <string name="composer_error_loading_draft">Zawartość szkicu nie jest dostępna. Edycja zastąpi obecną zawartość.</string>
   <string name="composer_add_attachments_content_description">Dodaj załączniki</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importuj z…</string>
-  <string name="composer_add_attachments_bottom_sheet_from_photos">From your photo library</string>
-  <string name="composer_add_attachments_bottom_sheet_from_camera">Take a new photo</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">Z biblioteki zdjęć</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Zrób nowe zdjęcie</string>
   <string name="composer_error_loading_parent_message">Nie można załadować danych wiadomości</string>
   <string name="composer_original_message_quote">Oryginalna wiadomość</string>
   <string name="composer_sender_quote">%s, %s &lt;%s&gt; napisał(a):</string>
@@ -52,7 +52,7 @@
   <string name="composer_too_many_attachments_error">Limit maksymalnej liczby załączników (100) został osiągnięty.</string>
   <string name="composer_delete_attachment_error">Wystąpił nieoczekiwany błąd podczas usuwania załącznika.</string>
   <string name="composer_unexpected_attachments_error">Wystąpił nieoczekiwany błąd z załącznikami.</string>
-  <string name="composer_attach_capture_from_camera_error">Capturing an attachment from camera isn\'t possible at this time</string>
+  <string name="composer_attach_capture_from_camera_error">Przechwytywanie załącznika z aparatu nie jest obecnie możliwe</string>
   <string name="composer_warning_local_data_shown">Nie udało się załadować najnowszej wersji szkicu. Wszelkie jej zmiany spowodują nadpisanie zawartości.</string>
   <string name="composer_button_add_password">Dodaj hasło</string>
   <string name="composer_button_discard_draft">Odrzuć szkic</string>
@@ -116,6 +116,15 @@
   <string name="discard_draft_dialog_confirm_button">Odrzuć</string>
   <string name="discard_draft_dialog_dismiss_button">Anuluj</string>
   <string name="discard_draft_error">Wystąpił błąd podczas odrzucania szkicu</string>
-  <string name="composer_remove_inline_image">Remove</string>
-  <string name="composer_send_as_attachment">Send as attachment</string>
+  <string name="composer_remove_inline_image">Usuń</string>
+  <string name="composer_send_as_attachment">Wyślij jako załącznik</string>
+  <string name="composer_remove_recipient_action_item">Usuń</string>
+  <string name="composer_copy_recipient_action_item">Kopiuj</string>
+  <string name="schedule_send_content_description">Zaplanuj wysyłanie</string>
+  <string name="composer_error_retrieving_schedule_send_options">Generowanie czasu \"zaplanuj wysyłanie\" w przypadku niepowodzenia</string>
+  <string name="composer_schedule_send_content_description">Zaplanuj wysyłanie</string>
+  <string name="composer_schedule_send_tomorrow_title">Jutro</string>
+  <string name="composer_schedule_send_monday_title">Poniedziałek</string>
+  <string name="composer_schedule_send_custom_title">Niestandardowa</string>
+  <string name="composer_schedule_send_custom_description">Wybierz datę i godzinę</string>
 </resources>

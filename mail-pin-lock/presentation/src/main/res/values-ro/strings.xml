@@ -19,12 +19,13 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Înapoi</string>
   <!-- Auto lock -->
-  <string name="mail_pinlock_settings_title">Autoblocare</string>
+  <string name="mail_pinlock_settings_title">Protecție</string>
   <string name="mail_pinlock_settings_toggle_autolock_title">Autoblocare aplicație</string>
-  <string name="mail_pinlock_settings_toggle_autolock_description">Activați funcția pentru a bloca automat aplicația și a folosi un cod PIN pentru deblocare.</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Activați această funcție pentru a vă bloca automat aplicația și a o securiza cu un cod PIN.</string>
   <string name="mail_pinlock_settings_change_pin_description">Schimbare cod PIN</string>
   <string name="mail_pinlock_settings_change_interval_title">Timp autoblocare</string>
   <string name="mail_pinlock_settings_autolock_immediately">Imediat</string>
+  <string name="mail_pinlock_settings_autolock_never">Niciodată</string>
   <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minute de inactivitate</string>
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minute de inactivitate</string>
   <string name="mail_pinlock_settings_autolock_description_one_hour">o oră de inactivitate</string>

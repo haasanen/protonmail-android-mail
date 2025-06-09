@@ -19,16 +19,17 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Back</string>
   <!-- Auto lock -->
-  <string name="mail_pinlock_settings_title">自動鎖定</string>
-  <string name="mail_pinlock_settings_toggle_autolock_title">自動鎖定應用程式</string>
-  <string name="mail_pinlock_settings_toggle_autolock_description">啟用此功能可讓應用程式自動鎖定，並使用 PIN 碼來解鎖。</string>
-  <string name="mail_pinlock_settings_change_pin_description">變更 PIN 碼</string>
-  <string name="mail_pinlock_settings_change_interval_title">自動鎖定計時器</string>
-  <string name="mail_pinlock_settings_autolock_immediately">立即</string>
-  <string name="mail_pinlock_settings_autolock_description_five_minutes">5分鐘內未有任何動作</string>
-  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15分鐘內未有任何動作</string>
-  <string name="mail_pinlock_settings_autolock_description_one_hour">1小時內未有任何動作</string>
-  <string name="mail_pinlock_settings_autolock_description_one_day">1天內未有任何動作</string>
+  <string name="mail_pinlock_settings_title">Protection</string>
+  <string name="mail_pinlock_settings_toggle_autolock_title">Auto lock app</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Enable this feature to automatically lock your app and secure it with a PIN code.</string>
+  <string name="mail_pinlock_settings_change_pin_description">Change PIN code</string>
+  <string name="mail_pinlock_settings_change_interval_title">Auto lock timer</string>
+  <string name="mail_pinlock_settings_autolock_immediately">Immediately</string>
+  <string name="mail_pinlock_settings_autolock_never">Never</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minutes inactivity</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minutes inactivity</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">1 hour inactivity</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">1 day inactivity</string>
   <string name="mail_settings_auto_lock_update_error">設定更新時發生錯誤</string>
   <string name="mail_settings_pin_insertion_input_title">輸入 PIN 碼</string>
   <string name="mail_settings_pin_insertion_set_title">設定 PIN 碼</string>

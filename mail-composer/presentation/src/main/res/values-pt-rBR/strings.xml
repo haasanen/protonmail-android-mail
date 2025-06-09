@@ -116,4 +116,13 @@
   <string name="discard_draft_error">Erro ao descartar o rascunho</string>
   <string name="composer_remove_inline_image">Remover</string>
   <string name="composer_send_as_attachment">Enviar como anexo</string>
+  <string name="composer_remove_recipient_action_item">Remover</string>
+  <string name="composer_copy_recipient_action_item">Copiar</string>
+  <string name="schedule_send_content_description">Agendar envio</string>
+  <string name="composer_error_retrieving_schedule_send_options">Falha ao gerar os horários para \"agendar envio\"</string>
+  <string name="composer_schedule_send_content_description">Agendar envio</string>
+  <string name="composer_schedule_send_tomorrow_title">Amanhã</string>
+  <string name="composer_schedule_send_monday_title">Segunda-feira</string>
+  <string name="composer_schedule_send_custom_title">Personalizado</string>
+  <string name="composer_schedule_send_custom_description">Selecionar hora e data</string>
 </resources>

@@ -117,4 +117,13 @@
   <string name="discard_draft_error">Eroare la înlăturarea ciornei.</string>
   <string name="composer_remove_inline_image">Eliminare</string>
   <string name="composer_send_as_attachment">Trimitere ca atașament</string>
+  <string name="composer_remove_recipient_action_item">Eliminare</string>
+  <string name="composer_copy_recipient_action_item">Copiere</string>
+  <string name="schedule_send_content_description">Trimitere programată</string>
+  <string name="composer_error_retrieving_schedule_send_options">Generarea timpului pentru „trimitere programată” a eșuat.</string>
+  <string name="composer_schedule_send_content_description">Trimitere programată</string>
+  <string name="composer_schedule_send_tomorrow_title">Mâine</string>
+  <string name="composer_schedule_send_monday_title">Luni</string>
+  <string name="composer_schedule_send_custom_title">Personal</string>
+  <string name="composer_schedule_send_custom_description">Alegeți ora și data</string>
 </resources>

@@ -88,7 +88,8 @@
   <string name="mailbox_action_button_clear_spam">Tøm søppelpost</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Oppgrader for å få automatisk sletting av meldinger som har ligget i papirkurven eller søppelposten i mer enn 30 dager</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Lær mer</string>
-  <string name="mailbox_action_clear_trash_spam_banner_text">Meldinger i papirkurven eller søppelposten som har vært der lenger enn 30 dager, slettes automatisk.</string>
+  <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Meldinger i papirkurven og søppelposten som har vært der lenger enn 30 dager, slettes automatisk.</string>
+  <string name="mailbox_action_auto_delete_off_clear_trash_spam_banner_text">Automatisk sletting er slått av. Meldinger i papirkurv og søppelpost blir værende til du sletter dem manuelt.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Tøm papirkurvmappen</string>
   <string name="mailbox_action_clear_spam_dialog_title">Tøm søppelpostmappen</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">Er du sikker på at du vil slette alle meldinger i papirkurven permanent?</string>

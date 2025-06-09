@@ -19,12 +19,13 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Voltar</string>
   <!-- Auto lock -->
-  <string name="mail_pinlock_settings_title">Bloqueio automático</string>
+  <string name="mail_pinlock_settings_title">Proteção</string>
   <string name="mail_pinlock_settings_toggle_autolock_title">Bloqueio automático do aplicativo</string>
-  <string name="mail_pinlock_settings_toggle_autolock_description">Ative este recurso para bloquear automaticamente seu aplicativo e use um código PIN para desbloqueá-lo.</string>
+  <string name="mail_pinlock_settings_toggle_autolock_description">Ative este recurso para bloquear automaticamente seu aplicativo e protegê-lo com um código PIN.</string>
   <string name="mail_pinlock_settings_change_pin_description">Alterar o código PIN</string>
   <string name="mail_pinlock_settings_change_interval_title">Tempo de bloqueio automático</string>
   <string name="mail_pinlock_settings_autolock_immediately">Imediatamente</string>
+  <string name="mail_pinlock_settings_autolock_never">Nunca</string>
   <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minutos de inatividade</string>
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minutos de inatividade</string>
   <string name="mail_pinlock_settings_autolock_description_one_hour">1 hora de inatividade</string>

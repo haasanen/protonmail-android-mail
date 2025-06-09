@@ -25,7 +25,7 @@
   <string name="report_a_problem_include_errors_description">A napló mutatja az összes műveletet, ami hibához vezetett.\nEzt csak a hibák kijavításához használjuk.</string>
   <string name="report_a_problem_summary_title">Összefoglaló (kötelező)</string>
   <string name="report_a_problem_summary_description">Példa: A Mail alkalmazás összeomlik a nagy méretű mellékleteket tartalmazó e-mailek megnyitásakor.</string>
-  <string name="report_a_problem_field_length_error">This field must be more than 10 characters</string>
+  <string name="report_a_problem_field_length_error">Ennek a mezőnek több mint 10 karakteresnek kell lennie</string>
   <string name="report_a_problem_expected_results_title">Várható eredmények</string>
   <string name="report_a_problem_expected_results_description">Példa: Az e-mail megnyitásával megjelenik az üzenet tartalma és a mellékletek.</string>
   <string name="report_a_problem_repro_steps_title">Lépések a reprodukáláshoz</string>

@@ -40,8 +40,8 @@
   <string name="composer_error_loading_draft">Ennek a piszkozatnak a tartalma jelenleg nem elérhető. Szerkesztése felülírja az esetlegesen már korábban hozzáadott tartalmat.</string>
   <string name="composer_add_attachments_content_description">Melléklet hozzáadása</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importálás innen…</string>
-  <string name="composer_add_attachments_bottom_sheet_from_photos">From your photo library</string>
-  <string name="composer_add_attachments_bottom_sheet_from_camera">Take a new photo</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">A saját fotókönyvtárból</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">Új fotó készítése</string>
   <string name="composer_error_loading_parent_message">Az üzenet adatainak betöltése nem sikerült</string>
   <string name="composer_original_message_quote">Eredeti üzenet</string>
   <string name="composer_sender_quote">%s-kor, %s&lt;%s&gt; ezt írta:</string>
@@ -52,7 +52,7 @@
   <string name="composer_too_many_attachments_error">Túllépve a mellékletek maximális száma (100).</string>
   <string name="composer_delete_attachment_error">Váratlan hiba történt egy melléklet törlése közben.</string>
   <string name="composer_unexpected_attachments_error">Váratlan hiba történt a mellékletekkel kapcsolatban.</string>
-  <string name="composer_attach_capture_from_camera_error">Capturing an attachment from camera isn\'t possible at this time</string>
+  <string name="composer_attach_capture_from_camera_error">Egy melléklet rögzítése kameráról jelenleg nem lehetséges.</string>
   <string name="composer_warning_local_data_shown">A vázlat legutóbbi változatának betöltése nem sikerült. Bármilyen változtatás felülírja a tartalmát.</string>
   <string name="composer_button_add_password">Jelszó hozzáadása</string>
   <string name="composer_button_discard_draft">Piszkozat elvetése</string>
@@ -114,6 +114,15 @@
   <string name="discard_draft_dialog_confirm_button">Elvetés</string>
   <string name="discard_draft_dialog_dismiss_button">Mégsem</string>
   <string name="discard_draft_error">Hiba a piszkozat elvetése közben</string>
-  <string name="composer_remove_inline_image">Remove</string>
-  <string name="composer_send_as_attachment">Send as attachment</string>
+  <string name="composer_remove_inline_image">Eltávolítás</string>
+  <string name="composer_send_as_attachment">Küldés mellékletként</string>
+  <string name="composer_remove_recipient_action_item">Eltávolítás</string>
+  <string name="composer_copy_recipient_action_item">Másolás</string>
+  <string name="schedule_send_content_description">Schedule send</string>
+  <string name="composer_error_retrieving_schedule_send_options">Generating the times to \"schedule send\" at failed</string>
+  <string name="composer_schedule_send_content_description">Schedule send</string>
+  <string name="composer_schedule_send_tomorrow_title">Tomorrow</string>
+  <string name="composer_schedule_send_monday_title">Monday</string>
+  <string name="composer_schedule_send_custom_title">Custom</string>
+  <string name="composer_schedule_send_custom_description">Pick time and date</string>
 </resources>

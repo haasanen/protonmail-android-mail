@@ -80,6 +80,7 @@
   <string name="message_blocked_sender_banner_text">此寄件者過去曾遭封鎖。</string>
   <string name="message_blocked_sender_button_text">解除封鎖</string>
   <string name="message_expiration_banner_text">此郵件的有效期限尚餘 %1$s</string>
+  <string name="message_auto_delete_banner_text">This message will be automatically deleted in %1$s</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">您將離開應用程式並導覽到:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">下次無需再詢問</string>

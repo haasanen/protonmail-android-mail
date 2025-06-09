@@ -118,4 +118,13 @@
   <string name="discard_draft_error">Chyba pri zahadzovaní konceptu</string>
   <string name="composer_remove_inline_image">Odstrániť</string>
   <string name="composer_send_as_attachment">Odoslať ako prílohu</string>
+  <string name="composer_remove_recipient_action_item">Odstrániť</string>
+  <string name="composer_copy_recipient_action_item">Kopírovať</string>
+  <string name="schedule_send_content_description">Naplánovať odoslanie</string>
+  <string name="composer_error_retrieving_schedule_send_options">Generovanie časov na „naplánovanie odoslania“ zlyhalo</string>
+  <string name="composer_schedule_send_content_description">Naplánovať odoslanie</string>
+  <string name="composer_schedule_send_tomorrow_title">Zajtra</string>
+  <string name="composer_schedule_send_monday_title">Pondelok</string>
+  <string name="composer_schedule_send_custom_title">Vlastné</string>
+  <string name="composer_schedule_send_custom_description">Vyberte čas a dátum</string>
 </resources>
