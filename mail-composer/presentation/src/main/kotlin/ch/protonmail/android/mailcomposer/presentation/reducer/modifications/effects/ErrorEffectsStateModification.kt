@@ -22,6 +22,7 @@ import androidx.annotation.StringRes
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 
@@ -67,6 +68,16 @@ internal sealed interface RecoverableError : EffectsStateModification {
             AttachmentAddError.Unknown,
             AttachmentAddError.InvalidDraftMessage ->
                 state.copy(error = Effect.of(TextUiModel(R.string.composer_unexpected_attachments_error)))
+        }
+    }
+
+    data class AttachmentRemove(val error: AttachmentDeleteError) : RecoverableError {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = when (error) {
+            AttachmentDeleteError.FailedToDeleteFile,
+            AttachmentDeleteError.InvalidDraftMessage,
+            AttachmentDeleteError.Unknown ->
+                state.copy(error = Effect.of(TextUiModel(R.string.composer_delete_attachment_error)))
         }
     }
 

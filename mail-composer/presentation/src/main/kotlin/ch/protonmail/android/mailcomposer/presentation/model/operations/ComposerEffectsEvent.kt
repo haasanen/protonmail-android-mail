@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.model.operations
 
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.BottomSheetEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.CompletionEffectsStateModification
@@ -72,9 +73,11 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
                 is InlineAttachmentRemoved -> ContentEffectsStateModifications.OnInlineAttachmentRemoved(contentId)
                 is OnAttachFromOptionsRequest -> BottomSheetEffectsStateModification.ShowBottomSheet
                 is OnInlineImageActionsRequested -> BottomSheetEffectsStateModification.ShowBottomSheet
+                is RemoveAttachmentError -> RecoverableError.AttachmentRemove(error)
             }
         )
 
+        data class RemoveAttachmentError(val error: AttachmentDeleteError) : AttachmentEvent
         data class AddAttachmentError(val error: AttachmentAddError) : AttachmentEvent
         data class InlineAttachmentAdded(val contentId: String) : AttachmentEvent
         data class InlineAttachmentRemoved(val contentId: String) : AttachmentEvent

@@ -34,7 +34,6 @@ import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.decode
 import ch.protonmail.android.mailcommon.domain.model.hasEmailData
 import ch.protonmail.android.mailcommon.domain.network.NetworkManager
-import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
@@ -468,7 +467,7 @@ class ComposerViewModel @AssistedInject constructor(
             deleteAttachment(attachmentId)
                 .onLeft {
                     Timber.e("Failed to delete attachment: $it")
-                    emitNewStateFor(EffectsEvent.AttachmentEvent.AddAttachmentError(AttachmentAddError.Unknown))
+                    emitNewStateFor(EffectsEvent.AttachmentEvent.RemoveAttachmentError(it))
                 }
         }
     }
