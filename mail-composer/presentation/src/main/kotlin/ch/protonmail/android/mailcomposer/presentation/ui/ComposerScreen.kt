@@ -35,7 +35,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +55,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
@@ -102,13 +102,13 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     val viewModel = hiltViewModel<ComposerViewModel, ComposerViewModel.Factory> { factory ->
         factory.create(recipientsStateManager)
     }
-    val composerStates by viewModel.composerStates.collectAsState()
+    val composerStates by viewModel.composerStates.collectAsStateWithLifecycle()
     val mainState = composerStates.main
     val attachmentsState = composerStates.attachments
     val accessoriesState = composerStates.accessories
     val effectsState = composerStates.effects
-    val isChooseAttachmentSourceEnabled by viewModel.isChooseAttachmentSourceEnabled.collectAsState()
-    val isScheduleSendEnabled by viewModel.isScheduleSendEnabled.collectAsState()
+    val isChooseAttachmentSourceEnabled by viewModel.isChooseAttachmentSourceEnabled.collectAsStateWithLifecycle()
+    val isScheduleSendEnabled by viewModel.isScheduleSendEnabled.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { ProtonSnackbarHostState() }
     val bottomSheetType = rememberSaveable(stateSaver = BottomSheetType.Saver) {
