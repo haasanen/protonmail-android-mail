@@ -124,4 +124,10 @@ internal sealed interface RecoverableError : EffectsStateModification {
         override fun apply(state: ComposerState.Effects): ComposerState.Effects =
             state.copy(error = Effect.of(TextUiModel(R.string.composer_error_send_message)))
     }
+    data object GetScheduleSendOptionsFailed : RecoverableError {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
+            state.copy(error = Effect.of(TextUiModel(R.string.composer_error_retrieving_schedule_send_options)))
+    }
+
 }

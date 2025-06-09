@@ -74,14 +74,16 @@ sealed interface ComposerState {
 
     data class Accessories(
         val isMessagePasswordSet: Boolean,
-        val messageExpiresIn: Duration
+        val messageExpiresIn: Duration,
+        val scheduleSendOptions: ScheduleSendOptionsUiModel
     ) {
 
         companion object {
 
             fun initial() = Accessories(
                 isMessagePasswordSet = false,
-                messageExpiresIn = Duration.ZERO
+                messageExpiresIn = Duration.ZERO,
+                scheduleSendOptions = ScheduleSendOptionsUiModel.EmptyOptions
             )
         }
     }

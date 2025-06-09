@@ -24,7 +24,15 @@ data class ScheduleSendOptionsUiModel(
     val tomorrow: InstantWithFormattedTime,
     val monday: InstantWithFormattedTime,
     val isCustomTimeOptionAvailable: Boolean
-)
+) {
+    companion object {
+        val EmptyOptions = ScheduleSendOptionsUiModel(
+            tomorrow = InstantWithFormattedTime(Instant.DISTANT_PAST, ""),
+            monday = InstantWithFormattedTime(Instant.DISTANT_PAST, ""),
+            isCustomTimeOptionAvailable = false
+        )
+    }
+}
 
 data class InstantWithFormattedTime(
     val instant: Instant,

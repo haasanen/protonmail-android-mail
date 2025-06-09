@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.reducer.modifications
 
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
+import ch.protonmail.android.mailcomposer.presentation.model.ScheduleSendOptionsUiModel
 import kotlin.time.Duration
 
 internal sealed interface AccessoriesStateModification : ComposerStateModification<ComposerState.Accessories> {
@@ -27,8 +28,10 @@ internal sealed interface AccessoriesStateModification : ComposerStateModificati
     override fun apply(state: ComposerState.Accessories): ComposerState.Accessories = when (this) {
         is MessageExpirationUpdated -> state.copy(messageExpiresIn = expiration)
         is MessagePasswordUpdated -> state.copy(isMessagePasswordSet = messagePassword != null)
+        is ScheduleSendOptionsUpdated -> state.copy(scheduleSendOptions = options)
     }
 
     data class MessagePasswordUpdated(val messagePassword: MessagePassword?) : AccessoriesStateModification
     data class MessageExpirationUpdated(val expiration: Duration) : AccessoriesStateModification
+    data class ScheduleSendOptionsUpdated(val options: ScheduleSendOptionsUiModel) : AccessoriesStateModification
 }

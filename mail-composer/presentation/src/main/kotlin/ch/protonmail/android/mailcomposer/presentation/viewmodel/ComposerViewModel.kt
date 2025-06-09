@@ -411,12 +411,19 @@ class ComposerViewModel @AssistedInject constructor(
                     emitNewStateFor(EffectsEvent.DraftEvent.OnDiscardDraftRequested)
 
                 is ComposerAction.DiscardDraftConfirmed -> onDiscardDraftConfirmed()
+                is ComposerAction.OnScheduleSendRequested -> onScheduleSendRequested()
             }
             logViewModelAction(action, "Completed.")
         }
     }
 
     fun loadEmbeddedImage(contentId: String): EmbeddedImage? = getEmbeddedImage(contentId).getOrNull()
+
+    private suspend fun onScheduleSendRequested() {
+        getFormattedScheduleSendOptions()
+            .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnGetScheduleSendOptionsError) }
+            .onRight { emitNewStateFor(CompositeEvent.ScheduleSendOptionsReady(it)) }
+    }
 
     private fun observeAttachments() {
         viewModelScope.launch {

@@ -56,4 +56,6 @@ internal sealed interface ComposerAction : ComposerStateOperation {
 
     data object DiscardDraftRequested : ComposerAction
     data object DiscardDraftConfirmed : ComposerAction
+
+    data object OnScheduleSendRequested : ComposerAction
 }
