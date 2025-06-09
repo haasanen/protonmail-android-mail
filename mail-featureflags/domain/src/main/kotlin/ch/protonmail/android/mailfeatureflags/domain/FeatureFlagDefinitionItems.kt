@@ -42,7 +42,7 @@ data object InlineImagesComposerEnabled : FeatureFlagDefinition(
     name = "Inline images composer",
     category = FeatureFlagCategory.Composer,
     description = "Allow to add attachments as inline images in composer",
-    defaultValue = false
+    defaultValue = true
 )
 
 data object ChooseAttachmentSourceEnabled : FeatureFlagDefinition(
@@ -50,7 +50,7 @@ data object ChooseAttachmentSourceEnabled : FeatureFlagDefinition(
     name = "Choose attachments source in composer",
     category = FeatureFlagCategory.Composer,
     description = "Allow to choose where to add attachments from (eg. camera, photos, files)",
-    defaultValue = false
+    defaultValue = true
 )
 
 data object ScheduledSendEnabled : FeatureFlagDefinition(
