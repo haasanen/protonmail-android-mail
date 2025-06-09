@@ -108,27 +108,3 @@ data class ComposerDraftState(
         )
     }
 }
-
-/**
- * @displayBody is the body wrapped with an HTML template to allow injecting css and javascript; used to display only;
- * @body is used to expose back to the viewModel any changes applied by the user (no template, user-content only);
- */
-data class ComposerFields(
-    val sender: SenderUiModel,
-    val displayBody: DraftDisplayBodyUiModel,
-    val body: String
-) {
-    companion object {
-        val initial = ComposerFields(
-            sender = SenderUiModel(""),
-            displayBody = DraftDisplayBodyUiModel(""),
-            body = ""
-        )
-    }
-}
-
-enum class ContactSuggestionsField {
-    TO,
-    CC,
-    BCC
-}
