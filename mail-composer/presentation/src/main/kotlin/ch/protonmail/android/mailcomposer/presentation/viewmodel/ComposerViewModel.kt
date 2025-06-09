@@ -419,12 +419,6 @@ class ComposerViewModel @AssistedInject constructor(
 
     fun loadEmbeddedImage(contentId: String): EmbeddedImage? = getEmbeddedImage(contentId).getOrNull()
 
-    private suspend fun onScheduleSendRequested() {
-        getFormattedScheduleSendOptions()
-            .onLeft { emitNewStateFor(ComposerEvent.ErrorGetScheduleSendOptions) }
-            .onRight { emitNewStateFor(ComposerEvent.ScheduleSendOptionsData(it)) }
-    }
-
     private fun observeAttachments() {
         viewModelScope.launch {
             observeMessageAttachments().onEach { result ->

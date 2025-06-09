@@ -217,12 +217,13 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     onPhotos = { viewModel.submit(ComposerAction2.OpenPhotosPicker) }
                 )
 
-                is BottomSheetType.ScheduleSendOptions -> ScheduleSendBottomSheetContent(
-                    optionsUiModel = state.scheduleSendOptions,
-                    onScheduleSendConfirmed = {
-                        Timber.d("Schedule send confirmed, to happen at $it")
-                    }
-                )
+                is BottomSheetType.ScheduleSendOptions -> Unit
+//                    ScheduleSendBottomSheetContent(
+//                    optionsUiModel = state.scheduleSendOptions,
+//                    onScheduleSendConfirmed = {
+//                        Timber.d("Schedule send confirmed, to happen at $it")
+//                    }
+//                )
             }
         },
         sheetState = bottomSheetState
@@ -240,7 +241,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     },
                     onScheduleSendClick = {
                         bottomSheetType.value = BottomSheetType.ScheduleSendOptions
-                        viewModel.submit(ComposerAction.OnScheduleSendRequested)
+//                        viewModel.submit(ComposerAction.OnScheduleSendRequested)
                     },
                     isSendMessageEnabled = mainState.isSubmittable,
                     isScheduleSendFeatureFlagEnabled = isScheduleSendEnabled
