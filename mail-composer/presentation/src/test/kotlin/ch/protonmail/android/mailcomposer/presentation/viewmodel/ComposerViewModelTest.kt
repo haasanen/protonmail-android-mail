@@ -58,15 +58,15 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
-import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerFields
+import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
-import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
+import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerStateReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
@@ -78,7 +78,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
-import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
@@ -112,7 +111,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction2 as ComposerAction
 
 class ComposerViewModelTest {
 
@@ -153,8 +152,7 @@ class ComposerViewModelTest {
             DraftDisplayBodyUiModel("<html> ${bodySlot.captured.messageBody} </html>")
         }
     }
-    private val attachmentUiModelMapper = AttachmentMetadataUiModelMapper()
-    private val reducer = ComposerReducer(attachmentUiModelMapper)
+    private val reducer = ComposerStateReducer()
     private val isAttachmentSourcesEnabled = flowOf(false)
     private val isScheduleSendEnabled = flowOf(false)
 
@@ -197,8 +195,8 @@ class ComposerViewModelTest {
         expectNoInputDraftAction()
         expectInputDraftMessageId { MessageIdSample.EmptyDraft }
 
-        viewModel.state.test {
-            assertEquals(Effect.of(Unit), awaitItem().closeComposer)
+        viewModel.composerStates.test {
+            assertEquals(Effect.of(Unit), awaitItem().effects.closeComposer)
         }
     }
 
@@ -233,7 +231,7 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        viewModel.submit(ComposerAction.AttachmentsAdded(listOf(uri)))
+        viewModel.submit(ComposerAction.AddAttachments(listOf(uri)))
 
         // Then
         coVerify { addAttachment(uri) }
@@ -308,7 +306,7 @@ class ComposerViewModelTest {
         recipientsStateManager.setFromParticipants(expectedTo, expectedCc, expectedBcc)
 
         // Then
-        viewModel.state.test {
+        viewModel.composerStates.test {
             coVerify { updateRecipients(expectedTo, expectedCc, expectedBcc) }
             cancelAndIgnoreRemainingEvents()
         }
@@ -345,10 +343,10 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        viewModel.submit(ComposerAction.OnCloseComposer)
+        viewModel.submit(ComposerAction.CloseComposer)
 
         // Then
-        assertEquals(expectedMessageId, viewModel.state.value.closeComposerWithDraftSaved.consume())
+        assertEquals(expectedMessageId, viewModel.composerStates.value.effects.closeComposerWithDraftSaved.consume())
     }
 
     @Test
@@ -383,13 +381,13 @@ class ComposerViewModelTest {
         expectUpdateRecipientsSucceeds(recipientsTo.value, recipientsCc.value, recipientsBcc.value)
 
         // When
-        viewModel.submit(ComposerAction.OnSendMessage)
+        viewModel.submit(ComposerAction.SendMessage)
 
         // Then
         coVerifyOrder {
             sendMessageMock()
         }
-        assertEquals(Effect.of(Unit), viewModel.state.value.closeComposerWithMessageSending)
+        assertEquals(Effect.of(Unit), viewModel.composerStates.value.effects.closeComposerWithMessageSending)
     }
 
     @Test
@@ -424,13 +422,13 @@ class ComposerViewModelTest {
         }
 
         // When
-        viewModel.submit(ComposerAction.OnSendMessage)
+        viewModel.submit(ComposerAction.SendMessage)
 
         // Then
         coVerifyOrder {
             sendMessageMock()
         }
-        assertEquals(Effect.of(Unit), viewModel.state.value.closeComposerWithMessageSendingOffline)
+        assertEquals(Effect.of(Unit), viewModel.composerStates.value.effects.closeComposerWithMessageSendingOffline)
     }
 
     @Test
@@ -449,10 +447,10 @@ class ComposerViewModelTest {
         expectedNoDraftSaved()
 
         // When
-        viewModel.submit(ComposerAction.OnCloseComposer)
+        viewModel.submit(ComposerAction.CloseComposer)
 
         // Then
-        assertEquals(Effect.of(Unit), viewModel.state.value.closeComposer)
+        assertEquals(Effect.of(Unit), viewModel.composerStates.value.effects.closeComposer)
     }
 
     @Test
@@ -469,10 +467,10 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        val actual = viewModel.state.value
+        val actual = viewModel.composerStates.value
 
         // Then
-        assertEquals(SenderUiModel(expectedDraftFields.sender.value), actual.fields.sender)
+        assertEquals(SenderUiModel(expectedDraftFields.sender.value), actual.main.fields.sender)
     }
 
     @Test
@@ -489,10 +487,10 @@ class ComposerViewModelTest {
         expectInitComposerWithNewEmptyDraftFails(expectedUserId) { DataError.Local.NoDataCached }
 
         // When
-        val actual = viewModel.state.value
+        val actual = viewModel.composerStates.value
 
         // Then
-        assertEquals(TextUiModel(R.string.composer_error_invalid_sender), actual.error.consume())
+        assertEquals(TextUiModel(R.string.composer_error_invalid_sender), actual.effects.exitError.consume())
     }
 
     @Test
@@ -517,8 +515,8 @@ class ComposerViewModelTest {
         viewModel.submit(action)
 
         // Then
-        val currentState = viewModel.state.value
-        assertEquals(TextUiModel(R.string.composer_error_store_draft_body), currentState.error.consume())
+        val currentState = viewModel.composerStates.value
+        assertEquals(TextUiModel(R.string.composer_error_store_draft_body), currentState.effects.error.consume())
     }
 
     @Test
@@ -543,8 +541,8 @@ class ComposerViewModelTest {
         }
 
         // Then
-        val currentState = viewModel.state.value
-        assertEquals(TextUiModel(R.string.composer_error_store_draft_subject), currentState.error.consume())
+        val currentState = viewModel.composerStates.value
+        assertEquals(TextUiModel(R.string.composer_error_store_draft_subject), currentState.effects.error.consume())
     }
 
     @Test
@@ -571,13 +569,16 @@ class ComposerViewModelTest {
         expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
 
-        viewModel.state.test {
+        viewModel.composerStates.test {
             // When
             recipientsStateManager.updateRecipients(recipientsUiModels, ContactSuggestionsField.TO)
 
             // Then
-            val currentState = viewModel.state.value
-            assertEquals(TextUiModel(R.string.composer_error_store_draft_recipients), currentState.error.consume())
+            val currentState = viewModel.composerStates.value
+            assertEquals(
+                TextUiModel(R.string.composer_error_store_draft_recipients),
+                currentState.effects.error.consume()
+            )
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -598,10 +599,10 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        val actual = viewModel.state.value
+        val actual = viewModel.composerStates.value
 
         // Then
-        assertTrue(actual.isLoading)
+        assertEquals(actual.main.loadingType, ComposerState.LoadingType.Initial)
         coVerify { openExistingDraft(expectedUserId, expectedDraftId) }
     }
 
@@ -626,7 +627,7 @@ class ComposerViewModelTest {
         expectNoRestoredState(savedStateHandle)
 
         // When
-        val actual = viewModel.state.value
+        val actual = viewModel.composerStates.value
 
         // Then
         val expectedComposerFields = ComposerFields(
@@ -634,7 +635,7 @@ class ComposerViewModelTest {
             expectedDisplayBody,
             expectedDraftFields.body.value
         )
-        assertEquals(expectedComposerFields, actual.fields)
+        assertEquals(expectedComposerFields, actual.main.fields)
     }
 
     @Test
@@ -656,9 +657,9 @@ class ComposerViewModelTest {
         expectNoRestoredState(savedStateHandle)
 
         // When
-        val actual = viewModel.state.value
+        val actual = viewModel.composerStates.value
 
-        assertEquals(Unit, actual.focusTextBody.consume())
+        assertEquals(Unit, actual.effects.focusTextBody.consume())
     }
 
     @Test
@@ -684,9 +685,9 @@ class ComposerViewModelTest {
         expectNoRestoredState(savedStateHandle)
 
         // When
-        val actual = viewModel.state.value
+        val actual = viewModel.composerStates.value
 
-        assertEquals(null, actual.focusTextBody.consume())
+        assertEquals(null, actual.effects.focusTextBody.consume())
     }
 
     @Test
@@ -705,7 +706,7 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        val actual = viewModel.state.value
+        val actual = viewModel.composerStates.value
 
         // Then
         val expectedComposerFields = ComposerFields(
@@ -713,7 +714,7 @@ class ComposerViewModelTest {
             expectedDisplayBody,
             expectedDraftFields.body.value
         )
-        assertEquals(expectedComposerFields, actual.fields)
+        assertEquals(expectedComposerFields, actual.main.fields)
         expectStoreDraftSubjectSucceeds(expectedDraftFields.subject)
     }
 
@@ -734,11 +735,11 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        val actual = viewModel.state.value
+        val actual = viewModel.composerStates.value
 
         // Then
         val expectedWarning = Effect.of(TextUiModel(R.string.composer_warning_local_data_shown))
-        assertEquals(expectedWarning, actual.warning)
+        assertEquals(expectedWarning, actual.effects.warning)
     }
 
     @Test
@@ -755,10 +756,10 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        val actual = viewModel.state.value
+        val actual = viewModel.composerStates.value
 
         // Then
-        assertEquals(TextUiModel(R.string.composer_error_loading_draft), actual.error.consume())
+        assertEquals(TextUiModel(R.string.composer_error_loading_draft), actual.effects.error.consume())
     }
 
     @Test
@@ -775,11 +776,11 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        viewModel.submit(ComposerAction.OnAddAttachments)
+        viewModel.submit(ComposerAction.AddAttachmentsRequested)
 
         // Then
-        val actual = viewModel.state.value
-        assertEquals(true, actual.changeBottomSheetVisibility.consume())
+        val actual = viewModel.composerStates.value
+        assertEquals(true, actual.effects.changeBottomSheetVisibility.consume())
     }
 
     @Test
@@ -810,14 +811,14 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        viewModel.state.test {
+        viewModel.composerStates.test {
 
             // Then
             val expected = AttachmentGroupUiModel(
                 limit = NO_ATTACHMENT_LIMIT,
                 attachments = listOf(AttachmentMetadataUiModelSamples.DeletableInvoiceUploaded)
             )
-            val actual = awaitItem().attachments
+            val actual = awaitItem().attachments.uiModel
             assertEquals(expected, actual)
         }
     }
@@ -882,7 +883,7 @@ class ComposerViewModelTest {
         }
 
         // When
-        viewModel.state.test {
+        viewModel.composerStates.test {
             // Then
             assertEquals(
                 RecipientUiModel.Valid(expectedRecipient.address),
@@ -924,7 +925,7 @@ class ComposerViewModelTest {
         }
 
         // When
-        viewModel.submit(ComposerAction.SendExpiringMessageToExternalRecipientsConfirmed)
+        viewModel.submit(ComposerAction.ConfirmSendExpirationSetToExternal)
 
         // Then
         coVerifyOrder {
@@ -946,11 +947,11 @@ class ComposerViewModelTest {
         coEvery { discardDraft(expectedUserId, expectedMessageId) } returns Unit.right()
 
         // When
-        viewModel.submit(ComposerAction.DiscardDraft)
+        viewModel.submit(ComposerAction.DiscardDraftRequested)
 
         // Then
-        viewModel.state.test {
-            assertEquals(Unit, awaitItem().confirmDiscardDraft.consume())
+        viewModel.composerStates.test {
+            assertEquals(Unit, awaitItem().effects.confirmDiscardDraft.consume())
         }
 
     }
@@ -972,8 +973,8 @@ class ComposerViewModelTest {
         viewModel.submit(ComposerAction.DiscardDraftConfirmed)
 
         // Then
-        viewModel.state.test {
-            assertEquals(Unit, awaitItem().closeComposer.consume())
+        viewModel.composerStates.test {
+            assertEquals(Unit, awaitItem().effects.closeComposer.consume())
         }
         coVerify { discardDraft(expectedUserId, expectedMessageId) }
     }

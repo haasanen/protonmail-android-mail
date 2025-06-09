@@ -95,4 +95,22 @@ internal sealed interface RecoverableError : EffectsStateModification {
         override fun apply(state: ComposerState.Effects): ComposerState.Effects =
             state.copy(error = Effect.of(TextUiModel(R.string.composer_error_store_draft_body)))
     }
+
+    data object SaveRecipientFailed : RecoverableError {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
+            state.copy(error = Effect.of(TextUiModel(R.string.composer_error_store_draft_recipients)))
+    }
+
+    data object SaveSubjectFailed : RecoverableError {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
+            state.copy(error = Effect.of(TextUiModel(R.string.composer_error_store_draft_subject)))
+    }
+
+    data object SendMessageFailed : RecoverableError {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
+            state.copy(error = Effect.of(TextUiModel(R.string.composer_error_send_message)))
+    }
 }

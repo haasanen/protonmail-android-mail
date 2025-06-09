@@ -41,6 +41,7 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.LoadingError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.UnrecoverableError
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import io.mockk.mockk
 import org.junit.runner.RunWith
@@ -180,13 +181,13 @@ internal class EffectsStateModificationTest(
             arrayOf(
                 "closes composer with saved draft",
                 initialState,
-                CompletionEffectsStateModification.CloseComposer(hasSavedDraft = true),
-                initialState.copy(closeComposerWithDraftSaved = Effect.of(Unit))
+                CompletionEffectsStateModification.CloseComposer.CloseComposerDraftSaved(MessageId("123")),
+                initialState.copy(closeComposerWithDraftSaved = Effect.of(MessageId("123")))
             ),
             arrayOf(
                 "closes composer without saved draft",
                 initialState,
-                CompletionEffectsStateModification.CloseComposer(hasSavedDraft = false),
+                CompletionEffectsStateModification.CloseComposer.CloseComposerNoDraft,
                 initialState.copy(closeComposer = Effect.of(Unit))
             ),
             arrayOf(

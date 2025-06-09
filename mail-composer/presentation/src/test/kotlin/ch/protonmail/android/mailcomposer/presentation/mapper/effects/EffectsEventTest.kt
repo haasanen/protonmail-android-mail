@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.LoadingError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.UnrecoverableError
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import io.mockk.mockk
 import org.junit.Test
@@ -99,21 +100,25 @@ internal class EffectsEventTest(
             ),
             arrayOf(
                 "ComposerControlEvent OnCloseRequest (true) to modification",
-                EffectsEvent.ComposerControlEvent.OnCloseRequest(true),
-                ComposerStateModifications(effectsModification = CompletionEffectsStateModification.CloseComposer(true))
+                EffectsEvent.ComposerControlEvent.OnCloseRequestWithDraft(MessageId("123")),
+                ComposerStateModifications(
+                    effectsModification = CompletionEffectsStateModification.CloseComposer.CloseComposerDraftSaved(
+                        MessageId("123")
+                    )
+                )
             ),
             arrayOf(
                 "ComposerControlEvent OnCloseRequest (false) to modification",
-                EffectsEvent.ComposerControlEvent.OnCloseRequest(false),
+                EffectsEvent.ComposerControlEvent.OnCloseRequest,
                 ComposerStateModifications(
-                    effectsModification = CompletionEffectsStateModification.CloseComposer(false)
+                    effectsModification = CompletionEffectsStateModification.CloseComposer.CloseComposerNoDraft
                 )
             ),
             arrayOf(
                 "ComposerControlEvent OnComposerRestored to modification",
                 EffectsEvent.ComposerControlEvent.OnComposerRestored,
                 ComposerStateModifications(
-                    effectsModification = CompletionEffectsStateModification.CloseComposer(false)
+                    effectsModification = CompletionEffectsStateModification.CloseComposer.CloseComposerNoDraft
                 )
             ),
             arrayOf(

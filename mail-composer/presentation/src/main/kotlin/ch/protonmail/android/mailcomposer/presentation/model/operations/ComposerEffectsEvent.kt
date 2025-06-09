@@ -111,6 +111,9 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
                 OnSetExpirationError -> RecoverableError.Expiration
                 OnDiscardDraftError -> RecoverableError.DiscardDraftFailed
                 OnStoreBodyError -> RecoverableError.SaveBodyFailed
+                OnStoreRecipientError -> RecoverableError.SaveRecipientFailed
+                OnStoreSubjectError -> RecoverableError.SaveSubjectFailed
+                OnSendMessageError -> RecoverableError.SendMessageFailed
             }
         )
 
@@ -119,6 +122,9 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
         data object OnSetExpirationError : ErrorEvent
         data object OnDiscardDraftError : ErrorEvent
         data object OnStoreBodyError : ErrorEvent
+        data object OnStoreSubjectError : ErrorEvent
+        data object OnStoreRecipientError : ErrorEvent
+        data object OnSendMessageError : ErrorEvent
     }
 
     sealed interface SendEvent : EffectsEvent {

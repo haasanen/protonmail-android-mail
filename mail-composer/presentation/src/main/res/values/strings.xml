@@ -125,4 +125,5 @@
     <string name="composer_schedule_send_monday_title">Monday</string>
     <string name="composer_schedule_send_custom_title">Custom</string>
     <string name="composer_schedule_send_custom_description">Pick time and date</string>
+    <string name="composer_error_send_message">Error sending message</string>
 </resources>

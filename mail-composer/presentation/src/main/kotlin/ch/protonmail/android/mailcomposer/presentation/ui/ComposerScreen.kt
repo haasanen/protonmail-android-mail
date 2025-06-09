@@ -456,6 +456,11 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         snackbarHostState.showSnackbar(type = ProtonSnackbarType.ERROR, message = error)
     }
 
+    ConsumableTextEffect(effect = effectsState.exitError) {
+        snackbarHostState.showSnackbar(type = ProtonSnackbarType.ERROR, message = it)
+        actions.onCloseComposerClick()
+    }
+
     ConsumableTextEffect(effect = effectsState.warning) { warning ->
         snackbarHostState.showSnackbar(type = ProtonSnackbarType.WARNING, message = warning)
     }

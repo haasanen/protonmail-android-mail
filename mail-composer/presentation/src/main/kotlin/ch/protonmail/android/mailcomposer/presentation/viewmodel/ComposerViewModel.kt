@@ -34,7 +34,6 @@ import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.decode
 import ch.protonmail.android.mailcommon.domain.model.hasEmailData
 import ch.protonmail.android.mailcommon.domain.network.NetworkManager
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
@@ -60,7 +59,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
-import ch.protonmail.android.mailcomposer.presentation.model.ComposerEvent
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerStates
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
@@ -412,6 +410,7 @@ class ComposerViewModel @AssistedInject constructor(
                 is ComposerAction2.DraftBodyChanged -> onDraftBodyChanged(action.draftBody)
                 is ComposerAction2.DiscardDraftRequested ->
                     emitNewStateFor(EffectsEvent.DraftEvent.OnDiscardDraftRequested)
+
                 is ComposerAction2.DiscardDraftConfirmed -> onDiscardDraftConfirmed()
             }
             logViewModelAction(action, "Completed.")
@@ -514,7 +513,7 @@ class ComposerViewModel @AssistedInject constructor(
         sendMessage().fold(
             ifLeft = {
                 Timber.w("composer: Send message failed. Error: $it")
-                ComposerEvent.OnSendingError(TextUiModel(it.toString()))
+                emitNewStateFor(EffectsEvent.ErrorEvent.OnSendMessageError)
             },
             ifRight = {
                 if (networkManager.isConnectedToNetwork()) {
@@ -540,6 +539,7 @@ class ComposerViewModel @AssistedInject constructor(
 
     private suspend fun onSubjectChanged(subject: Subject) = storeDraftWithSubject(subject)
         .onRight { savedStateHandle[ComposerScreen.HasSavedDraftKey] = true }
+        .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreSubjectError) }
 
     private suspend fun onDraftBodyChanged(updatedDraftBody: DraftBody) {
         val draftDisplayBody = buildDraftDisplayBody(MessageBodyWithType(updatedDraftBody.value, MimeTypeUiModel.Html))
@@ -570,9 +570,10 @@ class ComposerViewModel @AssistedInject constructor(
             recipients.toRecipients.toRecipients(),
             recipients.ccRecipients.toRecipients(),
             recipients.bccRecipients.toRecipients()
-        ).onRight {
-            emitNewStateFor(MainEvent.RecipientsChanged(recipientsStateManager.hasValidRecipients()))
-        }
+        ).fold(
+            ifRight = { emitNewStateFor(MainEvent.RecipientsChanged(recipientsStateManager.hasValidRecipients())) },
+            ifLeft = { emitNewStateFor(EffectsEvent.ErrorEvent.OnStoreRecipientError) }
+        )
 
         savedStateHandle[ComposerScreen.HasSavedDraftKey] = true
     }
