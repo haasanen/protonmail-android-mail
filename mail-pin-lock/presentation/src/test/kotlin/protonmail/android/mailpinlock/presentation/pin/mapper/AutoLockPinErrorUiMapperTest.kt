@@ -18,16 +18,16 @@
 
 package protonmail.android.mailpinlock.presentation.pin.mapper
 
+import ch.protonmail.android.mailcommon.domain.model.autolock.VerifyAutoLockPinError
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailsettings.presentation.R
-import protonmail.android.mailpinlock.presentation.autolock.helpers.AutoLockTestData
+import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.pin.AutoLockPinEvent
-import ch.protonmail.android.mailpinlock.presentation.pin.PinVerificationRemainingAttempts
 import ch.protonmail.android.mailpinlock.presentation.pin.mapper.AutoLockPinErrorUiMapper
 import org.junit.Test
 import org.junit.experimental.runners.Enclosed
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import protonmail.android.mailpinlock.presentation.autolock.helpers.AutoLockTestData
 import kotlin.test.assertEquals
 
 @RunWith(Enclosed::class)
@@ -61,18 +61,21 @@ internal class AutoLockPinErrorUiMapperTest {
                     TextUiModel(R.string.mail_settings_pin_insertion_error_unknown)
                 ),
                 TestInput(
-                    AutoLockPinEvent.Update.Error.WrongPinCode(AutoLockTestData.OneRemainingAttempt),
+                    AutoLockPinEvent.Update.Error.Verify(
+                        VerifyAutoLockPinError.IncorrectPin,
+                        AutoLockTestData.OneRemainingAttempt
+                    ),
                     TextUiModel.PluralisedText(
-                        R.plurals.mail_settings_pin_insertion_error_wrong_code_ultimatum,
-                        AutoLockTestData.OneRemainingAttempt.value
+                        R.plurals.mail_settings_pin_insertion_error_wrong_code_threshold,
+                        AutoLockTestData.OneRemainingAttempt
                     )
                 ),
                 TestInput(
-                    AutoLockPinEvent.Update.Error.WrongPinCode(AutoLockTestData.NineRemainingAttempts),
-                    TextUiModel.PluralisedText(
-                        R.plurals.mail_settings_pin_insertion_error_wrong_code,
-                        AutoLockTestData.NineRemainingAttempts.value
-                    )
+                    AutoLockPinEvent.Update.Error.Verify(
+                        VerifyAutoLockPinError.IncorrectPin,
+                        AutoLockTestData.NineRemainingAttempts
+                    ),
+                    TextUiModel(R.string.mail_settings_pin_verification_error_no_match)
                 )
             )
         }
@@ -91,7 +94,12 @@ internal class AutoLockPinErrorUiMapperTest {
         @Test
         fun `should map the remaining attempts to the appropriate error ui model`() = with(testInput) {
             // When
-            val actual = autoLockPinSettingsErrorUiMapper.toUiModel(remainingAttempts)
+            val actual = autoLockPinSettingsErrorUiMapper.toUiModel(
+                error = AutoLockPinEvent.Update.Error.Verify(
+                    error = VerifyAutoLockPinError.IncorrectPin,
+                    remainingAttempts = remainingAttempts
+                )
+            )
 
             // Then
             assertEquals(expectedValue, actual)
@@ -102,20 +110,23 @@ internal class AutoLockPinErrorUiMapperTest {
             @JvmStatic
             @Parameterized.Parameters(name = "{0}")
             fun data() = arrayOf(
-                TestInput(PinVerificationRemainingAttempts.Default, null),
                 TestInput(
-                    PinVerificationRemainingAttempts(1),
-                    TextUiModel.PluralisedText(R.plurals.mail_settings_pin_insertion_error_wrong_code_ultimatum, 1)
+                    10,
+                    TextUiModel(R.string.mail_settings_pin_verification_error_no_match)
                 ),
                 TestInput(
-                    PinVerificationRemainingAttempts(6),
-                    TextUiModel.PluralisedText(R.plurals.mail_settings_pin_insertion_error_wrong_code, 6)
+                    1,
+                    TextUiModel.PluralisedText(R.plurals.mail_settings_pin_insertion_error_wrong_code_threshold, 1)
+                ),
+                TestInput(
+                    6,
+                    TextUiModel(R.string.mail_settings_pin_verification_error_no_match)
                 )
             )
         }
 
         data class TestInput(
-            val remainingAttempts: PinVerificationRemainingAttempts,
+            val remainingAttempts: Int,
             val expectedValue: TextUiModel?
         )
     }
