@@ -22,14 +22,21 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinError
+import ch.protonmail.android.mailcommon.domain.model.autolock.VerifyAutoLockPinError
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval
 import ch.protonmail.android.mailpinlock.model.Autolock
 import kotlinx.coroutines.flow.Flow
 
-interface AutolockRepository {
+interface AutoLockRepository {
 
     fun observeAppLock(): Flow<Autolock>
     suspend fun updateAutolockInterval(interval: AutoLockInterval): Either<DataError, Unit>
     suspend fun setAutoLockPinCode(autoLockPin: AutoLockPin): Either<SetAutoLockPinError, Unit>
+    suspend fun verifyAutoLockPinCode(autoLockPin: AutoLockPin): Either<VerifyAutoLockPinError, Unit>
+    suspend fun deleteAutoLockPinCode(autoLockPin: AutoLockPin): Either<VerifyAutoLockPinError, Unit>
+
+    suspend fun setBiometricProtection(enabled: Boolean): Either<DataError, Unit>
     suspend fun shouldAutolock(): Either<DataError, Boolean>
+
+    suspend fun getRemainingAttempts(): Either<DataError, Int>
 }

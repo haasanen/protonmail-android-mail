@@ -21,14 +21,14 @@ package ch.protonmail.android.mailpinlock.di
 import ch.protonmail.android.mailpinlock.data.AppLockDataSource
 import ch.protonmail.android.mailpinlock.data.BiometricsSystemStateRepositoryImpl
 import ch.protonmail.android.mailpinlock.data.RustAppLockDataSource
-import ch.protonmail.android.mailpinlock.domain.AutolockRepository
+import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.domain.BiometricsSystemStateRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import ch.protonmail.android.mailpinlock.data.AutolockRepository as AutolockRepositoryImpl
+import ch.protonmail.android.mailpinlock.data.AutoLockRepositoryImpl as AutolockRepositoryImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -40,7 +40,7 @@ object PinLockModule {
 
         @Binds
         @Reusable
-        fun bindAutoLockRepository(impl: AutolockRepositoryImpl): AutolockRepository
+        fun bindAutoLockRepository(impl: AutolockRepositoryImpl): AutoLockRepository
 
         @Binds
         @Reusable
