@@ -27,6 +27,7 @@ import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toDraftCreateMode
 import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.mapper.toLocalDraftWithSyncStatus
+import ch.protonmail.android.composer.data.mapper.toPreviousScheduleSendTime
 import ch.protonmail.android.composer.data.mapper.toSaveDraftError
 import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.mapper.toSingleRecipients
@@ -43,6 +44,7 @@ import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
@@ -76,6 +78,7 @@ class RustDraftDataSourceImpl @Inject constructor(
     private val openRustDraft: OpenRustDraft,
     private val discardRustDraft: DiscardRustDraft,
     private val rustDraftUndoSend: RustDraftUndoSend,
+    private val cancelScheduleSendMessage: RustCancelScheduleSendMessage,
     private val enqueuer: Enqueuer
 ) : RustDraftDataSource {
 
@@ -202,13 +205,28 @@ class RustDraftDataSourceImpl @Inject constructor(
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-draft: Trying to undo send with null session; Failing.")
-            return DataError.Local.Unknown.left()
+            return DataError.Local.NoUserSession.left()
         }
 
         return rustDraftUndoSend(session, messageId.toLocalMessageId()).onRight {
             enqueuer.cancelWork(SendingStatusWorker.id(userId, messageId))
         }
+    }
 
+    override suspend fun cancelScheduleSendMessage(
+        userId: UserId,
+        messageId: MessageId
+    ): Either<DataError, PreviousScheduleSendTime> {
+        Timber.d("rust-draft: Cancels schedule send raft...")
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-draft: Trying to cancel schedule send with null session; Failing.")
+            return DataError.Local.NoUserSession.left()
+        }
+
+        return cancelScheduleSendMessage(session, messageId.toLocalMessageId()).map {
+            it.toPreviousScheduleSendTime()
+        }
     }
 
     override suspend fun attachmentList(): Either<DataError, AttachmentsWrapper> {

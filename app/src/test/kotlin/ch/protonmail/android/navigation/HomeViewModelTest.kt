@@ -30,7 +30,9 @@ import ch.protonmail.android.mailcommon.domain.sample.UserSample
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatFullDate
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
+import ch.protonmail.android.mailcomposer.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
+import ch.protonmail.android.mailcomposer.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.MarkMessageSendingStatusesAsSeen
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveSendingMessagesStatus
@@ -38,8 +40,8 @@ import ch.protonmail.android.mailcomposer.domain.usecase.UndoSendMessage
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordMailboxScreenView
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailpinlock.domain.usecase.ShouldPresentPinInsertionScreen
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.share.ShareIntentObserver
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -66,6 +68,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.time.DurationUnit
+import kotlin.time.Instant
 import kotlin.time.toDuration
 
 class HomeViewModelTest {
@@ -101,6 +104,7 @@ class HomeViewModelTest {
     private val discardDraft = mockk<DiscardDraft>(relaxUnitFun = true)
 
     private val undoSendMessage = mockk<UndoSendMessage>(relaxUnitFun = true)
+    private val cancelScheduleSendMessage = mockk<CancelScheduleSendMessage>(relaxUnitFun = true)
     private val markMessageSendingStatusesAsSeen = mockk<MarkMessageSendingStatusesAsSeen>(relaxUnitFun = true)
     private val formatFullDate = mockk<FormatFullDate>()
 
@@ -112,6 +116,7 @@ class HomeViewModelTest {
             undoSendMessage,
             markMessageSendingStatusesAsSeen,
             formatFullDate,
+            cancelScheduleSendMessage,
             observePrimaryUserId,
             shareIntentObserver
         )
@@ -398,4 +403,20 @@ class HomeViewModelTest {
         // Then
         coVerify(exactly = 0) { markMessageSendingStatusesAsSeen(any(), any()) }
     }
+
+    @Test
+    fun `should call cancel schedule send message use case when undo schedule send is triggered`() = runTest {
+        // Given
+        val messageId = MessageIdSample.LocalDraft
+        val previousScheduleTime = PreviousScheduleSendTime(Instant.DISTANT_FUTURE)
+
+        coEvery { cancelScheduleSendMessage(userId, messageId) } returns previousScheduleTime.right()
+
+        // When
+        homeViewModel.undoScheduleSendMessage(messageId)
+
+        // Then
+        coVerify { cancelScheduleSendMessage(userId, messageId) }
+    }
+
 }

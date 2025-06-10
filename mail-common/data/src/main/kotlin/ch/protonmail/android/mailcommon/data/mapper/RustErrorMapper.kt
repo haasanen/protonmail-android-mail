@@ -25,6 +25,8 @@ import uniffi.proton_mail_uniffi.ActionErrorReason
 import uniffi.proton_mail_uniffi.ContextReason
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadError
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
+import uniffi.proton_mail_uniffi.DraftCancelScheduleSendError
+import uniffi.proton_mail_uniffi.DraftCancelScheduleSendErrorReason
 import uniffi.proton_mail_uniffi.DraftDiscardError
 import uniffi.proton_mail_uniffi.DraftDiscardErrorReason
 import uniffi.proton_mail_uniffi.DraftOpenError
@@ -114,6 +116,15 @@ fun DraftAttachmentUploadError.toDataError(): DataError = when (this) {
         DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE -> DataError.Local.AttachmentError.AttachmentTooLarge
         DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS -> DataError.Local.AttachmentError.TooManyAttachments
         DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE -> DataError.Local.Unknown
+    }
+}
+
+fun DraftCancelScheduleSendError.toDataError(): DataError = when (this) {
+    is DraftCancelScheduleSendError.Other -> this.v1.toDataError()
+    is DraftCancelScheduleSendError.Reason -> when (this.v1) {
+        DraftCancelScheduleSendErrorReason.MESSAGE_DOES_NOT_EXIST,
+        DraftCancelScheduleSendErrorReason.MESSAGE_NOT_SCHEDULED,
+        DraftCancelScheduleSendErrorReason.MESSAGE_ALREADY_SENT -> DataError.Local.UndoSendError
     }
 }
 

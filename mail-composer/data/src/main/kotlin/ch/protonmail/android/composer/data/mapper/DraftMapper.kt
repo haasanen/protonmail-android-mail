@@ -31,6 +31,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
+import ch.protonmail.android.mailcomposer.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
@@ -47,6 +48,7 @@ import ch.protonmail.android.mailmessage.domain.model.Recipient
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
+import uniffi.proton_mail_uniffi.DraftCancelScheduledSendInfo
 import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.DraftSaveError
 import uniffi.proton_mail_uniffi.DraftSaveErrorReason
@@ -263,6 +265,10 @@ fun DraftSaveError.toSaveDraftError(): SaveDraftError = when (this) {
 }
 
 fun LocalEmbeddedImageInfo.toEmbeddedImage() = EmbeddedImage(this.data, this.mime)
+
+fun DraftCancelScheduledSendInfo.toPreviousScheduleSendTime() = PreviousScheduleSendTime(
+    Instant.fromEpochSeconds(this.lastScheduledTime.toLong())
+)
 
 @MissingRustApi
 // Hardcoded values in the mapping

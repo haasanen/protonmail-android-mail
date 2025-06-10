@@ -19,6 +19,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
@@ -42,6 +43,7 @@ import io.mockk.verifyOrder
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import uniffi.proton_mail_uniffi.DraftCancelScheduledSendInfo
 import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
 import uniffi.proton_mail_uniffi.DraftSaveError
@@ -57,6 +59,7 @@ import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Instant
 
 class RustDraftDataSourceImplTest {
 
@@ -68,6 +71,7 @@ class RustDraftDataSourceImplTest {
     private val mockUserSession = mockk<MailUserSessionWrapper>()
     private val enqueuer = mockk<Enqueuer>()
     private val rustDraftUndoSend = mockk<RustDraftUndoSend>()
+    private val rustCancelScheduleSend = mockk<RustCancelScheduleSendMessage>()
 
     private val dataSource = RustDraftDataSourceImpl(
         userSessionRepository,
@@ -75,6 +79,7 @@ class RustDraftDataSourceImplTest {
         openRustDraft,
         discardRustDraft,
         rustDraftUndoSend,
+        rustCancelScheduleSend,
         enqueuer
     )
 
@@ -451,7 +456,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.LocalDraft
-        val expected = DataError.Local.Unknown
+        val expected = DataError.Local.NoUserSession
         coEvery { userSessionRepository.getUserSession(userId) } returns null
 
         // When
@@ -466,7 +471,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageId("110")
-        val expectedError = DataError.Local.Unknown
+        val expectedError = DataError.Local.NoUserSession
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { rustDraftUndoSend(mockUserSession, messageId.toLocalMessageId()) } returns expectedError.left()
 
@@ -492,6 +497,56 @@ class RustDraftDataSourceImplTest {
         // Then
         assertEquals(Unit.right(), actual)
         coVerify { enqueuer.cancelWork(SendingStatusWorker.id(userId, messageId)) }
+    }
+
+    @Test
+    fun `cancel schedule send returns error when session is null`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.LocalDraft
+        val expected = DataError.Local.NoUserSession
+        coEvery { userSessionRepository.getUserSession(userId) } returns null
+
+        // When
+        val actual = dataSource.cancelScheduleSendMessage(userId, messageId)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `cancel schedule send returns error when rustDraftUndoSend fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageId("110")
+        val expectedError = DataError.Local.NoUserSession
+        coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
+        coEvery { rustCancelScheduleSend(mockUserSession, messageId.toLocalMessageId()) } returns expectedError.left()
+
+        // When
+        val actual = dataSource.cancelScheduleSendMessage(userId, messageId)
+
+        // Then
+        assertEquals(expectedError.left(), actual)
+    }
+
+    @Test
+    fun `cancel schedule send returns previous schedule time when successful`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageId("110")
+        val lastScheduledTime = 123uL
+        val scheduleInfo = DraftCancelScheduledSendInfo(lastScheduledTime)
+        val lastScheduleTime = PreviousScheduleSendTime(Instant.fromEpochSeconds(lastScheduledTime.toLong()))
+        coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
+        coEvery { rustCancelScheduleSend(mockUserSession, messageId.toLocalMessageId()) } returns scheduleInfo.right()
+        coEvery { enqueuer.cancelWork(SendingStatusWorker.id(userId, messageId)) } just Runs
+
+        // When
+        val actual = dataSource.cancelScheduleSendMessage(userId, messageId)
+
+        // Then
+        assertEquals(lastScheduleTime.right(), actual)
     }
 
     @Test

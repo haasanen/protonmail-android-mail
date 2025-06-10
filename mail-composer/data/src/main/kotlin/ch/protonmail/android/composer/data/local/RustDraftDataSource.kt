@@ -23,6 +23,7 @@ import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -50,4 +51,8 @@ interface RustDraftDataSource {
     suspend fun updateBccRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo>
     fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions>
+    suspend fun cancelScheduleSendMessage(
+        userId: UserId,
+        messageId: MessageId
+    ): Either<DataError, PreviousScheduleSendTime>
 }

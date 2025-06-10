@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
 import ch.protonmail.android.mailcomposer.domain.model.Subject
@@ -49,4 +50,5 @@ interface DraftRepository {
     suspend fun updateCcRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     suspend fun updateBccRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     fun getScheduleSendOptions(): Either<DataError, ScheduleSendOptions>
+    suspend fun cancelScheduleSend(userId: UserId, messageId: MessageId): Either<DataError, PreviousScheduleSendTime>
 }
