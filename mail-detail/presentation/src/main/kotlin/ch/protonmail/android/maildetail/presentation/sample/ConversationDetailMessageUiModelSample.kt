@@ -32,6 +32,7 @@ import ch.protonmail.android.maildetail.presentation.model.MessageDetailFooterUi
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
+import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -262,7 +263,8 @@ object ConversationDetailMessageUiModelSample {
             shouldShowSpamBanner = false,
             shouldShowBlockedSenderBanner = false,
             expirationBannerUiModel = ExpirationBannerUiModel.NoExpiration,
-            autoDeleteBannerUiModel = AutoDeleteBannerUiModel.NoAutoDelete
+            autoDeleteBannerUiModel = AutoDeleteBannerUiModel.NoAutoDelete,
+            scheduleSendBannerUiModel = ScheduleSendBannerUiModel.NoScheduleSend
         ),
         messageBodyUiModel = messageBodyUiModel,
         requestPhishingLinkConfirmation = false

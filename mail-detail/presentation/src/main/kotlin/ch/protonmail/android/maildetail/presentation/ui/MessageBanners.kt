@@ -26,6 +26,7 @@ import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
+import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
 import ch.protonmail.android.maildetail.presentation.util.toFormattedAutoDeleteTime
 import ch.protonmail.android.maildetail.presentation.util.toFormattedExpirationTime
 import kotlinx.coroutines.delay
@@ -181,6 +182,9 @@ fun PreviewMessageBanners() {
                 ),
                 autoDeleteBannerUiModel = AutoDeleteBannerUiModel.AutoDelete(
                     deletesAt = Instant.now()
+                ),
+                scheduleSendBannerUiModel = ScheduleSendBannerUiModel.SendScheduled(
+                    sendAt = Instant.now()
                 )
             ),
             onMarkMessageAsLegitimate = {},

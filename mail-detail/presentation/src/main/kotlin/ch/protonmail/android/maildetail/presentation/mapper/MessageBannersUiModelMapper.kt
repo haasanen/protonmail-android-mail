@@ -22,6 +22,7 @@ import android.content.Context
 import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
+import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -33,7 +34,8 @@ class MessageBannersUiModelMapper @Inject constructor(@ApplicationContext val co
         shouldShowSpamBanner = messageBanners.contains(MessageBanner.Spam),
         shouldShowBlockedSenderBanner = messageBanners.contains(MessageBanner.BlockedSender),
         expirationBannerUiModel = toExpirationBannerUiModel(messageBanners),
-        autoDeleteBannerUiModel = toAutoDeleteBannerUiModel(messageBanners)
+        autoDeleteBannerUiModel = toAutoDeleteBannerUiModel(messageBanners),
+        scheduleSendBannerUiModel = toScheduleSendBannerUiModel(messageBanners)
     )
 
     private fun toExpirationBannerUiModel(messageBanners: List<MessageBanner>): ExpirationBannerUiModel {
@@ -46,5 +48,11 @@ class MessageBannersUiModelMapper @Inject constructor(@ApplicationContext val co
         return messageBanners.filterIsInstance<MessageBanner.AutoDelete>().firstOrNull()?.let {
             AutoDeleteBannerUiModel.AutoDelete(deletesAt = it.deletesAt)
         } ?: AutoDeleteBannerUiModel.NoAutoDelete
+    }
+
+    private fun toScheduleSendBannerUiModel(messageBanners: List<MessageBanner>): ScheduleSendBannerUiModel {
+        return messageBanners.filterIsInstance<MessageBanner.ScheduledSend>().firstOrNull()?.let {
+            ScheduleSendBannerUiModel.SendScheduled(sendAt = it.scheduledAt)
+        } ?: ScheduleSendBannerUiModel.NoScheduleSend
     }
 }

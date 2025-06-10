@@ -25,7 +25,8 @@ data class MessageBannersUiModel(
     val shouldShowSpamBanner: Boolean,
     val shouldShowBlockedSenderBanner: Boolean,
     val expirationBannerUiModel: ExpirationBannerUiModel,
-    val autoDeleteBannerUiModel: AutoDeleteBannerUiModel
+    val autoDeleteBannerUiModel: AutoDeleteBannerUiModel,
+    val scheduleSendBannerUiModel: ScheduleSendBannerUiModel
 )
 
 sealed class ExpirationBannerUiModel {
@@ -40,4 +41,9 @@ sealed class AutoDeleteBannerUiModel {
     data class AutoDelete(
         val deletesAt: Instant
     ) : AutoDeleteBannerUiModel()
+}
+
+sealed class ScheduleSendBannerUiModel {
+    data object NoScheduleSend : ScheduleSendBannerUiModel()
+    data class SendScheduled(val sendAt: Instant) : ScheduleSendBannerUiModel()
 }
