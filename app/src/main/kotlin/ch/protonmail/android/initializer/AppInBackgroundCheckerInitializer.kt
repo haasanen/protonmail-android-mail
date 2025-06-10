@@ -47,7 +47,7 @@ class AppInBackgroundCheckerInitializer : Initializer<Unit>, LifecycleEventObser
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         when (event) {
             Lifecycle.Event.ON_RESUME -> appInBackgroundState?.setAppInBackground(false)
-            Lifecycle.Event.ON_PAUSE -> appInBackgroundState?.setAppInBackground(true)
+            Lifecycle.Event.ON_STOP -> appInBackgroundState?.setAppInBackground(true)
             else -> Unit
         }
     }

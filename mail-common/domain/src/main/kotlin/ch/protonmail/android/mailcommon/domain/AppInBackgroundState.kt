@@ -20,29 +20,32 @@ package ch.protonmail.android.mailcommon.domain
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.update
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class AppInBackgroundState @Inject constructor() {
 
-    private val _state: MutableStateFlow<Boolean?> = MutableStateFlow(null)
+    private val _state = MutableStateFlow(true)
+    val state: StateFlow<Boolean> = _state.asStateFlow()
 
-    /**
-     * Returns the current background state of the the app.
-     *
-     * If the state is unset, it defaults to `true`.
-     */
-    fun isAppInBackground(): Boolean = _state.value ?: true
+    fun isAppInBackground(): Boolean = state.value
 
-    /**
-     * Will emit the current background state of the app according to lifecycle events.
-     */
-    fun observe(): Flow<Boolean> = _state.asStateFlow().filterNotNull()
+    fun observe(): Flow<Boolean> = _state.asStateFlow()
 
-    @Synchronized
-    fun setAppInBackground(isAppInBackground: Boolean) = _state.update { isAppInBackground }
+    fun setAppInBackground(isAppInBackground: Boolean) {
+        _state.update { currentState ->
+            if (currentState != isAppInBackground) {
+                Timber.tag("AppInBackgroundState").d("State changing from $currentState to $isAppInBackground")
+                isAppInBackground
+            } else {
+                Timber.tag("AppInBackgroundState").d("Ignoring duplicate state: $isAppInBackground")
+                currentState
+            }
+        }
+    }
 }

@@ -27,17 +27,6 @@ import kotlin.test.assertEquals
 internal class AppInBackgroundStateTest {
 
     @Test
-    fun `should emit nothing when first instantiated`() = runTest {
-        // Given
-        val appInBackgroundState = AppInBackgroundState()
-
-        // When + Then
-        appInBackgroundState.observe().test {
-            expectNoEvents()
-        }
-    }
-
-    @Test
     fun `should emit the correct value when set`() = runTest {
         // Given
         val appInBackgroundState = AppInBackgroundState()
