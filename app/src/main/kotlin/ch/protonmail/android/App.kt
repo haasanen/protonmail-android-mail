@@ -20,7 +20,6 @@ package ch.protonmail.android
 
 import android.app.Application
 import androidx.lifecycle.ProcessLifecycleOwner
-import ch.protonmail.android.callbacks.AutoLockLifecycleCallbacks
 import ch.protonmail.android.callbacks.SecureActivityLifecycleCallbacks
 import ch.protonmail.android.initializer.MainInitializer
 import ch.protonmail.android.logging.LogsFileHandlerLifecycleObserver
@@ -38,9 +37,6 @@ internal class App : Application() {
 
     @Inject
     lateinit var secureActivityLifecycleCallbacks: SecureActivityLifecycleCallbacks
-
-    @Inject
-    lateinit var lockScreenLifecycleCallbacks: AutoLockLifecycleCallbacks
 
     @Inject
     lateinit var benchmarkTracer: BenchmarkTracer
@@ -62,7 +58,6 @@ internal class App : Application() {
 
         MainInitializer.init(this)
         registerActivityLifecycleCallbacks(secureActivityLifecycleCallbacks)
-        registerActivityLifecycleCallbacks(lockScreenLifecycleCallbacks)
 
         addLogsFileHandlerObserver()
         addDatabaseObserver()
