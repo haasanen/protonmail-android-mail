@@ -26,7 +26,10 @@ import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinError
+import ch.protonmail.android.mailcommon.domain.model.autolock.VerifyAutoLockPinError
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.PinAuthError
+import uniffi.proton_mail_uniffi.PinAuthErrorReason
 import uniffi.proton_mail_uniffi.PinSetError
 import uniffi.proton_mail_uniffi.PinSetErrorReason
 
@@ -35,6 +38,9 @@ fun AutoLockPin.toLocalAutoLockPin(): Either<DataError, LocalAutoLockPin> {
         try {
             value.map { it.digitToInt().toUInt() }.right()
         } catch (e: NumberFormatException) {
+            Timber.e(e, "Invalid digit in AutoLockPin: $value")
+            DataError.Local.TypeConversionError.left()
+        } catch (e: IllegalArgumentException) {
             Timber.e(e, "Invalid digit in AutoLockPin: $value")
             DataError.Local.TypeConversionError.left()
         }
@@ -53,5 +59,17 @@ fun PinSetError.toAutoLockPinError(): SetAutoLockPinError {
         }
 
         is PinSetError.Other -> SetAutoLockPinError.Other(v1.toDataError())
+    }
+}
+
+fun PinAuthError.toAutoLockPinError(): VerifyAutoLockPinError {
+    return when (this) {
+        is PinAuthError.Reason -> when (v1) {
+            PinAuthErrorReason.TOO_MANY_ATTEMPTS -> VerifyAutoLockPinError.TooManyAttempts
+            PinAuthErrorReason.TOO_FREQUENT_ATTEMPTS -> VerifyAutoLockPinError.TooFrequentAttempts
+            PinAuthErrorReason.INCORRECT_PIN -> VerifyAutoLockPinError.IncorrectPin
+        }
+
+        is PinAuthError.Other -> VerifyAutoLockPinError.Other(v1.toDataError())
     }
 }

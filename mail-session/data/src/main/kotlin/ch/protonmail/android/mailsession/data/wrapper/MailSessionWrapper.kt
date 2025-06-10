@@ -32,15 +32,19 @@ import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.BackgroundExecutionCallback
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailSessionDeletePinCodeResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountsResult
 import uniffi.proton_mail_uniffi.MailSessionGetPrimaryAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
+import uniffi.proton_mail_uniffi.MailSessionRemainingPinAttemptsResult
 import uniffi.proton_mail_uniffi.MailSessionSetBiometricsAppProtectionResult
 import uniffi.proton_mail_uniffi.MailSessionSetPinCodeResult
+import uniffi.proton_mail_uniffi.MailSessionUnsetBiometricsAppProtectionResult
 import uniffi.proton_mail_uniffi.MailSessionUserContextFromSessionResult
+import uniffi.proton_mail_uniffi.MailSessionVerifyPinCodeResult
 import uniffi.proton_mail_uniffi.MailSessionWatchAccountsResult
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
@@ -112,9 +116,31 @@ class MailSessionWrapper(private val mailSession: MailSession) {
             is MailSessionSetPinCodeResult.Error -> result.v1.toAutoLockPinError().left()
         }
 
+    suspend fun verifyPinCode(localAutoLockPin: LocalAutoLockPin) =
+        when (val result = mailSession.verifyPinCode(localAutoLockPin)) {
+            is MailSessionVerifyPinCodeResult.Ok -> Unit.right()
+            is MailSessionVerifyPinCodeResult.Error -> result.v1.toAutoLockPinError().left()
+        }
+
+    suspend fun deleteAutoLockPinCode(localAutoLockPin: LocalAutoLockPin) =
+        when (val result = mailSession.deletePinCode(localAutoLockPin)) {
+            is MailSessionDeletePinCodeResult.Ok -> Unit.right()
+            is MailSessionDeletePinCodeResult.Error -> result.v1.toAutoLockPinError().left()
+        }
+
     suspend fun setBiometricAppProtection() = when (val result = mailSession.setBiometricsAppProtection()) {
         is MailSessionSetBiometricsAppProtectionResult.Ok -> Unit.right()
         is MailSessionSetBiometricsAppProtectionResult.Error -> result.v1.toDataError().left()
+    }
+
+    suspend fun unsetBiometricAppProtection() = when (val result = mailSession.unsetBiometricsAppProtection()) {
+        is MailSessionUnsetBiometricsAppProtectionResult.Ok -> Unit.right()
+        is MailSessionUnsetBiometricsAppProtectionResult.Error -> result.v1.toDataError().left()
+    }
+
+    suspend fun getRemainingAttempts() = when (val result = mailSession.remainingPinAttempts()) {
+        is MailSessionRemainingPinAttemptsResult.Error -> result.v1.toDataError().left()
+        is MailSessionRemainingPinAttemptsResult.Ok -> result.v1.right()
     }
 
     fun registerDeviceTask() = mailSession.registerDeviceTask()
