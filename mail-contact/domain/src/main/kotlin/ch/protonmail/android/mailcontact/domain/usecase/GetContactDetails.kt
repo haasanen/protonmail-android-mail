@@ -18,7 +18,18 @@
 
 package ch.protonmail.android.mailcontact.domain.usecase
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcontact.domain.model.ContactDetailCard
+import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
+import me.proton.core.domain.entity.UserId
+import javax.inject.Inject
 
-@MissingRustApi
-class ObserveDecryptedContactTest
+class GetContactDetails @Inject constructor(
+    private val contactRepository: ContactRepository
+) {
+
+    suspend operator fun invoke(userId: UserId, contactId: ContactId): Either<DataError, ContactDetailCard> =
+        contactRepository.getContactDetails(userId, contactId)
+}

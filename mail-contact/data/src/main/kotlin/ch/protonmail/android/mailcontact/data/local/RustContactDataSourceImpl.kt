@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcontact.data.local
 
 import arrow.core.Either
+import arrow.core.flatMap
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactId
@@ -28,9 +29,12 @@ import ch.protonmail.android.mailcontact.data.ContactRustCoroutineScope
 import ch.protonmail.android.mailcontact.data.mapper.ContactSuggestionsMapper
 import ch.protonmail.android.mailcontact.data.mapper.DeviceContactsMapper
 import ch.protonmail.android.mailcontact.data.mapper.GroupedContactsMapper
+import ch.protonmail.android.mailcontact.data.mapper.toContactDetailCard
 import ch.protonmail.android.mailcontact.data.usecase.CreateRustContactWatcher
 import ch.protonmail.android.mailcontact.data.usecase.RustDeleteContact
+import ch.protonmail.android.mailcontact.data.usecase.RustGetContactDetails
 import ch.protonmail.android.mailcontact.data.usecase.RustGetContactSuggestions
+import ch.protonmail.android.mailcontact.domain.model.ContactDetailCard
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
@@ -57,6 +61,7 @@ class RustContactDataSourceImpl @Inject constructor(
     private val createRustContactWatcher: CreateRustContactWatcher,
     private val rustDeleteContact: RustDeleteContact,
     private val rustGetContactSuggestions: RustGetContactSuggestions,
+    private val rustGetContactDetails: RustGetContactDetails,
     @ContactRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustContactDataSource {
 
@@ -149,5 +154,20 @@ class RustContactDataSourceImpl @Inject constructor(
 
             VoidActionResult.Ok -> Unit.right()
         }
+    }
+
+    override suspend fun getContactDetails(
+        userId: UserId,
+        contactId: LocalContactId
+    ): Either<DataError, ContactDetailCard> {
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-contact: trying to load contact details with a null session")
+            return DataError.Local.NoUserSession.left()
+        }
+
+        return rustGetContactDetails(session, contactId)
+            .onLeft { Timber.e("rust-contact: getting contact details failed") }
+            .flatMap { it?.toContactDetailCard()?.right() ?: DataError.Local.NoContactDetailCard.left() }
     }
 }

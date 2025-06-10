@@ -16,27 +16,28 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcontact.domain.usecase
+package ch.protonmail.android.mailcontact.data.usecase
 
 import arrow.core.Either
 import arrow.core.left
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalContactId
+import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcontact.domain.model.DecryptedContact
-import kotlinx.coroutines.flow.Flow
-import ch.protonmail.android.mailcontact.domain.model.ContactId
-import kotlinx.coroutines.flow.flowOf
-import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import uniffi.proton_mail_uniffi.ContactDetailCard
+import uniffi.proton_mail_uniffi.GetContactDetailsResult
+import uniffi.proton_mail_uniffi.getContactDetails
 import javax.inject.Inject
 
-@MissingRustApi
-@Suppress("NotImplementedDeclaration")
-class ObserveDecryptedContact @Inject constructor() {
+class RustGetContactDetails @Inject constructor() {
 
-    operator fun invoke(
-        userId: UserId,
-        contactId: ContactId,
-        refresh: Boolean = false
-    ): Flow<Either<DataError, DecryptedContact>> = flowOf(DataError.Local.Unknown.left())
-
+    suspend operator fun invoke(
+        session: MailUserSessionWrapper,
+        contactId: LocalContactId
+    ): Either<DataError, ContactDetailCard?> =
+        when (val result = getContactDetails(session.getRustUserSession(), contactId)) {
+            is GetContactDetailsResult.Error -> result.v1.toDataError().left()
+            is GetContactDetailsResult.Ok -> result.v1.right()
+        }
 }

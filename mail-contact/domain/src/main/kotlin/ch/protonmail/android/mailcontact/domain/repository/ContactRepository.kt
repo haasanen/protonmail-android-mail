@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcontact.domain.repository
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontact.domain.model.ContactCard
+import ch.protonmail.android.mailcontact.domain.model.ContactDetailCard
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
@@ -69,4 +70,6 @@ interface ContactRepository {
         deviceContacts: List<DeviceContact>,
         query: ContactSuggestionQuery
     ): Either<DataError, List<ContactMetadata>>
+
+    suspend fun getContactDetails(userId: UserId, contactId: ContactId): Either<DataError, ContactDetailCard>
 }
