@@ -23,6 +23,7 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import kotlin.time.Duration
+import kotlin.time.Instant
 
 internal sealed interface ComposerAction : ComposerStateOperation {
     data object ChangeSender : ComposerAction
@@ -58,4 +59,5 @@ internal sealed interface ComposerAction : ComposerStateOperation {
     data object DiscardDraftConfirmed : ComposerAction
 
     data object OnScheduleSendRequested : ComposerAction
+    data class OnScheduleSend(val time: Instant) : ComposerAction
 }

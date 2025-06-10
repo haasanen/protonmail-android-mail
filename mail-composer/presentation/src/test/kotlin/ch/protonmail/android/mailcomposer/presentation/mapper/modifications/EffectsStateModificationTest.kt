@@ -249,6 +249,18 @@ internal class EffectsStateModificationTest(
                     stripInlineAttachment = Effect.of("cid-123"),
                     changeBottomSheetVisibility = Effect.of(false)
                 )
+            ),
+            arrayOf(
+                "schedule sends message and exit",
+                initialState,
+                CompletionEffectsStateModification.ScheduleMessage.ScheduleAndExit,
+                initialState.copy(closeComposerWithScheduleSending = Effect.of(Unit))
+            ),
+            arrayOf(
+                "schedule sends message and exit offline",
+                initialState,
+                CompletionEffectsStateModification.ScheduleMessage.ScheduleAndExitOffline,
+                initialState.copy(closeComposerWithScheduleSendingOffline = Effect.of(Unit))
             )
         )
     }

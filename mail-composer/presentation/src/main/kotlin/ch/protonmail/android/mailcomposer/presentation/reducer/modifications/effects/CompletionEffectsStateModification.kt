@@ -44,4 +44,15 @@ internal sealed interface CompletionEffectsStateModification : EffectsStateModif
         data object SendAndExit : SendMessage
         data object SendAndExitOffline : SendMessage
     }
+
+    sealed interface ScheduleMessage : EffectsStateModification {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = when (this) {
+            ScheduleAndExit -> state.copy(closeComposerWithScheduleSending = Effect.of(Unit))
+            ScheduleAndExitOffline -> state.copy(closeComposerWithScheduleSendingOffline = Effect.of(Unit))
+        }
+
+        data object ScheduleAndExit : ScheduleMessage
+        data object ScheduleAndExitOffline : ScheduleMessage
+    }
 }

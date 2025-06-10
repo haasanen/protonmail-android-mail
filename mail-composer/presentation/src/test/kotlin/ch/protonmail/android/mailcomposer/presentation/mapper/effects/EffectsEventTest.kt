@@ -177,6 +177,20 @@ internal class EffectsEventTest(
                 ComposerStateModifications(
                     effectsModification = BottomSheetEffectsStateModification.ShowBottomSheet
                 )
+            ),
+            arrayOf(
+                "SendEvent OnScheduleSendMessage to modification",
+                EffectsEvent.SendEvent.OnScheduleSendMessage,
+                ComposerStateModifications(
+                    effectsModification = CompletionEffectsStateModification.ScheduleMessage.ScheduleAndExit
+                )
+            ),
+            arrayOf(
+                "SendEvent OnOfflineScheduleSendMessage to modification",
+                EffectsEvent.SendEvent.OnOfflineScheduleSendMessage,
+                ComposerStateModifications(
+                    effectsModification = CompletionEffectsStateModification.ScheduleMessage.ScheduleAndExitOffline
+                )
             )
         )
     }

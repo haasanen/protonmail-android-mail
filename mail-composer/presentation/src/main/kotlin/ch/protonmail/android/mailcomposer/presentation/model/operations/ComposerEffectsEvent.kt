@@ -143,11 +143,17 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
                 is OnSendMessage -> CompletionEffectsStateModification.SendMessage.SendAndExit
                 is OnOfflineSendMessage -> CompletionEffectsStateModification.SendMessage.SendAndExitOffline
                 is OnSendingError -> RecoverableError.SendingFailed(message)
+                is OnScheduleSendMessage -> CompletionEffectsStateModification.ScheduleMessage.ScheduleAndExit
+                is OnOfflineScheduleSendMessage ->
+                    CompletionEffectsStateModification.ScheduleMessage.ScheduleAndExitOffline
             }
         )
 
         data object OnSendMessage : SendEvent
         data object OnOfflineSendMessage : SendEvent
+
+        data object OnScheduleSendMessage : SendEvent
+        data object OnOfflineScheduleSendMessage : SendEvent
 
         data object OnCancelSendNoSubject : SendEvent
         data class OnSendExpiringToExternalRecipients(val externalRecipients: List<Recipient>) : SendEvent
