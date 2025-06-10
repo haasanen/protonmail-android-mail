@@ -41,6 +41,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsettings.presentation.appsettings.AppSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsScreen
 import ch.protonmail.android.navigation.model.Destination
+import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.takeIfNotBlank
@@ -54,6 +55,7 @@ internal fun NavGraphBuilder.addConversationDetail(actions: ConversationDetail.A
 @Suppress("LongParameterList")
 internal fun NavGraphBuilder.addMailbox(
     navController: NavHostController,
+    fabHostState: ProtonFabHostState,
     openDrawerMenu: () -> Unit,
     setDrawerEnabled: (Boolean) -> Unit,
     onEvent: (AccountSwitchEvent) -> Unit,
@@ -96,7 +98,8 @@ internal fun NavGraphBuilder.addMailbox(
                 },
                 onAttachmentReady = onAttachmentReady
             ),
-            onEvent = onEvent
+            onEvent = onEvent,
+            fabHostState = fabHostState
         )
     }
 }

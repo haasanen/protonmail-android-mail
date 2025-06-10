@@ -109,6 +109,8 @@ import ch.protonmail.android.navigation.route.addWebFolderAndLabelSettings
 import ch.protonmail.android.navigation.route.addWebPrivacyAndSecuritySettings
 import ch.protonmail.android.navigation.route.addWebSpamFilterSettings
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
+import ch.protonmail.android.uicomponents.fab.FabHost
+import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import io.sentry.compose.withSentryObservableEffect
 import kotlinx.coroutines.NonCancellable
@@ -132,6 +134,7 @@ fun Home(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestinationRoute = navBackStackEntry?.destination?.route
 
+    val fabHostState = remember { ProtonFabHostState() }
     val snackbarHostSuccessState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.SUCCESS) }
     val snackbarHostWarningState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.WARNING) }
     val snackbarHostNormState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.NORM) }
@@ -399,6 +402,7 @@ fun Home(
             gesturesEnabled = currentDestinationRoute == Screen.Mailbox.route && isDrawerSwipeGestureEnabled.value
         ) {
             Scaffold(
+                floatingActionButton = { FabHost(fabHostState = fabHostState) },
                 snackbarHost = {
                     DismissableSnackbarHost(
                         modifier = Modifier.testTag(CommonTestTags.SnackbarHostSuccess),
@@ -483,6 +487,7 @@ fun Home(
                         )
                         addMailbox(
                             navController,
+                            fabHostState,
                             openDrawerMenu = { scope.launch { drawerState.open() } },
                             setDrawerEnabled = { isDrawerSwipeGestureEnabled.value = it },
                             showNormalSnackbar = { showNormalSnackbar(it) },

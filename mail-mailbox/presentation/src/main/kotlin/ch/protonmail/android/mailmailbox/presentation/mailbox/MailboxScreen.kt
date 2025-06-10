@@ -54,7 +54,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -152,6 +151,8 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.Upsellin
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMoreActionBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
+import ch.protonmail.android.uicomponents.fab.LazyFab
+import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.launch
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
@@ -165,7 +166,8 @@ fun MailboxScreen(
     modifier: Modifier = Modifier,
     actions: MailboxScreen.Actions,
     onEvent: (AccountSwitchEvent) -> Unit,
-    viewModel: MailboxViewModel = hiltViewModel()
+    viewModel: MailboxViewModel = hiltViewModel(),
+    fabHostState: ProtonFabHostState
 ) {
     val mailboxState = viewModel.state.collectAsStateWithLifecycle().value
 
@@ -356,6 +358,7 @@ fun MailboxScreen(
     ) {
         MailboxScreen(
             mailboxState = mailboxState,
+            fabHostState = fabHostState,
             mailboxListItems = mailboxListItems,
             actions = completeActions,
             modifier = modifier.semantics { testTagsAsResourceId = true }
@@ -366,6 +369,7 @@ fun MailboxScreen(
 @Composable
 fun MailboxScreen(
     mailboxState: MailboxState,
+    fabHostState: ProtonFabHostState,
     mailboxListItems: LazyPagingItems<MailboxItemUiModel>,
     actions: MailboxScreen.Actions,
     modifier: Modifier = Modifier
@@ -401,19 +405,19 @@ fun MailboxScreen(
 
     DeleteDialog(state = mailboxState.clearAllDialogState, actions.onClearAllConfirmed, actions.onClearAllDismissed)
 
+    LazyFab(fabHostState) { modifier ->
+        val mailboxListState = mailboxState.mailboxListState
+
+        if (mailboxListState is MailboxListState.Data && mailboxListState.shouldShowFab) {
+            AnimatedComposeMailFab(
+                showMinimized = showMinimizedFab,
+                onComposeClick = actions.navigateToComposer
+            )
+        }
+    }
+
     Scaffold(
         modifier = modifier.testTag(MailboxScreenTestTags.Root),
-        floatingActionButton = {
-            val mailboxListState = mailboxState.mailboxListState
-
-            if (mailboxListState is MailboxListState.Data && mailboxListState.shouldShowFab) {
-                AnimatedComposeMailFab(
-                    showMinimized = showMinimizedFab,
-                    onComposeClick = actions.navigateToComposer
-                )
-            }
-        },
-        floatingActionButtonPosition = FabPosition.EndOverlay,
         topBar = {
             val localDensity = LocalDensity.current
             Column(
@@ -1198,6 +1202,7 @@ private fun MailboxScreenPreview(@PreviewParameter(MailboxPreviewProvider::class
         MailboxScreen(
             mailboxListItems = mailboxPreview.items.collectAsLazyPagingItems(),
             mailboxState = mailboxPreview.state,
+            fabHostState = ProtonFabHostState(),
             actions = MailboxScreen.Actions.Empty
         )
     }
