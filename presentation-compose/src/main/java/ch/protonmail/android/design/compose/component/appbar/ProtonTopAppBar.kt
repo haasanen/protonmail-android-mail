@@ -57,7 +57,6 @@ fun ProtonTopAppBar(
         title = {
             Box(
                 modifier = Modifier
-                    .fillMaxHeight()
                     .wrapContentHeight(Alignment.CenterVertically)
             ) {
                 title()
