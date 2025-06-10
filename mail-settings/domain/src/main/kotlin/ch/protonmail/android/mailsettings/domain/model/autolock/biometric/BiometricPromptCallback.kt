@@ -20,5 +20,6 @@ package ch.protonmail.android.mailsettings.domain.model.autolock.biometric
 
 data class BiometricPromptCallback(
     val onAuthenticationError: () -> Unit,
-    val onAuthenticationSucceeded: () -> Unit
+    val onAuthenticationSucceeded: () -> Unit,
+    val onAuthenticationFailed: () -> Unit = {} // ET-636 remove default
 )
