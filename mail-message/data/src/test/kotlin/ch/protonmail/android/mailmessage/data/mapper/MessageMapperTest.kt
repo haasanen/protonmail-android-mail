@@ -80,7 +80,9 @@ class MessageMapperTest {
             exclusiveLocation = exclusiveLocation,
             replyTos = emptyList(),
             snoozeTime = 12345u,
-            isDraft = false
+            isDraft = false,
+            isScheduled = false,
+            canReply = false
         )
 
         // When

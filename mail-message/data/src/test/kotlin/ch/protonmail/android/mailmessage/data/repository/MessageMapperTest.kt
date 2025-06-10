@@ -222,7 +222,9 @@ class MessageMapperTest {
             exclusiveLocation = exclusiveLocation,
             replyTos = replyTo,
             avatar = avatarInformation,
-            isDraft = false
+            isDraft = false,
+            isScheduled = false,
+            canReply = false
         )
 
         // When
@@ -304,7 +306,9 @@ class MessageMapperTest {
             exclusiveLocation = null,
             replyTos = emptyList(),
             avatar = LocalAvatarInformation("S", "blue"),
-            isDraft = false
+            isDraft = false,
+            isScheduled = false,
+            canReply = false
         )
 
         // When

@@ -246,6 +246,8 @@ object LocalMessageTestData {
         exclusiveLocation = null,
         replyTos = emptyList(),
         avatar = avatarInformation,
-        isDraft = false
+        isDraft = false,
+        isScheduled = false,
+        canReply = false
     )
 }

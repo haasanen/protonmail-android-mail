@@ -70,6 +70,7 @@ fun DraftSendError.toDataError(): DataError = when (this) {
         is DraftSendErrorReason.MissingAttachmentUploads -> DataError.Local.SendDraftError.AttachmentsError
         is DraftSendErrorReason.MessageDoesNotExist,
         is DraftSendErrorReason.ScheduleSendExpired,
+        is DraftSendErrorReason.ScheduleSendMessageLimitExceeded,
         is DraftSendErrorReason.PackageError -> DataError.Local.Unknown
     }
 }

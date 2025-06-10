@@ -34,6 +34,7 @@ sealed interface SendErrorReason {
         data object AttachmentCryptoFailure : SendErrorReason
         data object AttachmentUploadFailureRetriable : SendErrorReason
         data object ScheduledSendExpired : SendErrorReason
+        data object ScheduledSendMessagesLimit : SendErrorReason
     }
 
     sealed interface ErrorWithMessage : SendErrorReason {
