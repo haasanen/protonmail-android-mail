@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailsettings.data.mapper
 
 import ch.protonmail.android.mailcommon.data.mapper.LocalAppSettings
-import ch.protonmail.android.mailcommon.data.mapper.LocalAppSettingsDiff
 import ch.protonmail.android.mailcommon.data.mapper.LocalAutolock
 import ch.protonmail.android.mailcommon.data.mapper.LocalProtection
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval
@@ -36,6 +35,7 @@ import uniffi.proton_mail_uniffi.AppProtection
 import uniffi.proton_mail_uniffi.AutoLock.Always
 import uniffi.proton_mail_uniffi.AutoLock.Minutes
 import uniffi.proton_mail_uniffi.AutoLock.Never
+import uniffi.proton_mail_uniffi.AppSettingsDiff as LocalAppSettingsDiff
 
 fun AppSettingsDiff.toAppDiff(): LocalAppSettingsDiff {
 
@@ -44,14 +44,14 @@ fun AppSettingsDiff.toAppDiff(): LocalAppSettingsDiff {
         defaultThemeFallback
     })
 
-    fun setAutolockInteval(interval: AutoLockInterval) = when (interval) {
+    fun setAutolockInterval(interval: AutoLockInterval) = when (interval) {
         AutoLockInterval.Immediately -> Always
         AutoLockInterval.Never -> Never
         else -> Minutes(interval.duration.inWholeMinutes.toUByte())
     }
 
     return LocalAppSettingsDiff(
-        autoLock = interval?.let { setAutolockInteval(it) },
+        autoLock = interval?.let { setAutolockInterval(it) },
         useCombineContacts = combineContacts,
         useAlternativeRouting = alternativeRouting,
         appearance = theme?.let { setTheme(it) }
