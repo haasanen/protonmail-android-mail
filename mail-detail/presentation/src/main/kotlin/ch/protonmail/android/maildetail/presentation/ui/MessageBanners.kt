@@ -71,85 +71,11 @@ fun MessageBanners(
         }
         when (val uiModel = messageBannersUiModel.expirationBannerUiModel) {
             is ExpirationBannerUiModel.NoExpiration -> Unit
-            is ExpirationBannerUiModel.Expiration -> {
-                val context = LocalContext.current
-                val expiresIn = remember {
-                    mutableStateOf(Duration.between(Instant.now(), uiModel.expiresAt).toKotlinDuration())
-                }
-                val formattedExpiration = expiresIn.value
-                    .toFormattedExpirationTime(context.resources)
-                    .joinToString(separator = ", ")
-                val expirationText = stringResource(
-                    R.string.message_expiration_banner_text,
-                    formattedExpiration
-                )
-
-                LaunchedEffect(Unit) {
-                    repeat(expiresIn.value.inWholeSeconds.toInt()) {
-                        delay(1.seconds)
-                        expiresIn.value = expiresIn.value.minus(1.seconds).coerceAtLeast(1.seconds)
-                    }
-                }
-
-                fun isLessThanAnHour() = expiresIn.value.inWholeMinutes < 60.minutes.inWholeMinutes
-
-                ProtonBanner(
-                    modifier = Modifier.fillMaxWidth(),
-                    icon = R.drawable.ic_proton_hourglass,
-                    iconTint = if (isLessThanAnHour()) {
-                        ProtonTheme.colors.iconInverted
-                    } else {
-                        ProtonTheme.colors.iconWeak
-                    },
-                    iconSize = ProtonDimens.IconSize.Medium,
-                    text = expirationText,
-                    textStyle = ProtonTheme.typography.bodyMedium.copy(
-                        color = if (isLessThanAnHour()) {
-                            ProtonTheme.colors.textInverted
-                        } else {
-                            ProtonTheme.colors.textWeak
-                        }
-                    ),
-                    backgroundColor = if (isLessThanAnHour()) {
-                        ProtonTheme.colors.notificationError
-                    } else {
-                        ProtonTheme.colors.backgroundNorm
-                    },
-                    borderColorIsBackgroundColor = isLessThanAnHour()
-                )
-            }
+            is ExpirationBannerUiModel.Expiration -> ExpirationBanner(uiModel)
         }
         when (val uiModel = messageBannersUiModel.autoDeleteBannerUiModel) {
             is AutoDeleteBannerUiModel.NoAutoDelete -> Unit
-            is AutoDeleteBannerUiModel.AutoDelete -> {
-                val context = LocalContext.current
-                val deletesIn = remember {
-                    mutableStateOf(Duration.between(Instant.now(), uiModel.deletesAt).toKotlinDuration())
-                }
-                val formattedExpiration = deletesIn.value
-                    .toFormattedAutoDeleteTime(context.resources)
-                    .joinToString(separator = ", ")
-                val autoDeleteText = stringResource(
-                    R.string.message_auto_delete_banner_text,
-                    formattedExpiration
-                )
-
-                LaunchedEffect(Unit) {
-                    repeat(deletesIn.value.inWholeSeconds.toInt()) {
-                        delay(1.seconds)
-                        deletesIn.value = deletesIn.value.minus(1.seconds).coerceAtLeast(1.seconds)
-                    }
-                }
-
-                ProtonBanner(
-                    icon = R.drawable.ic_proton_trash_clock,
-                    iconTint = ProtonTheme.colors.iconWeak,
-                    iconSize = ProtonDimens.IconSize.Medium,
-                    text = autoDeleteText,
-                    textStyle = ProtonTheme.typography.bodyMediumWeak,
-                    backgroundColor = ProtonTheme.colors.backgroundNorm
-                )
-            }
+            is AutoDeleteBannerUiModel.AutoDelete -> AutoDeleteBanner(uiModel)
         }
         if (messageBannersUiModel.shouldShowBlockedSenderBanner) {
             ProtonBannerWithButton(
@@ -160,6 +86,86 @@ fun MessageBanners(
             )
         }
     }
+}
+
+@Composable
+private fun AutoDeleteBanner(uiModel: AutoDeleteBannerUiModel.AutoDelete) {
+    val context = LocalContext.current
+    val deletesIn = remember {
+        mutableStateOf(Duration.between(Instant.now(), uiModel.deletesAt).toKotlinDuration())
+    }
+    val formattedExpiration = deletesIn.value
+        .toFormattedAutoDeleteTime(context.resources)
+        .joinToString(separator = ", ")
+    val autoDeleteText = stringResource(
+        R.string.message_auto_delete_banner_text,
+        formattedExpiration
+    )
+
+    LaunchedEffect(Unit) {
+        repeat(deletesIn.value.inWholeSeconds.toInt()) {
+            delay(1.seconds)
+            deletesIn.value = deletesIn.value.minus(1.seconds).coerceAtLeast(1.seconds)
+        }
+    }
+
+    ProtonBanner(
+        icon = R.drawable.ic_proton_trash_clock,
+        iconTint = ProtonTheme.colors.iconWeak,
+        iconSize = ProtonDimens.IconSize.Medium,
+        text = autoDeleteText,
+        textStyle = ProtonTheme.typography.bodyMediumWeak,
+        backgroundColor = ProtonTheme.colors.backgroundNorm
+    )
+}
+
+@Composable
+private fun ExpirationBanner(uiModel: ExpirationBannerUiModel.Expiration) {
+    val context = LocalContext.current
+    val expiresIn = remember {
+        mutableStateOf(Duration.between(Instant.now(), uiModel.expiresAt).toKotlinDuration())
+    }
+    val formattedExpiration = expiresIn.value
+        .toFormattedExpirationTime(context.resources)
+        .joinToString(separator = ", ")
+    val expirationText = stringResource(
+        R.string.message_expiration_banner_text,
+        formattedExpiration
+    )
+
+    LaunchedEffect(Unit) {
+        repeat(expiresIn.value.inWholeSeconds.toInt()) {
+            delay(1.seconds)
+            expiresIn.value = expiresIn.value.minus(1.seconds).coerceAtLeast(1.seconds)
+        }
+    }
+
+    fun isLessThanAnHour() = expiresIn.value.inWholeMinutes < 60.minutes.inWholeMinutes
+
+    ProtonBanner(
+        modifier = Modifier.fillMaxWidth(),
+        icon = R.drawable.ic_proton_hourglass,
+        iconTint = if (isLessThanAnHour()) {
+            ProtonTheme.colors.iconInverted
+        } else {
+            ProtonTheme.colors.iconWeak
+        },
+        iconSize = ProtonDimens.IconSize.Medium,
+        text = expirationText,
+        textStyle = ProtonTheme.typography.bodyMedium.copy(
+            color = if (isLessThanAnHour()) {
+                ProtonTheme.colors.textInverted
+            } else {
+                ProtonTheme.colors.textWeak
+            }
+        ),
+        backgroundColor = if (isLessThanAnHour()) {
+            ProtonTheme.colors.notificationError
+        } else {
+            ProtonTheme.colors.backgroundNorm
+        },
+        borderColorIsBackgroundColor = isLessThanAnHour()
+    )
 }
 
 private const val PHISHING_BANNER_BUTTON_BACKGROUND = 0x33FFFFFF
