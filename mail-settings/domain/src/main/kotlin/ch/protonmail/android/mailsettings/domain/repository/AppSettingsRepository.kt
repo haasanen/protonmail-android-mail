@@ -33,4 +33,5 @@ interface AppSettingsRepository {
     suspend fun updateAlternativeRouting(value: Boolean): Either<DataError, Unit>
     suspend fun updateUseCombineContacts(value: Boolean): Either<DataError, Unit>
     suspend fun updateInterval(interval: AutoLockInterval): Either<DataError, Unit>
+    suspend fun refreshSettings()
 }

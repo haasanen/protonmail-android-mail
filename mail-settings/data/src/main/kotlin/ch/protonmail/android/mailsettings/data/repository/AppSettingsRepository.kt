@@ -92,4 +92,8 @@ class AppSettingsRepository @Inject constructor(
 
     override suspend fun updateUseCombineContacts(value: Boolean): Either<DataError, Unit> =
         updateAppSettings(AppSettingsDiff(combineContacts = value))
+
+    override suspend fun refreshSettings() {
+        restartTrigger.emit(Unit)
+    }
 }
