@@ -20,23 +20,42 @@ package ch.protonmail.android.mailpinlock.domain.usecase
 
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
-import ch.protonmail.android.mailpinlock.domain.AutolockRepository
-import kotlinx.coroutines.flow.mapLatest
+import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
+import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfied
+import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfiedSignal
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import timber.log.Timber
 import javax.inject.Inject
 
 class ShouldPresentPinInsertionScreen @Inject constructor(
     private val appInBackgroundState: AppInBackgroundState,
-    private val autolockRepository: AutolockRepository
+    private val autolockRepository: AutoLockRepository,
+    private val autoLockSatisfiedSignal: AutoLockSatisfiedSignal
 ) {
 
-    operator fun invoke() = appInBackgroundState.observe().mapLatest { inBackground ->
-        if (inBackground) return@mapLatest false
-
-        return@mapLatest autolockRepository.shouldAutolock()
-            .getOrElse {
-                Timber.e("ShouldPresentPinInsertionScreen unable to get a value for shouldAutolock")
-                false
+    operator fun invoke(): Flow<Boolean> =
+        appInBackgroundState.observe().combine(autoLockSatisfiedSignal.isPending()) { inBackground, autolockSatisfied ->
+            inBackground to autolockSatisfied
+        }.flatMapLatest { (inBackground, autolockSatisfied) ->
+            if (inBackground) {
+                // Reset the flag when app goes to background
+                autoLockSatisfiedSignal.emitOperationSignal(AutoLockSatisfied(false))
+                flowOf(false)
+            } else if (autolockSatisfied.value) {
+                flowOf(false)
+            } else {
+                flow {
+                    val shouldAutolock = autolockRepository.shouldAutolock()
+                        .getOrElse {
+                            Timber.e("ShouldPresentPinInsertionScreen unable to get a value for shouldAutolock")
+                            false
+                        }
+                    emit(shouldAutolock)
+                }
             }
-    }
+        }
 }

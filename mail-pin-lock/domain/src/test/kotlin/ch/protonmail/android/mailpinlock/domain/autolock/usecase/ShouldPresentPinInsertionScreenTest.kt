@@ -38,7 +38,9 @@ package ch.protonmail.android.mailpinlock.domain.autolock.usecase
 
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
-import ch.protonmail.android.mailpinlock.domain.AutolockRepository
+import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
+import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfied
+import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfiedSignal
 import ch.protonmail.android.mailpinlock.domain.usecase.ShouldPresentPinInsertionScreen
 import io.mockk.called
 import io.mockk.coEvery
@@ -57,11 +59,14 @@ import kotlin.test.assertTrue
 internal class ShouldPresentPinInsertionScreenTest {
 
     private val appInBackgroundState = mockk<AppInBackgroundState>()
-    private val autolockRepository = mockk<AutolockRepository>()
+    private val autoLockRepository = mockk<AutoLockRepository>()
 
-    private val shouldPresentPinInsertionScreen = ShouldPresentPinInsertionScreen(
+    private val autoLockSatisfiedSignal = AutoLockSatisfiedSignal()
+
+    private fun useCase() = ShouldPresentPinInsertionScreen(
         appInBackgroundState,
-        autolockRepository
+        autoLockRepository,
+        autoLockSatisfiedSignal = autoLockSatisfiedSignal
     )
 
     @After
@@ -75,12 +80,12 @@ internal class ShouldPresentPinInsertionScreenTest {
         expectAppInBackground()
 
         // When
-        val result = shouldPresentPinInsertionScreen().first()
+        val result = useCase().invoke().first()
 
         // Then
         assertFalse(result)
         coVerify {
-            autolockRepository wasNot called
+            autoLockRepository wasNot called
         }
     }
 
@@ -88,9 +93,9 @@ internal class ShouldPresentPinInsertionScreenTest {
     fun `should indicate to display pin screen when the app is not background AND shouldShowPin is TRUE`() = runTest {
         // Given
         expectAppInForeground()
-        coEvery { autolockRepository.shouldAutolock() } returns true.right()
+        coEvery { autoLockRepository.shouldAutolock() } returns true.right()
         // When
-        val result = shouldPresentPinInsertionScreen().first()
+        val result = useCase().invoke().first()
 
         // Then
         assertTrue(result)
@@ -101,13 +106,28 @@ internal class ShouldPresentPinInsertionScreenTest {
         runTest {
             // Given
             expectAppInForeground()
-            coEvery { autolockRepository.shouldAutolock() } returns false.right()
+            coEvery { autoLockRepository.shouldAutolock() } returns false.right()
 
-            val result = shouldPresentPinInsertionScreen().first()
+            // When
+            val result = useCase().invoke().first()
 
             // Then
             assertFalse(result)
         }
+
+    @Test
+    fun `should not trigger pin request when app is in foreground and it is already completed`() = runTest {
+        // Given
+        expectAppInForeground()
+        coEvery { autoLockRepository.shouldAutolock() } returns true.right()
+        autoLockSatisfiedSignal.emitOperationSignal(AutoLockSatisfied(true))
+
+        // When
+        val result = useCase().invoke().first()
+
+        // Then
+        assertFalse(result)
+    }
 
     private fun expectAppInForeground() {
         every { appInBackgroundState.observe() } returns flowOf(false)
