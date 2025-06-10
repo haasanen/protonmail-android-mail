@@ -16,5 +16,8 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package protonmail.android.mailpinlock.presentation
+package ch.protonmail.android.mailpinlock.presentation.autolock.standalone
 
+import androidx.compose.runtime.compositionLocalOf
+
+val LocalLockScreenEntryPointIsStandalone = compositionLocalOf { false }

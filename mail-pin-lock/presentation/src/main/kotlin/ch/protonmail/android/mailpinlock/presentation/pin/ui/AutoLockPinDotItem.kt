@@ -29,11 +29,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.AutoLockPinScreen.PinDotsGridHeight
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.AutoLockPinScreen.PinDotsGridHeight
 import ch.protonmail.android.mailpinlock.presentation.R
 
 @Composable
@@ -46,13 +47,13 @@ fun AutoLockPinLockIcon(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AutoLockPinDotItem(modifier: Modifier = Modifier) {
+fun AutoLockPinDotItem(modifier: Modifier = Modifier, tint: Color = ProtonTheme.colors.iconAccent) {
     Icon(
         modifier = modifier
             .wrapContentSize()
             .padding(ProtonDimens.Spacing.Small),
         painter = painterResource(id = R.drawable.ic_proton_circle_filled),
-        tint = ProtonTheme.colors.iconAccent,
+        tint = tint,
         contentDescription = stringResource(id = R.string.mail_settings_pin_insertion_pin_dot_description)
     )
 }
