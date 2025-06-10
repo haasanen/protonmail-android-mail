@@ -33,7 +33,13 @@ import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.ComposerDirection
 import uniffi.proton_mail_uniffi.ComposerMode
 import uniffi.proton_mail_uniffi.ComposerRecipient
+import uniffi.proton_mail_uniffi.ContactDate
+import uniffi.proton_mail_uniffi.ContactDetailAddress
+import uniffi.proton_mail_uniffi.ContactDetailCard
+import uniffi.proton_mail_uniffi.ContactDetailsEmail
+import uniffi.proton_mail_uniffi.ContactDetailsTelephones
 import uniffi.proton_mail_uniffi.ContactEmailItem
+import uniffi.proton_mail_uniffi.ContactField
 import uniffi.proton_mail_uniffi.ContactItemType
 import uniffi.proton_mail_uniffi.ContactSuggestion
 import uniffi.proton_mail_uniffi.ContactSuggestionKind
@@ -44,6 +50,7 @@ import uniffi.proton_mail_uniffi.Disposition
 import uniffi.proton_mail_uniffi.DraftSendResult
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
 import uniffi.proton_mail_uniffi.ExclusiveLocation
+import uniffi.proton_mail_uniffi.GenderKind
 import uniffi.proton_mail_uniffi.GroupedContacts
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IssueReport
@@ -55,6 +62,7 @@ import uniffi.proton_mail_uniffi.MessageButtons
 import uniffi.proton_mail_uniffi.MimeType
 import uniffi.proton_mail_uniffi.MimeTypeCategory
 import uniffi.proton_mail_uniffi.MobileSettings
+import uniffi.proton_mail_uniffi.PartialDate
 import uniffi.proton_mail_uniffi.PgpScheme
 import uniffi.proton_mail_uniffi.PmSignature
 import uniffi.proton_mail_uniffi.RemoteId
@@ -62,6 +70,8 @@ import uniffi.proton_mail_uniffi.ShowImages
 import uniffi.proton_mail_uniffi.ShowMoved
 import uniffi.proton_mail_uniffi.SwipeAction
 import uniffi.proton_mail_uniffi.SystemLabel
+import uniffi.proton_mail_uniffi.VCardUrl
+import uniffi.proton_mail_uniffi.VcardPropType
 import uniffi.proton_mail_uniffi.ViewLayout
 import uniffi.proton_mail_uniffi.ViewMode
 
@@ -135,3 +145,48 @@ typealias LocalSpamOrTrash = SpamOrTrash
 typealias LocalMailLoginError = MailLoginError
 typealias LocalMailLoginErrorReason = MailLoginError.Reason
 typealias LocalMailLoginErrorOther = MailLoginError.Other
+typealias LocalContactDetailCard = ContactDetailCard
+typealias LocalContactField = ContactField
+typealias LocalContactFieldAnniversary = ContactField.Anniversary
+typealias LocalContactFieldBirthday = ContactField.Birthday
+typealias LocalContactDate = ContactDate
+typealias LocalContactDateDate = ContactDate.Date
+typealias LocalContactDateString = ContactDate.String
+typealias LocalPartialDate = PartialDate
+typealias LocalContactFieldGender = ContactField.Gender
+typealias LocalGenderKind = GenderKind
+typealias LocalGenderKindMale = GenderKind.Male
+typealias LocalGenderKindFemale = GenderKind.Female
+typealias LocalGenderKindOther = GenderKind.Other
+typealias LocalGenderKindNotApplicable = GenderKind.NotApplicable
+typealias LocalGenderKindUnknown = GenderKind.Unknown
+typealias LocalGenderKindNone = GenderKind.None
+typealias LocalGenderKindString = GenderKind.String
+typealias LocalContactFieldAddresses = ContactField.Addresses
+typealias LocalContactDetailAddress = ContactDetailAddress
+typealias LocalContactFieldEmails = ContactField.Emails
+typealias LocalContactDetailsEmail = ContactDetailsEmail
+typealias LocalContactFieldLanguages = ContactField.Languages
+typealias LocalContactFieldLogos = ContactField.Logos
+typealias LocalContactFieldMembers = ContactField.Members
+typealias LocalContactFieldNotes = ContactField.Notes
+typealias LocalContactFieldOrganizations = ContactField.Organizations
+typealias LocalContactFieldTelephones = ContactField.Telephones
+typealias LocalContactDetailsTelephones = ContactDetailsTelephones
+typealias LocalContactFieldPhotos = ContactField.Photos
+typealias LocalContactFieldRoles = ContactField.Roles
+typealias LocalContactFieldTimeZones = ContactField.TimeZones
+typealias LocalContactFieldTitles = ContactField.Titles
+typealias LocalContactFieldUrls = ContactField.Urls
+typealias LocalVCardUrl = VCardUrl
+typealias LocalVCardPropType = VcardPropType
+typealias LocalVCardPropTypeHome = VcardPropType.Home
+typealias LocalVCardPropTypeWork = VcardPropType.Work
+typealias LocalVCardPropTypeText = VcardPropType.Text
+typealias LocalVCardPropTypeVoice = VcardPropType.Voice
+typealias LocalVCardPropTypeFax = VcardPropType.Fax
+typealias LocalVCardPropTypeCell = VcardPropType.Cell
+typealias LocalVCardPropTypeVideo = VcardPropType.Video
+typealias LocalVCardPropTypePager = VcardPropType.Pager
+typealias LocalVCardPropTypeTextPhone = VcardPropType.TextPhone
+typealias LocalVCardPropTypeString = VcardPropType.String
