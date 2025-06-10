@@ -164,7 +164,6 @@ import ch.protonmail.android.mailmessage.presentation.reducer.ContactActionsBott
 import ch.protonmail.android.mailmessage.presentation.reducer.DetailMoreActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.MailboxMoreActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.UpsellingBottomSheetReducer
-import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
@@ -350,7 +349,6 @@ class ConversationDetailViewModelIntegrationTest {
             } returns ByteArrayInputStream("".toByteArray())
         }
     }
-    private val injectCssIntoDecryptedMessageBody = InjectCssIntoDecryptedMessageBody(context, flowOf(false))
     private val avatarImageUiModelMapper = AvatarImageUiModelMapper()
 
     private val mailLabelTextMapper = mockk<MailLabelTextMapper> {

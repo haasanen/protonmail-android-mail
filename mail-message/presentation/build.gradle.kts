@@ -65,7 +65,6 @@ dependencies {
     implementation(libs.androidx.webkit)
     implementation(libs.androidx.compose.material3)
     implementation(libs.coil.compose)
-    implementation(libs.jsoup)
 
     implementation(project(":mail-attachments:domain"))
     implementation(project(":mail-attachments:presentation"))
