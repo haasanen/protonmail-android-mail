@@ -122,4 +122,6 @@
     <string name="message_details_header_to">To</string>
     <string name="message_details_header_cc">Cc</string>
     <string name="message_details_header_bcc">Bcc</string>
+    <string name="schedule_message_sent_at_banner_title">This message will be sent</string>
+    <string name="schedule_message_edit_message_button">Edit message</string>
 </resources>

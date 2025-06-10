@@ -13,19 +13,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.design.compose.component.ProtonBanner
 import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
+import ch.protonmail.android.design.compose.component.ProtonBanner
 import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maildetail.presentation.R
-import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumInverted
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
+import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
+import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
 import ch.protonmail.android.maildetail.presentation.util.toFormattedAutoDeleteTime
 import ch.protonmail.android.maildetail.presentation.util.toFormattedExpirationTime
@@ -35,10 +39,12 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toKotlinDuration
 
 @Composable
+@Suppress("UseComposableActions")
 fun MessageBanners(
     messageBannersUiModel: MessageBannersUiModel,
     onMarkMessageAsLegitimate: (Boolean) -> Unit,
-    onUnblockSender: () -> Unit
+    onUnblockSender: () -> Unit,
+    onCancelScheduleMessage: () -> Unit
 ) {
     Column {
         if (messageBannersUiModel.shouldShowPhishingBanner) {
@@ -77,6 +83,10 @@ fun MessageBanners(
             is AutoDeleteBannerUiModel.NoAutoDelete -> Unit
             is AutoDeleteBannerUiModel.AutoDelete -> AutoDeleteBanner(uiModel)
         }
+        when (val uiModel = messageBannersUiModel.scheduleSendBannerUiModel) {
+            ScheduleSendBannerUiModel.NoScheduleSend -> Unit
+            is ScheduleSendBannerUiModel.SendScheduled -> ScheduleSendBanner(uiModel, onCancelScheduleMessage)
+        }
         if (messageBannersUiModel.shouldShowBlockedSenderBanner) {
             ProtonBannerWithButton(
                 bannerText = TextUiModel.TextRes(R.string.message_blocked_sender_banner_text).string(),
@@ -87,6 +97,25 @@ fun MessageBanners(
         }
     }
 }
+
+@Composable
+private fun ScheduleSendBanner(uiModel: ScheduleSendBannerUiModel.SendScheduled, onCancelScheduleMessage: () -> Unit) {
+    val bannerBaseText = stringResource(R.string.schedule_message_sent_at_banner_title)
+    val bannerText = buildAnnotatedString {
+        append(bannerBaseText)
+        append("\n")
+        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+            append(uiModel.sendAt.toString())
+        }
+    }
+    ProtonBannerWithButton(
+        bannerText = bannerText,
+        buttonText = TextUiModel.TextRes(R.string.schedule_message_edit_message_button).string(),
+        icon = R.drawable.ic_proton_clock_paper_plane,
+        onButtonClicked = onCancelScheduleMessage
+    )
+}
+
 
 @Composable
 private fun AutoDeleteBanner(uiModel: AutoDeleteBannerUiModel.AutoDelete) {
@@ -194,7 +223,8 @@ fun PreviewMessageBanners() {
                 )
             ),
             onMarkMessageAsLegitimate = {},
-            onUnblockSender = {}
+            onUnblockSender = {},
+            onCancelScheduleMessage = {}
         )
     }
 }

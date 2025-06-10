@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,6 +62,35 @@ fun ProtonBanner(
     iconTint: Color,
     iconSize: Dp?,
     text: String,
+    textStyle: TextStyle,
+    backgroundColor: Color,
+    contentPadding: PaddingValues = PaddingValues(ProtonDimens.Spacing.ModeratelyLarge),
+    borderColorIsBackgroundColor: Boolean = false,
+    contentAlignedWithText: Boolean = false,
+    content: @Composable () -> Unit = {}
+) {
+    ProtonBanner(
+        modifier,
+        icon,
+        iconTint,
+        iconSize,
+        AnnotatedString(text),
+        textStyle,
+        backgroundColor,
+        contentPadding,
+        borderColorIsBackgroundColor,
+        contentAlignedWithText,
+        content
+    )
+}
+
+@Composable
+fun ProtonBanner(
+    modifier: Modifier = Modifier,
+    @DrawableRes icon: Int,
+    iconTint: Color,
+    iconSize: Dp?,
+    text: AnnotatedString,
     textStyle: TextStyle,
     backgroundColor: Color,
     contentPadding: PaddingValues = PaddingValues(ProtonDimens.Spacing.ModeratelyLarge),
@@ -119,6 +149,7 @@ fun ProtonBanner(
     }
 }
 
+
 @Composable
 fun ProtonBanner(
     modifier: Modifier = Modifier,
@@ -159,6 +190,21 @@ fun ProtonBannerWithButton(
     @DrawableRes icon: Int,
     onButtonClicked: () -> Unit
 ) {
+    ProtonBannerWithButton(
+        AnnotatedString(bannerText),
+        buttonText,
+        icon,
+        onButtonClicked
+    )
+}
+
+@Composable
+fun ProtonBannerWithButton(
+    bannerText: AnnotatedString,
+    buttonText: String,
+    @DrawableRes icon: Int,
+    onButtonClicked: () -> Unit
+) {
     ProtonBanner(
         icon = icon,
         iconTint = ProtonTheme.colors.iconWeak,
@@ -192,6 +238,7 @@ fun ProtonBannerWithButton(
         }
     }
 }
+
 
 @Composable
 fun ProtonBannerWithButton(

@@ -22,7 +22,9 @@ import java.time.Instant
 import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
+import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
 
+@Suppress("LongParameterList")
 object MessageBannersUiModelTestData {
 
     val messageBannersUiModel = build(
@@ -30,7 +32,8 @@ object MessageBannersUiModelTestData {
         shouldShowSpamBanner = true,
         shouldShowBlockedSenderBanner = true,
         expirationBannerUiModel = ExpirationBannerUiModel.Expiration(Instant.MAX),
-        autoDeleteBannerUiModel = AutoDeleteBannerUiModel.AutoDelete(Instant.MAX)
+        autoDeleteBannerUiModel = AutoDeleteBannerUiModel.AutoDelete(Instant.MAX),
+        scheduleSendUiModel = ScheduleSendBannerUiModel.NoScheduleSend
     )
 
     fun build(
@@ -38,12 +41,14 @@ object MessageBannersUiModelTestData {
         shouldShowSpamBanner: Boolean,
         shouldShowBlockedSenderBanner: Boolean,
         expirationBannerUiModel: ExpirationBannerUiModel,
-        autoDeleteBannerUiModel: AutoDeleteBannerUiModel
+        autoDeleteBannerUiModel: AutoDeleteBannerUiModel,
+        scheduleSendUiModel: ScheduleSendBannerUiModel
     ) = MessageBannersUiModel(
         shouldShowPhishingBanner = shouldShowPhishingBanner,
         shouldShowSpamBanner = shouldShowSpamBanner,
         shouldShowBlockedSenderBanner = shouldShowBlockedSenderBanner,
         expirationBannerUiModel = expirationBannerUiModel,
-        autoDeleteBannerUiModel = autoDeleteBannerUiModel
+        autoDeleteBannerUiModel = autoDeleteBannerUiModel,
+        scheduleSendBannerUiModel = scheduleSendUiModel
     )
 }

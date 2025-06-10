@@ -182,7 +182,8 @@ private fun ConversationDetailExpandedItem(
             },
             onUnblockSender = {
                 actions.onUnblockSender(uiModel.messageId, uiModel.messageDetailHeaderUiModel.sender.participantAddress)
-            }
+            },
+            onCancelScheduleMessage = {}
         )
         MessageBody(
             messageBodyUiModel = uiModel.messageBodyUiModel,
