@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailpinlock.presentation.autolock.mapper
 
 import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockBiometricsUiModel
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockBiometricsUiModel
 import javax.inject.Inject
 
 class AutoLockBiometricsUiModelMapper @Inject constructor() {
@@ -28,7 +28,7 @@ class AutoLockBiometricsUiModelMapper @Inject constructor() {
         return when (state) {
             is AutoLockBiometricsState.BiometricsAvailable.BiometricsEnrolled ->
                 AutoLockBiometricsUiModel(
-                    enabled = state.enabled,
+                    enabled = true,
                     biometricsEnrolled = true,
                     biometricsHwAvailable = true
                 )

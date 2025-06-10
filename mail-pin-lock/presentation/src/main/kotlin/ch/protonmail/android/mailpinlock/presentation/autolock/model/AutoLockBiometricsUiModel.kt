@@ -16,16 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailpinlock.model
+package ch.protonmail.android.mailpinlock.presentation.autolock.model
 
-sealed interface AutoLockBiometricsState {
+import androidx.compose.runtime.Stable
 
-    data object BiometricsNotAvailable : AutoLockBiometricsState
-
-    sealed interface BiometricsAvailable : AutoLockBiometricsState {
-
-        data object BiometricsNotEnrolled : BiometricsAvailable
-
-        data object BiometricsEnrolled : BiometricsAvailable
-    }
-}
+@Stable
+data class AutoLockBiometricsUiModel(
+    val enabled: Boolean,
+    val biometricsEnrolled: Boolean,
+    val biometricsHwAvailable: Boolean
+)

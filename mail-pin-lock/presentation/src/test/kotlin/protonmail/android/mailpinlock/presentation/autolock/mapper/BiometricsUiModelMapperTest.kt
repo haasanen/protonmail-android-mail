@@ -19,8 +19,8 @@
 package protonmail.android.mailpinlock.presentation.autolock.mapper
 
 import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockBiometricsUiModel
 import ch.protonmail.android.mailpinlock.presentation.autolock.mapper.AutoLockBiometricsUiModelMapper
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockBiometricsUiModel
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -31,7 +31,7 @@ class BiometricsUiModelMapperTest {
     @Test
     fun `map Biometrics Available AND Enrolled And Enabled`() {
         assertEquals(
-            sut.toUiModel(AutoLockBiometricsState.BiometricsAvailable.BiometricsEnrolled(true)),
+            sut.toUiModel(AutoLockBiometricsState.BiometricsAvailable.BiometricsEnrolled),
             AutoLockBiometricsUiModel(
                 enabled = true,
                 biometricsEnrolled = true,
@@ -43,9 +43,9 @@ class BiometricsUiModelMapperTest {
     @Test
     fun `map Biometrics Available AND Enrolled And NOT Enabled`() {
         assertEquals(
-            sut.toUiModel(AutoLockBiometricsState.BiometricsAvailable.BiometricsEnrolled(false)),
+            sut.toUiModel(AutoLockBiometricsState.BiometricsAvailable.BiometricsEnrolled),
             AutoLockBiometricsUiModel(
-                enabled = false,
+                enabled = true,
                 biometricsEnrolled = true,
                 biometricsHwAvailable = true
             )
