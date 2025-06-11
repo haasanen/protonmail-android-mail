@@ -88,12 +88,21 @@ class ConversationDetailReducer @Inject constructor(
             openMessageBodyLinkEffect = currentState.toOpenMessageBodyLinkState(operation),
             openAttachmentEffect = currentState.toNewOpenAttachmentStateFrom(operation),
             openProtonCalendarIntent = currentState.toNewOpenProtonCalendarIntentFrom(operation),
+            onExitWithNavigateToComposer = currentState.toOpenComposerEffectState(operation),
             scrollToMessage = currentState.toScrollToMessageState(operation),
             conversationDeleteState = currentState.toNewDeleteDialogState(operation),
             reportPhishingDialogState = currentState.toNewReportPhishingDialogState(operation),
             trashedMessagesBannerState = currentState.toNewTrashedMessagesBannerState(operation),
             markAsLegitimateDialogState = currentState.toNewMarkAsLegitimateDialogState(operation)
         )
+    }
+
+    private fun ConversationDetailState.toOpenComposerEffectState(
+        operation: ConversationDetailOperation
+    ): Effect<MessageIdUiModel> = when (operation) {
+        is ConversationDetailEvent.ScheduleSendCancelled -> Effect.of(operation.messageId)
+
+        else -> onExitWithNavigateToComposer
     }
 
     private fun ConversationDetailState.toNewConversationState(operation: ConversationDetailOperation) =
@@ -220,8 +229,10 @@ class ConversationDetailReducer @Inject constructor(
                 } else {
                     Effect.of(Unit)
                 }
+
                 else -> exitScreenEffect
             }
+
             else -> exitScreenEffect
         }
 

@@ -105,6 +105,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.Participant
+import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
@@ -191,7 +192,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val observeAvatarImageStates: ObserveAvatarImageStates,
     private val getMessagesInSameExclusiveLocation: GetMessagesInSameExclusiveLocation,
     private val markMessageAsLegitimate: MarkMessageAsLegitimate,
-    private val unblockSender: UnblockSender
+    private val unblockSender: UnblockSender,
+    private val cancelScheduleSendMessage: CancelScheduleSendMessage
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -347,6 +349,15 @@ class ConversationDetailViewModel @Inject constructor(
                 handleMarkMessageAsLegitimateConfirmed(action)
 
             is ConversationDetailViewAction.UnblockSender -> handleUnblockSender(action.messageId, action.email)
+            is ConversationDetailViewAction.EditScheduleSendMessage -> handleEditScheduleSendMessage(action.messageId)
+        }
+    }
+
+    private fun handleEditScheduleSendMessage(messageId: MessageIdUiModel) {
+        viewModelScope.launch {
+            cancelScheduleSendMessage(primaryUserId.first(), MessageId(messageId.id))
+                .onLeft { Timber.w("cancel-schedule-send failed $it") }
+                .onRight { emitNewStateFrom(ConversationDetailEvent.ScheduleSendCancelled(messageId)) }
         }
     }
 
@@ -361,6 +372,7 @@ class ConversationDetailViewModel @Inject constructor(
         }
 
     }
+
     fun loadEmbeddedImage(messageId: MessageId?, contentId: String) = messageId?.let {
         runBlocking {
             getEmbeddedImageAvoidDuplicatedExecution(

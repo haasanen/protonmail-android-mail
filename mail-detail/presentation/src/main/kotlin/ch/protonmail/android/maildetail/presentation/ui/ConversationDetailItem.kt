@@ -183,7 +183,7 @@ private fun ConversationDetailExpandedItem(
             onUnblockSender = {
                 actions.onUnblockSender(uiModel.messageId, uiModel.messageDetailHeaderUiModel.sender.participantAddress)
             },
-            onCancelScheduleMessage = {}
+            onCancelScheduleMessage = { actions.onEditScheduleSendMessage(uiModel.messageId) }
         )
         MessageBody(
             messageBodyUiModel = uiModel.messageBodyUiModel,
@@ -243,7 +243,8 @@ object ConversationDetailItem {
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit,
         val onMarkMessageAsLegitimate: (MessageIdUiModel, Boolean) -> Unit,
-        val onUnblockSender: (MessageIdUiModel, String) -> Unit
+        val onUnblockSender: (MessageIdUiModel, String) -> Unit,
+        val onEditScheduleSendMessage: (MessageIdUiModel) -> Unit
     )
 }
 

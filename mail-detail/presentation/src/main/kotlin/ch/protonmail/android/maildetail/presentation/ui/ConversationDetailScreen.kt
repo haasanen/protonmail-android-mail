@@ -492,6 +492,12 @@ fun ConversationDetailScreen(
                 },
                 onUnblockSender = { messageId, email ->
                     viewModel.submit(ConversationDetailViewAction.UnblockSender(messageId, email))
+                },
+                onEditScheduleSendMessage = { messageId ->
+                    viewModel.submit(ConversationDetailViewAction.EditScheduleSendMessage(messageId))
+                },
+                onExitWithOpenInComposer = {
+                    actions.onExitWithOpenInComposer(MessageId(it.id))
                 }
             ),
             scrollToMessageId = state.scrollToMessage?.id
@@ -553,6 +559,10 @@ fun ConversationDetailScreen(
 
     ConsumableLaunchedEffect(effect = state.openProtonCalendarIntent) {
         actions.handleProtonCalendarRequest(it)
+    }
+
+    ConsumableLaunchedEffect(effect = state.onExitWithNavigateToComposer) {
+        actions.onExitWithOpenInComposer(it)
     }
 
     if (linkConfirmationDialogState.value != null) {
@@ -686,7 +696,8 @@ fun ConversationDetailScreen(
                     onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested,
                     onParticipantClicked = actions.onParticipantClicked,
                     onMarkMessageAsLegitimate = actions.onMarkMessageAsLegitimate,
-                    onUnblockSender = actions.onUnblockSender
+                    onUnblockSender = actions.onUnblockSender,
+                    onEditScheduleSendMessage = actions.onEditScheduleSendMessage
                 )
                 MessagesContentWithHiddenEdges(
                     uiModels = state.messagesState.messages,
@@ -955,7 +966,8 @@ object ConversationDetail {
         val onComposeNewMessage: (recipientAddress: String) -> Unit,
         val openComposerForDraftMessage: (messageId: MessageId) -> Unit,
         val showSnackbar: (message: String, type: ProtonSnackbarType) -> Unit,
-        val recordMailboxScreenView: () -> Unit
+        val recordMailboxScreenView: () -> Unit,
+        val onExitWithOpenInComposer: (MessageId) -> Unit
     )
 }
 
@@ -1011,7 +1023,9 @@ object ConversationDetailScreen {
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit,
         val onTrashedMessagesBannerClick: () -> Unit,
         val onMarkMessageAsLegitimate: (MessageIdUiModel, Boolean) -> Unit,
-        val onUnblockSender: (MessageIdUiModel, String) -> Unit
+        val onUnblockSender: (MessageIdUiModel, String) -> Unit,
+        val onEditScheduleSendMessage: (MessageIdUiModel) -> Unit,
+        val onExitWithOpenInComposer: (MessageIdUiModel) -> Unit
     ) {
 
         companion object {
@@ -1060,7 +1074,9 @@ object ConversationDetailScreen {
                 onParticipantClicked = { _, _ -> },
                 onTrashedMessagesBannerClick = {},
                 onMarkMessageAsLegitimate = { _, _ -> },
-                onUnblockSender = { _, _ -> }
+                onUnblockSender = { _, _ -> },
+                onEditScheduleSendMessage = {},
+                onExitWithOpenInComposer = {}
             )
         }
     }

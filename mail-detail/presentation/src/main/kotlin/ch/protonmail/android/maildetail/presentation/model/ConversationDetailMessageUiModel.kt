@@ -81,12 +81,3 @@ sealed interface ConversationDetailMessageUiModel {
         RepliedAll
     }
 }
-
-fun ConversationDetailMessageUiModel.getSenderAddress(): String? {
-    return when (this) {
-        is ConversationDetailMessageUiModel.Collapsed -> sender.participantAddress
-        is ConversationDetailMessageUiModel.Expanding -> collapsed.sender.participantAddress
-        is ConversationDetailMessageUiModel.Expanded -> messageDetailHeaderUiModel.sender.participantAddress
-        is ConversationDetailMessageUiModel.Hidden -> null
-    }
-}

@@ -161,6 +161,8 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
     data class ExitScreenWithMessage(val operation: ConversationDetailOperation) :
         ConversationDetailEvent,
         AffectingBottomSheet
+
+    data class ScheduleSendCancelled(val messageId: MessageIdUiModel) : ConversationDetailEvent
 }
 
 sealed interface ConversationDetailViewAction : ConversationDetailOperation {
@@ -206,6 +208,7 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     data class ReportPhishing(
         val messageId: MessageId
     ) : ConversationDetailViewAction, AffectingBottomSheet, AffectingReportPhishingDialog
+
     object ReportPhishingDismissed : ConversationDetailViewAction, AffectingReportPhishingDialog
     data class ReportPhishingConfirmed(
         val messageId: MessageId
@@ -315,4 +318,6 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     data object MarkMessageAsLegitimateDismissed : ConversationDetailViewAction, AffectingMarkAsLegitimateDialog
 
     data class UnblockSender(val messageId: MessageIdUiModel, val email: String) : ConversationDetailViewAction
+
+    data class EditScheduleSendMessage(val messageId: MessageIdUiModel) : ConversationDetailViewAction
 }
