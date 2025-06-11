@@ -157,7 +157,7 @@ internal fun PinSecureInputField(
         textObfuscationMode = textObfuscationMode,
         state = pinTextFieldState,
         keyboardOptions = keyboardOptions,
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(ProtonDimens.CornerRadius.Large),
         colors = createPinTextFieldColors(),
         textStyle = createPinTextStyle(),
         isError = isError,
