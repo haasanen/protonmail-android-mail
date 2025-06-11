@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -112,6 +113,7 @@ private fun CustomTimeOption(onOptionClicked: () -> Unit, modifier: Modifier = M
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .clip(ProtonTheme.shapes.extraLarge)
             .clickable(
                 role = Role.Button,
                 onClick = onOptionClicked
@@ -198,6 +200,7 @@ private fun MainOptionButton(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
+            .clip(ProtonTheme.shapes.extraLarge)
             .clickable(onClick = onClick)
             .background(
                 color = ProtonTheme.colors.backgroundInvertedSecondary,
