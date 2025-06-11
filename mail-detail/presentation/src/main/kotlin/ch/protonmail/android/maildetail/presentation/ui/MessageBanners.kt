@@ -50,8 +50,8 @@ fun MessageBanners(
                 icon = R.drawable.ic_proton_hook,
                 iconTint = ProtonTheme.colors.iconInverted,
                 iconSize = ProtonDimens.IconSize.Medium,
-                text = TextUiModel.TextRes(R.string.message_phishing_banner_text).string(),
-                buttonText = TextUiModel.TextRes(R.string.message_phishing_banner_mark_as_legitimate_button).string(),
+                text = stringResource(R.string.message_phishing_banner_text),
+                buttonText = stringResource(R.string.message_phishing_banner_mark_as_legitimate_button),
                 textStyle = ProtonTheme.typography.bodyMediumInverted,
                 backgroundColor = ProtonTheme.colors.notificationError,
                 buttonBackgroundColor = Color(PHISHING_BANNER_BUTTON_BACKGROUND),
@@ -64,8 +64,8 @@ fun MessageBanners(
                 icon = R.drawable.ic_proton_fire,
                 iconTint = ProtonTheme.colors.iconInverted,
                 iconSize = ProtonDimens.IconSize.Medium,
-                text = TextUiModel.TextRes(R.string.message_spam_banner_text).string(),
-                buttonText = TextUiModel.TextRes(R.string.message_spam_banner_not_spam_button).string(),
+                text = stringResource(R.string.message_spam_banner_text),
+                buttonText = stringResource(R.string.message_spam_banner_not_spam_button),
                 textStyle = ProtonTheme.typography.bodyMediumInverted,
                 backgroundColor = ProtonTheme.colors.notificationError,
                 buttonBackgroundColor = Color(PHISHING_BANNER_BUTTON_BACKGROUND),
@@ -87,8 +87,8 @@ fun MessageBanners(
         }
         if (messageBannersUiModel.shouldShowBlockedSenderBanner) {
             ProtonBannerWithButton(
-                bannerText = TextUiModel.TextRes(R.string.message_blocked_sender_banner_text).string(),
-                buttonText = TextUiModel.TextRes(R.string.message_blocked_sender_button_text).string(),
+                bannerText = stringResource(R.string.message_blocked_sender_banner_text),
+                buttonText = stringResource(R.string.message_blocked_sender_button_text),
                 icon = R.drawable.ic_proton_circle_slash,
                 onButtonClicked = onUnblockSender
             )
@@ -102,14 +102,14 @@ private fun ScheduleSendBanner(uiModel: ScheduleSendBannerUiModel.SendScheduled,
     val sendTimeFormatted = uiModel.sendAt.string()
     val bannerText = buildAnnotatedString {
         append(bannerBaseText)
-        append("\n")
+        appendLine()
         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
             append(sendTimeFormatted)
         }
     }
     ProtonBannerWithButton(
         bannerText = bannerText,
-        buttonText = TextUiModel.TextRes(R.string.schedule_message_edit_message_button).string(),
+        buttonText = stringResource(R.string.schedule_message_edit_message_button),
         icon = R.drawable.ic_proton_clock_paper_plane,
         onButtonClicked = onCancelScheduleMessage
     )
