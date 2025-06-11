@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
                                 launcherViewModel.submit(LauncherViewModel.Action.OpenSecurityKeys)
                             },
                             finishActivity = { finishAfterTransition() },
-                            onNavigateToPinInsertion = {
+                            onNavigateToLockScreen = {
                                 val intent = Intent(this, LockScreenActivity::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                                 startActivity(intent)
@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
         val openInActivityInNewTask: (uri: Uri) -> Unit,
         val openIntentChooser: (values: OpenAttachmentIntentValues) -> Unit,
         val openProtonCalendarIntentValues: (values: OpenProtonCalendarIntentValues) -> Unit,
-        val onNavigateToPinInsertion: () -> Unit,
+        val onNavigateToLockScreen: () -> Unit,
         val openSecurityKeys: () -> Unit,
         val finishActivity: () -> Unit
     )

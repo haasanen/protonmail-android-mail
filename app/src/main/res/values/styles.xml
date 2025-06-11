@@ -15,7 +15,7 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="ProtonTheme.Mail.Transparent" parent="ProtonTheme.Mail">
         <item name="android:windowIsTranslucent">true</item>
@@ -24,6 +24,9 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowAnimationStyle">@style/FadeAnimation</item>
+        <!-- Enable blur behind for API 31+ -->
+        <item name="android:windowBlurBehindEnabled" tools:targetApi="s">true</item>
+        <item name="android:windowBlurBehindRadius" tools:targetApi="s">16.dp</item>
     </style>
 
     <style name="FadeAnimation" parent="android:Theme">

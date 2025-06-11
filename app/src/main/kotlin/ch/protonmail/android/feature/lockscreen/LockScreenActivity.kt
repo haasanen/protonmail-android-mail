@@ -18,10 +18,17 @@
 
 package ch.protonmail.android.feature.lockscreen
 
+import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -38,26 +45,59 @@ internal class LockScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Blur is only added on API 31+ devices.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            setupNativeBlur()
+        }
+
         setContent {
             ProtonTheme {
                 val navController = rememberNavController().withSentryObservableEffect()
-                CompositionLocalProvider(LocalLockScreenEntryPointIsStandalone provides true) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = Destination.Screen.AutoLockOverlay.route
-                    ) {
-                        addAutoLockOverlay(
-                            onClose = { this@LockScreenActivity.finish() },
-                            navController
-                        )
 
-                        addAutoLockPinScreen(
-                            onClose = { this@LockScreenActivity.finish() },
-                            onShowSuccessSnackbar = {}
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .then(
+                            // If < API 31, show a background to hide the underlying content as there is no blur.
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                                Modifier.background(ProtonTheme.colors.backgroundNorm)
+                            } else {
+                                Modifier
+                            }
                         )
+                ) {
+
+                    CompositionLocalProvider(LocalLockScreenEntryPointIsStandalone provides true) {
+                        NavHost(
+                            navController = navController,
+                            startDestination = Destination.Screen.AutoLockOverlay.route
+                        ) {
+                            addAutoLockOverlay(
+                                onClose = { this@LockScreenActivity.finish() },
+                                navController
+                            )
+
+                            addAutoLockPinScreen(
+                                onClose = { this@LockScreenActivity.finish() },
+                                onShowSuccessSnackbar = {}
+                            )
+                        }
                     }
                 }
             }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun setupNativeBlur() {
+        window.apply {
+            setFlags(
+                WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
+                WindowManager.LayoutParams.FLAG_BLUR_BEHIND
+            )
+
+            @Suppress("MagicNumber")
+            setDimAmount(0.1f)
         }
     }
 }

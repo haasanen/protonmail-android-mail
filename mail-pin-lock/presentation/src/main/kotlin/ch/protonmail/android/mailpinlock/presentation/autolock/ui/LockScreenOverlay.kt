@@ -42,6 +42,7 @@ fun LockScreenOverlay(
         AutoLockOverlayState.Biometrics -> LockScreenBiometricsPrompt(
             {
                 viewModel.onSuccessfulBiometrics()
+                item?.finish()
             },
             onCloseAll = { item?.finishAffinity() }
         )

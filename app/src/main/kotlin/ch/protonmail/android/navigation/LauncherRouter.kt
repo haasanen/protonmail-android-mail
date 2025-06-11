@@ -18,18 +18,11 @@
 
 package ch.protonmail.android.navigation
 
-import android.os.Build
-import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.MainActivity
-import ch.protonmail.android.mailpinlock.presentation.autolock.ui.LockScreenInterstitial
 
 @Composable
 internal fun LauncherRouter(
@@ -40,27 +33,8 @@ internal fun LauncherRouter(
     val showAutoLock by viewModel.displayAutoLockState.collectAsStateWithLifecycle()
 
     if (showAutoLock) {
-        LockScreenInterstitial(
-            onClose = { activityActions.finishActivity() },
-            onNavigateToPinInsertion = {
-                activityActions.onNavigateToPinInsertion()
-            }
-        )
+        activityActions.onNavigateToLockScreen()
     }
 
-    Home(
-        modifier = Modifier.then(
-            if (showAutoLock) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    Modifier.blur(radius = 16.dp)
-                } else {
-                    Modifier.background(Color.Black.copy(alpha = 0.7f))
-                }
-            } else {
-                Modifier
-            }
-        ),
-        activityActions,
-        launcherActions
-    )
+    Home(activityActions, launcherActions)
 }

@@ -107,7 +107,7 @@ fun AutoLockPinScreen(
     )
 
     val containerColor = if (isStandalone) {
-        ProtonTheme.colors.backgroundNorm.copy(alpha = 0.75f)
+        ProtonTheme.colors.backgroundNorm.copy(alpha = 0.25f)
     } else {
         ProtonTheme.colors.backgroundNorm
     }
