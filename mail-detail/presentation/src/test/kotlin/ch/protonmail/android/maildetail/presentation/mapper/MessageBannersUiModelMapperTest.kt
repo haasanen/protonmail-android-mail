@@ -21,8 +21,11 @@ package ch.protonmail.android.maildetail.presentation.mapper
 import java.time.Instant
 import android.content.Context
 import android.content.res.Resources
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
+import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
+import ch.protonmail.android.maildetail.presentation.usecase.FormatScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import io.mockk.every
 import io.mockk.mockk
@@ -30,6 +33,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.toKotlinInstant
 
 class MessageBannersUiModelMapperTest {
 
@@ -37,8 +41,9 @@ class MessageBannersUiModelMapperTest {
     private val contextMock = mockk<Context> {
         every { resources } returns resourcesMock
     }
+    private val formatScheduleSendTime = mockk<FormatScheduleSendTime>()
 
-    private val messageBannersUiModelMapper = MessageBannersUiModelMapper(contextMock)
+    private val messageBannersUiModelMapper = MessageBannersUiModelMapper(contextMock, formatScheduleSendTime)
 
     @Test
     fun `should map to ui model with a phishing banner when banners list contains it`() {
@@ -155,5 +160,34 @@ class MessageBannersUiModelMapperTest {
 
         // Then
         assertEquals(AutoDeleteBannerUiModel.NoAutoDelete, result.autoDeleteBannerUiModel)
+    }
+
+    @Test
+    fun `should map to ui model with schedule-send banner when banners list contains it`() {
+        // Given
+        val expected = TextUiModel.Text("in the far future")
+        every { formatScheduleSendTime(Instant.MAX.toKotlinInstant()) } returns expected
+
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            listOf(MessageBanner.ScheduledSend(Instant.MAX))
+        )
+
+        // Then
+        assertEquals(
+            ScheduleSendBannerUiModel.SendScheduled(expected),
+            result.scheduleSendBannerUiModel
+        )
+    }
+
+    @Test
+    fun `should map to ui model with no schedule-send banner when banners list does not contain it`() {
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            emptyList()
+        )
+
+        // Then
+        assertEquals(ScheduleSendBannerUiModel.NoScheduleSend, result.scheduleSendBannerUiModel)
     }
 }

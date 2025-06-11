@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.model
 
 import java.time.Instant
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
 data class MessageBannersUiModel(
     val shouldShowPhishingBanner: Boolean,
@@ -45,5 +46,5 @@ sealed class AutoDeleteBannerUiModel {
 
 sealed class ScheduleSendBannerUiModel {
     data object NoScheduleSend : ScheduleSendBannerUiModel()
-    data class SendScheduled(val sendAt: Instant) : ScheduleSendBannerUiModel()
+    data class SendScheduled(val sendAt: TextUiModel) : ScheduleSendBannerUiModel()
 }

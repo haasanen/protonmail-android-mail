@@ -101,11 +101,12 @@ fun MessageBanners(
 @Composable
 private fun ScheduleSendBanner(uiModel: ScheduleSendBannerUiModel.SendScheduled, onCancelScheduleMessage: () -> Unit) {
     val bannerBaseText = stringResource(R.string.schedule_message_sent_at_banner_title)
+    val sendTimeFormatted = uiModel.sendAt.string()
     val bannerText = buildAnnotatedString {
         append(bannerBaseText)
         append("\n")
         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-            append(uiModel.sendAt.toString())
+            append(sendTimeFormatted)
         }
     }
     ProtonBannerWithButton(
@@ -219,7 +220,7 @@ fun PreviewMessageBanners() {
                     deletesAt = Instant.now()
                 ),
                 scheduleSendBannerUiModel = ScheduleSendBannerUiModel.SendScheduled(
-                    sendAt = Instant.now()
+                    sendAt = TextUiModel.Text("tomorrow at 08:00")
                 )
             ),
             onMarkMessageAsLegitimate = {},

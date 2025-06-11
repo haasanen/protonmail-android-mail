@@ -23,11 +23,16 @@ import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiMod
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
+import ch.protonmail.android.maildetail.presentation.usecase.FormatScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlin.time.toKotlinInstant
 
-class MessageBannersUiModelMapper @Inject constructor(@ApplicationContext val context: Context) {
+class MessageBannersUiModelMapper @Inject constructor(
+    @ApplicationContext val context: Context,
+    val formatScheduleSendTime: FormatScheduleSendTime
+) {
 
     fun toUiModel(messageBanners: List<MessageBanner>) = MessageBannersUiModel(
         shouldShowPhishingBanner = messageBanners.contains(MessageBanner.PhishingAttempt),
@@ -52,7 +57,7 @@ class MessageBannersUiModelMapper @Inject constructor(@ApplicationContext val co
 
     private fun toScheduleSendBannerUiModel(messageBanners: List<MessageBanner>): ScheduleSendBannerUiModel {
         return messageBanners.filterIsInstance<MessageBanner.ScheduledSend>().firstOrNull()?.let {
-            ScheduleSendBannerUiModel.SendScheduled(sendAt = it.scheduledAt)
+            ScheduleSendBannerUiModel.SendScheduled(sendAt = formatScheduleSendTime(it.scheduledAt.toKotlinInstant()))
         } ?: ScheduleSendBannerUiModel.NoScheduleSend
     }
 }

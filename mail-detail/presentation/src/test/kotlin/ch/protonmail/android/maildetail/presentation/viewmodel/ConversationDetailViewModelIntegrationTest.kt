@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.viewmodel
 
+import java.util.Locale
 import java.util.Random
 import android.content.Context
 import android.graphics.Color
@@ -45,7 +46,9 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailcommon.domain.usecase.GetAppLocale
 import ch.protonmail.android.mailcommon.domain.usecase.GetCurrentEpochTimeDuration
+import ch.protonmail.android.mailcommon.domain.usecase.GetLocalisedCalendar
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
@@ -121,6 +124,7 @@ import ch.protonmail.android.maildetail.presentation.reducer.MarkAsLegitimateDia
 import ch.protonmail.android.maildetail.presentation.reducer.TrashedMessagesBannerReducer
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
+import ch.protonmail.android.maildetail.presentation.usecase.FormatScheduleSendTime
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
@@ -340,6 +344,10 @@ class ConversationDetailViewModelIntegrationTest {
         mockk { every { this@mockk.invoke(any()) } returns TextUiModel("10:00") }
     private val context = mockk<Context>()
     private val avatarImageUiModelMapper = AvatarImageUiModelMapper()
+    private val getAppLocale = mockk<GetAppLocale> {
+        every { this@mockk.invoke() } returns Locale.ITALIAN
+    }
+    private val formatScheduleSendTime = FormatScheduleSendTime(GetLocalisedCalendar(getAppLocale), getAppLocale)
 
     private val mailLabelTextMapper = mockk<MailLabelTextMapper> {
         every { this@mockk.mapToString(MailLabelText.TextString("Spam")) } returns "Spam"
@@ -367,7 +375,7 @@ class ConversationDetailViewModelIntegrationTest {
             avatarImageUiModelMapper = avatarImageUiModelMapper
         ),
         messageDetailFooterUiModelMapper = MessageDetailFooterUiModelMapper(),
-        messageBannersUiModelMapper = MessageBannersUiModelMapper(context),
+        messageBannersUiModelMapper = MessageBannersUiModelMapper(context, formatScheduleSendTime),
         messageBodyUiModelMapper = MessageBodyUiModelMapper(
             attachmentGroupUiModelMapper = attachmentGroupUiModelMapper
         ),
