@@ -188,7 +188,6 @@ private fun TopAppBarInSearchMode(
             NavigationIcon(
                 uiModel = uiModel,
                 onNavigationIconClick = {
-                    focusManager.clearFocus(force = true)
                     keyboardController?.hide()
                     actions.onExitSearchMode()
                 }
