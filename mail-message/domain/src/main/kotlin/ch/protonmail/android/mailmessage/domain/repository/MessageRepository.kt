@@ -19,8 +19,8 @@
 package ch.protonmail.android.mailmessage.domain.repository
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -132,13 +132,6 @@ interface MessageRepository {
 
     suspend fun isMessageRead(userId: UserId, messageId: MessageId): Either<DataError.Local, Boolean>
 
-    suspend fun updateDraftRemoteIds(
-        userId: UserId,
-        localDraftId: MessageId,
-        apiAssignedId: MessageId,
-        conversationId: ConversationId
-    )
-
     /**
      * Delete the message with the given [messageId]
      */
@@ -174,4 +167,6 @@ interface MessageRepository {
     suspend fun markMessageAsLegitimate(userId: UserId, messageId: MessageId): Either<DataError, Unit>
 
     suspend fun unblockSender(userId: UserId, email: String): Either<DataError, Unit>
+
+    suspend fun cancelScheduleSend(userId: UserId, messageId: MessageId): Either<DataError, PreviousScheduleSendTime>
 }

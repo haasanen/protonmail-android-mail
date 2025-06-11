@@ -25,8 +25,10 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
@@ -115,4 +117,9 @@ interface RustMessageDataSource {
     suspend fun reportPhishing(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit>
 
     suspend fun deleteAllMessagesInLocation(userId: UserId, labelId: LocalLabelId): Either<DataError, Unit>
+
+    suspend fun cancelScheduleSendMessage(
+        userId: UserId,
+        messageId: MessageId
+    ): Either<DataError, PreviousScheduleSendTime>
 }

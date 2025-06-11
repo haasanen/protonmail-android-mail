@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
+import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
@@ -47,6 +48,9 @@ import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
 import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
+import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
+import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -58,27 +62,29 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
+import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.junit.Test
-import uniffi.proton_mail_uniffi.BodyOutput
-import uniffi.proton_mail_uniffi.MessageBanner
-import uniffi.proton_mail_uniffi.TransformOpts
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
+import uniffi.proton_mail_uniffi.BodyOutput
 import uniffi.proton_mail_uniffi.CustomFolderAction
+import uniffi.proton_mail_uniffi.DraftCancelScheduledSendInfo
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MailTheme
 import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.MessageBanner
 import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ThemeOpts
+import uniffi.proton_mail_uniffi.TransformOpts
+import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 class RustMessageDataSourceImplTest {
 
@@ -103,6 +109,7 @@ class RustMessageDataSourceImplTest {
     private val rustUnblockAddress = mockk<RustUnblockAddress>()
     private val rustReportPhishing = mockk<RustReportPhishing>()
     private val rustDeleteAllMessagesInLabel = mockk<RustDeleteAllMessagesInLabel>()
+    private val rustCancelScheduleSend = mockk<RustCancelScheduleSendMessage>()
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -128,6 +135,7 @@ class RustMessageDataSourceImplTest {
         rustUnblockAddress,
         rustReportPhishing,
         rustDeleteAllMessagesInLabel,
+        rustCancelScheduleSend,
         testDispatcher
     )
 
@@ -950,4 +958,56 @@ class RustMessageDataSourceImplTest {
             coVerify { rustDeleteAllMessagesInLabel(mailSession, labelId) }
             assertEquals(DataError.Local.Unknown.left(), result)
         }
+
+    @Test
+    fun `cancel schedule send returns error when session is null`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageId = MessageIdSample.LocalDraft
+        val expected = DataError.Local.NoUserSession
+        coEvery { userSessionRepository.getUserSession(userId) } returns null
+
+        // When
+        val actual = dataSource.cancelScheduleSendMessage(userId, messageId)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `cancel schedule send returns error when rustDraftUndoSend fails`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageId = MessageId("810")
+        val expectedError = DataError.Local.NoUserSession
+        val mailSession = mockk<MailUserSessionWrapper>()
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { rustCancelScheduleSend(mailSession, messageId.toLocalMessageId()) } returns expectedError.left()
+
+        // When
+        val actual = dataSource.cancelScheduleSendMessage(userId, messageId)
+
+        // Then
+        assertEquals(expectedError.left(), actual)
+    }
+
+    @Test
+    fun `cancel schedule send returns previous schedule time when successful`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageId = MessageId("810")
+        val mailSession = mockk<MailUserSessionWrapper>()
+        val lastScheduledTime = 123uL
+        val scheduleInfo = DraftCancelScheduledSendInfo(lastScheduledTime)
+        val lastScheduleTime = PreviousScheduleSendTime(Instant.fromEpochSeconds(lastScheduledTime.toLong()))
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { rustCancelScheduleSend(mailSession, messageId.toLocalMessageId()) } returns scheduleInfo.right()
+
+        // When
+        val actual = dataSource.cancelScheduleSendMessage(userId, messageId)
+
+        // Then
+        assertEquals(lastScheduleTime.right(), actual)
+    }
+
 }

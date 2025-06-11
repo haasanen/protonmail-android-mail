@@ -22,8 +22,8 @@ import java.io.File
 import arrow.core.Either
 import arrow.core.flatMap
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
-import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
@@ -168,14 +168,11 @@ class RustMessageRepositoryImpl @Inject constructor(
         shouldArchive
     )
 
-    override suspend fun updateDraftRemoteIds(
+    override suspend fun cancelScheduleSend(
         userId: UserId,
-        localDraftId: MessageId,
-        apiAssignedId: MessageId,
-        conversationId: ConversationId
-    ) {
-        TODO("Not yet implemented")
-    }
+        messageId: MessageId
+    ): Either<DataError, PreviousScheduleSendTime> = rustMessageDataSource.cancelScheduleSendMessage(userId, messageId)
+
 
     override suspend fun deleteMessages(
         userId: UserId,

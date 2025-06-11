@@ -29,9 +29,12 @@ import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
+import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalThemeOptions
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
+import ch.protonmail.android.mailmessage.data.mapper.toPreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
@@ -52,18 +55,19 @@ import ch.protonmail.android.mailmessage.data.usecase.RustUnblockAddress
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.ThemeOpts
-import uniffi.proton_mail_uniffi.TransformOpts
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
+import uniffi.proton_mail_uniffi.ThemeOpts
+import uniffi.proton_mail_uniffi.TransformOpts
 import javax.inject.Inject
 
 @SuppressWarnings("LongParameterList")
@@ -89,6 +93,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustUnblockAddress: RustUnblockAddress,
     private val rustReportPhishing: RustReportPhishing,
     private val rustDeleteAllMessagesInLabel: RustDeleteAllMessagesInLabel,
+    private val cancelScheduleSendMessage: RustCancelScheduleSendMessage,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RustMessageDataSource {
 
@@ -389,4 +394,21 @@ class RustMessageDataSourceImpl @Inject constructor(
 
             rustDeleteAllMessagesInLabel(session, labelId)
         }
+
+    override suspend fun cancelScheduleSendMessage(
+        userId: UserId,
+        messageId: MessageId
+    ): Either<DataError, PreviousScheduleSendTime> {
+        Timber.d("rust-message: Cancels schedule send raft...")
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-message: Trying to cancel schedule send with null session; Failing.")
+            return DataError.Local.NoUserSession.left()
+        }
+
+        return cancelScheduleSendMessage(session, messageId.toLocalMessageId()).map {
+            it.toPreviousScheduleSendTime()
+        }
+    }
+
 }

@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.composer.data.repository
 
-import ch.protonmail.android.mailcomposer.domain.model.PreviousScheduleSendTime
+import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailcomposer.domain.repository.PreviousScheduleSendTimeRepository
 import javax.inject.Inject
 import javax.inject.Singleton

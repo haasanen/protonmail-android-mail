@@ -18,19 +18,19 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailcomposer.domain.repository.PreviousScheduleSendTimeRepository
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class CancelScheduleSendMessage @Inject constructor(
-    private val draftRepository: DraftRepository,
+    private val messageRepository: MessageRepository,
     private val previousScheduleSendTimeRepository: PreviousScheduleSendTimeRepository
 ) {
 
     suspend operator fun invoke(userId: UserId, messageId: MessageId) =
-        draftRepository.cancelScheduleSend(userId, messageId)
+        messageRepository.cancelScheduleSend(userId, messageId)
             .onRight { previousScheduleSendTimeRepository.save(it) }
 
 }

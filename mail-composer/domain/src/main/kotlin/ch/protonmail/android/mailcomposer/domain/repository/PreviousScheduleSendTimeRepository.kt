@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.domain.repository
 
-import ch.protonmail.android.mailcomposer.domain.model.PreviousScheduleSendTime
+import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 
 interface PreviousScheduleSendTimeRepository {
     suspend fun save(time: PreviousScheduleSendTime)

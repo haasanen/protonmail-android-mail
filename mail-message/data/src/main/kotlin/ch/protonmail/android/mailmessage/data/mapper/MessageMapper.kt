@@ -47,6 +47,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
@@ -65,6 +66,7 @@ import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import me.proton.core.user.domain.entity.AddressId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.BodyOutput
+import uniffi.proton_mail_uniffi.DraftCancelScheduledSendInfo
 import uniffi.proton_mail_uniffi.MailTheme
 import uniffi.proton_mail_uniffi.MessageRecipient
 import uniffi.proton_mail_uniffi.MessageSender
@@ -236,3 +238,7 @@ private fun LocalMessageBanner.toMessageBanner(): MessageBanner {
         is LocalMessageBannerUnsubscribeNewsletter -> MessageBanner.UnsubscribeNewsletter
     }
 }
+
+fun DraftCancelScheduledSendInfo.toPreviousScheduleSendTime() = PreviousScheduleSendTime(
+    Instant.fromEpochSeconds(this.lastScheduledTime.toLong())
+)
