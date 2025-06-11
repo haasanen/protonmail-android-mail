@@ -24,6 +24,7 @@ import android.os.Build
 import android.text.format.Formatter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -114,6 +115,8 @@ fun AttachmentItem(
         )
     }
 
+    val isError = attachmentUiModel.status is AttachmentState.Error
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -121,6 +124,13 @@ fun AttachmentItem(
             .background(
                 color = ProtonTheme.colors.interactionWeakNorm,
                 shape = ProtonTheme.shapes.huge
+            )
+            .then(
+                if (isError) Modifier.border(
+                    width = ProtonDimens.BorderSize.Default,
+                    color = ProtonTheme.colors.notificationError,
+                    shape = ProtonTheme.shapes.huge
+                ) else Modifier
             )
             .clip(ProtonTheme.shapes.huge)
             .clickable {
