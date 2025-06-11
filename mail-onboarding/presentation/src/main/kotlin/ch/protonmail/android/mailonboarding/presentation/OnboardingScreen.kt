@@ -21,6 +21,7 @@ package ch.protonmail.android.mailonboarding.presentation
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -37,6 +38,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingUiModel
@@ -139,8 +141,8 @@ private fun OnboardingScreen(
         }
 
         if (!isEligibleForUpselling || pagerState.currentPage != viewCount.minus(1)) {
+            OnboardingIndexDots(pagerState.currentPage, viewCount)
             OnboardingButton(onExitAction, pagerState, viewCount)
-            OnboardingIndexDots(pagerState, viewCount)
         }
     }
 }
