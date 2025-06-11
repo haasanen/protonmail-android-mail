@@ -32,7 +32,7 @@ import ch.protonmail.android.mailcommon.presentation.usecase.FormatFullDate
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
-import ch.protonmail.android.mailcomposer.domain.usecase.CancelScheduleSendMessage
+import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.MarkMessageSendingStatusesAsSeen
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveSendingMessagesStatus

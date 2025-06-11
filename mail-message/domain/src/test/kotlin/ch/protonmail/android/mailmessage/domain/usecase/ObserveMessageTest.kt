@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.domain.test
+package ch.protonmail.android.mailmessage.domain.usecase
 
 import app.cash.turbine.test
 import arrow.core.left
@@ -25,7 +25,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
-import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.testdata.message.MessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import io.mockk.every

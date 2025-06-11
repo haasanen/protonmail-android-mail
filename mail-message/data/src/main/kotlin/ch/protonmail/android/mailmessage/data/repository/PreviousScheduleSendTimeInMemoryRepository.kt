@@ -16,10 +16,10 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.composer.data.repository
+package ch.protonmail.android.mailmessage.data.repository
 
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
-import ch.protonmail.android.mailcomposer.domain.repository.PreviousScheduleSendTimeRepository
+import ch.protonmail.android.mailmessage.domain.repository.PreviousScheduleSendTimeRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.repository
+package ch.protonmail.android.mailmessage.domain.repository
 
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 

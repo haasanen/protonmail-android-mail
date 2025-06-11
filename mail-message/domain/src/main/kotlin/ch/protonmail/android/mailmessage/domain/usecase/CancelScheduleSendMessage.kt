@@ -16,9 +16,9 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.usecase
+package ch.protonmail.android.mailmessage.domain.usecase
 
-import ch.protonmail.android.mailcomposer.domain.repository.PreviousScheduleSendTimeRepository
+import ch.protonmail.android.mailmessage.domain.repository.PreviousScheduleSendTimeRepository
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId

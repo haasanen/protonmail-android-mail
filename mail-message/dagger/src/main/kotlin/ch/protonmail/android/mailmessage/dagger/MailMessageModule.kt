@@ -25,6 +25,7 @@ import ch.protonmail.android.mailmessage.data.local.RustMessageDataSourceImpl
 import ch.protonmail.android.mailmessage.data.local.RustMessageQuery
 import ch.protonmail.android.mailmessage.data.local.RustMessageQueryImpl
 import ch.protonmail.android.mailmessage.data.repository.InMemoryAvatarImageStateRepositoryImpl
+import ch.protonmail.android.mailmessage.data.repository.PreviousScheduleSendTimeInMemoryRepository
 import ch.protonmail.android.mailmessage.data.repository.RustMessageActionRepository
 import ch.protonmail.android.mailmessage.data.repository.RustMessageRepositoryImpl
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
@@ -32,6 +33,7 @@ import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTrackerIm
 import ch.protonmail.android.mailmessage.domain.repository.InMemoryAvatarImageStateRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageActionRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.repository.PreviousScheduleSendTimeRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -88,5 +90,10 @@ object MailMessageModule {
             impl: InMemoryAvatarImageStateRepositoryImpl
         ): InMemoryAvatarImageStateRepository
 
+        @Binds
+        @Singleton
+        fun bindsPreviousScheduleSendTimeRepository(
+            impl: PreviousScheduleSendTimeInMemoryRepository
+        ): PreviousScheduleSendTimeRepository
     }
 }
