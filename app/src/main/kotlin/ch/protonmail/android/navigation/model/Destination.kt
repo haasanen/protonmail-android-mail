@@ -33,9 +33,11 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockInsertionMode
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInsertionMode
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.DialogType
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.AutoLockPinScreen.AutoLockPinModeKey
+import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinScreenDialogKeys.AutoLockPinDialogModeKey
+import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen.SWIPE_DIRECTION_KEY
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.serialize
@@ -101,9 +103,16 @@ sealed class Destination(val route: String) {
         object AutoLockSettings : Destination("settings/autolock")
         object AutolockInterval : Destination("settings/autolock/interval")
         object AutoLockPinScreen : Destination("settings/autolock/pin/${AutoLockPinModeKey.wrap()}") {
-
             operator fun invoke(mode: AutoLockInsertionMode) =
                 route.replace(AutoLockPinModeKey.wrap(), mode.serialize())
+        }
+
+        object AutoLockInterstitial : Destination("settings/autolock/landing/interstitial")
+
+        object AutoLockPinConfirmDialog :
+            Destination("settings/autolock/pindialog/${AutoLockPinDialogModeKey.wrap()}") {
+
+            operator fun invoke(mode: DialogType) = route.replace(AutoLockPinDialogModeKey.wrap(), mode.serialize())
         }
 
         object CombinedContactsSettings : Destination("settings/combinedContacts")

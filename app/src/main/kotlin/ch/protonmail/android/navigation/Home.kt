@@ -47,7 +47,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import ch.protonmail.android.LockScreenActivity
 import ch.protonmail.android.MainActivity
 import ch.protonmail.android.R
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
@@ -80,9 +79,9 @@ import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.onboarding.Onboarding
 import ch.protonmail.android.navigation.route.addAlternativeRoutingSetting
 import ch.protonmail.android.navigation.route.addAppSettings
+import ch.protonmail.android.navigation.route.addAutoLockIntervalSettings
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen
 import ch.protonmail.android.navigation.route.addAutoLockSettings
-import ch.protonmail.android.navigation.route.addAutolockIntervalSettings
 import ch.protonmail.android.navigation.route.addBugReporting
 import ch.protonmail.android.navigation.route.addCombinedContactsSetting
 import ch.protonmail.android.navigation.route.addComposer
@@ -96,6 +95,7 @@ import ch.protonmail.android.navigation.route.addFeatureFlagsOverrides
 import ch.protonmail.android.navigation.route.addLanguageSettings
 import ch.protonmail.android.navigation.route.addMailbox
 import ch.protonmail.android.navigation.route.addNotificationsSettings
+import ch.protonmail.android.navigation.route.addPinDialog
 import ch.protonmail.android.navigation.route.addPrivacySettings
 import ch.protonmail.android.navigation.route.addRemoveAccountDialog
 import ch.protonmail.android.navigation.route.addSetMessagePassword
@@ -583,20 +583,13 @@ fun Home(
                         addPrivacySettings(navController)
                         addAutoLockSettings(navController)
                         addAutoLockPinScreen(
-                            onBack = { navController.navigateBack() },
-                            onShowSuccessSnackbar = {
-                                scope.launch {
-                                    snackbarHostSuccessState.showSnackbar(
-                                        message = it,
-                                        type = ProtonSnackbarType.SUCCESS
-                                    )
-                                }
-                            },
-                            activityActions = LockScreenActivity.Actions.Empty
+                            onClose = { navController.navigateBack() },
+                            onShowSuccessSnackbar = { showNormalSnackbar(it) }
                         )
+                        addPinDialog(navController)
                         addSwipeActionsSettings(navController)
                         addThemeSettings(navController)
-                        addAutolockIntervalSettings(navController)
+                        addAutoLockIntervalSettings(navController)
                         addNotificationsSettings(navController)
                         addExportLogsSettings(navController)
                         addFeatureFlagsOverrides(navController)

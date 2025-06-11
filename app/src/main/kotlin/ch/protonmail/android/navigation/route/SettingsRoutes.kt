@@ -24,16 +24,21 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
-import ch.protonmail.android.LockScreenActivity
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsPeekView
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsScreen
 import ch.protonmail.android.mailbugreport.presentation.ui.report.BugReportScreen
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailfeatureflags.presentation.ui.FeatureFlagOverridesScreen
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInsertionMode
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.DialogType
+import ch.protonmail.android.mailpinlock.presentation.autolock.ui.AutoLockIntervalDialog
 import ch.protonmail.android.mailpinlock.presentation.autolock.ui.AutoLockSettingsScreen
-import ch.protonmail.android.mailpinlock.presentation.autolock.ui.AutolockIntervalDialog
+import ch.protonmail.android.mailpinlock.presentation.autolock.ui.LockScreenInterstitial
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.AutoLockPinScreen
+import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinScreenDialog
+import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinScreenDialogKeys.AutoLockPinDialogModeKey
+import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinScreenDialogKeys.AutoLockPinDialogResultKey
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
 import ch.protonmail.android.mailsettings.presentation.settings.alternativerouting.AlternativeRoutingSettingScreen
 import ch.protonmail.android.mailsettings.presentation.settings.combinedcontacts.CombinedContactsSettingScreen
@@ -52,6 +57,7 @@ import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsSc
 import ch.protonmail.android.mailsettings.presentation.webspamsettings.WebSpamFilterSettingsScreen
 import ch.protonmail.android.navigation.model.Destination.Screen
 import me.proton.core.compose.navigation.require
+import me.proton.core.util.kotlin.deserialize
 
 fun NavGraphBuilder.addWebAccountSettings(navController: NavHostController) {
     composable(route = Screen.AccountSettings.route) {
@@ -146,29 +152,32 @@ internal fun NavGraphBuilder.addAutoLockSettings(navController: NavHostControlle
         ProtonInvertedTheme {
             AutoLockSettingsScreen(
                 modifier = Modifier,
+                navController = navController,
                 actions = AutoLockSettingsScreen.Actions(
-                    // TODO ET-6548 { navController.navigate(Screen.AutoLockPinScreen(it)) },
-                    onPinScreenNavigation = {},
+                    onPinScreenNavigation = { navController.navigate(Screen.AutoLockPinScreen(it)) },
                     onBackClick = { navController.navigateBack() },
-                    onChangeIntervalClick = { navController.navigate(Screen.AutolockInterval.route) }
+                    onChangeIntervalClick = { navController.navigate(Screen.AutolockInterval.route) },
+                    onDialogNavigation = { navController.navigate(Screen.AutoLockPinConfirmDialog(it)) }
                 )
             )
         }
     }
 }
 
-internal fun NavGraphBuilder.addAutoLockPinScreen(
-    activityActions: LockScreenActivity.Actions,
-    onBack: () -> Unit,
-    onShowSuccessSnackbar: (String) -> Unit
-) {
-    composable(route = Screen.AutoLockPinScreen.route) {
-        AutoLockPinScreen(
-            modifier = Modifier,
-            onBackClick = onBack,
-            onShowSuccessSnackbar = onShowSuccessSnackbar,
-            onBiometricsClick = activityActions.showBiometricPrompt
+internal fun NavGraphBuilder.addAutoLockInterstitial(onClose: () -> Unit, navController: NavHostController) {
+    composable(route = Screen.AutoLockInterstitial.route) {
+        LockScreenInterstitial(
+            onClose = onClose,
+            onNavigateToPinInsertion = {
+                navController.navigate(Screen.AutoLockPinScreen(AutoLockInsertionMode.VerifyPin))
+            }
         )
+    }
+}
+
+internal fun NavGraphBuilder.addAutoLockPinScreen(onClose: () -> Unit, onShowSuccessSnackbar: (String) -> Unit) {
+    composable(route = Screen.AutoLockPinScreen.route) {
+        AutoLockPinScreen(onClose = onClose, onShowSuccessSnackbar = onShowSuccessSnackbar)
     }
 }
 
@@ -191,6 +200,25 @@ internal fun NavGraphBuilder.addLanguageSettings(navController: NavHostControlle
     }
 }
 
+internal fun NavGraphBuilder.addPinDialog(navController: NavHostController) {
+    dialog(route = Screen.AutoLockPinConfirmDialog.route) { backStackEntry ->
+        val dialogType = backStackEntry.arguments?.getString(AutoLockPinDialogModeKey)?.deserialize<DialogType>()
+            ?: DialogType.None
+
+        AutoLockPinScreenDialog(
+            dialogType = dialogType,
+            onNavigateBack = { navController.popBackStack() },
+            onSuccessWithResult = { resultKey ->
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set(AutoLockPinDialogResultKey, resultKey)
+                navController.popBackStack()
+            }
+        )
+    }
+}
+
+
 internal fun NavGraphBuilder.addSwipeActionsSettings(navController: NavHostController) {
     composable(route = Screen.SwipeActionsSettings.route) {
         SwipeActionsPreferenceScreen(
@@ -208,9 +236,9 @@ internal fun NavGraphBuilder.addSwipeActionsSettings(navController: NavHostContr
     }
 }
 
-internal fun NavGraphBuilder.addAutolockIntervalSettings(navController: NavHostController) {
+internal fun NavGraphBuilder.addAutoLockIntervalSettings(navController: NavHostController) {
     dialog(route = Screen.AutolockInterval.route) {
-        AutolockIntervalDialog(
+        AutoLockIntervalDialog(
             modifier = Modifier,
             onDismiss = { navController.navigateBack() }
         )

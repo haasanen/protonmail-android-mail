@@ -79,7 +79,7 @@ import timber.log.Timber
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AutoLockPinScreenV2(
+fun AutoLockPinScreen(
     onClose: () -> Unit,
     onShowSuccessSnackbar: (String) -> Unit,
     viewModel: AutoLockPinViewModel = hiltViewModel()
@@ -342,5 +342,5 @@ object AutoLockPinScreen {
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun AutoLockPinScreenPreview() {
-    AutoLockPinScreenV2(onClose = {}, onShowSuccessSnackbar = { _ -> })
+    AutoLockPinScreen(onClose = {}, onShowSuccessSnackbar = { _ -> })
 }
