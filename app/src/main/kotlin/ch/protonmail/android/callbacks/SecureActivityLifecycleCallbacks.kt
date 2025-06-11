@@ -23,7 +23,7 @@ import android.app.Application.ActivityLifecycleCallbacks
 import android.os.Bundle
 import android.view.WindowManager
 import arrow.core.getOrElse
-import ch.protonmail.android.LockScreenActivity
+import ch.protonmail.android.feature.lockscreen.LockScreenActivity
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePreventScreenshotsSetting
 import kotlinx.coroutines.CoroutineScope

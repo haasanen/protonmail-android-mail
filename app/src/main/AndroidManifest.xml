@@ -281,7 +281,8 @@
         </activity>
 
         <activity
-            android:name=".LockScreenActivity"
-            android:theme="@style/ProtonTheme.Mail" />
+            android:name=".feature.lockscreen.LockScreenActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/ProtonTheme.Mail.Transparent" />
     </application>
 </manifest>
