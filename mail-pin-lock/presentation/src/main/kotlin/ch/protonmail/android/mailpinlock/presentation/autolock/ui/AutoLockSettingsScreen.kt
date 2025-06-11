@@ -102,6 +102,10 @@ fun AutoLockSettingsScreen(
         actions.onDialogNavigation(DialogType.DisablePin)
     }
 
+    ConsumableLaunchedEffect(effects.pinLockToBiometricsRequested) {
+        actions.onDialogNavigation(DialogType.MigrateToBiometrics)
+    }
+
     ConsumableLaunchedEffect(effects.pinLockChangeRequested) {
         actions.onDialogNavigation(DialogType.ChangePin)
     }
@@ -137,6 +141,8 @@ fun AutoLockSettingsScreen(
                         viewModel.submit(AutoLockSettingsViewAction.RequestPinProtection)
 
                     DialogType.DisablePin.resultKey -> Unit
+                    DialogType.MigrateToBiometrics.resultKey ->
+                        viewModel.submit(AutoLockSettingsViewAction.RequestBiometricsProtection)
                 }
                 navController.currentBackStackEntry
                     ?.savedStateHandle
@@ -163,9 +169,6 @@ fun AutoLockSettingsScreen(
                             .padding(horizontal = ProtonDimens.Spacing.Large),
                         settings = uiState.settings,
                         submitAction = { viewModel.submit(it) },
-                        onBiometricsRequested = {
-                            viewModel.submit(AutoLockSettingsViewAction.RequestBiometricsProtection)
-                        },
                         onChangeIntervalNavigation = actions.onChangeIntervalClick,
                         onChangePin = { viewModel.submit(AutoLockSettingsViewAction.RequestPinProtectionChange) }
                     )
@@ -181,7 +184,6 @@ private fun AutoLockSettingScreen(
     modifier: Modifier = Modifier,
     settings: AutoLockSettings,
     submitAction: (AutoLockSettingsViewAction) -> Unit,
-    onBiometricsRequested: () -> Unit,
     onChangeIntervalNavigation: () -> Unit = {},
     onChangePin: () -> Unit
 ) {
@@ -217,8 +219,13 @@ private fun AutoLockSettingScreen(
                     name = stringResource(R.string.mail_pinlock_settings_with_biometrics),
                     isSelected = settings.protectionType == ProtectionType.Biometrics,
                     onItemSelected = {
-                        if (settings.biometricsEnabled) return@ProtonSettingsRadioItem
-                        onBiometricsRequested()
+                        val action = when (settings.protectionType) {
+                            ProtectionType.None -> AutoLockSettingsViewAction.RequestBiometricsProtection
+                            ProtectionType.Pin -> AutoLockSettingsViewAction.MigrateFromPinToBiometrics
+                            ProtectionType.Biometrics -> return@ProtonSettingsRadioItem
+                        }
+
+                        submitAction(action)
                     }
                 )
             }
@@ -327,7 +334,6 @@ private fun PreviewAutoLockSettingScreenEnabled() {
             protectionType = ProtectionType.Biometrics,
             biometricsAvailable = true
         ),
-        onBiometricsRequested = {},
         submitAction = {},
         onChangePin = {}
     )
@@ -343,7 +349,6 @@ private fun PreviewAutoLockSettingScreenDisabled() {
             protectionType = ProtectionType.None,
             biometricsAvailable = false
         ),
-        onBiometricsRequested = {},
         submitAction = {},
         onChangePin = {}
     )

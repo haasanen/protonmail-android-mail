@@ -39,6 +39,7 @@ sealed interface AutoLockSettingsEvent : AutoLockSettingsOperation {
     data object PinCreationRequested : AutoLockSettingsEvent
     data object PinChangeRequested : AutoLockSettingsEvent
     data object PinRemovalRequested : AutoLockSettingsEvent
+    data object PinMigrationToBiometrics : AutoLockSettingsEvent
     data class BiometricAuthRequested(val followUp: BiometricsOperationFollowUp) : AutoLockSettingsEvent
 
     sealed interface Error : AutoLockSettingsEvent {

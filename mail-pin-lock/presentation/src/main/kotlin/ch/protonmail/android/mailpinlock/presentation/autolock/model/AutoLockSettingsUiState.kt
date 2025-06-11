@@ -33,7 +33,6 @@ data class AutoLockSettings(
 ) {
 
     val isEnabled = protectionType != ProtectionType.None
-    val biometricsEnabled = protectionType == ProtectionType.Biometrics
 }
 
 enum class ProtectionType {
@@ -45,7 +44,8 @@ data class AutoLockSettingsEffects(
     val openPinCreation: Effect<Unit> = Effect.empty(),
     val requestBiometricsAuth: Effect<BiometricsOperationFollowUp> = Effect.empty(),
     val pinLockChangeRequested: Effect<Unit> = Effect.empty(),
-    val pinLockRemovalRequested: Effect<Unit> = Effect.empty()
+    val pinLockRemovalRequested: Effect<Unit> = Effect.empty(),
+    val pinLockToBiometricsRequested: Effect<Unit> = Effect.empty()
 )
 
 enum class BiometricsOperationFollowUp { SetNone, SetPin, SetBiometrics, RemovePinAndSetBiometrics }

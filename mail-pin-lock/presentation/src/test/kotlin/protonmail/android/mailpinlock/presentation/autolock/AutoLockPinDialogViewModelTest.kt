@@ -45,7 +45,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-internal class AutoLockPinDialogViewModel {
+internal class AutoLockPinDialogViewModelTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -146,6 +146,21 @@ internal class AutoLockPinDialogViewModel {
             awaitItem()
 
             viewModel.processPin(DialogType.DisablePin)
+            assertEquals(Effect.of(Unit), awaitItem().successEffect)
+        }
+    }
+
+    @Test
+    fun `should propagate success on valid migration`() = runTest {
+        // Given
+        coEvery { autoLockRepository.deleteAutoLockPinCode(autoLockPin) } returns Unit.right()
+        viewModel.textFieldState.edit { append(autoLockPin.value) }
+
+        // When + Then
+        viewModel.state.test {
+            awaitItem()
+
+            viewModel.processPin(DialogType.MigrateToBiometrics)
             assertEquals(Effect.of(Unit), awaitItem().successEffect)
         }
     }

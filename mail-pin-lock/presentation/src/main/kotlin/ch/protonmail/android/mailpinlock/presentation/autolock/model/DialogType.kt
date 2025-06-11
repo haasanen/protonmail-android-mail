@@ -31,4 +31,7 @@ sealed class DialogType(val resultKey: String?) {
 
     @Serializable
     data object DisablePin : DialogType("disable_pin_success")
+
+    @Serializable
+    data object MigrateToBiometrics : DialogType("migrate_pin_biometrics_success")
 }

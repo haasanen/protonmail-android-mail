@@ -50,7 +50,8 @@ class AutoLockPinDialogViewModel @Inject constructor(
             when (dialogType) {
                 DialogType.None -> Unit
                 DialogType.ChangePin -> verifyPin()
-                DialogType.DisablePin -> removePin()
+                DialogType.DisablePin,
+                DialogType.MigrateToBiometrics -> removePin()
             }
         }
     }

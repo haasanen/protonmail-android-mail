@@ -57,7 +57,7 @@ internal class AutoLockSettingsViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val autolockRepository: AutoLockRepository = mockk {
+    private val autoLockRepository: AutoLockRepository = mockk {
         coEvery {
             this@mockk.updateAutolockInterval(any())
         } returns Unit.right()
@@ -71,7 +71,7 @@ internal class AutoLockSettingsViewModelTest {
 
     private val viewModel by lazy {
         AutoLockSettingsViewModel(
-            autolockRepository,
+            autoLockRepository,
             autoLockSettingsReducer
         )
     }
@@ -249,7 +249,7 @@ internal class AutoLockSettingsViewModelTest {
     }
 
     @Test
-    fun `MigrateFromPinToBiometrics should set biometric protection and emit PinRemovalRequested`() = runTest {
+    fun `MigrateFromPinToBiometrics should emit PinLockToBiometricsRequested`() = runTest {
         // Given
         expectAutoLock(AutoLock(protectionType = Protection.Pin))
 
@@ -259,27 +259,10 @@ internal class AutoLockSettingsViewModelTest {
             viewModel.submit(AutoLockSettingsViewAction.MigrateFromPinToBiometrics)
 
             val effects = awaitItem()
-            assertEquals(Effect.of(Unit), effects.pinLockRemovalRequested)
+            assertEquals(Effect.of(Unit), effects.pinLockToBiometricsRequested)
         }
 
-        coVerify { autolockRepository.setBiometricProtection(true) }
-    }
-
-    @Test
-    fun `MigrateFromPinToBiometrics should emit error when biometric setting fails`() = runTest {
-        // Given
-        expectAutoLock(AutoLock(protectionType = Protection.Pin))
-        coEvery { autolockRepository.setBiometricProtection(true) } returns DataError.Local.Unknown.left()
-        val expectedEffect = Effect.of(TextUiModel(R.string.mail_settings_biometrics_unable_to_set))
-
-        // When + Then
-        viewModel.effects.test {
-            awaitItem() // initial empty effects
-            viewModel.submit(AutoLockSettingsViewAction.MigrateFromPinToBiometrics)
-
-            val effects = awaitItem()
-            assertEquals(expectedEffect, effects.updateError)
-        }
+        coVerify(exactly = 0) { autoLockRepository.setBiometricProtection(any()) }
     }
 
     @Test
@@ -402,7 +385,7 @@ internal class AutoLockSettingsViewModelTest {
         viewModel.submit(AutoLockSettingsViewAction.SetBiometricsPreference)
 
         // Then
-        coVerify { autolockRepository.setBiometricProtection(true) }
+        coVerify { autoLockRepository.setBiometricProtection(true) }
     }
 
     @Test
@@ -414,13 +397,13 @@ internal class AutoLockSettingsViewModelTest {
         viewModel.submit(AutoLockSettingsViewAction.SetBiometricsPreference)
 
         // Then
-        coVerify(exactly = 0) { autolockRepository.setBiometricProtection(any()) }
+        coVerify(exactly = 0) { autoLockRepository.setBiometricProtection(any()) }
     }
 
     @Test
     fun `SetBiometricsPreference should emit error when biometric setting fails`() = runTest {
         // Given
-        coEvery { autolockRepository.setBiometricProtection(true) } returns DataError.Local.Unknown.left()
+        coEvery { autoLockRepository.setBiometricProtection(true) } returns DataError.Local.Unknown.left()
         expectAutoLock(AutoLock(protectionType = Protection.None))
 
         val expectedEffect = Effect.of(TextUiModel(R.string.mail_settings_biometrics_unable_to_set))
@@ -461,14 +444,14 @@ internal class AutoLockSettingsViewModelTest {
         viewModel.submit(AutoLockSettingsViewAction.RemoveBiometricsProtection)
 
         // Then
-        coVerify { autolockRepository.setBiometricProtection(false) }
+        coVerify { autoLockRepository.setBiometricProtection(false) }
     }
 
     @Test
     fun `RemoveBiometricsProtection should emit error when biometric removal fails`() = runTest {
         // Given
         expectAutoLock(AutoLock(protectionType = Protection.Biometrics))
-        coEvery { autolockRepository.setBiometricProtection(false) } returns DataError.Local.Unknown.left()
+        coEvery { autoLockRepository.setBiometricProtection(false) } returns DataError.Local.Unknown.left()
         val expectedEffect = Effect.of(TextUiModel(R.string.mail_settings_biometrics_unable_to_unset))
 
         viewModel.effects.test {
@@ -481,10 +464,10 @@ internal class AutoLockSettingsViewModelTest {
     }
 
     private fun expectAutoLock(autolock: AutoLock) {
-        every { autolockRepository.observeAppLock() } returns flowOf(autolock)
+        every { autoLockRepository.observeAppLock() } returns flowOf(autolock)
     }
 
     private fun expectUnsetAutoLock() {
-        every { autolockRepository.observeAppLock() } returns flowOf()
+        every { autoLockRepository.observeAppLock() } returns flowOf()
     }
 }
