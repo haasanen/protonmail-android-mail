@@ -21,9 +21,13 @@ package ch.protonmail.android.uicomponents.fab
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.currentStateAsState
 
 /**
  * A Fab host where we can lazily change the Fab composable allowing us to delegate the actual implementation of
@@ -61,12 +65,26 @@ class ProtonFabHostState {
  */
 @Composable
 fun LazyFab(fabHostState: ProtonFabHostState, fabContent: @Composable (modifier: Modifier) -> Unit) {
+    // lifecycle owner is the screen that owns the lazy fab
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val currentLifecycleState = lifecycleOwner.lifecycle.currentStateAsState()
+    val fabIsVisible = remember { derivedStateOf { currentLifecycleState.value.isAtLeast(Lifecycle.State.STARTED) } }
+
+    fabHostState.setFabProvider { modifier: Modifier ->
+        if (fabIsVisible.value) {
+            // only draw the FAB if the screen is started, that way if we navigate away and the screen is stopped
+            // then the fab won't be drawn
+            fabContent(modifier)
+        }
+    }
+
     DisposableEffect(Unit) {
         onDispose {
+            // clean up the fab provider as we have left this composition
             fabHostState.clearFabProvider()
         }
     }
-    fabHostState.setFabProvider(fabContent)
 }
+
 
 
