@@ -23,7 +23,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-data class Autolock(
+data class AutoLock(
     val autolockInterval: AutoLockInterval = AutoLockInterval.Immediately,
     val protectionType: Protection = Protection.None,
     val biometricsState: AutoLockBiometricsState = AutoLockBiometricsState.BiometricsNotAvailable
@@ -31,7 +31,7 @@ data class Autolock(
 
     companion object {
 
-        fun default() = Autolock()
+        fun default() = AutoLock()
     }
 }
 

@@ -18,9 +18,9 @@
 
 package ch.protonmail.android.mailpinlock.data.mapper
 
+import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval
-import ch.protonmail.android.mailpinlock.model.Autolock
 import ch.protonmail.android.mailpinlock.model.BiometricsSystemState
 import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
@@ -28,7 +28,7 @@ import ch.protonmail.android.mailsettings.domain.model.Theme
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class AutolockMapperTest {
+class AutoLockMapperTest {
 
     private val appSettings = AppSettings(
         theme = Theme.DARK,
@@ -40,9 +40,9 @@ class AutolockMapperTest {
     )
 
     private val biometricsSystemState = BiometricsSystemState.BiometricEnrolled
-    private val biometricsState = AutoLockBiometricsState.BiometricsAvailable.BiometricsEnrolled(true)
+    private val biometricsState = AutoLockBiometricsState.BiometricsAvailable.BiometricsEnrolled
 
-    private val expected = Autolock(
+    private val expected = AutoLock(
         autolockInterval = AutoLockInterval.FifteenMinutes,
         protectionType = Protection.Biometrics,
         biometricsState = biometricsState
@@ -50,7 +50,7 @@ class AutolockMapperTest {
 
     @Test
     fun `map appSettings to autolock WHEN biometrics enrolled`() {
-        val actual = appSettings.toAutolock(biometricsSystemState)
+        val actual = appSettings.toAutoLock(biometricsSystemState)
         assertEquals(actual.autolockInterval, expected.autolockInterval)
         assertEquals(actual.protectionType, expected.protectionType)
         assertEquals(actual.biometricsState, expected.biometricsState)
@@ -59,8 +59,8 @@ class AutolockMapperTest {
     @Test
     fun `map appSettings to autolock WHEN biometrics not enrolled`() {
         appSettings.copy(autolockProtection = Protection.Pin)
-        expected.copy(biometricsState = AutoLockBiometricsState.BiometricsAvailable.BiometricsEnrolled(false))
-        val actual = appSettings.toAutolock(biometricsSystemState)
+        expected.copy(biometricsState = AutoLockBiometricsState.BiometricsAvailable.BiometricsNotEnrolled)
+        val actual = appSettings.toAutoLock(biometricsSystemState)
         assertEquals(actual.autolockInterval, expected.autolockInterval)
         assertEquals(actual.protectionType, expected.protectionType)
         assertEquals(actual.biometricsState, expected.biometricsState)

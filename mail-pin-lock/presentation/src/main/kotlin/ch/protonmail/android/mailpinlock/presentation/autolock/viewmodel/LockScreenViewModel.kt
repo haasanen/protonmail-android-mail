@@ -24,7 +24,7 @@ import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfied
 import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfiedSignal
-import ch.protonmail.android.mailpinlock.model.Autolock
+import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInterstitialState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,7 +48,7 @@ class LockScreenViewModel @Inject constructor(
         initialValue = AutoLockInterstitialState.Loading
     )
 
-    private fun Autolock.asInterstitialState() = when (this.protectionType) {
+    private fun AutoLock.asInterstitialState() = when (this.protectionType) {
         Protection.Pin -> AutoLockInterstitialState.Pin
         Protection.Biometrics -> AutoLockInterstitialState.Biometrics
         Protection.None -> AutoLockInterstitialState.Error

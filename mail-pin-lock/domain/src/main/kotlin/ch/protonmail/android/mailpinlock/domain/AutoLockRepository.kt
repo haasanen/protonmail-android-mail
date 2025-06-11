@@ -23,13 +23,13 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinError
 import ch.protonmail.android.mailcommon.domain.model.autolock.VerifyAutoLockPinError
+import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval
-import ch.protonmail.android.mailpinlock.model.Autolock
 import kotlinx.coroutines.flow.Flow
 
 interface AutoLockRepository {
 
-    fun observeAppLock(): Flow<Autolock>
+    fun observeAppLock(): Flow<AutoLock>
     suspend fun updateAutolockInterval(interval: AutoLockInterval): Either<DataError, Unit>
     suspend fun setAutoLockPinCode(autoLockPin: AutoLockPin): Either<SetAutoLockPinError, Unit>
     suspend fun verifyAutoLockPinCode(autoLockPin: AutoLockPin): Either<VerifyAutoLockPinError, Unit>

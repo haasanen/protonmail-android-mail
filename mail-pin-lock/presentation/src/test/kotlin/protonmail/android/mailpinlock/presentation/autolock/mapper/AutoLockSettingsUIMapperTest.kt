@@ -19,36 +19,36 @@
 package protonmail.android.mailpinlock.presentation.autolock.mapper
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval
-import ch.protonmail.android.mailpinlock.model.Autolock
 import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailpinlock.presentation.R
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutolockSettings
-import ch.protonmail.android.mailpinlock.presentation.autolock.ProtectionType
-import ch.protonmail.android.mailpinlock.presentation.autolock.mapper.AutolockSettingsUiMapper
+import ch.protonmail.android.mailpinlock.presentation.autolock.mapper.AutoLockSettingsUiMapper
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockSettings
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.ProtectionType
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import kotlin.test.assertEquals
 
 @RunWith(Parameterized::class)
-class AutolockSettingsUIMapperTest(
+class AutoLockSettingsUiMapperTest(
     @Suppress("unused") private val testName: String,
-    private val toMap: Autolock,
-    private val expectedUiModel: AutolockSettings
+    private val toMap: AutoLock,
+    private val expectedUiModel: AutoLockSettings
 ) {
 
     @Test
     fun `should map to ui model`() {
-        val uiModel = AutolockSettingsUiMapper.toUiModel(toMap)
+        val uiModel = AutoLockSettingsUiMapper.toUiModel(toMap)
         assertEquals(expectedUiModel, uiModel)
     }
 
     companion object {
 
-        val baseAutoLock = Autolock()
+        val baseAutoLock = AutoLock()
 
-        val baseUiModel = AutolockSettings(
+        val baseUiModel = AutoLockSettings(
             TextUiModel(R.string.mail_pinlock_settings_autolock_immediately),
             protectionType = ProtectionType.None,
             biometricsAvailable = false

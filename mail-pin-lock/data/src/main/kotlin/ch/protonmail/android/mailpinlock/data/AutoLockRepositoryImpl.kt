@@ -26,11 +26,11 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinError
 import ch.protonmail.android.mailcommon.domain.model.autolock.VerifyAutoLockPinError
-import ch.protonmail.android.mailpinlock.data.mapper.toAutolock
+import ch.protonmail.android.mailpinlock.data.mapper.toAutoLock
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.domain.BiometricsSystemStateRepository
+import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval
-import ch.protonmail.android.mailpinlock.model.Autolock
 import ch.protonmail.android.mailsession.data.mapper.toLocalAutoLockPin
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
@@ -45,11 +45,11 @@ class AutoLockRepositoryImpl @Inject constructor(
     private val appLockDataSource: AppLockDataSource
 ) : AutoLockRepository {
 
-    override fun observeAppLock(): Flow<Autolock> = combine(
+    override fun observeAppLock(): Flow<AutoLock> = combine(
         biometricsSystemStateRepository.observe(),
         appSettingsRepository.observeAppSettings()
     ) { biometrics, appSettings ->
-        appSettings.toAutolock(biometrics)
+        appSettings.toAutoLock(biometrics)
     }
 
     override suspend fun updateAutolockInterval(interval: AutoLockInterval): Either<DataError, Unit> =

@@ -19,20 +19,20 @@
 package ch.protonmail.android.mailpinlock.presentation.autolock.mapper
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState.BiometricsAvailable
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval
-import ch.protonmail.android.mailpinlock.model.Autolock
 import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailpinlock.presentation.R
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutolockSettings
-import ch.protonmail.android.mailpinlock.presentation.autolock.ProtectionType
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockSettings
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.ProtectionType
 
-internal object AutolockSettingsUiMapper {
+internal object AutoLockSettingsUiMapper {
 
-    fun toUiModel(autolock: Autolock) = AutolockSettings(
-        selectedUiInterval = autolock.autolockInterval.toTextUiModel(),
-        protectionType = autolock.protectionType.toProtectionTypeUiModel(),
-        biometricsAvailable = autolock.biometricsState is BiometricsAvailable
+    fun toUiModel(autoLock: AutoLock) = AutoLockSettings(
+        selectedUiInterval = autoLock.autolockInterval.toTextUiModel(),
+        protectionType = autoLock.protectionType.toProtectionTypeUiModel(),
+        biometricsAvailable = autoLock.biometricsState is BiometricsAvailable.BiometricsEnrolled
     )
 
     private fun Protection.toProtectionTypeUiModel() = when (this) {

@@ -47,18 +47,18 @@ import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.compose.PickerDialog
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailpinlock.presentation.R
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutolockIntervalState.Data
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutolockIntervalState.Loading
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutolockIntervalViewModel
-import ch.protonmail.android.mailpinlock.presentation.autolock.intervalFor
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockIntervalState.Data
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockIntervalState.Loading
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.intervalFor
+import ch.protonmail.android.mailpinlock.presentation.autolock.viewmodel.AutoLockIntervalViewModel
 
 const val TEST_TAG_AUTOLOCK_INTEVALS_DIALOG = "AutolockIntervalsDialogTestTag"
 
 @Composable
-fun AutolockIntervalDialog(
+fun AutoLockIntervalDialog(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
-    viewModel: AutolockIntervalViewModel = hiltViewModel()
+    viewModel: AutoLockIntervalViewModel = hiltViewModel()
 ) {
     val effects = viewModel.effects.collectAsStateWithLifecycle().value
     ConsumableLaunchedEffect(effects.close) {
@@ -68,7 +68,7 @@ fun AutolockIntervalDialog(
         val state = viewModel.state.collectAsStateWithLifecycle(Loading).value
     ) {
         is Data -> {
-            AutolockIntervalDialog(
+            AutoLockIntervalDialog(
                 modifier = modifier,
                 onDismiss = onDismiss,
                 onIntervalSelected = { viewModel.onIntervalSelected(state.intervalFor(it)) },
@@ -82,7 +82,7 @@ fun AutolockIntervalDialog(
 }
 
 @Composable
-fun AutolockIntervalDialog(
+fun AutoLockIntervalDialog(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
     onIntervalSelected: (TextUiModel) -> Unit,
@@ -101,8 +101,8 @@ fun AutolockIntervalDialog(
 
 @Preview(name = "Theme settings screen")
 @Composable
-fun PreviewAutolockIntervalDialog() {
-    AutolockIntervalDialog(
+fun PreviewAutoLockIntervalDialog() {
+    AutoLockIntervalDialog(
         onDismiss = {},
         onIntervalSelected = {},
         selectedInterval = TextUiModel(R.string.mail_pinlock_settings_autolock_description_five_minutes),

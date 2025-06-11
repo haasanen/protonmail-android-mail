@@ -58,7 +58,7 @@ fun AutoLockPinScreenDialog(
     dialogType: DialogType,
     onNavigateBack: () -> Unit,
     onSuccessWithResult: (String) -> Unit,
-    viewModel: AutoLockDialogPinViewModel = hiltViewModel<AutoLockDialogPinViewModel>()
+    viewModel: AutoLockPinDialogViewModel = hiltViewModel<AutoLockPinDialogViewModel>()
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()

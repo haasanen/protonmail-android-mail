@@ -18,26 +18,20 @@
 
 package ch.protonmail.android.mailpinlock.data.mapper
 
+import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState
 import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState.BiometricsAvailable
-import ch.protonmail.android.mailpinlock.model.Autolock
 import ch.protonmail.android.mailpinlock.model.BiometricsSystemState
-import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 
-fun AppSettings.toAutolock(biometricsState: BiometricsSystemState) = Autolock(
+fun AppSettings.toAutoLock(biometricsState: BiometricsSystemState) = AutoLock(
     autolockInterval = autolockInterval,
     protectionType = autolockProtection,
-    biometricsState = biometricsState.toAutolockBiometrics(autolockProtection == Protection.Biometrics)
+    biometricsState = biometricsState.toAutoLockBiometrics()
 )
 
-fun BiometricsSystemState.toAutolockBiometrics(enrolled: Boolean) = when (this) {
-    is BiometricsSystemState.BiometricNotAvailable ->
-        AutoLockBiometricsState.BiometricsNotAvailable
-
-    is BiometricsSystemState.BiometricEnrolled ->
-        BiometricsAvailable.BiometricsEnrolled(enrolled)
-
-    is BiometricsSystemState.BiometricNotEnrolled ->
-        BiometricsAvailable.BiometricsNotEnrolled
+fun BiometricsSystemState.toAutoLockBiometrics() = when (this) {
+    is BiometricsSystemState.BiometricNotAvailable -> AutoLockBiometricsState.BiometricsNotAvailable
+    is BiometricsSystemState.BiometricEnrolled -> BiometricsAvailable.BiometricsEnrolled
+    is BiometricsSystemState.BiometricNotEnrolled -> BiometricsAvailable.BiometricsNotEnrolled
 }

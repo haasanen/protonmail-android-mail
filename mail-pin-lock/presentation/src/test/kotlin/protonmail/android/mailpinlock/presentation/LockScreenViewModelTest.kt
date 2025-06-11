@@ -21,7 +21,7 @@ package protonmail.android.mailpinlock.presentation
 import app.cash.turbine.test
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfiedSignal
-import ch.protonmail.android.mailpinlock.model.Autolock
+import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInterstitialState
 import ch.protonmail.android.mailpinlock.presentation.autolock.viewmodel.LockScreenViewModel
@@ -67,7 +67,7 @@ internal class LockScreenViewModelTest {
     @Test
     fun `should emit interstitial on pin`() = runTest {
         // Given
-        val lock = Autolock.default().copy(protectionType = Protection.Pin)
+        val lock = AutoLock.default().copy(protectionType = Protection.Pin)
         every { autoLockRepository.observeAppLock() } returns flowOf(lock)
 
         val viewModel = LockScreenViewModel(
@@ -84,7 +84,7 @@ internal class LockScreenViewModelTest {
     @Test
     fun `should emit interstitial on biometrics`() = runTest {
         // Given
-        val lock = Autolock.default().copy(protectionType = Protection.Biometrics)
+        val lock = AutoLock.default().copy(protectionType = Protection.Biometrics)
         every { autoLockRepository.observeAppLock() } returns flowOf(lock)
 
         val viewModel = LockScreenViewModel(
@@ -101,7 +101,7 @@ internal class LockScreenViewModelTest {
     @Test
     fun `should emit error on no protection`() = runTest {
         // Given
-        val lock = Autolock.default().copy(protectionType = Protection.None)
+        val lock = AutoLock.default().copy(protectionType = Protection.None)
         every { autoLockRepository.observeAppLock() } returns flowOf(lock)
 
         val viewModel = LockScreenViewModel(
