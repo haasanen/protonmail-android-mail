@@ -64,6 +64,7 @@ import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayo
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
@@ -116,7 +117,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     }
     val bottomSheetState = rememberModalBottomSheetState()
     var showBottomSheet by rememberSaveable { mutableStateOf(false) }
-    val attachmentSizeDialogState = remember { mutableStateOf(false) }
+    val attachmentSizeDialogState = remember { mutableStateOf(AttachmentsFileSizeExceededDialogState.NoError) }
     val sendingErrorDialogState = remember { mutableStateOf<String?>(null) }
     val senderChangedNoticeDialogState = remember { mutableStateOf<String?>(null) }
     val sendWithoutSubjectDialogState = remember { mutableStateOf(false) }
@@ -403,12 +404,20 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         )
     }
 
-    if (attachmentSizeDialogState.value) {
+    if (attachmentSizeDialogState.value.isVisible) {
         ProtonAlertDialog(
-            onDismissRequest = { attachmentSizeDialogState.value = false },
+            onDismissRequest = {
+                viewModel.submit(
+                    ComposerAction.AcknowledgeAttachmentErrors(attachmentSizeDialogState.value.attachmentsWithError)
+                )
+                attachmentSizeDialogState.value = AttachmentsFileSizeExceededDialogState.NoError
+            },
             confirmButton = {
                 ProtonAlertDialogButton(R.string.composer_attachment_size_exceeded_dialog_confirm_button) {
-                    attachmentSizeDialogState.value = false
+                    viewModel.submit(
+                        ComposerAction.AcknowledgeAttachmentErrors(attachmentSizeDialogState.value.attachmentsWithError)
+                    )
+                    attachmentSizeDialogState.value = AttachmentsFileSizeExceededDialogState.NoError
                 }
             },
             title = stringResource(id = R.string.composer_attachment_size_exceeded_dialog_title),
@@ -526,7 +535,10 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     }
 
     ConsumableLaunchedEffect(effect = effectsState.attachmentsFileSizeExceeded) {
-        attachmentSizeDialogState.value = true
+        attachmentSizeDialogState.value = AttachmentsFileSizeExceededDialogState(
+            isVisible = true,
+            attachmentsWithError = it
+        )
     }
 
     ConsumableLaunchedEffect(effect = effectsState.confirmSendingWithoutSubject) {
@@ -659,6 +671,18 @@ private data class SendExpiringMessageDialogState(
     val isVisible: Boolean,
     val externalParticipants: List<Participant>
 )
+
+private data class AttachmentsFileSizeExceededDialogState(
+    val isVisible: Boolean,
+    val attachmentsWithError: List<AttachmentId>
+) {
+    companion object {
+        val NoError = AttachmentsFileSizeExceededDialogState(
+            isVisible = false,
+            attachmentsWithError = emptyList()
+        )
+    }
+}
 
 @Composable
 @AdaptivePreviews
