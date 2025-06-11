@@ -33,6 +33,7 @@ import ch.protonmail.android.composer.data.repository.DraftRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessageExpirationTimeRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessagePasswordRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessageRepositoryImpl
+import ch.protonmail.android.composer.data.repository.PreviousScheduleSendTimeInMemoryRepository
 import ch.protonmail.android.composer.data.repository.SendingStatusRepositoryImpl
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailcomposer.domain.repository.CameraTempImageRepository
@@ -41,6 +42,7 @@ import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessageRepository
+import ch.protonmail.android.mailcomposer.domain.repository.PreviousScheduleSendTimeRepository
 import ch.protonmail.android.mailcomposer.domain.repository.SendingStatusRepository
 import dagger.Binds
 import dagger.Module
@@ -112,4 +114,11 @@ abstract class SendingStatusModule {
     @Binds
     @Singleton
     abstract fun bindContactsPermissionRepository(repo: ContactsPermissionRepositoryImpl): ContactsPermissionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsPreviousScheduleSendTimeRepository(
+        impl: PreviousScheduleSendTimeInMemoryRepository
+    ): PreviousScheduleSendTimeRepository
+
 }

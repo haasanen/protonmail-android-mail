@@ -16,21 +16,11 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.usecase
+package ch.protonmail.android.mailcomposer.domain.repository
 
-import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import ch.protonmail.android.mailcomposer.domain.repository.PreviousScheduleSendTimeRepository
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import me.proton.core.domain.entity.UserId
-import javax.inject.Inject
+import ch.protonmail.android.mailcomposer.domain.model.PreviousScheduleSendTime
 
-class CancelScheduleSendMessage @Inject constructor(
-    private val draftRepository: DraftRepository,
-    private val previousScheduleSendTimeRepository: PreviousScheduleSendTimeRepository
-) {
-
-    suspend operator fun invoke(userId: UserId, messageId: MessageId) =
-        draftRepository.cancelScheduleSend(userId, messageId)
-            .onRight { previousScheduleSendTimeRepository.save(it) }
-
+interface PreviousScheduleSendTimeRepository {
+    suspend fun save(time: PreviousScheduleSendTime)
+    suspend fun get(): PreviousScheduleSendTime?
 }

@@ -16,21 +16,26 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.usecase
+package ch.protonmail.android.composer.data.repository
 
-import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
+import ch.protonmail.android.mailcomposer.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailcomposer.domain.repository.PreviousScheduleSendTimeRepository
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class CancelScheduleSendMessage @Inject constructor(
-    private val draftRepository: DraftRepository,
-    private val previousScheduleSendTimeRepository: PreviousScheduleSendTimeRepository
-) {
+/**
+ * Caches the "schedule send" time of a message when the user cancels the scheduling
+ * (which can happened through the "undo" snackbar right after scheduling or the "edit" banner in the message detail).
+ * This time is then shown again in the "schedule send" bottom sheet in composer.
+ */
+@Singleton
+class PreviousScheduleSendTimeInMemoryRepository @Inject constructor() : PreviousScheduleSendTimeRepository {
 
-    suspend operator fun invoke(userId: UserId, messageId: MessageId) =
-        draftRepository.cancelScheduleSend(userId, messageId)
-            .onRight { previousScheduleSendTimeRepository.save(it) }
+    private var previousTimeCache: PreviousScheduleSendTime? = null
 
+    override suspend fun save(time: PreviousScheduleSendTime) {
+        previousTimeCache = time
+    }
+
+    override suspend fun get(): PreviousScheduleSendTime? = previousTimeCache
 }
