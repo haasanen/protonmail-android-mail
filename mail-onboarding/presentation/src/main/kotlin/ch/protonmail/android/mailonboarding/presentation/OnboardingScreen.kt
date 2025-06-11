@@ -23,6 +23,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -74,22 +76,22 @@ private fun OnboardingScreen(
 
     val contentMap = listOfNotNull(
         OnboardingUiModel(
-            illustrationId = R.drawable.illustration_rebuilt_from_the_ground_up,
-            title = R.string.onboarding_introducing_next_gen_app,
-            headlineId = R.string.onboarding_rebuilt_from_ground_up_headline,
-            descriptionId = R.string.onboarding_rebuilt_from_ground_up_description
+            illustrationId = R.drawable.illustration_onboarding_welcome,
+            title = R.string.onboarding_welcome_title,
+            headlineId = R.string.onboarding_welcome_headline,
+            descriptionId = R.string.onboarding_welcome_description
         ),
         OnboardingUiModel(
-            illustrationId = R.drawable.illustration_new_design,
-            title = R.string.onboarding_introducing_next_gen_app,
-            headlineId = R.string.onboarding_new_inbox_headline,
-            descriptionId = R.string.onboarding_new_inbox_description
+            illustrationId = R.drawable.illustration_onboarding_rebuilt,
+            title = R.string.onboarding_rebuilt_title,
+            headlineId = R.string.onboarding_rebuilt_headline,
+            descriptionId = R.string.onboarding_rebuilt_description
         ),
         OnboardingUiModel(
-            illustrationId = R.drawable.illustration_feedback_needed,
-            title = R.string.onboarding_introducing_next_gen_app,
-            headlineId = R.string.onboarding_feedback_is_key_headline,
-            descriptionId = R.string.onboarding_feedback_is_key_description
+            illustrationId = R.drawable.illustration_onboarding_feedback,
+            title = R.string.onboarding_feedback_title,
+            headlineId = R.string.onboarding_feedback_headline,
+            descriptionId = R.string.onboarding_feedback_description
         ),
         if (isEligibleForUpselling) OnboardingUiModel.Empty else null
     )
@@ -125,10 +127,13 @@ private fun OnboardingScreen(
         modifier = Modifier
             .testTag(OnboardingScreenTestTags.RootItem)
             .background(ProtonTheme.colors.backgroundInvertedNorm)
+            .padding(ProtonDimens.Spacing.Large)
+            .verticalScroll(rememberScrollState())
     ) {
 
         HorizontalPager(
-            state = pagerState
+            state = pagerState,
+            beyondViewportPageCount = pagerState.pageCount // pre-render all three pages to ensure consistent sizing.
         ) { pageIndex ->
             OnboardingContent(content = contentMap[pageIndex])
         }

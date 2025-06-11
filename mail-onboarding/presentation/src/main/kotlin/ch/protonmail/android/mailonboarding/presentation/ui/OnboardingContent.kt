@@ -20,11 +20,10 @@ package ch.protonmail.android.mailonboarding.presentation.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,12 +34,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailonboarding.presentation.OnboardingScreenTestTags
 import ch.protonmail.android.mailonboarding.presentation.R
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingUiModel
@@ -54,11 +53,13 @@ internal fun OnboardingContent(content: OnboardingUiModel) {
             style = ProtonTheme.typography.titleLargeNorm.copy(textAlign = TextAlign.Center)
         )
 
+        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
+
         Image(
             modifier = Modifier
                 .testTag(OnboardingScreenTestTags.OnboardingImage)
-                .fillMaxHeight(MailDimens.OnboardingIllustrationWeight)
-                .fillMaxWidth(),
+                .align(Alignment.CenterHorizontally)
+                .widthIn(max = 200.dp),
             contentScale = ContentScale.Fit,
             painter = painterResource(id = content.illustrationId),
             contentDescription = stringResource(id = R.string.onboarding_illustration_content_description)
@@ -76,11 +77,7 @@ internal fun OnboardingContent(content: OnboardingUiModel) {
             )
         )
 
-        Column(
-            Modifier
-                .align(Alignment.CenterHorizontally)
-                .verticalScroll(rememberScrollState())
-        ) {
+        Column(modifier = Modifier.align(Alignment.CenterHorizontally)) {
             Text(
                 modifier = Modifier
                     .padding(ProtonDimens.Spacing.Large),
