@@ -60,7 +60,7 @@ internal sealed interface RecoverableError : EffectsStateModification {
     data class AttachmentsStore(val error: AttachmentAddError) : RecoverableError {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects = when (error) {
-            AttachmentAddError.AttachmentTooLarge -> state.copy(attachmentsFileSizeExceeded = Effect.of(Unit))
+            AttachmentAddError.AttachmentTooLarge -> state.copy(attachmentsFileSizeExceeded = Effect.of(emptyList()))
             AttachmentAddError.EncryptionError -> state.copy(attachmentsEncryptionFailed = Effect.of(Unit))
             AttachmentAddError.TooManyAttachments ->
                 state.copy(error = Effect.of(TextUiModel(R.string.composer_too_many_attachments_error)))

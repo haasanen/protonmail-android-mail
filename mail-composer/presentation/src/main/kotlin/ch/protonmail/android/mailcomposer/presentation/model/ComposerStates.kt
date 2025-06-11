@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model
 
+import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -102,7 +103,7 @@ sealed interface ComposerState {
         val closeComposerWithScheduleSendingOffline: Effect<Unit>,
         val confirmSendingWithoutSubject: Effect<Unit>,
         val changeFocusToField: Effect<FocusedFieldType>,
-        val attachmentsFileSizeExceeded: Effect<Unit>,
+        val attachmentsFileSizeExceeded: Effect<List<AttachmentId>>,
         val attachmentsEncryptionFailed: Effect<Unit>,
         val warning: Effect<TextUiModel>,
         val focusTextBody: Effect<Unit> = Effect.empty(),

@@ -133,7 +133,7 @@ internal class EffectsStateModificationTest(
                 "show file size exceeded error",
                 initialState,
                 RecoverableError.AttachmentsStore(AttachmentAddError.AttachmentTooLarge),
-                initialState.copy(attachmentsFileSizeExceeded = Effect.of(Unit))
+                initialState.copy(attachmentsFileSizeExceeded = Effect.of(emptyList()))
             ),
             arrayOf(
                 "shows expiration error",
