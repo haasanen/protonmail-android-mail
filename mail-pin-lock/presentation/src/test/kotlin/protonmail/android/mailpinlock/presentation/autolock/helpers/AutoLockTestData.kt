@@ -18,17 +18,13 @@
 
 package protonmail.android.mailpinlock.presentation.autolock.helpers
 
-import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.pin.AutoLockPinState
-import ch.protonmail.android.mailpinlock.presentation.pin.BiometricPinUiModel
 import ch.protonmail.android.mailpinlock.presentation.pin.ConfirmButtonUiModel
-import ch.protonmail.android.mailpinlock.presentation.pin.InsertedPin
+import ch.protonmail.android.mailpinlock.presentation.pin.DescriptionUiModel
+import ch.protonmail.android.mailpinlock.presentation.pin.PinInsertionStep
 import ch.protonmail.android.mailpinlock.presentation.pin.PinInsertionStep.PinInsertion
-import ch.protonmail.android.mailpinlock.presentation.pin.PinInsertionUiModel
-import ch.protonmail.android.mailpinlock.presentation.pin.PinVerificationRemainingAttempts
 import ch.protonmail.android.mailpinlock.presentation.pin.SignOutUiModel
 import ch.protonmail.android.mailpinlock.presentation.pin.TopBarUiModel
 
@@ -36,19 +32,41 @@ internal object AutoLockTestData {
 
     val BaseTopBarUiModel = TopBarUiModel(
         true,
-        R.string.mail_settings_pin_insertion_set_title
+        R.string.mail_pinlock_settings_new_pin_topbar
     )
     val BaseTopBarState = AutoLockPinState.TopBarState(BaseTopBarUiModel)
 
     val BasePinInsertionState = AutoLockPinState.PinInsertionState(
         startingStep = PinInsertion,
         step = PinInsertion,
-        remainingAttempts = PinVerificationRemainingAttempts.Default,
-        pinInsertionUiModel = PinInsertionUiModel(
-            InsertedPin(
-                emptyList()
-            )
-        )
+        descriptionUiModel = DescriptionUiModel(
+            R.string.mail_pinlock_settings_new_pin_title,
+            R.string.mail_pinlock_settings_new_pin_description
+        ),
+        remainingAttempts = 10,
+        error = null
+    )
+
+    val BaseConfirmPinState = AutoLockPinState.PinInsertionState(
+        startingStep = PinInsertionStep.PinInsertion,
+        step = PinInsertionStep.PinConfirmation,
+        descriptionUiModel = DescriptionUiModel(
+            R.string.mail_pinlock_settings_confirm_pin_title,
+            R.string.mail_pinlock_settings_confirm_pin_description
+        ),
+        remainingAttempts = null,
+        error = null
+    )
+
+    val BaseVerificationPinState = AutoLockPinState.PinInsertionState(
+        startingStep = PinInsertionStep.PinVerification,
+        step = PinInsertionStep.PinVerification,
+        descriptionUiModel = DescriptionUiModel(
+            R.string.mail_pinlock_settings_verify_pin_title,
+            R.string.mail_pinlock_settings_verify_pin_description
+        ),
+        remainingAttempts = 10,
+        error = null
     )
 
     val BaseConfirmButtonUiModel =
@@ -62,36 +80,31 @@ internal object AutoLockTestData {
 
     val BaseSignOutUiModel =
         SignOutUiModel(isDisplayed = false, isRequested = false)
+
     val BaseSignOutState = AutoLockPinState.SignOutButtonState(
         BaseSignOutUiModel
     )
-
-    val biometricPinState =
-        BiometricPinUiModel(shouldDisplayButton = false)
 
     val BaseLoadedState = AutoLockPinState.DataLoaded(
         topBarState = BaseTopBarState,
         pinInsertionState = BasePinInsertionState,
         confirmButtonState = BaseConfirmButtonState,
         signOutButtonState = BaseSignOutState,
-        biometricPinState = biometricPinState,
-        showBiometricPromptEffect = Effect.of(Unit),
-        Effect.empty(),
         Effect.empty(),
         Effect.empty()
     )
 
-    val OneRemainingAttempt = PinVerificationRemainingAttempts(1)
-    val NineRemainingAttempts = PinVerificationRemainingAttempts(9)
+    val SignOutShownUiModel = SignOutUiModel(
+        isDisplayed = true,
+        isRequested = true
+    )
 
-    val BaseAutoLockPin = AutoLockPin("1234")
-    val BaseAutoLockUpdatedPin = AutoLockPin("1233")
-    val BaseInvalidPinInserted = InsertedPin(listOf(1, 2, 3))
-    val BaseValidPinInserted = InsertedPin(listOf(1, 2, 3, 4))
+    val SignOutRequestedUiModel = SignOutUiModel(
+        isDisplayed = false,
+        isRequested = true
+    )
 
-    val PlaceholderTextUiModel = TextUiModel("placeholder")
-    val SignOutShownUiModel =
-        SignOutUiModel(isDisplayed = true, isRequested = false)
-    val SignOutRequestedUiModel =
-        SignOutUiModel(isDisplayed = true, isRequested = true)
+    const val OneRemainingAttempt = 1
+    const val NineRemainingAttempts = 9
+    const val DefaultRemainingAttempts = 10
 }

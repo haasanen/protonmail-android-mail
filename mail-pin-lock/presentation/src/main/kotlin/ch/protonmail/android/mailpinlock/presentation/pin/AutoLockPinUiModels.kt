@@ -25,7 +25,7 @@ import androidx.compose.runtime.Stable
 data class TopBarUiModel(val showBackButton: Boolean, @StringRes val textRes: Int)
 
 @Stable
-data class PinInsertionUiModel(val currentPin: InsertedPin)
+data class DescriptionUiModel(@StringRes val titleRes: Int, @StringRes val descriptionRes: Int)
 
 @Stable
 data class ConfirmButtonUiModel(val isEnabled: Boolean, @StringRes val textRes: Int)

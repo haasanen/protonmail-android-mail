@@ -18,9 +18,10 @@
 
 package ch.protonmail.android.mailpinlock.presentation.pin.mapper
 
-import ch.protonmail.android.mailpinlock.presentation.pin.ConfirmButtonUiModel
-import ch.protonmail.android.mailpinlock.presentation.pin.PinInsertionStep
 import ch.protonmail.android.mailpinlock.presentation.R
+import ch.protonmail.android.mailpinlock.presentation.pin.ConfirmButtonUiModel
+import ch.protonmail.android.mailpinlock.presentation.pin.DescriptionUiModel
+import ch.protonmail.android.mailpinlock.presentation.pin.PinInsertionStep
 import ch.protonmail.android.mailpinlock.presentation.pin.SignOutUiModel
 import ch.protonmail.android.mailpinlock.presentation.pin.TopBarUiModel
 import javax.inject.Inject
@@ -29,10 +30,9 @@ class AutoLockPinStepUiMapper @Inject constructor() {
 
     fun toTopBarUiModel(step: PinInsertionStep): TopBarUiModel {
         val stringRes = when (step) {
-            PinInsertionStep.PinChange -> R.string.mail_settings_pin_insertion_input_title
-            PinInsertionStep.PinInsertion -> R.string.mail_settings_pin_insertion_set_title
-            PinInsertionStep.PinConfirmation -> R.string.mail_settings_pin_insertion_confirm_title
-            PinInsertionStep.PinVerification -> R.string.mail_settings_pin_insertion_input_title
+            PinInsertionStep.PinInsertion -> R.string.mail_pinlock_settings_new_pin_topbar
+            PinInsertionStep.PinConfirmation -> R.string.mail_pinlock_settings_confirm_pin_topbar
+            PinInsertionStep.PinVerification -> R.string.mail_pinlock_settings_verify_pin_topbar
         }
 
         return TopBarUiModel(
@@ -41,9 +41,29 @@ class AutoLockPinStepUiMapper @Inject constructor() {
         )
     }
 
+    fun toDescriptionUiModel(step: PinInsertionStep): DescriptionUiModel {
+        val (title, description) = when (step) {
+            PinInsertionStep.PinInsertion -> Pair(
+                R.string.mail_pinlock_settings_new_pin_title,
+                R.string.mail_pinlock_settings_new_pin_description
+            )
+
+            PinInsertionStep.PinConfirmation -> Pair(
+                R.string.mail_pinlock_settings_confirm_pin_title,
+                R.string.mail_pinlock_settings_confirm_pin_description
+            )
+
+            PinInsertionStep.PinVerification -> Pair(
+                R.string.mail_pinlock_settings_verify_pin_title,
+                R.string.mail_pinlock_settings_verify_pin_description
+            )
+        }
+
+        return DescriptionUiModel(title, description)
+    }
+
     fun toConfirmButtonUiModel(isEnabled: Boolean, step: PinInsertionStep): ConfirmButtonUiModel {
         val stringRes = when (step) {
-            PinInsertionStep.PinChange,
             PinInsertionStep.PinInsertion,
             PinInsertionStep.PinVerification -> R.string.mail_settings_pin_insertion_button_confirm
 

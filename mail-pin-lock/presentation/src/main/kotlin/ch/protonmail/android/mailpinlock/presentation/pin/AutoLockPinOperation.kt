@@ -18,19 +18,16 @@
 
 package ch.protonmail.android.mailpinlock.presentation.pin
 
-import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState
+import ch.protonmail.android.mailcommon.domain.model.autolock.VerifyAutoLockPinError
 
 sealed interface AutoLockPinOperation
 
 sealed interface AutoLockPinViewAction : AutoLockPinOperation {
-    data class AddPinDigit(val addition: Int) : AutoLockPinViewAction
-    object RemovePinDigit : AutoLockPinViewAction
     object PerformConfirm : AutoLockPinViewAction
     object PerformBack : AutoLockPinViewAction
     object RequestSignOut : AutoLockPinViewAction
     object ConfirmSignOut : AutoLockPinViewAction
     object CancelSignOut : AutoLockPinViewAction
-    object BiometricAuthenticationSucceeded : AutoLockPinViewAction
 }
 
 sealed interface AutoLockPinEvent : AutoLockPinOperation {
@@ -38,15 +35,11 @@ sealed interface AutoLockPinEvent : AutoLockPinOperation {
     sealed interface Data : AutoLockPinEvent {
         data class Loaded(
             val step: PinInsertionStep,
-            val remainingAttempts: PinVerificationRemainingAttempts,
-            val initialBiometricsState: AutoLockBiometricsState
+            val remainingAttempts: Int?
         ) : Data
     }
 
     sealed interface Update : AutoLockPinEvent {
-        data class BiometricStateChanged(val biometricState: AutoLockBiometricsState) : Update
-
-        data class PinValueChanged(val newPin: InsertedPin) : Update
         data class MovedToStep(val step: PinInsertionStep) : Update
 
         object OperationAborted : Update
@@ -58,7 +51,13 @@ sealed interface AutoLockPinEvent : AutoLockPinOperation {
         object SignOutCanceled : Update
 
         sealed interface Error : Update {
-            data class WrongPinCode(val remainingAttempts: PinVerificationRemainingAttempts) : Error
+
+            data class Verify(
+                val error: VerifyAutoLockPinError,
+                val remainingAttempts: Int
+            ) : Error
+
+            data object PinTooShort : Error
             object NotMatchingPins : Error
             object UnknownError : Error
         }

@@ -437,22 +437,30 @@ fun ProtonSettingsRadioItem(
     modifier: Modifier = Modifier,
     name: String,
     isSelected: Boolean,
-    onItemSelected: (String) -> Unit
+    isEnabled: Boolean = true,
+    onItemSelected: () -> Unit
 ) {
     ProtonRawListItem(
         modifier = modifier
-            .selectable(selected = isSelected, role = Role.RadioButton) { onItemSelected(name) }
+            .selectable(
+                selected = isSelected,
+                enabled = isEnabled,
+                role = Role.RadioButton
+            ) {
+                if (isEnabled) onItemSelected()
+            }
             .sizeIn(minHeight = ProtonDimens.ListItemHeight)
             .padding(horizontal = ProtonDimens.Spacing.Large),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = name,
-            color = ProtonTheme.colors.textNorm,
+            color = if (isEnabled) ProtonTheme.colors.textNorm else ProtonTheme.colors.textDisabled,
             style = ProtonTheme.typography.bodyLargeNorm
         )
         RadioButton(
             selected = isSelected,
+            enabled = isEnabled,
             onClick = null
         )
     }
@@ -532,7 +540,7 @@ fun SettingsRadioItemPreview() {
     ProtonSettingsRadioItem(
         name = "Setting option",
         isSelected = true,
-        onItemSelected = {}
+        onItemSelected = { }
     )
 }
 

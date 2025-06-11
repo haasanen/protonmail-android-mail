@@ -77,6 +77,7 @@ object ProtonDimens {
         val Large = 36.dp
         val MediumLarge = 40.dp
         val ExtraLarge = 48.dp
+        val Huge = 72.dp
     }
 
     object BorderSize {

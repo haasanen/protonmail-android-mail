@@ -18,12 +18,12 @@
 
 package protonmail.android.mailpinlock.presentation.pin.mapper
 
+import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.pin.ConfirmButtonUiModel
 import ch.protonmail.android.mailpinlock.presentation.pin.PinInsertionStep
 import ch.protonmail.android.mailpinlock.presentation.pin.SignOutUiModel
 import ch.protonmail.android.mailpinlock.presentation.pin.TopBarUiModel
 import ch.protonmail.android.mailpinlock.presentation.pin.mapper.AutoLockPinStepUiMapper
-import ch.protonmail.android.mailsettings.presentation.R
 import org.junit.Test
 import org.junit.experimental.runners.Enclosed
 import org.junit.runner.RunWith
@@ -53,31 +53,24 @@ internal class AutoLockPinStepUiMapperTest {
             @Parameterized.Parameters(name = "{0}")
             fun data() = arrayOf(
                 TestInput(
-                    PinInsertionStep.PinChange,
-                    TopBarUiModel(
-                        true,
-                        R.string.mail_settings_pin_insertion_input_title
-                    )
-                ),
-                TestInput(
                     PinInsertionStep.PinInsertion,
                     TopBarUiModel(
                         true,
-                        R.string.mail_settings_pin_insertion_set_title
+                        R.string.mail_pinlock_settings_new_pin_topbar
                     )
                 ),
                 TestInput(
                     PinInsertionStep.PinConfirmation,
                     TopBarUiModel(
                         true,
-                        R.string.mail_settings_pin_insertion_confirm_title
+                        R.string.mail_pinlock_settings_confirm_pin_topbar
                     )
                 ),
                 TestInput(
                     PinInsertionStep.PinVerification,
                     TopBarUiModel(
                         false,
-                        R.string.mail_settings_pin_insertion_input_title
+                        R.string.mail_pinlock_settings_verify_pin_topbar
                     )
                 )
             )
@@ -108,14 +101,6 @@ internal class AutoLockPinStepUiMapperTest {
             @JvmStatic
             @Parameterized.Parameters(name = "{0}")
             fun data() = arrayOf(
-                TestInput(
-                    isEnabled = false,
-                    PinInsertionStep.PinChange,
-                    ConfirmButtonUiModel(
-                        false,
-                        R.string.mail_settings_pin_insertion_button_confirm
-                    )
-                ),
                 TestInput(
                     isEnabled = false,
                     PinInsertionStep.PinInsertion,
@@ -186,13 +171,6 @@ internal class AutoLockPinStepUiMapperTest {
                 ),
                 TestInput(
                     PinInsertionStep.PinConfirmation,
-                    SignOutUiModel(
-                        isDisplayed = false,
-                        isRequested = false
-                    )
-                ),
-                TestInput(
-                    PinInsertionStep.PinChange,
                     SignOutUiModel(
                         isDisplayed = false,
                         isRequested = false

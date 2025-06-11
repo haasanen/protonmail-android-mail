@@ -18,29 +18,38 @@
 
 package ch.protonmail.android.mailpinlock.presentation.pin.ui
 
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.component.ProtonTextButton
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.pin.AutoLockPinState
 
 @Composable
-fun AutoLockPinSignOutItem(
-    state: AutoLockPinState.SignOutButtonState,
-    actions: AutoLockPinDetailScreen.SignOutActions
-) {
+fun AutoLockPinSignOutItem(state: AutoLockPinState.SignOutButtonState, actions: AutoLockPinScreenV2.SignOutActions) {
     if (state.signOutUiModel.isDisplayed) {
-        ProtonTextButton(onClick = actions.onSignOut) {
+        ProtonTextButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = ProtonDimens.Spacing.Standard),
+            onClick = {
+                actions.onSignOut()
+            }
+        ) {
             Text(
                 text = stringResource(id = R.string.mail_settings_pin_insertion_signout_text),
-                style = ProtonTheme.typography.bodyLargeNorm,
-                color = ProtonTheme.colors.textAccent
+                style = ProtonTheme.typography.titleMedium,
+                color = ProtonTheme.colors.brandNorm,
+                textAlign = TextAlign.Center
             )
         }
     }

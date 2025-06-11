@@ -16,19 +16,16 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailpinlock.presentation.pin.mapper
+package ch.protonmail.android.mailpinlock.presentation.autolock.model
 
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailpinlock.presentation.R
-import ch.protonmail.android.mailpinlock.presentation.pin.PinInsertionStep
-import javax.inject.Inject
+import kotlinx.serialization.Serializable
 
-class AutoLockSuccessfulOperationUiMapper @Inject constructor() {
+@Serializable
+sealed interface AutoLockInsertionMode {
 
-    fun toTextUiModel(originalStep: PinInsertionStep): TextUiModel? {
-        return when (originalStep) {
-            PinInsertionStep.PinInsertion -> TextUiModel.TextRes(R.string.mail_settings_pin_insertion_created_success)
-            else -> null
-        }
-    }
+    @Serializable
+    object CreatePin : AutoLockInsertionMode
+
+    @Serializable
+    object VerifyPin : AutoLockInsertionMode
 }

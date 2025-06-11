@@ -26,8 +26,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -35,79 +38,138 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ch.protonmail.android.design.compose.component.ProtonAppSettingsItemInvert
+import androidx.navigation.NavController
 import ch.protonmail.android.design.compose.component.ProtonAppSettingsItemNorm
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonMainSettingsIcon
-import ch.protonmail.android.design.compose.component.ProtonSettingsToggleItem
-import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.design.compose.component.ProtonSettingsDetailsAppBar
+import ch.protonmail.android.design.compose.component.ProtonSettingsHeader
+import ch.protonmail.android.design.compose.component.ProtonSettingsRadioItem
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
-import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailpinlock.presentation.R
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockBiometricsUiModel
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockSettingsViewAction
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockSettingsViewAction.ToggleAutoLockPreference
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutoLockSettingsViewModel
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutolockSettings
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutolockSettingsUiState
-import ch.protonmail.android.mailpinlock.presentation.autolock.ProtectionType
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInsertionMode
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockSettings
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockSettingsUiState
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockSettingsViewAction
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.BiometricsOperationFollowUp
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.DialogType
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.ProtectionType
 import ch.protonmail.android.mailpinlock.presentation.autolock.ui.AutoLockSettingsScreen.Actions
+import ch.protonmail.android.mailpinlock.presentation.autolock.viewmodel.AutoLockSettingsViewModel
+import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinScreenDialogKeys.AutoLockPinDialogResultKey
+import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.BiometricPromptCallback
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AutoLockSettingsScreen(
     modifier: Modifier = Modifier,
+    navController: NavController,
     actions: Actions,
     viewModel: AutoLockSettingsViewModel = hiltViewModel()
 ) {
     val snackbarHostState = ProtonSnackbarHostState()
-    val effects = viewModel.effects.collectAsStateWithLifecycle().value
-    val state: AutolockSettingsUiState by viewModel.state.collectAsState()
+    val effects by viewModel.effects.collectAsStateWithLifecycle()
+    val state: AutoLockSettingsUiState by viewModel.state.collectAsState()
 
-    SnackbarWarnings(
-        snackbarHostState = snackbarHostState,
-        effects.autoLockBiometricsHwError,
-        effects.autoLockBiometricsEnrollmentError
+    val biometricPrompt = rememberBiometricAuthenticator(
+        title = stringResource(R.string.mail_settings_biometrics_title_confirm),
+        subtitle = stringResource(R.string.mail_settings_biometrics_subtitle_default),
+        negativeButtonText = stringResource(R.string.mail_settings_biometrics_button_negative),
+        onAuthenticationError = { _, _ ->
+            /* no op */
+        },
+        onAuthenticationFailed = { /* no op */ },
+        onAuthenticationSucceeded = {
+            viewModel.submit(AutoLockSettingsViewAction.SetBiometricsPreference)
+        }
     )
-    SnackbarErrors(
-        snackbarHostState = snackbarHostState,
-        effects.updateError
-    )
-    ConsumableLaunchedEffect(effects.forceOpenPinCreation) {
-        // ET-6548 onPinScreenNavigation(AutoLockInsertionMode.CreatePin)
+
+    ConsumableTextEffect(effects.updateError) {
+        snackbarHostState.showSnackbar(message = it, type = ProtonSnackbarType.ERROR)
     }
+
     ConsumableLaunchedEffect(effects.forceOpenPinCreation) {
-        // ET-6548 onPinScreenNavigation(AutoLockInsertionMode.ChangePin)
+        actions.onPinScreenNavigation(AutoLockInsertionMode.CreatePin)
+    }
+
+    ConsumableLaunchedEffect(effects.pinLockRemovalRequested) {
+        actions.onDialogNavigation(DialogType.DisablePin)
+    }
+
+    ConsumableLaunchedEffect(effects.pinLockChangeRequested) {
+        actions.onDialogNavigation(DialogType.ChangePin)
+    }
+
+    ConsumableLaunchedEffect(effects.requestBiometricsAuth) {
+        val callback = BiometricPromptCallback(
+            onAuthenticationError = {},
+            onAuthenticationFailed = {},
+            onAuthenticationSucceeded = {
+                val followUp = when (it) {
+                    BiometricsOperationFollowUp.SetNone -> AutoLockSettingsViewAction.RemoveBiometricsProtection
+                    BiometricsOperationFollowUp.SetPin -> AutoLockSettingsViewAction.SetPinPreference
+                    BiometricsOperationFollowUp.SetBiometrics -> AutoLockSettingsViewAction.SetBiometricsPreference
+                    BiometricsOperationFollowUp.RemovePinAndSetBiometrics ->
+                        AutoLockSettingsViewAction.MigrateFromPinToBiometrics
+                }
+
+                viewModel.submit(followUp)
+            }
+        )
+        biometricPrompt.authenticate(callback)
+    }
+
+    LaunchedEffect(navController) {
+        navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.getStateFlow<String?>(AutoLockPinDialogResultKey, null)
+            ?.collect { result ->
+                if (result == null) return@collect
+
+                when (result) {
+                    DialogType.ChangePin.resultKey ->
+                        viewModel.submit(AutoLockSettingsViewAction.RequestPinProtection)
+
+                    DialogType.DisablePin.resultKey -> Unit
+                }
+                navController.currentBackStackEntry
+                    ?.savedStateHandle
+                    ?.remove<String>(AutoLockPinDialogResultKey)
+            }
     }
 
     when (val uiState = state) {
-        AutolockSettingsUiState.Loading -> ProtonCenteredProgress()
-        is AutolockSettingsUiState.Data -> {
+        AutoLockSettingsUiState.Loading -> ProtonCenteredProgress()
+        is AutoLockSettingsUiState.Data -> {
             Scaffold(
                 modifier = modifier,
                 topBar = {
-                    ProtonSettingsTopBar(
+                    ProtonSettingsDetailsAppBar(
                         title = stringResource(id = R.string.mail_pinlock_settings_title),
                         onBackClick = actions.onBackClick
                     )
                 },
                 snackbarHost = { DismissableSnackbarHost(protonSnackbarHostState = snackbarHostState) },
                 content = { paddingValues ->
-                    AutolockSettingScreen(
+                    AutoLockSettingScreen(
                         modifier = Modifier
                             .padding(paddingValues)
                             .padding(horizontal = ProtonDimens.Spacing.Large),
                         settings = uiState.settings,
                         submitAction = { viewModel.submit(it) },
-                        actions = actions
+                        onBiometricsRequested = {
+                            viewModel.submit(AutoLockSettingsViewAction.RequestBiometricsProtection)
+                        },
+                        onChangeIntervalNavigation = actions.onChangeIntervalClick,
+                        onChangePin = { viewModel.submit(AutoLockSettingsViewAction.RequestPinProtectionChange) }
                     )
                 }
             )
@@ -116,50 +178,77 @@ fun AutoLockSettingsScreen(
 }
 
 @Composable
-private fun AutolockSettingScreen(
+@Suppress("UseComposableActions")
+private fun AutoLockSettingScreen(
     modifier: Modifier = Modifier,
-    settings: AutolockSettings,
-    actions: Actions,
-    submitAction: (AutoLockSettingsViewAction) -> Unit
+    settings: AutoLockSettings,
+    submitAction: (AutoLockSettingsViewAction) -> Unit,
+    onBiometricsRequested: () -> Unit,
+    onChangeIntervalNavigation: () -> Unit = {},
+    onChangePin: () -> Unit
 ) {
+
     Column(modifier = modifier) {
-        AutolockOnOffToggle(
-            toggleOn = settings.isEnabled,
-            onSubmit = { submitAction(ToggleAutoLockPreference(it)) }
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = ProtonTheme.shapes.extraLarge,
+            elevation = CardDefaults.cardElevation(),
+            colors = CardDefaults.cardColors().copy(
+                containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+            )
+        ) {
+            ProtonSettingsRadioItem(
+                name = stringResource(R.string.mail_pinlock_settings_no_lock),
+                isSelected = settings.protectionType == ProtectionType.None,
+                onItemSelected = {
+                    submitAction(AutoLockSettingsViewAction.RequestProtectionRemoval)
+                }
+            )
+            HorizontalDivider(color = ProtonTheme.colors.backgroundInvertedNorm)
+            ProtonSettingsRadioItem(
+                name = stringResource(R.string.mail_pinlock_settings_with_pin),
+                isSelected = settings.protectionType == ProtectionType.Pin,
+                onItemSelected = {
+                    submitAction(AutoLockSettingsViewAction.RequestPinProtection)
+                }
+            )
+            HorizontalDivider(color = ProtonTheme.colors.backgroundInvertedNorm)
+
+            if (settings.biometricsAvailable) {
+                ProtonSettingsRadioItem(
+                    name = stringResource(R.string.mail_pinlock_settings_with_biometrics),
+                    isSelected = settings.protectionType == ProtectionType.Biometrics,
+                    onItemSelected = {
+                        if (settings.biometricsEnabled) return@ProtonSettingsRadioItem
+                        onBiometricsRequested()
+                    }
+                )
+            }
+        }
+
+        Text(
+            modifier = Modifier
+                .padding(vertical = ProtonDimens.Spacing.Standard)
+                .padding(horizontal = ProtonDimens.Spacing.Large),
+            text = stringResource(R.string.mail_pinlock_settings_logout_disclaimer),
+            style = ProtonTheme.typography.bodyMedium,
+            color = ProtonTheme.colors.textWeak
         )
 
-        if (settings.isEnabled) {
+        if (settings.protectionType != ProtectionType.None) {
             Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = ProtonTheme.shapes.extraLarge,
-                elevation = CardDefaults.cardElevation(),
-                colors = CardDefaults.cardColors().copy(
-                    containerColor = ProtonTheme.colors.backgroundInvertedSecondary
-                )
-            ) {
-                ChangePinOption(onClickChangePin = actions.onPinScreenNavigation)
-                ChangeIntervalOption(
-                    selectedChoice = settings.selectedUiInterval,
-                    onClickChangeInterval = actions.onChangeIntervalClick
-                )
-                if (settings.biometricsAvailable) {
-                    BiometricsOnOffToggle(
-                        toggleOn = settings.biometricsEnabled,
-                        onSubmit = {
-                            submitAction(
-                                AutoLockSettingsViewAction.ToggleAutoLockBiometricsPreference(
-                                    AutoLockBiometricsUiModel(
-                                        enabled = it,
-                                        biometricsEnrolled = false,
-                                        biometricsHwAvailable = false
-                                    )
-                                )
-                            )
-                        }
-                    )
-                }
+
+            if (settings.protectionType == ProtectionType.Pin) {
+                ChangePinOption(onClickChangePin = onChangePin)
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
+
             }
+
+            ChangeIntervalOption(
+                selectedChoice = settings.selectedUiInterval,
+                onClickChangeInterval = onChangeIntervalNavigation
+            )
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
         }
     }
 }
@@ -170,135 +259,94 @@ private fun ChangeIntervalOption(
     selectedChoice: TextUiModel,
     onClickChangeInterval: () -> Unit
 ) {
-    ProtonAppSettingsItemInvert(
-        modifier = modifier,
-        name = stringResource(id = R.string.mail_pinlock_settings_change_interval_title),
-        hint = selectedChoice.string(),
-        onClick = onClickChangeInterval,
-        icon = {
-            ProtonMainSettingsIcon(
-                iconRes = R.drawable.ic_proton_chevron_up_down,
-                contentDescription = stringResource(id = R.string.mail_pinlock_settings_change_interval_title),
-                tint = ProtonTheme.colors.iconHint
-            )
-        }
-    )
-}
+    ProtonSettingsHeader(title = R.string.mail_pinlock_settings_change_interval_title)
+    Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
 
-@Composable
-private fun ChangePinOption(modifier: Modifier = Modifier, onClickChangePin: () -> Unit) {
-    ProtonAppSettingsItemNorm(
-        modifier = modifier,
-        name = stringResource(id = R.string.mail_pinlock_settings_change_pin_description),
-        onClick = onClickChangePin,
-        icon = {
-            ProtonMainSettingsIcon(
-                iconRes = R.drawable.ic_proton_chevron_right,
-                contentDescription = stringResource(id = R.string.mail_pinlock_settings_change_pin_description),
-                tint = ProtonTheme.colors.iconHint
-            )
-        }
-    )
-}
-
-@Composable
-private fun AutolockOnOffToggle(
-    modifier: Modifier = Modifier,
-    toggleOn: Boolean,
-    onSubmit: (Boolean) -> Unit
-) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         shape = ProtonTheme.shapes.extraLarge,
         elevation = CardDefaults.cardElevation(),
         colors = CardDefaults.cardColors().copy(
             containerColor = ProtonTheme.colors.backgroundInvertedSecondary
         )
     ) {
-        ProtonSettingsToggleItem(
-            modifier = Modifier.padding(ProtonDimens.Spacing.Large),
-            name = stringResource(id = R.string.mail_pinlock_settings_toggle_autolock_title),
-            hint = stringResource(id = R.string.mail_pinlock_settings_toggle_autolock_description),
-            value = toggleOn,
-            onToggle = onSubmit
+        ProtonAppSettingsItemNorm(
+            modifier = modifier,
+            name = selectedChoice.string(),
+            onClick = onClickChangeInterval,
+            icon = {
+                ProtonMainSettingsIcon(
+                    iconRes = R.drawable.ic_proton_chevron_up_down,
+                    contentDescription = stringResource(id = R.string.mail_pinlock_settings_change_interval_title),
+                    tint = ProtonTheme.colors.iconHint
+                )
+            }
         )
     }
 }
 
 @Composable
-private fun BiometricsOnOffToggle(
-    modifier: Modifier = Modifier,
-    toggleOn: Boolean,
-    onSubmit: (Boolean) -> Unit
-) {
-    ProtonSettingsToggleItem(
-        modifier = modifier.padding(ProtonDimens.Spacing.Large),
-        name = stringResource(id = R.string.unlock_using_biometrics),
-        value = toggleOn,
-        onToggle = onSubmit
-    )
-}
-
-@Composable
-private fun SnackbarEffect(
-    snackbarHostState: ProtonSnackbarHostState,
-    type: ProtonSnackbarType,
-    effects: Array<out Effect<TextUiModel>>
-) {
-    effects.forEach {
-        ConsumableTextEffect(it) {
-            snackbarHostState.showSnackbar(
-                message = it,
-                type = type
-            )
-        }
+private fun ChangePinOption(modifier: Modifier = Modifier, onClickChangePin: () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = ProtonTheme.shapes.extraLarge,
+        elevation = CardDefaults.cardElevation(),
+        colors = CardDefaults.cardColors().copy(
+            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+        )
+    ) {
+        ProtonAppSettingsItemNorm(
+            modifier = modifier,
+            name = stringResource(id = R.string.mail_pinlock_settings_change_pin_description),
+            onClick = onClickChangePin,
+            icon = {
+                ProtonMainSettingsIcon(
+                    iconRes = R.drawable.ic_proton_chevron_right,
+                    contentDescription = stringResource(id = R.string.mail_pinlock_settings_change_pin_description),
+                    tint = ProtonTheme.colors.iconHint
+                )
+            }
+        )
     }
 }
 
-@Composable
-private fun SnackbarWarnings(snackbarHostState: ProtonSnackbarHostState, vararg effects: Effect<TextUiModel>) {
-    SnackbarEffect(snackbarHostState, ProtonSnackbarType.WARNING, effects)
-}
+object AutoLockSettingsScreen {
 
-@Composable
-private fun SnackbarErrors(snackbarHostState: ProtonSnackbarHostState, vararg effects: Effect<TextUiModel>) {
-    SnackbarEffect(snackbarHostState, ProtonSnackbarType.ERROR, effects)
+    data class Actions(
+        val onChangeIntervalClick: () -> Unit,
+        val onBackClick: () -> Unit,
+        val onPinScreenNavigation: (AutoLockInsertionMode) -> Unit,
+        val onDialogNavigation: (DialogType) -> Unit
+    )
 }
 
 @Preview(name = "Autolock Settings Screen Enabled", showBackground = true, device = "id:pixel_5")
 @Composable
-fun PreviewAutolockSettingScreenEnabled() {
-    AutolockSettingScreen(
-        settings = AutolockSettings(
+private fun PreviewAutolockSettingScreenEnabled() {
+    AutoLockSettingScreen(
+        settings = AutoLockSettings(
             TextUiModel("15 minutes"),
             protectionType = ProtectionType.Biometrics,
             biometricsAvailable = true
         ),
-        actions = Actions(),
-        submitAction = {}
+        onBiometricsRequested = {},
+        submitAction = {},
+        onChangePin = {}
     )
 }
 
 
 @Preview(name = "Autolock Settings Screen Disabled", showBackground = true, device = "id:pixel_5")
 @Composable
-fun PreviewAutolockSettingScreenDisabled() {
-    AutolockSettingScreen(
-        settings = AutolockSettings(
+private fun PreviewAutoLockSettingScreenDisabled() {
+    AutoLockSettingScreen(
+        settings = AutoLockSettings(
             TextUiModel("None"),
             protectionType = ProtectionType.None,
             biometricsAvailable = false
         ),
-        actions = Actions(),
-        submitAction = {}
-    )
-}
-
-object AutoLockSettingsScreen {
-
-    data class Actions(
-        val onChangeIntervalClick: () -> Unit = {},
-        val onBackClick: () -> Unit = {},
-        val onPinScreenNavigation: () -> Unit = {}
+        onBiometricsRequested = {},
+        submitAction = {},
+        onChangePin = {}
     )
 }

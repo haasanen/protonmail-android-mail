@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailpinlock.presentation.pin
 
 enum class PinInsertionStep {
-    PinChange,
     PinInsertion,
     PinConfirmation,
     PinVerification

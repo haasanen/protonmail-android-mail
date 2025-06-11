@@ -19,8 +19,8 @@
 package protonmail.android.mailpinlock.presentation.pin.mapper
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.pin.PinInsertionStep
-import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.pin.mapper.AutoLockSuccessfulOperationUiMapper
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -46,10 +46,6 @@ internal class AutoLockSuccessfulOperationUiMapperTest(private val testInput: Te
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
         fun data() = arrayOf(
-            TestInput(
-                startingStep = PinInsertionStep.PinChange,
-                TextUiModel(R.string.mail_settings_pin_insertion_changed_success)
-            ),
             TestInput(
                 startingStep = PinInsertionStep.PinInsertion,
                 TextUiModel(R.string.mail_settings_pin_insertion_created_success)

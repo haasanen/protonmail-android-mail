@@ -65,6 +65,8 @@ dependencies {
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
     implementation(project(":mail-pin-lock:domain"))
+    implementation(project(":mail-session:data"))
+    implementation(project(":mail-session:domain"))
     implementation(project(":mail-settings:domain"))
 
     implementation(project(":uicomponents"))
@@ -72,6 +74,7 @@ dependencies {
     implementation(project(":presentation-compose"))
 
     testImplementation(libs.bundles.test)
+    testImplementation(libs.kotlin.serialization.json)
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))
     testImplementation(libs.proton.rust.core)

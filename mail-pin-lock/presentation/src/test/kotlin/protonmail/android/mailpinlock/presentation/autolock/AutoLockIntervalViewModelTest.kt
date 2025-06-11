@@ -23,17 +23,17 @@ import app.cash.turbine.test
 import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailpinlock.domain.AutolockRepository
+import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
+import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval.FifteenMinutes
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval.FiveMinutes
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval.Immediately
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval.OneDay
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval.OneHour
-import ch.protonmail.android.mailpinlock.model.Autolock
 import ch.protonmail.android.mailpinlock.presentation.R
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutolockIntervalEffects
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutolockIntervalState
-import ch.protonmail.android.mailpinlock.presentation.autolock.AutolockIntervalViewModel
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockIntervalState
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutolockIntervalEffects
+import ch.protonmail.android.mailpinlock.presentation.autolock.viewmodel.AutoLockIntervalViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -42,14 +42,14 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-class AutolockIntervalViewModelTest {
+class AutoLockIntervalViewModelTest {
 
-    private val autoLockFlow = MutableSharedFlow<Autolock>()
-    private val autolockRepository: AutolockRepository = mockk {
+    private val autoLockFlow = MutableSharedFlow<AutoLock>()
+    private val autolockRepository: AutoLockRepository = mockk {
         coEvery {
             this@mockk.observeAppLock()
         } returns autoLockFlow
@@ -59,13 +59,13 @@ class AutolockIntervalViewModelTest {
         } returns Unit.right()
     }
 
-    private lateinit var viewModel: AutolockIntervalViewModel
+    private lateinit var viewModel: AutoLockIntervalViewModel
 
-    @Before
+    @BeforeTest
     fun setUp() {
         Dispatchers.setMain(UnconfinedTestDispatcher())
 
-        viewModel = AutolockIntervalViewModel(
+        viewModel = AutoLockIntervalViewModel(
             autolockRepository
         )
     }
@@ -78,7 +78,7 @@ class AutolockIntervalViewModelTest {
         // When
         viewModel.onIntervalSelected(FifteenMinutes)
         // then
-        Assert.assertEquals(
+        assertEquals(
             AutolockIntervalEffects(close = Effect.Companion.of(Unit)),
             viewModel.effects.value
         )
@@ -91,11 +91,11 @@ class AutolockIntervalViewModelTest {
             initialStateEmitted()
 
             // When
-            autoLockFlow.emit(Autolock(autolockInterval = FifteenMinutes))
+            autoLockFlow.emit(AutoLock(autolockInterval = FifteenMinutes))
 
             // Then
-            Assert.assertEquals(
-                AutolockIntervalState.Data(
+            assertEquals(
+                AutoLockIntervalState.Data(
                     currentInterval = FifteenMinutes,
                     intervalsToChoices = uiIntervals
                 ),
@@ -111,10 +111,10 @@ class AutolockIntervalViewModelTest {
             // Given
             initialStateEmitted()
             // When
-            autoLockFlow.emit(Autolock(autolockInterval = FifteenMinutes))
+            autoLockFlow.emit(AutoLock(autolockInterval = FifteenMinutes))
             // Then
-            Assert.assertEquals(
-                AutolockIntervalState.Data(
+            assertEquals(
+                AutoLockIntervalState.Data(
                     currentInterval = FifteenMinutes,
                     intervalsToChoices = uiIntervals
                 ),
@@ -122,10 +122,10 @@ class AutolockIntervalViewModelTest {
             )
 
             // When
-            autoLockFlow.emit(Autolock(autolockInterval = OneDay))
+            autoLockFlow.emit(AutoLock(autolockInterval = OneDay))
             // Then
-            Assert.assertEquals(
-                AutolockIntervalState.Data(
+            assertEquals(
+                AutoLockIntervalState.Data(
                     currentInterval = OneDay,
                     intervalsToChoices = uiIntervals
                 ),
@@ -146,8 +146,8 @@ class AutolockIntervalViewModelTest {
         coVerify { autolockRepository.updateAutolockInterval(FifteenMinutes) }
     }
 
-    private suspend fun ReceiveTurbine<AutolockIntervalState>.initialStateEmitted() {
-        awaitItem() as AutolockIntervalState.Loading
+    private suspend fun ReceiveTurbine<AutoLockIntervalState>.initialStateEmitted() {
+        awaitItem() as AutoLockIntervalState.Loading
     }
 
     companion object {

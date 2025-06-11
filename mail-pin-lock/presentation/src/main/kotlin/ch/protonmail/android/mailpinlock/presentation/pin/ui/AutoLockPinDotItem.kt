@@ -18,128 +18,34 @@
 
 package ch.protonmail.android.mailpinlock.presentation.pin.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.height
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.AutoLockPinScreen.PinDotsGridHeight
 import ch.protonmail.android.mailpinlock.presentation.R
 
 @Composable
-fun AutoLockPinLockIcon(modifier: Modifier = Modifier) {
-    Icon(
-        modifier = modifier.wrapContentSize(),
-        painter = painterResource(R.drawable.ic_proton_lock),
-        contentDescription = stringResource(id = R.string.mail_settings_pin_insertion_lock_icon_description)
-    )
-}
-
-@Composable
-fun AutoLockPinDotItem(modifier: Modifier = Modifier, tint: Color = ProtonTheme.colors.iconAccent) {
+fun AutoLockPinDotItem(modifier: Modifier = Modifier, tint: Color) {
     Icon(
         modifier = modifier
-            .wrapContentSize()
             .padding(ProtonDimens.Spacing.Small),
-        painter = painterResource(id = R.drawable.ic_proton_circle_filled),
+        painter = painterResource(id = R.drawable.pin_circle),
         tint = tint,
         contentDescription = stringResource(id = R.string.mail_settings_pin_insertion_pin_dot_description)
     )
 }
 
 @Composable
-fun AutoLockPinDotsGrid(insertedPinSize: Int, modifier: Modifier = Modifier) {
-    LazyHorizontalGrid(
-        modifier = modifier
-            .height(PinDotsGridHeight)
-            .wrapContentSize(),
-        rows = GridCells.Fixed(Constants.PinRowMaxLines),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        items(insertedPinSize) {
-            AutoLockPinDotItem()
-        }
-    }
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = false)
+private fun AutoLockPinDotItemPreview() {
+    AutoLockPinDotItem(tint = ProtonTheme.colors.notificationError)
 }
 
-@Composable
-fun AutoLockPinKeyboardGrid(
-    showBiometricPin: Boolean,
-    actions: AutoLockPinKeyboardGrid.Actions,
-    modifier: Modifier = Modifier
-) {
-    LazyVerticalGrid(
-        contentPadding = PaddingValues(ProtonDimens.Spacing.Large),
-        modifier = modifier.wrapContentSize(),
-        columns = GridCells.Fixed(Constants.KeyboardRowSize),
-        horizontalArrangement = Arrangement.Center,
-        verticalArrangement = Arrangement.Center
-    ) {
-        items(Constants.KeyboardMainElementsSize) { element ->
-            VirtualKeyboardDigitItem(
-                value = element + 1, // Index starts at 0
-                onElementClicked = actions.onDigitAdded
-            )
-        }
-
-
-        item {
-            if (showBiometricPin) {
-                VirtualKeyboardButtonItem(
-                    drawableRes = R.drawable.ic_proton_fingerprint,
-                    onClick = actions.onBiometricPinClick,
-                    contentDescription = stringResource(id = R.string.mail_settings_pin_insertion_biometric_description)
-                )
-            }
-        }
-
-        item {
-            VirtualKeyboardDigitItem(
-                value = 0,
-                onElementClicked = actions.onDigitAdded
-            )
-        }
-        item {
-            VirtualKeyboardButtonItem(
-                drawableRes = R.drawable.ic_proton_backspace,
-                onClick = actions.onBackSpaceClick,
-                contentDescription = stringResource(id = R.string.mail_settings_pin_insertion_backspace_description)
-            )
-        }
-    }
-}
-
-object AutoLockPinKeyboardGrid {
-
-    data class Actions(
-        val onBiometricPinClick: () -> Unit,
-        val onDigitAdded: (Int) -> Unit,
-        val onBackSpaceClick: () -> Unit
-    ) {
-        companion object {
-            val Empty = Actions(
-                onBiometricPinClick = {},
-                onDigitAdded = {},
-                onBackSpaceClick = {}
-            )
-        }
-    }
-}
-
-private object Constants {
-
-    const val PinRowMaxLines = 1
-    const val KeyboardRowSize = 3
-    const val KeyboardMainElementsSize = 9 // Keyboard items are split in 9 + 3 elements
-}

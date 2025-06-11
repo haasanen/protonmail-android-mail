@@ -30,10 +30,7 @@ sealed interface AutoLockPinState {
         val pinInsertionState: PinInsertionState,
         val confirmButtonState: ConfirmButtonState,
         val signOutButtonState: SignOutButtonState,
-        val biometricPinState: BiometricPinUiModel,
-        val showBiometricPromptEffect: Effect<Unit>,
         val closeScreenEffect: Effect<Unit>,
-        val pinInsertionErrorEffect: Effect<TextUiModel>,
         val snackbarSuccessEffect: Effect<TextUiModel>
     ) : AutoLockPinState
 
@@ -44,9 +41,10 @@ sealed interface AutoLockPinState {
     data class TopBarState(val topBarStateUiModel: TopBarUiModel)
 
     data class PinInsertionState(
+        val descriptionUiModel: DescriptionUiModel,
         val startingStep: PinInsertionStep,
         val step: PinInsertionStep,
-        val remainingAttempts: PinVerificationRemainingAttempts,
-        val pinInsertionUiModel: PinInsertionUiModel
+        val remainingAttempts: Int?,
+        val error: TextUiModel? = null
     )
 }

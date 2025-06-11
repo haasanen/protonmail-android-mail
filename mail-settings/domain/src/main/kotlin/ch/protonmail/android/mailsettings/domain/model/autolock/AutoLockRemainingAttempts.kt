@@ -21,8 +21,12 @@ package ch.protonmail.android.mailsettings.domain.model.autolock
 import kotlinx.serialization.Serializable
 
 @JvmInline
-value class AutoLockEncryptedRemainingAttempts(val encryptedValue: String)
-
-@JvmInline
 @Serializable
-value class AutoLockRemainingAttempts(val value: Int)
+value class AutoLockRemainingAttempts(val value: Int) {
+
+    companion object {
+
+        private const val DefaultValue = 10
+        fun Default() = AutoLockRemainingAttempts(DefaultValue)
+    }
+}
