@@ -28,9 +28,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.MainActivity
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.legacymigration.presentation.MigrationLoadingScreen
 import ch.protonmail.android.navigation.model.LauncherState
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.legacymigration.presentation.MigrationLoadingScreen
 
 @Composable
 fun Launcher(activityActions: MainActivity.Actions, viewModel: LauncherViewModel = hiltViewModel()) {
@@ -38,7 +38,7 @@ fun Launcher(activityActions: MainActivity.Actions, viewModel: LauncherViewModel
 
     when (state) {
         LauncherState.AccountNeeded -> viewModel.submit(LauncherViewModel.Action.AddAccount)
-        LauncherState.PrimaryExist -> Home(
+        LauncherState.PrimaryExist -> LauncherRouter(
             activityActions = activityActions,
             launcherActions = Launcher.Actions(
                 onPasswordManagement = { viewModel.submit(LauncherViewModel.Action.OpenPasswordManagement) },

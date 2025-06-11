@@ -30,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.feature.lockscreen.LockScreenActivity
 import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailcommon.domain.system.DeviceCapabilities
 import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilitiesProvider
@@ -60,7 +61,6 @@ class MainActivity : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
 
-
         // Register activities for result.
         launcherViewModel.register(this)
 
@@ -79,8 +79,15 @@ class MainActivity : AppCompatActivity() {
                             openInActivityInNewTask = { openInActivityInNewTask(it) },
                             openIntentChooser = { openIntentChooser(it) },
                             openProtonCalendarIntentValues = { handleProtonCalendarRequest(it) },
-                            openSecurityKeys = { launcherViewModel.submit(LauncherViewModel.Action.OpenSecurityKeys) },
-                            finishActivity = { finishAfterTransition() }
+                            openSecurityKeys = {
+                                launcherViewModel.submit(LauncherViewModel.Action.OpenSecurityKeys)
+                            },
+                            finishActivity = { finishAfterTransition() },
+                            onNavigateToPinInsertion = {
+                                val intent = Intent(this, LockScreenActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                startActivity(intent)
+                            }
                         ),
                         launcherViewModel
                     )
@@ -144,6 +151,7 @@ class MainActivity : AppCompatActivity() {
         val openInActivityInNewTask: (uri: Uri) -> Unit,
         val openIntentChooser: (values: OpenAttachmentIntentValues) -> Unit,
         val openProtonCalendarIntentValues: (values: OpenProtonCalendarIntentValues) -> Unit,
+        val onNavigateToPinInsertion: () -> Unit,
         val openSecurityKeys: () -> Unit,
         val finishActivity: () -> Unit
     )
