@@ -1,7 +1,5 @@
 package ch.protonmail.android.maildetail.presentation.ui
 
-import java.time.Duration
-import java.time.Instant
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,8 +16,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
 import ch.protonmail.android.design.compose.component.ProtonBanner
+import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumInverted
@@ -34,9 +32,9 @@ import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiM
 import ch.protonmail.android.maildetail.presentation.util.toFormattedAutoDeleteTime
 import ch.protonmail.android.maildetail.presentation.util.toFormattedExpirationTime
 import kotlinx.coroutines.delay
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.toKotlinDuration
 
 @Composable
 @Suppress("UseComposableActions")
@@ -121,9 +119,8 @@ private fun ScheduleSendBanner(uiModel: ScheduleSendBannerUiModel.SendScheduled,
 @Composable
 private fun AutoDeleteBanner(uiModel: AutoDeleteBannerUiModel.AutoDelete) {
     val context = LocalContext.current
-    val deletesIn = remember {
-        mutableStateOf(Duration.between(Instant.now(), uiModel.deletesAt).toKotlinDuration())
-    }
+    val timeBetweenNowAndDeletion = uiModel.deletesAt - Clock.System.now()
+    val deletesIn = remember { mutableStateOf(timeBetweenNowAndDeletion) }
     val formattedExpiration = deletesIn.value
         .toFormattedAutoDeleteTime(context.resources)
         .joinToString(separator = ", ")
@@ -152,9 +149,8 @@ private fun AutoDeleteBanner(uiModel: AutoDeleteBannerUiModel.AutoDelete) {
 @Composable
 private fun ExpirationBanner(uiModel: ExpirationBannerUiModel.Expiration) {
     val context = LocalContext.current
-    val expiresIn = remember {
-        mutableStateOf(Duration.between(Instant.now(), uiModel.expiresAt).toKotlinDuration())
-    }
+    val timeBetweenNowAndExpiration = uiModel.expiresAt - Clock.System.now()
+    val expiresIn = remember { mutableStateOf(timeBetweenNowAndExpiration) }
     val formattedExpiration = expiresIn.value
         .toFormattedExpirationTime(context.resources)
         .joinToString(separator = ", ")
@@ -214,10 +210,10 @@ fun PreviewMessageBanners() {
                 shouldShowSpamBanner = true,
                 shouldShowBlockedSenderBanner = true,
                 expirationBannerUiModel = ExpirationBannerUiModel.Expiration(
-                    expiresAt = Instant.now()
+                    expiresAt = Clock.System.now()
                 ),
                 autoDeleteBannerUiModel = AutoDeleteBannerUiModel.AutoDelete(
-                    deletesAt = Instant.now()
+                    deletesAt = Clock.System.now()
                 ),
                 scheduleSendBannerUiModel = ScheduleSendBannerUiModel.SendScheduled(
                     sendAt = TextUiModel.Text("tomorrow at 08:00")

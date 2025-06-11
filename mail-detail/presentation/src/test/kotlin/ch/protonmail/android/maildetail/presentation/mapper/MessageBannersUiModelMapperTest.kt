@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
-import java.time.Instant
 import android.content.Context
 import android.content.res.Resources
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -33,7 +32,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlin.time.toKotlinInstant
+import kotlin.time.Instant
 
 class MessageBannersUiModelMapperTest {
 
@@ -119,11 +118,11 @@ class MessageBannersUiModelMapperTest {
 
         // When
         val result = messageBannersUiModelMapper.toUiModel(
-            listOf(MessageBanner.Expiry(Instant.MAX))
+            listOf(MessageBanner.Expiry(Instant.DISTANT_FUTURE))
         )
 
         // Then
-        assertEquals(ExpirationBannerUiModel.Expiration(Instant.MAX), result.expirationBannerUiModel)
+        assertEquals(ExpirationBannerUiModel.Expiration(Instant.DISTANT_FUTURE), result.expirationBannerUiModel)
     }
 
     @Test
@@ -141,12 +140,12 @@ class MessageBannersUiModelMapperTest {
     fun `should map to ui model with auto-delete banner when banners list contains it`() {
         // When
         val result = messageBannersUiModelMapper.toUiModel(
-            listOf(MessageBanner.AutoDelete(Instant.MAX))
+            listOf(MessageBanner.AutoDelete(Instant.DISTANT_FUTURE))
         )
 
         // Then
         assertEquals(
-            AutoDeleteBannerUiModel.AutoDelete(Instant.MAX),
+            AutoDeleteBannerUiModel.AutoDelete(Instant.DISTANT_FUTURE),
             result.autoDeleteBannerUiModel
         )
     }
@@ -166,11 +165,11 @@ class MessageBannersUiModelMapperTest {
     fun `should map to ui model with schedule-send banner when banners list contains it`() {
         // Given
         val expected = TextUiModel.Text("in the far future")
-        every { formatScheduleSendTime(Instant.MAX.toKotlinInstant()) } returns expected
+        every { formatScheduleSendTime(Instant.DISTANT_FUTURE) } returns expected
 
         // When
         val result = messageBannersUiModelMapper.toUiModel(
-            listOf(MessageBanner.ScheduledSend(Instant.MAX))
+            listOf(MessageBanner.ScheduledSend(Instant.DISTANT_FUTURE))
         )
 
         // Then

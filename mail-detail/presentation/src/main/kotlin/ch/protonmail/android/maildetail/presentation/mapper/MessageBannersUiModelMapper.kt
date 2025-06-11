@@ -27,7 +27,6 @@ import ch.protonmail.android.maildetail.presentation.usecase.FormatScheduleSendT
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import kotlin.time.toKotlinInstant
 
 class MessageBannersUiModelMapper @Inject constructor(
     @ApplicationContext val context: Context,
@@ -57,7 +56,7 @@ class MessageBannersUiModelMapper @Inject constructor(
 
     private fun toScheduleSendBannerUiModel(messageBanners: List<MessageBanner>): ScheduleSendBannerUiModel {
         return messageBanners.filterIsInstance<MessageBanner.ScheduledSend>().firstOrNull()?.let {
-            ScheduleSendBannerUiModel.SendScheduled(sendAt = formatScheduleSendTime(it.scheduledAt.toKotlinInstant()))
+            ScheduleSendBannerUiModel.SendScheduled(sendAt = formatScheduleSendTime(it.scheduledAt))
         } ?: ScheduleSendBannerUiModel.NoScheduleSend
     }
 }

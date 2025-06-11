@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmessage.data.mapper
 
-import java.time.Instant
 import android.os.Build
 import arrow.core.Either
 import arrow.core.left
@@ -71,6 +70,7 @@ import uniffi.proton_mail_uniffi.MessageRecipient
 import uniffi.proton_mail_uniffi.MessageSender
 import uniffi.proton_mail_uniffi.ThemeOpts
 import uniffi.proton_mail_uniffi.TransformOpts
+import kotlin.time.Instant
 import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId as RustRemoteMessageId
 
 fun LocalAvatarInformation.toAvatarInformation(): AvatarInformation {
@@ -221,7 +221,7 @@ fun MailTheme.toMessageTheme(): MessageTheme {
 }
 
 private fun LocalMessageBanner.toMessageBanner(): MessageBanner {
-    fun ULong.toInstant() = Instant.ofEpochSecond(this.toLong())
+    fun ULong.toInstant() = Instant.fromEpochSeconds(this.toLong())
 
     return when (this) {
         is LocalMessageBannerAutoDelete -> MessageBanner.AutoDelete(timestamp.toInstant())

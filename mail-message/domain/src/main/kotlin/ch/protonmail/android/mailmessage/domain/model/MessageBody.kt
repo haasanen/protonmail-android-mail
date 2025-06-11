@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmessage.domain.model
 
-import java.time.Instant
+import kotlin.time.Instant
 
 data class MessageBody(
     val messageId: MessageId,
@@ -41,18 +41,18 @@ enum class MimeType(val value: String) {
 }
 
 sealed interface MessageBanner {
-    object BlockedSender : MessageBanner
-    object PhishingAttempt : MessageBanner
-    object Spam : MessageBanner
+    data object BlockedSender : MessageBanner
+    data object PhishingAttempt : MessageBanner
+    data object Spam : MessageBanner
 
     data class Expiry(val expiresAt: Instant) : MessageBanner
     data class AutoDelete(val deletesAt: Instant) : MessageBanner
 
-    object UnsubscribeNewsletter : MessageBanner
+    data object UnsubscribeNewsletter : MessageBanner
 
     data class ScheduledSend(val scheduledAt: Instant) : MessageBanner
     data class Snoozed(val snoozedUntil: Instant) : MessageBanner
 
-    object EmbeddedImages : MessageBanner
-    object RemoteContent : MessageBanner
+    data object EmbeddedImages : MessageBanner
+    data object RemoteContent : MessageBanner
 }

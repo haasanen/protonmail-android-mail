@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.maildetail.presentation.model
 
-import java.time.Instant
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import kotlin.time.Instant
 
 data class MessageBannersUiModel(
     val shouldShowPhishingBanner: Boolean,
