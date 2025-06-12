@@ -203,9 +203,12 @@ fun ProtonBannerWithButton(
     bannerText: AnnotatedString,
     buttonText: String,
     @DrawableRes icon: Int,
-    onButtonClicked: () -> Unit
+    onButtonClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false
 ) {
     ProtonBanner(
+        modifier = modifier,
         icon = icon,
         iconTint = ProtonTheme.colors.iconWeak,
         iconSize = ProtonDimens.IconSize.Medium,
@@ -218,6 +221,7 @@ fun ProtonBannerWithButton(
             ProtonButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { onButtonClicked() },
+                enabled = isLoading.not(),
                 colors = ButtonDefaults.buttonColors().copy(
                     containerColor = ProtonTheme.colors.interactionWeakNorm,
                     contentColor = ProtonTheme.colors.textNorm
@@ -230,10 +234,14 @@ fun ProtonBannerWithButton(
                     vertical = ProtonDimens.Spacing.Medium
                 )
             ) {
-                Text(
-                    text = buttonText,
-                    style = ProtonTheme.typography.bodyMediumNorm
-                )
+                if (isLoading) {
+                    ProtonCenteredProgress(modifier = Modifier.size(ProtonDimens.IconSize.Medium))
+                } else {
+                    Text(
+                        text = buttonText,
+                        style = ProtonTheme.typography.bodyMediumNorm
+                    )
+                }
             }
         }
     }

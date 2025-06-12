@@ -349,15 +349,16 @@ class ConversationDetailViewModel @Inject constructor(
                 handleMarkMessageAsLegitimateConfirmed(action)
 
             is ConversationDetailViewAction.UnblockSender -> handleUnblockSender(action.messageId, action.email)
-            is ConversationDetailViewAction.EditScheduleSendMessage -> handleEditScheduleSendMessage(action.messageId)
+            is ConversationDetailViewAction.EditScheduleSendMessage -> handleEditScheduleSendMessage(action)
         }
     }
 
-    private fun handleEditScheduleSendMessage(messageId: MessageIdUiModel) {
+    private fun handleEditScheduleSendMessage(action: ConversationDetailViewAction.EditScheduleSendMessage) {
         viewModelScope.launch {
-            cancelScheduleSendMessage(primaryUserId.first(), MessageId(messageId.id))
+            emitNewStateFrom(action)
+            cancelScheduleSendMessage(primaryUserId.first(), MessageId(action.messageId.id))
                 .onLeft { Timber.w("cancel-schedule-send failed $it") }
-                .onRight { emitNewStateFrom(ConversationDetailEvent.ScheduleSendCancelled(messageId)) }
+                .onRight { emitNewStateFrom(ConversationDetailEvent.ScheduleSendCancelled(action.messageId)) }
         }
     }
 

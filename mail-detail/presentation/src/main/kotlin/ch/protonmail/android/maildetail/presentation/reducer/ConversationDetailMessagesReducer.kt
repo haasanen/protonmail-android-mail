@@ -23,10 +23,10 @@ import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState.Data
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState.Error
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
+import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
 import kotlinx.collections.immutable.toImmutableList
@@ -41,11 +41,14 @@ class ConversationDetailMessagesReducer @Inject constructor() {
         operation: ConversationDetailOperation.AffectingMessages
     ): ConversationDetailsMessagesState = when (operation) {
 
-        is ConversationDetailEvent.ErrorLoadingMessages -> Error(
+        is ConversationDetailEvent.ErrorLoadingMessages -> ConversationDetailsMessagesState.Error(
             message = TextUiModel(string.detail_error_loading_messages)
         )
 
-        is ConversationDetailEvent.MessagesData -> Data(messages = operation.messagesUiModels)
+        is ConversationDetailEvent.MessagesData -> ConversationDetailsMessagesState.Data(
+            messages = operation.messagesUiModels
+        )
+
         is ConversationDetailEvent.NoNetworkError -> currentState.toNewStateForNoNetworkError()
         is ConversationDetailEvent.ErrorLoadingConversation -> currentState.toNewStateForErrorLoadingConversation()
         is ConversationDetailEvent.CollapseDecryptedMessage ->
@@ -90,6 +93,47 @@ class ConversationDetailMessagesReducer @Inject constructor() {
                 operation.expandCollapseMode
             )
 
+        is ConversationDetailViewAction.EditScheduleSendMessage -> currentState.toNewStateForEditScheduleSend(operation)
+    }
+
+    private fun ConversationDetailsMessagesState.toNewStateForEditScheduleSend(
+        action: ConversationDetailViewAction.EditScheduleSendMessage
+    ) = when (this) {
+        is ConversationDetailsMessagesState.Data -> {
+            val message = this.messages
+                .filterIsInstance<ConversationDetailMessageUiModel.Expanded>()
+                .firstOrNull { it.messageId == action.messageId }
+
+            when (message) {
+                null -> this
+                else -> {
+                    when (val scheduleBanner = message.messageBannersUiModel.scheduleSendBannerUiModel) {
+                        is ScheduleSendBannerUiModel.NoScheduleSend -> this
+                        is ScheduleSendBannerUiModel.SendScheduled -> {
+                            val updatedMessageState = message.copy(
+                                messageBannersUiModel = message.messageBannersUiModel.copy(
+                                    scheduleSendBannerUiModel = scheduleBanner.copy(isScheduleBeingCancelled = true)
+                                )
+                            )
+                            val updatedMessages = this.messages.map {
+                                if (it.messageId == action.messageId) {
+                                    updatedMessageState
+                                } else {
+                                    it
+                                }
+                            }.toImmutableList()
+
+                            this.copy(messages = updatedMessages)
+                        }
+                    }
+                }
+            }
+
+        }
+
+        is ConversationDetailsMessagesState.Error,
+        ConversationDetailsMessagesState.Loading,
+        ConversationDetailsMessagesState.Offline -> this
     }
 
     private fun ConversationDetailsMessagesState.toNewStateForNoNetworkError() = when (this) {

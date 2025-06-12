@@ -145,6 +145,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
+import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
@@ -331,6 +332,8 @@ class ConversationDetailViewModelIntegrationTest {
     )
 
     private val getMessagesInSameExclusiveLocation = mockk<GetMessagesInSameExclusiveLocation>()
+
+    private val cancelScheduleSendMessage = mockk<CancelScheduleSendMessage>()
     // endregion
 
     // region mappers
@@ -2238,7 +2241,8 @@ class ConversationDetailViewModelIntegrationTest {
         observeAvatarImageStates = observeAvatarImgStates,
         getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
         markMessageAsLegitimate = markMessageAsLegitimate,
-        unblockSender = unblockSender
+        unblockSender = unblockSender,
+        cancelScheduleSendMessage = cancelScheduleSendMessage
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(

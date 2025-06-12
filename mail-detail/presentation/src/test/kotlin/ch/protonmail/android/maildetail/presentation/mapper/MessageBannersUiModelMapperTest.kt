@@ -174,7 +174,7 @@ class MessageBannersUiModelMapperTest {
 
         // Then
         assertEquals(
-            ScheduleSendBannerUiModel.SendScheduled(expected),
+            ScheduleSendBannerUiModel.SendScheduled(expected, false),
             result.scheduleSendBannerUiModel
         )
     }

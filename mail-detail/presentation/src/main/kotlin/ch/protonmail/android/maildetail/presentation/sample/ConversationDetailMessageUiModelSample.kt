@@ -172,6 +172,33 @@ object ConversationDetailMessageUiModelSample {
         messageBodyUiModel = MessageDetailBodyUiModelSample.withAllowedContent
     )
 
+    val InvoiceExpendedWithScheduleSendBanner = buildExpanded(
+        message = MessageSample.Invoice,
+        messageBodyUiModel = MessageDetailBodyUiModelSample.build(
+            messageBody = "Invoice Scheduled to be sent"
+        ),
+        bannersUiModel = messageBannersUiModel(
+            ScheduleSendBannerUiModel.SendScheduled(
+                TextUiModel.Text("tomorrow at 08"),
+                isScheduleBeingCancelled = false
+            )
+        )
+    )
+
+    @Suppress("VariableMaxLength")
+    val InvoiceExpendedWithScheduleSendCancellingBanner = buildExpanded(
+        message = MessageSample.Invoice,
+        messageBodyUiModel = MessageDetailBodyUiModelSample.build(
+            messageBody = "Invoice Scheduled to be sent"
+        ),
+        bannersUiModel = messageBannersUiModel(
+            ScheduleSendBannerUiModel.SendScheduled(
+                TextUiModel.Text("tomorrow at 08"),
+                isScheduleBeingCancelled = true
+            )
+        )
+    )
+
     fun invoiceExpandedWithAttachments(limit: Int) = buildExpanded(
         message = MessageSample.Invoice,
         messageBodyUiModel = MessageDetailBodyUiModelSample.build(
@@ -232,7 +259,8 @@ object ConversationDetailMessageUiModelSample {
         ),
         isStarred: Boolean = false,
         messageBodyUiModel: MessageBodyUiModel = MessageDetailBodyUiModelSample.build(UUID.randomUUID().toString()),
-        locationUiModel: MessageLocationUiModel = MessageLocationUiModelSample.AllMail
+        locationUiModel: MessageLocationUiModel = MessageLocationUiModelSample.AllMail,
+        bannersUiModel: MessageBannersUiModel = messageBannersUiModel()
     ): ConversationDetailMessageUiModel.Expanded = ConversationDetailMessageUiModel.Expanded(
         messageId = MessageIdUiModel(message.messageId.id),
         isUnread = message.isUnread,
@@ -258,16 +286,20 @@ object ConversationDetailMessageUiModelSample {
             messageId = MessageIdUiModel(message.messageId.id),
             shouldShowReplyAll = false
         ),
-        messageBannersUiModel = MessageBannersUiModel(
-            shouldShowPhishingBanner = true,
-            shouldShowSpamBanner = false,
-            shouldShowBlockedSenderBanner = false,
-            expirationBannerUiModel = ExpirationBannerUiModel.NoExpiration,
-            autoDeleteBannerUiModel = AutoDeleteBannerUiModel.NoAutoDelete,
-            scheduleSendBannerUiModel = ScheduleSendBannerUiModel.NoScheduleSend
-        ),
+        messageBannersUiModel = bannersUiModel,
         messageBodyUiModel = messageBodyUiModel,
         requestPhishingLinkConfirmation = false
+    )
+
+    private fun messageBannersUiModel(
+        scheduleSendBannerUiModel: ScheduleSendBannerUiModel = ScheduleSendBannerUiModel.NoScheduleSend
+    ) = MessageBannersUiModel(
+        shouldShowPhishingBanner = true,
+        shouldShowSpamBanner = false,
+        shouldShowBlockedSenderBanner = false,
+        expirationBannerUiModel = ExpirationBannerUiModel.NoExpiration,
+        autoDeleteBannerUiModel = AutoDeleteBannerUiModel.NoAutoDelete,
+        scheduleSendBannerUiModel = scheduleSendBannerUiModel
     )
 
     private fun buildExpanding(

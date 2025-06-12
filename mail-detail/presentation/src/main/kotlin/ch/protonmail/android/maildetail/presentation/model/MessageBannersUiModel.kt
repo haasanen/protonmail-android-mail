@@ -46,5 +46,8 @@ sealed class AutoDeleteBannerUiModel {
 
 sealed class ScheduleSendBannerUiModel {
     data object NoScheduleSend : ScheduleSendBannerUiModel()
-    data class SendScheduled(val sendAt: TextUiModel) : ScheduleSendBannerUiModel()
+    data class SendScheduled(
+        val sendAt: TextUiModel,
+        val isScheduleBeingCancelled: Boolean
+    ) : ScheduleSendBannerUiModel()
 }

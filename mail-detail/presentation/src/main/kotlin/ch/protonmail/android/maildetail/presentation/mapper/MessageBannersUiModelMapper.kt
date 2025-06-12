@@ -56,7 +56,10 @@ class MessageBannersUiModelMapper @Inject constructor(
 
     private fun toScheduleSendBannerUiModel(messageBanners: List<MessageBanner>): ScheduleSendBannerUiModel {
         return messageBanners.filterIsInstance<MessageBanner.ScheduledSend>().firstOrNull()?.let {
-            ScheduleSendBannerUiModel.SendScheduled(sendAt = formatScheduleSendTime(it.scheduledAt))
+            ScheduleSendBannerUiModel.SendScheduled(
+                sendAt = formatScheduleSendTime(it.scheduledAt),
+                isScheduleBeingCancelled = false
+            )
         } ?: ScheduleSendBannerUiModel.NoScheduleSend
     }
 }

@@ -111,7 +111,8 @@ private fun ScheduleSendBanner(uiModel: ScheduleSendBannerUiModel.SendScheduled,
         bannerText = bannerText,
         buttonText = stringResource(R.string.schedule_message_edit_message_button),
         icon = R.drawable.ic_proton_clock_paper_plane,
-        onButtonClicked = onCancelScheduleMessage
+        onButtonClicked = onCancelScheduleMessage,
+        isLoading = uiModel.isScheduleBeingCancelled
     )
 }
 
@@ -216,7 +217,8 @@ fun PreviewMessageBanners() {
                     deletesAt = Clock.System.now()
                 ),
                 scheduleSendBannerUiModel = ScheduleSendBannerUiModel.SendScheduled(
-                    sendAt = TextUiModel.Text("tomorrow at 08:00")
+                    sendAt = TextUiModel.Text("tomorrow at 08:00"),
+                    isScheduleBeingCancelled = false
                 )
             ),
             onMarkMessageAsLegitimate = {},

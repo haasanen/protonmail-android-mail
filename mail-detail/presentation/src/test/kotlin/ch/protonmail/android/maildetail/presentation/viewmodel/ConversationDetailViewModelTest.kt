@@ -104,6 +104,7 @@ import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
+import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
@@ -304,6 +305,7 @@ class ConversationDetailViewModelTest {
     private val getMessagesInSameExclusiveLocation = mockk<GetMessagesInSameExclusiveLocation>()
     private val markMessageAsLegitimate = mockk<MarkMessageAsLegitimate>()
     private val unblockSender = mockk<UnblockSender>()
+    private val cancelScheduleSendMessage = mockk<CancelScheduleSendMessage>()
 
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
@@ -351,7 +353,8 @@ class ConversationDetailViewModelTest {
             observeAvatarImageStates = observeAvatarImageStates,
             getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
             markMessageAsLegitimate = markMessageAsLegitimate,
-            unblockSender = unblockSender
+            unblockSender = unblockSender,
+            cancelScheduleSendMessage = cancelScheduleSendMessage
         )
     }
 
