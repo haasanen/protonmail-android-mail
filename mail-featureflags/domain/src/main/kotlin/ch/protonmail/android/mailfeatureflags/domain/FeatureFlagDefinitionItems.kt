@@ -50,5 +50,5 @@ data object ScheduledSendEnabled : FeatureFlagDefinition(
     name = "Schedule send",
     category = FeatureFlagCategory.Composer,
     description = "Allow to schedule messages for sending at a later time",
-    defaultValue = false
+    defaultValue = true
 )
