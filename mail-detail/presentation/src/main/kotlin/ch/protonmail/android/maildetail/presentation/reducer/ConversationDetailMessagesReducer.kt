@@ -93,7 +93,7 @@ class ConversationDetailMessagesReducer @Inject constructor() {
                 operation.expandCollapseMode
             )
 
-        is ConversationDetailViewAction.EditScheduleSendMessage -> currentState.toNewStateForEditScheduleSend(
+        is ConversationDetailViewAction.EditScheduleSendMessageConfirmed -> currentState.toNewStateForEditScheduleSend(
             messageId = operation.messageId,
             isScheduleBeingCancelled = true
         )

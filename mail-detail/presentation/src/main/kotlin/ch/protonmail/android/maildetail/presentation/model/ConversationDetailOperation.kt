@@ -324,6 +324,6 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
 
     data class UnblockSender(val messageId: MessageIdUiModel, val email: String) : ConversationDetailViewAction
 
-    data class EditScheduleSendMessage(val messageId: MessageIdUiModel) :
+    data class EditScheduleSendMessageConfirmed(val messageId: MessageIdUiModel) :
         ConversationDetailViewAction, AffectingMessages
 }

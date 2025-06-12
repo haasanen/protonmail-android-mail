@@ -494,7 +494,7 @@ fun ConversationDetailScreen(
                     viewModel.submit(ConversationDetailViewAction.UnblockSender(messageId, email))
                 },
                 onEditScheduleSendMessage = { messageId ->
-                    viewModel.submit(ConversationDetailViewAction.EditScheduleSendMessage(messageId))
+                    viewModel.submit(ConversationDetailViewAction.EditScheduleSendMessageConfirmed(messageId))
                 },
                 onExitWithOpenInComposer = {
                     actions.onExitWithOpenInComposer(MessageId(it.id))

@@ -257,7 +257,7 @@ class ConversationDetailMessagesReducerTest(
                         ConversationDetailMessageUiModelSample.InvoiceExpendedWithScheduleSendBanner
                     ).toImmutableList()
                 ),
-                operation = ConversationDetailViewAction.EditScheduleSendMessage(
+                operation = ConversationDetailViewAction.EditScheduleSendMessageConfirmed(
                     ConversationDetailMessageUiModelSample.InvoiceExpendedWithScheduleSendBanner.messageId
                 ),
                 expectedState = ConversationDetailsMessagesState.Data(

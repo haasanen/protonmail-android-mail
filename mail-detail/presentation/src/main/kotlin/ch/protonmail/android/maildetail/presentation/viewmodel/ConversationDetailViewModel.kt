@@ -349,11 +349,11 @@ class ConversationDetailViewModel @Inject constructor(
                 handleMarkMessageAsLegitimateConfirmed(action)
 
             is ConversationDetailViewAction.UnblockSender -> handleUnblockSender(action.messageId, action.email)
-            is ConversationDetailViewAction.EditScheduleSendMessage -> handleEditScheduleSendMessage(action)
+            is ConversationDetailViewAction.EditScheduleSendMessageConfirmed -> handleEditScheduleSendMessage(action)
         }
     }
 
-    private fun handleEditScheduleSendMessage(action: ConversationDetailViewAction.EditScheduleSendMessage) {
+    private fun handleEditScheduleSendMessage(action: ConversationDetailViewAction.EditScheduleSendMessageConfirmed) {
         viewModelScope.launch {
             emitNewStateFrom(action)
             cancelScheduleSendMessage(primaryUserId.first(), MessageId(action.messageId.id))
