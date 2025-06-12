@@ -21,21 +21,29 @@ package ch.protonmail.android.maildetail.presentation.ui.footer
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailFooterUiModel
 import ch.protonmail.android.maildetail.presentation.previewdata.MessageDetailFooterPreview
@@ -43,9 +51,6 @@ import ch.protonmail.android.maildetail.presentation.previewdata.MessageDetailFo
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailItem
 import ch.protonmail.android.maildetail.presentation.ui.MessageBodyTestTags
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodySmallNorm
 
 @Composable
 fun MessageDetailFooter(
@@ -57,7 +62,7 @@ fun MessageDetailFooter(
         modifier = modifier
             .testTag(MessageBodyTestTags.MessageActionsRootItem)
             .fillMaxWidth()
-            .padding(ProtonDimens.Spacing.Standard),
+            .padding(ProtonDimens.Spacing.Large),
         horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Standard)
     ) {
         MessageActionButton(
@@ -100,20 +105,26 @@ private fun MessageActionButton(
 ) {
     Button(
         modifier = modifier.fillMaxWidth(),
-        shape = ProtonTheme.shapes.extraLarge,
+        shape = ProtonTheme.shapes.huge,
         colors = ButtonDefaults.buttonColors().copy(containerColor = ProtonTheme.colors.interactionWeakNorm),
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
+        contentPadding = PaddingValues(horizontal = ProtonDimens.Spacing.Standard),
         onClick = { onClick() }
     ) {
         Icon(
-            modifier = Modifier.padding(end = ProtonDimens.Spacing.Small),
             painter = painterResource(id = iconResource),
             tint = ProtonTheme.colors.iconNorm,
             contentDescription = null
         )
-        Text(
+
+        Spacer(Modifier.width(ProtonDimens.Spacing.Standard))
+
+        BasicText(
             text = stringResource(textResource),
-            style = ProtonTheme.typography.bodySmallNorm
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+            autoSize = TextAutoSize.StepBased(maxFontSize = ProtonTheme.typography.bodyMediumNorm.fontSize),
+            style = ProtonTheme.typography.bodyMediumNorm
         )
     }
 }
