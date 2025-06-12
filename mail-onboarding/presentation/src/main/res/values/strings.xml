@@ -37,7 +37,7 @@
     <!--  New Onboarding 3  -->
     <string name="onboarding_feedback_title">Thank you for your participation!</string>
     <string name="onboarding_feedback_headline">Your feedback is key</string>
-    <string name="onboarding_feedback_description">We\'ll be rolling out new features in the coming months. Please test the app and tap "Report a problem" to let us know how we can keep improving. Your input is invaluable!</string>
+    <string name="onboarding_feedback_description">We\'ll be rolling out new features in the coming months. Please test the app and tap \"Report a problem\" to let us know how we can keep improving. Your input is invaluable!</string>
     <!--  Onboarding actions  -->
     <string name="onboarding_next">Next</string>
     <string name="onboarding_get_started">Start testing</string>

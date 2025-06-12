@@ -68,6 +68,10 @@ internal fun OnboardingButton(
         val positiveButtonTextId =
             if (pagerState.currentPage == viewCount.minus(1)) R.string.onboarding_get_started
             else R.string.onboarding_next
-        Text(text = stringResource(id = positiveButtonTextId))
+        Text(
+            text = stringResource(id = positiveButtonTextId),
+            style = ProtonTheme.typography.titleSmall,
+            color = ProtonTheme.colors.textInverted
+        )
     }
 }
