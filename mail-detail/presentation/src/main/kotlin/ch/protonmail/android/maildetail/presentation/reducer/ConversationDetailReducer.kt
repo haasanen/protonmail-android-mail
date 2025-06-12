@@ -52,6 +52,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOpe
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
+import ch.protonmail.android.maildetail.presentation.model.EditScheduledMessageDialogState
 import ch.protonmail.android.maildetail.presentation.model.MarkAsLegitimateDialogState
 import ch.protonmail.android.maildetail.presentation.model.MessageBodyLink
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
@@ -69,6 +70,7 @@ class ConversationDetailReducer @Inject constructor(
     private val reportPhishingDialogReducer: ConversationReportPhishingDialogReducer,
     private val trashedMessagesBannerReducer: TrashedMessagesBannerReducer,
     private val markAsLegitimateDialogReducer: MarkAsLegitimateDialogReducer,
+    private val editScheduledMessageDialogReducer: EditScheduledMessageDialogReducer,
     private val actionResultMapper: ActionResultMapper
 ) {
 
@@ -93,8 +95,19 @@ class ConversationDetailReducer @Inject constructor(
             conversationDeleteState = currentState.toNewDeleteDialogState(operation),
             reportPhishingDialogState = currentState.toNewReportPhishingDialogState(operation),
             trashedMessagesBannerState = currentState.toNewTrashedMessagesBannerState(operation),
-            markAsLegitimateDialogState = currentState.toNewMarkAsLegitimateDialogState(operation)
+            markAsLegitimateDialogState = currentState.toNewMarkAsLegitimateDialogState(operation),
+            editScheduledMessageDialogState = currentState.toNewEditScheduleMessageDialogState(operation)
         )
+    }
+
+    private fun ConversationDetailState.toNewEditScheduleMessageDialogState(
+        operation: ConversationDetailOperation
+    ): EditScheduledMessageDialogState {
+        return if (operation is ConversationDetailOperation.AffectingEditScheduleMessageDialog) {
+            editScheduledMessageDialogReducer.newStateFrom(operation)
+        } else {
+            editScheduledMessageDialogState
+        }
     }
 
     private fun ConversationDetailState.toOpenComposerEffectState(

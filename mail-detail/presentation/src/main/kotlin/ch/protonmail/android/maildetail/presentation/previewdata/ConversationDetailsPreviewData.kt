@@ -33,6 +33,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteSta
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
+import ch.protonmail.android.maildetail.presentation.model.EditScheduledMessageDialogState
 import ch.protonmail.android.maildetail.presentation.model.MarkAsLegitimateDialogState
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
@@ -92,7 +93,8 @@ object ConversationDetailsPreviewData {
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
         trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
-        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden
+        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
+        editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
     )
 
     val SuccessWithRandomMessageIds = ConversationDetailState(
@@ -146,7 +148,8 @@ object ConversationDetailsPreviewData {
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
         trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
-        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden
+        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
+        editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
     )
 
     val FailedLoadingConversation = ConversationDetailState(
@@ -167,7 +170,8 @@ object ConversationDetailsPreviewData {
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
         trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
-        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden
+        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
+        editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
     )
 
     val FailedLoadingMessages = ConversationDetailState(
@@ -188,7 +192,8 @@ object ConversationDetailsPreviewData {
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
         trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
-        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden
+        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
+        editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
     )
 
     val FailedLoadingBottomBar = ConversationDetailState(
@@ -209,7 +214,8 @@ object ConversationDetailsPreviewData {
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
         trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
-        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden
+        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
+        editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
     )
 
     val Loading = ConversationDetailState(
@@ -230,7 +236,8 @@ object ConversationDetailsPreviewData {
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
         trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
-        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden
+        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
+        editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
     )
 
     val NotLoggedIn = ConversationDetailState(
@@ -251,7 +258,8 @@ object ConversationDetailsPreviewData {
         conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
         trashedMessagesBannerState = TrashedMessagesBannerState.Hidden,
-        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden
+        markAsLegitimateDialogState = MarkAsLegitimateDialogState.Hidden,
+        editScheduledMessageDialogState = EditScheduledMessageDialogState.Hidden
     )
 }
 

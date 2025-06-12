@@ -105,6 +105,7 @@ import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
 import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDetailsPreviewProvider
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.scrollOffsetDp
+import ch.protonmail.android.maildetail.presentation.ui.dialog.EditScheduleSendDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.MarkAsLegitimateDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.ReportPhishingDialog
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationDetailViewModel
@@ -211,6 +212,13 @@ fun ConversationDetailScreen(
         onConfirm = { viewModel.submit(ConversationDetailViewAction.MarkMessageAsLegitimateConfirmed(it)) },
         onDismiss = { viewModel.submit(ConversationDetailViewAction.MarkMessageAsLegitimateDismissed) }
     )
+
+    EditScheduleSendDialog(
+        state = state.editScheduledMessageDialogState,
+        onConfirm = { viewModel.submit(ConversationDetailViewAction.EditScheduleSendMessageConfirmed(it)) },
+        onDismiss = { viewModel.submit(ConversationDetailViewAction.EditScheduleSendMessageDismissed) }
+    )
+
 
     ProtonModalBottomSheetLayout(
         showBottomSheet = showBottomSheet,
@@ -494,7 +502,7 @@ fun ConversationDetailScreen(
                     viewModel.submit(ConversationDetailViewAction.UnblockSender(messageId, email))
                 },
                 onEditScheduleSendMessage = { messageId ->
-                    viewModel.submit(ConversationDetailViewAction.EditScheduleSendMessageConfirmed(messageId))
+                    viewModel.submit(ConversationDetailViewAction.EditScheduleSendMessageRequested(messageId))
                 },
                 onExitWithOpenInComposer = {
                     actions.onExitWithOpenInComposer(MessageId(it.id))

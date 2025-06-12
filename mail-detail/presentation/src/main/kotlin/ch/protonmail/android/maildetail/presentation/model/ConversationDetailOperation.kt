@@ -30,6 +30,7 @@ import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingBottomSheet
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingConversation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingDeleteDialog
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingEditScheduleMessageDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingErrorBar
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingMarkAsLegitimateDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingMessageBar
@@ -58,6 +59,7 @@ sealed interface ConversationDetailOperation {
     sealed interface AffectingReportPhishingDialog
     sealed interface AffectingTrashedMessagesBanner
     sealed interface AffectingMarkAsLegitimateDialog
+    sealed interface AffectingEditScheduleMessageDialog
 }
 
 sealed interface ConversationDetailEvent : ConversationDetailOperation {
@@ -324,6 +326,11 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
 
     data class UnblockSender(val messageId: MessageIdUiModel, val email: String) : ConversationDetailViewAction
 
+    data object EditScheduleSendMessageDismissed :
+        ConversationDetailViewAction, AffectingEditScheduleMessageDialog
     data class EditScheduleSendMessageConfirmed(val messageId: MessageIdUiModel) :
-        ConversationDetailViewAction, AffectingMessages
+        ConversationDetailViewAction, AffectingMessages, AffectingEditScheduleMessageDialog
+
+    data class EditScheduleSendMessageRequested(val messageId: MessageIdUiModel) :
+        ConversationDetailViewAction, AffectingEditScheduleMessageDialog
 }

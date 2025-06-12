@@ -310,7 +310,9 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.ReportPhishing,
             is ConversationDetailViewAction.ReportPhishingDismissed,
             is ConversationDetailViewAction.MarkMessageAsLegitimate,
-            is ConversationDetailViewAction.MarkMessageAsLegitimateDismissed -> directlyHandleViewAction(action)
+            is ConversationDetailViewAction.MarkMessageAsLegitimateDismissed,
+            is ConversationDetailViewAction.EditScheduleSendMessageDismissed,
+            is ConversationDetailViewAction.EditScheduleSendMessageRequested -> directlyHandleViewAction(action)
 
             is ConversationDetailViewAction.SwitchViewMode -> handleSwitchViewMode(action)
 

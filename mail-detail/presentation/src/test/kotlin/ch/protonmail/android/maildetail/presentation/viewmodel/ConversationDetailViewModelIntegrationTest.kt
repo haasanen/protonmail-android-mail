@@ -120,6 +120,7 @@ import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailM
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailMetadataReducer
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailReducer
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationReportPhishingDialogReducer
+import ch.protonmail.android.maildetail.presentation.reducer.EditScheduledMessageDialogReducer
 import ch.protonmail.android.maildetail.presentation.reducer.MarkAsLegitimateDialogReducer
 import ch.protonmail.android.maildetail.presentation.reducer.TrashedMessagesBannerReducer
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
@@ -407,6 +408,7 @@ class ConversationDetailViewModelIntegrationTest {
         reportPhishingDialogReducer = ConversationReportPhishingDialogReducer(),
         trashedMessagesBannerReducer = TrashedMessagesBannerReducer(),
         markAsLegitimateDialogReducer = MarkAsLegitimateDialogReducer(),
+        editScheduledMessageDialogReducer = EditScheduledMessageDialogReducer(),
         actionResultMapper = ActionResultMapper(mailLabelTextMapper)
     )
 

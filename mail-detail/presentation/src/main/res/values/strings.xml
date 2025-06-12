@@ -127,4 +127,8 @@
     <string name="schedule_send_tomorrow">tomorrow at %1$s</string>
     <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
     <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
+    <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
+    <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
+    <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
+    <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
 </resources>
