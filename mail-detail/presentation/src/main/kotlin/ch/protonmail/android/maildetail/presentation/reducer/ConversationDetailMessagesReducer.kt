@@ -93,16 +93,30 @@ class ConversationDetailMessagesReducer @Inject constructor() {
                 operation.expandCollapseMode
             )
 
-        is ConversationDetailViewAction.EditScheduleSendMessage -> currentState.toNewStateForEditScheduleSend(operation)
+        is ConversationDetailViewAction.EditScheduleSendMessage -> currentState.toNewStateForEditScheduleSend(
+            messageId = operation.messageId,
+            isScheduleBeingCancelled = true
+        )
+
+        is ConversationDetailEvent.ErrorCancellingScheduleSend ->
+            currentState.toNewStateForEditScheduleSend(operation.messageId, isScheduleBeingCancelled = false)
+
+        is ConversationDetailEvent.OfflineErrorCancellingScheduleSend ->
+            currentState.toNewStateForEditScheduleSend(operation.messageId, isScheduleBeingCancelled = false)
     }
 
     private fun ConversationDetailsMessagesState.toNewStateForEditScheduleSend(
-        action: ConversationDetailViewAction.EditScheduleSendMessage
+        messageId: MessageIdUiModel,
+        isScheduleBeingCancelled: Boolean
     ) = when (this) {
+        is ConversationDetailsMessagesState.Error,
+        is ConversationDetailsMessagesState.Loading,
+        is ConversationDetailsMessagesState.Offline -> this
+
         is ConversationDetailsMessagesState.Data -> {
             val message = this.messages
                 .filterIsInstance<ConversationDetailMessageUiModel.Expanded>()
-                .firstOrNull { it.messageId == action.messageId }
+                .firstOrNull { it.messageId == messageId }
 
             when (message) {
                 null -> this
@@ -112,11 +126,13 @@ class ConversationDetailMessagesReducer @Inject constructor() {
                         is ScheduleSendBannerUiModel.SendScheduled -> {
                             val updatedMessageState = message.copy(
                                 messageBannersUiModel = message.messageBannersUiModel.copy(
-                                    scheduleSendBannerUiModel = scheduleBanner.copy(isScheduleBeingCancelled = true)
+                                    scheduleSendBannerUiModel = scheduleBanner.copy(
+                                        isScheduleBeingCancelled = isScheduleBeingCancelled
+                                    )
                                 )
                             )
                             val updatedMessages = this.messages.map {
-                                if (it.messageId == action.messageId) {
+                                if (it.messageId == messageId) {
                                     updatedMessageState
                                 } else {
                                     it
@@ -130,10 +146,6 @@ class ConversationDetailMessagesReducer @Inject constructor() {
             }
 
         }
-
-        is ConversationDetailsMessagesState.Error,
-        ConversationDetailsMessagesState.Loading,
-        ConversationDetailsMessagesState.Offline -> this
     }
 
     private fun ConversationDetailsMessagesState.toNewStateForNoNetworkError() = when (this) {

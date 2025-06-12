@@ -265,6 +265,22 @@ class ConversationDetailMessagesReducerTest(
                         ConversationDetailMessageUiModelSample.InvoiceExpendedWithScheduleSendCancellingBanner
                     ).toImmutableList()
                 )
+            ),
+
+            Input(
+                currentState = ConversationDetailsMessagesState.Data(
+                    messages = listOf(
+                        ConversationDetailMessageUiModelSample.InvoiceExpendedWithScheduleSendCancellingBanner
+                    ).toImmutableList()
+                ),
+                operation = ConversationDetailEvent.ErrorCancellingScheduleSend(
+                    ConversationDetailMessageUiModelSample.InvoiceExpendedWithScheduleSendBanner.messageId
+                ),
+                expectedState = ConversationDetailsMessagesState.Data(
+                    messages = listOf(
+                        ConversationDetailMessageUiModelSample.InvoiceExpendedWithScheduleSendBanner
+                    ).toImmutableList()
+                )
             )
         )
 

@@ -163,6 +163,11 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
         AffectingBottomSheet
 
     data class ScheduleSendCancelled(val messageId: MessageIdUiModel) : ConversationDetailEvent
+    data class OfflineErrorCancellingScheduleSend(val messageId: MessageIdUiModel) :
+        ConversationDetailEvent, AffectingErrorBar, AffectingMessages
+
+    data class ErrorCancellingScheduleSend(val messageId: MessageIdUiModel) :
+        ConversationDetailEvent, AffectingErrorBar, AffectingMessages
 }
 
 sealed interface ConversationDetailViewAction : ConversationDetailOperation {

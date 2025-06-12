@@ -198,6 +198,9 @@ class ConversationDetailReducer @Inject constructor(
                 is ErrorAttachmentDownloadInProgress -> R.string.error_attachment_download_in_progress
                 is ErrorDeletingConversation -> R.string.error_delete_conversation_failed
                 is ConversationDetailEvent.ErrorDeletingMessage -> R.string.error_delete_message_failed
+                is ConversationDetailEvent.ErrorCancellingScheduleSend -> R.string.error_cancel_schedule_send_failed
+                is ConversationDetailEvent.OfflineErrorCancellingScheduleSend ->
+                    R.string.offline_error_cancel_schedule_send_failed
             }
             Effect.of(TextUiModel(textResource))
         } else {

@@ -357,7 +357,13 @@ class ConversationDetailViewModel @Inject constructor(
         viewModelScope.launch {
             emitNewStateFrom(action)
             cancelScheduleSendMessage(primaryUserId.first(), MessageId(action.messageId.id))
-                .onLeft { Timber.w("cancel-schedule-send failed $it") }
+                .onLeft { error ->
+                    if (error.isOfflineError()) {
+                        emitNewStateFrom(ConversationDetailEvent.OfflineErrorCancellingScheduleSend(action.messageId))
+                        return@launch
+                    }
+                    emitNewStateFrom(ConversationDetailEvent.ErrorCancellingScheduleSend(action.messageId))
+                }
                 .onRight { emitNewStateFrom(ConversationDetailEvent.ScheduleSendCancelled(action.messageId)) }
         }
     }
