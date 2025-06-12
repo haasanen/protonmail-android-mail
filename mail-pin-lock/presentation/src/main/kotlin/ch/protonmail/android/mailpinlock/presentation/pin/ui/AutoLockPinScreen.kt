@@ -248,9 +248,9 @@ private fun PinScreenContent(
 
             PinScreenButton(
                 uiModel = state.confirmButtonState.confirmButtonUiModel,
+                isEnabled = pinTextFieldState.text.isNotEmpty(),
                 onClick = actions.onNext
             )
-
 
             Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
 
@@ -263,7 +263,11 @@ private fun PinScreenContent(
 
 
 @Composable
-private fun PinScreenButton(uiModel: ConfirmButtonUiModel, onClick: () -> Unit) {
+private fun PinScreenButton(
+    uiModel: ConfirmButtonUiModel,
+    isEnabled: Boolean,
+    onClick: () -> Unit
+) {
     ProtonTextButton(
         modifier = Modifier
             .fillMaxWidth()
@@ -272,9 +276,8 @@ private fun PinScreenButton(uiModel: ConfirmButtonUiModel, onClick: () -> Unit) 
                 color = ProtonTheme.colors.brandNorm,
                 shape = RoundedCornerShape(56.dp)
             ),
-        onClick = {
-            onClick()
-        }
+        enabled = isEnabled,
+        onClick = onClick
     ) {
         Text(
             text = stringResource(uiModel.textRes),
@@ -314,7 +317,7 @@ private fun AutoLockPinScreenHeader(descriptionUiModel: DescriptionUiModel, isCo
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
+        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
     }
 }
 

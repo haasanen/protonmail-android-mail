@@ -24,7 +24,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.repeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -96,6 +95,7 @@ internal fun PinInputSection(
     LaunchedEffect(isError) {
         if (isError) {
             shouldShake = true
+            pinTextFieldState.edit { delete(0, pinTextFieldState.text.length) }
         }
     }
 
@@ -127,54 +127,27 @@ internal fun PinSecureInputField(
     supportingText: @Composable () -> Unit
 ) {
     val isStandalone = LocalLockScreenEntryPointIsStandalone.current
-    var shouldShowContent by remember { mutableStateOf(false) }
-    val painter = if (shouldShowContent) {
-        painterResource(id = R.drawable.ic_proton_eye_slashed)
+
+    if (!isStandalone) {
+        PinInsertionSecureField(
+            modifier = modifier,
+            state = pinTextFieldState,
+            keyboardOptions = keyboardOptions,
+            maxLength = maxLength,
+            isError = isError,
+            supportingText = { supportingText() }
+        )
     } else {
-        painterResource(id = R.drawable.ic_proton_eye_clear)
-    }
-
-    val textObfuscationMode = if (shouldShowContent) {
-        TextObfuscationMode.Visible
-    } else {
-        TextObfuscationMode.Hidden
-    }
-
-    OutlinedSecureTextField(
-        trailingIcon = {
-            IconButton(onClick = { shouldShowContent = !shouldShowContent }) {
-                Icon(
-                    modifier = Modifier.size(ProtonDimens.IconSize.Small),
-                    painter = painter,
-                    contentDescription = NO_CONTENT_DESCRIPTION
-                )
-            }
-        },
-        modifier = modifier
-            .fillMaxWidth()
-            .then(if (isStandalone) Modifier.size(0.dp) else Modifier),
-        inputTransformation = createLengthLimitTransformation(maxLength),
-        textObfuscationMode = textObfuscationMode,
-        state = pinTextFieldState,
-        keyboardOptions = keyboardOptions,
-        shape = RoundedCornerShape(ProtonDimens.CornerRadius.Large),
-        colors = createPinTextFieldColors(),
-        textStyle = createPinTextStyle(),
-        isError = isError,
-        supportingText = { supportingText() }
-    )
-
-    if (isStandalone) {
-        val dotTint = if (isError) ProtonTheme.colors.notificationError else ProtonTheme.colors.textNorm
-
         Column {
-            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                repeat(pinTextFieldState.text.length) {
-                    AutoLockPinDotItem(tint = dotTint)
-                }
-            }
+            StandalonePinInsertionSecureField(
+                modifier = modifier,
+                state = pinTextFieldState,
+                maxLength = maxLength,
+                keyboardOptions = keyboardOptions
+            )
+
             if (isError) {
-                Spacer(Modifier.height(ProtonDimens.Spacing.Large))
+                Spacer(Modifier.height(ProtonDimens.Spacing.Standard))
                 supportingText()
             }
         }
@@ -190,6 +163,71 @@ private fun createLengthLimitTransformation(maxLength: Int?) = object : InputTra
 }
 
 @Composable
+private fun PinInsertionSecureField(
+    modifier: Modifier,
+    maxLength: Int?,
+    state: TextFieldState,
+    keyboardOptions: KeyboardOptions,
+    isError: Boolean,
+    supportingText: @Composable () -> Unit
+) {
+    var shouldShowContent by remember { mutableStateOf(false) }
+
+    val textObfuscationMode = if (shouldShowContent) {
+        TextObfuscationMode.Visible
+    } else {
+        TextObfuscationMode.Hidden
+    }
+
+    val painter = if (shouldShowContent) {
+        painterResource(id = R.drawable.ic_proton_eye_slashed)
+    } else {
+        painterResource(id = R.drawable.ic_proton_eye_clear)
+    }
+
+    OutlinedSecureTextField(
+        trailingIcon = {
+            IconButton(onClick = { shouldShowContent = !shouldShowContent }) {
+                Icon(
+                    modifier = Modifier.size(ProtonDimens.IconSize.Small),
+                    painter = painter,
+                    contentDescription = NO_CONTENT_DESCRIPTION
+                )
+            }
+        },
+        modifier = modifier.fillMaxWidth(),
+        inputTransformation = createLengthLimitTransformation(maxLength),
+        textObfuscationMode = textObfuscationMode,
+        state = state,
+        keyboardOptions = keyboardOptions,
+        shape = RoundedCornerShape(ProtonDimens.CornerRadius.Large),
+        colors = createPinTextFieldColors(),
+        textStyle = createPinTextStyle(),
+        isError = isError,
+        supportingText = { supportingText() }
+    )
+}
+
+@Composable
+private fun StandalonePinInsertionSecureField(
+    modifier: Modifier,
+    maxLength: Int?,
+    state: TextFieldState,
+    keyboardOptions: KeyboardOptions
+) {
+    OutlinedSecureTextField(
+        modifier = modifier.fillMaxWidth(),
+        inputTransformation = createLengthLimitTransformation(maxLength),
+        textObfuscationMode = TextObfuscationMode.Hidden,
+        state = state,
+        keyboardOptions = keyboardOptions,
+        shape = RoundedCornerShape(ProtonDimens.CornerRadius.Large),
+        colors = createPinTextFieldColorsStandalone(),
+        textStyle = createPinTextStyleStandalone()
+    )
+}
+
+@Composable
 private fun createPinTextFieldColors() = TextFieldDefaults.colors().copy(
     focusedIndicatorColor = Color.Transparent,
     unfocusedIndicatorColor = Color.Transparent,
@@ -200,10 +238,29 @@ private fun createPinTextFieldColors() = TextFieldDefaults.colors().copy(
 )
 
 @Composable
+private fun createPinTextFieldColorsStandalone() = TextFieldDefaults.colors().copy(
+    focusedIndicatorColor = Color.Transparent,
+    unfocusedIndicatorColor = Color.Transparent,
+    focusedContainerColor = Color.Transparent,
+    unfocusedContainerColor = Color.Transparent,
+    errorContainerColor = Color.Transparent,
+    errorIndicatorColor = Color.Transparent
+)
+
+@Composable
 private fun createPinTextStyle() = TextStyle(
     fontStyle = ProtonTheme.typography.titleLarge.fontStyle,
     fontWeight = ProtonTheme.typography.titleLarge.fontWeight,
     fontSize = ProtonTheme.typography.titleLarge.fontSize
+)
+
+@Composable
+private fun createPinTextStyleStandalone() = TextStyle(
+    fontStyle = ProtonTheme.typography.headlineLarge.fontStyle,
+    fontWeight = ProtonTheme.typography.headlineLarge.fontWeight,
+    fontSize = ProtonTheme.typography.headlineLarge.fontSize,
+    color = ProtonTheme.colors.textNorm,
+    textAlign = TextAlign.Center
 )
 
 @Composable
