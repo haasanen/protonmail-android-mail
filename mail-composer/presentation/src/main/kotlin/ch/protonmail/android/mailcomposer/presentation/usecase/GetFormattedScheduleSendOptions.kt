@@ -23,7 +23,7 @@ import java.util.Date
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.usecase.GetAppLocale
-import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
+import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptionsWithPreviousTime
 import ch.protonmail.android.mailcomposer.domain.usecase.GetScheduleSendOptions
 import ch.protonmail.android.mailcomposer.presentation.model.InstantWithFormattedTime
 import ch.protonmail.android.mailcomposer.presentation.model.ScheduleSendOptionsUiModel
@@ -45,9 +45,10 @@ class GetFormattedScheduleSendOptions @Inject constructor(
         return InstantWithFormattedTime(this, formatter.format(date))
     }
 
-    private fun ScheduleSendOptions.toUiModel() = ScheduleSendOptionsUiModel(
-        tomorrow = this.tomorrowTime.toInstantWithFormattedTime(),
-        monday = this.mondayTime.toInstantWithFormattedTime(),
-        isCustomTimeOptionAvailable = this.isCustomTimeOptionAvailable
+    private fun ScheduleSendOptionsWithPreviousTime.toUiModel() = ScheduleSendOptionsUiModel(
+        tomorrow = this.options.tomorrowTime.toInstantWithFormattedTime(),
+        monday = this.options.mondayTime.toInstantWithFormattedTime(),
+        isCustomTimeOptionAvailable = this.options.isCustomTimeOptionAvailable,
+        previousScheduleSendTime = this.previousTime?.time?.toInstantWithFormattedTime()
     )
 }

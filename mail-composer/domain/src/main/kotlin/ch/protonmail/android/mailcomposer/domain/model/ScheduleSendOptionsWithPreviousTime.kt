@@ -16,29 +16,11 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.presentation.model
+package ch.protonmail.android.mailcomposer.domain.model
 
-import kotlin.time.Instant
+import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 
-data class ScheduleSendOptionsUiModel(
-    val tomorrow: InstantWithFormattedTime,
-    val monday: InstantWithFormattedTime,
-    val isCustomTimeOptionAvailable: Boolean,
-    val previousScheduleSendTime: InstantWithFormattedTime?
-) {
-
-    companion object {
-
-        val EmptyOptions = ScheduleSendOptionsUiModel(
-            tomorrow = InstantWithFormattedTime(Instant.DISTANT_PAST, ""),
-            monday = InstantWithFormattedTime(Instant.DISTANT_PAST, ""),
-            isCustomTimeOptionAvailable = false,
-            previousScheduleSendTime = null
-        )
-    }
-}
-
-data class InstantWithFormattedTime(
-    val instant: Instant,
-    val formatted: String
+data class ScheduleSendOptionsWithPreviousTime(
+    val options: ScheduleSendOptions,
+    val previousTime: PreviousScheduleSendTime?
 )

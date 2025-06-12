@@ -18,10 +18,19 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
+import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptionsWithPreviousTime
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
+import ch.protonmail.android.mailmessage.domain.repository.PreviousScheduleSendTimeRepository
 import javax.inject.Inject
 
-class GetScheduleSendOptions @Inject constructor(private val draftRepository: DraftRepository) {
+class GetScheduleSendOptions @Inject constructor(
+    private val draftRepository: DraftRepository,
+    private val previousScheduleSendTimeRepository: PreviousScheduleSendTimeRepository
+) {
 
     suspend operator fun invoke() = draftRepository.getScheduleSendOptions()
+        .map { options ->
+            val previousTime = previousScheduleSendTimeRepository.get()
+            ScheduleSendOptionsWithPreviousTime(options, previousTime)
+        }
 }

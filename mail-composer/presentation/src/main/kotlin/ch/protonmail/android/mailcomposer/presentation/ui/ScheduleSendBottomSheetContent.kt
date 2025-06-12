@@ -51,7 +51,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
-import ch.protonmail.android.design.compose.theme.titleLargeNorm
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.InstantWithFormattedTime
 import ch.protonmail.android.mailcomposer.presentation.model.ScheduleSendOptionsUiModel
@@ -86,9 +86,19 @@ fun ScheduleSendBottomSheetContent(
                 textAlign = TextAlign.Center,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = ProtonTheme.typography.titleLargeNorm,
+                style = ProtonTheme.typography.titleMediumNorm,
                 fontWeight = FontWeight.SemiBold
             )
+
+            optionsUiModel.previousScheduleSendTime?.let { previousTime ->
+
+                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
+
+                PreviousTimeOption(
+                    previousTime = previousTime,
+                    onClicked = onScheduleSendConfirmed
+                )
+            }
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
 
@@ -104,6 +114,53 @@ fun ScheduleSendBottomSheetContent(
                 onOptionClicked = ::showFeatureMissingToast
             )
 
+        }
+    }
+}
+
+@Composable
+private fun PreviousTimeOption(
+    onClicked: (Instant) -> Unit,
+    previousTime: InstantWithFormattedTime,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(ProtonTheme.shapes.extraLarge)
+            .clickable(
+                role = Role.Button,
+                onClick = { onClicked(previousTime.instant) }
+            )
+            .background(
+                color = ProtonTheme.colors.backgroundInvertedSecondary,
+                shape = ProtonTheme.shapes.extraLarge
+            )
+            .padding(ProtonDimens.Spacing.Large),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier,
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                modifier = Modifier,
+                text = stringResource(R.string.composer_schedule_send_previously_set),
+                style = ProtonTheme.typography.bodyMediumWeak,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
+
+            Text(
+                modifier = Modifier,
+                text = previousTime.formatted,
+                style = ProtonTheme.typography.bodyLargeNorm,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
@@ -228,15 +285,38 @@ private fun MainOptionButton(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(
+    showBackground = true,
+    name = "Schedule send sheet with default options"
+)
 @Composable
-private fun PreviewInlineActions() {
+private fun PreviewScheduleSendBottomSheet() {
     ProtonTheme {
         ScheduleSendBottomSheetContent(
             optionsUiModel = ScheduleSendOptionsUiModel(
                 tomorrow = InstantWithFormattedTime(Instant.parse("05 Jun at 08:00"), "05 Jun at 08:00"),
                 monday = InstantWithFormattedTime(Instant.parse("09 Jun at 08:00"), "09 Jun at 08:00"),
-                isCustomTimeOptionAvailable = true
+                isCustomTimeOptionAvailable = true,
+                previousScheduleSendTime = null
+            ),
+            onScheduleSendConfirmed = {}
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    name = "Schedule send sheet with previous schedule send time"
+)
+@Composable
+private fun PreviewScheduleSendSheetWithPreviousTime() {
+    ProtonTheme {
+        ScheduleSendBottomSheetContent(
+            optionsUiModel = ScheduleSendOptionsUiModel(
+                tomorrow = InstantWithFormattedTime(Instant.parse("05 Jun at 08:00"), "05 Jun at 08:00"),
+                monday = InstantWithFormattedTime(Instant.parse("09 Jun at 08:00"), "09 Jun at 08:00"),
+                isCustomTimeOptionAvailable = true,
+                previousScheduleSendTime = InstantWithFormattedTime(Instant.parse("12 Jun at 09:45"), "12 Jun at 09:45")
             ),
             onScheduleSendConfirmed = {}
         )
