@@ -20,13 +20,11 @@ package ch.protonmail.android.mailmessage.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailfeatureflags.domain.annotation.V6CssInjectionEnabled
 import ch.protonmail.android.mailmessage.presentation.model.webview.MessageBodyWebViewOperation.MessageBodyWebViewAction
 import ch.protonmail.android.mailmessage.presentation.model.webview.MessageBodyWebViewOperation.MessageBodyWebViewEvent
 import ch.protonmail.android.mailmessage.presentation.model.webview.MessageBodyWebViewState
 import ch.protonmail.android.mailmessage.presentation.reducer.MessageBodyWebViewReducer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -34,8 +32,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MessageBodyWebViewViewModel @Inject constructor(
-    private val reducer: MessageBodyWebViewReducer,
-    @V6CssInjectionEnabled val isUsingV6CssInjection: Flow<Boolean>
+    private val reducer: MessageBodyWebViewReducer
 ) : ViewModel() {
 
     private val mutableState = MutableStateFlow(MessageBodyWebViewState.Initial)

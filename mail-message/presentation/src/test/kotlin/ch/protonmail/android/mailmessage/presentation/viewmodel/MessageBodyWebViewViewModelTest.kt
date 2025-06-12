@@ -29,7 +29,6 @@ import io.mockk.mockkStatic
 import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -41,7 +40,7 @@ internal class MessageBodyWebViewViewModelTest {
 
     private val mockUri = mockk<Uri>()
     private val reducer = spyk<MessageBodyWebViewReducer>()
-    private val viewModel = MessageBodyWebViewViewModel(reducer, flowOf(false))
+    private val viewModel = MessageBodyWebViewViewModel(reducer)
 
     @Before
     fun setUp() {

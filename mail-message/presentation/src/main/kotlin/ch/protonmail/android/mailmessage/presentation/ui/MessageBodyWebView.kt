@@ -96,7 +96,6 @@ fun MessageBodyWebView(
     )
 
     val webViewInteractionState = viewModel.state.collectAsStateWithLifecycle().value
-    val isUsingV6CssInjection = viewModel.isUsingV6CssInjection.collectAsStateWithLifecycle(false).value
     val longClickDialogState = remember { mutableStateOf(false) }
 
     val actions = webViewActions.copy(
@@ -189,7 +188,6 @@ fun MessageBodyWebView(
                     it.settings.allowContentAccess = false
                     it.settings.allowFileAccess = false
                     it.settings.loadWithOverviewMode = true
-                    it.settings.useWideViewPort = isUsingV6CssInjection
                     configureDarkLightMode(it, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
                     configureLongClick(it, actions.onMessageBodyLinkLongClicked)
                     webView = it

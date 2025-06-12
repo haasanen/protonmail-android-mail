@@ -21,14 +21,6 @@ package ch.protonmail.android.mailfeatureflags.domain
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagCategory
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 
-data object UseV6CssInjectionDefinition : FeatureFlagDefinition(
-    key = "v6_css_injection",
-    name = "Enforce V6 CSS injection",
-    category = FeatureFlagCategory.Details,
-    description = "Applies V6 CSS injection on the Rust-provided message body.",
-    defaultValue = false
-)
-
 data object DebugInspectDbEnabled : FeatureFlagDefinition(
     key = "debug_observe_db_enabled",
     name = "Attach to DB for debug inspection",

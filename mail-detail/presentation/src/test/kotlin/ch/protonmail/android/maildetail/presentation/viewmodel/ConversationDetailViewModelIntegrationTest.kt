@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.maildetail.presentation.viewmodel
 
-import java.io.ByteArrayInputStream
 import java.util.Random
 import android.content.Context
 import android.graphics.Color
@@ -339,16 +338,7 @@ class ConversationDetailViewModelIntegrationTest {
         mockk { every { this@mockk.invoke(any()) } returns TextUiModel("10:00") }
     private val formatExtendedTime: FormatExtendedTime =
         mockk { every { this@mockk.invoke(any()) } returns TextUiModel("10:00") }
-    private val context = mockk<Context> {
-        every { resources } returns mockk {
-            every {
-                openRawResource(R.raw.css_reset_with_custom_props)
-            } returns ByteArrayInputStream("".toByteArray())
-            every {
-                openRawResource(R.raw.css_media_scheme)
-            } returns ByteArrayInputStream("".toByteArray())
-        }
-    }
+    private val context = mockk<Context>()
     private val avatarImageUiModelMapper = AvatarImageUiModelMapper()
 
     private val mailLabelTextMapper = mockk<MailLabelTextMapper> {
