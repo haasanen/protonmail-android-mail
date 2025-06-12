@@ -22,8 +22,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,14 +36,6 @@ class AppInBackgroundState @Inject constructor() {
     fun observe(): Flow<Boolean> = _state.asStateFlow()
 
     fun setAppInBackground(isAppInBackground: Boolean) {
-        _state.update { currentState ->
-            if (currentState != isAppInBackground) {
-                Timber.tag("AppInBackgroundState").d("State changing from $currentState to $isAppInBackground")
-                isAppInBackground
-            } else {
-                Timber.tag("AppInBackgroundState").d("Ignoring duplicate state: $isAppInBackground")
-                currentState
-            }
-        }
+        _state.value = isAppInBackground
     }
 }
