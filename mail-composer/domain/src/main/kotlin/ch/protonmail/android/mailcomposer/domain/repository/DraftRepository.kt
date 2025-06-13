@@ -48,5 +48,5 @@ interface DraftRepository {
     suspend fun updateToRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     suspend fun updateCcRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     suspend fun updateBccRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
-    fun getScheduleSendOptions(): Either<DataError, ScheduleSendOptions>
+    suspend fun getScheduleSendOptions(): Either<DataError, ScheduleSendOptions>
 }

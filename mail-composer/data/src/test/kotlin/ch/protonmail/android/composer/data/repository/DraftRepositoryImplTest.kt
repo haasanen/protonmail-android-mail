@@ -17,6 +17,7 @@ import ch.protonmail.android.testdata.composer.DraftFieldsTestData
 import ch.protonmail.android.testdata.composer.LocalDraftTestData
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 import kotlin.test.Test
@@ -26,8 +27,9 @@ import kotlin.time.Instant
 class DraftRepositoryImplTest {
 
     private val draftDataSource = mockk<RustDraftDataSource>()
+    private val dispatcher = StandardTestDispatcher()
 
-    private val draftRepository = DraftRepositoryImpl(draftDataSource)
+    private val draftRepository = DraftRepositoryImpl(draftDataSource, dispatcher)
 
     @Test
     fun `returns success when open draft succeeds`() = runTest {
@@ -199,7 +201,7 @@ class DraftRepositoryImplTest {
     }
 
     @Test
-    fun `returns success when get schedule send options succeeds`() = runTest {
+    fun `returns success when get schedule send options succeeds`() = runTest(dispatcher) {
         // Given
         val tomorrowTime = 123uL
         val mondayTime = 456uL
@@ -219,7 +221,7 @@ class DraftRepositoryImplTest {
     }
 
     @Test
-    fun `returns error when get schedule send options fails`() = runTest {
+    fun `returns error when get schedule send options fails`() = runTest(dispatcher) {
         // Given
         val expected = DataError.Local.Unknown
         coEvery { draftDataSource.getScheduleSendOptions() } returns expected.left()

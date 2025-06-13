@@ -24,6 +24,7 @@ import ch.protonmail.android.composer.data.mapper.toDraftFields
 import ch.protonmail.android.composer.data.mapper.toDraftFieldsWithSyncStatus
 import ch.protonmail.android.composer.data.mapper.toEmbeddedImage
 import ch.protonmail.android.composer.data.mapper.toScheduleSendOptions
+import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
@@ -36,12 +37,15 @@ import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 import kotlin.time.Instant
 
 class DraftRepositoryImpl @Inject constructor(
-    private val draftDataSource: RustDraftDataSource
+    private val draftDataSource: RustDraftDataSource,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : DraftRepository {
 
     override suspend fun getMessageId(): Either<DataError, MessageId> = draftDataSource.getMessageId()
@@ -71,8 +75,9 @@ class DraftRepositoryImpl @Inject constructor(
     override suspend fun updateBccRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit> =
         draftDataSource.updateBccRecipients(recipients)
 
-    override fun getScheduleSendOptions(): Either<DataError, ScheduleSendOptions> =
+    override suspend fun getScheduleSendOptions(): Either<DataError, ScheduleSendOptions> = withContext(ioDispatcher) {
         draftDataSource.getScheduleSendOptions().map { it.toScheduleSendOptions() }
+    }
 
     override suspend fun send(): Either<DataError, Unit> = draftDataSource.send()
 
