@@ -21,12 +21,12 @@ package ch.protonmail.android.mailpinlock.presentation.autolock.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
+import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
+import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
-import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfied
-import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfiedSignal
 import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.Protection
-import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInterstitialState
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockOverlayState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -37,7 +37,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LockScreenViewModel @Inject constructor(
     autoLockRepository: AutoLockRepository,
-    private val autoLockSatisfiedSignal: AutoLockSatisfiedSignal
+    private val autoLockCheckPendingState: AutoLockCheckPendingState
 ) : ViewModel() {
 
     val state = autoLockRepository.observeAppLock().map {
@@ -45,18 +45,18 @@ class LockScreenViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Companion.WhileSubscribed(stopTimeoutMillis),
-        initialValue = AutoLockInterstitialState.Loading
+        initialValue = AutoLockOverlayState.Loading
     )
 
     private fun AutoLock.asInterstitialState() = when (this.protectionType) {
-        Protection.Pin -> AutoLockInterstitialState.Pin
-        Protection.Biometrics -> AutoLockInterstitialState.Biometrics
-        Protection.None -> AutoLockInterstitialState.Error
+        Protection.Pin -> AutoLockOverlayState.Pin
+        Protection.Biometrics -> AutoLockOverlayState.Biometrics
+        Protection.None -> AutoLockOverlayState.Error
     }
 
     fun onSuccessfulBiometrics() {
         viewModelScope.launch {
-            autoLockSatisfiedSignal.emitOperationSignal(AutoLockSatisfied(true))
+            autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(false))
         }
     }
 }

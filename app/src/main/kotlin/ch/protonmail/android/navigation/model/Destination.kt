@@ -107,7 +107,7 @@ sealed class Destination(val route: String) {
                 route.replace(AutoLockPinModeKey.wrap(), mode.serialize())
         }
 
-        object AutoLockInterstitial : Destination("settings/autolock/landing/interstitial")
+        object AutoLockOverlay : Destination("settings/autolock/landing/overlay")
 
         object AutoLockPinConfirmDialog :
             Destination("settings/autolock/pindialog/${AutoLockPinDialogModeKey.wrap()}") {

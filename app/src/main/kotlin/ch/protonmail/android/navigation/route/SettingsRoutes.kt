@@ -34,7 +34,7 @@ import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockIns
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.DialogType
 import ch.protonmail.android.mailpinlock.presentation.autolock.ui.AutoLockIntervalDialog
 import ch.protonmail.android.mailpinlock.presentation.autolock.ui.AutoLockSettingsScreen
-import ch.protonmail.android.mailpinlock.presentation.autolock.ui.LockScreenInterstitial
+import ch.protonmail.android.mailpinlock.presentation.autolock.ui.LockScreenOverlay
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.AutoLockPinScreen
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinScreenDialog
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinScreenDialogKeys.AutoLockPinDialogModeKey
@@ -164,9 +164,9 @@ internal fun NavGraphBuilder.addAutoLockSettings(navController: NavHostControlle
     }
 }
 
-internal fun NavGraphBuilder.addAutoLockInterstitial(onClose: () -> Unit, navController: NavHostController) {
-    composable(route = Screen.AutoLockInterstitial.route) {
-        LockScreenInterstitial(
+internal fun NavGraphBuilder.addAutoLockOverlay(onClose: () -> Unit, navController: NavHostController) {
+    composable(route = Screen.AutoLockOverlay.route) {
+        LockScreenOverlay(
             onClose = onClose,
             onNavigateToPinInsertion = {
                 navController.navigate(Screen.AutoLockPinScreen(AutoLockInsertionMode.VerifyPin))

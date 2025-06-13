@@ -26,9 +26,9 @@ import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinError
 import ch.protonmail.android.mailcommon.domain.model.autolock.VerifyAutoLockPinError
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
+import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
-import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfied
-import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfiedSignal
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInsertionMode
 import ch.protonmail.android.mailpinlock.presentation.pin.AutoLockPinEvent
 import ch.protonmail.android.mailpinlock.presentation.pin.AutoLockPinState
@@ -62,7 +62,7 @@ internal class AutoLockPinViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val autoLockRepository = mockk<AutoLockRepository>()
-    private val autoLockSatisfiedSignal = spyk<AutoLockSatisfiedSignal>()
+    private val autoLockCheckPendingState = spyk<AutoLockCheckPendingState>()
     private val signOutAllAccounts = mockk<SignOutAllAccounts>()
     private val savedStateHandle = mockk<SavedStateHandle>()
 
@@ -76,7 +76,7 @@ internal class AutoLockPinViewModelTest {
 
     private fun viewModel() = AutoLockPinViewModel(
         autoLockRepository = autoLockRepository,
-        autoLockSatisfiedSignal = autoLockSatisfiedSignal,
+        autoLockCheckPendingState = autoLockCheckPendingState,
         signOutAllAccounts = signOutAllAccounts,
         reducer = reducer,
         savedStateHandle = savedStateHandle
@@ -296,7 +296,7 @@ internal class AutoLockPinViewModelTest {
         // Then
         coVerify {
             reducer.newStateFrom(any(), AutoLockPinEvent.Update.VerificationCompleted)
-            autoLockSatisfiedSignal.emitOperationSignal(AutoLockSatisfied(true))
+            autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(true))
         }
     }
 
@@ -326,7 +326,7 @@ internal class AutoLockPinViewModelTest {
         }
 
         coVerify(exactly = 0) {
-            autoLockSatisfiedSignal.emitOperationSignal(AutoLockSatisfied(true))
+            autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(true))
         }
     }
 

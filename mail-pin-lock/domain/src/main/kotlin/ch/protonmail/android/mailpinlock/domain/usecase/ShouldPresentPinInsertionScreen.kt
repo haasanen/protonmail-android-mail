@@ -20,42 +20,38 @@ package ch.protonmail.android.mailpinlock.domain.usecase
 
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
+import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
+import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
-import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfied
-import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfiedSignal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import timber.log.Timber
 import javax.inject.Inject
 
 class ShouldPresentPinInsertionScreen @Inject constructor(
     private val appInBackgroundState: AppInBackgroundState,
-    private val autolockRepository: AutoLockRepository,
-    private val autoLockSatisfiedSignal: AutoLockSatisfiedSignal
+    private val autoLockRepository: AutoLockRepository,
+    private val autoLockCheckPendingState: AutoLockCheckPendingState
 ) {
 
-    operator fun invoke(): Flow<Boolean> =
-        appInBackgroundState.observe().combine(autoLockSatisfiedSignal.isPending()) { inBackground, autolockSatisfied ->
-            inBackground to autolockSatisfied
-        }.flatMapLatest { (inBackground, autolockSatisfied) ->
-            if (inBackground) {
-                // Reset the flag when app goes to background
-                autoLockSatisfiedSignal.emitOperationSignal(AutoLockSatisfied(false))
-                flowOf(false)
-            } else if (autolockSatisfied.value) {
-                flowOf(false)
-            } else {
-                flow {
-                    val shouldAutolock = autolockRepository.shouldAutolock()
-                        .getOrElse {
-                            Timber.e("ShouldPresentPinInsertionScreen unable to get a value for shouldAutolock")
-                            false
-                        }
-                    emit(shouldAutolock)
+    operator fun invoke(): Flow<Boolean> = combine(
+        appInBackgroundState.observe(),
+        autoLockCheckPendingState.state
+    ) { inBackground, isAutoLockPending ->
+
+        if (inBackground) {
+            // Reset the flag when app goes to background
+            autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(true))
+            false
+        } else if (!isAutoLockPending.value) {
+            false
+        } else {
+            val shouldAutoLock = autoLockRepository.shouldAutolock()
+                .getOrElse {
+                    Timber.e("ShouldPresentPinInsertionScreen unable to get a value for shouldAutolock")
+                    false
                 }
-            }
+            shouldAutoLock
         }
+    }
 }

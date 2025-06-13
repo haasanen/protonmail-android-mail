@@ -18,9 +18,9 @@
 
 package ch.protonmail.android.mailpinlock.presentation.autolock.model
 
-sealed interface AutoLockInterstitialState {
-    data object Loading : AutoLockInterstitialState
-    data object Pin : AutoLockInterstitialState
-    data object Biometrics : AutoLockInterstitialState
-    data object Error : AutoLockInterstitialState
+sealed interface AutoLockOverlayState {
+    data object Loading : AutoLockOverlayState
+    data object Pin : AutoLockOverlayState
+    data object Biometrics : AutoLockOverlayState
+    data object Error : AutoLockOverlayState
 }

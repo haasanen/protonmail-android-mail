@@ -38,9 +38,9 @@ package ch.protonmail.android.mailpinlock.domain.autolock.usecase
 
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
+import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
+import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
-import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfied
-import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfiedSignal
 import ch.protonmail.android.mailpinlock.domain.usecase.ShouldPresentPinInsertionScreen
 import io.mockk.called
 import io.mockk.coEvery
@@ -61,12 +61,12 @@ internal class ShouldPresentPinInsertionScreenTest {
     private val appInBackgroundState = mockk<AppInBackgroundState>()
     private val autoLockRepository = mockk<AutoLockRepository>()
 
-    private val autoLockSatisfiedSignal = AutoLockSatisfiedSignal()
+    private val autoLockCheckPendingState = AutoLockCheckPendingState()
 
     private fun useCase() = ShouldPresentPinInsertionScreen(
         appInBackgroundState,
         autoLockRepository,
-        autoLockSatisfiedSignal = autoLockSatisfiedSignal
+        autoLockCheckPendingState = autoLockCheckPendingState
     )
 
     @After
@@ -120,7 +120,7 @@ internal class ShouldPresentPinInsertionScreenTest {
         // Given
         expectAppInForeground()
         coEvery { autoLockRepository.shouldAutolock() } returns true.right()
-        autoLockSatisfiedSignal.emitOperationSignal(AutoLockSatisfied(true))
+        autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(false))
 
         // When
         val result = useCase().invoke().first()

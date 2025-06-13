@@ -25,11 +25,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailpinlock.presentation.R
-import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInterstitialState
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockOverlayState
 import ch.protonmail.android.mailpinlock.presentation.autolock.viewmodel.LockScreenViewModel
 
 @Composable
-fun LockScreenInterstitial(
+fun LockScreenOverlay(
     onClose: () -> Unit,
     onNavigateToPinInsertion: () -> Unit,
     viewModel: LockScreenViewModel = hiltViewModel()
@@ -39,16 +39,16 @@ fun LockScreenInterstitial(
     val item = LocalActivity.current
 
     when (state) {
-        AutoLockInterstitialState.Biometrics -> LockScreenBiometricsPrompt(
+        AutoLockOverlayState.Biometrics -> LockScreenBiometricsPrompt(
             {
                 viewModel.onSuccessfulBiometrics()
             },
             onCloseAll = { item?.finishAffinity() }
         )
 
-        AutoLockInterstitialState.Error -> onClose()
-        AutoLockInterstitialState.Loading -> Unit
-        AutoLockInterstitialState.Pin -> onNavigateToPinInsertion()
+        AutoLockOverlayState.Error -> onClose()
+        AutoLockOverlayState.Loading -> Unit
+        AutoLockOverlayState.Pin -> onNavigateToPinInsertion()
     }
 }
 

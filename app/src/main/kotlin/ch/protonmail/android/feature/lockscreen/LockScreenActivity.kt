@@ -27,7 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailpinlock.presentation.autolock.standalone.LocalLockScreenEntryPointIsStandalone
 import ch.protonmail.android.navigation.model.Destination
-import ch.protonmail.android.navigation.route.addAutoLockInterstitial
+import ch.protonmail.android.navigation.route.addAutoLockOverlay
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen
 import dagger.hilt.android.AndroidEntryPoint
 import io.sentry.compose.withSentryObservableEffect
@@ -44,9 +44,9 @@ internal class LockScreenActivity : AppCompatActivity() {
                 CompositionLocalProvider(LocalLockScreenEntryPointIsStandalone provides true) {
                     NavHost(
                         navController = navController,
-                        startDestination = Destination.Screen.AutoLockInterstitial.route
+                        startDestination = Destination.Screen.AutoLockOverlay.route
                     ) {
-                        addAutoLockInterstitial(
+                        addAutoLockOverlay(
                             onClose = { this@LockScreenActivity.finish() },
                             navController
                         )

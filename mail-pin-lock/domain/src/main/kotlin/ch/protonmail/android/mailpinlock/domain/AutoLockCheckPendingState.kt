@@ -24,16 +24,16 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @JvmInline
-value class AutoLockSatisfied(val value: Boolean)
+value class AutoLockCheckPending(val value: Boolean)
 
 @Singleton
-class AutoLockSatisfiedSignal @Inject constructor() {
+class AutoLockCheckPendingState @Inject constructor() {
 
-    private val emptyListSignal = MutableStateFlow(AutoLockSatisfied(false))
+    private val mutableState = MutableStateFlow(AutoLockCheckPending(true))
 
-    suspend fun emitOperationSignal(value: AutoLockSatisfied) {
-        emptyListSignal.emit(value)
+    val state = mutableState.asStateFlow()
+
+    suspend fun emitOperationSignal(value: AutoLockCheckPending) {
+        mutableState.emit(value)
     }
-
-    fun isPending() = emptyListSignal.asStateFlow()
 }

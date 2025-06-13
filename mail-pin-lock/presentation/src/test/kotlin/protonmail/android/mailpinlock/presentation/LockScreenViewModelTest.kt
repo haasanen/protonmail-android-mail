@@ -19,11 +19,11 @@
 package protonmail.android.mailpinlock.presentation
 
 import app.cash.turbine.test
+import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
-import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfiedSignal
 import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.Protection
-import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInterstitialState
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockOverlayState
 import ch.protonmail.android.mailpinlock.presentation.autolock.viewmodel.LockScreenViewModel
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.every
@@ -55,12 +55,12 @@ internal class LockScreenViewModelTest {
 
         val viewModel = LockScreenViewModel(
             autoLockRepository = autoLockRepository,
-            autoLockSatisfiedSignal = AutoLockSatisfiedSignal()
+            autoLockCheckPendingState = AutoLockCheckPendingState()
         )
 
         // When + Then
         viewModel.state.test {
-            assertEquals(AutoLockInterstitialState.Loading, awaitItem())
+            assertEquals(AutoLockOverlayState.Loading, awaitItem())
         }
     }
 
@@ -72,12 +72,12 @@ internal class LockScreenViewModelTest {
 
         val viewModel = LockScreenViewModel(
             autoLockRepository = autoLockRepository,
-            autoLockSatisfiedSignal = AutoLockSatisfiedSignal()
+            autoLockCheckPendingState = AutoLockCheckPendingState()
         )
 
         // When + Then
         viewModel.state.test {
-            assertEquals(AutoLockInterstitialState.Pin, awaitItem())
+            assertEquals(AutoLockOverlayState.Pin, awaitItem())
         }
     }
 
@@ -89,12 +89,12 @@ internal class LockScreenViewModelTest {
 
         val viewModel = LockScreenViewModel(
             autoLockRepository = autoLockRepository,
-            autoLockSatisfiedSignal = AutoLockSatisfiedSignal()
+            autoLockCheckPendingState = AutoLockCheckPendingState()
         )
 
         // When + Then
         viewModel.state.test {
-            assertEquals(AutoLockInterstitialState.Biometrics, awaitItem())
+            assertEquals(AutoLockOverlayState.Biometrics, awaitItem())
         }
     }
 
@@ -106,12 +106,12 @@ internal class LockScreenViewModelTest {
 
         val viewModel = LockScreenViewModel(
             autoLockRepository = autoLockRepository,
-            autoLockSatisfiedSignal = AutoLockSatisfiedSignal()
+            autoLockCheckPendingState = AutoLockCheckPendingState()
         )
 
         // When + Then
         viewModel.state.test {
-            assertEquals(AutoLockInterstitialState.Error, awaitItem())
+            assertEquals(AutoLockOverlayState.Error, awaitItem())
         }
     }
 }

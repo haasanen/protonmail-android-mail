@@ -25,9 +25,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
+import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
+import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
-import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfied
-import ch.protonmail.android.mailpinlock.domain.AutoLockSatisfiedSignal
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInsertionMode
 import ch.protonmail.android.mailpinlock.presentation.pin.reducer.AutoLockPinReducer
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.AutoLockPinScreen
@@ -43,7 +43,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AutoLockPinViewModel @Inject constructor(
     private val autoLockRepository: AutoLockRepository,
-    private val autoLockSatisfiedSignal: AutoLockSatisfiedSignal,
+    private val autoLockCheckPendingState: AutoLockCheckPendingState,
     private val signOutAllAccounts: SignOutAllAccounts,
     private val reducer: AutoLockPinReducer,
     savedStateHandle: SavedStateHandle
@@ -145,7 +145,7 @@ class AutoLockPinViewModel @Inject constructor(
                 )
             )
         }.onRight {
-            autoLockSatisfiedSignal.emitOperationSignal(AutoLockSatisfied(true))
+            autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(true))
             continuation()
         }
     }
