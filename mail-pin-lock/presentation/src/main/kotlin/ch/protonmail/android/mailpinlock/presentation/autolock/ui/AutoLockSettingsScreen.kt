@@ -96,7 +96,7 @@ fun AutoLockSettingsScreen(
         snackbarHostState.showSnackbar(message = it, type = ProtonSnackbarType.ERROR)
     }
 
-    ConsumableLaunchedEffect(effects.forceOpenPinCreation) {
+    ConsumableLaunchedEffect(effects.openPinCreation) {
         actions.onPinScreenNavigation(AutoLockInsertionMode.CreatePin)
     }
 

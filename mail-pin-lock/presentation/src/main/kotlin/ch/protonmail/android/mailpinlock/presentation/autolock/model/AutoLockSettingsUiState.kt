@@ -42,7 +42,7 @@ enum class ProtectionType {
 
 data class AutoLockSettingsEffects(
     val updateError: Effect<TextUiModel> = Effect.empty(),
-    val forceOpenPinCreation: Effect<Unit> = Effect.empty(),
+    val openPinCreation: Effect<Unit> = Effect.empty(),
     val requestBiometricsAuth: Effect<BiometricsOperationFollowUp> = Effect.empty(),
     val pinLockChangeRequested: Effect<Unit> = Effect.empty(),
     val pinLockRemovalRequested: Effect<Unit> = Effect.empty()

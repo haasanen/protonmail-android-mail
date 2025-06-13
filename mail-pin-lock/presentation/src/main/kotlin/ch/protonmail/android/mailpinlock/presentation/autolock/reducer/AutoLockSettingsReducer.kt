@@ -32,7 +32,7 @@ class AutoLockSettingsReducer @Inject constructor() {
             currentEffects.copy(requestBiometricsAuth = Effect.of(event.followUp))
 
         is AutoLockSettingsEvent.PinChangeRequested -> currentEffects.copy(pinLockChangeRequested = Effect.of(Unit))
-        is AutoLockSettingsEvent.PinCreationRequested -> currentEffects.copy(forceOpenPinCreation = Effect.of(Unit))
+        is AutoLockSettingsEvent.PinCreationRequested -> currentEffects.copy(openPinCreation = Effect.of(Unit))
         is AutoLockSettingsEvent.PinRemovalRequested -> currentEffects.copy(pinLockRemovalRequested = Effect.of(Unit))
         is AutoLockSettingsEvent.Error -> reduceError(currentEffects, event)
     }

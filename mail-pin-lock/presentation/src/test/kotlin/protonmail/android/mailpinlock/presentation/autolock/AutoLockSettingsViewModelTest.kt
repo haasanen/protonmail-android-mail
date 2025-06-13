@@ -182,7 +182,7 @@ internal class AutoLockSettingsViewModelTest {
             viewModel.submit(AutoLockSettingsViewAction.RequestPinProtection)
 
             val effects = awaitItem()
-            assertEquals(Effect.of(Unit), effects.forceOpenPinCreation)
+            assertEquals(Effect.of(Unit), effects.openPinCreation)
         }
     }
 
@@ -197,7 +197,7 @@ internal class AutoLockSettingsViewModelTest {
             viewModel.submit(AutoLockSettingsViewAction.RequestPinProtection)
 
             val effects = awaitItem()
-            assertEquals(Effect.of(Unit), effects.forceOpenPinCreation)
+            assertEquals(Effect.of(Unit), effects.openPinCreation)
         }
     }
 
@@ -358,7 +358,7 @@ internal class AutoLockSettingsViewModelTest {
             viewModel.submit(AutoLockSettingsViewAction.SetPinPreference)
 
             val effects = awaitItem()
-            assertEquals(Effect.of(Unit), effects.forceOpenPinCreation)
+            assertEquals(Effect.of(Unit), effects.openPinCreation)
         }
     }
 
