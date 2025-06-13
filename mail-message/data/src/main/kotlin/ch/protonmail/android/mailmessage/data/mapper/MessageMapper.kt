@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmessage.data.mapper
 
-import android.os.Build
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
@@ -47,7 +46,6 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
@@ -61,6 +59,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Participant
+import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import me.proton.core.user.domain.entity.AddressId
@@ -191,14 +190,7 @@ fun TransformOpts.toMessageBodyTransformations(): MessageBodyTransformations {
 fun MessageThemeOptions.toLocalThemeOptions(): ThemeOpts = ThemeOpts(
     currentTheme = currentTheme.toMailTheme(),
     themeOverride = themeOverride?.toMailTheme(),
-    supportsDarkModeViaMediaQuery = if (themeOverride == MessageTheme.Light) {
-        // If the themeOverride is Light and the html style contains media query for dark mode,
-        // then we cannot tell WebView to render in light mode, so we set this to false.
-        false
-    } else {
-        // Media query for dark mode is supported on Android 10 and above.
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-    }
+    supportsDarkModeViaMediaQuery = true
 )
 
 fun ThemeOpts.toMessageThemeOptions(): MessageThemeOptions {

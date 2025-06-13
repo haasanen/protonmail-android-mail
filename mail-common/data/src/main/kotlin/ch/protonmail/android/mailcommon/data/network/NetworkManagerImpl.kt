@@ -18,12 +18,12 @@
 
 package ch.protonmail.android.mailcommon.data.network
 
+import android.Manifest
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.net.NetworkRequest
-import android.os.Build
+import androidx.annotation.RequiresPermission
 import ch.protonmail.android.mailcommon.domain.network.NetworkManager
 import ch.protonmail.android.mailcommon.domain.network.NetworkStatus
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -52,48 +52,33 @@ class NetworkManagerImpl @Inject constructor(
         }
     }
 
+
     override val networkStatus: NetworkStatus
+        @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
         get() = with(connectivityManager) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val activeNetwork = activeNetwork
-                val networkCapabilities = getNetworkCapabilities(activeNetwork)
+            val activeNetwork = activeNetwork
+            val networkCapabilities = getNetworkCapabilities(activeNetwork)
 
-                when {
-                    networkCapabilities == null -> NetworkStatus.Disconnected
-                    !networkCapabilities.hasCapability(
-                        NetworkCapabilities.NET_CAPABILITY_INTERNET
-                    ) -> NetworkStatus.Disconnected
+            when {
+                networkCapabilities == null -> NetworkStatus.Disconnected
+                !networkCapabilities.hasCapability(
+                    NetworkCapabilities.NET_CAPABILITY_INTERNET
+                ) -> NetworkStatus.Disconnected
 
-                    !networkCapabilities.hasCapability(
-                        NetworkCapabilities.NET_CAPABILITY_VALIDATED
-                    ) -> NetworkStatus.Disconnected
+                !networkCapabilities.hasCapability(
+                    NetworkCapabilities.NET_CAPABILITY_VALIDATED
+                ) -> NetworkStatus.Disconnected
 
-                    !isActiveNetworkMetered -> NetworkStatus.Unmetered
-                    else -> NetworkStatus.Metered
-                }
-            } else {
-                // Fallback for API < 23
-                @Suppress("DEPRECATION")
-                when {
-                    activeNetworkInfo?.isConnected != true -> NetworkStatus.Disconnected
-                    isActiveNetworkMetered -> NetworkStatus.Metered
-                    else -> NetworkStatus.Unmetered
-                }
+                !isActiveNetworkMetered -> NetworkStatus.Unmetered
+                else -> NetworkStatus.Metered
             }
         }
 
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     override fun register() {
         if (!registered) {
             registered = true
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                connectivityManager.registerDefaultNetworkCallback(networkCallback)
-            } else {
-                // Fallback for API < 24
-                val request = NetworkRequest.Builder()
-                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                    .build()
-                connectivityManager.registerNetworkCallback(request, networkCallback)
-            }
+            connectivityManager.registerDefaultNetworkCallback(networkCallback)
         }
     }
 

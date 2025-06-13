@@ -48,9 +48,7 @@
         android:taskAffinity=""
         android:theme="@style/ProtonTheme.Mail"
         tools:replace="android:theme,android:supportsRtl">
-        <profileable
-            android:shell="true"
-            tools:targetApi="29" />
+        <profileable android:shell="true" />
 
         <meta-data
             android:name="asset_statements"

@@ -16,7 +16,6 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("DEPRECATION")
 
 package ch.protonmail.android.mailcommon.data.network
 
@@ -24,8 +23,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.net.NetworkInfo
-import android.net.NetworkRequest
 import android.os.Build
 import ch.protonmail.android.mailcommon.domain.network.NetworkStatus
 import io.mockk.MockKAnnotations
@@ -46,7 +43,7 @@ import org.robolectric.annotation.Config
 import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [Build.VERSION_CODES.P])
+@Config(minSdk = Build.VERSION_CODES.Q)
 class NetworkManagerImplTest {
 
     @MockK
@@ -60,9 +57,6 @@ class NetworkManagerImplTest {
 
     @RelaxedMockK
     private lateinit var networkCapabilities: NetworkCapabilities
-
-    @RelaxedMockK
-    private lateinit var networkInfo: NetworkInfo
 
     private lateinit var networkManager: NetworkManagerImpl
 
@@ -82,7 +76,6 @@ class NetworkManagerImplTest {
     }
 
     @Test
-    @Config(sdk = [Build.VERSION_CODES.M])
     fun `networkStatus returns Disconnected when activeNetwork is null`() {
         every { connectivityManager.activeNetwork } returns null
         every { connectivityManager.getNetworkCapabilities(null) } returns null
@@ -93,7 +86,6 @@ class NetworkManagerImplTest {
     }
 
     @Test
-    @Config(sdk = [Build.VERSION_CODES.M])
     fun `networkStatus returns Disconnected when networkCapabilities is null`() {
         every { connectivityManager.activeNetwork } returns network
         every { connectivityManager.getNetworkCapabilities(network) } returns null
@@ -104,7 +96,6 @@ class NetworkManagerImplTest {
     }
 
     @Test
-    @Config(sdk = [Build.VERSION_CODES.M])
     fun `networkStatus returns Disconnected when no internet capability`() {
         every { connectivityManager.activeNetwork } returns network
         every { connectivityManager.getNetworkCapabilities(network) } returns networkCapabilities
@@ -116,7 +107,6 @@ class NetworkManagerImplTest {
     }
 
     @Test
-    @Config(sdk = [Build.VERSION_CODES.M])
     fun `networkStatus returns Disconnected when not validated`() {
         every { connectivityManager.activeNetwork } returns network
         every { connectivityManager.getNetworkCapabilities(network) } returns networkCapabilities
@@ -129,7 +119,6 @@ class NetworkManagerImplTest {
     }
 
     @Test
-    @Config(sdk = [Build.VERSION_CODES.M])
     fun `networkStatus returns Unmetered when connected and not metered`() {
         every { connectivityManager.activeNetwork } returns network
         every { connectivityManager.getNetworkCapabilities(network) } returns networkCapabilities
@@ -143,7 +132,6 @@ class NetworkManagerImplTest {
     }
 
     @Test
-    @Config(sdk = [Build.VERSION_CODES.M])
     fun `networkStatus returns Metered when connected and metered`() {
         every { connectivityManager.activeNetwork } returns network
         every { connectivityManager.getNetworkCapabilities(network) } returns networkCapabilities
@@ -157,53 +145,7 @@ class NetworkManagerImplTest {
     }
 
     @Test
-    @Config(sdk = [Build.VERSION_CODES.LOLLIPOP])
-    fun `networkStatus fallback returns Disconnected when not connected`() {
-        every { connectivityManager.activeNetworkInfo } returns networkInfo
-        every { networkInfo.isConnected } returns false
-
-        val result = networkManager.networkStatus
-
-        assertEquals(NetworkStatus.Disconnected, result)
-    }
-
-    @Test
-    @Config(sdk = [Build.VERSION_CODES.LOLLIPOP])
-    fun `networkStatus fallback returns Disconnected when activeNetworkInfo is null`() {
-        every { connectivityManager.activeNetworkInfo } returns null
-
-        val result = networkManager.networkStatus
-
-        assertEquals(NetworkStatus.Disconnected, result)
-    }
-
-    @Test
-    @Config(sdk = [Build.VERSION_CODES.LOLLIPOP])
-    fun `networkStatus fallback returns Metered when connected and metered`() {
-        every { connectivityManager.activeNetworkInfo } returns networkInfo
-        every { networkInfo.isConnected } returns true
-        every { connectivityManager.isActiveNetworkMetered } returns true
-
-        val result = networkManager.networkStatus
-
-        assertEquals(NetworkStatus.Metered, result)
-    }
-
-    @Test
-    @Config(sdk = [Build.VERSION_CODES.LOLLIPOP])
-    fun `networkStatus fallback returns Unmetered when connected and not metered`() {
-        every { connectivityManager.activeNetworkInfo } returns networkInfo
-        every { networkInfo.isConnected } returns true
-        every { connectivityManager.isActiveNetworkMetered } returns false
-
-        val result = networkManager.networkStatus
-
-        assertEquals(NetworkStatus.Unmetered, result)
-    }
-
-    @Test
-    @Config(sdk = [Build.VERSION_CODES.N])
-    fun `register calls registerDefaultNetworkCallback on API 24+`() {
+    fun `register calls registerDefaultNetworkCallback`() {
         every { connectivityManager.registerDefaultNetworkCallback(capture(networkCallback)) } just Runs
 
         networkManager.register()
@@ -212,7 +154,6 @@ class NetworkManagerImplTest {
     }
 
     @Test
-    @Config(sdk = [Build.VERSION_CODES.N])
     fun `register only registers once when called multiple times`() {
         every { connectivityManager.registerDefaultNetworkCallback(any()) } just Runs
 
@@ -223,23 +164,6 @@ class NetworkManagerImplTest {
     }
 
     @Test
-    @Config(sdk = [Build.VERSION_CODES.M])
-    fun `register calls registerNetworkCallback with request on API 23`() {
-        val requestSlot = slot<NetworkRequest>()
-        every { connectivityManager.registerNetworkCallback(capture(requestSlot), capture(networkCallback)) } just Runs
-
-        networkManager.register()
-
-        verify {
-            connectivityManager.registerNetworkCallback(
-                any<NetworkRequest>(),
-                any<ConnectivityManager.NetworkCallback>()
-            )
-        }
-    }
-
-    @Test
-    @Config(sdk = [Build.VERSION_CODES.N])
     fun `unregister calls unregisterNetworkCallback when registered`() {
         every { connectivityManager.registerDefaultNetworkCallback(capture(networkCallback)) } just Runs
         every { connectivityManager.unregisterNetworkCallback(any<ConnectivityManager.NetworkCallback>()) } just Runs
@@ -251,7 +175,6 @@ class NetworkManagerImplTest {
     }
 
     @Test
-    @Config(sdk = [Build.VERSION_CODES.N])
     fun `unregister does nothing when not registered`() {
         networkManager.unregister()
 
@@ -261,7 +184,6 @@ class NetworkManagerImplTest {
     }
 
     @Test
-    @Config(sdk = [Build.VERSION_CODES.N])
     fun `unregister only unregisters once when called multiple times`() {
         every { connectivityManager.registerDefaultNetworkCallback(capture(networkCallback)) } just Runs
         every { connectivityManager.unregisterNetworkCallback(any<ConnectivityManager.NetworkCallback>()) } just Runs

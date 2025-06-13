@@ -18,9 +18,7 @@
 
 package ch.protonmail.android.mailcommon.domain.benchmark
 
-import android.os.Build
 import android.os.Trace
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -42,21 +40,13 @@ class BenchmarkTracerImpl @Inject constructor(private val benchmarkEnabled: Bool
 
     override fun beginAsync(name: String) {
         if (benchmarkEnabled) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                Trace.beginAsyncSection(name, 0)
-            } else {
-                Timber.w("Trace.beginAsyncSection is not supported on this device")
-            }
+            Trace.beginAsyncSection(name, 0)
         }
     }
 
     override fun endAsync(name: String) {
         if (benchmarkEnabled) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                Trace.endAsyncSection(name, 0)
-            } else {
-                Timber.w("Trace.endAsyncSection is not supported on this device")
-            }
+            Trace.endAsyncSection(name, 0)
         }
     }
 }
