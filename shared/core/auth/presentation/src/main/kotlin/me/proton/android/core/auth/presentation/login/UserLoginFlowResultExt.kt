@@ -69,6 +69,10 @@ fun LoginError.getErrorMessage(): String = when (this) {
     LoginError.MissingPrimaryKey -> "LoginError.MissingPrimaryKey"
     LoginError.KeySecretDecryption -> "LoginError.KeySecretDecryption"
     LoginError.WrongMailboxPassword -> "LoginError.WrongMailboxPassword"
+    is LoginError.AddressFetch -> "LoginError.AddressFetch"
+    is LoginError.AddressKeySetup -> "LoginError.AddressKeySetup"
+    is LoginError.AddressSetup -> "LoginError.AddressSetup"
+    is LoginError.UserKeySetup -> "LoginError.UserKeySetup"
 }
 
 @Suppress("MaxLineLength")
@@ -76,6 +80,8 @@ fun LoginErrorReason.getErrorMessage(context: Context) = when (this) {
     LoginErrorReason.INVALID_CREDENTIALS -> context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
     LoginErrorReason.UNSUPPORTED_TFA -> context.getString(R.string.auth_login_error_invalid_action_unsupported_tfa)
     LoginErrorReason.CANT_UNLOCK_USER_KEY -> context.getString(R.string.auth_login_error_invalid_action_cannot_unlock_keys)
+    LoginErrorReason.USER_SETUP -> context.getString(R.string.auth_login_error_invalid_action_cannot_setup_user)
+    LoginErrorReason.ADDRESS_SETUP -> context.getString(R.string.auth_login_error_invalid_action_cannot_setup_address)
 }
 
 fun UserApiServiceError.getErrorMessage() = when (this) {

@@ -28,6 +28,8 @@ sealed interface MailLoginError {
     data object InvalidCredentials : MailLoginError
     data object UnsupportedTwoFactorAuthentication : MailLoginError
     data object CannotUnlockUserKey : MailLoginError
+    data object UserSetup : MailLoginError
+    data object AddressSetup : MailLoginError
     data class Other(val error: DataError) : MailLoginError
 }
 
@@ -38,6 +40,8 @@ fun LocalMailLoginError.toLoginError(): MailLoginError {
             LoginErrorReason.INVALID_CREDENTIALS -> MailLoginError.InvalidCredentials
             LoginErrorReason.UNSUPPORTED_TFA -> MailLoginError.UnsupportedTwoFactorAuthentication
             LoginErrorReason.CANT_UNLOCK_USER_KEY -> MailLoginError.CannotUnlockUserKey
+            LoginErrorReason.USER_SETUP -> MailLoginError.UserSetup
+            LoginErrorReason.ADDRESS_SETUP -> MailLoginError.AddressSetup
         }
         is LocalMailLoginErrorOther -> MailLoginError.Other(this.v1.toDataError())
     }
