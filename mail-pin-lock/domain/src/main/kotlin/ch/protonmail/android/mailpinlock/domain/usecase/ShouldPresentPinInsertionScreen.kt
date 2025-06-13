@@ -46,12 +46,11 @@ class ShouldPresentPinInsertionScreen @Inject constructor(
         } else if (!isAutoLockPending.value) {
             false
         } else {
-            val shouldAutoLock = autoLockRepository.shouldAutolock()
+            autoLockRepository.shouldAutolock()
                 .getOrElse {
                     Timber.e("ShouldPresentPinInsertionScreen unable to get a value for shouldAutolock")
                     false
                 }
-            shouldAutoLock
         }
     }
 }

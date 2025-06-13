@@ -296,7 +296,7 @@ internal class AutoLockPinViewModelTest {
         // Then
         coVerify {
             reducer.newStateFrom(any(), AutoLockPinEvent.Update.VerificationCompleted)
-            autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(true))
+            autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(false))
         }
     }
 

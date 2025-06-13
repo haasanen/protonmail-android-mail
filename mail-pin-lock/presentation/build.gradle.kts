@@ -66,7 +66,6 @@ dependencies {
     implementation(project(":mail-common:presentation"))
     implementation(project(":mail-pin-lock:domain"))
     implementation(project(":mail-session:data"))
-    implementation(project(":mail-session:domain"))
     implementation(project(":mail-settings:domain"))
 
     implementation(project(":uicomponents"))

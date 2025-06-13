@@ -53,7 +53,7 @@ class AutoLockIntervalViewModel @Inject constructor(
                 autoLock.autolockInterval,
                 AutoLockInterval.entries.sortedBy { it.duration }
                     .toMutableList()
-                    .apply { this.removeAt(this.lastIndex) } // we don't show never, that's autolock off
+                    .apply { this.remove(AutoLockInterval.Never) }
                     .associateWith { it.toTextUiModel() }
             )
         }

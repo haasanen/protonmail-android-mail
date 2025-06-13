@@ -31,6 +31,11 @@ class AutoLockCheckPendingState @Inject constructor() {
 
     private val mutableState = MutableStateFlow(AutoLockCheckPending(true))
 
+    /**
+     * Signals whether there is a "pending" auto lock check ongoing to avoid multiple
+     * navigation actions to the auto lock overlay if the verification is intentionally
+     * skipped across multiple lifecycle changes.
+     */
     val state = mutableState.asStateFlow()
 
     suspend fun emitOperationSignal(value: AutoLockCheckPending) {

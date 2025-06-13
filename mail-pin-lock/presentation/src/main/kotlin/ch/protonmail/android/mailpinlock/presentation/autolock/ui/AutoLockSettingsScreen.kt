@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -67,7 +66,6 @@ import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinS
 import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.BiometricPromptCallback
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AutoLockSettingsScreen(
     modifier: Modifier = Modifier,
@@ -84,9 +82,9 @@ fun AutoLockSettingsScreen(
         subtitle = stringResource(R.string.mail_settings_biometrics_subtitle_default),
         negativeButtonText = stringResource(R.string.mail_settings_biometrics_button_negative),
         onAuthenticationError = { _, _ ->
-            /* no op */
+            /* no op, handling delegated to system prompt */
         },
-        onAuthenticationFailed = { /* no op */ },
+        onAuthenticationFailed = { /* no op, handling delegated to system prompt */ },
         onAuthenticationSucceeded = {
             viewModel.submit(AutoLockSettingsViewAction.SetBiometricsPreference)
         }
@@ -322,7 +320,7 @@ object AutoLockSettingsScreen {
 
 @Preview(name = "Autolock Settings Screen Enabled", showBackground = true, device = "id:pixel_5")
 @Composable
-private fun PreviewAutolockSettingScreenEnabled() {
+private fun PreviewAutoLockSettingScreenEnabled() {
     AutoLockSettingScreen(
         settings = AutoLockSettings(
             TextUiModel("15 minutes"),

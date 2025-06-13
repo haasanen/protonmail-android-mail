@@ -145,7 +145,7 @@ class AutoLockPinViewModel @Inject constructor(
                 )
             )
         }.onRight {
-            autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(true))
+            autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(false))
             continuation()
         }
     }
