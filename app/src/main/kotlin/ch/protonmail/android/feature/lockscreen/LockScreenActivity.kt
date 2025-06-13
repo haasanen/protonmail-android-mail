@@ -22,7 +22,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -88,16 +87,11 @@ internal class LockScreenActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     private fun setupNativeBlur() {
-        window.apply {
-            setFlags(
-                WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
-                WindowManager.LayoutParams.FLAG_BLUR_BEHIND
-            )
+        window.addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
 
-            @Suppress("MagicNumber")
-            setDimAmount(0.1f)
-        }
+        @Suppress("MagicNumber")
+        window.setDimAmount(0.1f)
     }
 }
