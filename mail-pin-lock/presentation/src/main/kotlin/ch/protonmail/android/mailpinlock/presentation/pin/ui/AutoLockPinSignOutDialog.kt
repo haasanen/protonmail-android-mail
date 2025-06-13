@@ -35,7 +35,7 @@ import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.pin.AutoLockPinState
 
 @Composable
-fun AutoLockPinSignOutItem(state: AutoLockPinState.SignOutButtonState, actions: AutoLockPinScreenV2.SignOutActions) {
+fun AutoLockPinSignOutItem(state: AutoLockPinState.SignOutButtonState, actions: AutoLockPinScreen.SignOutActions) {
     if (state.signOutUiModel.isDisplayed) {
         ProtonTextButton(
             modifier = Modifier

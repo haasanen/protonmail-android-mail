@@ -60,6 +60,7 @@ object ProtonDimens {
         val MediumLarge = 14.dp
         val ExtraLarge = 16.dp
         val Huge = 24.dp
+        val Massive = 56.dp
     }
 
     object ShadowElevation {

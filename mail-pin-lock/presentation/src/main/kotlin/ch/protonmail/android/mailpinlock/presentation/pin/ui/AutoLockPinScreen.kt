@@ -33,7 +33,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -44,6 +43,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -74,6 +74,7 @@ import ch.protonmail.android.mailpinlock.presentation.pin.AutoLockPinViewAction
 import ch.protonmail.android.mailpinlock.presentation.pin.AutoLockPinViewModel
 import ch.protonmail.android.mailpinlock.presentation.pin.ConfirmButtonUiModel
 import ch.protonmail.android.mailpinlock.presentation.pin.DescriptionUiModel
+import ch.protonmail.android.mailpinlock.presentation.pin.preview.AutoLockPinScreenPreviewData
 import timber.log.Timber
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -88,23 +89,38 @@ fun AutoLockPinScreen(
 
     val pinTextFieldState = viewModel.pinTextFieldState
 
-    val configuration = LocalConfiguration.current
-    val isCompact = configuration.screenHeightDp < 480 || configuration.fontScale > 1.3f
-
-    val isStandalone = LocalLockScreenEntryPointIsStandalone.current
-
-    val actions = AutoLockPinScreenV2.Actions(
+    val actions = AutoLockPinScreen.Actions(
         onBack = { viewModel.submit(AutoLockPinViewAction.PerformBack) },
         onClose = onClose,
         onNext = { viewModel.submit(AutoLockPinViewAction.PerformConfirm) },
         onShowSuccessSnackbar = onShowSuccessSnackbar
     )
 
-    val signOutActions = AutoLockPinScreenV2.SignOutActions(
+    val signOutActions = AutoLockPinScreen.SignOutActions(
         onSignOut = { viewModel.submit(AutoLockPinViewAction.RequestSignOut) },
         onSignOutConfirmed = { viewModel.submit(AutoLockPinViewAction.ConfirmSignOut) },
         onSignOutCanceled = { viewModel.submit(AutoLockPinViewAction.CancelSignOut) }
     )
+
+    AutoLockPinScreen(
+        state = state,
+        textFieldState = pinTextFieldState,
+        actions = actions,
+        signOutActions = signOutActions
+    )
+}
+
+@Composable
+private fun AutoLockPinScreen(
+    state: AutoLockPinState,
+    textFieldState: TextFieldState,
+    actions: AutoLockPinScreen.Actions,
+    signOutActions: AutoLockPinScreen.SignOutActions
+) {
+    val configuration = LocalConfiguration.current
+    val isCompact = configuration.screenHeightDp < 480 || configuration.fontScale > 1.3f
+
+    val isStandalone = LocalLockScreenEntryPointIsStandalone.current
 
     val containerColor = if (isStandalone) {
         ProtonTheme.colors.backgroundNorm.copy(alpha = 0.25f)
@@ -117,9 +133,9 @@ fun AutoLockPinScreen(
             modifier = Modifier.fillMaxSize(),
             containerColor = containerColor,
             topBar = {
-                if (!isStandalone) {
+                if (!isStandalone && state as? AutoLockPinState.DataLoaded != null) {
                     PinScreenTopBar(
-                        state = state,
+                        state = state.topBarState,
                         isCompact = isCompact,
                         onBackClick = actions.onBack
                     )
@@ -136,9 +152,9 @@ fun AutoLockPinScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         PinScreenContent(
-                            state = state as AutoLockPinState.DataLoaded,
+                            state = state,
                             isCompact = isCompact,
-                            pinTextFieldState = pinTextFieldState,
+                            pinTextFieldState = textFieldState,
                             actions = actions,
                             signOutActions = signOutActions
                         )
@@ -151,11 +167,11 @@ fun AutoLockPinScreen(
 
 @Composable
 private fun PinScreenTopBar(
-    state: AutoLockPinState,
+    state: AutoLockPinState.TopBarState,
     isCompact: Boolean,
     onBackClick: () -> Unit
 ) {
-    val uiModel = (state as? AutoLockPinState.DataLoaded)?.topBarState?.topBarStateUiModel ?: return
+    val uiModel = state.topBarStateUiModel
 
     ProtonTopAppBar(
         title = { if (isCompact) Text(text = stringResource(id = uiModel.textRes)) },
@@ -176,8 +192,8 @@ private fun PinScreenContent(
     modifier: Modifier = Modifier,
     isCompact: Boolean,
     pinTextFieldState: TextFieldState,
-    actions: AutoLockPinScreenV2.Actions,
-    signOutActions: AutoLockPinScreenV2.SignOutActions
+    actions: AutoLockPinScreen.Actions,
+    signOutActions: AutoLockPinScreen.SignOutActions
 ) {
     val imeHeight = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
 
@@ -202,8 +218,6 @@ private fun PinScreenContent(
     ConsumableTextEffect(state.snackbarSuccessEffect) {
         actions.onShowSuccessSnackbar(it)
     }
-
-
 
     Column(
         modifier = modifier
@@ -274,7 +288,7 @@ private fun PinScreenButton(
             .padding(horizontal = ProtonDimens.Spacing.Standard)
             .background(
                 color = ProtonTheme.colors.brandNorm,
-                shape = RoundedCornerShape(56.dp)
+                shape = ProtonTheme.shapes.massive
             ),
         enabled = isEnabled,
         onClick = onClick
@@ -321,22 +335,40 @@ private fun AutoLockPinScreenHeader(descriptionUiModel: DescriptionUiModel, isCo
     }
 }
 
-object AutoLockPinScreenV2 {
+object AutoLockPinScreen {
     data class Actions(
         val onBack: () -> Unit,
         val onClose: () -> Unit,
         val onNext: () -> Unit,
         val onShowSuccessSnackbar: (snackbarText: String) -> Unit
-    )
+    ) {
+
+        companion object {
+
+            val Empty = Actions(
+                onBack = {},
+                onClose = {},
+                onNext = {},
+                onShowSuccessSnackbar = { _ -> }
+            )
+        }
+    }
 
     data class SignOutActions(
         val onSignOut: () -> Unit,
         val onSignOutConfirmed: () -> Unit,
         val onSignOutCanceled: () -> Unit
-    )
-}
+    ) {
 
-object AutoLockPinScreen {
+        companion object {
+
+            val Empty = SignOutActions(
+                onSignOut = {},
+                onSignOutConfirmed = {},
+                onSignOutCanceled = {}
+            )
+        }
+    }
 
     const val AutoLockPinModeKey = "auto_lock_pin_open_mode"
 }
@@ -345,5 +377,28 @@ object AutoLockPinScreen {
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun AutoLockPinScreenPreview() {
-    AutoLockPinScreen(onClose = {}, onShowSuccessSnackbar = { _ -> })
+    AutoLockPinScreen(
+        state = AutoLockPinScreenPreviewData.DataLoaded,
+        textFieldState = TextFieldState(),
+        actions = AutoLockPinScreen.Actions.Empty,
+        signOutActions = AutoLockPinScreen.SignOutActions.Empty
+    )
+}
+
+@Composable
+@Preview(name = "Light mode", showBackground = true)
+@Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun AutoLockPinScreenCompatPreview() {
+    val customConfiguration = Configuration().apply {
+        screenHeightDp = 400
+        fontScale = 1.0f
+    }
+    CompositionLocalProvider(LocalConfiguration provides customConfiguration) {
+        AutoLockPinScreen(
+            state = AutoLockPinScreenPreviewData.DataLoaded,
+            textFieldState = TextFieldState(),
+            actions = AutoLockPinScreen.Actions.Empty,
+            signOutActions = AutoLockPinScreen.SignOutActions.Empty
+        )
+    }
 }

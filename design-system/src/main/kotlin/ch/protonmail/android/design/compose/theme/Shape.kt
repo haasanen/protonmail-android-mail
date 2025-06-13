@@ -33,6 +33,7 @@ data class ProtonShapes(
     val mediumLarge: CornerBasedShape = RoundedCornerShape(ProtonDimens.CornerRadius.MediumLarge),
     val extraLarge: CornerBasedShape = RoundedCornerShape(ProtonDimens.CornerRadius.ExtraLarge),
     val huge: CornerBasedShape = RoundedCornerShape(ProtonDimens.CornerRadius.Huge),
+    val massive: CornerBasedShape = RoundedCornerShape(ProtonDimens.CornerRadius.Massive),
     val bottomSheet: Shape = RoundedCornerShape(
         topStart = ProtonDimens.LargeCornerRadius,
         topEnd = ProtonDimens.LargeCornerRadius,
