@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
+import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailpinlock.presentation.autolock.mapper.AutoLockSettingsUiMapper
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockSettingsEffects
@@ -82,11 +83,8 @@ class AutoLockSettingsViewModel @Inject constructor(
         emitNewEffectFrom(AutoLockSettingsEvent.PinRemovalRequested)
     }
 
-    private suspend fun resolveBiometricProtection() {
-        val currentLockPolicy = autoLockRepository.observeAppLock().firstOrNull()
-            ?: return emitNewEffectFrom(AutoLockSettingsEvent.Error.UnknownLockPolicy)
-
-        val followUpEvent = when (currentLockPolicy.protectionType) {
+    private suspend fun resolveBiometricProtection() = withCurrentLockPolicy { autoLock ->
+        val followUpEvent = when (autoLock.protectionType) {
             Protection.None -> BiometricsOperationFollowUp.SetBiometrics
             Protection.Pin -> BiometricsOperationFollowUp.RemovePinAndSetBiometrics
             Protection.Biometrics -> return
@@ -95,11 +93,8 @@ class AutoLockSettingsViewModel @Inject constructor(
         emitNewEffectFrom(AutoLockSettingsEvent.BiometricAuthRequested(followUpEvent))
     }
 
-    private suspend fun resolvePinProtection() {
-        val currentLockPolicy = autoLockRepository.observeAppLock().firstOrNull()
-            ?: return emitNewEffectFrom(AutoLockSettingsEvent.Error.UnknownLockPolicy)
-
-        val event = when (currentLockPolicy.protectionType) {
+    private suspend fun resolvePinProtection() = withCurrentLockPolicy { autoLock ->
+        val event = when (autoLock.protectionType) {
             Protection.Pin,
             Protection.None -> AutoLockSettingsEvent.PinCreationRequested
 
@@ -113,11 +108,8 @@ class AutoLockSettingsViewModel @Inject constructor(
         emitNewEffectFrom(AutoLockSettingsEvent.PinChangeRequested)
     }
 
-    private suspend fun resolveProtectionRemoval() {
-        val currentLockPolicy = autoLockRepository.observeAppLock().firstOrNull()
-            ?: return emitNewEffectFrom(AutoLockSettingsEvent.Error.UnknownLockPolicy)
-
-        val event = when (currentLockPolicy.protectionType) {
+    private suspend fun resolveProtectionRemoval() = withCurrentLockPolicy { autoLock ->
+        val event = when (autoLock.protectionType) {
             Protection.Pin -> AutoLockSettingsEvent.PinRemovalRequested
             Protection.Biometrics -> AutoLockSettingsEvent.BiometricAuthRequested(BiometricsOperationFollowUp.SetNone)
             Protection.None -> return
@@ -132,23 +124,25 @@ class AutoLockSettingsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun applyBiometricPreference() {
-        val currentLockPolicy = autoLockRepository.observeAppLock().firstOrNull()
-            ?: return emitNewEffectFrom(AutoLockSettingsEvent.Error.UnknownLockPolicy)
-        if (currentLockPolicy.protectionType == Protection.Biometrics) return
+    private suspend fun applyBiometricPreference() = withCurrentLockPolicy { autoLock ->
+        if (autoLock.protectionType == Protection.Biometrics) return
 
         autoLockRepository.setBiometricProtection(true).onLeft {
             emitNewEffectFrom(AutoLockSettingsEvent.Error.BiometricsSetError)
         }
     }
 
-    private suspend fun applyPinPreference() {
-        val currentLockPolicy = autoLockRepository.observeAppLock().firstOrNull()
-            ?: return emitNewEffectFrom(AutoLockSettingsEvent.Error.UnknownLockPolicy)
-
-        if (currentLockPolicy.protectionType != Protection.Pin) {
+    private suspend fun applyPinPreference() = withCurrentLockPolicy { autoLock ->
+        if (autoLock.protectionType != Protection.Pin) {
             return emitNewEffectFrom(AutoLockSettingsEvent.PinCreationRequested)
         }
+    }
+
+    private suspend inline fun withCurrentLockPolicy(action: (AutoLock) -> Unit) {
+        val currentAutoLock = autoLockRepository.observeAppLock().firstOrNull()
+            ?: return emitNewEffectFrom(AutoLockSettingsEvent.Error.UnknownLockPolicy)
+
+        action(currentAutoLock)
     }
 
     private fun emitNewEffectFrom(event: AutoLockSettingsEvent) {
