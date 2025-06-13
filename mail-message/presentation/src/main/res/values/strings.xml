@@ -27,10 +27,6 @@
     </plurals>
     <string name="attachments">attachments</string>
     <string name="attachment_show_more_label">+%1$d more</string>
-    <string name="attachment_permission_dialog_title">Permission required</string>
-    <string name="attachment_permission_dialog_message">Proton Mail needs permission to access your storage to download the attachment.</string>
-    <string name="attachment_permission_dialog_dismiss_button">OK</string>
-    <string name="attachment_permission_dialog_action_button">Settings</string>
     <string name="attachment_type_description">%1$s file</string>
     <!-- Attachment Types -->
     <string name="attachment_type_archive">Archive</string>

@@ -18,9 +18,6 @@
 
 package ch.protonmail.android.mailmessage.presentation.ui
 
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.text.format.Formatter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,8 +36,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,9 +45,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.design.compose.component.ProtonAlertDialog
-import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
-import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
@@ -62,8 +54,6 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -74,46 +64,8 @@ fun AttachmentItem(
     onAttachmentItemDeleteClicked: (attachmentId: AttachmentId) -> Unit
 ) {
     val context = LocalContext.current
-    val shouldShowPermissionDialog = remember { mutableStateOf(false) }
     val nameTextColor = if (attachmentUiModel.status == AttachmentState.Uploading) ProtonTheme.colors.textHint else
         ProtonTheme.colors.textWeak
-
-    // Use a conditional to skip permission logic in preview mode
-    val externalStoragePermission =
-        rememberPermissionState(
-            permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            onPermissionResult = { result ->
-                if (result) {
-                    onAttachmentItemClicked(AttachmentId(attachmentUiModel.id.value))
-                } else {
-                    shouldShowPermissionDialog.value = true
-                }
-            }
-        )
-
-    if (shouldShowPermissionDialog.value) {
-        ProtonAlertDialog(
-            title = stringResource(id = R.string.attachment_permission_dialog_title),
-            text = { ProtonAlertDialogText(R.string.attachment_permission_dialog_message) },
-            dismissButton = {
-                ProtonAlertDialogButton(R.string.attachment_permission_dialog_dismiss_button) {
-                    shouldShowPermissionDialog.value = false
-                }
-            },
-            confirmButton = {
-                ProtonAlertDialogButton(R.string.attachment_permission_dialog_action_button) {
-                    shouldShowPermissionDialog.value = false
-                    context.startActivity(
-                        Intent(
-                            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            Uri.fromParts("package", context.packageName, null)
-                        )
-                    )
-                }
-            },
-            onDismissRequest = { shouldShowPermissionDialog.value = false }
-        )
-    }
 
     val isError = attachmentUiModel.status is AttachmentState.Error
 
@@ -135,11 +87,7 @@ fun AttachmentItem(
             .clip(ProtonTheme.shapes.huge)
             .clickable {
                 if (!attachmentUiModel.deletable) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || externalStoragePermission.status.isGranted) {
-                        onAttachmentItemClicked(AttachmentId(attachmentUiModel.id.value))
-                    } else {
-                        externalStoragePermission.launchPermissionRequest()
-                    }
+                    onAttachmentItemClicked(AttachmentId(attachmentUiModel.id.value))
                 }
             }
             .padding(

@@ -6,13 +6,9 @@ fullTest:
       version: 33
     - model: Pixel2.arm
       version: 29
-    - model: Pixel2.arm
-      version: 28
 smokeTest:
   device:
     - model: MediumPhone.arm
       version: 34
     - model: Pixel2.arm
       version: 30
-    - model: Pixel2.arm
-      version: 28
