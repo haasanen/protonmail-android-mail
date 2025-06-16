@@ -23,6 +23,9 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalAppSettings
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
+import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinError
+import ch.protonmail.android.mailcommon.domain.model.autolock.VerifyAutoLockPinError
 import ch.protonmail.android.mailpinlock.domain.BiometricsSystemStateRepository
 import ch.protonmail.android.mailpinlock.model.AutoLockBiometricsState
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval
@@ -178,7 +181,7 @@ class AutoLockRepositoryImplTest {
     }
 
     @Test
-    fun `when shouldAutoLock THEN return result`() = runTest {
+    fun `when shouldAutoLock then return result`() = runTest {
         // Given
         coEvery { appLockDataSource.shouldAutoLock(mockMailSession) } returns true.right()
 
@@ -191,7 +194,7 @@ class AutoLockRepositoryImplTest {
     }
 
     @Test
-    fun `when shouldAutoLock is False THEN return result`() = runTest {
+    fun `when shouldAutoLock is false the return result`() = runTest {
         // Given
         coEvery { appLockDataSource.shouldAutoLock(mockMailSession) } returns false.right()
 
@@ -225,6 +228,188 @@ class AutoLockRepositoryImplTest {
 
         // Then
         coVerify { mockMailSessionWrapper.signalBiometricsCheckPassed() }
+        confirmVerified(mockMailSessionWrapper)
+    }
+
+    @Test
+    fun `when setting auto lock, call is proxied to mail session and settings are refreshed on success`() = runTest {
+        // Given
+        val autoLockPin = AutoLockPin("1234")
+        val localAutoLockPin = listOf(1u, 2u, 3u, 4u)
+        coEvery { mockMailSessionWrapper.setAutoLockPinCode(localAutoLockPin) } returns Unit.right()
+
+        // When
+        val result = autoLockRepositoryImpl.setAutoLockPinCode(autoLockPin)
+
+        // Then
+        assertTrue { result.isRight() }
+        coVerify(exactly = 1) { mockMailSessionWrapper.setAutoLockPinCode(localAutoLockPin) }
+        coVerify(exactly = 1) { appSettingsRepository.refreshSettings() }
+        confirmVerified(mockMailSessionWrapper, appSettingsRepository)
+    }
+
+    @Test
+    fun `when setting auto lock, call is proxied to mailsession and with no settings refresh on failure`() = runTest {
+        // Given
+        val autoLockPin = AutoLockPin("1234")
+        val localAutoLockPin = listOf(1u, 2u, 3u, 4u)
+
+        val expectedError = SetAutoLockPinError.PinIsMalformed.left()
+        coEvery { mockMailSessionWrapper.setAutoLockPinCode(localAutoLockPin) } returns expectedError
+
+        // When
+        val result = autoLockRepositoryImpl.setAutoLockPinCode(autoLockPin)
+
+        // Then
+        assertEquals(result, expectedError)
+        coVerify(exactly = 1) { mockMailSessionWrapper.setAutoLockPinCode(localAutoLockPin) }
+        confirmVerified(mockMailSessionWrapper, appSettingsRepository)
+    }
+
+    @Test
+    fun `when verifying auto lock, call is proxied to mail session and settings are refreshed on success`() = runTest {
+        // Given
+        val autoLockPin = AutoLockPin("1234")
+        val localAutoLockPin = listOf(1u, 2u, 3u, 4u)
+        coEvery { mockMailSessionWrapper.verifyPinCode(localAutoLockPin) } returns Unit.right()
+
+        // When
+        val result = autoLockRepositoryImpl.verifyAutoLockPinCode(autoLockPin)
+
+        // Then
+        assertTrue { result.isRight() }
+        coVerify(exactly = 1) { mockMailSessionWrapper.verifyPinCode(localAutoLockPin) }
+        coVerify(exactly = 1) { appSettingsRepository.refreshSettings() }
+        confirmVerified(mockMailSessionWrapper, appSettingsRepository)
+    }
+
+    @Test
+    fun `when verifying auto lock, call is proxied to mailsession and with no settings refresh on failure`() = runTest {
+        // Given
+        val autoLockPin = AutoLockPin("1234")
+        val localAutoLockPin = listOf(1u, 2u, 3u, 4u)
+
+        val expectedError = VerifyAutoLockPinError.IncorrectPin.left()
+        coEvery { mockMailSessionWrapper.verifyPinCode(localAutoLockPin) } returns expectedError
+
+        // When
+        val result = autoLockRepositoryImpl.verifyAutoLockPinCode(autoLockPin)
+
+        // Then
+        assertEquals(result, expectedError)
+        coVerify(exactly = 1) { mockMailSessionWrapper.verifyPinCode(localAutoLockPin) }
+        confirmVerified(mockMailSessionWrapper, appSettingsRepository)
+    }
+
+    @Test
+    fun `when deleting auto lock, call is proxied to mail session and settings are refreshed on success`() = runTest {
+        // Given
+        val autoLockPin = AutoLockPin("1234")
+        val localAutoLockPin = listOf(1u, 2u, 3u, 4u)
+        coEvery { mockMailSessionWrapper.deleteAutoLockPinCode(localAutoLockPin) } returns Unit.right()
+
+        // When
+        val result = autoLockRepositoryImpl.deleteAutoLockPinCode(autoLockPin)
+
+        // Then
+        assertTrue { result.isRight() }
+        coVerify(exactly = 1) { mockMailSessionWrapper.deleteAutoLockPinCode(localAutoLockPin) }
+        coVerify(exactly = 1) { appSettingsRepository.refreshSettings() }
+        confirmVerified(mockMailSessionWrapper, appSettingsRepository)
+    }
+
+    @Test
+    fun `when deleting auto lock, call is proxied to mailsession and with no settings refresh on failure`() = runTest {
+        // Given
+        val autoLockPin = AutoLockPin("1234")
+        val localAutoLockPin = listOf(1u, 2u, 3u, 4u)
+
+        val expectedError = VerifyAutoLockPinError.IncorrectPin.left()
+        coEvery { mockMailSessionWrapper.deleteAutoLockPinCode(localAutoLockPin) } returns expectedError
+
+        // When
+        val result = autoLockRepositoryImpl.deleteAutoLockPinCode(autoLockPin)
+
+        // Then
+        assertEquals(result, expectedError)
+        coVerify(exactly = 1) { mockMailSessionWrapper.deleteAutoLockPinCode(localAutoLockPin) }
+        confirmVerified(mockMailSessionWrapper, appSettingsRepository)
+    }
+
+    @Test
+    fun `when setting biometric protection, call is proxied correctly to the mailsession (success)`() = runTest {
+        // Given
+        val expected = Unit.right()
+        coEvery { mockMailSessionWrapper.setBiometricAppProtection() } returns expected
+
+        // When
+        val result = autoLockRepositoryImpl.setBiometricProtection(true)
+
+        // Then
+        assertEquals(expected, result)
+        coVerify(exactly = 1) { mockMailSessionWrapper.setBiometricAppProtection() }
+        coVerify(exactly = 1) { appSettingsRepository.refreshSettings() }
+        confirmVerified(mockMailSessionWrapper, appSettingsRepository)
+    }
+
+    @Test
+    fun `when setting biometric protection, call is proxied correctly to the mailsession (failure)`() = runTest {
+        // Given
+        val expected = DataError.Local.Unknown.left()
+        coEvery { mockMailSessionWrapper.setBiometricAppProtection() } returns expected
+
+        // When
+        val result = autoLockRepositoryImpl.setBiometricProtection(true)
+
+        // Then
+        assertEquals(expected, result)
+        coVerify(exactly = 1) { mockMailSessionWrapper.setBiometricAppProtection() }
+        confirmVerified(mockMailSessionWrapper, appSettingsRepository)
+    }
+
+    @Test
+    fun `when removing biometric protection, call is proxied correctly to the mailsession (success)`() = runTest {
+        // Given
+        val expected = DataError.Local.Unknown.left()
+        coEvery { mockMailSessionWrapper.unsetBiometricAppProtection() } returns expected
+
+        // When
+        val result = autoLockRepositoryImpl.setBiometricProtection(false)
+
+        // Then
+        assertEquals(expected, result)
+        coVerify(exactly = 1) { mockMailSessionWrapper.unsetBiometricAppProtection() }
+        confirmVerified(mockMailSessionWrapper, appSettingsRepository)
+    }
+
+
+    @Test
+    fun `when querying for remaining attempts succeeds, the data is propagated`() = runTest {
+        // Given
+        val expected = 1u.right()
+        coEvery { mockMailSessionWrapper.getRemainingAttempts() } returns expected
+
+        // When
+        val result = autoLockRepositoryImpl.getRemainingAttempts()
+
+        // Then
+        assertEquals(expected.getOrNull()?.toInt(), result.getOrNull())
+        coVerify(exactly = 1) { mockMailSessionWrapper.getRemainingAttempts() }
+        confirmVerified(mockMailSessionWrapper)
+    }
+
+    @Test
+    fun `when querying for remaining attempts errors, the error is propagated`() = runTest {
+        // Given
+        val expected = DataError.Local.Unknown.left()
+        coEvery { mockMailSessionWrapper.getRemainingAttempts() } returns expected
+
+        // When
+        val result = autoLockRepositoryImpl.getRemainingAttempts()
+
+        // Then
+        assertEquals(expected, result)
+        coVerify(exactly = 1) { mockMailSessionWrapper.getRemainingAttempts() }
         confirmVerified(mockMailSessionWrapper)
     }
 }
