@@ -43,6 +43,7 @@ internal sealed interface ComposerAction : ComposerStateOperation {
 
     data object ClearSendingError : ComposerAction
 
+    data class AcknowledgeAttachmentErrors(val attachmentsWithError: List<AttachmentId>) : ComposerAction
     data object InlineImageActionsRequested : ComposerAction
     data object AddAttachmentsRequested : ComposerAction
     data object OpenPhotosPicker : ComposerAction

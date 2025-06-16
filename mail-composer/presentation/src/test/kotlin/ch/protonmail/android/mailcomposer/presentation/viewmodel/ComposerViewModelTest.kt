@@ -1019,6 +1019,33 @@ class ComposerViewModelTest {
         assertEquals(Effect.of(Unit), viewModel.composerStates.value.effects.confirmSendingWithoutSubject)
     }
 
+    @Test
+    fun `should delete erroneous attachments when confirmed`() = runTest {
+        // Given
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        expectStoreDraftSubjectSucceeds(Subject(""))
+        expectNoInputDraftMessageId()
+        expectInputDraftAction { DraftAction.Compose }
+        expectObservedMessageAttachments()
+        expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        ignoreRecipientsUpdates()
+
+        val id1 = AttachmentId("att-1")
+        val id2 = AttachmentId("att-2")
+
+        coEvery { deleteAttachment(id1) } returns Unit.right()
+        coEvery { deleteAttachment(id2) } returns Unit.right()
+
+        // When
+        viewModel.submit(ComposerAction.AcknowledgeAttachmentErrors(listOf(id1, id2)))
+
+        // Then
+        coVerify { deleteAttachment(id1) }
+        coVerify { deleteAttachment(id2) }
+    }
+
     @BeforeTest
     fun setUp() {
         mockkStatic(android.graphics.Color::parseColor)

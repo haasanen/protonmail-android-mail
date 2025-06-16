@@ -34,6 +34,7 @@ import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.decode
 import ch.protonmail.android.mailcommon.domain.model.hasEmailData
 import ch.protonmail.android.mailcommon.domain.network.NetworkManager
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
@@ -415,8 +416,32 @@ class ComposerViewModel @AssistedInject constructor(
                 is ComposerAction.DiscardDraftConfirmed -> onDiscardDraftConfirmed()
                 is ComposerAction.OnScheduleSendRequested -> onScheduleSendRequested()
                 is ComposerAction.OnScheduleSend -> handleOnScheduleSendMessage(action.time)
+                is ComposerAction.AcknowledgeAttachmentErrors -> handleConfirmAttachmentErrors(action)
             }
             logViewModelAction(action, "Completed.")
+        }
+    }
+
+    private fun handleConfirmAttachmentErrors(action: ComposerAction.AcknowledgeAttachmentErrors) {
+        val attachmentsWithError = action.attachmentsWithError
+        if (attachmentsWithError.isEmpty()) {
+            Timber.w("composer: No attachments with error to handle")
+            return
+        }
+
+        viewModelScope.launch {
+            var errorDeletingAttachments: AttachmentDeleteError? = null
+            attachmentsWithError.forEach { attachmentId ->
+                deleteAttachment(attachmentId)
+                    .onLeft {
+                        Timber.e("Failed to delete attachment: $it")
+                        errorDeletingAttachments = it
+                    }
+            }
+
+            errorDeletingAttachments?.let {
+                emitNewStateFor(EffectsEvent.AttachmentEvent.RemoveAttachmentError(it))
+            }
         }
     }
 
