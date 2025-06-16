@@ -16,24 +16,23 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.usecase
+package ch.protonmail.android.maillabel.data.usecase
 
-import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
-import uniffi.proton_mail_uniffi.NewAllMailMailboxResult
-import uniffi.proton_mail_uniffi.newAllMailMailbox
+import uniffi.proton_mail_uniffi.NewMailboxResult
+import uniffi.proton_mail_uniffi.newMailbox
 import javax.inject.Inject
 
-class CreateAllMailMailbox @Inject constructor() {
+class CreateMailbox @Inject constructor() {
 
-    suspend operator fun invoke(mailUserSession: MailUserSessionWrapper): Either<DataError, MailboxWrapper> =
-        when (val result = newAllMailMailbox(mailUserSession.getRustUserSession())) {
-            is NewAllMailMailboxResult.Error -> result.v1.toDataError().left()
-            is NewAllMailMailboxResult.Ok -> MailboxWrapper(result.v1).right()
+    suspend operator fun invoke(mailUserSession: MailUserSessionWrapper, labelId: LocalLabelId) =
+        when (val result = newMailbox(mailUserSession.getRustUserSession(), labelId)) {
+            is NewMailboxResult.Error -> result.v1.toDataError().left()
+            is NewMailboxResult.Ok -> MailboxWrapper(result.v1).right()
         }
 }

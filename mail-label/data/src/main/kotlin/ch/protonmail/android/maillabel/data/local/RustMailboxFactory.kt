@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.local
+package ch.protonmail.android.maillabel.data.local
 
 import arrow.core.Either
 import arrow.core.flatten
@@ -25,8 +25,8 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.usecase.GetSelectedMailLabelId
-import ch.protonmail.android.mailmessage.data.usecase.CreateAllMailMailbox
-import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
+import ch.protonmail.android.maillabel.data.usecase.CreateAllMailMailbox
+import ch.protonmail.android.maillabel.data.usecase.CreateMailbox
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import kotlinx.coroutines.sync.Mutex
