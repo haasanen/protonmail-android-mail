@@ -280,10 +280,10 @@ internal class AutoLockSettingsViewModelTest {
     }
 
     @Test
-    fun `RequestBiometricsProtection with Pin protection should emit BiometricAuth request`() = runTest {
+    fun `RequestBiometricsProtection with Pin protection should emit PinLockToBiometricsRequested`() = runTest {
         // Given
         expectAutoLock(AutoLock(protectionType = Protection.Pin))
-        val expectedEffect = Effect.of(BiometricsOperationFollowUp.RemovePinAndSetBiometrics)
+        val expectedEffect = Effect.of(Unit)
 
         // When + Then
         viewModel.effects.test {
@@ -291,7 +291,7 @@ internal class AutoLockSettingsViewModelTest {
             viewModel.submit(AutoLockSettingsViewAction.RequestBiometricsProtection)
 
             val effects = awaitItem()
-            assertEquals(expectedEffect, effects.requestBiometricsAuth)
+            assertEquals(expectedEffect, effects.pinLockToBiometricsRequested)
         }
     }
 

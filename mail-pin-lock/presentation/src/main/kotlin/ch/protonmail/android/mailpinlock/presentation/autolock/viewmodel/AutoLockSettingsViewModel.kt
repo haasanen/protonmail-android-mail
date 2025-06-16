@@ -70,9 +70,9 @@ class AutoLockSettingsViewModel @Inject constructor(
                 is AutoLockSettingsViewAction.RequestPinProtection -> resolvePinProtection()
                 is AutoLockSettingsViewAction.ForceRequestPinCreation -> forceRequestPinCreation()
                 is AutoLockSettingsViewAction.RequestPinProtectionChange -> resolvePinProtectionChange()
+                is AutoLockSettingsViewAction.SetPinPreference -> applyPinPreference()
                 is AutoLockSettingsViewAction.MigrateFromPinToBiometrics -> migratePinProtectionToBiometrics()
                 is AutoLockSettingsViewAction.RequestBiometricsProtection -> resolveBiometricProtection()
-                is AutoLockSettingsViewAction.SetPinPreference -> applyPinPreference()
                 is AutoLockSettingsViewAction.SetBiometricsPreference -> applyBiometricPreference()
                 is AutoLockSettingsViewAction.RemoveBiometricsProtection -> disableBiometricPreference()
             }
@@ -84,13 +84,16 @@ class AutoLockSettingsViewModel @Inject constructor(
     }
 
     private suspend fun resolveBiometricProtection() = withCurrentLockPolicy { autoLock ->
-        val followUpEvent = when (autoLock.protectionType) {
-            Protection.None -> BiometricsOperationFollowUp.SetBiometrics
-            Protection.Pin -> BiometricsOperationFollowUp.RemovePinAndSetBiometrics
+        val event = when (autoLock.protectionType) {
             Protection.Biometrics -> return
+            Protection.None -> AutoLockSettingsEvent.BiometricAuthRequested(
+                followUp = BiometricsOperationFollowUp.SetBiometrics
+            )
+
+            Protection.Pin -> AutoLockSettingsEvent.PinMigrationToBiometrics
         }
 
-        emitNewEffectFrom(AutoLockSettingsEvent.BiometricAuthRequested(followUpEvent))
+        emitNewEffectFrom(event)
     }
 
     private suspend fun resolvePinProtection() = withCurrentLockPolicy { autoLock ->

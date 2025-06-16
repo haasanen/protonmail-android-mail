@@ -219,13 +219,7 @@ private fun AutoLockSettingScreen(
                     name = stringResource(R.string.mail_pinlock_settings_with_biometrics),
                     isSelected = settings.protectionType == ProtectionType.Biometrics,
                     onItemSelected = {
-                        val action = when (settings.protectionType) {
-                            ProtectionType.None -> AutoLockSettingsViewAction.RequestBiometricsProtection
-                            ProtectionType.Pin -> AutoLockSettingsViewAction.MigrateFromPinToBiometrics
-                            ProtectionType.Biometrics -> return@ProtonSettingsRadioItem
-                        }
-
-                        submitAction(action)
+                        submitAction(AutoLockSettingsViewAction.RequestBiometricsProtection)
                     }
                 )
             }
@@ -246,7 +240,6 @@ private fun AutoLockSettingScreen(
             if (settings.protectionType == ProtectionType.Pin) {
                 ChangePinOption(onClickChangePin = onChangePin)
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
-
             }
 
             ChangeIntervalOption(
