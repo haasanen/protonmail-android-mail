@@ -22,6 +22,7 @@ import androidx.annotation.StringRes
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddErrorWithList
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
@@ -55,6 +56,30 @@ internal sealed interface RecoverableError : EffectsStateModification {
         data object FreeUser : SenderChange(R.string.composer_change_sender_paid_feature)
         data object UnknownPermissions :
             SenderChange(R.string.composer_error_change_sender_failed_getting_subscription)
+    }
+
+    data class AttachmentsListChangedWithError(
+        val attachmentAddErrorWithList: AttachmentAddErrorWithList
+    ) : RecoverableError {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
+            when (attachmentAddErrorWithList.error) {
+                AttachmentAddError.AttachmentTooLarge,
+                AttachmentAddError.TooManyAttachments -> state.copy(
+                    attachmentsFileSizeExceeded = Effect.of(
+                        attachmentAddErrorWithList.failedAttachments.map {
+                            it.attachmentMetadata.attachmentId
+                        }
+                    )
+                )
+
+                AttachmentAddError.EncryptionError,
+                AttachmentAddError.Unknown,
+                AttachmentAddError.InvalidDraftMessage ->
+                    state.copy(error = Effect.of(TextUiModel(R.string.composer_unexpected_attachments_error)))
+
+
+            }
     }
 
     data class AttachmentsStore(val error: AttachmentAddError) : RecoverableError {

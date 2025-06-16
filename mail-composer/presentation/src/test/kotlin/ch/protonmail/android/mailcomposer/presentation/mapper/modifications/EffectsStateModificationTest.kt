@@ -18,9 +18,14 @@
 
 package ch.protonmail.android.mailcomposer.presentation.mapper.modifications
 
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
+import ch.protonmail.android.mailattachments.domain.model.AttachmentState
+import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddErrorWithList
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
@@ -77,6 +82,9 @@ internal class EffectsStateModificationTest(
             RecipientsBcc(emptyList())
         )
         private val draftUiModel = DraftUiModel(draftFields, draftDisplayBody)
+
+        private val invoiceAttachment = AttachmentMetadataSamples.Invoice
+        private val invoiceId = invoiceAttachment.attachmentId
 
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
@@ -261,7 +269,89 @@ internal class EffectsStateModificationTest(
                 initialState,
                 CompletionEffectsStateModification.ScheduleMessage.ScheduleAndExitOffline,
                 initialState.copy(closeComposerWithScheduleSendingOffline = Effect.of(Unit))
+            ),
+            arrayOf(
+                "attachment list changed with TooManyAttachments error",
+                initialState,
+                RecoverableError.AttachmentsListChangedWithError(
+                    AttachmentAddErrorWithList(
+                        error = AttachmentAddError.TooManyAttachments,
+                        failedAttachments = listOf(
+                            errorAttachment(DataError.Local.AttachmentError.TooManyAttachments)
+                        )
+                    )
+                ),
+                initialState.copy(
+                    attachmentsFileSizeExceeded = Effect.of(listOf(invoiceId))
+                )
+            ),
+            arrayOf(
+                "attachment list changed with AttachmentTooLarge error",
+                initialState,
+                RecoverableError.AttachmentsListChangedWithError(
+                    AttachmentAddErrorWithList(
+                        error = AttachmentAddError.AttachmentTooLarge,
+                        failedAttachments = listOf(
+                            errorAttachment(DataError.Local.AttachmentError.AttachmentTooLarge)
+                        )
+                    )
+                ),
+                initialState.copy(
+                    attachmentsFileSizeExceeded = Effect.of(listOf(invoiceId))
+                )
+            ),
+            arrayOf(
+                "attachment list changed with EncryptionError",
+                initialState,
+                RecoverableError.AttachmentsListChangedWithError(
+                    AttachmentAddErrorWithList(
+                        error = AttachmentAddError.EncryptionError,
+                        failedAttachments = listOf(
+                            errorAttachment(DataError.Local.AttachmentError.EncryptionError)
+                        )
+                    )
+                ),
+                initialState.copy(
+                    error = Effect.of(TextUiModel.TextRes(R.string.composer_unexpected_attachments_error))
+                )
+            ),
+            arrayOf(
+                "attachment list changed with InvalidDraftMessage error",
+                initialState,
+                RecoverableError.AttachmentsListChangedWithError(
+                    AttachmentAddErrorWithList(
+                        error = AttachmentAddError.InvalidDraftMessage,
+                        failedAttachments = listOf(
+                            errorAttachment(DataError.Local.AttachmentError.InvalidDraftMessage)
+                        )
+                    )
+                ),
+                initialState.copy(
+                    error = Effect.of(TextUiModel.TextRes(R.string.composer_unexpected_attachments_error))
+                )
+            ),
+            arrayOf(
+                "attachment list changed with Unknown error",
+                initialState,
+                RecoverableError.AttachmentsListChangedWithError(
+                    AttachmentAddErrorWithList(
+                        error = AttachmentAddError.Unknown,
+                        failedAttachments = listOf(
+                            errorAttachment(
+                                DataError.Local.AttachmentError.AttachmentTooLarge
+                            )
+                        )
+                    )
+                ),
+                initialState.copy(
+                    error = Effect.of(TextUiModel.TextRes(R.string.composer_unexpected_attachments_error))
+                )
             )
+        )
+
+        private fun errorAttachment(error: DataError.Local): AttachmentMetadataWithState = AttachmentMetadataWithState(
+            attachmentMetadata = invoiceAttachment,
+            attachmentState = AttachmentState.Error(reason = error)
         )
     }
 }
