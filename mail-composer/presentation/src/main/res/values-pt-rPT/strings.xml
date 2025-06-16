@@ -120,9 +120,11 @@
   <string name="composer_copy_recipient_action_item">Copiar</string>
   <string name="schedule_send_content_description">Agendar envio</string>
   <string name="composer_error_retrieving_schedule_send_options">Falta programar o horário para agendar o envio</string>
-  <string name="composer_schedule_send_content_description">Schedule send</string>
+  <string name="composer_schedule_send_content_description">Agendar o envio</string>
   <string name="composer_schedule_send_tomorrow_title">Amanhã</string>
   <string name="composer_schedule_send_monday_title">Segunda-feira</string>
-  <string name="composer_schedule_send_custom_title">Custom</string>
+  <string name="composer_schedule_send_custom_title">Personalizar</string>
   <string name="composer_schedule_send_custom_description">Escolher data e hora</string>
+  <string name="composer_error_send_message">Erro no envio da mensagem</string>
+  <string name="composer_schedule_send_previously_set">Previously set</string>
 </resources>

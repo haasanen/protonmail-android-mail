@@ -125,4 +125,6 @@
   <string name="composer_schedule_send_monday_title">Δευτέρα</string>
   <string name="composer_schedule_send_custom_title">Προσαρμοσμένο</string>
   <string name="composer_schedule_send_custom_description">Επιλέξτε ώρα και ημερομηνία</string>
+  <string name="composer_error_send_message">Σφάλμα κατά την αποστολή του μηνύματος</string>
+  <string name="composer_schedule_send_previously_set">Προηγουμένως ορισμένο</string>
 </resources>

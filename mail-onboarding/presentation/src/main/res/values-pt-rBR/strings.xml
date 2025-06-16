@@ -27,14 +27,17 @@
   <string name="onboarding_neat_and_tidy_headline">Limpo e arrumado</string>
   <string name="onboarding_neat_and_tidy_description">Mensagens de arquivos, etiquetas e códigos de cores para criar sua caixa de entrada personalizada e perfeita.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_rebuilt_from_ground_up_headline">Transformado completamente</string>
-  <string name="onboarding_rebuilt_from_ground_up_description">Completamente reestruturado na arquitetura Rust, o novo Proton Mail foi reconstruído para desempenho, experiência do usuário e escalabilidade.</string>
+  <string name="onboarding_welcome_title">Boas-vindas ao\nnovo aplicativo do Proton Mail!</string>
+  <string name="onboarding_welcome_headline">Transformado completamente</string>
+  <string name="onboarding_welcome_description">Obrigado por participar deste grupo limitado de beta testers para a versão beta. Seu feedback é fundamental para nos ajudar a desenvolver um Proton Mail ainda melhor pronto para o lançamento público.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_new_inbox_headline">Nova caixa de entrada revelada</string>
-  <string name="onboarding_new_inbox_description">Estamos empolgados em apresentar o novo design vibrante e a experiência do usuário aprimorada. Por enquanto, você pode visualizar as novas listas e as visualizações de mensagens.</string>
+  <string name="onboarding_rebuilt_title">Completamente redesenhado para mais rendimento e velocidade</string>
+  <string name="onboarding_rebuilt_headline">Nova caixa de entrada revelada</string>
+  <string name="onboarding_rebuilt_description">Completamente redesenhado usando a arquitetura de ferrugem, o novo aplicativo do Proton Mail é mais rápido com um design dinâmico e recursos muito solicitados, como o modo offline.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_is_key_headline">Seu feedback é essencial</string>
-  <string name="onboarding_feedback_is_key_description">Estamos lançando todos os recursos nos próximos meses. Por favor, continue testando o aplicativo e nos diga como podemos melhorá-lo.</string>
+  <string name="onboarding_feedback_title">Obrigado pela sua participação!</string>
+  <string name="onboarding_feedback_headline">Seu feedback é essencial</string>
+  <string name="onboarding_feedback_description">Vamos lançar novos recursos nos próximos meses. Teste o aplicativo e toque em «Relatar um problema» para nos dizer como podemos continuar melhorando. Sua contribuição é inestimável!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Próximo</string>
   <string name="onboarding_get_started">Começar o teste</string>

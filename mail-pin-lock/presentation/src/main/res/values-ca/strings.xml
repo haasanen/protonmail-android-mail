@@ -19,37 +19,42 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Torna</string>
   <!-- Auto lock -->
-  <string name="mail_pinlock_settings_title">Protecció</string>
-  <string name="mail_pinlock_settings_toggle_autolock_title">Bloqueig automàtic de l\'aplicació</string>
-  <string name="mail_pinlock_settings_toggle_autolock_description">Activeu aquesta característica per a bloquejar automàticament l\'aplicació i protegir-la amb un codi PIN.</string>
+  <string name="mail_pinlock_settings_title">Bloqueig de l\'aplicació</string>
+  <string name="mail_pinlock_settings_no_lock">No bloquis</string>
+  <string name="mail_pinlock_settings_with_pin">Protegiu amb codi PIN</string>
+  <string name="mail_pinlock_settings_with_biometrics">Protegiu amb dades biomètriques</string>
+  <string name="mail_pinlock_settings_logout_disclaimer">Totes les preferències de bloqueig de l\'aplicació, inclòs el codi PIN, es restabliran quan tanqueu la sessió de l\'aplicació.</string>
+  <string name="mail_pinlock_settings_new_pin_topbar">Establiu un nou codi PIN</string>
+  <string name="mail_pinlock_settings_new_pin_title">Codi PIN nou</string>
+  <string name="mail_pinlock_settings_new_pin_description">Introduïu un codi PIN d\'entre 4 i 21 dígits</string>
+  <string name="mail_pinlock_settings_confirm_pin_topbar">Confirma el codi PIN</string>
+  <string name="mail_pinlock_settings_confirm_pin_title">Repeteix el codi PIN</string>
+  <string name="mail_pinlock_settings_confirm_pin_description">Torneu a introduir el codi PIN per assegurar-vos que és correcte</string>
+  <string name="mail_pinlock_settings_verify_pin_topbar">Introduïu el codi PIN</string>
+  <string name="mail_pinlock_settings_verify_pin_title">Introduïu el codi PIN</string>
+  <string name="mail_pinlock_settings_verify_pin_description">Confirmeu que sou vós per a continuar</string>
   <string name="mail_pinlock_settings_change_pin_description">Canvia el codi PIN</string>
-  <string name="mail_pinlock_settings_change_interval_title">Temporitzador de bloqueig automàtic</string>
+  <string name="mail_pinlock_settings_change_interval_title">Bloqueig automàtic</string>
   <string name="mail_pinlock_settings_autolock_immediately">Immediatament</string>
   <string name="mail_pinlock_settings_autolock_never">Mai</string>
-  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minuts d\'inactivitat</string>
-  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minuts d\'inactivitat</string>
-  <string name="mail_pinlock_settings_autolock_description_one_hour">1 hora d\'inactivitat</string>
-  <string name="mail_pinlock_settings_autolock_description_one_day">1 dia d\'inactivitat</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">Després de 5 minuts</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">Després de 15 minuts</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">Després d\'1 hora</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">Després d\'un dia</string>
   <string name="mail_settings_auto_lock_update_error">S\'ha produït un error en actualitzar les preferències.</string>
-  <string name="mail_settings_pin_insertion_input_title">Introduïu el codi PIN</string>
-  <string name="mail_settings_pin_insertion_set_title">Estableix el codi PIN</string>
-  <string name="mail_settings_pin_insertion_confirm_title">Confirma el codi PIN</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">Icona de bloqueig</string>
   <string name="mail_settings_pin_insertion_pin_dot_description">Punt del codi PIN</string>
-  <string name="mail_settings_pin_insertion_backspace_description">Retrocés</string>
-  <string name="mail_settings_pin_insertion_biometric_description">Autenticació biomètrica</string>
-  <string name="mail_settings_pin_insertion_button_create">Crea</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Confirma</string>
+  <string name="mail_settings_pin_insertion_button_create">Confirma</string>
+  <string name="mail_settings_pin_insertion_button_confirm">Següent</string>
   <string name="mail_settings_pin_insertion_error_no_match">Els codis PIN no coincideixen.</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="one">%s intent restant.</item>
-    <item quantity="other">%s intents restants.</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="one">%s intent restant fins a l\'eliminació segura de les dades.</item>
-    <item quantity="other">%s intents restants fins a l\'eliminació segura de les dades.</item>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code_threshold">
+    <item quantity="one">%s intent restant abans de tancar la sessió.</item>
+    <item quantity="other">%s intents restants abans de tancar la sessió.</item>
   </plurals>
   <string name="mail_settings_pin_insertion_error_unknown">S\'ha produït un error en verificar el codi PIN.</string>
+  <string name="mail_settings_pin_insertion_error_too_short">El codi PIN ha de tenir com a mínim 4 dígits</string>
+  <string name="mail_settings_pin_verification_error_too_many">Massa intents. Torneu-ho a provar més tard.</string>
+  <string name="mail_settings_pin_verification_error_no_match">Codi PIN incorrecte</string>
+  <string name="mail_settings_pin_verification_error_too_many_frequent">Massa intents seguits. Torneu-ho a provar més tard.</string>
   <string name="mail_settings_pin_insertion_signout_text">Tanca la sessió</string>
   <string name="mail_settings_pin_insertion_signout_dialog_title">Tanca la sessió</string>
   <string name="mail_settings_pin_insertion_signout_dialog_description">Segur que desitgeu tancar la sessió?</string>
@@ -59,9 +64,21 @@
   <string name="mail_settings_pin_insertion_changed_success">S\'ha canviat el codi PIN.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">S\'ha produït un error. Proveu de nou.</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">No s’han registrat dades biomètriques</string>
-  <string name="log_in_using_biometric_credential">Desbloquejar amb les vostres credencials biomètriques</string>
-  <string name="unlock_using_biometrics">Desbloquejar usant biomètrica</string>
-  <string name="biometric_error_hw_not_available">El sensor biomètric no està disponible.</string>
+  <string name="mail_settings_pin_verify_generic_error_message">S\'ha produït un error. Torneu-ho a provar.</string>
+  <string name="mail_settings_pin_verify_too_many_attempts">Massa intents incorrectes</string>
+  <string name="mail_settings_pin_verify_wrong_pin">Codi PIN incorrecte</string>
+  <string name="mail_settings_biometrics_unable_to_set">S\'ha produït un error en establir les preferències de la biometria.</string>
+  <string name="mail_settings_biometrics_unable_to_unset">S\'ha produït un error en restablir les preferències de la biometria.</string>
+  <string name="mail_settings_biometrics_unknown_lock">S\'ha produït un error en recuperar la política de bloqueig actual.</string>
+  <!-- Auto lock dialog -->
+  <string name="mail_settings_pin_lock_dialog_title">Confirma el codi PIN</string>
+  <string name="mail_settings_pin_lock_dialog_subtitle">Per seguretat, introduïu el codi PIN actual per a continuar.</string>
+  <string name="mail_settings_pin_lock_dialog_button_next">Següent</string>
+  <string name="mail_settings_pin_lock_dialog_button_cancel">Cancel·la</string>
+  <!-- Biometrics unlock -->
+  <string name="mail_settings_biometrics_title_confirm">Confirma l\'operació</string>
+  <string name="mail_settings_biometrics_subtitle_default">Utilitzeu l\'empremta digital per a confirmar l\'operació</string>
+  <string name="mail_settings_biometrics_button_negative">Cancel·la</string>
+  <string name="mail_settings_biometrics_title_app_locked">Aplicació bloquejada</string>
+  <string name="mail_settings_biometrics_subtitle_app_locked">Desbloquegeu utilitzant les credencials biomètriques</string>
 </resources>

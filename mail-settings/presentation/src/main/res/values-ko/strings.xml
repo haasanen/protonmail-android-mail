@@ -25,12 +25,12 @@
   <string name="mail_settings_folder_and_label_settings">폴더 및 라벨 설정</string>
   <string name="mail_settings_privacy_and_security_settings">개인정보 보호 및 보안 설정</string>
   <string name="mail_settings_preferences">환경 설정</string>
-  <string name="mail_settings_app">앱</string>
-  <string name="mail_settings_mailbox">이메일</string>
+  <string name="mail_settings_app">앱 사용자화</string>
+  <string name="mail_settings_mailbox">메일함 설정</string>
   <string name="mail_settings_email_hint">이메일 및 메일함 환경 설정</string>
   <string name="mail_settings_folders_labels">폴더 및 라벨</string>
   <string name="mail_settings_folders_labels_hint">메일함 정리</string>
-  <string name="mail_settings_spam_and_custom_filters">스팸 및 커스텀 필터</string>
+  <string name="mail_settings_spam_and_custom_filters">스팸 및 필터</string>
   <string name="mail_settings_spam_and_custom_filters_hint">자동화 및 분류</string>
   <string name="mail_settings_privacy_and_security">개인정보 및 보안</string>
   <string name="mail_settings_privacy_and_security_hint">이메일 트래킹 보호</string>
@@ -65,8 +65,8 @@
   <string name="mail_settings_app_customization_advanced_header">고급</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">시스템</string>
-  <string name="mail_settings_theme_light">라이트 모드</string>
-  <string name="mail_settings_theme_dark">다크 모드</string>
+  <string name="mail_settings_theme_light">라이트</string>
+  <string name="mail_settings_theme_dark">다크</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">사용 가능한 정보 없음</string>
   <string name="mail_settings_account">계정</string>

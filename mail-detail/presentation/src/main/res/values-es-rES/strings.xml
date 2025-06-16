@@ -17,10 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">Error al cargar los contactos</string>
   <string name="detail_error_loading_conversation">Error al cargar la conversación</string>
   <string name="detail_error_loading_messages">Error al cargar los mensajes</string>
-  <string name="error_mark_unread_failed">Error al marcar como \"No leído\". Inténtalo de nuevo.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d mensaje</item>
     <item quantity="other">%d mensajes</item>
@@ -59,12 +57,10 @@
   <string name="conversation_moved_to_spam">Se ha movido la conversación al spam.</string>
   <string name="conversation_moved_to_archive">Conversación movida al archivo</string>
   <string name="error_move_conversation_failed">Error al mover la conversación. Inténtalo de nuevo.</string>
-  <string name="error_loading_message">Se ha producido un error. Inténtalo de nuevo más tarde.</string>
   <string name="error_offline_loading_message">No estás conectado. Se necesita una conexión a internet para mostrar el contenido de este mensaje.</string>
   <string name="error_get_attachment_failed">Error al obtener el archivo adjunto.</string>
   <string name="error_attachment_download_in_progress">La descarga actual debe completarse antes de iniciar una nueva.</string>
   <string name="error_get_attachment_not_enough_memory">Error al obtener el adjunto por falta de memoria</string>
-  <string name="reload">Recargar</string>
   <string name="error_relabel_message_failed">Error al etiquetar de nuevo el mensaje. Inténtalo de nuevo.</string>
   <string name="error_relabel_conversation_failed">Error al reetiquetar la conversación. Vuelve a intentarlo</string>
   <string name="please_go_back_online_to_load_messages">Estás desconectado. Vuelve a conectarte para cargar los mensajes.</string>
@@ -104,25 +100,19 @@
   <string name="message_delete_dialog_message">¿Estás seguro de que quieres eliminar permanentemente este mensaje?</string>
   <string name="message_deleted">Se ha eliminado el mensaje.</string>
   <string name="error_delete_message_failed">Error al eliminar el mensaje</string>
-  <string name="error_delete_message_failed_wrong_folder">El mensaje no está en una ubicación de donde pueda ser eliminado.</string>
   <string name="error_delete_conversation_failed">Error al eliminar la conversación</string>
-  <string name="error_delete_conversation_failed_wrong_folder">La conversación no está en una ubicación de donde pueda ser eliminada.</string>
   <string name="conversation_delete_dialog_title">Eliminar la conversación</string>
   <string name="conversation_delete_dialog_message">¿Estás seguro de que quieres eliminar permanentemente esta conversación?</string>
   <string name="conversation_deleted">Se ha eliminado la conversación.</string>
   <string name="message_body_load_remote_content_button_text">Cargar contenido remoto</string>
   <string name="message_body_load_embedded_images_button_text">Cargar las imágenes incrustadas</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Cargar contenido remoto e incrustado</string>
-  <string name="message_report_phishing_dialog_title_offline">Atención</string>
-  <string name="message_report_phishing_dialog_message_offline">Esta función solo está disponible en línea.</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">Aceptar</string>
   <string name="message_report_phishing_dialog_title">Confirmar el informe de suplantación</string>
   <string name="message_report_phishing_dialog_message">Al reportar un mensaje como suplantación de identidad, enviarás una alerta a nosotros para analizarlo y mejorar nuestros filtros. Significa que podremos ver todo el contenido del mensaje.</string>
   <string name="message_report_phishing_dialog_confim_button">Confirmar</string>
   <string name="message_report_phishing_dialog_cancel_button">Cancelar</string>
   <string name="open_on_protoncalendar_banner_title">Abrir en Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Calendario seguro y cifrado</string>
-  <string name="error_print_failed">Error al imprimir el mensaje</string>
   <string name="trashed_messages_banner">Esta conversación contiene mensajes borrados.</string>
   <string name="non_trashed_messages_banner">Esta conversación contiene mensajes que no son borrados.</string>
   <string name="show">Mostrar</string>
@@ -132,4 +122,13 @@
   <string name="message_details_header_to">Para</string>
   <string name="message_details_header_cc">Cc</string>
   <string name="message_details_header_bcc">Cco</string>
+  <string name="schedule_message_sent_at_banner_title">Este mensaje se enviará</string>
+  <string name="schedule_message_edit_message_button">Editar mensaje</string>
+  <string name="schedule_send_tomorrow">mañana a las %1$s</string>
+  <string name="error_cancel_schedule_send_failed">No se pudo cancelar la hora de envío programado para este mensaje</string>
+  <string name="offline_error_cancel_schedule_send_failed">No se puede cancelar un mensaje programado sin conexión</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Editar borrador</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancelar</string>
+  <string name="message_cancel_schedule_send_dialog_title">Editar y reprogramar</string>
+  <string name="message_cancel_schedule_send_dialog_message">Este mensaje se moverá a Borradores para que puedas editarlo. Necesitarás reprogramar cuándo será enviado.</string>
 </resources>

@@ -34,11 +34,12 @@
   <string name="mailbox_message_sending_success">Le message a été envoyé.</string>
   <string name="mailbox_message_sending_error">Une erreur s\'est produite lors de l\'envoi du message.</string>
   <string name="mailbox_message_sending_error_action">Déplacer vers le dossier Brouillons</string>
-  <string name="mailbox_attachment_uploading_error">La pièce jointe n\'a pas pu être chargée.</string>
   <string name="notification_switched_account">Basculé sur le compte %s</string>
   <string name="label_saved">Le label a été enregistré.</string>
   <string name="label_deleted">Le label a été supprimé.</string>
-  <string name="label_list_loading_error">Une erreur s\'est produite lors du chargement du label. Veuillez réessayer plus tard.</string>
   <string name="app_locked">Application verrouillée</string>
   <string name="use_pin_instead">Utiliser le code PIN à la place</string>
+  <string name="mailbox_message_scheduling">Planification du message…</string>
+  <string name="mailbox_message_scheduling_offline">Hors ligne : message en file d\'attente pour la planification</string>
+  <string name="mailbox_message_scheduled_for_sending_success">Ce message sera envoyé le %1$s</string>
 </resources>

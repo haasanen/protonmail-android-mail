@@ -27,14 +27,17 @@
   <string name="onboarding_neat_and_tidy_headline">Просты і лаканічны</string>
   <string name="onboarding_neat_and_tidy_description">Файл, метка і пазначэнне паведамленняў колерам дапамогуць стварыць ідэальную паштовую скрыню, якая будзе пасаваць менавіта вам.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_rebuilt_from_ground_up_headline">Цалкам перапрацаваны</string>
-  <string name="onboarding_rebuilt_from_ground_up_description">Новая праграма Proton Mail цалкам перароблена для прадукцыйнасці, камфортнага выкарыстання і маштабавання. Усё гэта стала магчымым дзякуючы перапісванню праграмнага кода на архітэктуру Rust.</string>
+  <string name="onboarding_welcome_title">Вітаем у новай\nпраграме Proton Mail!</string>
+  <string name="onboarding_welcome_headline">Цалкам перапрацаваная</string>
+  <string name="onboarding_welcome_description">Дзякуй, што далучыліся да гэтай абмежаванай па колькасці групы ранніх бэта-тэсціроўшчыкаў. Ваш водгук мае рашаючае значэнне, каб дапамагчы нам пабудаваць яшчэ лепшую праграму Proton Mail</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_new_inbox_headline">Прадстаўляем вам новую паштовую скрыню</string>
-  <string name="onboarding_new_inbox_description">Мы рады прадставіць новы яркі дызайн і палепшанае ўзаемадзеянне з карыстальнікам. У цяперашні час вы можаце рабіць папярэдні прагляд новага спіса і паведамленняў. </string>
+  <string name="onboarding_rebuilt_title">Перабудавана, каб быць лепшай і хутчэйшай</string>
+  <string name="onboarding_rebuilt_headline">Прадстаўляем вам новую паштовую скрыню</string>
+  <string name="onboarding_rebuilt_description">Новы Proton Mail стаў яшчэ хутчэй, атрымаў яркі дызайн і вельмі запатрабаваныя функцыі, такія як рэжым па-за сеткай. Гэтага ўдалося дасягнуць дзякуючы выкарыстанню архітэктуры Rust.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_is_key_headline">Ваш водгук вельмі важны для нас</string>
-  <string name="onboarding_feedback_is_key_description">Разгортванне ўсіх новых функцый адбудзецца ў наступным месяцы. Працягвайце тэсціраваць праграму і паведамляйце нам, што можна палепшыць!</string>
+  <string name="onboarding_feedback_title">Дзякуй за ваш удзел!</string>
+  <string name="onboarding_feedback_headline">Ваш водгук мае ключавое значэнне</string>
+  <string name="onboarding_feedback_description">У бліжэйшыя месяцы мы будзем выпускаць новыя функцыі. Пратэсціруйце праграму і націсніце \"Паведаміць аб праблеме\". Гэта дазволіць нам зразумець, якім чынам мы можам удасканаліць праграму. Ваш водгук з\'яўляецца бясцэнным!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Далей</string>
   <string name="onboarding_get_started">Пачніце тэсціраваць</string>

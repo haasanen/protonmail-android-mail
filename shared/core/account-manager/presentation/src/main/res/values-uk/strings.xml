@@ -17,19 +17,19 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="account_switcher_manage_account">Manage account</string>
-  <string name="account_switcher_sign_out">Sign out</string>
-  <string name="account_switcher_sign_in">Sign in</string>
-  <string name="account_switcher_remove">Remove</string>
-  <string name="account_switcher_remove_from_device">Remove from this device</string>
-  <string name="account_switcher_switch_to">Switch to</string>
-  <string name="manage_accounts_title">Manage accounts</string>
-  <string name="manage_accounts_signed_in">Signed in</string>
-  <string name="manage_accounts_signed_out">Signed out</string>
-  <string name="manage_accounts_add_account">Add account</string>
-  <string name="manage_accounts_switch_to">Switch to</string>
-  <string name="primary_account_avatar_camera_content_description">Account avatar camera</string>
-  <string name="manage_accounts_on_device">Manage accounts on this device</string>
-  <string name="add_another_account">Add another account</string>
-  <string name="account_switcher_no_initials">NA</string>
+  <string name="account_switcher_manage_account">Керувати обліковим записом</string>
+  <string name="account_switcher_sign_out">Вийти</string>
+  <string name="account_switcher_sign_in">Увійти</string>
+  <string name="account_switcher_remove">Видалити</string>
+  <string name="account_switcher_remove_from_device">Видалити з цього пристрою</string>
+  <string name="account_switcher_switch_to">Перейти до</string>
+  <string name="manage_accounts_title">Керування обліковими записами</string>
+  <string name="manage_accounts_signed_in">Виконано вхід</string>
+  <string name="manage_accounts_signed_out">Виконано вихід</string>
+  <string name="manage_accounts_add_account">Додати обліковий запис</string>
+  <string name="manage_accounts_switch_to">Перейти до</string>
+  <string name="primary_account_avatar_camera_content_description">Камера аватара облікового запису</string>
+  <string name="manage_accounts_on_device">Керувати обліковими записами на цьому пристрої</string>
+  <string name="add_another_account">Додати інший обліковий запис</string>
+  <string name="account_switcher_no_initials">Н/Д</string>
 </resources>

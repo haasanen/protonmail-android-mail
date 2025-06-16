@@ -127,4 +127,6 @@
   <string name="composer_schedule_send_monday_title">Панядзелак</string>
   <string name="composer_schedule_send_custom_title">Карыстальніцкае</string>
   <string name="composer_schedule_send_custom_description">Выберыце час і дату</string>
+  <string name="composer_error_send_message">Памылка адпраўкі паведамлення</string>
+  <string name="composer_schedule_send_previously_set">Previously set</string>
 </resources>

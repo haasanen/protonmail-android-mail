@@ -98,4 +98,6 @@
   <string name="auth_signup_validation_username_input_invalid">Nazwa użytkownika jest nieprawidłowa.</string>
   <string name="auth_signup_validation_email_input_invalid">Nazwa użytkownika jest nieprawidłowa.</string>
   <string name="auth_signup_countries_search">Szukaj kraju</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_user">Nie można skonfigurować użytkownika.</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_address">Nie można skonfigurować adresu.</string>
 </resources>

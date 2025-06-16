@@ -30,7 +30,7 @@
   <string name="composer_error_invalid_email">Indirizzo email non valido</string>
   <string name="composer_error_invalid_sender">Indirizzo mittente non valido</string>
   <string name="change_sender_button_content_description">Cambia il mittente</string>
-  <string name="composer_change_sender_paid_feature">Passa a un piano a pagamento per cambiare l\'indirizzo mittente</string>
+  <string name="composer_change_sender_paid_feature">Passa a un piano a pagamento per cambiare l\'indirizzo del mittente</string>
   <string name="composer_error_change_sender_failed_getting_subscription">Caricamento dell\'abbonamento non riuscito. Cambio del mittente non riuscito.</string>
   <string name="composer_error_store_draft_sender_address">Salvataggio del mittente della bozza non riuscito</string>
   <string name="composer_error_store_draft_body">Salvataggio del contenuto della bozza non riuscito</string>
@@ -119,10 +119,12 @@
   <string name="composer_remove_recipient_action_item">Rimuovi</string>
   <string name="composer_copy_recipient_action_item">Copia</string>
   <string name="schedule_send_content_description">Programma l\'invio</string>
-  <string name="composer_error_retrieving_schedule_send_options">Generazione degli orari per \"invio programmato\" non riuscita</string>
+  <string name="composer_error_retrieving_schedule_send_options">Generazione degli orari per l\'invio programmato non riuscita </string>
   <string name="composer_schedule_send_content_description">Programma l\'invio</string>
   <string name="composer_schedule_send_tomorrow_title">Domani</string>
   <string name="composer_schedule_send_monday_title">Lunedì</string>
   <string name="composer_schedule_send_custom_title">Personalizzato</string>
-  <string name="composer_schedule_send_custom_description">Scegli ora e data</string>
+  <string name="composer_schedule_send_custom_description">Scegli la data e l\'ora</string>
+  <string name="composer_error_send_message">Invio del messaggio non riuscito</string>
+  <string name="composer_schedule_send_previously_set">Previously set</string>
 </resources>

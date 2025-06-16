@@ -17,10 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">Načtení kontaktů selhalo</string>
   <string name="detail_error_loading_conversation">Načtení konverzace selhalo</string>
   <string name="detail_error_loading_messages">Načtení zpráv selhalo</string>
-  <string name="error_mark_unread_failed">Označit jako nepřečtené se nezdařilo. Zkuste to prosím znovu.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d zpráva</item>
     <item quantity="few">%d zprávy</item>
@@ -63,12 +61,10 @@
   <string name="conversation_moved_to_spam">Konverzace přesunuta do spamu</string>
   <string name="conversation_moved_to_archive">Konverzace přesunuta do Archivu</string>
   <string name="error_move_conversation_failed">Přesunutí konverzace se nezdařilo. Zkuste to znovu.</string>
-  <string name="error_loading_message">Něco se pokazilo, prosím zkuste to znovu.</string>
   <string name="error_offline_loading_message">Jste offline. Pro zobrazení obsahu této zprávy je nutné připojení k internetu.</string>
   <string name="error_get_attachment_failed">Načtení přílohy se nezdařilo.</string>
   <string name="error_attachment_download_in_progress">Před zahájením nového stahování je třeba dokončit stávající stahování.</string>
   <string name="error_get_attachment_not_enough_memory">Nepodařilo se načíst přílohu z důvodu nedostatku paměti</string>
-  <string name="reload">Znovu načíst</string>
   <string name="error_relabel_message_failed">Nepodařilo se přeznačit zprávu. Zkuste to prosím znovu</string>
   <string name="error_relabel_conversation_failed">Nepodařilo se přeznačit konverzaci. Zkuste to prosím znovu</string>
   <string name="please_go_back_online_to_load_messages">Jste odpojeni (offline). Pro načtení zpráv se prosím znovu připojte</string>
@@ -108,25 +104,19 @@
   <string name="message_delete_dialog_message">Jste si jisti, že chcete trvale smazat tuto zprávu?</string>
   <string name="message_deleted">Zpráva smazána</string>
   <string name="error_delete_message_failed">Smazání zprávy selhalo</string>
-  <string name="error_delete_message_failed_wrong_folder">Zpráva se nenachází v místě, kde ji lze smazat</string>
   <string name="error_delete_conversation_failed">Smazání konverzace selhalo</string>
-  <string name="error_delete_conversation_failed_wrong_folder">Konverzace se nenachází v místě, kde ji lze smazat</string>
   <string name="conversation_delete_dialog_title">Smazat konverzaci</string>
   <string name="conversation_delete_dialog_message">Jste si jisti, že chcete trvale smazat tuto konverzaci?</string>
   <string name="conversation_deleted">Konverzace smazána</string>
   <string name="message_body_load_remote_content_button_text">Načíst vzdálený obsah</string>
   <string name="message_body_load_embedded_images_button_text">Načíst vložené obrázky</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Načíst vzdálený a vložený obsah</string>
-  <string name="message_report_phishing_dialog_title_offline">Upozornění</string>
-  <string name="message_report_phishing_dialog_message_offline">Tato funkce je dostupná jen v režimu online.</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Potvrdit oznámení phishingu</string>
   <string name="message_report_phishing_dialog_message">Nahlášení této zprávy jako pokusu o phishing odešle tuto zprávu nám, abychom ji mohli analyzovat a zlepšit tím naše filtry. To znamená, že uvidíme kompletně celý obsah této zprávy.</string>
   <string name="message_report_phishing_dialog_confim_button">Potvrdit</string>
   <string name="message_report_phishing_dialog_cancel_button">Zrušit</string>
   <string name="open_on_protoncalendar_banner_title">Otevřít v Proton kalendáři</string>
   <string name="open_on_protoncalendar_banner_description">Zabezpečený šifrovaný kalendář</string>
-  <string name="error_print_failed">Chyba při tisknutí zprávy</string>
   <string name="trashed_messages_banner">Tato konverzace obsahuje zprávy z koše.</string>
   <string name="non_trashed_messages_banner">Tato konverzace obsahuje zprávy, které nejsou v koši.</string>
   <string name="show">Zobrazit</string>
@@ -136,4 +126,13 @@
   <string name="message_details_header_to">Komu</string>
   <string name="message_details_header_cc">Kopie</string>
   <string name="message_details_header_bcc">Skrytá kopie</string>
+  <string name="schedule_message_sent_at_banner_title">Tato zpráva bude odeslána</string>
+  <string name="schedule_message_edit_message_button">Upravit zprávu</string>
+  <string name="schedule_send_tomorrow">zítra %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Nepodařilo se zrušit naplánovaný čas odeslání této zprávy</string>
+  <string name="offline_error_cancel_schedule_send_failed">Nelze zrušit naplánovanou zprávu, když jste offline</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Upravit koncept</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Zrušit</string>
+  <string name="message_cancel_schedule_send_dialog_title">Upravit a znovu naplánovat</string>
+  <string name="message_cancel_schedule_send_dialog_message">Tato zpráva bude přesunuta do konceptů, abyste ji mohli upravit. Budete muset znovu naplánovat, kdy bude odeslána.</string>
 </resources>

@@ -18,27 +18,28 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Вийти</string>
-  <string name="dialog_sign_out_account_description">The data associateed to your account will remain on this device unless you select to delete it.</string>
-  <string name="dialog_sign_out_account_confirm">Sign out</string>
-  <string name="dialog_sign_out_account_cancel">Cancel</string>
-  <string name="dialog_remove_account_title">Remove account?</string>
-  <string name="dialog_remove_account_description">Remove all associated data</string>
+  <string name="dialog_sign_out_account_description">Дані, пов\'язані з вашим обліковим записом, залишаться на цьому пристрої, якщо ви не вирішите їх видалити.</string>
+  <string name="dialog_sign_out_account_confirm">Вийти</string>
+  <string name="dialog_sign_out_account_cancel">Скасувати</string>
+  <string name="dialog_remove_account_title">Видалити обліковий запис?</string>
+  <string name="dialog_remove_account_description">Видалити всі пов\'язані дані</string>
   <string name="dialog_remove_account_confirm">Вилучити</string>
   <string name="dialog_remove_account_cancel">Скасувати</string>
   <string name="feature_coming_soon">Функція невдовзі з\'явиться…</string>
   <string name="mailbox_draft_saved">Чернетку збережено</string>
   <string name="mailbox_draft_discard">Відхилити</string>
-  <string name="mailbox_draft_discarded">Draft discarded</string>
+  <string name="mailbox_draft_discarded">Чернетку відхилено</string>
   <string name="mailbox_message_sending">Надсилання повідомлення…</string>
-  <string name="mailbox_message_sending_offline">Offline: message queued for sending</string>
+  <string name="mailbox_message_sending_offline">Ви поза мережею: повідомлення в черзі на відправлення</string>
   <string name="mailbox_message_sending_success">Повідомлення надіслано</string>
   <string name="mailbox_message_sending_error">Помилка надсилання повідомлення</string>
   <string name="mailbox_message_sending_error_action">Перейти до Чернеток</string>
-  <string name="mailbox_attachment_uploading_error">Помилка вивантаження вкладення</string>
-  <string name="notification_switched_account">Switched to account %s</string>
+  <string name="notification_switched_account">Змінено на обліковий запис %s</string>
   <string name="label_saved">Мітку збережено</string>
   <string name="label_deleted">Мітку видалено</string>
-  <string name="label_list_loading_error">Помилка завантаження мітки, спробуйте знову пізніше</string>
   <string name="app_locked">Програму заблоковано</string>
   <string name="use_pin_instead">Використати PIN-код натомість</string>
+  <string name="mailbox_message_scheduling">Планування повідомлення…</string>
+  <string name="mailbox_message_scheduling_offline">Ви поза мережею: повідомлення в черзі на планування</string>
+  <string name="mailbox_message_scheduled_for_sending_success">Це повідомлення буде надіслано %1$s</string>
 </resources>

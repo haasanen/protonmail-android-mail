@@ -17,10 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">Не ўдалося загрузіць кантакты</string>
   <string name="detail_error_loading_conversation">Не ўдалося загрузіць размову</string>
   <string name="detail_error_loading_messages">Не ўдалося загрузіць паведамленні</string>
-  <string name="error_mark_unread_failed">Не ўдалося пазначыць непрачытанае. Паспрабуйце яшчэ раз.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d паведамленне</item>
     <item quantity="few">%d паведамленні</item>
@@ -63,12 +61,10 @@
   <string name="conversation_moved_to_spam">Размова перамешчана ў Спам</string>
   <string name="conversation_moved_to_archive">Размова перамешчана ў Архіў</string>
   <string name="error_move_conversation_failed">Не ўдалося перамясціць размову. Паўтарыце спробу.</string>
-  <string name="error_loading_message">Нешта пайшло не так. Паспрабуйце яшчэ раз.</string>
   <string name="error_offline_loading_message">Вы па-за сеткай. Для адлюстравання змесціва гэтага паведамлення неабходна падключэнне да інтэрнэту.</string>
   <string name="error_get_attachment_failed">Не ўдалося атрымаць далучэнне.</string>
   <string name="error_attachment_download_in_progress">Спачатку завяршыце бягучае спампоўванне перад тым, як пачаць новае.</string>
   <string name="error_get_attachment_not_enough_memory">Не ўдалося атрымаць далучэнне па прычыне недахопу памяці</string>
-  <string name="reload">Перазагрузіць</string>
   <string name="error_relabel_message_failed">Не ўдалося паўторна пазначыць паведамленне. Паўтарыце спробу</string>
   <string name="error_relabel_conversation_failed">Не ўдалося змяніць метку размовы. Паўтарыце спробу</string>
   <string name="please_go_back_online_to_load_messages">Вы па-за сеткай. Для загрузкі паведамленняў неабходна падключэнне да інтэрнэту</string>
@@ -108,25 +104,19 @@
   <string name="message_delete_dialog_message">Вы сапраўды хочаце незваротна выдаліць гэта паведамленне?</string>
   <string name="message_deleted">Паведамленне выдалена</string>
   <string name="error_delete_message_failed">Не ўдалося выдаліць паведамленне.</string>
-  <string name="error_delete_message_failed_wrong_folder">Змяніце размяшчэнне паведамлення, каб выдаліць яго</string>
   <string name="error_delete_conversation_failed">Не ўдалося выдаліць размову</string>
-  <string name="error_delete_conversation_failed_wrong_folder">Змяніце размяшчэнне размовы, каб выдаліць яе</string>
   <string name="conversation_delete_dialog_title">Выдаліць размову</string>
   <string name="conversation_delete_dialog_message">Вы сапраўды хочаце незваротна выдаліць гэту размову?</string>
   <string name="conversation_deleted">Размова выдалена</string>
   <string name="message_body_load_remote_content_button_text">Загружаць аддаленае змесціва</string>
   <string name="message_body_load_embedded_images_button_text">Загружаць убудаваныя відарысы</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Загружаць аддаленае і ўбудаванае змесціва</string>
-  <string name="message_report_phishing_dialog_title_offline">Увага</string>
-  <string name="message_report_phishing_dialog_message_offline">Гэта функцыя даступна толькі падчас знаходжання ў сетцы.</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Пацвердзіць скаргу на фішынг</string>
   <string name="message_report_phishing_dialog_message">Адпраўляючы скаргу пра спробу фішынгу, вы адправіце гэта паведамленне нам, каб мы маглі прааналізаваць яго і палепшыць нашы фільтры. Гэта азначае, што мы зможам цалкам убачыць змесціва гэтага паведамлення.</string>
   <string name="message_report_phishing_dialog_confim_button">Пацвердзіць</string>
   <string name="message_report_phishing_dialog_cancel_button">Скасаваць</string>
   <string name="open_on_protoncalendar_banner_title">Адкрыць у Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Бяспечны зашыфраваны каляндар</string>
-  <string name="error_print_failed">Не ўдалося надрукаваць паведамленне</string>
   <string name="trashed_messages_banner">Гэта размова змяшчае выдаленыя паведамленні.</string>
   <string name="non_trashed_messages_banner">Гэта размова змяшчае паведамленні, якія не былі выдалены.</string>
   <string name="show">Паказаць</string>
@@ -136,4 +126,13 @@
   <string name="message_details_header_to">Каму</string>
   <string name="message_details_header_cc">Копія</string>
   <string name="message_details_header_bcc">Схаваная копія</string>
+  <string name="schedule_message_sent_at_banner_title">Гэта паведамленне будзе адпраўлена</string>
+  <string name="schedule_message_edit_message_button">Рэдагаваць паведамленне</string>
+  <string name="schedule_send_tomorrow">заўтра ў %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
+  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
+  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
+  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
 </resources>

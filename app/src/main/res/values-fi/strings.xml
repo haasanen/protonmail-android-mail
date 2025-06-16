@@ -34,11 +34,12 @@
   <string name="mailbox_message_sending_success">Viesti lähetettiin</string>
   <string name="mailbox_message_sending_error">Virhe lähetettäessä viestiä</string>
   <string name="mailbox_message_sending_error_action">Avaa luonnokset</string>
-  <string name="mailbox_attachment_uploading_error">Virhe lisättäessä liitettä</string>
   <string name="notification_switched_account">Vaihdettiin tiliin %s</string>
   <string name="label_saved">Tunniste tallennettiin</string>
   <string name="label_deleted">Tunniste poistettiin</string>
-  <string name="label_list_loading_error">Virhe ladattaessa tunnistetta. Yritä myöhemmin uudelleen.</string>
   <string name="app_locked">Sovellus on lukittu</string>
   <string name="use_pin_instead">Käytä sen sijaan PIN-koodia</string>
+  <string name="mailbox_message_scheduling">Scheduling message…</string>
+  <string name="mailbox_message_scheduling_offline">Offline: message queued for scheduling</string>
+  <string name="mailbox_message_scheduled_for_sending_success">This message will be sent on %1$s</string>
 </resources>

@@ -98,4 +98,6 @@
   <string name="auth_signup_validation_username_input_invalid">La saisie du nom d’utilisateur n\'est pas valide.</string>
   <string name="auth_signup_validation_email_input_invalid">La saisie du nom d’utilisateur n\'est pas valide.</string>
   <string name="auth_signup_countries_search">Rechercher un pays</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_user">L\'utilisateur n\'a pas pu être configuré.</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_address">L\'adresse n\'a pas pu être configurée.</string>
 </resources>

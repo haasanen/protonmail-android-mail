@@ -127,4 +127,6 @@
   <string name="composer_schedule_send_monday_title">Pondělí</string>
   <string name="composer_schedule_send_custom_title">Vlastní</string>
   <string name="composer_schedule_send_custom_description">Vyberte čas a datum</string>
+  <string name="composer_error_send_message">Chyba při odesílání zprávy</string>
+  <string name="composer_schedule_send_previously_set">Dříve nastavené</string>
 </resources>

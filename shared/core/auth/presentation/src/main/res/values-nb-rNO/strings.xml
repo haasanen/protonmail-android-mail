@@ -98,4 +98,6 @@
   <string name="auth_signup_validation_username_input_invalid">Brukernavninndata ugyldig.</string>
   <string name="auth_signup_validation_email_input_invalid">Brukernavninndata ugyldig.</string>
   <string name="auth_signup_countries_search">Søk etter land</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_user">Kunne ikke sette opp brukeren.</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_address">Kunne ikke sette opp adressen.</string>
 </resources>

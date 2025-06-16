@@ -27,14 +27,17 @@
   <string name="onboarding_neat_and_tidy_headline">Temiz ve düzenli</string>
   <string name="onboarding_neat_and_tidy_description">Gelen kutunuzu düzenlemek için iletileri dosyalayın, etiketleyin ve renklendirin.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_rebuilt_from_ground_up_headline">Sıfırdan dönüştürüldü</string>
-  <string name="onboarding_rebuilt_from_ground_up_description">Rust mimarisi üzerinde tümüyle yeniden tasarlanan yeni Proton Mail, başarım, kullanıcı deneyimi ve ölçeklenebilirlik için yeniden yapıldı.</string>
+  <string name="onboarding_welcome_title">Yeni Proton Mail uygulamasına\nhoş geldiniz!</string>
+  <string name="onboarding_welcome_headline">Baştan sona dönüştürüldü</string>
+  <string name="onboarding_welcome_description">Sınırlı erken beta sürümü deneme kullanıcıları grubuna katıldığınız için teşekkür ederiz. Geri bildiriminiz, genel kullanıma hazır daha da iyi bir Proton Mail oluşturmamıza yardımcı olmak için çok önemlidir.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_new_inbox_headline">Yeni gelen kutusu açıldı</string>
-  <string name="onboarding_new_inbox_description">Canlı yeni tasarımı ve geliştirilmiş kullanıcı deneyimini tanıtmaktan heyecan duyuyoruz. Şimdilik yeni liste ve ileti görünümlerini ön izlemesine bakabilirsiniz. </string>
+  <string name="onboarding_rebuilt_title">Daha iyi ve daha hızlı olmak için yeniden yapıldı</string>
+  <string name="onboarding_rebuilt_headline">Yeni gelen kutusu kullanıma sunuldu</string>
+  <string name="onboarding_rebuilt_description">Rust mimarisi kullanılarak tümüyle yeniden tasarlanan yeni Proton Mail, canlı bir tasarımla daha hızlı ve çevrim dışı kip gibi sık istenilen özellikler sunuyor.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_is_key_headline">Geri bildiriminiz çok önemli</string>
-  <string name="onboarding_feedback_is_key_description">Önümüzdeki aylarda tüm özellikleri kullanıma sunacağız. Lütfen uygulamayı denemeyi sürdürün ve onu nasıl daha iyi yapabileceğimizi bize bildirin!</string>
+  <string name="onboarding_feedback_title">Desteğiniz için teşekkür ederiz!</string>
+  <string name="onboarding_feedback_headline">Geri bildiriminiz çok önemli</string>
+  <string name="onboarding_feedback_description">Önümüzdeki aylarda yeni özellikler sunacağız. Lütfen uygulamayı deneyin ve geliştirmeyi nasıl sürdürebileceğimizi bize iletmek için \"Bir sorun bildireceğim\" üzerine dokunun. Katkınız çok değerli!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Sonraki</string>
   <string name="onboarding_get_started">Denemeye başlayın</string>

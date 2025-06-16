@@ -25,12 +25,12 @@
   <string name="mail_settings_folder_and_label_settings">Nastavitve za mape in oznake</string>
   <string name="mail_settings_privacy_and_security_settings">Nastavitve zasebnosti in varnosti</string>
   <string name="mail_settings_preferences">Nastavitve</string>
-  <string name="mail_settings_app">Aplikacija</string>
-  <string name="mail_settings_mailbox">E-pošta</string>
+  <string name="mail_settings_app">App customizations</string>
+  <string name="mail_settings_mailbox">Mailbox preferences</string>
   <string name="mail_settings_email_hint">Nastavitve e-pošte in nabiralnika</string>
   <string name="mail_settings_folders_labels">Mape in oznake</string>
   <string name="mail_settings_folders_labels_hint">Organiziranje nabiralnika</string>
-  <string name="mail_settings_spam_and_custom_filters">Filtri za neželeno pošto in filtri po meri</string>
+  <string name="mail_settings_spam_and_custom_filters">Spam and filters</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Samodejna dejanja in razvrščanje</string>
   <string name="mail_settings_privacy_and_security">Zasebnost in varnost</string>
   <string name="mail_settings_privacy_and_security_hint">Zaščita pred sledenjem v sporočilih</string>
@@ -65,8 +65,8 @@
   <string name="mail_settings_app_customization_advanced_header">Napredno</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">System</string>
-  <string name="mail_settings_theme_light">Light mode</string>
-  <string name="mail_settings_theme_dark">Dark mode</string>
+  <string name="mail_settings_theme_light">Svetla</string>
+  <string name="mail_settings_theme_dark">Temna</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Informacije niso na voljo</string>
   <string name="mail_settings_account">Račun</string>

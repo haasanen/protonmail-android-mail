@@ -125,4 +125,6 @@
   <string name="composer_schedule_send_monday_title">Lunes</string>
   <string name="composer_schedule_send_custom_title">Personalizado</string>
   <string name="composer_schedule_send_custom_description">Seleccionar hora y fecha</string>
+  <string name="composer_error_send_message">Error al enviar el mensaje</string>
+  <string name="composer_schedule_send_previously_set">Establecido previamente</string>
 </resources>

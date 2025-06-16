@@ -30,7 +30,7 @@
   <string name="composer_error_invalid_email">E-Mail-Adresse ist ungültig</string>
   <string name="composer_error_invalid_sender">Absenderadresse ist ungültig</string>
   <string name="change_sender_button_content_description">Absender ändern</string>
-  <string name="composer_change_sender_paid_feature">Upgrade auf ein kostenpflichtiges Abonnement, um die Absenderadresse zu ändern</string>
+  <string name="composer_change_sender_paid_feature">Auf ein kostenpflichtiges Abo umsteigen, um die Absenderadresse ändern zu können</string>
   <string name="composer_error_change_sender_failed_getting_subscription">Fehler beim Ändern des Absenders, da das Abonnement des Benutzers nicht abgerufen werden konnte. Bitte versuche es erneut.</string>
   <string name="composer_error_store_draft_sender_address">Absenderadresse wurde nicht gespeichert</string>
   <string name="composer_error_store_draft_body">E-Mail-Entwurf wurde nicht gespeichert</string>
@@ -125,4 +125,6 @@
   <string name="composer_schedule_send_monday_title">Montag</string>
   <string name="composer_schedule_send_custom_title">Benutzerdefiniert</string>
   <string name="composer_schedule_send_custom_description">Datum und Uhrzeit auswählen</string>
+  <string name="composer_error_send_message">Fehler beim Senden der Nachricht</string>
+  <string name="composer_schedule_send_previously_set">Zuletzt festgelegt</string>
 </resources>

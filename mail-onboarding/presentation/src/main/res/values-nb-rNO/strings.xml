@@ -27,14 +27,17 @@
   <string name="onboarding_neat_and_tidy_headline">Pent og ryddig</string>
   <string name="onboarding_neat_and_tidy_description">Fil-, etikett- og fargekodemeldinger for å opprette en perfekt, tilpasset innboks.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_rebuilt_from_ground_up_headline">Forvandlet fra grunnen av</string>
-  <string name="onboarding_rebuilt_from_ground_up_description">Den nye Proton Mail er fullstendig nyutviklet på Rust-arkitektur, og er bygd for ytelse, brukeropplevelse og skalerbarhet.</string>
+  <string name="onboarding_welcome_title">Velkommen til den\nnye Proton Mail-appen!</string>
+  <string name="onboarding_welcome_headline">Forvandlet fra grunnen av</string>
+  <string name="onboarding_welcome_description">Takk for at du deltar i denne begrensede gruppen av tidlige betatestere. Din tilbakemelding er kritisk for å hjelpe oss med å bygge en enda bedre Proton Mail, klar for offentlig utgivelse.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_new_inbox_headline">Ny innboks utpakket</string>
-  <string name="onboarding_new_inbox_description">Vi er glade for å avduke det livlige nye designet og den forbedrede brukeropplevelsen. Foreløpig kan du forhåndsvise de nye liste- og meldingsvisningene. </string>
+  <string name="onboarding_rebuilt_title">Gjenoppbygd til å bli bedre og raskere</string>
+  <string name="onboarding_rebuilt_headline">Ny innboks utpakket</string>
+  <string name="onboarding_rebuilt_description">Helt omkonstruert ved hjelp av Rust-arkitektur, er den nye Proton Mail raskere med en levende design og svært etterspurte funksjoner, som frakoblet modus.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_is_key_headline">Din tilbakemelding er viktig</string>
-  <string name="onboarding_feedback_is_key_description">Vi ruller ut alle funksjonene i løpet av de neste månedene. Fortsett å teste appen og fortell oss hvordan vi kan gjøre den bedre!</string>
+  <string name="onboarding_feedback_title">Takk for deltakelsen!</string>
+  <string name="onboarding_feedback_headline">Din tilbakemelding er viktig</string>
+  <string name="onboarding_feedback_description">Vi ruller ut nye funksjoner i månedene som kommer. Vennligst test appen og trykk på \"Rapporter et problem\" for å fortelle oss hvordan vi kan fortsette å forbedre oss. Innspillet ditt er uvurderlig!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Neste</string>
   <string name="onboarding_get_started">Begynn å teste</string>

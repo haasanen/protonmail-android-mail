@@ -25,12 +25,12 @@
   <string name="mail_settings_folder_and_label_settings">文件夹和标签设置</string>
   <string name="mail_settings_privacy_and_security_settings">隐私和安全设置</string>
   <string name="mail_settings_preferences">偏好设置</string>
-  <string name="mail_settings_app">应用</string>
-  <string name="mail_settings_mailbox">电子邮箱</string>
+  <string name="mail_settings_app">个性化设置</string>
+  <string name="mail_settings_mailbox">邮箱偏好设置</string>
   <string name="mail_settings_email_hint">电子邮件和邮箱首选项</string>
   <string name="mail_settings_folders_labels">文件夹和标签</string>
   <string name="mail_settings_folders_labels_hint">邮箱管理</string>
-  <string name="mail_settings_spam_and_custom_filters">垃圾邮件和自定义过滤器</string>
+  <string name="mail_settings_spam_and_custom_filters">垃圾邮件和过滤器</string>
   <string name="mail_settings_spam_and_custom_filters_hint">自动操作和排序</string>
   <string name="mail_settings_privacy_and_security">隐私和安全</string>
   <string name="mail_settings_privacy_and_security_hint">邮件追踪防护</string>
@@ -65,8 +65,8 @@
   <string name="mail_settings_app_customization_advanced_header">高级</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">跟随系统</string>
-  <string name="mail_settings_theme_light">浅色模式</string>
-  <string name="mail_settings_theme_dark">深色模式</string>
+  <string name="mail_settings_theme_light">浅色</string>
+  <string name="mail_settings_theme_dark">深色</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">无可用信息</string>
   <string name="mail_settings_account">账户</string>

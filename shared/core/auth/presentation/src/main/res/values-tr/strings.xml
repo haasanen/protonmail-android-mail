@@ -98,4 +98,6 @@
   <string name="auth_signup_validation_username_input_invalid">Yazılan kullanıcı adı geçersiz.</string>
   <string name="auth_signup_validation_email_input_invalid">Yazılan kullanıcı adı geçersiz.</string>
   <string name="auth_signup_countries_search">Ülke ara</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_user">Kullanıcı kurulamadı.</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_address">Adres kurulamadı.</string>
 </resources>

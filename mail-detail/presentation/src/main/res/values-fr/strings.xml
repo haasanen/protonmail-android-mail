@@ -17,10 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">Les contacts n\'ont pas pu être chargés.</string>
   <string name="detail_error_loading_conversation">La conversation n\'a pas pu être chargée.</string>
   <string name="detail_error_loading_messages">Les messages n\'ont pas pu être chargés.</string>
-  <string name="error_mark_unread_failed">Le marquage comme non lu n\'a pas abouti. Nous vous invitons à réessayer.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d message</item>
     <item quantity="other">%d messages</item>
@@ -59,12 +57,10 @@
   <string name="conversation_moved_to_spam">La conversation a été déplacée dans le dossier Indésirables/spam.</string>
   <string name="conversation_moved_to_archive">La conversation a été déplacée dans le dossier Archives.</string>
   <string name="error_move_conversation_failed">La conversation n\'a pas pu être déplacée. Veuillez réessayer.</string>
-  <string name="error_loading_message">Un problème est survenu, veuillez réessayer.</string>
   <string name="error_offline_loading_message">Vous n\'êtes pas connecté. Une connexion internet est nécessaire pour afficher le contenu de ce message.</string>
   <string name="error_get_attachment_failed">La pièce jointe n\'a pas pu être obtenue.</string>
   <string name="error_attachment_download_in_progress">Le téléchargement en cours doit être terminé avant d\'en commencer un nouveau.</string>
   <string name="error_get_attachment_not_enough_memory">La pièce jointe n\'a pu être obtenue par manque de mémoire.</string>
-  <string name="reload">Recharger</string>
   <string name="error_relabel_message_failed">Le nouveau label n\'a pas pu être appliqué au message. Réessayez.</string>
   <string name="error_relabel_conversation_failed">Le nouveau label n\'a pas pu être appliqué à la conversation. Réessayez.</string>
   <string name="please_go_back_online_to_load_messages">Vous êtes hors ligne. Veuillez vous reconnecter pour charger les messages.</string>
@@ -104,25 +100,19 @@
   <string name="message_delete_dialog_message">Voulez-vous vraiment supprimer définitivement ce message ?</string>
   <string name="message_deleted">Le message a été supprimé.</string>
   <string name="error_delete_message_failed">Le message n\'a pas pu être supprimé.</string>
-  <string name="error_delete_message_failed_wrong_folder">Le message ne se trouve pas à un emplacement permettant sa suppression.</string>
   <string name="error_delete_conversation_failed">La conversation n\'a pas pu être supprimée.</string>
-  <string name="error_delete_conversation_failed_wrong_folder">La conversation ne se trouve pas à un emplacement permettant sa suppression.</string>
   <string name="conversation_delete_dialog_title">Supprimer la conversation</string>
   <string name="conversation_delete_dialog_message">Voulez-vous vraiment supprimer définitivement cette conversation ?</string>
   <string name="conversation_deleted">La conversation a été supprimée.</string>
   <string name="message_body_load_remote_content_button_text">Charger le contenu distant</string>
   <string name="message_body_load_embedded_images_button_text">Charger les images intégrées</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Charger le contenu distant intégré</string>
-  <string name="message_report_phishing_dialog_title_offline">Attention</string>
-  <string name="message_report_phishing_dialog_message_offline">Cette fonctionnalité est uniquement disponible en ligne.</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Confirmer le signalement de phishing/hameçonnage</string>
   <string name="message_report_phishing_dialog_message">Signaler un message comme une tentative de phishing/hameçonnage nous enverra le message afin que nous puissions l\'analyser et améliorer nos filtres. Cela signifie que nous serons en mesure de voir le contenu du message dans son intégralité.</string>
   <string name="message_report_phishing_dialog_confim_button">Confirmer</string>
   <string name="message_report_phishing_dialog_cancel_button">Annuler</string>
   <string name="open_on_protoncalendar_banner_title">Ouvrir dans Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Calendrier chiffré et sécurisé</string>
-  <string name="error_print_failed">Le message n\'a pas pu être imprimé.</string>
   <string name="trashed_messages_banner">Cette conversation comporte des messages qui sont dans le dossier Corbeille.</string>
   <string name="non_trashed_messages_banner">Cette conversation comporte des messages qui ne sont pas dans le dossier Corbeille.</string>
   <string name="show">Afficher</string>
@@ -132,4 +122,13 @@
   <string name="message_details_header_to">À</string>
   <string name="message_details_header_cc">Cc</string>
   <string name="message_details_header_bcc">Cci</string>
+  <string name="schedule_message_sent_at_banner_title">Ce message sera envoyé</string>
+  <string name="schedule_message_edit_message_button">Modifier le message</string>
+  <string name="schedule_send_tomorrow">demain à %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Impossible d\'annuler l\'heure d\'envoi planifiée de ce message</string>
+  <string name="offline_error_cancel_schedule_send_failed">Vous ne pouvez pas annuler un message planifié lorsque vous êtes hors ligne</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Modifier le brouillon</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Annuler</string>
+  <string name="message_cancel_schedule_send_dialog_title">Modifier et replanifier</string>
+  <string name="message_cancel_schedule_send_dialog_message">Ce message sera déplacé vers Brouillons afin que vous puissiez le modifier. Vous devrez reprogrammer quand il sera envoyé.</string>
 </resources>

@@ -40,8 +40,8 @@
   <string name="composer_error_loading_draft">目前無法擷取該草稿的內容。編輯將覆寫任何預先存在的內容。</string>
   <string name="composer_add_attachments_content_description">新增附件</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">匯入自……</string>
-  <string name="composer_add_attachments_bottom_sheet_from_photos">From your photo library</string>
-  <string name="composer_add_attachments_bottom_sheet_from_camera">Take a new photo</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">從您的相片圖庫挑選</string>
+  <string name="composer_add_attachments_bottom_sheet_from_camera">拍攝新照片</string>
   <string name="composer_error_loading_parent_message">無法載入訊息資訊</string>
   <string name="composer_original_message_quote">原始訊息</string>
   <string name="composer_sender_quote">在 %s，%s &lt;%s&gt; 寫道：</string>
@@ -113,15 +113,17 @@
   <string name="discard_draft_dialog_confirm_button">放棄</string>
   <string name="discard_draft_dialog_dismiss_button">取消</string>
   <string name="discard_draft_error">放棄草稿時發生錯誤</string>
-  <string name="composer_remove_inline_image">Remove</string>
+  <string name="composer_remove_inline_image">移除</string>
   <string name="composer_send_as_attachment">Send as attachment</string>
-  <string name="composer_remove_recipient_action_item">Remove</string>
-  <string name="composer_copy_recipient_action_item">Copy</string>
+  <string name="composer_remove_recipient_action_item">移除</string>
+  <string name="composer_copy_recipient_action_item">複製</string>
   <string name="schedule_send_content_description">Schedule send</string>
   <string name="composer_error_retrieving_schedule_send_options">Generating the times to \"schedule send\" at failed</string>
   <string name="composer_schedule_send_content_description">Schedule send</string>
-  <string name="composer_schedule_send_tomorrow_title">Tomorrow</string>
-  <string name="composer_schedule_send_monday_title">Monday</string>
-  <string name="composer_schedule_send_custom_title">Custom</string>
+  <string name="composer_schedule_send_tomorrow_title">明天</string>
+  <string name="composer_schedule_send_monday_title">週一</string>
+  <string name="composer_schedule_send_custom_title">自訂</string>
   <string name="composer_schedule_send_custom_description">Pick time and date</string>
+  <string name="composer_error_send_message">傳送郵件時發生錯誤</string>
+  <string name="composer_schedule_send_previously_set">Previously set</string>
 </resources>

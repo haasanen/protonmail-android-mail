@@ -125,4 +125,6 @@
   <string name="composer_schedule_send_monday_title">Segunda-feira</string>
   <string name="composer_schedule_send_custom_title">Personalizado</string>
   <string name="composer_schedule_send_custom_description">Selecionar hora e data</string>
+  <string name="composer_error_send_message">Erro no envio da mensagem</string>
+  <string name="composer_schedule_send_previously_set">Definido anteriormente</string>
 </resources>

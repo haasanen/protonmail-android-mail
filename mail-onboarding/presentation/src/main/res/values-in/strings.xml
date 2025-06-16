@@ -27,14 +27,17 @@
   <string name="onboarding_neat_and_tidy_headline">Rapi dan teratur</string>
   <string name="onboarding_neat_and_tidy_description">Arsipkan, labeli, dan warnai pesan Anda untuk menciptakan kotak masuk khusus yang sempurna bagi Anda.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_rebuilt_from_ground_up_headline">Dirombak dari dasar</string>
-  <string name="onboarding_rebuilt_from_ground_up_description">Dirancang ulang sepenuhnya pada arsitektur Rust, Proton Mail yang baru dibenahi untuk memberikan performa, pengalaman pengguna, dan ketahanan kinerja.</string>
+  <string name="onboarding_welcome_title">Welcome to the\nnew Proton Mail app!</string>
+  <string name="onboarding_welcome_headline">Transformed from the ground up</string>
+  <string name="onboarding_welcome_description">Thank you for joining this limited group of early beta testers. Your feedback is critical for helping us build an even better Proton Mail ready for public release.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_new_inbox_headline">Kotak masuk yang baru</string>
-  <string name="onboarding_new_inbox_description">Kami dengan bangga menghadirkan desain baru yang dinamis dan pengalaman pengguna yang ditingkatkan. Untuk saat ini, Anda dapat mempratinjau daftar dan tampilan pesan kami yang baru. </string>
+  <string name="onboarding_rebuilt_title">Rebuilt to be better and faster</string>
+  <string name="onboarding_rebuilt_headline">New inbox unboxed</string>
+  <string name="onboarding_rebuilt_description">Completely reengineered using Rust architecture, the new Proton Mail is faster with a vibrant design and highly-requested features, like offline mode.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_is_key_headline">Tanggapan Anda adalah kunci</string>
-  <string name="onboarding_feedback_is_key_description">Kami akan meluncurkan seluruh fitur yang ada dalam beberapa bulan ke depan. Mohon terus uji aplikasi kami dan beri tahu kami bagaimana kami dapat membuat aplikasi ini menjadi lebih baik!</string>
+  <string name="onboarding_feedback_title">Thank you for your participation!</string>
+  <string name="onboarding_feedback_headline">Your feedback is key</string>
+  <string name="onboarding_feedback_description">We\'ll be rolling out new features in the coming months. Please test the app and tap \"Report a problem\" to let us know how we can keep improving. Your input is invaluable!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Selanjutnya</string>
   <string name="onboarding_get_started">Mulai uji coba</string>

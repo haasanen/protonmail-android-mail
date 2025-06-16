@@ -98,4 +98,6 @@
   <string name="auth_signup_validation_username_input_invalid">Μη έγκυρη εισαγωγή ονόματος χρήστη.</string>
   <string name="auth_signup_validation_email_input_invalid">Μη έγκυρη εισαγωγή ονόματος χρήστη.</string>
   <string name="auth_signup_countries_search">Αναζήτηση χώρας</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_user">Δεν ήταν δυνατή η ρύθμιση του χρήστη.</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_address">Δεν ήταν δυνατή η ρύθμιση της διεύθυνσης.</string>
 </resources>

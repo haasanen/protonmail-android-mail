@@ -34,11 +34,12 @@
   <string name="mailbox_message_sending_success">Паведамленне адпраўлена</string>
   <string name="mailbox_message_sending_error">Памылка адпраўкі паведамлення</string>
   <string name="mailbox_message_sending_error_action">Перайсці ў Чарнавікі</string>
-  <string name="mailbox_attachment_uploading_error">Памылка запампоўвання далучэння</string>
   <string name="notification_switched_account">Зменена на ўліковы запіс %s</string>
   <string name="label_saved">Метка захавана</string>
   <string name="label_deleted">Метка выдалена</string>
-  <string name="label_list_loading_error">Памылка загрузкі меткі. Паспрабуйце пазней</string>
   <string name="app_locked">Праграма заблакіравана</string>
   <string name="use_pin_instead">Выкарыстаць замест гэтага PIN</string>
+  <string name="mailbox_message_scheduling">Планаванне паведамлення…</string>
+  <string name="mailbox_message_scheduling_offline">Вы па-за сеткай: паведамленне ў чарзе на планаванне</string>
+  <string name="mailbox_message_scheduled_for_sending_success">Гэта паведамленне будзе адпраўлена %1$s</string>
 </resources>

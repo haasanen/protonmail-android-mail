@@ -17,10 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">Neuspešno nalaganje stikov</string>
   <string name="detail_error_loading_conversation">Neuspešno nalaganje pogovorov</string>
   <string name="detail_error_loading_messages">Neuspešno nalaganje sporočil</string>
-  <string name="error_mark_unread_failed">Označevanje kot neprebrano ni uspelo. Poskusite znova.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d sporočilo</item>
     <item quantity="two">%d sporočil</item>
@@ -63,12 +61,10 @@
   <string name="conversation_moved_to_spam">Pogovor premaknjen med neželeno pošto</string>
   <string name="conversation_moved_to_archive">Pogovor je premaknjen v arhiv</string>
   <string name="error_move_conversation_failed">Premikanje pogovora ni uspelo. Poskusite znova.</string>
-  <string name="error_loading_message">Nekaj je šlo narobe, poskusite znova.</string>
   <string name="error_offline_loading_message">Nimate povezave. Za prikaz vsebine tega sporočila je potrebna internetna povezava.</string>
   <string name="error_get_attachment_failed">Priponke ni bilo mogoče pridobiti.</string>
   <string name="error_attachment_download_in_progress">Trenutni prenos se mora dokončati, preden se lahko začne naslednji.</string>
   <string name="error_get_attachment_not_enough_memory">Priponke ni bilo mogoče prenesti zaradi nezadostne količine pomnilnika</string>
-  <string name="reload">Ponovno naloži</string>
   <string name="error_relabel_message_failed">Napaka pri spreminjanju kategorije. Poskusite znova</string>
   <string name="error_relabel_conversation_failed">Napaka pri spreminjanju pogovora. Poskusite znova</string>
   <string name="please_go_back_online_to_load_messages">Nimate povezave. Za prenos sporočil se povežite v splet</string>
@@ -108,25 +104,19 @@
   <string name="message_delete_dialog_message">Ali ste prepričani, da želite trajno izbrisati to sporočilo?</string>
   <string name="message_deleted">Sporočilo izbrisano</string>
   <string name="error_delete_message_failed">Brisanje sporočila ni uspelo</string>
-  <string name="error_delete_message_failed_wrong_folder">Sporočilo ni na mestu, kjer bi ga bilo mogoče izbrisati</string>
   <string name="error_delete_conversation_failed">Pogovora ni bilo mogoče izbrisati</string>
-  <string name="error_delete_conversation_failed_wrong_folder">Sporočilo ni na mestu, kjer bi ga bilo mogoče izbrisati</string>
   <string name="conversation_delete_dialog_title">Izbriši pogovor</string>
   <string name="conversation_delete_dialog_message">Ali ste prepričani, da želite trajno izbrisati ta pogovor?</string>
   <string name="conversation_deleted">Pogovor izbrisan</string>
   <string name="message_body_load_remote_content_button_text">Naloži oddaljeno vsebino</string>
   <string name="message_body_load_embedded_images_button_text">Naloži vdelane slike</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Naloži oddaljeno in vdelano vsebino</string>
-  <string name="message_report_phishing_dialog_title_offline">Pozor</string>
-  <string name="message_report_phishing_dialog_message_offline">Ta možnost je na voljo samo ob vzpostavljeni povezavi.</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">V redu</string>
   <string name="message_report_phishing_dialog_title">Potrdite prijavo poskusa prevare</string>
   <string name="message_report_phishing_dialog_message">S prijavo lažnega predstavljanja nam boste poslali sporočilo v analizo, s katero bomo izboljšali svoje filtre. To pomeni, da nam bo vsebina sporočila v celoti vidna.</string>
   <string name="message_report_phishing_dialog_confim_button">Potrdi</string>
   <string name="message_report_phishing_dialog_cancel_button">Prekliči</string>
   <string name="open_on_protoncalendar_banner_title">Odpri v Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Varen šifriran koledar</string>
-  <string name="error_print_failed">Natis sporočila ni uspel</string>
   <string name="trashed_messages_banner">Ta pogovor vključuje sporočila, ki so v smetnjaku.</string>
   <string name="non_trashed_messages_banner">Ta pogovor vključuje sporočila, ki niso v smetnjaku.</string>
   <string name="show">Prikaži</string>
@@ -136,4 +126,13 @@
   <string name="message_details_header_to">Za</string>
   <string name="message_details_header_cc">Kp</string>
   <string name="message_details_header_bcc">Skp</string>
+  <string name="schedule_message_sent_at_banner_title">This message will be sent</string>
+  <string name="schedule_message_edit_message_button">Edit message</string>
+  <string name="schedule_send_tomorrow">tomorrow at %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
+  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
+  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
+  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
 </resources>

@@ -25,12 +25,12 @@
   <string name="mail_settings_folder_and_label_settings">Ajustes de carpeta y etiqueta</string>
   <string name="mail_settings_privacy_and_security_settings">Ajustes de privacidad y seguridad</string>
   <string name="mail_settings_preferences">Preferencias</string>
-  <string name="mail_settings_app">Aplicación</string>
-  <string name="mail_settings_mailbox">Correo electrónico</string>
+  <string name="mail_settings_app">Personalizaciones de la aplicación</string>
+  <string name="mail_settings_mailbox">Preferencias de buzón</string>
   <string name="mail_settings_email_hint">Preferencias de buzón y correo electrónico</string>
   <string name="mail_settings_folders_labels">Carpetas y etiquetas</string>
   <string name="mail_settings_folders_labels_hint">Organización del buzón</string>
-  <string name="mail_settings_spam_and_custom_filters">Filtros personalizados y contra el spam</string>
+  <string name="mail_settings_spam_and_custom_filters">Spam y filtros</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Acciones automáticas y clasificación</string>
   <string name="mail_settings_privacy_and_security">Privacidad y seguridad</string>
   <string name="mail_settings_privacy_and_security_hint">Protección contra rastreos de correos electrónicos</string>
@@ -65,8 +65,8 @@
   <string name="mail_settings_app_customization_advanced_header">Avanzado</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Sistema</string>
-  <string name="mail_settings_theme_light">Modo claro</string>
-  <string name="mail_settings_theme_dark">Modo oscuro</string>
+  <string name="mail_settings_theme_light">Claro</string>
+  <string name="mail_settings_theme_dark">Oscuro</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Sin información disponible</string>
   <string name="mail_settings_account">Cuenta</string>

@@ -34,11 +34,12 @@
   <string name="mailbox_message_sending_success">Mesaj trimis</string>
   <string name="mailbox_message_sending_error">Eroare trimitere mesaj</string>
   <string name="mailbox_message_sending_error_action">Accesare Ciorne</string>
-  <string name="mailbox_attachment_uploading_error">Eroare la încărcare atașament.</string>
   <string name="notification_switched_account">S-a comutat la contul %s</string>
   <string name="label_saved">Etichetă a fost salvată.</string>
   <string name="label_deleted">Etichetă a fost ștearsă.</string>
-  <string name="label_list_loading_error">Eroare la încărcarea etichetei. Reîncercați mai târziu.</string>
   <string name="app_locked">Aplicație blocată</string>
   <string name="use_pin_instead">Folosiți PIN</string>
+  <string name="mailbox_message_scheduling">Se programează mesajul…</string>
+  <string name="mailbox_message_scheduling_offline">Deconectat: mesaj pus în lista pentru programare</string>
+  <string name="mailbox_message_scheduled_for_sending_success">Acest mesaj va fi trimis la data de %1$s</string>
 </resources>

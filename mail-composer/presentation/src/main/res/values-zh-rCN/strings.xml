@@ -115,13 +115,15 @@
   <string name="discard_draft_error">丢弃草稿时出错</string>
   <string name="composer_remove_inline_image">移除</string>
   <string name="composer_send_as_attachment">作为附件发送</string>
-  <string name="composer_remove_recipient_action_item">Remove</string>
-  <string name="composer_copy_recipient_action_item">Copy</string>
-  <string name="schedule_send_content_description">Schedule send</string>
-  <string name="composer_error_retrieving_schedule_send_options">Generating the times to \"schedule send\" at failed</string>
-  <string name="composer_schedule_send_content_description">Schedule send</string>
-  <string name="composer_schedule_send_tomorrow_title">Tomorrow</string>
-  <string name="composer_schedule_send_monday_title">Monday</string>
-  <string name="composer_schedule_send_custom_title">Custom</string>
-  <string name="composer_schedule_send_custom_description">Pick time and date</string>
+  <string name="composer_remove_recipient_action_item">移除</string>
+  <string name="composer_copy_recipient_action_item">复制</string>
+  <string name="schedule_send_content_description">定时发送</string>
+  <string name="composer_error_retrieving_schedule_send_options">生成\"定时发送\"的时间失败</string>
+  <string name="composer_schedule_send_content_description">定时发送</string>
+  <string name="composer_schedule_send_tomorrow_title">明天</string>
+  <string name="composer_schedule_send_monday_title">星期一</string>
+  <string name="composer_schedule_send_custom_title">自定义</string>
+  <string name="composer_schedule_send_custom_description">选取时间和日期</string>
+  <string name="composer_error_send_message">发送信息时出错</string>
+  <string name="composer_schedule_send_previously_set">先前设定</string>
 </resources>

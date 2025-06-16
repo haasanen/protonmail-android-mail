@@ -125,4 +125,6 @@
   <string name="composer_schedule_send_monday_title">Lundi</string>
   <string name="composer_schedule_send_custom_title">Personnaliser</string>
   <string name="composer_schedule_send_custom_description">Choisir l\'heure et la date</string>
+  <string name="composer_error_send_message">Une erreur s\'est produite lors de l\'envoi du message.</string>
+  <string name="composer_schedule_send_previously_set">Précédemment défini</string>
 </resources>

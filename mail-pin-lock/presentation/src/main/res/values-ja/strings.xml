@@ -19,35 +19,41 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Back</string>
   <!-- Auto lock -->
-  <string name="mail_pinlock_settings_title">Protection</string>
-  <string name="mail_pinlock_settings_toggle_autolock_title">Auto lock app</string>
-  <string name="mail_pinlock_settings_toggle_autolock_description">Enable this feature to automatically lock your app and secure it with a PIN code.</string>
-  <string name="mail_pinlock_settings_change_pin_description">Change PIN code</string>
-  <string name="mail_pinlock_settings_change_interval_title">Auto lock timer</string>
+  <string name="mail_pinlock_settings_title">App lock</string>
+  <string name="mail_pinlock_settings_no_lock">Don\'t lock</string>
+  <string name="mail_pinlock_settings_with_pin">Secure with PIN</string>
+  <string name="mail_pinlock_settings_with_biometrics">Secure with biometrics</string>
+  <string name="mail_pinlock_settings_logout_disclaimer">All app lock settings, including the PIN, will reset when you sign out of the app.</string>
+  <string name="mail_pinlock_settings_new_pin_topbar">Set new PIN</string>
+  <string name="mail_pinlock_settings_new_pin_title">New PIN</string>
+  <string name="mail_pinlock_settings_new_pin_description">Enter a PIN between 4 and 21 digits long</string>
+  <string name="mail_pinlock_settings_confirm_pin_topbar">Confirm PIN</string>
+  <string name="mail_pinlock_settings_confirm_pin_title">Repeat PIN</string>
+  <string name="mail_pinlock_settings_confirm_pin_description">Re-enter your PIN to make sure it’s correct</string>
+  <string name="mail_pinlock_settings_verify_pin_topbar">Enter your PIN</string>
+  <string name="mail_pinlock_settings_verify_pin_title">Enter your PIN</string>
+  <string name="mail_pinlock_settings_verify_pin_description">Confirm it\'s you to continue</string>
+  <string name="mail_pinlock_settings_change_pin_description">Change PIN</string>
+  <string name="mail_pinlock_settings_change_interval_title">Auto-lock</string>
   <string name="mail_pinlock_settings_autolock_immediately">Immediately</string>
   <string name="mail_pinlock_settings_autolock_never">Never</string>
-  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minutes inactivity</string>
-  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minutes inactivity</string>
-  <string name="mail_pinlock_settings_autolock_description_one_hour">1 hour inactivity</string>
-  <string name="mail_pinlock_settings_autolock_description_one_day">1 day inactivity</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">After 5 minutes</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">After 15 minutes</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">After 1 hour</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">After 1 day</string>
   <string name="mail_settings_auto_lock_update_error">設定更新エラー</string>
-  <string name="mail_settings_pin_insertion_input_title">PIN コードを入力</string>
-  <string name="mail_settings_pin_insertion_set_title">PIN コードを設定</string>
-  <string name="mail_settings_pin_insertion_confirm_title">PINコードを確認</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">ロックアイコン</string>
   <string name="mail_settings_pin_insertion_pin_dot_description">Pinドット</string>
-  <string name="mail_settings_pin_insertion_backspace_description">バックスペース</string>
-  <string name="mail_settings_pin_insertion_biometric_description">生体認証</string>
-  <string name="mail_settings_pin_insertion_button_create">作成</string>
-  <string name="mail_settings_pin_insertion_button_confirm">確認</string>
+  <string name="mail_settings_pin_insertion_button_create">Confirm</string>
+  <string name="mail_settings_pin_insertion_button_confirm">Next</string>
   <string name="mail_settings_pin_insertion_error_no_match">PINコードが一致しません。</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="other">残りの試行回数は %s 回です。</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="other">完全なデータ抹消まで残り%s回です。</item>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code_threshold">
+    <item quantity="other">%s remaining attempts until before sign-out.</item>
   </plurals>
   <string name="mail_settings_pin_insertion_error_unknown">PIN コードの確認中にエラーが発生しました。</string>
+  <string name="mail_settings_pin_insertion_error_too_short">PIN must be at least 4 digits</string>
+  <string name="mail_settings_pin_verification_error_too_many">Too many attempts. Please try again later.</string>
+  <string name="mail_settings_pin_verification_error_no_match">Incorrect PIN</string>
+  <string name="mail_settings_pin_verification_error_too_many_frequent">Too many frequent attempts. Please try again later.</string>
   <string name="mail_settings_pin_insertion_signout_text">サインアウト</string>
   <string name="mail_settings_pin_insertion_signout_dialog_title">サインアウト</string>
   <string name="mail_settings_pin_insertion_signout_dialog_description">サインアウトしてよろしいですか？</string>
@@ -57,9 +63,21 @@
   <string name="mail_settings_pin_insertion_changed_success">PIN コードが正常に変更されました。</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">エラーが発生しました。再度お試しください。</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">生体認証データが登録されていません</string>
-  <string name="log_in_using_biometric_credential">生体認証によるロック解除</string>
-  <string name="unlock_using_biometrics">生体認証によるロック解除</string>
-  <string name="biometric_error_hw_not_available">生体認証ハードウェアは使用できません。</string>
+  <string name="mail_settings_pin_verify_generic_error_message">An error occurred. Try again.</string>
+  <string name="mail_settings_pin_verify_too_many_attempts">Too many incorrect attempts</string>
+  <string name="mail_settings_pin_verify_wrong_pin">Incorrect PIN</string>
+  <string name="mail_settings_biometrics_unable_to_set">An error occurred while setting Biometrics preferences.</string>
+  <string name="mail_settings_biometrics_unable_to_unset">An error occurred while resetting Biometrics preferences.</string>
+  <string name="mail_settings_biometrics_unknown_lock">An error occurred while fetching the current lock policy.</string>
+  <!-- Auto lock dialog -->
+  <string name="mail_settings_pin_lock_dialog_title">Confirm PIN</string>
+  <string name="mail_settings_pin_lock_dialog_subtitle">For security, enter your current PIN to continue.</string>
+  <string name="mail_settings_pin_lock_dialog_button_next">Next</string>
+  <string name="mail_settings_pin_lock_dialog_button_cancel">Cancel</string>
+  <!-- Biometrics unlock -->
+  <string name="mail_settings_biometrics_title_confirm">Confirm operation</string>
+  <string name="mail_settings_biometrics_subtitle_default">Use your fingerprint to confirm the operation</string>
+  <string name="mail_settings_biometrics_button_negative">Cancel</string>
+  <string name="mail_settings_biometrics_title_app_locked">App locked</string>
+  <string name="mail_settings_biometrics_subtitle_app_locked">Unlock using your biometric credentials</string>
 </resources>

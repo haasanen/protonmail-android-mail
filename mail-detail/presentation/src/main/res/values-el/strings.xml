@@ -17,10 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">Αποτυχημένη φόρτωση επαφών</string>
   <string name="detail_error_loading_conversation">Αποτυχημένη φόρτωση συνομιλίας</string>
   <string name="detail_error_loading_messages">Αποτυχημένη φόρτωση μηνυμάτων</string>
-  <string name="error_mark_unread_failed">Αποτυχία σήμανσης ως μη διαβασμένου. Παρακαλούμε δοκιμάστε ξανά.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d μήνυμα</item>
     <item quantity="other">%d μηνύματα</item>
@@ -59,12 +57,10 @@
   <string name="conversation_moved_to_spam">Η συνομιλία μεταφέρθηκε στα Ενοχλητικά</string>
   <string name="conversation_moved_to_archive">Η συνομιλία μετακινήθηκε στα Αρχειοθετημένα</string>
   <string name="error_move_conversation_failed">Η μετακινηση συνομιλίας απέτυχε. Παρακαλούμε προσπαθήστε ξανά.</string>
-  <string name="error_loading_message">Κάτι πήγε στραβά, παρακαλούμε δοκιμάστε ξανά.</string>
   <string name="error_offline_loading_message">Βρίσκεστε εκτός σύνδεσης. Για εμφάνιση του περιεχομένου αυτού του μηνύματος, απαιτείται σύνδεση στο διαδίκτυο.</string>
   <string name="error_get_attachment_failed">Αποτυχία λήψης συνημμένου.</string>
   <string name="error_attachment_download_in_progress">Η τρέχουσα λήψη πρέπει να ολοκληρωθεί πριν την έναρξη νέας.</string>
   <string name="error_get_attachment_not_enough_memory">Αποτυχία λήψης συνημμένου λόγω ανεπαρκούς μνήμης</string>
-  <string name="reload">Επαναφόρτωση</string>
   <string name="error_relabel_message_failed">Σφάλμα κατά την αλλαγή ετικέτας μηνύματος. Παρακαλώ προσπαθήστε ξανά</string>
   <string name="error_relabel_conversation_failed">Σφάλμα κατά την αλλαγή ετικέτας συνομιλίας. Παρακαλούμε προσπαθήστε ξανά</string>
   <string name="please_go_back_online_to_load_messages">Είσαστε αποσυνδεμένοι. Παρακαλούμε συνδεθήτε ξανά για να φορτώσετε μηνύματα</string>
@@ -104,25 +100,19 @@
   <string name="message_delete_dialog_message">Θέλετε σίγουρα να διαγράψετε οριστικά αυτό το μήνυμα;</string>
   <string name="message_deleted">Το μήνυμα διαγράφηκε</string>
   <string name="error_delete_message_failed">Αποτυχία διαγραφής μηνύματος</string>
-  <string name="error_delete_message_failed_wrong_folder">Το μήνυμα δε βρίσκεται σε τοποθεσία όπου μπορεί να διαγραφεί</string>
   <string name="error_delete_conversation_failed">Αποτυχία διαγραφής συνομιλίας</string>
-  <string name="error_delete_conversation_failed_wrong_folder">Η συνομιλία δε βρίσκεται σε τοποθεσία όπου μπορεί να διαγραφεί</string>
   <string name="conversation_delete_dialog_title">Διαγραφή συνομιλίας</string>
   <string name="conversation_delete_dialog_message">Θέλετε σίγουρα να διαγράψετε οριστικά αυτήν τη συνομιλία;</string>
   <string name="conversation_deleted">Η συνομιλία διαγράφηκε</string>
   <string name="message_body_load_remote_content_button_text">Φόρτωση απομακρυσμένου περιεχομένου</string>
   <string name="message_body_load_embedded_images_button_text">Φόρτωση ενσωματωμένων εικόνων</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Φόρτωση απομακρυσμένου και ενσωματωμένου περιεχομένου</string>
-  <string name="message_report_phishing_dialog_title_offline">Προσοχή</string>
-  <string name="message_report_phishing_dialog_message_offline">Αυτή η λειτουργία είναι διαθέσιμη μόνο όταν είστε συνδεδεμένοι στο διαδύκτιο</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">ΟΚ</string>
   <string name="message_report_phishing_dialog_title">Επιβεβαίωση αναφοράς ηλεκτρονικού \"ψαρέματος\" (Phishing)</string>
   <string name="message_report_phishing_dialog_message">Η αναφορά ενός μηνύματος ως προσπάθεια ηλεκτρονικού \"ψαρέματος\" (phising) θα το αποστείλει σε εμάς, ώστε να το αναλύσουμε και να βελτιώσουμε τα φίλτρα μας. Αυτό σημαίνει ότι θα μπορέσουμε να δούμε το περιεχόμενο ολόκληρου του μηνύματος.</string>
   <string name="message_report_phishing_dialog_confim_button">Επιβεβαίωση</string>
   <string name="message_report_phishing_dialog_cancel_button">Ακύρωση</string>
   <string name="open_on_protoncalendar_banner_title">Άνοιγμα στο Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Ασφαλές κρυπτογραφημένο ημερολόγιο</string>
-  <string name="error_print_failed">Αποτυχία εκτύπωσης μηνύματος</string>
   <string name="trashed_messages_banner">Αυτή η συνομιλία περιέχει διαγραμμένα μηνύματα.</string>
   <string name="non_trashed_messages_banner">Αυτή η συνομιλία περιέχει μη διαγραμμένα μηνύματα.</string>
   <string name="show">Εμφάνιση</string>
@@ -132,4 +122,13 @@
   <string name="message_details_header_to">Προς</string>
   <string name="message_details_header_cc">Κοιν.</string>
   <string name="message_details_header_bcc">Κρυφή κοιν.</string>
+  <string name="schedule_message_sent_at_banner_title">Αυτό το μήνυμα θα αποσταλεί</string>
+  <string name="schedule_message_edit_message_button">Επεξεργασία μηνύματος</string>
+  <string name="schedule_send_tomorrow">αύριο στις %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Αδυναμία ακύρωσης της προγραμματισμένης ώρας αποστολής για αυτό το μήνυμα</string>
+  <string name="offline_error_cancel_schedule_send_failed">Δεν είναι δυνατή η ακύρωση προγραμματισμένου μηνύματος όσο είστε εκτός σύνδεσης</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Επεξεργασία πρόχειρου</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Ακύρωση</string>
+  <string name="message_cancel_schedule_send_dialog_title">Επεξεργασία και αναπρογραμματισμός</string>
+  <string name="message_cancel_schedule_send_dialog_message">Αυτό το μήνυμα θα μετακινηθεί στα Πρόχειρα ώστε να το επεξεργαστείτε. Θα χρειαστεί να προγραμματίσετε ξανά πότε θα σταλεί.</string>
 </resources>

@@ -34,11 +34,12 @@
   <string name="mailbox_message_sending_success">Üzenet elküldve</string>
   <string name="mailbox_message_sending_error">Hiba az üzenet küldése közben</string>
   <string name="mailbox_message_sending_error_action">Ugrás a piszkozatokhoz</string>
-  <string name="mailbox_attachment_uploading_error">Hiba mellékletek feltöltésénél</string>
   <string name="notification_switched_account">Átváltás %s fiókra</string>
   <string name="label_saved">Címke mentve</string>
   <string name="label_deleted">Címke törölve</string>
-  <string name="label_list_loading_error">Hiba a címke betöltése során, próbálja újra később</string>
   <string name="app_locked">Az alkalmazás zárolt</string>
   <string name="use_pin_instead">Inkább PIN-kód használata</string>
+  <string name="mailbox_message_scheduling">Scheduling message…</string>
+  <string name="mailbox_message_scheduling_offline">Offline: message queued for scheduling</string>
+  <string name="mailbox_message_scheduled_for_sending_success">This message will be sent on %1$s</string>
 </resources>

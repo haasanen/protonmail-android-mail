@@ -17,10 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">Misslyckades ladda kontakter</string>
   <string name="detail_error_loading_conversation">Misslyckades ladda konversation</string>
   <string name="detail_error_loading_messages">Misslyckades ladda meddelanden</string>
-  <string name="error_mark_unread_failed">Det gick inte att markera som oläst. Försök igen.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d meddelande</item>
     <item quantity="other">%d meddelanden</item>
@@ -59,12 +57,10 @@
   <string name="conversation_moved_to_spam">Konversation flyttad till skräppost</string>
   <string name="conversation_moved_to_archive">Konversation flyttad till arkiv</string>
   <string name="error_move_conversation_failed">Misslyckades att flytta konversation. Försök igen.</string>
-  <string name="error_loading_message">Något gick fel, försök igen.</string>
   <string name="error_offline_loading_message">Du är offline. En Internetanslutning krävs för att visa innehållet i detta meddelande.</string>
   <string name="error_get_attachment_failed">Misslyckades att hämta bilaga.</string>
   <string name="error_attachment_download_in_progress">Nuvarande nedladdning måste slutföras innan du startar en ny.</string>
   <string name="error_get_attachment_not_enough_memory">Misslyckades att hämta bilaga på grund av otillräckligt minne</string>
-  <string name="reload">Ladda om</string>
   <string name="error_relabel_message_failed">Misslyckades att märka om meddelande. Försök igen</string>
   <string name="error_relabel_conversation_failed">Misslyckades att märka om konversation. Försök igen</string>
   <string name="please_go_back_online_to_load_messages">Du är offline. Gå tillbaka online för att ladda meddelanden</string>
@@ -104,25 +100,19 @@
   <string name="message_delete_dialog_message">Är du säker på att du vill ta bort detta meddelande permanent?</string>
   <string name="message_deleted">Meddelande borttaget</string>
   <string name="error_delete_message_failed">Misslyckades att ta bort meddelande</string>
-  <string name="error_delete_message_failed_wrong_folder">Meddelande är inte på en plats där det kan tas bort</string>
   <string name="error_delete_conversation_failed">Misslyckades att ta bort konversation</string>
-  <string name="error_delete_conversation_failed_wrong_folder">Konversation är inte på en plats där den kan tas bort</string>
   <string name="conversation_delete_dialog_title">Ta bort konversation</string>
   <string name="conversation_delete_dialog_message">Är du säker på att du vill ta bort denna konversation permanent?</string>
   <string name="conversation_deleted">Konversation borttagen</string>
   <string name="message_body_load_remote_content_button_text">Ladda fjärrinnehåll</string>
   <string name="message_body_load_embedded_images_button_text">Ladda inbäddade bilder</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Ladda fjärr- och inbäddat innehåll</string>
-  <string name="message_report_phishing_dialog_title_offline">Uppmärksamhet</string>
-  <string name="message_report_phishing_dialog_message_offline">Denna funktion är endast tillgänglig online.</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Bekräfta nätfiskerapport</string>
   <string name="message_report_phishing_dialog_message">Att rapportera ett meddelande som ett nätfiskeförsök kommer skicka meddelandet till oss så att vi kan analysera det och förbättra våra filter. Detta innebär att vi kommer kunna se innehållet i meddelandet i sin helhet.</string>
   <string name="message_report_phishing_dialog_confim_button">Bekräfta</string>
   <string name="message_report_phishing_dialog_cancel_button">Avbryt</string>
   <string name="open_on_protoncalendar_banner_title">Öppna i Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Säker krypterad kalender</string>
-  <string name="error_print_failed">Misslyckades att skriva ut meddelande</string>
   <string name="trashed_messages_banner">Denna konversation innehåller kastade meddelanden.</string>
   <string name="non_trashed_messages_banner">Denna konversation innehåller icke kastade meddelanden.</string>
   <string name="show">Visa</string>
@@ -132,4 +122,13 @@
   <string name="message_details_header_to">Till</string>
   <string name="message_details_header_cc">Kopia</string>
   <string name="message_details_header_bcc">Hemlig kopia</string>
+  <string name="schedule_message_sent_at_banner_title">Detta meddelande kommer att skickas</string>
+  <string name="schedule_message_edit_message_button">Redigera meddelande</string>
+  <string name="schedule_send_tomorrow">imorgon kl. %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
+  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Redigera utkast</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Avbryt</string>
+  <string name="message_cancel_schedule_send_dialog_title">Redigera och schemalägg igen</string>
+  <string name="message_cancel_schedule_send_dialog_message">Detta meddelande kommer att flyttas till utkast så att du kan redigera det. Du måste schemalägga om när det ska skickas.</string>
 </resources>

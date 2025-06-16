@@ -17,10 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">Contacten laden mislukt</string>
   <string name="detail_error_loading_conversation">Gesprek laden mislukt</string>
   <string name="detail_error_loading_messages">Berichten laden mislukt</string>
-  <string name="error_mark_unread_failed">Bericht als ongelezen markeren is mislukt. Probeer het opnieuw.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d bericht</item>
     <item quantity="other">%d berichten</item>
@@ -59,12 +57,10 @@
   <string name="conversation_moved_to_spam">Gesprek verplaatst naar prullenbak</string>
   <string name="conversation_moved_to_archive">Gesprek verplaatst naar archief</string>
   <string name="error_move_conversation_failed">Gesprek verplaatsen mislukt. Probeer opnieuw.</string>
-  <string name="error_loading_message">Er ging iets mis. Probeer opnieuw.</string>
   <string name="error_offline_loading_message">U bent offline. Een internetverbinding is verplicht om de inhoud van dit bericht te tonen.</string>
   <string name="error_get_attachment_failed">Het is niet gelukt om de bijlage op te halen.</string>
   <string name="error_attachment_download_in_progress">Huidige download moet voltooid zijn voordat u een nieuwe start.</string>
   <string name="error_get_attachment_not_enough_memory">Kan bijlage niet ophalen vanwege onvoldoende geheugen</string>
-  <string name="reload">Opnieuw laden</string>
   <string name="error_relabel_message_failed">Kon het bericht niet opnieuw labelen. Probeer opnieuw.</string>
   <string name="error_relabel_conversation_failed">Kon het gesprek niet opnieuw labelen. Probeer opnieuw.</string>
   <string name="please_go_back_online_to_load_messages">U bent offline. Ga terug online om berichten te laden</string>
@@ -104,25 +100,19 @@
   <string name="message_delete_dialog_message">Weet u zeker dat u dit bericht permanent wilt verwijderen?</string>
   <string name="message_deleted">Bericht verwijderd</string>
   <string name="error_delete_message_failed">Het bericht verwijderen is mislukt.</string>
-  <string name="error_delete_message_failed_wrong_folder">Bericht staat niet op een locatie waar het kan worden gewist</string>
   <string name="error_delete_conversation_failed">Wissen gesprek mislukt</string>
-  <string name="error_delete_conversation_failed_wrong_folder">Gesprek staat niet op een locatie waar het kan worden gewist</string>
   <string name="conversation_delete_dialog_title">Gesprek verwijderen</string>
   <string name="conversation_delete_dialog_message">Weet u zeker dat u dit gesprek permanent wilt verwijderen?</string>
   <string name="conversation_deleted">Gesprek verwijderd</string>
   <string name="message_body_load_remote_content_button_text">Externe inhoud laden</string>
   <string name="message_body_load_embedded_images_button_text">Ingesloten afbeeldingen laden</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Externe en ingesloten inhoud laden</string>
-  <string name="message_report_phishing_dialog_title_offline">Attentie</string>
-  <string name="message_report_phishing_dialog_message_offline">Deze functionaliteit is alleen online beschikbaar.</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Phishing-rapport bevestigen</string>
   <string name="message_report_phishing_dialog_message">Door een bericht als phishing aan te merken, wordt het naar ProtonMail verzonden, zodat het mogelijk is de inhoud te analyseren en de spamfilters te verbeteren. Dit betekent dat we alle inhoud van dit betreffende bericht kunnen zien.</string>
   <string name="message_report_phishing_dialog_confim_button">Bevestigen</string>
   <string name="message_report_phishing_dialog_cancel_button">Annuleren</string>
   <string name="open_on_protoncalendar_banner_title">Openen in Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Veilig versleutelde agenda</string>
-  <string name="error_print_failed">Bericht afdrukken mislukt</string>
   <string name="trashed_messages_banner">Dit gesprek bevat berichten die zich in de prullenbak bevinden.</string>
   <string name="non_trashed_messages_banner">Dit gesprek bevat berichten die zich niet in de prullenbak bevinden.</string>
   <string name="show">Tonen</string>
@@ -132,4 +122,13 @@
   <string name="message_details_header_to">Aan</string>
   <string name="message_details_header_cc">Cc</string>
   <string name="message_details_header_bcc">Bcc</string>
+  <string name="schedule_message_sent_at_banner_title">Dit bericht zal worden verzonden</string>
+  <string name="schedule_message_edit_message_button">Bericht bewerken</string>
+  <string name="schedule_send_tomorrow">morgen om %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Kon de geplande verzendtijd van dit bericht niet annuleren.</string>
+  <string name="offline_error_cancel_schedule_send_failed">Het is niet mogelijk om een gepland bericht te annuleren terwijl u offline bent.</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Concept bewerken</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Annuleren</string>
+  <string name="message_cancel_schedule_send_dialog_title">Bewerken en opnieuw inplannen</string>
+  <string name="message_cancel_schedule_send_dialog_message">Dit bericht wordt verplaatst naar Concepten zodat u het kunt bewerken. U moet opnieuw inplannen wanneer het wordt verzonden.</string>
 </resources>

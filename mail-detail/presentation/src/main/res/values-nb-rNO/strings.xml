@@ -17,10 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">Feil ved lasting av kontakter</string>
   <string name="detail_error_loading_conversation">Feil ved lasting av samtale</string>
   <string name="detail_error_loading_messages">Feil ved lasting av meldinger</string>
-  <string name="error_mark_unread_failed">Merk som ulest mislyktes. Prøv på nytt.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d melding</item>
     <item quantity="other">%d meldinger</item>
@@ -59,12 +57,10 @@
   <string name="conversation_moved_to_spam">Samtale flyttet til søppelpost</string>
   <string name="conversation_moved_to_archive">Samtale flyttet til arkiv</string>
   <string name="error_move_conversation_failed">Kunne ikke flytte samtale. Prøv på nytt.</string>
-  <string name="error_loading_message">Noe gikk galt. Prøv på nytt.</string>
   <string name="error_offline_loading_message">Du er frakoblet. En internettforbindelse kreves for å vise innholdet i denne meldingen.</string>
   <string name="error_get_attachment_failed">Kunne ikke hente vedlegg.</string>
   <string name="error_attachment_download_in_progress">Gjeldende nedlasting må fullføres før du kan starte en ny.</string>
   <string name="error_get_attachment_not_enough_memory">Kunne ikke hente vedlegg på grunn av utilstrekkelig minne.</string>
-  <string name="reload">Last inn på nytt</string>
   <string name="error_relabel_message_failed">Kunne ikke endre merking av melding. Prøv på nytt.</string>
   <string name="error_relabel_conversation_failed">Kunne ikke endre merking av samtale. Prøv på nytt.</string>
   <string name="please_go_back_online_to_load_messages">Du er frakoblet. Koble til internett for å laste inn meldinger.</string>
@@ -104,25 +100,19 @@
   <string name="message_delete_dialog_message">Er du sikker på at du vil slette denne meldingen permanent?</string>
   <string name="message_deleted">Melding slettet</string>
   <string name="error_delete_message_failed">Kunne ikke slette meldingen</string>
-  <string name="error_delete_message_failed_wrong_folder">Meldingen er ikke på en plassering der den kan slettes</string>
   <string name="error_delete_conversation_failed">Kunne ikke slette samtale</string>
-  <string name="error_delete_conversation_failed_wrong_folder">Samtalen er ikke på en plassering der den kan slettes</string>
   <string name="conversation_delete_dialog_title">Slett samtalen</string>
   <string name="conversation_delete_dialog_message">Er du sikker på at du vil slette denne samtalen permanent?</string>
   <string name="conversation_deleted">Samtale slettet</string>
   <string name="message_body_load_remote_content_button_text">Last eksternt innhold</string>
   <string name="message_body_load_embedded_images_button_text">Last innebygde bilder</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Last inn eksternt og innebygd innhold</string>
-  <string name="message_report_phishing_dialog_title_offline">Oppmerksomhet</string>
-  <string name="message_report_phishing_dialog_message_offline">Denne funksjonen er kun tilgjengelig på nett.</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Bekreft rapporten om nettfisking</string>
   <string name="message_report_phishing_dialog_message">Hvis du rapporterer en melding som et forsøk på nettfisking, sendes meldingen til oss, slik at vi kan analysere den og forbedre filtrene våre. Dette betyr at vi vil kunne se innholdet i meldingen i sin helhet.</string>
   <string name="message_report_phishing_dialog_confim_button">Bekreft</string>
   <string name="message_report_phishing_dialog_cancel_button">Avbryt</string>
   <string name="open_on_protoncalendar_banner_title">Åpne i Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Sikker kryptert kalender</string>
-  <string name="error_print_failed">Kunne ikke skrive ut meldingen</string>
   <string name="trashed_messages_banner">Denne samtalen inneholder meldinger i papirkurven.</string>
   <string name="non_trashed_messages_banner">Denne samtalen inneholder ikke meldinger i papirkurven.</string>
   <string name="show">Vis</string>
@@ -132,4 +122,13 @@
   <string name="message_details_header_to">Til</string>
   <string name="message_details_header_cc">Kopi</string>
   <string name="message_details_header_bcc">Blindkopi</string>
+  <string name="schedule_message_sent_at_banner_title">Denne meldingen vil bli sendt</string>
+  <string name="schedule_message_edit_message_button">Rediger melding</string>
+  <string name="schedule_send_tomorrow">i morgen kl. %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Kunne ikke avbryte denne meldingens planlagte sendetid</string>
+  <string name="offline_error_cancel_schedule_send_failed">Kan ikke avbryte en planlagt melding mens du er frakoblet</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Rediger utkast</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Avbryt</string>
+  <string name="message_cancel_schedule_send_dialog_title">Rediger og endre tidsplan</string>
+  <string name="message_cancel_schedule_send_dialog_message">Denne meldingen flyttes til Utkast slik at du kan redigere den. Du må omplanlegge når den skal sendes.</string>
 </resources>

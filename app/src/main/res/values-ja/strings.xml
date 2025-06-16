@@ -34,11 +34,12 @@
   <string name="mailbox_message_sending_success">メッセージが送信されました</string>
   <string name="mailbox_message_sending_error">メッセージ送信エラー</string>
   <string name="mailbox_message_sending_error_action">下書きを開く</string>
-  <string name="mailbox_attachment_uploading_error">添付ファイルのアップロードエラー</string>
   <string name="notification_switched_account">アカウント %sに切り替えました</string>
   <string name="label_saved">ラベルが保存されました</string>
   <string name="label_deleted">ラベルが削除されました</string>
-  <string name="label_list_loading_error">ラベルの読み込み中にエラーが発生しました。後でもう一度お試しください。</string>
   <string name="app_locked">アプリがロックされました</string>
   <string name="use_pin_instead">代わりにPINコードを使用する</string>
+  <string name="mailbox_message_scheduling">Scheduling message…</string>
+  <string name="mailbox_message_scheduling_offline">Offline: message queued for scheduling</string>
+  <string name="mailbox_message_scheduled_for_sending_success">This message will be sent on %1$s</string>
 </resources>

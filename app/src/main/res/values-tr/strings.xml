@@ -34,11 +34,12 @@
   <string name="mailbox_message_sending_success">İleti gönderildi</string>
   <string name="mailbox_message_sending_error">İleti gönderilirken sorun çıktı</string>
   <string name="mailbox_message_sending_error_action">Taslaklar kutusuna git</string>
-  <string name="mailbox_attachment_uploading_error">Ek dosya yüklenirken sorun çıktı</string>
   <string name="notification_switched_account">%s hesabına geçildi</string>
   <string name="label_saved">Etiket kaydedldi</string>
   <string name="label_deleted">Etiket silindi</string>
-  <string name="label_list_loading_error">Etiket yüklenirken sorun çıktı. Lütfen bir süre sonra yeniden deneyin</string>
   <string name="app_locked">Uygulama kilitlendi</string>
   <string name="use_pin_instead">Bunun yerine PIN kodu kullanın</string>
+  <string name="mailbox_message_scheduling">İleti zamanlanıyor…</string>
+  <string name="mailbox_message_scheduling_offline">Çevrim dışı: İleti zamanlanmak üzere sıraya alındı</string>
+  <string name="mailbox_message_scheduled_for_sending_success">Bu ileti %1$s zamanında gönderilecek</string>
 </resources>

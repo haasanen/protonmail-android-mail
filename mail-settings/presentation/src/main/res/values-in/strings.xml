@@ -25,12 +25,12 @@
   <string name="mail_settings_folder_and_label_settings">Pengaturan folder dan label</string>
   <string name="mail_settings_privacy_and_security_settings">Pengaturan privasi dan keamanan</string>
   <string name="mail_settings_preferences">Preferensi</string>
-  <string name="mail_settings_app">Aplikasi</string>
-  <string name="mail_settings_mailbox">Email</string>
+  <string name="mail_settings_app">Penyesuaian aplikasi</string>
+  <string name="mail_settings_mailbox">Preferensi kotak surat</string>
   <string name="mail_settings_email_hint">Preferensi email dan kotak surat</string>
   <string name="mail_settings_folders_labels">Folder dan label</string>
   <string name="mail_settings_folders_labels_hint">Penataan kotak surat</string>
-  <string name="mail_settings_spam_and_custom_filters">Filter spam dan filter khusus</string>
+  <string name="mail_settings_spam_and_custom_filters">Spam dan filter</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Tindakan dan penyortiran otomatis</string>
   <string name="mail_settings_privacy_and_security">Privasi dan keamanan</string>
   <string name="mail_settings_privacy_and_security_hint">Perlindungan pelacakan email</string>
@@ -65,8 +65,8 @@
   <string name="mail_settings_app_customization_advanced_header">Lanjutan</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Sistem</string>
-  <string name="mail_settings_theme_light">Mode terang</string>
-  <string name="mail_settings_theme_dark">Mode gelap</string>
+  <string name="mail_settings_theme_light">Terang</string>
+  <string name="mail_settings_theme_dark">Gelap</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Tidak ada informasi yang tersedia</string>
   <string name="mail_settings_account">Akun</string>

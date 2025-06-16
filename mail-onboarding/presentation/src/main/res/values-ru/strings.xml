@@ -27,14 +27,17 @@
   <string name="onboarding_neat_and_tidy_headline">Чистота и порядок</string>
   <string name="onboarding_neat_and_tidy_description">Упорядочивайте, отмечайте и раскрашивайте зашифрованные сообщения, чтобы создать идеальный индивидуальный почтовый ящик.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_rebuilt_from_ground_up_headline">Переработано с нуля</string>
-  <string name="onboarding_rebuilt_from_ground_up_description">Новое приложение Proton Mail, полностью переработанное на архитектуре Rust, было перестроено для повышения производительности, удобства использования и масштабируемости.</string>
+  <string name="onboarding_welcome_title">Добро пожаловать в\nновое приложение Proton Mail!</string>
+  <string name="onboarding_welcome_headline">Полностью переделано</string>
+  <string name="onboarding_welcome_description">Благодарим вас за присоединение к этой ограниченной группе ранних бета-тестеров. Ваш отзыв крайне важен для создания еще лучшего Proton Mail, готового к публичному выпуску.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_new_inbox_headline">Новый входящие unboxed</string>
-  <string name="onboarding_new_inbox_description">Мы рады представить новый яркий дизайн и улучшенный пользовательский интерфейс. Теперь вы можете предварительно просмотреть новый список и представление сообщений. </string>
+  <string name="onboarding_rebuilt_title">Создано заново: лучше и быстрее</string>
+  <string name="onboarding_rebuilt_headline">Новый вид папки «Входящие»</string>
+  <string name="onboarding_rebuilt_description">Полностью переработано с использованием архитектуры Rust, новое приложение Proton Mail быстрее, имеет яркий дизайн и долгожданные функции, такие как автономный режим.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_is_key_headline">Ваш отзыв очень важен</string>
-  <string name="onboarding_feedback_is_key_description">В течение следующих месяцев мы развернем все функции. Продолжайте тестировать приложение и сообщайте нам, как мы можем сделать его лучше!</string>
+  <string name="onboarding_feedback_title">Благодарим вас за участие!</string>
+  <string name="onboarding_feedback_headline">Ваш отзыв очень важен</string>
+  <string name="onboarding_feedback_description">В ближайшие месяцы мы будем добавлять новые функции. Пожалуйста, протестируйте приложение и нажмите \"Сообщить о проблеме\", чтобы рассказать нам, как мы можем улучшить его. Ваш вклад бесценен!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Далее</string>
   <string name="onboarding_get_started">Начать тестирование</string>

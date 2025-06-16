@@ -27,18 +27,21 @@
   <string name="onboarding_neat_and_tidy_headline">Простота й лаконічність</string>
   <string name="onboarding_neat_and_tidy_description">Файли, мітки та позначення повідомлень кольором для досконалої, індивідуальної поштової скриньки.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_rebuilt_from_ground_up_headline">Transformed from the ground up</string>
-  <string name="onboarding_rebuilt_from_ground_up_description">Completely reengineered on Rust architecture, the new Proton Mail is rebuilt for performance, user experience, and scalability.</string>
+  <string name="onboarding_welcome_title">Вітаємо в\nновому застосунку Proton Mail!</string>
+  <string name="onboarding_welcome_headline">Повністю перетворений</string>
+  <string name="onboarding_welcome_description">Дякуємо, що приєдналися до цієї обмеженої групи ранніх бета-тестувальників. Ваш відгук має вирішальне значення для допомоги нам у створенні ще кращого Proton Mail, готового до публічного випуску.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_new_inbox_headline">New inbox unboxed</string>
-  <string name="onboarding_new_inbox_description">We’re excited to unveil the vibrant new design and improved user experience. For now, you can preview the new list and message views. </string>
+  <string name="onboarding_rebuilt_title">Перероблений, щоби бути кращим і швидшим</string>
+  <string name="onboarding_rebuilt_headline">Представляємо нову поштову скриньку</string>
+  <string name="onboarding_rebuilt_description">Повністю перероблений на архітектурі Rust, новий Proton Mail швидший, має яскравий дизайн та дуже запитувані функції, як-от режим не в мережі.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_is_key_headline">Your feedback is key</string>
-  <string name="onboarding_feedback_is_key_description">We’re rolling out all the features in the next months. Please continue to test the app and let us know how we can make it better!</string>
+  <string name="onboarding_feedback_title">Дякуємо за вашу участь!</string>
+  <string name="onboarding_feedback_headline">Ваш відгук має вирішальне значення</string>
+  <string name="onboarding_feedback_description">У найближчі місяці ми будемо впроваджувати нові функції. Протестуйте застосунок і натисніть «Повідомити про проблему», аби повідомити нам, як ми можемо його вдосконалити. Ваша думка для нас дуже важлива!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Далі</string>
-  <string name="onboarding_get_started">Start testing</string>
+  <string name="onboarding_get_started">Почніть тестувати</string>
   <string name="onboarding_illustration_content_description">Ознайомча ілюстрація</string>
   <string name="onboarding_close_content_description">Закрити</string>
-  <string name="onboarding_introducing_next_gen_app">Introducing our next-gen app!</string>
+  <string name="onboarding_introducing_next_gen_app">Представляємо наш застосунок наступного покоління!</string>
 </resources>

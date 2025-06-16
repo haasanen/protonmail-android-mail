@@ -98,4 +98,6 @@
   <string name="auth_signup_validation_username_input_invalid">사용자 이름 입력이 유효하지 않습니다.</string>
   <string name="auth_signup_validation_email_input_invalid">사용자 이름 입력이 유효하지 않습니다.</string>
   <string name="auth_signup_countries_search">국가 검색</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_user">Could not setup the user.</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_address">Could not setup the address.</string>
 </resources>

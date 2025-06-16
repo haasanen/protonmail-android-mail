@@ -30,7 +30,7 @@
   <string name="composer_error_invalid_email">올바르지 않은 이메일 주소입니다</string>
   <string name="composer_error_invalid_sender">보낸 이의 주소가 잘못되었습니다</string>
   <string name="change_sender_button_content_description">보낸 사람 변경</string>
-  <string name="composer_change_sender_paid_feature">보낸 사람 주소를 변경하려면 유료 요금제로 업그레이드하세요.</string>
+  <string name="composer_change_sender_paid_feature">보낸 사람의 주소를 변경하려면 유료 플랜으로 업그레이드하세요</string>
   <string name="composer_error_change_sender_failed_getting_subscription">사용자의 구독을 실패했기 때문에 발신자를 변경할 수 없습니다. 다시 시도하십시오.</string>
   <string name="composer_error_store_draft_sender_address">이 초안의 발신자 주소를 저장하는 데 실패했습니다.</string>
   <string name="composer_error_store_draft_body">이 초안의 본문을 저장하는 것을 실패했습니다.</string>
@@ -124,4 +124,6 @@
   <string name="composer_schedule_send_monday_title">월요일</string>
   <string name="composer_schedule_send_custom_title">사용자 정의</string>
   <string name="composer_schedule_send_custom_description">시간 및 날짜 선택</string>
+  <string name="composer_error_send_message">메시지 전송 오류</string>
+  <string name="composer_schedule_send_previously_set">Previously set</string>
 </resources>

@@ -19,35 +19,41 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Kembali</string>
   <!-- Auto lock -->
-  <string name="mail_pinlock_settings_title">Perlindungan</string>
-  <string name="mail_pinlock_settings_toggle_autolock_title">Kunci-otomatis aplikasi</string>
-  <string name="mail_pinlock_settings_toggle_autolock_description">Aktifkan fitur ini untuk mengunci aplikasi secara otomatis dan mengamankannya dengan kode PIN.</string>
-  <string name="mail_pinlock_settings_change_pin_description">Ubah kode PIN</string>
-  <string name="mail_pinlock_settings_change_interval_title">Pengatur waktu kunci-otomatis</string>
+  <string name="mail_pinlock_settings_title">App lock</string>
+  <string name="mail_pinlock_settings_no_lock">Don\'t lock</string>
+  <string name="mail_pinlock_settings_with_pin">Secure with PIN</string>
+  <string name="mail_pinlock_settings_with_biometrics">Secure with biometrics</string>
+  <string name="mail_pinlock_settings_logout_disclaimer">All app lock settings, including the PIN, will reset when you sign out of the app.</string>
+  <string name="mail_pinlock_settings_new_pin_topbar">Set new PIN</string>
+  <string name="mail_pinlock_settings_new_pin_title">New PIN</string>
+  <string name="mail_pinlock_settings_new_pin_description">Enter a PIN between 4 and 21 digits long</string>
+  <string name="mail_pinlock_settings_confirm_pin_topbar">Confirm PIN</string>
+  <string name="mail_pinlock_settings_confirm_pin_title">Repeat PIN</string>
+  <string name="mail_pinlock_settings_confirm_pin_description">Re-enter your PIN to make sure it’s correct</string>
+  <string name="mail_pinlock_settings_verify_pin_topbar">Enter your PIN</string>
+  <string name="mail_pinlock_settings_verify_pin_title">Enter your PIN</string>
+  <string name="mail_pinlock_settings_verify_pin_description">Confirm it\'s you to continue</string>
+  <string name="mail_pinlock_settings_change_pin_description">Change PIN</string>
+  <string name="mail_pinlock_settings_change_interval_title">Auto-lock</string>
   <string name="mail_pinlock_settings_autolock_immediately">Segera</string>
   <string name="mail_pinlock_settings_autolock_never">Tidak pernah</string>
-  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 menit tidak aktif</string>
-  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 menit tidak aktif</string>
-  <string name="mail_pinlock_settings_autolock_description_one_hour">1 jam tidak aktif</string>
-  <string name="mail_pinlock_settings_autolock_description_one_day">1 hari tidak aktif</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">After 5 minutes</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">After 15 minutes</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">After 1 hour</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">After 1 day</string>
   <string name="mail_settings_auto_lock_update_error">Terdapat kesalahan dalam memperbarui pengaturan</string>
-  <string name="mail_settings_pin_insertion_input_title">Masukkan kode PIN</string>
-  <string name="mail_settings_pin_insertion_set_title">Atur kode PIN</string>
-  <string name="mail_settings_pin_insertion_confirm_title">Konfirmasikan kode PIN</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">Ikon kunci</string>
   <string name="mail_settings_pin_insertion_pin_dot_description">Titik pin</string>
-  <string name="mail_settings_pin_insertion_backspace_description">Hapus</string>
-  <string name="mail_settings_pin_insertion_biometric_description">Autentikasi Biometrik</string>
-  <string name="mail_settings_pin_insertion_button_create">Buat</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Konfirmasi</string>
+  <string name="mail_settings_pin_insertion_button_create">Confirm</string>
+  <string name="mail_settings_pin_insertion_button_confirm">Next</string>
   <string name="mail_settings_pin_insertion_error_no_match">Kode PIN tidak sesuai.</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="other">%s upaya tersisa.</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="other">%s upaya tersisa sebelum penghapusan data.</item>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code_threshold">
+    <item quantity="other">%s remaining attempts until before sign-out.</item>
   </plurals>
   <string name="mail_settings_pin_insertion_error_unknown">Terdapat masalah dalam memverifikasi kode PIN Anda.</string>
+  <string name="mail_settings_pin_insertion_error_too_short">PIN must be at least 4 digits</string>
+  <string name="mail_settings_pin_verification_error_too_many">Too many attempts. Please try again later.</string>
+  <string name="mail_settings_pin_verification_error_no_match">Incorrect PIN</string>
+  <string name="mail_settings_pin_verification_error_too_many_frequent">Too many frequent attempts. Please try again later.</string>
   <string name="mail_settings_pin_insertion_signout_text">Keluar</string>
   <string name="mail_settings_pin_insertion_signout_dialog_title">Keluar</string>
   <string name="mail_settings_pin_insertion_signout_dialog_description">Apakah Anda yakin ingin keluar?</string>
@@ -57,9 +63,21 @@
   <string name="mail_settings_pin_insertion_changed_success">Kode PIN berhasil diubah.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Terdapat suatu kesalahan. Silakan coba lagi.</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">Tidak ada data biometrik yang terdaftar</string>
-  <string name="log_in_using_biometric_credential">Buka kunci dengan kredensial biometrik</string>
-  <string name="unlock_using_biometrics">Buka kunci dengan biometrik</string>
-  <string name="biometric_error_hw_not_available">Perangkat keras biometrik tidak tersedia.</string>
+  <string name="mail_settings_pin_verify_generic_error_message">An error occurred. Try again.</string>
+  <string name="mail_settings_pin_verify_too_many_attempts">Too many incorrect attempts</string>
+  <string name="mail_settings_pin_verify_wrong_pin">Incorrect PIN</string>
+  <string name="mail_settings_biometrics_unable_to_set">An error occurred while setting Biometrics preferences.</string>
+  <string name="mail_settings_biometrics_unable_to_unset">An error occurred while resetting Biometrics preferences.</string>
+  <string name="mail_settings_biometrics_unknown_lock">An error occurred while fetching the current lock policy.</string>
+  <!-- Auto lock dialog -->
+  <string name="mail_settings_pin_lock_dialog_title">Confirm PIN</string>
+  <string name="mail_settings_pin_lock_dialog_subtitle">For security, enter your current PIN to continue.</string>
+  <string name="mail_settings_pin_lock_dialog_button_next">Next</string>
+  <string name="mail_settings_pin_lock_dialog_button_cancel">Cancel</string>
+  <!-- Biometrics unlock -->
+  <string name="mail_settings_biometrics_title_confirm">Confirm operation</string>
+  <string name="mail_settings_biometrics_subtitle_default">Use your fingerprint to confirm the operation</string>
+  <string name="mail_settings_biometrics_button_negative">Cancel</string>
+  <string name="mail_settings_biometrics_title_app_locked">App locked</string>
+  <string name="mail_settings_biometrics_subtitle_app_locked">Unlock using your biometric credentials</string>
 </resources>

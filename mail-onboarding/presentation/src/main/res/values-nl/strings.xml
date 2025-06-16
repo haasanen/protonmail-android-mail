@@ -27,14 +27,17 @@
   <string name="onboarding_neat_and_tidy_headline">Netjes en opgeruimd</string>
   <string name="onboarding_neat_and_tidy_description">Sorteer, label en ken kleur toe aan berichten om uw perfecte inbox te creëren.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_rebuilt_from_ground_up_headline">Vanaf de grond getransformeerd</string>
-  <string name="onboarding_rebuilt_from_ground_up_description">Het vernieuwde Proton Mail is volledig herbouwd op Rust-architectuur, voor verbeterde prestaties, gebruikerservaring en schaalbaarheid.</string>
+  <string name="onboarding_welcome_title">Welkom bij de\nnieuwe Proton Mail-app!</string>
+  <string name="onboarding_welcome_headline">Van de grond af getransformeerd</string>
+  <string name="onboarding_welcome_description">Bedankt dat u deelneemt aan deze beperkte groep vroege bèta-testers. Uw feedback is cruciaal om ons te helpen een nog betere Proton Mail te bouwen die klaar is voor publieke uitgave.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_new_inbox_headline">Nieuw postvak uitgepakt</string>
-  <string name="onboarding_new_inbox_description">Met trots onthullen we het levendige nieuwe ontwerp en de verbeterde gebruikerservaring. Om te beginnen kunt u de nieuwe lijst en berichtweergave alvast bekijken. </string>
+  <string name="onboarding_rebuilt_title">Herbouwd om beter en sneller te zijn</string>
+  <string name="onboarding_rebuilt_headline">Nieuw inbox uitgepakt</string>
+  <string name="onboarding_rebuilt_description">Volledig herontworpen met behulp van Rust-architectuur, is de nieuwe Proton Mail sneller met een levendig ontwerp en veelgevraagde functies, zoals de offline modus.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_is_key_headline">Uw feedback is essentieel</string>
-  <string name="onboarding_feedback_is_key_description">We rollen alle functies uit in de komende maanden. Blijf de app testen en laat ons weten hoe we het beter kunnen maken!</string>
+  <string name="onboarding_feedback_title">Bedankt voor uw deelname!</string>
+  <string name="onboarding_feedback_headline">Uw feedback is essentieel</string>
+  <string name="onboarding_feedback_description">We zullen de komende maanden nieuwe functies uitrollen. Test u alstublieft de app en tik op \"Een probleem melden\" om ons te laten weten hoe we kunnen blijven verbeteren. Uw inbreng is van onschatbare waarde!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Volgende</string>
   <string name="onboarding_get_started">Begin met testen</string>

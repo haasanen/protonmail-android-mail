@@ -25,12 +25,12 @@
   <string name="mail_settings_folder_and_label_settings">資料夾與標籤設定</string>
   <string name="mail_settings_privacy_and_security_settings">隱私與安全性設定</string>
   <string name="mail_settings_preferences">偏好設定</string>
-  <string name="mail_settings_app">應用程式</string>
-  <string name="mail_settings_mailbox">電子郵件</string>
+  <string name="mail_settings_app">應用程式自訂</string>
+  <string name="mail_settings_mailbox">Mailbox preferences</string>
   <string name="mail_settings_email_hint">電子郵件與信箱偏好設定</string>
   <string name="mail_settings_folders_labels">資料與標籤</string>
   <string name="mail_settings_folders_labels_hint">信箱組織</string>
-  <string name="mail_settings_spam_and_custom_filters">垃圾郵件與自訂過濾條件</string>
+  <string name="mail_settings_spam_and_custom_filters">垃圾郵件與篩選器</string>
   <string name="mail_settings_spam_and_custom_filters_hint">自動動作與排序</string>
   <string name="mail_settings_privacy_and_security">隱私與安全性</string>
   <string name="mail_settings_privacy_and_security_hint">電子郵件追蹤保護</string>
@@ -64,9 +64,9 @@
   <string name="mail_settings_app_customization_mail_experience_header">Mail 體驗</string>
   <string name="mail_settings_app_customization_advanced_header">進階</string>
   <!-- Theme settings -->
-  <string name="mail_settings_system_default">System</string>
-  <string name="mail_settings_theme_light">Light mode</string>
-  <string name="mail_settings_theme_dark">Dark mode</string>
+  <string name="mail_settings_system_default">系統</string>
+  <string name="mail_settings_theme_light">淺色</string>
+  <string name="mail_settings_theme_dark">深色</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">無適用資訊</string>
   <string name="mail_settings_account">帳號</string>

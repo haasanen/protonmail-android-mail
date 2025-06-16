@@ -124,4 +124,6 @@
   <string name="composer_schedule_send_monday_title">Senin</string>
   <string name="composer_schedule_send_custom_title">Sesuaikan</string>
   <string name="composer_schedule_send_custom_description">Pilih waktu dan tanggal</string>
+  <string name="composer_error_send_message">Kesalahan mengirim pesan</string>
+  <string name="composer_schedule_send_previously_set">Previously set</string>
 </resources>

@@ -34,11 +34,12 @@
   <string name="mailbox_message_sending_success">Mensaje enviado</string>
   <string name="mailbox_message_sending_error">Error al enviar el mensaje</string>
   <string name="mailbox_message_sending_error_action">Ir a Borradores</string>
-  <string name="mailbox_attachment_uploading_error">Error al cargar el archivo adjunto</string>
   <string name="notification_switched_account">Se ha cambiado a la cuenta: %s</string>
   <string name="label_saved">Etiqueta guardada</string>
   <string name="label_deleted">Etiqueta eliminada</string>
-  <string name="label_list_loading_error">Error al cargar la etiqueta. Intente de nuevo más tarde.</string>
   <string name="app_locked">Aplicación bloqueada</string>
   <string name="use_pin_instead">Use el código PIN en su lugar.</string>
+  <string name="mailbox_message_scheduling">Programando mensaje…</string>
+  <string name="mailbox_message_scheduling_offline">Sin conexión: mensaje en cola para programar</string>
+  <string name="mailbox_message_scheduled_for_sending_success">Este mensaje se enviará el %1$s</string>
 </resources>

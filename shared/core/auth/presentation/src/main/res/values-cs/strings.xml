@@ -98,4 +98,6 @@
   <string name="auth_signup_validation_username_input_invalid">Neplatné zadání uživatelského jména.</string>
   <string name="auth_signup_validation_email_input_invalid">Neplatné zadání uživatelského jména.</string>
   <string name="auth_signup_countries_search">Vyhledat zemi</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_user">Nelze nastavit uživatele.</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_address">Nelze nastavit adresu.</string>
 </resources>

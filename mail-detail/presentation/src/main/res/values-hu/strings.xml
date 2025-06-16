@@ -17,10 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">Névjegyek betöltése sikertelen</string>
   <string name="detail_error_loading_conversation">Beszélgetések betöltése sikertelen</string>
   <string name="detail_error_loading_messages">Üzenetek betöltése sikertelen</string>
-  <string name="error_mark_unread_failed">Olvasatlanként megjelölés sikertelen. Próbálja meg újra.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d üzenet</item>
     <item quantity="other">%d üzenet(ek)</item>
@@ -59,12 +57,10 @@
   <string name="conversation_moved_to_spam">Beszélgetés áthelyezve a levélszemétbe.</string>
   <string name="conversation_moved_to_archive">Beszélgetés áthelyezve az archívumba</string>
   <string name="error_move_conversation_failed">A beszélgetés áthelyezése sikertelen. Próbálja újra.</string>
-  <string name="error_loading_message">Nem meghatározott hiba történt, kérjük próbálja meg újra.</string>
   <string name="error_offline_loading_message">Ön jelenleg offline. Internet kapcsolat szükséges az üzenet tartalmának betöltéséhez.</string>
   <string name="error_get_attachment_failed">A melléklet elérése sikertelen.</string>
   <string name="error_attachment_download_in_progress">A jelenlegi letöltésnek be kell fejeződnie az új letöltés megkezdése előtt.</string>
   <string name="error_get_attachment_not_enough_memory">Elégtelen memória miatt a melléklet letöltése sikertelen</string>
-  <string name="reload">Újratöltés</string>
   <string name="error_relabel_message_failed">Az üzenet címkéinek frissítése nem sikerült. Próbálja meg újra</string>
   <string name="error_relabel_conversation_failed">A beszélgetés címkéinek frissítése nem sikerült. Próbálja meg újra</string>
   <string name="please_go_back_online_to_load_messages">Ön jelenleg offline. Kérjük csatlakozzon újra internethez az üzenetek betöltéséhez</string>
@@ -104,25 +100,19 @@
   <string name="message_delete_dialog_message">Biztos, hogy véglegesen törli ezt az üzenetet?</string>
   <string name="message_deleted">Üzenet törölve</string>
   <string name="error_delete_message_failed">Hiba az üzenet törlésekor</string>
-  <string name="error_delete_message_failed_wrong_folder">Az üzenet nem olyan helyen van, ahonnan törölhető</string>
   <string name="error_delete_conversation_failed">Beszélgetés törlése nem sikerült</string>
-  <string name="error_delete_conversation_failed_wrong_folder">A beszélgetés nem olyan helyen van, ahonnan törölhető</string>
   <string name="conversation_delete_dialog_title">Beszélgetés törlése</string>
   <string name="conversation_delete_dialog_message">Biztos, hogy végleg törölni szeretné ezt a beszélgetést?</string>
   <string name="conversation_deleted">Beszélgetés törölve</string>
   <string name="message_body_load_remote_content_button_text">Távoli tartalom betöltése</string>
   <string name="message_body_load_embedded_images_button_text">Beágyazott képek betöltése</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Távoli, beágyazott tartalom betöltése</string>
-  <string name="message_report_phishing_dialog_title_offline">Figyelem</string>
-  <string name="message_report_phishing_dialog_message_offline">Ez a funkció csak online érhető el.</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Erősítse meg az adathalász bejelentést</string>
   <string name="message_report_phishing_dialog_message">Az adathalász kísérletként megjelölt üzeneteket a rendszer hozzánk továbbítja, hogy kiértékelhessük és fejleszthessük a szűrőinket. Ebben az esetben az üzenet teljes szövegéhez hozzáférhetünk.</string>
   <string name="message_report_phishing_dialog_confim_button">Jóváhagyás</string>
   <string name="message_report_phishing_dialog_cancel_button">Mégsem</string>
   <string name="open_on_protoncalendar_banner_title">Megnyitás a Proton Calendarban</string>
   <string name="open_on_protoncalendar_banner_description">Biztonságos, titkosított naptár</string>
-  <string name="error_print_failed">Üzenet nyomtatása sikertelen</string>
   <string name="trashed_messages_banner">Ez a beszélgetés törölt üzeneteket is tartalmaz.</string>
   <string name="non_trashed_messages_banner">Ez a beszélgetés nem-törölt üzeneteket is tartalmaz.</string>
   <string name="show">Megjelenítés</string>
@@ -132,4 +122,13 @@
   <string name="message_details_header_to">Címzett</string>
   <string name="message_details_header_cc">Másolat</string>
   <string name="message_details_header_bcc">Titkos másolat</string>
+  <string name="schedule_message_sent_at_banner_title">This message will be sent</string>
+  <string name="schedule_message_edit_message_button">Edit message</string>
+  <string name="schedule_send_tomorrow">tomorrow at %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
+  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
+  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
+  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
 </resources>

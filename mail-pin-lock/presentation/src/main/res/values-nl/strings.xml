@@ -19,37 +19,42 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Terug</string>
   <!-- Auto lock -->
-  <string name="mail_pinlock_settings_title">Bescherming</string>
-  <string name="mail_pinlock_settings_toggle_autolock_title">Programma automatisch vergrendelen</string>
-  <string name="mail_pinlock_settings_toggle_autolock_description">Schakel deze functie in om uw app automatisch te vergrendelen en te beveiligen met een PIN-code.</string>
-  <string name="mail_pinlock_settings_change_pin_description">Wijzig PIN-code</string>
-  <string name="mail_pinlock_settings_change_interval_title">Timer automatisch vergrendelen</string>
+  <string name="mail_pinlock_settings_title">Appvergrendeling</string>
+  <string name="mail_pinlock_settings_no_lock">Niet vergrendelen</string>
+  <string name="mail_pinlock_settings_with_pin">Beveilig met pincode</string>
+  <string name="mail_pinlock_settings_with_biometrics">Beveilig met biometrie</string>
+  <string name="mail_pinlock_settings_logout_disclaimer">Alle app vergrendelingsinstellingen, inclusief de PIN, worden gereset wanneer u uitlogt uit de app.</string>
+  <string name="mail_pinlock_settings_new_pin_topbar">Nieuwe pincode instellen</string>
+  <string name="mail_pinlock_settings_new_pin_title">Nieuwe pincode</string>
+  <string name="mail_pinlock_settings_new_pin_description">Voer een pincode in van 4 tot 21 cijfers lang</string>
+  <string name="mail_pinlock_settings_confirm_pin_topbar">Pincode bevestigen</string>
+  <string name="mail_pinlock_settings_confirm_pin_title">Pincode herhalen</string>
+  <string name="mail_pinlock_settings_confirm_pin_description">Voer uw pincode opnieuw in om er zeker van te zijn dat deze correct is</string>
+  <string name="mail_pinlock_settings_verify_pin_topbar">Voer uw pincode in</string>
+  <string name="mail_pinlock_settings_verify_pin_title">Voer uw pincode in</string>
+  <string name="mail_pinlock_settings_verify_pin_description">Bevestig uw identiteit om verder te gaan</string>
+  <string name="mail_pinlock_settings_change_pin_description">Wijzig pincode</string>
+  <string name="mail_pinlock_settings_change_interval_title">Automatisch vergrendelen</string>
   <string name="mail_pinlock_settings_autolock_immediately">Onmiddellijk</string>
   <string name="mail_pinlock_settings_autolock_never">Nooit</string>
-  <string name="mail_pinlock_settings_autolock_description_five_minutes">5 minuten inactiviteit</string>
-  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minuten inactiviteit</string>
-  <string name="mail_pinlock_settings_autolock_description_one_hour">1 uur inactiviteit</string>
-  <string name="mail_pinlock_settings_autolock_description_one_day">1 dag inactiviteit</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">Na 5 minuten</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">Na 15 minuten</string>
+  <string name="mail_pinlock_settings_autolock_description_one_hour">Na 1 uur</string>
+  <string name="mail_pinlock_settings_autolock_description_one_day">Na 1 dag</string>
   <string name="mail_settings_auto_lock_update_error">Fout bij het bijwerken van instellingen</string>
-  <string name="mail_settings_pin_insertion_input_title">Pincode invoeren</string>
-  <string name="mail_settings_pin_insertion_set_title">Pincode instellen</string>
-  <string name="mail_settings_pin_insertion_confirm_title">Pincode bevestigen</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">Vergrendel icoon</string>
   <string name="mail_settings_pin_insertion_pin_dot_description">Pincode</string>
-  <string name="mail_settings_pin_insertion_backspace_description">Backspace</string>
-  <string name="mail_settings_pin_insertion_biometric_description">Biometrische verificatie</string>
-  <string name="mail_settings_pin_insertion_button_create">Aanmaken</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Bevestigen</string>
+  <string name="mail_settings_pin_insertion_button_create">Bevestigen</string>
+  <string name="mail_settings_pin_insertion_button_confirm">Volgende</string>
   <string name="mail_settings_pin_insertion_error_no_match">Pincodes komen niet overeen.</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="one">%s poging over.</item>
-    <item quantity="other">%s pogingen over.</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="one">%s poging resterend totdat alle gegevens veilig gewist worden.</item>
-    <item quantity="other">%s pogingen resterend totdat alle gegevens veilig gewist worden.</item>
+  <plurals name="mail_settings_pin_insertion_error_wrong_code_threshold">
+    <item quantity="one">%s poging over voordat u wordt afgemeld.</item>
+    <item quantity="other">%s pogingen over voordat u wordt afgemeld.</item>
   </plurals>
   <string name="mail_settings_pin_insertion_error_unknown">Er is een fout opgetreden bij het verifiëren van uw pincode.</string>
+  <string name="mail_settings_pin_insertion_error_too_short">PIN moet minstens 4 cijfers bevatten</string>
+  <string name="mail_settings_pin_verification_error_too_many">Te veel pogingen. Probeer het later opnieuw.</string>
+  <string name="mail_settings_pin_verification_error_no_match">Onjuiste PIN</string>
+  <string name="mail_settings_pin_verification_error_too_many_frequent">Te veel pogingen kort na elkaar. Probeer later opnieuw.</string>
   <string name="mail_settings_pin_insertion_signout_text">Uitloggen</string>
   <string name="mail_settings_pin_insertion_signout_dialog_title">Uitloggen</string>
   <string name="mail_settings_pin_insertion_signout_dialog_description">Weet u zeker dat u zich wilt uitloggen?</string>
@@ -59,9 +64,21 @@
   <string name="mail_settings_pin_insertion_changed_success">Pincode succesvol gewijzigd.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Er ging iets fout. Probeer opnieuw.</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">Geen biometrische gegevens ingeschreven</string>
-  <string name="log_in_using_biometric_credential">Ontgrendelen met uw biometrische gegevens</string>
-  <string name="unlock_using_biometrics">Ontgrendel met biometrische gegevens</string>
-  <string name="biometric_error_hw_not_available">Biometrische hardware niet beschikbaar.</string>
+  <string name="mail_settings_pin_verify_generic_error_message">Er ging iets fout. Probeer het opnieuw.</string>
+  <string name="mail_settings_pin_verify_too_many_attempts">Te veel verkeerde pogingen</string>
+  <string name="mail_settings_pin_verify_wrong_pin">Onjuiste PIN</string>
+  <string name="mail_settings_biometrics_unable_to_set">Er is een fout opgetreden bij het instellen van de biometrische voorkeuren.</string>
+  <string name="mail_settings_biometrics_unable_to_unset">Er is een fout opgetreden bij het resetten van de biometrische voorkeuren.</string>
+  <string name="mail_settings_biometrics_unknown_lock">Er is een fout opgetreden tijdens het ophalen van het huidige vergrendelingsbeleid.</string>
+  <!-- Auto lock dialog -->
+  <string name="mail_settings_pin_lock_dialog_title">Pincode bevestigen</string>
+  <string name="mail_settings_pin_lock_dialog_subtitle">Voor de veiligheid, voer uw huidige PIN in om door te gaan.</string>
+  <string name="mail_settings_pin_lock_dialog_button_next">Volgende</string>
+  <string name="mail_settings_pin_lock_dialog_button_cancel">Annuleren</string>
+  <!-- Biometrics unlock -->
+  <string name="mail_settings_biometrics_title_confirm">Bevestig de bewerking</string>
+  <string name="mail_settings_biometrics_subtitle_default">Gebruik uw vingerafdruk om de bewerking te bevestigen</string>
+  <string name="mail_settings_biometrics_button_negative">Annuleren</string>
+  <string name="mail_settings_biometrics_title_app_locked">App vergrendeld</string>
+  <string name="mail_settings_biometrics_subtitle_app_locked">Ontgrendelen met uw biometrische gegevens</string>
 </resources>

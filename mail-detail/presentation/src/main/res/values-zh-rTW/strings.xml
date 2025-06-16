@@ -17,10 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">無法載入聯絡人資料</string>
   <string name="detail_error_loading_conversation">無法載入往來對話內容</string>
   <string name="detail_error_loading_messages">無法載入郵件訊息</string>
-  <string name="error_mark_unread_failed">無法標記成未讀。請再試一次。</string>
   <plurals name="message_count_label_text">
     <item quantity="other">%d 封郵件</item>
   </plurals>
@@ -57,12 +55,10 @@
   <string name="conversation_moved_to_spam">無法將往來對話訊息丟進垃圾郵件</string>
   <string name="conversation_moved_to_archive">往來對話訊息已移至封存檔</string>
   <string name="error_move_conversation_failed">無法移動往來對話。請再試一次。</string>
-  <string name="error_loading_message">載入訊息時發生錯誤，請再試一次。</string>
   <string name="error_offline_loading_message">您目前是離線狀態。需要網際網路連線才能顯示此訊息的內容。</string>
   <string name="error_get_attachment_failed">無法取得附件。</string>
   <string name="error_attachment_download_in_progress">在開始新的下載之前，必須先完成目前的。</string>
   <string name="error_get_attachment_not_enough_memory">因為儲存空間不足，無法取得附件</string>
-  <string name="reload">重新載入</string>
   <string name="error_relabel_message_failed">無法重新在郵件加上標籤。請再試試</string>
   <string name="error_relabel_conversation_failed">無法重新在往來對話加上標籤。請再試試</string>
   <string name="please_go_back_online_to_load_messages">您目前是離線狀態。請重新連線以載入訊息</string>
@@ -74,9 +70,9 @@
   <string name="message_body_remote_content_banner_text">已經關閉遠端內容的自動載入。這可以在設定中變更。</string>
   <string name="message_body_embedded_and_remote_content_banner_text">已經關閉內嵌影像與遠端內容的自動載入。這可以在設定中變更。</string>
   <string name="message_phishing_banner_text">This message was flagged as suspicious, either by our system or by you. If you believe it’s safe, mark it as legitimate.</string>
-  <string name="message_phishing_banner_mark_as_legitimate_button">Mark as legitimate</string>
+  <string name="message_phishing_banner_mark_as_legitimate_button">標記為正常郵件</string>
   <string name="message_spam_banner_text">This message was flagged as Spam, either by our system or by you.</string>
-  <string name="message_spam_banner_not_spam_button">Not Spam</string>
+  <string name="message_spam_banner_not_spam_button">非垃圾郵件</string>
   <string name="message_blocked_sender_banner_text">此寄件者過去曾遭封鎖。</string>
   <string name="message_blocked_sender_button_text">解除封鎖</string>
   <string name="message_expiration_banner_text">此郵件的有效期限尚餘 %1$s</string>
@@ -102,25 +98,19 @@
   <string name="message_delete_dialog_message">您確定要永久刪除此郵件嗎？</string>
   <string name="message_deleted">郵件已刪除</string>
   <string name="error_delete_message_failed">刪除信件失敗</string>
-  <string name="error_delete_message_failed_wrong_folder">訊息位在無法刪除的地方</string>
   <string name="error_delete_conversation_failed">刪除對話失敗</string>
-  <string name="error_delete_conversation_failed_wrong_folder">對話位在無法刪除的地方</string>
   <string name="conversation_delete_dialog_title">刪除往來對話</string>
   <string name="conversation_delete_dialog_message">您確定要永遠刪除這個對話內容？</string>
   <string name="conversation_deleted">往來對話已刪除</string>
   <string name="message_body_load_remote_content_button_text">載入遠端內容</string>
   <string name="message_body_load_embedded_images_button_text">載入內嵌圖片</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">戴入遠端及內崁內容</string>
-  <string name="message_report_phishing_dialog_title_offline">注意</string>
-  <string name="message_report_phishing_dialog_message_offline">此功能僅在線上提供。</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">好</string>
   <string name="message_report_phishing_dialog_title">確認提報釣魚郵件</string>
   <string name="message_report_phishing_dialog_message">檢舉一封郵件帶有網路釣魚的企圖，將會把郵件傳送給我們，讓我們可以分析郵件並改進我們的篩選。這意味我們將能夠完全飽覽郵件的內容。</string>
   <string name="message_report_phishing_dialog_confim_button">確認</string>
   <string name="message_report_phishing_dialog_cancel_button">取消</string>
   <string name="open_on_protoncalendar_banner_title">在 Proton 行事曆開啟</string>
   <string name="open_on_protoncalendar_banner_description">安全加密行事曆</string>
-  <string name="error_print_failed">顯示信件失敗</string>
   <string name="trashed_messages_banner">這對話內容含有拉圾訊息。</string>
   <string name="non_trashed_messages_banner">這對話內容含有非拉圾訊息。</string>
   <string name="show">顯示</string>
@@ -130,4 +120,13 @@
   <string name="message_details_header_to">收件者</string>
   <string name="message_details_header_cc">副本</string>
   <string name="message_details_header_bcc">密件副本</string>
+  <string name="schedule_message_sent_at_banner_title">This message will be sent</string>
+  <string name="schedule_message_edit_message_button">編輯訊息</string>
+  <string name="schedule_send_tomorrow">明天，於 %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
+  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">編輯草稿</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">取消</string>
+  <string name="message_cancel_schedule_send_dialog_title">編輯與重新排程</string>
+  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
 </resources>

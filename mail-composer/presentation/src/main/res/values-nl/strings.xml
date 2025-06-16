@@ -119,10 +119,12 @@
   <string name="composer_remove_recipient_action_item">Verwijderen</string>
   <string name="composer_copy_recipient_action_item">Kopiëren</string>
   <string name="schedule_send_content_description">Ingepland versturen</string>
-  <string name="composer_error_retrieving_schedule_send_options">Generating the times to \"schedule send\" at failed</string>
+  <string name="composer_error_retrieving_schedule_send_options">Het genereren van de tijdstippen voor \"Ingepland versturen\" is mislukt.</string>
   <string name="composer_schedule_send_content_description">Ingepland versturen</string>
   <string name="composer_schedule_send_tomorrow_title">Morgen</string>
   <string name="composer_schedule_send_monday_title">Maandag</string>
   <string name="composer_schedule_send_custom_title">Aangepast</string>
   <string name="composer_schedule_send_custom_description">Kies tijd en datum</string>
+  <string name="composer_error_send_message">Fout bij verzenden bericht</string>
+  <string name="composer_schedule_send_previously_set">Eerder ingesteld</string>
 </resources>

@@ -62,5 +62,5 @@
   <string name="account_recovery_reset_dialog_action_request_reset">Запитати скидання пароля</string>
   <string name="account_recovery_reset_dialog_action_use_recovery">Використати спосіб відновлення</string>
   <string name="account_recovery_reset_dialog_action_use_recovery_hint">Змініть пароль у вашому браузері без очікування періоду безпеки.</string>
-  <string name="account_recovery_reset_dialog_action_request_reset_success">Password reset requested</string>
+  <string name="account_recovery_reset_dialog_action_request_reset_success">Подано запит на скидання пароля</string>
 </resources>

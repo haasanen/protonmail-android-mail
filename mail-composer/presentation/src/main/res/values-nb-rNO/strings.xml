@@ -125,4 +125,6 @@
   <string name="composer_schedule_send_monday_title">Mandag</string>
   <string name="composer_schedule_send_custom_title">Tilpasset</string>
   <string name="composer_schedule_send_custom_description">Velg klokkeslett og dato</string>
+  <string name="composer_error_send_message">Feil ved sending av melding</string>
+  <string name="composer_schedule_send_previously_set">Tidligere angitt</string>
 </resources>

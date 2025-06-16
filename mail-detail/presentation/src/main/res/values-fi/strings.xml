@@ -17,10 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">Yhteystietojen lataus epäonnistui</string>
   <string name="detail_error_loading_conversation">Keskustelun lataus epäonnistui</string>
   <string name="detail_error_loading_messages">Viestien lataus epäonnistui</string>
-  <string name="error_mark_unread_failed">Merkintä lukemattomaksi epäonnistui. Yritä uudelleen.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d viesti</item>
     <item quantity="other">%d viestiä</item>
@@ -59,12 +57,10 @@
   <string name="conversation_moved_to_spam">Keskustelu siirrettiin roskapostiin</string>
   <string name="conversation_moved_to_archive">Keskustelu siirrettiin arkistoon</string>
   <string name="error_move_conversation_failed">Keskustelun siirto epäonnistui. Yritä uudelleen.</string>
-  <string name="error_loading_message">Jotain meni pieleen. Yritä uudelleen.</string>
   <string name="error_offline_loading_message">Ei yhteyttä. Viestin sisällön näyttäminen vaatii Internet-yhteyden.</string>
   <string name="error_get_attachment_failed">Liitteen nouto epäonnistui.</string>
   <string name="error_attachment_download_in_progress">Nykyisen latauksen on valmistuttava ennen uuden aloitusta.</string>
   <string name="error_get_attachment_not_enough_memory">Liitetiedostoa ei voitu ladata riittämättömän tallennustilan vuoksi</string>
-  <string name="reload">Lataa uudelleen</string>
   <string name="error_relabel_message_failed">Viestin tunnistemuutos ei onnistunut. Yritä uudelleen</string>
   <string name="error_relabel_conversation_failed">Keskustelun tunnistemuutos ei onnistunut. Yritä uudelleen</string>
   <string name="please_go_back_online_to_load_messages">Ei yhteyttä. Palauta yhteys viestien lataamiseksi.</string>
@@ -104,25 +100,19 @@
   <string name="message_delete_dialog_message">Haluatko varmasti poistaa viestin pysyvästi?</string>
   <string name="message_deleted">Viesti poistettiin</string>
   <string name="error_delete_message_failed">Viestin poisto epäonnistui</string>
-  <string name="error_delete_message_failed_wrong_folder">Viesti ei ole sijainnissa, josta se voidaan poistaa</string>
   <string name="error_delete_conversation_failed">Keskustelun poisto epäonnistui</string>
-  <string name="error_delete_conversation_failed_wrong_folder">Keskustelu ei ole sijainnissa, josta se voidaan poistaa</string>
   <string name="conversation_delete_dialog_title">Poista keskustelu</string>
   <string name="conversation_delete_dialog_message">Haluatko varmasti poistaa keskustelun pysyvästi?</string>
   <string name="conversation_deleted">Keskustelu poistettiin</string>
   <string name="message_body_load_remote_content_button_text">Lataa ulkoinen sisältö</string>
   <string name="message_body_load_embedded_images_button_text">Lataa upotetut kuvat</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Lataa ulkoinen ja upotettu sisältö</string>
-  <string name="message_report_phishing_dialog_title_offline">Huomio</string>
-  <string name="message_report_phishing_dialog_message_offline">Ominaisuus vaatii Internet-yhteyden.</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Vahvista tietojenkalasteluilmoitus</string>
   <string name="message_report_phishing_dialog_message">Viestin raportointi tietokalasteluyritykseksi lähettää sen meille, jotta voimme analysoida sen ja parantaa suodattimiamme. Huomioi, että näemme lähettämäsi viestin sisällön.</string>
   <string name="message_report_phishing_dialog_confim_button">Vahvista</string>
   <string name="message_report_phishing_dialog_cancel_button">Peru</string>
   <string name="open_on_protoncalendar_banner_title">Avaa Proton Calendarissa</string>
   <string name="open_on_protoncalendar_banner_description">Turvallinen salattu kalenteri</string>
-  <string name="error_print_failed">Viestin tulostus epäonnistui</string>
   <string name="trashed_messages_banner">Keskustelu sisältää roskakorissa olevia viestejä.</string>
   <string name="non_trashed_messages_banner">Keskustelu sisältää viestejä, jotka eivät ole roskakorissa.</string>
   <string name="show">Näytä</string>
@@ -132,4 +122,13 @@
   <string name="message_details_header_to">Vastaanottaja</string>
   <string name="message_details_header_cc">Kopio</string>
   <string name="message_details_header_bcc">Piilokopio</string>
+  <string name="schedule_message_sent_at_banner_title">This message will be sent</string>
+  <string name="schedule_message_edit_message_button">Edit message</string>
+  <string name="schedule_send_tomorrow">tomorrow at %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
+  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
+  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
+  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
 </resources>

@@ -17,10 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">Kontak gagal dimuat</string>
   <string name="detail_error_loading_conversation">Percakapan gagal dimuat</string>
   <string name="detail_error_loading_messages">Pesan gagal dimuat</string>
-  <string name="error_mark_unread_failed">Tanda belum dibaca gagal disematkan. Silakan coba lagi.</string>
   <plurals name="message_count_label_text">
     <item quantity="other">%d pesan</item>
   </plurals>
@@ -57,12 +55,10 @@
   <string name="conversation_moved_to_spam">Percakapan dipindahkan ke Spam</string>
   <string name="conversation_moved_to_archive">Percakapan dipindahkan ke Arsip</string>
   <string name="error_move_conversation_failed">Percakapan gagal dipindahkan. Silakan coba lagi.</string>
-  <string name="error_loading_message">Terjadi suatu kesalahan. Silakan coba lagi.</string>
   <string name="error_offline_loading_message">Anda sedang offline. Koneksi internet diperlukan untuk menampilkan konten pesan ini.</string>
   <string name="error_get_attachment_failed">Lampiran gagal diperoleh.</string>
   <string name="error_attachment_download_in_progress">Unduhan saat ini harus diselesaikan sebelum memulai unduhan baru.</string>
   <string name="error_get_attachment_not_enough_memory">Lampiran gagal diperoleh karena memori yang tersedia tidak memadai</string>
-  <string name="reload">Muat ulang</string>
   <string name="error_relabel_message_failed">Pesan gagal dilabeli ulang. Silakan coba lagi</string>
   <string name="error_relabel_conversation_failed">Percakapan gagal dilabeli ulang. Silakan coba lagi</string>
   <string name="please_go_back_online_to_load_messages">Anda sedang offline. Silakan sambungkan diri Anda ke internet untuk memuat pesan</string>
@@ -102,25 +98,19 @@
   <string name="message_delete_dialog_message">Apakah Anda yakin ingin menghapus pesan ini secara permanen?</string>
   <string name="message_deleted">Pesan dihapus</string>
   <string name="error_delete_message_failed">Pesan gagal dihapus</string>
-  <string name="error_delete_message_failed_wrong_folder">Pesan tidak terletak pada lokasi yang memungkinkan pesan untuk dihapus</string>
   <string name="error_delete_conversation_failed">Percakapan gagal dihapus</string>
-  <string name="error_delete_conversation_failed_wrong_folder">Percakapan tidak terletak pada lokasi yang memungkinkan percakapan untuk dihapus</string>
   <string name="conversation_delete_dialog_title">Hapus percakapan</string>
   <string name="conversation_delete_dialog_message">Apakah Anda yakin ingin menghapus percakapan ini secara permanen?</string>
   <string name="conversation_deleted">Percakapan dihapus</string>
   <string name="message_body_load_remote_content_button_text">Muat konten eksternal</string>
   <string name="message_body_load_embedded_images_button_text">Muat gambar yang tersemat</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Muat konten eksternal dan yang tersemat</string>
-  <string name="message_report_phishing_dialog_title_offline">Perhatian</string>
-  <string name="message_report_phishing_dialog_message_offline">Fitur ini hanya tersedia secara online.</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Konfirmasi laporan phishing</string>
   <string name="message_report_phishing_dialog_message">Dengan melaporkan pesan sebagai upaya phishing, pesan tersebut akan dikirimkan kepada kami agar kami dapat menganalisanya dan meningkatkan filter kami. Hal ini berarti bahwa kami akan dapat melihat isi pesan tersebut secara utuh.</string>
   <string name="message_report_phishing_dialog_confim_button">Konfirmasi</string>
   <string name="message_report_phishing_dialog_cancel_button">Batal</string>
   <string name="open_on_protoncalendar_banner_title">Buka di Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Kalender terenkripsi yang aman</string>
-  <string name="error_print_failed">Pesan gagal dicetak</string>
   <string name="trashed_messages_banner">Percakapan ini berisi pesan yang dibuang.</string>
   <string name="non_trashed_messages_banner">Percakapan ini berisi pesan yang tidak dibuang.</string>
   <string name="show">Tampilkan</string>
@@ -130,4 +120,13 @@
   <string name="message_details_header_to">Ke</string>
   <string name="message_details_header_cc">Cc</string>
   <string name="message_details_header_bcc">Bcc</string>
+  <string name="schedule_message_sent_at_banner_title">This message will be sent</string>
+  <string name="schedule_message_edit_message_button">Edit message</string>
+  <string name="schedule_send_tomorrow">tomorrow at %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
+  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
+  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
+  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
 </resources>

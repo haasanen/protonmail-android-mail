@@ -30,7 +30,7 @@
   <string name="composer_error_invalid_email">E-postadressen är ogiltig</string>
   <string name="composer_error_invalid_sender">Avsändaradress är ogiltig</string>
   <string name="change_sender_button_content_description">Ändra avsändare</string>
-  <string name="composer_change_sender_paid_feature">Uppgradera till ett betalt paket om du vill ändra avsändaradressen</string>
+  <string name="composer_change_sender_paid_feature">Uppgradera till ett betalt paket för att ändra avsändaradressen</string>
   <string name="composer_error_change_sender_failed_getting_subscription">Kan inte ändra avsändare eftersom hämtning av användarens prenumeration misslyckades. Försök igen.</string>
   <string name="composer_error_store_draft_sender_address">Avsändaradress sparades inte</string>
   <string name="composer_error_store_draft_body">Utkast till e-posttext sparades inte</string>
@@ -125,4 +125,6 @@
   <string name="composer_schedule_send_monday_title">Måndag</string>
   <string name="composer_schedule_send_custom_title">Anpassad</string>
   <string name="composer_schedule_send_custom_description">Välj tid och datum</string>
+  <string name="composer_error_send_message">Det gick inte att skicka meddelandet</string>
+  <string name="composer_schedule_send_previously_set">Tidigare inställt</string>
 </resources>

@@ -17,10 +17,8 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="detail_error_loading_contacts">Încărcarea contactelor a eșuat.</string>
   <string name="detail_error_loading_conversation">Eșuare încărcare conversație.</string>
   <string name="detail_error_loading_messages">Încărcarea mesajelor a eșuat.</string>
-  <string name="error_mark_unread_failed">Marcarea ca necitit a eșuat. Reîncercați.</string>
   <plurals name="message_count_label_text">
     <item quantity="one">%d mesaj</item>
     <item quantity="few">%d mesaje</item>
@@ -61,12 +59,10 @@
   <string name="conversation_moved_to_spam">Conversația a fost mutată în «Nedorite».</string>
   <string name="conversation_moved_to_archive">Conversația a fost mutată în «Arhivă».</string>
   <string name="error_move_conversation_failed">Mutarea conversației a eșuat. Reîncercați.</string>
-  <string name="error_loading_message">Ceva nu a funcționat bine. Reîncercați.</string>
   <string name="error_offline_loading_message">Nu aveți conexiune. Pentru a afișa conținutul acestui mesaj aveți nevoie de conexiune la internet.</string>
   <string name="error_get_attachment_failed">Eșuare preluare atașament.</string>
   <string name="error_attachment_download_in_progress">Descărcarea actuală trebuie să se încheie înainte de a începe alta.</string>
   <string name="error_get_attachment_not_enough_memory">Nu s-a reușit obținerea atașamentului datorită memoriei insuficiente.</string>
-  <string name="reload">Reîncărcare</string>
   <string name="error_relabel_message_failed">Nu s-a reușit reetichetarea mesajului. Reîncercați.</string>
   <string name="error_relabel_conversation_failed">Nu s-a reușit reetichetarea mesajului. Reîncercați.</string>
   <string name="please_go_back_online_to_load_messages">Nu aveți conexiune. Reconectați-vă pentru a se încărca mesajele.</string>
@@ -106,25 +102,19 @@
   <string name="message_delete_dialog_message">Sigur doriți să ștergeți definitiv acest mesaj?</string>
   <string name="message_deleted">Mesaj șters</string>
   <string name="error_delete_message_failed">Mesajul nu a putut fi șters.</string>
-  <string name="error_delete_message_failed_wrong_folder">Mesajul nu se află într-un loc unde poate fi șters.</string>
   <string name="error_delete_conversation_failed">Conversația nu s-a putut șterge.</string>
-  <string name="error_delete_conversation_failed_wrong_folder">Conversația nu se află într-un loc unde poate fi șters.</string>
   <string name="conversation_delete_dialog_title">Ștergere conversație</string>
   <string name="conversation_delete_dialog_message">Sigur doriți să ștergeți definitiv această conversație?</string>
   <string name="conversation_deleted">Conversația a fost ștearsă.</string>
   <string name="message_body_load_remote_content_button_text">Încărcare conținut extern</string>
   <string name="message_body_load_embedded_images_button_text">Încărcare imagini incluse</string>
   <string name="message_body_load_embedded_and_remote_content_button_text">Încărcare conținut la distanță și încorporat</string>
-  <string name="message_report_phishing_dialog_title_offline">Atenție</string>
-  <string name="message_report_phishing_dialog_message_offline">Această funcție este disponibilă doar online.</string>
-  <string name="message_report_phishing_dialog_confim_button_offline">OK</string>
   <string name="message_report_phishing_dialog_title">Confirmare raport înșelăciune</string>
   <string name="message_report_phishing_dialog_message">Raportarea unui mesaj ca fiind o încercare de înșelăciune ne va trimite și nouă mesajul pentru a-l analiza și a îmbunătăți filtrele noastre. Aceasta înseamnă că vom putea vedea conținutul complet al mesajului.</string>
   <string name="message_report_phishing_dialog_confim_button">Confirmare</string>
   <string name="message_report_phishing_dialog_cancel_button">Anulare</string>
   <string name="open_on_protoncalendar_banner_title">Deschidere în Proton Calendar</string>
   <string name="open_on_protoncalendar_banner_description">Calendar securizat și criptat</string>
-  <string name="error_print_failed">Nu s-a reușit tipărirea mesajului.</string>
   <string name="trashed_messages_banner">Această conversație conține mesaje șterse.</string>
   <string name="non_trashed_messages_banner">Această conversație conține mesaje neșterse.</string>
   <string name="show">Afișare</string>
@@ -134,4 +124,13 @@
   <string name="message_details_header_to">Către</string>
   <string name="message_details_header_cc">C</string>
   <string name="message_details_header_bcc">Ca</string>
+  <string name="schedule_message_sent_at_banner_title">Acest mesaj va fi trimis</string>
+  <string name="schedule_message_edit_message_button">Editare mesaj</string>
+  <string name="schedule_send_tomorrow">mâine la %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
+  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
+  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
+  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
 </resources>

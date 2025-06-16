@@ -27,14 +27,17 @@
   <string name="onboarding_neat_and_tidy_headline">整齊俐落</string>
   <string name="onboarding_neat_and_tidy_description">資料夾、標籤與顏色等模式，助您創造理想中完美、自訂的收件匣。</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_rebuilt_from_ground_up_headline">徹底改變</string>
-  <string name="onboarding_rebuilt_from_ground_up_description">新的 Proton Mail 使用 Rust 徹底重新設計架構。在效能、使用者體驗與可擴展性方面都有所改進。</string>
+  <string name="onboarding_welcome_title">Welcome to the\nnew Proton Mail app!</string>
+  <string name="onboarding_welcome_headline">徹底改變</string>
+  <string name="onboarding_welcome_description">Thank you for joining this limited group of early beta testers. Your feedback is critical for helping us build an even better Proton Mail ready for public release.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_new_inbox_headline">開箱全新收件匣</string>
-  <string name="onboarding_new_inbox_description">我們很高興推出充滿活力的新設計與改善的使用者體驗。目前，您可以預覽新的清單與郵件檢視畫面。 </string>
+  <string name="onboarding_rebuilt_title">Rebuilt to be better and faster</string>
+  <string name="onboarding_rebuilt_headline">開箱全新收件匣</string>
+  <string name="onboarding_rebuilt_description">Completely reengineered using Rust architecture, the new Proton Mail is faster with a vibrant design and highly-requested features, like offline mode.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_is_key_headline">您的意見回饋非常重要</string>
-  <string name="onboarding_feedback_is_key_description">我們將在接下來的幾個月內推出所有功能。請繼續測試此應用程式，並告訴我們如何才能使其更好！</string>
+  <string name="onboarding_feedback_title">Thank you for your participation!</string>
+  <string name="onboarding_feedback_headline">您的意見回饋非常重要</string>
+  <string name="onboarding_feedback_description">We\'ll be rolling out new features in the coming months. Please test the app and tap \"Report a problem\" to let us know how we can keep improving. Your input is invaluable!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">下一步</string>
   <string name="onboarding_get_started">開始測試</string>

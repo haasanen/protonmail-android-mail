@@ -25,12 +25,12 @@
   <string name="mail_settings_folder_and_label_settings">Ustawienia folderów i etykiet</string>
   <string name="mail_settings_privacy_and_security_settings">Ustawienia prywatności i bezpieczeństwa</string>
   <string name="mail_settings_preferences">Ustawienia</string>
-  <string name="mail_settings_app">Aplikacja</string>
-  <string name="mail_settings_mailbox">Adres e-mail</string>
+  <string name="mail_settings_app">Dostosowanie aplikacji</string>
+  <string name="mail_settings_mailbox">Ustawienia skrzynki pocztowej</string>
   <string name="mail_settings_email_hint">Ustawienia poczty e-mail i skrzynki pocztowej</string>
   <string name="mail_settings_folders_labels">Foldery i etykiety</string>
   <string name="mail_settings_folders_labels_hint">Organizacja skrzynki odbiorczej</string>
-  <string name="mail_settings_spam_and_custom_filters">Spam i filtry niestandardowe</string>
+  <string name="mail_settings_spam_and_custom_filters">Spam i filtry</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Automatyczne akcje i sortowanie</string>
   <string name="mail_settings_privacy_and_security">Prywatność i bezpieczeństwo</string>
   <string name="mail_settings_privacy_and_security_hint">Ochrona przed śledzeniem wiadomości</string>

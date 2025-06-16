@@ -25,12 +25,12 @@
   <string name="mail_settings_folder_and_label_settings">Налады папкі і меткі</string>
   <string name="mail_settings_privacy_and_security_settings">Налады прыватнасці і бяспека</string>
   <string name="mail_settings_preferences">Параметры</string>
-  <string name="mail_settings_app">Праграма</string>
-  <string name="mail_settings_mailbox">Электронная пошта</string>
+  <string name="mail_settings_app">Налады праграмы</string>
+  <string name="mail_settings_mailbox">Параметры паштовай скрыні</string>
   <string name="mail_settings_email_hint">Параметры электроннай пошты і паштовай скрыні</string>
   <string name="mail_settings_folders_labels">Папкі і меткі</string>
   <string name="mail_settings_folders_labels_hint">Арганізацыя паштовай скрыні</string>
-  <string name="mail_settings_spam_and_custom_filters">Спам і карыстальніцкія фільтры</string>
+  <string name="mail_settings_spam_and_custom_filters">Спам і фільтры</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Аўтаматычныя дзеянні і сартаванне</string>
   <string name="mail_settings_privacy_and_security">Прыватнасць і бяспека</string>
   <string name="mail_settings_privacy_and_security_hint">Абарона ад праграм сачэння электроннай пошты</string>
@@ -65,8 +65,8 @@
   <string name="mail_settings_app_customization_advanced_header">Дадатковыя</string>
   <!-- Theme settings -->
   <string name="mail_settings_system_default">Сістэмная</string>
-  <string name="mail_settings_theme_light">Светлы рэжым</string>
-  <string name="mail_settings_theme_dark">Цёмны рэжым</string>
+  <string name="mail_settings_theme_light">Светлая</string>
+  <string name="mail_settings_theme_dark">Цёмная</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">Інфармацыя адсутнічае</string>
   <string name="mail_settings_account">Уліковы запіс</string>

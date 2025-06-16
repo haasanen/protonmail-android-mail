@@ -27,14 +27,17 @@
   <string name="onboarding_neat_and_tidy_headline">Τακτοποιημένα</string>
   <string name="onboarding_neat_and_tidy_description">Αρχειοθετήστε, εφαρμόσετε ετικέτες και χρώματα στα μηνύματά σας, για να δημιουργήσετε τα τέλεια, προσαρμοσμένα εισερχόμενά σας.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_rebuilt_from_ground_up_headline">Μεταμορφώθηκε από το μηδέν</string>
-  <string name="onboarding_rebuilt_from_ground_up_description">Πλήρως επανασχεδιασμένο στην αρχιτεκτονική Rust, το νέο Proton Mail ανακατασκευάζεται για απόδοση, εμπειρία χρήστη και επεκτασιμότητα.</string>
+  <string name="onboarding_welcome_title">Καλώς ορίσατε στην\nνέα εφαρμογή Proton Mail!</string>
+  <string name="onboarding_welcome_headline">Μεταμορφώθηκε από το μηδέν</string>
+  <string name="onboarding_welcome_description">Ευχαριστούμε που συμμετέχετε σε αυτήν την περιορισμένη ομάδα πρώιμων Beta δοκιμαστών. Η ανατροφοδότησή σας είναι κρίσιμη για να μας βοηθήσετε να φτιάξουμε ένα ακόμα καλύτερο Proton Mail, έτοιμο για δημόσια κυκλοφορία.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_new_inbox_headline">Νέα εισερχόμενα αποκαλυφτήκαν</string>
-  <string name="onboarding_new_inbox_description">Είμαστε ενθουσιασμένοι που αποκαλύπτουμε τη ζωντανή νέα σχεδίαση και τη βελτιωμένη εμπειρία χρήστη. Προς το παρόν, μπορείτε να κάνετε προεπισκόπηση των νέων προβολών λίστας και μηνυμάτων. </string>
+  <string name="onboarding_rebuilt_title">Ξαναχτίστηκε για να είναι καλύτερο και ταχύτερο</string>
+  <string name="onboarding_rebuilt_headline">Νέα εισερχόμενα αποκαλυφτήκαν</string>
+  <string name="onboarding_rebuilt_description">Επανασχεδιασμένο πλήρως χρησιμοποιώντας την αρχιτεκτονική Rust, το νέο Proton Mail είναι ταχύτερο με ζωντανό σχεδιασμό και πολύ-ζητούμενα χαρακτηριστικά, όπως η λειτουργία εκτός σύνδεσης.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_is_key_headline">Τα σχόλιά σας είναι πολύ σημαντικά</string>
-  <string name="onboarding_feedback_is_key_description">Θα κυκλοφορήσουμε όλες τις δυνατότητες τους επόμενους μήνες. Παρακαλούμε συνεχίστε να δοκιμάζετε την εφαρμογή και ενημερώστε μας πώς μπορούμε να την κάνουμε καλύτερη!</string>
+  <string name="onboarding_feedback_title">Ευχαριστούμε για τη συμμετοχή σας!</string>
+  <string name="onboarding_feedback_headline">Τα σχόλιά σας είναι πολύ σημαντικά</string>
+  <string name="onboarding_feedback_description">Θα κυκλοφορήσουμε νέα χαρακτηριστικά τους επόμενους μήνες. Παρακαλούμε δοκιμάστε την εφαρμογή και πατήστε \"Αναφορά προβλήματος\" για να μας πείτε πώς μπορούμε να συνεχίσουμε να βελτιωνόμαστε. Η εισαγωγή σας είναι ανεκτίμητη!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Επόμενο</string>
   <string name="onboarding_get_started">Ξεκινήστε τη δοκιμή</string>

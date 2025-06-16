@@ -25,12 +25,12 @@
   <string name="mail_settings_folder_and_label_settings">Cartelle ed etichette</string>
   <string name="mail_settings_privacy_and_security_settings">Privacy e sicurezza</string>
   <string name="mail_settings_preferences">Preferenze</string>
-  <string name="mail_settings_app">Applicazione</string>
-  <string name="mail_settings_mailbox">Messaggi</string>
+  <string name="mail_settings_app">Personalizzazioni dell\'app</string>
+  <string name="mail_settings_mailbox">Preferenze della casella email</string>
   <string name="mail_settings_email_hint">Preferenze messaggi e casella di posta</string>
   <string name="mail_settings_folders_labels">Cartelle ed etichette</string>
   <string name="mail_settings_folders_labels_hint">Organizzazione della casella di posta</string>
-  <string name="mail_settings_spam_and_custom_filters">Spam e filtri personalizzati</string>
+  <string name="mail_settings_spam_and_custom_filters">Spam e filtri</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Classificazione automatica dei messaggi</string>
   <string name="mail_settings_privacy_and_security">Privacy e sicurezza</string>
   <string name="mail_settings_privacy_and_security_hint">Protezione dal tracciamento email</string>

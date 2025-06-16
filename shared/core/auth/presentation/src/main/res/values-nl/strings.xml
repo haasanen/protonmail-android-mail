@@ -98,4 +98,6 @@
   <string name="auth_signup_validation_username_input_invalid">Gebruikersnaam invoer ongeldig.</string>
   <string name="auth_signup_validation_email_input_invalid">Gebruikersnaam invoer ongeldig.</string>
   <string name="auth_signup_countries_search">Zoek land</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_user">De gebruiker kon niet worden ingesteld.</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_address">Kon het adres niet instellen.</string>
 </resources>
