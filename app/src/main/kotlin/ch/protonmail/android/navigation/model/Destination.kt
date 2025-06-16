@@ -101,7 +101,7 @@ sealed class Destination(val route: String) {
         object SpamFilterSettings : Destination("settings/spamFilter")
         object AlternativeRoutingSettings : Destination("settings/alternativeRouting")
         object AutoLockSettings : Destination("settings/autolock")
-        object AutolockInterval : Destination("settings/autolock/interval")
+        object AutoLockInterval : Destination("settings/autolock/interval")
         object AutoLockPinScreen : Destination("settings/autolock/pin/${AutoLockPinModeKey.wrap()}") {
             operator fun invoke(mode: AutoLockInsertionMode) =
                 route.replace(AutoLockPinModeKey.wrap(), mode.serialize())

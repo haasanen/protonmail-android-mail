@@ -174,7 +174,7 @@ class AutoLockRepositoryImplTest {
             // Then
             assertEquals(expectedAppSettings.autolockInterval, awaitItem().autolockInterval)
 
-            autoLockRepositoryImpl.updateAutolockInterval(expectedUpdatedInterval)
+            autoLockRepositoryImpl.updateAutoLockInterval(expectedUpdatedInterval)
 
             assertEquals(expectedUpdatedInterval, awaitItem().autolockInterval)
         }
@@ -186,7 +186,7 @@ class AutoLockRepositoryImplTest {
         coEvery { appLockDataSource.shouldAutoLock(mockMailSession) } returns true.right()
 
         // When
-        val result = autoLockRepositoryImpl.shouldAutolock()
+        val result = autoLockRepositoryImpl.shouldAutoLock()
 
         // Then
         assert(result.isRight())
@@ -199,7 +199,7 @@ class AutoLockRepositoryImplTest {
         coEvery { appLockDataSource.shouldAutoLock(mockMailSession) } returns false.right()
 
         // When
-        val result = autoLockRepositoryImpl.shouldAutolock()
+        val result = autoLockRepositoryImpl.shouldAutoLock()
 
         // Then
         assert(result.isRight())
@@ -212,7 +212,7 @@ class AutoLockRepositoryImplTest {
         coEvery { appLockDataSource.shouldAutoLock(mockMailSession) } returns DataError.Local.Unknown.left()
 
         // When
-        val result = autoLockRepositoryImpl.shouldAutolock()
+        val result = autoLockRepositoryImpl.shouldAutoLock()
 
         // Then
         assert(result.isLeft())

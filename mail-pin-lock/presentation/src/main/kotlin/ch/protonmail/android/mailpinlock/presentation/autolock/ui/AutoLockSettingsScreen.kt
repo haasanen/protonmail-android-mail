@@ -318,7 +318,7 @@ object AutoLockSettingsScreen {
     )
 }
 
-@Preview(name = "Autolock Settings Screen Enabled", showBackground = true, device = "id:pixel_5")
+@Preview(name = "AutoLock Settings Screen Enabled", showBackground = true, device = "id:pixel_5")
 @Composable
 private fun PreviewAutoLockSettingScreenEnabled() {
     AutoLockSettingScreen(
@@ -333,7 +333,7 @@ private fun PreviewAutoLockSettingScreenEnabled() {
 }
 
 
-@Preview(name = "Autolock Settings Screen Disabled", showBackground = true, device = "id:pixel_5")
+@Preview(name = "AutoLock Settings Screen Disabled", showBackground = true, device = "id:pixel_5")
 @Composable
 private fun PreviewAutoLockSettingScreenDisabled() {
     AutoLockSettingScreen(

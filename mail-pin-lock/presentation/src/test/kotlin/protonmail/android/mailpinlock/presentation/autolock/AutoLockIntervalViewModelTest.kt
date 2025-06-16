@@ -31,8 +31,8 @@ import ch.protonmail.android.mailpinlock.model.AutoLockInterval.Immediately
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval.OneDay
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval.OneHour
 import ch.protonmail.android.mailpinlock.presentation.R
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockIntervalEffects
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockIntervalState
-import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutolockIntervalEffects
 import ch.protonmail.android.mailpinlock.presentation.autolock.viewmodel.AutoLockIntervalViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -55,7 +55,7 @@ class AutoLockIntervalViewModelTest {
         } returns autoLockFlow
 
         coEvery {
-            this@mockk.updateAutolockInterval(any())
+            this@mockk.updateAutoLockInterval(any())
         } returns Unit.right()
     }
 
@@ -73,13 +73,13 @@ class AutoLockIntervalViewModelTest {
     @Test
     fun `close effect emitted when interval is updated`() = runTest {
         // Given
-        coEvery { autolockRepository.updateAutolockInterval(any()) } returns Unit.right()
+        coEvery { autolockRepository.updateAutoLockInterval(any()) } returns Unit.right()
 
         // When
         viewModel.onIntervalSelected(FifteenMinutes)
         // then
         assertEquals(
-            AutolockIntervalEffects(close = Effect.Companion.of(Unit)),
+            AutoLockIntervalEffects(close = Effect.Companion.of(Unit)),
             viewModel.effects.value
         )
     }
@@ -137,13 +137,13 @@ class AutoLockIntervalViewModelTest {
     @Test
     fun `updates autolockRepository on repository when intervalSelected`() = runTest {
         // Given
-        coEvery { autolockRepository.updateAutolockInterval(any()) } returns Unit.right()
+        coEvery { autolockRepository.updateAutoLockInterval(any()) } returns Unit.right()
 
         // When
         viewModel.onIntervalSelected(FifteenMinutes)
 
         // Then
-        coVerify { autolockRepository.updateAutolockInterval(FifteenMinutes) }
+        coVerify { autolockRepository.updateAutoLockInterval(FifteenMinutes) }
     }
 
     private suspend fun ReceiveTurbine<AutoLockIntervalState>.initialStateEmitted() {

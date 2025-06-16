@@ -156,7 +156,7 @@ internal fun NavGraphBuilder.addAutoLockSettings(navController: NavHostControlle
                 actions = AutoLockSettingsScreen.Actions(
                     onPinScreenNavigation = { navController.navigate(Screen.AutoLockPinScreen(it)) },
                     onBackClick = { navController.navigateBack() },
-                    onChangeIntervalClick = { navController.navigate(Screen.AutolockInterval.route) },
+                    onChangeIntervalClick = { navController.navigate(Screen.AutoLockInterval.route) },
                     onDialogNavigation = { navController.navigate(Screen.AutoLockPinConfirmDialog(it)) }
                 )
             )
@@ -237,7 +237,7 @@ internal fun NavGraphBuilder.addSwipeActionsSettings(navController: NavHostContr
 }
 
 internal fun NavGraphBuilder.addAutoLockIntervalSettings(navController: NavHostController) {
-    dialog(route = Screen.AutolockInterval.route) {
+    dialog(route = Screen.AutoLockInterval.route) {
         AutoLockIntervalDialog(
             modifier = Modifier,
             onDismiss = { navController.navigateBack() }

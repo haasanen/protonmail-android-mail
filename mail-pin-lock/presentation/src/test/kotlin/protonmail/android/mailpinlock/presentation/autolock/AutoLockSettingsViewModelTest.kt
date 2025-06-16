@@ -59,7 +59,7 @@ internal class AutoLockSettingsViewModelTest {
 
     private val autoLockRepository: AutoLockRepository = mockk {
         coEvery {
-            this@mockk.updateAutolockInterval(any())
+            this@mockk.updateAutoLockInterval(any())
         } returns Unit.right()
 
         coEvery {

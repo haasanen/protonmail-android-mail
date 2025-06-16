@@ -18,16 +18,14 @@
 
 package ch.protonmail.android.mailcommon.data.mapper
 
-import uniffi.proton_mail_uniffi.AutoDeleteBanner
-import uniffi.proton_mail_uniffi.AutoDeleteState
-import uniffi.proton_mail_uniffi.MessageBanner
-import uniffi.proton_mail_uniffi.SpamOrTrash
 import uniffi.proton_mail_uniffi.AlmostAllMail
 import uniffi.proton_mail_uniffi.AppProtection
 import uniffi.proton_mail_uniffi.AppSettings
 import uniffi.proton_mail_uniffi.AppSettingsDiff
 import uniffi.proton_mail_uniffi.AttachmentMetadata
 import uniffi.proton_mail_uniffi.AttachmentMimeType
+import uniffi.proton_mail_uniffi.AutoDeleteBanner
+import uniffi.proton_mail_uniffi.AutoDeleteState
 import uniffi.proton_mail_uniffi.AutoLock
 import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.ComposerDirection
@@ -58,6 +56,7 @@ import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.MailLoginError
 import uniffi.proton_mail_uniffi.MailSettings
 import uniffi.proton_mail_uniffi.Message
+import uniffi.proton_mail_uniffi.MessageBanner
 import uniffi.proton_mail_uniffi.MessageButtons
 import uniffi.proton_mail_uniffi.MimeType
 import uniffi.proton_mail_uniffi.MimeTypeCategory
@@ -68,6 +67,7 @@ import uniffi.proton_mail_uniffi.PmSignature
 import uniffi.proton_mail_uniffi.RemoteId
 import uniffi.proton_mail_uniffi.ShowImages
 import uniffi.proton_mail_uniffi.ShowMoved
+import uniffi.proton_mail_uniffi.SpamOrTrash
 import uniffi.proton_mail_uniffi.SwipeAction
 import uniffi.proton_mail_uniffi.SystemLabel
 import uniffi.proton_mail_uniffi.VCardUrl
@@ -136,7 +136,7 @@ typealias RemoteMessageId = RemoteId
 typealias LocalEmbeddedImageInfo = EmbeddedAttachmentInfo
 typealias LocalAppSettings = AppSettings
 typealias LocalAppSettingsDiff = AppSettingsDiff
-typealias LocalAutolock = AutoLock
+typealias LocalAutoLock = AutoLock
 typealias LocalProtection = AppProtection
 typealias LocalAutoLockPin = List<UInt>
 typealias LocalAutoDeleteBanner = AutoDeleteBanner

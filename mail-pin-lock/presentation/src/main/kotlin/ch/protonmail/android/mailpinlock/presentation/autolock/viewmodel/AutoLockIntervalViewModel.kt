@@ -24,8 +24,8 @@ import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval
 import ch.protonmail.android.mailpinlock.presentation.autolock.mapper.AutoLockSettingsUiMapper.toTextUiModel
+import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockIntervalEffects
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockIntervalState
-import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutolockIntervalEffects
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.onCloseEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -43,7 +43,7 @@ class AutoLockIntervalViewModel @Inject constructor(
     private val autoLockRepository: AutoLockRepository
 ) : ViewModel() {
 
-    private val _effects = MutableStateFlow(AutolockIntervalEffects())
+    private val _effects = MutableStateFlow(AutoLockIntervalEffects())
     val effects = _effects.asStateFlow()
 
     val state: Flow<AutoLockIntervalState> = autoLockRepository
@@ -66,7 +66,7 @@ class AutoLockIntervalViewModel @Inject constructor(
     fun onIntervalSelected(interval: AutoLockInterval) {
         _effects.update { it.onCloseEffect() }
         viewModelScope.launch {
-            autoLockRepository.updateAutolockInterval(interval)
+            autoLockRepository.updateAutoLockInterval(interval)
         }
     }
 }

@@ -67,7 +67,7 @@ class AppSettingsMapperTest {
     }
 
     @Test
-    fun `when map LocalAppSettings then Autolock is mapped`() {
+    fun `when map LocalAppSettings then AutoLock is mapped`() {
         assertTrue(
             localAppSettings.copy(protection = AppProtection.PIN)
                 .toAppSettings()

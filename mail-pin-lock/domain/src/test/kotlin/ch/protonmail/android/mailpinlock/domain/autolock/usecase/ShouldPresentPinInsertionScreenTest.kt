@@ -93,7 +93,7 @@ internal class ShouldPresentPinInsertionScreenTest {
     fun `should indicate to display pin screen when the app is not background AND shouldShowPin is TRUE`() = runTest {
         // Given
         expectAppInForeground()
-        coEvery { autoLockRepository.shouldAutolock() } returns true.right()
+        coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
         // When
         val result = useCase().invoke().first()
 
@@ -106,7 +106,7 @@ internal class ShouldPresentPinInsertionScreenTest {
         runTest {
             // Given
             expectAppInForeground()
-            coEvery { autoLockRepository.shouldAutolock() } returns false.right()
+            coEvery { autoLockRepository.shouldAutoLock() } returns false.right()
 
             // When
             val result = useCase().invoke().first()
@@ -119,7 +119,7 @@ internal class ShouldPresentPinInsertionScreenTest {
     fun `should not trigger pin request when app is in foreground and it is already completed`() = runTest {
         // Given
         expectAppInForeground()
-        coEvery { autoLockRepository.shouldAutolock() } returns true.right()
+        coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
         autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(false))
 
         // When

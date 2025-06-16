@@ -30,14 +30,14 @@ import kotlinx.coroutines.flow.Flow
 interface AutoLockRepository {
 
     fun observeAppLock(): Flow<AutoLock>
-    suspend fun updateAutolockInterval(interval: AutoLockInterval): Either<DataError, Unit>
+    suspend fun updateAutoLockInterval(interval: AutoLockInterval): Either<DataError, Unit>
     suspend fun setAutoLockPinCode(autoLockPin: AutoLockPin): Either<SetAutoLockPinError, Unit>
     suspend fun verifyAutoLockPinCode(autoLockPin: AutoLockPin): Either<VerifyAutoLockPinError, Unit>
     suspend fun deleteAutoLockPinCode(autoLockPin: AutoLockPin): Either<VerifyAutoLockPinError, Unit>
 
     suspend fun setBiometricProtection(enabled: Boolean): Either<DataError, Unit>
 
-    suspend fun shouldAutolock(): Either<DataError, Boolean>
+    suspend fun shouldAutoLock(): Either<DataError, Boolean>
     suspend fun getRemainingAttempts(): Either<DataError, Int>
 
     fun signalBiometricsCheckPassed()

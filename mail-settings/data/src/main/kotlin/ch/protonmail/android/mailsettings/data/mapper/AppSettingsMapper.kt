@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailsettings.data.mapper
 
 import ch.protonmail.android.mailcommon.data.mapper.LocalAppSettings
-import ch.protonmail.android.mailcommon.data.mapper.LocalAutolock
+import ch.protonmail.android.mailcommon.data.mapper.LocalAutoLock
 import ch.protonmail.android.mailcommon.data.mapper.LocalProtection
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval
 import ch.protonmail.android.mailpinlock.model.Protection
@@ -44,14 +44,14 @@ fun AppSettingsDiff.toAppDiff(): LocalAppSettingsDiff {
         defaultThemeFallback
     })
 
-    fun setAutolockInterval(interval: AutoLockInterval) = when (interval) {
+    fun setAutoLockInterval(interval: AutoLockInterval) = when (interval) {
         AutoLockInterval.Immediately -> Always
         AutoLockInterval.Never -> Never
         else -> Minutes(interval.duration.inWholeMinutes.toUByte())
     }
 
     return LocalAppSettingsDiff(
-        autoLock = interval?.let { setAutolockInterval(it) },
+        autoLock = interval?.let { setAutoLockInterval(it) },
         useCombineContacts = combineContacts,
         useAlternativeRouting = alternativeRouting,
         appearance = theme?.let { setTheme(it) }
@@ -71,7 +71,7 @@ private object LocalMapperThemeConstants {
 
 fun AppAppearance.toTheme() = themeAppearanceLookup.entries.first { it.value == this }.key
 
-fun LocalAutolock.toAutolockInterval() = when (this) {
+fun LocalAutoLock.toAutoLockInterval() = when (this) {
     is Never -> AutoLockInterval.Never
     is Always -> AutoLockInterval.Immediately
     is Minutes -> AutoLockInterval.fromMinutes(this.v1.toLong())
@@ -85,7 +85,7 @@ fun LocalProtection.toProtection() = when (this) {
 
 fun LocalAppSettings.toAppSettings(customLanguage: AppLanguage? = null) = AppSettings(
     autolockProtection = protection.toProtection(),
-    autolockInterval = autoLock.toAutolockInterval(),
+    autolockInterval = autoLock.toAutoLockInterval(),
     hasAlternativeRouting = useAlternativeRouting,
     theme = appearance.toTheme(),
     customAppLanguage = customLanguage?.langName,

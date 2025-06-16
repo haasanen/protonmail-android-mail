@@ -52,7 +52,7 @@ import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInt
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.intervalFor
 import ch.protonmail.android.mailpinlock.presentation.autolock.viewmodel.AutoLockIntervalViewModel
 
-const val TEST_TAG_AUTOLOCK_INTEVALS_DIALOG = "AutolockIntervalsDialogTestTag"
+const val TEST_TAG_AUTOLOCK_INTEVALS_DIALOG = "AutoLockIntervalsDialogTestTag"
 
 @Composable
 fun AutoLockIntervalDialog(

@@ -52,7 +52,7 @@ class AutoLockRepositoryImpl @Inject constructor(
         appSettings.toAutoLock(biometrics)
     }
 
-    override suspend fun updateAutolockInterval(interval: AutoLockInterval): Either<DataError, Unit> =
+    override suspend fun updateAutoLockInterval(interval: AutoLockInterval): Either<DataError, Unit> =
         appSettingsRepository.updateInterval(interval = interval)
 
     // note this exists in UserSessionRepositoryImpl for dealing with legacy pin codes, maybe it should all be moved
@@ -99,7 +99,7 @@ class AutoLockRepositoryImpl @Inject constructor(
 
     override fun signalBiometricsCheckPassed() = mailSessionRepository.getMailSession().signalBiometricsCheckPassed()
 
-    override suspend fun shouldAutolock(): Either<DataError, Boolean> =
+    override suspend fun shouldAutoLock(): Either<DataError, Boolean> =
         appLockDataSource.shouldAutoLock(mailSessionRepository.getMailSession().getRustMailSession())
 
     override suspend fun getRemainingAttempts(): Either<DataError, Int> {

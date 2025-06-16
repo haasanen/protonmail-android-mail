@@ -38,11 +38,11 @@ sealed class AutoLockIntervalState {
     data object Loading : AutoLockIntervalState()
 }
 
-data class AutolockIntervalEffects(
+data class AutoLockIntervalEffects(
     val close: Effect<Unit> = Effect.empty()
 )
 
-internal fun AutolockIntervalEffects.onCloseEffect() = this.copy(close = Effect.of(Unit))
+internal fun AutoLockIntervalEffects.onCloseEffect() = this.copy(close = Effect.of(Unit))
 
 internal fun AutoLockIntervalState.Data.intervalFor(choice: TextUiModel) =
     intervalsToChoices.entries.first { it.value == choice }.key
