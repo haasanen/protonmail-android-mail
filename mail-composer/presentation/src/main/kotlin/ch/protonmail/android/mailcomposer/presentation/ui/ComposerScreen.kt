@@ -87,6 +87,7 @@ import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.time.Duration
@@ -482,13 +483,16 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
 
     ConsumableLaunchedEffect(effect = effectsState.changeBottomSheetVisibility) { show ->
         if (show) {
+            // Set flag before updating state to allow animation to be visible
+            showBottomSheet = true
             dismissKeyboard(context, view, keyboardController)
+            // Delay between hiding keyboard and showing sheet to avoid glitch and freeze on some devices
+            delay(ComposerScreen.DELAY_SHOWING_BOTTOMSHEET)
             bottomSheetState.show()
         } else {
             bottomSheetState.hide()
+            showBottomSheet = false
         }
-
-        showBottomSheet = show
     }
 
     ConsumableLaunchedEffect(effect = effectsState.closeComposer) {
@@ -590,6 +594,7 @@ private fun buildActions(
 
 object ComposerScreen {
 
+    const val DELAY_SHOWING_BOTTOMSHEET = 100L
     const val MAX_ATTACHMENTS_SIZE = 25 * 1000 * 1000L
 
     const val DraftMessageIdKey = "draft_message_id"
