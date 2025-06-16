@@ -23,6 +23,8 @@ import android.net.Uri
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -154,6 +156,11 @@ fun MessageBodyWebView(
 
     var webViewHeightPx by remember { mutableStateOf(0) }
 
+    val transitionState = remember {
+        MutableTransitionState(false)
+    }.apply { targetState = true }
+
+
     LaunchedEffect(key1 = state.loadingState, key2 = webViewHeightPx) {
         if (state.loadingState == LoadingState.Finished && webViewHeightPx > 0) {
             // The purpose of this delay is to prevent multiple calls to onMessageBodyLoaded. WebView height
@@ -179,30 +186,32 @@ fun MessageBodyWebView(
                     )
                 )
             }
-            WebView(
-                onCreated = {
-                    it.settings.builtInZoomControls = true
-                    it.settings.displayZoomControls = false
-                    it.settings.javaScriptEnabled = false
-                    it.settings.safeBrowsingEnabled = true
-                    it.settings.allowContentAccess = false
-                    it.settings.allowFileAccess = false
-                    it.settings.loadWithOverviewMode = true
-                    configureDarkLightMode(it, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
-                    configureLongClick(it, actions.onMessageBodyLinkLongClicked)
-                    webView = it
-                },
-                captureBackPresses = false,
-                state = state,
-                modifier = Modifier
-                    .testTag(MessageBodyWebViewTestTags.WebView)
-                    .fillMaxWidth()
-                    .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
-                    .onSizeChanged { size ->
-                        webViewHeightPx = size.height
+            AnimatedVisibility(visibleState = transitionState) {
+                WebView(
+                    onCreated = {
+                        it.settings.builtInZoomControls = true
+                        it.settings.displayZoomControls = false
+                        it.settings.javaScriptEnabled = false
+                        it.settings.safeBrowsingEnabled = true
+                        it.settings.allowContentAccess = false
+                        it.settings.allowFileAccess = false
+                        it.settings.loadWithOverviewMode = true
+                        configureDarkLightMode(it, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
+                        configureLongClick(it, actions.onMessageBodyLinkLongClicked)
+                        webView = it
                     },
-                client = client
-            )
+                    captureBackPresses = false,
+                    state = state,
+                    modifier = Modifier
+                        .testTag(MessageBodyWebViewTestTags.WebView)
+                        .fillMaxWidth()
+                        .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
+                        .onSizeChanged { size ->
+                            webViewHeightPx = size.height
+                        },
+                    client = client
+                )
+            }
         }
         if (messageBodyUiModel.shouldShowExpandCollapseButton) {
             ExpandCollapseBodyButton(
