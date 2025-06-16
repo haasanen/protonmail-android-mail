@@ -24,12 +24,15 @@ import ch.protonmail.android.maillabel.data.MailLabelRustCoroutineScope
 import ch.protonmail.android.maillabel.data.local.LabelDataSource
 import ch.protonmail.android.maillabel.data.local.RustLabelDataSource
 import ch.protonmail.android.maillabel.data.repository.InMemorySelectedMailLabelIdRepositoryImpl
+import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.repository.RustLabelRepository
+import ch.protonmail.android.maillabel.data.repository.ViewModeRepositoryImpl
 import ch.protonmail.android.maillabel.data.usecase.CreateRustSidebar
 import ch.protonmail.android.maillabel.data.usecase.RustGetAllMailLabelId
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import ch.protonmail.android.maillabel.domain.repository.SelectedMailLabelIdRepository
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
+import ch.protonmail.android.maillabel.domain.repository.ViewModeRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import dagger.Module
@@ -80,4 +83,10 @@ object MailLabelModule {
         observePrimaryUserId: ObservePrimaryUserId
     ): SelectedMailLabelIdRepository =
         InMemorySelectedMailLabelIdRepositoryImpl(appScope, findLocalSystemLabelId, observePrimaryUserId)
+
+    @Provides
+    @Singleton
+    fun providesViewModelRepository(rustMailboxFactory: RustMailboxFactory): ViewModeRepository =
+        ViewModeRepositoryImpl(rustMailboxFactory)
+
 }
