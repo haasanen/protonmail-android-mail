@@ -60,7 +60,6 @@ dependencies {
     debugImplementation(libs.bundles.compose.debug)
 
     implementation(libs.bundles.module.presentation)
-    implementation(libs.proton.core.mailSettings.domain)
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))

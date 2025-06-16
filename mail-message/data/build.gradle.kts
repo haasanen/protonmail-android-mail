@@ -54,7 +54,6 @@ dependencies {
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-label:domain"))
     implementation(project(":mail-label:data"))
-    implementation(project(":mail-label:domain"))
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-session:data"))
     implementation(project(":mail-session:domain"))

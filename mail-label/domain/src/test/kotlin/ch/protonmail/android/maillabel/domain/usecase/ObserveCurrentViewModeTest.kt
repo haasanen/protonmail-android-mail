@@ -22,16 +22,13 @@ import app.cash.turbine.test
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import me.proton.core.domain.type.IntEnum
-import me.proton.core.mailsettings.domain.entity.MailSettings
-import me.proton.core.mailsettings.domain.entity.ViewMode as CoreViewMode
-import ch.protonmail.android.maillabel.domain.model.ViewMode
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import kotlin.test.Ignore
@@ -83,47 +80,6 @@ internal class ObserveCurrentViewModeTest(
     }
 
     private companion object TestData {
-
-        fun buildMailSettings(isConversationSettingEnabled: Boolean) = MailSettings(
-            userId = UserIdTestData.userId,
-            displayName = null,
-            signature = null,
-            autoSaveContacts = null,
-            composerMode = null,
-            messageButtons = null,
-            showImages = null,
-            showMoved = null,
-            viewMode = buildViewModeEnum(isConversationSettingEnabled),
-            viewLayout = null,
-            swipeLeft = null,
-            swipeRight = null,
-            shortcuts = null,
-            pmSignature = null,
-            numMessagePerPage = null,
-            draftMimeType = null,
-            receiveMimeType = null,
-            showMimeType = null,
-            enableFolderColor = null,
-            inheritParentFolderColor = null,
-            rightToLeft = null,
-            attachPublicKey = null,
-            sign = null,
-            pgpScheme = null,
-            promptPin = null,
-            stickyLabels = null,
-            confirmLink = null,
-            autoDeleteSpamAndTrashDays = null,
-            almostAllMail = null,
-            mobileSettings = null
-        )
-
-        private fun buildViewModeEnum(isConversationSettingEnabled: Boolean): IntEnum<CoreViewMode> {
-            val viewModel =
-                if (isConversationSettingEnabled) CoreViewMode.ConversationGrouping
-                else CoreViewMode.NoConversationGrouping
-
-            return IntEnum(viewModel.value, viewModel)
-        }
 
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")

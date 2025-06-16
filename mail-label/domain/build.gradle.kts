@@ -46,7 +46,6 @@ dependencies {
     implementation(libs.bundles.module.domain)
 
     implementation(libs.proton.core.user.domain)
-    implementation(libs.proton.core.mailSettings.domain)
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-session:domain"))

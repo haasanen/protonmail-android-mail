@@ -60,7 +60,6 @@ dependencies {
 
     implementation(libs.bundles.module.presentation)
     implementation(libs.androidx.constraintlayout.compose)
-    implementation(libs.proton.core.mailSettings.domain)
 
     implementation(project(":mail-common:presentation"))
     implementation(project(":mail-common:domain"))
