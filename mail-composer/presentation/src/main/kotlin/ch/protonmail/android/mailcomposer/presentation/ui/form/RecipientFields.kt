@@ -33,6 +33,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -49,10 +50,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ch.protonmail.android.design.compose.component.ProtonAlertDialog
-import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
-import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableFormScope
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.mailcomposer.presentation.R
@@ -67,9 +66,7 @@ import ch.protonmail.android.mailcomposer.presentation.viewmodel.RecipientsViewM
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.thenIf
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -95,55 +92,24 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
     val hasCcBccContent = recipientsCcValue.isNotEmpty() || recipientsBccValue.isNotEmpty()
     val shouldShowCcBcc = recipientsOpen || hasCcBccContent
 
-    var showContactsPermissionDialog by remember { mutableStateOf(false) }
-    val contactsPermissionDenied = viewModel.contactsPermissionDenied.collectAsStateWithLifecycle(false)
+    val requestPermissionEffect by viewModel.requestPermissionEffect.collectAsStateWithLifecycle()
 
     val readContactsPermission = rememberPermissionState(
         permission = Manifest.permission.READ_CONTACTS
-    )
+    ) { _ ->
+        viewModel.markContactPermissionInteraction()
+    }
 
-    if (!readContactsPermission.status.isGranted &&
-        !contactsPermissionDenied.value &&
-        showContactsPermissionDialog
-    ) {
-        ProtonAlertDialog(
-            title = stringResource(id = R.string.device_contacts_permission_dialog_title),
-            text = { ProtonAlertDialogText(R.string.device_contacts_permission_dialog_message) },
-            dismissButton = {
-                ProtonAlertDialogButton(R.string.device_contacts_permission_dialog_action_button_deny) {
-                    showContactsPermissionDialog = false
-                    viewModel.denyContactsPermission()
-                }
-            },
-            confirmButton = {
-                ProtonAlertDialogButton(R.string.device_contacts_permission_dialog_action_button) {
-                    showContactsPermissionDialog = false
-                    readContactsPermission.launchPermissionRequest()
-                }
-            },
-            onDismissRequest = {
-                showContactsPermissionDialog = false
-                viewModel.denyContactsPermission()
-            }
-        )
+    ConsumableLaunchedEffect(requestPermissionEffect) {
+        readContactsPermission.launchPermissionRequest()
     }
 
     LaunchedEffect(suggestions, suggestionField) {
         onToggleSuggestions(suggestionField == null || suggestions.isEmpty())
     }
 
-    LaunchedEffect(readContactsPermission.status.isGranted) {
-        if (!readContactsPermission.status.isGranted && !contactsPermissionDenied.value) {
-            if (readContactsPermission.status.shouldShowRationale) {
-                showContactsPermissionDialog = true
-            } else if (!showContactsPermissionDialog) {
-                readContactsPermission.launchPermissionRequest()
-            }
-        }
-    }
-
     // Take height of to chip text field as it's always shown (ie. no changing to 0 on recompose)
-    var toChipTextFieldHeightPx by remember { mutableStateOf(0f) }
+    var toChipTextFieldHeightPx by remember { mutableFloatStateOf(0f) }
     // When showing to suggestions, only "to" field is visible
     val toSuggestionsListHeightPx = (formHeightPx - toChipTextFieldHeightPx).coerceAtLeast(0f)
     // When showing cc suggestions, "to" and "cc" fields are visible
@@ -154,6 +120,11 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
     val toSuggestionListHeightDp = with(LocalDensity.current) { toSuggestionsListHeightPx.toDp() }
     val ccSuggestionListHeightDp = with(LocalDensity.current) { ccSuggestionsListHeightPx.toDp() }
     val bccSuggestionListHeightDp = with(LocalDensity.current) { bccSuggestionsListHeightPx.toDp() }
+
+    val baseFieldActions = ComposerChipsListField.Actions.Empty.copy(
+        onPermissionRequest = viewModel::requestPermission,
+        onDeniedContactsPermission = viewModel::markContactPermissionInteraction
+    )
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -173,7 +144,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                     }
                 },
             focusRequester = fieldFocusRequesters[FocusedFieldType.TO],
-            actions = ComposerChipsListField.Actions(
+            actions = baseFieldActions.copy(
                 onSuggestionTermTyped = {
                     viewModel.updateSearchTerm(it, ContactSuggestionsField.TO)
                 },
@@ -235,7 +206,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                     .testTag(ComposerTestTags.CcRecipient)
                     .retainFieldFocusOnConfigurationChange(FocusedFieldType.CC),
                 focusRequester = fieldFocusRequesters[FocusedFieldType.CC],
-                actions = ComposerChipsListField.Actions(
+                actions = baseFieldActions.copy(
                     onSuggestionTermTyped = {
                         viewModel.updateSearchTerm(it, ContactSuggestionsField.CC)
                     },
@@ -262,7 +233,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                         .testTag(ComposerTestTags.BccRecipient)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.BCC),
                     focusRequester = fieldFocusRequesters[FocusedFieldType.BCC],
-                    actions = ComposerChipsListField.Actions(
+                    actions = baseFieldActions.copy(
                         onSuggestionTermTyped = {
                             viewModel.updateSearchTerm(it, ContactSuggestionsField.BCC)
                         },
@@ -290,7 +261,6 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
     }
 }
 
-// Move the below it once ComposerV2 becomes the default flow.
 private object RecipientsButtonRotationValues {
 
     const val Open = 180f

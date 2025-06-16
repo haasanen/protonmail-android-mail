@@ -25,13 +25,13 @@ import ch.protonmail.android.testdata.contact.ContactTestData.contactGroupSugges
 
 object ContactUiModelTestData {
 
-    val contactSuggestion1 = ContactSuggestionUiModel.Contact(
+    val contactSuggestion1 = ContactSuggestionUiModel.Data.Contact(
         name = "contact being suggested",
         initial = AvatarInformationSample.contactSuggestion.initials,
         email = ContactEmailSample.contactSuggestionEmail.email
     )
 
-    val contactGroupSuggestion = ContactSuggestionUiModel.ContactGroup(
+    val contactGroupSuggestion = ContactSuggestionUiModel.Data.ContactGroup(
         name = "contact group here",
         color = AvatarInformationSample.contactSuggestion.color,
         emails = listOf(

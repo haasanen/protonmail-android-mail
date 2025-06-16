@@ -50,4 +50,4 @@ class ContactsPermissionLocalDataSourceImpl @Inject constructor(
     }
 }
 
-internal const val SHOULD_STOP_SHOWING_PERMISSION_DIALOG = "HasDeniedContactsPermission"
+private const val SHOULD_STOP_SHOWING_PERMISSION_DIALOG = "HasDeniedContactsPermission"

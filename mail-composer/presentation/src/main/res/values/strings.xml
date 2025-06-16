@@ -108,6 +108,7 @@
         <item quantity="one">%d member</item>
         <item quantity="other">%d members</item>
     </plurals>
+    <string name="composer_recipient_suggestion_device">Show device contacts</string>
     <!-- Discard draft dialog -->
     <string name="discard_draft_dialog_title">Discard this message?</string>
     <string name="discard_draft_dialog_text">Your draft will not be saved</string>

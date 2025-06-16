@@ -219,7 +219,6 @@ private fun ChipsListContent(
         )
     }
 
-
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center
@@ -275,29 +274,44 @@ private fun ChipsListContent(
                     onContactSuggestionsDismissed = actions.onSuggestionsDismissed,
                     onContactSuggestionSelected = { item ->
                         val selection = when (item) {
-                            is ContactSuggestionUiModel.ContactGroup ->
+                            is ContactSuggestionUiModel.Data.ContactGroup ->
                                 item.emails
                                     .joinToString(separator = "\n")
                                     .takeIfNotBlank()
                                     .orEmpty()
 
-                            is ContactSuggestionUiModel.Contact -> item.email
+                            is ContactSuggestionUiModel.Data.Contact -> item.email
                         }
                         actions.onSuggestionsDismissed()
                         listState.typeWord(selection)
                         textFieldState.edit { delete(0, length) }
-                    }
+                    },
+                    onRequestContactsPermission = actions.onPermissionRequest,
+                    onDeniedContactsPermission = actions.onDeniedContactsPermission
                 )
             )
         }
     }
-
 }
 
 object ComposerChipsListField {
     data class Actions(
         val onSuggestionTermTyped: (String) -> Unit,
         val onSuggestionsDismissed: () -> Unit,
-        val onListChanged: (List<ChipItem>) -> Unit
-    )
+        val onListChanged: (List<ChipItem>) -> Unit,
+        val onPermissionRequest: () -> Unit,
+        val onDeniedContactsPermission: () -> Unit
+    ) {
+
+        companion object {
+
+            val Empty = Actions(
+                onSuggestionTermTyped = {},
+                onSuggestionsDismissed = {},
+                onListChanged = { _ -> },
+                onPermissionRequest = {},
+                onDeniedContactsPermission = {}
+            )
+        }
+    }
 }

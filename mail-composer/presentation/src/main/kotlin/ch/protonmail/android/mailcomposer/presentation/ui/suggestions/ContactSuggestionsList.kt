@@ -41,13 +41,22 @@ fun ContactSuggestionsList(
     LazyColumn(modifier = modifier) {
         items(contactSuggestionItems.size) { index ->
             val item = contactSuggestionItems[index]
-            ContactSuggestionItemElement(currentText, item, onClick = {
-                actions.onContactSuggestionSelected(item)
-            })
 
-            if (index < contactSuggestionItems.size - 1) {
-                HorizontalDivider(color = ProtonTheme.colors.backgroundInvertedBorder)
+            when (item) {
+                is ContactSuggestionUiModel.Data.Contact,
+                is ContactSuggestionUiModel.Data.ContactGroup -> ContactSuggestionItemElement(
+                    currentText = currentText,
+                    item = item,
+                    onClick = { actions.onContactSuggestionSelected(item) }
+                )
+
+                ContactSuggestionUiModel.DeviceContacts -> DeviceContactsEntry(
+                    onClick = actions.onRequestContactsPermission,
+                    onDenyClick = actions.onDeniedContactsPermission
+                )
             }
+
+            HorizontalDivider(color = ProtonTheme.colors.backgroundInvertedBorder)
         }
     }
 }
@@ -56,7 +65,9 @@ object ContactSuggestionsList {
 
     data class Actions(
         val onContactSuggestionsDismissed: () -> Unit,
-        val onContactSuggestionSelected: (contact: ContactSuggestionUiModel) -> Unit
+        val onContactSuggestionSelected: (contact: ContactSuggestionUiModel.Data) -> Unit,
+        val onRequestContactsPermission: () -> Unit,
+        val onDeniedContactsPermission: () -> Unit
     ) {
 
         companion object {
@@ -64,7 +75,9 @@ object ContactSuggestionsList {
             val Empty = Actions(
 
                 onContactSuggestionsDismissed = {},
-                onContactSuggestionSelected = {}
+                onContactSuggestionSelected = {},
+                onRequestContactsPermission = {},
+                onDeniedContactsPermission = {}
             )
         }
     }

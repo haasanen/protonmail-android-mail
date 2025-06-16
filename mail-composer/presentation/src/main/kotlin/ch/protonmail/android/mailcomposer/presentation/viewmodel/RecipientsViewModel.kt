@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.domain.repository.ContactsPermissionRepository
 import ch.protonmail.android.mailcomposer.presentation.mapper.ContactSuggestionsMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
@@ -40,11 +41,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel(assistedFactory = RecipientsViewModel.Factory::class)
 internal class RecipientsViewModel @AssistedInject constructor(
@@ -60,17 +59,25 @@ internal class RecipientsViewModel @AssistedInject constructor(
     private val mutableContactSuggestionsFieldFlow = MutableStateFlow<ContactSuggestionsField?>(null)
     val contactSuggestionsFieldFlow = mutableContactSuggestionsFieldFlow.asStateFlow()
 
+    private val mutableRequestPermissionEffect = MutableStateFlow<Effect<Unit>>(Effect.empty())
+    val requestPermissionEffect = mutableRequestPermissionEffect.asStateFlow()
+
     val contactsSuggestions = observeContactsSuggestions().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = emptyList()
     )
 
-    val contactsPermissionDenied = contactsPermissionRepository.observePermissionDenied()
-        .map { it.getOrNull() == true }
 
-    fun denyContactsPermission() {
+    fun markContactPermissionInteraction() {
         viewModelScope.launch { contactsPermissionRepository.trackPermissionDenied() }
+        if (contactsSuggestions.value.filterIsInstance<ContactSuggestionUiModel.DeviceContacts>().isEmpty()) {
+            closeSuggestions()
+        }
+    }
+
+    fun requestPermission() {
+        viewModelScope.launch { mutableRequestPermissionEffect.emit(Effect.of(Unit)) }
     }
 
     fun updateSearchTerm(term: String, contactSuggestionsField: ContactSuggestionsField) {
@@ -88,20 +95,25 @@ internal class RecipientsViewModel @AssistedInject constructor(
 
     private fun observeContactsSuggestions(): Flow<List<ContactSuggestionUiModel>> = combine(
         primaryUserId(),
-        searchTerm
-    ) { userId, searchTerm ->
+        searchTerm,
+        contactsPermissionRepository.observePermissionDenied()
+    ) { userId, searchTerm, permissionsDenied ->
 
-        if (searchTerm.isBlank()) return@combine emptyList<ContactSuggestionUiModel>()
+        if (searchTerm.isBlank()) return@combine emptyList()
 
-        return@combine getContactSuggestions(userId, ContactSuggestionQuery(searchTerm)).fold(
-            ifLeft = {
-                return@fold emptyList<ContactSuggestionUiModel>()
-            },
-            ifRight = { contacts ->
-                val contactsLimited = contacts.take(maxContactAutocompletionCount)
-                return@fold contactSuggestionsMapper.toUiModel(contactsLimited)
+        buildList {
+            getContactSuggestions(userId, ContactSuggestionQuery(searchTerm)).fold(
+                ifLeft = { },
+                ifRight = { contacts ->
+                    val contactsLimited = contacts.take(maxContactAutocompletionCount)
+                    addAll(contactSuggestionsMapper.toUiModel(contactsLimited))
+                }
+            )
+
+            if (permissionsDenied.getOrNull() == null) {
+                add(ContactSuggestionUiModel.DeviceContacts)
             }
-        )
+        }
     }
 
     private fun primaryUserId() = observePrimaryUserId.invoke().filterNotNull()
@@ -110,10 +122,5 @@ internal class RecipientsViewModel @AssistedInject constructor(
     interface Factory {
 
         fun create(recipientsStateManager: RecipientsStateManager): RecipientsViewModel
-    }
-
-    private companion object {
-
-        val SuggestionsDebounce = 200.milliseconds
     }
 }

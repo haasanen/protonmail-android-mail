@@ -56,7 +56,7 @@ import ch.protonmail.android.uicomponents.text.HighlightedText
 @Composable
 fun ContactSuggestionItemElement(
     currentText: String,
-    item: ContactSuggestionUiModel,
+    item: ContactSuggestionUiModel.Data,
     onClick: () -> Unit
 ) {
     Column(
@@ -69,14 +69,14 @@ fun ContactSuggestionItemElement(
             .padding(vertical = ProtonDimens.Spacing.Medium)
     ) {
         when (item) {
-            is ContactSuggestionUiModel.ContactGroup -> ContactSuggestionGroupEntry(currentText, item)
-            is ContactSuggestionUiModel.Contact -> ContactSuggestionEntry(currentText, item)
+            is ContactSuggestionUiModel.Data.ContactGroup -> ContactSuggestionGroupEntry(currentText, item)
+            is ContactSuggestionUiModel.Data.Contact -> ContactSuggestionEntry(currentText, item)
         }
     }
 }
 
 @Composable
-private fun ContactSuggestionEntry(currentText: String, item: ContactSuggestionUiModel.Contact) {
+private fun ContactSuggestionEntry(currentText: String, item: ContactSuggestionUiModel.Data.Contact) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         ContactAvatar(item)
 
@@ -103,7 +103,7 @@ private fun ContactSuggestionEntry(currentText: String, item: ContactSuggestionU
 }
 
 @Composable
-private fun ContactSuggestionGroupEntry(currentText: String, item: ContactSuggestionUiModel.ContactGroup) {
+private fun ContactSuggestionGroupEntry(currentText: String, item: ContactSuggestionUiModel.Data.ContactGroup) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         ContactGroupAvatar()
 
@@ -152,7 +152,7 @@ private fun ContactGroupAvatar() {
 }
 
 @Composable
-fun ContactAvatar(contact: ContactSuggestionUiModel.Contact) {
+fun ContactAvatar(contact: ContactSuggestionUiModel.Data.Contact) {
     Box(
         modifier = Modifier
             .sizeIn(
@@ -186,7 +186,7 @@ fun PreviewSingleContactSuggestionItemLight() {
     ProtonTheme(isDark = false) {
         ContactSuggestionItemElement(
             currentText = "doe",
-            item = ContactSuggestionUiModel.Contact(
+            item = ContactSuggestionUiModel.Data.Contact(
                 initial = "JD",
                 name = "John Doe",
                 email = "john.doe@example.com",
@@ -208,7 +208,7 @@ fun PreviewSingleContactSuggestionItemDark() {
     ProtonTheme(isDark = true) {
         ContactSuggestionItemElement(
             currentText = "doe",
-            item = ContactSuggestionUiModel.Contact(
+            item = ContactSuggestionUiModel.Data.Contact(
                 initial = "JD",
                 name = "John Doe",
                 email = "john.doe@example.com",
@@ -228,7 +228,7 @@ fun PreviewContactGroupSuggestionItemLight() {
     ProtonTheme(isDark = false) {
         ContactSuggestionItemElement(
             currentText = "team",
-            item = ContactSuggestionUiModel.ContactGroup(
+            item = ContactSuggestionUiModel.Data.ContactGroup(
                 name = "Design Team",
                 emails = listOf("team@company.com", "design@company.com"),
                 color = Color.Blue.toString()
@@ -247,7 +247,7 @@ fun PreviewContactGroupSuggestionItemDark() {
     ProtonTheme(isDark = true) {
         ContactSuggestionItemElement(
             currentText = "team",
-            item = ContactSuggestionUiModel.ContactGroup(
+            item = ContactSuggestionUiModel.Data.ContactGroup(
                 name = "Design Team",
                 emails = listOf("team@company.com", "design@company.com"),
                 color = Color.Blue.toString()

@@ -28,18 +28,18 @@ class ContactSuggestionsMapper @Inject constructor() {
 
     fun toUiModel(contacts: List<ContactMetadata>): List<ContactSuggestionUiModel> = contacts.map { contact ->
         when (contact) {
-            is ContactMetadata.Contact -> ContactSuggestionUiModel.Contact(
+            is ContactMetadata.Contact -> ContactSuggestionUiModel.Data.Contact(
                 name = contact.name,
                 initial = contact.avatar.initials,
                 email = contact.emails.firstOrNull()?.email ?: contact.name,
                 avatarColor = Color(contact.avatar.color.toColorInt())
             )
-            is ContactMetadata.ContactGroup -> ContactSuggestionUiModel.ContactGroup(
+
+            is ContactMetadata.ContactGroup -> ContactSuggestionUiModel.Data.ContactGroup(
                 name = contact.name,
                 emails = contact.members.map { it.emails.firstOrNull()?.email ?: it.name },
                 color = contact.color
             )
         }
     }
-
 }
