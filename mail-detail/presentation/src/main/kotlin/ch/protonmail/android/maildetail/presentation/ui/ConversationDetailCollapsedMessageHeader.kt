@@ -63,7 +63,6 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMes
 import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDetailCollapsedMessageHeaderPreviewData
 import ch.protonmail.android.maildetail.presentation.ui.common.SingleLineRecipientNames
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
-import me.proton.core.presentation.R.drawable
 import me.proton.core.util.kotlin.EMPTY_STRING
 import me.proton.core.util.kotlin.exhaustive
 
@@ -80,8 +79,7 @@ internal fun ConversationDetailCollapsedMessageHeader(
     ConstraintLayout(
         modifier = modifier
             .testTag(ConversationDetailCollapsedMessageHeaderTestTags.RootItem)
-            .padding(ProtonDimens.Spacing.Standard)
-            .padding(ProtonDimens.Spacing.Small)
+            .padding(ProtonDimens.Spacing.Large)
             .fillMaxWidth()
     ) {
         val (
@@ -111,7 +109,7 @@ internal fun ConversationDetailCollapsedMessageHeader(
 
         ParticipantAvatar(
             modifier = Modifier
-                .padding(end = ProtonDimens.Spacing.Standard)
+                .padding(end = ProtonDimens.Spacing.Large)
                 .constrainAs(avatarRef) {
                     centerVerticallyTo(parent)
                 },
@@ -150,7 +148,7 @@ internal fun ConversationDetailCollapsedMessageHeader(
                 fontColor = fontColor
             )
 
-            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Tiny))
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Compact))
 
             Row(
                 modifier = Modifier
@@ -244,7 +242,7 @@ private fun AttachmentIcon(fontColor: Color, modifier: Modifier) {
         modifier = modifier
             .testTag(ConversationDetailCollapsedMessageHeaderTestTags.AttachmentIcon)
             .size(ProtonDimens.IconSize.Small),
-        painter = painterResource(id = drawable.ic_proton_paper_clip),
+        painter = painterResource(id = R.drawable.ic_proton_paper_clip),
         tint = fontColor,
         contentDescription = NO_CONTENT_DESCRIPTION
     )
@@ -265,7 +263,7 @@ private fun Expiration(uiModel: ConversationDetailMessageUiModel.Collapsed, modi
             modifier = Modifier
                 .testTag(ConversationDetailCollapsedMessageHeaderTestTags.ExpirationIcon)
                 .size(MailDimens.TinyIcon),
-            painter = painterResource(id = drawable.ic_proton_hourglass),
+            painter = painterResource(id = R.drawable.ic_proton_hourglass),
             tint = ProtonTheme.colors.iconNorm,
             contentDescription = NO_CONTENT_DESCRIPTION
         )
@@ -287,7 +285,7 @@ private fun ForwardedIcon(
         ConversationDetailMessageUiModel.ForwardedIcon.None -> Box(modifier)
         ConversationDetailMessageUiModel.ForwardedIcon.Forwarded -> SmallNonClickableIcon(
             modifier = modifier.testTag(ConversationDetailCollapsedMessageHeaderTestTags.ForwardedIcon),
-            iconId = drawable.ic_proton_arrow_right,
+            iconId = R.drawable.ic_proton_arrow_right,
             iconColor = fontColor
         )
     }.exhaustive
@@ -305,7 +303,7 @@ private fun RepliedIcon(
             modifier = modifier
                 .testTag(ConversationDetailCollapsedMessageHeaderTestTags.RepliedIcon)
                 .padding(horizontal = ProtonDimens.Spacing.Tiny),
-            iconId = drawable.ic_proton_arrow_up_and_left,
+            iconId = R.drawable.ic_proton_arrow_up_and_left,
             iconColor = fontColor
         )
 
@@ -313,7 +311,7 @@ private fun RepliedIcon(
             modifier = modifier
                 .testTag(ConversationDetailCollapsedMessageHeaderTestTags.RepliedAllIcon)
                 .padding(horizontal = ProtonDimens.Spacing.Tiny),
-            iconId = drawable.ic_proton_arrows_up_and_left,
+            iconId = R.drawable.ic_proton_arrows_up_and_left,
             iconColor = fontColor
         )
     }.exhaustive
@@ -353,7 +351,7 @@ private fun StarIcon(modifier: Modifier) {
         modifier = modifier
             .testTag(ConversationDetailCollapsedMessageHeaderTestTags.StarIcon)
             .size(ProtonDimens.IconSize.Small),
-        painter = painterResource(id = drawable.ic_proton_star_filled),
+        painter = painterResource(id = R.drawable.ic_proton_star_filled),
         tint = ProtonTheme.colors.starSelected,
         contentDescription = NO_CONTENT_DESCRIPTION
     )
@@ -380,8 +378,8 @@ private fun Time(
 
 private fun visibleWhen(isVisible: Boolean) = if (isVisible) Visibility.Visible else Visibility.Gone
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun CdCollapsedMessageHeaderPreview(
     @PreviewParameter(ConversationDetailCollapsedMessageHeaderPreviewData::class)

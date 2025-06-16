@@ -21,6 +21,7 @@ package ch.protonmail.android.design.compose.component.appbar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
@@ -51,7 +52,8 @@ fun ProtonTopAppBar(
     actions: @Composable RowScope.() -> Unit = {},
     backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
     contentColor: Color = ProtonTheme.colors.textNorm,
-    minHeight: Dp = ProtonDimens.DefaultTopBarMinHeight
+    minHeight: Dp = ProtonDimens.DefaultTopBarMinHeight,
+    preferredHeight: Dp = ProtonDimens.DefaultTopBarMinHeight
 ) {
     TopAppBar(
         title = {
@@ -63,7 +65,8 @@ fun ProtonTopAppBar(
             }
         },
         modifier = modifier
-            .heightIn(min = minHeight),
+            .height(preferredHeight)
+            .heightIn(minHeight),
         navigationIcon = {
             Box(
                 modifier = Modifier

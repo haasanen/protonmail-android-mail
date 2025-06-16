@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,11 +41,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.maildetail.presentation.R
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.R as design
 
 @Composable
 fun OpenInProtonCalendarBanner(modifier: Modifier = Modifier, onOpenInProtonCalendarClick: () -> Unit) {
@@ -59,20 +61,27 @@ fun OpenInProtonCalendarBanner(modifier: Modifier = Modifier, onOpenInProtonCale
             .padding(
                 start = ProtonDimens.Spacing.Large,
                 end = ProtonDimens.Spacing.Large,
-                bottom = ProtonDimens.Spacing.Standard + ProtonDimens.Spacing.Small
+                bottom = ProtonDimens.Spacing.Standard
             )
             .fillMaxWidth()
             .shadow(
                 elevation = ProtonDimens.ShadowElevation.Small,
                 shape = ProtonTheme.shapes.extraLarge,
-                spotColor = ProtonTheme.colors.borderNorm.copy(alpha = 0.2f),
-                ambientColor = ProtonTheme.colors.borderNorm.copy(alpha = 0.4f)
+                spotColor = ProtonTheme.colors.shadowWeak,
+                ambientColor = ProtonTheme.colors.shadowWeak
             ),
 
         onClick = onOpenInProtonCalendarClick
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            Box(modifier = Modifier.size(MailDimens.ProtonCalendarIconSize)) {
+            Box(
+                modifier = Modifier
+                    .size(MailDimens.ProtonCalendarIconSize)
+                    .border(
+                        ProtonDimens.OutlinedBorderSize, ProtonTheme.colors.borderNorm,
+                        shape = ProtonTheme.shapes.large
+                    )
+            ) {
                 Image(
                     modifier = Modifier.align(Alignment.Center),
                     painter = painterResource(id = R.drawable.ic_logo_calendar),
@@ -93,7 +102,7 @@ fun OpenInProtonCalendarBanner(modifier: Modifier = Modifier, onOpenInProtonCale
                 )
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Tiny))
                 Text(
-                    style = ProtonTheme.typography.bodyMedium,
+                    style = ProtonTheme.typography.bodySmall,
                     color = ProtonTheme.colors.textWeak,
                     maxLines = 1,
                     text = stringResource(id = R.string.open_on_protoncalendar_banner_description)
@@ -102,7 +111,7 @@ fun OpenInProtonCalendarBanner(modifier: Modifier = Modifier, onOpenInProtonCale
             Box(modifier = Modifier.size(MailDimens.ProtonCalendarIconSize)) {
                 Icon(
                     modifier = Modifier.align(Alignment.Center),
-                    painter = painterResource(id = R.drawable.ic_proton_arrow_out_square),
+                    painter = painterResource(id = design.drawable.ic_proton_arrow_out_square_new),
                     contentDescription = NO_CONTENT_DESCRIPTION,
                     tint = ProtonTheme.colors.iconHint
                 )
@@ -115,10 +124,7 @@ fun OpenInProtonCalendarBanner(modifier: Modifier = Modifier, onOpenInProtonCale
 @Composable
 private fun OpenInProtonCalendarBannerPreview() {
     ProtonTheme {
-        Box(
-            modifier = Modifier
-                .padding(ProtonDimens.Spacing.Large)
-        ) {
+        Box {
             OpenInProtonCalendarBanner(onOpenInProtonCalendarClick = {})
         }
     }

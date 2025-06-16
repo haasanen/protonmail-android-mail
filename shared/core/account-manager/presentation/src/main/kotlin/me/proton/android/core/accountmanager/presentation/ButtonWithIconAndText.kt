@@ -46,7 +46,7 @@ fun ButtonWithIconAndText(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(ProtonDimens.Spacing.Large),
+            .padding(all = ProtonDimens.Spacing.Large),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Standard)
     ) {

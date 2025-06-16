@@ -20,6 +20,7 @@ package ch.protonmail.android.design.compose.component
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
@@ -51,6 +52,7 @@ fun ProtonModalBottomSheetLayout(
                 shape = ProtonTheme.shapes.bottomSheet,
                 containerColor = ProtonTheme.colors.backgroundInvertedNorm,
                 contentColor = ProtonTheme.colors.textNorm,
+                dragHandle = { BottomSheetDefaults.DragHandle(color = ProtonTheme.colors.backgroundDeep) },
                 content = sheetContent,
                 properties = ModalBottomSheetProperties(shouldDismissOnBackPress = dismissOnBack)
             )

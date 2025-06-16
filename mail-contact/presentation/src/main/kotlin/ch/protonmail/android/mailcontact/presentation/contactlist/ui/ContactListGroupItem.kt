@@ -27,9 +27,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,16 +37,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailcontact.presentation.R
-import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
-import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.mailcontact.presentation.R
+import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData
+import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags
 
 @Composable
 internal fun ContactListGroupItem(
@@ -71,12 +70,12 @@ internal fun ContactListGroupItem(
             Box(
                 modifier = Modifier
                     .sizeIn(
-                        minWidth = MailDimens.AvatarMinSize,
-                        minHeight = MailDimens.AvatarMinSize
+                        minWidth = MailDimens.AvatarSize,
+                        minHeight = MailDimens.AvatarSize
                     )
                     .background(
                         color = contactGroup.color,
-                        shape = CircleShape
+                        shape = ProtonTheme.shapes.large
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -93,8 +92,6 @@ internal fun ContactListGroupItem(
         Column(
             modifier = Modifier.padding(
                 start = ProtonDimens.ListItemTextStartPadding,
-                top = ProtonDimens.ListItemTextStartPadding,
-                bottom = ProtonDimens.ListItemTextStartPadding,
                 end = ProtonDimens.Spacing.Large
             )
         ) {

@@ -54,7 +54,7 @@ fun Avatar(
     clickable: Boolean = true,
     outerContainerSize: Dp = MailDimens.DefaultTouchTargetSize,
     avatarSize: Dp = MailDimens.AvatarMinSize,
-    backgroundShape: Shape = ProtonTheme.shapes.medium
+    backgroundShape: Shape = ProtonTheme.shapes.large
 ) {
     Box(
         modifier = modifier

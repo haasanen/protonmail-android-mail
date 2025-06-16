@@ -56,7 +56,7 @@ fun LabelsList(
 ) {
     SubcomposeLayout(
         modifier = modifier
-            .padding(top = ProtonDimens.Spacing.Small)
+            .padding(top = ProtonDimens.Spacing.Tiny)
             .wrapContentSize()
     ) { constraints ->
 
@@ -193,7 +193,7 @@ private fun Label(label: LabelUiModel) {
         modifier = Modifier
             .testTag(LabelsListTestTags.Label)
             .padding(
-                end = ProtonDimens.Spacing.Standard
+                end = ProtonDimens.Spacing.Compact
             )
             .height(MailDimens.MailboxItemLabelHeight)
             .background(label.color, shape = ProtonTheme.shapes.medium)

@@ -21,7 +21,6 @@ package ch.protonmail.android.maildetail.presentation.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -31,7 +30,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -51,12 +49,14 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodySmallHint
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -66,11 +66,6 @@ import ch.protonmail.android.maildetail.presentation.R.plurals
 import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.previewdata.DetailsScreenTopBarPreview
 import ch.protonmail.android.maildetail.presentation.previewdata.DetailsScreenTopBarPreviewProvider
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodySmallNorm
-import ch.protonmail.android.design.compose.theme.titleMediumNorm
-import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -158,7 +153,7 @@ fun CustomSingleLineTopAppBar(
     isStarred: Boolean?,
     subjectLineAlpha: Float
 ) {
-    Row(
+    Box(
         modifier = modifier
             .testTag(DetailScreenTopBarTestTags.RootItem)
             .background(ProtonTheme.colors.backgroundNorm)
@@ -166,7 +161,7 @@ fun CustomSingleLineTopAppBar(
     ) {
         IconButton(
             modifier = Modifier
-                .align(Alignment.CenterVertically),
+                .align(Alignment.CenterStart),
             onClick = actions.onBackClick
         ) {
             Icon(
@@ -177,38 +172,41 @@ fun CustomSingleLineTopAppBar(
                 tint = ProtonTheme.colors.textNorm
             )
         }
-
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .align(Alignment.CenterVertically)
-                .wrapContentHeight(align = Alignment.CenterVertically)
-        ) {
-            messageCount?.let { count ->
-                Text(
-                    modifier = Modifier
-                        .testTag(DetailScreenTopBarTestTags.MessageCount)
-                        .fillMaxWidth(),
-                    text = pluralStringResource(plurals.message_count_label_text, count, count),
-                    style = ProtonTheme.typography.bodySmallNorm,
-                    textAlign = TextAlign.Center
-                )
-            }
-            SelectionContainer(modifier = Modifier.testTag(DetailScreenTopBarTestTags.Subject)) {
-                Text(
-                    modifier = Modifier
-                        .graphicsLayer {
-                            alpha = subjectLineAlpha
-                        }
-                        .fillMaxWidth(),
-                    maxLines = 1,
-                    text = title,
-                    overflow = TextOverflow.Ellipsis,
-                    style = ProtonTheme.typography.titleMediumNorm,
-                    textAlign = TextAlign.Center
-                )
-            }
+        messageCount?.let { count ->
+            Text(
+                modifier = Modifier
+                    .testTag(DetailScreenTopBarTestTags.MessageCount)
+                    .align(Alignment.Center)
+                    .wrapContentHeight(align = Alignment.CenterVertically)
+                    .padding(horizontal = ProtonDimens.Spacing.Jumbo)
+                    .graphicsLayer {
+                        alpha = 1 - subjectLineAlpha
+                    },
+                text = pluralStringResource(plurals.message_count_label_text, count, count),
+                style = ProtonTheme.typography.bodySmallHint,
+                textAlign = TextAlign.Center
+            )
         }
+
+        SelectionContainer(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .graphicsLayer {
+                    alpha = subjectLineAlpha
+                }
+        ) {
+            Text(
+                modifier = Modifier
+                    .wrapContentHeight(align = Alignment.CenterVertically)
+                    .padding(horizontal = ProtonDimens.Spacing.Jumbo)
+                    .fillMaxWidth(),
+                text = title,
+                overflow = TextOverflow.Ellipsis,
+                style = ProtonTheme.typography.titleLargeMedium,
+                textAlign = TextAlign.Center
+            )
+        }
+
 
         if (isStarred != null) {
             val onStarIconClick = {
@@ -219,7 +217,7 @@ fun CustomSingleLineTopAppBar(
             }
             IconButton(
                 modifier = Modifier
-                    .align(Alignment.CenterVertically),
+                    .align(Alignment.CenterEnd),
                 onClick = onStarIconClick
             ) {
                 Icon(
@@ -260,9 +258,8 @@ private fun SubjectHeader(
                     .fillMaxWidth(),
                 text = subject,
                 overflow = TextOverflow.Ellipsis,
-                style = ProtonTheme.typography.titleLargeNorm,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Start
+                style = ProtonTheme.typography.titleLargeMedium,
+                textAlign = TextAlign.Center
             )
         }
     }

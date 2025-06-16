@@ -68,8 +68,6 @@ internal fun ContactListItem(
         Column(
             modifier = Modifier.padding(
                 start = ProtonDimens.ListItemTextStartPadding,
-                top = ProtonDimens.ListItemTextStartPadding,
-                bottom = ProtonDimens.ListItemTextStartPadding,
                 end = ProtonDimens.Spacing.Large
             )
         ) {

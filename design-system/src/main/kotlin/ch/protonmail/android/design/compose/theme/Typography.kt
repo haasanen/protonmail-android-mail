@@ -110,6 +110,7 @@ data class ProtonTypography(
     val headlineMedium: TextStyle,
     val headlineSmall: TextStyle,
     val titleLarge: TextStyle,
+    val titleLargeMedium: TextStyle,
     val titleMedium: TextStyle,
     val titleSmall: TextStyle,
     val labelLarge: TextStyle,
@@ -128,6 +129,7 @@ data class ProtonTypography(
         headlineMedium = Default.headlineMedium,
         headlineSmall = Default.headlineSmall,
         titleLarge = Default.titleLarge,
+        titleLargeMedium = Default.titleLargeMedium,
         titleMedium = Default.titleMedium,
         titleSmall = Default.titleSmall,
         labelLarge = Default.labelLarge,
@@ -185,6 +187,13 @@ data class ProtonTypography(
             titleLarge = TextStyle(
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.SemiBold,
+                fontSize = 22.sp,
+                lineHeight = 28.sp,
+                letterSpacing = 0.sp
+            ),
+            titleLargeMedium = TextStyle(
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Medium,
                 fontSize = 22.sp,
                 lineHeight = 28.sp,
                 letterSpacing = 0.sp

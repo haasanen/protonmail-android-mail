@@ -59,9 +59,9 @@ fun RowForSignedInAccountWithCounter(
             .clickable(enabled = accountListItem !is AccountListItem.Disabled) {
                 onEvent(AccountSwitchEvent.OnAccountSelected(accountListItem.accountItem.userId))
             }
-            .padding(ProtonDimens.Spacing.Standard),
+            .padding(ProtonDimens.Spacing.Large),
         accountListItem = accountListItem,
-        accountInitialsShape = CircleShape,
+        accountInitialsShape = ProtonTheme.shapes.large,
         trailingRowContent = {
             if (accountListItem is AccountListItem.Ready) {
                 val counter = accountListItem.accountItem.counter

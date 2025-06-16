@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
@@ -42,6 +43,7 @@ import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxTopAppBarTestTags.NavigationButton
@@ -109,13 +111,14 @@ fun MailboxTopAppBar(
         } else {
             ProtonTopAppBar(
                 modifier = modifier.testTag(MailboxTopAppBarTestTags.RootItem),
+                minHeight = ProtonDimens.MailTopBarMinHeight,
                 title = {
                     Text(
                         modifier = Modifier
                             .testTag(MailboxTopAppBarTestTags.LocationLabel)
                             .clickable(onClick = actions.onTitleClick),
                         text = uiModel.title,
-                        style = ProtonTheme.typography.titleLarge,
+                        style = ProtonTheme.typography.titleLargeMedium,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
                     )
@@ -143,10 +146,12 @@ fun MailboxTopAppBar(
                                 )
                             )
                         }
+                        Spacer(Modifier.size(ProtonDimens.Spacing.ModeratelyLarge))
                         AccountAvatar(
                             accountItem = uiModel.accountAvatarItem,
                             onClick = actions.onAccountAvatarClicked
                         )
+                        Spacer(Modifier.size(ProtonDimens.Spacing.Large))
                     }
                 }
             )
@@ -265,6 +270,32 @@ private data class UiModel(
 @Preview
 fun LoadingMailboxTopAppBarPreview() {
     val state = MailboxTopAppBarState.Loading
+
+    MailboxTopAppBar(
+        state = state,
+        actions = MailboxTopAppBar.Actions(
+            onOpenMenu = {},
+            onExitSelectionMode = {},
+            onExitSearchMode = {},
+            onTitleClick = {},
+            onEnterSearchMode = {},
+            onSearch = {},
+            onOpenUpsellingPage = {},
+            onCloseUpsellingPage = {},
+            onAccountAvatarClicked = {}
+        )
+    )
+}
+
+@Composable
+@Preview
+fun MailboxTopAppBarPreview() {
+    val state = MailboxTopAppBarState.Data.DefaultMode(
+        TextUiModel("Inbox"),
+        CoreAccountAvatarItem(
+            "A"
+        )
+    )
 
     MailboxTopAppBar(
         state = state,

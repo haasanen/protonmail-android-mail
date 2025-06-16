@@ -23,10 +23,8 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Button
@@ -62,7 +60,12 @@ fun MessageDetailFooter(
         modifier = modifier
             .testTag(MessageBodyTestTags.MessageActionsRootItem)
             .fillMaxWidth()
-            .padding(ProtonDimens.Spacing.Large),
+            .padding(
+                bottom = ProtonDimens.Spacing.Huge - ProtonDimens.Spacing.Small,
+                start = ProtonDimens.Spacing.Large,
+                end = ProtonDimens.Spacing.Large,
+                top = ProtonDimens.Spacing.ModeratelyLarge
+            ),
         horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Standard)
     ) {
         MessageActionButton(
@@ -112,14 +115,13 @@ private fun MessageActionButton(
         onClick = { onClick() }
     ) {
         Icon(
+            modifier = Modifier.padding(end = ProtonDimens.Spacing.Small),
             painter = painterResource(id = iconResource),
             tint = ProtonTheme.colors.iconNorm,
             contentDescription = null
         )
-
-        Spacer(Modifier.width(ProtonDimens.Spacing.Standard))
-
         BasicText(
+            modifier = Modifier.padding(start = ProtonDimens.Spacing.Small),
             text = stringResource(textResource),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,

@@ -58,7 +58,7 @@ import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.LocalTypography
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyLargeWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.accountmanager.presentation.AccountDimens
 import me.proton.android.core.accountmanager.presentation.ButtonWithIconAndText
@@ -102,16 +102,15 @@ fun AccountsSwitcherBottomSheetScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CurrentAccountSection(
-                        modifier,
-                        state.signedInAccounts.filterIsInstance<AccountListItem.Ready.Primary>().first(),
-                        onEvent
+                        currentAccount = state.signedInAccounts.filterIsInstance<AccountListItem.Ready.Primary>()
+                            .first(),
+                        onEvent = onEvent
                     )
 
                     OtherAccountsSection(
-                        modifier,
-                        state.signedInAccounts.filterNot { it is AccountListItem.Ready.Primary },
-                        state.disabledAccounts,
-                        onEvent
+                        signedInAccounts = state.signedInAccounts.filterNot { it is AccountListItem.Ready.Primary },
+                        signedOutAccounts = state.disabledAccounts,
+                        onEvent = onEvent
                     )
 
                     ManageAccountsOnDeviceButton(modifier = modifier, onEvent = onEvent)
@@ -148,12 +147,12 @@ private fun CurrentAccountSection(
         )
 
         currentAccount.accountItem.email?.takeIfNotBlank()?.let {
-            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Tiny))
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Compact))
             Text(
                 text = it,
                 color = ProtonTheme.colors.textWeak,
                 textAlign = TextAlign.Center,
-                style = LocalTypography.current.bodyLargeWeak
+                style = LocalTypography.current.bodyMediumWeak
             )
         }
     }
@@ -167,7 +166,7 @@ private fun CurrentAccountAvatar(
 ) {
     val cameraVisible by remember { mutableStateOf(false) } // remove when avatar image implemented
     Box(
-        modifier = modifier.padding(ProtonDimens.Spacing.Large)
+        modifier = modifier.padding(ProtonDimens.Spacing.MediumLight)
     ) {
         PrimaryAccountAvatar(
             modifier = modifier,
@@ -210,22 +209,22 @@ private fun CurrentAccountAvatar(
 
 @Composable
 private fun OtherAccountsSection(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     signedInAccounts: List<AccountListItem>,
     signedOutAccounts: List<AccountListItem>,
     onEvent: (AccountSwitchEvent) -> Unit
 ) {
     if (signedInAccounts.isNotEmpty() || signedOutAccounts.isNotEmpty()) {
         Text(
-            color = LocalColors.current.textWeak,
-            style = LocalTypography.current.bodyLarge,
+            color = LocalColors.current.textHint,
+            style = LocalTypography.current.titleSmall,
             textAlign = TextAlign.Start,
             text = stringResource(R.string.manage_accounts_switch_to),
             modifier = Modifier
                 .padding(
                     bottom = ProtonDimens.Spacing.Medium,
                     top = ProtonDimens.Spacing.Standard,
-                    start = ProtonDimens.Spacing.Large
+                    start = ProtonDimens.Spacing.Medium
                 )
                 .fillMaxWidth()
         )
@@ -233,9 +232,8 @@ private fun OtherAccountsSection(
     Card(
         shape = RoundedCornerShape(AccountDimens.AccountCardRadius),
         modifier = modifier
-            .padding(horizontal = ProtonDimens.Spacing.Large)
+            .padding(horizontal = ProtonDimens.Spacing.Medium)
             .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(),
         colors = CardDefaults.cardColors().copy(
             containerColor = ProtonTheme.colors.backgroundInvertedSecondary
         )
@@ -291,7 +289,7 @@ private fun ManageAccountsOnDeviceButton(modifier: Modifier, onEvent: (AccountSw
     Card(
         shape = RoundedCornerShape(AccountDimens.AccountCardRadius),
         modifier = modifier
-            .padding(ProtonDimens.Spacing.Large)
+            .padding(ProtonDimens.Spacing.Medium)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(),
         colors = CardDefaults.cardColors().copy(containerColor = ProtonTheme.colors.backgroundInvertedSecondary)

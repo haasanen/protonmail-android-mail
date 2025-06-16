@@ -227,6 +227,7 @@ class ProtonColors(
     shadowNorm: Color,
     shadowRaised: Color,
     shadowLifted: Color,
+    shadowWeak: Color,
 
     starDefault: Color = shade50,
     starSelected: Color = ProtonPalette.TexasRose,
@@ -403,6 +404,8 @@ class ProtonColors(
         internal set
     var shadowLifted: Color by mutableStateOf(shadowLifted, structuralEqualityPolicy())
         internal set
+    var shadowWeak: Color by mutableStateOf(shadowWeak, structuralEqualityPolicy())
+        internal set
 
     var starDefault: Color by mutableStateOf(starDefault, structuralEqualityPolicy())
         internal set
@@ -501,6 +504,7 @@ class ProtonColors(
         shadowNorm: Color = this.shadowNorm,
         shadowRaised: Color = this.shadowRaised,
         shadowLifted: Color = this.shadowLifted,
+        shadowWeak: Color = this.shadowWeak,
         sidebarBackground: Color = this.sidebarBackground,
         sidebarInteractionPressed: Color = this.sidebarInteractionPressed,
         sidebarSeparator: Color = this.sidebarSeparator,
@@ -597,6 +601,7 @@ class ProtonColors(
         shadowNorm = shadowNorm,
         shadowRaised = shadowRaised,
         shadowLifted = shadowLifted,
+        shadowWeak = shadowWeak,
 
         starDefault = starDefault,
         starSelected = starSelected,
@@ -652,6 +657,7 @@ class ProtonColors(
             shadowNorm = Color.Black.copy(alpha = 0.8f),
             shadowRaised = Color.Black.copy(alpha = 0.8f),
             shadowLifted = Color.Black.copy(alpha = 0.8f),
+            shadowWeak = ProtonPalette.Charade.copy(alpha = 0.04f),
             blenderNorm = ProtonPalette.EerieBlack.copy(alpha = 0.48f),
             textAccent = brandPlus10,
             iconAccent = brandPlus10,
@@ -701,6 +707,7 @@ class ProtonColors(
             shadowNorm = Color.White.copy(alpha = 0.8f),
             shadowRaised = Color.White.copy(alpha = 0.8f),
             shadowLifted = Color.White.copy(alpha = 0.86f),
+            shadowWeak = ProtonPalette.Platinum.copy(alpha = 0.4f),
             blenderNorm = Color.Black.copy(alpha = 0.52f),
             textAccent = brandPlus10,
             iconAccent = brandPlus10,
@@ -723,7 +730,7 @@ class ProtonColors(
                 backgroundDeep = it.shade45,
                 backgroundAvatar = it.shade100,
                 interactionBrandWeakPressed = it.brandMinus20,
-                borderNorm = it.shade45,
+                borderNorm = it.shade20,
                 borderStrong = it.shade50,
                 starDefault = it.shade50,
                 backgroundInvertedNorm = it.shade20,
@@ -887,6 +894,7 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
     shadowNorm = other.shadowNorm
     shadowRaised = other.shadowRaised
     shadowLifted = other.shadowLifted
+    shadowWeak = other.shadowWeak
 
     starDefault = other.starDefault
     starSelected = other.starSelected

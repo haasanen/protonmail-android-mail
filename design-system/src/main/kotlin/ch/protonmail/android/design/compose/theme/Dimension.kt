@@ -26,8 +26,10 @@ object ProtonDimens {
     val ExtraLargeCornerRadius = 12.dp
 
     val DefaultButtonMinHeight = 48.dp
+    val AvatarAppBarHeight = 34.dp
 
     val DefaultTopBarMinHeight = 56.dp
+    val MailTopBarMinHeight = 48.dp
 
     val ListItemHeight = 48.dp
     val ListItemTextStartPadding = 12.dp
@@ -60,6 +62,7 @@ object ProtonDimens {
         val MediumLarge = 14.dp
         val ExtraLarge = 16.dp
         val Huge = 24.dp
+        val Jumbo = 32.dp
         val Massive = 56.dp
     }
 

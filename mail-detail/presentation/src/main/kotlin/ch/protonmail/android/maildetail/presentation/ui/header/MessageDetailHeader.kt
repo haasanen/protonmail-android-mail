@@ -60,6 +60,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import ch.protonmail.android.design.compose.component.ProtonOutlinedIconButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.bodySmallWeak
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
@@ -127,7 +128,15 @@ private fun MessageDetailHeaderLayout(
             .fillMaxWidth()
             .padding(ProtonDimens.Spacing.Large)
     ) {
-        Row(modifier = modifier.fillMaxWidth()) {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { actions.onParticipantClicked(uiModel.sender, uiModel.avatar) }
+                )
+        ) {
             ParticipantAvatar(
                 avatarUiModel = uiModel.avatar,
                 avatarImageUiModel = uiModel.avatarImage,
@@ -137,53 +146,42 @@ private fun MessageDetailHeaderLayout(
                     onAvatarImageLoadFailed = { }
                 )
             )
-
             Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Column(
-                    modifier = Modifier.clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { actions.onParticipantClicked(uiModel.sender, uiModel.avatar) }
-                    )
-                ) {
-                    SenderName(participantUiModel = uiModel.sender)
-                    Spacer(modifier = modifier.height(ProtonDimens.Spacing.Small))
-                    ParticipantAddress(
-                        participantUiModel = uiModel.sender,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-                }
-
-                Spacer(modifier.height(ProtonDimens.Spacing.Standard))
-
-                AllRecipients(
-                    allRecipients = uiModel.allRecipients,
-                    hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients,
-                    onClick = actions.onClick,
-                    isExpanded = isExpanded
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                SenderNameRow(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    participantUiModel = uiModel.sender, icons = {
+                        Icons(uiModel = uiModel, isExpanded = isExpanded)
+                        Spacer(modifier.width(ProtonDimens.Spacing.Small))
+                        Time(time = uiModel.time)
+                    }
                 )
-
-                if (uiModel.labels.isNotEmpty()) {
-                    Spacer(modifier.height(ProtonDimens.Spacing.Standard))
-                    Labels(modifier = Modifier, uiModels = uiModel.labels)
-                }
-            }
-
-            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
-
-            Column(horizontalAlignment = Alignment.End) {
+                Spacer(modifier = modifier.height(ProtonDimens.Spacing.Standard))
                 Row {
-                    Icons(uiModel = uiModel, isExpanded = isExpanded)
-                    Spacer(modifier.width(ProtonDimens.Spacing.Small))
-                    Time(time = uiModel.time)
-                }
-
-                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
-
-                Row {
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        ParticipantAddress(
+                            participantUiModel = uiModel.sender,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                        Spacer(modifier.height(ProtonDimens.Spacing.Standard))
+                        AllRecipients(
+                            allRecipients = uiModel.allRecipients,
+                            hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients,
+                            onClick = actions.onClick,
+                            isExpanded = isExpanded
+                        )
+                        if (uiModel.labels.isNotEmpty()) {
+                            Spacer(modifier.height(ProtonDimens.Spacing.Compact))
+                            Labels(modifier = Modifier, uiModels = uiModel.labels)
+                        }
+                    }
                     MessageDetailHeaderActions(
                         modifier = modifier
                             .testTag(MessageDetailHeaderTestTags.ActionsRootItem),
@@ -193,7 +191,6 @@ private fun MessageDetailHeaderLayout(
                 }
             }
         }
-
         if (isExpanded) {
             Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
             MessageDetailHeaderCard(
@@ -201,14 +198,16 @@ private fun MessageDetailHeaderLayout(
                 actions = actions
             )
         }
+        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
     }
 }
 
 @Composable
-private fun SenderName(
+private fun SenderNameRow(
     modifier: Modifier = Modifier,
     participantUiModel: ParticipantUiModel,
-    style: TextStyle = ProtonTheme.typography.titleMediumNorm
+    style: TextStyle = ProtonTheme.typography.titleMediumNorm,
+    icons: @Composable () -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -226,6 +225,7 @@ private fun SenderName(
         if (participantUiModel.shouldShowOfficialBadge) {
             OfficialBadge()
         }
+        icons()
     }
 }
 
@@ -247,7 +247,7 @@ private fun ParticipantAddress(
             modifier = modifier.testTag(MessageDetailHeaderTestTags.ParticipantValue),
             maxLines = maxLines,
             color = if (participantUiModel.shouldShowAddressInRed) ProtonTheme.colors.notificationError else textColor,
-            style = ProtonTheme.typography.bodySmall,
+            style = ProtonTheme.typography.bodyMediumWeak,
             overflow = overflow
         )
     }
@@ -307,7 +307,7 @@ private fun AllRecipients(
                 .testTag(MessageDetailHeaderTestTags.AllRecipientsText)
                 .padding(end = ProtonDimens.Spacing.Small),
             text = stringResource(R.string.to),
-            style = ProtonTheme.typography.bodySmallWeak
+            style = ProtonTheme.typography.bodyMediumWeak
         )
         Row(
             modifier = Modifier.weight(1f, fill = false),
@@ -315,7 +315,7 @@ private fun AllRecipients(
         ) {
             SingleLineRecipientNames(
                 modifier = Modifier.weight(1f, fill = false),
-                textStyle = ProtonTheme.typography.bodySmallWeak,
+                textStyle = ProtonTheme.typography.bodyMediumWeak,
                 fontWeight = FontWeight.Normal,
                 fontColor = ProtonTheme.colors.textWeak,
                 recipients = allRecipients,
@@ -325,9 +325,9 @@ private fun AllRecipients(
             Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
 
             val expandCollapseIconRes = if (isExpanded) {
-                R.drawable.ic_chevron_tiny_up
+                R.drawable.ic_proton_chevron_up_filled
             } else {
-                R.drawable.ic_chevron_tiny_down
+                R.drawable.ic_proton_chevron_down_filled
             }
 
             Icon(
@@ -375,6 +375,7 @@ internal fun MessageDetailHeaderButton(
     onClick: () -> Unit
 ) {
     ProtonOutlinedIconButton(
+        modifier = modifier,
         buttonSize = MailDimens.MessageDetailsHeader.ButtonSize,
         shape = ProtonTheme.shapes.mediumLarge,
         border = BorderStroke(MailDimens.DefaultBorder, ProtonTheme.colors.borderNorm),
@@ -449,11 +450,12 @@ private fun SenderDetails(
                     onClick = { actions.onParticipantClicked(senderUiModel, avatarUiModel) }
                 )
         ) {
-            SenderName(
+            SenderNameRow(
                 participantUiModel = senderUiModel,
-                style = ProtonTheme.typography.bodySmallNorm
+                style = ProtonTheme.typography.bodySmallNorm,
+                icons = { }
             )
-            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Compact))
             ParticipantAddress(
                 participantUiModel = senderUiModel,
                 textColor = ProtonTheme.colors.textAccent

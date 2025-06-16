@@ -56,7 +56,7 @@ fun Action.iconDrawable() = when (this) {
     Action.SavePdf -> R.drawable.ic_proton_arrow_down_line
     Action.SenderEmails -> R.drawable.ic_proton_envelope
     Action.SaveAttachments -> R.drawable.ic_proton_arrow_down_to_square
-    Action.More -> R.drawable.ic_proton_three_dots_horizontal
+    Action.More -> R.drawable.ic_proton_three_dots_vertical
     Action.Inbox -> R.drawable.ic_proton_inbox
     Action.Pin -> R.drawable.ic_pin_angled
     Action.Unpin -> R.drawable.ic_pin_angled_slash

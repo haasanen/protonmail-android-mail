@@ -22,7 +22,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,8 +52,8 @@ fun PrimaryAccountAvatar(
                 minWidth = AccountDimens.PrimaryAccountAvatarSize,
                 minHeight = AccountDimens.PrimaryAccountAvatarSize
             )
-            .background(color = boxColor, shape = CircleShape)
-            .clip(shape = CircleShape),
+            .background(color = boxColor, shape = ProtonTheme.shapes.jumbo)
+            .clip(shape = ProtonTheme.shapes.jumbo),
         contentAlignment = Alignment.Center
     ) {
         if (iconResId == null) {
