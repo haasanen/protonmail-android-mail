@@ -38,8 +38,13 @@ import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.confirmVerified
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.spyk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -78,14 +83,15 @@ class AutoLockRepositoryImplTest {
         every { this@mockk.observe() } returns flowOf(BiometricsSystemState.BiometricEnrolled)
     }
 
-    private val appSettingsRepository: AppSettingsRepository =
+    private val appSettingsRepository: AppSettingsRepository = spyk(
         AppSettingsRepository(
             mailSessionRepository = mailSessionRepository,
             rustAppSettingsDataSource = appSettingsDataSource,
             appLanguageRepository = appLanguageRepository
         )
+    )
 
-    private var autoLockRepositoryImpl: AutoLockRepositoryImpl =
+    private val autoLockRepositoryImpl: AutoLockRepositoryImpl =
         AutoLockRepositoryImpl(
             biometricsSystemStateRepository = biometricsStateRepository,
             appSettingsRepository = appSettingsRepository,
@@ -172,27 +178,53 @@ class AutoLockRepositoryImplTest {
     }
 
     @Test
-    fun `when shouldAutolock THEN return result`() = runTest {
+    fun `when shouldAutoLock THEN return result`() = runTest {
+        // Given
         coEvery { appLockDataSource.shouldAutoLock(mockMailSession) } returns true.right()
+
+        // When
         val result = autoLockRepositoryImpl.shouldAutolock()
+
+        // Then
         assert(result.isRight())
         assertTrue(result.getOrNull()!!)
     }
 
     @Test
-    fun `when shouldAutolock is False THEN return result`() = runTest {
+    fun `when shouldAutoLock is False THEN return result`() = runTest {
+        // Given
         coEvery { appLockDataSource.shouldAutoLock(mockMailSession) } returns false.right()
+
+        // When
         val result = autoLockRepositoryImpl.shouldAutolock()
 
+        // Then
         assert(result.isRight())
         assertFalse(result.getOrNull()!!)
     }
 
     @Test
-    fun `when shouldAutolock fails then return error`() = runTest {
+    fun `when shouldAutoLock fails then return error`() = runTest {
+        // Given
         coEvery { appLockDataSource.shouldAutoLock(mockMailSession) } returns DataError.Local.Unknown.left()
+
+        // When
         val result = autoLockRepositoryImpl.shouldAutolock()
 
+        // Then
         assert(result.isLeft())
+    }
+
+    @Test
+    fun `when biometric passes, then the mail session is notified`() = runTest {
+        // Given
+        coEvery { mockMailSessionWrapper.signalBiometricsCheckPassed() } just runs
+
+        // When
+        autoLockRepositoryImpl.signalBiometricsCheckPassed()
+
+        // Then
+        coVerify { mockMailSessionWrapper.signalBiometricsCheckPassed() }
+        confirmVerified(mockMailSessionWrapper)
     }
 }

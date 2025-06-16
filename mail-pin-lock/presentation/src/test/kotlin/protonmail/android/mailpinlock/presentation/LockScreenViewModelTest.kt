@@ -19,6 +19,7 @@
 package protonmail.android.mailpinlock.presentation
 
 import app.cash.turbine.test
+import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
 import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.model.AutoLock
@@ -26,8 +27,12 @@ import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockOverlayState
 import ch.protonmail.android.mailpinlock.presentation.autolock.viewmodel.LockScreenViewModel
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.spyk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -42,6 +47,7 @@ internal class LockScreenViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val autoLockRepository = mockk<AutoLockRepository>()
+    private val autoLockPendingState = spyk<AutoLockCheckPendingState>()
 
     @AfterTest
     fun teardown() {
@@ -53,10 +59,7 @@ internal class LockScreenViewModelTest {
         // Given
         every { autoLockRepository.observeAppLock() } returns flowOf()
 
-        val viewModel = LockScreenViewModel(
-            autoLockRepository = autoLockRepository,
-            autoLockCheckPendingState = AutoLockCheckPendingState()
-        )
+        val viewModel = viewModel()
 
         // When + Then
         viewModel.state.test {
@@ -70,10 +73,7 @@ internal class LockScreenViewModelTest {
         val lock = AutoLock.default().copy(protectionType = Protection.Pin)
         every { autoLockRepository.observeAppLock() } returns flowOf(lock)
 
-        val viewModel = LockScreenViewModel(
-            autoLockRepository = autoLockRepository,
-            autoLockCheckPendingState = AutoLockCheckPendingState()
-        )
+        val viewModel = viewModel()
 
         // When + Then
         viewModel.state.test {
@@ -87,10 +87,7 @@ internal class LockScreenViewModelTest {
         val lock = AutoLock.default().copy(protectionType = Protection.Biometrics)
         every { autoLockRepository.observeAppLock() } returns flowOf(lock)
 
-        val viewModel = LockScreenViewModel(
-            autoLockRepository = autoLockRepository,
-            autoLockCheckPendingState = AutoLockCheckPendingState()
-        )
+        val viewModel = viewModel()
 
         // When + Then
         viewModel.state.test {
@@ -104,14 +101,33 @@ internal class LockScreenViewModelTest {
         val lock = AutoLock.default().copy(protectionType = Protection.None)
         every { autoLockRepository.observeAppLock() } returns flowOf(lock)
 
-        val viewModel = LockScreenViewModel(
-            autoLockRepository = autoLockRepository,
-            autoLockCheckPendingState = AutoLockCheckPendingState()
-        )
+        val viewModel = viewModel()
 
         // When + Then
         viewModel.state.test {
             assertEquals(AutoLockOverlayState.Error, awaitItem())
         }
     }
+
+    @Test
+    fun `should notify the repository when biometric succeeds`() = runTest {
+        // Given
+        val lock = AutoLock.default().copy(protectionType = Protection.Biometrics)
+        every { autoLockRepository.observeAppLock() } returns flowOf(lock)
+        every { autoLockRepository.signalBiometricsCheckPassed() } just runs
+
+        val viewModel = viewModel()
+
+        // When
+        viewModel.onSuccessfulBiometrics()
+
+        // Then
+        coVerify { autoLockRepository.signalBiometricsCheckPassed() }
+        coVerify { autoLockPendingState.emitOperationSignal(AutoLockCheckPending(false)) }
+    }
+
+    private fun viewModel() = LockScreenViewModel(
+        autoLockRepository = autoLockRepository,
+        autoLockCheckPendingState = autoLockPendingState
+    )
 }

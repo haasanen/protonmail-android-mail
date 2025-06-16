@@ -36,7 +36,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LockScreenViewModel @Inject constructor(
-    autoLockRepository: AutoLockRepository,
+    private val autoLockRepository: AutoLockRepository,
     private val autoLockCheckPendingState: AutoLockCheckPendingState
 ) : ViewModel() {
 
@@ -56,6 +56,7 @@ class LockScreenViewModel @Inject constructor(
 
     fun onSuccessfulBiometrics() {
         viewModelScope.launch {
+            autoLockRepository.signalBiometricsCheckPassed()
             autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(false))
         }
     }

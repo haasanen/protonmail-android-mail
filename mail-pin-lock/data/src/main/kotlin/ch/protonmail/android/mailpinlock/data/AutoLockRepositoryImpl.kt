@@ -97,6 +97,8 @@ class AutoLockRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun signalBiometricsCheckPassed() = mailSessionRepository.getMailSession().signalBiometricsCheckPassed()
+
     override suspend fun shouldAutolock(): Either<DataError, Boolean> =
         appLockDataSource.shouldAutoLock(mailSessionRepository.getMailSession().getRustMailSession())
 

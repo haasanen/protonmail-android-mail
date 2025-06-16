@@ -36,7 +36,9 @@ interface AutoLockRepository {
     suspend fun deleteAutoLockPinCode(autoLockPin: AutoLockPin): Either<VerifyAutoLockPinError, Unit>
 
     suspend fun setBiometricProtection(enabled: Boolean): Either<DataError, Unit>
-    suspend fun shouldAutolock(): Either<DataError, Boolean>
 
+    suspend fun shouldAutolock(): Either<DataError, Boolean>
     suspend fun getRemainingAttempts(): Either<DataError, Int>
+
+    fun signalBiometricsCheckPassed()
 }

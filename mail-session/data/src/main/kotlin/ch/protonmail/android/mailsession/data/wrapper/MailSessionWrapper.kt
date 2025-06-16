@@ -138,6 +138,8 @@ class MailSessionWrapper(private val mailSession: MailSession) {
         is MailSessionUnsetBiometricsAppProtectionResult.Error -> result.v1.toDataError().left()
     }
 
+    fun signalBiometricsCheckPassed() = mailSession.biometricsCheckPassed()
+
     suspend fun getRemainingAttempts() = when (val result = mailSession.remainingPinAttempts()) {
         is MailSessionRemainingPinAttemptsResult.Error -> result.v1.toDataError().left()
         is MailSessionRemainingPinAttemptsResult.Ok -> result.v1.right()
