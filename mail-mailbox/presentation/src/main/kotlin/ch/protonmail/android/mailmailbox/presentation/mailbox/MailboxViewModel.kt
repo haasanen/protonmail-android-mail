@@ -55,11 +55,12 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.GetSelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveLoadedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveSelectedMailLabelId
-import ch.protonmail.android.maillabel.domain.usecase.ObserveCurrentViewMode
+import ch.protonmail.android.maillabel.domain.usecase.GetCurrentViewMode
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.SelectMailLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
@@ -129,7 +130,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.proton.android.core.accountmanager.domain.usecase.ObservePrimaryAccountAvatarItem
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.ViewMode
 import me.proton.core.util.kotlin.DispatcherProvider
 import timber.log.Timber
 import javax.inject.Inject
@@ -138,7 +138,7 @@ import javax.inject.Inject
 @SuppressWarnings("LongParameterList", "TooManyFunctions", "LargeClass")
 class MailboxViewModel @Inject constructor(
     private val mailboxPagerFactory: MailboxPagerFactory,
-    private val observeCurrentViewMode: ObserveCurrentViewMode,
+    private val getCurrentViewMode: GetCurrentViewMode,
     observePrimaryUserId: ObservePrimaryUserId,
     private val observeMailLabels: ObserveMailLabels,
     private val observeSwipeActionsPreference: ObserveSwipeActionsPreference,
@@ -914,7 +914,7 @@ class MailboxViewModel @Inject constructor(
             return
         }
         val event = MailboxEvent.Delete(
-            viewMode = getPreferredViewMode(),
+            viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId()),
             numAffectedMessages = selectionModeDataState.selectedMailboxItems.size
         )
         emitNewStateFrom(event)
@@ -958,6 +958,7 @@ class MailboxViewModel @Inject constructor(
                 SystemLabelId.Spam -> SpamOrTrash.Spam
                 else -> null
             }
+
             else -> null
         }
         spamOrTrash?.let { emitNewStateFrom(MailboxEvent.ClearAll(spamOrTrash = it)) }
@@ -1043,23 +1044,13 @@ class MailboxViewModel @Inject constructor(
         observeMailLabels(userId)
     }
 
-    private suspend fun getPreferredViewMode(): ViewMode {
-        val userId = primaryUserId.firstOrNull()
-
-        return if (userId == null) {
-            ObserveCurrentViewMode.DefaultViewMode
-        } else {
-            observeCurrentViewMode(userId).first()
-        }
-    }
-
     private suspend fun getViewModeForCurrentLocation(currentMailLabel: MailLabelId): ViewMode {
         val userId = primaryUserId.firstOrNull()
 
         return if (userId == null || state.value.isInSearchMode()) {
-            ObserveCurrentViewMode.DefaultViewMode
+            GetCurrentViewMode.DefaultViewMode
         } else {
-            observeCurrentViewMode(userId, currentMailLabel.labelId).first()
+            getCurrentViewMode(userId, currentMailLabel.labelId)
         }
     }
 
