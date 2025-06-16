@@ -18,6 +18,11 @@
 
 package ch.protonmail.android.mailcomposer.presentation.mapper.effects
 
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
+import ch.protonmail.android.mailattachments.domain.model.AttachmentState
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
+import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddErrorWithList
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
@@ -31,12 +36,15 @@ import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.operations.CompositeEvent
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AccessoriesStateModification
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AttachmentsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.BottomSheetEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import ch.protonmail.android.mailmessage.domain.model.Recipient
+import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -79,6 +87,18 @@ internal class CompositeEventTest(
 
         private val senderAddresses: List<SenderUiModel> = listOf(mockk())
         private val expiration = 2.hours
+
+        private val noErrorAttachment = mockk<AttachmentMetadataWithState>().apply {
+            every { attachmentState } returns AttachmentState.Uploaded
+        }
+
+        private val errorAttachment = mockk<AttachmentMetadataWithState>().apply {
+            every { attachmentState } returns AttachmentState.Error(
+                DataError.Local.AttachmentError.TooManyAttachments
+            )
+        }
+        private val errorList = listOf(errorAttachment)
+        private val noErrorList = listOf(noErrorAttachment)
 
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
@@ -127,6 +147,27 @@ internal class CompositeEventTest(
                 ComposerStateModifications(
                     mainModification = MainStateModification.UpdateSender(senderEmail),
                     effectsModification = BottomSheetEffectsStateModification.HideBottomSheet
+                )
+            ),
+            arrayOf(
+                "AttachmentListChanged with error to modification",
+                CompositeEvent.AttachmentListChanged(errorList),
+                ComposerStateModifications(
+                    attachmentsModification = AttachmentsStateModification.ListUpdated(errorList),
+                    effectsModification = RecoverableError.AttachmentsListChangedWithError(
+                        attachmentAddErrorWithList = AttachmentAddErrorWithList(
+                            AttachmentAddError.TooManyAttachments,
+                            errorList
+                        )
+                    )
+                )
+            ),
+            arrayOf(
+                "AttachmentListChanged with no error to modification",
+                CompositeEvent.AttachmentListChanged(noErrorList),
+                ComposerStateModifications(
+                    attachmentsModification = AttachmentsStateModification.ListUpdated(noErrorList),
+                    effectsModification = null
                 )
             )
         )

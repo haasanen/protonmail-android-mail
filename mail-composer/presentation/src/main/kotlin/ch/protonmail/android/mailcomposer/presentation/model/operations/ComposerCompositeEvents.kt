@@ -18,17 +18,22 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model.operations
 
+import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
+import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
+import ch.protonmail.android.mailcomposer.presentation.mapper.AttachmentListErrorMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ScheduleSendOptionsUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AccessoriesStateModification
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AttachmentsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.BottomSheetEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
+import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import kotlin.time.Duration
 
 internal sealed interface CompositeEvent : ComposerStateEvent {
@@ -67,6 +72,20 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
             accessoriesModification = AccessoriesStateModification.ScheduleSendOptionsUpdated(options),
             effectsModification = BottomSheetEffectsStateModification.ShowBottomSheet
         )
+
+        is AttachmentListChanged -> ComposerStateModifications(
+            attachmentsModification = AttachmentsStateModification.ListUpdated(list),
+            effectsModification = list
+                .filter { it.attachmentState is AttachmentState.Error }
+                .takeIf { it.isNotEmpty() }
+                ?.let {
+                    AttachmentListErrorMapper.toAttachmentAddErrorWithList(it)?.let { errorWithList ->
+                        RecoverableError.AttachmentsListChangedWithError(
+                            attachmentAddErrorWithList = errorWithList
+                        )
+                    }
+                }
+        )
     }
 
     data class DraftContentReady(
@@ -83,4 +102,6 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
     data class ScheduleSendOptionsReady(val options: ScheduleSendOptionsUiModel) : CompositeEvent
 
     data object OnSendWithEmptySubject : CompositeEvent
+
+    data class AttachmentListChanged(val list: List<AttachmentMetadataWithState>) : CompositeEvent
 }

@@ -66,7 +66,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsState
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
-import ch.protonmail.android.mailcomposer.presentation.model.operations.AttachmentsEvent
 import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerStateEvent
 import ch.protonmail.android.mailcomposer.presentation.model.operations.CompositeEvent
@@ -436,7 +435,7 @@ class ComposerViewModel @AssistedInject constructor(
                     Timber.e("Failed to observe message attachments: $it")
                     emitNewStateFor(EffectsEvent.DraftEvent.OnDraftLoadingFailed)
                 }.onRight { attachments ->
-                    emitNewStateFor(AttachmentsEvent.OnListChanged(attachments))
+                    emitNewStateFor(CompositeEvent.AttachmentListChanged(attachments))
                 }
             }.launchIn(this)
         }
