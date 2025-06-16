@@ -41,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -179,9 +180,7 @@ fun CustomSingleLineTopAppBar(
                     .align(Alignment.Center)
                     .wrapContentHeight(align = Alignment.CenterVertically)
                     .padding(horizontal = ProtonDimens.Spacing.Jumbo)
-                    .graphicsLayer {
-                        alpha = 1 - subjectLineAlpha
-                    },
+                    .alpha(1 - subjectLineAlpha),
                 text = pluralStringResource(plurals.message_count_label_text, count, count),
                 style = ProtonTheme.typography.bodySmallHint,
                 textAlign = TextAlign.Center
@@ -191,9 +190,7 @@ fun CustomSingleLineTopAppBar(
         SelectionContainer(
             modifier = Modifier
                 .align(Alignment.Center)
-                .graphicsLayer {
-                    alpha = subjectLineAlpha
-                }
+                .alpha(subjectLineAlpha)
         ) {
             Text(
                 modifier = Modifier
