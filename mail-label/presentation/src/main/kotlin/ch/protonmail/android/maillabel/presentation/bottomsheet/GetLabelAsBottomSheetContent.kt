@@ -27,7 +27,7 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageLabelAsActions
 import me.proton.core.domain.entity.UserId
-import me.proton.core.mailsettings.domain.entity.ViewMode
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 import javax.inject.Inject
 
 internal class GetLabelAsBottomSheetContent @Inject constructor(

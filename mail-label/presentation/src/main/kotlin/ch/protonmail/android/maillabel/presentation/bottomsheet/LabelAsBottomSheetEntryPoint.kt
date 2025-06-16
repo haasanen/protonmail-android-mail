@@ -19,7 +19,7 @@
 package ch.protonmail.android.maillabel.presentation.bottomsheet
 
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import me.proton.core.mailsettings.domain.entity.ViewMode
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 
 sealed interface LabelAsBottomSheetEntryPoint {
     data object Conversation : LabelAsBottomSheetEntryPoint

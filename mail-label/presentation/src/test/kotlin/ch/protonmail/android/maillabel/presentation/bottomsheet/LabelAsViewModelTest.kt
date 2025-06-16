@@ -51,7 +51,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import me.proton.core.mailsettings.domain.entity.ViewMode
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

@@ -29,7 +29,7 @@ import ch.protonmail.android.testdata.label.LabelTestData
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import me.proton.core.mailsettings.domain.entity.ViewMode
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

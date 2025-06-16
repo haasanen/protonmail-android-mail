@@ -15,7 +15,7 @@ import ch.protonmail.android.mailmessage.domain.usecase.GetAllMessageBottomBarAc
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import me.proton.core.mailsettings.domain.entity.ViewMode
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 import org.junit.Test
 import kotlin.test.assertEquals
 

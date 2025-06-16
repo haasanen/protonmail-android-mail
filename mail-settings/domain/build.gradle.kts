@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.proton.core.configuration.data)
     implementation(libs.proton.core.user.domain)
 
+    implementation(project(":mail-label:domain"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-pin-lock:domain"))

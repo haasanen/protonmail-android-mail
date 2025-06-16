@@ -1,19 +1,16 @@
 package ch.protonmail.android.maillabel.domain.usecase
 
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveMailSettings
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
-import me.proton.core.mailsettings.domain.entity.ViewMode
 import javax.inject.Inject
 
+@Deprecated("Broken to allow migrating to using ViewMode from mail-label. to be fixed in next commit.")
 class ObserveCurrentViewMode @Inject constructor(
-    private val observeMailSettings: ObserveMailSettings,
+//    private val observeMailSettings: ObserveMailSettings,
     private val observeMessageOnlyLabelIds: ObserveMessageOnlyLabelIds
 ) {
 
@@ -24,10 +21,13 @@ class ObserveCurrentViewMode @Inject constructor(
             } else invoke(userId)
         }
 
-    operator fun invoke(userId: UserId): Flow<ViewMode> = observeMailSettings(userId)
-        .filterNotNull()
-        .mapLatest { it.viewMode?.enum ?: DefaultViewMode }
-        .distinctUntilChanged()
+    @Suppress("NotImplementedDeclaration")
+    operator fun invoke(userId: UserId): Flow<ViewMode> =
+        TODO("Impl broken by commit to allow migrating ViewMode. Fixed in next commit")
+//        observeMailSettings(userId)
+//        .filterNotNull()
+//        .mapLatest { it.viewMode?.enum ?: DefaultViewMode }
+//        .distinctUntilChanged()
 
     companion object {
 

@@ -151,9 +151,9 @@ import kotlinx.coroutines.test.setMain
 import me.proton.android.core.accountmanager.domain.usecase.ObservePrimaryAccountAvatarItem
 import me.proton.core.domain.entity.UserId
 import me.proton.core.mailsettings.domain.entity.SwipeAction
-import me.proton.core.mailsettings.domain.entity.ViewMode
-import me.proton.core.mailsettings.domain.entity.ViewMode.ConversationGrouping
-import me.proton.core.mailsettings.domain.entity.ViewMode.NoConversationGrouping
+import ch.protonmail.android.maillabel.domain.model.ViewMode
+import ch.protonmail.android.maillabel.domain.model.ViewMode.ConversationGrouping
+import ch.protonmail.android.maillabel.domain.model.ViewMode.NoConversationGrouping
 import me.proton.core.test.kotlin.TestDispatcherProvider
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

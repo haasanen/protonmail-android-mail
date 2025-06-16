@@ -38,7 +38,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingUnreadFilter
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
 import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
-import me.proton.core.mailsettings.domain.entity.ViewMode
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 
 internal sealed interface MailboxOperation {
     sealed interface AffectingTopAppBar
