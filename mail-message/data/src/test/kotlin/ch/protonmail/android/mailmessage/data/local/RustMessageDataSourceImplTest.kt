@@ -43,7 +43,7 @@ import ch.protonmail.android.mailmessage.data.usecase.RustReportPhishing
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustUnblockAddress
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
-import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample

@@ -25,7 +25,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.LabelConversationsAsResult
 import uniffi.proton_mail_uniffi.labelConversationsAs
 import javax.inject.Inject

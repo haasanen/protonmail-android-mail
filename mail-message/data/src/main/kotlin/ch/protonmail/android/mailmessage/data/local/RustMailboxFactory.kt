@@ -27,7 +27,7 @@ import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.usecase.GetSelectedMailLabelId
 import ch.protonmail.android.mailmessage.data.usecase.CreateAllMailMailbox
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
-import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock

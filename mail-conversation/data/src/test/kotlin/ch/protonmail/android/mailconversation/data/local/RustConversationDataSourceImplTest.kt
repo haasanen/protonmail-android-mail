@@ -31,7 +31,7 @@ import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMo
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
-import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule

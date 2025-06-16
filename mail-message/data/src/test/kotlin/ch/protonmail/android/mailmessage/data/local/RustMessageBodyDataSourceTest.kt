@@ -22,9 +22,9 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
-import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper

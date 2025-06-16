@@ -16,12 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.wrapper
+package ch.protonmail.android.maillabel.data.wrapper
 
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.LocalViewMode
 import uniffi.proton_mail_uniffi.Mailbox
 
+/**
+ * Wraps rust Mailbox object, which is used to keep track of the currently selected label
+ */
 class MailboxWrapper(private val rustMailbox: Mailbox) {
 
     fun getRustMailbox() = rustMailbox

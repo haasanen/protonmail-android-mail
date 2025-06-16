@@ -25,7 +25,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
-import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
