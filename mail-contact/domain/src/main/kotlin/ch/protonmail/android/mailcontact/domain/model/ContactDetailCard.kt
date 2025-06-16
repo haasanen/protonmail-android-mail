@@ -72,8 +72,8 @@ data class ContactDetailAddress(
 )
 
 data class ContactDetailEmail(
-    val name: String,
-    val email: String
+    val email: String,
+    val emailType: List<VCardPropType>
 )
 
 data class ContactDetailTelephone(

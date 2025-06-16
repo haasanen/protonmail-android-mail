@@ -110,8 +110,8 @@ private fun LocalPartialDate.toPartialDate() = PartialDate(
 )
 
 private fun LocalContactDetailsEmail.toContactDetailEmail() = ContactDetailEmail(
-    name = this.name,
-    email = this.email
+    email = this.email,
+    emailType = this.emailType.map { it.toVCardPropType() }
 )
 
 private fun LocalContactDetailAddress.toContactDetailAddress() = ContactDetailAddress(
