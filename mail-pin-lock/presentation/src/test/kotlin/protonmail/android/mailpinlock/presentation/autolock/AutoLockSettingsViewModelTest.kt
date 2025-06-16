@@ -187,7 +187,7 @@ internal class AutoLockSettingsViewModelTest {
     }
 
     @Test
-    fun `RequestPinProtection with existing Pin protection should emit PinCreationRequested`() = runTest {
+    fun `RequestPinProtection with existing Pin protection should emit nothing`() = runTest {
         // Given
         expectAutoLock(AutoLock(protectionType = Protection.Pin))
 
@@ -195,9 +195,7 @@ internal class AutoLockSettingsViewModelTest {
         viewModel.effects.test {
             awaitItem() // initial empty effects
             viewModel.submit(AutoLockSettingsViewAction.RequestPinProtection)
-
-            val effects = awaitItem()
-            assertEquals(Effect.of(Unit), effects.openPinCreation)
+            expectNoEvents()
         }
     }
 
@@ -316,7 +314,6 @@ internal class AutoLockSettingsViewModelTest {
     fun `RequestBiometricsProtection with unknown lock policy should emit error`() = runTest {
         // Given
         expectUnsetAutoLock()
-//        expectAutoLock(Autolock(protectionType = Protection.Biometrics))
         val expectedEffect = Effect.of(TextUiModel(R.string.mail_settings_biometrics_unknown_lock))
 
         // When + Then
@@ -463,8 +460,8 @@ internal class AutoLockSettingsViewModelTest {
         }
     }
 
-    private fun expectAutoLock(autolock: AutoLock) {
-        every { autoLockRepository.observeAppLock() } returns flowOf(autolock)
+    private fun expectAutoLock(autoLock: AutoLock) {
+        every { autoLockRepository.observeAppLock() } returns flowOf(autoLock)
     }
 
     private fun expectUnsetAutoLock() {

@@ -24,6 +24,7 @@ sealed interface AutoLockSettingsViewAction : AutoLockSettingsOperation {
 
     data object RequestProtectionRemoval : AutoLockSettingsViewAction
     data object RequestPinProtection : AutoLockSettingsViewAction
+    data object ForceRequestPinCreation : AutoLockSettingsViewAction
     data object RequestPinProtectionChange : AutoLockSettingsViewAction
     data object RequestBiometricsProtection : AutoLockSettingsViewAction
 

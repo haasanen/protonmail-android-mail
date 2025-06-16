@@ -138,7 +138,7 @@ fun AutoLockSettingsScreen(
 
                 when (result) {
                     DialogType.ChangePin.resultKey ->
-                        viewModel.submit(AutoLockSettingsViewAction.RequestPinProtection)
+                        viewModel.submit(AutoLockSettingsViewAction.ForceRequestPinCreation)
 
                     DialogType.DisablePin.resultKey -> Unit
                     DialogType.MigrateToBiometrics.resultKey ->
