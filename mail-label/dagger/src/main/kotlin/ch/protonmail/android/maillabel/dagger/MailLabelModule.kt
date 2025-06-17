@@ -18,15 +18,20 @@
 
 package ch.protonmail.android.maillabel.dagger
 
+import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.maillabel.data.MailLabelRustCoroutineScope
 import ch.protonmail.android.maillabel.data.local.LabelDataSource
 import ch.protonmail.android.maillabel.data.local.RustLabelDataSource
+import ch.protonmail.android.maillabel.data.repository.InMemorySelectedMailLabelIdRepositoryImpl
 import ch.protonmail.android.maillabel.data.repository.RustLabelRepository
 import ch.protonmail.android.maillabel.data.usecase.CreateRustSidebar
 import ch.protonmail.android.maillabel.data.usecase.RustGetAllMailLabelId
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
+import ch.protonmail.android.maillabel.domain.repository.SelectedMailLabelIdRepository
+import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -66,4 +71,13 @@ object MailLabelModule {
     @Singleton
     fun providesLabelRepository(rustLabelDataSource: LabelDataSource): LabelRepository =
         RustLabelRepository(rustLabelDataSource)
+
+    @Provides
+    @Singleton
+    fun provideSelectedMailLabelIdRepository(
+        @AppScope appScope: CoroutineScope,
+        findLocalSystemLabelId: FindLocalSystemLabelId,
+        observePrimaryUserId: ObservePrimaryUserId
+    ): SelectedMailLabelIdRepository =
+        InMemorySelectedMailLabelIdRepositoryImpl(appScope, findLocalSystemLabelId, observePrimaryUserId)
 }
