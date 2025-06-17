@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcomposer.domain.repository.ContactsPermissionRe
 import ch.protonmail.android.mailcomposer.presentation.mapper.ContactSuggestionsMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.RecipientsActions
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
@@ -46,7 +47,6 @@ import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Rule
@@ -63,8 +63,9 @@ internal class RecipientsViewModelTest {
     }
     private val getContactSuggestions = mockk<GetContactSuggestions>()
     private val contactsPermissionRepository = mockk<ContactsPermissionRepository> {
-        every { this@mockk.observePermissionInteraction() } returns flowOf()
+        every { this@mockk.observePermissionInteraction() } returns flowOf(true.right())
     }
+
     private val recipientsStateManager = spyk<RecipientsStateManager>()
     private val contactSuggestionsMapper = spyk<ContactSuggestionsMapper>()
 
@@ -85,14 +86,12 @@ internal class RecipientsViewModelTest {
         val viewModel = viewModel()
 
         // When
-        viewModel.updateSearchTerm(searchTerm, ContactSuggestionsField.TO)
+        viewModel.submit(RecipientsActions.UpdateSearchTerm(searchTerm, ContactSuggestionsField.TO))
 
-        viewModel.contactsSuggestions.test {
-            assertTrue(awaitItem().isEmpty())
-        }
-
-        viewModel.contactSuggestionsFieldFlow.test {
-            assertEquals(ContactSuggestionsField.TO, awaitItem())
+        viewModel.state.test {
+            val state = awaitItem()
+            assertTrue(state.suggestions.isEmpty())
+            assertEquals(ContactSuggestionsField.TO, state.suggestionsField)
         }
     }
 
@@ -106,7 +105,7 @@ internal class RecipientsViewModelTest {
         val viewModel = viewModel()
 
         // When
-        viewModel.updateRecipients(recipients, ContactSuggestionsField.BCC)
+        viewModel.submit(RecipientsActions.UpdateRecipients(recipients, ContactSuggestionsField.BCC))
 
         // Then
         verify { recipientsStateManager.updateRecipients(recipients, ContactSuggestionsField.BCC) }
@@ -120,13 +119,14 @@ internal class RecipientsViewModelTest {
         val viewModel = viewModel()
 
         // When
-        viewModel.updateSearchTerm(searchTerm, ContactSuggestionsField.TO)
-        viewModel.contactSuggestionsFieldFlow.test {
-            assertEquals(ContactSuggestionsField.TO, awaitItem())
+        viewModel.state.test {
+            skipItems(1)
 
-            viewModel.closeSuggestions()
-            advanceUntilIdle()
-            assertEquals(null, awaitItem())
+            viewModel.submit(RecipientsActions.UpdateSearchTerm(searchTerm, ContactSuggestionsField.TO))
+            assertEquals(ContactSuggestionsField.TO, awaitItem().suggestionsField)
+
+            viewModel.submit(RecipientsActions.CloseSuggestions)
+            assertEquals(null, awaitItem().suggestionsField)
         }
     }
 
@@ -137,39 +137,44 @@ internal class RecipientsViewModelTest {
         val viewModel = viewModel()
 
         // When + Then
-        viewModel.contactsSuggestions.test {
-            viewModel.updateSearchTerm(searchTerm, ContactSuggestionsField.TO)
-            assertTrue(awaitItem().isEmpty())
-        }
+        viewModel.state.test {
+            skipItems(1)
 
-        viewModel.contactSuggestionsFieldFlow.test {
-            viewModel.updateSearchTerm(searchTerm, ContactSuggestionsField.TO)
-            assertEquals(ContactSuggestionsField.TO, awaitItem())
+            viewModel.submit(RecipientsActions.UpdateSearchTerm(searchTerm, ContactSuggestionsField.TO))
+            assertEquals(ContactSuggestionsField.TO, awaitItem().suggestionsField)
 
-            viewModel.updateSearchTerm(searchTerm, ContactSuggestionsField.CC)
-            assertEquals(ContactSuggestionsField.CC, awaitItem())
+            viewModel.submit(RecipientsActions.UpdateSearchTerm(searchTerm, ContactSuggestionsField.CC))
+            assertEquals(ContactSuggestionsField.CC, awaitItem().suggestionsField)
 
-            viewModel.updateSearchTerm(searchTerm, ContactSuggestionsField.BCC)
-            assertEquals(ContactSuggestionsField.BCC, awaitItem())
+            viewModel.submit(RecipientsActions.UpdateSearchTerm(searchTerm, ContactSuggestionsField.BCC))
+            assertEquals(ContactSuggestionsField.BCC, awaitItem().suggestionsField)
         }
     }
 
     @Test
     fun `should reflect empty suggestions emissions`() = runTest {
-        // Given
         val searchTerm = "searchTerm"
-        expectEmptySuggestions(searchTerm)
+
+        every { observePrimaryUserId.invoke() } returns flowOf(userId)
+        every { contactsPermissionRepository.observePermissionInteraction() } returns flowOf(true.right())
+        coEvery {
+            getContactSuggestions(userId, ContactSuggestionQuery(searchTerm))
+        } returns emptyList<ContactMetadata>().right()
+        every { contactSuggestionsMapper.toUiModel(emptyList()) } returns emptyList()
+
         val viewModel = viewModel()
 
         // When + Then
-        viewModel.contactsSuggestions.test {
-            viewModel.updateSearchTerm(searchTerm, ContactSuggestionsField.TO)
-            assertTrue(awaitItem().isEmpty())
+        viewModel.state.test {
+            skipItems(1) // Skip initial state
+
+            viewModel.submit(RecipientsActions.UpdateSearchTerm(searchTerm, ContactSuggestionsField.TO))
+            assertTrue(awaitItem().suggestions.isEmpty())
         }
     }
 
     @Test
-    fun `should return contact suggestions`() = runTest {
+    fun `should return contacts suggestions`() = runTest {
         // Given
         val searchTerm = "searchTerm"
         val expectedContacts = listOf(
@@ -190,10 +195,10 @@ internal class RecipientsViewModelTest {
         val viewModel = viewModel()
 
         // When + Then
-        viewModel.contactsSuggestions.test {
+        viewModel.state.test {
             skipItems(1)
-            viewModel.updateSearchTerm(searchTerm, ContactSuggestionsField.TO)
-            assertEquals(expectedSuggestions, awaitItem())
+            viewModel.submit(RecipientsActions.UpdateSearchTerm(searchTerm, ContactSuggestionsField.TO))
+            assertEquals(expectedSuggestions, expectMostRecentItem().suggestions)
         }
     }
 
@@ -203,11 +208,11 @@ internal class RecipientsViewModelTest {
         val viewModel = viewModel()
 
         // When
-        viewModel.requestPermission()
+        viewModel.submit(RecipientsActions.RequestContactsPermission)
 
         // Then
-        viewModel.requestPermissionEffect.test {
-            assertEquals(Effect.of(Unit), awaitItem())
+        viewModel.state.test {
+            assertEquals(Effect.of(Unit), awaitItem().requestContactsPermission)
         }
     }
 
@@ -227,9 +232,9 @@ internal class RecipientsViewModelTest {
         val viewModel = viewModel()
 
         // When
-        viewModel.contactSuggestionsFieldFlow.test {
-            viewModel.markContactPermissionInteraction()
-            assertNull(awaitItem())
+        viewModel.state.test {
+            viewModel.submit(RecipientsActions.MarkContactsPermissionInteraction)
+            assertNull(awaitItem().suggestionsField)
             expectNoEvents()
         }
     }
@@ -241,11 +246,6 @@ internal class RecipientsViewModelTest {
         contactsPermissionRepository,
         recipientsStateManager
     )
-
-    private fun expectEmptySuggestions(@Suppress("SameParameterValue") forTerm: String) {
-        coEvery { getContactSuggestions(userId, ContactSuggestionQuery(forTerm)) } returns
-            emptyList<ContactMetadata>().right()
-    }
 
     private companion object {
 

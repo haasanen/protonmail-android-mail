@@ -287,7 +287,7 @@ private fun ChipsListContent(
                         textFieldState.edit { delete(0, length) }
                     },
                     onRequestContactsPermission = actions.onPermissionRequest,
-                    onDeniedContactsPermission = actions.onDeniedContactsPermission
+                    onDeniedContactsPermission = actions.onPermissionInteraction
                 )
             )
         }
@@ -300,7 +300,7 @@ object ComposerChipsListField {
         val onSuggestionsDismissed: () -> Unit,
         val onListChanged: (List<ChipItem>) -> Unit,
         val onPermissionRequest: () -> Unit,
-        val onDeniedContactsPermission: () -> Unit
+        val onPermissionInteraction: () -> Unit
     ) {
 
         companion object {
@@ -310,7 +310,7 @@ object ComposerChipsListField {
                 onSuggestionsDismissed = {},
                 onListChanged = { _ -> },
                 onPermissionRequest = {},
-                onDeniedContactsPermission = {}
+                onPermissionInteraction = {}
             )
         }
     }

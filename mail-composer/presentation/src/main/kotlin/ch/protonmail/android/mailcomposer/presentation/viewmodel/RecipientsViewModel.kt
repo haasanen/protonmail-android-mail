@@ -20,12 +20,14 @@ package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.domain.repository.ContactsPermissionRepository
 import ch.protonmail.android.mailcomposer.presentation.mapper.ContactSuggestionsMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
-import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsState
+import ch.protonmail.android.mailcomposer.presentation.model.RecipientsActions
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel.Companion.maxContactAutocompletionCount
 import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
@@ -38,7 +40,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
@@ -57,39 +58,69 @@ internal class RecipientsViewModel @AssistedInject constructor(
     private val searchTerm = MutableStateFlow("")
 
     private val mutableContactSuggestionsFieldFlow = MutableStateFlow<ContactSuggestionsField?>(null)
-    val contactSuggestionsFieldFlow = mutableContactSuggestionsFieldFlow.asStateFlow()
-
     private val mutableRequestPermissionEffect = MutableStateFlow<Effect<Unit>>(Effect.empty())
-    val requestPermissionEffect = mutableRequestPermissionEffect.asStateFlow()
 
-    val contactsSuggestions = observeContactsSuggestions().stateIn(
+    private val contactsSuggestions = observeContactsSuggestions().stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
         initialValue = emptyList()
     )
 
-    fun markContactPermissionInteraction() {
-        viewModelScope.launch { contactsPermissionRepository.trackPermissionInteraction() }
-        if (contactsSuggestions.value.filterIsInstance<ContactSuggestionUiModel.DeviceContacts>().isEmpty()) {
-            closeSuggestions()
+    val state = combine(
+        contactsSuggestions,
+        mutableContactSuggestionsFieldFlow,
+        mutableRequestPermissionEffect
+    ) { suggestions, suggestionsField, requestPermission ->
+        ContactSuggestionsState(
+            suggestions = suggestions,
+            suggestionsField = suggestionsField,
+            requestContactsPermission = requestPermission
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = ContactSuggestionsState(
+            suggestions = emptyList(),
+            suggestionsField = null,
+            requestContactsPermission = Effect.empty()
+        )
+    )
+
+    fun submit(action: RecipientsActions) {
+        when (action) {
+            is RecipientsActions.CloseSuggestions -> onCloseSuggestions()
+            is RecipientsActions.MarkContactsPermissionInteraction -> onMarkContactPermissionInteraction()
+            is RecipientsActions.RequestContactsPermission -> onRequestPermission()
+            is RecipientsActions.UpdateRecipients -> onUpdateRecipients(action)
+            is RecipientsActions.UpdateSearchTerm -> onUpdateSearchTerm(action)
         }
     }
 
-    fun requestPermission() {
+    private fun onCloseSuggestions() {
+        mutableContactSuggestionsFieldFlow.update { null }
+    }
+
+    private fun onMarkContactPermissionInteraction() {
+        viewModelScope.launch { contactsPermissionRepository.trackPermissionInteraction() }
+        val isSuggestionsFieldEmpty =
+            contactsSuggestions.value.filterIsInstance<ContactSuggestionUiModel.DeviceContacts>().isEmpty()
+
+        if (isSuggestionsFieldEmpty) {
+            onCloseSuggestions()
+        }
+    }
+
+    private fun onRequestPermission() {
         viewModelScope.launch { mutableRequestPermissionEffect.emit(Effect.of(Unit)) }
     }
 
-    fun updateSearchTerm(term: String, contactSuggestionsField: ContactSuggestionsField) {
-        searchTerm.update { term }
-        mutableContactSuggestionsFieldFlow.update { contactSuggestionsField }
+    private fun onUpdateRecipients(action: RecipientsActions.UpdateRecipients) {
+        recipientsStateManager.updateRecipients(action.values, action.type)
     }
 
-    fun updateRecipients(values: List<RecipientUiModel>, type: ContactSuggestionsField) {
-        recipientsStateManager.updateRecipients(values, type)
-    }
-
-    fun closeSuggestions() {
-        mutableContactSuggestionsFieldFlow.update { null }
+    private fun onUpdateSearchTerm(action: RecipientsActions.UpdateSearchTerm) {
+        searchTerm.update { action.term }
+        mutableContactSuggestionsFieldFlow.update { action.contactSuggestionsField }
     }
 
     private fun observeContactsSuggestions(): Flow<List<ContactSuggestionUiModel>> = combine(

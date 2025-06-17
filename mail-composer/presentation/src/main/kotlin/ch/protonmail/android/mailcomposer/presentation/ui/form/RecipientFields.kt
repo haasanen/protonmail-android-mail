@@ -58,6 +58,7 @@ import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.RecipientsActions
 import ch.protonmail.android.mailcomposer.presentation.model.toImmutableChipList
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerTestTags
 import ch.protonmail.android.mailcomposer.presentation.ui.chips.ComposerChipsListField
@@ -84,28 +85,28 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
     val recipientsCcValue = recipients.ccRecipients.toImmutableChipList()
     val recipientsBccValue = recipients.bccRecipients.toImmutableChipList()
 
-    val suggestions by viewModel.contactsSuggestions.collectAsStateWithLifecycle()
-    val suggestionField by viewModel.contactSuggestionsFieldFlow.collectAsStateWithLifecycle()
-    val isShowingToSuggestions = suggestionField == ContactSuggestionsField.TO && suggestions.isNotEmpty()
-    val isShowingCcSuggestions = suggestionField == ContactSuggestionsField.CC && suggestions.isNotEmpty()
-    val isShowingBccSuggestions = suggestionField == ContactSuggestionsField.BCC && suggestions.isNotEmpty()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val suggestions = state.suggestions
+    val suggestionsField = state.suggestionsField
+
+    val isShowingToSuggestions = suggestionsField == ContactSuggestionsField.TO && suggestions.isNotEmpty()
+    val isShowingCcSuggestions = suggestionsField == ContactSuggestionsField.CC && suggestions.isNotEmpty()
+    val isShowingBccSuggestions = suggestionsField == ContactSuggestionsField.BCC && suggestions.isNotEmpty()
     val hasCcBccContent = recipientsCcValue.isNotEmpty() || recipientsBccValue.isNotEmpty()
     val shouldShowCcBcc = recipientsOpen || hasCcBccContent
-
-    val requestPermissionEffect by viewModel.requestPermissionEffect.collectAsStateWithLifecycle()
 
     val readContactsPermission = rememberPermissionState(
         permission = Manifest.permission.READ_CONTACTS
     ) { _ ->
-        viewModel.markContactPermissionInteraction()
+        viewModel.submit(RecipientsActions.MarkContactsPermissionInteraction)
     }
 
-    ConsumableLaunchedEffect(requestPermissionEffect) {
+    ConsumableLaunchedEffect(state.requestContactsPermission) {
         readContactsPermission.launchPermissionRequest()
     }
 
-    LaunchedEffect(suggestions, suggestionField) {
-        onToggleSuggestions(suggestionField == null || suggestions.isEmpty())
+    LaunchedEffect(suggestions, suggestionsField) {
+        onToggleSuggestions(suggestionsField == null || suggestions.isEmpty())
     }
 
     // Take height of to chip text field as it's always shown (ie. no changing to 0 on recompose)
@@ -122,8 +123,8 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
     val bccSuggestionListHeightDp = with(LocalDensity.current) { bccSuggestionsListHeightPx.toDp() }
 
     val baseFieldActions = ComposerChipsListField.Actions.Empty.copy(
-        onPermissionRequest = viewModel::requestPermission,
-        onDeniedContactsPermission = viewModel::markContactPermissionInteraction
+        onPermissionRequest = { viewModel.submit(RecipientsActions.RequestContactsPermission) },
+        onPermissionInteraction = { viewModel.submit(RecipientsActions.MarkContactsPermissionInteraction) }
     )
 
     Row(
@@ -146,13 +147,13 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
             focusRequester = fieldFocusRequesters[FocusedFieldType.TO],
             actions = baseFieldActions.copy(
                 onSuggestionTermTyped = {
-                    viewModel.updateSearchTerm(it, ContactSuggestionsField.TO)
+                    viewModel.submit(RecipientsActions.UpdateSearchTerm(it, ContactSuggestionsField.TO))
                 },
                 onSuggestionsDismissed = {
-                    if (isShowingToSuggestions) viewModel.closeSuggestions()
+                    if (isShowingToSuggestions) viewModel.submit(RecipientsActions.CloseSuggestions)
                 },
                 onListChanged = {
-                    viewModel.updateRecipients(it.toUiModel(), ContactSuggestionsField.TO)
+                    viewModel.submit(RecipientsActions.UpdateRecipients(it.toUiModel(), ContactSuggestionsField.TO))
                 }
             ),
             contactSuggestionState = ContactSuggestionState(
@@ -168,7 +169,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                             .focusProperties { canFocus = false },
                         onClick = {
                             recipientsOpen = !recipientsOpen
-                            viewModel.closeSuggestions()
+                            viewModel.submit(RecipientsActions.CloseSuggestions)
                         }
                     ) {
                         Icon(
@@ -208,13 +209,15 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                 focusRequester = fieldFocusRequesters[FocusedFieldType.CC],
                 actions = baseFieldActions.copy(
                     onSuggestionTermTyped = {
-                        viewModel.updateSearchTerm(it, ContactSuggestionsField.CC)
+                        viewModel.submit(RecipientsActions.UpdateSearchTerm(it, ContactSuggestionsField.CC))
                     },
                     onSuggestionsDismissed = {
-                        if (isShowingCcSuggestions) viewModel.closeSuggestions()
+                        if (isShowingCcSuggestions) viewModel.submit(RecipientsActions.CloseSuggestions)
                     },
                     onListChanged = {
-                        viewModel.updateRecipients(it.toUiModel(), ContactSuggestionsField.CC)
+                        viewModel.submit(
+                            RecipientsActions.UpdateRecipients(it.toUiModel(), ContactSuggestionsField.CC)
+                        )
                     }
                 ),
                 contactSuggestionState = ContactSuggestionState(
@@ -235,13 +238,17 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                     focusRequester = fieldFocusRequesters[FocusedFieldType.BCC],
                     actions = baseFieldActions.copy(
                         onSuggestionTermTyped = {
-                            viewModel.updateSearchTerm(it, ContactSuggestionsField.BCC)
+                            viewModel.submit(
+                                RecipientsActions.UpdateSearchTerm(it, ContactSuggestionsField.BCC)
+                            )
                         },
                         onSuggestionsDismissed = {
-                            if (isShowingBccSuggestions) viewModel.closeSuggestions()
+                            if (isShowingBccSuggestions) viewModel.submit(RecipientsActions.CloseSuggestions)
                         },
                         onListChanged = {
-                            viewModel.updateRecipients(it.toUiModel(), ContactSuggestionsField.BCC)
+                            viewModel.submit(
+                                RecipientsActions.UpdateRecipients(it.toUiModel(), ContactSuggestionsField.BCC)
+                            )
                         }
                     ),
                     contactSuggestionState = ContactSuggestionState(

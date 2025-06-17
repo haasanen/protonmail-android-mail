@@ -39,16 +39,16 @@ class ContactsPermissionLocalDataSourceImpl @Inject constructor(
 ) : ContactsPermissionLocalDataSource {
 
     override fun observePermissionInteraction() = dataStoreProvider.contactsPermissionsStore.data.map { prefs ->
-        prefs[longPreferencesKey(HAS_INTERACTED_WITH_CONTACT_PERMISSION)]?.let { timestamp ->
+        prefs[longPreferencesKey(CONTACTS_PERMISSION_INTERACTION_KEY)]?.let { timestamp ->
             (timestamp > 0L).right()
         } ?: DataError.Local.NoDataCached.left()
     }
 
     override suspend fun trackPermissionInteraction() {
         dataStoreProvider.contactsPermissionsStore.edit { prefs ->
-            prefs[longPreferencesKey(HAS_INTERACTED_WITH_CONTACT_PERMISSION)] = System.currentTimeMillis()
+            prefs[longPreferencesKey(CONTACTS_PERMISSION_INTERACTION_KEY)] = System.currentTimeMillis()
         }
     }
 }
 
-private const val HAS_INTERACTED_WITH_CONTACT_PERMISSION = "HasInteractedWithContactPermission"
+private const val CONTACTS_PERMISSION_INTERACTION_KEY = "HasInteractedWithContactPermission"
