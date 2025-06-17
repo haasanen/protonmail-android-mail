@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import arrow.core.Either
-import arrow.core.flatMap
 import arrow.core.left
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
@@ -30,12 +29,8 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
-import ch.protonmail.android.mailmessage.data.mapper.toLocalThemeOptions
-import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
-import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toPreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
-import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
@@ -52,8 +47,6 @@ import ch.protonmail.android.mailmessage.data.usecase.RustReportPhishing
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustUnblockAddress
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
-import ch.protonmail.android.mailmessage.domain.model.MessageBody
-import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -66,7 +59,6 @@ import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ThemeOpts
-import uniffi.proton_mail_uniffi.TransformOpts
 import javax.inject.Inject
 
 @SuppressWarnings("LongParameterList")
@@ -75,7 +67,6 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustMailboxFactory: RustMailboxFactory,
     private val rustMessageQuery: RustMessageQuery,
     private val createRustMessageAccessor: CreateRustMessageAccessor,
-    private val createRustMessageBodyAccessor: CreateRustMessageBodyAccessor,
     private val getRustSenderImage: GetRustSenderImage,
     private val rustMarkMessagesRead: RustMarkMessagesRead,
     private val rustMarkMessagesUnread: RustMarkMessagesUnread,
@@ -122,32 +113,6 @@ class RustMessageDataSourceImpl @Inject constructor(
 
         return@withContext createRustMessageAccessor(session, messageId)
             .onLeft { Timber.e("rust-message: Failed to get remote message $it") }
-    }
-
-    override suspend fun getMessageBody(
-        userId: UserId,
-        messageId: LocalMessageId,
-        transformations: MessageBodyTransformations
-    ): Either<DataError, MessageBody> = withContext(ioDispatcher) {
-        // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
-        // the current labelId is not needed to get the body and is planned to be dropped on this API
-        val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
-            ?: return@withContext DataError.Local.NoDataCached.left()
-
-        return@withContext createRustMessageBodyAccessor(mailbox, messageId)
-            .onLeft { Timber.e("rust-message: Failed to get message body $it") }
-            .flatMap { decryptedMessage ->
-                val transformOptions = TransformOpts(
-                    showBlockQuote = transformations.showQuotedText,
-                    hideRemoteImages = transformations.hideRemoteContent,
-                    hideEmbeddedImages = transformations.hideEmbeddedImages,
-                    theme = transformations.messageThemeOptions?.toLocalThemeOptions()
-                )
-
-                decryptedMessage.body(transformOptions).map { decryptedBody ->
-                    decryptedBody.toMessageBody(messageId.toMessageId(), decryptedMessage.mimeType())
-                }
-            }
     }
 
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata> =

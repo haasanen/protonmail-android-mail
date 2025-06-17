@@ -22,13 +22,11 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
-import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
@@ -45,9 +43,7 @@ import ch.protonmail.android.mailmessage.data.usecase.RustReportPhishing
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustUnblockAddress
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
-import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
-import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -66,7 +62,6 @@ import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
-import uniffi.proton_mail_uniffi.BodyOutput
 import uniffi.proton_mail_uniffi.CustomFolderAction
 import uniffi.proton_mail_uniffi.DraftCancelScheduledSendInfo
 import uniffi.proton_mail_uniffi.Id
@@ -75,12 +70,10 @@ import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MailTheme
 import uniffi.proton_mail_uniffi.MessageAvailableActions
-import uniffi.proton_mail_uniffi.MessageBanner
 import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ThemeOpts
-import uniffi.proton_mail_uniffi.TransformOpts
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -92,7 +85,6 @@ class RustMessageDataSourceImplTest {
     private val rustMailboxFactory: RustMailboxFactory = mockk()
     private val rustMessageQuery: RustMessageQuery = mockk()
     private val createRustMessageAccessor = mockk<CreateRustMessageAccessor>()
-    private val createRustMessageBodyAccessor = mockk<CreateRustMessageBodyAccessor>()
     private val getRustSenderImage = mockk<GetRustSenderImage>()
     private val rustMarkMessagesRead = mockk<RustMarkMessagesRead>()
     private val rustMarkMessagesUnread = mockk<RustMarkMessagesUnread>()
@@ -118,7 +110,6 @@ class RustMessageDataSourceImplTest {
         rustMailboxFactory,
         rustMessageQuery,
         createRustMessageAccessor,
-        createRustMessageBodyAccessor,
         getRustSenderImage,
         rustMarkMessagesRead,
         rustMarkMessagesUnread,
@@ -172,61 +163,6 @@ class RustMessageDataSourceImplTest {
         val result = dataSource.getMessage(userId, messageId)
 
         // Then
-        assertEquals(expectedError.left(), result)
-    }
-
-    @Test
-    fun `get message body should return decrypted message body`() = runTest(testDispatcher) {
-        // Given
-        val userId = UserIdTestData.userId
-        val mailSession = mockk<MailUserSessionWrapper>()
-        val messageId = LocalMessageIdSample.AugWeatherForecast
-        val mailbox = mockk<MailboxWrapper>()
-        val transformOpts = mockk<TransformOpts>(relaxed = true)
-        val bodyBanners = emptyList<MessageBanner>()
-        val bodyOutput = BodyOutput(
-            "message body",
-            false,
-            0uL,
-            0uL,
-            0uL,
-            0uL,
-            transformOpts,
-            bodyBanners
-        )
-        val localMimeType = LocalMimeType.TEXT_PLAIN
-        val decryptedMessageBodyWrapper = mockk<DecryptedMessageWrapper> {
-            coEvery { body(any()) } returns bodyOutput.right()
-            coEvery { mimeType() } returns localMimeType
-        }
-
-        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
-        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
-        coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns decryptedMessageBodyWrapper.right()
-
-        // When
-        val result = dataSource.getMessageBody(userId, messageId, MessageBodyTransformations.MessageDetailsDefaults)
-
-        // Then
-        coVerify { rustMailboxFactory.createAllMail(userId) }
-        coVerify { createRustMessageBodyAccessor(mailbox, messageId) }
-        assertTrue(result.isRight())
-    }
-
-    @Test
-    fun `get message body should handle error`() = runTest(testDispatcher) {
-        // Given
-        val userId = UserIdTestData.userId
-        val messageId = LocalMessageIdSample.AugWeatherForecast
-        val mailbox = mockk<MailboxWrapper>()
-        val expectedError = DataError.Local.NoDataCached
-        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
-        coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns expectedError.left()
-        // When
-        val result = dataSource.getMessageBody(userId, messageId, MessageBodyTransformations.MessageDetailsDefaults)
-
-        // Then
-        coVerify { rustMailboxFactory.createAllMail(userId) }
         assertEquals(expectedError.left(), result)
     }
 

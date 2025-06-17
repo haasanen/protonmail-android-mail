@@ -33,13 +33,6 @@ data class MessageBodyTransformations(
             hideRemoteContent = null,
             messageThemeOptions = null
         )
-
-        val AttachmentDefaults = MessageBodyTransformations(
-            showQuotedText = false,
-            hideEmbeddedImages = false,
-            hideRemoteContent = false,
-            messageThemeOptions = null
-        )
     }
 }
 

@@ -25,8 +25,6 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.MessageBody
-import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -41,12 +39,6 @@ interface RustMessageDataSource {
 
     suspend fun getMessage(userId: UserId, messageId: LocalMessageId): Either<DataError, LocalMessageMetadata>
     suspend fun getMessage(userId: UserId, messageId: RemoteMessageId): Either<DataError, LocalMessageMetadata>
-
-    suspend fun getMessageBody(
-        userId: UserId,
-        messageId: LocalMessageId,
-        transformations: MessageBodyTransformations
-    ): Either<DataError, MessageBody>
 
     suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata>
 

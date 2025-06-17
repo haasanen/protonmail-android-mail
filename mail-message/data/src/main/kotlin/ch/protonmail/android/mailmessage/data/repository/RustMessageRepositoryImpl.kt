@@ -20,7 +20,6 @@ package ch.protonmail.android.mailmessage.data.repository
 
 import java.io.File
 import arrow.core.Either
-import arrow.core.flatMap
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -29,11 +28,8 @@ import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toRemoteMessageId
 import ch.protonmail.android.mailmessage.domain.model.Message
-import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
-import ch.protonmail.android.mailmessage.domain.model.RefreshedMessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
@@ -44,7 +40,6 @@ import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-@Suppress("NotImplementedDeclaration", "TooManyFunctions")
 class RustMessageRepositoryImpl @Inject constructor(
     private val rustMessageDataSource: RustMessageDataSource
 ) : MessageRepository {
@@ -91,36 +86,6 @@ class RustMessageRepositoryImpl @Inject constructor(
             emit(message)
         }
 
-    override suspend fun getMessageWithBody(
-        userId: UserId,
-        messageId: MessageId,
-        messageBodyTransformations: MessageBodyTransformations
-    ): Either<DataError, MessageWithBody> {
-        val localMessageId = messageId.toLocalMessageId()
-
-        return rustMessageDataSource.getMessage(userId, localMessageId).flatMap { localMessage ->
-            rustMessageDataSource.getMessageBody(userId, localMessageId, messageBodyTransformations)
-                .map { MessageWithBody(localMessage.toMessage(), it) }
-        }
-    }
-
-    override suspend fun getRefreshedMessageWithBody(userId: UserId, messageId: MessageId): RefreshedMessageWithBody? {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun upsertMessageWithBody(userId: UserId, messageWithBody: MessageWithBody): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun moveTo(
-        userId: UserId,
-        messageId: MessageId,
-        fromLabel: LabelId?,
-        toLabel: LabelId
-    ): Either<DataError.Local, Message> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun moveTo(
         userId: UserId,
         messageIds: List<MessageId>,
@@ -142,10 +107,6 @@ class RustMessageRepositoryImpl @Inject constructor(
 
     override suspend fun unStarMessages(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit> =
         rustMessageDataSource.unStarMessages(userId, messageIds.map { it.toLocalMessageId() })
-
-    override suspend fun isMessageRead(userId: UserId, messageId: MessageId): Either<DataError.Local, Boolean> {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun labelAs(
         userId: UserId,

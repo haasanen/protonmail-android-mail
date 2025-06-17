@@ -23,7 +23,6 @@ import app.cash.turbine.test
 import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -31,10 +30,8 @@ import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
-import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toRemoteMessageId
-import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
@@ -48,11 +45,7 @@ import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Test
-import uniffi.proton_mail_uniffi.BodyOutput
-import uniffi.proton_mail_uniffi.MessageBanner
-import uniffi.proton_mail_uniffi.TransformOpts
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 class RustMessageRepositoryImplTest {
 
@@ -167,52 +160,6 @@ class RustMessageRepositoryImplTest {
             assert(result.isLeft())
             assertEquals(DataError.Local.NoDataCached, result.swap().getOrElse { null })
             awaitComplete()
-        }
-    }
-
-    @Test
-    fun `getMessageWithBody should return message with body`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val messageId = LocalMessageIdSample.AugWeatherForecast.toMessageId()
-        val localMessage = LocalMessageTestData.AugWeatherForecast
-        val transformOpts = mockk<TransformOpts>(relaxed = true)
-        val bodyBanners = emptyList<MessageBanner>()
-        val bodyOutput = BodyOutput(
-            "message body",
-            false,
-            0uL,
-            0uL,
-            0uL,
-            0uL,
-            transformOpts,
-            bodyBanners
-        )
-        val localMimeType = LocalMimeType.TEXT_PLAIN
-        val expectedMessageWithBody = bodyOutput.toMessageBody(messageId, localMimeType)
-        coEvery { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) } returns localMessage.right()
-        coEvery {
-            rustMessageDataSource.getMessageBody(
-                userId,
-                messageId.toLocalMessageId(),
-                MessageBodyTransformations.MessageDetailsDefaults
-            )
-        } returns expectedMessageWithBody.right()
-        // When
-        val result = repository.getMessageWithBody(userId, messageId, MessageBodyTransformations.MessageDetailsDefaults)
-            .getOrNull()
-
-        // Then
-        assertNotNull(result)
-        assertEquals(localMessage.toMessage(), result.message)
-        assertEquals(expectedMessageWithBody, result.messageBody)
-        coVerify { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) }
-        coVerify {
-            rustMessageDataSource.getMessageBody(
-                userId,
-                messageId.toLocalMessageId(),
-                MessageBodyTransformations.MessageDetailsDefaults
-            )
         }
     }
 

@@ -22,11 +22,8 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.Message
-import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
-import ch.protonmail.android.mailmessage.domain.model.RefreshedMessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -66,38 +63,6 @@ interface MessageRepository {
     fun observeMessage(userId: UserId, remoteMessageId: RemoteMessageId): Flow<Either<DataError, Message>>
 
     /**
-     * Get the [MessageWithBody] for a given [MessageId], for [userId],
-     * respecting the [MessageBodyTransformations] provided.
-     */
-    suspend fun getMessageWithBody(
-        userId: UserId,
-        messageId: MessageId,
-        messageBodyTransformations: MessageBodyTransformations
-    ): Either<DataError, MessageWithBody>
-
-    /**
-     * Get the [MessageWithBody] for a given [MessageId] and [userId] from the remote storage
-     * and stores it locally. When getting from remote fails, returns any existing local one
-     */
-    suspend fun getRefreshedMessageWithBody(userId: UserId, messageId: MessageId): RefreshedMessageWithBody?
-
-    suspend fun upsertMessageWithBody(userId: UserId, messageWithBody: MessageWithBody): Boolean
-
-    /**
-     * Moves the given [messageId] from the optional exclusive label to the [toLabel]
-     * @param userId the user id of the affected messages
-     * @param messageId the message to be moved
-     * @param fromLabel the message's optional exclusive label
-     * @param toLabel the label to move the messages to
-     */
-    suspend fun moveTo(
-        userId: UserId,
-        messageId: MessageId,
-        fromLabel: LabelId?,
-        toLabel: LabelId
-    ): Either<DataError.Local, Message>
-
-    /**
      * Moves the given [messageIds] from the optional exclusive label to the [toLabel]
      * @param userId the user id of the affected messages
      * @param messageIds the messages to move with their optional exclusive label
@@ -128,8 +93,6 @@ interface MessageRepository {
      * Set the messages with the given [messageIds] as read
      */
     suspend fun markRead(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit>
-
-    suspend fun isMessageRead(userId: UserId, messageId: MessageId): Either<DataError.Local, Boolean>
 
     /**
      * Delete the message with the given [MessageId]
