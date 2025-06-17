@@ -29,7 +29,6 @@ import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalThemeOptions
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
@@ -56,6 +55,7 @@ import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -63,7 +63,6 @@ import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
-import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ThemeOpts
@@ -332,23 +331,6 @@ class RustMessageDataSourceImpl @Inject constructor(
             partiallySelectedLabelIds = partiallySelectedLabelIds,
             shouldArchive = shouldArchive
         )
-    }
-
-    override suspend fun getEmbeddedImage(
-        userId: UserId,
-        messageId: LocalMessageId,
-        contentId: String
-    ): Either<DataError, EmbeddedAttachmentInfo> = withContext(ioDispatcher) {
-        // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
-        // the current labelId is not needed to get the body and is planned to be dropped on this API
-        val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
-            ?: return@withContext DataError.Local.NoDataCached.left()
-
-        return@withContext createRustMessageBodyAccessor(mailbox, messageId)
-            .onLeft { Timber.e("rust-message: Failed to build message body accessor $it") }
-            .flatMap { decryptedMessage ->
-                decryptedMessage.getEmbeddedAttachment(contentId)
-            }
     }
 
     override suspend fun markMessageAsLegitimate(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit> =

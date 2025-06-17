@@ -23,7 +23,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -37,16 +37,16 @@ class GetEmbeddedImageTest {
     private val messageId = MessageIdSample.Invoice
     private val contentId = "embeddedImageContentId"
 
-    private val messageRepository = mockk<MessageRepository>()
+    private val messageBodyRepository = mockk<MessageBodyRepository>()
 
-    private val getEmbeddedImage = GetEmbeddedImage(messageRepository)
+    private val getEmbeddedImage = GetEmbeddedImage(messageBodyRepository)
 
     @Test
     fun `returns embedded image when getting it is successful`() = runTest {
         // Given
         val expectedByteArray = "I'm a bytearray".toByteArray()
         val expected = EmbeddedImage(expectedByteArray, "image/png").right()
-        coEvery { messageRepository.getEmbeddedImage(userId, messageId, contentId) } returns expected
+        coEvery { messageBodyRepository.getEmbeddedImage(userId, messageId, contentId) } returns expected
 
         // When
         val actual = getEmbeddedImage(userId, messageId, contentId)
@@ -58,7 +58,7 @@ class GetEmbeddedImageTest {
     @Test
     fun `returns error when get embedded image fails`() = runTest {
         // Given
-        coEvery { messageRepository.getEmbeddedImage(userId, messageId, contentId) } returns
+        coEvery { messageBodyRepository.getEmbeddedImage(userId, messageId, contentId) } returns
             DataError.Local.NoDataCached.left()
 
         // When

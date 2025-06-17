@@ -20,13 +20,12 @@ package ch.protonmail.android.mailmessage.domain.repository
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
+import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.RefreshedMessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
@@ -42,12 +41,6 @@ interface MessageRepository {
         address: String,
         bimi: String?
     ): SenderImage?
-
-    suspend fun getEmbeddedImage(
-        userId: UserId,
-        messageId: MessageId,
-        contentId: String
-    ): Either<DataError, EmbeddedImage>
 
     /**
      * Load all [Message] from local cache for [userId] filtered by [PageKey].
@@ -139,7 +132,7 @@ interface MessageRepository {
     suspend fun isMessageRead(userId: UserId, messageId: MessageId): Either<DataError.Local, Boolean>
 
     /**
-     * Delete the message with the given [messageId]
+     * Delete the message with the given [MessageId]
      */
     suspend fun deleteMessages(
         userId: UserId,

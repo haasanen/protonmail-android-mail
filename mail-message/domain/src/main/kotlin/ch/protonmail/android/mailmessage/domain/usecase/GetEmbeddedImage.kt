@@ -22,18 +22,18 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class GetEmbeddedImage @Inject constructor(
-    private val messageRepository: MessageRepository
+    private val messageBodyRepository: MessageBodyRepository
 ) {
 
     suspend operator fun invoke(
         userId: UserId,
         messageId: MessageId,
         contentId: String
-    ): Either<DataError, EmbeddedImage> = messageRepository.getEmbeddedImage(userId, messageId, contentId)
+    ): Either<DataError, EmbeddedImage> = messageBodyRepository.getEmbeddedImage(userId, messageId, contentId)
 
 }

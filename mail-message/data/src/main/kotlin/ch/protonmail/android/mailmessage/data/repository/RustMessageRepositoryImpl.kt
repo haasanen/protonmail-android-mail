@@ -28,7 +28,6 @@ import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toRemoteMessageId
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -43,7 +42,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
 @Suppress("NotImplementedDeclaration", "TooManyFunctions")
@@ -60,17 +58,6 @@ class RustMessageRepositoryImpl @Inject constructor(
             SenderImage(File(imageString))
         }
     }
-
-    override suspend fun getEmbeddedImage(
-        userId: UserId,
-        messageId: MessageId,
-        contentId: String
-    ): Either<DataError, EmbeddedImage> =
-        rustMessageDataSource.getEmbeddedImage(userId, messageId.toLocalMessageId(), contentId)
-            .map { localEmbeddedImage ->
-                Timber.d("RustMessage: Loaded embedded image: $contentId; mime ${localEmbeddedImage.mime};")
-                EmbeddedImage(localEmbeddedImage.data, localEmbeddedImage.mime)
-            }
 
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<Message> {
         return rustMessageDataSource.getMessages(userId, pageKey)
