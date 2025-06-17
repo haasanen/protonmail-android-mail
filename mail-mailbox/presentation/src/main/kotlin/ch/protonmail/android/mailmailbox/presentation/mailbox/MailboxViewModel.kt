@@ -523,7 +523,13 @@ class MailboxViewModel @Inject constructor(
                     type = if (query.isEmpty()) viewMode.toMailboxItemType() else MailboxItemType.Message,
                     searchQuery = query
                 )
-            }.flatMapLatest { mapPagingData(userId, it) }
+            }.flatMapLatest {
+                mapPagingData(userId, it).also {
+                    currentMailLabel?.let { labelLoaded ->
+                        selectMailLabelId.setLocationAsLoaded(labelLoaded.id)
+                    }
+                }
+            }
         }.onEach {
             pagingDataFlow.emit(it)
         }.launchIn(viewModelScope)
