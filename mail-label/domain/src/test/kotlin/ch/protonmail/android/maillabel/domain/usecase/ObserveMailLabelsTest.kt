@@ -20,10 +20,8 @@ package ch.protonmail.android.maillabel.domain.usecase
 
 import android.graphics.Color
 import app.cash.turbine.test
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import ch.protonmail.android.testdata.label.LabelTestData.buildLabel
-import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData.buildCustomFolder
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData.buildCustomLabel
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -31,7 +29,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -64,10 +61,6 @@ class ObserveMailLabelsTest {
         every { observeSystemLabels(userId) } returns flowOf(emptyList())
     }
 
-    private val selectedMailLabelId = mockk<SelectedMailLabelId> {
-        every { flow } returns MutableStateFlow(MailLabelTestData.inboxSystemLabel.id)
-    }
-
     private val TestScope.observeMailLabels
         get() = ObserveMailLabels(
             dispatcher = UnconfinedTestDispatcher(testScheduler),
@@ -87,9 +80,6 @@ class ObserveMailLabelsTest {
 
     @Test
     fun `return correct value on success`() = runTest {
-        // Given
-        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.inboxSystemLabel.id)
-
         // When
         observeMailLabels.invoke(userId).test {
             // Then
@@ -118,8 +108,6 @@ class ObserveMailLabelsTest {
 
     @Test
     fun `return correct folders parent on success`() = runTest {
-        // Given
-        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.inboxSystemLabel.id)
 
         val labels = listOf(
             buildLabel(id = "id0", type = LabelType.MessageFolder, order = 0),
@@ -151,8 +139,6 @@ class ObserveMailLabelsTest {
 
     @Test
     fun `return correct folders order on success`() = runTest {
-        // Given
-        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.allMailSystemLabel.id)
 
         every { labelRepository.observeCustomFolders(any()) } returns flowOf(
             listOf(

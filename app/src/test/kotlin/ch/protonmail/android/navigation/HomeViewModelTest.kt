@@ -37,7 +37,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.MarkMessageSendingStatusesAsSeen
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveSendingMessagesStatus
 import ch.protonmail.android.mailcomposer.domain.usecase.UndoSendMessage
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordMailboxScreenView
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailpinlock.domain.usecase.ShouldPresentPinInsertionScreen
@@ -90,8 +89,6 @@ class HomeViewModelTest {
     }
 
     private val recordMailboxScreenView = mockk<RecordMailboxScreenView>(relaxUnitFun = true)
-
-    private val selectedMailLabelId = mockk<SelectedMailLabelId>(relaxUnitFun = true)
 
     private val shouldPresentPinInsertionScreen = mockk<ShouldPresentPinInsertionScreen> {
         every { this@mockk.invoke() } returns flowOf(false)
