@@ -17,8 +17,10 @@
 
 package ch.protonmail.android.mailsession.data.deviceinfo
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
+import android.provider.Settings
 import dagger.hilt.android.qualifiers.ApplicationContext
 import me.proton.core.util.android.device.appLanguage
 import me.proton.core.util.android.device.deviceFontSize
@@ -33,9 +35,19 @@ import uniffi.proton_mail_uniffi.DeviceInfoProvider
 import uniffi.proton_mail_uniffi.DeviceInfo
 import javax.inject.Inject
 
+@SuppressLint("HardwareIds")
 class AndroidDeviceInfoProvider @Inject constructor(
     @ApplicationContext val context: Context
 ) : DeviceInfoProvider {
+
+    private val appId: String by lazy {
+        runCatching {
+            Settings.Secure.getString(
+                context.contentResolver,
+                Settings.Secure.ANDROID_ID
+            )
+        }.getOrDefault("")
+    }
 
     override suspend fun getDeviceInfo(): DeviceInfo = DeviceInfo(
         // The language code of this Locale.
@@ -50,6 +62,8 @@ class AndroidDeviceInfoProvider @Inject constructor(
         brand = Build.BRAND,
         // The name of the industrial design.
         codename = Build.DEVICE,
+        // The app's UUID given by the OS.
+        uuid = appId,
         // The country/region code, in ISO 3166 2-letter code, or a UN M.49 3-digit code.
         country = context.deviceRegion(),
         // If device/OS is rooted/jailbroken.

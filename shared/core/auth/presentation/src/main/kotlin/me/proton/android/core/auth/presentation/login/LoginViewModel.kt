@@ -30,18 +30,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.proton.android.core.auth.presentation.IODispatcher
-import me.proton.android.core.auth.presentation.challenge.GetChallengePayload
-import me.proton.core.challenge.data.frame.ChallengeFrame
+import me.proton.android.core.auth.presentation.challenge.toUserBehavior
 import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
-import me.proton.core.util.kotlin.serialize
 import uniffi.proton_account_uniffi.LoginError
 import uniffi.proton_account_uniffi.LoginFlowLoginResult
 import uniffi.proton_account_uniffi.LoginFlowUserIdResult
 import uniffi.proton_mail_uniffi.LoginScreenId
-import uniffi.proton_mail_uniffi.MailLoginError
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
 import uniffi.proton_mail_uniffi.MailSessionToUserContextResult
+import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.recordLoginScreenView
 import javax.inject.Inject
 
@@ -49,7 +47,6 @@ import javax.inject.Inject
 class LoginViewModel @Inject internal constructor(
     @ApplicationContext
     private val context: Context,
-    private val getChallengePayload: GetChallengePayload,
     private val sessionInterface: MailSession,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -90,9 +87,11 @@ class LoginViewModel @Inject internal constructor(
     ) = withContext(ioDispatcher) {
         mutableState.emit(LoginViewState.LoggingIn)
 
-        val payload = getChallengePayload(listOfNotNull(ChallengeFrame.Username.from(context, usernameFrameDetails)))
-        val payloadJson = payload.serialize()
-        val result = getLoginFlow().login(email = username, password = password, fingerprintPayload = payloadJson)
+        val result = getLoginFlow().login(
+            email = username,
+            password = password,
+            userBehavior = usernameFrameDetails.toUserBehavior()
+        )
         when (result) {
             is LoginFlowLoginResult.Error -> onError(result.v1)
             is LoginFlowLoginResult.Ok -> onSuccess()
@@ -103,18 +102,19 @@ class LoginViewModel @Inject internal constructor(
         mutableState.emit(getLoginViewState())
     }
 
-    private suspend fun onError(error: MailLoginError) {
-        mutableState.emit(getError(error))
-    }
-
     private suspend fun onError(error: LoginError) {
         mutableState.emit(getError(error))
     }
 
-    private fun getError(error: MailLoginError): LoginViewState =
+    private suspend fun onError(error: ProtonError) {
+        mutableState.emit(getError(error))
+    }
+
+    private fun getError(error: LoginError): LoginViewState =
         LoginViewState.Error.LoginFlow(error.getErrorMessage(context))
 
-    private fun getError(error: LoginError): LoginViewState = LoginViewState.Error.LoginFlow(error.getErrorMessage())
+    private fun getError(error: ProtonError): LoginViewState =
+        LoginViewState.Error.LoginFlow(error.getErrorMessage(context))
 
     private suspend fun getLoginViewState(): LoginViewState {
         val userId = when (val result = getLoginFlow().userId()) {

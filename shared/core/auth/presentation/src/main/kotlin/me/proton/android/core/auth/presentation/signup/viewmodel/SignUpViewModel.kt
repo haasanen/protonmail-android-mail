@@ -18,18 +18,19 @@
 
 package me.proton.android.core.auth.presentation.signup.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
-import me.proton.android.core.auth.presentation.IODispatcher
 import me.proton.android.core.auth.presentation.LogTag
+import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.signup.CreatePasswordAction
 import me.proton.android.core.auth.presentation.signup.CreatePasswordState
 import me.proton.android.core.auth.presentation.signup.CreateRecoveryAction
@@ -49,6 +50,7 @@ import me.proton.core.compose.viewmodel.BaseViewModel
 import me.proton.core.presentation.savedstate.state
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_account_uniffi.SignupException
+import uniffi.proton_account_uniffi.SignupFlow
 import uniffi.proton_account_uniffi.SignupFlowCompleteResult
 import uniffi.proton_account_uniffi.SignupFlowCreateResult
 import uniffi.proton_mail_uniffi.MailSession
@@ -62,10 +64,10 @@ import javax.inject.Inject
 @Suppress("TooGenericExceptionCaught")
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
+    @ApplicationContext private val context: Context,
+    savedStateHandle: SavedStateHandle,
     requiredAccountType: AccountType,
-    private val sessionInterface: MailSession,
-    @IODispatcher private val coroutineDispatcher: CoroutineDispatcher
+    private val sessionInterface: MailSession
 ) : BaseViewModel<SignUpAction, SignUpState>(
     initialAction = CreateUsernameAction.LoadData(
         savedStateHandle.get<AccountType>("accountType") ?: requiredAccountType
@@ -81,8 +83,7 @@ class SignUpViewModel @Inject constructor(
     private val usernameHandler = UsernameHandler.create(
         getFlow = { getSignUpFlow() },
         getCurrentAccountType = { currentAccountType },
-        updateAccountType = { type -> currentAccountType = type },
-        coroutineDispatcher = coroutineDispatcher
+        updateAccountType = { type -> currentAccountType = type }
     )
 
     private val passwordHandler = PasswordHandler.create(
@@ -90,11 +91,15 @@ class SignUpViewModel @Inject constructor(
     )
 
     private val recoveryHandler = RecoveryHandler.create(
-        getFlow = { getSignUpFlow() },
-        coroutineDispatcher = coroutineDispatcher
+        getFlow = { getSignUpFlow() }
     )
 
-    private suspend fun getSignUpFlow() = (signUpFlowDeferred.await() as MailSessionNewSignupFlowResult.Ok).v1
+    private suspend fun getSignUpFlow(): SignupFlow {
+        return when (val result = signUpFlowDeferred.await()) {
+            is MailSessionNewSignupFlowResult.Ok -> result.v1
+            is MailSessionNewSignupFlowResult.Error -> error(result.v1.getErrorMessage(context))
+        }
+    }
 
     override fun onAction(action: SignUpAction) = when (action) {
         is CreateUsernameAction -> usernameHandler.handleAction(action)

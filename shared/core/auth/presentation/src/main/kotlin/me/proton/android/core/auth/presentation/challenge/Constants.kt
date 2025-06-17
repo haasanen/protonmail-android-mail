@@ -18,8 +18,6 @@
 
 package me.proton.android.core.auth.presentation.challenge
 
-internal const val MAIL_FRAME_KEY_PREFIX = "mail-android-v7-challenge"
-
 internal const val LOGIN_CHALLENGE_FLOW_NAME = "login"
 internal const val LOGIN_CHALLENGE_USERNAME_FRAME = "username"
 

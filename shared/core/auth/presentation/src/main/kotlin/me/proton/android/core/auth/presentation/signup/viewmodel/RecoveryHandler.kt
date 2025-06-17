@@ -18,8 +18,8 @@
 
 package me.proton.android.core.auth.presentation.signup.viewmodel
 
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flow
+import me.proton.android.core.auth.presentation.challenge.toUserBehavior
 import me.proton.android.core.auth.presentation.signup.CreateRecoveryAction
 import me.proton.android.core.auth.presentation.signup.CreateRecoveryAction.CreateRecoveryClosed
 import me.proton.android.core.auth.presentation.signup.CreateRecoveryAction.DialogAction.CountryPicked
@@ -59,8 +59,7 @@ import uniffi.proton_account_uniffi.Country as RustCountry
  * Handler responsible for account recovery actions during signup process.
  */
 class RecoveryHandler private constructor(
-    private val getFlow: suspend () -> SignupFlow,
-    private val coroutineDispatcher: CoroutineDispatcher
+    private val getFlow: suspend () -> SignupFlow
 ) : ErrorHandler {
 
     @Volatile
@@ -127,9 +126,8 @@ class RecoveryHandler private constructor(
         }
 
         emit(Creating(selectedRecoveryMethod))
-        // TODO: add challenge-fingerprinting
 
-        when (val result = getFlow().submitRecoveryEmail(email)) {
+        when (val result = getFlow().submitRecoveryEmail(email, recoveryFrameDetails.toUserBehavior())) {
             is SignupFlowSubmitRecoveryEmailResult.Error -> {
                 emit(Email(message = result.v1.getErrorMessage()))
             }
@@ -153,10 +151,9 @@ class RecoveryHandler private constructor(
         }
 
         emit(Creating(selectedRecoveryMethod))
-        // TODO: add challenge-fingerpriting
 
         val fullPhoneNumber = "$callingCode$phoneNumber"
-        when (val result = getFlow().submitRecoveryPhone(fullPhoneNumber)) {
+        when (val result = getFlow().submitRecoveryPhone(fullPhoneNumber, recoveryFrameDetails.toUserBehavior())) {
             is SignupFlowSubmitRecoveryPhoneResult.Error -> {
                 emit(Phone(message = result.v1.getErrorMessage()))
             }
@@ -224,8 +221,7 @@ class RecoveryHandler private constructor(
 
     companion object {
 
-        fun create(getFlow: suspend () -> SignupFlow, coroutineDispatcher: CoroutineDispatcher): RecoveryHandler =
-            RecoveryHandler(getFlow, coroutineDispatcher)
+        fun create(getFlow: suspend () -> SignupFlow): RecoveryHandler = RecoveryHandler(getFlow)
     }
 }
 

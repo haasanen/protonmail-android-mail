@@ -22,8 +22,6 @@ import me.proton.android.core.auth.presentation.LogTag
 import me.proton.android.core.auth.presentation.R
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_account_uniffi.LoginError
-import uniffi.proton_mail_uniffi.LoginErrorReason
-import uniffi.proton_mail_uniffi.MailLoginError
 import uniffi.proton_mail_uniffi.OtherErrorReason
 import uniffi.proton_mail_uniffi.OtherErrorReason.InvalidParameter
 import uniffi.proton_mail_uniffi.OtherErrorReason.Other
@@ -47,42 +45,25 @@ import uniffi.uniffi_common.UserApiServiceError.TooManyRequests
 import uniffi.uniffi_common.UserApiServiceError.Unauthorized
 import uniffi.uniffi_common.UserApiServiceError.UnprocessableEntity
 
-fun MailLoginError.getErrorMessage(context: Context) = when (this) {
-    is MailLoginError.Other -> this.v1.getErrorMessage(context)
-    is MailLoginError.Reason -> this.v1.getErrorMessage(context)
-}
-
-fun LoginError.getErrorMessage(): String = when (this) {
+fun LoginError.getErrorMessage(context: Context): String = when (this) {
     is LoginError.FlowLogin -> v1.getErrorMessage()
     is LoginError.FlowTotp -> v1.getErrorMessage()
     is LoginError.FlowFido -> v1.getErrorMessage()
     is LoginError.UserFetch -> v1.getErrorMessage()
     is LoginError.KeySecretSaltFetch -> v1.getErrorMessage()
-
-    is LoginError.KeySecretDerivation -> v1
-    is LoginError.ServerProof -> v1
-    is LoginError.SrpProof -> v1
     is LoginError.AuthStore -> v1
     is LoginError.Other -> v1
-
-    LoginError.InvalidState -> "LoginError.InvalidState"
-    LoginError.MissingPrimaryKey -> "LoginError.MissingPrimaryKey"
-    LoginError.KeySecretDecryption -> "LoginError.KeySecretDecryption"
-    LoginError.UserKeySetupNonPrivate -> "LoginError.UserKeySetupNonPrivate"
-    LoginError.WrongMailboxPassword -> "LoginError.WrongMailboxPassword"
+    is LoginError.InvalidState -> "LoginError.InvalidState"
     is LoginError.AddressFetch -> "LoginError.AddressFetch"
-    is LoginError.AddressKeySetup -> "LoginError.AddressKeySetup"
-    is LoginError.AddressSetup -> "LoginError.AddressSetup"
-    is LoginError.UserKeySetup -> "LoginError.UserKeySetup"
-}
-
-@Suppress("MaxLineLength")
-fun LoginErrorReason.getErrorMessage(context: Context) = when (this) {
-    LoginErrorReason.INVALID_CREDENTIALS -> context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
-    LoginErrorReason.UNSUPPORTED_TFA -> context.getString(R.string.auth_login_error_invalid_action_unsupported_tfa)
-    LoginErrorReason.CANT_UNLOCK_USER_KEY -> context.getString(R.string.auth_login_error_invalid_action_cannot_unlock_keys)
-    LoginErrorReason.USER_SETUP -> context.getString(R.string.auth_login_error_invalid_action_cannot_setup_user)
-    LoginErrorReason.ADDRESS_SETUP -> context.getString(R.string.auth_login_error_invalid_action_cannot_setup_address)
+    is LoginError.AddressKeySetup -> v1
+    is LoginError.AddressSetup -> context.getString(R.string.auth_login_error_invalid_action_cannot_setup_address)
+    is LoginError.UserKeySetup -> context.getString(R.string.auth_login_error_invalid_action_cannot_setup_user)
+    is LoginError.ApiError -> v1
+    is LoginError.CantUnlockUserKey -> context.getString(R.string.auth_login_error_invalid_action_cannot_unlock_keys)
+    is LoginError.InvalidCredentials -> context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
+    is LoginError.QrLoginEncoding -> "LoginError.QrLoginEncoding"
+    is LoginError.WithCodePollFlowFailed -> v1
+    is LoginError.UserKeySetupNonPrivate -> "LoginError.UserKeySetupNonPrivate"
 }
 
 fun UserApiServiceError.getErrorMessage() = when (this) {
@@ -125,7 +106,7 @@ private fun OtherErrorReason.getErrorMessage(context: Context) = when (this) {
     is Other -> this.v1
 }
 
-private fun ProtonError.getErrorMessage(context: Context) = when (this) {
+fun ProtonError.getErrorMessage(context: Context) = when (this) {
     is OtherReason -> v1.getErrorMessage(context)
     is ServerError -> v1.getErrorMessage()
     is Unexpected -> v1.getErrorMessage()

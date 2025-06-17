@@ -43,7 +43,6 @@ import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_account_uniffi.LoginError
 import uniffi.proton_account_uniffi.LoginFlow
 import uniffi.proton_account_uniffi.LoginFlowSubmitTotpResult
-import uniffi.proton_mail_uniffi.MailLoginError
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
@@ -113,18 +112,17 @@ class OneTimePasswordInputViewModel @Inject constructor(
         }
     }
 
-    private fun onError(error: MailLoginError): Flow<OneTimePasswordInputState> = flow {
+    private fun onError(error: ProtonError): Flow<OneTimePasswordInputState> = flow {
         emit(Error.LoginFlow(error.getErrorMessage(context)))
 
-        when ((error as? MailLoginError.Other)?.v1) {
+        when (error) {
             is ProtonError.Unexpected -> emitAll(onClose())
-
             else -> Unit
         }
     }
 
     private fun onError(error: LoginError): Flow<OneTimePasswordInputState> = flow {
-        emit(Error.LoginFlow(error.getErrorMessage()))
+        emit(Error.LoginFlow(error.getErrorMessage(context)))
     }
 
     private fun onSuccess(loginFlow: LoginFlow): Flow<OneTimePasswordInputState> = flow {

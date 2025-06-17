@@ -44,12 +44,12 @@ import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_account_uniffi.LoginError
 import uniffi.proton_account_uniffi.LoginFlow
 import uniffi.proton_account_uniffi.LoginFlowSubmitMailboxPasswordResult
-import uniffi.proton_mail_uniffi.MailLoginError
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
 import uniffi.proton_mail_uniffi.MailSessionToUserContextResult
+import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
 import javax.inject.Inject
@@ -112,12 +112,12 @@ class TwoPassInputViewModel @Inject constructor(
         }
     }
 
-    private fun onError(error: MailLoginError): Flow<TwoPassInputState> = flow {
+    private fun onError(error: ProtonError): Flow<TwoPassInputState> = flow {
         emit(Error.LoginFlow(error.getErrorMessage(context)))
     }
 
     private fun onError(error: LoginError): Flow<TwoPassInputState> = flow {
-        emit(Error.LoginFlow(error.getErrorMessage()))
+        emit(Error.LoginFlow(error.getErrorMessage(context)))
     }
 
     private fun onSuccess(loginFlow: LoginFlow): Flow<TwoPassInputState> = flow {
@@ -137,6 +137,7 @@ class TwoPassInputViewModel @Inject constructor(
                 CoreLogger.e(LogTag.LOGIN, result.v1.toString())
                 null
             }
+
             is MailSessionGetAccountSessionsResult.Ok -> result.v1
         }
     }

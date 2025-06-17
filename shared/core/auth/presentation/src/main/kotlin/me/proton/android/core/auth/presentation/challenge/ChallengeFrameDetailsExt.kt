@@ -18,16 +18,13 @@
 
 package me.proton.android.core.auth.presentation.challenge
 
-import me.proton.core.challenge.data.frame.ChallengeFrame
-import javax.inject.Inject
+import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
+import uniffi.proton_account_uniffi.UserBehavior
 
-internal class GetChallengePayload @Inject constructor() {
-
-    @Suppress("ForbiddenComment")
-    operator fun invoke(frames: List<ChallengeFrame>): Map<String, ChallengeFrame> {
-        return frames.mapIndexed { index, frame ->
-            // FIXME Add support for other apps
-            Pair("$MAIL_FRAME_KEY_PREFIX-$index", frame)
-        }.toMap()
-    }
-}
+internal fun ChallengeFrameDetails.toUserBehavior() = UserBehavior(
+    timeOnField = focusTime.map { it.toUInt() },
+    clickOnField = clicks.toUInt(),
+    copyField = copy,
+    pasteField = paste,
+    keyDownField = keys
+)

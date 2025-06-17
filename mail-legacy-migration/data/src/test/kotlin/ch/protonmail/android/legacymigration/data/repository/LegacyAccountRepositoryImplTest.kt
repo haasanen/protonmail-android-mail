@@ -18,35 +18,36 @@
 
 package ch.protonmail.android.legacymigration.data.repository
 
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.legacymigration.data.local.LegacyAccountDataSource
 import ch.protonmail.android.legacymigration.data.local.LegacyUserAddressDataSource
 import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSource
 import ch.protonmail.android.legacymigration.data.mapper.MigrationInfoMapper
 import ch.protonmail.android.legacymigration.domain.model.AccountMigrationInfo
+import ch.protonmail.android.legacymigration.domain.model.AccountPasswordMode
+import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserAddressInfo
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserInfo
+import ch.protonmail.android.legacymigration.domain.model.MigrationError
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.NetworkError
+import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
+import ch.protonmail.android.mailsession.data.wrapper.LoginFlowWrapper
+import ch.protonmail.android.mailsession.domain.model.LoginError
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import arrow.core.left
-import arrow.core.right
-import ch.protonmail.android.legacymigration.domain.model.AccountPasswordMode
-import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
-import ch.protonmail.android.legacymigration.domain.model.MigrationError
-import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
-import ch.protonmail.android.mailsession.data.wrapper.LoginFlowWrapper
-import ch.protonmail.android.mailsession.domain.model.LoginError
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-import kotlin.test.assertFalse
-import org.junit.Rule
-import org.junit.Test
-import ch.protonmail.android.mailsession.domain.model.MailLoginError
 import me.proton.core.network.domain.session.SessionId
 import me.proton.core.user.domain.entity.AddressId
+import org.junit.Rule
+import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class LegacyAccountRepositoryImplTest {
 
@@ -196,7 +197,7 @@ class LegacyAccountRepositoryImplTest {
         // Given
         coEvery {
             mailSessionRepository.getMailSession().newLoginFlow()
-        } returns MailLoginError.InvalidCredentials.left()
+        } returns DataError.Remote.Http(NetworkError.UnprocessableEntity).left()
 
         // When
         val result = repository.migrateLegacyAccount(accountInfo)

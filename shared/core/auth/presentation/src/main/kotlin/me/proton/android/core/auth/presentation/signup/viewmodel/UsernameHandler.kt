@@ -18,9 +18,9 @@
 
 package me.proton.android.core.auth.presentation.signup.viewmodel
 
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import me.proton.android.core.auth.presentation.challenge.toUserBehavior
 import me.proton.android.core.auth.presentation.signup.CreateUsernameAction
 import me.proton.android.core.auth.presentation.signup.CreateUsernameAction.CreateExternalAccount
 import me.proton.android.core.auth.presentation.signup.CreateUsernameAction.CreateInternalAccount
@@ -55,8 +55,7 @@ import uniffi.proton_account_uniffi.SignupFlowSubmitInternalUsernameResult
 class UsernameHandler private constructor(
     private val getFlow: suspend () -> SignupFlow,
     private val getCurrentAccountType: () -> AccountType,
-    private val updateAccountType: (AccountType) -> Unit,
-    private val coroutineDispatcher: CoroutineDispatcher
+    private val updateAccountType: (AccountType) -> Unit
 ) : ErrorHandler {
 
     fun handleAction(action: CreateUsernameAction) = when (action) {
@@ -97,6 +96,7 @@ class UsernameHandler private constructor(
                 isLoading = false,
                 message = result.v1.getErrorMessage()
             )
+
             is SignupFlowAvailableDomainsResult.Ok -> emit(LoadingComplete(AccountType.Internal, domains = result.v1))
         }
     }
@@ -122,7 +122,7 @@ class UsernameHandler private constructor(
                     emit(InternalUsernameEmpty)
                     return@flow
                 }
-                handleInternalUsernameSubmission(accountType, username, domain)
+                handleInternalUsernameSubmission(accountType, username, domain, usernameFrameDetails)
             }
 
             AccountType.External -> {
@@ -130,20 +130,26 @@ class UsernameHandler private constructor(
                     emit(EmailEmpty)
                     return@flow
                 }
-                handleExternalUsernameSubmission(accountType, username)
+                handleExternalUsernameSubmission(accountType, username, usernameFrameDetails)
             }
         }
 
-        // TODO: add challenge-fingerprinting for
         emit(result)
     }
 
     private suspend fun handleInternalUsernameSubmission(
         accountType: AccountType,
         username: String,
-        domain: String
+        domain: String,
+        usernameFrameDetails: ChallengeFrameDetails
     ): CreateUsernameState {
-        return when (val result = getFlow().submitInternalUsername(username, domain)) {
+        return when (
+            val result = getFlow().submitInternalUsername(
+                username = username,
+                domain = domain,
+                userBehavior = usernameFrameDetails.toUserBehavior()
+            )
+        ) {
             is SignupFlowSubmitInternalUsernameResult.Error -> {
                 when (result.v1) {
                     is SignupException.UsernameUnavailable ->
@@ -171,8 +177,17 @@ class UsernameHandler private constructor(
         }
     }
 
-    private suspend fun handleExternalUsernameSubmission(accountType: AccountType, email: String): CreateUsernameState {
-        return when (val result = getFlow().submitExternalUsername(email)) {
+    private suspend fun handleExternalUsernameSubmission(
+        accountType: AccountType,
+        email: String,
+        usernameFrameDetails: ChallengeFrameDetails
+    ): CreateUsernameState {
+        return when (
+            val result = getFlow().submitExternalUsername(
+                email = email,
+                userBehavior = usernameFrameDetails.toUserBehavior()
+            )
+        ) {
             is SignupFlowSubmitExternalUsernameResult.Error -> {
                 when (result.v1) {
                     is SignupException.UsernameUnavailable ->
@@ -215,10 +230,7 @@ class UsernameHandler private constructor(
         fun create(
             getFlow: suspend () -> SignupFlow,
             getCurrentAccountType: () -> AccountType,
-            updateAccountType: (AccountType) -> Unit,
-            coroutineDispatcher: CoroutineDispatcher
-        ): UsernameHandler = UsernameHandler(
-            getFlow, getCurrentAccountType, updateAccountType, coroutineDispatcher
-        )
+            updateAccountType: (AccountType) -> Unit
+        ): UsernameHandler = UsernameHandler(getFlow, getCurrentAccountType, updateAccountType)
     }
 }

@@ -70,7 +70,15 @@ class InitRustCommonLibrary @Inject constructor(
         )
         Timber.d("rust-session: Initializing the Rust Lib with $sessionParams")
 
-        when (val result = createMailSession(sessionParams, keyChain, challengeNotifierCallback, deviceInfoProvider)) {
+        when (
+            val result = createMailSession(
+                params = sessionParams,
+                keyChain = keyChain,
+                hvNotifier = challengeNotifierCallback,
+                deviceInfoProvider = deviceInfoProvider,
+                productName = PRODUCT_NAME
+            )
+        ) {
             is CreateMailSessionResult.Error -> {
                 Timber.e("rust-session: Critical error! Failed creating Mail session. Reason: ${result.v1}")
             }
@@ -87,5 +95,6 @@ class InitRustCommonLibrary @Inject constructor(
     companion object {
 
         private const val CACHE_SIZE = 500_000_000uL
+        private const val PRODUCT_NAME = "android-mail"
     }
 }

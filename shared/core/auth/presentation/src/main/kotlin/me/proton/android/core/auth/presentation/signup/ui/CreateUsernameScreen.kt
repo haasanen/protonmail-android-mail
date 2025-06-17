@@ -59,6 +59,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import me.proton.android.core.auth.presentation.LocalClipManager
+import me.proton.android.core.auth.presentation.LocalClipManager.OnClipChangedDisposableEffect
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
 import me.proton.android.core.auth.presentation.challenge.SIGNUP_CHALLENGE_FLOW_NAME
@@ -73,8 +75,6 @@ import me.proton.android.core.auth.presentation.signup.CreateUsernameState
 import me.proton.android.core.auth.presentation.signup.SignUpState
 import me.proton.android.core.auth.presentation.signup.viewmodel.SignUpViewModel
 import me.proton.core.account.domain.entity.AccountType
-import me.proton.core.challenge.presentation.compose.LocalClipManager
-import me.proton.core.challenge.presentation.compose.LocalClipManager.OnClipChangedDisposableEffect
 import me.proton.core.challenge.presentation.compose.PayloadController
 import me.proton.core.challenge.presentation.compose.payload
 import me.proton.core.compose.component.ProtonCloseButton
