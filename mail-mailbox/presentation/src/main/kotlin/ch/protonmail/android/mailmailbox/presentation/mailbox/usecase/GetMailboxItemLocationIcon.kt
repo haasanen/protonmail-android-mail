@@ -21,8 +21,8 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.usecase
 import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
+import ch.protonmail.android.maillabel.domain.usecase.GetSelectedMailLabelId
 import ch.protonmail.android.maillabel.presentation.iconRes
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.usecase.ShouldShowLocationIndicator
@@ -33,7 +33,7 @@ import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class GetMailboxItemLocationIcon @Inject constructor(
-    private val selectedMailLabelId: SelectedMailLabelId,
+    private val getSelectedMailLabelId: GetSelectedMailLabelId,
     private val shouldShowLocationIndicator: ShouldShowLocationIndicator,
     private val colorMapper: ColorMapper
 ) {
@@ -78,7 +78,7 @@ class GetMailboxItemLocationIcon @Inject constructor(
     }
 
     private suspend fun currentLocationShouldShowIcons(userId: UserId): Boolean {
-        val currentLocation = selectedMailLabelId.flow.value
+        val currentLocation = getSelectedMailLabelId()
 
         // Should show when starred, all mail, almost all mail or custom label
         return shouldShowLocationIndicator(userId, currentLocation)

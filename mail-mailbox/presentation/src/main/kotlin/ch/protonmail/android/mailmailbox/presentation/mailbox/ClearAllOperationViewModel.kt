@@ -20,7 +20,7 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
+import ch.protonmail.android.maillabel.domain.usecase.ObserveLoadedMailLabelId
 import ch.protonmail.android.mailmailbox.domain.model.AutoDeleteState
 import ch.protonmail.android.mailmailbox.domain.usecase.GetAutoDeleteBanner
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.ClearAllStateUiModelMapper
@@ -40,7 +40,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class ClearAllOperationViewModel @Inject constructor(
     private val observePrimaryUserId: ObservePrimaryUserId,
-    private val selectedMailLabelId: SelectedMailLabelId,
+    private val observeLoadedMailLabelId: ObserveLoadedMailLabelId,
     private val getAutoDeleteBanner: GetAutoDeleteBanner
 ) : ViewModel() {
 
@@ -53,7 +53,7 @@ internal class ClearAllOperationViewModel @Inject constructor(
     private fun observeClearAllState(): Flow<ClearAllStateUiModel> = observePrimaryUserId()
         .filterNotNull()
         .flatMapLatest { userId ->
-            selectedMailLabelId.flow.map { mailLabelId ->
+            observeLoadedMailLabelId().map { mailLabelId ->
                 Pair(userId, mailLabelId.labelId)
             }
         }

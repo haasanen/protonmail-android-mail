@@ -19,7 +19,6 @@
 package ch.protonmail.android.maillabel.domain.usecase
 
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
@@ -30,8 +29,6 @@ import io.mockk.verify
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
@@ -41,11 +38,11 @@ class GetCurrentMailLabelTest {
 
     private val observeMailLabels = mockk<ObserveMailLabels>()
     private val mutableSelectedIdFlow = MutableStateFlow<MailLabelId>(MailLabelTestData.sentSystemLabel.id)
-    private val selectedMailLabelId = mockk<SelectedMailLabelId> {
-        every { flow } returns mutableSelectedIdFlow.asStateFlow()
+    private val getSelectedMailLabelId = mockk<GetSelectedMailLabelId> {
+        every { this@mockk.invoke() } returns MailLabelTestData.sentSystemLabel.id
     }
 
-    private val getCurrentMailLabel = GetCurrentMailLabel(observeMailLabels, selectedMailLabelId)
+    private val getCurrentMailLabel = GetCurrentMailLabel(observeMailLabels, getSelectedMailLabelId)
 
     private val userId = UserIdSample.Primary
     private val secondaryUserId = UserId("secondary")

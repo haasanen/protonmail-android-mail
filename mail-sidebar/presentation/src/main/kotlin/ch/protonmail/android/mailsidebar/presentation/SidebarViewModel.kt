@@ -22,10 +22,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.usecase.ObserveLoadedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
+import ch.protonmail.android.maillabel.domain.usecase.SelectMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.UpdateLabelExpandedState
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
 import ch.protonmail.android.maillabel.presentation.toUiModels
@@ -47,11 +48,12 @@ import javax.inject.Inject
 @HiltViewModel
 class SidebarViewModel @Inject constructor(
     val appInformation: AppInformation,
-    private val selectedMailLabelId: SelectedMailLabelId,
     private val updateLabelExpandedState: UpdateLabelExpandedState,
-    observePrimaryUserId: ObservePrimaryUserId,
-    observeMailLabels: ObserveMailLabels,
-    observeUnreadCounters: ObserveUnreadCounters
+    private val observePrimaryUserId: ObservePrimaryUserId,
+    private val observeMailLabels: ObserveMailLabels,
+    private val observeUnreadCounters: ObserveUnreadCounters,
+    private val observeLoadedMailLabelId: ObserveLoadedMailLabelId,
+    private val selectMailLabelId: SelectMailLabelId
 ) : ViewModel() {
 
     private val initialState = State.Disabled
@@ -68,17 +70,17 @@ class SidebarViewModel @Inject constructor(
         }
 
         combine(
-            selectedMailLabelId.flow,
+            observeLoadedMailLabelId(),
             observeMailLabels(userId),
             observeUnreadCounters(userId)
-        ) { selectedMailLabelId, mailLabels, counters ->
+        ) { loadedMailLabelId, mailLabels, counters ->
             State.Enabled(
-                selectedMailLabelId = selectedMailLabelId,
+                selectedMailLabelId = loadedMailLabelId,
                 // Pending Account team to migrate "paymentManager" to rust
                 // (current implementation isn't aware of the rust session and throws
                 // exception crashing the app if no user is logged into "core"
                 canChangeSubscription = false,
-                mailLabels = mailLabels.toUiModels(counters.toMap(), selectedMailLabelId)
+                mailLabels = mailLabels.toUiModels(counters.toMap(), loadedMailLabelId)
             )
         }
     }.stateIn(
@@ -100,7 +102,8 @@ class SidebarViewModel @Inject constructor(
             is SidebarLabelAction.Add -> Unit
             is SidebarLabelAction.Collapse -> onUpdateLabelExpandedState(action.labelId, false)
             is SidebarLabelAction.Expand -> onUpdateLabelExpandedState(action.labelId, true)
-            is SidebarLabelAction.Select -> selectedMailLabelId.set(action.labelId)
+            is SidebarLabelAction.Select -> selectMailLabelId(action.labelId)
+
         }
     }
 

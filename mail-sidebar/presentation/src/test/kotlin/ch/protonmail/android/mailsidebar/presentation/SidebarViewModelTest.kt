@@ -20,12 +20,13 @@ package ch.protonmail.android.mailsidebar.presentation
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.ObserveLoadedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
+import ch.protonmail.android.maillabel.domain.usecase.SelectMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.UpdateLabelExpandedState
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
@@ -59,9 +60,14 @@ class SidebarViewModelTest {
 
     private val appInformation = mockk<AppInformation>()
 
-    private val selectedMailLabelId = mockk<SelectedMailLabelId> {
-        every { this@mockk.flow } returns MutableStateFlow<MailLabelId>(MailLabelId.System(SystemLabelId.Inbox.labelId))
-        every { this@mockk.set(any()) } returns Unit
+    private val observeLoadedMailLabelId = mockk<ObserveLoadedMailLabelId> {
+        every { this@mockk.invoke() } returns MutableStateFlow(
+            MailLabelId.System(SystemLabelId.Inbox.labelId)
+        )
+    }
+
+    private val selectMailLabelId = mockk<SelectMailLabelId> {
+        every { this@mockk.invoke(any()) } returns Unit
     }
 
     private val primaryUserId = MutableStateFlow<UserId?>(null)
@@ -87,11 +93,12 @@ class SidebarViewModelTest {
         Dispatchers.setMain(UnconfinedTestDispatcher())
         sidebarViewModel = SidebarViewModel(
             appInformation = appInformation,
-            selectedMailLabelId = selectedMailLabelId,
             updateLabelExpandedState = updateLabelExpandedState,
             observePrimaryUserId = observePrimaryUserId,
             observeMailLabels = observeMailboxLabels,
-            observeUnreadCounters = observeUnreadCounters
+            observeUnreadCounters = observeUnreadCounters,
+            observeLoadedMailLabelId = observeLoadedMailLabelId,
+            selectMailLabelId = selectMailLabelId
         )
     }
 
@@ -122,7 +129,7 @@ class SidebarViewModelTest {
         sidebarViewModel.submit(LabelAction(Select(MailLabelTestData.archiveSystemLabel.id)))
 
         // Then
-        verify { selectedMailLabelId.set(MailLabelTestData.archiveSystemLabel.id) }
+        verify { selectMailLabelId(MailLabelTestData.archiveSystemLabel.id) }
     }
 
     @Test

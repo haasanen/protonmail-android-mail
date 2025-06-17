@@ -20,11 +20,11 @@ package ch.protonmail.android.mailmailbox.presentation
 
 import app.cash.turbine.test
 import arrow.core.right
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.ObserveLoadedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
 import ch.protonmail.android.mailmailbox.domain.model.AutoDeleteBanner
 import ch.protonmail.android.mailmailbox.domain.model.AutoDeleteState
@@ -62,8 +62,8 @@ internal class ClearAllOperationViewModelTest {
     private val observeMailLabels = mockk<ObserveMailLabels> {
         every { this@mockk.invoke(userId) } returns flowOfLabels
     }
-    private val selectedMailLabelId = mockk<SelectedMailLabelId> {
-        every { this@mockk.flow } returns selectedMailLabelIdFlow
+    private val observeLoadedMailLabelId = mockk<ObserveLoadedMailLabelId> {
+        every { this@mockk.invoke() } returns selectedMailLabelIdFlow
     }
     private val getAutoDeleteBanner = mockk<GetAutoDeleteBanner>()
 
@@ -76,7 +76,7 @@ internal class ClearAllOperationViewModelTest {
     fun `should emit upselling state when the current label is spam or trash and the feature is disabled`() = runTest {
         // Given
         every { observeMailLabels.invoke(userId) } returns flowOf(spamMailLabels)
-        every { selectedMailLabelId.flow } returns
+        every { observeLoadedMailLabelId() } returns
             MutableStateFlow(MailLabelId.System(spamSystemLabelId.labelId))
         coEvery {
             getAutoDeleteBanner(userId, spamSystemLabelId.labelId)
@@ -92,7 +92,7 @@ internal class ClearAllOperationViewModelTest {
     fun `should emit clear all state when the current label is spam or trash and the feature is enabled`() = runTest {
         // Given
         every { observeMailLabels.invoke(userId) } returns flowOf(spamMailLabels)
-        every { selectedMailLabelId.flow } returns
+        every { observeLoadedMailLabelId() } returns
             MutableStateFlow(MailLabelId.System(spamSystemLabelId.labelId))
         coEvery {
             getAutoDeleteBanner(userId, spamSystemLabelId.labelId)
@@ -106,7 +106,7 @@ internal class ClearAllOperationViewModelTest {
 
     private fun viewModel() = ClearAllOperationViewModel(
         observePrimaryUserId,
-        selectedMailLabelId,
+        observeLoadedMailLabelId,
         getAutoDeleteBanner
     )
 

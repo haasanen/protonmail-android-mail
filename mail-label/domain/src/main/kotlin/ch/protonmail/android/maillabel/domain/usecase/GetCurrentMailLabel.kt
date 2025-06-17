@@ -19,7 +19,6 @@
 package ch.protonmail.android.maillabel.domain.usecase
 
 import java.util.concurrent.ConcurrentHashMap
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import kotlinx.coroutines.flow.first
@@ -28,12 +27,12 @@ import javax.inject.Inject
 
 class GetCurrentMailLabel @Inject constructor(
     private val observeMailLabels: ObserveMailLabels,
-    private val selectedMailLabelId: SelectedMailLabelId
+    private val getSelectedMailLabelId: GetSelectedMailLabelId
 ) {
     private val labelCache = ConcurrentHashMap<UserId, MailLabels>()
 
     suspend operator fun invoke(userId: UserId): MailLabel? {
-        val selectedId = selectedMailLabelId.flow.value
+        val selectedId = getSelectedMailLabelId()
 
         val cached = labelCache[userId]?.allById?.get(selectedId)
         if (cached != null) {

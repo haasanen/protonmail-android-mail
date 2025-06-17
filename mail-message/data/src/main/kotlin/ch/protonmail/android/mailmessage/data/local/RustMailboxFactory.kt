@@ -24,7 +24,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
+import ch.protonmail.android.maillabel.domain.usecase.GetSelectedMailLabelId
 import ch.protonmail.android.mailmessage.data.usecase.CreateAllMailMailbox
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
@@ -39,7 +39,7 @@ class RustMailboxFactory @Inject constructor(
     private val executeWithUserSession: ExecuteWithUserSession,
     private val createMailbox: CreateMailbox,
     private val createAllMailMailbox: CreateAllMailMailbox,
-    private val selectedMailLabelId: SelectedMailLabelId
+    private val getSelectedMailLabelId: GetSelectedMailLabelId
 ) {
 
     private val mutex = Mutex()
@@ -47,7 +47,7 @@ class RustMailboxFactory @Inject constructor(
 
     @Deprecated("Error prone due to using selectedMailLabel; To be dropped after ET-1739")
     suspend fun create(userId: UserId): Either<DataError, MailboxWrapper> = mutex.withLock {
-        val currentLabelId = selectedMailLabelId.flow.value.labelId.toLocalLabelId()
+        val currentLabelId = getSelectedMailLabelId().labelId.toLocalLabelId()
 
         val cachedMailbox = getMailboxFromCache(currentLabelId)
         if (cachedMailbox != null) {

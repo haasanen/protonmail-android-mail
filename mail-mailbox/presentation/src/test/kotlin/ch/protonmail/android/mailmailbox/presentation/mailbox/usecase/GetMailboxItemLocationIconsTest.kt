@@ -22,11 +22,11 @@ import androidx.compose.ui.graphics.Color
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.GetSelectedMailLabelId
 import ch.protonmail.android.mailmailbox.domain.usecase.ShouldShowLocationIndicator
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.testdata.mailbox.MailboxTestData.buildMailboxItem
@@ -35,19 +35,18 @@ import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
-import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Test
 import kotlinx.coroutines.test.runTest
 import ch.protonmail.android.maillabel.presentation.R
 
 class GetMailboxItemLocationIconTest {
     private val userId = UserIdSample.Primary
-    private val selectedMailLabelId = mockk<SelectedMailLabelId>()
+    private val getSelectedMailLabelId = mockk<GetSelectedMailLabelId>()
     private val shouldShowLocationIndicator = mockk<ShouldShowLocationIndicator>()
     private val colorMapper = mockk<ColorMapper>()
 
     private val getMailboxItemLocationIcon = GetMailboxItemLocationIcon(
-        selectedMailLabelId = selectedMailLabelId,
+        getSelectedMailLabelId = getSelectedMailLabelId,
         shouldShowLocationIndicator = shouldShowLocationIndicator,
         colorMapper = colorMapper
     )
@@ -57,9 +56,8 @@ class GetMailboxItemLocationIconTest {
         // Given
         val mailboxItem = buildMailboxItem()
         val folderColorSettings = FolderColorSettings(useFolderColor = true, inheritParentFolderColor = false)
-        val flow = MutableStateFlow(MailLabelId.System(SystemLabelId.Inbox.labelId))
 
-        every { selectedMailLabelId.flow } returns flow
+        every { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.Inbox.labelId)
         coEvery { shouldShowLocationIndicator(userId, any()) } returns false
 
         // When
@@ -83,7 +81,7 @@ class GetMailboxItemLocationIconTest {
         )
         val folderColorSettings = FolderColorSettings(useFolderColor = false, inheritParentFolderColor = false)
 
-        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelId.System(SystemLabelId.AllMail.labelId))
+        every { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.AllMail.labelId)
         coEvery { shouldShowLocationIndicator(userId, any()) } returns true
 
         // When
@@ -103,7 +101,7 @@ class GetMailboxItemLocationIconTest {
 
         every { colorMapper.toColor(any()) } returns Color(0xFFFF5733).right()
         coEvery { shouldShowLocationIndicator(userId, any()) } returns true
-        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelId.System(SystemLabelId.AllMail.labelId))
+        every { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.AllMail.labelId)
 
         // When
         val result = getMailboxItemLocationIcon(userId, mailboxItem, folderColorSettings, isShowingSearchResults = true)
@@ -122,7 +120,7 @@ class GetMailboxItemLocationIconTest {
         )
         val folderColorSettings = FolderColorSettings(useFolderColor = false, inheritParentFolderColor = false)
         coEvery { shouldShowLocationIndicator(userId, any()) } returns true
-        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelId.System(SystemLabelId.AllMail.labelId))
+        every { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.AllMail.labelId)
 
         // When
         val result = getMailboxItemLocationIcon(userId, mailboxItem, folderColorSettings, isShowingSearchResults = true)

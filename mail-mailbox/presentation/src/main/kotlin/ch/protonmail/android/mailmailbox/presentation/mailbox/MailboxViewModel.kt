@@ -51,14 +51,17 @@ import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAs
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.GetSelectedMailLabelId
+import ch.protonmail.android.maillabel.domain.usecase.ObserveLoadedMailLabelId
+import ch.protonmail.android.maillabel.domain.usecase.ObserveSelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
+import ch.protonmail.android.maillabel.domain.usecase.SelectMailLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
@@ -139,7 +142,10 @@ class MailboxViewModel @Inject constructor(
     observePrimaryUserId: ObservePrimaryUserId,
     private val observeMailLabels: ObserveMailLabels,
     private val observeSwipeActionsPreference: ObserveSwipeActionsPreference,
-    private val selectedMailLabelId: SelectedMailLabelId,
+    private val observeSelectedMailLabelId: ObserveSelectedMailLabelId,
+    private val observeLoadedMailLabelId: ObserveLoadedMailLabelId,
+    private val getSelectedMailLabelId: GetSelectedMailLabelId,
+    private val selectMailLabelId: SelectMailLabelId,
     private val observeUnreadCounters: ObserveUnreadCounters,
     private val observeFolderColorSettings: ObserveFolderColorSettings,
     private val getBottomBarActions: GetBottomBarActions,
@@ -201,7 +207,7 @@ class MailboxViewModel @Inject constructor(
             .filterNotNull()
             .launchIn(viewModelScope)
 
-        selectedMailLabelId.flow
+        observeSelectedMailLabelId()
             .mapToExistingLabel()
             .pairWithCurrentLabelCount()
             .combine(primaryUserId.filterNotNull()) { labelWithCount, userId ->
@@ -219,7 +225,7 @@ class MailboxViewModel @Inject constructor(
             }
             .launchIn(viewModelScope)
 
-        selectedMailLabelId.flow.mapToExistingLabel()
+        observeLoadedMailLabelId().mapToExistingLabel()
             .combine(state.observeSelectedMailboxItems()) { selectedMailLabel, selectedMailboxItems ->
                 getBottomBarActions(
                     primaryUserId.filterNotNull().first(),
@@ -349,7 +355,7 @@ class MailboxViewModel @Inject constructor(
         val inboxLabel = findLocalSystemLabelId(primaryUserId.first(), SystemLabelId.Inbox)
             ?: return Timber.e("Unable to find Inbox system label")
 
-        selectedMailLabelId.set(inboxLabel)
+        selectMailLabelId(inboxLabel)
     }
 
     private fun handleCustomizeToolbar(viewAction: MailboxViewAction) {
@@ -493,7 +499,7 @@ class MailboxViewModel @Inject constructor(
 
         primaryUserId.filterNotNull().flatMapLatest { userId ->
             combine(
-                state.observeMailLabelChanges(),
+                observeMailLabelChangeRequests(),
                 state.observeUnreadFilterState(),
                 state.observeSearchQuery()
             ) { selectedMailLabel, unreadFilterEnabled, query ->
@@ -509,7 +515,7 @@ class MailboxViewModel @Inject constructor(
                     currentSearchModeState = isInSearchMode
                 }
 
-                val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
+                val viewMode = getViewModeForCurrentLocation(selectedMailLabel.id)
                 mailboxPagerFactory.create(
                     userId = userId,
                     selectedMailLabelId = selectedMailLabel.id,
@@ -552,7 +558,7 @@ class MailboxViewModel @Inject constructor(
         }
 
         val user = primaryUserId.filterNotNull().first()
-        val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
+        val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
         when (viewMode) {
             ViewMode.ConversationGrouping -> markConversationsAsRead(
                 userId = user,
@@ -575,7 +581,7 @@ class MailboxViewModel @Inject constructor(
             return
         }
         val userId = primaryUserId.filterNotNull().first()
-        val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
+        val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
         when (viewMode) {
             ViewMode.ConversationGrouping -> markConversationsAsUnread(
                 userId = userId,
@@ -593,7 +599,7 @@ class MailboxViewModel @Inject constructor(
 
     private suspend fun handleSwipeReadAction(swipeReadAction: MailboxViewAction.SwipeReadAction) {
         if (swipeReadAction.isRead) {
-            when (getViewModeForCurrentLocation(selectedMailLabelId.flow.value)) {
+            when (getViewModeForCurrentLocation(getSelectedMailLabelId())) {
                 ViewMode.ConversationGrouping -> markConversationsAsUnread(
                     userId = primaryUserId.filterNotNull().first(),
                     labelId = getFromLabelIdSearchAware(),
@@ -606,7 +612,7 @@ class MailboxViewModel @Inject constructor(
                 )
             }
         } else {
-            when (getViewModeForCurrentLocation(selectedMailLabelId.flow.value)) {
+            when (getViewModeForCurrentLocation(getSelectedMailLabelId())) {
                 ViewMode.ConversationGrouping -> markConversationsAsRead(
                     userId = primaryUserId.filterNotNull().first(),
                     labelId = getFromLabelIdSearchAware(),
@@ -624,7 +630,7 @@ class MailboxViewModel @Inject constructor(
 
     private suspend fun handleSwipeStarAction(swipeStarAction: MailboxViewAction.StarAction) {
         if (swipeStarAction.isStarred) {
-            when (getViewModeForCurrentLocation(selectedMailLabelId.flow.value)) {
+            when (getViewModeForCurrentLocation(getSelectedMailLabelId())) {
                 ViewMode.ConversationGrouping -> unStarConversations(
                     userId = primaryUserId.filterNotNull().first(),
                     conversationIds = listOf(ConversationId(swipeStarAction.itemId))
@@ -636,7 +642,7 @@ class MailboxViewModel @Inject constructor(
                 )
             }
         } else {
-            when (getViewModeForCurrentLocation(selectedMailLabelId.flow.value)) {
+            when (getViewModeForCurrentLocation(getSelectedMailLabelId())) {
                 ViewMode.ConversationGrouping -> starConversations(
                     userId = primaryUserId.filterNotNull().first(),
                     conversationIds = listOf(ConversationId(swipeStarAction.itemId))
@@ -653,7 +659,7 @@ class MailboxViewModel @Inject constructor(
 
     private suspend fun handleSwipeArchiveAction(swipeArchiveAction: MailboxViewAction.SwipeArchiveAction) {
         if (isActionAllowedForCurrentLabel(SystemLabelId.Archive.labelId)) {
-            val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
+            val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
             val userId = primaryUserId.filterNotNull().first()
             moveSingleItemToDestination(userId, swipeArchiveAction.itemId, SystemLabelId.Archive, viewMode)
             emitNewStateFrom(swipeArchiveAction)
@@ -662,7 +668,7 @@ class MailboxViewModel @Inject constructor(
 
     private suspend fun handleSwipeSpamAction(swipeSpamAction: MailboxViewAction.SwipeSpamAction) {
         if (isActionAllowedForCurrentLabel(SystemLabelId.Spam.labelId)) {
-            val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
+            val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
             val userId = primaryUserId.filterNotNull().first()
             moveSingleItemToDestination(userId, swipeSpamAction.itemId, SystemLabelId.Spam, viewMode)
             emitNewStateFrom(swipeSpamAction)
@@ -671,7 +677,7 @@ class MailboxViewModel @Inject constructor(
 
     private suspend fun handleSwipeTrashAction(swipeTrashAction: MailboxViewAction.SwipeTrashAction) {
         if (isActionAllowedForCurrentLabel(SystemLabelId.Trash.labelId)) {
-            val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
+            val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
             val userId = primaryUserId.filterNotNull().first()
             moveSingleItemToDestination(userId, swipeTrashAction.itemId, SystemLabelId.Trash, viewMode)
             emitNewStateFrom(swipeTrashAction)
@@ -718,7 +724,7 @@ class MailboxViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
+            val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
             val entryPoint = when (operation) {
                 is MailboxViewAction.RequestLabelAsBottomSheet ->
                     LabelAsBottomSheetEntryPoint.Mailbox.SelectionMode(viewMode)
@@ -734,7 +740,7 @@ class MailboxViewModel @Inject constructor(
 
             val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.Ready(
                 userId = primaryUserId.first(),
-                currentLabel = selectedMailLabelId.flow.value.labelId,
+                currentLabel = getSelectedMailLabelId().labelId,
                 itemIds = items,
                 entryPoint = entryPoint
             )
@@ -745,7 +751,7 @@ class MailboxViewModel @Inject constructor(
     private fun requestMoveToBottomSheet(operation: MailboxViewAction) {
         viewModelScope.launch {
             val userId = primaryUserId.filterNotNull().first()
-            val currentMailLabel = selectedMailLabelId.flow.value
+            val currentMailLabel = getSelectedMailLabelId()
             val viewMode = getViewModeForCurrentLocation(currentMailLabel)
 
             val (entryPoint, selectedItemIds) = when (operation) {
@@ -802,7 +808,7 @@ class MailboxViewModel @Inject constructor(
         emitNewStateFrom(operation)
 
         val userId = primaryUserId.filterNotNull().first()
-        val currentMailLabel = selectedMailLabelId.flow.value
+        val currentMailLabel = getSelectedMailLabelId()
         val viewMode = getViewModeForCurrentLocation(currentMailLabel)
         val selectedItemIds: List<MailboxItemId> = selectionState.selectedMailboxItems.map { MailboxItemId(it.id) }
 
@@ -867,7 +873,7 @@ class MailboxViewModel @Inject constructor(
             return DataError.Local.Unknown.left()
         }
         val userId = primaryUserId.filterNotNull().first()
-        val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
+        val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
         return when (viewMode) {
             ViewMode.ConversationGrouping -> moveConversations(
                 userId = userId,
@@ -906,7 +912,7 @@ class MailboxViewModel @Inject constructor(
         }
 
         val userId = primaryUserId.filterNotNull().first()
-        val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
+        val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
         when (viewMode) {
             ViewMode.ConversationGrouping -> {
                 deleteConversations(
@@ -942,7 +948,7 @@ class MailboxViewModel @Inject constructor(
     }
 
     private fun handleClearAllConfirmed(action: MailboxViewAction.ClearAllConfirmed) = viewModelScope.launch {
-        deleteAllMessagesInLocation(primaryUserId.first(), selectedMailLabelId.flow.first().labelId)
+        deleteAllMessagesInLocation(primaryUserId.first(), getSelectedMailLabelId().labelId)
         emitNewStateFrom(action)
     }
 
@@ -953,7 +959,7 @@ class MailboxViewModel @Inject constructor(
             return
         }
         val userId = primaryUserId.filterNotNull().first()
-        val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
+        val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
         when (viewMode) {
             ViewMode.ConversationGrouping -> {
                 starConversations(userId, selectionModeDataState.selectedMailboxItems.map { ConversationId(it.id) })
@@ -974,7 +980,7 @@ class MailboxViewModel @Inject constructor(
             return
         }
         val userId = primaryUserId.filterNotNull().first()
-        val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
+        val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
         when (viewMode) {
             ViewMode.ConversationGrouping -> {
                 unStarConversations(userId, selectionModeDataState.selectedMailboxItems.map { ConversationId(it.id) })
@@ -1003,14 +1009,15 @@ class MailboxViewModel @Inject constructor(
 
     private fun observeCurrentMailLabel() = observeMailLabels()
         .map { mailLabels ->
-            mailLabels.allById[selectedMailLabelId.flow.value]
+            mailLabels.allById[getSelectedMailLabelId()]
         }
 
-    private fun Flow<MailLabelId>.mapToExistingLabel() = map {
-        observeMailLabels().firstOrNull()?.let { mailLabels ->
-            mailLabels.allById[selectedMailLabelId.flow.value]
-        }
-    }.filterNotNull()
+    private fun Flow<MailLabelId>.mapToExistingLabel(): Flow<MailLabel> = flatMapLatest { labelId ->
+        observeMailLabels()
+            .mapNotNull { mailLabels ->
+                mailLabels.allById[labelId]
+            }
+    }
 
     private fun observeUnreadCounters(): Flow<List<UnreadCounter>> = primaryUserId.flatMapLatest { userId ->
         observeUnreadCounters(userId)
@@ -1048,7 +1055,7 @@ class MailboxViewModel @Inject constructor(
     }
 
     private fun Flow<List<UnreadCounter>>.mapToCurrentLabelCount() = map { unreadCounters ->
-        val currentMailLabelId = selectedMailLabelId.flow.value
+        val currentMailLabelId = getSelectedMailLabelId()
         unreadCounters.find { it.labelId == currentMailLabelId.labelId }?.count
     }
 
@@ -1062,10 +1069,7 @@ class MailboxViewModel @Inject constructor(
             .mapNotNull { it?.isFilterEnabled }
             .distinctUntilChanged()
 
-    private fun Flow<MailboxState>.observeMailLabelChanges() =
-        this.map { it.mailboxListState as? MailboxListState.Data.ViewMode }
-            .mapNotNull { it?.currentMailLabel }
-            .distinctUntilChanged()
+    private fun observeMailLabelChangeRequests(): Flow<MailLabel> = observeSelectedMailLabelId().mapToExistingLabel()
 
     private fun Flow<MailboxState>.observeSearchQuery() = this.map { it.mailboxListState as? MailboxListState.Data }
         .mapNotNull { it?.searchState?.searchQuery }
@@ -1092,7 +1096,7 @@ class MailboxViewModel @Inject constructor(
     }
 
     private suspend fun getFromLabelIdSearchAware(): LabelId {
-        val currentLabelId = selectedMailLabelId.flow.value.labelId
+        val currentLabelId = getSelectedMailLabelId().labelId
 
         if (!state.value.isInSearchMode()) {
             return currentLabelId
