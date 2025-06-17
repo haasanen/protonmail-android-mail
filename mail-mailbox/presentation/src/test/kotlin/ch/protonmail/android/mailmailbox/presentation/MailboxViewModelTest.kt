@@ -47,15 +47,18 @@ import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAs
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.GetSelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCurrentViewMode
+import ch.protonmail.android.maillabel.domain.usecase.ObserveLoadedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
+import ch.protonmail.android.maillabel.domain.usecase.ObserveSelectedMailLabelId
+import ch.protonmail.android.maillabel.domain.usecase.SelectMailLabelId
 import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
@@ -167,8 +170,21 @@ class MailboxViewModelTest {
         every { this@mockk.invoke() } returns flowOf(userId)
     }
 
-    private val selectedMailLabelId = mockk<SelectedMailLabelId> {
-        every { this@mockk.flow } returns MutableStateFlow<MailLabelId>(initialLocationMailLabelId)
+    private val observeSelectedMailLabelId = mockk<ObserveSelectedMailLabelId> {
+        every { this@mockk.invoke() } returns MutableStateFlow(initialLocationMailLabelId)
+    }
+
+    private val observeLoadedMailLabelId = mockk<ObserveLoadedMailLabelId> {
+        every { this@mockk.invoke() } returns MutableStateFlow(initialLocationMailLabelId)
+    }
+
+    private val getSelectedMailLabelId = mockk<GetSelectedMailLabelId> {
+        every { this@mockk.invoke() } returns initialLocationMailLabelId
+    }
+
+    private val selectMailLabelId = mockk<SelectMailLabelId> {
+        every { this@mockk.invoke(any()) } just runs
+        every { this@mockk.setLocationAsLoaded(any()) } just runs
     }
 
     private val observeMailLabels = mockk<ObserveMailLabels> {
@@ -263,7 +279,10 @@ class MailboxViewModelTest {
             observePrimaryUserId = observePrimaryUserId,
             observeMailLabels = observeMailLabels,
             observeSwipeActionsPreference = observeSwipeActionsPreference,
-            selectedMailLabelId = selectedMailLabelId,
+            observeSelectedMailLabelId = observeSelectedMailLabelId,
+            observeLoadedMailLabelId = observeLoadedMailLabelId,
+            getSelectedMailLabelId = getSelectedMailLabelId,
+            selectMailLabelId = selectMailLabelId,
             observeUnreadCounters = observeUnreadCounters,
             observeFolderColorSettings = observeFolderColorSettings,
             getBottomBarActions = observeMailboxActions,
@@ -349,7 +368,8 @@ class MailboxViewModelTest {
             scrollToMailboxTop = Effect.of(expectedMailLabel.id)
         )
         val currentLocationFlow = MutableStateFlow<MailLabelId>(MailLabelTestData.inboxSystemLabel.id)
-        every { selectedMailLabelId.flow } returns currentLocationFlow
+        every { observeLoadedMailLabelId() } returns currentLocationFlow
+        every { observeSelectedMailLabelId() } returns currentLocationFlow
         every {
             mailboxReducer.newStateFrom(
                 any(),
@@ -388,7 +408,8 @@ class MailboxViewModelTest {
             )
         )
         val currentLocationFlow = MutableStateFlow<MailLabelId>(MailLabelTestData.inboxSystemLabel.id)
-        every { selectedMailLabelId.flow } returns currentLocationFlow
+        every { observeLoadedMailLabelId() } returns currentLocationFlow
+        every { observeSelectedMailLabelId() } returns currentLocationFlow
         every {
             mailboxReducer.newStateFrom(
                 any(),
@@ -396,6 +417,7 @@ class MailboxViewModelTest {
             )
         } returns intermediateState
         returnExpectedStateForBottomBarEvent(expectedState = expectedState)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem()
@@ -456,7 +478,8 @@ class MailboxViewModelTest {
         )
         val currentLocationFlow = MutableStateFlow<MailLabelId>(initialMailLabel.id)
         every { observeMailLabels(userId) } returns mailLabelsFlow
-        every { selectedMailLabelId.flow } returns currentLocationFlow
+        every { observeLoadedMailLabelId() } returns currentLocationFlow
+        every { observeSelectedMailLabelId() } returns currentLocationFlow
 
         every {
             mailboxReducer.newStateFrom(any(), MailboxEvent.NewLabelSelected(modifiedMailLabel, null))
@@ -521,18 +544,22 @@ class MailboxViewModelTest {
                 )
             )
         )
-        val currentLocationFlow = MutableStateFlow<MailLabelId>(initialMailLabel.id)
-        every { observeMailLabels(userId) } returns mailLabelsFlow
-        every { selectedMailLabelId.flow } returns currentLocationFlow
-
+        val currentLocationFlow = MutableStateFlow(initialMailLabel.id)
         val currentUserIdFlow = MutableStateFlow(userId)
+
+        every { observeLoadedMailLabelId() } returns currentLocationFlow
+        every { observeSelectedMailLabelId() } returns currentLocationFlow
+        every { getSelectedMailLabelId() } returns initialMailLabel.id
+        every { observeMailLabels(userId) } returns mailLabelsFlow
+        every { observeMailLabels(userId1) } returns mailLabelsFlow
         every { observePrimaryUserId() } returns currentUserIdFlow
 
         every {
             mailboxReducer.newStateFrom(any(), MailboxEvent.NewLabelSelected(initialMailLabel, null))
         } returns expectedState
+
         every {
-            mailboxReducer.newStateFrom(any(), MailboxEvent.SwipeActionsChanged(expectedSwipeActions))
+            mailboxReducer.newStateFrom(expectedState, MailboxEvent.SwipeActionsChanged(expectedSwipeActions))
         } returns expectedStateWithSwipeGestures
 
         mailboxViewModel.state.test {
@@ -546,6 +573,8 @@ class MailboxViewModelTest {
             assertEquals(MailboxStateSampleData.Loading, awaitItem())
             assertEquals(expectedState, awaitItem())
             assertEquals(expectedStateWithSwipeGestures, awaitItem())
+
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -575,7 +604,9 @@ class MailboxViewModelTest {
         )
         val currentLocationFlow = MutableStateFlow<MailLabelId>(initialMailLabel.id)
         every { observeMailLabels(userId) } returns mailLabelsFlow
-        every { selectedMailLabelId.flow } returns currentLocationFlow
+        every { observeLoadedMailLabelId() } returns currentLocationFlow
+        every { observeSelectedMailLabelId() } returns currentLocationFlow
+        every { getSelectedMailLabelId() } returns initialMailLabel.id
         every {
             mailboxReducer.newStateFrom(
                 any(),
@@ -939,7 +970,8 @@ class MailboxViewModelTest {
         val currentLocationFlow = MutableStateFlow<MailLabelId>(initialLocationMailLabelId)
         val initialMailboxState = createMailboxDataState()
         val expectedState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.spamSystemLabel.id)
-        every { selectedMailLabelId.flow } returns currentLocationFlow
+        every { observeLoadedMailLabelId() } returns currentLocationFlow
+        every { observeSelectedMailLabelId() } returns currentLocationFlow
         expectPagerMock(
             filterUnread = false,
             itemType = Message,
@@ -1348,7 +1380,8 @@ class MailboxViewModelTest {
         val inboxLabel = MailLabelTestData.inboxSystemLabel
         val currentLocationFlow = MutableStateFlow<MailLabelId>(initialLocationMailLabelId)
         val expectedState = createMailboxDataState(selectedMailLabelId = inboxLabel.id)
-        every { selectedMailLabelId.flow } returns currentLocationFlow
+        every { observeLoadedMailLabelId() } returns currentLocationFlow
+        every { observeSelectedMailLabelId() } returns currentLocationFlow
         every { mailboxReducer.newStateFrom(any(), any()) } returns expectedMailBoxState
         val pagingData = PagingData.from(listOf(unreadMailboxItem))
         expectPagerMock(pagingDataFlow = flowOf(pagingData))
@@ -1863,7 +1896,7 @@ class MailboxViewModelTest {
         expectedSelectedLabelCountStateChange(initialState)
         expectBottomSheetActionsSucceeds(
             expectedActions,
-            selectedMailLabelId.flow.value.labelId,
+            getSelectedMailLabelId().labelId,
             selectedItemsList.map { MailboxItemId(it.id) },
             NoConversationGrouping
         )
@@ -1917,7 +1950,7 @@ class MailboxViewModelTest {
         expectedSelectedLabelCountStateChange(initialState)
         expectBottomSheetActionsSucceeds(
             expectedActions,
-            selectedMailLabelId.flow.value.labelId,
+            getSelectedMailLabelId().labelId,
             selectedItemsList.map { MailboxItemId(it.id) },
             NoConversationGrouping
         )
@@ -1961,7 +1994,7 @@ class MailboxViewModelTest {
         expectedSelectedLabelCountStateChange(initialState)
         expectBottomSheetActionsSucceeds(
             expectedActions,
-            selectedMailLabelId.flow.value.labelId,
+            getSelectedMailLabelId().labelId,
             selectedItemsList.map { MailboxItemId(it.id) },
             NoConversationGrouping
         )
@@ -2003,7 +2036,7 @@ class MailboxViewModelTest {
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectBottomSheetActionsSucceeds(
             expectedActions,
-            selectedMailLabelId.flow.value.labelId,
+            getSelectedMailLabelId().labelId,
             selectedItemsList.map { MailboxItemId(it.id) },
             ConversationGrouping
         )
@@ -2043,7 +2076,7 @@ class MailboxViewModelTest {
         expectedSelectedLabelCountStateChange(initialState)
         expectBottomSheetActionsSucceeds(
             expectedActions,
-            selectedMailLabelId.flow.value.labelId,
+            getSelectedMailLabelId().labelId,
             selectedItemsList.map { MailboxItemId(it.id) },
             NoConversationGrouping
         )
@@ -2084,7 +2117,7 @@ class MailboxViewModelTest {
         expectedSelectedLabelCountStateChange(initialState)
         expectBottomSheetActionsSucceeds(
             expectedActions,
-            selectedMailLabelId.flow.value.labelId,
+            getSelectedMailLabelId().labelId,
             selectedItemsList.map { MailboxItemId(it.id) },
             ConversationGrouping
         )
@@ -2166,7 +2199,7 @@ class MailboxViewModelTest {
             observeCurrentViewMode(userId = userId, initialLocationMailLabelId.labelId)
         } returns flowOf(ConversationGrouping)
         every { observePrimaryUserId.invoke() } returns primaryUserFlow
-        every { selectedMailLabelId.flow } returns currentLocationFlow
+        every { observeLoadedMailLabelId() } returns currentLocationFlow
         val pagingData = PagingData.from(listOf(unreadMailboxItem))
         expectPagerMock(
             itemType = Conversation,
@@ -2301,7 +2334,8 @@ class MailboxViewModelTest {
         val expectedViewAction = MailboxViewAction.SwipeArchiveAction(itemId)
         val currentLocationFlow = MutableStateFlow<MailLabelId>(MailLabelTestData.inboxSystemLabel.id)
 
-        every { selectedMailLabelId.flow } returns currentLocationFlow
+        every { observeLoadedMailLabelId() } returns currentLocationFlow
+        every { getSelectedMailLabelId() } returns MailLabelTestData.inboxSystemLabel.id
         expectedSelectedLabelCountStateChange(initialState)
         expectMoveMessagesSucceeds(userId, listOf(buildMailboxUiModelItem(id = itemId)), SystemLabelId.Archive)
         expectPagerMock()
@@ -2328,7 +2362,8 @@ class MailboxViewModelTest {
         val expectedViewAction = MailboxViewAction.SwipeArchiveAction(expectedItemId)
         val currentLocationFlow = MutableStateFlow<MailLabelId>(MailLabelTestData.inboxSystemLabel.id)
 
-        every { selectedMailLabelId.flow } returns currentLocationFlow
+        every { observeLoadedMailLabelId() } returns currentLocationFlow
+        every { getSelectedMailLabelId() } returns MailLabelTestData.inboxSystemLabel.id
         expectViewModeForCurrentLocation(ConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
         expectMoveConversationsSucceeds(
@@ -2431,7 +2466,9 @@ class MailboxViewModelTest {
         val expectedViewAction = MailboxViewAction.SwipeSpamAction(expectedItemId)
         val currentLocationFlow = MutableStateFlow<MailLabelId>(MailLabelTestData.spamSystemLabel.id)
 
-        every { selectedMailLabelId.flow } returns currentLocationFlow
+        every { observeLoadedMailLabelId() } returns currentLocationFlow
+        every { getSelectedMailLabelId() } returns MailLabelTestData.spamSystemLabel.id
+
         expectedSelectedLabelCountStateChange(initialState)
         expectPagerMock()
 
@@ -2503,7 +2540,9 @@ class MailboxViewModelTest {
         val expectedViewAction = MailboxViewAction.SwipeTrashAction(expectedItemId)
         val currentLocationFlow = MutableStateFlow<MailLabelId>(MailLabelTestData.trashSystemLabel.id)
 
-        every { selectedMailLabelId.flow } returns currentLocationFlow
+        every { observeLoadedMailLabelId() } returns currentLocationFlow
+        every { getSelectedMailLabelId() } returns MailLabelTestData.trashSystemLabel.id
+
         expectedSelectedLabelCountStateChange(initialState)
         expectPagerMock()
 
@@ -2810,13 +2849,13 @@ class MailboxViewModelTest {
         // Given
         val expectedLabel = MailLabelTestData.inboxSystemLabel
         coEvery { findLocalSystemLabelId(userId, SystemLabelId.Inbox) } returns expectedLabel.id
-        coJustRun { selectedMailLabelId.set(expectedLabel.id) }
+        coJustRun { selectMailLabelId(expectedLabel.id) }
 
         // When
         mailboxViewModel.submit(MailboxViewAction.NavigateToInboxLabel)
 
         // Then
-        coVerify { selectedMailLabelId.set(expectedLabel.id) }
+        coVerify { selectMailLabelId(expectedLabel.id) }
     }
 
     @Test
@@ -3016,7 +3055,10 @@ class MailboxViewModelTest {
     @Test
     fun `should show confirmation dialog for clearing all messages from a location`() = runTest {
         // Given
-        every { selectedMailLabelId.flow } returns MutableStateFlow<MailLabelId>(MailLabelTestData.trashSystemLabel.id)
+        every {
+            observeLoadedMailLabelId()
+        } returns MutableStateFlow<MailLabelId>(MailLabelTestData.trashSystemLabel.id)
+        every { getSelectedMailLabelId() } returns MailLabelTestData.trashSystemLabel.id
 
         // When
         mailboxViewModel.submit(MailboxViewAction.ClearAll)
@@ -3028,7 +3070,11 @@ class MailboxViewModelTest {
     @Test
     fun `should clear all messages from a location when the action was confirmed`() = runTest {
         // Given
-        every { selectedMailLabelId.flow } returns MutableStateFlow<MailLabelId>(MailLabelTestData.trashSystemLabel.id)
+        every {
+            observeLoadedMailLabelId()
+        } returns MutableStateFlow<MailLabelId>(MailLabelTestData.trashSystemLabel.id)
+        every { getSelectedMailLabelId() } returns MailLabelTestData.trashSystemLabel.id
+
         coEvery {
             deleteAllMessagesInLocation(userId, MailLabelTestData.trashSystemLabel.id.labelId)
         } returns Unit.right()
