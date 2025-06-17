@@ -21,9 +21,7 @@ package ch.protonmail.android.mailmessage.data.repository
 import java.io.File
 import arrow.core.Either
 import arrow.core.flatMap
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
@@ -35,6 +33,7 @@ import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
+import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.RefreshedMessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
@@ -78,18 +77,25 @@ class RustMessageRepositoryImpl @Inject constructor(
             .map { it.toMessage() }
     }
 
-    @MissingRustApi
-    // Observing is currently faked! This won't reflect changes to the message after the first emission
-    override fun observeMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError, Message>> =
-        flow {
-            val message = rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())
-                .map { it.toMessage() }
+    override suspend fun getMessage(userId: UserId, messageId: MessageId): Either<DataError, Message> =
+        rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())
+            .map { it.toMessage() }
 
-            emit(message)
-        }
+    @Deprecated(
+        message = "Observing is faked! This won't reflect changes to the message after the first emission",
+        replaceWith = ReplaceWith("getMessage(userId, messageId)")
+    )
+    override fun observeMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError, Message>> = flow {
+        val message = rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())
+            .map { it.toMessage() }
 
-    @MissingRustApi
-    // Observing is currently faked! This won't reflect changes to the message after the first emission
+        emit(message)
+    }
+
+    @Deprecated(
+        message = "Observing is faked! This won't reflect changes to the message after the first emission",
+        replaceWith = ReplaceWith("getMessage(userId, messageId)")
+    )
     override fun observeMessage(userId: UserId, remoteMessageId: RemoteMessageId): Flow<Either<DataError, Message>> =
         flow {
             val message = rustMessageDataSource.getMessage(userId, remoteMessageId.toRemoteMessageId())
