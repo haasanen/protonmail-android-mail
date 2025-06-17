@@ -223,7 +223,20 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     onScheduleSendConfirmed = {
                         Timber.d("Schedule send confirmed, to happen at $it")
                         viewModel.submit(ComposerAction.OnScheduleSend(it))
+                    },
+                    onPickCustomTimeRequested = {
+                        bottomSheetType.value = BottomSheetType.ScheduleSendCustomTimePicker
                     }
+                )
+
+                is BottomSheetType.ScheduleSendCustomTimePicker -> ScheduleSendTimePickerBottomSheetContent(
+                    onClose = {
+                        scope.launch {
+                            bottomSheetState.hide()
+                            showBottomSheet = false
+                        }
+                    },
+                    onScheduleSendConfirmed = {}
                 )
             }
         },
@@ -613,6 +626,7 @@ private sealed interface BottomSheetType {
     data object SetExpirationTime : BottomSheetType
     data object AttachmentSources : BottomSheetType
     data object ScheduleSendOptions : BottomSheetType
+    data object ScheduleSendCustomTimePicker : BottomSheetType
     data class InlineImageActions(val contentId: String) : BottomSheetType
 
     companion object {
@@ -634,6 +648,7 @@ private sealed interface BottomSheetType {
                     is SetExpirationTime -> mapOf(TYPE_KEY to SetExpirationTime::class.simpleName)
                     is AttachmentSources -> mapOf(TYPE_KEY to AttachmentSources::class.simpleName)
                     is ScheduleSendOptions -> mapOf(TYPE_KEY to ScheduleSendOptions::class.simpleName)
+                    is ScheduleSendCustomTimePicker -> mapOf(TYPE_KEY to ScheduleSendCustomTimePicker::class.simpleName)
                 }
             },
             restore = { map ->
@@ -643,6 +658,7 @@ private sealed interface BottomSheetType {
                     SetExpirationTime::class.simpleName -> SetExpirationTime
                     AttachmentSources::class.simpleName -> AttachmentSources
                     ScheduleSendOptions::class.simpleName -> ScheduleSendOptions
+                    ScheduleSendCustomTimePicker::class.simpleName -> ScheduleSendCustomTimePicker
                     else -> throw IllegalStateException("Attempting to restore invalid bottom sheet type")
                 }
             }

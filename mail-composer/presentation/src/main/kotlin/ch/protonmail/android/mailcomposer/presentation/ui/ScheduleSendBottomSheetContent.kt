@@ -61,6 +61,7 @@ import kotlin.time.Instant
 fun ScheduleSendBottomSheetContent(
     optionsUiModel: ScheduleSendOptionsUiModel,
     onScheduleSendConfirmed: (Instant) -> Unit,
+    onPickCustomTimeRequested: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -111,7 +112,12 @@ fun ScheduleSendBottomSheetContent(
                 Toast.makeText(context, "Feature coming soon...", Toast.LENGTH_SHORT).show()
             }
             CustomTimeOption(
-                onOptionClicked = ::showFeatureMissingToast
+                onPickCustomTime = {
+                    when {
+                        optionsUiModel.isCustomTimeOptionAvailable -> onPickCustomTimeRequested()
+                        else -> showFeatureMissingToast()
+                    }
+                }
             )
 
         }
@@ -166,14 +172,14 @@ private fun PreviousTimeOption(
 }
 
 @Composable
-private fun CustomTimeOption(onOptionClicked: () -> Unit, modifier: Modifier = Modifier) {
+private fun CustomTimeOption(onPickCustomTime: () -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(ProtonTheme.shapes.extraLarge)
             .clickable(
                 role = Role.Button,
-                onClick = onOptionClicked
+                onClick = onPickCustomTime
             )
             .background(
                 color = ProtonTheme.colors.backgroundInvertedSecondary,
@@ -299,7 +305,8 @@ private fun PreviewScheduleSendBottomSheet() {
                 isCustomTimeOptionAvailable = true,
                 previousScheduleSendTime = null
             ),
-            onScheduleSendConfirmed = {}
+            onScheduleSendConfirmed = {},
+            onPickCustomTimeRequested = {}
         )
     }
 }
@@ -318,7 +325,8 @@ private fun PreviewScheduleSendSheetWithPreviousTime() {
                 isCustomTimeOptionAvailable = true,
                 previousScheduleSendTime = InstantWithFormattedTime(Instant.parse("12 Jun at 09:45"), "12 Jun at 09:45")
             ),
-            onScheduleSendConfirmed = {}
+            onScheduleSendConfirmed = {},
+            onPickCustomTimeRequested = {}
         )
     }
 }
