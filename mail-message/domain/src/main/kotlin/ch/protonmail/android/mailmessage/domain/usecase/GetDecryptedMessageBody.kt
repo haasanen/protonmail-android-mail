@@ -24,64 +24,65 @@ import arrow.core.right
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
+import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.MimeType
+import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
 class GetDecryptedMessageBody @Inject constructor(
-    private val messageRepository: MessageRepository
+    private val messageRepository: MessageRepository,
+    private val messageBodyRepository: MessageBodyRepository
 ) {
 
     suspend operator fun invoke(
         userId: UserId,
         messageId: MessageId,
         transformations: MessageBodyTransformations = MessageBodyTransformations.MessageDetailsDefaults
-    ): Either<GetDecryptedMessageBodyError, DecryptedMessageBody> {
-        return messageRepository.getMessageWithBody(userId, messageId, transformations)
-            .mapLeft { GetDecryptedMessageBodyError.Data(it) }
-            .flatMap { messageWithBody ->
-                val messageBody = messageWithBody.messageBody
+    ): Either<GetDecryptedMessageBodyError, DecryptedMessageBody> = messageRepository.getMessage(userId, messageId)
+        .mapLeft { GetDecryptedMessageBodyError.Data(it) }
+        .flatMap { messageMetadata ->
+            messageBodyRepository.getMessageBody(userId, messageId, transformations)
+                .mapLeft { GetDecryptedMessageBodyError.Data(it) }
+                .flatMap { messageBody ->
+                    val attachments = when {
+                        messageBody.mimeType == MimeType.MultipartMixed ->
+                            getDecryptedMimeAttachments(userId, messageId, messageMetadata)
 
-                val attachments = when {
-                    messageBody.mimeType == MimeType.MultipartMixed ->
-                        getDecryptedMimeAttachments(userId, messageId, messageWithBody)
+                        else -> messageMetadata.attachments
+                    }
 
-                    else -> messageWithBody.message.attachments
+                    DecryptedMessageBody(
+                        messageId = messageId,
+                        value = messageBody.body,
+                        isUnread = messageMetadata.isUnread,
+                        mimeType = messageBody.mimeType,
+                        hasQuotedText = messageBody.hasQuotedText,
+                        banners = messageBody.banners,
+                        attachments = attachments,
+                        transformations = messageBody.transformations
+                    ).right()
                 }
-
-                DecryptedMessageBody(
-                    messageId = messageId,
-                    value = messageBody.body,
-                    isUnread = messageWithBody.message.isUnread,
-                    mimeType = messageBody.mimeType,
-                    hasQuotedText = messageBody.hasQuotedText,
-                    banners = messageBody.banners,
-                    attachments = attachments,
-                    transformations = messageBody.transformations
-                ).right()
-            }
-    }
+        }
 
     private suspend fun getDecryptedMimeAttachments(
         userId: UserId,
         messageId: MessageId,
-        messageWithBody: MessageWithBody
+        message: Message
     ): List<AttachmentMetadata> {
         // After the message body is decrypted (through the first messageWithBody call)
         // rust will expose the decrypted mime attachments to the message "attachments" field.
         // This logic is needed to get such up-to-date attachments when opening a MIME message
-        return messageRepository.getMessageWithBody(userId, messageId, MessageBodyTransformations.AttachmentDefaults)
+        return messageRepository.getMessage(userId, messageId)
             .onLeft {
                 Timber.w("decrypted-message-body: Failed getting refreshed MIME attachments")
             }
             .getOrNull()
-            ?.message
             ?.attachments
-            ?: messageWithBody.message.attachments
+            ?: message.attachments
     }
 }

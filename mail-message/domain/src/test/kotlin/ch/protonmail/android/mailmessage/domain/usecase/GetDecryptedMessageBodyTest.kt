@@ -23,10 +23,12 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
+import ch.protonmail.android.mailmessage.domain.model.Message
+import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.MimeType
+import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.testdata.message.MessageBodyTestData
 import ch.protonmail.android.testdata.message.MessageTestData
@@ -47,59 +49,83 @@ class GetDecryptedMessageBodyTest(
 
     private val messageId = MessageId("messageId")
     private val messageRepository = mockk<MessageRepository>()
+    private val messageBodyRepository = mockk<MessageBodyRepository>()
 
     private val getDecryptedMessageBody = GetDecryptedMessageBody(
-        messageRepository
+        messageRepository,
+        messageBodyRepository
     )
 
     @Test
-    fun `when repository gets message body and decryption is successful then the decrypted message body is returned`() =
-        runTest {
-            // Given
-            val transformations = MessageBodyTransformations(
-                showQuotedText = false,
-                hideEmbeddedImages = false,
-                hideRemoteContent = false,
-                messageThemeOptions = null
+    fun `when repository gets the decrypted message body successfully then it is returned`() = runTest {
+        // Given
+        val transformations = MessageBodyTransformations(
+            showQuotedText = false,
+            hideEmbeddedImages = false,
+            hideRemoteContent = false,
+            messageThemeOptions = null
+        )
+        val expected = DecryptedMessageBody(
+            messageId = messageId,
+            value = testInput.messageBody.body,
+            mimeType = testInput.messageBody.mimeType,
+            hasQuotedText = false,
+            isUnread = false,
+            banners = emptyList(),
+            attachments = testInput.message.attachments,
+            transformations = transformations
+        ).right()
+        coEvery {
+            messageRepository.getMessage(
+                UserIdTestData.userId,
+                messageId
             )
-            val expected = DecryptedMessageBody(
-                messageId = messageId,
-                value = testInput.messageWithBody.messageBody.body,
-                mimeType = testInput.messageWithBody.messageBody.mimeType,
-                hasQuotedText = false,
-                isUnread = false,
-                banners = emptyList(),
-                attachments = testInput.messageWithBody.message.attachments,
-                transformations = transformations
-            ).right()
-            coEvery {
-                messageRepository.getMessageWithBody(
-                    UserIdTestData.userId,
-                    messageId,
-                    MessageBodyTransformations.MessageDetailsDefaults
-                )
-            } returns testInput.messageWithBody.right()
-            coEvery {
-                messageRepository.getMessageWithBody(
-                    UserIdTestData.userId,
-                    messageId,
-                    MessageBodyTransformations.AttachmentDefaults
-                )
-            } returns testInput.messageWithBody.right()
+        } returns testInput.message.right()
+        coEvery {
+            messageBodyRepository.getMessageBody(
+                UserIdTestData.userId,
+                messageId,
+                MessageBodyTransformations.MessageDetailsDefaults
+            )
+        } returns testInput.messageBody.right()
 
-            // When
-            val actual = getDecryptedMessageBody(UserIdTestData.userId, messageId)
+        // When
+        val actual = getDecryptedMessageBody(UserIdTestData.userId, messageId)
 
-            // Then
-            assertEquals(expected, actual, testName)
-        }
+        // Then
+        assertEquals(expected, actual, testName)
+    }
 
     @Test
-    fun `when repository method returns an error then the use case returns the error`() = runTest {
+    fun `when message repository returns an error then the use case returns the error`() = runTest {
         // Given
         val expected = GetDecryptedMessageBodyError.Data(DataError.Local.NoDataCached).left()
         coEvery {
-            messageRepository.getMessageWithBody(
+            messageRepository.getMessage(
+                UserIdTestData.userId,
+                messageId
+            )
+        } returns DataError.Local.NoDataCached.left()
+
+        // When
+        val actual = getDecryptedMessageBody(UserIdTestData.userId, messageId)
+
+        // Then
+        assertEquals(expected, actual, testName)
+    }
+
+    @Test
+    fun `when body repository returns an error then the use case returns the error`() = runTest {
+        // Given
+        val expected = GetDecryptedMessageBodyError.Data(DataError.Local.NoDataCached).left()
+        coEvery {
+            messageRepository.getMessage(
+                UserIdTestData.userId,
+                messageId
+            )
+        } returns testInput.message.right()
+        coEvery {
+            messageBodyRepository.getMessageBody(
                 UserIdTestData.userId,
                 messageId,
                 MessageBodyTransformations.MessageDetailsDefaults
@@ -118,11 +144,13 @@ class GetDecryptedMessageBodyTest(
         private val testInputList = listOf(
             TestInput(
                 MimeType.Html,
-                MessageWithBody(MessageTestData.message, MessageBodyTestData.htmlMessageBody)
+                MessageTestData.message,
+                MessageBodyTestData.htmlMessageBody
             ),
             TestInput(
                 MimeType.MultipartMixed,
-                MessageWithBody(MessageTestData.message, MessageBodyTestData.multipartMixedMessageBody)
+                MessageTestData.message,
+                MessageBodyTestData.multipartMixedMessageBody
             )
         )
 
@@ -141,6 +169,7 @@ class GetDecryptedMessageBodyTest(
 
     data class TestInput(
         val mimeType: MimeType,
-        val messageWithBody: MessageWithBody
+        val message: Message,
+        val messageBody: MessageBody
     )
 }
