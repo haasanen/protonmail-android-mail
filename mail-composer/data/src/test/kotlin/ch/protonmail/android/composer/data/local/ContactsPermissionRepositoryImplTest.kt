@@ -45,31 +45,31 @@ internal class ContactsPermissionRepositoryImplTest {
         // Given
         val sharedFlow = MutableSharedFlow<Either<DataError, Boolean>>()
         val expectedResult = true.right()
-        every { dataSource.observePermissionDenied() } returns sharedFlow
+        every { dataSource.observePermissionInteraction() } returns sharedFlow
         val repo = ContactsPermissionRepositoryImpl(dataSource)
 
         // When
-        repo.observePermissionDenied().test {
+        repo.observePermissionInteraction().test {
             sharedFlow.emit(expectedResult)
 
             assertEquals(expectedResult, awaitItem())
         }
 
         // Then
-        verify(exactly = 1) { dataSource.observePermissionDenied() }
+        verify(exactly = 1) { dataSource.observePermissionInteraction() }
         confirmVerified(dataSource)
     }
 
     @Test
     fun `should track the denial state through the data source`() = runTest {
         // Given
-        coEvery { dataSource.trackPermissionDeniedEvent() } just runs
+        coEvery { dataSource.trackPermissionInteraction() } just runs
         val repo = ContactsPermissionRepositoryImpl(dataSource)
 
         // When
-        repo.trackPermissionDenied()
+        repo.trackPermissionInteraction()
         // Then
-        coVerify(exactly = 1) { dataSource.trackPermissionDeniedEvent() }
+        coVerify(exactly = 1) { dataSource.trackPermissionInteraction() }
         confirmVerified(dataSource)
     }
 }

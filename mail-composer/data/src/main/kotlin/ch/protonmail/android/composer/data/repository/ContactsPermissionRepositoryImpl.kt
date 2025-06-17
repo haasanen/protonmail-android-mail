@@ -26,9 +26,9 @@ class ContactsPermissionRepositoryImpl @Inject constructor(
     private val dataSource: ContactsPermissionLocalDataSource
 ) : ContactsPermissionRepository {
 
-    override fun observePermissionDenied() = dataSource.observePermissionDenied()
+    override fun observePermissionInteraction() = dataSource.observePermissionInteraction()
 
-    override suspend fun trackPermissionDenied() {
-        dataSource.trackPermissionDeniedEvent()
+    override suspend fun trackPermissionInteraction() {
+        dataSource.trackPermissionInteraction()
     }
 }

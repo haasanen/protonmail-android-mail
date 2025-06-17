@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ContactsPermissionRepository {
 
-    fun observePermissionDenied(): Flow<Either<DataError, Boolean>>
+    fun observePermissionInteraction(): Flow<Either<DataError, Boolean>>
 
-    suspend fun trackPermissionDenied()
+    suspend fun trackPermissionInteraction()
 }

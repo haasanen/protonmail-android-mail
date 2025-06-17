@@ -68,9 +68,8 @@ internal class RecipientsViewModel @AssistedInject constructor(
         initialValue = emptyList()
     )
 
-
     fun markContactPermissionInteraction() {
-        viewModelScope.launch { contactsPermissionRepository.trackPermissionDenied() }
+        viewModelScope.launch { contactsPermissionRepository.trackPermissionInteraction() }
         if (contactsSuggestions.value.filterIsInstance<ContactSuggestionUiModel.DeviceContacts>().isEmpty()) {
             closeSuggestions()
         }
@@ -96,8 +95,8 @@ internal class RecipientsViewModel @AssistedInject constructor(
     private fun observeContactsSuggestions(): Flow<List<ContactSuggestionUiModel>> = combine(
         primaryUserId(),
         searchTerm,
-        contactsPermissionRepository.observePermissionDenied()
-    ) { userId, searchTerm, permissionsDenied ->
+        contactsPermissionRepository.observePermissionInteraction()
+    ) { userId, searchTerm, permissionInteraction ->
 
         if (searchTerm.isBlank()) return@combine emptyList()
 
@@ -110,7 +109,7 @@ internal class RecipientsViewModel @AssistedInject constructor(
                 }
             )
 
-            if (permissionsDenied.getOrNull() == null) {
+            if (permissionInteraction.getOrNull() == null) {
                 add(ContactSuggestionUiModel.DeviceContacts)
             }
         }

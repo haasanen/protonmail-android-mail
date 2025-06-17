@@ -21,16 +21,15 @@ package ch.protonmail.android.composer.data.local
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.composer.data.local.ContactsPermissionDataStoreProvider.Companion.V7_PERMISSION_INTERACTION_KEY
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.slot
 import io.mockk.spyk
-import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -51,11 +50,11 @@ internal class ContactsPermissionLocalDataSourceImplTest {
     @Test
     fun `should return data when present`() = runTest {
         // Given
-        val expectedState = false
-        every { preferences[booleanPreferencesKey(SHOULD_STOP_SHOWING_PERMISSION_DIALOG)] } returns expectedState
+        val expectedState = true
+        every { preferences[longPreferencesKey(V7_PERMISSION_INTERACTION_KEY)] } returns 1234L
 
         // When
-        val actual = dataSource.observePermissionDenied().first()
+        val actual = dataSource.observePermissionInteraction().first()
 
         // Then
         assertEquals(expectedState.right(), actual)
@@ -63,39 +62,28 @@ internal class ContactsPermissionLocalDataSourceImplTest {
 
     @Test
     fun `should return an error when data is not present`() = runTest {
-        every { preferences[booleanPreferencesKey(SHOULD_STOP_SHOWING_PERMISSION_DIALOG)] } returns null
+        every { preferences[longPreferencesKey(V7_PERMISSION_INTERACTION_KEY)] } returns null
 
         // When
-        val actual = dataSource.observePermissionDenied().first()
+        val actual = dataSource.observePermissionInteraction().first()
 
         // Then
         assertEquals(DataError.Local.NoDataCached.left(), actual)
     }
 
     @Test
-    fun `should save the denied state when invoked`() = runTest {
-        val transformSlot = slot<suspend (Preferences) -> Preferences>()
+    fun `should save the timestamp when invoked`() = runTest {
         val mutablePreferences = mockk<MutablePreferences>()
 
         every { preferences.toMutablePreferences() } returns mutablePreferences
-        every { mutablePreferences[any<Preferences.Key<Boolean>>()] = any() } returns Unit
+        every { mutablePreferences[any<Preferences.Key<Long>>()] = any() } returns Unit
 
         // When
-        dataSource.trackPermissionDeniedEvent()
+        dataSource.trackPermissionInteraction()
 
         // Then
         coVerify {
-            contactsPermissionDataStoreSpy.updateData(capture(transformSlot))
+            contactsPermissionDataStoreSpy.updateData(any())
         }
-
-        transformSlot.captured.invoke(preferences)
-
-        verify {
-            mutablePreferences[booleanPreferencesKey(SHOULD_STOP_SHOWING_PERMISSION_DIALOG)] = true
-        }
-    }
-
-    private companion object {
-        const val SHOULD_STOP_SHOWING_PERMISSION_DIALOG = "HasDeniedContactsPermission"
     }
 }

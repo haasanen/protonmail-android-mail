@@ -22,6 +22,7 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.domain.repository.ContactsPermissionRepository
 import ch.protonmail.android.mailcomposer.presentation.mapper.ContactSuggestionsMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
@@ -37,7 +38,9 @@ import ch.protonmail.android.testdata.contact.ContactUiModelTestData
 import io.mockk.coEvery
 import io.mockk.confirmVerified
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
@@ -50,6 +53,7 @@ import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class RecipientsViewModelTest {
@@ -59,7 +63,7 @@ internal class RecipientsViewModelTest {
     }
     private val getContactSuggestions = mockk<GetContactSuggestions>()
     private val contactsPermissionRepository = mockk<ContactsPermissionRepository> {
-        every { this@mockk.observePermissionDenied() } returns flowOf()
+        every { this@mockk.observePermissionInteraction() } returns flowOf()
     }
     private val recipientsStateManager = spyk<RecipientsStateManager>()
     private val contactSuggestionsMapper = spyk<ContactSuggestionsMapper>()
@@ -181,6 +185,7 @@ internal class RecipientsViewModelTest {
             getContactSuggestions(userId, ContactSuggestionQuery(searchTerm))
         } returns expectedContacts.right()
         coEvery { contactSuggestionsMapper.toUiModel(expectedContacts) } returns expectedSuggestions
+        coEvery { contactsPermissionRepository.observePermissionInteraction() } returns flowOf(true.right())
 
         val viewModel = viewModel()
 
@@ -193,46 +198,39 @@ internal class RecipientsViewModelTest {
     }
 
     @Test
-    fun `should emit contacts denied state when collected and repository returns a value (true)`() = runTest {
+    fun `should emit permission request event upon user action`() = runTest {
         // Given
-        val expectedValue = true
-        every { contactsPermissionRepository.observePermissionDenied() } returns flowOf(expectedValue.right())
         val viewModel = viewModel()
 
-        // When + Then
-        viewModel.contactsPermissionDenied.test {
-            assertEquals(expectedValue, awaitItem())
-            awaitComplete()
+        // When
+        viewModel.requestPermission()
+
+        // Then
+        viewModel.requestPermissionEffect.test {
+            assertEquals(Effect.of(Unit), awaitItem())
         }
     }
 
     @Test
-    fun `should emit contacts non denied state when collected and repository returns a value (false)`() = runTest {
+    fun `should close suggestions when permission is interacted with and no suggestions are displayed`() = runTest {
         // Given
-        val expectedValue = false
-        every { contactsPermissionRepository.observePermissionDenied() } returns flowOf(expectedValue.right())
-        val viewModel = viewModel()
+        coEvery {
+            getContactSuggestions(userId, ContactSuggestionQuery(any()))
+        } returns emptyList<ContactMetadata>().right()
 
-        // When + Then
-        viewModel.contactsPermissionDenied.test {
-            assertEquals(expectedValue, awaitItem())
-            awaitComplete()
-        }
-    }
-
-    @Test
-    fun `should emit contacts non denied state when collected and repository returns an error`() = runTest {
-        // Given
-        val expectedValue = false
         every {
-            contactsPermissionRepository.observePermissionDenied()
+            contactsPermissionRepository.observePermissionInteraction()
         } returns flowOf(DataError.Local.NoDataCached.left())
+
+        coEvery { contactsPermissionRepository.trackPermissionInteraction() } just runs
+
         val viewModel = viewModel()
 
-        // When + Then
-        viewModel.contactsPermissionDenied.test {
-            assertEquals(expectedValue, awaitItem())
-            awaitComplete()
+        // When
+        viewModel.contactSuggestionsFieldFlow.test {
+            viewModel.markContactPermissionInteraction()
+            assertNull(awaitItem())
+            expectNoEvents()
         }
     }
 

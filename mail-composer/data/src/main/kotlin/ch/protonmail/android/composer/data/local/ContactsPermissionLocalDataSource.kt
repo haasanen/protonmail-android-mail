@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.composer.data.local
 
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
@@ -30,24 +30,25 @@ import javax.inject.Inject
 
 interface ContactsPermissionLocalDataSource {
 
-    fun observePermissionDenied(): Flow<Either<DataError, Boolean>>
-    suspend fun trackPermissionDeniedEvent()
+    fun observePermissionInteraction(): Flow<Either<DataError, Boolean>>
+    suspend fun trackPermissionInteraction()
 }
 
 class ContactsPermissionLocalDataSourceImpl @Inject constructor(
     private val dataStoreProvider: ContactsPermissionDataStoreProvider
 ) : ContactsPermissionLocalDataSource {
 
-    override fun observePermissionDenied() = dataStoreProvider.contactsPermissionsStore.data.map { prefs ->
-        prefs[booleanPreferencesKey(SHOULD_STOP_SHOWING_PERMISSION_DIALOG)]?.right()
-            ?: DataError.Local.NoDataCached.left()
+    override fun observePermissionInteraction() = dataStoreProvider.contactsPermissionsStore.data.map { prefs ->
+        prefs[longPreferencesKey(HAS_INTERACTED_WITH_CONTACT_PERMISSION)]?.let { timestamp ->
+            (timestamp > 0L).right()
+        } ?: DataError.Local.NoDataCached.left()
     }
 
-    override suspend fun trackPermissionDeniedEvent() {
+    override suspend fun trackPermissionInteraction() {
         dataStoreProvider.contactsPermissionsStore.edit { prefs ->
-            prefs[booleanPreferencesKey(SHOULD_STOP_SHOWING_PERMISSION_DIALOG)] = true
+            prefs[longPreferencesKey(HAS_INTERACTED_WITH_CONTACT_PERMISSION)] = System.currentTimeMillis()
         }
     }
 }
 
-private const val SHOULD_STOP_SHOWING_PERMISSION_DIALOG = "HasDeniedContactsPermission"
+private const val HAS_INTERACTED_WITH_CONTACT_PERMISSION = "HasInteractedWithContactPermission"
