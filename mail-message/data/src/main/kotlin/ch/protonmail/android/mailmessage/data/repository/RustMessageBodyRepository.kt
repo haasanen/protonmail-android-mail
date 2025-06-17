@@ -31,7 +31,7 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
-class MessageBodyRepositoryImpl @Inject constructor(
+class RustMessageBodyRepository @Inject constructor(
     private val messageBodyDataSource: MessageBodyDataSource
 ) : MessageBodyRepository {
 

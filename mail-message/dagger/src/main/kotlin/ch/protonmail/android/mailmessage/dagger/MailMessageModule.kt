@@ -27,7 +27,7 @@ import ch.protonmail.android.mailmessage.data.local.RustMessageDataSourceImpl
 import ch.protonmail.android.mailmessage.data.local.RustMessageQuery
 import ch.protonmail.android.mailmessage.data.local.RustMessageQueryImpl
 import ch.protonmail.android.mailmessage.data.repository.InMemoryAvatarImageStateRepositoryImpl
-import ch.protonmail.android.mailmessage.data.repository.MessageBodyRepositoryImpl
+import ch.protonmail.android.mailmessage.data.repository.RustMessageBodyRepository
 import ch.protonmail.android.mailmessage.data.repository.PreviousScheduleSendTimeInMemoryRepository
 import ch.protonmail.android.mailmessage.data.repository.RustMessageActionRepository
 import ch.protonmail.android.mailmessage.data.repository.RustMessageRepositoryImpl
@@ -110,7 +110,7 @@ interface MailMessageViewModelModule {
 
     @Binds
     @ViewModelScoped
-    fun providesMessageBodyRepository(impl: MessageBodyRepositoryImpl): MessageBodyRepository
+    fun providesMessageBodyRepository(impl: RustMessageBodyRepository): MessageBodyRepository
 
     @Binds
     @ViewModelScoped
