@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
+import java.time.LocalDate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -28,27 +29,31 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.delete
+import androidx.compose.foundation.text.input.insert
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.getSelectedDate
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -63,6 +68,8 @@ import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcomposer.presentation.R
+import timber.log.Timber
+import kotlin.time.Clock
 import kotlin.time.Instant
 
 @Composable
@@ -91,13 +98,13 @@ fun ScheduleSendTimePickerBottomSheetContent(
             },
             modifier = Modifier.padding(
                 start = ProtonDimens.Spacing.Small,
-                top = ProtonDimens.Spacing.Medium,
+                top = 0.dp,
                 end = ProtonDimens.Spacing.Medium,
                 bottom = ProtonDimens.Spacing.Medium
             )
         )
 
-       Column(
+        Column(
             modifier = modifier
                 .fillMaxWidth()
                 .background(ProtonTheme.colors.backgroundInvertedNorm)
@@ -152,52 +159,90 @@ private fun ScheduleSendTime(
 
         BasicTextField(
             modifier = Modifier
+                .size(80.dp, 40.dp)
                 .background(
                     color = ProtonTheme.colors.backgroundInvertedDeep,
                     shape = ProtonTheme.shapes.medium
                 )
-                .size(80.dp, 40.dp)
-                .padding(ProtonDimens.Spacing.Small),
+                .padding(ProtonDimens.Spacing.Small)
+                .align(Alignment.Bottom),
             state = textFieldState,
-            textStyle = ProtonTheme.typography.bodyLargeNorm
+            textStyle = ProtonTheme.typography.bodyLargeNorm,
+            readOnly = true,
+            lineLimits = TextFieldLineLimits.SingleLine
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ScheduleSendDatePicker(textFieldState: TextFieldState, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(ProtonTheme.shapes.extraLarge)
-            .background(
-                color = ProtonTheme.colors.backgroundInvertedSecondary,
-                shape = ProtonTheme.shapes.extraLarge
-            )
-            .padding(ProtonDimens.Spacing.Large),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            modifier = Modifier,
-            text = stringResource(R.string.composer_schedule_send_custom_date_label),
-            style = ProtonTheme.typography.bodyMediumNorm,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
 
-        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDate = LocalDate.now(),
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean =
+                utcTimeMillis > Clock.System.now().toEpochMilliseconds()
 
-        BasicTextField(
-            modifier = Modifier
+            override fun isSelectableYear(year: Int): Boolean = year >= LocalDate.now().year
+        }
+    )
+
+    LaunchedEffect(datePickerState.getSelectedDate()) {
+        Timber.d("date picker: selected date changed ${datePickerState.getSelectedDate()}")
+        textFieldState.edit {
+            delete(0, length)
+            insert(0, datePickerState.getSelectedDate().toString())
+        }
+    }
+
+    Column {
+        DatePicker(
+            modifier = modifier
+                .clip(ProtonTheme.shapes.extraLarge)
                 .background(
-                    color = ProtonTheme.colors.backgroundInvertedDeep,
-                    shape = ProtonTheme.shapes.medium
-                )
-                .size(80.dp, 40.dp)
-                .padding(ProtonDimens.Spacing.Small),
-            state = textFieldState,
-            textStyle = ProtonTheme.typography.bodyLargeNorm
+                    color = ProtonTheme.colors.backgroundInvertedSecondary,
+                    shape = ProtonTheme.shapes.extraLarge
+                ),
+            state = datePickerState,
+            showModeToggle = false,
+            colors = DatePickerDefaults.colors().copy(
+                containerColor = ProtonTheme.colors.backgroundNorm,
+                dividerColor = ProtonTheme.colors.backgroundInvertedNorm
+            ),
+            title = null,
+            headline = {
+                Row(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(ProtonDimens.Spacing.Large),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        modifier = Modifier,
+                        text = stringResource(R.string.composer_schedule_send_custom_date_label),
+                        style = ProtonTheme.typography.bodyMediumNorm,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
+
+                    BasicTextField(
+                        modifier = Modifier
+                            .background(
+                                color = ProtonTheme.colors.backgroundInvertedDeep,
+                                shape = ProtonTheme.shapes.medium
+                            )
+                            .padding(ProtonDimens.Spacing.Medium)
+                            .align(Alignment.CenterVertically),
+                        state = textFieldState,
+                        readOnly = true,
+                        textStyle = ProtonTheme.typography.bodyLargeNorm
+                    )
+                }
+            }
         )
     }
 }
@@ -215,12 +260,12 @@ private fun TopBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            onClick = onClose,
+            onClick = onClose
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_proton_cross),
                 contentDescription = null,
-                tint = ProtonTheme.colors.iconNorm,
+                tint = ProtonTheme.colors.iconNorm
 
             )
         }
