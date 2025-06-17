@@ -178,7 +178,7 @@ fun CustomSingleLineTopAppBar(
                 modifier = Modifier
                     .testTag(DetailScreenTopBarTestTags.MessageCount)
                     .align(Alignment.Center)
-                    .wrapContentHeight(align = Alignment.CenterVertically)
+                    .fillMaxWidth(fraction = 0.7f)
                     .padding(horizontal = ProtonDimens.Spacing.Jumbo)
                     .alpha(1 - subjectLineAlpha),
                 text = pluralStringResource(plurals.message_count_label_text, count, count),
@@ -190,6 +190,7 @@ fun CustomSingleLineTopAppBar(
         SelectionContainer(
             modifier = Modifier
                 .align(Alignment.Center)
+                .fillMaxWidth(fraction = 0.7f)
                 .alpha(subjectLineAlpha)
         ) {
             Text(
