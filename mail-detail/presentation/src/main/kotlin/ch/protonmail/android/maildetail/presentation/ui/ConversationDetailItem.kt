@@ -24,6 +24,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -47,6 +51,8 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMes
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Hidden
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
+import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
+import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailItem.previewActions
 import ch.protonmail.android.maildetail.presentation.ui.footer.MessageDetailFooter
 import ch.protonmail.android.maildetail.presentation.ui.header.MessageDetailHeader
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
@@ -65,35 +71,11 @@ fun ConversationDetailItem(
     val avatarActions = ParticipantAvatar.Actions.Empty.copy(
         onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested
     )
-    ElevatedCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .border(
-                width = if (isSystemInDarkTheme()) MailDimens.ThinBorder else MailDimens.MediumBorder,
-                color = ProtonTheme.colors.borderNorm,
-                shape = ProtonTheme.shapes.huge
-            )
-            .shadow(
-                elevation = if (isSystemInDarkTheme()) {
-                    MailDimens.ConversationCollapseHeaderElevationDark
-                } else {
-                    MailDimens.ConversationCollapseHeaderElevation
-                },
-                shape = ProtonTheme.shapes.huge,
-                ambientColor = ProtonTheme.colors.shadowNorm.copy(alpha = ShadowAlpha),
-                spotColor = ProtonTheme.colors.shadowNorm.copy(alpha = ShadowAlpha)
-            ),
-        shape = ProtonTheme.shapes.huge,
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = ProtonTheme.colors.backgroundNorm
-        ),
-        elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = MailDimens.ConversationCollapseHeaderElevation
-        )
-    ) {
-        when (uiModel) {
-            is Hidden -> Unit
-            is Collapsed -> {
+
+    when (uiModel) {
+        is Hidden -> Unit
+        is Collapsed -> {
+            ConversationDetailCard(modifier = modifier) {
                 ConversationDetailCollapsedMessageHeader(
                     uiModel = uiModel,
                     avatarActions = avatarActions,
@@ -107,24 +89,67 @@ fun ConversationDetailItem(
                         }
                 )
             }
+        }
 
-            is Expanding -> {
+        is Expanding -> {
+            ConversationDetailCard(modifier) {
                 ConversationDetailExpandingItem(
                     uiModel = uiModel,
                     avatarActions = avatarActions
                 )
             }
+        }
 
-            is Expanded -> {
-                ConversationDetailExpandedItem(
-                    modifier = Modifier.padding(bottom = MailDimens.ConversationCollapseHeaderOverlapHeight),
-                    uiModel = uiModel,
-                    actions = actions,
-                    onMessageBodyLoadFinished = onMessageBodyLoadFinished
+        is Expanded -> {
+            Box(Modifier.fillMaxHeight()) {
+                ConversationDetailCard(modifier = modifier.fillMaxHeight()) {
+                    ConversationDetailExpandedItem(
+                        uiModel = uiModel,
+                        actions = actions,
+                        onMessageBodyLoadFinished = onMessageBodyLoadFinished
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .testTag(ConversationDetailItemTestTags.CollapseAnchor)
+                        .clickable { actions.onCollapse(uiModel.messageId) }
+                        .fillMaxWidth()
+                        .height(MailDimens.ConversationMessageCollapseBarHeight)
                 )
             }
         }
     }
+}
+
+@Composable
+private fun ConversationDetailCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+    ElevatedCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .border(
+                width = if (isSystemInDarkTheme()) MailDimens.ThinBorder else MailDimens.MediumBorder,
+                color = ProtonTheme.colors.borderNorm,
+                shape = ProtonTheme.shapes.conversation
+            )
+            .shadow(
+                elevation = if (isSystemInDarkTheme()) {
+                    MailDimens.ConversationCollapseHeaderElevationDark
+                } else {
+                    MailDimens.ConversationCollapseHeaderElevation
+                },
+                shape = ProtonTheme.shapes.conversation,
+                ambientColor = ProtonTheme.colors.shadowNorm.copy(alpha = ShadowAlpha),
+                spotColor = ProtonTheme.colors.shadowNorm.copy(alpha = ShadowAlpha)
+            ),
+        shape = ProtonTheme.shapes.conversation,
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = ProtonTheme.colors.backgroundNorm
+        ),
+        elevation = CardDefaults.elevatedCardElevation(
+            defaultElevation = MailDimens.ConversationCollapseHeaderElevation
+        ),
+        content = content
+    )
 }
 
 @Composable
@@ -146,10 +171,9 @@ private fun ConversationDetailExpandingItem(
 }
 
 @Composable
-private fun ConversationDetailExpandedItem(
+private fun ColumnScope.ConversationDetailExpandedItem(
     uiModel: Expanded,
     actions: ConversationDetailItem.Actions,
-    modifier: Modifier = Modifier,
     onMessageBodyLoadFinished: (messageId: MessageId, height: Int) -> Unit
 ) {
     val headerActions = MessageDetailHeader.Actions.Empty.copy(
@@ -164,57 +188,72 @@ private fun ConversationDetailExpandedItem(
         onShowFeatureMissingSnackbar = actions.showFeatureMissingSnackbar
     )
 
-    Column(modifier = modifier) {
-        Box(
-            modifier = Modifier
-                .testTag(ConversationDetailItemTestTags.CollapseAnchor)
-                .clickable { actions.onCollapse(uiModel.messageId) }
-                .fillMaxWidth()
-                .height(MailDimens.ConversationMessageCollapseBarHeight)
-        )
-        MessageDetailHeader(
-            uiModel = uiModel.messageDetailHeaderUiModel,
-            headerActions = headerActions
-        )
-        MessageBanners(
-            messageBannersUiModel = uiModel.messageBannersUiModel,
-            onMarkMessageAsLegitimate = { isPhishing ->
-                actions.onMarkMessageAsLegitimate(uiModel.messageId, isPhishing)
+    MessageDetailHeader(
+        uiModel = uiModel.messageDetailHeaderUiModel,
+        headerActions = headerActions
+    )
+    MessageBanners(
+        messageBannersUiModel = uiModel.messageBannersUiModel,
+        onMarkMessageAsLegitimate = { isPhishing ->
+            actions.onMarkMessageAsLegitimate(uiModel.messageId, isPhishing)
+        },
+        onUnblockSender = {
+            actions.onUnblockSender(uiModel.messageId, uiModel.messageDetailHeaderUiModel.sender.participantAddress)
+        },
+        onCancelScheduleMessage = { actions.onEditScheduleSendMessage(uiModel.messageId) }
+    )
+    MessageBody(
+        messageBodyUiModel = uiModel.messageBodyUiModel,
+        actions = MessageBody.Actions(
+            onMessageBodyLinkClicked = { actions.onMessageBodyLinkClicked(uiModel.messageId, it) },
+            onShowAllAttachments = { actions.onShowAllAttachmentsForMessage(uiModel.messageId) },
+            onAttachmentClicked = { actions.onAttachmentClicked(uiModel.messageId, it) },
+            onToggleAttachmentsExpandCollapseMode = {
+                actions.onToggleAttachmentsExpandCollapseMode(uiModel.messageId)
             },
-            onUnblockSender = {
-                actions.onUnblockSender(uiModel.messageId, uiModel.messageDetailHeaderUiModel.sender.participantAddress)
+            onExpandCollapseButtonClicked = {
+                actions.onBodyExpandCollapseButtonClicked(uiModel.messageId)
             },
-            onCancelScheduleMessage = { actions.onEditScheduleSendMessage(uiModel.messageId) }
-        )
-        MessageBody(
-            messageBodyUiModel = uiModel.messageBodyUiModel,
-            actions = MessageBody.Actions(
-                onMessageBodyLinkClicked = { actions.onMessageBodyLinkClicked(uiModel.messageId, it) },
-                onShowAllAttachments = { actions.onShowAllAttachmentsForMessage(uiModel.messageId) },
-                onAttachmentClicked = { actions.onAttachmentClicked(uiModel.messageId, it) },
-                onToggleAttachmentsExpandCollapseMode = {
-                    actions.onToggleAttachmentsExpandCollapseMode(uiModel.messageId)
-                },
-                onExpandCollapseButtonClicked = {
-                    actions.onBodyExpandCollapseButtonClicked(uiModel.messageId)
-                },
-                loadEmbeddedImage = actions.loadEmbeddedImage,
-                onReply = actions.onReply,
-                onReplyAll = actions.onReplyAll,
-                onForward = actions.onForward,
-                onLoadRemoteContent = { actions.onLoadRemoteContent(it) },
-                onLoadEmbeddedImages = { actions.onLoadEmbeddedImages(it) },
-                onLoadRemoteAndEmbeddedContent = { actions.onLoadRemoteAndEmbeddedContent(it) },
-                onOpenInProtonCalendar = { actions.onOpenInProtonCalendar(it) },
-                onPrint = { actions.onPrint(it) }
-            ),
-            onMessageBodyLoaded = onMessageBodyLoadFinished
-        )
-        MessageDetailFooter(
-            uiModel = uiModel.messageDetailFooterUiModel,
-            actions = MessageDetailFooter.Actions.fromConversationDetailItemActions(actions)
-        )
-    }
+            loadEmbeddedImage = actions.loadEmbeddedImage,
+            onReply = actions.onReply,
+            onReplyAll = actions.onReplyAll,
+            onForward = actions.onForward,
+            onLoadRemoteContent = { actions.onLoadRemoteContent(it) },
+            onLoadEmbeddedImages = { actions.onLoadEmbeddedImages(it) },
+            onLoadRemoteAndEmbeddedContent = { actions.onLoadRemoteAndEmbeddedContent(it) },
+            onOpenInProtonCalendar = { actions.onOpenInProtonCalendar(it) },
+            onPrint = { actions.onPrint(it) }
+        ),
+        onMessageBodyLoaded = onMessageBodyLoadFinished
+    )
+    // to bring buttons to the bottom of the page
+    Spacer(modifier = Modifier.weight(1f))
+    MessageDetailFooter(
+        uiModel = uiModel.messageDetailFooterUiModel,
+        actions = MessageDetailFooter.Actions.fromConversationDetailItemActions(actions)
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ConversationDetailItemCollapsedPreview() {
+    ConversationDetailItem(
+        ConversationDetailMessageUiModelSample.ExpiringInvitation,
+        actions = previewActions,
+        modifier = Modifier,
+        onMessageBodyLoadFinished = { id: MessageId, i: Int -> }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ConversationDetailItemExpandedPreview() {
+    ConversationDetailItem(
+        ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded,
+        actions = previewActions,
+        modifier = Modifier,
+        onMessageBodyLoadFinished = { id: MessageId, i: Int -> }
+    )
 }
 
 object ConversationDetailItem {
@@ -246,6 +285,36 @@ object ConversationDetailItem {
         val onMarkMessageAsLegitimate: (MessageIdUiModel, Boolean) -> Unit,
         val onUnblockSender: (MessageIdUiModel, String) -> Unit,
         val onEditScheduleSendMessage: (MessageIdUiModel) -> Unit
+    )
+
+    val previewActions = Actions(
+        {},
+        {},
+        {},
+        { model: MessageIdUiModel, uri: Uri -> },
+        {},
+        {},
+        { model: MessageIdUiModel, id: AttachmentId -> },
+        {},
+        {},
+        { id1: MessageId?, string1: String -> null },
+        {},
+        {},
+        {},
+        {},
+        {},
+        { id: MessageId, options: MessageThemeOptions -> },
+        {},
+        {},
+        {},
+        {},
+        {},
+        { model: ParticipantUiModel, model1: AvatarUiModel -> },
+        {},
+        { model: ParticipantUiModel, model1: AvatarUiModel? -> },
+        { model: MessageIdUiModel, bool: Boolean -> },
+        { model: MessageIdUiModel, string: String -> },
+        { model: MessageIdUiModel -> }
     )
 }
 

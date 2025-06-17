@@ -18,8 +18,10 @@
 package ch.protonmail.android.maildetail.presentation.ui
 
 import android.net.Uri
+import android.view.MotionEvent
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -46,6 +48,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -125,6 +128,7 @@ import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ContactActi
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.DetailMoreActionsBottomSheetContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -778,7 +782,10 @@ fun MessagesContentWithHiddenEdges(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@OptIn(
+    ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class, FlowPreview::class,
+    ExperimentalAnimationApi::class
+)
 @Composable
 @Suppress("LongParameterList", "ComplexMethod")
 private fun MessagesContent(
@@ -792,8 +799,10 @@ private fun MessagesContent(
     paddingOffsetDp: Dp = 0f.dp
 ) {
     val listState = rememberLazyListState()
-    var loadedItemsChanged by remember { mutableStateOf(0) }
+    var loadedItemsChanged by remember { mutableIntStateOf(0) }
+    var scrollCompleted by remember { mutableStateOf(false) }
     val loadedItemsHeight = remember { mutableStateMapOf<String, Int>() }
+
     val layoutDirection = LocalLayoutDirection.current
     val contentPadding = remember(padding, paddingOffsetDp) {
         PaddingValues(
@@ -802,7 +811,7 @@ private fun MessagesContent(
             top = (
                 padding.calculateTopPadding() + ProtonDimens.Spacing.Standard + paddingOffsetDp
                 ).coerceAtLeast(0f.dp),
-            bottom = padding.calculateBottomPadding() + ProtonDimens.Spacing.Standard
+            bottom = padding.calculateBottomPadding() - ProtonDimens.Spacing.Tiny
         )
     }
 
@@ -857,14 +866,15 @@ private fun MessagesContent(
 
                 // Scrolled message expanded, so we can conclude that scrolling is completed
                 actions.onScrollRequestCompleted()
+                scrollCompleted = true
                 scrollToIndex = -1
             }
         }
     }
 
     // We will insert a placeholder after the last item to move it to the top when scrolled
-    val lazyColumnHeight = remember { mutableStateOf(0) }
-    var placeholderHeightPx by remember { mutableStateOf(0) }
+    val lazyColumnHeight = remember { mutableIntStateOf(0) }
+    var placeholderHeightPx by remember { mutableIntStateOf(0) }
 
     // Detect if user manually scrolled the list
     var userScrolled by remember { mutableStateOf(false) }
@@ -877,15 +887,16 @@ private fun MessagesContent(
 
     LazyColumn(
         modifier = modifier
+            .fillMaxHeight()
             .testTag(ConversationDetailScreenTestTags.MessagesList)
             .pointerInteropFilter { event ->
-                if (!userTapped && event.action == android.view.MotionEvent.ACTION_DOWN) {
+                if (!userTapped && event.action == MotionEvent.ACTION_DOWN) {
                     userTapped = true
                 }
                 false // Allow the event to propagate
             }
             .onGloballyPositioned {
-                lazyColumnHeight.value = it.size.height
+                lazyColumnHeight.intValue = it.size.height
             },
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(-MailDimens.ConversationCollapseHeaderOverlapHeight),
@@ -915,6 +926,14 @@ private fun MessagesContent(
                     is ConversationDetailMessageUiModel.Collapsed,
                     is ConversationDetailMessageUiModel.Expanding -> Modifier.animateItem()
 
+                    is ConversationDetailMessageUiModel.Expanded -> {
+                        if (!isLastItem) {
+                            Modifier.padding(bottom = MailDimens.ConversationCollapseHeaderOverlapHeight)
+                        } else {
+                            Modifier
+                        }
+                    }
+
                     else -> Modifier
                 }.onSizeChanged {
                     itemsHeight[index] = it.height
@@ -931,7 +950,7 @@ private fun MessagesContent(
                 // We assume scroll operation is completed when the scrolled item is expanded
                 if (isLastItem && scrollToIndex >= 0 && !initialPlaceholderHeightCalculated) {
                     val sumOfHeights = itemsHeight.entries.filter { it.key >= scrollToIndex }.sumOf { it.value }
-                    placeholderHeightPx = lazyColumnHeight.value - sumOfHeights +
+                    placeholderHeightPx = lazyColumnHeight.intValue - sumOfHeights +
                         contentPadding.calculateTopPadding().dpToPx()
 
                     // We need to check if we got all items heights, in that case we need to trigger scroll to the
