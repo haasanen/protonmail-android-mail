@@ -20,11 +20,14 @@ package ch.protonmail.android.mailmessage.dagger
 
 import ch.protonmail.android.mailmessage.data.ImageLoaderCoroutineScope
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
+import ch.protonmail.android.mailmessage.data.local.MessageBodyDataSource
+import ch.protonmail.android.mailmessage.data.local.RustMessageBodyDataSource
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSourceImpl
 import ch.protonmail.android.mailmessage.data.local.RustMessageQuery
 import ch.protonmail.android.mailmessage.data.local.RustMessageQueryImpl
 import ch.protonmail.android.mailmessage.data.repository.InMemoryAvatarImageStateRepositoryImpl
+import ch.protonmail.android.mailmessage.data.repository.MessageBodyRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.PreviousScheduleSendTimeInMemoryRepository
 import ch.protonmail.android.mailmessage.data.repository.RustMessageActionRepository
 import ch.protonmail.android.mailmessage.data.repository.RustMessageRepositoryImpl
@@ -32,12 +35,15 @@ import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTrackerImpl
 import ch.protonmail.android.mailmessage.domain.repository.InMemoryAvatarImageStateRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageActionRepository
+import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.repository.PreviousScheduleSendTimeRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -96,4 +102,17 @@ object MailMessageModule {
             impl: PreviousScheduleSendTimeInMemoryRepository
         ): PreviousScheduleSendTimeRepository
     }
+}
+
+@Module
+@InstallIn(ViewModelComponent::class)
+interface MailMessageViewModelModule {
+
+    @Binds
+    @ViewModelScoped
+    fun providesMessageBodyRepository(impl: MessageBodyRepositoryImpl): MessageBodyRepository
+
+    @Binds
+    @ViewModelScoped
+    fun providesMessageBodyDataSource(impl: RustMessageBodyDataSource): MessageBodyDataSource
 }
