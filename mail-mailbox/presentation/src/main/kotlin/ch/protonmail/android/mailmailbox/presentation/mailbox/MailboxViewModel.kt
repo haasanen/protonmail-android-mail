@@ -498,6 +498,16 @@ class MailboxViewModel @Inject constructor(
         var currentSearchModeState: Boolean? = null
 
         primaryUserId.filterNotNull().flatMapLatest { userId ->
+
+            // Reset state and emit empty data when userId changes
+            currentMailLabel = null
+            currentSearchModeState = null
+            pagingDataFlow.tryEmit(
+                PagingData.empty(
+                    LoadStates(LoadState.Loading, LoadState.Loading, LoadState.Loading)
+                )
+            )
+
             combine(
                 observeMailLabelChangeRequests(),
                 state.observeUnreadFilterState(),
