@@ -28,7 +28,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -55,7 +54,6 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableFormScope
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
@@ -165,7 +163,6 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
             label = stringResource(id = R.string.to_prefix),
             chipsList = recipientsTo,
             modifier = Modifier
-                .heightIn(min = MailDimens.Composer.FormFieldsRowHeight)
                 .weight(1f)
                 .testTag(ComposerTestTags.ToRecipient)
                 .retainFieldFocusOnConfigurationChange(FocusedFieldType.TO)
