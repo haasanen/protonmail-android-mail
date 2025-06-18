@@ -37,10 +37,13 @@ data class AutoLock(
 
 enum class AutoLockInterval(val duration: Duration) {
     Immediately(0.seconds),
+    OneMinute(1.minutes),
+    TwoMinutes(2.minutes),
     FiveMinutes(5.minutes),
+    TenMinutes(10.minutes),
     FifteenMinutes(15.minutes),
-    OneHour(1.hours),
-    OneDay(24.hours),
+    ThirtyMinutes(30.minutes),
+    SixtyMinutes(1.hours),
     Never(Duration.INFINITE);
 
     companion object {

@@ -28,8 +28,11 @@ import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval.FifteenMinutes
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval.FiveMinutes
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval.Immediately
-import ch.protonmail.android.mailpinlock.model.AutoLockInterval.OneDay
-import ch.protonmail.android.mailpinlock.model.AutoLockInterval.OneHour
+import ch.protonmail.android.mailpinlock.model.AutoLockInterval.OneMinute
+import ch.protonmail.android.mailpinlock.model.AutoLockInterval.SixtyMinutes
+import ch.protonmail.android.mailpinlock.model.AutoLockInterval.TenMinutes
+import ch.protonmail.android.mailpinlock.model.AutoLockInterval.ThirtyMinutes
+import ch.protonmail.android.mailpinlock.model.AutoLockInterval.TwoMinutes
 import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockIntervalEffects
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockIntervalState
@@ -122,11 +125,11 @@ class AutoLockIntervalViewModelTest {
             )
 
             // When
-            autoLockFlow.emit(AutoLock(autolockInterval = OneDay))
+            autoLockFlow.emit(AutoLock(autolockInterval = FiveMinutes))
             // Then
             assertEquals(
                 AutoLockIntervalState.Data(
-                    currentInterval = OneDay,
+                    currentInterval = FiveMinutes,
                     intervalsToChoices = uiIntervals
                 ),
                 awaitItem()
@@ -154,10 +157,13 @@ class AutoLockIntervalViewModelTest {
 
         val uiIntervals = mapOf(
             Immediately to TextUiModel(R.string.mail_pinlock_settings_autolock_immediately),
+            OneMinute to TextUiModel(R.string.mail_pinlock_settings_autolock_description_one_minute),
+            TwoMinutes to TextUiModel(R.string.mail_pinlock_settings_autolock_description_two_minutes),
             FiveMinutes to TextUiModel(R.string.mail_pinlock_settings_autolock_description_five_minutes),
+            TenMinutes to TextUiModel(R.string.mail_pinlock_settings_autolock_description_ten_minutes),
             FifteenMinutes to TextUiModel(R.string.mail_pinlock_settings_autolock_description_fifteen_minutes),
-            OneHour to TextUiModel(R.string.mail_pinlock_settings_autolock_description_one_hour),
-            OneDay to TextUiModel(R.string.mail_pinlock_settings_autolock_description_one_day)
+            ThirtyMinutes to TextUiModel(R.string.mail_pinlock_settings_autolock_description_thirty_minutes),
+            SixtyMinutes to TextUiModel(R.string.mail_pinlock_settings_autolock_description_sixty_minutes)
         )
     }
 }

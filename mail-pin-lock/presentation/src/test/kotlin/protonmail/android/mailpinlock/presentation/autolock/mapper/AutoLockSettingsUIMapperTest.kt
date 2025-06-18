@@ -83,27 +83,58 @@ class AutoLockSettingsUiMapperTest(
                 baseUiModel.copy(selectedUiInterval = TextUiModel(R.string.mail_pinlock_settings_autolock_immediately))
             ),
             arrayOf(
+                "to autolock with biometrics One Minute",
+                baseAutoLock.copy(autolockInterval = AutoLockInterval.OneMinute),
+                baseUiModel.copy(
+                    selectedUiInterval = TextUiModel(R.string.mail_pinlock_settings_autolock_description_one_minute)
+                )
+            ),
+            arrayOf(
+                "to autolock with biometrics Two Minutes",
+                baseAutoLock.copy(autolockInterval = AutoLockInterval.TwoMinutes),
+                baseUiModel.copy(
+                    selectedUiInterval = TextUiModel(R.string.mail_pinlock_settings_autolock_description_two_minutes)
+                )
+            ),
+            arrayOf(
+                "to autolock with biometrics Five Minutes",
+                baseAutoLock.copy(autolockInterval = AutoLockInterval.FiveMinutes),
+                baseUiModel.copy(
+                    selectedUiInterval = TextUiModel(R.string.mail_pinlock_settings_autolock_description_five_minutes)
+                )
+            ),
+            arrayOf(
+                "to autolock with biometrics Ten Minutes",
+                baseAutoLock.copy(autolockInterval = AutoLockInterval.TenMinutes),
+                baseUiModel.copy(
+                    selectedUiInterval = TextUiModel(R.string.mail_pinlock_settings_autolock_description_ten_minutes)
+                )
+            ),
+            arrayOf(
                 "to autolock with biometrics FifteenMinutes",
                 baseAutoLock.copy(autolockInterval = AutoLockInterval.FifteenMinutes),
                 baseUiModel.copy(
-                    selectedUiInterval =
-                    TextUiModel(R.string.mail_pinlock_settings_autolock_description_fifteen_minutes)
+                    selectedUiInterval = TextUiModel(
+                        R.string.mail_pinlock_settings_autolock_description_fifteen_minutes
+                    )
+                )
+            ),
+            arrayOf(
+                "to autolock with biometrics T",
+                baseAutoLock.copy(autolockInterval = AutoLockInterval.ThirtyMinutes),
+                baseUiModel.copy(
+                    selectedUiInterval = TextUiModel(
+                        R.string.mail_pinlock_settings_autolock_description_thirty_minutes
+                    )
                 )
             ),
             arrayOf(
                 "to autolock with biometrics One Hour",
-                baseAutoLock.copy(autolockInterval = AutoLockInterval.OneHour),
+                baseAutoLock.copy(autolockInterval = AutoLockInterval.SixtyMinutes),
                 baseUiModel.copy(
-                    selectedUiInterval =
-                    TextUiModel(R.string.mail_pinlock_settings_autolock_description_one_hour)
-                )
-            ),
-            arrayOf(
-                "to autolock with biometrics One Day",
-                baseAutoLock.copy(autolockInterval = AutoLockInterval.OneDay),
-                baseUiModel.copy(
-                    selectedUiInterval =
-                    TextUiModel(R.string.mail_pinlock_settings_autolock_description_one_day)
+                    selectedUiInterval = TextUiModel(
+                        R.string.mail_pinlock_settings_autolock_description_sixty_minutes
+                    )
                 )
             )
         )

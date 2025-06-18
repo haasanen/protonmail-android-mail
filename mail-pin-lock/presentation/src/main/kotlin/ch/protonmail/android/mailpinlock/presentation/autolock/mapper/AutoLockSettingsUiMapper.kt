@@ -44,10 +44,13 @@ internal object AutoLockSettingsUiMapper {
     internal fun AutoLockInterval.toTextUiModel(): TextUiModel {
         val textRes = when (this) {
             AutoLockInterval.Immediately -> R.string.mail_pinlock_settings_autolock_immediately
+            AutoLockInterval.OneMinute -> R.string.mail_pinlock_settings_autolock_description_one_minute
+            AutoLockInterval.TwoMinutes -> R.string.mail_pinlock_settings_autolock_description_two_minutes
             AutoLockInterval.FiveMinutes -> R.string.mail_pinlock_settings_autolock_description_five_minutes
+            AutoLockInterval.TenMinutes -> R.string.mail_pinlock_settings_autolock_description_ten_minutes
             AutoLockInterval.FifteenMinutes -> R.string.mail_pinlock_settings_autolock_description_fifteen_minutes
-            AutoLockInterval.OneHour -> R.string.mail_pinlock_settings_autolock_description_one_hour
-            AutoLockInterval.OneDay -> R.string.mail_pinlock_settings_autolock_description_one_day
+            AutoLockInterval.ThirtyMinutes -> R.string.mail_pinlock_settings_autolock_description_thirty_minutes
+            AutoLockInterval.SixtyMinutes -> R.string.mail_pinlock_settings_autolock_description_sixty_minutes
             AutoLockInterval.Never -> R.string.mail_pinlock_settings_autolock_never
         }
         return TextUiModel.TextRes(textRes)
