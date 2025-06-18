@@ -91,7 +91,7 @@ fun ScheduleSendTimePickerBottomSheetContent(
         initialSelectedDate = LocalDate.now(),
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean =
-                utcTimeMillis > Clock.System.now().toEpochMilliseconds()
+                utcTimeMillis >= Clock.System.now().toEpochMilliseconds() - MILLIS_IN_A_DAY
 
             override fun isSelectableYear(year: Int): Boolean = year >= LocalDate.now().year
         }
@@ -347,6 +347,8 @@ private fun TopBar(
 
 private const val INITIAL_TIME_HOUR = 8
 private const val INITIAL_TIME_MINUTE = 0
+
+private const val MILLIS_IN_A_DAY = 1000 * 60 * 60 * 24
 
 @Preview(showBackground = true)
 @Composable
