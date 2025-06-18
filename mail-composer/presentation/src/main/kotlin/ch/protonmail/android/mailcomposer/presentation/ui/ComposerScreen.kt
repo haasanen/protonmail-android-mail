@@ -236,7 +236,9 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                             showBottomSheet = false
                         }
                     },
-                    onScheduleSendConfirmed = {}
+                    onScheduleSendConfirmed = {
+                        viewModel.submit(ComposerAction.OnScheduleSend(it))
+                    }
                 )
             }
         },

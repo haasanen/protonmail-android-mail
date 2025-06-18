@@ -20,6 +20,9 @@ package ch.protonmail.android.mailcomposer.presentation.ui
 
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Calendar
@@ -77,6 +80,7 @@ import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcomposer.presentation.R
 import kotlin.time.Clock
 import kotlin.time.Instant
+import kotlin.time.toKotlinInstant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -108,7 +112,12 @@ fun ScheduleSendTimePickerBottomSheetContent(
         TopBar(
             onClose = onClose,
             onSendClicked = {
-                // Gather time from date and time pickers and schedule send
+                datePickerState.getSelectedDate()?.let { date ->
+                    val time = LocalTime.of(timePickerState.hour, timePickerState.minute)
+                    val dateTime = LocalDateTime.of(date, time)
+                    val instant = dateTime.atZone(ZoneId.systemDefault()).toInstant()
+                    onScheduleSendConfirmed(instant.toKotlinInstant())
+                }
             },
             modifier = Modifier.padding(
                 start = ProtonDimens.Spacing.Small,
