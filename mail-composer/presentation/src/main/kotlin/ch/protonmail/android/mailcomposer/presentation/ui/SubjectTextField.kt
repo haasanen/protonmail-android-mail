@@ -69,13 +69,6 @@ internal fun SubjectTextField(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
-        Text(
-            text = stringResource(R.string.subject_prefix),
-            modifier = Modifier.wrapContentWidth(),
-            color = ProtonTheme.colors.textHint,
-            style = ProtonTheme.typography.bodyMedium
-        )
-        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
 
         BasicTextField(
             modifier = Modifier
@@ -87,23 +80,37 @@ internal fun SubjectTextField(
             keyboardOptions = keyboardOptions,
             cursorBrush = SolidColor(cursorColor),
             decorator = { innerTextField ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    if (isFocused) {
-                        innerTextField()
 
-                    } else {
-                        Text(
-                            text = textFieldState.text.toString(),
-                            style = ProtonTheme.typography.bodyMediumNorm,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp)
-                        )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(R.string.subject_prefix),
+                        modifier = Modifier.wrapContentWidth(),
+                        color = ProtonTheme.colors.textHint,
+                        style = ProtonTheme.typography.bodyMedium
+                    )
+                    Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
+
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        if (isFocused) {
+                            innerTextField()
+
+                        } else {
+                            Text(
+                                text = textFieldState.text.toString(),
+                                style = ProtonTheme.typography.bodyMediumNorm,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = ProtonDimens.Spacing.Standard)
+                            )
+                        }
                     }
                 }
             }
