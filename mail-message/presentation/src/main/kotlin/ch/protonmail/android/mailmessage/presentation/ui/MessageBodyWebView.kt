@@ -23,8 +23,9 @@ import android.net.Uri
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.ExperimentalAnimatableApi
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -37,20 +38,27 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -77,11 +85,14 @@ import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.webview.MessageBodyWebViewOperation
 import ch.protonmail.android.mailmessage.presentation.viewmodel.MessageBodyWebViewViewModel
 import com.google.accompanist.web.AccompanistWebViewClient
-import com.google.accompanist.web.LoadingState
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 
+@OptIn(ExperimentalAnimatableApi::class)
 @Composable
 fun MessageBodyWebView(
     modifier: Modifier = Modifier,
@@ -126,6 +137,8 @@ fun MessageBodyWebView(
     val isSystemInDarkTheme = isSystemInDarkTheme()
 
     var webView by remember { mutableStateOf<WebView?>(null) }
+    var contentLoaded = remember { mutableStateOf(false) }
+
     LaunchedEffect(key1 = messageBodyUiModel.viewModePreference) {
         webView?.let {
             configureDarkLightMode(it, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
@@ -151,28 +164,15 @@ fun MessageBodyWebView(
                     super.shouldInterceptRequest(view, request)
                 }
             }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                contentLoaded.value = true
+            }
         }
     }
 
-    var webViewHeightPx by remember { mutableStateOf(0) }
-
-    val transitionState = remember {
-        MutableTransitionState(false)
-    }.apply { targetState = true }
-
-
-    LaunchedEffect(key1 = state.loadingState, key2 = webViewHeightPx) {
-        if (state.loadingState == LoadingState.Finished && webViewHeightPx > 0) {
-            // The purpose of this delay is to prevent multiple calls to onMessageBodyLoaded. WebView height
-            // may continue to change after the content is loaded, so we wait a bit to make sure the height is stable.
-            // If this block is called again, current coroutine will be cancelled automatically
-            delay(WEB_PAGE_CONTENT_LOAD_TIMEOUT)
-
-            onMessageBodyLoaded(messageId, webViewHeightPx)
-        }
-    }
-
-    Column(modifier = modifier) {
+    Column(modifier) {
         key(client) {
             val attachmentsUiModel = messageBodyUiModel.attachments
             if (attachmentsUiModel != null && attachmentsUiModel.attachments.isNotEmpty()) {
@@ -186,7 +186,9 @@ fun MessageBodyWebView(
                     )
                 )
             }
-            AnimatedVisibility(visibleState = transitionState) {
+            RevealWebView(contentLoaded = contentLoaded, onHeightFinalised = { height ->
+                onMessageBodyLoaded(messageId, height)
+            }) {
                 WebView(
                     onCreated = {
                         it.settings.builtInZoomControls = true
@@ -204,15 +206,15 @@ fun MessageBodyWebView(
                     state = state,
                     modifier = Modifier
                         .testTag(MessageBodyWebViewTestTags.WebView)
-                        .fillMaxWidth()
+                        // there's a bug where if the message is too long the webview will crash
                         .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
-                        .onSizeChanged { size ->
-                            webViewHeightPx = size.height
-                        },
+                        .fillMaxWidth()
+                        .wrapContentSize(),
                     client = client
                 )
             }
         }
+
         if (messageBodyUiModel.shouldShowExpandCollapseButton) {
             ExpandCollapseBodyButton(
                 modifier = Modifier.offset(x = ProtonDimens.Spacing.Standard),
@@ -257,6 +259,84 @@ private fun configureDarkLightMode(
         webView.showInLightMode()
     }
     // In other cases, media query in Html content will be used to render correctly
+}
+
+/** reveals the content when heights are finalised and content is loaded
+avoids weird height glitching where the height changes 3X whilst the webview loads
+its content.  This view will wait for loading, all measure passes then perform a reveal
+animation **/
+@OptIn(FlowPreview::class)
+@Composable
+fun RevealWebView(
+    contentLoaded: MutableState<Boolean>,
+    onHeightFinalised: (height: Int) -> Unit = { _ -> },
+    mainContent: @Composable () -> Unit
+) {
+    var reportedWebViewHeight by remember { mutableIntStateOf(0) }
+    val webViewTargetHeightPx = remember { mutableIntStateOf(0) }
+
+    val webviewHeightAnimationValues: Int by animateIntAsState(
+        targetValue = webViewTargetHeightPx.intValue,
+        animationSpec = tween(
+            durationMillis = 200
+        )
+    )
+    // alpha is calculated as a percentage of the current height reveal
+    val alphaTween =
+        remember {
+            derivedStateOf {
+                0f.coerceAtLeast(webviewHeightAnimationValues / webViewTargetHeightPx.intValue.toFloat())
+            }
+        }
+
+    LaunchedEffect(reportedWebViewHeight) {
+        snapshotFlow { reportedWebViewHeight }
+            // the webpage has loaded and the target height has not already been set
+            .filter { contentLoaded.value && webViewTargetHeightPx.intValue == 0 }
+            // allow measuring passes and webview to settle
+            .debounce(timeoutMillis = 100L)
+            .collectLatest { height ->
+                webViewTargetHeightPx.intValue = height
+                onHeightFinalised(height)
+            }
+    }
+
+    /**
+     * Although this code is  normally possible with the modifiers onSizeChanged() and .height(),
+     * it's not possible here since we need these values _before_ the webview has a change to render.
+     *
+     * We need to go down to the measuring pass in order to buffer the reported heights before the webview renders.
+     * Until we are confident with a height the webview will be laid out with a height of 0
+     * (note if you do this using modifiers then your onSizeChanged will always stay at 0 and you'll never get a
+     * calculated height).
+     * As soon as we are happy with our target height (using throttling until the reported height settles)
+     * we animate the rendered height (in the layout) to our target height
+     */
+    Layout(
+        content = mainContent,
+        modifier = Modifier.graphicsLayer {
+            // its recommended to set alpha in the graphics layer if you are
+            // setting alpha according to a state
+            alpha = alphaTween.value
+        }
+    ) { measurables, constraints ->
+
+        val placeables: List<Placeable> = measurables.map { measurable ->
+            measurable.measure(constraints).apply {
+                if (height > 0) {
+                    // set our reported height state will will be throttled until it has settled
+                    reportedWebViewHeight = height
+                }
+            }
+        }
+        val itemsTotalWidth = placeables.sumOf { placeable -> placeable.width }
+        // layout according to our reveal animation height
+        layout(itemsTotalWidth, webviewHeightAnimationValues) {
+            placeables.forEach { placeable ->
+                placeable.placeRelative(0, 0)
+            }
+        }
+    }
 }
 
 
@@ -313,9 +393,4 @@ object MessageBodyWebViewTestTags {
     const val WebView = "MessageBodyWebView"
 }
 
-private const val WEB_PAGE_CONTENT_LOAD_TIMEOUT = 250L
-
-// Max constraint for WebView height. If the height is greater
-// than this value, we will not fix the height of the WebView or it will crash.
-// (Limit set in androidx.compose.ui.unit.Constraints)
 private const val WEB_VIEW_FIXED_MAX_HEIGHT = 262_143
