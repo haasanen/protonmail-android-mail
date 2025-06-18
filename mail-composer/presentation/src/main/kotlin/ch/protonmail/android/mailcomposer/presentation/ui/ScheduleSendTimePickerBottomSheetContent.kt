@@ -37,8 +37,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.input.TextFieldLineLimits
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.delete
 import androidx.compose.foundation.text.input.insert
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -46,6 +44,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -77,6 +76,7 @@ import timber.log.Timber
 import kotlin.time.Clock
 import kotlin.time.Instant
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleSendTimePickerBottomSheetContent(
     onClose: () -> Unit,
@@ -84,9 +84,15 @@ fun ScheduleSendTimePickerBottomSheetContent(
     modifier: Modifier = Modifier
 ) {
 
-    val timeTextFieldState = rememberTextFieldState()
-    val dateTextFieldState = rememberTextFieldState()
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDate = LocalDate.now(),
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean =
+                utcTimeMillis > Clock.System.now().toEpochMilliseconds()
 
+            override fun isSelectableYear(year: Int): Boolean = year >= LocalDate.now().year
+        }
+    )
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -117,7 +123,6 @@ fun ScheduleSendTimePickerBottomSheetContent(
         ) {
 
             ScheduleSendTime(
-                textFieldState = timeTextFieldState,
                 onPickCustomTime = {
                     // Show dialog to allow picking a custom time
                 }
@@ -125,25 +130,19 @@ fun ScheduleSendTimePickerBottomSheetContent(
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
 
-            ScheduleSendDatePicker(dateTextFieldState)
+            ScheduleSendDatePicker(datePickerState)
         }
     }
 }
 
 @Composable
-private fun ScheduleSendTime(
-    textFieldState: TextFieldState,
-    onPickCustomTime: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+private fun ScheduleSendTime(onPickCustomTime: () -> Unit, modifier: Modifier = Modifier) {
+    val timeTextFieldState = rememberTextFieldState(initialText = DEFAULT_SEND_TIME)
+
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(ProtonTheme.shapes.extraLarge)
-            .clickable(
-                role = Role.Button,
-                onClick = { onPickCustomTime() }
-            )
             .background(
                 color = ProtonTheme.colors.backgroundInvertedSecondary,
                 shape = ProtonTheme.shapes.extraLarge
@@ -164,39 +163,34 @@ private fun ScheduleSendTime(
 
         BasicTextField(
             modifier = Modifier
-                .size(80.dp, 40.dp)
                 .background(
                     color = ProtonTheme.colors.backgroundInvertedDeep,
                     shape = ProtonTheme.shapes.medium
                 )
-                .padding(ProtonDimens.Spacing.Small)
-                .align(Alignment.Bottom),
-            state = textFieldState,
-            textStyle = ProtonTheme.typography.bodyLargeNorm,
+                .clickable(
+                    role = Role.Button,
+                    onClick = { onPickCustomTime() }
+                )
+                .padding(ProtonDimens.Spacing.Medium)
+                .align(Alignment.CenterVertically)
+                .width(IntrinsicSize.Min),
+            state = timeTextFieldState,
             readOnly = true,
-            lineLimits = TextFieldLineLimits.SingleLine
+            textStyle = ProtonTheme.typography.bodyLargeNorm
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ScheduleSendDatePicker(textFieldState: TextFieldState, modifier: Modifier = Modifier) {
+private fun ScheduleSendDatePicker(datePickerState: DatePickerState, modifier: Modifier = Modifier) {
 
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDate = LocalDate.now(),
-        selectableDates = object : SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean =
-                utcTimeMillis > Clock.System.now().toEpochMilliseconds()
-
-            override fun isSelectableYear(year: Int): Boolean = year >= LocalDate.now().year
-        }
-    )
+    val dateTextFieldState = rememberTextFieldState()
     val formatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
 
     LaunchedEffect(datePickerState.getSelectedDate()) {
         Timber.d("date picker: selected date changed ${datePickerState.getSelectedDate()}")
-        textFieldState.edit {
+        dateTextFieldState.edit {
             delete(0, length)
             insert(0, datePickerState.getSelectedDate()?.format(formatter) ?: "")
         }
@@ -244,7 +238,7 @@ private fun ScheduleSendDatePicker(textFieldState: TextFieldState, modifier: Mod
                             .padding(ProtonDimens.Spacing.Medium)
                             .align(Alignment.CenterVertically)
                             .width(IntrinsicSize.Min),
-                        state = textFieldState,
+                        state = dateTextFieldState,
                         readOnly = true,
                         textStyle = ProtonTheme.typography.bodyLargeNorm
                     )
@@ -310,6 +304,8 @@ private fun TopBar(
         }
     }
 }
+
+private const val DEFAULT_SEND_TIME = "08:00"
 
 @Preview(showBackground = true)
 @Composable
