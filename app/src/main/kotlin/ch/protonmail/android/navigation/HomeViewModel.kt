@@ -25,7 +25,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import ch.protonmail.android.mailcommon.data.file.getShareInfo
 import ch.protonmail.android.mailcommon.data.file.isStartedFromLauncher
-import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.encode
 import ch.protonmail.android.mailcommon.domain.model.isNotEmpty
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -34,16 +33,17 @@ import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.MarkMessageSendingStatusesAsSeen
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveSendingMessagesStatus
-import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.UndoSendMessage
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordMailboxScreenView
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
+import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.model.NavigationEffect
-import ch.protonmail.android.navigation.share.ShareIntentObserver
+import ch.protonmail.android.navigation.share.NewIntentObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -52,6 +52,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -67,7 +68,7 @@ class HomeViewModel @Inject constructor(
     private val formatFullDate: FormatFullDate,
     private val cancelScheduleSendMessage: CancelScheduleSendMessage,
     observePrimaryUserId: ObservePrimaryUserId,
-    shareIntentObserver: ShareIntentObserver
+    newIntentObserver: NewIntentObserver
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId().filterNotNull()
@@ -83,10 +84,8 @@ class HomeViewModel @Inject constructor(
             emitNewStateFor(it)
         }.launchIn(viewModelScope)
 
-        shareIntentObserver()
-            .onEach { intent ->
-                emitNewStateForIntent(intent)
-            }
+        newIntentObserver()
+            .onEach { emitNewStateForIntent(it) }
             .launchIn(viewModelScope)
     }
 
@@ -101,6 +100,11 @@ class HomeViewModel @Inject constructor(
             is NavigationEffect.PopBackStackTo -> navController.popBackStack(
                 route = navigationEffect.route,
                 inclusive = navigationEffect.inclusive
+            )
+
+            is NavigationEffect.NavigateToUri -> navController.navigate(
+                navigationEffect.uri,
+                navigationEffect.navOptions
             )
         }
     }
@@ -164,33 +168,37 @@ class HomeViewModel @Inject constructor(
             // Emitting a None status to UI would override the previously emitted effect and cause snack not to show
             return
         }
-        val currentState = state.value
-        mutableState.value = currentState.copy(messageSendingStatusEffect = Effect.of(messageSendingStatus))
+        mutableState.update { it.copy(messageSendingStatusEffect = Effect.of(messageSendingStatus)) }
     }
 
     private fun emitNewStateForIntent(intent: Intent) {
         val currentState = state.value
         if (intent.isStartedFromLauncher()) {
-
             mutableState.value = currentState.copy(startedFromLauncher = true)
         } else if (!currentState.startedFromLauncher) {
-            val intentShareInfo = intent.getShareInfo()
-            if (intentShareInfo.isNotEmpty()) {
-                emitNewStateForShareVia(intentShareInfo)
-            }
+            emitNavigationForIntent(intent)
         } else {
             Timber.d("Share intent is not processed as this instance was started from launcher!")
         }
+
+        emitNavigationForIntent(intent)
     }
 
-    private fun emitNewStateForShareVia(intentShareInfo: IntentShareInfo) {
-        val currentState = state.value
-        mutableState.value = currentState.copy(
-            navigateToEffect = Effect.of(
-                NavigationEffect.NavigateTo(
-                    Destination.Screen.ShareFileComposer(DraftAction.PrefillForShare(intentShareInfo.encode()))
-                )
-            )
-        )
+    private fun emitNavigationForIntent(intent: Intent) {
+        val isNotificationIntent = intent.data?.host == NotificationsDeepLinkHelper.NotificationHost
+
+        val event = when {
+            isNotificationIntent -> NavigationEffect.NavigateToUri(intent.data!!) // Smart null check not triggered
+            else -> {
+                val intentShareInfo = intent.getShareInfo()
+                    .takeIf { it.isNotEmpty() }
+                    ?: return Timber.e("Unable to determine uri from share intent.")
+
+                val draftAction = DraftAction.PrefillForShare(intentShareInfo.encode())
+                NavigationEffect.NavigateTo(Destination.Screen.ShareFileComposer(draftAction))
+            }
+        }
+
+        mutableState.update { it.copy(navigateToEffect = Effect.of(event)) }
     }
 }

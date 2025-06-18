@@ -18,10 +18,12 @@
 
 package ch.protonmail.android.navigation.model
 
+import android.net.Uri
 import androidx.navigation.NavOptions
 
 sealed interface NavigationEffect {
     data class NavigateTo(val route: String, val navOptions: NavOptions? = null) : NavigationEffect
+    data class NavigateToUri(val uri: Uri, val navOptions: NavOptions? = null) : NavigationEffect
     data object PopBackStack : NavigationEffect
     data class PopBackStackTo(val route: String, val inclusive: Boolean) : NavigationEffect
 }

@@ -38,12 +38,16 @@ class NotificationsDeepLinkHelperImpl @Inject constructor(
         buildMessageDeepLinkUri(notificationId, messageId, userId),
         context,
         MainActivity::class.java
-    )
+    ).apply {
+        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+    }
 
     override fun buildMessageGroupDeepLinkIntent(notificationId: String, userId: String): Intent = Intent(
         Intent.ACTION_VIEW,
         buildMessageGroupDeepLinkUri(notificationId, userId),
         context,
         MainActivity::class.java
-    )
+    ).apply {
+        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+    }
 }

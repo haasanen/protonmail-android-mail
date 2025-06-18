@@ -39,7 +39,7 @@ import ch.protonmail.android.maildetail.presentation.util.ProtonCalendarUtil
 import ch.protonmail.android.navigation.Launcher
 import ch.protonmail.android.navigation.LauncherViewModel
 import ch.protonmail.android.navigation.model.LauncherState
-import ch.protonmail.android.navigation.share.ShareIntentObserver
+import ch.protonmail.android.navigation.share.NewIntentObserver
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var deviceCapabilities: DeviceCapabilities
 
     @Inject
-    lateinit var shareIntentObserver: ShareIntentObserver
+    lateinit var newIntentObserver: NewIntentObserver
 
     private val launcherViewModel: LauncherViewModel by viewModels()
 
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         launcherViewModel.register(this)
 
         // Do not handle share intents for Alpha, composer is hidden
-//        shareIntentObserver.onNewIntent(intent)
+//        newIntentObserver.onNewIntent(intent)
 
         disableRecentAppsScreenshotPreview()
 
@@ -94,6 +94,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        newIntentObserver.onNewIntent(intent)
     }
 
     private fun disableRecentAppsScreenshotPreview() {

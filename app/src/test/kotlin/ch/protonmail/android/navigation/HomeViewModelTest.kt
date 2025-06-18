@@ -30,19 +30,21 @@ import ch.protonmail.android.mailcommon.domain.sample.UserSample
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatFullDate
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
-import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
-import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.MarkMessageSendingStatusesAsSeen
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveSendingMessagesStatus
 import ch.protonmail.android.mailcomposer.domain.usecase.UndoSendMessage
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordMailboxScreenView
+import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
+import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
 import ch.protonmail.android.mailpinlock.domain.usecase.ShouldPresentPinInsertionScreen
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.navigation.model.HomeState
-import ch.protonmail.android.navigation.share.ShareIntentObserver
+import ch.protonmail.android.navigation.model.NavigationEffect
+import ch.protonmail.android.navigation.share.NewIntentObserver
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -66,6 +68,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import kotlin.time.DurationUnit
 import kotlin.time.Instant
 import kotlin.time.toDuration
@@ -94,7 +97,7 @@ class HomeViewModelTest {
         every { this@mockk.invoke() } returns flowOf(false)
     }
 
-    private val shareIntentObserver = mockk<ShareIntentObserver>(relaxUnitFun = true) {
+    private val newIntentObserver = mockk<NewIntentObserver>(relaxUnitFun = true) {
         every { this@mockk() } returns emptyFlow()
     }
 
@@ -115,7 +118,7 @@ class HomeViewModelTest {
             formatFullDate,
             cancelScheduleSendMessage,
             observePrimaryUserId,
-            shareIntentObserver
+            newIntentObserver
         )
     }
 
@@ -149,7 +152,7 @@ class HomeViewModelTest {
             action = Intent.ACTION_MAIN,
             data = null
         )
-        every { shareIntentObserver() } returns flowOf(mainIntent)
+        every { newIntentObserver() } returns flowOf(mainIntent)
 
         // When
         homeViewModel.state.test {
@@ -272,7 +275,9 @@ class HomeViewModelTest {
     fun `should emit a new state with navigation effect when a share intent is received`() = runTest {
         // Given
         val fileUriStr = "content://media/1234"
-        val fileUri = mockk<Uri>()
+        val fileUri = mockk<Uri> {
+            every { this@mockk.host } returns null
+        }
         val intentShareInfo = IntentShareInfo.Empty.copy(
             attachmentUris = listOf(fileUriStr)
         )
@@ -285,7 +290,7 @@ class HomeViewModelTest {
         every { any<Intent>().getShareInfo() } returns intentShareInfo
 
         every { shouldPresentPinInsertionScreen() } returns flowOf()
-        every { shareIntentObserver() } returns flowOf(shareIntent)
+        every { newIntentObserver() } returns flowOf(shareIntent)
 
         // When + Then
         homeViewModel.state.test {
@@ -297,7 +302,9 @@ class HomeViewModelTest {
     @Test
     fun `should not emit a new navigation state when file share info is empty`() = runTest {
         // Given
-        val fileUri = mockk<Uri>()
+        val fileUri = mockk<Uri> {
+            every { this@mockk.host } returns null
+        }
         val shareIntent = mockIntent(
             action = Intent.ACTION_VIEW,
             data = fileUri
@@ -307,7 +314,7 @@ class HomeViewModelTest {
         every { any<Intent>().getShareInfo() } returns IntentShareInfo.Empty
 
         every { shouldPresentPinInsertionScreen() } returns flowOf()
-        every { shareIntentObserver() } returns flowOf(shareIntent)
+        every { newIntentObserver() } returns flowOf(shareIntent)
 
         // When + Then
         homeViewModel.state.test {
@@ -320,7 +327,9 @@ class HomeViewModelTest {
     fun `should not emit a new navigation state when activity was started from launcher`() = runTest {
         // Given
         val fileUriStr = "content://media/1234"
-        val fileUri = mockk<Uri>()
+        val fileUri = mockk<Uri> {
+            every { this@mockk.host } returns null
+        }
         val intentShareInfo = IntentShareInfo.Empty.copy(
             attachmentUris = listOf(fileUriStr)
         )
@@ -337,12 +346,33 @@ class HomeViewModelTest {
         every { any<Intent>().getShareInfo() } returns intentShareInfo
 
         every { shouldPresentPinInsertionScreen() } returns flowOf()
-        every { shareIntentObserver() } returns flowOf(mainIntent, shareIntent)
+        every { newIntentObserver() } returns flowOf(mainIntent, shareIntent)
 
         // When + Then
         homeViewModel.state.test {
-            val actualItem = awaitItem()
-            assertNull(actualItem.navigateToEffect.consume())
+            val effect = awaitItem().navigateToEffect.consume()
+            assertTrue { effect is NavigationEffect.NavigateTo }
+        }
+    }
+
+    @Test
+    fun `should emit a new state with navigation effect when a notification intent is received`() = runTest {
+        // Given
+        val uri = mockk<Uri> {
+            every { this@mockk.host } returns NotificationsDeepLinkHelper.NotificationHost
+        }
+
+        val shareIntent = mockIntent(
+            action = Intent.ACTION_VIEW,
+            data = uri
+        )
+
+        every { newIntentObserver() } returns flowOf(shareIntent)
+
+        // When + Then
+        homeViewModel.state.test {
+            val effect = awaitItem().navigateToEffect.consume()
+            assertTrue { effect is NavigationEffect.NavigateToUri }
         }
     }
 

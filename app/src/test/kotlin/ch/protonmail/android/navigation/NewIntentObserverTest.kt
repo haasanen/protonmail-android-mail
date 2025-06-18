@@ -21,20 +21,21 @@ package ch.protonmail.android.navigation
 import android.content.Intent
 import app.cash.turbine.test
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
-import ch.protonmail.android.navigation.share.ShareIntentObserver
+import ch.protonmail.android.navigation.share.NewIntentObserver
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertEquals
 
-class ShareIntentObserverTest {
+class NewIntentObserverTest {
 
-    private lateinit var shareIntentObserver: ShareIntentObserver
+    private lateinit var newIntentObserver: NewIntentObserver
 
     @Before
     fun setUp() {
-        shareIntentObserver = ShareIntentObserver()
+        newIntentObserver = NewIntentObserver()
     }
 
     @Test
@@ -45,12 +46,11 @@ class ShareIntentObserverTest {
         }
 
         // When
-        shareIntentObserver.onNewIntent(intent)
+        newIntentObserver.onNewIntent(intent)
 
         // Then
-        shareIntentObserver().test {
-            val actual = awaitItem()
-            assert(actual == intent)
+        newIntentObserver().test {
+            assertEquals(intent, awaitItem())
         }
     }
 
@@ -62,12 +62,11 @@ class ShareIntentObserverTest {
         }
 
         // When
-        shareIntentObserver.onNewIntent(intent)
+        newIntentObserver.onNewIntent(intent)
 
         // Then
-        shareIntentObserver().test {
-            val actual = awaitItem()
-            assert(actual == intent)
+        newIntentObserver().test {
+            assertEquals(intent, awaitItem())
         }
     }
 
@@ -79,12 +78,11 @@ class ShareIntentObserverTest {
         }
 
         // When
-        shareIntentObserver.onNewIntent(intent)
+        newIntentObserver.onNewIntent(intent)
 
         // Then
-        shareIntentObserver().test {
-            val actual = awaitItem()
-            assert(actual == intent)
+        newIntentObserver().test {
+            assertEquals(intent, awaitItem())
         }
     }
 
@@ -96,12 +94,29 @@ class ShareIntentObserverTest {
         }
 
         // When
-        shareIntentObserver.onNewIntent(intent)
+        newIntentObserver.onNewIntent(intent)
 
         // Then
-        shareIntentObserver().test {
-            val actual = awaitItem()
-            assert(actual == intent)
+        newIntentObserver().test {
+            assertEquals(intent, awaitItem())
+        }
+    }
+
+
+    @Test
+    fun `should emit share intent for a notification action`() = runTest {
+        // Given
+        val intent = mockk<Intent>(relaxed = true) {
+            every { action } returns Intent.ACTION_VIEW
+            every { data?.host } returns NotificationsDeepLinkHelper.NotificationHost
+        }
+
+        // When
+        newIntentObserver.onNewIntent(intent)
+
+        // Then
+        newIntentObserver().test {
+            assertEquals(intent, awaitItem())
         }
     }
 
@@ -113,27 +128,10 @@ class ShareIntentObserverTest {
         }
 
         // When
-        shareIntentObserver.onNewIntent(intent)
+        newIntentObserver.onNewIntent(intent)
 
         // Then
-        shareIntentObserver().test {
-            expectNoEvents()
-        }
-    }
-
-    @Test
-    fun `should not emit share intent for a notification action`() = runTest {
-        // Given
-        val intent = mockk<Intent>(relaxed = true) {
-            every { action } returns Intent.ACTION_VIEW
-            every { data?.host } returns NotificationsDeepLinkHelper.NotificationHost
-        }
-
-        // When
-        shareIntentObserver.onNewIntent(intent)
-
-        // Then
-        shareIntentObserver().test {
+        newIntentObserver().test {
             expectNoEvents()
         }
     }
