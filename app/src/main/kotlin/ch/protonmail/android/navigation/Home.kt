@@ -33,11 +33,14 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -120,6 +123,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.proton.android.core.accountmanager.presentation.manager.addAccountsManager
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -311,6 +315,19 @@ fun Home(
     }
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+    // Prevents the drawer to briefly flash by setting alpha to 0f, it's a workaround
+    // due to M3 library DrawerState behaviour.
+    // See https://issuetracker.google.com/issues/366272542#comment1
+    var drawerAlpha by rememberSaveable {
+        mutableFloatStateOf(0f)
+    }
+
+    LaunchedEffect(Unit) {
+        delay(500.milliseconds)
+        drawerAlpha = 1f
+    }
+
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val onBottomSheetDismissed: () -> Unit = {
@@ -416,6 +433,7 @@ fun Home(
             drawerState = drawerState,
             drawerContent = {
                 ModalDrawerSheet(
+                    modifier = Modifier.alpha(drawerAlpha),
                     drawerContentColor = ProtonTheme.colors.sidebarTextNorm,
                     drawerContainerColor = ProtonTheme.colors.sidebarBackground,
                     windowInsets = WindowInsets(
