@@ -101,6 +101,8 @@ object MailDimens {
         val AvatarSize = 40.dp
     }
 
+    val ContactAvatarSize = 100.dp
+
     val NotificationDotSize = 8.dp
 
     val ProtonCalendarIconSize = 40.dp

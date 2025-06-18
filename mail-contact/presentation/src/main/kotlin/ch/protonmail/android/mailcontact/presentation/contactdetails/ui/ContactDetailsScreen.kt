@@ -1,0 +1,356 @@
+/*
+ * Copyright (c) 2022 Proton Technologies AG
+ * This file is part of Proton Technologies AG and Proton Mail.
+ *
+ * Proton Mail is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Proton Mail is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.protonmail.android.mailcontact.presentation.contactdetails.ui
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.tooling.preview.Preview
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonErrorMessage
+import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
+import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcommon.presentation.model.string
+import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
+import ch.protonmail.android.mailcontact.presentation.R
+import ch.protonmail.android.mailcontact.presentation.contactdetails.model.AvatarUiModel
+import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemGroupUiModel
+import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemType
+import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemUiModel
+import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsState
+import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsUiModel
+import ch.protonmail.android.mailcontact.presentation.contactdetails.model.HeaderUiModel
+import ch.protonmail.android.mailcontact.presentation.contactdetails.model.QuickActionUiModel
+import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactDelete
+import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactEdit
+
+@Composable
+fun ContactDetailsScreen(
+    state: ContactDetailsState,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Scaffold(
+        modifier = modifier,
+        containerColor = ProtonTheme.colors.backgroundInvertedNorm,
+        topBar = { ContactDetailsTopBar(state, onBack) }
+    ) {
+        when (state) {
+            is ContactDetailsState.Data -> ContactDetails(
+                uiModel = state.uiModel,
+                modifier = Modifier.padding(it)
+            )
+            is ContactDetailsState.Error -> ProtonErrorMessage(
+                errorMessage = stringResource(id = R.string.contact_details_loading_error)
+            )
+            is ContactDetailsState.Loading -> ProtonCenteredProgress()
+        }
+    }
+}
+
+@Composable
+private fun ContactDetails(uiModel: ContactDetailsUiModel, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(ProtonDimens.Spacing.Large),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        when (val avatarUiModel = uiModel.avatarUiModel) {
+            is AvatarUiModel.Initials -> InitialsContactAvatar(
+                initials = avatarUiModel.value,
+                color = avatarUiModel.color
+            )
+            is AvatarUiModel.Photo -> ImageContactAvatar(
+                imageBitmap = avatarUiModel.bitmap
+            )
+        }
+
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+        Text(
+            text = uiModel.headerUiModel.displayName,
+            style = ProtonTheme.typography.titleLargeNorm
+        )
+        uiModel.headerUiModel.displayEmailAddress?.let {
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Compact))
+            Text(
+                text = it,
+                style = ProtonTheme.typography.bodyMediumWeak
+            )
+        }
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
+
+        ContactDetailsQuickActions(quickActionUiModels = uiModel.quickActionUiModels)
+
+        uiModel.contactDetailsItemGroupUiModels.forEachIndexed { index, groupUiModel ->
+            ContactDetailsItemGroup(itemGroupUiModel = groupUiModel)
+            if (index != uiModel.contactDetailsItemGroupUiModels.size - 1) {
+                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+            }
+        }
+    }
+}
+
+@Composable
+private fun ContactDetailsTopBar(state: ContactDetailsState, onBack: () -> Unit) {
+    ProtonTopAppBar(
+        modifier = Modifier.fillMaxWidth(),
+        backgroundColor = ProtonTheme.colors.backgroundInvertedNorm,
+        title = {},
+        navigationIcon = {
+            IconButton(onClick = onBack) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_arrow_back),
+                    tint = ProtonTheme.colors.iconNorm,
+                    contentDescription = stringResource(id = R.string.presentation_back)
+                )
+            }
+        },
+        actions = {
+            if (state is ContactDetailsState.Data) {
+                if (ContactEdit.value) {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_proton_pen),
+                            tint = ProtonTheme.colors.iconNorm,
+                            contentDescription = stringResource(
+                                id = R.string.contact_details_edit_contact_content_description
+                            )
+                        )
+                    }
+                }
+                if (ContactDelete.value) {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_proton_trash),
+                            tint = ProtonTheme.colors.iconNorm,
+                            contentDescription = stringResource(
+                                id = R.string.contact_details_delete_contact_content_description
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    )
+}
+
+@Composable
+private fun ContactDetailsQuickActions(quickActionUiModels: List<QuickActionUiModel>) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = ProtonDimens.Spacing.Large)
+            .background(color = ProtonTheme.colors.backgroundInvertedNorm)
+    ) {
+        quickActionUiModels.forEachIndexed { index, uiModel ->
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        enabled = uiModel.isEnabled,
+                        role = Role.Button,
+                        onClick = {}
+                    )
+                    .background(
+                        color = ProtonTheme.colors.backgroundInvertedSecondary,
+                        shape = ProtonTheme.shapes.extraLarge
+                    )
+                    .padding(ProtonDimens.Spacing.Large),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = uiModel.icon),
+                    tint = if (uiModel.isEnabled) ProtonTheme.colors.iconNorm else ProtonTheme.colors.iconDisabled,
+                    contentDescription = NO_CONTENT_DESCRIPTION
+                )
+                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
+                Text(
+                    text = stringResource(id = uiModel.label),
+                    style = ProtonTheme.typography.bodyMedium.copy(
+                        color = if (uiModel.isEnabled) ProtonTheme.colors.textWeak else ProtonTheme.colors.textDisabled
+                    )
+                )
+            }
+            if (index != quickActionUiModels.size - 1) {
+                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
+            }
+        }
+    }
+}
+
+@Composable
+private fun ContactDetailsItemGroup(itemGroupUiModel: ContactDetailsItemGroupUiModel) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = ProtonTheme.colors.backgroundInvertedSecondary,
+                shape = ProtonTheme.shapes.extraLarge
+            )
+    ) {
+        itemGroupUiModel.contactDetailsItemUiModels.forEachIndexed { index, uiModel ->
+            Column(
+                modifier = Modifier.padding(ProtonDimens.Spacing.Large)
+            ) {
+                Text(
+                    text = uiModel.label.string(),
+                    style = ProtonTheme.typography.bodyMedium.copy(
+                        color = ProtonTheme.colors.textHint
+                    )
+                )
+                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
+                Text(
+                    text = uiModel.value.string(),
+                    style = ProtonTheme.typography.bodyLarge.copy(
+                        color = if (uiModel.contactDetailsItemType == ContactDetailsItemType.Other) {
+                            ProtonTheme.colors.textNorm
+                        } else {
+                            ProtonTheme.colors.textAccent
+                        }
+                    )
+                )
+            }
+            if (index != itemGroupUiModel.contactDetailsItemUiModels.size - 1) {
+                MailDivider()
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ContactDetailsScreenPreview() {
+    ContactDetailsScreen(
+        state = ContactDetailsState.Data(
+            uiModel = ContactDetailsUiModel(
+                avatarUiModel = AvatarUiModel.Initials(
+                    value = "PM",
+                    color = Color.Blue
+                ),
+                headerUiModel = HeaderUiModel(
+                    displayName = "Proton Mail",
+                    displayEmailAddress = "pm@pm.me"
+                ),
+                quickActionUiModels = listOf(
+                    QuickActionUiModel(
+                        icon = R.drawable.ic_proton_pen_square,
+                        label = R.string.contact_details_quick_action_message,
+                        isEnabled = true
+                    ),
+                    QuickActionUiModel(
+                        icon = R.drawable.ic_proton_phone,
+                        label = R.string.contact_details_quick_action_call,
+                        isEnabled = false
+                    ),
+                    QuickActionUiModel(
+                        icon = R.drawable.ic_proton_arrow_up_from_square,
+                        label = R.string.contact_details_quick_action_share,
+                        isEnabled = true
+                    )
+                ),
+                contactDetailsItemGroupUiModels = listOf(
+                    ContactDetailsItemGroupUiModel(
+                        contactDetailsItemUiModels = listOf(
+                            ContactDetailsItemUiModel(
+                                contactDetailsItemType = ContactDetailsItemType.Email,
+                                label = TextUiModel.Text("Work"),
+                                value = TextUiModel.Text("pm@pm.me")
+                            ),
+                            ContactDetailsItemUiModel(
+                                contactDetailsItemType = ContactDetailsItemType.Email,
+                                label = TextUiModel.Text("Home"),
+                                value = TextUiModel.Text("proton@pm.me")
+                            )
+                        )
+                    ),
+                    ContactDetailsItemGroupUiModel(
+                        contactDetailsItemUiModels = listOf(
+                            ContactDetailsItemUiModel(
+                                contactDetailsItemType = ContactDetailsItemType.Phone,
+                                label = TextUiModel.Text("Home"),
+                                value = TextUiModel.Text("+370(637) 98 998")
+                            )
+                        )
+                    ),
+                    ContactDetailsItemGroupUiModel(
+                        contactDetailsItemUiModels = listOf(
+                            ContactDetailsItemUiModel(
+                                contactDetailsItemType = ContactDetailsItemType.Other,
+                                label = TextUiModel.Text("Address"),
+                                value = TextUiModel.Text("Lettensteg 10, 8037 Zurich")
+                            )
+                        )
+                    ),
+                    ContactDetailsItemGroupUiModel(
+                        contactDetailsItemUiModels = listOf(
+                            ContactDetailsItemUiModel(
+                                contactDetailsItemType = ContactDetailsItemType.Other,
+                                label = TextUiModel.Text("Birthday"),
+                                value = TextUiModel.Text("Dec 09, 2006")
+                            )
+                        )
+                    ),
+                    ContactDetailsItemGroupUiModel(
+                        contactDetailsItemUiModels = listOf(
+                            ContactDetailsItemUiModel(
+                                contactDetailsItemType = ContactDetailsItemType.Other,
+                                label = TextUiModel.Text("Note"),
+                                value = TextUiModel.Text("This is a note.")
+                            )
+                        )
+                    )
+                )
+            )
+        ),
+        onBack = {}
+    )
+}
