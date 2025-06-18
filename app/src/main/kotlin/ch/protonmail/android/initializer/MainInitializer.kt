@@ -58,6 +58,7 @@ class MainInitializer : Initializer<Unit> {
         LoggerInitializer::class.java,
         StrictModeInitializer::class.java,
         ThemeObserverInitializer::class.java,
+        AutoLockInitializer::class.java,
         NotificationInitializer::class.java,
         NotificationHandlersInitializer::class.java,
         RustMailCommonInitializer::class.java,

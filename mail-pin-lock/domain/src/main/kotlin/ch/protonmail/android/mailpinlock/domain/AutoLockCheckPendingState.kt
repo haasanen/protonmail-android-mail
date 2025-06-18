@@ -38,7 +38,7 @@ class AutoLockCheckPendingState @Inject constructor() {
      */
     val state = mutableState.asStateFlow()
 
-    suspend fun emitOperationSignal(value: AutoLockCheckPending) {
-        mutableState.emit(value)
+    fun emitCheckPendingState(value: AutoLockCheckPending) {
+        mutableState.tryEmit(value)
     }
 }

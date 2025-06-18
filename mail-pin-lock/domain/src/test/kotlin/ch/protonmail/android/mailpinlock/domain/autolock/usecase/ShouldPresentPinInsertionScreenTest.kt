@@ -36,35 +36,31 @@ package ch.protonmail.android.mailpinlock.domain.autolock.usecase
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
 import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.domain.usecase.ShouldPresentPinInsertionScreen
-import io.mockk.called
 import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.test.assertTrue
 
 internal class ShouldPresentPinInsertionScreenTest {
 
-    private val appInBackgroundState = mockk<AppInBackgroundState>()
     private val autoLockRepository = mockk<AutoLockRepository>()
 
-    private val autoLockCheckPendingState = AutoLockCheckPendingState()
+    private val autoLockCheckPendingState = spyk(AutoLockCheckPendingState())
 
     private fun useCase() = ShouldPresentPinInsertionScreen(
-        appInBackgroundState,
         autoLockRepository,
         autoLockCheckPendingState = autoLockCheckPendingState
     )
@@ -75,25 +71,36 @@ internal class ShouldPresentPinInsertionScreenTest {
     }
 
     @Test
-    fun `should not indicate to display pin screen and do nothing when the app is in the background`() = runTest {
+    fun `should not trigger pin request when shouldShowPin is false`() = runTest {
         // Given
-        expectAppInBackground()
+        coEvery { autoLockRepository.shouldAutoLock() } returns false.right()
 
         // When
         val result = useCase().invoke().first()
 
         // Then
         assertFalse(result)
-        coVerify {
-            autoLockRepository wasNot called
-        }
     }
 
     @Test
-    fun `should indicate to display pin screen when the app is not background AND shouldShowPin is TRUE`() = runTest {
+    fun `should not trigger pin request when it is already completed`() = runTest {
         // Given
-        expectAppInForeground()
         coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
+        autoLockCheckPendingState.emitCheckPendingState(AutoLockCheckPending(false))
+
+        // When
+        val result = useCase().invoke().first()
+
+        // Then
+        assertFalse(result)
+    }
+
+    @Test
+    fun `should trigger pin request when it's not already completed`() = runTest {
+        // Given
+        coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
+        autoLockCheckPendingState.emitCheckPendingState(AutoLockCheckPending(true))
+
         // When
         val result = useCase().invoke().first()
 
@@ -102,25 +109,10 @@ internal class ShouldPresentPinInsertionScreenTest {
     }
 
     @Test
-    fun `should NOT indicate to display pin screen when the app is not background AND shouldShowPin is FALSE`() =
-        runTest {
-            // Given
-            expectAppInForeground()
-            coEvery { autoLockRepository.shouldAutoLock() } returns false.right()
-
-            // When
-            val result = useCase().invoke().first()
-
-            // Then
-            assertFalse(result)
-        }
-
-    @Test
-    fun `should not trigger pin request when app is in foreground and it is already completed`() = runTest {
+    fun `should not trigger pin request when it's not necessary`() = runTest {
         // Given
-        expectAppInForeground()
-        coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
-        autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(false))
+        coEvery { autoLockRepository.shouldAutoLock() } returns false.right()
+        autoLockCheckPendingState.emitCheckPendingState(AutoLockCheckPending(true))
 
         // When
         val result = useCase().invoke().first()
@@ -129,11 +121,16 @@ internal class ShouldPresentPinInsertionScreenTest {
         assertFalse(result)
     }
 
-    private fun expectAppInForeground() {
-        every { appInBackgroundState.observe() } returns flowOf(false)
-    }
+    @Test
+    fun `should not trigger pin request on pending attempt but shouldAutoLock fails`() = runTest {
+        // Given
+        coEvery { autoLockRepository.shouldAutoLock() } returns DataError.Local.NoDataCached.left()
+        autoLockCheckPendingState.emitCheckPendingState(AutoLockCheckPending(true))
 
-    private fun expectAppInBackground() {
-        every { appInBackgroundState.observe() } returns flowOf(true)
+        // When
+        val result = useCase().invoke().first()
+
+        // Then
+        assertFalse(result)
     }
 }

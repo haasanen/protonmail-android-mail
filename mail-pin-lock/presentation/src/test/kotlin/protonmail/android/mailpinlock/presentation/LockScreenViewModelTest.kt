@@ -123,7 +123,7 @@ internal class LockScreenViewModelTest {
 
         // Then
         coVerify { autoLockRepository.signalBiometricsCheckPassed() }
-        coVerify { autoLockPendingState.emitOperationSignal(AutoLockCheckPending(false)) }
+        coVerify { autoLockPendingState.emitCheckPendingState(AutoLockCheckPending(false)) }
     }
 
     private fun viewModel() = LockScreenViewModel(

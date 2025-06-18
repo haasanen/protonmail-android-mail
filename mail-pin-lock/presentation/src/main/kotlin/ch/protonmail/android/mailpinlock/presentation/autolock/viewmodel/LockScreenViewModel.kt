@@ -57,7 +57,7 @@ class LockScreenViewModel @Inject constructor(
     fun onSuccessfulBiometrics() {
         viewModelScope.launch {
             autoLockRepository.signalBiometricsCheckPassed()
-            autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(false))
+            autoLockCheckPendingState.emitCheckPendingState(AutoLockCheckPending(false))
         }
     }
 }

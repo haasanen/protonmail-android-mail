@@ -19,38 +19,30 @@
 package ch.protonmail.android.mailpinlock.domain.usecase
 
 import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
-import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
 import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
 
 class ShouldPresentPinInsertionScreen @Inject constructor(
-    private val appInBackgroundState: AppInBackgroundState,
     private val autoLockRepository: AutoLockRepository,
     private val autoLockCheckPendingState: AutoLockCheckPendingState
 ) {
 
-    operator fun invoke(): Flow<Boolean> = combine(
-        appInBackgroundState.observe(),
-        autoLockCheckPendingState.state
-    ) { inBackground, isAutoLockPending ->
+    operator fun invoke(): Flow<Boolean> = autoLockCheckPendingState.state
+        .map { pendingCheck ->
+            if (pendingCheck.value) {
+                val shouldLock = autoLockRepository.shouldAutoLock()
+                    .getOrElse {
+                        Timber.tag("AutoLock").e("Unable to get a value for shouldAutolock")
+                        false
+                    }
 
-        if (inBackground) {
-            // Reset the flag when app goes to background
-            autoLockCheckPendingState.emitOperationSignal(AutoLockCheckPending(true))
-            false
-        } else if (!isAutoLockPending.value) {
-            false
-        } else {
-            autoLockRepository.shouldAutoLock()
-                .getOrElse {
-                    Timber.e("ShouldPresentPinInsertionScreen unable to get a value for shouldAutoLock")
-                    false
-                }
+                shouldLock
+            } else {
+                false
+            }
         }
-    }
 }
