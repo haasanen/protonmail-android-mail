@@ -78,8 +78,8 @@ import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcomposer.presentation.R
-import kotlin.time.Clock
 import kotlin.time.Instant
+import java.time.Instant as JavaInstant
 import kotlin.time.toKotlinInstant
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,10 +94,19 @@ fun ScheduleSendTimePickerBottomSheetContent(
     val datePickerState = rememberDatePickerState(
         initialSelectedDate = LocalDate.now(),
         selectableDates = object : SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean =
-                utcTimeMillis >= Clock.System.now().toEpochMilliseconds() - MILLIS_IN_A_DAY
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                val timestamp = JavaInstant.ofEpochMilli(utcTimeMillis)
+                val zoneId = ZoneId.systemDefault()
 
-            override fun isSelectableYear(year: Int): Boolean = year >= LocalDate.now().year
+                val today = LocalDate.now(zoneId)
+                val eightyNineDaysFromNow = today.plusDays(89)
+                val dateOfTimestamp = timestamp.atZone(zoneId).toLocalDate()
+
+                val isInRange = !dateOfTimestamp.isBefore(today) && !dateOfTimestamp.isAfter(eightyNineDaysFromNow)
+                return isInRange
+            }
+
+            override fun isSelectableYear(year: Int): Boolean = year == LocalDate.now().year
         }
     )
     Column(
@@ -356,8 +365,6 @@ private fun TopBar(
 
 private const val INITIAL_TIME_HOUR = 8
 private const val INITIAL_TIME_MINUTE = 0
-
-private const val MILLIS_IN_A_DAY = 1000 * 60 * 60 * 24
 
 @Preview(showBackground = true)
 @Composable
