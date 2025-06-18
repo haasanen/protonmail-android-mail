@@ -19,6 +19,8 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -26,12 +28,14 @@ import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
@@ -51,6 +55,7 @@ import androidx.compose.material3.getSelectedDate
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -187,12 +192,13 @@ private fun ScheduleSendDatePicker(textFieldState: TextFieldState, modifier: Mod
             override fun isSelectableYear(year: Int): Boolean = year >= LocalDate.now().year
         }
     )
+    val formatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
 
     LaunchedEffect(datePickerState.getSelectedDate()) {
         Timber.d("date picker: selected date changed ${datePickerState.getSelectedDate()}")
         textFieldState.edit {
             delete(0, length)
-            insert(0, datePickerState.getSelectedDate().toString())
+            insert(0, datePickerState.getSelectedDate()?.format(formatter) ?: "")
         }
     }
 
@@ -236,7 +242,8 @@ private fun ScheduleSendDatePicker(textFieldState: TextFieldState, modifier: Mod
                                 shape = ProtonTheme.shapes.medium
                             )
                             .padding(ProtonDimens.Spacing.Medium)
-                            .align(Alignment.CenterVertically),
+                            .align(Alignment.CenterVertically)
+                            .width(IntrinsicSize.Min),
                         state = textFieldState,
                         readOnly = true,
                         textStyle = ProtonTheme.typography.bodyLargeNorm
