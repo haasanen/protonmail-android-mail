@@ -18,28 +18,24 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.util.Calendar
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.input.delete
-import androidx.compose.foundation.text.input.insert
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
@@ -50,18 +46,25 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimeInput
+import androidx.compose.material3.TimePickerDefaults
+import androidx.compose.material3.TimePickerDialog
+import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.getSelectedDate
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -72,7 +75,6 @@ import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcomposer.presentation.R
-import timber.log.Timber
 import kotlin.time.Clock
 import kotlin.time.Instant
 
@@ -84,6 +86,7 @@ fun ScheduleSendTimePickerBottomSheetContent(
     modifier: Modifier = Modifier
 ) {
 
+    val timePickerState = rememberTimePickerState(initialHour = INITIAL_TIME_HOUR, initialMinute = INITIAL_TIME_MINUTE)
     val datePickerState = rememberDatePickerState(
         initialSelectedDate = LocalDate.now(),
         selectableDates = object : SelectableDates {
@@ -122,11 +125,7 @@ fun ScheduleSendTimePickerBottomSheetContent(
                 .padding(ProtonDimens.Spacing.Large)
         ) {
 
-            ScheduleSendTime(
-                onPickCustomTime = {
-                    // Show dialog to allow picking a custom time
-                }
-            )
+            ScheduleSendTime(timePickerState)
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
 
@@ -135,9 +134,21 @@ fun ScheduleSendTimePickerBottomSheetContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ScheduleSendTime(onPickCustomTime: () -> Unit, modifier: Modifier = Modifier) {
-    val timeTextFieldState = rememberTextFieldState(initialText = DEFAULT_SEND_TIME)
+private fun ScheduleSendTime(timePickerState: TimePickerState, modifier: Modifier = Modifier) {
+
+    val pickedTime = remember { mutableStateOf("") }
+    val showTimePicker = remember { mutableStateOf(false) }
+    val calendar = remember { Calendar.getInstance() }
+    val formatter = remember { SimpleDateFormat("hh:mm a", Locale.current.platformLocale) }
+
+    LaunchedEffect(timePickerState.hour, timePickerState.minute) {
+        calendar.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+        calendar.set(Calendar.MINUTE, timePickerState.minute)
+        calendar.isLenient = false
+        pickedTime.value = formatter.format(calendar.time)
+    }
 
     Row(
         modifier = modifier
@@ -161,23 +172,57 @@ private fun ScheduleSendTime(onPickCustomTime: () -> Unit, modifier: Modifier = 
 
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
 
-        BasicTextField(
+        Button(
             modifier = Modifier
                 .background(
                     color = ProtonTheme.colors.backgroundInvertedDeep,
                     shape = ProtonTheme.shapes.medium
                 )
-                .clickable(
-                    role = Role.Button,
-                    onClick = { onPickCustomTime() }
+                .height(42.dp)
+                .padding(horizontal = 0.dp),
+            onClick = { showTimePicker.value = true },
+            colors = ButtonDefaults.buttonColors().copy(
+                containerColor = ProtonTheme.colors.backgroundInvertedDeep
+            ),
+            shape = ProtonTheme.shapes.medium,
+            contentPadding = PaddingValues(horizontal = ProtonDimens.Spacing.Medium)
+        ) {
+            Text(
+                modifier = Modifier,
+                text = pickedTime.value,
+                style = ProtonTheme.typography.bodyLargeNorm,
+                maxLines = 1
+            )
+        }
+    }
+
+    if (showTimePicker.value) {
+        TimePickerDialog(
+            onDismissRequest = { showTimePicker.value = false },
+            confirmButton = {
+                TextButton(onClick = { showTimePicker.value = false }) {
+                    Text(stringResource(R.string.composer_schedule_send_dialog_ok))
+                }
+            },
+            title = {
+                Text(
+                    stringResource(R.string.composer_schedule_send_dialog_enter_time),
+                    style = ProtonTheme.typography.bodyMediumNorm
                 )
-                .padding(ProtonDimens.Spacing.Medium)
-                .align(Alignment.CenterVertically)
-                .width(IntrinsicSize.Min),
-            state = timeTextFieldState,
-            readOnly = true,
-            textStyle = ProtonTheme.typography.bodyLargeNorm
-        )
+                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+            }
+        ) {
+            TimeInput(
+                state = timePickerState,
+                colors = TimePickerDefaults.colors().copy(
+                    containerColor = ProtonTheme.colors.backgroundInvertedNorm,
+                    timeSelectorSelectedContainerColor = ProtonTheme.colors.backgroundInvertedDeep,
+                    timeSelectorUnselectedContainerColor = ProtonTheme.colors.backgroundInvertedDeep,
+                    periodSelectorSelectedContainerColor = ProtonTheme.colors.interactionBrandWeakPressed,
+                    periodSelectorUnselectedContainerColor = ProtonTheme.colors.backgroundInvertedDeep
+                )
+            )
+        }
     }
 }
 
@@ -185,15 +230,11 @@ private fun ScheduleSendTime(onPickCustomTime: () -> Unit, modifier: Modifier = 
 @Composable
 private fun ScheduleSendDatePicker(datePickerState: DatePickerState, modifier: Modifier = Modifier) {
 
-    val dateTextFieldState = rememberTextFieldState()
+    val pickedDate = remember { mutableStateOf("") }
     val formatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
 
     LaunchedEffect(datePickerState.getSelectedDate()) {
-        Timber.d("date picker: selected date changed ${datePickerState.getSelectedDate()}")
-        dateTextFieldState.edit {
-            delete(0, length)
-            insert(0, datePickerState.getSelectedDate()?.format(formatter) ?: "")
-        }
+        pickedDate.value = datePickerState.getSelectedDate()?.format(formatter) ?: ""
     }
 
     Column {
@@ -229,18 +270,17 @@ private fun ScheduleSendDatePicker(datePickerState: DatePickerState, modifier: M
 
                     Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
 
-                    BasicTextField(
+                    Text(
                         modifier = Modifier
                             .background(
                                 color = ProtonTheme.colors.backgroundInvertedDeep,
                                 shape = ProtonTheme.shapes.medium
                             )
                             .padding(ProtonDimens.Spacing.Medium)
-                            .align(Alignment.CenterVertically)
-                            .width(IntrinsicSize.Min),
-                        state = dateTextFieldState,
-                        readOnly = true,
-                        textStyle = ProtonTheme.typography.bodyLargeNorm
+                            .align(Alignment.CenterVertically),
+                        text = pickedDate.value,
+                        style = ProtonTheme.typography.bodyLargeNorm,
+                        maxLines = 1
                     )
                 }
             }
@@ -305,7 +345,8 @@ private fun TopBar(
     }
 }
 
-private const val DEFAULT_SEND_TIME = "08:00"
+private const val INITIAL_TIME_HOUR = 8
+private const val INITIAL_TIME_MINUTE = 0
 
 @Preview(showBackground = true)
 @Composable
