@@ -143,10 +143,10 @@ internal class CompositeEventTest(
             ),
             arrayOf(
                 "UserChangedSender to modification",
-                CompositeEvent.UserChangedSender(senderEmail),
+                CompositeEvent.UserChangedSender(senderEmail, draftDisplayBody),
                 ComposerStateModifications(
                     mainModification = MainStateModification.UpdateSender(senderEmail),
-                    effectsModification = BottomSheetEffectsStateModification.HideBottomSheet
+                    effectsModification = ContentEffectsStateModifications.DraftSenderChanged(draftDisplayBody)
                 )
             ),
             arrayOf(

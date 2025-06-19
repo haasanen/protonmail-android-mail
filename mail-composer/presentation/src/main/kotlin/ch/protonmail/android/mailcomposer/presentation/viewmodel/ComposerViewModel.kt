@@ -35,6 +35,7 @@ import ch.protonmail.android.mailcommon.domain.model.decode
 import ch.protonmail.android.mailcommon.domain.model.hasEmailData
 import ch.protonmail.android.mailcommon.domain.network.NetworkManager
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
+import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
@@ -433,7 +434,17 @@ class ComposerViewModel @AssistedInject constructor(
         val newSender = SenderEmail(sender.email)
 
         changeSenderAddress(newSender)
-            .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnGetAddressesError) }
+            .onLeft { error ->
+                when (error) {
+                    is ChangeSenderError.AddressCanNotSend,
+                    is ChangeSenderError.AddressDisabled,
+                    is ChangeSenderError.AddressNotFound ->
+                        emitNewStateFor(EffectsEvent.ErrorEvent.OnAddressNotValidForSending)
+                    is ChangeSenderError.Other -> emitNewStateFor(EffectsEvent.ErrorEvent.OnChangeSenderFailure)
+                    ChangeSenderError.RefreshBodyError -> emitNewStateFor(EffectsEvent.ErrorEvent.OnRefreshBodyFailed)
+                }
+
+            }
             .onRight { bodyWithNewSignature ->
                 val draftDisplayBody = buildDraftDisplayBody(
                     MessageBodyWithType(bodyWithNewSignature.value, MimeTypeUiModel.Html)

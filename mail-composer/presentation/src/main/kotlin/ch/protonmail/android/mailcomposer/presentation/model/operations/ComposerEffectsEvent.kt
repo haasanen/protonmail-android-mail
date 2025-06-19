@@ -118,6 +118,9 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
                 OnStoreSubjectError -> RecoverableError.SaveSubjectFailed
                 OnSendMessageError -> RecoverableError.SendMessageFailed
                 OnGetScheduleSendOptionsError -> RecoverableError.GetScheduleSendOptionsFailed
+                OnAddressNotValidForSending -> RecoverableError.SenderChange.AddressCanNotSend
+                OnChangeSenderFailure -> RecoverableError.SenderChange.ChangeSenderFailure
+                OnRefreshBodyFailed -> RecoverableError.SenderChange.RefreshBodyFailure
             }
         )
 
@@ -130,6 +133,9 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
         data object OnStoreRecipientError : ErrorEvent
         data object OnSendMessageError : ErrorEvent
         data object OnGetScheduleSendOptionsError : ErrorEvent
+        data object OnAddressNotValidForSending : ErrorEvent
+        data object OnRefreshBodyFailed : ErrorEvent
+        data object OnChangeSenderFailure : ErrorEvent
     }
 
     sealed interface SendEvent : EffectsEvent {
