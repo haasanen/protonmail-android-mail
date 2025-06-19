@@ -31,7 +31,6 @@
   <string name="composer_error_invalid_sender">寄件者電子郵件位址無效</string>
   <string name="change_sender_button_content_description">變更寄件人</string>
   <string name="composer_change_sender_paid_feature">升級至付費方案以變更寄件者地址</string>
-  <string name="composer_error_change_sender_failed_getting_subscription">因無法取得訂購授權資料無法變更寄件者。請再試一次。</string>
   <string name="composer_error_store_draft_sender_address">未儲存寄件者地址</string>
   <string name="composer_error_store_draft_body">未儲存草稿電子郵件正文</string>
   <string name="composer_error_duplicate_recipient">已移除重複的收件人</string>

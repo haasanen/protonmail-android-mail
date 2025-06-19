@@ -31,7 +31,6 @@
   <string name="composer_error_invalid_sender">Adres verzender is ongeldig</string>
   <string name="change_sender_button_content_description">Verander afzender</string>
   <string name="composer_change_sender_paid_feature">Upgrade naar een betaald abonnement om het adres van de afzender te veranderen</string>
-  <string name="composer_error_change_sender_failed_getting_subscription">Kan de afzender niet wijzigen omdat het ophalen van het abonnement van de gebruiker is mislukt. Probeer het nog eens.</string>
   <string name="composer_error_store_draft_sender_address">Adres van de afzender werd niet bewaard</string>
   <string name="composer_error_store_draft_body">Concept e-mail bericht is niet opgeslagen</string>
   <string name="composer_error_duplicate_recipient">Dubbele ontvanger(s) verwijderd</string>

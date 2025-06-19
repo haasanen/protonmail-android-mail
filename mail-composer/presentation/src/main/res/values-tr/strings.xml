@@ -31,7 +31,6 @@
   <string name="composer_error_invalid_sender">Gönderici adresi geçersiz</string>
   <string name="change_sender_button_content_description">Göndericiyi değiştir</string>
   <string name="composer_change_sender_paid_feature">Gönderici adresini değiştirmek için ücretli bir tarifeye yükseltin</string>
-  <string name="composer_error_change_sender_failed_getting_subscription">Kuıllanıcının abonelik bilgileri alınamadığından gönderici değiştirilemedi. Yeniden deneyin.</string>
   <string name="composer_error_store_draft_sender_address">Gönderici adresi kaydedilemedi</string>
   <string name="composer_error_store_draft_body">Taslak e-postanın içeriği kaydedilemedi</string>
   <string name="composer_error_duplicate_recipient">Çift alıcılar kaldırıldı</string>

@@ -31,7 +31,6 @@
   <string name="composer_error_invalid_sender">送信者アドレスが無効</string>
   <string name="change_sender_button_content_description">送信者を変更</string>
   <string name="composer_change_sender_paid_feature">Upgrade to a paid plan to change the sender address</string>
-  <string name="composer_error_change_sender_failed_getting_subscription">ユーザーのサブスクリプションの取得に失敗したため、送信者を変更できませんでした。もう一度お試しください。</string>
   <string name="composer_error_store_draft_sender_address">下書きの送信元アドレスの保存に失敗しました</string>
   <string name="composer_error_store_draft_body">下書き本文の保存に失敗しました</string>
   <string name="composer_error_duplicate_recipient">重複した受取人(たち)が削除されました</string>

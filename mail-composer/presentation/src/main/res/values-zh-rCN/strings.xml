@@ -31,7 +31,6 @@
   <string name="composer_error_invalid_sender">发件人地址无效</string>
   <string name="change_sender_button_content_description">更改发件地址</string>
   <string name="composer_change_sender_paid_feature">升级到付费方案即可更改发件人地址</string>
-  <string name="composer_error_change_sender_failed_getting_subscription">无法更改发件人地址，系统未能获取用户订阅信息。请稍后重试。</string>
   <string name="composer_error_store_draft_sender_address">无法存储此草稿的发件人地址</string>
   <string name="composer_error_store_draft_body">无法存储此草稿正文</string>
   <string name="composer_error_duplicate_recipient">已移除重复收件人</string>

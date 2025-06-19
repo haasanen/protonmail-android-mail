@@ -31,7 +31,6 @@
   <string name="composer_error_invalid_sender">Адрес отправителя недействителен</string>
   <string name="change_sender_button_content_description">Изменить отправителя</string>
   <string name="composer_change_sender_paid_feature">Перейдите на платный тариф, чтобы изменить адрес отправителя</string>
-  <string name="composer_error_change_sender_failed_getting_subscription">Не удаётся изменить отправителя, так как не удалось получить подписку пользователя. Попробуйте ещё раз.</string>
   <string name="composer_error_store_draft_sender_address">Адрес отправителя не сохранён</string>
   <string name="composer_error_store_draft_body">Черновик письма не сохранён</string>
   <string name="composer_error_duplicate_recipient">Дублирующиеся получатели удалены</string>

@@ -31,7 +31,6 @@
   <string name="composer_error_invalid_sender">Adresa odesílatele je neplatná</string>
   <string name="change_sender_button_content_description">Změnit odesílatele</string>
   <string name="composer_change_sender_paid_feature">Pro změnu adresy odesílatele přejděte na placený tarif</string>
-  <string name="composer_error_change_sender_failed_getting_subscription">Nelze změnit odesílatele, protože selhalo získání uživatelského předplatného. Zkuste to znovu.</string>
   <string name="composer_error_store_draft_sender_address">Selhalo uložení adresy odesílatele</string>
   <string name="composer_error_store_draft_body">Selhalo uložení konceptu těla e-mailu</string>
   <string name="composer_error_duplicate_recipient">Duplicitní příjemci odebráni</string>

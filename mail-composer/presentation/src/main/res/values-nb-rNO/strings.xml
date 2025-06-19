@@ -31,7 +31,6 @@
   <string name="composer_error_invalid_sender">Avsenderadressen er ugyldig</string>
   <string name="change_sender_button_content_description">Endre avsender</string>
   <string name="composer_change_sender_paid_feature">Oppgrader til en betalt plan for å endre avsenderadressen</string>
-  <string name="composer_error_change_sender_failed_getting_subscription">Kan ikke endre avsender da innhenting av brukerens abonnement mislyktes. Prøv igjen.</string>
   <string name="composer_error_store_draft_sender_address">Avsenderadressen ble ikke lagret</string>
   <string name="composer_error_store_draft_body">Meldingsinnholdet til dette utkastet ble ikke lagret</string>
   <string name="composer_error_duplicate_recipient">Duplisert(e) mottaker(e) fjernet</string>

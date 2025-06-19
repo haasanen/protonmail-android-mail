@@ -31,7 +31,6 @@
   <string name="composer_error_invalid_sender">Lähettäjän osoite on virheellinen</string>
   <string name="change_sender_button_content_description">Vaihda lähettäjä</string>
   <string name="composer_change_sender_paid_feature">Upgrade to a paid plan to change the sender address</string>
-  <string name="composer_error_change_sender_failed_getting_subscription">Lähettäjää ei voida vaihtaa, koska käyttäjän tilaustietojen nouto epäonnistui. Yritä uudelleen.</string>
   <string name="composer_error_store_draft_sender_address">Luonnoksen lähetysosoitteen tallennus epäonnistui</string>
   <string name="composer_error_store_draft_body">Luonnoksen sisällön tallennus epäonnistui</string>
   <string name="composer_error_duplicate_recipient">Vastaanottajien kaksoiskappaleet poistettiin</string>

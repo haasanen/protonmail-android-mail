@@ -31,7 +31,6 @@
   <string name="composer_error_invalid_sender">Adresa expeditorului nu este validă.</string>
   <string name="change_sender_button_content_description">Modificare expeditor</string>
   <string name="composer_change_sender_paid_feature">Treceți la un plan cu plată pentru a schimba adresa expeditorului.</string>
-  <string name="composer_error_change_sender_failed_getting_subscription">Nu se poate schimba expeditorul deoarece obținerea datelor abonamentului utilizatorului a eșuat. Mai încercați.</string>
   <string name="composer_error_store_draft_sender_address">Adresa expeditorului nu a fost salvată.</string>
   <string name="composer_error_store_draft_body">Conținutului acestei ciorne nu a fost salvat.</string>
   <string name="composer_error_duplicate_recipient">Destinatari duplicați eliminați</string>

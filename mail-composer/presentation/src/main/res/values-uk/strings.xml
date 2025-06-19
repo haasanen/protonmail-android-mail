@@ -31,7 +31,6 @@
   <string name="composer_error_invalid_sender">Адреса відправника недійсна</string>
   <string name="change_sender_button_content_description">Змінити відправника</string>
   <string name="composer_change_sender_paid_feature">Перейдіть на платний тариф, щоби змінити адресу відправника</string>
-  <string name="composer_error_change_sender_failed_getting_subscription">Неможливо змінити відправника, оскільки не вдалося отримати дані про передплату користувача. Спробуйте ще раз.</string>
   <string name="composer_error_store_draft_sender_address">Адресу відправника не збережено</string>
   <string name="composer_error_store_draft_body">Вміст чернетки листа не збережено</string>
   <string name="composer_error_duplicate_recipient">Вилучено дублікати отримувачів</string>
