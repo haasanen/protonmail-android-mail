@@ -40,8 +40,10 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
+import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailcomposer.domain.usecase.ChangeSenderAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
@@ -49,6 +51,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DeleteInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.GetEmbeddedImage
+import ch.protonmail.android.mailcomposer.domain.usecase.GetSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
@@ -101,6 +104,7 @@ import io.mockk.unmockkAll
 import io.mockk.unmockkStatic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -146,6 +150,8 @@ class ComposerViewModelTest {
     private val getEmbeddedImage = mockk<GetEmbeddedImage>()
     private val getFormattedScheduleSendOptions = mockk<GetFormattedScheduleSendOptions>()
     private val scheduleSendMessage = mockk<ScheduleSendMessage>()
+    private val getSenderAddresses = mockk<GetSenderAddresses>()
+    private val changeSenderAddress = mockk<ChangeSenderAddress>()
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<MessageBodyWithType>()
@@ -156,6 +162,7 @@ class ComposerViewModelTest {
     private val reducer = ComposerStateReducer()
     private val isAttachmentSourcesEnabled = flowOf(false)
     private val isScheduleSendEnabled = flowOf(false)
+    private val isChangeSenderEnabled = MutableStateFlow(true)
 
     private val viewModel by lazy {
         ComposerViewModel(
@@ -183,8 +190,11 @@ class ComposerViewModelTest {
             getEmbeddedImage,
             getFormattedScheduleSendOptions,
             scheduleSendMessage,
+            getSenderAddresses,
+            changeSenderAddress,
             isAttachmentSourcesEnabled,
             isScheduleSendEnabled,
+            isChangeSenderEnabled,
             observePrimaryUserIdMock
         )
     }
@@ -1017,6 +1027,88 @@ class ComposerViewModelTest {
         // Then
         coVerify { sendMessageMock wasNot Called }
         assertEquals(Effect.of(Unit), viewModel.composerStates.value.effects.confirmSendingWithoutSubject)
+    }
+
+    @Test
+    fun `should not trigger change sender flow when feature flag is disabled`() = runTest {
+        // Given
+        val expectedSubject = Subject("")
+        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        val expectedDraftBody = DraftBody("I am plaintext")
+        val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
+        val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
+        val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
+        val expectedMessageId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
+        mockParticipantMapper()
+        expectNetworkManagerIsConnected()
+        expectNoInputDraftAction()
+        expectStoreDraftSubjectSucceeds(expectedSubject)
+        expectObservedMessageAttachments()
+        expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
+        expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedMessageId) {
+            DraftFields(
+                sender = expectedSenderEmail,
+                subject = expectedSubject,
+                body = expectedDraftBody,
+                recipientsTo = recipientsTo,
+                recipientsCc = recipientsCc,
+                recipientsBcc = recipientsBcc
+            )
+        }
+        expectUpdateRecipientsSucceeds(recipientsTo.value, recipientsCc.value, recipientsBcc.value)
+        isChangeSenderEnabled.value = false
+
+        // When
+        viewModel.submit(ComposerAction.ChangeSender)
+
+        // Then
+        coVerify { getSenderAddresses wasNot Called }
+    }
+
+    @Test
+    fun `displays available sender addresses when change sender is requested`() = runTest {
+        // Given
+        val expectedSubject = Subject("")
+        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        val expectedDraftBody = DraftBody("I am plaintext")
+        val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
+        val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
+        val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
+        val expectedMessageId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
+        mockParticipantMapper()
+        expectNetworkManagerIsConnected()
+        expectNoInputDraftAction()
+        expectStoreDraftSubjectSucceeds(expectedSubject)
+        expectObservedMessageAttachments()
+        expectNoFileShareVia()
+        expectNoRestoredState(savedStateHandle)
+        expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedMessageId) {
+            DraftFields(
+                sender = expectedSenderEmail,
+                subject = expectedSubject,
+                body = expectedDraftBody,
+                recipientsTo = recipientsTo,
+                recipientsCc = recipientsCc,
+                recipientsBcc = recipientsBcc
+            )
+        }
+        expectUpdateRecipientsSucceeds(recipientsTo.value, recipientsCc.value, recipientsBcc.value)
+        val addresses = listOf(SenderEmail("test@pm.me"), SenderEmail("test1@pm.me"))
+        val senderAddresses = SenderAddresses(
+            addresses = addresses,
+            selected = addresses[0]
+        )
+        coEvery { getSenderAddresses() } returns senderAddresses.right()
+        val expected = addresses.map { SenderUiModel(it.value) }
+
+        // When
+        viewModel.submit(ComposerAction.ChangeSender)
+
+        // Then
+        assertEquals(expected, viewModel.composerStates.value.main.senderAddresses)
     }
 
     @Test

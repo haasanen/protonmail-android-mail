@@ -44,6 +44,7 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.model.hasAnyRecipient
+import ch.protonmail.android.mailcomposer.domain.usecase.ChangeSenderAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
@@ -51,6 +52,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DeleteInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.GetEmbeddedImage
+import ch.protonmail.android.mailcomposer.domain.usecase.GetSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
@@ -67,6 +69,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsState
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
+import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerStateEvent
 import ch.protonmail.android.mailcomposer.presentation.model.operations.CompositeEvent
@@ -78,6 +81,7 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsChangeSenderEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsChooseAttachmentSourceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ScheduleSendEnabled
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -142,8 +146,11 @@ class ComposerViewModel @AssistedInject constructor(
     private val getEmbeddedImage: GetEmbeddedImage,
     private val getFormattedScheduleSendOptions: GetFormattedScheduleSendOptions,
     private val scheduleSend: ScheduleSendMessage,
+    private val getSenderAddresses: GetSenderAddresses,
+    private val changeSenderAddress: ChangeSenderAddress,
     @IsChooseAttachmentSourceEnabled private val chooseAttachmentSourceEnabled: Flow<Boolean>,
     @ScheduleSendEnabled private val scheduleSendEnabled: Flow<Boolean>,
+    @IsChangeSenderEnabled private val isChangeSenderEnabled: Flow<Boolean>,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -372,8 +379,8 @@ class ComposerViewModel @AssistedInject constructor(
         composerActionsChannel.consumeEach { action ->
             logViewModelAction(action, "Executing")
             when (action) {
-                is ComposerAction.ChangeSender -> TODO()
-                is ComposerAction.SetSenderAddress -> TODO()
+                is ComposerAction.ChangeSender -> onChangeSenderRequested()
+                is ComposerAction.SetSenderAddress -> onChangeSender(action.sender)
 
                 is ComposerAction.OpenExpirationSettings -> TODO()
 
@@ -421,6 +428,27 @@ class ComposerViewModel @AssistedInject constructor(
             logViewModelAction(action, "Completed.")
         }
     }
+
+    private suspend fun onChangeSender(sender: SenderUiModel) {
+        changeSenderAddress(SenderEmail(sender.email))
+    }
+
+    private suspend fun onChangeSenderRequested() {
+        if (isChangeSenderEnabled.first().not()) {
+            Timber.d("Change sender requested, feature is disabled. Doing nothing.")
+            return
+        }
+
+        getSenderAddresses()
+            .onLeft {
+                emitNewStateFor(EffectsEvent.ErrorEvent.OnSenderChangePermissionsError)
+            }
+            .onRight { senderAddresses ->
+                val addresses = senderAddresses.addresses.map { SenderUiModel(it.value) }
+                emitNewStateFor(CompositeEvent.SenderAddressesListReady(addresses))
+            }
+    }
+
 
     private fun handleConfirmAttachmentErrors(action: ComposerAction.AcknowledgeAttachmentErrors) {
         val attachmentsWithError = action.attachmentsWithError
