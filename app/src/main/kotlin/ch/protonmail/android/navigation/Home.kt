@@ -328,6 +328,13 @@ fun Home(
         drawerAlpha = 1f
     }
 
+    // To be kept in place as long as Drawer is part of the Home Scaffold
+    LaunchedEffect(currentDestinationRoute) {
+        if (currentDestinationRoute != null && currentDestinationRoute != Screen.Mailbox.route && drawerState.isOpen) {
+            drawerState.close()
+        }
+    }
+
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val onBottomSheetDismissed: () -> Unit = {
