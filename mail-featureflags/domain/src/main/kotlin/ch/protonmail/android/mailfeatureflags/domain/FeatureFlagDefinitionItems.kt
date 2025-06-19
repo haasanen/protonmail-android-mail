@@ -52,3 +52,11 @@ data object ScheduledSendEnabled : FeatureFlagDefinition(
     description = "Allow to schedule messages for sending at a later time",
     defaultValue = true
 )
+
+data object ChangeSenderEnabled : FeatureFlagDefinition(
+    key = "change_sender_enabled",
+    name = "Change sender",
+    category = FeatureFlagCategory.Composer,
+    description = "Allow to change the message sender in composer",
+    defaultValue = false
+)
