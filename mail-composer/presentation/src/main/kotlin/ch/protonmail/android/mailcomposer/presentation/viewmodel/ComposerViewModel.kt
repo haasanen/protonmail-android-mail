@@ -433,7 +433,7 @@ class ComposerViewModel @AssistedInject constructor(
         val newSender = SenderEmail(sender.email)
 
         changeSenderAddress(newSender)
-            .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnSenderChangePermissionsError) }
+            .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnGetAddressesError) }
             .onRight { bodyWithNewSignature ->
                 val draftDisplayBody = buildDraftDisplayBody(
                     MessageBodyWithType(bodyWithNewSignature.value, MimeTypeUiModel.Html)
@@ -450,7 +450,7 @@ class ComposerViewModel @AssistedInject constructor(
 
         getSenderAddresses()
             .onLeft {
-                emitNewStateFor(EffectsEvent.ErrorEvent.OnSenderChangePermissionsError)
+                emitNewStateFor(EffectsEvent.ErrorEvent.OnGetAddressesError)
             }
             .onRight { senderAddresses ->
                 val addresses = senderAddresses.addresses.map { SenderUiModel(it.value) }

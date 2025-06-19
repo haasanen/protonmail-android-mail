@@ -50,12 +50,12 @@ internal sealed interface RecoverableError : EffectsStateModification {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects = when (this) {
             FreeUser -> state.copy(premiumFeatureMessage = Effect.of(TextUiModel(resId)))
-            UnknownPermissions -> state.copy(error = Effect.of(TextUiModel(resId)))
+            GetAddressesError -> state.copy(error = Effect.of(TextUiModel(resId)))
         }
 
         data object FreeUser : SenderChange(R.string.composer_change_sender_paid_feature)
-        data object UnknownPermissions :
-            SenderChange(R.string.composer_error_change_sender_failed_getting_subscription)
+        data object GetAddressesError :
+            SenderChange(R.string.composer_error_change_sender_failed_getting_addresses)
     }
 
     data class AttachmentsListChangedWithError(

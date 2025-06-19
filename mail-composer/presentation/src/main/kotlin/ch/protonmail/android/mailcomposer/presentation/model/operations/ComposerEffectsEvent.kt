@@ -110,7 +110,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
         override fun toStateModifications(): ComposerStateModifications = ComposerStateModifications(
             effectsModification = when (this) {
                 OnSenderChangeFreeUserError -> RecoverableError.SenderChange.FreeUser
-                OnSenderChangePermissionsError -> RecoverableError.SenderChange.UnknownPermissions
+                OnGetAddressesError -> RecoverableError.SenderChange.GetAddressesError
                 OnSetExpirationError -> RecoverableError.Expiration
                 OnDiscardDraftError -> RecoverableError.DiscardDraftFailed
                 OnStoreBodyError -> RecoverableError.SaveBodyFailed
@@ -122,7 +122,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
         )
 
         data object OnSenderChangeFreeUserError : ErrorEvent
-        data object OnSenderChangePermissionsError : ErrorEvent
+        data object OnGetAddressesError : ErrorEvent
         data object OnSetExpirationError : ErrorEvent
         data object OnDiscardDraftError : ErrorEvent
         data object OnStoreBodyError : ErrorEvent

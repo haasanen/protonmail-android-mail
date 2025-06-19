@@ -116,11 +116,12 @@ internal class EffectsStateModificationTest(
                 )
             ),
             arrayOf(
-                "shows failed getting permissions on sender change error",
+                "shows failed getting addresses on sender change error",
                 initialState,
-                RecoverableError.SenderChange.UnknownPermissions,
+                RecoverableError.SenderChange.GetAddressesError,
                 initialState.copy(
-                    error = Effect.of(TextUiModel(R.string.composer_error_change_sender_failed_getting_subscription))
+                    error = Effect.of(TextUiModel(R.string.composer_error_change_sender_failed_getting_addresses)),
+                    changeBottomSheetVisibility = Effect.of(false)
                 )
             ),
             arrayOf(
@@ -345,6 +346,15 @@ internal class EffectsStateModificationTest(
                 ),
                 initialState.copy(
                     error = Effect.of(TextUiModel.TextRes(R.string.composer_unexpected_attachments_error))
+                )
+            ),
+            arrayOf(
+                "draft sender changed refreshed body and hides bottomsheet",
+                initialState,
+                ContentEffectsStateModifications.DraftSenderChanged(draftDisplayBody),
+                initialState.copy(
+                    refreshBody = Effect.of(draftDisplayBody),
+                    changeBottomSheetVisibility = Effect.of(false)
                 )
             )
         )

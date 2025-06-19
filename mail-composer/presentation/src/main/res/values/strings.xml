@@ -129,4 +129,5 @@
     <string name="composer_error_send_message">Error sending message</string>
     <string name="composer_schedule_send_previously_set">Previously set</string>
     <string name="composer_change_sender_title">From</string>
+    <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
 </resources>

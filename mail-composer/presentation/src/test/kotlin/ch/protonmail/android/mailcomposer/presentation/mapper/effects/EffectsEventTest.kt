@@ -128,8 +128,8 @@ internal class EffectsEventTest(
             ),
             arrayOf(
                 "ErrorEvent OnSenderChangePermissionsError to modification",
-                EffectsEvent.ErrorEvent.OnSenderChangePermissionsError,
-                ComposerStateModifications(effectsModification = RecoverableError.SenderChange.UnknownPermissions)
+                EffectsEvent.ErrorEvent.OnGetAddressesError,
+                ComposerStateModifications(effectsModification = RecoverableError.SenderChange.GetAddressesError)
             ),
             arrayOf(
                 "ErrorEvent OnSetExpirationError to modification",
