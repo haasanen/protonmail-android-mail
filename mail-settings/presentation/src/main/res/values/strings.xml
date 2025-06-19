@@ -117,49 +117,6 @@
     <string name="mail_settings_notifications_update_error">Error updating settings</string>
     <string name="mail_settings_notifications_loading_error">Error loading settings</string>
 
-    <!-- Auto lock -->
-    <string name="mail_settings_auto_lock_title">Auto lock</string>
-    <string name="mail_settings_auto_lock_item_title">Auto lock app</string>
-    <string name="mail_settings_auto_lock_item_description">Turn this feature on to auto lock your app and use a PIN code to unlock it.</string>
-    <string name="mail_settings_auto_lock_change_pin_description">Change PIN code</string>
-    <string name="mail_settings_auto_lock_item_timer_title">Auto lock timer</string>
-    <string name="mail_settings_auto_lock_immediately">Immediately</string>
-    <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minutes inactivity</string>
-    <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minutes inactivity</string>
-    <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 hour inactivity</string>
-    <string name="mail_settings_auto_lock_item_timer_description_one_day">1 day inactivity</string>
-    <string name="mail_settings_auto_lock_update_error">Error updating settings</string>
-    <string name="mail_settings_pin_insertion_input_title">Insert PIN code</string>
-    <string name="mail_settings_pin_insertion_set_title">Set PIN code</string>
-    <string name="mail_settings_pin_insertion_confirm_title">Confirm PIN code</string>
-    <string name="mail_settings_pin_insertion_lock_icon_description">Lock icon</string>
-    <string name="mail_settings_pin_insertion_pin_dot_description">Pin dot</string>
-    <string name="mail_settings_pin_insertion_backspace_description">Backspace</string>
-    <string name="mail_settings_pin_insertion_biometric_description">Biometric Authentication</string>
-    <string name="mail_settings_pin_insertion_error_no_match">PIN codes do not match.</string>
-    <plurals name="mail_settings_pin_insertion_error_wrong_code">
-        <item quantity="one">%s remaining attempt.</item>
-        <item quantity="other">%s remaining attempts.</item>
-    </plurals>
-    <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-        <item quantity="one">%s remaining attempt until secure data wipe.</item>
-        <item quantity="other">%s remaining attempts until secure data wipe.</item>
-    </plurals>
-    <string name="mail_settings_pin_insertion_error_unknown">There was an error verifying your PIN code.</string>
-    <string name="mail_settings_pin_insertion_signout_text">Sign Out</string>
-    <string name="mail_settings_pin_insertion_signout_dialog_title">Sign Out</string>
-    <string name="mail_settings_pin_insertion_signout_dialog_description">Are you sure you want to sign out?</string>
-    <string name="mail_settings_pin_insertion_signout_dialog_confirm">Yes</string>
-    <string name="mail_settings_pin_insertion_signout_dialog_cancel">No</string>
-    <string name="mail_settings_pin_insertion_created_success">PIN code created successfully.</string>
-    <string name="mail_settings_pin_insertion_changed_success">PIN code changed successfully.</string>
-
     <!-- Error messages -->
     <string name="mail_settings_generic_error_message">An error occurred. Try again.</string>
-
-    <!-- strings used for biometric enrollment -->
-    <string name="no_biometric_data_enrolled">No biometric data enrolled</string>
-    <string name="log_in_using_biometric_credential">Unlock using your biometric credentials</string>
-    <string name="unlock_using_biometrics">Unlock using biometrics</string>
-    <string name="biometric_error_hw_not_available">Biometric hardware not available.</string>
 </resources>

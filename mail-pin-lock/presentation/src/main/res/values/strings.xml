@@ -47,8 +47,6 @@
     <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">After 15 minutes</string>
     <string name="mail_pinlock_settings_autolock_description_thirty_minutes">After 30 minutes</string>
     <string name="mail_pinlock_settings_autolock_description_sixty_minutes">After 60 minutes</string>
-    <string name="mail_settings_auto_lock_update_error">Error updating settings</string>
-    <string name="mail_settings_pin_insertion_pin_dot_description">Pin dot</string>
     <string name="mail_settings_pin_insertion_confirm_button">Confirm</string>
     <string name="mail_settings_pin_insertion_next_button">Next</string>
     <string name="mail_settings_pin_insertion_error_no_match">PIN codes do not match.</string>
