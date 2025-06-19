@@ -207,8 +207,7 @@ class MailboxViewModel @Inject constructor(
             .filterNotNull()
             .launchIn(viewModelScope)
 
-        observeSelectedMailLabelId()
-            .mapToExistingLabel()
+        observeMailLabelChangeRequests()
             .pairWithCurrentLabelCount()
             .combine(primaryUserId.filterNotNull()) { labelWithCount, userId ->
                 Triple(labelWithCount.first, labelWithCount.second, userId)
@@ -1076,7 +1075,9 @@ class MailboxViewModel @Inject constructor(
             .mapNotNull { it?.isFilterEnabled }
             .distinctUntilChanged()
 
-    private fun observeMailLabelChangeRequests(): Flow<MailLabel> = observeSelectedMailLabelId().mapToExistingLabel()
+    private fun observeMailLabelChangeRequests(): Flow<MailLabel> = observeSelectedMailLabelId()
+        .mapToExistingLabel()
+        .distinctUntilChanged()
 
     private fun Flow<MailboxState>.observeSearchQuery() = this.map { it.mailboxListState as? MailboxListState.Data }
         .mapNotNull { it?.searchState?.searchQuery }
