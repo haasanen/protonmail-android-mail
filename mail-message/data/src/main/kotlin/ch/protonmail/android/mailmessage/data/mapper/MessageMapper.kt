@@ -190,7 +190,13 @@ fun TransformOpts.toMessageBodyTransformations(): MessageBodyTransformations {
 fun MessageThemeOptions.toLocalThemeOptions(): ThemeOpts = ThemeOpts(
     currentTheme = currentTheme.toMailTheme(),
     themeOverride = themeOverride?.toMailTheme(),
-    supportsDarkModeViaMediaQuery = true
+    supportsDarkModeViaMediaQuery = if (themeOverride == MessageTheme.Light) {
+        // If the themeOverride is Light and the html style contains media query for dark mode,
+        // then we cannot tell WebView to render in light mode, so we set this to false.
+        false
+    } else {
+        true
+    }
 )
 
 fun ThemeOpts.toMessageThemeOptions(): MessageThemeOptions {
