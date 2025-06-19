@@ -65,7 +65,7 @@ class OnboardingLocalDataSourceImplTest {
     @Test
     fun `returns locally stored preference from data store when available`() = runTest {
         // Given
-        coEvery { preferences[booleanPreferencesKey("shouldDisplayOnboardingPrefKey")] } returns false
+        coEvery { preferences[booleanPreferencesKey("ShouldDisplayV7BetaOnboardingPrefKey")] } returns false
         every { onboardingDataStoreMock.data } returns flowOf(preferences)
 
         // When
