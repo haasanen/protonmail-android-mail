@@ -39,6 +39,7 @@ import io.mockk.mockk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
+import me.proton.core.domain.entity.UserId
 import org.junit.After
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -82,8 +83,9 @@ internal class ProcessPushNotificationDataWorkerMessageReadTest {
         // Given
         prepareSharedMocks()
 
+        val userPushData = LocalPushNotificationData.UserPushData(UserId("userId"), "userEmail")
         val pushData = LocalPushNotificationData.MessagePushData.MessageReadPushData("messageId")
-        val messageReadPushNotificationData = LocalPushNotification.Message.MessageRead(pushData)
+        val messageReadPushNotificationData = LocalPushNotification.Message.MessageRead(userPushData, pushData)
 
         // When
         val result = worker.doWork()

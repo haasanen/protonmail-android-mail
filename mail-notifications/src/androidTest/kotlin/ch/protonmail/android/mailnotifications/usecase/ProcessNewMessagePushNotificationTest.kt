@@ -25,11 +25,13 @@ import android.content.Intent
 import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.ListenableWorker
+import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.system.NotificationProvider
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
 import ch.protonmail.android.mailnotifications.domain.model.LocalNotificationAction
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotification
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData
+import ch.protonmail.android.mailnotifications.domain.model.PushNotificationDismissPendingIntentData
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationPendingIntentPayloadData
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationSenderData
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
@@ -39,19 +41,22 @@ import ch.protonmail.android.mailnotifications.domain.usecase.intents.CreateNewM
 import ch.protonmail.android.mailnotifications.subText
 import ch.protonmail.android.mailnotifications.text
 import ch.protonmail.android.mailnotifications.title
+import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
+import ch.protonmail.android.mailsettings.domain.model.ExtendedNotificationPreference
 import ch.protonmail.android.mailsettings.domain.usecase.notifications.GetExtendedNotificationsSetting
 import ch.protonmail.android.test.annotations.suite.SmokeTest
 import io.mockk.CapturingSlot
 import io.mockk.coEvery
-import io.mockk.coVerifySequence
+import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -59,9 +64,6 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import me.proton.core.domain.entity.UserId
-import me.proton.core.eventmanager.domain.EventManager
-import me.proton.core.eventmanager.domain.EventManagerConfig
-import me.proton.core.eventmanager.domain.EventManagerProvider
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -77,18 +79,18 @@ internal class ProcessNewMessagePushNotificationTest {
     private val notificationProvider = getNotificationProvider()
     private val notificationManagerCompatProxy = mockk<NotificationManagerCompatProxy>(relaxUnitFun = true)
     private val notificationsDeepLinkHelper = mockk<NotificationsDeepLinkHelper>()
-    private val getNotificationsExtendedPreference = mockk<GetExtendedNotificationsSetting>()
+    private val getNotificationsExtendedPreference = mockk<GetExtendedNotificationsSetting>() {
+        coEvery { this@mockk.invoke() } returns ExtendedNotificationPreference(true).right()
+    }
     private val createNotificationAction = spyk(CreateNotificationAction(context))
     private val createNewMessageNavigationIntent = spyk(
         CreateNewMessageNavigationIntent(context, notificationsDeepLinkHelper)
     )
 
     private val testDispatcher = StandardTestDispatcher()
-    private val scope = CoroutineScope(testDispatcher)
 
-    private val eventManager = mockk<EventManager>(relaxUnitFun = true)
-    private val eventManagerProvider = mockk<EventManagerProvider> {
-        coEvery { this@mockk.get(any()) } returns eventManager
+    private val eventLoopRepository = mockk<EventLoopRepository> {
+        coEvery { this@mockk.trigger(any()) } just runs
     }
 
     private val processNewMessagePushNotification: ProcessNewMessagePushNotification
@@ -99,11 +101,10 @@ internal class ProcessNewMessagePushNotificationTest {
             getNotificationsExtendedPreference,
             createNewMessageNavigationIntent,
             createNotificationAction,
-            eventManagerProvider,
-            scope
+            eventLoopRepository
         )
 
-    private val userData = LocalPushNotificationData.UserPushData(RawUserId, RawUserEmail)
+    private val userData = LocalPushNotificationData.UserPushData(UserId(RawUserId), RawUserEmail)
     private val sender = PushNotificationSenderData(
         senderName = "Proton Mail",
         senderAddress = "test@proton.me",
@@ -143,13 +144,21 @@ internal class ProcessNewMessagePushNotificationTest {
         // Given
         val expectedArchivePayload = PushNotificationPendingIntentPayloadData(
             pushData.messageId.hashCode(),
-            userData.userId,
-            userData.userId,
+            userData.userId.id,
+            userData.userId.id,
             pushData.messageId,
             LocalNotificationAction.MoveTo.Archive
         )
         val expectedTrashPayload = expectedArchivePayload.copy(action = LocalNotificationAction.MoveTo.Trash)
         val expectedMarkAsReadPayload = expectedArchivePayload.copy(action = LocalNotificationAction.MarkAsRead)
+
+        val dismissNotificationPayload = PushNotificationDismissPendingIntentData.SingleNotification(
+            userData.userId.id,
+            pushData.messageId.hashCode()
+        )
+        val dismissGroupPayload = PushNotificationDismissPendingIntentData.GroupNotification(
+            userData.userId.id
+        )
 
         // When
         val result = processNewMessagePushNotification(newMessageData)
@@ -161,16 +170,15 @@ internal class ProcessNewMessagePushNotificationTest {
             createNotificationAction(expectedArchivePayload)
             createNotificationAction(expectedTrashPayload)
             createNotificationAction(expectedMarkAsReadPayload)
+            createNotificationAction(dismissNotificationPayload)
+            createNotificationAction(dismissGroupPayload)
         }
 
-        coVerifySequence {
-            eventManagerProvider.get(EventManagerConfig.Core(UserId(userData.userId)))
-            eventManager.resume()
+        coVerify {
+            eventLoopRepository.trigger(userData.userId)
         }
 
         confirmVerified(createNotificationAction)
-        confirmVerified(eventManager)
-        confirmVerified(eventManagerProvider)
     }
 
     @Test
@@ -233,7 +241,7 @@ internal class ProcessNewMessagePushNotificationTest {
 
         const val RawUserId = "userId"
         const val RawUserEmail = "userEmail"
-        const val RawSender = "sender"
+        const val RawSender = "Proton Mail"
         const val RawMessageId = "messageId"
         const val RawContent = "content"
     }

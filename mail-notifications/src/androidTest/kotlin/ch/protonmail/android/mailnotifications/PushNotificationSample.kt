@@ -21,11 +21,12 @@ package ch.protonmail.android.mailnotifications
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotification
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationSenderData
+import me.proton.core.domain.entity.UserId
 
 internal object PushNotificationSample {
 
     private val SampleNewMessagePushNotificationData = LocalPushNotification(
-        userPushData = LocalPushNotificationData.UserPushData("userId", "userEmail"),
+        userPushData = LocalPushNotificationData.UserPushData(UserId("userId"), "userEmail"),
         pushNotificationData = LocalPushNotificationData.MessagePushData.NewMessagePushData(
             sender = PushNotificationSenderData("SenderEmail", "Sender", ""),
             messageId = "aMessageId",
@@ -34,12 +35,12 @@ internal object PushNotificationSample {
     )
 
     private val SampleMessageReadPushNotificationData = LocalPushNotification(
-        userPushData = LocalPushNotificationData.UserPushData("userId", "userEmail"),
-        pushNotificationData = LocalPushNotificationData.MessagePushData.MessageReadPushData(messageId = "aMessageId",)
+        userPushData = LocalPushNotificationData.UserPushData(UserId("userId"), "userEmail"),
+        pushNotificationData = LocalPushNotificationData.MessagePushData.MessageReadPushData(messageId = "aMessageId")
     )
 
     private val SampleLoginPushNotificationData = LocalPushNotification(
-        userPushData = LocalPushNotificationData.UserPushData("userId", "userEmail"),
+        userPushData = LocalPushNotificationData.UserPushData(UserId("userId"), "userEmail"),
         pushNotificationData = LocalPushNotificationData.MessagePushData.NewMessagePushData(
             sender = PushNotificationSenderData("Proton Mail", "abuse@proton.me", ""),
             messageId = "",

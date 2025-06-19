@@ -31,6 +31,7 @@ import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificatio
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationSenderData
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
 import ch.protonmail.android.mailnotifications.domain.usecase.ProcessNewLoginPushNotification
+import ch.protonmail.android.mailnotifications.domain.usecase.actions.CreateNotificationAction
 import ch.protonmail.android.mailnotifications.summaryText
 import ch.protonmail.android.mailnotifications.text
 import ch.protonmail.android.mailnotifications.title
@@ -41,8 +42,10 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.slot
+import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
+import me.proton.core.domain.entity.UserId
 import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -57,13 +60,16 @@ internal class ProcessNewLoginPushNotificationTest {
 
     private val notificationProvider = getNotificationProvider()
     private val notificationManagerCompatProxy = mockk<NotificationManagerCompatProxy>(relaxUnitFun = true)
+    private val createNotificationAction = spyk(CreateNotificationAction(context))
+
     private val processNewLoginPushNotification = ProcessNewLoginPushNotification(
         context,
         notificationProvider,
-        notificationManagerCompatProxy
+        notificationManagerCompatProxy,
+        createNotificationAction
     )
 
-    private val userData = LocalPushNotificationData.UserPushData(NotificationUserId, NotificationEmail)
+    private val userData = LocalPushNotificationData.UserPushData(UserId(NotificationUserId), NotificationEmail)
     private val sender = PushNotificationSenderData(senderName = "Proton Mail", senderAddress = "", senderGroup = "")
     private val pushData =
         LocalPushNotificationData.NewLoginPushData(sender, NotificationSummary, NotificationUrl)

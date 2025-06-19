@@ -42,6 +42,7 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
+import me.proton.core.domain.entity.UserId
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -91,7 +92,7 @@ class ProcessPushNotificationDataWorkerLoginTest {
         // Given
         prepareSharedMocks()
 
-        val userData = LocalPushNotificationData.UserPushData("primary", "primary-email@pm.me")
+        val userData = LocalPushNotificationData.UserPushData(UserId("primary"), "primary-email@pm.me")
         val sender = PushNotificationSenderData(
             senderName = "Proton Mail",
             senderAddress = "",
