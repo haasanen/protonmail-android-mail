@@ -20,6 +20,7 @@ package ch.protonmail.android.composer.data.mapper
 
 import ch.protonmail.android.composer.data.local.LocalDraft
 import ch.protonmail.android.composer.data.local.LocalDraftWithSyncStatus
+import ch.protonmail.android.composer.data.local.LocalSenderAddresses
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
 import ch.protonmail.android.mailcommon.data.mapper.LocalComposerRecipient
@@ -27,6 +28,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalDraftSendResult
 import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
@@ -55,11 +57,16 @@ import uniffi.proton_mail_uniffi.DraftSendErrorReason
 import uniffi.proton_mail_uniffi.DraftSendFailure
 import uniffi.proton_mail_uniffi.DraftSendResultOrigin
 import uniffi.proton_mail_uniffi.DraftSendStatus
+import uniffi.proton_mail_uniffi.DraftSenderAddressChangeError
+import uniffi.proton_mail_uniffi.DraftSenderAddressChangeErrorReason
+import uniffi.proton_mail_uniffi.DraftSenderAddressList
 import uniffi.proton_mail_uniffi.DraftSyncStatus
 import uniffi.proton_mail_uniffi.SingleRecipientEntry
 import kotlin.time.DurationUnit
 import kotlin.time.Instant
 import kotlin.time.toDuration
+
+fun DraftSenderAddressList.toLocalSenderAddresses() = LocalSenderAddresses(this.available, this.active)
 
 fun DraftScheduleSendOptions.toScheduleSendOptions() = ScheduleSendOptions(
     tomorrowTime = Instant.fromEpochSeconds(this.tomorrowTime.toLong()),
@@ -263,6 +270,15 @@ fun DraftSaveError.toSaveDraftError(): SaveDraftError = when (this) {
 }
 
 fun LocalEmbeddedImageInfo.toEmbeddedImage() = EmbeddedImage(this.data, this.mime)
+
+fun DraftSenderAddressChangeError.toChangeSenderError() = when (this) {
+    is DraftSenderAddressChangeError.Other -> ChangeSenderError.Other(this.v1.toDataError())
+    is DraftSenderAddressChangeError.Reason -> when (val reason = this.v1) {
+        is DraftSenderAddressChangeErrorReason.AddressDisabled -> ChangeSenderError.AddressDisabled
+        is DraftSenderAddressChangeErrorReason.AddressEmailNotFound -> ChangeSenderError.AddressNotFound(reason.v1)
+        is DraftSenderAddressChangeErrorReason.AddressNotSendEnabled -> ChangeSenderError.AddressCanNotSend
+    }
+}
 
 @MissingRustApi
 // Hardcoded values in the mapping

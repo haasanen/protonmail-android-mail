@@ -24,9 +24,11 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.raise.either
 import arrow.core.right
+import ch.protonmail.android.composer.data.mapper.toChangeSenderError
 import ch.protonmail.android.composer.data.mapper.toDraftCreateMode
 import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.mapper.toLocalDraftWithSyncStatus
+import ch.protonmail.android.composer.data.mapper.toLocalSenderAddresses
 import ch.protonmail.android.composer.data.mapper.toSaveDraftError
 import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.mapper.toSingleRecipients
@@ -42,8 +44,10 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
+import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
@@ -62,6 +66,8 @@ import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
+import uniffi.proton_mail_uniffi.DraftChangeSenderAddressResult
+import uniffi.proton_mail_uniffi.DraftListSenderAddressesResult
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptionsResult
@@ -172,6 +178,22 @@ class RustDraftDataSourceImpl @Inject constructor(
             val recipientsBccWrapper = draftWrapper.recipientsBcc()
             return@withValidRustDraftWrapper updateRecipients(recipientsBccWrapper, recipients)
         }
+
+    override suspend fun listSenderAddresses(): Either<DataError, LocalSenderAddresses> = withValidRustDraftWrapper {
+        return@withValidRustDraftWrapper when (val result = it.listSenderAddresses()) {
+            is DraftListSenderAddressesResult.Error -> result.v1.toDataError().left()
+            is DraftListSenderAddressesResult.Ok -> result.v1.toLocalSenderAddresses().right()
+        }
+    }
+
+    override suspend fun changeSender(sender: SenderEmail): Either<ChangeSenderError, Unit> =
+        withValidRustDraftWrapper {
+            when (val result = it.changeSender(sender.value)) {
+                is DraftChangeSenderAddressResult.Error -> result.v1.toChangeSenderError().left()
+                DraftChangeSenderAddressResult.Ok -> Unit.right()
+            }
+        }
+
 
     // Will emit based on a mutableFlow which is updated by the callback above;
     // Requests again the data from rust library, maps it to the new entity and exposes to the view

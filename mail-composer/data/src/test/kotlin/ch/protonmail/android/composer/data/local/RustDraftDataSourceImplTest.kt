@@ -20,6 +20,7 @@ import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
+import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
@@ -42,7 +43,9 @@ import io.mockk.verifyOrder
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import uniffi.proton_mail_uniffi.DraftChangeSenderAddressResult
 import uniffi.proton_mail_uniffi.DraftCreateMode
+import uniffi.proton_mail_uniffi.DraftListSenderAddressesResult
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
 import uniffi.proton_mail_uniffi.DraftSaveError
 import uniffi.proton_mail_uniffi.DraftSaveErrorReason
@@ -50,9 +53,11 @@ import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptionsResult
 import uniffi.proton_mail_uniffi.DraftSendError
 import uniffi.proton_mail_uniffi.DraftSendErrorReason
+import uniffi.proton_mail_uniffi.DraftSenderAddressList
 import uniffi.proton_mail_uniffi.DraftSyncStatus
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
 import uniffi.proton_mail_uniffi.ProtonError
+import uniffi.proton_mail_uniffi.UnexpectedError
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
 import kotlin.test.Test
@@ -721,6 +726,73 @@ class RustDraftDataSourceImplTest {
 
         // When
         val actual = dataSource.scheduleSend(timestamp)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `list sender addresses returns addresses when successful`() = runTest {
+        // Given
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        val addresses = listOf("test1@pm.me", "test2@pm.me")
+        val expected = LocalSenderAddresses(addresses, addresses[0])
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.listSenderAddresses() } returns DraftListSenderAddressesResult.Ok(
+            DraftSenderAddressList(addresses, addresses[0])
+        )
+
+        // When
+        val actual = dataSource.listSenderAddresses()
+
+        // Then
+        assertEquals(expected.right(), actual)
+    }
+
+    @Test
+    fun `list sender addresses returns error when unsuccessful`() = runTest {
+        // Given
+        val expected = DataError.Local.Unknown
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.listSenderAddresses() } returns DraftListSenderAddressesResult.Error(
+            ProtonError.Unexpected(UnexpectedError.DRAFT)
+        )
+
+        // When
+        val actual = dataSource.listSenderAddresses()
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `change sender address returns success when successful`() = runTest {
+        // Given
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        val address = "test1@pm.me"
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.changeSender(address) } returns DraftChangeSenderAddressResult.Ok
+
+        // When
+        val actual = dataSource.changeSender(SenderEmail(address))
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `change sender address returns specific error when unsuccessful`() = runTest {
+        // Given
+        val expected = DataError.Local.Unknown
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.listSenderAddresses() } returns DraftListSenderAddressesResult.Error(
+            ProtonError.Unexpected(UnexpectedError.DRAFT)
+        )
+
+        // When
+        val actual = dataSource.listSenderAddresses()
 
         // Then
         assertEquals(expected.left(), actual)

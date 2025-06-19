@@ -55,4 +55,8 @@ class DraftWrapper(private val rustDraft: Draft) {
     fun scheduleSendOptions(): DraftScheduleSendOptionsResult = rustDraft.scheduleSendOptions()
 
     suspend fun scheduleSend(timestamp: UnixTimestamp) = rustDraft.schedule(timestamp)
+
+    suspend fun listSenderAddresses() = rustDraft.listSenderAddresses()
+
+    suspend fun changeSender(address: String) = rustDraft.changeSenderAddress(address)
 }
