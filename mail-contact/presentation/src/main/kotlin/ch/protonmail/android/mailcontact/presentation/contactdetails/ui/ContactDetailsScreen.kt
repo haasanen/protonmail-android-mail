@@ -44,6 +44,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonErrorMessage
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
@@ -56,6 +58,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.mailcontact.presentation.R
+import ch.protonmail.android.mailcontact.presentation.contactdetails.ContactDetailsViewModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.AvatarUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemGroupUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemType
@@ -64,19 +67,33 @@ import ch.protonmail.android.mailcontact.presentation.contactdetails.model.Conta
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.HeaderUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.QuickActionUiModel
-import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactDelete
-import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactEdit
 
 @Composable
 fun ContactDetailsScreen(
+    onBack: () -> Unit,
+    showFeatureMissingSnackbar: () -> Unit,
+    viewModel: ContactDetailsViewModel = hiltViewModel<ContactDetailsViewModel>()
+) {
+    val state = viewModel.state.collectAsStateWithLifecycle().value
+
+    ContactDetailsScreen(
+        state = state,
+        onBack = onBack,
+        showFeatureMissingSnackbar = showFeatureMissingSnackbar
+    )
+}
+
+@Composable
+private fun ContactDetailsScreen(
     state: ContactDetailsState,
     onBack: () -> Unit,
+    showFeatureMissingSnackbar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         modifier = modifier,
         containerColor = ProtonTheme.colors.backgroundInvertedNorm,
-        topBar = { ContactDetailsTopBar(state, onBack) }
+        topBar = { ContactDetailsTopBar(state, onBack, showFeatureMissingSnackbar) }
     ) {
         when (state) {
             is ContactDetailsState.Data -> ContactDetails(
@@ -84,9 +101,12 @@ fun ContactDetailsScreen(
                 modifier = Modifier.padding(it)
             )
             is ContactDetailsState.Error -> ProtonErrorMessage(
-                errorMessage = stringResource(id = R.string.contact_details_loading_error)
+                errorMessage = stringResource(id = R.string.contact_details_loading_error),
+                modifier = Modifier.padding(it)
             )
-            is ContactDetailsState.Loading -> ProtonCenteredProgress()
+            is ContactDetailsState.Loading -> ProtonCenteredProgress(
+                modifier = Modifier.padding(it)
+            )
         }
     }
 }
@@ -137,7 +157,11 @@ private fun ContactDetails(uiModel: ContactDetailsUiModel, modifier: Modifier = 
 }
 
 @Composable
-private fun ContactDetailsTopBar(state: ContactDetailsState, onBack: () -> Unit) {
+private fun ContactDetailsTopBar(
+    state: ContactDetailsState,
+    onBack: () -> Unit,
+    showFeatureMissingSnackbar: () -> Unit
+) {
     ProtonTopAppBar(
         modifier = Modifier.fillMaxWidth(),
         backgroundColor = ProtonTheme.colors.backgroundInvertedNorm,
@@ -153,27 +177,23 @@ private fun ContactDetailsTopBar(state: ContactDetailsState, onBack: () -> Unit)
         },
         actions = {
             if (state is ContactDetailsState.Data) {
-                if (ContactEdit.value) {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_proton_pen),
-                            tint = ProtonTheme.colors.iconNorm,
-                            contentDescription = stringResource(
-                                id = R.string.contact_details_edit_contact_content_description
-                            )
+                IconButton(onClick = showFeatureMissingSnackbar) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_proton_pen),
+                        tint = ProtonTheme.colors.iconNorm,
+                        contentDescription = stringResource(
+                            id = R.string.contact_details_edit_contact_content_description
                         )
-                    }
+                    )
                 }
-                if (ContactDelete.value) {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_proton_trash),
-                            tint = ProtonTheme.colors.iconNorm,
-                            contentDescription = stringResource(
-                                id = R.string.contact_details_delete_contact_content_description
-                            )
+                IconButton(onClick = showFeatureMissingSnackbar) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_proton_trash),
+                        tint = ProtonTheme.colors.iconNorm,
+                        contentDescription = stringResource(
+                            id = R.string.contact_details_delete_contact_content_description
                         )
-                    }
+                    )
                 }
             }
         }
@@ -351,7 +371,8 @@ private fun ContactDetailsScreenPreview() {
                 )
             )
         ),
-        onBack = {}
+        onBack = {},
+        showFeatureMissingSnackbar = {}
     )
 }
 
