@@ -354,3 +354,7 @@ private fun ContactDetailsScreenPreview() {
         onBack = {}
     )
 }
+
+object ContactDetailsScreen {
+    const val CONTACT_DETAILS_ID_KEY = "ContactDetailsIdKey"
+}

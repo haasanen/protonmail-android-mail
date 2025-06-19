@@ -20,9 +20,6 @@ package ch.protonmail.android.mailcontact.presentation.contactdetails.mapper
 
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
-import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
-import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactDate
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailAddress
@@ -30,7 +27,6 @@ import ch.protonmail.android.mailcontact.domain.model.ContactDetailCard
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailTelephone
 import ch.protonmail.android.mailcontact.domain.model.ContactField
-import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GenderKind
 import ch.protonmail.android.mailcontact.domain.model.VCardPropType
 import ch.protonmail.android.mailcontact.domain.model.VCardUrl
@@ -45,26 +41,25 @@ import ch.protonmail.android.mailcontact.presentation.contactdetails.model.Quick
 import me.proton.core.util.kotlin.takeIfNotEmpty
 import javax.inject.Inject
 
-class ContactDetailsUiModelMapper @Inject constructor(
-    private val colorMapper: ColorMapper
-) {
+class ContactDetailsUiModelMapper @Inject constructor() {
 
-    fun toUiModel(contactMetadata: ContactMetadata.Contact, contactDetailCard: ContactDetailCard) =
-        ContactDetailsUiModel(
-            avatarUiModel = toAvatarUiModel(contactMetadata.avatar),
-            headerUiModel = toHeaderUiModel(contactMetadata),
-            quickActionUiModels = toQuickActionUiModels(contactDetailCard.fields),
-            contactDetailsItemGroupUiModels = contactDetailCard.fields.map { toContactDetailsItemGroupUiModel(it) }
-        )
-
-    private fun toAvatarUiModel(avatarInformation: AvatarInformation) = AvatarUiModel.Initials(
-        value = avatarInformation.initials,
-        color = colorMapper.toColor(avatarInformation.color).getOrElse { Color.Unspecified }
+    fun toUiModel(contactDetailCard: ContactDetailCard) = ContactDetailsUiModel(
+        avatarUiModel = toAvatarUiModel(),
+        headerUiModel = toHeaderUiModel(),
+        quickActionUiModels = toQuickActionUiModels(contactDetailCard.fields),
+        contactDetailsItemGroupUiModels = contactDetailCard.fields.map { toContactDetailsItemGroupUiModel(it) }
     )
 
-    private fun toHeaderUiModel(contactMetadata: ContactMetadata.Contact) = HeaderUiModel(
-        displayName = contactMetadata.name,
-        displayEmailAddress = contactMetadata.emails.firstOrNull()?.email
+    // Replace hard-coded values when Rust changes are made
+    private fun toAvatarUiModel() = AvatarUiModel.Initials(
+        value = "P",
+        color = Color.Blue
+    )
+
+    // Replace hard-coded values when Rust changes are made
+    private fun toHeaderUiModel() = HeaderUiModel(
+        displayName = "Proton Mail",
+        displayEmailAddress = "proton@pm.me"
     )
 
     private fun toQuickActionUiModels(fields: List<ContactField>) = listOf(
