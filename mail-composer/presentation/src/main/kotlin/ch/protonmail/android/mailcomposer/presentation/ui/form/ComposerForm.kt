@@ -70,7 +70,8 @@ internal fun ComposerForm(
     formHeightPx: Float,
     injectInlineAttachment: Effect<String>,
     stripInlineAttachment: Effect<String>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    refreshBody: Effect<DraftDisplayBodyUiModel>
 ) {
 
     val recipientsViewModel = hiltViewModel<RecipientsViewModel, RecipientsViewModel.Factory> { factory ->
@@ -168,6 +169,7 @@ internal fun ComposerForm(
                     shouldRequestFocus = focusTextBody,
                     injectInlineAttachment = injectInlineAttachment,
                     stripInlineAttachment = stripInlineAttachment,
+                    refreshBody = refreshBody,
                     webViewActions = EditableMessageBodyWebView.Actions(
                         loadEmbeddedImage = actions.loadEmbeddedImage,
                         onMessageBodyChanged = actions.onBodyChanged,

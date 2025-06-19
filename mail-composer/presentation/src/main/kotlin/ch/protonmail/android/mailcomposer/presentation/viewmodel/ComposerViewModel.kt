@@ -430,7 +430,16 @@ class ComposerViewModel @AssistedInject constructor(
     }
 
     private suspend fun onChangeSender(sender: SenderUiModel) {
-        changeSenderAddress(SenderEmail(sender.email))
+        val newSender = SenderEmail(sender.email)
+
+        changeSenderAddress(newSender)
+            .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnSenderChangePermissionsError) }
+            .onRight { bodyWithNewSignature ->
+                val draftDisplayBody = buildDraftDisplayBody(
+                    MessageBodyWithType(bodyWithNewSignature.value, MimeTypeUiModel.Html)
+                )
+                emitNewStateFor(CompositeEvent.UserChangedSender(newSender, draftDisplayBody))
+            }
     }
 
     private suspend fun onChangeSenderRequested() {

@@ -351,7 +351,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                         focusTextBody = effectsState.focusTextBody,
                         formHeightPx = formHeightPx,
                         injectInlineAttachment = effectsState.injectInlineAttachment,
-                        stripInlineAttachment = effectsState.stripInlineAttachment
+                        stripInlineAttachment = effectsState.stripInlineAttachment,
+                        refreshBody = effectsState.refreshBody
                     )
                 }
             }

@@ -115,7 +115,8 @@ sealed interface ComposerState {
         val openCamera: Effect<Unit>,
         val confirmDiscardDraft: Effect<Unit>,
         val injectInlineAttachment: Effect<String>,
-        val stripInlineAttachment: Effect<String>
+        val stripInlineAttachment: Effect<String>,
+        val refreshBody: Effect<DraftDisplayBodyUiModel>
     ) {
 
         companion object {
@@ -145,7 +146,8 @@ sealed interface ComposerState {
                 openCamera = Effect.empty(),
                 confirmDiscardDraft = Effect.empty(),
                 injectInlineAttachment = Effect.empty(),
-                stripInlineAttachment = Effect.empty()
+                stripInlineAttachment = Effect.empty(),
+                refreshBody = Effect.empty()
             )
         }
     }

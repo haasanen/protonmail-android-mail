@@ -67,6 +67,7 @@ fun EditableMessageBodyWebView(
     shouldRequestFocus: Effect<Unit>,
     injectInlineAttachment: Effect<String>,
     stripInlineAttachment: Effect<String>,
+    refreshBody: Effect<DraftDisplayBodyUiModel>,
     webViewActions: EditableMessageBodyWebView.Actions
 ) {
 
@@ -145,6 +146,11 @@ fun EditableMessageBodyWebView(
             wv.evaluateJavascript("stripInlineImage('$contentId');") {
                 Timber.v("editor-webview: stripped inline image with cid $contentId from webview")
             }
+        }
+
+        ConsumableLaunchedEffect(refreshBody) { refreshedBody ->
+            Timber.v("editor-webview: requested to refresh the draft body...")
+            wv.loadDataWithBaseURL(null, refreshedBody.value, MimeType.Html.value, "utf-8", null)
         }
 
 

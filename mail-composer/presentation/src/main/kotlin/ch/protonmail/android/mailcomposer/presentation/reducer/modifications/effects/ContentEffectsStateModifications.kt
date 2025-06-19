@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
+import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 
 internal sealed interface ContentEffectsStateModifications : EffectsStateModification {
@@ -60,6 +61,14 @@ internal sealed interface ContentEffectsStateModifications : EffectsStateModific
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
             stripInlineAttachment = Effect.of(contentId),
+            changeBottomSheetVisibility = Effect.of(false)
+        )
+    }
+
+    data class DraftSenderChanged(val refreshedBody: DraftDisplayBodyUiModel) : EffectsStateModification {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
+            refreshBody = Effect.of(refreshedBody),
             changeBottomSheetVisibility = Effect.of(false)
         )
     }

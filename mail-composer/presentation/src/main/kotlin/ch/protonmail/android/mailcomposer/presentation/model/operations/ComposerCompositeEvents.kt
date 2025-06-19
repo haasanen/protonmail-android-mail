@@ -23,6 +23,7 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.presentation.mapper.AttachmentListErrorMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
+import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ScheduleSendOptionsUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
@@ -65,7 +66,7 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
 
         is UserChangedSender -> ComposerStateModifications(
             mainModification = MainStateModification.UpdateSender(newSender),
-            effectsModification = BottomSheetEffectsStateModification.HideBottomSheet
+            effectsModification = ContentEffectsStateModifications.DraftSenderChanged(refreshedBody)
         )
 
         is ScheduleSendOptionsReady -> ComposerStateModifications(
@@ -95,7 +96,10 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
     ) : CompositeEvent
 
     data class SenderAddressesListReady(val sendersList: List<SenderUiModel>) : CompositeEvent
-    data class UserChangedSender(val newSender: SenderEmail) : CompositeEvent
+    data class UserChangedSender(
+        val newSender: SenderEmail,
+        val refreshedBody: DraftDisplayBodyUiModel
+    ) : CompositeEvent
 
     data class SetExpirationDismissed(val expiration: Duration) : CompositeEvent
 
