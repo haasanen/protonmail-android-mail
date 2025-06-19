@@ -64,10 +64,10 @@ class AutoLockPinStepUiMapper @Inject constructor() {
 
     fun toConfirmButtonUiModel(isEnabled: Boolean, step: PinInsertionStep): ConfirmButtonUiModel {
         val stringRes = when (step) {
-            PinInsertionStep.PinInsertion,
-            PinInsertionStep.PinVerification -> R.string.mail_settings_pin_insertion_button_confirm
+            PinInsertionStep.PinInsertion -> R.string.mail_settings_pin_insertion_next_button
 
-            PinInsertionStep.PinConfirmation -> R.string.mail_settings_pin_insertion_button_create
+            PinInsertionStep.PinVerification,
+            PinInsertionStep.PinConfirmation -> R.string.mail_settings_pin_insertion_confirm_button
         }
 
         return ConfirmButtonUiModel(isEnabled, stringRes)

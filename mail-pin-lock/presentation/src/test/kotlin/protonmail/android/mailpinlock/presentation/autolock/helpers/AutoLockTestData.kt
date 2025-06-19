@@ -72,7 +72,7 @@ internal object AutoLockTestData {
     val BaseConfirmButtonUiModel =
         ConfirmButtonUiModel(
             isEnabled = false,
-            R.string.mail_settings_pin_insertion_button_confirm
+            R.string.mail_settings_pin_insertion_next_button
         )
     val BaseConfirmButtonState = AutoLockPinState.ConfirmButtonState(
         BaseConfirmButtonUiModel

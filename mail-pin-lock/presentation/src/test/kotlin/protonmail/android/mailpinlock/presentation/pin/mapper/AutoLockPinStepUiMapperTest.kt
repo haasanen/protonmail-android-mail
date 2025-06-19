@@ -106,7 +106,7 @@ internal class AutoLockPinStepUiMapperTest {
                     PinInsertionStep.PinInsertion,
                     ConfirmButtonUiModel(
                         false,
-                        R.string.mail_settings_pin_insertion_button_confirm
+                        R.string.mail_settings_pin_insertion_next_button
                     )
                 ),
                 TestInput(
@@ -114,7 +114,7 @@ internal class AutoLockPinStepUiMapperTest {
                     PinInsertionStep.PinVerification,
                     ConfirmButtonUiModel(
                         false,
-                        R.string.mail_settings_pin_insertion_button_confirm
+                        R.string.mail_settings_pin_insertion_confirm_button
                     )
                 ),
                 TestInput(
@@ -122,7 +122,7 @@ internal class AutoLockPinStepUiMapperTest {
                     PinInsertionStep.PinConfirmation,
                     ConfirmButtonUiModel(
                         false,
-                        R.string.mail_settings_pin_insertion_button_create
+                        R.string.mail_settings_pin_insertion_confirm_button
                     )
                 ),
                 TestInput(
@@ -130,7 +130,7 @@ internal class AutoLockPinStepUiMapperTest {
                     PinInsertionStep.PinConfirmation,
                     ConfirmButtonUiModel(
                         true,
-                        R.string.mail_settings_pin_insertion_button_create
+                        R.string.mail_settings_pin_insertion_confirm_button
                     )
                 )
             )

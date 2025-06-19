@@ -136,8 +136,6 @@
     <string name="mail_settings_pin_insertion_pin_dot_description">Pin dot</string>
     <string name="mail_settings_pin_insertion_backspace_description">Backspace</string>
     <string name="mail_settings_pin_insertion_biometric_description">Biometric Authentication</string>
-    <string name="mail_settings_pin_insertion_button_create">Create</string>
-    <string name="mail_settings_pin_insertion_button_confirm">Confirm</string>
     <string name="mail_settings_pin_insertion_error_no_match">PIN codes do not match.</string>
     <plurals name="mail_settings_pin_insertion_error_wrong_code">
         <item quantity="one">%s remaining attempt.</item>

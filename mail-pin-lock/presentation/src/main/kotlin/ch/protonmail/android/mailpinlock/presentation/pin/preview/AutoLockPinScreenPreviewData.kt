@@ -44,7 +44,7 @@ internal object AutoLockPinScreenPreviewData {
             null
         ),
         confirmButtonState = AutoLockPinState.ConfirmButtonState(
-            confirmButtonUiModel = ConfirmButtonUiModel(true, R.string.mail_settings_pin_insertion_button_confirm)
+            confirmButtonUiModel = ConfirmButtonUiModel(true, R.string.mail_settings_pin_insertion_confirm_button)
         ),
         signOutButtonState = AutoLockPinState.SignOutButtonState(
             signOutUiModel = SignOutUiModel(isDisplayed = true, isRequested = false)
