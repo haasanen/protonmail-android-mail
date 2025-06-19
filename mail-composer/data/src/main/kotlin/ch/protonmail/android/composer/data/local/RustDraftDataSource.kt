@@ -52,6 +52,7 @@ interface RustDraftDataSource {
     suspend fun updateBccRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     suspend fun listSenderAddresses(): Either<DataError, LocalSenderAddresses>
     suspend fun changeSender(sender: SenderEmail): Either<ChangeSenderError, Unit>
+    suspend fun body(): Either<DataError, String>
 
     fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo>
     fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions>

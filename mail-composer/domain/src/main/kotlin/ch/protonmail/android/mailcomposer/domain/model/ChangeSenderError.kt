@@ -25,6 +25,7 @@ sealed interface ChangeSenderError {
 
     data object AddressCanNotSend : ChangeSenderError
     data object AddressDisabled : ChangeSenderError
+    data object RefreshBodyError : ChangeSenderError
 
     data class Other(val error: DataError) : ChangeSenderError
 }

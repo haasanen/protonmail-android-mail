@@ -257,6 +257,8 @@ class RustDraftDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun body(): Either<DataError, String> = withValidRustDraftWrapper { it.body().right() }
+
     private fun updateRecipients(
         recipientsWrapper: ComposerRecipientListWrapper,
         updatedRecipients: List<Recipient>

@@ -18,6 +18,10 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
+import arrow.core.Either
+import arrow.core.flatMap
+import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
+import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import javax.inject.Inject
@@ -26,5 +30,9 @@ class ChangeSenderAddress @Inject constructor(
     private val draftRepository: DraftRepository
 ) {
 
-    suspend operator fun invoke(sender: SenderEmail) = draftRepository.changeSender(sender)
+    suspend operator fun invoke(sender: SenderEmail): Either<ChangeSenderError, DraftBody> =
+        draftRepository.changeSender(sender).flatMap {
+            draftRepository.getBody()
+                .mapLeft { ChangeSenderError.RefreshBodyError }
+        }
 }

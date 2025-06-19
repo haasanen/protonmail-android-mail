@@ -97,5 +97,7 @@ class DraftRepositoryImpl @Inject constructor(
     override suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
         draftDataSource.undoSend(userId, messageId)
 
+    override suspend fun getBody(): Either<DataError, DraftBody> = draftDataSource.body().map { DraftBody(it) }
+
 
 }
