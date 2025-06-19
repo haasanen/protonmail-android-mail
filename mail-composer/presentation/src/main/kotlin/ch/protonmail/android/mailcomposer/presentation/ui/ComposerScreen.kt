@@ -194,6 +194,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             when (val sheetType = bottomSheetType.value) {
                 BottomSheetType.ChangeSender -> ChangeSenderBottomSheetContent(
                     mainState.senderAddresses,
+                    mainState.fields.sender,
                     { sender -> viewModel.submit(ComposerAction.SetSenderAddress(sender)) }
                 )
 
@@ -316,9 +317,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                         actions = ComposerForm.Actions(
                             onBodyChanged = { viewModel.submit(ComposerAction.DraftBodyChanged(DraftBody(it))) },
                             onChangeSender = {
-                                showFeatureMissingSnackbar()
-                                // setBottomSheetType(BottomSheetType.ChangeSender)
-                                // viewModel.submit(ComposerAction2.ChangeSenderRequested)
+                                bottomSheetType.value = BottomSheetType.ChangeSender
+                                viewModel.submit(ComposerAction.ChangeSender)
                             },
                             onWebViewMeasuresChanged = { webViewParams ->
                                 scrollManager.onEditorParamsChanged(
