@@ -44,8 +44,11 @@ internal class LockScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Blur is only added on API 31+ devices.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        // Blur is only added on API 31+ devices and when advertised by the window flag.
+        val supportsBackgroundBlur = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+            window.windowManager.isCrossWindowBlurEnabled
+
+        if (supportsBackgroundBlur) {
             setupNativeBlur()
         }
 
@@ -57,8 +60,8 @@ internal class LockScreenActivity : AppCompatActivity() {
                     modifier = Modifier
                         .fillMaxSize()
                         .then(
-                            // If < API 31, show a background to hide the underlying content as there is no blur.
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                            // If blurring is unsupported or not enabled, prevent transparency by adding a background
+                            if (!supportsBackgroundBlur) {
                                 Modifier.background(ProtonTheme.colors.backgroundNorm)
                             } else {
                                 Modifier
