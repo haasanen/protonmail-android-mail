@@ -605,11 +605,6 @@ class ComposerViewModel @AssistedInject constructor(
     private suspend fun handleOnScheduleSendMessage(time: Instant) {
         emitNewStateFor(MainEvent.CoreLoadingToggled)
 
-        if (subjectTextField.text.isBlank()) {
-            emitNewStateFor(CompositeEvent.OnSendWithEmptySubject)
-            return
-        }
-
         onScheduleSend(time)
     }
 
