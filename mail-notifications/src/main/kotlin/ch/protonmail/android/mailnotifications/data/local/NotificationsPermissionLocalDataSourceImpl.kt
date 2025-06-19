@@ -20,7 +20,6 @@ package ch.protonmail.android.mailnotifications.data.local
 
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
-import ch.protonmail.android.mailnotifications.data.local.NotificationPermissionsKeys.NumberOfAttempts
 import ch.protonmail.android.mailnotifications.data.model.NotificationsPermissionRequestAttempts
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -30,9 +29,11 @@ class NotificationsPermissionLocalDataSourceImpl @Inject constructor(
     private val dataStoreProvider: NotificationDataStoreProvider
 ) : NotificationsPermissionLocalDataSource {
 
+    private val preferenceKey = intPreferencesKey(NotificationDataStoreProvider.V7_NOTIFICATIONS_REQUESTS_ATTEMPT)
+
     override fun observePermissionRequestAttempts(): Flow<NotificationsPermissionRequestAttempts> {
         return dataStoreProvider.notificationPermissionStore.data.map { preferences ->
-            val attempts = preferences[intPreferencesKey(NumberOfAttempts)] ?: 0
+            val attempts = preferences[preferenceKey] ?: 0
 
             NotificationsPermissionRequestAttempts(attempts)
         }
@@ -40,13 +41,8 @@ class NotificationsPermissionLocalDataSourceImpl @Inject constructor(
 
     override suspend fun increasePermissionRequestAttempts() {
         dataStoreProvider.notificationPermissionStore.edit { preferences ->
-            val currentValue = preferences[intPreferencesKey(NumberOfAttempts)] ?: 0
-            preferences[intPreferencesKey(NumberOfAttempts)] = currentValue + 1
+            val currentValue = preferences[preferenceKey] ?: 0
+            preferences[preferenceKey] = currentValue + 1
         }
     }
-}
-
-private object NotificationPermissionsKeys {
-
-    const val NumberOfAttempts = "NotificationsPermissionAttemptsNumber"
 }

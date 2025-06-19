@@ -19,8 +19,11 @@
 package ch.protonmail.android.mailnotifications.data.local
 
 import android.content.Context
+import androidx.datastore.core.DataMigration
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -32,8 +35,42 @@ class NotificationDataStoreProvider @Inject constructor(
 ) {
 
     private val Context.notificationPermissionStore: DataStore<Preferences> by preferencesDataStore(
-        name = "notificationsPermissionStore"
+        name = "NotificationPermissionStore",
+        produceMigrations = { _ ->
+            listOf(NotificationsV6DataStoreMigration())
+        }
     )
 
     val notificationPermissionStore = context.notificationPermissionStore
+
+    internal class NotificationsV6DataStoreMigration : DataMigration<Preferences> {
+
+        private val v6PreferenceTimestamp = longPreferencesKey(V6_KEY_NOTIFICATIONS_TIMESTAMP)
+        private val v6PreferenceStopShowing = booleanPreferencesKey(V6_KEY_NOTIFICATIONS_STOP_SHOWING)
+
+        private val preferencesList = listOf(v6PreferenceTimestamp, v6PreferenceStopShowing)
+
+        override suspend fun shouldMigrate(currentData: Preferences) = preferencesList.any { it in currentData }
+
+        override suspend fun migrate(currentData: Preferences): Preferences {
+            val mutablePrefs = currentData.toMutablePreferences()
+
+            preferencesList.forEach {
+                if (currentData.contains(it)) {
+                    mutablePrefs.remove(it)
+                }
+            }
+
+            return mutablePrefs.toPreferences()
+        }
+
+        override suspend fun cleanUp() = Unit
+    }
+
+    internal companion object {
+
+        const val V6_KEY_NOTIFICATIONS_TIMESTAMP = "NotificationPermissionTimestampKey"
+        const val V6_KEY_NOTIFICATIONS_STOP_SHOWING = "ShouldStopShowingPermissionDialog"
+        const val V7_NOTIFICATIONS_REQUESTS_ATTEMPT = "NotificationsPermissionAttemptsNumber"
+    }
 }
