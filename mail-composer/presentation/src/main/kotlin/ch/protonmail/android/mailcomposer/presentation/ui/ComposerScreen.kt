@@ -77,11 +77,9 @@ import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
-import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
@@ -315,8 +313,13 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     ComposerForm(
                         modifier = Modifier.testTag(ComposerTestTags.ComposerForm),
                         changeFocusToField = effectsState.changeFocusToField,
-                        actions = buildActions(
-                            viewModel = viewModel,
+                        actions = ComposerForm.Actions(
+                            onBodyChanged = { viewModel.submit(ComposerAction.DraftBodyChanged(DraftBody(it))) },
+                            onChangeSender = {
+                                showFeatureMissingSnackbar()
+                                // setBottomSheetType(BottomSheetType.ChangeSender)
+                                // viewModel.submit(ComposerAction2.ChangeSenderRequested)
+                            },
                             onWebViewMeasuresChanged = { webViewParams ->
                                 scrollManager.onEditorParamsChanged(
                                     getComposeScreenParams(),
@@ -332,8 +335,9 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                                 val visibleBounds = boundsInWindow.intersect(columnBounds)
                                 visibleWebViewHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
                             },
-                            onLoadEmbeddedImage = { contentId -> viewModel.loadEmbeddedImage(contentId) },
-                            showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
+                            loadEmbeddedImage = { viewModel.loadEmbeddedImage(it) },
+                            onAttachmentRemoveRequested = { viewModel.submit(ComposerAction.RemoveAttachment(it)) },
+                            onInlineImageRemoved = { viewModel.submit(ComposerAction.RemoveInlineAttachment(it)) },
                             onInlineImageClicked = { contentId ->
                                 bottomSheetType.value = BottomSheetType.InlineImageActions(contentId)
                                 viewModel.submit(ComposerAction.InlineImageActionsRequested)
@@ -565,33 +569,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
 
 }
 
-@Suppress("LongParameterList")
-private fun buildActions(
-    viewModel: ComposerViewModel,
-    onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
-    onHeaderPositioned: (Rect, Float) -> Unit,
-    onWebViewPositioned: (Rect) -> Unit,
-    onLoadEmbeddedImage: (String) -> EmbeddedImage?,
-    showFeatureMissingSnackbar: () -> Unit,
-    onInlineImageClicked: (String) -> Unit
-): ComposerForm.Actions = ComposerForm.Actions(
-    onBodyChanged = {
-        viewModel.submit(ComposerAction.DraftBodyChanged(DraftBody(it)))
-    },
-    onChangeSender = {
-        showFeatureMissingSnackbar()
-        // setBottomSheetType(BottomSheetType.ChangeSender)
-        // viewModel.submit(ComposerAction2.ChangeSenderRequested)
-    },
-    onWebViewMeasuresChanged = onWebViewMeasuresChanged,
-    onHeaderPositioned = onHeaderPositioned,
-    onWebViewPositioned = onWebViewPositioned,
-    loadEmbeddedImage = onLoadEmbeddedImage,
-    onAttachmentRemoveRequested = { viewModel.submit(ComposerAction.RemoveAttachment(it)) },
-    onInlineImageRemoved = { viewModel.submit(ComposerAction.RemoveInlineAttachment(it)) },
-    onInlineImageClicked = onInlineImageClicked
-)
-
 object ComposerScreen {
 
     const val DELAY_SHOWING_BOTTOMSHEET = 100L
@@ -681,7 +658,9 @@ private data class AttachmentsFileSizeExceededDialogState(
     val isVisible: Boolean,
     val attachmentsWithError: List<AttachmentId>
 ) {
+
     companion object {
+
         val NoError = AttachmentsFileSizeExceededDialogState(
             isVisible = false,
             attachmentsWithError = emptyList()
