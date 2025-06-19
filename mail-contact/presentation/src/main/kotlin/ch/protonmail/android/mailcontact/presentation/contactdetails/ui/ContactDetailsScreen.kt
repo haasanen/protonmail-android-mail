@@ -20,7 +20,7 @@ package ch.protonmail.android.mailcontact.presentation.contactdetails.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,10 +36,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -54,6 +55,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
+import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
@@ -212,16 +214,15 @@ private fun ContactDetailsQuickActions(quickActionUiModels: List<QuickActionUiMo
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        enabled = uiModel.isEnabled,
-                        role = Role.Button,
-                        onClick = {}
-                    )
                     .background(
                         color = ProtonTheme.colors.backgroundInvertedSecondary,
                         shape = ProtonTheme.shapes.extraLarge
+                    )
+                    .clip(ProtonTheme.shapes.extraLarge)
+                    .clickable(
+                        enabled = uiModel.isEnabled,
+                        role = Role.Button,
+                        onClick = {}
                     )
                     .padding(ProtonDimens.Spacing.Large),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -256,10 +257,22 @@ private fun ContactDetailsItemGroup(itemGroupUiModel: ContactDetailsItemGroupUiM
                 color = ProtonTheme.colors.backgroundInvertedSecondary,
                 shape = ProtonTheme.shapes.extraLarge
             )
+            .clip(ProtonTheme.shapes.extraLarge)
     ) {
         itemGroupUiModel.contactDetailsItemUiModels.forEachIndexed { index, uiModel ->
+            val context = LocalContext.current
+            val contactItemLabel = uiModel.label.string()
+            val contactItemValue = uiModel.value.string()
             Column(
-                modifier = Modifier.padding(ProtonDimens.Spacing.Large)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .combinedClickable(
+                        onLongClickLabel = stringResource(id = R.string.contact_details_action_copy_label),
+                        onLongClick = { context.copyTextToClipboard(contactItemLabel, contactItemValue) },
+                        onClickLabel = null,
+                        onClick = {}
+                    )
+                    .padding(ProtonDimens.Spacing.Large)
             ) {
                 Text(
                     text = uiModel.label.string(),
@@ -293,7 +306,7 @@ private fun ContactDetailsScreenPreview() {
         state = ContactDetailsState.Data(
             uiModel = ContactDetailsUiModel(
                 avatarUiModel = AvatarUiModel.Initials(
-                    value = "PM",
+                    value = "P",
                     color = Color.Blue
                 ),
                 headerUiModel = HeaderUiModel(
