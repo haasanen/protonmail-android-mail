@@ -809,15 +809,14 @@ private fun MailboxItemsList(
             }
     ) {
 
-        if (state is MailboxListState.Data.ViewMode && !state.searchState.isInSearch()) {
-            item {
-                ClearAllOperationBanner(
-                    actions = ClearAllOperationBanner.Actions(
-                        onUpselling = actions.showMissingFeature,
-                        onClearAll = actions.onClearAll
-                    )
+        item {
+            ClearAllOperationBanner(
+                mailboxListState = state,
+                actions = ClearAllOperationBanner.Actions(
+                    onUpselling = actions.showMissingFeature,
+                    onClearAll = actions.onClearAll
                 )
-            }
+            )
         }
 
         items(

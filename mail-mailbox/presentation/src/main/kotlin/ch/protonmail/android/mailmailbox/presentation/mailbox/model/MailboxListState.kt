@@ -74,3 +74,5 @@ sealed interface MailboxListState {
 
     data object Loading : MailboxListState
 }
+
+fun MailboxListState.hasClearableOperations() = this is MailboxListState.Data.ViewMode && !this.searchState.isInSearch()

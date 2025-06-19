@@ -29,17 +29,20 @@ import ch.protonmail.android.design.compose.component.ProtonBannerWithLink
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllStateUiModel
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.hasClearableOperations
 
 @Composable
 internal fun ClearAllOperationBanner(
+    mailboxListState: MailboxListState,
     viewModel: ClearAllOperationViewModel = hiltViewModel(),
     actions: ClearAllOperationBanner.Actions
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    when (state) {
-        is ClearAllStateUiModel.Hidden -> Unit
+    when {
+        state is ClearAllStateUiModel.Hidden || !mailboxListState.hasClearableOperations() -> Unit
         else -> ClearAllOperationBannerContent(state, actions)
     }
 }
