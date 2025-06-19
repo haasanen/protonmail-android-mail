@@ -19,8 +19,10 @@
 package ch.protonmail.android.mailonboarding.data
 
 import android.content.Context
+import androidx.datastore.core.DataMigration
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import javax.inject.Inject
 
@@ -29,8 +31,37 @@ class OnboardingDataStoreProvider @Inject constructor(
 ) {
 
     private val Context.onboardingDataStore: DataStore<Preferences> by preferencesDataStore(
-        name = "onboardingPrefDataStore"
+        name = "onboardingPrefDataStore",
+        produceMigrations = { _ ->
+            listOf(OnboardingV6DataStoreMigration())
+        }
     )
     val onboardingDataStore = context.onboardingDataStore
-}
 
+    internal class OnboardingV6DataStoreMigration : DataMigration<Preferences> {
+
+        private val v6Preference = booleanPreferencesKey(V6_SHOW_ONBOARDING_KEY)
+
+        override suspend fun shouldMigrate(currentData: Preferences) = currentData.contains(v6Preference)
+
+        override suspend fun migrate(currentData: Preferences): Preferences {
+            val mutablePrefs = currentData.toMutablePreferences()
+
+            val hasV6PreferenceKey = currentData.contains(v6Preference)
+
+            if (hasV6PreferenceKey) {
+                mutablePrefs.remove(v6Preference)
+            }
+
+            return mutablePrefs.toPreferences()
+        }
+
+        override suspend fun cleanUp() = Unit
+    }
+
+    internal companion object {
+
+        const val V6_SHOW_ONBOARDING_KEY = "shouldDisplayOnboardingPrefKey"
+        const val V7_SHOW_ONBOARDING_KEY = "ShouldDisplayV7BetaOnboardingPrefKey"
+    }
+}

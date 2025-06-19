@@ -33,7 +33,9 @@ class OnboardingLocalDataSourceImpl @Inject constructor(
     private val dataStoreProvider: OnboardingDataStoreProvider
 ) : OnboardingLocalDataSource {
 
-    private val shouldDisplayOnboardingPrefKey = booleanPreferencesKey("shouldDisplayOnboardingPrefKey")
+    private val shouldDisplayOnboardingPrefKey = booleanPreferencesKey(
+        OnboardingDataStoreProvider.V7_SHOW_ONBOARDING_KEY
+    )
 
     override fun observe(): Flow<Either<PreferencesError, OnboardingPreference>> =
         dataStoreProvider.onboardingDataStore.safeData.map { prefsEither ->
