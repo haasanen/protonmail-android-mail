@@ -24,13 +24,17 @@ import ch.protonmail.android.composer.data.mapper.toDraftFields
 import ch.protonmail.android.composer.data.mapper.toDraftFieldsWithSyncStatus
 import ch.protonmail.android.composer.data.mapper.toEmbeddedImage
 import ch.protonmail.android.composer.data.mapper.toScheduleSendOptions
+import ch.protonmail.android.composer.data.mapper.toSenderAddresses
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
+import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
+import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -78,6 +82,12 @@ class DraftRepositoryImpl @Inject constructor(
     override suspend fun getScheduleSendOptions(): Either<DataError, ScheduleSendOptions> = withContext(ioDispatcher) {
         draftDataSource.getScheduleSendOptions().map { it.toScheduleSendOptions() }
     }
+
+    override suspend fun listSenderAddresses(): Either<DataError, SenderAddresses> =
+        draftDataSource.listSenderAddresses().map { it.toSenderAddresses() }
+
+    override suspend fun changeSender(sender: SenderEmail): Either<ChangeSenderError, Unit> =
+        draftDataSource.changeSender(sender)
 
     override suspend fun send(): Either<DataError, Unit> = draftDataSource.send()
 

@@ -39,6 +39,7 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
 import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
+import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
@@ -65,6 +66,11 @@ import uniffi.proton_mail_uniffi.SingleRecipientEntry
 import kotlin.time.DurationUnit
 import kotlin.time.Instant
 import kotlin.time.toDuration
+
+fun LocalSenderAddresses.toSenderAddresses() = SenderAddresses(
+    this.addresses.map { SenderEmail(it) },
+    SenderEmail(this.selected)
+)
 
 fun DraftSenderAddressList.toLocalSenderAddresses() = LocalSenderAddresses(this.available, this.active)
 

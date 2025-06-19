@@ -20,11 +20,14 @@ package ch.protonmail.android.mailcomposer.domain.repository
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
+import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
+import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
@@ -49,4 +52,6 @@ interface DraftRepository {
     suspend fun updateCcRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     suspend fun updateBccRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
     suspend fun getScheduleSendOptions(): Either<DataError, ScheduleSendOptions>
+    suspend fun listSenderAddresses(): Either<DataError, SenderAddresses>
+    suspend fun changeSender(sender: SenderEmail): Either<ChangeSenderError, Unit>
 }
