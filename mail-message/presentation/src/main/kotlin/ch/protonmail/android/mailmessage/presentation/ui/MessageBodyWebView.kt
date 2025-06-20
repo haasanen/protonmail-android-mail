@@ -285,7 +285,7 @@ fun RevealWebView(
     val alphaTween =
         remember {
             derivedStateOf {
-                0f.coerceAtLeast(webviewHeightAnimationValues / webViewTargetHeightPx.intValue.toFloat())
+                webviewHeightAnimationValues.divideBy(webViewTargetHeightPx.intValue.toFloat())
             }
         }
 
@@ -394,3 +394,6 @@ object MessageBodyWebViewTestTags {
 }
 
 private const val WEB_VIEW_FIXED_MAX_HEIGHT = 262_143
+
+// we can't divide by 0 so guard
+private fun Int.divideBy(value: Float): Float = if (value == 0f) 0f else this.div(value)
