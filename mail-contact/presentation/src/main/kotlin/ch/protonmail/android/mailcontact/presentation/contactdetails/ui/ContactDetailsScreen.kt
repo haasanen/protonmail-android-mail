@@ -36,6 +36,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,7 +48,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
-import ch.protonmail.android.design.compose.component.ProtonErrorMessage
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -70,6 +70,7 @@ import ch.protonmail.android.mailcontact.presentation.previewdata.ContactDetails
 @Composable
 fun ContactDetailsScreen(
     onBack: () -> Unit,
+    onShowErrorSnackbar: (String) -> Unit,
     showFeatureMissingSnackbar: () -> Unit,
     viewModel: ContactDetailsViewModel = hiltViewModel<ContactDetailsViewModel>()
 ) {
@@ -78,6 +79,7 @@ fun ContactDetailsScreen(
     ContactDetailsScreen(
         state = state,
         onBack = onBack,
+        onShowErrorSnackbar = onShowErrorSnackbar,
         showFeatureMissingSnackbar = showFeatureMissingSnackbar
     )
 }
@@ -86,6 +88,7 @@ fun ContactDetailsScreen(
 private fun ContactDetailsScreen(
     state: ContactDetailsState,
     onBack: () -> Unit,
+    onShowErrorSnackbar: (String) -> Unit,
     showFeatureMissingSnackbar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -99,9 +102,9 @@ private fun ContactDetailsScreen(
                 uiModel = state.uiModel,
                 modifier = Modifier.padding(it)
             )
-            is ContactDetailsState.Error -> ProtonErrorMessage(
-                errorMessage = stringResource(id = R.string.contact_details_loading_error),
-                modifier = Modifier.padding(it)
+            is ContactDetailsState.Error -> ContactDetailsError(
+                onBack = onBack,
+                onShowErrorSnackbar = onShowErrorSnackbar
             )
             is ContactDetailsState.Loading -> ProtonCenteredProgress(
                 modifier = Modifier.padding(it)
@@ -296,12 +299,23 @@ private fun ContactDetailsItemGroup(itemGroupUiModel: ContactDetailsItemGroupUiM
     }
 }
 
+@Composable
+private fun ContactDetailsError(onBack: () -> Unit, onShowErrorSnackbar: (String) -> Unit) {
+    val errorMessage = stringResource(id = R.string.contact_details_loading_error)
+
+    LaunchedEffect(Unit) {
+        onShowErrorSnackbar(errorMessage)
+        onBack()
+    }
+}
+
 @Preview
 @Composable
 private fun ContactDetailsScreenPreview() {
     ContactDetailsScreen(
         state = ContactDetailsPreviewData.contactDetailsState,
         onBack = {},
+        onShowErrorSnackbar = {},
         showFeatureMissingSnackbar = {}
     )
 }
