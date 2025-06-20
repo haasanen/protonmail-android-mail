@@ -32,6 +32,7 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
+import ch.protonmail.android.mailcontact.presentation.contactdetails.ui.ContactDetailsScreen
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
 import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearchScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
@@ -253,8 +254,7 @@ internal fun NavGraphBuilder.addContacts(
                     showFeatureMissingSnackbar()
                 },
                 onContactSelected = { contactId ->
-                    showFeatureMissingSnackbar()
-                    // navController.navigate(Destination.Screen.ContactDetails(contactId))
+                    navController.navigate(Destination.Screen.ContactDetails(contactId))
                 },
                 onContactGroupSelected = { _ ->
                     showFeatureMissingSnackbar()
@@ -274,13 +274,27 @@ internal fun NavGraphBuilder.addContacts(
     }
 }
 
+internal fun NavGraphBuilder.addContactDetails(
+    navController: NavHostController,
+    onShowErrorSnackbar: (String) -> Unit,
+    showFeatureMissingSnackbar: () -> Unit
+) {
+    composable(route = Destination.Screen.ContactDetails.route) {
+        ContactDetailsScreen(
+            onBack = { navController.navigateBack() },
+            onShowErrorSnackbar = onShowErrorSnackbar,
+            showFeatureMissingSnackbar = showFeatureMissingSnackbar
+        )
+    }
+}
+
 internal fun NavGraphBuilder.addContactSearch(
     navController: NavHostController,
     showFeatureMissingSnackbar: () -> Unit
 ) {
     val actions = ContactSearchScreen.Actions(
-        onContactSelected = { _ ->
-            showFeatureMissingSnackbar()
+        onContactSelected = { contactId ->
+            navController.navigate(Destination.Screen.ContactDetails(contactId))
         },
         onContactGroupSelected = { _ ->
             showFeatureMissingSnackbar()

@@ -89,6 +89,7 @@ import ch.protonmail.android.navigation.route.addAutoLockSettings
 import ch.protonmail.android.navigation.route.addBugReporting
 import ch.protonmail.android.navigation.route.addCombinedContactsSetting
 import ch.protonmail.android.navigation.route.addComposer
+import ch.protonmail.android.navigation.route.addContactDetails
 import ch.protonmail.android.navigation.route.addContactSearch
 import ch.protonmail.android.navigation.route.addContacts
 import ch.protonmail.android.navigation.route.addConversationDetail
@@ -599,6 +600,15 @@ fun Home(
                                         type = ProtonSnackbarType.ERROR
                                     )
                                 }
+                            },
+                            showFeatureMissingSnackbar = {
+                                showFeatureMissingSnackbar()
+                            }
+                        )
+                        addContactDetails(
+                            navController,
+                            onShowErrorSnackbar = {
+                                showErrorSnackbar(it)
                             },
                             showFeatureMissingSnackbar = {
                                 showFeatureMissingSnackbar()
