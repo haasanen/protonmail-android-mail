@@ -26,9 +26,15 @@ import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import kotlinx.coroutines.flow.Flow
 
 interface LegacyAutoLockRepository {
+
     suspend fun autoLockEnabled(): Either<MigrationError, LegacyAutoLockPreference>
+
     suspend fun hasAutoLockPinCode(): Boolean
     fun observeAutoLockPinCode(): Flow<Either<MigrationError, LegacyAutoLockPin>>
+
     suspend fun hasAutoLockBiometricPreference(): Boolean
     fun observeAutoLockBiometricsPreference(): Flow<Either<MigrationError, LegacyAutoLockBiometricsPreference>>
+    suspend fun getAutoLockBiometricsPreference(): Either<MigrationError, LegacyAutoLockBiometricsPreference>
+
+    suspend fun clearPreferences()
 }

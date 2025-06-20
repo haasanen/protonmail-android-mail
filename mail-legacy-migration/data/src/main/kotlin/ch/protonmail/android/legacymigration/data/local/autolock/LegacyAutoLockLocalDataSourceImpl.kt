@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.legacymigration.data.local.autolock
 
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import arrow.core.Either
 import arrow.core.left
@@ -33,7 +34,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
-    private val dataStoreProvider: LegacyAutoLockDataStoreProvider,
+    dataStoreProvider: LegacyAutoLockDataStoreProvider,
     private val decryptLegacySerializableValue: DecryptLegacySerializableValue
 ) : LegacyAutoLockLocalDataSource {
 
@@ -80,6 +81,12 @@ class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
             }
     }
 
+    override suspend fun clearPreferences() {
+        dataStore.edit { prefs ->
+            prefs.clear()
+        }
+    }
+
     override suspend fun hasAutoLockBiometricPreference(): Boolean = runCatching {
         dataStore.data.first()[autoLockBiometricsKey]?.isNotEmpty() == true
     }.getOrDefault(false)
@@ -101,7 +108,21 @@ class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
             }
     }
 
+    override suspend fun getAutoLockBiometricsPreference(): Either<MigrationError, LegacyAutoLockBiometricsPreference> {
+        return try {
+            val encryptedValue = dataStore.data.first()[autoLockBiometricsKey]
+                ?.takeIf { it.isNotEmpty() }
+                ?: return MigrationError.AutoLockFailure.FailedToReadBiometricPreference.left()
+
+            decryptLegacySerializableValue<LegacyAutoLockBiometricsPreference>(encryptedValue)
+                .mapLeft { MigrationError.AutoLockFailure.FailedToDecryptBiometricPreference }
+        } catch (_: Exception) {
+            MigrationError.AutoLockFailure.FailedToReadBiometricPreference.left()
+        }
+    }
+
     private companion object {
+
         const val LEGACY_PIN_CODE_PREF_KEY = "pinCodePrefKey"
         const val LEGACY_AUTO_LOCK_BIOMETRICS_PREF_KEY = "autoLockBiometricsKey"
         const val LEGACY_AUTO_LOCK_ENABLED_PREF_KEY = "hasAutoLockPrefKey"

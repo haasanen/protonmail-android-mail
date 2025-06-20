@@ -46,4 +46,9 @@ class LegacyAutoLockRepositoryImpl @Inject constructor(
     @Suppress("MaxLineLength")
     override fun observeAutoLockBiometricsPreference(): Flow<Either<MigrationError, LegacyAutoLockBiometricsPreference>> =
         legacyAutoLockLocalDataSource.observeAutoLockBiometricsPreference()
+
+    override suspend fun getAutoLockBiometricsPreference() =
+        legacyAutoLockLocalDataSource.getAutoLockBiometricsPreference()
+
+    override suspend fun clearPreferences() = legacyAutoLockLocalDataSource.clearPreferences()
 }
