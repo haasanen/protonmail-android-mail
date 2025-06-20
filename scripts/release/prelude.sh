@@ -21,5 +21,9 @@
 set -e
 
 CONFIG_FILE_PATH="$(git rev-parse --show-toplevel)/app-configuration.properties"
-VERSION_CODE=$CI_PIPELINE_IID
+
+# Offset to align with V6 version code (prod is ~9000 ahead)
+VERSION_CODE_OFFSET=9000
+VERSION_CODE=$((CI_PIPELINE_IID + VERSION_CODE_OFFSET))
+
 VERSION_NAME=$(cat $CONFIG_FILE_PATH | grep versionName | cut -d "=" -f 2 | sed 's/"//g')
