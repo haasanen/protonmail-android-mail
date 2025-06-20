@@ -72,7 +72,6 @@ dependencies {
 
     implementation(project(":design-system"))
     implementation(project(":mail-session:domain"))
-    implementation(project(":mail-settings:domain"))
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 
