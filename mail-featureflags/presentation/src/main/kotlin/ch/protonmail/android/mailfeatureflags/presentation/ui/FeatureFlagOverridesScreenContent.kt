@@ -81,7 +81,11 @@ internal fun FeatureFlagOverridesScreenContent(
                 when (item) {
                     is FeatureFlagListItem.Header -> ProtonSettingsHeader(title = item.categoryName)
                     is FeatureFlagListItem.FeatureFlag -> {
-                        Box(modifier = Modifier.fillMaxWidth()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = ProtonDimens.Spacing.Standard)
+                        ) {
                             Column(modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Large)) {
                                 ProtonSettingsToggleItem(
                                     name = item.model.name,
@@ -92,11 +96,11 @@ internal fun FeatureFlagOverridesScreenContent(
                                 )
 
                                 if (item.model.overridden) {
+                                    Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Tiny))
                                     Text(
                                         text = stringResource(R.string.feature_flag_overridden_description),
                                         color = ProtonTheme.colors.notificationWarning,
-                                        style = ProtonTypography.Default.bodySmallHint,
-                                        modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Large)
+                                        style = ProtonTypography.Default.bodySmallHint
                                     )
                                 }
                             }
@@ -133,24 +137,33 @@ private fun FeatureFlagScreenPreview() {
 
 val sampleData = FeatureFlagOverridesState.Loaded(
     featureFlagListItems = listOf(
-        FeatureFlagListItem.Header("Composer"),
+        FeatureFlagListItem.Header("Section 1"),
         FeatureFlagListItem.FeatureFlag(
             FeatureFlagUiModel(
-                key = "key-composer",
-                name = "Navigation",
-                description = "Allow access to all Composer flows.",
+                key = "key-1",
+                name = "Feature 1",
+                description = "Some description.",
                 enabled = false,
                 overridden = false
             )
         ),
-        FeatureFlagListItem.Header("System"),
         FeatureFlagListItem.FeatureFlag(
             FeatureFlagUiModel(
-                key = "key-notifs",
-                name = "Notifications",
-                description = "Enable push notifications.",
-                enabled = false,
+                key = "key-2",
+                name = "Feature 2",
+                description = "Some other description.",
+                enabled = true,
                 overridden = false
+            )
+        ),
+        FeatureFlagListItem.Header("Section 2"),
+        FeatureFlagListItem.FeatureFlag(
+            FeatureFlagUiModel(
+                key = "key-3",
+                name = "Overridden",
+                description = "An overridden FF.",
+                enabled = false,
+                overridden = true
             )
         )
     ).toImmutableList()
