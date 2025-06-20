@@ -19,10 +19,6 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Calendar
@@ -78,13 +74,19 @@ import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcomposer.presentation.R
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Instant
-import java.time.Instant as JavaInstant
-import kotlin.time.toKotlinInstant
+import kotlinx.datetime.Instant as DateTimeInstant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScheduleSendTimePickerBottomSheetContent(
+internal fun ScheduleSendTimePickerBottomSheetContent(
     onClose: () -> Unit,
     onScheduleSendConfirmed: (Instant) -> Unit,
     modifier: Modifier = Modifier
@@ -92,21 +94,22 @@ fun ScheduleSendTimePickerBottomSheetContent(
 
     val timePickerState = rememberTimePickerState(initialHour = INITIAL_TIME_HOUR, initialMinute = INITIAL_TIME_MINUTE)
     val datePickerState = rememberDatePickerState(
-        initialSelectedDate = LocalDate.now(),
+        initialSelectedDate = java.time.LocalDate.now(),
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                val timestamp = JavaInstant.ofEpochMilli(utcTimeMillis)
-                val zoneId = ZoneId.systemDefault()
+                val timeZone = TimeZone.currentSystemDefault()
+                val instant = DateTimeInstant.fromEpochMilliseconds(utcTimeMillis)
 
-                val today = LocalDate.now(zoneId)
-                val eightyNineDaysFromNow = today.plusDays(89)
-                val dateOfTimestamp = timestamp.atZone(zoneId).toLocalDate()
-
-                val isInRange = !dateOfTimestamp.isBefore(today) && !dateOfTimestamp.isAfter(eightyNineDaysFromNow)
-                return isInRange
+                val today = Clock.System.now().toLocalDateTime(timeZone).date
+                val eightyNineDaysFromNow = today.plus(89, DateTimeUnit.DAY)
+                val dateOfTimestamp = instant.toLocalDateTime(timeZone).date
+                return dateOfTimestamp in today..eightyNineDaysFromNow
             }
 
-            override fun isSelectableYear(year: Int): Boolean = year == LocalDate.now().year
+            override fun isSelectableYear(year: Int): Boolean {
+                val timeZone = TimeZone.currentSystemDefault()
+                return year == Clock.System.now().toLocalDateTime(timeZone).year
+            }
         }
     )
     Column(
@@ -122,10 +125,16 @@ fun ScheduleSendTimePickerBottomSheetContent(
             onClose = onClose,
             onSendClicked = {
                 datePickerState.getSelectedDate()?.let { date ->
-                    val time = LocalTime.of(timePickerState.hour, timePickerState.minute)
-                    val dateTime = LocalDateTime.of(date, time)
-                    val instant = dateTime.atZone(ZoneId.systemDefault()).toInstant()
-                    onScheduleSendConfirmed(instant.toKotlinInstant())
+                    val dateTime = LocalDateTime(
+                        date.year,
+                        date.month,
+                        date.dayOfMonth,
+                        timePickerState.hour,
+                        timePickerState.minute
+                    )
+                    val timeZone = TimeZone.currentSystemDefault()
+                    val timestamp = Instant.fromEpochSeconds(dateTime.toInstant(timeZone).epochSeconds)
+                    onScheduleSendConfirmed(timestamp)
                 }
             },
             modifier = Modifier.padding(

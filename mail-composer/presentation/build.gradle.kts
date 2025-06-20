@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.accompanist.webview)
     implementation(libs.proton.core.user.domain)
+    implementation(libs.kotlinx.datetime)
 
     implementation(project(":mail-attachments:domain"))
     implementation(project(":mail-attachments:presentation"))
