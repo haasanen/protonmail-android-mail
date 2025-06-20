@@ -49,7 +49,17 @@ platform :android do
 
   desc "Runs Unit Tests"
   lane :unitTest do
-    gradle(tasks: ["testDevDebugUnitTest", "testDebugUnitTest", "testUtilsUnitTest"])
+    gradle(
+      tasks: [
+        "testDevDebugUnitTest",
+        "testDebugUnitTest",
+        "testUtilsUnitTest",
+        "coberturaXmlReport",
+        "globalLineCoverage",
+        ":coverage:koverHtmlReport"
+      ],
+      flags: "-Pci --console=plain -x :coverage:jacocoToCobertura"
+    )
   end
 
   desc "Setup UI Tests assets"
@@ -76,11 +86,6 @@ platform :android do
   desc "Runs all UI tests on a wide set of devices on Firebase Test lab"
   lane :fullRegressionTest do
     sh("../scripts/run_firebase_ui_tests.sh full-regression-test")
-  end
-
-  desc "Generate test coverage report based on the last test run"
-  lane :coverageReport do
-    gradle(task: "-Pci --console=plain coberturaXmlReport globalLineCoverage :coverage:koverHtmlReport -x :coverage:jacocoToCobertura")
   end
 
   desc "Publish alpha build to firebase dev group"
