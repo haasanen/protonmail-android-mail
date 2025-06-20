@@ -138,6 +138,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.hasClearableOperations
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxPreview
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxPreviewProvider
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
@@ -808,15 +809,15 @@ private fun MailboxItemsList(
                 false // Allow the event to propagate
             }
     ) {
-
         item {
-            ClearAllOperationBanner(
-                mailboxListState = state,
-                actions = ClearAllOperationBanner.Actions(
-                    onUpselling = actions.showMissingFeature,
-                    onClearAll = actions.onClearAll
+            if (state.hasClearableOperations()) {
+                ClearAllOperationBanner(
+                    actions = ClearAllOperationBanner.Actions(
+                        onUpselling = actions.showMissingFeature,
+                        onClearAll = actions.onClearAll
+                    )
                 )
-            )
+            }
         }
 
         items(
