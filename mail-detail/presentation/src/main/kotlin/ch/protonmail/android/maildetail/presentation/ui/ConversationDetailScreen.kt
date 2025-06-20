@@ -373,7 +373,10 @@ fun ConversationDetailScreen(
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.showSnackbar(message, ProtonSnackbarType.NORM)
                         },
-                        onAddContactClicked = { actions.onAddContact(BasicContactInfo(it.name, it.address)) },
+                        onAddContactClicked = {
+                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
+                            actions.onAddContact(BasicContactInfo(it.name, it.address))
+                        },
                         onNewMessageClicked = {
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.showFeatureMissingSnackbar()
