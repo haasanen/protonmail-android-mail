@@ -39,7 +39,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -56,7 +55,6 @@ import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.mailcontact.presentation.R
@@ -64,11 +62,10 @@ import ch.protonmail.android.mailcontact.presentation.contactdetails.ContactDeta
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.AvatarUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemGroupUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemType
-import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsState
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsUiModel
-import ch.protonmail.android.mailcontact.presentation.contactdetails.model.HeaderUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.QuickActionUiModel
+import ch.protonmail.android.mailcontact.presentation.previewdata.ContactDetailsPreviewData
 
 @Composable
 fun ContactDetailsScreen(
@@ -303,87 +300,7 @@ private fun ContactDetailsItemGroup(itemGroupUiModel: ContactDetailsItemGroupUiM
 @Composable
 private fun ContactDetailsScreenPreview() {
     ContactDetailsScreen(
-        state = ContactDetailsState.Data(
-            uiModel = ContactDetailsUiModel(
-                avatarUiModel = AvatarUiModel.Initials(
-                    value = "P",
-                    color = Color.Blue
-                ),
-                headerUiModel = HeaderUiModel(
-                    displayName = "Proton Mail",
-                    displayEmailAddress = "pm@pm.me"
-                ),
-                quickActionUiModels = listOf(
-                    QuickActionUiModel(
-                        icon = R.drawable.ic_proton_pen_square,
-                        label = R.string.contact_details_quick_action_message,
-                        isEnabled = true
-                    ),
-                    QuickActionUiModel(
-                        icon = R.drawable.ic_proton_phone,
-                        label = R.string.contact_details_quick_action_call,
-                        isEnabled = false
-                    ),
-                    QuickActionUiModel(
-                        icon = R.drawable.ic_proton_arrow_up_from_square,
-                        label = R.string.contact_details_quick_action_share,
-                        isEnabled = true
-                    )
-                ),
-                contactDetailsItemGroupUiModels = listOf(
-                    ContactDetailsItemGroupUiModel(
-                        contactDetailsItemUiModels = listOf(
-                            ContactDetailsItemUiModel(
-                                contactDetailsItemType = ContactDetailsItemType.Email,
-                                label = TextUiModel.Text("Work"),
-                                value = TextUiModel.Text("pm@pm.me")
-                            ),
-                            ContactDetailsItemUiModel(
-                                contactDetailsItemType = ContactDetailsItemType.Email,
-                                label = TextUiModel.Text("Home"),
-                                value = TextUiModel.Text("proton@pm.me")
-                            )
-                        )
-                    ),
-                    ContactDetailsItemGroupUiModel(
-                        contactDetailsItemUiModels = listOf(
-                            ContactDetailsItemUiModel(
-                                contactDetailsItemType = ContactDetailsItemType.Phone,
-                                label = TextUiModel.Text("Home"),
-                                value = TextUiModel.Text("+370(637) 98 998")
-                            )
-                        )
-                    ),
-                    ContactDetailsItemGroupUiModel(
-                        contactDetailsItemUiModels = listOf(
-                            ContactDetailsItemUiModel(
-                                contactDetailsItemType = ContactDetailsItemType.Other,
-                                label = TextUiModel.Text("Address"),
-                                value = TextUiModel.Text("Lettensteg 10, 8037 Zurich")
-                            )
-                        )
-                    ),
-                    ContactDetailsItemGroupUiModel(
-                        contactDetailsItemUiModels = listOf(
-                            ContactDetailsItemUiModel(
-                                contactDetailsItemType = ContactDetailsItemType.Other,
-                                label = TextUiModel.Text("Birthday"),
-                                value = TextUiModel.Text("Dec 09, 2006")
-                            )
-                        )
-                    ),
-                    ContactDetailsItemGroupUiModel(
-                        contactDetailsItemUiModels = listOf(
-                            ContactDetailsItemUiModel(
-                                contactDetailsItemType = ContactDetailsItemType.Other,
-                                label = TextUiModel.Text("Note"),
-                                value = TextUiModel.Text("This is a note.")
-                            )
-                        )
-                    )
-                )
-            )
-        ),
+        state = ContactDetailsPreviewData.contactDetailsState,
         onBack = {},
         showFeatureMissingSnackbar = {}
     )
