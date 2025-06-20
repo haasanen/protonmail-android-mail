@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.legacymigration.presentation
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,9 +35,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.ProtonColors
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
@@ -44,7 +46,7 @@ fun MigrationLoadingScreen(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(ProtonColors.Light.shade10),
+            .background(ProtonTheme.colors.shade10),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -78,5 +80,14 @@ fun MigrationLoadingScreen(modifier: Modifier = Modifier) {
                 )
             }
         }
+    }
+}
+
+@Preview(device = Devices.PHONE, uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light mode")
+@Preview(device = Devices.PHONE, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Night mode")
+@Composable
+private fun MigrationScreenPreview() {
+    ProtonTheme {
+        MigrationLoadingScreen()
     }
 }
