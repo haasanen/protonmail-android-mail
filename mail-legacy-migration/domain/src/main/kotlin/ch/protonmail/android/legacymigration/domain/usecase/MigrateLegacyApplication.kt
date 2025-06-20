@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.legacymigration.domain.usecase
 
+import arrow.core.Either
+import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import jakarta.inject.Inject
 import timber.log.Timber
 
@@ -25,55 +27,37 @@ class MigrateLegacyApplication @Inject constructor(
     private val migrateLegacyAccounts: MigrateLegacyAccounts,
     private val shouldMigrateLegacyAccount: ShouldMigrateLegacyAccount,
     private val destroyLegacyDatabases: DestroyLegacyDatabases,
-    private val shouldMigrateAutoLockPin: ShouldMigrateAutoLockPin,
-    private val migrateLegacyAutoLockPinCode: MigrateLegacyAutoLockPinCode,
     private val isLegacyAutoLockEnabled: IsLegacyAutoLockEnabled,
-    private val shouldMigrateAutoLockBiometricPreference: ShouldMigrateAutoLockBiometricPreference,
-    private val migrateLegacyAutoLockBiometricPreference: MigrateLegacyAutoLockBiometricPreference
+    private val migrateAutoLockLegacyPreference: MigrateAutoLockLegacyPreference,
+    private val clearLegacyAutoLockPreferences: ClearLegacyAutoLockPreferences
 ) {
-    suspend operator fun invoke() {
 
+    suspend operator fun invoke() {
         if (shouldMigrateLegacyAccount()) {
-            migrateLegacyAccounts()
-                .onLeft {
-                    Timber.e("Legacy migration: Failed to migrate legacy accounts")
-                }
-                .onRight {
-                    Timber.d("Legacy migration: Successfully migrated legacy accounts")
-                    destroyLegacyDatabases()
-                }
+            migrateLegacyAccounts().handleAccountMigration()
         } else {
             Timber.d("Legacy migration: No legacy account to migrate")
             destroyLegacyDatabases()
         }
 
         if (isLegacyAutoLockEnabled()) {
-            if (shouldMigrateAutoLockPin()) {
-                migrateLegacyAutoLockPinCode()
-                    .onLeft { error ->
-                        Timber.e("Legacy migration: Failed to migrate legacy auto-lock pin code: $error")
-                    }
-                    .onRight {
-                        Timber.d("Legacy migration: Successfully migrated legacy auto-lock pin code")
-                    }
-            } else {
-                Timber.d("Legacy migration: No legacy auto-lock pin code to migrate")
-            }
-
-            if (shouldMigrateAutoLockBiometricPreference()) {
-                migrateLegacyAutoLockBiometricPreference()
-                    .onLeft { error ->
-                        Timber.e("Legacy migration: Failed to migrate legacy auto-lock biometric preference: $error")
-                    }
-                    .onRight {
-                        Timber.d("Legacy migration: Successfully migrated legacy auto-lock biometric preference")
-                    }
-            } else {
-                Timber.d("Legacy migration: No legacy auto lock biometric preference to migrate")
-
-            }
+            migrateAutoLockLegacyPreference().handleAutoLockMigration()
         } else {
             Timber.d("Legacy migration: Legacy auto-lock is not enabled, skipping migration")
+            clearLegacyAutoLockPreferences()
         }
+    }
+
+    private fun Either<List<MigrationError>, Unit>.handleAccountMigration() {
+        onLeft { Timber.e("Legacy migration: Failed to migrate legacy accounts") }
+        onRight {
+            Timber.d("Legacy migration: Successfully migrated legacy accounts")
+            destroyLegacyDatabases()
+        }
+    }
+
+    private suspend fun Either<MigrationError, Unit>.handleAutoLockMigration() {
+        onLeft { Timber.e("Legacy migration: Failed to migrate legacy auto-lock preference") }
+        onRight { clearLegacyAutoLockPreferences() }
     }
 }

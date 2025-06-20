@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.legacymigration.data.local.autolock
 
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import arrow.core.Either
 import arrow.core.left
@@ -27,6 +26,7 @@ import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockBiometri
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPin
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPreference
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
+import ch.protonmail.android.mailcommon.data.mapper.safeEdit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -82,37 +82,16 @@ class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun clearPreferences() {
-        dataStore.edit { prefs ->
+        dataStore.safeEdit { prefs ->
             prefs.clear()
         }
-    }
-
-    override suspend fun hasAutoLockBiometricPreference(): Boolean = runCatching {
-        dataStore.data.first()[autoLockBiometricsKey]?.isNotEmpty() == true
-    }.getOrDefault(false)
-
-    @Suppress("MaxLineLength")
-    override fun observeAutoLockBiometricsPreference(): Flow<Either<MigrationError, LegacyAutoLockBiometricsPreference>> {
-        return dataStore.data
-            .map { prefs ->
-                prefs[autoLockBiometricsKey]
-                    ?.takeIf { it.isNotEmpty() }
-                    ?.let { encryptedValue ->
-                        decryptLegacySerializableValue<LegacyAutoLockBiometricsPreference>(encryptedValue)
-                            .mapLeft { MigrationError.AutoLockFailure.FailedToDecryptBiometricPreference }
-                    }
-                    ?: MigrationError.AutoLockFailure.FailedToReadBiometricPreference.left()
-            }
-            .catch {
-                emit(MigrationError.AutoLockFailure.FailedToReadBiometricPreference.left())
-            }
     }
 
     override suspend fun getAutoLockBiometricsPreference(): Either<MigrationError, LegacyAutoLockBiometricsPreference> {
         return try {
             val encryptedValue = dataStore.data.first()[autoLockBiometricsKey]
                 ?.takeIf { it.isNotEmpty() }
-                ?: return MigrationError.AutoLockFailure.FailedToReadBiometricPreference.left()
+                ?: return MigrationError.AutoLockFailure.EmptyBiometricPreferenceRead.left()
 
             decryptLegacySerializableValue<LegacyAutoLockBiometricsPreference>(encryptedValue)
                 .mapLeft { MigrationError.AutoLockFailure.FailedToDecryptBiometricPreference }

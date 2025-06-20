@@ -32,8 +32,6 @@ interface LegacyAutoLockRepository {
     suspend fun hasAutoLockPinCode(): Boolean
     fun observeAutoLockPinCode(): Flow<Either<MigrationError, LegacyAutoLockPin>>
 
-    suspend fun hasAutoLockBiometricPreference(): Boolean
-    fun observeAutoLockBiometricsPreference(): Flow<Either<MigrationError, LegacyAutoLockBiometricsPreference>>
     suspend fun getAutoLockBiometricsPreference(): Either<MigrationError, LegacyAutoLockBiometricsPreference>
 
     suspend fun clearPreferences()

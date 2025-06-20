@@ -36,6 +36,7 @@ sealed interface MigrationError {
         data object FailedToReadAutoLockEnabled : MigrationError
         data object FailedToDecryptAutoLockEnabled : MigrationError
 
+        data object EmptyBiometricPreferenceRead : MigrationError
         data object FailedToReadBiometricPreference : MigrationError
         data object FailedToDecryptBiometricPreference : MigrationError
         data object FailedToSetBiometricPreference : MigrationError

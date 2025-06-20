@@ -20,7 +20,6 @@ package ch.protonmail.android.legacymigration.data.repository
 
 import arrow.core.Either
 import ch.protonmail.android.legacymigration.data.local.autolock.LegacyAutoLockLocalDataSource
-import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockBiometricsPreference
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPin
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPreference
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
@@ -39,13 +38,6 @@ class LegacyAutoLockRepositoryImpl @Inject constructor(
 
     override fun observeAutoLockPinCode(): Flow<Either<MigrationError, LegacyAutoLockPin>> =
         legacyAutoLockLocalDataSource.observeAutoLockPinCode()
-
-    override suspend fun hasAutoLockBiometricPreference(): Boolean =
-        legacyAutoLockLocalDataSource.hasAutoLockBiometricPreference()
-
-    @Suppress("MaxLineLength")
-    override fun observeAutoLockBiometricsPreference(): Flow<Either<MigrationError, LegacyAutoLockBiometricsPreference>> =
-        legacyAutoLockLocalDataSource.observeAutoLockBiometricsPreference()
 
     override suspend fun getAutoLockBiometricsPreference() =
         legacyAutoLockLocalDataSource.getAutoLockBiometricsPreference()

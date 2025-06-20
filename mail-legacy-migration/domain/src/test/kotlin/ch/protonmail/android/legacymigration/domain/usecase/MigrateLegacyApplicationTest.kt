@@ -23,31 +23,29 @@ import arrow.core.right
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.coVerifySequence
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
-import io.mockk.coVerifySequence
 
 class MigrateLegacyApplicationTest {
 
     private val migrateLegacyAccounts = mockk<MigrateLegacyAccounts>()
     private val shouldMigrateLegacyAccount = mockk<ShouldMigrateLegacyAccount>()
     private val destroyLegacyDatabases = mockk<DestroyLegacyDatabases>(relaxUnitFun = true)
-    private val shouldMigrateAutoLockPin = mockk<ShouldMigrateAutoLockPin>()
-    private val migrateLegacyAutoLockPinCode = mockk<MigrateLegacyAutoLockPinCode>()
     private val isLegacyAutoLockEnabled = mockk<IsLegacyAutoLockEnabled>()
-    private val shouldMigrateAutoLockBiometricPreference = mockk<ShouldMigrateAutoLockBiometricPreference>()
-    private val migrateLegacyAutoLockBiometricPreference = mockk<MigrateLegacyAutoLockBiometricPreference>()
+    private val migrateAutoLockLegacyPreference = mockk<MigrateAutoLockLegacyPreference>()
+    private val clearLegacyAutoLockPreferences = mockk<ClearLegacyAutoLockPreferences>()
 
     private val migrateLegacyApplication = MigrateLegacyApplication(
         migrateLegacyAccounts,
         shouldMigrateLegacyAccount,
         destroyLegacyDatabases,
-        shouldMigrateAutoLockPin,
-        migrateLegacyAutoLockPinCode,
         isLegacyAutoLockEnabled,
-        shouldMigrateAutoLockBiometricPreference,
-        migrateLegacyAutoLockBiometricPreference
+        migrateAutoLockLegacyPreference,
+        clearLegacyAutoLockPreferences
     )
 
     @Test
@@ -56,10 +54,8 @@ class MigrateLegacyApplicationTest {
         coEvery { shouldMigrateLegacyAccount() } returns true
         coEvery { migrateLegacyAccounts() } returns Unit.right()
         coEvery { isLegacyAutoLockEnabled() } returns true
-        coEvery { shouldMigrateAutoLockPin() } returns true
-        coEvery { migrateLegacyAutoLockPinCode() } returns Unit.right()
-        coEvery { shouldMigrateAutoLockBiometricPreference() } returns true
-        coEvery { migrateLegacyAutoLockBiometricPreference() } returns Unit.right()
+        coEvery { migrateAutoLockLegacyPreference() } returns Unit.right()
+        coEvery { clearLegacyAutoLockPreferences() } just runs
 
         // When
         migrateLegacyApplication()
@@ -70,10 +66,8 @@ class MigrateLegacyApplicationTest {
             migrateLegacyAccounts()
             destroyLegacyDatabases()
             isLegacyAutoLockEnabled()
-            shouldMigrateAutoLockPin()
-            migrateLegacyAutoLockPinCode()
-            shouldMigrateAutoLockBiometricPreference()
-            migrateLegacyAutoLockBiometricPreference()
+            migrateAutoLockLegacyPreference()
+            clearLegacyAutoLockPreferences()
         }
     }
 
@@ -82,10 +76,8 @@ class MigrateLegacyApplicationTest {
         // Given
         coEvery { shouldMigrateLegacyAccount() } returns false
         coEvery { isLegacyAutoLockEnabled() } returns true
-        coEvery { shouldMigrateAutoLockPin() } returns true
-        coEvery { migrateLegacyAutoLockPinCode() } returns Unit.right()
-        coEvery { shouldMigrateAutoLockBiometricPreference() } returns true
-        coEvery { migrateLegacyAutoLockBiometricPreference() } returns Unit.right()
+        coEvery { migrateAutoLockLegacyPreference() } returns Unit.right()
+        coEvery { clearLegacyAutoLockPreferences() } just runs
 
         // When
         migrateLegacyApplication()
@@ -95,71 +87,20 @@ class MigrateLegacyApplicationTest {
             shouldMigrateLegacyAccount()
             destroyLegacyDatabases()
             isLegacyAutoLockEnabled()
-            shouldMigrateAutoLockPin()
-            migrateLegacyAutoLockPinCode()
-            shouldMigrateAutoLockBiometricPreference()
-            migrateLegacyAutoLockBiometricPreference()
+            migrateAutoLockLegacyPreference()
+            clearLegacyAutoLockPreferences()
         }
 
         coVerify(exactly = 0) { migrateLegacyAccounts() }
     }
 
     @Test
-    fun `should skip auto-lock pin migration when not needed`() = runTest {
-        // Given
-        coEvery { shouldMigrateLegacyAccount() } returns true
-        coEvery { migrateLegacyAccounts() } returns Unit.right()
-        coEvery { shouldMigrateAutoLockPin() } returns false
-        coEvery { isLegacyAutoLockEnabled() } returns true
-        coEvery { shouldMigrateAutoLockBiometricPreference() } returns false
-
-        // When
-        migrateLegacyApplication()
-
-        // Then
-        coVerifySequence {
-            shouldMigrateLegacyAccount()
-            migrateLegacyAccounts()
-            destroyLegacyDatabases()
-            shouldMigrateAutoLockPin()
-        }
-
-        coVerify(exactly = 0) { migrateLegacyAutoLockPinCode() }
-    }
-
-    @Test
-    fun `should skip biometric preference when not needed`() = runTest {
-        // Given
-        coEvery { shouldMigrateLegacyAccount() } returns true
-        coEvery { migrateLegacyAccounts() } returns Unit.right()
-        coEvery { isLegacyAutoLockEnabled() } returns true
-        coEvery { shouldMigrateAutoLockPin() } returns true
-        coEvery { migrateLegacyAutoLockPinCode() } returns Unit.right()
-        coEvery { shouldMigrateAutoLockBiometricPreference() } returns false
-
-        // WHen
-        migrateLegacyApplication()
-
-        // Then
-        coVerifySequence {
-            shouldMigrateLegacyAccount()
-            migrateLegacyAccounts()
-            destroyLegacyDatabases()
-            isLegacyAutoLockEnabled()
-            shouldMigrateAutoLockPin()
-            migrateLegacyAutoLockPinCode()
-            shouldMigrateAutoLockBiometricPreference()
-        }
-
-        coVerify(exactly = 0) { migrateLegacyAutoLockBiometricPreference() }
-    }
-
-    @Test
-    fun `should skip all auto-lock migration when not enabled`() = runTest {
+    fun `should skip auto-lock pin migration when not needed but still clear legacy prefs`() = runTest {
         // Given
         coEvery { shouldMigrateLegacyAccount() } returns true
         coEvery { migrateLegacyAccounts() } returns Unit.right()
         coEvery { isLegacyAutoLockEnabled() } returns false
+        coEvery { clearLegacyAutoLockPreferences() } just runs
 
         // When
         migrateLegacyApplication()
@@ -170,12 +111,10 @@ class MigrateLegacyApplicationTest {
             migrateLegacyAccounts()
             destroyLegacyDatabases()
             isLegacyAutoLockEnabled()
+            clearLegacyAutoLockPreferences()
         }
 
-        coVerify(exactly = 0) { shouldMigrateAutoLockPin() }
-        coVerify(exactly = 0) { migrateLegacyAutoLockPinCode() }
-        coVerify(exactly = 0) { shouldMigrateAutoLockBiometricPreference() }
-        coVerify(exactly = 0) { migrateLegacyAutoLockBiometricPreference() }
+        coVerify(exactly = 0) { migrateAutoLockLegacyPreference() }
     }
 
     @Test
@@ -184,12 +123,9 @@ class MigrateLegacyApplicationTest {
         coEvery { shouldMigrateLegacyAccount() } returns true
         coEvery { migrateLegacyAccounts() } returns listOf(MigrationError.MigrateFailed.AuthenticationFailure).left()
         coEvery { isLegacyAutoLockEnabled() } returns true
-        coEvery { shouldMigrateAutoLockPin() } returns true
-        coEvery { migrateLegacyAutoLockPinCode() } returns MigrationError.AutoLockFailure.FailedToSetAutoLockPin.left()
-        coEvery { shouldMigrateAutoLockBiometricPreference() } returns true
         coEvery {
-            migrateLegacyAutoLockBiometricPreference()
-        } returns MigrationError.AutoLockFailure.FailedToSetBiometricPreference.left()
+            migrateAutoLockLegacyPreference()
+        } returns MigrationError.AutoLockFailure.FailedToSetAutoLockPin.left()
 
         // When
         migrateLegacyApplication()
@@ -199,12 +135,10 @@ class MigrateLegacyApplicationTest {
             shouldMigrateLegacyAccount()
             migrateLegacyAccounts()
             isLegacyAutoLockEnabled()
-            shouldMigrateAutoLockPin()
-            migrateLegacyAutoLockPinCode()
-            shouldMigrateAutoLockBiometricPreference()
-            migrateLegacyAutoLockBiometricPreference()
+            migrateAutoLockLegacyPreference()
         }
 
         coVerify(exactly = 0) { destroyLegacyDatabases() }
+        coVerify(exactly = 0) { clearLegacyAutoLockPreferences() }
     }
 }
