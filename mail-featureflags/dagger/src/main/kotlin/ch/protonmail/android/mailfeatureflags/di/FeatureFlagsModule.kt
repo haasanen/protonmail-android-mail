@@ -21,15 +21,11 @@ package ch.protonmail.android.mailfeatureflags.di
 import ch.protonmail.android.mailfeatureflags.data.local.DataStoreFeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.data.local.DefaultFeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.ChangeSenderEnabled
-import ch.protonmail.android.mailfeatureflags.domain.ChooseAttachmentSourceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
-import ch.protonmail.android.mailfeatureflags.domain.InlineImagesComposerEnabled
 import ch.protonmail.android.mailfeatureflags.domain.ScheduledSendEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.InlineImagesInComposerEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsChangeSenderEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsChooseAttachmentSourceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ScheduleSendEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
@@ -64,28 +60,6 @@ object FeatureFlagsModule {
     @ScheduleSendEnabled
     fun provideScheduledSendEnabled(resolver: FeatureFlagResolver) =
         resolver.observeFeatureFlag(ScheduledSendEnabled.key)
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideAttachmentSourceDefinition(): FeatureFlagDefinition = ChooseAttachmentSourceEnabled
-
-    @Provides
-    @Singleton
-    @IsChooseAttachmentSourceEnabled
-    fun provideAttachmentSourceEnabled(resolver: FeatureFlagResolver) =
-        resolver.observeFeatureFlag(ChooseAttachmentSourceEnabled.key)
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideInlineImagesComposerDefinition(): FeatureFlagDefinition = InlineImagesComposerEnabled
-
-    @Provides
-    @Singleton
-    @InlineImagesInComposerEnabled
-    fun provideInlineImagesComposerEnabled(resolver: FeatureFlagResolver) =
-        resolver.observeFeatureFlag(InlineImagesComposerEnabled.key)
 
     @Provides
     @IntoSet

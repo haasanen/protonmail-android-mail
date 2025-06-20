@@ -107,7 +107,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     val attachmentsState = composerStates.attachments
     val accessoriesState = composerStates.accessories
     val effectsState = composerStates.effects
-    val isChooseAttachmentSourceEnabled by viewModel.isChooseAttachmentSourceEnabled.collectAsStateWithLifecycle()
     val isScheduleSendEnabled by viewModel.isScheduleSendEnabled.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { ProtonSnackbarHostState() }
@@ -212,7 +211,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 )
 
                 is BottomSheetType.AttachmentSources -> AttachmentSourceBottomSheetContent(
-                    isChooseAttachmentSourceEnabled = isChooseAttachmentSourceEnabled,
                     onCamera = { viewModel.submit(ComposerAction.OpenCameraPicker) },
                     onFiles = { viewModel.submit(ComposerAction.OpenFilePicker) },
                     onPhotos = { viewModel.submit(ComposerAction.OpenPhotosPicker) }

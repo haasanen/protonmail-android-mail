@@ -83,7 +83,6 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplay
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsChangeSenderEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsChooseAttachmentSourceEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ScheduleSendEnabled
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Compose
@@ -150,7 +149,6 @@ class ComposerViewModel @AssistedInject constructor(
     private val scheduleSend: ScheduleSendMessage,
     private val getSenderAddresses: GetSenderAddresses,
     private val changeSenderAddress: ChangeSenderAddress,
-    @IsChooseAttachmentSourceEnabled private val chooseAttachmentSourceEnabled: Flow<Boolean>,
     @ScheduleSendEnabled private val scheduleSendEnabled: Flow<Boolean>,
     @IsChangeSenderEnabled private val isChangeSenderEnabled: Flow<Boolean>,
     observePrimaryUserId: ObservePrimaryUserId
@@ -172,12 +170,6 @@ class ComposerViewModel @AssistedInject constructor(
 
     internal val composerStates = mutableComposerStates.asStateFlow()
 
-
-    val isChooseAttachmentSourceEnabled = chooseAttachmentSourceEnabled.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
-        initialValue = false
-    )
 
     val isScheduleSendEnabled = scheduleSendEnabled.stateIn(
         scope = viewModelScope,

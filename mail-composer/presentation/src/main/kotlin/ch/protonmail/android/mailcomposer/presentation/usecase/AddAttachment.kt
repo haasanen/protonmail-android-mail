@@ -24,24 +24,19 @@ import arrow.core.Either
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.usecase.AddInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.AddStandardAttachment
-import ch.protonmail.android.mailfeatureflags.domain.annotation.InlineImagesInComposerEnabled
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class AddAttachment @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val addStandardAttachment: AddStandardAttachment,
-    private val addInlineAttachment: AddInlineAttachment,
-    @InlineImagesInComposerEnabled private val isInlineImagesEnabled: Flow<Boolean>
+    private val addInlineAttachment: AddInlineAttachment
 ) {
 
     suspend operator fun invoke(fileUri: Uri): Either<AttachmentAddError, AddAttachmentResult> {
         val isNotImageMimeType = fileUri.mimeType() !in imageMimeTypes()
-        val featureFlagDisabled = isInlineImagesEnabled.first().not()
 
-        if (isNotImageMimeType || featureFlagDisabled) {
+        if (isNotImageMimeType) {
             return addStandardAttachment(fileUri)
                 .map { AddAttachmentResult.StandardAttachmentAdded }
         }

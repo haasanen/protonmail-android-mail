@@ -23,24 +23,18 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentDisposition
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
-import ch.protonmail.android.mailfeatureflags.domain.annotation.InlineImagesInComposerEnabled
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ObserveMessageAttachments @Inject constructor(
-    private val attachmentRepository: AttachmentRepository,
-    @InlineImagesInComposerEnabled private val isInlineImagesEnabled: Flow<Boolean>
+    private val attachmentRepository: AttachmentRepository
 ) {
 
     suspend operator fun invoke(): Flow<Either<DataError, List<AttachmentMetadataWithState>>> =
         attachmentRepository.observeAttachments().map { either ->
             either.map { attachments ->
-                when {
-                    isInlineImagesEnabled.first() -> attachments.filter { it.hasAttachmentDisposition() }
-                    else -> attachments
-                }
+                attachments.filter { it.hasAttachmentDisposition() }
             }
         }
 

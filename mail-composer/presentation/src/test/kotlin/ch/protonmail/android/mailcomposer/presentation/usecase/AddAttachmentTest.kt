@@ -9,7 +9,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.AddInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.AddStandardAttachment
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -19,13 +18,11 @@ class AddAttachmentTest {
     private val context = mockk<Context>()
     private val addStandardAttachment = mockk<AddStandardAttachment>()
     private val addInlineAttachment = mockk<AddInlineAttachment>()
-    private val isFeatureEnabled = MutableStateFlow(true)
 
     private val addAttachment = AddAttachment(
         context,
         addStandardAttachment,
-        addInlineAttachment,
-        isInlineImagesEnabled = isFeatureEnabled
+        addInlineAttachment
     )
 
     @Test
@@ -87,22 +84,6 @@ class AddAttachmentTest {
 
         // Then
         assertEquals(expected.left(), actual)
-    }
-
-    @Test
-    fun `adds image attachments as standard when feature flag is disabled`() = runTest {
-        // Given
-        val fileUri = mockk<Uri>()
-        val expected = AddAttachment.AddAttachmentResult.StandardAttachmentAdded
-        coEvery { context.contentResolver.getType(fileUri) } returns "image/jpeg"
-        coEvery { addStandardAttachment(fileUri) } returns Unit.right()
-        isFeatureEnabled.value = false
-
-        // When
-        val actual = addAttachment(fileUri)
-
-        // Then
-        assertEquals(expected.right(), actual)
     }
 
     @Test

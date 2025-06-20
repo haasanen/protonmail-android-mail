@@ -160,7 +160,6 @@ class ComposerViewModelTest {
         }
     }
     private val reducer = ComposerStateReducer()
-    private val isAttachmentSourcesEnabled = flowOf(false)
     private val isScheduleSendEnabled = flowOf(false)
     private val isChangeSenderEnabled = MutableStateFlow(true)
 
@@ -192,7 +191,6 @@ class ComposerViewModelTest {
             scheduleSendMessage,
             getSenderAddresses,
             changeSenderAddress,
-            isAttachmentSourcesEnabled,
             isScheduleSendEnabled,
             isChangeSenderEnabled,
             observePrimaryUserIdMock

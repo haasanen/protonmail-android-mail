@@ -50,7 +50,6 @@ import kotlinx.collections.immutable.persistentListOf
 @Composable
 @Suppress("UseComposableActions")
 fun AttachmentSourceBottomSheetContent(
-    isChooseAttachmentSourceEnabled: Boolean,
     onCamera: () -> Unit,
     onFiles: () -> Unit,
     onPhotos: () -> Unit,
@@ -84,10 +83,7 @@ fun AttachmentSourceBottomSheetContent(
             )
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
-            val actions = when {
-                isChooseAttachmentSourceEnabled -> persistentListOf(Sources.Photos, Sources.Camera, Sources.Files)
-                else -> persistentListOf(Sources.Files)
-            }
+            val actions = persistentListOf(Sources.Photos, Sources.Camera, Sources.Files)
 
             ActionGroup(
                 modifier = Modifier,
@@ -123,7 +119,6 @@ private enum class Sources(@DrawableRes val icon: Int, @StringRes val descriptio
 private fun PreviewInlineActions() {
     ProtonTheme {
         AttachmentSourceBottomSheetContent(
-            isChooseAttachmentSourceEnabled = true,
             onCamera = {},
             onFiles = {},
             onPhotos = {}

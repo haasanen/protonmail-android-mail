@@ -30,12 +30,4 @@ annotation class ScheduleSendEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class IsChooseAttachmentSourceEnabled
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class InlineImagesInComposerEnabled
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 annotation class IsDebugInspectDbEnabled
