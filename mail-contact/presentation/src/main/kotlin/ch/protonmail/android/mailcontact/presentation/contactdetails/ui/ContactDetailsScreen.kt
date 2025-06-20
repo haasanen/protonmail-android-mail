@@ -64,6 +64,7 @@ import ch.protonmail.android.mailcontact.presentation.contactdetails.model.Conta
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemType
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsState
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsUiModel
+import ch.protonmail.android.mailcontact.presentation.contactdetails.model.QuickActionType
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.QuickActionUiModel
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactDetailsPreviewData
 
@@ -71,6 +72,7 @@ import ch.protonmail.android.mailcontact.presentation.previewdata.ContactDetails
 fun ContactDetailsScreen(
     onBack: () -> Unit,
     onShowErrorSnackbar: (String) -> Unit,
+    onMessageContact: (String) -> Unit,
     showFeatureMissingSnackbar: () -> Unit,
     viewModel: ContactDetailsViewModel = hiltViewModel<ContactDetailsViewModel>()
 ) {
@@ -80,6 +82,7 @@ fun ContactDetailsScreen(
         state = state,
         onBack = onBack,
         onShowErrorSnackbar = onShowErrorSnackbar,
+        onMessageContact = onMessageContact,
         showFeatureMissingSnackbar = showFeatureMissingSnackbar
     )
 }
@@ -89,6 +92,7 @@ private fun ContactDetailsScreen(
     state: ContactDetailsState,
     onBack: () -> Unit,
     onShowErrorSnackbar: (String) -> Unit,
+    onMessageContact: (String) -> Unit,
     showFeatureMissingSnackbar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -100,6 +104,7 @@ private fun ContactDetailsScreen(
         when (state) {
             is ContactDetailsState.Data -> ContactDetails(
                 uiModel = state.uiModel,
+                onMessageContact = onMessageContact,
                 modifier = Modifier.padding(it)
             )
             is ContactDetailsState.Error -> ContactDetailsError(
@@ -114,7 +119,11 @@ private fun ContactDetailsScreen(
 }
 
 @Composable
-private fun ContactDetails(uiModel: ContactDetailsUiModel, modifier: Modifier = Modifier) {
+private fun ContactDetails(
+    uiModel: ContactDetailsUiModel,
+    onMessageContact: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -147,10 +156,13 @@ private fun ContactDetails(uiModel: ContactDetailsUiModel, modifier: Modifier = 
         }
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
 
-        ContactDetailsQuickActions(quickActionUiModels = uiModel.quickActionUiModels)
+        ContactDetailsQuickActions(
+            quickActionUiModels = uiModel.quickActionUiModels,
+            onMessageContact = { uiModel.headerUiModel.displayEmailAddress?.let { onMessageContact(it) } }
+        )
 
         uiModel.contactDetailsItemGroupUiModels.forEachIndexed { index, groupUiModel ->
-            ContactDetailsItemGroup(itemGroupUiModel = groupUiModel)
+            ContactDetailsItemGroup(itemGroupUiModel = groupUiModel, onMessageContact = onMessageContact)
             if (index != uiModel.contactDetailsItemGroupUiModels.size - 1) {
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             }
@@ -203,7 +215,7 @@ private fun ContactDetailsTopBar(
 }
 
 @Composable
-private fun ContactDetailsQuickActions(quickActionUiModels: List<QuickActionUiModel>) {
+private fun ContactDetailsQuickActions(quickActionUiModels: List<QuickActionUiModel>, onMessageContact: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -222,7 +234,13 @@ private fun ContactDetailsQuickActions(quickActionUiModels: List<QuickActionUiMo
                     .clickable(
                         enabled = uiModel.isEnabled,
                         role = Role.Button,
-                        onClick = {}
+                        onClick = {
+                            when (uiModel.quickActionType) {
+                                QuickActionType.Message -> onMessageContact()
+                                QuickActionType.Call -> TODO()
+                                QuickActionType.Share -> TODO()
+                            }
+                        }
                     )
                     .padding(ProtonDimens.Spacing.Large),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -249,7 +267,10 @@ private fun ContactDetailsQuickActions(quickActionUiModels: List<QuickActionUiMo
 }
 
 @Composable
-private fun ContactDetailsItemGroup(itemGroupUiModel: ContactDetailsItemGroupUiModel) {
+private fun ContactDetailsItemGroup(
+    itemGroupUiModel: ContactDetailsItemGroupUiModel,
+    onMessageContact: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -263,14 +284,29 @@ private fun ContactDetailsItemGroup(itemGroupUiModel: ContactDetailsItemGroupUiM
             val context = LocalContext.current
             val contactItemLabel = uiModel.label.string()
             val contactItemValue = uiModel.value.string()
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .combinedClickable(
                         onLongClickLabel = stringResource(id = R.string.contact_details_action_copy_label),
                         onLongClick = { context.copyTextToClipboard(contactItemLabel, contactItemValue) },
-                        onClickLabel = null,
-                        onClick = {}
+                        onClickLabel = when (uiModel.contactDetailsItemType) {
+                            ContactDetailsItemType.Email -> stringResource(
+                                id = R.string.contact_details_action_message_label
+                            )
+                            ContactDetailsItemType.Phone -> stringResource(
+                                id = R.string.contact_details_action_call_label
+                            )
+                            ContactDetailsItemType.Other -> null
+                        },
+                        onClick = {
+                            when (uiModel.contactDetailsItemType) {
+                                ContactDetailsItemType.Email -> onMessageContact(contactItemValue)
+                                ContactDetailsItemType.Phone -> TODO()
+                                ContactDetailsItemType.Other -> Unit
+                            }
+                        }
                     )
                     .padding(ProtonDimens.Spacing.Large)
             ) {
@@ -316,6 +352,7 @@ private fun ContactDetailsScreenPreview() {
         state = ContactDetailsPreviewData.contactDetailsState,
         onBack = {},
         onShowErrorSnackbar = {},
+        onMessageContact = {},
         showFeatureMissingSnackbar = {}
     )
 }

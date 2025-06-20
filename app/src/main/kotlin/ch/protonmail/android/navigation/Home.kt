@@ -610,6 +610,15 @@ fun Home(
                             onShowErrorSnackbar = {
                                 showErrorSnackbar(it)
                             },
+                            onMessageContact = {
+                                navController.navigate(
+                                    Screen.MessageActionComposer(
+                                        DraftAction.ComposeToAddresses(
+                                            listOf(it)
+                                        )
+                                    )
+                                )
+                            },
                             showFeatureMissingSnackbar = {
                                 showFeatureMissingSnackbar()
                             }

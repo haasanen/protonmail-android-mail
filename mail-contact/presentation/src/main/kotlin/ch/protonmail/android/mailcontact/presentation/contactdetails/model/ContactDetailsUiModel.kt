@@ -42,6 +42,7 @@ data class HeaderUiModel(
 )
 
 data class QuickActionUiModel(
+    val quickActionType: QuickActionType,
     @DrawableRes val icon: Int,
     @StringRes val label: Int,
     val isEnabled: Boolean
@@ -56,5 +57,7 @@ data class ContactDetailsItemUiModel(
     val label: TextUiModel,
     val value: TextUiModel
 )
+
+enum class QuickActionType { Message, Call, Share }
 
 enum class ContactDetailsItemType { Email, Phone, Other }

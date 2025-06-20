@@ -21,6 +21,7 @@ import ch.protonmail.android.mailcontact.presentation.contactdetails.model.Conta
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsItemUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.ContactDetailsUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.HeaderUiModel
+import ch.protonmail.android.mailcontact.presentation.contactdetails.model.QuickActionType
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.QuickActionUiModel
 import ch.protonmail.android.testdata.contact.ContactIdTestData
 import kotlin.test.Test
@@ -112,16 +113,19 @@ class ContactDetailsUiModelMapperTest {
             ),
             quickActionUiModels = listOf(
                 QuickActionUiModel(
+                    quickActionType = QuickActionType.Message,
                     icon = R.drawable.ic_proton_pen_square,
                     label = R.string.contact_details_quick_action_message,
                     isEnabled = true
                 ),
                 QuickActionUiModel(
+                    quickActionType = QuickActionType.Call,
                     icon = R.drawable.ic_proton_phone,
                     label = R.string.contact_details_quick_action_call,
                     isEnabled = false
                 ),
                 QuickActionUiModel(
+                    quickActionType = QuickActionType.Share,
                     icon = R.drawable.ic_proton_arrow_up_from_square,
                     label = R.string.contact_details_quick_action_share,
                     isEnabled = true
