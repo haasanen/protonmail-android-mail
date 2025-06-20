@@ -119,6 +119,7 @@ import me.proton.core.util.kotlin.deserialize
 import me.proton.core.util.kotlin.takeIfNotEmpty
 import timber.log.Timber
 import kotlin.time.Instant
+import androidx.core.net.toUri
 
 @Suppress("LargeClass", "LongParameterList", "TooManyFunctions", "UnusedPrivateMember")
 @HiltViewModel(assistedFactory = ComposerViewModel.Factory::class)
@@ -264,7 +265,7 @@ class ComposerViewModel @AssistedInject constructor(
 
         fileShareInfo.attachmentUris.takeIfNotEmpty()?.let { rawUri ->
             Timber.w("composer: storing attachment not implemented")
-            val uriList = rawUri.map { Uri.parse(it) }
+            val uriList = rawUri.map { it.toUri() }
             onAttachmentsAdded(uriList)
         }
 
