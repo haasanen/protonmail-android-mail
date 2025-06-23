@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailcontact.data.local
 
 import arrow.core.Either
-import arrow.core.flatMap
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactId
@@ -168,6 +167,6 @@ class RustContactDataSourceImpl @Inject constructor(
 
         return rustGetContactDetails(session, contactId)
             .onLeft { Timber.e("rust-contact: getting contact details failed") }
-            .flatMap { it?.toContactDetailCard()?.right() ?: DataError.Local.NoContactDetailCard.left() }
+            .map { it.toContactDetailCard() }
     }
 }

@@ -35,7 +35,7 @@ class RustGetContactDetails @Inject constructor() {
     suspend operator fun invoke(
         session: MailUserSessionWrapper,
         contactId: LocalContactId
-    ): Either<DataError, ContactDetailCard?> =
+    ): Either<DataError, ContactDetailCard> =
         when (val result = getContactDetails(session.getRustUserSession(), contactId)) {
             is GetContactDetailsResult.Error -> result.v1.toDataError().left()
             is GetContactDetailsResult.Ok -> result.v1.right()
