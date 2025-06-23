@@ -75,6 +75,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMes
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToInbox
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
 import ch.protonmail.android.maildetail.presentation.model.MessageBodyLink
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
@@ -951,6 +952,32 @@ class ConversationDetailViewModelTest {
         viewModel.state.test {
             initialStateEmitted()
             viewModel.submit(ConversationDetailViewAction.MarkUnread)
+
+            // then
+            assertNotNull(awaitItem().exitScreenEffect.consume())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `exit state is emitted when moving the conversation item back to inbox`() = runTest {
+        // given
+        val labelId = LabelIdSample.Archive
+        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
+        coEvery { move(userId, conversationId, SystemLabelId.Inbox) } returns Unit.right()
+        coEvery {
+            reducer.newStateFrom(
+                currentState = ConversationDetailState.Loading,
+                operation = ConversationDetailEvent.ExitScreenWithMessage(MoveToInbox)
+            )
+        } returns ConversationDetailState.Loading.copy(
+            exitScreenEffect = Effect.of(Unit)
+        )
+
+        // when
+        viewModel.state.test {
+            initialStateEmitted()
+            viewModel.submit(MoveToInbox)
 
             // then
             assertNotNull(awaitItem().exitScreenEffect.consume())

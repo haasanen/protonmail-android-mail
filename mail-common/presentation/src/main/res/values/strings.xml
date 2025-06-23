@@ -40,6 +40,7 @@
     <string name="action_unstar_description">Unstar</string>
     <string name="action_label_description">Label as</string>
     <string name="action_move_description">Move to</string>
+    <string name="action_inbox_description">Move to inbox</string>
     <string name="action_trash_description">Move to trash</string>
     <string name="action_delete_description">Delete</string>
     <string name="action_archive_description">Archive</string>
@@ -55,7 +56,6 @@
     <string name="action_sender_emails_description">Set action for future emails from this sender</string>
     <string name="action_save_attachments_description">Save attachments</string>
     <string name="action_more_description">More</string>
-    <string name="action_inbox_description">Inbox</string>
     <string name="action_pin_description">Pin</string>
     <string name="action_unpin_description">Unpin</string>
     <string name="action_reply_content_description">Reply</string>

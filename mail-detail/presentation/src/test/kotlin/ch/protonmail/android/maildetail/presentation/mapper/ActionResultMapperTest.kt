@@ -77,6 +77,19 @@ internal class ActionResultMapperTest {
     }
 
     @Test
+    fun `returns undoable result when operation is MoveToInbox`() {
+        // Given
+        val operation = ConversationDetailViewAction.MoveToInbox
+        val expectedResult = UndoableActionResult(TextUiModel(R.string.conversation_moved_to_inbox))
+
+        // When
+        val result = actionResultMapper.toActionResult(operation)
+
+        // Then
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
     fun `returns undoable result with label text when operation is MoveToDestinationConfirmed`() {
         // Given
         val mailLabelText = MailLabelText("Inbox")

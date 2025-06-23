@@ -45,6 +45,9 @@ class ActionResultMapper @Inject constructor(
         is ConversationDetailViewAction.MoveToTrash ->
             UndoableActionResult(TextUiModel(R.string.conversation_moved_to_trash))
 
+        is ConversationDetailViewAction.MoveToInbox ->
+            UndoableActionResult(TextUiModel(R.string.conversation_moved_to_inbox))
+
         is ConversationDetailViewAction.MoveToCompleted -> {
             val textRes = when (operation.entryPoint) {
                 is MoveToBottomSheetEntryPoint.Conversation -> R.string.conversation_moved_to_selected_destination

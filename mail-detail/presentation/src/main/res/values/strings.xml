@@ -53,6 +53,7 @@
     <string name="message_moved_to_selected_destination">Message moved to %1$s</string>
     <string name="error_move_message_failed">Moving message failed. Please retry.</string>
     <string name="conversation_moved_to_trash">Conversation moved to Trash</string>
+    <string name="conversation_moved_to_inbox">Conversation moved to Inbox</string>
     <string name="conversation_moved_to_selected_destination">Conversation moved to %1$s</string>
     <string name="conversation_moved_to_spam">Conversation moved to Spam</string>
     <string name="conversation_moved_to_archive">Conversation moved to Archive</string>

@@ -71,6 +71,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailVie
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ExpandMessage
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MarkUnread
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MessageBodyLinkClicked
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToInbox
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToTrash
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestScrollTo
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ScrollRequestCompleted
@@ -257,7 +258,7 @@ class ConversationDetailViewModel @Inject constructor(
                 requestConversationMoveToBottomSheet(action)
 
             is ConversationDetailViewAction.MoveToCompleted -> handleMoveToCompleted(action)
-            is ConversationDetailViewAction.MoveToInbox -> moveConversationToInbox()
+            is MoveToInbox -> moveConversationToInbox()
             is ConversationDetailViewAction.RequestConversationLabelAsBottomSheet ->
                 requestConversationLabelAsBottomSheet(action)
 
@@ -848,7 +849,7 @@ class ConversationDetailViewModel @Inject constructor(
         viewModelScope.launch {
             performSafeExitAction(
                 onLeft = ConversationDetailEvent.ErrorMovingConversation,
-                onRight = ConversationDetailViewAction.MoveToInbox
+                onRight = ConversationDetailEvent.ExitScreenWithMessage(MoveToInbox)
             ) { userId ->
                 moveConversation(userId, conversationId, SystemLabelId.Inbox)
             }
