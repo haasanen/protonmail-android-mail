@@ -18,9 +18,18 @@
 
 package ch.protonmail.android.mailcontact.domain.model
 
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
+
 data class ContactDetailCard(
     val id: ContactId,
+    val avatarInformation: AvatarInformation,
+    val extendedName: ExtendedName,
     val fields: List<ContactField>
+)
+
+data class ExtendedName(
+    val last: String?,
+    val first: String?
 )
 
 sealed interface ContactField {

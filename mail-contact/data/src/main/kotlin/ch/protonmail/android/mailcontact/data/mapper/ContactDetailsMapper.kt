@@ -42,6 +42,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalContactFieldTelephones
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactFieldTimeZones
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactFieldTitles
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactFieldUrls
+import ch.protonmail.android.mailcommon.data.mapper.LocalExtendedName
 import ch.protonmail.android.mailcommon.data.mapper.LocalGenderKind
 import ch.protonmail.android.mailcommon.data.mapper.LocalGenderKindFemale
 import ch.protonmail.android.mailcommon.data.mapper.LocalGenderKindMale
@@ -69,6 +70,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactDetailCard
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailTelephone
 import ch.protonmail.android.mailcontact.domain.model.ContactField
+import ch.protonmail.android.mailcontact.domain.model.ExtendedName
 import ch.protonmail.android.mailcontact.domain.model.GenderKind
 import ch.protonmail.android.mailcontact.domain.model.PartialDate
 import ch.protonmail.android.mailcontact.domain.model.VCardPropType
@@ -76,7 +78,14 @@ import ch.protonmail.android.mailcontact.domain.model.VCardUrl
 
 fun LocalContactDetailCard.toContactDetailCard() = ContactDetailCard(
     id = id.toContactId(),
+    avatarInformation = avatarInformation.toAvatarInformation(),
+    extendedName = extendedName.toExtendedName(),
     fields = fields.map { it.toContactField() }
+)
+
+private fun LocalExtendedName.toExtendedName() = ExtendedName(
+    last = last,
+    first = first
 )
 
 private fun LocalContactField.toContactField() = when (this) {

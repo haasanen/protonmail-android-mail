@@ -5,8 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailCard
+import ch.protonmail.android.mailcontact.domain.model.ExtendedName
 import ch.protonmail.android.mailcontact.domain.usecase.GetContactDetails
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.contactdetails.mapper.ContactDetailsUiModelMapper
@@ -22,6 +25,7 @@ import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.contact.ContactIdTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -35,7 +39,10 @@ class ContactDetailsViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val getContactDetails = mockk<GetContactDetails>()
-    private val contactDetailsUiModelMapper = ContactDetailsUiModelMapper()
+    private val colorMapper = mockk<ColorMapper> {
+        every { toColor(any()) } returns Color.Blue.right()
+    }
+    private val contactDetailsUiModelMapper = ContactDetailsUiModelMapper(colorMapper)
     private val savedStateHandle = mockk<SavedStateHandle>()
     private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
 
@@ -52,7 +59,18 @@ class ContactDetailsViewModelTest {
     fun `state should emit mapped data when getting contact details was successful`() = runTest {
         // Given
         val contactId = ContactIdTestData.contactId1
-        val contactDetailCard = ContactDetailCard(contactId, emptyList())
+        val contactDetailCard = ContactDetailCard(
+            id = contactId,
+            avatarInformation = AvatarInformation(
+                initials = "P",
+                color = "color"
+            ),
+            extendedName = ExtendedName(
+                last = "Mail",
+                first = "Proton"
+            ),
+            fields = emptyList()
+        )
         coEvery { savedStateHandle.get<String>(ContactDetailsScreen.CONTACT_DETAILS_ID_KEY) } returns contactId.id
         coEvery { observePrimaryUserId() } returns flowOf(UserIdTestData.userId)
         coEvery { getContactDetails(UserIdTestData.userId, contactId) } returns contactDetailCard.right()
@@ -69,7 +87,7 @@ class ContactDetailsViewModelTest {
                     ),
                     headerUiModel = HeaderUiModel(
                         displayName = "Proton Mail",
-                        displayEmailAddress = "proton@pm.me"
+                        displayEmailAddress = null
                     ),
                     quickActionUiModels = listOf(
                         QuickActionUiModel(

@@ -25,6 +25,9 @@ import ch.protonmail.android.mailcontact.domain.model.ContactDetailAddress
 import ch.protonmail.android.mailcontact.domain.model.ContactField
 import ch.protonmail.android.mailcontact.domain.model.PartialDate
 
+fun List<ContactField>.getPrimaryEmail() =
+    filterIsInstance<ContactField.Emails>().firstOrNull()?.list?.firstOrNull()?.email
+
 fun List<ContactField>.hasEmailAddresses() =
     filterIsInstance<ContactField.Emails>().firstOrNull()?.list?.isNotEmpty() ?: false
 

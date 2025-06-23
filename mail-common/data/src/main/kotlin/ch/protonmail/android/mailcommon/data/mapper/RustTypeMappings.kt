@@ -48,6 +48,7 @@ import uniffi.proton_mail_uniffi.Disposition
 import uniffi.proton_mail_uniffi.DraftSendResult
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
 import uniffi.proton_mail_uniffi.ExclusiveLocation
+import uniffi.proton_mail_uniffi.ExtendedName
 import uniffi.proton_mail_uniffi.GenderKind
 import uniffi.proton_mail_uniffi.GroupedContacts
 import uniffi.proton_mail_uniffi.Id
@@ -146,6 +147,7 @@ typealias LocalMailLoginError = MailLoginError
 typealias LocalMailLoginErrorReason = MailLoginError.Reason
 typealias LocalMailLoginErrorOther = MailLoginError.Other
 typealias LocalContactDetailCard = ContactDetailCard
+typealias LocalExtendedName = ExtendedName
 typealias LocalContactField = ContactField
 typealias LocalContactFieldAnniversary = ContactField.Anniversary
 typealias LocalContactFieldBirthday = ContactField.Birthday

@@ -4,12 +4,16 @@ import java.time.Month
 import java.time.format.TextStyle
 import java.util.Locale
 import androidx.compose.ui.graphics.Color
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
+import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactDate
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailAddress
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailCard
 import ch.protonmail.android.mailcontact.domain.model.ContactDetailEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactField
+import ch.protonmail.android.mailcontact.domain.model.ExtendedName
 import ch.protonmail.android.mailcontact.domain.model.GenderKind
 import ch.protonmail.android.mailcontact.domain.model.PartialDate
 import ch.protonmail.android.mailcontact.domain.model.VCardPropType
@@ -24,18 +28,32 @@ import ch.protonmail.android.mailcontact.presentation.contactdetails.model.Heade
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.QuickActionType
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.QuickActionUiModel
 import ch.protonmail.android.testdata.contact.ContactIdTestData
+import io.mockk.every
+import io.mockk.mockk
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ContactDetailsUiModelMapperTest {
 
-    private val mapper = ContactDetailsUiModelMapper()
+    private val colorMapper = mockk<ColorMapper> {
+        every { toColor(any()) } returns Color.Blue.right()
+    }
+
+    private val mapper = ContactDetailsUiModelMapper(colorMapper)
 
     @Test
     fun `should map contact detail card to ui model`() {
         // Given
         val contactDetailCard = ContactDetailCard(
             id = ContactIdTestData.contactId1,
+            avatarInformation = AvatarInformation(
+                initials = "P",
+                color = "color"
+            ),
+            extendedName = ExtendedName(
+                last = "Mail",
+                first = "Proton"
+            ),
             fields = listOf(
                 ContactField.Emails(
                     list = listOf(
@@ -109,7 +127,7 @@ class ContactDetailsUiModelMapperTest {
             ),
             headerUiModel = HeaderUiModel(
                 displayName = "Proton Mail",
-                displayEmailAddress = "proton@pm.me"
+                displayEmailAddress = "pm@pm.me"
             ),
             quickActionUiModels = listOf(
                 QuickActionUiModel(
