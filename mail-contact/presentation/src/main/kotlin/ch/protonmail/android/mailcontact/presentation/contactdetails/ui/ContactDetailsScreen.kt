@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailcontact.presentation.contactdetails.ui
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -27,16 +29,23 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,12 +54,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
@@ -87,6 +99,7 @@ fun ContactDetailsScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ContactDetailsScreen(
     state: ContactDetailsState,
@@ -96,24 +109,72 @@ private fun ContactDetailsScreen(
     showFeatureMissingSnackbar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Scaffold(
-        modifier = modifier,
-        containerColor = ProtonTheme.colors.backgroundInvertedNorm,
-        topBar = { ContactDetailsTopBar(state, onBack, showFeatureMissingSnackbar) }
+    val context = LocalContext.current
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var showBottomSheet by remember { mutableStateOf(false) }
+
+    ProtonModalBottomSheetLayout(
+        showBottomSheet = showBottomSheet,
+        sheetState = bottomSheetState,
+        onDismissed = { showBottomSheet = false },
+        dismissOnBack = true,
+        sheetContent = {
+            if (state is ContactDetailsState.Data) {
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    state.uiModel.contactDetailsItemGroupUiModels.flatMap { itemGroupUiModel ->
+                        itemGroupUiModel.contactDetailsItemUiModels.filter { itemUiModel ->
+                            itemUiModel.contactDetailsItemType == ContactDetailsItemType.Phone
+                        }
+                    }.forEach { uiModel ->
+                        val phoneNumber = uiModel.value.string()
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = ProtonDimens.ListItemHeight)
+                                .clickable(
+                                    enabled = true,
+                                    onClick = { launchPhoneApp(context, phoneNumber) }
+                                )
+                                .padding(horizontal = ProtonDimens.Spacing.Large),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.contact_details_action_call_label) + " \"" +
+                                    uiModel.label.string() + "\" " + uiModel.value.string(),
+                                style = ProtonTheme.typography.bodyLargeNorm
+                            )
+                        }
+                    }
+                }
+            }
+        }
     ) {
-        when (state) {
-            is ContactDetailsState.Data -> ContactDetails(
-                uiModel = state.uiModel,
-                onMessageContact = onMessageContact,
-                modifier = Modifier.padding(it)
-            )
-            is ContactDetailsState.Error -> ContactDetailsError(
-                onBack = onBack,
-                onShowErrorSnackbar = onShowErrorSnackbar
-            )
-            is ContactDetailsState.Loading -> ProtonCenteredProgress(
-                modifier = Modifier.padding(it)
-            )
+        Scaffold(
+            modifier = modifier,
+            containerColor = ProtonTheme.colors.backgroundInvertedNorm,
+            topBar = { ContactDetailsTopBar(state, onBack, showFeatureMissingSnackbar) }
+        ) {
+            when (state) {
+                is ContactDetailsState.Data -> ContactDetails(
+                    uiModel = state.uiModel,
+                    onMessageContact = onMessageContact,
+                    onCallQuickAction = { showBottomSheet = true },
+                    showFeatureMissingSnackbar = showFeatureMissingSnackbar,
+                    modifier = Modifier.padding(it)
+                )
+
+                is ContactDetailsState.Error -> ContactDetailsError(
+                    onBack = onBack,
+                    onShowErrorSnackbar = onShowErrorSnackbar
+                )
+
+                is ContactDetailsState.Loading -> ProtonCenteredProgress(
+                    modifier = Modifier.padding(it)
+                )
+            }
         }
     }
 }
@@ -122,6 +183,8 @@ private fun ContactDetailsScreen(
 private fun ContactDetails(
     uiModel: ContactDetailsUiModel,
     onMessageContact: (String) -> Unit,
+    onCallQuickAction: () -> Unit,
+    showFeatureMissingSnackbar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -158,7 +221,9 @@ private fun ContactDetails(
 
         ContactDetailsQuickActions(
             quickActionUiModels = uiModel.quickActionUiModels,
-            onMessageContact = { uiModel.headerUiModel.displayEmailAddress?.let { onMessageContact(it) } }
+            onMessageContact = { uiModel.headerUiModel.displayEmailAddress?.let { onMessageContact(it) } },
+            onCallQuickAction = onCallQuickAction,
+            showFeatureMissingSnackbar = showFeatureMissingSnackbar
         )
 
         uiModel.contactDetailsItemGroupUiModels.forEachIndexed { index, groupUiModel ->
@@ -215,7 +280,12 @@ private fun ContactDetailsTopBar(
 }
 
 @Composable
-private fun ContactDetailsQuickActions(quickActionUiModels: List<QuickActionUiModel>, onMessageContact: () -> Unit) {
+private fun ContactDetailsQuickActions(
+    quickActionUiModels: List<QuickActionUiModel>,
+    onMessageContact: () -> Unit,
+    onCallQuickAction: () -> Unit,
+    showFeatureMissingSnackbar: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -237,8 +307,8 @@ private fun ContactDetailsQuickActions(quickActionUiModels: List<QuickActionUiMo
                         onClick = {
                             when (uiModel.quickActionType) {
                                 QuickActionType.Message -> onMessageContact()
-                                QuickActionType.Call -> TODO()
-                                QuickActionType.Share -> TODO()
+                                QuickActionType.Call -> onCallQuickAction()
+                                QuickActionType.Share -> showFeatureMissingSnackbar()
                             }
                         }
                     )
@@ -295,15 +365,17 @@ private fun ContactDetailsItemGroup(
                             ContactDetailsItemType.Email -> stringResource(
                                 id = R.string.contact_details_action_message_label
                             )
+
                             ContactDetailsItemType.Phone -> stringResource(
                                 id = R.string.contact_details_action_call_label
                             )
+
                             ContactDetailsItemType.Other -> null
                         },
                         onClick = {
                             when (uiModel.contactDetailsItemType) {
                                 ContactDetailsItemType.Email -> onMessageContact(contactItemValue)
-                                ContactDetailsItemType.Phone -> TODO()
+                                ContactDetailsItemType.Phone -> launchPhoneApp(context, contactItemValue)
                                 ContactDetailsItemType.Other -> Unit
                             }
                         }
@@ -343,6 +415,12 @@ private fun ContactDetailsError(onBack: () -> Unit, onShowErrorSnackbar: (String
         onShowErrorSnackbar(errorMessage)
         onBack()
     }
+}
+
+private fun launchPhoneApp(context: Context, phoneNumber: String) {
+    val uri = "tel:$phoneNumber".toUri()
+    val intent = Intent(Intent.ACTION_DIAL, uri)
+    context.startActivity(intent)
 }
 
 @Preview
