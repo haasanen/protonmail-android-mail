@@ -38,7 +38,6 @@ import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactList
 import ch.protonmail.android.mailcontact.presentation.dialogs.ContactDeleteConfirmationDialog
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactCreate
-import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.delay
 
@@ -87,7 +86,7 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
         sheetState = bottomSheetState,
         onDismissed = { showBottomSheet = false },
         dismissOnBack = true,
-        sheetContent = bottomSheetHeightConstrainedContent {
+        sheetContent = {
             if (state is ContactListState.Loaded) {
                 when (state.bottomSheetType) {
                     ContactListState.BottomSheetType.Menu -> {

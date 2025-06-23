@@ -151,7 +151,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBo
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMoreActionBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
-import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.fab.LazyFab
 import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
@@ -291,7 +290,7 @@ fun MailboxScreen(
         onDismissed = { showBottomSheet = false },
         dismissOnBack = true,
         sheetState = bottomSheetState,
-        sheetContent = bottomSheetHeightConstrainedContent {
+        sheetContent = {
             when (val contentState = mailboxState.bottomSheetState?.contentState) {
                 is MoveToBottomSheetState.Requested -> {
 

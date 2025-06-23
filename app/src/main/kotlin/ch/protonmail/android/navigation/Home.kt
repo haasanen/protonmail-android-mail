@@ -112,7 +112,6 @@ import ch.protonmail.android.navigation.route.addWebEmailSettings
 import ch.protonmail.android.navigation.route.addWebFolderAndLabelSettings
 import ch.protonmail.android.navigation.route.addWebPrivacyAndSecuritySettings
 import ch.protonmail.android.navigation.route.addWebSpamFilterSettings
-import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.fab.FabHost
 import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
@@ -422,7 +421,7 @@ fun Home(
     ProtonModalBottomSheetLayout(
         showBottomSheet = showBottomSheet,
         sheetState = bottomSheetState,
-        sheetContent = bottomSheetHeightConstrainedContent {
+        sheetContent = {
             when (val type = bottomSheetType) {
                 is BottomSheetType.NotificationsPermissions -> NotificationsPermissionBottomSheet(
                     onRequest = launcherActions.onRequestNotificationPermission,

@@ -123,7 +123,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsB
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ContactActionsBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.DetailMoreActionsBottomSheetContent
-import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.android.awaitFrame
@@ -225,7 +224,7 @@ fun ConversationDetailScreen(
         sheetState = bottomSheetState,
         onDismissed = { showBottomSheet = false },
         dismissOnBack = true,
-        sheetContent = bottomSheetHeightConstrainedContent {
+        sheetContent = {
             when (val bottomSheetContentState = state.bottomSheetState?.contentState) {
                 is MoveToBottomSheetState.Requested -> {
                     val initialData = MoveToBottomSheet.InitialData(

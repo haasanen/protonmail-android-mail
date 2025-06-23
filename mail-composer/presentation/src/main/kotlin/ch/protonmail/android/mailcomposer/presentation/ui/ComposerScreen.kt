@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -82,7 +83,6 @@ import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
-import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.delay
@@ -189,7 +189,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         showBottomSheet = showBottomSheet,
         onDismissed = { showBottomSheet = false },
         dismissOnBack = true,
-        sheetContent = bottomSheetHeightConstrainedContent {
+        sheetContent = {
             when (val sheetType = bottomSheetType.value) {
                 BottomSheetType.ChangeSender -> ChangeSenderBottomSheetContent(
                     mainState.senderAddresses,
@@ -305,7 +305,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     scrollState.value.toDp(localDensity)
                 )
 
-                var formHeightPx by remember { mutableStateOf(0f) }
+                var formHeightPx by remember { mutableFloatStateOf(0f) }
 
 
                 if (mainState.loadingType == ComposerState.LoadingType.Save) {

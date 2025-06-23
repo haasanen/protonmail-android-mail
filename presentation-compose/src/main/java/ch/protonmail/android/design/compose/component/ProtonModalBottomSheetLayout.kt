@@ -25,7 +25,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -36,7 +35,7 @@ fun ProtonModalBottomSheetLayout(
     showBottomSheet: Boolean,
     sheetContent: @Composable ColumnScope.() -> Unit,
     modifier: Modifier = Modifier,
-    sheetState: SheetState = rememberModalBottomSheetState(),
+    sheetState: SheetState,
     onDismissed: () -> Unit,
     dismissOnBack: Boolean,
     content: @Composable () -> Unit
