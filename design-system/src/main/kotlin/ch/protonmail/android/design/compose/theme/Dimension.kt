@@ -52,6 +52,7 @@ object ProtonDimens {
         val ExtraLarge = 24.dp
         val Huge = 32.dp
         val Jumbo = 40.dp
+        val Massive = 48.dp
     }
 
     object CornerRadius {

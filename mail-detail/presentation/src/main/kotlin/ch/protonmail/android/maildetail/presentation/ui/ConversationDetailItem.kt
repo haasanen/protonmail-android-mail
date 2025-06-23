@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -140,7 +141,7 @@ private fun ConversationDetailExpandingItem(
             uiModel = uiModel.collapsed,
             avatarActions = avatarActions
         )
-        ProtonCenteredProgress(modifier = Modifier.padding(MailDimens.ProgressDefaultSize))
+        ProtonCenteredProgress(modifier = Modifier.padding(ProtonDimens.Spacing.Massive))
     }
 }
 
