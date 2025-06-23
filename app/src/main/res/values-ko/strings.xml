@@ -39,7 +39,7 @@
   <string name="label_deleted">라벨을 삭제했습니다.</string>
   <string name="app_locked">앱 잠김</string>
   <string name="use_pin_instead">대신 PIN 사용하기</string>
-  <string name="mailbox_message_scheduling">Scheduling message…</string>
-  <string name="mailbox_message_scheduling_offline">Offline: message queued for scheduling</string>
-  <string name="mailbox_message_scheduled_for_sending_success">This message will be sent on %1$s</string>
+  <string name="mailbox_message_scheduling">메시지 예약 중…</string>
+  <string name="mailbox_message_scheduling_offline">오프라인: 메시지 예약 대기 중</string>
+  <string name="mailbox_message_scheduled_for_sending_success">이 메시지는 %1$s에 전송됩니다</string>
 </resources>

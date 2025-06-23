@@ -39,7 +39,7 @@
   <string name="label_deleted">Tunniste poistettiin</string>
   <string name="app_locked">Sovellus on lukittu</string>
   <string name="use_pin_instead">Käytä sen sijaan PIN-koodia</string>
-  <string name="mailbox_message_scheduling">Scheduling message…</string>
+  <string name="mailbox_message_scheduling">Ajoitetaan viestiä…</string>
   <string name="mailbox_message_scheduling_offline">Offline: message queued for scheduling</string>
-  <string name="mailbox_message_scheduled_for_sending_success">This message will be sent on %1$s</string>
+  <string name="mailbox_message_scheduled_for_sending_success">Viesti lähetetään %1$s</string>
 </resources>

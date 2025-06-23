@@ -39,7 +39,7 @@
   <string name="label_deleted">Label dihapus</string>
   <string name="app_locked">Aplikasi terkunci</string>
   <string name="use_pin_instead">Gunakan PIN sebagai gantinya</string>
-  <string name="mailbox_message_scheduling">Scheduling message…</string>
-  <string name="mailbox_message_scheduling_offline">Offline: message queued for scheduling</string>
-  <string name="mailbox_message_scheduled_for_sending_success">This message will be sent on %1$s</string>
+  <string name="mailbox_message_scheduling">Menjadwalkan pesan…</string>
+  <string name="mailbox_message_scheduling_offline">Offline: Pesan diantrekan untuk dijadwalkan</string>
+  <string name="mailbox_message_scheduled_for_sending_success">Pesan ini akan dikirim pada %1$s</string>
 </resources>

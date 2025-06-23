@@ -98,6 +98,6 @@
   <string name="auth_signup_validation_username_input_invalid">Numele de utilizator introdus nu e valid.</string>
   <string name="auth_signup_validation_email_input_invalid">Adresa de e-mail introdusă nu e validă.</string>
   <string name="auth_signup_countries_search">Căutare țară</string>
-  <string name="auth_login_error_invalid_action_cannot_setup_user">Could not setup the user.</string>
-  <string name="auth_login_error_invalid_action_cannot_setup_address">Could not setup the address.</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_user">Nu s-a putut configura utilizatorul.</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_address">Nu s-a putut configura adresa.</string>
 </resources>

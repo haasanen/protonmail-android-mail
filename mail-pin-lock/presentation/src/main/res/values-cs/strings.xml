@@ -37,10 +37,13 @@
   <string name="mail_pinlock_settings_change_interval_title">Automatické uzamčení</string>
   <string name="mail_pinlock_settings_autolock_immediately">Okamžitě</string>
   <string name="mail_pinlock_settings_autolock_never">Nikdy</string>
+  <string name="mail_pinlock_settings_autolock_description_one_minute">Po 1 minutě</string>
+  <string name="mail_pinlock_settings_autolock_description_two_minutes">Po 2 minutách</string>
   <string name="mail_pinlock_settings_autolock_description_five_minutes">Po 5 minutách</string>
+  <string name="mail_pinlock_settings_autolock_description_ten_minutes">Po 10 minutách</string>
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">Po 15 minutách</string>
-  <string name="mail_pinlock_settings_autolock_description_one_hour">Po 1 hodině</string>
-  <string name="mail_pinlock_settings_autolock_description_one_day">Po 1 dnu</string>
+  <string name="mail_pinlock_settings_autolock_description_thirty_minutes">Po 30 minutách</string>
+  <string name="mail_pinlock_settings_autolock_description_sixty_minutes">Po 60 minutách</string>
   <string name="mail_settings_auto_lock_update_error">Chyba při aktualizaci nastavení</string>
   <string name="mail_settings_pin_insertion_pin_dot_description">Tečky PIN kódu</string>
   <string name="mail_settings_pin_insertion_button_create">Potvrdit</string>

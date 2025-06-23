@@ -27,16 +27,16 @@
   <string name="onboarding_neat_and_tidy_headline">Tyylikäs ja siisti</string>
   <string name="onboarding_neat_and_tidy_description">Lajittele, merkitse ja värikoodaa viestejä luodaksesi täydellisen, mukautetun postilaatikkosi.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Welcome to the\nnew Proton Mail app!</string>
+  <string name="onboarding_welcome_title">Tervetuloa uuteen\nProton Mail -sovellukseen!</string>
   <string name="onboarding_welcome_headline">Transformed from the ground up</string>
   <string name="onboarding_welcome_description">Thank you for joining this limited group of early beta testers. Your feedback is critical for helping us build an even better Proton Mail ready for public release.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Rebuilt to be better and faster</string>
   <string name="onboarding_rebuilt_headline">New inbox unboxed</string>
-  <string name="onboarding_rebuilt_description">Completely reengineered using Rust architecture, the new Proton Mail is faster with a vibrant design and highly-requested features, like offline mode.</string>
+  <string name="onboarding_rebuilt_description">The new Proton Mail is faster with a vibrant design and highly-requested features, like offline mode.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Thank you for your participation!</string>
-  <string name="onboarding_feedback_headline">Your feedback is key</string>
+  <string name="onboarding_feedback_title">Kiitos osallistumisestasi!</string>
+  <string name="onboarding_feedback_headline">Palautteesi on tärkeää</string>
   <string name="onboarding_feedback_description">We\'ll be rolling out new features in the coming months. Please test the app and tap \"Report a problem\" to let us know how we can keep improving. Your input is invaluable!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Seuraava</string>

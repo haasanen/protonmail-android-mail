@@ -31,10 +31,6 @@
   </plurals>
   <string name="attachments">priponke</string>
   <string name="attachment_show_more_label">in še %1$d</string>
-  <string name="attachment_permission_dialog_title">Potrebno je dovoljenje</string>
-  <string name="attachment_permission_dialog_message">Za prenos priponke Proton Mail potrebuje dovoljenje za dostop do shrambe vaše naprave.</string>
-  <string name="attachment_permission_dialog_dismiss_button">V redu</string>
-  <string name="attachment_permission_dialog_action_button">Nastavitve</string>
   <string name="attachment_type_description">Datoteka %1$s</string>
   <!-- Attachment Types -->
   <string name="attachment_type_archive">Arhiv</string>
@@ -81,10 +77,4 @@
   <string name="contact_actions_block_contact_description">Blokiraj ta stik</string>
   <string name="contact_actions_view_contact_details">Ogled podrobnosti stika</string>
   <string name="contact_actions_view_contact_details_description">Oglejte si podrobnosti stika</string>
-  <!-- Device Contacts permission dialog -->
-  <string name="device_contacts_permission_dialog_title">Potrebno je dovoljenje</string>
-  <string name="device_contacts_permission_dialog_message">Proton Mail potrebuje dovoljenje za dostop do stikov, da lahko predlaga prejemnike.</string>
-  <string name="device_contacts_permission_dialog_dismiss_button">V redu</string>
-  <string name="device_contacts_permission_dialog_action_button">Zahtevaj dovoljenje</string>
-  <string name="device_contacts_permission_dialog_action_button_deny">Zavrni</string>
 </resources>

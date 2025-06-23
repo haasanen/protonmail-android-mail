@@ -27,17 +27,17 @@
   <string name="onboarding_neat_and_tidy_headline">Takaros</string>
   <string name="onboarding_neat_and_tidy_description">Rendezze el, címkézze fel és lássa el színkóddal üzeneteit, hogy létrehozza a saját tökéletes fiókját.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Welcome to the\nnew Proton Mail app!</string>
-  <string name="onboarding_welcome_headline">Transformed from the ground up</string>
-  <string name="onboarding_welcome_description">Thank you for joining this limited group of early beta testers. Your feedback is critical for helping us build an even better Proton Mail ready for public release.</string>
+  <string name="onboarding_welcome_title">Üdvözöljük az új\nProton Mail alkalmazásban!</string>
+  <string name="onboarding_welcome_headline">Teljesen átalakítva</string>
+  <string name="onboarding_welcome_description">Köszönjük, hogy csatlakozott a korai béta tesztelők szűk csoportjához. Az Ön visszajelzése kulcsfontosságú ahhoz, hogy még jobb, nyilvános megjelenésre kész Proton Mailt építsünk.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Rebuilt to be better and faster</string>
-  <string name="onboarding_rebuilt_headline">New inbox unboxed</string>
-  <string name="onboarding_rebuilt_description">Completely reengineered using Rust architecture, the new Proton Mail is faster with a vibrant design and highly-requested features, like offline mode.</string>
+  <string name="onboarding_rebuilt_title">Újraépítve, hogy jobb és gyorsabb legyen</string>
+  <string name="onboarding_rebuilt_headline">Új beérkezett üzenetek kicsomagolva</string>
+  <string name="onboarding_rebuilt_description">The new Proton Mail is faster with a vibrant design and highly-requested features, like offline mode.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Thank you for your participation!</string>
-  <string name="onboarding_feedback_headline">Your feedback is key</string>
-  <string name="onboarding_feedback_description">We\'ll be rolling out new features in the coming months. Please test the app and tap \"Report a problem\" to let us know how we can keep improving. Your input is invaluable!</string>
+  <string name="onboarding_feedback_title">Köszönjük a részvételét!</string>
+  <string name="onboarding_feedback_headline">Az Ön visszajelzése kulcsfontosságú</string>
+  <string name="onboarding_feedback_description">Új funkciókat vezetünk be a következő hónapokban. Kérjük, tesztelje az alkalmazást, és érintse meg a „Probléma bejelentése” gombot, hogy tudassa velünk, hogyan fejlődhetünk tovább. Visszajelzése felbecsülhetetlen!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Tovább</string>
   <string name="onboarding_get_started">Tesztelés indítása</string>

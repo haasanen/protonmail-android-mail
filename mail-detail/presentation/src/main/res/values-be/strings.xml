@@ -129,10 +129,10 @@
   <string name="schedule_message_sent_at_banner_title">Гэта паведамленне будзе адпраўлена</string>
   <string name="schedule_message_edit_message_button">Рэдагаваць паведамленне</string>
   <string name="schedule_send_tomorrow">заўтра ў %1$s</string>
-  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
-  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
-  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
-  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
-  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
-  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
+  <string name="error_cancel_schedule_send_failed">Не ўдалося скасаваць запланаваны час адпраўкі гэтага паведамлення</string>
+  <string name="offline_error_cancel_schedule_send_failed">Немагчыма скасаваць запланаванае паведамленне пакуль вы па-за сеткай</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Рэдагаваць чарнавік</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Скасаваць</string>
+  <string name="message_cancel_schedule_send_dialog_title">Рэдагаваць і перапланаваць</string>
+  <string name="message_cancel_schedule_send_dialog_message">Гэта паведамленне будзе перамешчана ў папку з чарнавікамі, так што вы зможаце адрэдагаваць яго. Вам неабходна будзе перапланаваць яго пасля адпраўкі.</string>
 </resources>

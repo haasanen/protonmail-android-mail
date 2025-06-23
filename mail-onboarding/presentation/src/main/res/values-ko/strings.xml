@@ -27,17 +27,17 @@
   <string name="onboarding_neat_and_tidy_headline">단정하고 깔끔한.</string>
   <string name="onboarding_neat_and_tidy_description">폴더, 라벨 및 색상 코드 메시지를 사용하여 맞춤형 메일함을 만들어보세요.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Welcome to the\nnew Proton Mail app!</string>
-  <string name="onboarding_welcome_headline">Transformed from the ground up</string>
-  <string name="onboarding_welcome_description">Thank you for joining this limited group of early beta testers. Your feedback is critical for helping us build an even better Proton Mail ready for public release.</string>
+  <string name="onboarding_welcome_title">새로운 Proton Mail 앱에\n오신 것을 환영합니다!</string>
+  <string name="onboarding_welcome_headline">기초부터 완전히 거듭나다</string>
+  <string name="onboarding_welcome_description">소수 정예 초기 베타 테스터 그룹에 참여해 주셔서 감사합니다. 주시는 피드백은 한층 더 나은 Proton Mail의 공개 릴리즈를 만드는 데 매우 큰 도움이 됩니다.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Rebuilt to be better and faster</string>
-  <string name="onboarding_rebuilt_headline">New inbox unboxed</string>
-  <string name="onboarding_rebuilt_description">Completely reengineered using Rust architecture, the new Proton Mail is faster with a vibrant design and highly-requested features, like offline mode.</string>
+  <string name="onboarding_rebuilt_title">더 좋게, 더 빠르게 재구축되다</string>
+  <string name="onboarding_rebuilt_headline">새로운 받은 편지함 개봉박두</string>
+  <string name="onboarding_rebuilt_description">더 빠른 모습으로 돌아온 새로운 Proton Mail은 생생한 디자인은 물론, 오프라인 모드와 같이 요청이 많았던 기능들을 담았습니다.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Thank you for your participation!</string>
-  <string name="onboarding_feedback_headline">Your feedback is key</string>
-  <string name="onboarding_feedback_description">We\'ll be rolling out new features in the coming months. Please test the app and tap \"Report a problem\" to let us know how we can keep improving. Your input is invaluable!</string>
+  <string name="onboarding_feedback_title">참여해 주셔서 감사합니다!</string>
+  <string name="onboarding_feedback_headline">귀중한 피드백 감사합니다</string>
+  <string name="onboarding_feedback_description">향후 몇 달 안에 새로운 기능을 출시할 예정입니다. 앱을 테스트해 보시고, 개선할 점이 있다면 \"문제 보고\"를 눌러 알려주세요. 소중한 의견 기다리겠습니다!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">다음</string>
   <string name="onboarding_get_started">테스트 시작</string>

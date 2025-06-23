@@ -107,6 +107,7 @@
     <item quantity="one">%d μέλος</item>
     <item quantity="other">%d μέλη</item>
   </plurals>
+  <string name="composer_recipient_suggestion_device">Εμφάνιση επαφών συσκευής</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">Να απορριφθεί αυτό το μήνυμα;</string>
   <string name="discard_draft_dialog_text">Το πρόχειρό σας δεν θα αποθηκευτεί</string>
@@ -126,4 +127,13 @@
   <string name="composer_schedule_send_custom_description">Επιλέξτε ώρα και ημερομηνία</string>
   <string name="composer_error_send_message">Σφάλμα κατά την αποστολή του μηνύματος</string>
   <string name="composer_schedule_send_previously_set">Προηγουμένως ορισμένο</string>
+  <string name="composer_schedule_send_custom_time_label">Ώρα</string>
+  <string name="composer_schedule_send_custom_date_label">Ημερομηνία</string>
+  <string name="composer_schedule_send_dialog_ok">Ok</string>
+  <string name="composer_schedule_send_dialog_enter_time">Εισάγετε ώρα</string>
+  <string name="composer_change_sender_title">Από</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Δεν είναι δυνατή η αλλαγή αποστολέα καθώς απέτυχε η λήψη των διευθύνσεων του χρήστη. Δοκιμάστε ξανά.</string>
+  <string name="composer_change_sender_invalid_address">Η επιλεγμένη διεύθυνση δεν μπορεί να χρησιμοποιηθεί για αποστολή</string>
+  <string name="composer_change_sender_unexpected_failure">Παρουσιάστηκε κάποιο πρόβλημα κατά την αλλαγή του αποστολέα. Παρακαλούμε προσπαθήστε ξανά.</string>
+  <string name="composer_change_sender_error_refreshing_body">Η ανανέωση του σώματος απέτυχε μετά την αλλαγή αποστολέα. Η υπογραφή ενδέχεται να είναι παλιά.</string>
 </resources>

@@ -37,10 +37,13 @@
   <string name="mail_pinlock_settings_change_interval_title">Automatisch sperren</string>
   <string name="mail_pinlock_settings_autolock_immediately">Sofort</string>
   <string name="mail_pinlock_settings_autolock_never">Niemals</string>
+  <string name="mail_pinlock_settings_autolock_description_one_minute">Nach 1 Minute</string>
+  <string name="mail_pinlock_settings_autolock_description_two_minutes">Nach 2 Minuten</string>
   <string name="mail_pinlock_settings_autolock_description_five_minutes">Nach 5 Minuten</string>
+  <string name="mail_pinlock_settings_autolock_description_ten_minutes">Nach 10 Minuten</string>
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">Nach 15 Minuten</string>
-  <string name="mail_pinlock_settings_autolock_description_one_hour">Nach 1 Stunde</string>
-  <string name="mail_pinlock_settings_autolock_description_one_day">Nach 1 Tag</string>
+  <string name="mail_pinlock_settings_autolock_description_thirty_minutes">Nach 30 Minuten</string>
+  <string name="mail_pinlock_settings_autolock_description_sixty_minutes">Nach 60 Minuten</string>
   <string name="mail_settings_auto_lock_update_error">Fehler beim Aktualisieren der Einstellungen</string>
   <string name="mail_settings_pin_insertion_pin_dot_description">Pin-Code Punkt</string>
   <string name="mail_settings_pin_insertion_button_create">Bestätigen</string>

@@ -27,10 +27,6 @@
   </plurals>
   <string name="attachments">liitteet</string>
   <string name="attachment_show_more_label">+%1$d lisää</string>
-  <string name="attachment_permission_dialog_title">Käyttöoikeus tarvitaan</string>
-  <string name="attachment_permission_dialog_message">Proton Mail tarvitsee liitetiedostojen tallentamiseksi tallennustilan käyttöoikeuden.</string>
-  <string name="attachment_permission_dialog_dismiss_button">OK</string>
-  <string name="attachment_permission_dialog_action_button">Asetukset</string>
   <string name="attachment_type_description">Tiedostotyyppi: %1$s</string>
   <!-- Attachment Types -->
   <string name="attachment_type_archive">Pakattu</string>
@@ -77,10 +73,4 @@
   <string name="contact_actions_block_contact_description">Estä tämä yhteystieto</string>
   <string name="contact_actions_view_contact_details">Näytä yhteystieto</string>
   <string name="contact_actions_view_contact_details_description">Näytä yhteystiedon tiedot</string>
-  <!-- Device Contacts permission dialog -->
-  <string name="device_contacts_permission_dialog_title">Käyttöoikeus tarvitaan</string>
-  <string name="device_contacts_permission_dialog_message">Proton Mail tarvitsee vastaanottajien ehdottamiseksi oikeuden lukea yhteystietojasi.</string>
-  <string name="device_contacts_permission_dialog_dismiss_button">OK</string>
-  <string name="device_contacts_permission_dialog_action_button">Pyydä oikeutta</string>
-  <string name="device_contacts_permission_dialog_action_button_deny">Estä</string>
 </resources>

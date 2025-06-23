@@ -126,13 +126,13 @@
   <string name="message_details_header_to">Pre</string>
   <string name="message_details_header_cc">Kópia (Cc)</string>
   <string name="message_details_header_bcc">Skrytá kópia (Bcc)</string>
-  <string name="schedule_message_sent_at_banner_title">This message will be sent</string>
-  <string name="schedule_message_edit_message_button">Edit message</string>
-  <string name="schedule_send_tomorrow">tomorrow at %1$s</string>
-  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
-  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
-  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
-  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
-  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
-  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
+  <string name="schedule_message_sent_at_banner_title">Táto správa bude odoslaná</string>
+  <string name="schedule_message_edit_message_button">Upraviť správu</string>
+  <string name="schedule_send_tomorrow">zajtra o %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Nepodarilo sa zrušiť plánovaný čas odoslania tejto správy</string>
+  <string name="offline_error_cancel_schedule_send_failed">V režime offline nie je možné zrušiť naplánovanú správu</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Upraviť koncept</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Zrušiť</string>
+  <string name="message_cancel_schedule_send_dialog_title">Upraviť a preplánovať</string>
+  <string name="message_cancel_schedule_send_dialog_message">Táto správa sa presunie do Konceptov, aby ste ju mohli upraviť. Budete musieť preplánovať, kedy bude odoslaná.</string>
 </resources>

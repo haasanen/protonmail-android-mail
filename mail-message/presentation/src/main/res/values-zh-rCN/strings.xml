@@ -25,10 +25,6 @@
   </plurals>
   <string name="attachments">附件</string>
   <string name="attachment_show_more_label">+还有 %1$d 项</string>
-  <string name="attachment_permission_dialog_title">需要权限</string>
-  <string name="attachment_permission_dialog_message">Proton Mail 需要设备存储权限才能下载附件。</string>
-  <string name="attachment_permission_dialog_dismiss_button">确定</string>
-  <string name="attachment_permission_dialog_action_button">设置</string>
   <string name="attachment_type_description">%1$s文件</string>
   <!-- Attachment Types -->
   <string name="attachment_type_archive">归档</string>
@@ -75,10 +71,4 @@
   <string name="contact_actions_block_contact_description">屏蔽此联系人</string>
   <string name="contact_actions_view_contact_details">查看联系人详情</string>
   <string name="contact_actions_view_contact_details_description">查看联系人详情</string>
-  <!-- Device Contacts permission dialog -->
-  <string name="device_contacts_permission_dialog_title">需要权限</string>
-  <string name="device_contacts_permission_dialog_message">Proton Mail 需要权限才能读取您的联系人，以便提供收件人建议。</string>
-  <string name="device_contacts_permission_dialog_dismiss_button">好的</string>
-  <string name="device_contacts_permission_dialog_action_button">请求权限</string>
-  <string name="device_contacts_permission_dialog_action_button_deny">拒绝</string>
 </resources>

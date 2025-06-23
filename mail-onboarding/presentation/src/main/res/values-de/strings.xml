@@ -33,7 +33,7 @@
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Überarbeitet, um besser und schneller zu sein</string>
   <string name="onboarding_rebuilt_headline">Neuen Posteingang erkunden</string>
-  <string name="onboarding_rebuilt_description">Das neue Proton Mail wurde unter Verwendung der Rust-Architektur komplett überarbeitet, ist schneller, hat ein dynamisches Design und verfügt über stark nachgefragte Funktionen, wie den Offline-Modus.</string>
+  <string name="onboarding_rebuilt_description">Das neue Proton Mail ist schneller, hat ein ansprechendes Design und begehrte Funktionen, wie den Offline-Modus.</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">Vielen Dank für deine Teilnahme!</string>
   <string name="onboarding_feedback_headline">Dein Feedback ist entscheidend</string>

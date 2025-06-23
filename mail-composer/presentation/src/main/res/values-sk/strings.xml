@@ -109,6 +109,7 @@
     <item quantity="many">%d členov</item>
     <item quantity="other">%d členov</item>
   </plurals>
+  <string name="composer_recipient_suggestion_device">Show device contacts</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">Zahodiť túto správu?</string>
   <string name="discard_draft_dialog_text">Vaša koncept sa neuloží</string>
@@ -127,5 +128,14 @@
   <string name="composer_schedule_send_custom_title">Vlastné</string>
   <string name="composer_schedule_send_custom_description">Vyberte čas a dátum</string>
   <string name="composer_error_send_message">Chyba pri odosielaní správy</string>
-  <string name="composer_schedule_send_previously_set">Previously set</string>
+  <string name="composer_schedule_send_previously_set">Predtým nastavené</string>
+  <string name="composer_schedule_send_custom_time_label">Time</string>
+  <string name="composer_schedule_send_custom_date_label">Date</string>
+  <string name="composer_schedule_send_dialog_ok">Ok</string>
+  <string name="composer_schedule_send_dialog_enter_time">Enter time</string>
+  <string name="composer_change_sender_title">From</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
+  <string name="composer_change_sender_invalid_address">The selected address can not be used for sending</string>
+  <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
+  <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
 </resources>

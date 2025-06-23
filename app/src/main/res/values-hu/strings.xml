@@ -39,7 +39,7 @@
   <string name="label_deleted">Címke törölve</string>
   <string name="app_locked">Az alkalmazás zárolt</string>
   <string name="use_pin_instead">Inkább PIN-kód használata</string>
-  <string name="mailbox_message_scheduling">Scheduling message…</string>
-  <string name="mailbox_message_scheduling_offline">Offline: message queued for scheduling</string>
-  <string name="mailbox_message_scheduled_for_sending_success">This message will be sent on %1$s</string>
+  <string name="mailbox_message_scheduling">Üzenet ütemezése…</string>
+  <string name="mailbox_message_scheduling_offline">Offline: az üzenet sorba van állítva ütemezésre</string>
+  <string name="mailbox_message_scheduled_for_sending_success">Ez az üzenet el lesz küldve %1$s</string>
 </resources>

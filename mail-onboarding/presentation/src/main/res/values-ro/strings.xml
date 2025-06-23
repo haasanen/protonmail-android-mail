@@ -33,7 +33,7 @@
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Refăcut pentru a fi mai bun și mai rapid</string>
   <string name="onboarding_rebuilt_headline">Prezentare nouă cont</string>
-  <string name="onboarding_rebuilt_description">Reconstruit complet utilizând arhitectura Rust, noul Proton Mail este mai rapid, cu un design vibrant și funcții foarte solicitate, precum modul deconectat.</string>
+  <string name="onboarding_rebuilt_description">Noul Proton Mail este mai rapid, cu un design vibrant și funcții foarte solicitate, precum modul deconectat.</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">Vă mulțumim pentru participare!</string>
   <string name="onboarding_feedback_headline">Sugestiile primite sunt esențiale</string>

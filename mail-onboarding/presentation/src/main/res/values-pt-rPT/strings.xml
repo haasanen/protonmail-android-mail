@@ -33,7 +33,7 @@
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Completamente redesenhado para mais rendimento e velocidade</string>
   <string name="onboarding_rebuilt_headline">Abrimos a nova caixa de entrada!</string>
-  <string name="onboarding_rebuilt_description">Completamente redesenhada usando a arquitetura de ferrugem, a nova aplicação do Proton Mail é mais rápida com um design dinâmico e funcionalidades muito solicitadas, como o modo offline.</string>
+  <string name="onboarding_rebuilt_description">O novo Proton Mail é mais rápido com um design dinâmico e funcionalidades muito solicitadas, como o modo offline.</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">Agradecemos a sua participação!</string>
   <string name="onboarding_feedback_headline">Os seus comentários são importantes.</string>

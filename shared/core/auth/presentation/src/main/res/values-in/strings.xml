@@ -98,6 +98,6 @@
   <string name="auth_signup_validation_username_input_invalid">Masukan nama pengguna tidak valid.</string>
   <string name="auth_signup_validation_email_input_invalid">Masukan nama pengguna tidak valid.</string>
   <string name="auth_signup_countries_search">Cari negara</string>
-  <string name="auth_login_error_invalid_action_cannot_setup_user">Could not setup the user.</string>
-  <string name="auth_login_error_invalid_action_cannot_setup_address">Could not setup the address.</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_user">Tidak dapat menyiapkan pengguna.</string>
+  <string name="auth_login_error_invalid_action_cannot_setup_address">Tidak dapat menyiapkan alamat.</string>
 </resources>

@@ -33,7 +33,7 @@
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Completamente rediseñada para más rendimiento y velocidad</string>
   <string name="onboarding_rebuilt_headline">Nueva bandeja de entrada por descubrir</string>
-  <string name="onboarding_rebuilt_description">Completamente rediseñada con la arquitectura de Rust, la nueva aplicación Proton Mail es más rápida con un diseño dinámico y características muy esperadas, como el modo fuera de línea.</string>
+  <string name="onboarding_rebuilt_description">La nueva Proton Mail es más rápida con un diseño dinámico y funciones muy solicitadas, como el modo sin conexión.</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">¡Gracias por su participación!</string>
   <string name="onboarding_feedback_headline">Su opinión es importante</string>

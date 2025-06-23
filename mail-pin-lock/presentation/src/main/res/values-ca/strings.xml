@@ -37,10 +37,13 @@
   <string name="mail_pinlock_settings_change_interval_title">Bloqueig automàtic</string>
   <string name="mail_pinlock_settings_autolock_immediately">Immediatament</string>
   <string name="mail_pinlock_settings_autolock_never">Mai</string>
+  <string name="mail_pinlock_settings_autolock_description_one_minute">Passat 1 minut</string>
+  <string name="mail_pinlock_settings_autolock_description_two_minutes">Passats 2 minuts</string>
   <string name="mail_pinlock_settings_autolock_description_five_minutes">Després de 5 minuts</string>
+  <string name="mail_pinlock_settings_autolock_description_ten_minutes">Passats 10 minuts</string>
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">Després de 15 minuts</string>
-  <string name="mail_pinlock_settings_autolock_description_one_hour">Després d\'1 hora</string>
-  <string name="mail_pinlock_settings_autolock_description_one_day">Després d\'un dia</string>
+  <string name="mail_pinlock_settings_autolock_description_thirty_minutes">Passats 30 minuts</string>
+  <string name="mail_pinlock_settings_autolock_description_sixty_minutes">D\'aquí a 1 hora</string>
   <string name="mail_settings_auto_lock_update_error">S\'ha produït un error en actualitzar les preferències.</string>
   <string name="mail_settings_pin_insertion_pin_dot_description">Punt del codi PIN</string>
   <string name="mail_settings_pin_insertion_button_create">Confirma</string>

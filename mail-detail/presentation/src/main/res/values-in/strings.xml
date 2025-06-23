@@ -120,13 +120,13 @@
   <string name="message_details_header_to">Ke</string>
   <string name="message_details_header_cc">Cc</string>
   <string name="message_details_header_bcc">Bcc</string>
-  <string name="schedule_message_sent_at_banner_title">This message will be sent</string>
-  <string name="schedule_message_edit_message_button">Edit message</string>
-  <string name="schedule_send_tomorrow">tomorrow at %1$s</string>
-  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
-  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
-  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
-  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
-  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
-  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
+  <string name="schedule_message_sent_at_banner_title">Pesan ini akan dikirim</string>
+  <string name="schedule_message_edit_message_button">sunting pesan</string>
+  <string name="schedule_send_tomorrow">besok pukul %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Gagal membatalkan waktu kirim terjadwal pesan ini</string>
+  <string name="offline_error_cancel_schedule_send_failed">Tidak dapat batal pesan terjadwal saat offline</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Sunting draf</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Batalkan</string>
+  <string name="message_cancel_schedule_send_dialog_title">Sunting dan jadwal ulang</string>
+  <string name="message_cancel_schedule_send_dialog_message">Pesan ini akan dipindahkan ke Draf agar Anda bisa menyuntingnya. Anda perlu menjadwalkan ulang kapan akan dikirim.</string>
 </resources>

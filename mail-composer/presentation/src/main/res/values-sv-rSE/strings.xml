@@ -107,6 +107,7 @@
     <item quantity="one">%d medlem</item>
     <item quantity="other">%d medlemmar</item>
   </plurals>
+  <string name="composer_recipient_suggestion_device">Visa enhetens kontakter</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">Kasta detta meddelande?</string>
   <string name="discard_draft_dialog_text">Ditt utkast kommer inte att sparas</string>
@@ -126,4 +127,13 @@
   <string name="composer_schedule_send_custom_description">Välj tid och datum</string>
   <string name="composer_error_send_message">Det gick inte att skicka meddelandet</string>
   <string name="composer_schedule_send_previously_set">Tidigare inställt</string>
+  <string name="composer_schedule_send_custom_time_label">Tid</string>
+  <string name="composer_schedule_send_custom_date_label">Datum</string>
+  <string name="composer_schedule_send_dialog_ok">Ok</string>
+  <string name="composer_schedule_send_dialog_enter_time">Ange tid</string>
+  <string name="composer_change_sender_title">Från</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
+  <string name="composer_change_sender_invalid_address">Den valda adressen kan inte användas för att skicka</string>
+  <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
+  <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
 </resources>

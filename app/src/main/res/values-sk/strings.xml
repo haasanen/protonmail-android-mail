@@ -39,7 +39,7 @@
   <string name="label_deleted">Štítok odstránený</string>
   <string name="app_locked">Aplikácia uzamknutá</string>
   <string name="use_pin_instead">Použiť radšej PIN</string>
-  <string name="mailbox_message_scheduling">Scheduling message…</string>
-  <string name="mailbox_message_scheduling_offline">Offline: message queued for scheduling</string>
-  <string name="mailbox_message_scheduled_for_sending_success">This message will be sent on %1$s</string>
+  <string name="mailbox_message_scheduling">Plánovanie správy…</string>
+  <string name="mailbox_message_scheduling_offline">Offline: správa vo fronte na plánovanie</string>
+  <string name="mailbox_message_scheduled_for_sending_success">Táto správa bude odoslaná %1$s</string>
 </resources>

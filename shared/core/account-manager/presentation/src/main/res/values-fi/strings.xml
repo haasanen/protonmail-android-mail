@@ -31,5 +31,5 @@
   <string name="primary_account_avatar_camera_content_description">Account avatar camera</string>
   <string name="manage_accounts_on_device">Hallitse tämän laitteen tilejä</string>
   <string name="add_another_account">Lisää toinen tili</string>
-  <string name="account_switcher_no_initials">NA</string>
+  <string name="account_switcher_no_initials">Ei saatavilla</string>
 </resources>

@@ -33,7 +33,7 @@
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Перабудавана, каб быць лепшай і хутчэйшай</string>
   <string name="onboarding_rebuilt_headline">Прадстаўляем вам новую паштовую скрыню</string>
-  <string name="onboarding_rebuilt_description">Новы Proton Mail стаў яшчэ хутчэй, атрымаў яркі дызайн і вельмі запатрабаваныя функцыі, такія як рэжым па-за сеткай. Гэтага ўдалося дасягнуць дзякуючы выкарыстанню архітэктуры Rust.</string>
+  <string name="onboarding_rebuilt_description">Новы Proton Mail стаў яшчэ хутчэй, атрымаў яркі дызайн і вельмі запатрабаваныя функцыі, напрыклад рэжым па-за сеткай.</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">Дзякуй за ваш удзел!</string>
   <string name="onboarding_feedback_headline">Ваш водгук мае ключавое значэнне</string>

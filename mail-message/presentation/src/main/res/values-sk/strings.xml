@@ -31,10 +31,6 @@
   </plurals>
   <string name="attachments">prílohy</string>
   <string name="attachment_show_more_label">+%1$d viac</string>
-  <string name="attachment_permission_dialog_title">Vyžaduje sa oprávnenie</string>
-  <string name="attachment_permission_dialog_message">Pre stiahnutie prílohy potrebuje Proton Mail povolenie na prístup k vášmu úložisku.</string>
-  <string name="attachment_permission_dialog_dismiss_button">OK</string>
-  <string name="attachment_permission_dialog_action_button">Nastavenia</string>
   <string name="attachment_type_description">Súbor %1$s</string>
   <!-- Attachment Types -->
   <string name="attachment_type_archive">Archív</string>
@@ -81,10 +77,4 @@
   <string name="contact_actions_block_contact_description">Zablokovať tento kontakt</string>
   <string name="contact_actions_view_contact_details">Zobraziť detaily kontaktu</string>
   <string name="contact_actions_view_contact_details_description">Zobraziť podrobnosti o kontakte</string>
-  <!-- Device Contacts permission dialog -->
-  <string name="device_contacts_permission_dialog_title">Vyžaduje sa oprávnenie</string>
-  <string name="device_contacts_permission_dialog_message">Služba Proton Mail potrebuje oprávnenie na čítanie vašich kontaktov z dôvodu návrhu príjemcov.</string>
-  <string name="device_contacts_permission_dialog_dismiss_button">OK</string>
-  <string name="device_contacts_permission_dialog_action_button">Vyžiadanie povolenia</string>
-  <string name="device_contacts_permission_dialog_action_button_deny">Zamietnuť</string>
 </resources>

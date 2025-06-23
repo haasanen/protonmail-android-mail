@@ -29,10 +29,6 @@
   </plurals>
   <string name="attachments">atașamente</string>
   <string name="attachment_show_more_label">+ încă %1$d</string>
-  <string name="attachment_permission_dialog_title">Permisiune necesară</string>
-  <string name="attachment_permission_dialog_message">Proton Mail are nevoie de permisiunea de a accesa spațiul de stocarea pentru a descărca atașamentul.</string>
-  <string name="attachment_permission_dialog_dismiss_button">OK</string>
-  <string name="attachment_permission_dialog_action_button">Setări</string>
   <string name="attachment_type_description">Fișier %1$s</string>
   <!-- Attachment Types -->
   <string name="attachment_type_archive">arhivă</string>
@@ -79,10 +75,4 @@
   <string name="contact_actions_block_contact_description">Blocare acest contact</string>
   <string name="contact_actions_view_contact_details">Afișare detalii contact</string>
   <string name="contact_actions_view_contact_details_description">Afișare detalii contact.</string>
-  <!-- Device Contacts permission dialog -->
-  <string name="device_contacts_permission_dialog_title">Permisiune necesară</string>
-  <string name="device_contacts_permission_dialog_message">Proton Mail are nevoie de permisiunea de a accesa contactele pentru a sugera destinatari.</string>
-  <string name="device_contacts_permission_dialog_dismiss_button">OK</string>
-  <string name="device_contacts_permission_dialog_action_button">Solicitare permisiune</string>
-  <string name="device_contacts_permission_dialog_action_button_deny">Refuzare</string>
 </resources>

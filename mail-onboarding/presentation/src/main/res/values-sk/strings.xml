@@ -27,17 +27,17 @@
   <string name="onboarding_neat_and_tidy_headline">Úhľadné a čisté</string>
   <string name="onboarding_neat_and_tidy_description">Pomocou súborov, štítkov a farebných kódov pre správy si prispôsobte schránku doručenej pošty.</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Welcome to the\nnew Proton Mail app!</string>
-  <string name="onboarding_welcome_headline">Transformed from the ground up</string>
-  <string name="onboarding_welcome_description">Thank you for joining this limited group of early beta testers. Your feedback is critical for helping us build an even better Proton Mail ready for public release.</string>
+  <string name="onboarding_welcome_title">Vitajte v novej\naplikácii Proton Mail!</string>
+  <string name="onboarding_welcome_headline">Prepracované od základov</string>
+  <string name="onboarding_welcome_description">Ďakujeme, že ste sa pripojili k tejto obmedzenej skupine skorých beta testerov. Vaša spätná väzba je kľúčová pre pomoc pri budovaní ešte lepšieho Proton Mailu pripraveného na verejné vydanie.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Rebuilt to be better and faster</string>
-  <string name="onboarding_rebuilt_headline">New inbox unboxed</string>
-  <string name="onboarding_rebuilt_description">Completely reengineered using Rust architecture, the new Proton Mail is faster with a vibrant design and highly-requested features, like offline mode.</string>
+  <string name="onboarding_rebuilt_title">Prestavali sme ho, aby bol lepší a rýchlejší</string>
+  <string name="onboarding_rebuilt_headline">Odhalenie novej doručenej pošty</string>
+  <string name="onboarding_rebuilt_description">Nový Proton Mail je rýchlejší, má dynamický dizajn a veľmi žiadané funkcie, ako napríklad offline režim.</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Thank you for your participation!</string>
-  <string name="onboarding_feedback_headline">Your feedback is key</string>
-  <string name="onboarding_feedback_description">We\'ll be rolling out new features in the coming months. Please test the app and tap \"Report a problem\" to let us know how we can keep improving. Your input is invaluable!</string>
+  <string name="onboarding_feedback_title">Ďakujeme Vám za Vašu účasť!</string>
+  <string name="onboarding_feedback_headline">Vaša spätná väzba je kľúčová</string>
+  <string name="onboarding_feedback_description">V nasledujúcich mesiacoch budeme zavádzať nové funkcie. Otestujte aplikáciu a klepnite na „Nahlásiť problém“, aby ste nám dali vedieť, ako ju môžeme ďalej zlepšovať. Vaše príspevky sú neoceniteľné!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Ďalej</string>
   <string name="onboarding_get_started">Začať testovať</string>

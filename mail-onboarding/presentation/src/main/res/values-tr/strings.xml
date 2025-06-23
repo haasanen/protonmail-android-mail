@@ -33,7 +33,7 @@
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Daha iyi ve daha hızlı olmak için yeniden yapıldı</string>
   <string name="onboarding_rebuilt_headline">Yeni gelen kutusu kullanıma sunuldu</string>
-  <string name="onboarding_rebuilt_description">Rust mimarisi kullanılarak tümüyle yeniden tasarlanan yeni Proton Mail, canlı bir tasarımla daha hızlı ve çevrim dışı kip gibi sık istenilen özellikler sunuyor.</string>
+  <string name="onboarding_rebuilt_description">Yeni Proton Mail, canlı bir tasarımla daha hızlı ve çevrim dışı kip gibi sık istenilen özellikler sunuyor.</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">Desteğiniz için teşekkür ederiz!</string>
   <string name="onboarding_feedback_headline">Geri bildiriminiz çok önemli</string>

@@ -37,17 +37,20 @@
   <string name="mail_pinlock_settings_change_interval_title">Auto-lock</string>
   <string name="mail_pinlock_settings_autolock_immediately">Immediately</string>
   <string name="mail_pinlock_settings_autolock_never">Never</string>
+  <string name="mail_pinlock_settings_autolock_description_one_minute">After 1 minute</string>
+  <string name="mail_pinlock_settings_autolock_description_two_minutes">After 2 minutes</string>
   <string name="mail_pinlock_settings_autolock_description_five_minutes">After 5 minutes</string>
+  <string name="mail_pinlock_settings_autolock_description_ten_minutes">After 10 minutes</string>
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">After 15 minutes</string>
-  <string name="mail_pinlock_settings_autolock_description_one_hour">After 1 hour</string>
-  <string name="mail_pinlock_settings_autolock_description_one_day">After 1 day</string>
+  <string name="mail_pinlock_settings_autolock_description_thirty_minutes">After 30 minutes</string>
+  <string name="mail_pinlock_settings_autolock_description_sixty_minutes">After 60 minutes</string>
   <string name="mail_settings_auto_lock_update_error">設定更新エラー</string>
   <string name="mail_settings_pin_insertion_pin_dot_description">Pinドット</string>
   <string name="mail_settings_pin_insertion_button_create">Confirm</string>
   <string name="mail_settings_pin_insertion_button_confirm">Next</string>
   <string name="mail_settings_pin_insertion_error_no_match">PINコードが一致しません。</string>
   <plurals name="mail_settings_pin_insertion_error_wrong_code_threshold">
-    <item quantity="other">%s remaining attempts until before sign-out.</item>
+    <item quantity="other">%s remaining attempts before sign-out.</item>
   </plurals>
   <string name="mail_settings_pin_insertion_error_unknown">PIN コードの確認中にエラーが発生しました。</string>
   <string name="mail_settings_pin_insertion_error_too_short">PIN must be at least 4 digits</string>

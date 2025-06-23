@@ -26,7 +26,7 @@
   <string name="mail_pinlock_settings_logout_disclaimer">All app lock settings, including the PIN, will reset when you sign out of the app.</string>
   <string name="mail_pinlock_settings_new_pin_topbar">Ställ in ny PIN</string>
   <string name="mail_pinlock_settings_new_pin_title">Ny PIN</string>
-  <string name="mail_pinlock_settings_new_pin_description">Enter a PIN between 4 and 21 digits long</string>
+  <string name="mail_pinlock_settings_new_pin_description">Ange en PIN mellan 4 och 21 siffror långt</string>
   <string name="mail_pinlock_settings_confirm_pin_topbar">Bekräfta PIN</string>
   <string name="mail_pinlock_settings_confirm_pin_title">Upprepa PIN</string>
   <string name="mail_pinlock_settings_confirm_pin_description">Ange din PIN igen för att säkerställa att den är korrekt</string>
@@ -37,10 +37,13 @@
   <string name="mail_pinlock_settings_change_interval_title">Lås automatiskt</string>
   <string name="mail_pinlock_settings_autolock_immediately">Omedelbart</string>
   <string name="mail_pinlock_settings_autolock_never">Aldrig</string>
+  <string name="mail_pinlock_settings_autolock_description_one_minute">Efter 1 minut</string>
+  <string name="mail_pinlock_settings_autolock_description_two_minutes">Efter 2 minuter</string>
   <string name="mail_pinlock_settings_autolock_description_five_minutes">Efter 5 minuter</string>
+  <string name="mail_pinlock_settings_autolock_description_ten_minutes">Efter 10 minuter</string>
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">Efter 15 minuter</string>
-  <string name="mail_pinlock_settings_autolock_description_one_hour">Efter 1 timme</string>
-  <string name="mail_pinlock_settings_autolock_description_one_day">Efter 1 dag</string>
+  <string name="mail_pinlock_settings_autolock_description_thirty_minutes">Efter 30 minuter</string>
+  <string name="mail_pinlock_settings_autolock_description_sixty_minutes">Efter 60 minuter</string>
   <string name="mail_settings_auto_lock_update_error">Fel vid uppdatering av inställningar</string>
   <string name="mail_settings_pin_insertion_pin_dot_description">Fästpunkt</string>
   <string name="mail_settings_pin_insertion_button_create">Bekräfta</string>
@@ -48,7 +51,7 @@
   <string name="mail_settings_pin_insertion_error_no_match">PIN-koder matchar inte.</string>
   <plurals name="mail_settings_pin_insertion_error_wrong_code_threshold">
     <item quantity="one">%s remaining attempt before sign-out.</item>
-    <item quantity="other">%s remaining attempts until before sign-out.</item>
+    <item quantity="other">%s remaining attempts before sign-out.</item>
   </plurals>
   <string name="mail_settings_pin_insertion_error_unknown">Ett fel uppstod vid verifieringen av din PIN-kod.</string>
   <string name="mail_settings_pin_insertion_error_too_short">PIN-koden måste vara minst 4 siffror</string>

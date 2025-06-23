@@ -109,6 +109,7 @@
     <item quantity="many">%d удзельнікаў</item>
     <item quantity="other">%d удзельнікаў</item>
   </plurals>
+  <string name="composer_recipient_suggestion_device">Паказаць кантакты прылады</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">Скасаваць гэта паведамленне?</string>
   <string name="discard_draft_dialog_text">Ваш чарнавік не будзе захаваны</string>
@@ -127,5 +128,14 @@
   <string name="composer_schedule_send_custom_title">Карыстальніцкае</string>
   <string name="composer_schedule_send_custom_description">Выберыце час і дату</string>
   <string name="composer_error_send_message">Памылка адпраўкі паведамлення</string>
-  <string name="composer_schedule_send_previously_set">Previously set</string>
+  <string name="composer_schedule_send_previously_set">Раней зададзеныя</string>
+  <string name="composer_schedule_send_custom_time_label">Час</string>
+  <string name="composer_schedule_send_custom_date_label">Дата</string>
+  <string name="composer_schedule_send_dialog_ok">OK</string>
+  <string name="composer_schedule_send_dialog_enter_time">Увядзіце час</string>
+  <string name="composer_change_sender_title">Ад</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Немагчыма змяніць адпраўніка, бо не ўдаецца атрымаць адрасы карыстальніка. Паспрабуйце яшчэ раз.</string>
+  <string name="composer_change_sender_invalid_address">Выбраны адрас не можа быць выкарыстаны для адпраўкі.</string>
+  <string name="composer_change_sender_unexpected_failure">Нешта пайшло не так пры змене адпраўніка. Паспрабуйце яшчэ раз.</string>
+  <string name="composer_change_sender_error_refreshing_body">Збой абнаўлення змесціва пасля змены адпраўніка. Подпіс можа быць састарэлым.</string>
 </resources>

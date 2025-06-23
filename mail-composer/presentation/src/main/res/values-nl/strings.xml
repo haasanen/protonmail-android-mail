@@ -107,6 +107,7 @@
     <item quantity="one">%d lid</item>
     <item quantity="other">%d leden</item>
   </plurals>
+  <string name="composer_recipient_suggestion_device">Toon apparaat contacten</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">Dit bericht weggooien?</string>
   <string name="discard_draft_dialog_text">Uw concept wordt niet opgeslagen</string>
@@ -126,4 +127,13 @@
   <string name="composer_schedule_send_custom_description">Kies tijd en datum</string>
   <string name="composer_error_send_message">Fout bij verzenden bericht</string>
   <string name="composer_schedule_send_previously_set">Eerder ingesteld</string>
+  <string name="composer_schedule_send_custom_time_label">Tijd</string>
+  <string name="composer_schedule_send_custom_date_label">Datum</string>
+  <string name="composer_schedule_send_dialog_ok">OK</string>
+  <string name="composer_schedule_send_dialog_enter_time">Tijd invoeren</string>
+  <string name="composer_change_sender_title">Van</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Kan de afzender niet wijzigen omdat het ophalen van de adressen van de gebruiker is mislukt. Probeer het nog eens.</string>
+  <string name="composer_change_sender_invalid_address">Het geselecteerde adres kan niet voor verzenden worden gebruikt.</string>
+  <string name="composer_change_sender_unexpected_failure">Er is iets fout gegaan bij het wijzigen van de afzender. Probeer het opnieuw.</string>
+  <string name="composer_change_sender_error_refreshing_body">Het vernieuwen van de inhoud na het wijzigen van de afzender is mislukt. De handtekening is mogelijk verouderd.</string>
 </resources>

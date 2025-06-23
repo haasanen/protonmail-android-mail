@@ -25,10 +25,6 @@
   </plurals>
   <string name="attachments">첨부파일</string>
   <string name="attachment_show_more_label">그 외 %1$d개</string>
-  <string name="attachment_permission_dialog_title">권한 필요</string>
-  <string name="attachment_permission_dialog_message">Proton Mail에서 첨부 파일을 다운로드하기 위해 저장공간 접근 권한이 필요합니다.</string>
-  <string name="attachment_permission_dialog_dismiss_button">확인</string>
-  <string name="attachment_permission_dialog_action_button">설정</string>
   <string name="attachment_type_description">%1$s 파일</string>
   <!-- Attachment Types -->
   <string name="attachment_type_archive">보관함</string>
@@ -75,10 +71,4 @@
   <string name="contact_actions_block_contact_description">이 연락처 차단</string>
   <string name="contact_actions_view_contact_details">연락처 세부 정보 보기</string>
   <string name="contact_actions_view_contact_details_description">연락처의 세부 정보를 봅니다</string>
-  <!-- Device Contacts permission dialog -->
-  <string name="device_contacts_permission_dialog_title">권한 필요</string>
-  <string name="device_contacts_permission_dialog_message">Proton Mail이 수신자를 제안하기 위해 연락처를 읽을 권한이 필요합니다.</string>
-  <string name="device_contacts_permission_dialog_dismiss_button">확인</string>
-  <string name="device_contacts_permission_dialog_action_button">권한 요청</string>
-  <string name="device_contacts_permission_dialog_action_button_deny">거절</string>
 </resources>

@@ -33,7 +33,7 @@
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Gjenoppbygd til å bli bedre og raskere</string>
   <string name="onboarding_rebuilt_headline">Ny innboks utpakket</string>
-  <string name="onboarding_rebuilt_description">Helt omkonstruert ved hjelp av Rust-arkitektur, er den nye Proton Mail raskere med en levende design og svært etterspurte funksjoner, som frakoblet modus.</string>
+  <string name="onboarding_rebuilt_description">Den nye Proton Mail er raskere med en levende design og svært etterspurte funksjoner, som frakoblet modus.</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">Takk for deltakelsen!</string>
   <string name="onboarding_feedback_headline">Din tilbakemelding er viktig</string>

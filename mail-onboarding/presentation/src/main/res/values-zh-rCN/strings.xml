@@ -33,7 +33,7 @@
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">重塑，更好更快</string>
   <string name="onboarding_rebuilt_headline">全新收件箱正式开启</string>
-  <string name="onboarding_rebuilt_description">使用 Rust 架构彻底重新设计，全新的 Proton Mail 速度更快，设计充满活力，并具备备受期待的功能，例如离线模式。</string>
+  <string name="onboarding_rebuilt_description">新版 Proton Mail 速度更快，设计充满活力，并具有离线模式等备受欢迎的功能。</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">感谢您的参与！</string>
   <string name="onboarding_feedback_headline">您的意见至关重要</string>

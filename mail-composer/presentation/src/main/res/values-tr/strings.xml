@@ -107,6 +107,7 @@
     <item quantity="one">%d üye</item>
     <item quantity="other">%d üye</item>
   </plurals>
+  <string name="composer_recipient_suggestion_device">Aygıt kişilerini görüntüle</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">Bu ileti silinsin mi?</string>
   <string name="discard_draft_dialog_text">Taslağınız kaydedilmeyecek</string>
@@ -126,4 +127,13 @@
   <string name="composer_schedule_send_custom_description">Tarihi ve saati seçin</string>
   <string name="composer_error_send_message">İleti gönderilirken sorun çıktı</string>
   <string name="composer_schedule_send_previously_set">Önceden ayarlanmış</string>
+  <string name="composer_schedule_send_custom_time_label">Saat</string>
+  <string name="composer_schedule_send_custom_date_label">Tarih</string>
+  <string name="composer_schedule_send_dialog_ok">Tamam</string>
+  <string name="composer_schedule_send_dialog_enter_time">Saati yazın</string>
+  <string name="composer_change_sender_title">Kimden</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Kullanıcının adresleri alınamadığından gönderici değiştirilemedi. Yeniden deneyin.</string>
+  <string name="composer_change_sender_invalid_address">Seçilmiş adres gönderim için kullanılamaz</string>
+  <string name="composer_change_sender_unexpected_failure">Gönderici değiştirilirken bir sorun çıktı. Lütfen yeniden deneyin.</string>
+  <string name="composer_change_sender_error_refreshing_body">Gönderici değiştirildikten sonra içerik yenilenemedi. İmza güncel olmayabilir.</string>
 </resources>

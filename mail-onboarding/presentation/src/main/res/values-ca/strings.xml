@@ -33,7 +33,7 @@
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Redissenyada completament per obtenir més rendiment i velocitat</string>
   <string name="onboarding_rebuilt_headline">La nova safata d’entrada ja és aquí</string>
-  <string name="onboarding_rebuilt_description">Completament redissenyada amb l\'arquitectura Rust, la nova aplicació de Proton Mail és més ràpida amb un disseny vibrant i amb característiques molt sol·licitades, com el mode fora de línia.</string>
+  <string name="onboarding_rebuilt_description">El nou Proton Mail és més ràpid, amb un disseny vibrant i funcions molt sol·licitades, com ara el mode fora de línia.</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">Gràcies per la vostra participació!</string>
   <string name="onboarding_feedback_headline">Els vostres comentaris són importants</string>

@@ -25,12 +25,12 @@
   <string name="mail_settings_folder_and_label_settings">Mappa és címke beállítások</string>
   <string name="mail_settings_privacy_and_security_settings">Adatvédelem és biztonsági beállítások</string>
   <string name="mail_settings_preferences">Beállítások</string>
-  <string name="mail_settings_app">App customizations</string>
-  <string name="mail_settings_mailbox">Mailbox preferences</string>
+  <string name="mail_settings_app">Alkalmazás testreszabása</string>
+  <string name="mail_settings_mailbox">Postafiók beállítások</string>
   <string name="mail_settings_email_hint">E-mail és postafiók beállítások</string>
   <string name="mail_settings_folders_labels">Mappák és címkék</string>
   <string name="mail_settings_folders_labels_hint">Postafiók szervezet</string>
-  <string name="mail_settings_spam_and_custom_filters">Spam and filters</string>
+  <string name="mail_settings_spam_and_custom_filters">Levélszemét és szűrők</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Automatikus műveletek és rendezés</string>
   <string name="mail_settings_privacy_and_security">Adatvédelem és biztonság</string>
   <string name="mail_settings_privacy_and_security_hint">E-mail követés elleni védelem</string>

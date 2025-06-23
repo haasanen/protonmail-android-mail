@@ -33,7 +33,7 @@
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Создано заново: лучше и быстрее</string>
   <string name="onboarding_rebuilt_headline">Новый вид папки «Входящие»</string>
-  <string name="onboarding_rebuilt_description">Полностью переработано с использованием архитектуры Rust, новое приложение Proton Mail быстрее, имеет яркий дизайн и долгожданные функции, такие как автономный режим.</string>
+  <string name="onboarding_rebuilt_description">The new Proton Mail is faster with a vibrant design and highly-requested features, like offline mode.</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">Благодарим вас за участие!</string>
   <string name="onboarding_feedback_headline">Ваш отзыв очень важен</string>

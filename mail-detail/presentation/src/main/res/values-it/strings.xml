@@ -122,13 +122,13 @@
   <string name="message_details_header_to">A</string>
   <string name="message_details_header_cc">Cc</string>
   <string name="message_details_header_bcc">Ccn</string>
-  <string name="schedule_message_sent_at_banner_title">Questo messaggio verrà inviato</string>
-  <string name="schedule_message_edit_message_button">Modifica messaggio</string>
-  <string name="schedule_send_tomorrow">domani alle %1$s</string>
-  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
-  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
-  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
-  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
-  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
-  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
+  <string name="schedule_message_sent_at_banner_title">Questo messaggio verrà inviato</string>
+  <string name="schedule_message_edit_message_button">Modifica</string>
+  <string name="schedule_send_tomorrow">domani alle %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Annullamento dell\'invio programmato non riuscito</string>
+  <string name="offline_error_cancel_schedule_send_failed">Nessuna connessione a Internet. Annullamento dell\'invio sospeso.</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Modifica</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Annulla</string>
+  <string name="message_cancel_schedule_send_dialog_title">Modifica e programma</string>
+  <string name="message_cancel_schedule_send_dialog_message">Questo messaggio verrà spostato nelle bozze e la programmazione verrà rimossa</string>
 </resources>

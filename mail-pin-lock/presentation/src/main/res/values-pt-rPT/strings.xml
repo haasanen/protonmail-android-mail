@@ -37,10 +37,13 @@
   <string name="mail_pinlock_settings_change_interval_title">Bloqueio automático</string>
   <string name="mail_pinlock_settings_autolock_immediately">De imediato</string>
   <string name="mail_pinlock_settings_autolock_never">Nunca</string>
+  <string name="mail_pinlock_settings_autolock_description_one_minute">Após 1 minuto</string>
+  <string name="mail_pinlock_settings_autolock_description_two_minutes">Após 2 minutos</string>
   <string name="mail_pinlock_settings_autolock_description_five_minutes">Após 5 minutos</string>
+  <string name="mail_pinlock_settings_autolock_description_ten_minutes">Após 10 minutos</string>
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">Após 15 minutos</string>
-  <string name="mail_pinlock_settings_autolock_description_one_hour">Após 1 hora</string>
-  <string name="mail_pinlock_settings_autolock_description_one_day">Após 1 dia</string>
+  <string name="mail_pinlock_settings_autolock_description_thirty_minutes">Após 30 minutos</string>
+  <string name="mail_pinlock_settings_autolock_description_sixty_minutes">Após 60 minutos</string>
   <string name="mail_settings_auto_lock_update_error">Erro ao atualizar as definições</string>
   <string name="mail_settings_pin_insertion_pin_dot_description">Código PIN de pontos</string>
   <string name="mail_settings_pin_insertion_button_create">Confirmar</string>
@@ -69,7 +72,7 @@
   <string name="mail_settings_pin_verify_wrong_pin">PIN incorreto</string>
   <string name="mail_settings_biometrics_unable_to_set">Ocorreu um erro ao configurar as preferências de biometria.</string>
   <string name="mail_settings_biometrics_unable_to_unset">Ocorreu um erro ao repor as preferências biométricas.</string>
-  <string name="mail_settings_biometrics_unknown_lock">An error occurred while fetching the current lock policy.</string>
+  <string name="mail_settings_biometrics_unknown_lock">Ocorreu um erro ao obter a política de bloqueio atual.</string>
   <!-- Auto lock dialog -->
   <string name="mail_settings_pin_lock_dialog_title">Confirmar PIN</string>
   <string name="mail_settings_pin_lock_dialog_subtitle">Por motivos de segurança, introduza o seu PIN atual para continuar.</string>

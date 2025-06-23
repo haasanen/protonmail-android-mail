@@ -33,7 +33,7 @@
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Ξαναχτίστηκε για να είναι καλύτερο και ταχύτερο</string>
   <string name="onboarding_rebuilt_headline">Νέα εισερχόμενα αποκαλυφτήκαν</string>
-  <string name="onboarding_rebuilt_description">Επανασχεδιασμένο πλήρως χρησιμοποιώντας την αρχιτεκτονική Rust, το νέο Proton Mail είναι ταχύτερο με ζωντανό σχεδιασμό και πολύ-ζητούμενα χαρακτηριστικά, όπως η λειτουργία εκτός σύνδεσης.</string>
+  <string name="onboarding_rebuilt_description">Το νέο Proton Mail είναι ταχύτερο με ζωντανό σχεδιασμό και χαρακτηριστικά που έχουν ζητηθεί πολύ, όπως η λειτουργία εκτός σύνδεσης.</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">Ευχαριστούμε για τη συμμετοχή σας!</string>
   <string name="onboarding_feedback_headline">Τα σχόλιά σας είναι πολύ σημαντικά</string>

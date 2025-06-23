@@ -37,10 +37,13 @@
   <string name="mail_pinlock_settings_change_interval_title">Automatisch vergrendelen</string>
   <string name="mail_pinlock_settings_autolock_immediately">Onmiddellijk</string>
   <string name="mail_pinlock_settings_autolock_never">Nooit</string>
+  <string name="mail_pinlock_settings_autolock_description_one_minute">Na 1 minuut</string>
+  <string name="mail_pinlock_settings_autolock_description_two_minutes">Na 2 minuten</string>
   <string name="mail_pinlock_settings_autolock_description_five_minutes">Na 5 minuten</string>
+  <string name="mail_pinlock_settings_autolock_description_ten_minutes">Na 10 minuten</string>
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">Na 15 minuten</string>
-  <string name="mail_pinlock_settings_autolock_description_one_hour">Na 1 uur</string>
-  <string name="mail_pinlock_settings_autolock_description_one_day">Na 1 dag</string>
+  <string name="mail_pinlock_settings_autolock_description_thirty_minutes">Na 30 minuten</string>
+  <string name="mail_pinlock_settings_autolock_description_sixty_minutes">Na 60 minuten</string>
   <string name="mail_settings_auto_lock_update_error">Fout bij het bijwerken van instellingen</string>
   <string name="mail_settings_pin_insertion_pin_dot_description">Pincode</string>
   <string name="mail_settings_pin_insertion_button_create">Bevestigen</string>

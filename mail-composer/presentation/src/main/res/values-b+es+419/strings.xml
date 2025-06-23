@@ -107,6 +107,7 @@
     <item quantity="one">%d miembro</item>
     <item quantity="other">%d miembros</item>
   </plurals>
+  <string name="composer_recipient_suggestion_device">Mostrar contactos del dispositivo</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">¿Descartar este mensaje?</string>
   <string name="discard_draft_dialog_text">Su borrador no se guardará</string>
@@ -126,4 +127,13 @@
   <string name="composer_schedule_send_custom_description">Seleccionar hora y fecha</string>
   <string name="composer_error_send_message">Error al enviar el mensaje</string>
   <string name="composer_schedule_send_previously_set">Configurado previamente</string>
+  <string name="composer_schedule_send_custom_time_label">Hora</string>
+  <string name="composer_schedule_send_custom_date_label">Fecha</string>
+  <string name="composer_schedule_send_dialog_ok">Aceptar</string>
+  <string name="composer_schedule_send_dialog_enter_time">Ingresar hora</string>
+  <string name="composer_change_sender_title">De</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">No se puede cambiar el remitente porque no se pudieron obtener las direcciones del usuario. Intente otra vez.</string>
+  <string name="composer_change_sender_invalid_address">La dirección seleccionada no se puede usar para enviar</string>
+  <string name="composer_change_sender_unexpected_failure">Algo salió mal al cambiar el remitente. Inténtelo de nuevo.</string>
+  <string name="composer_change_sender_error_refreshing_body">Falló la actualización del cuerpo tras el cambio de remitente. La firma podría estar desactualizada.</string>
 </resources>

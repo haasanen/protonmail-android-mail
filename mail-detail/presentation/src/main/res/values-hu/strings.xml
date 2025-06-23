@@ -122,13 +122,13 @@
   <string name="message_details_header_to">Címzett</string>
   <string name="message_details_header_cc">Másolat</string>
   <string name="message_details_header_bcc">Titkos másolat</string>
-  <string name="schedule_message_sent_at_banner_title">This message will be sent</string>
-  <string name="schedule_message_edit_message_button">Edit message</string>
-  <string name="schedule_send_tomorrow">tomorrow at %1$s</string>
-  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
-  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
-  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
-  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
-  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
-  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
+  <string name="schedule_message_sent_at_banner_title">Ez az üzenet el lesz küldve</string>
+  <string name="schedule_message_edit_message_button">Üzenet szerkesztése</string>
+  <string name="schedule_send_tomorrow">holnap %1$s-kor</string>
+  <string name="error_cancel_schedule_send_failed">Nem sikerült törölni ennek az üzenetnek az ütemezett küldési idejét.</string>
+  <string name="offline_error_cancel_schedule_send_failed">Nem lehet törölni egy tervezett üzenetet offline állapotban</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Piszkozat szerkesztése</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Mégsem</string>
+  <string name="message_cancel_schedule_send_dialog_title">Szerkesztés és átütemezés</string>
+  <string name="message_cancel_schedule_send_dialog_message">Ez az üzenet át lesz helyezve a Piszkozatok mappába, ott szerkeszthető lesz. Újra be kell állítani, mikor legyen elküldve.</string>
 </resources>

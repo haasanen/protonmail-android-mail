@@ -78,7 +78,7 @@
   <string name="message_blocked_sender_banner_text">Tämä lähettäjä on estetty aiemmin.</string>
   <string name="message_blocked_sender_button_text">Poista esto</string>
   <string name="message_expiration_banner_text">Viesti on asetettu tuhoutumaan kun on kulunut %1$s</string>
-  <string name="message_auto_delete_banner_text">This message will be automatically deleted in %1$s</string>
+  <string name="message_auto_delete_banner_text">Tämä viesti poistetaan automaattisesti %1$s</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Olet poistumassa sovelluksesta avaamassa kohdetta:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">Älä kysy uudelleen</string>
@@ -122,13 +122,13 @@
   <string name="message_details_header_to">Vastaanottaja</string>
   <string name="message_details_header_cc">Kopio</string>
   <string name="message_details_header_bcc">Piilokopio</string>
-  <string name="schedule_message_sent_at_banner_title">This message will be sent</string>
-  <string name="schedule_message_edit_message_button">Edit message</string>
+  <string name="schedule_message_sent_at_banner_title">Tämä viesti lähetetään</string>
+  <string name="schedule_message_edit_message_button">Muokkaa viestiä</string>
   <string name="schedule_send_tomorrow">tomorrow at %1$s</string>
   <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
   <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
-  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
-  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
-  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Muokkaa luonnosta</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Peruuta</string>
+  <string name="message_cancel_schedule_send_dialog_title">Muokkaa ja ajoita uudelleen</string>
   <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
 </resources>

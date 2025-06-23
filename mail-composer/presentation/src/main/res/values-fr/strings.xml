@@ -107,6 +107,7 @@
     <item quantity="one">%d membre</item>
     <item quantity="other">%d membres</item>
   </plurals>
+  <string name="composer_recipient_suggestion_device">Montrer les contacts de l\'appareil</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">Abandonner ce message ?</string>
   <string name="discard_draft_dialog_text">Votre brouillon ne sera pas enregistré.</string>
@@ -126,4 +127,13 @@
   <string name="composer_schedule_send_custom_description">Choisir l\'heure et la date</string>
   <string name="composer_error_send_message">Une erreur s\'est produite lors de l\'envoi du message.</string>
   <string name="composer_schedule_send_previously_set">Précédemment défini</string>
+  <string name="composer_schedule_send_custom_time_label">Temps</string>
+  <string name="composer_schedule_send_custom_date_label">Date</string>
+  <string name="composer_schedule_send_dialog_ok">Ok</string>
+  <string name="composer_schedule_send_dialog_enter_time">Saisir l\'heure</string>
+  <string name="composer_change_sender_title">De</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Impossible de changer l\'expéditeur : les adresses de l\'utilisateur n\'ont pu être récupérées. Veuillez réessayer.</string>
+  <string name="composer_change_sender_invalid_address">L\'adresse sélectionnée ne peut pas être utilisée pour l\'envoi</string>
+  <string name="composer_change_sender_unexpected_failure">Une erreur est survenue en tentant de changer l\'expéditeur. Merci de réessayer</string>
+  <string name="composer_change_sender_error_refreshing_body">L\'actualisation du corps après l\'échec du changement d\'expéditeur a échoué. La signature pourrait être obsolète.</string>
 </resources>

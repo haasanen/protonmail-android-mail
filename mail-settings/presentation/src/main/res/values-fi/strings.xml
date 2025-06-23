@@ -25,12 +25,12 @@
   <string name="mail_settings_folder_and_label_settings">Kansio- ja tunnisteasetukset</string>
   <string name="mail_settings_privacy_and_security_settings">Yksityisyys- ja suojausasetukset</string>
   <string name="mail_settings_preferences">Asetukset</string>
-  <string name="mail_settings_app">App customizations</string>
-  <string name="mail_settings_mailbox">Mailbox preferences</string>
+  <string name="mail_settings_app">Sovelluksen mukauttaminen</string>
+  <string name="mail_settings_mailbox">Postilaatikon asetukset</string>
   <string name="mail_settings_email_hint">Sähköpostin ja postilaatikon asetukset</string>
   <string name="mail_settings_folders_labels">Kansiot ja tunnisteet</string>
   <string name="mail_settings_folders_labels_hint">Postilaatikon järjestely</string>
-  <string name="mail_settings_spam_and_custom_filters">Spam and filters</string>
+  <string name="mail_settings_spam_and_custom_filters">Roskaposti ja suodattimet</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Automaattiset toiminnot ja lajittelu</string>
   <string name="mail_settings_privacy_and_security">Yksityisyys ja suojaus</string>
   <string name="mail_settings_privacy_and_security_hint">Sähköpostin seurantasuojaus</string>
@@ -64,7 +64,7 @@
   <string name="mail_settings_app_customization_mail_experience_header">Mail-elämys</string>
   <string name="mail_settings_app_customization_advanced_header">Edistyneet</string>
   <!-- Theme settings -->
-  <string name="mail_settings_system_default">System</string>
+  <string name="mail_settings_system_default">Järjestelmä</string>
   <string name="mail_settings_theme_light">Vaalea</string>
   <string name="mail_settings_theme_dark">Tumma</string>
   <!-- Settings item states -->

@@ -30,7 +30,7 @@
   <string name="composer_error_invalid_email">Az e-mail cím érvénytelen</string>
   <string name="composer_error_invalid_sender">A küldő cím érvénytelen</string>
   <string name="change_sender_button_content_description">Feladó módosítása</string>
-  <string name="composer_change_sender_paid_feature">Upgrade to a paid plan to change the sender address</string>
+  <string name="composer_change_sender_paid_feature">Váltson előfizetéses csomagra a feladó címének megváltoztatásához</string>
   <string name="composer_error_store_draft_sender_address">A feladó címe nem lett elmentve</string>
   <string name="composer_error_store_draft_body">Az e-mail vázlat nem lett elmentve</string>
   <string name="composer_error_duplicate_recipient">Duplikált címzett(ek) eltávolítva</string>
@@ -107,6 +107,7 @@
     <item quantity="one">%d tag</item>
     <item quantity="other">%d tag</item>
   </plurals>
+  <string name="composer_recipient_suggestion_device">Show device contacts</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">Elveti ezt az üzenetet?</string>
   <string name="discard_draft_dialog_text">Az Ön piszkozata nem lesz elmentve</string>
@@ -117,13 +118,22 @@
   <string name="composer_send_as_attachment">Küldés mellékletként</string>
   <string name="composer_remove_recipient_action_item">Eltávolítás</string>
   <string name="composer_copy_recipient_action_item">Másolás</string>
-  <string name="schedule_send_content_description">Schedule send</string>
-  <string name="composer_error_retrieving_schedule_send_options">Generating the times to \"schedule send\" at failed</string>
-  <string name="composer_schedule_send_content_description">Schedule send</string>
-  <string name="composer_schedule_send_tomorrow_title">Tomorrow</string>
-  <string name="composer_schedule_send_monday_title">Monday</string>
-  <string name="composer_schedule_send_custom_title">Custom</string>
-  <string name="composer_schedule_send_custom_description">Pick time and date</string>
-  <string name="composer_error_send_message">Error sending message</string>
-  <string name="composer_schedule_send_previously_set">Previously set</string>
+  <string name="schedule_send_content_description">Ütemezett küldés</string>
+  <string name="composer_error_retrieving_schedule_send_options">Nem sikerült létrehozni időpontokat az \"ütemezett küldéshez\"</string>
+  <string name="composer_schedule_send_content_description">Ütemezett küldés</string>
+  <string name="composer_schedule_send_tomorrow_title">Holnap</string>
+  <string name="composer_schedule_send_monday_title">Hétfő</string>
+  <string name="composer_schedule_send_custom_title">Egyéni</string>
+  <string name="composer_schedule_send_custom_description">Válasszon időt és dátumot</string>
+  <string name="composer_error_send_message">Hiba az üzenet küldése közben</string>
+  <string name="composer_schedule_send_previously_set">Korábban beállítva</string>
+  <string name="composer_schedule_send_custom_time_label">Time</string>
+  <string name="composer_schedule_send_custom_date_label">Date</string>
+  <string name="composer_schedule_send_dialog_ok">Ok</string>
+  <string name="composer_schedule_send_dialog_enter_time">Enter time</string>
+  <string name="composer_change_sender_title">From</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
+  <string name="composer_change_sender_invalid_address">The selected address can not be used for sending</string>
+  <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
+  <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
 </resources>

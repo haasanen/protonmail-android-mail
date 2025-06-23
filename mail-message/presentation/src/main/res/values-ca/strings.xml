@@ -27,10 +27,6 @@
   </plurals>
   <string name="attachments">adjunts</string>
   <string name="attachment_show_more_label">%1$d més</string>
-  <string name="attachment_permission_dialog_title">Es requereix permís.</string>
-  <string name="attachment_permission_dialog_message">Proton Mail necessita permís per accedir a l\'emmagatzematge per a descarregar l\'adjunt.</string>
-  <string name="attachment_permission_dialog_dismiss_button">OK</string>
-  <string name="attachment_permission_dialog_action_button">Preferències</string>
   <string name="attachment_type_description">%1$s fitxer</string>
   <!-- Attachment Types -->
   <string name="attachment_type_archive">Arxiu</string>
@@ -77,10 +73,4 @@
   <string name="contact_actions_block_contact_description">Bloca aquest contacte</string>
   <string name="contact_actions_view_contact_details">Mostra el detalls del contacte</string>
   <string name="contact_actions_view_contact_details_description">Visualitza els detalls del contacte</string>
-  <!-- Device Contacts permission dialog -->
-  <string name="device_contacts_permission_dialog_title">Es requereix permís.</string>
-  <string name="device_contacts_permission_dialog_message">Proton Mail necessita permís per llegir els vostres contactes i suggerir destinataris.</string>
-  <string name="device_contacts_permission_dialog_dismiss_button">D\'acord</string>
-  <string name="device_contacts_permission_dialog_action_button">Sol·licitar permís</string>
-  <string name="device_contacts_permission_dialog_action_button_deny">Denega</string>
 </resources>
