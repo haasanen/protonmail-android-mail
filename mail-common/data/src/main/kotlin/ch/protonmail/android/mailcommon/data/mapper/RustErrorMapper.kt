@@ -37,17 +37,8 @@ import uniffi.proton_mail_uniffi.DraftUndoSendError
 import uniffi.proton_mail_uniffi.DraftUndoSendErrorReason
 import uniffi.proton_mail_uniffi.EventError
 import uniffi.proton_mail_uniffi.EventErrorReason
-import uniffi.proton_mail_uniffi.MailScrollerError
-import uniffi.proton_mail_uniffi.MailScrollerErrorReason
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.UserContextError
-
-fun MailScrollerError.toDataError(): DataError = when (this) {
-    is MailScrollerError.Other -> this.v1.toDataError()
-    is MailScrollerError.Reason -> when (this.v1) {
-        MailScrollerErrorReason.DIRTY -> DataError.Local.Unknown
-    }
-}
 
 fun UserContextError.toDataError(): DataError = when (this) {
     is UserContextError.Other -> this.v1.toDataError()

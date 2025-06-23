@@ -21,8 +21,8 @@ package ch.protonmail.android.mailconversation.data.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.data.mapper.toDataError
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.ConversationScroller
 import uniffi.proton_mail_uniffi.ConversationScrollerAllItemsResult
@@ -30,13 +30,14 @@ import uniffi.proton_mail_uniffi.ConversationScrollerFetchMoreResult
 
 class ConversationPaginatorWrapper(private val rustPaginator: ConversationScroller) {
 
-    suspend fun nextPage(): Either<DataError, List<Conversation>> = when (val result = rustPaginator.fetchMore()) {
-        is ConversationScrollerFetchMoreResult.Error -> result.v1.toDataError().left()
-        is ConversationScrollerFetchMoreResult.Ok -> result.v1.right()
-    }
+    suspend fun nextPage(): Either<PaginationError, List<Conversation>> =
+        when (val result = rustPaginator.fetchMore()) {
+            is ConversationScrollerFetchMoreResult.Error -> result.v1.toPaginationError().left()
+            is ConversationScrollerFetchMoreResult.Ok -> result.v1.right()
+        }
 
-    suspend fun reload(): Either<DataError, List<Conversation>> = when (val result = rustPaginator.allItems()) {
-        is ConversationScrollerAllItemsResult.Error -> result.v1.toDataError().left()
+    suspend fun reload(): Either<PaginationError, List<Conversation>> = when (val result = rustPaginator.allItems()) {
+        is ConversationScrollerAllItemsResult.Error -> result.v1.toPaginationError().left()
         is ConversationScrollerAllItemsResult.Ok -> result.v1.right()
     }
 

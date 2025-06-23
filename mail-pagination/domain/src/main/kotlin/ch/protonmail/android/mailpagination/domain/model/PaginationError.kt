@@ -16,20 +16,11 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.wrapper
+package ch.protonmail.android.mailpagination.domain.model
 
-import arrow.core.Either
-import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailmessage.data.model.PaginatorParams
-import ch.protonmail.android.mailpagination.domain.model.PaginationError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 
-interface MessagePaginatorWrapper {
-
-    val params: PaginatorParams
-
-    suspend fun nextPage(): Either<PaginationError, List<LocalMessageMetadata>>
-
-    suspend fun reload(): Either<PaginationError, List<LocalMessageMetadata>>
-
-    fun destroy()
+sealed interface PaginationError {
+    data object DirtyPaginationData : PaginationError
+    data class Other(val error: DataError) : PaginationError
 }

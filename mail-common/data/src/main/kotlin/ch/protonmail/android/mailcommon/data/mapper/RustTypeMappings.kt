@@ -55,6 +55,7 @@ import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IssueReport
 import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.MailLoginError
+import uniffi.proton_mail_uniffi.MailScrollerError
 import uniffi.proton_mail_uniffi.MailSettings
 import uniffi.proton_mail_uniffi.Message
 import uniffi.proton_mail_uniffi.MessageBanner
@@ -192,3 +193,4 @@ typealias LocalVCardPropTypeVideo = VcardPropType.Video
 typealias LocalVCardPropTypePager = VcardPropType.Pager
 typealias LocalVCardPropTypeTextPhone = VcardPropType.TextPhone
 typealias LocalVCardPropTypeString = VcardPropType.String
+typealias LocalMailScrollerError = MailScrollerError

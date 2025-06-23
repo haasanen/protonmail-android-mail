@@ -22,9 +22,9 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailcommon.data.mapper.toDataError
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.model.PaginatorParams
+import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import uniffi.proton_mail_uniffi.MessageScroller
 import uniffi.proton_mail_uniffi.MessageScrollerAllItemsResult
 import uniffi.proton_mail_uniffi.MessageScrollerFetchMoreResult
@@ -34,15 +34,15 @@ class MailboxMessagePaginatorWrapper(
     override val params: PaginatorParams
 ) : MessagePaginatorWrapper {
 
-    override suspend fun nextPage(): Either<DataError, List<LocalMessageMetadata>> =
+    override suspend fun nextPage(): Either<PaginationError, List<LocalMessageMetadata>> =
         when (val result = rustPaginator.fetchMore()) {
-            is MessageScrollerFetchMoreResult.Error -> result.v1.toDataError().left()
+            is MessageScrollerFetchMoreResult.Error -> result.v1.toPaginationError().left()
             is MessageScrollerFetchMoreResult.Ok -> result.v1.right()
         }
 
-    override suspend fun reload(): Either<DataError, List<LocalMessageMetadata>> =
+    override suspend fun reload(): Either<PaginationError, List<LocalMessageMetadata>> =
         when (val result = rustPaginator.allItems()) {
-            is MessageScrollerAllItemsResult.Error -> result.v1.toDataError().left()
+            is MessageScrollerAllItemsResult.Error -> result.v1.toPaginationError().left()
             is MessageScrollerAllItemsResult.Ok -> result.v1.right()
         }
 

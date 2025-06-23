@@ -23,7 +23,7 @@ plugins {
 }
 
 android {
-    namespace = "ch.protonmail.android.mailconversation.data"
+    namespace = "ch.protonmail.android.mailpagination.data"
     compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
@@ -44,25 +44,9 @@ android {
 dependencies {
     compileOnly(libs.proton.rust.core)
 
-    implementation(libs.bundles.module.data)
-    implementation(libs.proton.core.user.domain)
-
-    api(project(":mail-pagination:domain"))
-    implementation(project(":mail-pagination:data"))
-    implementation(project(":mail-attachments:data"))
-    implementation(project(":mail-attachments:domain"))
-    implementation(project(":mail-conversation:domain"))
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
-    implementation(project(":mail-label:domain"))
-    implementation(project(":mail-label:data"))
-    implementation(project(":mail-message:domain"))
-    implementation(project(":mail-message:data"))
-    implementation(project(":mail-session:domain"))
-    implementation(project(":mail-session:data"))
+    implementation(project(":mail-pagination:domain"))
 
-    testImplementation(project(":test:utils"))
-    testImplementation(project(":test:test-data"))
-    testImplementation(libs.proton.rust.core)
-    testImplementation(libs.bundles.test.androidTest)
+    testImplementation(libs.bundles.test)
 }
