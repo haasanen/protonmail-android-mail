@@ -37,7 +37,6 @@ import ch.protonmail.android.mailcontact.presentation.contactlist.ContactListVie
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen.DELAY_SHOWING
 import ch.protonmail.android.mailcontact.presentation.dialogs.ContactDeleteConfirmationDialog
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
-import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactCreate
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.delay
 
@@ -161,7 +160,7 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
                             title = stringResource(R.string.no_contacts),
                             description = stringResource(R.string.no_contacts_description),
                             buttonText = stringResource(R.string.add_contact),
-                            showAddButton = ContactCreate.value,
+                            showAddButton = false, // Hide button as feature isn't currently on the roadmap
                             onAddClick = { viewModel.submit(ContactListViewAction.OnOpenBottomSheet) }
                         )
                     }
