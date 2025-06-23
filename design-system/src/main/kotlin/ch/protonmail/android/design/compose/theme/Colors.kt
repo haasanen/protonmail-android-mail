@@ -735,7 +735,9 @@ class ProtonColors(
                 starDefault = it.shade50,
                 backgroundInvertedNorm = it.shade20,
                 backgroundInvertedSecondary = it.shade40,
-                backgroundInvertedDeep = it.shade45
+                backgroundInvertedDeep = it.shade45,
+                iconDisabled = it.shade50,
+                textDisabled = it.shade50
             )
         }
 
