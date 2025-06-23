@@ -44,8 +44,8 @@ val privateProperties = Properties().apply {
     }
 }
 
-val accountSentryDSN: String = privateProperties.getProperty("accountSentryDSN") ?: ""
-val sentryDSN: String = privateProperties.getProperty("sentryDSN") ?: ""
+val accountSentryDSN: String = System.getenv("SENTRY_DSN_ACCOUNT") ?: ""
+val sentryDSN: String = System.getenv("SENTRY_DSN_MAIL") ?: ""
 val proxyToken: String? = privateProperties.getProperty("PROXY_TOKEN")
 
 val gitHashProvider: Provider<String> = providers.exec {
@@ -99,13 +99,6 @@ android {
                 keyPassword = "android"
             }
         }
-
-        register("release") {
-            storeFile = file("$rootDir/keystore/ProtonMail.keystore")
-            storePassword = "${privateProperties["keyStorePassword"]}"
-            keyAlias = "ProtonMail"
-            keyPassword = "${privateProperties["keyStoreKeyPassword"]}"
-        }
     }
 
     buildTypes {
@@ -134,7 +127,7 @@ android {
                 file("proguard").listFiles()?.forEach { proguardFile(it) }
             }
             manifestPlaceholders["isFcmServiceEnabled"] = isFcmServiceEnabled
-            signingConfig = signingConfigs["release"]
+            signingConfig = signingConfigs["debug"]
         }
         create("benchmark") {
             initWith(getByName("release"))
