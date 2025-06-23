@@ -1,5 +1,6 @@
 package ch.protonmail.android.mailconversation.data.local
 
+import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
@@ -10,6 +11,7 @@ import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -19,6 +21,7 @@ import io.mockk.Called
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.coVerifySequence
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
@@ -26,6 +29,7 @@ import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
+import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -293,4 +297,32 @@ class RustConversationsQueryImplTest {
             invalidationTracker.notifyInvalidation(setOf(RustDataSourceId.CONVERSATION, RustDataSourceId.LABELS))
         }
     }
+
+    @Test
+    fun `calls reload when paginator throw 'dirty state' error`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val labelId = SystemLabelId.Inbox.labelId
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.Next)
+        val session = mockk<MailUserSessionWrapper>()
+        val dirtyStateError = PaginationError.DirtyPaginationData
+        val paginator = mockk<ConversationPaginatorWrapper> {
+            coEvery { this@mockk.reload() } returns emptyList<Conversation>().right()
+            coEvery { this@mockk.nextPage() } returns dirtyStateError.left()
+        }
+        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery {
+            createRustConversationPaginator(session, labelId.toLocalLabelId(), false, any())
+        } returns paginator.right()
+
+        // When
+        rustConversationsQuery.getConversations(userId, pageKey)
+
+        // Then
+        coVerifySequence {
+            paginator.nextPage()
+            paginator.reload()
+        }
+    }
+
 }

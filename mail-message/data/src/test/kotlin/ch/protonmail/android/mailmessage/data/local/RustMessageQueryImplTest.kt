@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
@@ -28,11 +29,13 @@ import ch.protonmail.android.mailmessage.data.wrapper.MailboxMessagePaginatorWra
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.coVerifySequence
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
@@ -105,12 +108,12 @@ class RustMessageQueryImplTest {
     @Test
     fun `returns first page when called with PageToLoad First`() = runTest {
         // Given
-        val expectedConversations = listOf(LocalMessageTestData.AugWeatherForecast)
+        val expectedMessages = listOf(LocalMessageTestData.AugWeatherForecast)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val paginator = mockk<MailboxMessagePaginatorWrapper> {
-            coEvery { this@mockk.nextPage() } returns expectedConversations.right()
+            coEvery { this@mockk.nextPage() } returns expectedMessages.right()
         }
         coEvery { messagePaginatorManager.getOrCreatePaginator(userId, pageKey, any()) } returns paginator.right()
 
@@ -118,18 +121,18 @@ class RustMessageQueryImplTest {
         val actual = rustMessageQuery.getMessages(userId, pageKey)
 
         // Then
-        assertEquals(expectedConversations, actual)
+        assertEquals(expectedMessages, actual)
     }
 
     @Test
     fun `returns next page when called with PageToLoad Next`() = runTest {
         // Given
-        val expectedConversations = listOf(LocalMessageTestData.AugWeatherForecast)
+        val expectedMessages = listOf(LocalMessageTestData.AugWeatherForecast)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.Next)
         val paginator = mockk<MailboxMessagePaginatorWrapper> {
-            coEvery { this@mockk.nextPage() } returns expectedConversations.right()
+            coEvery { this@mockk.nextPage() } returns expectedMessages.right()
         }
         coEvery { messagePaginatorManager.getOrCreatePaginator(userId, pageKey, any()) } returns paginator.right()
 
@@ -137,18 +140,18 @@ class RustMessageQueryImplTest {
         val actual = rustMessageQuery.getMessages(userId, pageKey)
 
         // Then
-        assertEquals(expectedConversations, actual)
+        assertEquals(expectedMessages, actual)
     }
 
     @Test
     fun `returns all pages when called with PageToLoad All`() = runTest {
         // Given
-        val expectedConversations = listOf(LocalMessageTestData.AugWeatherForecast)
+        val expectedMessages = listOf(LocalMessageTestData.AugWeatherForecast)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.All)
         val paginator = mockk<MailboxMessagePaginatorWrapper> {
-            coEvery { this@mockk.reload() } returns expectedConversations.right()
+            coEvery { this@mockk.reload() } returns expectedMessages.right()
         }
         coEvery { messagePaginatorManager.getOrCreatePaginator(userId, pageKey, any()) } returns paginator.right()
 
@@ -156,7 +159,30 @@ class RustMessageQueryImplTest {
         val actual = rustMessageQuery.getMessages(userId, pageKey)
 
         // Then
-        assertEquals(expectedConversations, actual)
+        assertEquals(expectedMessages, actual)
+    }
+
+    @Test
+    fun `calls reload when paginator throw 'dirty state' error`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val labelId = SystemLabelId.Inbox.labelId
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.Next)
+        val dirtyStateError = PaginationError.DirtyPaginationData
+        val paginator = mockk<MailboxMessagePaginatorWrapper> {
+            coEvery { this@mockk.reload() } returns emptyList<LocalMessageMetadata>().right()
+            coEvery { this@mockk.nextPage() } returns dirtyStateError.left()
+        }
+        coEvery { messagePaginatorManager.getOrCreatePaginator(userId, pageKey, any()) } returns paginator.right()
+
+        // When
+        rustMessageQuery.getMessages(userId, pageKey)
+
+        // Then
+        coVerifySequence {
+            paginator.nextPage()
+            paginator.reload()
+        }
     }
 
 }

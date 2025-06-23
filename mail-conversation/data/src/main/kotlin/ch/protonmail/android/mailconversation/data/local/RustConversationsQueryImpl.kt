@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import arrow.core.Either
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
@@ -28,6 +29,7 @@ import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -35,6 +37,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import javax.inject.Inject
 
@@ -78,7 +81,9 @@ class RustConversationsQueryImpl @Inject constructor(
             PageToLoad.First -> paginatorState?.paginatorWrapper?.nextPage()
             PageToLoad.Next -> paginatorState?.paginatorWrapper?.nextPage()
             PageToLoad.All -> paginatorState?.paginatorWrapper?.reload()
-        }?.getOrElse { emptyList() }
+        }
+            ?.reloadOnDirtyData(paginatorState?.paginatorWrapper)
+            ?.getOrElse { emptyList() }
 
         Timber.v("rust-conversation-query: init value for conversation is $conversations")
         return conversations
@@ -133,4 +138,20 @@ class RustConversationsQueryImpl @Inject constructor(
         val labelId: LocalLabelId,
         val unread: Boolean
     )
+
+    /**
+     * Due to internal state management, the rust lib requires clients to call `all_items` (reload)
+     * before any `fetch_items` (nextPage) when the Dirty state happens in order to recover from such state.
+     * Here we force the reload and let the paging3 lib call nextPage as needed.
+     *
+     * Note that dirty state shouldn't happen, as paging3 is already calling a reload each time data is invalidated!
+     */
+    private suspend fun Either<PaginationError, List<Conversation>>.reloadOnDirtyData(
+        paginator: ConversationPaginatorWrapper?
+    ) = this.onLeft { error ->
+        if (error is PaginationError.DirtyPaginationData) {
+            Timber.w("rust-conversation-query: Paginator in dirty state $error")
+            paginator?.reload()
+        }
+    }
 }
