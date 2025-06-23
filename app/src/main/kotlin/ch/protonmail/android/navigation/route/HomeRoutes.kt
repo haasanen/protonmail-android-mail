@@ -282,10 +282,12 @@ internal fun NavGraphBuilder.addContactDetails(
 ) {
     composable(route = Destination.Screen.ContactDetails.route) {
         ContactDetailsScreen(
-            onBack = { navController.navigateBack() },
-            onShowErrorSnackbar = onShowErrorSnackbar,
-            onMessageContact = onMessageContact,
-            showFeatureMissingSnackbar = showFeatureMissingSnackbar
+            actions = ContactDetailsScreen.Actions(
+                onBack = { navController.navigateBack() },
+                onShowErrorSnackbar = onShowErrorSnackbar,
+                onMessageContact = onMessageContact,
+                showFeatureMissingSnackbar = showFeatureMissingSnackbar
+            )
         )
     }
 }

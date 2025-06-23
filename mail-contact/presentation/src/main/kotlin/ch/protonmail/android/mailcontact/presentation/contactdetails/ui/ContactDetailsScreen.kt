@@ -82,20 +82,14 @@ import ch.protonmail.android.mailcontact.presentation.previewdata.ContactDetails
 
 @Composable
 fun ContactDetailsScreen(
-    onBack: () -> Unit,
-    onShowErrorSnackbar: (String) -> Unit,
-    onMessageContact: (String) -> Unit,
-    showFeatureMissingSnackbar: () -> Unit,
+    actions: ContactDetailsScreen.Actions,
     viewModel: ContactDetailsViewModel = hiltViewModel<ContactDetailsViewModel>()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
 
     ContactDetailsScreen(
         state = state,
-        onBack = onBack,
-        onShowErrorSnackbar = onShowErrorSnackbar,
-        onMessageContact = onMessageContact,
-        showFeatureMissingSnackbar = showFeatureMissingSnackbar
+        actions = actions
     )
 }
 
@@ -103,10 +97,7 @@ fun ContactDetailsScreen(
 @Composable
 private fun ContactDetailsScreen(
     state: ContactDetailsState,
-    onBack: () -> Unit,
-    onShowErrorSnackbar: (String) -> Unit,
-    onMessageContact: (String) -> Unit,
-    showFeatureMissingSnackbar: () -> Unit,
+    actions: ContactDetailsScreen.Actions,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -155,20 +146,19 @@ private fun ContactDetailsScreen(
         Scaffold(
             modifier = modifier,
             containerColor = ProtonTheme.colors.backgroundInvertedNorm,
-            topBar = { ContactDetailsTopBar(state, onBack, showFeatureMissingSnackbar) }
+            topBar = { ContactDetailsTopBar(state, actions.onBack, actions.showFeatureMissingSnackbar) }
         ) {
             when (state) {
                 is ContactDetailsState.Data -> ContactDetails(
                     uiModel = state.uiModel,
-                    onMessageContact = onMessageContact,
+                    actions = actions,
                     onCallQuickAction = { showBottomSheet = true },
-                    showFeatureMissingSnackbar = showFeatureMissingSnackbar,
                     modifier = Modifier.padding(it)
                 )
 
                 is ContactDetailsState.Error -> ContactDetailsError(
-                    onBack = onBack,
-                    onShowErrorSnackbar = onShowErrorSnackbar
+                    onBack = actions.onBack,
+                    onShowErrorSnackbar = actions.onShowErrorSnackbar
                 )
 
                 is ContactDetailsState.Loading -> ProtonCenteredProgress(
@@ -182,9 +172,8 @@ private fun ContactDetailsScreen(
 @Composable
 private fun ContactDetails(
     uiModel: ContactDetailsUiModel,
-    onMessageContact: (String) -> Unit,
+    actions: ContactDetailsScreen.Actions,
     onCallQuickAction: () -> Unit,
-    showFeatureMissingSnackbar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -221,13 +210,15 @@ private fun ContactDetails(
 
         ContactDetailsQuickActions(
             quickActionUiModels = uiModel.quickActionUiModels,
-            onMessageContact = { uiModel.headerUiModel.displayEmailAddress?.let { onMessageContact(it) } },
-            onCallQuickAction = onCallQuickAction,
-            showFeatureMissingSnackbar = showFeatureMissingSnackbar
+            actions = ContactDetailsScreen.QuickActions(
+                onMessageContact = { uiModel.headerUiModel.displayEmailAddress?.let { actions.onMessageContact(it) } },
+                onCallQuickAction = onCallQuickAction,
+                showFeatureMissingSnackbar = actions.showFeatureMissingSnackbar
+            )
         )
 
         uiModel.contactDetailsItemGroupUiModels.forEachIndexed { index, groupUiModel ->
-            ContactDetailsItemGroup(itemGroupUiModel = groupUiModel, onMessageContact = onMessageContact)
+            ContactDetailsItemGroup(itemGroupUiModel = groupUiModel, onMessageContact = actions.onMessageContact)
             if (index != uiModel.contactDetailsItemGroupUiModels.size - 1) {
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             }
@@ -282,9 +273,7 @@ private fun ContactDetailsTopBar(
 @Composable
 private fun ContactDetailsQuickActions(
     quickActionUiModels: List<QuickActionUiModel>,
-    onMessageContact: () -> Unit,
-    onCallQuickAction: () -> Unit,
-    showFeatureMissingSnackbar: () -> Unit
+    actions: ContactDetailsScreen.QuickActions
 ) {
     Row(
         modifier = Modifier
@@ -306,9 +295,9 @@ private fun ContactDetailsQuickActions(
                         role = Role.Button,
                         onClick = {
                             when (uiModel.quickActionType) {
-                                QuickActionType.Message -> onMessageContact()
-                                QuickActionType.Call -> onCallQuickAction()
-                                QuickActionType.Share -> showFeatureMissingSnackbar()
+                                QuickActionType.Message -> actions.onMessageContact()
+                                QuickActionType.Call -> actions.onCallQuickAction()
+                                QuickActionType.Share -> actions.showFeatureMissingSnackbar()
                             }
                         }
                     )
@@ -428,13 +417,28 @@ private fun launchPhoneApp(context: Context, phoneNumber: String) {
 private fun ContactDetailsScreenPreview() {
     ContactDetailsScreen(
         state = ContactDetailsPreviewData.contactDetailsState,
-        onBack = {},
-        onShowErrorSnackbar = {},
-        onMessageContact = {},
-        showFeatureMissingSnackbar = {}
+        actions = ContactDetailsScreen.Actions(
+            onBack = {},
+            onShowErrorSnackbar = {},
+            onMessageContact = {},
+            showFeatureMissingSnackbar = {}
+        )
     )
 }
 
 object ContactDetailsScreen {
     const val CONTACT_DETAILS_ID_KEY = "ContactDetailsIdKey"
+
+    data class Actions(
+        val onBack: () -> Unit,
+        val onShowErrorSnackbar: (String) -> Unit,
+        val onMessageContact: (String) -> Unit,
+        val showFeatureMissingSnackbar: () -> Unit
+    )
+
+    data class QuickActions(
+        val onMessageContact: () -> Unit,
+        val onCallQuickAction: () -> Unit,
+        val showFeatureMissingSnackbar: () -> Unit
+    )
 }
