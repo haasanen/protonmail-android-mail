@@ -198,6 +198,7 @@ fun MessageBodyWebView(
                         it.settings.allowContentAccess = false
                         it.settings.allowFileAccess = false
                         it.settings.loadWithOverviewMode = true
+                        it.isVerticalScrollBarEnabled = false
                         configureDarkLightMode(it, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
                         configureLongClick(it, actions.onMessageBodyLinkLongClicked)
                         webView = it
