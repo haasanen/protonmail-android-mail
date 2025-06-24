@@ -50,7 +50,6 @@ import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MessageFlags
 import uniffi.proton_mail_uniffi.MessageRecipient
-import uniffi.proton_mail_uniffi.MessageReplyTo
 import uniffi.proton_mail_uniffi.MessageSender
 import uniffi.proton_mail_uniffi.SystemLabel
 
@@ -177,10 +176,6 @@ class MessageMapperTest {
                 "bcc2@test.com", false, "Bcc2", null
             )
         )
-        val replyTo = listOf(
-            MessageReplyTo("to1@test.com", "To1"),
-            MessageReplyTo("to2@test.com", "To2")
-        )
         val expirationTime = 1625235000000u
         val isReplied = false
         val isRepliedAll = false
@@ -220,7 +215,6 @@ class MessageMapperTest {
             starred = starred,
             attachmentsMetadata = attachments,
             exclusiveLocation = exclusiveLocation,
-            replyTos = replyTo,
             avatar = avatarInformation,
             isDraft = false,
             isScheduled = false,
@@ -304,7 +298,6 @@ class MessageMapperTest {
             starred = false,
             attachmentsMetadata = listOf(attachment1, attachment2),
             exclusiveLocation = null,
-            replyTos = emptyList(),
             avatar = LocalAvatarInformation("S", "blue"),
             isDraft = false,
             isScheduled = false,
