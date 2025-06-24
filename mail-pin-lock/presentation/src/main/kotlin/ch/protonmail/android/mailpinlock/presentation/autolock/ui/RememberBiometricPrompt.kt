@@ -20,39 +20,33 @@ package ch.protonmail.android.mailpinlock.presentation.autolock.ui
 
 import java.util.concurrent.Executor
 import android.annotation.SuppressLint
-import android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG
-import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL
-import android.hardware.biometrics.BiometricPrompt
 import android.os.Build
-import android.os.CancellationSignal
+import androidx.activity.compose.LocalActivity
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import androidx.biometric.BiometricPrompt
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.BiometricPromptCallback
+import ch.protonmail.android.mailpinlock.presentation.autolock.BiometricPromptCallback
 
 @SuppressLint("MissingPermission")
-data class BiometricAuthenticator(
-    val prompt: BiometricPrompt,
-    val executor: Executor,
-    val callback: BiometricPrompt.AuthenticationCallback
+class BiometricAuthenticator(
+    private val activity: FragmentActivity,
+    private val executor: Executor,
+    private val promptInfo: BiometricPrompt.PromptInfo
 ) {
-
-    fun authenticate() {
-        prompt.authenticate(CancellationSignal(), executor, callback)
-    }
-
     fun authenticate(callback: BiometricPromptCallback) {
-        val callback = object : BiometricPrompt.AuthenticationCallback() {
+        val authCallback = object : BiometricPrompt.AuthenticationCallback() {
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
-                callback.onAuthenticationError()
+                callback.onAuthenticationError(errorCode, errString)
             }
 
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
-                callback.onAuthenticationSucceeded()
+                callback.onAuthenticationSucceeded(result)
             }
 
             override fun onAuthenticationFailed() {
@@ -61,59 +55,48 @@ data class BiometricAuthenticator(
             }
         }
 
-        prompt.authenticate(CancellationSignal(), executor, callback)
+        val prompt = BiometricPrompt(activity, executor, authCallback)
+        prompt.authenticate(promptInfo)
+    }
+
+    fun authenticate(
+        onAuthenticationError: (errorCode: Int, errString: CharSequence) -> Unit = { _, _ -> },
+        onAuthenticationSucceeded: (result: BiometricPrompt.AuthenticationResult) -> Unit = {},
+        onAuthenticationFailed: () -> Unit = {}
+    ) {
+        authenticate(
+            BiometricPromptCallback(
+                onAuthenticationError,
+                onAuthenticationSucceeded,
+                onAuthenticationFailed
+            )
+        )
     }
 }
 
 @Composable
 @SuppressLint("MissingPermission")
-@Suppress("UseComposableActions")
 fun rememberBiometricAuthenticator(
     title: String,
     subtitle: String,
-    negativeButtonText: String,
-    onAuthenticationError: (errorCode: Int, errString: CharSequence) -> Unit = { _, _ -> },
-    onAuthenticationSucceeded: (result: BiometricPrompt.AuthenticationResult) -> Unit = { },
-    onAuthenticationFailed: () -> Unit = { }
+    negativeButtonText: String
 ): BiometricAuthenticator {
-    val context = LocalContext.current
-    val activity = context as FragmentActivity
-    val executor = ContextCompat.getMainExecutor(context)
+    val activity = LocalActivity.current as FragmentActivity
+    val executor = remember { ContextCompat.getMainExecutor(activity) }
 
-    val callback = remember {
-        object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                super.onAuthenticationError(errorCode, errString)
-                onAuthenticationError(errorCode, errString)
-            }
-
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                super.onAuthenticationSucceeded(result)
-                onAuthenticationSucceeded(result)
-            }
-
-            override fun onAuthenticationFailed() {
-                super.onAuthenticationFailed()
-                onAuthenticationFailed()
-            }
-        }
-    }
-
-    val biometricPrompt = remember {
-        BiometricPrompt.Builder(activity)
+    val promptInfo = remember(title, subtitle, negativeButtonText) {
+        BiometricPrompt.PromptInfo.Builder()
             .setTitle(title)
             .setSubtitle(subtitle)
             .apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
                 } else {
-                    setNegativeButton(negativeButtonText, executor) { _, _ -> }
+                    setNegativeButtonText(negativeButtonText)
                 }
             }
             .build()
     }
 
-    return remember {
-        BiometricAuthenticator(biometricPrompt, executor, callback)
-    }
+    return BiometricAuthenticator(activity, executor, promptInfo)
 }

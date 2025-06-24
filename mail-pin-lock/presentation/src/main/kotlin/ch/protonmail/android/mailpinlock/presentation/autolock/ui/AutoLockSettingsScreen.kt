@@ -53,6 +53,7 @@ import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailpinlock.presentation.R
+import ch.protonmail.android.mailpinlock.presentation.autolock.BiometricPromptCallback
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInsertionMode
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockSettings
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockSettingsUiState
@@ -63,7 +64,6 @@ import ch.protonmail.android.mailpinlock.presentation.autolock.model.ProtectionT
 import ch.protonmail.android.mailpinlock.presentation.autolock.ui.AutoLockSettingsScreen.Actions
 import ch.protonmail.android.mailpinlock.presentation.autolock.viewmodel.AutoLockSettingsViewModel
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinScreenDialogKeys.AutoLockPinDialogResultKey
-import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.BiometricPromptCallback
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 
 @Composable
@@ -80,14 +80,7 @@ fun AutoLockSettingsScreen(
     val biometricPrompt = rememberBiometricAuthenticator(
         title = stringResource(R.string.mail_settings_biometrics_title_confirm),
         subtitle = stringResource(R.string.mail_settings_biometrics_subtitle_default),
-        negativeButtonText = stringResource(R.string.mail_settings_biometrics_button_negative),
-        onAuthenticationError = { _, _ ->
-            /* no op, handling delegated to system prompt */
-        },
-        onAuthenticationFailed = { /* no op, handling delegated to system prompt */ },
-        onAuthenticationSucceeded = {
-            viewModel.submit(AutoLockSettingsViewAction.SetBiometricsPreference)
-        }
+        negativeButtonText = stringResource(R.string.mail_settings_biometrics_button_negative)
     )
 
     ConsumableTextEffect(effects.updateError) {
@@ -112,18 +105,19 @@ fun AutoLockSettingsScreen(
 
     ConsumableLaunchedEffect(effects.requestBiometricsAuth) {
         val callback = BiometricPromptCallback(
-            onAuthenticationError = {},
+            onAuthenticationError = { _, _ -> },
             onAuthenticationFailed = {},
-            onAuthenticationSucceeded = {
-                val followUp = when (it) {
+            onAuthenticationSucceeded = { _ ->
+                val action = when (it) {
                     BiometricsOperationFollowUp.SetNone -> AutoLockSettingsViewAction.RemoveBiometricsProtection
                     BiometricsOperationFollowUp.SetPin -> AutoLockSettingsViewAction.SetPinPreference
                     BiometricsOperationFollowUp.SetBiometrics -> AutoLockSettingsViewAction.SetBiometricsPreference
+
                     BiometricsOperationFollowUp.RemovePinAndSetBiometrics ->
                         AutoLockSettingsViewAction.MigrateFromPinToBiometrics
                 }
 
-                viewModel.submit(followUp)
+                viewModel.submit(action)
             }
         )
         biometricPrompt.authenticate(callback)

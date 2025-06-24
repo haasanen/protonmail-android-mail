@@ -16,10 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.domain.model.autolock.biometric
+package ch.protonmail.android.mailpinlock.presentation.autolock
+
+import androidx.biometric.BiometricPrompt
 
 data class BiometricPromptCallback(
-    val onAuthenticationError: () -> Unit,
-    val onAuthenticationSucceeded: () -> Unit,
-    val onAuthenticationFailed: () -> Unit = {} // ET-636 remove default
+    val onAuthenticationError: (errorCode: Int, errString: CharSequence) -> Unit,
+    val onAuthenticationSucceeded: (result: BiometricPrompt.AuthenticationResult) -> Unit,
+    val onAuthenticationFailed: () -> Unit = {}
 )

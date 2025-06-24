@@ -20,6 +20,7 @@ package ch.protonmail.android.mailpinlock.presentation.autolock.ui
 
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,15 +37,15 @@ fun LockScreenOverlay(
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val item = LocalActivity.current
+    val activity = LocalActivity.current
 
     when (state) {
         AutoLockOverlayState.Biometrics -> LockScreenBiometricsPrompt(
             {
                 viewModel.onSuccessfulBiometrics()
-                item?.finish()
+                activity?.finish()
             },
-            onCloseAll = { item?.finishAffinity() }
+            onCloseAll = { activity?.finishAffinity() }
         )
 
         AutoLockOverlayState.Error -> onClose()
@@ -55,18 +56,17 @@ fun LockScreenOverlay(
 
 @Composable
 private fun LockScreenBiometricsPrompt(onClose: () -> Unit, onCloseAll: () -> Unit) {
-    val biometricPrompt = rememberBiometricAuthenticator(
+    val biometricAuthenticator = rememberBiometricAuthenticator(
         title = stringResource(R.string.mail_settings_biometrics_title_app_locked),
         subtitle = stringResource(R.string.mail_settings_biometrics_subtitle_app_locked),
-        negativeButtonText = stringResource(R.string.mail_settings_biometrics_button_negative),
-        onAuthenticationError = { _, _ ->
-            onCloseAll()
-        },
-        onAuthenticationFailed = {},
-        onAuthenticationSucceeded = {
-            onClose()
-        }
+        negativeButtonText = stringResource(R.string.mail_settings_biometrics_button_negative)
     )
 
-    biometricPrompt.authenticate()
+    LaunchedEffect(biometricAuthenticator) {
+        biometricAuthenticator.authenticate(
+            onAuthenticationError = { _, _ -> onCloseAll() },
+            onAuthenticationFailed = {},
+            onAuthenticationSucceeded = { onClose() }
+        )
+    }
 }
