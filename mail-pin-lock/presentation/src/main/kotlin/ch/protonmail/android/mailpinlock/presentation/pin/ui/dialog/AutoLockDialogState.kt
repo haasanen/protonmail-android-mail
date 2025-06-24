@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
 data class AutoLockDialogState(
     val error: TextUiModel?,
+    val errorEffect: Effect<Unit>,
     val successEffect: Effect<Unit>
 )
 

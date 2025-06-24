@@ -68,7 +68,7 @@ internal class AutoLockPinDialogReducerTest {
         // Given
         val initialState = initialState()
         val expectedError = TextUiModel.TextRes(R.string.mail_settings_pin_insertion_error_unknown)
-        val expectedState = initialState.copy(error = expectedError)
+        val expectedState = initialState.copy(error = expectedError, errorEffect = Effect.of(Unit))
 
         val error = AutoLockPinDialogEvent.Error(VerifyAutoLockPinError.IncorrectPin, null)
 
@@ -88,7 +88,7 @@ internal class AutoLockPinDialogReducerTest {
             R.plurals.mail_settings_pin_insertion_error_wrong_code_threshold,
             remainingAttempts
         )
-        val expectedState = initialState.copy(error = expectedError)
+        val expectedState = initialState.copy(error = expectedError, errorEffect = Effect.of(Unit))
 
         val error = AutoLockPinDialogEvent.Error(VerifyAutoLockPinError.IncorrectPin, remainingAttempts)
 
@@ -101,6 +101,6 @@ internal class AutoLockPinDialogReducerTest {
 
     private companion object {
 
-        fun initialState() = AutoLockDialogState(null, Effect.empty())
+        fun initialState() = AutoLockDialogState(null, Effect.empty(), Effect.empty())
     }
 }

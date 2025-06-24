@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.delete
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -85,7 +86,10 @@ private fun AutoLockPinScreenDialogContent(
     onProcessPin: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    val isError = state.error != null
+
+    ConsumableLaunchedEffect(state.errorEffect) {
+        pinFieldState.edit { delete(0, pinFieldState.text.length) }
+    }
 
     ProtonAlertDialog(
         modifier = modifier,
@@ -109,9 +113,9 @@ private fun AutoLockPinScreenDialogContent(
                     pinTextFieldState = pinFieldState,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                     maxLength = MAX_PIN_LENGTH,
-                    isError = isError,
+                    isError = state.error != null,
                     supportingText = {
-                        if (isError) {
+                        if (state.error != null) {
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
                                 text = state.error.string(),
@@ -154,7 +158,7 @@ private const val MAX_PIN_LENGTH = 21
 private fun AutoLockPinScreenDialogPreview() {
     ProtonTheme {
         AutoLockPinScreenDialogContent(
-            state = AutoLockDialogState(null, Effect.empty()),
+            state = AutoLockDialogState(null, Effect.empty(), Effect.empty()),
             pinFieldState = TextFieldState(),
             onProcessPin = {},
             onNavigateBack = {}

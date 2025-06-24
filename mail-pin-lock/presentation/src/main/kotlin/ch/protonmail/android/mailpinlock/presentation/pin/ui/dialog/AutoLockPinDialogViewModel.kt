@@ -40,7 +40,13 @@ class AutoLockPinDialogViewModel @Inject constructor(
     private val dialogReducer: AutoLockPinDialogReducer
 ) : ViewModel() {
 
-    private val mutableState = MutableStateFlow(AutoLockDialogState(null, Effect.empty()))
+    private val mutableState = MutableStateFlow(
+        AutoLockDialogState(
+            error = null,
+            errorEffect = Effect.empty(),
+            successEffect = Effect.empty()
+        )
+    )
     val state = mutableState.asStateFlow()
 
     internal val textFieldState = TextFieldState()

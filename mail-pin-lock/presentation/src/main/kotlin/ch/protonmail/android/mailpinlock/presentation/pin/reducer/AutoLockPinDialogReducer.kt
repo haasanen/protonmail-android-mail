@@ -35,14 +35,13 @@ class AutoLockPinDialogReducer @Inject constructor(
         AutoLockPinDialogEvent.Success -> handleSuccess(currentState)
     }
 
-
     private fun handleError(state: AutoLockDialogState, event: AutoLockPinDialogEvent.Error): AutoLockDialogState {
         val error = if (event.remainingAttempts != null) {
             errorsUiMapper.toUiErrorWithRemainingAttempts(event.error, event.remainingAttempts)
         } else {
             TextUiModel.TextRes(R.string.mail_settings_pin_insertion_error_unknown)
         }
-        return state.copy(error = error)
+        return state.copy(error = error, errorEffect = Effect.of(Unit))
     }
 
     private fun handleSuccess(state: AutoLockDialogState) = state.copy(successEffect = Effect.Companion.of(Unit))
