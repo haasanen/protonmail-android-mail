@@ -18,13 +18,9 @@
 
 package ch.protonmail.android.mailmailbox.dagger
 
-import ch.protonmail.android.mailmailbox.data.local.RustPrefetchDataSource
-import ch.protonmail.android.mailmailbox.data.local.RustPrefetchDataSourceImpl
 import ch.protonmail.android.mailmailbox.data.repository.MailboxBannersRepositoryImpl
-import ch.protonmail.android.mailmailbox.data.repository.PrefetchRepositoryImpl
 import ch.protonmail.android.mailmailbox.data.repository.UnreadCountersRepositoryImpl
 import ch.protonmail.android.mailmailbox.domain.repository.MailboxBannersRepository
-import ch.protonmail.android.mailmailbox.domain.repository.PrefetchRepository
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxItems
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxItemPagingSourceFactory
@@ -35,7 +31,6 @@ import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.components.SingletonComponent
 
 @Module(includes = [MailboxModule.BindsModule::class])
 @InstallIn(ViewModelComponent::class)
@@ -62,17 +57,4 @@ object MailboxModule {
         @Reusable
         fun bindsMailboxBannersRepository(impl: MailboxBannersRepositoryImpl): MailboxBannersRepository
     }
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-interface BindsModule {
-
-    @Binds
-    @Reusable
-    fun bindsPrefetchRepository(impl: PrefetchRepositoryImpl): PrefetchRepository
-
-    @Binds
-    @Reusable
-    fun bindsPrefetchDataSource(impl: RustPrefetchDataSourceImpl): RustPrefetchDataSource
 }

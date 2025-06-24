@@ -23,7 +23,6 @@ import androidx.startup.AppInitializer
 import androidx.startup.Initializer
 import ch.protonmail.android.BuildConfig
 import ch.protonmail.android.initializer.background.BackgroundExecutionInitializer
-import ch.protonmail.android.initializer.prefetch.DataPrefetchInitializer
 import ch.protonmail.android.initializer.strictmode.StrictModeInitializer
 import ch.protonmail.android.legacymigration.domain.initializer.LegacyAppCleanupInitializer
 import kotlinx.coroutines.CoroutineScope
@@ -63,8 +62,7 @@ class MainInitializer : Initializer<Unit> {
         NotificationHandlersInitializer::class.java,
         RustMailCommonInitializer::class.java,
         ChallengeInitializer::class.java,
-        BackgroundExecutionInitializer::class.java,
-        DataPrefetchInitializer::class.java
+        BackgroundExecutionInitializer::class.java
     )
 
     companion object {

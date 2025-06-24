@@ -52,7 +52,7 @@ object LocalMailSettingsTestData {
         swipeLeft = LocalSwipeAction.TRASH,
         swipeRight = LocalSwipeAction.ARCHIVE,
         shortcuts = false,
-        pmSignature = LocalPmSignature.ENABLED,
+        pmSignature = LocalPmSignature(1.toUByte()),
         pmSignatureReferralLink = false,
         imageProxy = 0.toUInt(),
         numMessagePerPage = 1.toUInt(),
