@@ -61,19 +61,12 @@ class AutoLockPinReducer @Inject constructor(
     private fun handleError(
         state: AutoLockPinState.DataLoaded,
         event: AutoLockPinEvent.Update.Error
-    ): AutoLockPinState.DataLoaded = when (event) {
-        is AutoLockPinEvent.Update.Error.Verify -> state.copy(
-            pinInsertionState = state.pinInsertionState.copy(
-                error = errorsUiMapper.toUiModel(event)
-            )
+    ): AutoLockPinState.DataLoaded = state.copy(
+        pinInsertionState = state.pinInsertionState.copy(
+            error = errorsUiMapper.toUiModel(event),
+            triggerError = Effect.of(Unit)
         )
-
-        else -> state.copy(
-            pinInsertionState = state.pinInsertionState.copy(
-                error = errorsUiMapper.toUiModel(event)
-            )
-        )
-    }
+    )
 
     private fun abortOperation(state: AutoLockPinState.DataLoaded) =
         state.copy(closeScreenEffect = Effect.Companion.of(Unit))
@@ -100,7 +93,8 @@ class AutoLockPinReducer @Inject constructor(
             descriptionUiModel = descriptionUiModel,
             startingStep = state.pinInsertionState.startingStep,
             step = step,
-            remainingAttempts = null
+            remainingAttempts = null,
+            triggerError = Effect.empty()
         )
 
         return state.copy(
@@ -136,7 +130,8 @@ class AutoLockPinReducer @Inject constructor(
                 startingStep = step,
                 step = step,
                 remainingAttempts = remainingAttempts,
-                error = null
+                error = null,
+                triggerError = Effect.empty()
             ),
             confirmButtonState = AutoLockPinState.ConfirmButtonState(confirmButtonUiModel),
             signOutButtonState = AutoLockPinState.SignOutButtonState(signOutUiModel),

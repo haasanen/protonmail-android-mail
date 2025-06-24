@@ -40,8 +40,9 @@ internal object AutoLockPinScreenPreviewData {
             ),
             startingStep = PinInsertionStep.PinInsertion,
             step = PinInsertionStep.PinInsertion,
-            null,
-            null
+            remainingAttempts = null,
+            error = null,
+            triggerError = Effect.empty()
         ),
         confirmButtonState = AutoLockPinState.ConfirmButtonState(
             confirmButtonUiModel = ConfirmButtonUiModel(true, R.string.mail_settings_pin_insertion_confirm_button)

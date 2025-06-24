@@ -44,7 +44,8 @@ internal object AutoLockTestData {
             R.string.mail_pinlock_settings_new_pin_description
         ),
         remainingAttempts = 10,
-        error = null
+        error = null,
+        triggerError = Effect.empty()
     )
 
     val BaseConfirmPinState = AutoLockPinState.PinInsertionState(
@@ -55,7 +56,8 @@ internal object AutoLockTestData {
             R.string.mail_pinlock_settings_confirm_pin_description
         ),
         remainingAttempts = null,
-        error = null
+        error = null,
+        triggerError = Effect.empty()
     )
 
     val BaseVerificationPinState = AutoLockPinState.PinInsertionState(
@@ -66,7 +68,8 @@ internal object AutoLockTestData {
             R.string.mail_pinlock_settings_verify_pin_description
         ),
         remainingAttempts = 10,
-        error = null
+        error = null,
+        triggerError = Effect.empty()
     )
 
     val BaseConfirmButtonUiModel =

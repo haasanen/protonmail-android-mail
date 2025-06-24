@@ -148,7 +148,6 @@ object AutoLockPinScreenDialogKeys {
 
 private const val MAX_PIN_LENGTH = 21
 
-
 @Composable
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)

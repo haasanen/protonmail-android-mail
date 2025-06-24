@@ -241,8 +241,9 @@ private fun PinScreenContent(
             PinInputSection(
                 modifier = Modifier.focusRequester(focusRequester),
                 pinTextFieldState = pinTextFieldState,
+                maxLength = MAX_PIN_LENGTH,
                 error = state.pinInsertionState.error,
-                maxLength = 21
+                triggerError = state.pinInsertionState.triggerError
             )
 
             Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
@@ -334,6 +335,8 @@ private fun AutoLockPinScreenHeader(descriptionUiModel: DescriptionUiModel, isCo
         Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
     }
 }
+
+private const val MAX_PIN_LENGTH = 21
 
 object AutoLockPinScreen {
     data class Actions(

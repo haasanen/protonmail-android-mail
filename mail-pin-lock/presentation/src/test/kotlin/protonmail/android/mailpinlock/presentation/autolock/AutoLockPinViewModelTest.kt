@@ -410,8 +410,9 @@ internal class AutoLockPinViewModelTest {
                 mockk(),
                 startingStep = mode,
                 step = mode,
-                null,
-                null
+                remainingAttempts = null,
+                error = null,
+                triggerError = Effect.empty()
             ),
             mockk(),
             mockk(),

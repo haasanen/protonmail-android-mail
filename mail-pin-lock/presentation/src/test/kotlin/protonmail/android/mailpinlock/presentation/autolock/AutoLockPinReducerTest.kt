@@ -80,7 +80,8 @@ internal class AutoLockPinReducerTest(private val testName: String, private val 
                     event = AutoLockPinEvent.Update.Error.NotMatchingPins,
                     expected = AutoLockTestData.BaseLoadedState.copy(
                         pinInsertionState = AutoLockTestData.BasePinInsertionState.copy(
-                            error = TextUiModel(R.string.mail_settings_pin_insertion_error_no_match)
+                            error = TextUiModel(R.string.mail_settings_pin_insertion_error_no_match),
+                            triggerError = Effect.of(Unit)
                         )
                     )
                 )
@@ -92,7 +93,8 @@ internal class AutoLockPinReducerTest(private val testName: String, private val 
                     event = AutoLockPinEvent.Update.Error.UnknownError,
                     expected = AutoLockTestData.BaseLoadedState.copy(
                         pinInsertionState = AutoLockTestData.BasePinInsertionState.copy(
-                            error = TextUiModel(R.string.mail_settings_pin_insertion_error_unknown)
+                            error = TextUiModel(R.string.mail_settings_pin_insertion_error_unknown),
+                            triggerError = Effect.of(Unit)
                         )
                     )
                 )

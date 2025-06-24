@@ -45,6 +45,7 @@ sealed interface AutoLockPinState {
         val startingStep: PinInsertionStep,
         val step: PinInsertionStep,
         val remainingAttempts: Int?,
-        val error: TextUiModel? = null
+        val error: TextUiModel? = null,
+        val triggerError: Effect<Unit>
     )
 }

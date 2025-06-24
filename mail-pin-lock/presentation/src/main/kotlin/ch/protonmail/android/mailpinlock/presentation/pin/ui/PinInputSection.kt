@@ -43,7 +43,6 @@ import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,6 +58,8 @@ import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
@@ -70,9 +71,9 @@ internal fun PinInputSection(
     modifier: Modifier = Modifier,
     pinTextFieldState: TextFieldState,
     maxLength: Int? = null,
-    error: TextUiModel?
+    error: TextUiModel?,
+    triggerError: Effect<Unit>
 ) {
-    val isError = error != null
     var shouldShake by remember { mutableStateOf(false) }
 
     val shakeOffset by animateFloatAsState(
@@ -92,11 +93,9 @@ internal fun PinInputSection(
         label = "shake_animation"
     )
 
-    LaunchedEffect(isError) {
-        if (isError) {
-            shouldShake = true
-            pinTextFieldState.edit { delete(0, pinTextFieldState.text.length) }
-        }
+    ConsumableLaunchedEffect(triggerError) {
+        shouldShake = true
+        pinTextFieldState.edit { delete(0, pinTextFieldState.text.length) }
     }
 
     Column(
@@ -110,9 +109,9 @@ internal fun PinInputSection(
             pinTextFieldState = pinTextFieldState,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
             maxLength = maxLength,
-            isError = isError
+            isError = error != null
         ) {
-            if (isError) SupportingErrorText(error)
+            if (error != null) SupportingErrorText(error)
         }
     }
 }
