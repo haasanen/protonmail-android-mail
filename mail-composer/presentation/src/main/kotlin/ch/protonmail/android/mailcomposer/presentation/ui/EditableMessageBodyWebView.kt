@@ -234,6 +234,8 @@ object EditableMessageBodyWebView {
         val onInlineImageRemoved: (String) -> Unit,
         val onInlineImageClicked: (String) -> Unit
     )
+
+    val contentMimeTypes = arrayOf("image/*")
 }
 
 // Max constraint for WebView height. If the height is greater

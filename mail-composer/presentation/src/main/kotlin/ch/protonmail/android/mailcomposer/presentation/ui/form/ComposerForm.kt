@@ -19,6 +19,8 @@
 package ch.protonmail.android.mailcomposer.presentation.ui.form
 
 import android.content.Context
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputConnection
 import android.webkit.WebView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,6 +38,10 @@ import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
+import androidx.core.view.OnReceiveContentListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.inputmethod.EditorInfoCompat
+import androidx.core.view.inputmethod.InputConnectionCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
@@ -195,7 +201,33 @@ internal fun ComposerForm(
 private fun onBuildWebView(editorWebView: MutableState<WebView?>) = { context: Context ->
     if (editorWebView.value == null) {
         Timber.d("editor-webview: factory creating new editor webview")
-        val webView = WebView(context)
+
+        val webView = object : WebView(context) {
+
+            override fun onCreateInputConnection(outAttrs: EditorInfo?): InputConnection? {
+                val inputConnection = super.onCreateInputConnection(outAttrs) ?: return null
+
+                EditorInfoCompat.setContentMimeTypes(outAttrs!!, EditableMessageBodyWebView.contentMimeTypes)
+                return InputConnectionCompat.createWrapper(this, inputConnection, outAttrs)
+            }
+        }
+
+        ViewCompat.setOnReceiveContentListener(
+            webView,
+            EditableMessageBodyWebView.contentMimeTypes,
+            OnReceiveContentListener { _, content ->
+                Timber.d("editor-webview: received some juicy content $content")
+
+                val split = content.partition { item -> item.uri != null }
+                val contentWithUri = split.first
+                val otherContent = split.second
+
+                val contentUri = contentWithUri.clip.getItemAt(0).uri
+                Timber.d("editor-webview: the uri of the picked media is $contentUri")
+
+                return@OnReceiveContentListener otherContent
+            }
+        )
         editorWebView.value = webView
     }
 
