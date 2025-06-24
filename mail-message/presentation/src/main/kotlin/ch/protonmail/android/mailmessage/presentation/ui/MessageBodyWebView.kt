@@ -293,8 +293,8 @@ fun RevealWebView(
 
     LaunchedEffect(reportedWebViewHeight) {
         snapshotFlow { reportedWebViewHeight }
-            // the webpage has loaded and the target height has not already been set
-            .filter { contentLoaded.value && webViewTargetHeightPx.intValue == 0 }
+            // the webpage has loaded
+            .filter { contentLoaded.value }
             // allow measuring passes and webview to settle
             .debounce(timeoutMillis = 100L)
             .collectLatest { height ->
