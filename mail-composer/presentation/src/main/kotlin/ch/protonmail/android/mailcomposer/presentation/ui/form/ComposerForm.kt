@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.ui.form
 
 import android.content.Context
+import android.net.Uri
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.webkit.WebView
@@ -180,7 +181,7 @@ internal fun ComposerForm(
                         loadEmbeddedImage = actions.loadEmbeddedImage,
                         onMessageBodyChanged = actions.onBodyChanged,
                         onWebViewParamsChanged = actions.onWebViewMeasuresChanged,
-                        onBuildWebView = onBuildWebView(webViewCache),
+                        onBuildWebView = onBuildWebView(webViewCache, actions.onInlineImageAdded),
                         onInlineImageRemoved = actions.onInlineImageRemoved,
                         onInlineImageClicked = actions.onInlineImageClicked
                     ),
@@ -198,7 +199,7 @@ internal fun ComposerForm(
 }
 
 @Composable
-private fun onBuildWebView(editorWebView: MutableState<WebView?>) = { context: Context ->
+private fun onBuildWebView(editorWebView: MutableState<WebView?>, onMediaAdded: (Uri) -> Unit) = { context: Context ->
     if (editorWebView.value == null) {
         Timber.d("editor-webview: factory creating new editor webview")
 
@@ -216,14 +217,13 @@ private fun onBuildWebView(editorWebView: MutableState<WebView?>) = { context: C
             webView,
             EditableMessageBodyWebView.contentMimeTypes,
             OnReceiveContentListener { _, content ->
-                Timber.d("editor-webview: received some juicy content $content")
-
                 val split = content.partition { item -> item.uri != null }
                 val contentWithUri = split.first
                 val otherContent = split.second
 
-                val contentUri = contentWithUri.clip.getItemAt(0).uri
-                Timber.d("editor-webview: the uri of the picked media is $contentUri")
+                runCatching { contentWithUri.clip.getItemAt(0).uri }
+                    .getOrNull()
+                    ?.let(onMediaAdded)
 
                 return@OnReceiveContentListener otherContent
             }
@@ -245,6 +245,7 @@ internal object ComposerForm {
         val loadEmbeddedImage: (String) -> EmbeddedImage?,
         val onAttachmentRemoveRequested: (AttachmentId) -> Unit,
         val onInlineImageRemoved: (String) -> Unit,
-        val onInlineImageClicked: (String) -> Unit
+        val onInlineImageClicked: (String) -> Unit,
+        val onInlineImageAdded: (Uri) -> Unit
     )
 }

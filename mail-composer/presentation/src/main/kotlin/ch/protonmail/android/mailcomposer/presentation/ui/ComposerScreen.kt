@@ -354,7 +354,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                             onInlineImageClicked = { contentId ->
                                 bottomSheetType.value = BottomSheetType.InlineImageActions(contentId)
                                 viewModel.submit(ComposerAction.InlineImageActionsRequested)
-                            }
+                            },
+                            onInlineImageAdded = { viewModel.submit(ComposerAction.AddAttachments(listOf(it))) }
                         ),
                         senderEmail = mainState.fields.sender.email,
                         recipientsStateManager = recipientsStateManager,
