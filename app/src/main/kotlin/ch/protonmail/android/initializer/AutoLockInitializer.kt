@@ -24,6 +24,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.startup.Initializer
+import ch.protonmail.android.mailpinlock.data.StartAutoLockCountdown
 import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
 import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import dagger.hilt.EntryPoint
@@ -34,12 +35,18 @@ import dagger.hilt.components.SingletonComponent
 class AutoLockInitializer : Initializer<Unit>, LifecycleEventObserver {
 
     private var autoLockCheckPendingState: AutoLockCheckPendingState? = null
+    private var startAutoLockCountdown: StartAutoLockCountdown? = null
 
     override fun create(context: Context) {
         autoLockCheckPendingState = EntryPointAccessors.fromApplication(
             context.applicationContext,
             AutoLockInitializerEntryPoint::class.java
         ).autoLockCheckPendingState()
+
+        startAutoLockCountdown = EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            AutoLockInitializerEntryPoint::class.java
+        ).startAutoLockCountdown()
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
@@ -49,8 +56,9 @@ class AutoLockInitializer : Initializer<Unit>, LifecycleEventObserver {
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         when (event) {
             Lifecycle.Event.ON_STOP -> {
-                // Set pending check when app goes to background
+                // Set pending check when app goes to background and explicitly trigger the Rust countdown
                 autoLockCheckPendingState?.emitCheckPendingState(AutoLockCheckPending(true))
+                startAutoLockCountdown?.invoke()
             }
 
             else -> Unit
@@ -62,5 +70,7 @@ class AutoLockInitializer : Initializer<Unit>, LifecycleEventObserver {
     interface AutoLockInitializerEntryPoint {
 
         fun autoLockCheckPendingState(): AutoLockCheckPendingState
+
+        fun startAutoLockCountdown(): StartAutoLockCountdown
     }
 }

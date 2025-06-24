@@ -145,6 +145,8 @@ class MailSessionWrapper(private val mailSession: MailSession) {
         is MailSessionRemainingPinAttemptsResult.Ok -> result.v1.right()
     }
 
+    fun startAutoLockCountdown() = mailSession.startAutoLockCountdown()
+
     fun registerDeviceTask() = mailSession.registerDeviceTask()
 
     fun startBackgroundTask(callback: BackgroundExecutionCallback) = mailSession.startBackgroundExecution(callback)
