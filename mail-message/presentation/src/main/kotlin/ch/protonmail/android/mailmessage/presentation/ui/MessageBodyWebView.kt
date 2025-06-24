@@ -208,6 +208,7 @@ fun MessageBodyWebView(
                         .testTag(MessageBodyWebViewTestTags.WebView)
                         // there's a bug where if the message is too long the webview will crash
                         .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
+                        .padding(horizontal = ProtonDimens.Spacing.Large)
                         .fillMaxWidth()
                         .wrapContentSize(),
                     client = client
