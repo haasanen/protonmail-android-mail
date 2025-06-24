@@ -112,29 +112,29 @@ private fun ContactDetailsScreen(
         sheetContent = {
             if (state is ContactDetailsState.Data) {
                 Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
+                    modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
-                    state.uiModel.contactDetailsItemGroupUiModels.flatMap { itemGroupUiModel ->
-                        itemGroupUiModel.contactDetailsItemUiModels.filter { itemUiModel ->
-                            itemUiModel.contactDetailsItemType == ContactDetailsItemType.Phone
-                        }
-                    }.forEach { uiModel ->
+                    state.uiModel.contactDetailsItemGroupUiModels.findPhoneItems()?.forEach { uiModel ->
+                        val actionLabel = stringResource(id = R.string.contact_details_action_call_label)
+                        val phoneNumberType = uiModel.label.string()
                         val phoneNumber = uiModel.value.string()
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(min = ProtonDimens.ListItemHeight)
                                 .clickable(
-                                    enabled = true,
                                     onClick = { launchPhoneApp(context, phoneNumber) }
                                 )
                                 .padding(horizontal = ProtonDimens.Spacing.Large),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = stringResource(id = R.string.contact_details_action_call_label) + " \"" +
-                                    uiModel.label.string() + "\" " + uiModel.value.string(),
+                                text = formatPhoneText(
+                                    actionLabel = actionLabel,
+                                    phoneNumberType = phoneNumberType,
+                                    phoneNumber = phoneNumber
+                                ),
                                 style = ProtonTheme.typography.bodyLargeNorm
                             )
                         }
@@ -411,6 +411,18 @@ private fun launchPhoneApp(context: Context, phoneNumber: String) {
     val intent = Intent(Intent.ACTION_DIAL, uri)
     context.startActivity(intent)
 }
+
+private fun List<ContactDetailsItemGroupUiModel>.findPhoneItems() = find { itemGroupUiModel ->
+    itemGroupUiModel.contactDetailsItemUiModels.any {
+        it.contactDetailsItemType == ContactDetailsItemType.Phone
+    }
+}?.contactDetailsItemUiModels
+
+private fun formatPhoneText(
+    actionLabel: String,
+    phoneNumberType: String,
+    phoneNumber: String
+) = "$actionLabel \"$phoneNumberType\" $phoneNumber"
 
 @Preview
 @Composable
