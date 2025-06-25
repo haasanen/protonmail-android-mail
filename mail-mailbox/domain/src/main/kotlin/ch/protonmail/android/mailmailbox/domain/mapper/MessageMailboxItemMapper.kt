@@ -50,6 +50,7 @@ class MessageMailboxItemMapper @Inject constructor() : Mapper<Message, MailboxIt
         avatarInformation = message.avatarInformation,
         exclusiveLocation = message.exclusiveLocation,
         attachments = message.attachments.filter { it.isCalendarAttachment().not() },
-        isDraft = message.isDraft
+        isDraft = message.isDraft,
+        isScheduled = message.isScheduled
     )
 }

@@ -287,6 +287,7 @@ object MessageSample {
         customLabels = customLabels,
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
-        isDraft = false
+        isDraft = false,
+        isScheduled = false
     )
 }

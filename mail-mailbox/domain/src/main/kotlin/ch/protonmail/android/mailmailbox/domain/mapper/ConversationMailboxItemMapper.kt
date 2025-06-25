@@ -51,7 +51,8 @@ class ConversationMailboxItemMapper @Inject constructor() : Mapper<Conversation,
             avatarInformation = avatarInformation,
             exclusiveLocation = exclusiveLocation,
             attachments = attachments.filter { it.isCalendarAttachment().not() },
-            isDraft = false
+            isDraft = false,
+            isScheduled = false
         )
     }
 }

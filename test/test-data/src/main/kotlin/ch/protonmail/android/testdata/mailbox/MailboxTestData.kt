@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.testdata.mailbox
 
-import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
@@ -28,7 +27,6 @@ import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
@@ -40,18 +38,14 @@ import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.testdata.R
 import ch.protonmail.android.testdata.label.LabelTestData.buildLabel
-import ch.protonmail.android.testdata.user.UserIdTestData
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.mailmailbox.R.string as mailboxStrings
 
 object MailboxTestData {
 
     val unreadMailboxItem = buildMessageMailboxItem("1", isRead = false)
     val readMailboxItem = buildMessageMailboxItem("2", isRead = true)
-    val unreadMailboxItemWithLabel =
-        unreadMailboxItem.copy(labels = listOf(LabelSample.Folder2021))
 
     val repliedMailboxItem = buildMessageMailboxItem("3", isReplied = true)
     val repliedAllMailboxItem = buildMessageMailboxItem("4", isReplied = true, isRepliedAll = true)
@@ -62,7 +56,6 @@ object MailboxTestData {
     val mailboxConversationItem = buildConversationMailboxItem("6")
 
     fun buildMailboxItem(
-        userId: UserId = UserIdTestData.userId,
         id: String = "itemId",
         time: Long = 0,
         labelIds: List<LabelId> = listOf(SystemLabelId.Inbox.labelId),
@@ -99,7 +92,8 @@ object MailboxTestData {
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
         attachments = attachments,
-        isDraft = false
+        isDraft = false,
+        isScheduled = false
     )
 
     private fun buildMessageMailboxItem(
@@ -108,7 +102,6 @@ object MailboxTestData {
         isReplied: Boolean = false,
         isRepliedAll: Boolean = false,
         isForwarded: Boolean = false,
-        labelIds: List<LabelId> = emptyList(),
         labels: List<Label> = emptyList(),
         exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")),
         attachments: List<AttachmentMetadata> = emptyList()
@@ -135,7 +128,8 @@ object MailboxTestData {
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
         attachments = attachments,
-        isDraft = false
+        isDraft = false,
+        isScheduled = false
     )
 
     private fun buildConversationMailboxItem(id: String) = MailboxItem(
@@ -161,7 +155,8 @@ object MailboxTestData {
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")),
         attachments = emptyList(),
-        isDraft = false
+        isDraft = false,
+        isScheduled = false
     )
 
 }
@@ -173,10 +168,6 @@ object MailboxItemUiModelTestData {
         type = MailboxItemType.Message,
         subject = "First message",
         isRead = false
-    )
-
-    val unreadMailboxItemUiModelWithLabelColored = unreadMailboxItemUiModel.copy(
-        locations = persistentListOf(MailboxItemLocationUiModel(R.drawable.ic_proton_folder_filled, Color.Red))
     )
 
     val unreadMailboxItemUiModelWithLabel = unreadMailboxItemUiModel.copy(
@@ -229,6 +220,7 @@ object MailboxItemUiModelTestData {
         expiryInformation = ExpiryInformationUiModel.NoExpiry,
         shouldShowCalendarIcon = false,
         shouldOpenInComposer = shouldOpenInComposer,
-        attachments = persistentListOf()
+        attachments = persistentListOf(),
+        shouldShowScheduleSendTime = false
     )
 }

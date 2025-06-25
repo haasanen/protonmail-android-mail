@@ -66,10 +66,10 @@ data class Message(
     val customLabels: List<Label>,
     val avatarInformation: AvatarInformation,
     val exclusiveLocation: ExclusiveLocation,
-    val isDraft: Boolean
+    val isDraft: Boolean,
+    val isScheduled: Boolean
 ) {
     val allRecipients = toList + ccList + bccList
-    val allRecipientsDeduplicated = allRecipients.toSet()
 
     fun expirationTimeOrNull(): Duration? = expirationTime.takeIf { it > 0 }?.seconds
 

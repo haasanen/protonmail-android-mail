@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -68,7 +67,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.Mailbo
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import kotlinx.collections.immutable.ImmutableList
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MailboxItem(
     modifier: Modifier = Modifier,

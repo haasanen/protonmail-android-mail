@@ -60,7 +60,8 @@ data class MailboxItem(
     val avatarInformation: AvatarInformation,
     val exclusiveLocation: ExclusiveLocation,
     val attachments: List<AttachmentMetadata>,
-    val isDraft: Boolean
+    val isDraft: Boolean,
+    val isScheduled: Boolean
 )
 
 fun ViewMode.toMailboxItemType() = when (this) {

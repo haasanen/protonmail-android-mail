@@ -85,8 +85,8 @@ class GetParticipantsResolvedNamesTest {
         val recipients = listOf(recipient, recipient1)
         val mailboxItem = buildMailboxItem(
             labelIds = listOf(SystemLabelId.Inbox.labelId),
-            recipients = recipients,
-            type = MailboxItemType.Message
+            type = MailboxItemType.Message,
+            recipients = recipients
         )
         coEvery { shouldShowRecipients(userId) } returns true
         every { resolveParticipantName(recipient) } returns resolveParticipant1NameResult

@@ -290,7 +290,7 @@ class MailboxItemUiModelMapperTest {
     fun `when use case returns location icon to be shown they are mapped to the ui model`() = runTest {
         // Given
         val labelIds = listOf(SystemLabelId.Inbox.labelId, SystemLabelId.Drafts.labelId)
-        val mailboxItem = buildMailboxItem(type = MailboxItemType.Conversation, labelIds = labelIds)
+        val mailboxItem = buildMailboxItem(labelIds = labelIds, type = MailboxItemType.Conversation)
         val inboxIconRes = MailboxItemLocationUiModel(R.drawable.ic_proton_inbox)
         val icons = GetMailboxItemLocationIcon.Result.Icon(inboxIconRes)
         coEvery {

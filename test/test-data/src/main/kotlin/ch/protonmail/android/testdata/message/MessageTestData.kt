@@ -234,6 +234,7 @@ object MessageTestData {
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
         attachments = attachments,
-        isDraft = false
+        isDraft = false,
+        isScheduled = false
     )
 }

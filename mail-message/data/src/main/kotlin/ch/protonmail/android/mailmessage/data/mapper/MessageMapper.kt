@@ -120,7 +120,8 @@ fun LocalMessageMetadata.toMessage(): Message {
         customLabels = customLabels.map { it.toLabel() },
         avatarInformation = this.avatar.toAvatarInformation(),
         exclusiveLocation = this.exclusiveLocation.toExclusiveLocation(),
-        isDraft = this.isDraft
+        isDraft = this.isDraft,
+        isScheduled = this.isScheduled
     )
 }
 
