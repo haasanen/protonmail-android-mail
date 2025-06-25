@@ -150,8 +150,6 @@ fun ConversationDetailScreen(
         MessageTheme.Light
 
     state.bottomSheetState?.let {
-        // Avoids a "jumping" of the bottom sheet
-        if (it.isShowEffectWithoutContent()) return@let
 
         ConsumableLaunchedEffect(effect = it.bottomSheetVisibilityEffect) { bottomSheetEffect ->
             when (bottomSheetEffect) {

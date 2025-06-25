@@ -23,11 +23,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 data class BottomSheetState(
     val contentState: BottomSheetContentState?,
     val bottomSheetVisibilityEffect: Effect<BottomSheetVisibilityEffect> = Effect.empty()
-) {
-
-    fun isShowEffectWithoutContent() =
-        bottomSheetVisibilityEffect == Effect.of(BottomSheetVisibilityEffect.Show) && contentState == null
-}
+)
 
 sealed interface BottomSheetVisibilityEffect {
     data object Show : BottomSheetVisibilityEffect
