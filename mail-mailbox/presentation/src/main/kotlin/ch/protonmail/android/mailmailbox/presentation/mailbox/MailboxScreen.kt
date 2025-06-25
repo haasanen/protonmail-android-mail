@@ -174,6 +174,7 @@ fun MailboxScreen(
     val mailboxListItems = viewModel.items.collectAsLazyPagingItems()
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     BackHandler(mailboxState.mailboxListState is MailboxListState.Data.SelectionMode) {
         viewModel.submit(MailboxViewAction.ExitSelectionMode)
@@ -259,18 +260,19 @@ fun MailboxScreen(
     )
 
     mailboxState.bottomSheetState?.let {
-
         ConsumableLaunchedEffect(effect = it.bottomSheetVisibilityEffect) { bottomSheetEffect ->
             when (bottomSheetEffect) {
                 BottomSheetVisibilityEffect.Hide -> {
-                    bottomSheetState.hide()
-                    showBottomSheet = false
+                    scope
+                        .launch { bottomSheetState.hide() }
+                        .invokeOnCompletion {
+                            if (!bottomSheetState.isVisible) {
+                                showBottomSheet = false
+                            }
+                        }
                 }
 
-                BottomSheetVisibilityEffect.Show -> {
-                    bottomSheetState.show()
-                    showBottomSheet = true
-                }
+                BottomSheetVisibilityEffect.Show -> showBottomSheet = true
             }
         }
     }
