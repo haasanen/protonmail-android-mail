@@ -68,6 +68,7 @@ fun LoginError.getErrorMessage(): String = when (this) {
     LoginError.InvalidState -> "LoginError.InvalidState"
     LoginError.MissingPrimaryKey -> "LoginError.MissingPrimaryKey"
     LoginError.KeySecretDecryption -> "LoginError.KeySecretDecryption"
+    LoginError.UserKeySetupNonPrivate -> "LoginError.UserKeySetupNonPrivate"
     LoginError.WrongMailboxPassword -> "LoginError.WrongMailboxPassword"
     is LoginError.AddressFetch -> "LoginError.AddressFetch"
     is LoginError.AddressKeySetup -> "LoginError.AddressKeySetup"
