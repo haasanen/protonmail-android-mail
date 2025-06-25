@@ -42,5 +42,5 @@ data object ChangeSenderEnabled : FeatureFlagDefinition(
     name = "Change sender",
     category = FeatureFlagCategory.Composer,
     description = "Allow to change the message sender in composer",
-    defaultValue = false
+    defaultValue = true
 )
