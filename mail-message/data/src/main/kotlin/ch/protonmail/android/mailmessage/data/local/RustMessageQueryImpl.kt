@@ -22,8 +22,6 @@ import arrow.core.Either
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
-import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
-import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
@@ -33,19 +31,12 @@ import uniffi.proton_mail_uniffi.LiveQueryCallback
 import javax.inject.Inject
 
 class RustMessageQueryImpl @Inject constructor(
-    private val invalidationTracker: RustInvalidationTracker,
     private val messagePaginatorManager: MessagePaginatorManager
 ) : RustMessageQuery {
 
     private val messagesUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
             Timber.d("rust-message: messages updated, invalidating pagination...")
-
-            invalidationTracker.notifyInvalidation(
-                setOf(
-                    RustDataSourceId.MESSAGE, RustDataSourceId.LABELS
-                )
-            )
         }
     }
 

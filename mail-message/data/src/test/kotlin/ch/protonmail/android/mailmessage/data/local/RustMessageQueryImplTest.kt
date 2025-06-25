@@ -21,12 +21,10 @@ package ch.protonmail.android.mailmessage.data.local
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxMessagePaginatorWrapper
-import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
@@ -38,7 +36,6 @@ import io.mockk.coVerify
 import io.mockk.coVerifySequence
 import io.mockk.mockk
 import io.mockk.slot
-import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.LiveQueryCallback
@@ -59,10 +56,8 @@ class RustMessageQueryImplTest {
     private val messagePaginator: MailboxMessagePaginatorWrapper = mockk()
 
     private val messagePaginatorManager = mockk<MessagePaginatorManager>()
-    private val invalidationTracker: RustInvalidationTracker = mockk(relaxUnitFun = true)
 
     private val rustMessageQuery = RustMessageQueryImpl(
-        invalidationTracker,
         messagePaginatorManager
     )
 
@@ -83,26 +78,6 @@ class RustMessageQueryImplTest {
         // Then
         assertEquals(expectedMessages, actual)
         coVerify { messagePaginatorManager.getOrCreatePaginator(userId, pageKey, mailboxCallbackSlot.captured) }
-    }
-
-    @Test
-    fun `invalidate paging data when mailbox live query callback is called`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val callbackSlot = slot<LiveQueryCallback>()
-        val localLabelId = LocalLabelId(1u)
-        val pageKey = PageKey.DefaultPageKey(labelId = localLabelId.toLabelId())
-        coEvery {
-            messagePaginatorManager.getOrCreatePaginator(userId, pageKey, capture(callbackSlot))
-        } returns messagePaginator.right()
-        coEvery { messagePaginator.nextPage() } returns emptyList<LocalMessageMetadata>().right()
-
-        // When
-        rustMessageQuery.getMessages(userId, pageKey)
-        callbackSlot.captured.onUpdate()
-
-        // Then
-        verify { invalidationTracker.notifyInvalidation(any()) }
     }
 
     @Test

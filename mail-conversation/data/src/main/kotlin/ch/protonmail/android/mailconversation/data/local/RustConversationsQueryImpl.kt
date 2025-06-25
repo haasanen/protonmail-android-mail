@@ -25,8 +25,6 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
-import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
-import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
@@ -43,7 +41,6 @@ import javax.inject.Inject
 
 class RustConversationsQueryImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
-    private val invalidationTracker: RustInvalidationTracker,
     private val createRustConversationPaginator: CreateRustConversationPaginator
 ) : RustConversationsQuery {
 
@@ -54,12 +51,6 @@ class RustConversationsQueryImpl @Inject constructor(
         override fun onUpdate() {
             Timber.d("rust-conversation-query: paging: conversations updated, invalidating paginator...")
 
-            invalidationTracker.notifyInvalidation(
-                setOf(
-                    RustDataSourceId.CONVERSATION,
-                    RustDataSourceId.LABELS
-                )
-            )
         }
     }
 

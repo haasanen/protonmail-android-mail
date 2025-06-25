@@ -24,7 +24,6 @@ import ch.protonmail.android.mailmailbox.domain.repository.MailboxBannersReposit
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxItems
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxItemPagingSourceFactory
-import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -37,13 +36,10 @@ import dagger.hilt.android.components.ViewModelComponent
 object MailboxModule {
 
     @Provides
-    fun providesMailboxItemPagingSourceFactory(
-        getMailboxItems: GetMailboxItems,
-        rustInvalidationTracker: RustInvalidationTracker
-    ): MailboxItemPagingSourceFactory = MailboxItemPagingSourceFactory(
-        getMailboxItems,
-        rustInvalidationTracker
-    )
+    fun providesMailboxItemPagingSourceFactory(getMailboxItems: GetMailboxItems): MailboxItemPagingSourceFactory =
+        MailboxItemPagingSourceFactory(
+            getMailboxItems
+        )
 
     @Module
     @InstallIn(ViewModelComponent::class)

@@ -25,7 +25,6 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxItems
-import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.copyWithNewPageToLoad
@@ -33,22 +32,18 @@ import ch.protonmail.android.mailpagination.presentation.paging.RustPagingSource
 import timber.log.Timber
 
 class MailboxItemPagingSourceFactory(
-    private val getMailboxItems: GetMailboxItems,
-    private val rustInvalidationTracker: RustInvalidationTracker
+    private val getMailboxItems: GetMailboxItems
 ) {
 
     fun create(mailboxPageKey: MailboxPageKey, type: MailboxItemType): PagingSource<MailboxPageKey, MailboxItem> =
-        RustMailboxItemPagingSource(getMailboxItems, rustInvalidationTracker, mailboxPageKey, type)
+        RustMailboxItemPagingSource(getMailboxItems, mailboxPageKey, type)
 }
 
 class RustMailboxItemPagingSource(
     private val getMailboxItems: GetMailboxItems,
-    rustInvalidationTracker: RustInvalidationTracker,
     private val mailboxPageKey: MailboxPageKey,
     private val type: MailboxItemType
-) : RustPagingSource<MailboxPageKey, MailboxItem>(
-    rustInvalidationTracker = rustInvalidationTracker
-) {
+) : RustPagingSource<MailboxPageKey, MailboxItem>() {
 
     override val keyReuseSupported: Boolean
         get() = true

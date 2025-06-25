@@ -18,44 +18,18 @@
 
 package ch.protonmail.android.mailpagination.presentation.paging
 
-import java.util.concurrent.atomic.AtomicBoolean
 import androidx.paging.PagingSource
-import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
-import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationObserver
-import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
-abstract class RustPagingSource<Key : Any, Value : Any>(
-    private val rustInvalidationTracker: RustInvalidationTracker
-) : PagingSource<Key, Value>() {
-
-    private val registeredObserver = AtomicBoolean(false)
-
-    private val observer = object : RustInvalidationObserver(
-        setOf(RustDataSourceId.CONVERSATION, RustDataSourceId.MESSAGE)
-    ) {
-        override fun onInvalidated(invalidatedDataSources: Set<RustDataSourceId>) {
-            Timber.d("Paging: data sources $invalidatedDataSources invalidated")
-            invalidate()
-        }
-    }
+abstract class RustPagingSource<Key : Any, Value : Any> : PagingSource<Key, Value>() {
 
     override suspend fun load(params: LoadParams<Key>): LoadResult<Key, Value> {
         return withContext(Dispatchers.IO) {
 
-            registerObserverIfNecessary()
-
             val loadResult = loadPage(params)
             @Suppress("UNCHECKED_CAST")
             if (invalid) INVALID as LoadResult.Invalid<Key, Value> else loadResult
-        }
-    }
-
-    private fun registerObserverIfNecessary() {
-        if (registeredObserver.compareAndSet(false, true)) {
-            rustInvalidationTracker.addObserver(observer)
         }
     }
 

@@ -31,8 +31,6 @@ import ch.protonmail.android.mailmessage.data.repository.RustMessageBodyReposito
 import ch.protonmail.android.mailmessage.data.repository.PreviousScheduleSendTimeInMemoryRepository
 import ch.protonmail.android.mailmessage.data.repository.RustMessageActionRepository
 import ch.protonmail.android.mailmessage.data.repository.RustMessageRepositoryImpl
-import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
-import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTrackerImpl
 import ch.protonmail.android.mailmessage.domain.repository.InMemoryAvatarImageStateRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageActionRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
@@ -85,10 +83,6 @@ object MailMessageModule {
         @Binds
         @Singleton
         fun bindRustMessageDataSource(impl: RustMessageDataSourceImpl): RustMessageDataSource
-
-        @Binds
-        @Singleton
-        fun bindsRustInvalidationTracker(impl: RustInvalidationTrackerImpl): RustInvalidationTracker
 
         @Binds
         @Singleton
