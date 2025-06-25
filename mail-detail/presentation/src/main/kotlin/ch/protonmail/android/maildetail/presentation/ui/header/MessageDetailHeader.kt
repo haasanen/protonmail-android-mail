@@ -213,17 +213,17 @@ private fun SenderNameRow(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            modifier = modifier
-                .testTag(MessageDetailHeaderTestTags.SenderName)
-                .weight(1f, fill = false),
-            text = participantUiModel.participantName,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            style = style
-        )
-        if (participantUiModel.shouldShowOfficialBadge) {
-            OfficialBadge()
+        Row(modifier = Modifier.weight(1f)) {
+            Text(
+                modifier = Modifier.testTag(MessageDetailHeaderTestTags.SenderName),
+                text = participantUiModel.participantName,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = style
+            )
+            if (participantUiModel.shouldShowOfficialBadge) {
+                OfficialBadge()
+            }
         }
         icons()
     }
