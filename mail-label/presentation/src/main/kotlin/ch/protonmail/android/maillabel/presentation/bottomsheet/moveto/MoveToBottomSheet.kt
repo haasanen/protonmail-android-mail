@@ -18,15 +18,20 @@
 
 package ch.protonmail.android.maillabel.presentation.bottomsheet.moveto
 
+import java.util.UUID
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonHorizontallyCenteredProgress
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.R
+import ch.protonmail.android.maillabel.presentation.bottomsheet.BottomSheetAnimatedContent
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import me.proton.core.domain.entity.UserId
 
@@ -55,18 +60,26 @@ fun MoveToBottomSheetScreen(
         onMoveToComplete = actions.onMoveToComplete
     )
 
-    when (val currentState = state) {
-        is MoveToState.Data -> MoveToBottomSheetContent(
-            dataState = currentState,
-            actions = contentActions,
-            modifier = modifier
-        )
+    BottomSheetAnimatedContent(
+        state = state,
+        loadingState = MoveToState.Loading,
+        errorStates = setOf(MoveToState.Error)
+    ) { currentState ->
+        when (currentState) {
+            is MoveToState.Data -> MoveToBottomSheetContent(
+                dataState = currentState,
+                actions = contentActions,
+                modifier = modifier
+            )
 
-        is MoveToState.Loading -> ProtonHorizontallyCenteredProgress()
+            is MoveToState.Loading -> ProtonHorizontallyCenteredProgress(
+                modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Large)
+            )
 
-        is MoveToState.Error -> {
-            actions.onError(stringResource(R.string.bottom_sheet_label_as_error_fetch))
-            actions.onDismiss()
+            is MoveToState.Error -> {
+                actions.onError(stringResource(R.string.bottom_sheet_move_to_error_fetch))
+                actions.onDismiss()
+            }
         }
     }
 }
@@ -83,6 +96,7 @@ object MoveToBottomSheet {
         ) -> Unit
     )
 
+    @Stable
     data class InitialData(
         val userId: UserId,
         val currentLocationLabelId: LabelId,
@@ -90,6 +104,7 @@ object MoveToBottomSheet {
         val entryPoint: MoveToBottomSheetEntryPoint
     ) {
 
-        fun identifier() = "${this.hashCode()}"
+        private val identifier by lazy { UUID.randomUUID().toString() }
+        fun identifier() = identifier
     }
 }

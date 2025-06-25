@@ -18,13 +18,17 @@
 
 package ch.protonmail.android.maillabel.presentation.bottomsheet
 
+import java.util.UUID
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonHorizontallyCenteredProgress
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.R
 import me.proton.core.domain.entity.UserId
@@ -55,18 +59,26 @@ fun LabelAsBottomSheetScreen(
         onDismiss = actions.onDismiss
     )
 
-    when (val currentState = state) {
-        is LabelAsState.Data -> LabelAsBottomSheetContent(
-            labelAsDataState = currentState,
-            actions = contentActions,
-            modifier = modifier
-        )
+    BottomSheetAnimatedContent(
+        state = state,
+        loadingState = LabelAsState.Loading,
+        errorStates = setOf(LabelAsState.Error)
+    ) { currentState ->
+        when (currentState) {
+            is LabelAsState.Data -> LabelAsBottomSheetContent(
+                labelAsDataState = currentState,
+                actions = contentActions,
+                modifier = modifier
+            )
 
-        is LabelAsState.Loading -> ProtonHorizontallyCenteredProgress()
+            is LabelAsState.Loading -> ProtonHorizontallyCenteredProgress(
+                modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Large)
+            )
 
-        is LabelAsState.Error -> {
-            actions.onError(stringResource(R.string.bottom_sheet_label_as_error_fetch))
-            actions.onDismiss()
+            is LabelAsState.Error -> {
+                actions.onError(stringResource(R.string.bottom_sheet_label_as_error_fetch))
+                actions.onDismiss()
+            }
         }
     }
 }
@@ -80,6 +92,7 @@ object LabelAsBottomSheet {
         val onLabelAsComplete: (shouldExit: Boolean, entryPoint: LabelAsBottomSheetEntryPoint) -> Unit
     )
 
+    @Stable
     data class InitialData(
         val userId: UserId,
         val currentLocationLabelId: LabelId,
@@ -87,6 +100,7 @@ object LabelAsBottomSheet {
         val entryPoint: LabelAsBottomSheetEntryPoint
     ) {
 
-        fun identifier() = "${this.hashCode()}"
+        private val identifier by lazy { UUID.randomUUID().toString() }
+        fun identifier() = identifier
     }
 }
