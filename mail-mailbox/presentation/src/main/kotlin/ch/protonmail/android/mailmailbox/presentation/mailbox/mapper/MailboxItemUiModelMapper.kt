@@ -34,6 +34,7 @@ import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.FormatMailboxScheduleSendTime
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.GetMailboxItemLocationIcon
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
@@ -43,11 +44,13 @@ import me.proton.core.domain.arch.Mapper
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Instant
 
 class MailboxItemUiModelMapper @Inject constructor(
     private val mailboxAvatarUiModelMapper: MailboxAvatarUiModelMapper,
     private val colorMapper: ColorMapper,
-    private val formatMailboxItemTime: FormatShortTime,
+    private val formatShortTime: FormatShortTime,
+    private val formatScheduleSendTime: FormatMailboxScheduleSendTime,
     private val getMailboxItemLocationIcon: GetMailboxItemLocationIcon,
     private val getParticipantsResolvedNames: GetParticipantsResolvedNames,
     private val expiryInformationUiModelMapper: ExpiryInformationUiModelMapper,
@@ -68,7 +71,7 @@ class MailboxItemUiModelMapper @Inject constructor(
             userId = userId.id,
             id = mailboxItem.id,
             conversationId = mailboxItem.conversationId,
-            time = formatMailboxItemTime(mailboxItem.time.seconds),
+            time = formatMailboxTime(mailboxItem),
             isRead = mailboxItem.read,
             labels = toLabelUiModels(mailboxItem.labels),
             subject = mailboxItem.subject,
@@ -85,6 +88,12 @@ class MailboxItemUiModelMapper @Inject constructor(
             attachments = mailboxItem.attachments.map(attachmentMetadataUiModelMapper::toUiModel).toImmutableList(),
             shouldShowScheduleSendTime = mailboxItem.isScheduled
         )
+    }
+
+    private fun formatMailboxTime(mailboxItem: MailboxItem) = if (mailboxItem.isScheduled) {
+        formatScheduleSendTime(Instant.fromEpochSeconds(mailboxItem.time.seconds.inWholeSeconds))
+    } else {
+        formatShortTime(mailboxItem.time.seconds)
     }
 
     private suspend fun getLocationIconsToDisplay(

@@ -78,7 +78,7 @@ class FormatMailboxScheduleSendTimeTest {
     }
 
     @Test
-    fun `when the schedule time is not today or tomorrow show localized short date`() {
+    fun `when the schedule time is not today or tomorrow show localized short date with time`() {
         // Given
         givenCurrentTimeAndLocale(
             Instant.fromEpochSeconds(1_658_772_437),
@@ -96,6 +96,7 @@ class FormatMailboxScheduleSendTimeTest {
         assertIs<TextUiModel.Text>(actual, actual.toString())
         assertEquals(TextUiModel.Text(expected), actual)
     }
+
 
     private fun givenCurrentTimeAndLocale(currentTime: Instant, locale: Locale) {
         val calendar = Calendar.getInstance(locale)

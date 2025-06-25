@@ -43,6 +43,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInform
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemLocationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.FormatMailboxScheduleSendTime
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.GetMailboxItemLocationIcon
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
@@ -65,6 +66,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Instant
 
 class MailboxItemUiModelMapperTest {
 
@@ -88,7 +90,8 @@ class MailboxItemUiModelMapperTest {
             )
         } returns GetMailboxItemLocationIcon.Result.None
     }
-    private val formatMailboxItemTime: FormatShortTime = mockk()
+    private val formatShortTime: FormatShortTime = mockk()
+    private val formatScheduleSendTime: FormatMailboxScheduleSendTime = mockk()
 
     private val getParticipantsResolvedNames = mockk<GetParticipantsResolvedNames> {
         coEvery {
@@ -114,7 +117,8 @@ class MailboxItemUiModelMapperTest {
     private val mapper = MailboxItemUiModelMapper(
         mailboxAvatarUiModelMapper = mailboxAvatarUiModelMapper,
         colorMapper = colorMapper,
-        formatMailboxItemTime = formatMailboxItemTime,
+        formatShortTime = formatShortTime,
+        formatScheduleSendTime = formatScheduleSendTime,
         getMailboxItemLocationIcon = getMailboxItemLocationIcons,
         getParticipantsResolvedNames = getParticipantsResolvedNames,
         expiryInformationUiModelMapper = expiryInformationUiModelMapper,
@@ -124,7 +128,7 @@ class MailboxItemUiModelMapperTest {
     @BeforeTest
     fun setup() {
         mockkConstructor(Duration::class)
-        every { formatMailboxItemTime(anyConstructed()) } returns TextUiModel.Text("21 Feb")
+        every { formatShortTime(anyConstructed()) } returns TextUiModel.Text("21 Feb")
     }
 
     @AfterTest
@@ -233,12 +237,25 @@ class MailboxItemUiModelMapperTest {
     }
 
     @Test
-    fun `mailbox item time is formatted in the ui model`() = runTest {
+    fun `mailbox item time is formatted normally when item is not scheduled`() = runTest {
         // Given
         val time: Long = 1_658_851_202
         val mailboxItem = buildMailboxItem(time = time)
         val result = TextUiModel.Text("18:00")
-        every { formatMailboxItemTime.invoke(time.seconds) } returns result
+        every { formatShortTime.invoke(time.seconds) } returns result
+        // When
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
+        // Then
+        assertEquals(result, actual.time)
+    }
+
+    @Test
+    fun `mailbox item time is formatted as scheduled when item is scheduled`() = runTest {
+        // Given
+        val instant = Instant.fromEpochSeconds(1_658_851_202)
+        val mailboxItem = buildMailboxItem(time = instant.epochSeconds, isScheduled = true)
+        val result = TextUiModel.Text("tomorrow at 09:00")
+        every { formatScheduleSendTime.invoke(instant) } returns result
         // When
         val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then

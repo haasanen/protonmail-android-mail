@@ -68,7 +68,8 @@ object MailboxTestData {
         expirationTime: Long = 0,
         calendarAttachmentCount: Int = 0,
         exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Sent, LabelId("1")),
-        attachments: List<AttachmentMetadata> = emptyList()
+        attachments: List<AttachmentMetadata> = emptyList(),
+        isScheduled: Boolean = false
     ) = MailboxItem(
         type = type,
         id = id,
@@ -93,7 +94,7 @@ object MailboxTestData {
         exclusiveLocation = exclusiveLocation,
         attachments = attachments,
         isDraft = false,
-        isScheduled = false
+        isScheduled = isScheduled
     )
 
     private fun buildMessageMailboxItem(
