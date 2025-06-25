@@ -134,4 +134,6 @@
         <item quantity="other">Expires in %d minutes</item>
     </plurals>
     <string name="expires_in_less_than_a_minute">Expires in less than a minute</string>
+    <string name="schedule_send_tomorrow">Tomorrow, %1$s</string>
+    <string name="schedule_send_today">Today, %1$s</string>
 </resources>
