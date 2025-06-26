@@ -20,5 +20,6 @@ package ch.protonmail.android.maildetail.presentation.model
 
 data class MessageDetailFooterUiModel(
     val messageId: MessageIdUiModel,
-    val shouldShowReplyAll: Boolean
+    val shouldShowReplyAll: Boolean,
+    val shouldShowActions: Boolean
 )

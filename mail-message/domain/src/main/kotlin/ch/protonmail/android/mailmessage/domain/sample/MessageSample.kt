@@ -288,6 +288,7 @@ object MessageSample {
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
         isDraft = false,
-        isScheduled = false
+        isScheduled = false,
+        isReplyAllowed = true
     )
 }

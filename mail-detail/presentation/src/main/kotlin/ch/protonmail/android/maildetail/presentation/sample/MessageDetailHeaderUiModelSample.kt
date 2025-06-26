@@ -63,6 +63,7 @@ object MessageDetailHeaderUiModelSample {
         encryptionPadlock = 0,
         encryptionInfo = "",
         messageIdUiModel = MessageIdUiModel("id"),
-        themeOverride = null
+        themeOverride = null,
+        shouldShowQuickReply = true
     )
 }

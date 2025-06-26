@@ -95,7 +95,8 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
             encryptionPadlock = R.drawable.ic_proton_lock,
             encryptionInfo = "End-to-end encrypted and signed message",
             messageIdUiModel = toMessageUiModel(message.messageId),
-            themeOverride = viewModePreference.toThemeOverride()
+            themeOverride = viewModePreference.toThemeOverride(),
+            shouldShowQuickReply = message.isReplyAllowed
         )
     }
 
@@ -106,6 +107,7 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
             ViewModePreference.DarkMode -> MessageTheme.Dark
         }
     }
+
     private fun Message.hasNonCalendarAttachments() = numAttachments > attachmentCount.calendar
 
     private fun Message.hasUndisclosedRecipients() = (toList + ccList + bccList).isEmpty()

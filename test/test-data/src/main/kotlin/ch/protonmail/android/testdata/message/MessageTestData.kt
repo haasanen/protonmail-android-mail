@@ -235,6 +235,7 @@ object MessageTestData {
         exclusiveLocation = exclusiveLocation,
         attachments = attachments,
         isDraft = false,
-        isScheduled = false
+        isScheduled = false,
+        isReplyAllowed = true
     )
 }

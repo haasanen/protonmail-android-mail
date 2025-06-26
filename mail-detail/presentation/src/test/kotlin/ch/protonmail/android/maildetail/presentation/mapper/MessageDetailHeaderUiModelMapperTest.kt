@@ -106,7 +106,8 @@ class MessageDetailHeaderUiModelMapperTest {
         encryptionPadlock = ic_proton_lock,
         encryptionInfo = "End-to-end encrypted and signed message",
         messageIdUiModel = MessageIdUiModel(message.messageId.id),
-        themeOverride = null
+        themeOverride = null,
+        shouldShowQuickReply = true
     )
 
     private val colorMapper: ColorMapper = mockk {

@@ -26,12 +26,14 @@ internal object MessageDetailFooterPreviewData {
 
     val ReplyAll = MessageDetailFooterUiModel(
         MessageIdUiModel("id"),
-        shouldShowReplyAll = true
+        shouldShowReplyAll = true,
+        shouldShowActions = true
     )
 
     val Reply = MessageDetailFooterUiModel(
         MessageIdUiModel("id"),
-        shouldShowReplyAll = false
+        shouldShowReplyAll = false,
+        shouldShowActions = true
     )
 }
 

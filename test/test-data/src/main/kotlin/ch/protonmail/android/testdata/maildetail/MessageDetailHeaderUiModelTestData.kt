@@ -83,6 +83,7 @@ object MessageDetailHeaderUiModelTestData {
         encryptionPadlock = R.drawable.ic_proton_lock,
         encryptionInfo = "End-to-end encrypted and signed message",
         messageIdUiModel = MessageIdUiModel("id"),
-        themeOverride = null
+        themeOverride = null,
+        shouldShowQuickReply = true
     )
 }

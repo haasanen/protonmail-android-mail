@@ -29,7 +29,8 @@ class MessageDetailFooterUiModelMapper @Inject constructor() {
         val shouldShowReplyAll = message.allRecipients.size > 1
         return MessageDetailFooterUiModel(
             MessageIdUiModel(message.messageId.id),
-            shouldShowReplyAll = shouldShowReplyAll
+            shouldShowReplyAll = shouldShowReplyAll,
+            shouldShowActions = message.isReplyAllowed
         )
     }
 }

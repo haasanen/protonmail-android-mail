@@ -38,7 +38,8 @@ internal class MessageDetailFooterUiModelMapperTest {
 
         val expected = MessageDetailFooterUiModel(
             messageId = MessageIdUiModel(multipleRecipientsMessage.messageId.id),
-            shouldShowReplyAll = true
+            shouldShowReplyAll = true,
+            shouldShowActions = true
         )
 
         // When
@@ -55,7 +56,8 @@ internal class MessageDetailFooterUiModelMapperTest {
 
         val expected = MessageDetailFooterUiModel(
             messageId = MessageIdUiModel(singleRecipientMessage.messageId.id),
-            shouldShowReplyAll = false
+            shouldShowReplyAll = false,
+            shouldShowActions = true
         )
 
         // When

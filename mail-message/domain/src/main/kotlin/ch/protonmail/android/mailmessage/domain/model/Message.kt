@@ -67,7 +67,8 @@ data class Message(
     val avatarInformation: AvatarInformation,
     val exclusiveLocation: ExclusiveLocation,
     val isDraft: Boolean,
-    val isScheduled: Boolean
+    val isScheduled: Boolean,
+    val isReplyAllowed: Boolean
 ) {
     val allRecipients = toList + ccList + bccList
 

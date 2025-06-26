@@ -91,7 +91,8 @@ object MessageDetailHeaderPreviewData {
         encryptionPadlock = R.drawable.ic_proton_lock,
         encryptionInfo = "End-to-end encrypted and signed message",
         messageIdUiModel = MessageIdUiModel("string"),
-        themeOverride = null
+        themeOverride = null,
+        shouldShowQuickReply = true
     )
 
     val WithLabels = WithoutLabels.copy(

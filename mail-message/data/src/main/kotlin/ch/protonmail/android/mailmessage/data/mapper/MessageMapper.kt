@@ -121,7 +121,8 @@ fun LocalMessageMetadata.toMessage(): Message {
         avatarInformation = this.avatar.toAvatarInformation(),
         exclusiveLocation = this.exclusiveLocation.toExclusiveLocation(),
         isDraft = this.isDraft,
-        isScheduled = this.isScheduled
+        isScheduled = this.isScheduled,
+        isReplyAllowed = this.canReply
     )
 }
 

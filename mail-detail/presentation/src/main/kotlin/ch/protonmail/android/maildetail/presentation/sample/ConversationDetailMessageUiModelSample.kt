@@ -284,7 +284,8 @@ object ConversationDetailMessageUiModelSample {
         ),
         messageDetailFooterUiModel = MessageDetailFooterUiModel(
             messageId = MessageIdUiModel(message.messageId.id),
-            shouldShowReplyAll = false
+            shouldShowReplyAll = false,
+            shouldShowActions = true
         ),
         messageBannersUiModel = bannersUiModel,
         messageBodyUiModel = messageBodyUiModel,

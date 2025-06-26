@@ -48,5 +48,6 @@ data class MessageDetailHeaderUiModel(
     @DrawableRes val encryptionPadlock: Int,
     val encryptionInfo: String,
     val messageIdUiModel: MessageIdUiModel,
-    val themeOverride: MessageTheme?
+    val themeOverride: MessageTheme?,
+    val shouldShowQuickReply: Boolean
 )
