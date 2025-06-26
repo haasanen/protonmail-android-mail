@@ -48,10 +48,13 @@ class MessagePaginatorManager @Inject constructor(
     private var paginator: MessagePaginatorWrapper? = null
     private val paginatorMutex = Mutex()
 
+    fun getPaginator(): MessagePaginatorWrapper? = paginator
+
     suspend fun getOrCreatePaginator(
         userId: UserId,
         pageKey: PageKey,
-        callback: LiveQueryCallback
+        callback: LiveQueryCallback,
+        onNewPaginator: suspend () -> Unit
     ): Either<DataError, MessagePaginatorWrapper> = paginatorMutex.withLock {
         if (!shouldInitPaginator(userId, pageKey)) {
             Timber.v("rust-paginator: reusing existing paginator instance...")
@@ -70,6 +73,7 @@ class MessagePaginatorManager @Inject constructor(
             is PageKey.PageKeyForSearch -> createSearchPaginator(session, pageKey, callback)
         }.onRight {
             paginator = it
+            onNewPaginator()
         }
     }
 

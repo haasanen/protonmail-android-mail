@@ -51,6 +51,7 @@ class MessagePaginatorManagerTest {
         createRustMessagesPaginator,
         createRustSearchPaginator
     )
+    private val onNewPaginatorCallback: suspend () -> Unit = {}
 
     @Test
     fun `initialises paginator instance with given input label`() = runTest {
@@ -67,7 +68,7 @@ class MessagePaginatorManagerTest {
         } returns messagePaginator.right()
 
         // When
-        val actual = messagePaginatorManager.getOrCreatePaginator(userId, pageKey, callback)
+        val actual = messagePaginatorManager.getOrCreatePaginator(userId, pageKey, callback, onNewPaginatorCallback)
 
         // Then
         assertNotNull(actual)
@@ -102,9 +103,9 @@ class MessagePaginatorManagerTest {
         } returns paginator.right()
 
         // When
-        messagePaginatorManager.getOrCreatePaginator(userId, pageKeyFirstPage, callback)
+        messagePaginatorManager.getOrCreatePaginator(userId, pageKeyFirstPage, callback, onNewPaginatorCallback)
         coEvery { paginator.nextPage() } returns nextPage.right()
-        messagePaginatorManager.getOrCreatePaginator(userId, pageKeyNextPage, callback)
+        messagePaginatorManager.getOrCreatePaginator(userId, pageKeyNextPage, callback, onNewPaginatorCallback)
 
         // Then
         coVerify(exactly = 1) { createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any()) }
@@ -137,8 +138,8 @@ class MessagePaginatorManagerTest {
         } returns paginator.right()
 
         // When
-        messagePaginatorManager.getOrCreatePaginator(userId, pageKey, callback)
-        messagePaginatorManager.getOrCreatePaginator(userId, newPageKey, callback)
+        messagePaginatorManager.getOrCreatePaginator(userId, pageKey, callback, onNewPaginatorCallback)
+        messagePaginatorManager.getOrCreatePaginator(userId, newPageKey, callback, onNewPaginatorCallback)
 
         // Then
         coVerify(exactly = 1) { createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any()) }
@@ -181,9 +182,9 @@ class MessagePaginatorManagerTest {
         } returns paginator.right()
 
         // When
-        messagePaginatorManager.getOrCreatePaginator(userId, pageKeyFirstPage, callback)
-        messagePaginatorManager.getOrCreatePaginator(userId, pageKeyNextPage, callback)
-        messagePaginatorManager.getOrCreatePaginator(userId, pageKeyFirstPage, callback)
+        messagePaginatorManager.getOrCreatePaginator(userId, pageKeyFirstPage, callback, onNewPaginatorCallback)
+        messagePaginatorManager.getOrCreatePaginator(userId, pageKeyNextPage, callback, onNewPaginatorCallback)
+        messagePaginatorManager.getOrCreatePaginator(userId, pageKeyFirstPage, callback, onNewPaginatorCallback)
 
         // Then
         coVerify(exactly = 2) { createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any()) }
@@ -214,8 +215,8 @@ class MessagePaginatorManagerTest {
         } returns paginator.right()
 
         // When
-        messagePaginatorManager.getOrCreatePaginator(userId, pageKey, callback)
-        messagePaginatorManager.getOrCreatePaginator(userId, newPageKey, callback)
+        messagePaginatorManager.getOrCreatePaginator(userId, pageKey, callback, onNewPaginatorCallback)
+        messagePaginatorManager.getOrCreatePaginator(userId, newPageKey, callback, onNewPaginatorCallback)
 
         // Then
         coVerify(exactly = 1) { createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any()) }
