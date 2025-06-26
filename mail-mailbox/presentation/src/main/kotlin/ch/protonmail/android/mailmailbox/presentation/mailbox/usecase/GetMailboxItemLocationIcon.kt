@@ -44,7 +44,7 @@ class GetMailboxItemLocationIcon @Inject constructor(
         folderColorSettings: FolderColorSettings,
         isShowingSearchResults: Boolean
     ): Result {
-        if (!currentLocationShouldShowIcons(userId) && !isShowingSearchResults) {
+        if (!shouldShowIcons(userId, mailboxItem) && !isShowingSearchResults) {
             return Result.None
         }
 
@@ -77,11 +77,12 @@ class GetMailboxItemLocationIcon @Inject constructor(
         }
     }
 
-    private suspend fun currentLocationShouldShowIcons(userId: UserId): Boolean {
+    private suspend fun shouldShowIcons(userId: UserId, mailboxItem: MailboxItem): Boolean {
         val currentLocation = getSelectedMailLabelId()
+        val itemLocation = mailboxItem.exclusiveLocation
 
         // Should show when starred, all mail, almost all mail or custom label
-        return shouldShowLocationIndicator(userId, currentLocation)
+        return shouldShowLocationIndicator(userId, currentLocation, itemLocation)
     }
 
     sealed interface Result {

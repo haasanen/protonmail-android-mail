@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.domain.usecase
 
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -33,22 +34,29 @@ class ShouldShowLocationIndicator @Inject constructor(
 
     private val systemLabelsCache = mutableMapOf<UserId, List<LabelWithSystemLabelId>?>()
 
-    suspend operator fun invoke(userId: UserId, mailLabelId: MailLabelId): Boolean {
+    suspend operator fun invoke(
+        userId: UserId,
+        mailLabelId: MailLabelId,
+        itemLocation: ExclusiveLocation
+    ): Boolean {
         return when (mailLabelId) {
             is MailLabelId.Custom.Label -> true
-            is MailLabelId.System -> shouldShowIconForSystemLabel(userId, mailLabelId, labelRepository)
+            is MailLabelId.System -> shouldShowIconForSystemLabel(userId, mailLabelId, itemLocation)
             else -> false
         }
     }
 
     private suspend fun shouldShowIconForSystemLabel(
         userId: UserId,
-        mailLabelId: MailLabelId,
-        labelRepository: LabelRepository
+        currentMailLabel: MailLabelId,
+        itemLocation: ExclusiveLocation
     ): Boolean {
         val systemLabels = systemLabelsCache.getOrPut(userId) {
             labelRepository.observeSystemLabels(userId).firstOrNull()
         }
+        val isItemScheduledForSend = isItemScheduledForSend(itemLocation)
+        val isCurrentLocationSent = isCurrentLocationSent(systemLabels, currentMailLabel)
+        val itemIsScheduledAndLocationIsSent = isItemScheduledForSend && isCurrentLocationSent
 
         val locationList = systemLabels?.filter {
             it.systemLabelId.labelId == SystemLabelId.AllMail.labelId ||
@@ -58,7 +66,22 @@ class ShouldShowLocationIndicator @Inject constructor(
             ?.map { it.id }
             ?: emptyList()
 
-        return locationList.contains(mailLabelId)
+        return locationList.contains(currentMailLabel) || itemIsScheduledAndLocationIsSent
+    }
+
+    private fun isCurrentLocationSent(systemLabels: List<LabelWithSystemLabelId>?, currentMailLabel: MailLabelId) =
+        systemLabels?.filter {
+            it.systemLabelId == SystemLabelId.Sent ||
+                it.systemLabelId == SystemLabelId.AllSent
+        }
+            .orEmpty()
+            .map { it.label.labelId }
+            .contains(currentMailLabel.labelId)
+
+    private fun isItemScheduledForSend(itemLocation: ExclusiveLocation) = when (itemLocation) {
+        is ExclusiveLocation.System -> itemLocation.systemLabelId == SystemLabelId.AllScheduled
+        is ExclusiveLocation.Folder,
+        ExclusiveLocation.NoLocation -> false
     }
 
 }

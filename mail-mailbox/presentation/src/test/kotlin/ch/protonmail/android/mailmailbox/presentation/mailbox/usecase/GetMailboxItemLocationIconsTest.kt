@@ -40,6 +40,7 @@ import kotlinx.coroutines.test.runTest
 import ch.protonmail.android.maillabel.presentation.R
 
 class GetMailboxItemLocationIconTest {
+
     private val userId = UserIdSample.Primary
     private val getSelectedMailLabelId = mockk<GetSelectedMailLabelId>()
     private val shouldShowLocationIndicator = mockk<ShouldShowLocationIndicator>()
@@ -58,7 +59,7 @@ class GetMailboxItemLocationIconTest {
         val folderColorSettings = FolderColorSettings(useFolderColor = true, inheritParentFolderColor = false)
 
         every { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.Inbox.labelId)
-        coEvery { shouldShowLocationIndicator(userId, any()) } returns false
+        coEvery { shouldShowLocationIndicator(userId, any(), any()) } returns false
 
         // When
         val result = getMailboxItemLocationIcon(
@@ -82,7 +83,7 @@ class GetMailboxItemLocationIconTest {
         val folderColorSettings = FolderColorSettings(useFolderColor = false, inheritParentFolderColor = false)
 
         every { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.AllMail.labelId)
-        coEvery { shouldShowLocationIndicator(userId, any()) } returns true
+        coEvery { shouldShowLocationIndicator(userId, any(), any()) } returns true
 
         // When
         val result = getMailboxItemLocationIcon(userId, mailboxItem, folderColorSettings, isShowingSearchResults = true)
@@ -100,7 +101,7 @@ class GetMailboxItemLocationIconTest {
         val folderColorSettings = FolderColorSettings(useFolderColor = true, inheritParentFolderColor = false)
 
         every { colorMapper.toColor(any()) } returns Color(0xFFFF5733).right()
-        coEvery { shouldShowLocationIndicator(userId, any()) } returns true
+        coEvery { shouldShowLocationIndicator(userId, any(), any()) } returns true
         every { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.AllMail.labelId)
 
         // When
@@ -119,7 +120,7 @@ class GetMailboxItemLocationIconTest {
             exclusiveLocation = ExclusiveLocation.Folder("Custom folder", LabelId("1"), "#FF5733")
         )
         val folderColorSettings = FolderColorSettings(useFolderColor = false, inheritParentFolderColor = false)
-        coEvery { shouldShowLocationIndicator(userId, any()) } returns true
+        coEvery { shouldShowLocationIndicator(userId, any(), any()) } returns true
         every { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.AllMail.labelId)
 
         // When
