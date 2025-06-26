@@ -70,6 +70,7 @@ include(":mail-contact:data")
 include(":mail-contact:domain")
 include(":mail-contact:presentation")
 
+include(":mail-pagination:dagger")
 include(":mail-pagination:data")
 include(":mail-pagination:domain")
 include(":mail-pagination:presentation")

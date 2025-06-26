@@ -16,25 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("com.android.library")
-    kotlin("android")
-    id("app-config-plugin")
-}
+package ch.protonmail.android.mailpagination.domain.usecase
 
-android {
-    namespace = "ch.protonmail.android.mailpagination"
-    compileSdk = AppConfiguration.compileSdk.get()
+import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
+import javax.inject.Inject
 
-    defaultConfig {
-        minSdk = AppConfiguration.minSdk.get()
-        lint.targetSdk = AppConfiguration.targetSdk.get()
-    }
-}
-
-dependencies {
-    api(project(":mail-pagination:dagger"))
-    api(project(":mail-pagination:data"))
-    api(project(":mail-pagination:domain"))
-    api(project(":mail-pagination:presentation"))
+class ObservePageInvalidationEvents @Inject constructor(
+    private val repository: PageInvalidationRepository
+) {
+    operator fun invoke() = repository.observePageInvalidationEvents()
 }

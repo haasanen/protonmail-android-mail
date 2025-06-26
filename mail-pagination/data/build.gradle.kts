@@ -19,6 +19,8 @@
 plugins {
     id("com.android.library")
     kotlin("android")
+    kotlin("kapt")
+    kotlin("plugin.serialization")
     id("app-config-plugin")
 }
 
@@ -30,7 +32,6 @@ android {
         minSdk = AppConfiguration.minSdk.get()
         lint.targetSdk = AppConfiguration.targetSdk.get()
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -42,11 +43,18 @@ android {
 }
 
 dependencies {
+    kapt(libs.bundles.app.annotationProcessors)
+
     compileOnly(libs.proton.rust.core)
+    implementation(libs.bundles.module.data)
+    implementation(libs.proton.core.user.domain)
 
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-pagination:domain"))
+    implementation(project(":mail-label:domain"))
 
     testImplementation(libs.bundles.test)
+    testImplementation(project(":test:utils"))
+    testImplementation(project(":test:test-data"))
 }

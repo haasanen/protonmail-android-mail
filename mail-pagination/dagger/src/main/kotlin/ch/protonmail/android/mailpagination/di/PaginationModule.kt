@@ -16,25 +16,24 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("com.android.library")
-    kotlin("android")
-    id("app-config-plugin")
-}
+package ch.protonmail.android.mailpagination.di
 
-android {
-    namespace = "ch.protonmail.android.mailpagination"
-    compileSdk = AppConfiguration.compileSdk.get()
+import ch.protonmail.android.mailpagination.data.repository.InMemoryPageInvalidationRepositoryImpl
+import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
-    defaultConfig {
-        minSdk = AppConfiguration.minSdk.get()
-        lint.targetSdk = AppConfiguration.targetSdk.get()
+@Module
+@InstallIn(SingletonComponent::class)
+object PaginationModule {
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    internal interface BindsModule {
+
+        @Binds
+        fun bindPageInvalidationRepository(impl: InMemoryPageInvalidationRepositoryImpl): PageInvalidationRepository
     }
-}
-
-dependencies {
-    api(project(":mail-pagination:dagger"))
-    api(project(":mail-pagination:data"))
-    api(project(":mail-pagination:domain"))
-    api(project(":mail-pagination:presentation"))
 }

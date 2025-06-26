@@ -19,22 +19,37 @@
 plugins {
     id("com.android.library")
     kotlin("android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
     id("app-config-plugin")
 }
 
 android {
-    namespace = "ch.protonmail.android.mailpagination"
+    namespace = "ch.protonmail.android.mailpagination.dagger"
     compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
         minSdk = AppConfiguration.minSdk.get()
         lint.targetSdk = AppConfiguration.targetSdk.get()
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
 }
 
 dependencies {
-    api(project(":mail-pagination:dagger"))
-    api(project(":mail-pagination:data"))
-    api(project(":mail-pagination:domain"))
-    api(project(":mail-pagination:presentation"))
+    kapt(libs.bundles.app.annotationProcessors)
+    implementation(libs.dagger.hilt.android)
+    compileOnly(libs.proton.rust.core)
+
+    implementation(project(":mail-pagination:data"))
+    implementation(project(":mail-pagination:domain"))
+    implementation(project(":mail-common:data"))
+
 }
