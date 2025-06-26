@@ -22,7 +22,6 @@ import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.model.toDynamicSystemMailLabel
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import kotlinx.coroutines.flow.firstOrNull
 import me.proton.core.domain.entity.UserId
@@ -58,16 +57,22 @@ class ShouldShowLocationIndicator @Inject constructor(
         val isCurrentLocationSent = isCurrentLocationSent(systemLabels, currentMailLabel)
         val itemIsScheduledAndLocationIsSent = isItemScheduledForSend && isCurrentLocationSent
 
-        val locationList = systemLabels?.filter {
-            it.systemLabelId.labelId == SystemLabelId.AllMail.labelId ||
-                it.systemLabelId.labelId == SystemLabelId.AlmostAllMail.labelId ||
-                it.systemLabelId.labelId == SystemLabelId.Starred.labelId
-        }?.toDynamicSystemMailLabel()
-            ?.map { it.id }
-            ?: emptyList()
+        val isCurrentLocationAllMailOrStarred = isCurrentLocationAllMailOrStarred(systemLabels, currentMailLabel)
 
-        return locationList.contains(currentMailLabel) || itemIsScheduledAndLocationIsSent
+        return isCurrentLocationAllMailOrStarred || itemIsScheduledAndLocationIsSent
     }
+
+    private fun isCurrentLocationAllMailOrStarred(
+        systemLabels: List<LabelWithSystemLabelId>?,
+        currentMailLabel: MailLabelId
+    ) = systemLabels?.filter {
+        it.systemLabelId == SystemLabelId.AllMail ||
+            it.systemLabelId == SystemLabelId.AlmostAllMail ||
+            it.systemLabelId == SystemLabelId.Starred
+    }
+        .orEmpty()
+        .map { it.label.labelId }
+        .contains(currentMailLabel.labelId)
 
     private fun isCurrentLocationSent(systemLabels: List<LabelWithSystemLabelId>?, currentMailLabel: MailLabelId) =
         systemLabels?.filter {
