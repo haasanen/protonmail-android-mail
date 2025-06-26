@@ -46,7 +46,9 @@ fun LazyPagingItems<MailboxItemUiModel>.mapToUiStates(refreshRequested: Boolean)
     return when {
         isPageLoadingNoData() -> MailboxScreenState.Loading
         isPageAppendLoading() -> MailboxScreenState.AppendLoading
-        isPageLoadingWithData() -> MailboxScreenState.LoadingWithData
+        // Ignore isPageLoadingWithData() case to create MailboxScreenState.LoadingWithData,
+        // we do not want to display a Loading spinner at the top
+        // unless user performs Pull to Refresh
         isPageAppendFailed() -> appendErrorToUiState(this)
         isPageRefreshFailed() -> refreshErrorToUiState(this)
         isPageEmpty() -> MailboxScreenState.Empty
