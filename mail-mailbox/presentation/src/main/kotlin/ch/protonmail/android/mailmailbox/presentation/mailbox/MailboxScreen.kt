@@ -687,6 +687,13 @@ private fun MailboxSwipeRefresh(
         items.refresh()
     }
 
+    val listDataState = state as? MailboxListState.Data
+    listDataState?.paginatorInvalidationEffect?.let {
+        ConsumableLaunchedEffect(it) {
+            items.refresh()
+        }
+    }
+
     PullToRefreshBox(
         modifier = modifier,
         state = pullToRefreshState,
