@@ -23,10 +23,8 @@ import android.text.format.Formatter
 import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatExtendedTime
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
-import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
@@ -37,7 +35,6 @@ import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
-import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -54,7 +51,6 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
     private val formatShortTime: FormatShortTime,
     private val messageLocationUiModelMapper: MessageLocationUiModelMapper,
     private val participantUiModelMapper: ParticipantUiModelMapper,
-    private val resolveParticipantName: ResolveParticipantName,
     private val avatarImageUiModelMapper: AvatarImageUiModelMapper
 ) {
 
@@ -111,16 +107,6 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
     private fun Message.hasNonCalendarAttachments() = numAttachments > attachmentCount.calendar
 
     private fun Message.hasUndisclosedRecipients() = (toList + ccList + bccList).isEmpty()
-
-    private fun Message.allRecipients(contacts: List<ContactMetadata.Contact>): TextUiModel {
-        val allRecipientsList = toList + ccList + bccList
-
-        return if (allRecipientsList.isNotEmpty()) {
-            TextUiModel.Text(allRecipientsList.joinToString { resolveParticipantName(it).name })
-        } else {
-            TextUiModel.TextRes(R.string.undisclosed_recipients)
-        }
-    }
 
     private fun toLabelUiModels(labels: List<Label>): ImmutableList<LabelUiModel> =
         labels.filter { it.type == LabelType.MessageLabel }.map { label ->

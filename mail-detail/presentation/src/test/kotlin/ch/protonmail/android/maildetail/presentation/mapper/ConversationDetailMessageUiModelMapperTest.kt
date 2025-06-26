@@ -40,10 +40,8 @@ import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
-import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
 import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
-import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.maildetail.MessageBannersUiModelTestData.messageBannersUiModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -87,17 +85,6 @@ internal class ConversationDetailMessageUiModelMapperTest {
     private val messageLocationUiModelMapper: MessageLocationUiModelMapper = mockk {
         coEvery { this@mockk(messageLocation = any()) } returns MessageLocationUiModelSample.AllMail
     }
-    private val resolveParticipantName: ResolveParticipantName = mockk {
-        every {
-            this@mockk(participant = RecipientSample.Doe)
-        } returns ResolveParticipantNameResult(ContactSample.Doe.name, isProton = false)
-        every {
-            this@mockk(participant = RecipientSample.John)
-        } returns ResolveParticipantNameResult(ContactSample.John.name, isProton = false)
-        every {
-            this@mockk(participant = RecipientSample.PreciWeather)
-        } returns ResolveParticipantNameResult(RecipientSample.PreciWeather.name, isProton = false)
-    }
     private val avatarImageUiModelMapper: AvatarImageUiModelMapper = mockk {
         every { this@mockk.toUiModel(avatarImageState = any()) } returns AvatarImageUiModel.NoImageAvailable
     }
@@ -110,7 +97,6 @@ internal class ConversationDetailMessageUiModelMapperTest {
             formatShortTime = formatShortTime,
             messageLocationUiModelMapper = messageLocationUiModelMapper,
             participantUiModelMapper = ParticipantUiModelMapper(ResolveParticipantName()),
-            resolveParticipantName = resolveParticipantName,
             avatarImageUiModelMapper = avatarImageUiModelMapper
         )
     )

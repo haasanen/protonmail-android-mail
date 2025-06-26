@@ -41,8 +41,6 @@ import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelSample
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
-import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
-import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
 import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.testdata.label.LabelTestData
@@ -138,28 +136,6 @@ class MessageDetailHeaderUiModelMapperTest {
             recipientToUiModel(MessageTestData.recipient3, primaryUserAddress)
         } returns participant3UiModel
     }
-    private val resolveParticipantName: ResolveParticipantName = mockk {
-        every {
-            this@mockk.invoke(
-                MessageTestData.sender
-            )
-        } returns ResolveParticipantNameResult(MessageTestData.sender.name, isProton = false)
-        every {
-            this@mockk.invoke(
-                MessageTestData.recipient1
-            )
-        } returns ResolveParticipantNameResult(MessageTestData.recipient1.name, isProton = false)
-        every {
-            this@mockk.invoke(
-                MessageTestData.recipient2
-            )
-        } returns ResolveParticipantNameResult(MessageTestData.recipient2.name, isProton = false)
-        every {
-            this@mockk.invoke(
-                MessageTestData.recipient3
-            )
-        } returns ResolveParticipantNameResult(MessageTestData.recipient3.name, isProton = false)
-    }
     private val avatarImageUiModelMapper: AvatarImageUiModelMapper = mockk {
         every { this@mockk.toUiModel(any()) } returns AvatarImageUiModel.NoImageAvailable
     }
@@ -172,7 +148,6 @@ class MessageDetailHeaderUiModelMapperTest {
         formatShortTime = formatShortTime,
         messageLocationUiModelMapper = messageLocationUiModelMapper,
         participantUiModelMapper = participantUiModelMapper,
-        resolveParticipantName = resolveParticipantName,
         avatarImageUiModelMapper = avatarImageUiModelMapper
     )
 

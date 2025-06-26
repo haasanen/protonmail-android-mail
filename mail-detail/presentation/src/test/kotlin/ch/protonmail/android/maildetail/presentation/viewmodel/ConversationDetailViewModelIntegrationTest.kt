@@ -375,7 +375,6 @@ class ConversationDetailViewModelIntegrationTest {
             formatShortTime = formatShortTime,
             messageLocationUiModelMapper = messageLocationUiModelMapper,
             participantUiModelMapper = ParticipantUiModelMapper(resolveParticipantName),
-            resolveParticipantName = resolveParticipantName,
             avatarImageUiModelMapper = avatarImageUiModelMapper
         ),
         messageDetailFooterUiModelMapper = MessageDetailFooterUiModelMapper(),
