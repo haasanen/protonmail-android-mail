@@ -87,6 +87,24 @@ class MailboxListReducer @Inject constructor(
             is MailboxEvent.AttachmentDownloadOngoingEvent -> reduceAttachmentDownload(currentState)
             is MailboxEvent.AttachmentReadyEvent -> reduceAttachmentReady(operation, currentState)
             is MailboxEvent.AttachmentErrorEvent -> reduceAttachmentDownloadError(currentState)
+            is MailboxEvent.PaginatorInvalidated -> reducePaginatorInvalidated(operation, currentState)
+        }
+    }
+
+    private fun reducePaginatorInvalidated(
+        operation: MailboxEvent.PaginatorInvalidated,
+        currentState: MailboxListState
+    ): MailboxListState {
+        return when (currentState) {
+            is MailboxListState.Data.ViewMode -> currentState.copy(
+                paginatorInvalidationEffect = Effect.of(Unit)
+            )
+
+            is MailboxListState.Data.SelectionMode -> currentState.copy(
+                paginatorInvalidationEffect = Effect.of(Unit)
+            )
+
+            else -> currentState
         }
     }
 

@@ -106,6 +106,8 @@ import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
+import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
+import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
@@ -142,6 +144,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
@@ -271,6 +274,10 @@ class MailboxViewModelTest {
 
     private val deleteAllMessagesInLocation = mockk<DeleteAllMessagesInLocation>()
 
+    private val observePageInvalidationEvents = mockk<ObservePageInvalidationEvents> {
+        every { this@mockk() } returns flowOf()
+    }
+
     private val mailboxViewModel by lazy {
         MailboxViewModel(
             mailboxPagerFactory = pagerFactory,
@@ -310,7 +317,8 @@ class MailboxViewModelTest {
             observeAvatarImageStates = observeAvatarImageStates,
             observePrimaryAccountAvatarItem = observePrimaryAccountAvatarItem,
             deleteAllMessagesInLocation = deleteAllMessagesInLocation,
-            getAttachmentIntentValues = getAttachmentIntentValues
+            getAttachmentIntentValues = getAttachmentIntentValues,
+            observePageInvalidationEvents = observePageInvalidationEvents
         )
     }
 
@@ -3081,6 +3089,29 @@ class MailboxViewModelTest {
 
         // Then
         coVerify { deleteAllMessagesInLocation(userId, MailLabelTestData.trashSystemLabel.id.labelId) }
+    }
+
+    @Test
+    fun `observe invalidation events and update ui state upon receiving invalidationrequest`() = runTest {
+        // Given
+        val invalidationEventsFlow = MutableSharedFlow<PageInvalidationEvent>()
+        val invalidationEvent = PageInvalidationEvent.ConversationsInvalidated
+        every {
+            observePageInvalidationEvents()
+        } returns invalidationEventsFlow
+        every { getSelectedMailLabelId() } returns MailLabelTestData.inboxSystemLabel.id
+
+        // When
+        mailboxViewModel.state.test {
+            advanceUntilIdle()
+
+            invalidationEventsFlow.emit(invalidationEvent)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+
+        // Then
+        verify { mailboxReducer.newStateFrom(any(), MailboxEvent.PaginatorInvalidated(invalidationEvent)) }
     }
 
     private fun returnExpectedStateForBottomBarEvent(

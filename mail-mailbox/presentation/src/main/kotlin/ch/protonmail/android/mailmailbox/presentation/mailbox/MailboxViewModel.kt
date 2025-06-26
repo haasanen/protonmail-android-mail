@@ -106,6 +106,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxM
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAccountSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
+import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
@@ -174,7 +175,8 @@ class MailboxViewModel @Inject constructor(
     private val observeAvatarImageStates: ObserveAvatarImageStates,
     private val observePrimaryAccountAvatarItem: ObservePrimaryAccountAvatarItem,
     private val getAttachmentIntentValues: GetAttachmentIntentValues,
-    private val deleteAllMessagesInLocation: DeleteAllMessagesInLocation
+    private val deleteAllMessagesInLocation: DeleteAllMessagesInLocation,
+    private val observePageInvalidationEvents: ObservePageInvalidationEvents
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId().filterNotNull()
@@ -263,6 +265,10 @@ class MailboxViewModel @Inject constructor(
 
         observePrimaryAccountAvatarItem().onEach { item ->
             emitNewStateFrom(MailboxEvent.PrimaryAccountAvatarChanged(item))
+        }.launchIn(viewModelScope)
+
+        observePageInvalidationEvents().onEach {
+            emitNewStateFrom(MailboxEvent.PaginatorInvalidated(it))
         }.launchIn(viewModelScope)
     }
 

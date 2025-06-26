@@ -36,12 +36,14 @@ sealed interface MailboxListState {
         val searchState: MailboxSearchState
         val shouldShowFab: Boolean
         val avatarImagesUiModel: AvatarImagesUiModel
+        val paginatorInvalidationEffect: Effect<Unit>
         data class ViewMode(
             override val currentMailLabel: MailLabel,
             override val swipeActions: SwipeActionsUiModel?,
             override val searchState: MailboxSearchState,
             override val shouldShowFab: Boolean,
             override val avatarImagesUiModel: AvatarImagesUiModel,
+            override val paginatorInvalidationEffect: Effect<Unit> = Effect.empty(),
             val openItemEffect: Effect<OpenMailboxItemRequest>,
             val scrollToMailboxTop: Effect<MailLabelId>,
             val refreshErrorEffect: Effect<Unit>,
@@ -60,6 +62,7 @@ sealed interface MailboxListState {
             override val searchState: MailboxSearchState,
             override val shouldShowFab: Boolean,
             override val avatarImagesUiModel: AvatarImagesUiModel,
+            override val paginatorInvalidationEffect: Effect<Unit> = Effect.empty(),
             val selectedMailboxItems: Set<SelectedMailboxItem>,
             val areAllItemsSelected: Boolean
         ) : Data {

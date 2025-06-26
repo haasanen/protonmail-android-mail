@@ -39,6 +39,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
 import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
 import ch.protonmail.android.maillabel.domain.model.ViewMode
+import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 
 internal sealed interface MailboxOperation {
     sealed interface AffectingTopAppBar
@@ -205,6 +206,8 @@ internal sealed interface MailboxEvent : MailboxOperation {
         AffectingBottomSheet
 
     data class PrimaryAccountAvatarChanged(val item: CoreAccountAvatarItem?) : MailboxEvent, AffectingTopAppBar
+
+    data class PaginatorInvalidated(val event: PageInvalidationEvent) : MailboxEvent, AffectingMailboxList
 
     sealed interface ItemClicked : MailboxEvent {
 
