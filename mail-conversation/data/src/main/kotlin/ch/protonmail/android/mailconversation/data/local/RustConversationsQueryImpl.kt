@@ -21,16 +21,22 @@ package ch.protonmail.android.mailconversation.data.local
 import arrow.core.Either
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
-import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
+import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailpagination.domain.cache.PagingCacheWithInvalidationFilter
+import ch.protonmail.android.mailpagination.domain.cache.PagingFetcher
+import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
@@ -41,7 +47,9 @@ import javax.inject.Inject
 
 class RustConversationsQueryImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
-    private val createRustConversationPaginator: CreateRustConversationPaginator
+    private val createRustConversationPaginator: CreateRustConversationPaginator,
+    @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope,
+    private val cacheWithInvalidationFilter: PagingCacheWithInvalidationFilter<LocalConversation>
 ) : RustConversationsQuery {
 
     private var paginatorState: PaginatorState? = null
@@ -51,6 +59,12 @@ class RustConversationsQueryImpl @Inject constructor(
         override fun onUpdate() {
             Timber.d("rust-conversation-query: paging: conversations updated, invalidating paginator...")
 
+            coroutineScope.launch {
+                cacheWithInvalidationFilter.submitInvalidation(
+                    pageInvalidationEvent = PageInvalidationEvent.ConversationsInvalidated,
+                    fetcher = DefaultConversationFetcher(paginatorState?.paginatorWrapper)
+                )
+            }
         }
     }
 
@@ -61,61 +75,82 @@ class RustConversationsQueryImpl @Inject constructor(
             return null
         }
 
-        val labelId = pageKey.labelId.toLocalLabelId()
+        val labelId = pageKey.labelId
         val unread = pageKey.readStatus == ReadStatus.Unread
         Timber.v("rust-conversation-query: observe conversations for labelId $labelId unread: $unread")
 
-        initPaginator(userId, labelId, unread, session, pageKey)
+        val pageDescriptor = PageDescriptor(
+            userId = userId,
+            labelId = labelId,
+            unread = unread
+        )
+
+        paginatorMutex.withLock {
+            if (shouldInitPaginator(pageDescriptor, pageKey)) {
+                initPaginator(pageDescriptor, session)
+                cacheWithInvalidationFilter.reset()
+            }
+        }
 
         Timber.v("rust-conversation-query: Paging: querying ${pageKey.pageToLoad.name} page for conversation")
-        val conversations = when (pageKey.pageToLoad) {
-            PageToLoad.First -> paginatorState?.paginatorWrapper?.nextPage()
-            PageToLoad.Next -> paginatorState?.paginatorWrapper?.nextPage()
-            PageToLoad.All -> paginatorState?.paginatorWrapper?.reload()
-        }
-            ?.reloadOnDirtyData(paginatorState?.paginatorWrapper)
-            ?.getOrElse { emptyList() }
 
-        Timber.v("rust-conversation-query: init value for conversation is $conversations")
+        val conversations = when (pageKey.pageToLoad) {
+
+            PageToLoad.First ->
+                paginatorState?.paginatorWrapper
+                    ?.loadNextPageAndCache { cacheWithInvalidationFilter.replaceData(it, markAsSeen = true) }
+                    ?: emptyList()
+
+            PageToLoad.Next ->
+                paginatorState?.paginatorWrapper
+                    ?.loadNextPageAndCache { cacheWithInvalidationFilter.storeNextPage(it) }
+                    ?: emptyList()
+
+            PageToLoad.All -> reloadAllData()
+        }
+
         return conversations
     }
 
-    private suspend fun initPaginator(
-        userId: UserId,
-        labelId: LocalLabelId,
-        unread: Boolean,
-        session: MailUserSessionWrapper,
-        pageKey: PageKey.DefaultPageKey
-    ) = paginatorMutex.withLock<Unit> {
-        if (!shouldInitPaginator(userId, labelId, unread, pageKey)) {
-            Timber.v("rust-conversation-query: reusing existing paginator instance...")
-            return
-        }
+    private suspend fun reloadAllData(): List<LocalConversation> {
+        Timber.v("rust-conversation-query: reload all data")
+
+        val fetcher = DefaultConversationFetcher(paginatorState?.paginatorWrapper)
+
+        // Return unseen data from the cache, if present.
+        cacheWithInvalidationFilter.popUnseenData(
+            PageInvalidationEvent.ConversationsInvalidated, fetcher
+        )?.let { return it }
+
+        // Otherwise fetch fresh data and update the cache.
+        val freshData = fetcher.reload()
+        cacheWithInvalidationFilter.replaceData(freshData, markAsSeen = true)
+        return freshData
+    }
+
+    private suspend fun initPaginator(pageDescriptor: PageDescriptor, session: MailUserSessionWrapper) {
 
         Timber.v("rust-conversation-query: [destroy and] initialize paginator instance...")
         destroy()
 
-        createRustConversationPaginator(session, labelId, unread, conversationsUpdatedCallback)
+        createRustConversationPaginator(
+            session,
+            pageDescriptor.labelId.toLocalLabelId(),
+            pageDescriptor.unread,
+            conversationsUpdatedCallback
+        )
             .onRight {
                 paginatorState = PaginatorState(
                     paginatorWrapper = it,
-                    userId = userId,
-                    labelId = labelId,
-                    unread = unread
+                    pageDescriptor = pageDescriptor
                 )
             }
     }
 
-    private fun shouldInitPaginator(
-        userId: UserId,
-        labelId: LocalLabelId,
-        unread: Boolean,
-        pageKey: PageKey.DefaultPageKey
-    ) = paginatorState == null ||
-        paginatorState?.userId != userId ||
-        paginatorState?.labelId != labelId ||
-        paginatorState?.unread != unread ||
-        pageKey.pageToLoad == PageToLoad.First
+    private fun shouldInitPaginator(pageDescriptor: PageDescriptor, pageKey: PageKey.DefaultPageKey) =
+        paginatorState == null ||
+            paginatorState?.pageDescriptor != pageDescriptor ||
+            pageKey.pageToLoad == PageToLoad.First
 
     private fun destroy() {
         Timber.v("rust-conversation-query: disconnecting and destroying watcher")
@@ -125,24 +160,48 @@ class RustConversationsQueryImpl @Inject constructor(
 
     private data class PaginatorState(
         val paginatorWrapper: ConversationPaginatorWrapper,
+        val pageDescriptor: PageDescriptor
+    )
+
+    private data class PageDescriptor(
         val userId: UserId,
-        val labelId: LocalLabelId,
+        val labelId: LabelId,
         val unread: Boolean
     )
 
-    /**
-     * Due to internal state management, the rust lib requires clients to call `all_items` (reload)
-     * before any `fetch_items` (nextPage) when the Dirty state happens in order to recover from such state.
-     * Here we force the reload and let the paging3 lib call nextPage as needed.
-     *
-     * Note that dirty state shouldn't happen, as paging3 is already calling a reload each time data is invalidated!
-     */
-    private suspend fun Either<PaginationError, List<Conversation>>.reloadOnDirtyData(
-        paginator: ConversationPaginatorWrapper?
-    ) = this.onLeft { error ->
-        if (error is PaginationError.DirtyPaginationData) {
-            Timber.w("rust-conversation-query: Paginator in dirty state $error")
-            paginator?.reload()
+    private class DefaultConversationFetcher(
+        private val paginatorWrapper: ConversationPaginatorWrapper?
+    ) : PagingFetcher<LocalConversation> {
+
+        override suspend fun reload(): List<LocalConversation> {
+            val paginator = paginatorWrapper ?: return emptyList()
+            val result = paginator.reload()
+            return result
+                .reloadOnDirtyData(paginator)
+                .getOrElse { emptyList() }
         }
     }
 }
+
+/**
+ * Due to internal state management, the rust lib requires clients to call `all_items` (reload)
+ * before any `fetch_items` (nextPage) when the Dirty state happens in order to recover from such state.
+ * Here we force the reload and let the paging3 lib call nextPage as needed.
+ *
+ * Note that dirty state shouldn't happen, as paging3 is already calling a reload each time data is invalidated!
+ */
+private suspend fun Either<PaginationError, List<Conversation>>.reloadOnDirtyData(
+    paginator: ConversationPaginatorWrapper?
+) = this.onLeft { error ->
+    if (error is PaginationError.DirtyPaginationData) {
+        Timber.w("rust-conversation-query: Paginator in dirty state $error")
+        paginator?.reload()
+    }
+}
+
+private suspend fun ConversationPaginatorWrapper.loadNextPageAndCache(
+    cache: suspend (List<LocalConversation>) -> Unit
+): List<LocalConversation> = nextPage().onRight { results ->
+    cache(results)
+}.reloadOnDirtyData(this)
+    .getOrElse { emptyList() }
