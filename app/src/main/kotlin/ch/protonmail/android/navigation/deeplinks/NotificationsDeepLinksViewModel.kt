@@ -21,7 +21,6 @@ package ch.protonmail.android.navigation.deeplinks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.network.NetworkManager
 import ch.protonmail.android.mailcommon.domain.network.NetworkStatus
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
@@ -132,7 +131,8 @@ class NotificationsDeepLinksViewModel @Inject constructor(
             .collectLatest { messageResult ->
                 messageResult
                     .onLeft {
-                        if (it != DataError.Local.NoDataCached) navigateToInbox(userId.id)
+                        Timber.e("Unable to fetch message - Navigating to inbox. - $it")
+                        navigateToInbox(userId.id)
                     }
                     .onRight { message ->
                         navigateToConversation(message, userId, switchedAccountEmail)
