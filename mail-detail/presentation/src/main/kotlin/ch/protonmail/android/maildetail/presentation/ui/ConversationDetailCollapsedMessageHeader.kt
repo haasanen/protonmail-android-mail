@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -74,7 +75,7 @@ internal fun ConversationDetailCollapsedMessageHeader(
 ) {
     val fontWeight = if (uiModel.isUnread) FontWeight.Medium else FontWeight.Normal
     val labelFontWeight = if (uiModel.isUnread) FontWeight.Bold else FontWeight.Normal
-    val fontColor = if (uiModel.isUnread) ProtonTheme.colors.textNorm else ProtonTheme.colors.textWeak
+    val fontColor = if (uiModel.isUnread) ProtonTheme.colors.textNorm else ProtonTheme.colors.textHint
 
     ConstraintLayout(
         modifier = modifier
@@ -342,6 +343,14 @@ private fun Sender(
         if (uiModel.sender.shouldShowOfficialBadge) {
             OfficialBadge()
         }
+        if (uiModel.isDraft) {
+            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
+            Text(
+                text = stringResource(R.string.collapsed_header_draft),
+                style = ProtonTheme.typography.bodyLarge,
+                color = ProtonTheme.colors.notificationError
+            )
+        }
     }
 }
 
@@ -379,19 +388,16 @@ private fun Time(
 private fun visibleWhen(isVisible: Boolean) = if (isVisible) Visibility.Visible else Visibility.Gone
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun CdCollapsedMessageHeaderPreview(
     @PreviewParameter(ConversationDetailCollapsedMessageHeaderPreviewData::class)
     uiModel: ConversationDetailMessageUiModel.Collapsed
 ) {
     ProtonTheme {
-        ProtonTheme {
-            ConversationDetailCollapsedMessageHeader(
-                uiModel = uiModel,
-                avatarActions = ParticipantAvatar.Actions.Empty
-            )
-        }
+        ConversationDetailCollapsedMessageHeader(
+            uiModel = uiModel,
+            avatarActions = ParticipantAvatar.Actions.Empty
+        )
     }
 }
 

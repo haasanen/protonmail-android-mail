@@ -22,8 +22,6 @@ import android.content.Context
 import android.text.format.Formatter
 import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
-import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
-import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatExtendedTime
@@ -35,10 +33,12 @@ import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
+import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
+import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.collections.immutable.ImmutableList
@@ -65,7 +65,7 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
         viewModePreference: ViewModePreference
     ): MessageDetailHeaderUiModel {
         return MessageDetailHeaderUiModel(
-            avatar = detailAvatarUiModelMapper(message.avatarInformation, message.sender),
+            avatar = detailAvatarUiModelMapper(message.isDraft, message.avatarInformation, message.sender),
             avatarImage = avatarImageUiModelMapper.toUiModel(avatarImageState),
             sender = participantUiModelMapper.senderToUiModel(
                 message.sender,

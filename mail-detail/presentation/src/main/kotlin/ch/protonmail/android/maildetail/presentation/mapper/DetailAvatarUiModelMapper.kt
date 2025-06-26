@@ -28,12 +28,19 @@ class DetailAvatarUiModelMapper @Inject constructor(
     private val avatarInformationMapper: AvatarInformationMapper
 ) {
 
-    operator fun invoke(avatarInformation: AvatarInformation, sender: Sender): AvatarUiModel {
-
-        return avatarInformationMapper.toUiModel(
-            avatarInformation,
-            sender.address,
-            sender.bimiSelector
-        )
+    operator fun invoke(
+        isDraft: Boolean,
+        avatarInformation: AvatarInformation,
+        sender: Sender
+    ): AvatarUiModel {
+        return if (isDraft) {
+            AvatarUiModel.DraftIcon
+        } else {
+            avatarInformationMapper.toUiModel(
+                avatarInformation,
+                sender.address,
+                sender.bimiSelector
+            )
+        }
     }
 }

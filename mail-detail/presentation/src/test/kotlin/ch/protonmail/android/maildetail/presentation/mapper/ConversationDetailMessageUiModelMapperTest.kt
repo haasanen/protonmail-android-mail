@@ -65,7 +65,13 @@ internal class ConversationDetailMessageUiModelMapperTest {
     private val primaryUserAddress = UserAddressSample.PrimaryAddress.email
 
     private val avatarUiModelMapper: DetailAvatarUiModelMapper = mockk {
-        every { this@mockk(any(), any()) } returns ConversationDetailMessageUiModelSample.AugWeatherForecast.avatar
+        every {
+            this@mockk(
+                any(),
+                any(),
+                any()
+            )
+        } returns ConversationDetailMessageUiModelSample.AugWeatherForecast.avatar
     }
     private val expirationTimeMapper: ExpirationTimeMapper = mockk {
         every { toUiModel(epochTime = any()) } returns
@@ -309,6 +315,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         every {
             avatarUiModelMapper(
                 any(),
+                any(),
                 any()
             )
         } returns ConversationDetailMessageUiModelSample.ExpiringInvitation.avatar
@@ -328,6 +335,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         val expected = ConversationDetailMessageUiModelSample.ExpiringInvitation
         every {
             avatarUiModelMapper(
+                any(),
                 any(),
                 any()
             )

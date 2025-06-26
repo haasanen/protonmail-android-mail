@@ -114,7 +114,7 @@ class MessageDetailHeaderUiModelMapperTest {
     }
     private val context: Context = mockk()
     private val detailAvatarUiModelMapper: DetailAvatarUiModelMapper = mockk {
-        every { this@mockk(any(), any()) } returns avatarUiModel
+        every { this@mockk(any(), any(), any()) } returns avatarUiModel
     }
     private val formatExtendedTime: FormatExtendedTime = mockk {
         every { this@mockk(message.time.seconds) } returns extendedTimeTestUiModel

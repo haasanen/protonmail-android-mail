@@ -20,10 +20,13 @@ package ch.protonmail.android.mailmessage.presentation.ui
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,18 +48,19 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.R
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
-import coil.request.ImageRequest
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
+import ch.protonmail.android.mailcommon.presentation.R
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.dpToPx
 import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
+import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 
 @Composable
 fun ParticipantAvatar(
@@ -64,7 +68,7 @@ fun ParticipantAvatar(
     avatarUiModel: AvatarUiModel,
     avatarImageUiModel: AvatarImageUiModel,
     actions: ParticipantAvatar.Actions = ParticipantAvatar.Actions.Empty,
-    clickable: Boolean = true,
+    clickable: Boolean = avatarUiModel !is AvatarUiModel.DraftIcon,
     outerContainerSize: Dp = MailDimens.AvatarSize,
     avatarSize: Dp = MailDimens.AvatarSize,
     backgroundShape: Shape = ProtonTheme.shapes.large
@@ -119,13 +123,23 @@ fun ParticipantAvatarDraftIcon(avatarSize: Dp) {
             .sizeIn(
                 minWidth = avatarSize,
                 minHeight = avatarSize
+            )
+            .background(
+                color = Color.Transparent,
+                shape = RoundedCornerShape(ProtonDimens.CornerRadius.MediumLarge)
+            )
+            .border(
+                width = 1.dp,
+                color = ProtonTheme.colors.borderNorm,
+                shape = ProtonTheme.shapes.large
             ),
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            modifier = Modifier.size(ProtonDimens.IconSize.Small),
-            painter = painterResource(id = R.drawable.ic_proton_pencil),
-            contentDescription = NO_CONTENT_DESCRIPTION
+            modifier = Modifier.padding(ProtonDimens.Spacing.MediumLight),
+            painter = painterResource(id = R.drawable.ic_proton_pen_square),
+            contentDescription = NO_CONTENT_DESCRIPTION,
+            tint = ProtonTheme.colors.textHint
         )
     }
 }

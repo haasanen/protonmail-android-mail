@@ -37,7 +37,8 @@
         <item quantity="other">%d Attachments</item>
     </plurals>
     <string name="hide_details">Hide details</string>
-    <string name="undisclosed_recipients">Undisclosed recipients</string>
+    <string name="undisclosed_recipients">…</string>
+    <string name="collapsed_header_draft">(Draft)</string>
     <string name="error_mark_as_read_failed">Mark as read operation failed. Please retry.</string>
     <string name="error_mark_as_unread_failed">Mark as unread operation failed. Please retry.</string>
     <string name="error_star_operation_failed">Add star operation failed. Please retry.</string>

@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMap
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -61,11 +62,36 @@ class DetailAvatarUiModelMapperTest {
         } returns expectedAvatarUiModel
 
         // When
-        val result = detailAvatarUiModelMapper(message.avatarInformation, message.sender)
+        val result = detailAvatarUiModelMapper(message.isDraft, message.avatarInformation, message.sender)
 
         // Then
         assertEquals(expectedAvatarUiModel, result)
         verify { avatarInformationMapper.toUiModel(message.avatarInformation, "sender@example.com", "bimiSelector") }
     }
 
+    @Test
+    fun `should map Message to draft AvatarUiModel correctly`() {
+        // Given
+        val message = MessageSample.AugWeatherForecast.copy(
+            sender = Sender(
+                address = "sender@example.com",
+                name = "Sender Name",
+                isProton = true,
+                bimiSelector = "bimiSelector"
+            ),
+            avatarInformation = AvatarInformation(
+                initials = "SN",
+                color = "#FF5733"
+            ),
+            isDraft = true
+        )
+        val expectedAvatarUiModel = AvatarUiModel.DraftIcon
+
+        // When
+        val result = detailAvatarUiModelMapper(message.isDraft, message.avatarInformation, message.sender)
+
+        // Then
+        assertEquals(expectedAvatarUiModel, result)
+        confirmVerified(avatarInformationMapper)
+    }
 }

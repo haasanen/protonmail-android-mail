@@ -61,7 +61,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         primaryUserAddress: String?
     ): ConversationDetailMessageUiModel.Collapsed {
         return ConversationDetailMessageUiModel.Collapsed(
-            avatar = avatarUiModelMapper(message.avatarInformation, message.sender),
+            avatar = avatarUiModelMapper(message.isDraft, message.avatarInformation, message.sender),
             avatarImage = avatarImageUiModelMapper.toUiModel(avatarImageState),
             expiration = message.expirationTimeOrNull()?.let(expirationTimeMapper::toUiModel),
             forwardedIcon = getForwardedIcon(isForwarded = message.isForwarded),
