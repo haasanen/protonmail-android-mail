@@ -56,6 +56,10 @@ fun MessageDetailFooter(
     uiModel: MessageDetailFooterUiModel,
     actions: MessageDetailFooter.Actions
 ) {
+    if (!uiModel.shouldShowActions) {
+        return
+    }
+
     Row(
         modifier = modifier
             .testTag(MessageBodyTestTags.MessageActionsRootItem)

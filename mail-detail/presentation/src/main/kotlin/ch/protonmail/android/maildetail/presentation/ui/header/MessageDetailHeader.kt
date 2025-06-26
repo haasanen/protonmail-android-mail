@@ -21,7 +21,6 @@ package ch.protonmail.android.maildetail.presentation.ui.header
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -83,7 +82,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import kotlinx.collections.immutable.ImmutableList
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MessageDetailHeader(
     modifier: Modifier = Modifier,

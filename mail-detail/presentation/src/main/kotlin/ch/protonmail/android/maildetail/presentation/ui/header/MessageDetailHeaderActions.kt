@@ -43,10 +43,13 @@ fun MessageDetailHeaderActions(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Small)
     ) {
-        if (uiModel.recipientsCount > 1) {
-            ReplyAllActionButton(action = { actions.onReplyAll(MessageId(uiModel.messageIdUiModel.id)) })
-        } else {
-            ReplyActionButton(action = { actions.onReply(MessageId(uiModel.messageIdUiModel.id)) })
+
+        if (uiModel.shouldShowQuickReply) {
+            if (uiModel.recipientsCount > 1) {
+                ReplyAllActionButton(action = { actions.onReplyAll(MessageId(uiModel.messageIdUiModel.id)) })
+            } else {
+                ReplyActionButton(action = { actions.onReply(MessageId(uiModel.messageIdUiModel.id)) })
+            }
         }
 
         MoreActionButton(action = {
