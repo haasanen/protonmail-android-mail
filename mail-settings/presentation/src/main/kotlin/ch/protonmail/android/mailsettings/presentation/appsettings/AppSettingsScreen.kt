@@ -114,7 +114,8 @@ private fun AppSettingsScreenContent(
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
 
                 LanguageSettingsItem(
-                    language = state.settings.customLanguage ?: "English",
+                    language = state.settings.customLanguage
+                        ?: stringResource(R.string.mail_settings_app_language_sys_default),
                     onLanguageClick = actions.onAppLanguageClick
                 )
 

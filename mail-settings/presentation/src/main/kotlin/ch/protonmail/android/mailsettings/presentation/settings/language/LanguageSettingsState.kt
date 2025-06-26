@@ -35,7 +35,7 @@ data class UserSelectedLanguage(val appLanguage: AppLanguage) : LanguageChoice {
 
 data object SystemDefaultLanguage : LanguageChoice {
 
-    override val textUiModel = TextUiModel(R.string.mail_settings_app_language)
+    override val textUiModel = TextUiModel(R.string.mail_settings_app_language_sys_default)
 }
 
 sealed class LanguageSettingsState {
