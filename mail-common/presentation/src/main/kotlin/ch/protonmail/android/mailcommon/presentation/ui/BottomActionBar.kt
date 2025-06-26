@@ -38,7 +38,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -82,15 +81,20 @@ fun BottomActionBar(
                     }
                 )
                 .fillMaxWidth()
-                .padding(horizontal = 0.dp, vertical = ProtonDimens.Spacing.Large),
+                .padding(vertical = ProtonDimens.Spacing.Standard),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             when (state) {
                 is BottomBarState.Loading -> {
-                    ProtonCenteredProgress(modifier = Modifier.size(MailDimens.ProgressDefaultSize))
+                    ProtonCenteredProgress(
+                        modifier = Modifier
+                            .padding(vertical = ProtonDimens.Spacing.Standard)
+                            .size(MailDimens.ProgressDefaultSize)
+                    )
                 }
 
                 is BottomBarState.Error -> Text(
+                    modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Standard),
                     text = stringResource(id = R.string.common_error_loading_actions),
                     style = ProtonTypography.Default.bodyLargeNorm
                 )
@@ -162,7 +166,7 @@ private fun BottomBarIcon(
     onClick: () -> Unit
 ) {
     IconButton(
-        modifier = modifier.size(ProtonDimens.IconSize.Default),
+        modifier = modifier,
         onClick = onClick
     ) {
         Icon(
