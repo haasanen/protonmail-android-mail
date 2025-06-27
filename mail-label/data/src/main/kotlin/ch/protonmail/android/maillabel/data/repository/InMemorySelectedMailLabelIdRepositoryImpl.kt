@@ -18,10 +18,8 @@
 
 package ch.protonmail.android.maillabel.data.repository
 
-import ch.protonmail.android.maillabel.domain.repository.SelectedMailLabelIdRepository
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.maillabel.domain.model.LocationChangeStatus
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelIdWithLocationChangeStatus
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -29,10 +27,13 @@ import ch.protonmail.android.maillabel.domain.model.asLocationLoaded
 import ch.protonmail.android.maillabel.domain.model.asLocationRequested
 import ch.protonmail.android.maillabel.domain.model.isLoaded
 import ch.protonmail.android.maillabel.domain.model.isRequested
+import ch.protonmail.android.maillabel.domain.repository.SelectedMailLabelIdRepository
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -41,6 +42,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
@@ -73,6 +75,11 @@ class InMemorySelectedMailLabelIdRepositoryImpl @Inject constructor(
         .filter { it.isRequested() }
         .map { it.mailLabelId }
         .distinctUntilChanged()
+        .shareIn(
+            scope = appScope,
+            started = SharingStarted.Eagerly,
+            replay = 1
+        )
 
     init {
         observePrimaryUserId()
