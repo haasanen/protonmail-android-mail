@@ -79,11 +79,7 @@ class RustConversationsQueryImpl @Inject constructor(
         val unread = pageKey.readStatus == ReadStatus.Unread
         Timber.v("rust-conversation-query: observe conversations for labelId $labelId unread: $unread")
 
-        val pageDescriptor = PageDescriptor(
-            userId = userId,
-            labelId = labelId,
-            unread = unread
-        )
+        val pageDescriptor = pageKey.toPageDescriptor(userId)
 
         paginatorMutex.withLock {
             if (shouldInitPaginator(pageDescriptor, pageKey)) {
@@ -181,7 +177,16 @@ class RustConversationsQueryImpl @Inject constructor(
                 .getOrElse { emptyList() }
         }
     }
+
+    private fun PageKey.DefaultPageKey.toPageDescriptor(userId: UserId): PageDescriptor {
+        return PageDescriptor(
+            userId = userId,
+            labelId = this.labelId,
+            unread = this.readStatus == ReadStatus.Unread
+        )
+    }
 }
+
 
 /**
  * Due to internal state management, the rust lib requires clients to call `all_items` (reload)

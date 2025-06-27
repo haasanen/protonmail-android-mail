@@ -21,7 +21,6 @@ package ch.protonmail.android.mailpagination.data.cache
 import ch.protonmail.android.mailpagination.data.PagingCoroutineScope
 import ch.protonmail.android.mailpagination.domain.cache.PagingCacheWithInvalidationFilter
 import ch.protonmail.android.mailpagination.domain.cache.PagingFetcher
-import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 import javax.inject.Inject
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
@@ -89,7 +88,7 @@ class PagingCacheWithInvalidationFilterImpl<T> @Inject constructor(
             if (hasUnseenData) {
                 hasUnseenData = false
 
-                coroutineScope.launch(Dispatchers.IO) {
+                coroutineScope.launch {
                     Timber.d("paging-cache-invalidation: Refreshing unseen data in background.")
                     runCatching {
                         refreshDataIfChanged(pageInvalidationEvent, fetcher)
