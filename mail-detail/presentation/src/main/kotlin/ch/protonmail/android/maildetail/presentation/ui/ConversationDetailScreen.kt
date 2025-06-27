@@ -28,12 +28,11 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -47,6 +46,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -54,6 +54,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -130,6 +131,9 @@ import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -814,10 +818,12 @@ private fun MessagesContent(
             bottom = padding.calculateBottomPadding() - ProtonDimens.Spacing.Tiny
         )
 
+    val verticalPaddingPx =
+        contentPadding.calculateTopPadding().dpToPx() + contentPadding.calculateBottomPadding().dpToPx()
+
     // Map of item heights in LazyColumn (Row index -> height)
     // We will use this map to calculate total height of first non-draft message + any draft messages below it
     val itemsHeight = remember { mutableStateMapOf<Int, Int>() }
-    var initialPlaceholderHeightCalculated by remember { mutableStateOf(false) }
     var scrollCount by remember { mutableStateOf(0) }
 
     val visibleUiModels = uiModels.filter { it !is ConversationDetailMessageUiModel.Hidden }
@@ -834,7 +840,7 @@ private fun MessagesContent(
     // Insert some offset to scrolling to make sure the message above will also be visible partially
     val scrollOffsetPx = scrollOffsetDp.dpToPx()
 
-    LaunchedEffect(key1 = scrollToIndex, key2 = loadedItemsChanged, key3 = initialPlaceholderHeightCalculated) {
+    LaunchedEffect(key1 = scrollToIndex, key2 = loadedItemsChanged) {
         if (scrollToIndex >= 0) {
 
             // We are having frequent state updates at the beginning which are causing recompositions and
@@ -871,9 +877,10 @@ private fun MessagesContent(
         }
     }
 
-    // We will insert a placeholder after the last item to move it to the top when scrolled
     val lazyColumnHeight = remember { mutableIntStateOf(0) }
-    var placeholderHeightPx by remember { mutableIntStateOf(0) }
+    // height calculated based on whether there is space to fill (in the case where we have not many messages
+    // then the message should take up the rest of the screen space
+    var scrollToMessageMinimumHeightPx by remember { mutableIntStateOf(0) }
 
     // Detect if user manually scrolled the list
     var userScrolled by remember { mutableStateOf(false) }
@@ -882,6 +889,41 @@ private fun MessagesContent(
         if (!userScrolled && userTapped && listState.isScrollInProgress) {
             userScrolled = true
         }
+    }
+
+    val isAllItemsMeasured = derivedStateOf { itemsHeight.size >= visibleUiModels.size }
+
+    // The webview for the message that we will scroll to has loaded
+    // this is important as the listview will need its final height
+    var isScrollToMessageWebViewLoaded by remember { mutableStateOf(false) }
+    // finished scroll calculations, items have loaded and we have heights
+    val viewHasFinishedScrollingAndMeasuring = derivedStateOf {
+        itemsHeight.isNotEmpty() &&
+            isScrollToMessageWebViewLoaded &&
+            isAllItemsMeasured.value
+    }
+    // conversations slightly overlay / stack each other
+    val headerOverlapHeightPx = MailDimens.ConversationCollapseHeaderOverlapHeight.dpToPx()
+    LaunchedEffect(listState) {
+        snapshotFlow { viewHasFinishedScrollingAndMeasuring.value }
+            // have we finished ?
+            .filter { it == true }
+            // debounce as sometimes there are multiple passes and we should wait for the view to settle
+            .debounce(timeoutMillis = 300L)
+            .collectLatest { map ->
+                val sumOfHeights = itemsHeight.entries.sumOf { it.value } - itemsHeight.entries.last().value
+
+                // there is a designed overlap / stacking of conversation cards, so we need to take this into
+                // account when calculating heights
+                val sumOfCardOverlap = (itemsHeight.size - 1) * headerOverlapHeightPx
+
+                // any available space after conversation items are rendered in the column
+                val availableSpace = lazyColumnHeight.intValue - verticalPaddingPx - sumOfHeights + sumOfCardOverlap
+                if (itemsHeight.entries.last().value < availableSpace) {
+                    // then we should expand to fit space
+                    scrollToMessageMinimumHeightPx = availableSpace.toInt()
+                }
+            }
     }
 
     LazyColumn(
@@ -926,10 +968,13 @@ private fun MessagesContent(
                     is ConversationDetailMessageUiModel.Expanding -> Modifier.animateItem()
 
                     is ConversationDetailMessageUiModel.Expanded -> {
-                        if (!isLastItem) {
-                            Modifier.padding(bottom = MailDimens.ConversationCollapseHeaderOverlapHeight)
+                        if (isLastItem) {
+                            if (scrollToMessageMinimumHeightPx > 0) {
+                                Modifier
+                                    .heightIn(min = scrollToMessageMinimumHeightPx.pxToDp())
+                            } else Modifier
                         } else {
-                            Modifier
+                            Modifier.padding(bottom = MailDimens.ConversationCollapseHeaderOverlapHeight)
                         }
                     }
 
@@ -938,40 +983,14 @@ private fun MessagesContent(
                     itemsHeight[index] = it.height
                 },
                 onMessageBodyLoadFinished = { messageId, height ->
+                    if (messageId.id == scrollToMessageId) {
+                        isScrollToMessageWebViewLoaded = true
+                    }
                     loadedItemsHeight[messageId.id] = height
                     loadedItemsChanged += 1
                 },
                 cachedWebContentHeight = loadedItemsHeight.getOrDefault(uiModel.messageId.id, 0)
             )
-
-            if (!userScrolled) {
-                // We will insert placeholder after the last item to move it to the top when scrolled
-                // Make this calculation until we get sum of all items heights before the completion of scrolling
-                // We assume scroll operation is completed when the scrolled item is expanded
-                if (isLastItem && scrollToIndex >= 0 && !initialPlaceholderHeightCalculated) {
-                    val sumOfHeights = itemsHeight.entries.filter { it.key >= scrollToIndex }.sumOf { it.value }
-                    placeholderHeightPx = lazyColumnHeight.intValue - sumOfHeights +
-                        contentPadding.calculateTopPadding().dpToPx()
-
-                    // We need to check if we got all items heights, in that case we need to trigger scroll to the
-                    // message again by changing initialPlaceholderHeightCalculated to true. We need this scrolling
-                    // only when sum of all item heights is less than the LazyColumn height (which means we have
-                    // few messages in the conversation)
-                    if (itemsHeight.size == visibleUiModels.size) {
-                        initialPlaceholderHeightCalculated = true
-                    }
-                }
-            } else {
-                // After user scrolled, we need to reset the placeholder height to 0
-                placeholderHeightPx = 0
-            }
-
-            if (isLastItem && placeholderHeightPx > 0) {
-                Spacer(
-                    modifier = Modifier
-                        .height(placeholderHeightPx.pxToDp())
-                )
-            }
         }
     }
 }
