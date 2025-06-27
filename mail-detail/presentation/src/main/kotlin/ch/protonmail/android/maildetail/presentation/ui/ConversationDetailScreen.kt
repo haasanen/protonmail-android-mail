@@ -108,7 +108,6 @@ import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
 import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDetailsPreviewProvider
-import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.scrollOffsetDp
 import ch.protonmail.android.maildetail.presentation.ui.dialog.EditScheduleSendDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.MarkAsLegitimateDialog
 import ch.protonmail.android.maildetail.presentation.ui.dialog.ReportPhishingDialog
@@ -133,6 +132,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -803,7 +803,7 @@ private fun MessagesContent(
     paddingOffsetDp: Dp = 0f.dp
 ) {
     val listState = rememberLazyListState()
-    var loadedItemsChanged by remember { mutableIntStateOf(0) }
+    var webContentLoaded by remember { mutableIntStateOf(0) }
     var scrollCompleted by remember { mutableStateOf(false) }
     val loadedItemsHeight = remember { mutableStateMapOf<String, Int>() }
 
@@ -824,7 +824,7 @@ private fun MessagesContent(
     // Map of item heights in LazyColumn (Row index -> height)
     // We will use this map to calculate total height of first non-draft message + any draft messages below it
     val itemsHeight = remember { mutableStateMapOf<Int, Int>() }
-    var scrollCount by remember { mutableStateOf(0) }
+    var scrollCount by remember { mutableIntStateOf(0) }
 
     val visibleUiModels = uiModels.filter { it !is ConversationDetailMessageUiModel.Hidden }
 
@@ -833,24 +833,13 @@ private fun MessagesContent(
         else visibleUiModels.indexOfFirst { uiModel -> uiModel.messageId.id == scrollToMessageId }
     }
 
-    // Sometimes we do not get all conversation items in the first call. The complete list of items can be provided
-    // after a delay. In that case we need to repeat the initial automatic scroll to the most recent non-draft item
-    var lastScrolledIndex by remember { mutableStateOf(-1) }
-
-    // Insert some offset to scrolling to make sure the message above will also be visible partially
-    val scrollOffsetPx = scrollOffsetDp.dpToPx()
-
-    LaunchedEffect(key1 = scrollToIndex, key2 = loadedItemsChanged) {
+    LaunchedEffect(key1 = scrollToIndex, key2 = webContentLoaded) {
         if (scrollToIndex >= 0) {
 
             // We are having frequent state updates at the beginning which are causing recompositions and
             // animateScrollToItem to be cancelled or delayed. Therefore we use scrollToItem for
             // the first scroll action.
-            if (loadedItemsChanged == 0) {
-
-                listState.scrollToItem(scrollToIndex, scrollOffsetPx)
-
-                lastScrolledIndex = scrollToIndex
+            if (webContentLoaded == 0) {
 
                 // When try to perform both scrolling and expanding at the same time, the above scrollToItem
                 // suspend function is paused during WebView initialization. Therefore we notify the view model
@@ -862,12 +851,6 @@ private fun MessagesContent(
                 scrollCount++
 
             } else {
-
-                // If we get a different scrollToIndex, we need to scroll to that index again
-                if (scrollToIndex != lastScrolledIndex) {
-                    listState.animateScrollToItem(scrollToIndex, scrollOffsetPx)
-                    lastScrolledIndex = scrollToIndex
-                }
 
                 // Scrolled message expanded, so we can conclude that scrolling is completed
                 actions.onScrollRequestCompleted()
@@ -919,6 +902,20 @@ private fun MessagesContent(
                     // then we should expand to fit space
                     scrollToMessageMinimumHeightPx = availableSpace.toInt()
                 }
+            }
+
+    }
+
+    // The webview for the message that we will scroll to has loaded
+    // this is important as the listview will need its final height
+    var scrollToMessageLoaded by remember { mutableStateOf(false) }
+    LaunchedEffect(listState) {
+        // wait for the final height of our target expanded message before scrolling
+        snapshotFlow { scrollToMessageLoaded }
+            .distinctUntilChanged()
+            .filter { !userScrolled && scrollToIndex > 0 }
+            .collect {
+                listState.animateScrollToItem(scrollToIndex)
             }
     }
 
@@ -979,11 +976,11 @@ private fun MessagesContent(
                     itemsHeight[index] = it.height
                 },
                 onMessageBodyLoadFinished = { messageId, height ->
+                    loadedItemsHeight[messageId.id] = height
                     if (messageId.id == scrollToMessageId) {
                         isScrollToMessageWebViewLoaded = true
                     }
-                    loadedItemsHeight[messageId.id] = height
-                    loadedItemsChanged += 1
+                    webContentLoaded++
                 },
                 cachedWebContentHeight = loadedItemsHeight.getOrDefault(uiModel.messageId.id, 0)
             )
@@ -1019,8 +1016,6 @@ object ConversationDetailScreen {
     const val ConversationIdKey = "conversation id"
     const val ScrollToMessageIdKey = "scroll to message id"
     const val OpenedFromLocationKey = "opened from location"
-
-    val scrollOffsetDp: Dp = (-30).dp
 
     data class Actions(
         val onExit: (notifyUserMessage: ActionResult?) -> Unit,
