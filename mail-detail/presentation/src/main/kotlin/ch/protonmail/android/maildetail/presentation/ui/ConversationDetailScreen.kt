@@ -804,7 +804,7 @@ private fun MessagesContent(
     val loadedItemsHeight = remember { mutableStateMapOf<String, Int>() }
 
     val layoutDirection = LocalLayoutDirection.current
-    val contentPadding = remember(padding, paddingOffsetDp) {
+    val contentPadding =
         PaddingValues(
             start = padding.calculateStartPadding(layoutDirection),
             end = padding.calculateEndPadding(layoutDirection),
@@ -813,7 +813,6 @@ private fun MessagesContent(
                 ).coerceAtLeast(0f.dp),
             bottom = padding.calculateBottomPadding() - ProtonDimens.Spacing.Tiny
         )
-    }
 
     // Map of item heights in LazyColumn (Row index -> height)
     // We will use this map to calculate total height of first non-draft message + any draft messages below it
