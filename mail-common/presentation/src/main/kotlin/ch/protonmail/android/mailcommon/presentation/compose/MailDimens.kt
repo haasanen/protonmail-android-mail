@@ -131,7 +131,6 @@ object MailDimens {
         val ButtonIconSize = 20.dp
         val CollapseExpandButtonSize = 16.dp
         val DetailsTitleWidth = 34.dp
-        const val ShadowAlpha = 0.5f
     }
 
     val DetailsMoreQuickReplyButtonSize = 84.dp

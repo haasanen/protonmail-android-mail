@@ -49,7 +49,6 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.MessageDetailsHeader.ShadowAlpha
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Collapsed
@@ -147,8 +146,8 @@ private fun ConversationDetailCard(modifier: Modifier = Modifier, content: @Comp
                     MailDimens.ConversationCollapseHeaderElevation
                 },
                 shape = ProtonTheme.shapes.conversation,
-                ambientColor = ProtonTheme.colors.shadowSoft.copy(alpha = ShadowAlpha),
-                spotColor = ProtonTheme.colors.shadowSoft.copy(alpha = ShadowAlpha)
+                ambientColor = ProtonTheme.colors.shadowSoft,
+                spotColor = ProtonTheme.colors.shadowSoft
             ),
         shape = ProtonTheme.shapes.conversation,
         colors = CardDefaults.elevatedCardColors(
