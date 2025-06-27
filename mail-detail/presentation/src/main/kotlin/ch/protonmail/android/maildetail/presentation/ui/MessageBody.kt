@@ -45,7 +45,8 @@ fun MessageBody(
     modifier: Modifier = Modifier,
     messageBodyUiModel: MessageBodyUiModel,
     actions: MessageBody.Actions,
-    onMessageBodyLoaded: (messageId: MessageId, height: Int) -> Unit = { _, _ -> }
+    onMessageBodyLoaded: (messageId: MessageId, height: Int) -> Unit = { _, _ -> },
+    cachedMessageBodyHeight: Int = 0
 ) {
     val hasWebView = LocalDeviceCapabilitiesProvider.current.hasWebView
 
@@ -101,7 +102,8 @@ fun MessageBody(
                 loadEmbeddedImage = actions.loadEmbeddedImage,
                 onPrint = actions.onPrint
             ),
-            onMessageBodyLoaded = onMessageBodyLoaded
+            onMessageBodyLoaded = onMessageBodyLoaded,
+            cachedHeight = cachedMessageBodyHeight
         )
     } else {
         MessageBodyNoWebView(

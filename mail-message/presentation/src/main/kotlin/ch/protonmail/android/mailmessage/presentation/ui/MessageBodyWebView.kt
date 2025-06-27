@@ -99,7 +99,8 @@ fun MessageBodyWebView(
     messageBodyUiModel: MessageBodyUiModel,
     webViewActions: MessageBodyWebView.Actions,
     onMessageBodyLoaded: (messageId: MessageId, height: Int) -> Unit = { _, _ -> },
-    viewModel: MessageBodyWebViewViewModel = hiltViewModel()
+    viewModel: MessageBodyWebViewViewModel = hiltViewModel(),
+    cachedHeight: Int = 0
 ) {
     val context = LocalContext.current
 
@@ -186,7 +187,7 @@ fun MessageBodyWebView(
                     )
                 )
             }
-            RevealWebView(contentLoaded = contentLoaded, onHeightFinalised = { height ->
+            RevealWebView(contentLoaded = contentLoaded, cachedHeight = cachedHeight, onHeightFinalised = { height ->
                 onMessageBodyLoaded(messageId, height)
             }) {
                 WebView(
@@ -272,10 +273,11 @@ animation **/
 fun RevealWebView(
     contentLoaded: MutableState<Boolean>,
     onHeightFinalised: (height: Int) -> Unit = { _ -> },
+    cachedHeight: Int = 0,
     mainContent: @Composable () -> Unit
 ) {
-    var reportedWebViewHeight by remember { mutableIntStateOf(0) }
-    val webViewTargetHeightPx = remember { mutableIntStateOf(0) }
+    var reportedWebViewHeight by remember { mutableIntStateOf(cachedHeight) }
+    val webViewTargetHeightPx = remember { mutableIntStateOf(cachedHeight) }
 
     val webviewHeightAnimationValues: Int by animateIntAsState(
         targetValue = webViewTargetHeightPx.intValue,
@@ -283,11 +285,16 @@ fun RevealWebView(
             durationMillis = 200
         )
     )
+
+    // if the height is already cached, just show the webview at its cached height
+    val shouldAnimate = cachedHeight == 0
     // alpha is calculated as a percentage of the current height reveal
     val alphaTween =
         remember {
             derivedStateOf {
-                webviewHeightAnimationValues.divideBy(webViewTargetHeightPx.intValue.toFloat())
+                if (shouldAnimate) {
+                    webviewHeightAnimationValues.divideBy(webViewTargetHeightPx.intValue.toFloat())
+                } else 1f
             }
         }
 
@@ -296,7 +303,7 @@ fun RevealWebView(
             // the webpage has loaded
             .filter { contentLoaded.value }
             // allow measuring passes and webview to settle
-            .debounce(timeoutMillis = 100L)
+            .debounce(timeoutMillis = 150L)
             .collectLatest { height ->
                 webViewTargetHeightPx.intValue = height
                 onHeightFinalised(height)
@@ -332,8 +339,9 @@ fun RevealWebView(
             }
         }
         val itemsTotalWidth = placeables.sumOf { placeable -> placeable.width }
+        val height = if (shouldAnimate) webviewHeightAnimationValues else cachedHeight
         // layout according to our reveal animation height
-        layout(itemsTotalWidth, webviewHeightAnimationValues) {
+        layout(itemsTotalWidth, height) {
             placeables.forEach { placeable ->
                 placeable.placeRelative(0, 0)
             }

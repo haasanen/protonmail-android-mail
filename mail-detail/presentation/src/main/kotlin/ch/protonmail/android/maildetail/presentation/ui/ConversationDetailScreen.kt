@@ -940,7 +940,8 @@ private fun MessagesContent(
                 onMessageBodyLoadFinished = { messageId, height ->
                     loadedItemsHeight[messageId.id] = height
                     loadedItemsChanged += 1
-                }
+                },
+                cachedWebContentHeight = loadedItemsHeight.getOrDefault(uiModel.messageId.id, 0)
             )
 
             if (!userScrolled) {

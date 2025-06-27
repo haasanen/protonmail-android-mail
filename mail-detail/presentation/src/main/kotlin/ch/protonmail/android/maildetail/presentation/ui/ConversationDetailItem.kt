@@ -66,7 +66,8 @@ fun ConversationDetailItem(
     uiModel: ConversationDetailMessageUiModel,
     actions: ConversationDetailItem.Actions,
     modifier: Modifier = Modifier,
-    onMessageBodyLoadFinished: (messageId: MessageId, height: Int) -> Unit
+    onMessageBodyLoadFinished: (messageId: MessageId, height: Int) -> Unit,
+    cachedWebContentHeight: Int = 0
 ) {
     val avatarActions = ParticipantAvatar.Actions.Empty.copy(
         onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested
@@ -106,7 +107,8 @@ fun ConversationDetailItem(
                     ConversationDetailExpandedItem(
                         uiModel = uiModel,
                         actions = actions,
-                        onMessageBodyLoadFinished = onMessageBodyLoadFinished
+                        onMessageBodyLoadFinished = onMessageBodyLoadFinished,
+                        cachedWebContentHeight = cachedWebContentHeight
                     )
                 }
                 Box(
@@ -174,7 +176,8 @@ private fun ConversationDetailExpandingItem(
 private fun ColumnScope.ConversationDetailExpandedItem(
     uiModel: Expanded,
     actions: ConversationDetailItem.Actions,
-    onMessageBodyLoadFinished: (messageId: MessageId, height: Int) -> Unit
+    onMessageBodyLoadFinished: (messageId: MessageId, height: Int) -> Unit,
+    cachedWebContentHeight: Int = 0
 ) {
     val headerActions = MessageDetailHeader.Actions.Empty.copy(
         onReply = actions.onReply,
@@ -224,7 +227,8 @@ private fun ColumnScope.ConversationDetailExpandedItem(
             onOpenInProtonCalendar = { actions.onOpenInProtonCalendar(it) },
             onPrint = { actions.onPrint(it) }
         ),
-        onMessageBodyLoaded = onMessageBodyLoadFinished
+        onMessageBodyLoaded = onMessageBodyLoadFinished,
+        cachedMessageBodyHeight = cachedWebContentHeight
     )
     // to bring buttons to the bottom of the page
     Spacer(modifier = Modifier.weight(1f))
