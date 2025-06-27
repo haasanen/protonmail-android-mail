@@ -25,7 +25,9 @@ import ch.protonmail.android.mailfeatureflags.domain.ExternalEncryptionEnabled
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.LinkifyUrlEnabled
+import ch.protonmail.android.mailfeatureflags.domain.ShareViaEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShareViaEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsExternalEncryptionEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
@@ -60,6 +62,16 @@ object FeatureFlagsModule {
     @Singleton
     @IsLinkifyUrlsEnabled
     fun provideLinkifyUrlEnabled(resolver: FeatureFlagResolver) = resolver.observeFeatureFlag(LinkifyUrlEnabled.key)
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideShareViaDefinition(): FeatureFlagDefinition = ShareViaEnabled
+
+    @Provides
+    @Singleton
+    @IsShareViaEnabled
+    fun provideShareViaEnabled(resolver: FeatureFlagResolver) = resolver.observeFeatureFlag(ShareViaEnabled.key)
 
     @Provides
     @IntoSet

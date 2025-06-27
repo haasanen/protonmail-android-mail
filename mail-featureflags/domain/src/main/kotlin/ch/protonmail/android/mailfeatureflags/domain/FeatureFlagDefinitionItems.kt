@@ -44,3 +44,11 @@ data object ExternalEncryptionEnabled : FeatureFlagDefinition(
     description = "Allow to set password to encrypt message to external recipients",
     defaultValue = true
 )
+
+data object ShareViaEnabled : FeatureFlagDefinition(
+    key = "share_via_enabled",
+    name = "Share via",
+    category = FeatureFlagCategory.Composer,
+    description = "Enables the \"Share via\" feature",
+    defaultValue = true
+)
