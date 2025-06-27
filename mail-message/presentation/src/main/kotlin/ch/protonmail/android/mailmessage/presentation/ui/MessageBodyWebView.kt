@@ -89,6 +89,7 @@ import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 
@@ -298,12 +299,17 @@ fun RevealWebView(
             }
         }
 
-    LaunchedEffect(reportedWebViewHeight) {
-        snapshotFlow { reportedWebViewHeight }
-            // the webpage has loaded
-            .filter { contentLoaded.value }
-            // allow measuring passes and webview to settle
-            .debounce(timeoutMillis = 150L)
+    LaunchedEffect(Unit) {
+        combine(
+            snapshotFlow { reportedWebViewHeight }
+                // allow measuring passes and webview to settle
+                .debounce(timeoutMillis = 250L),
+            // also listen for changes in content loaded, there can be multiple calls to this
+            snapshotFlow { contentLoaded.value }
+        ) { height, isLoaded ->
+            // in order to get the settled height after the webpage has loaded
+            if (isLoaded) height else 0
+        }.filter { it > 0 }
             .collectLatest { height ->
                 webViewTargetHeightPx.intValue = height
                 onHeightFinalised(height)
