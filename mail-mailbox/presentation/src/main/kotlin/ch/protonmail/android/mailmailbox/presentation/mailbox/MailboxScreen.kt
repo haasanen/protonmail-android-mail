@@ -348,7 +348,7 @@ fun MailboxScreen(
 
                 is ManageAccountSheetState -> AccountsSwitcherBottomSheetScreen(onEvent = {
                     onEvent(it)
-                    showBottomSheet = false
+                    viewModel.submit(MailboxViewAction.DismissBottomSheet)
                 })
 
                 is UpsellingBottomSheetState -> Unit
