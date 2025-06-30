@@ -73,6 +73,10 @@ class ProtonSnackbarHostState(
         this.type = type
         snackbarHostState.showSnackbar(message, actionLabel, withDismissAction, duration)
     }
+
+    fun dismissAll() {
+        snackbarHostState.currentSnackbarData?.dismiss()
+    }
 }
 
 @Composable
