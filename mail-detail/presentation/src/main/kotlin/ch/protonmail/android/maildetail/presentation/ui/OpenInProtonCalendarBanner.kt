@@ -67,8 +67,8 @@ fun OpenInProtonCalendarBanner(modifier: Modifier = Modifier, onOpenInProtonCale
             .shadow(
                 elevation = ProtonDimens.ShadowElevation.Small,
                 shape = ProtonTheme.shapes.extraLarge,
-                spotColor = ProtonTheme.colors.shadowWeak,
-                ambientColor = ProtonTheme.colors.shadowWeak
+                spotColor = ProtonTheme.colors.shadowSoft,
+                ambientColor = ProtonTheme.colors.shadowSoft
             ),
 
         onClick = onOpenInProtonCalendarClick

@@ -224,10 +224,9 @@ class ProtonColors(
     floatyPressed: Color = ProtonPalette.Charade,
     floatyText: Color = ProtonPalette.White,
 
-    shadowNorm: Color,
+    shadowSoft: Color,
     shadowRaised: Color,
     shadowLifted: Color,
-    shadowWeak: Color,
 
     starDefault: Color = shade50,
     starSelected: Color = ProtonPalette.TexasRose,
@@ -398,13 +397,11 @@ class ProtonColors(
     var floatyText: Color by mutableStateOf(floatyText, structuralEqualityPolicy())
         internal set
 
-    var shadowNorm: Color by mutableStateOf(shadowNorm, structuralEqualityPolicy())
+    var shadowSoft: Color by mutableStateOf(shadowSoft, structuralEqualityPolicy())
         internal set
     var shadowRaised: Color by mutableStateOf(shadowRaised, structuralEqualityPolicy())
         internal set
     var shadowLifted: Color by mutableStateOf(shadowLifted, structuralEqualityPolicy())
-        internal set
-    var shadowWeak: Color by mutableStateOf(shadowWeak, structuralEqualityPolicy())
         internal set
 
     var starDefault: Color by mutableStateOf(starDefault, structuralEqualityPolicy())
@@ -501,10 +498,9 @@ class ProtonColors(
         floatyText: Color = this.floatyText,
         starDefault: Color = this.starDefault,
         starSelected: Color = this.starSelected,
-        shadowNorm: Color = this.shadowNorm,
         shadowRaised: Color = this.shadowRaised,
         shadowLifted: Color = this.shadowLifted,
-        shadowWeak: Color = this.shadowWeak,
+        shadowSoft: Color = this.shadowSoft,
         sidebarBackground: Color = this.sidebarBackground,
         sidebarInteractionPressed: Color = this.sidebarInteractionPressed,
         sidebarSeparator: Color = this.sidebarSeparator,
@@ -598,10 +594,9 @@ class ProtonColors(
         floatyPressed = floatyPressed,
         floatyText = floatyText,
 
-        shadowNorm = shadowNorm,
         shadowRaised = shadowRaised,
         shadowLifted = shadowLifted,
-        shadowWeak = shadowWeak,
+        shadowSoft = shadowSoft,
 
         starDefault = starDefault,
         starSelected = starSelected,
@@ -654,10 +649,9 @@ class ProtonColors(
             shade15 = ProtonPalette.FrostGray,
             shade10 = ProtonPalette.Porcelain,
             shade0 = Color.White,
-            shadowNorm = Color.Black.copy(alpha = 0.8f),
+            shadowSoft = Color.Black.copy(alpha = 0.8f),
             shadowRaised = Color.Black.copy(alpha = 0.8f),
             shadowLifted = Color.Black.copy(alpha = 0.8f),
-            shadowWeak = ProtonPalette.Charade.copy(alpha = 0.04f),
             blenderNorm = ProtonPalette.EerieBlack.copy(alpha = 0.48f),
             textAccent = brandPlus10,
             iconAccent = brandPlus10,
@@ -704,10 +698,9 @@ class ProtonColors(
             shade15 = ProtonPalette.Obsidian,
             shade10 = ProtonPalette.Swamp,
             shade0 = ProtonPalette.EerieBlack,
-            shadowNorm = Color.White.copy(alpha = 0.8f),
+            shadowSoft = ProtonPalette.White.copy(alpha = 0.8f),
             shadowRaised = Color.White.copy(alpha = 0.8f),
             shadowLifted = Color.White.copy(alpha = 0.86f),
-            shadowWeak = ProtonPalette.Platinum.copy(alpha = 0.4f),
             blenderNorm = Color.Black.copy(alpha = 0.52f),
             textAccent = brandPlus10,
             iconAccent = brandPlus10,
@@ -893,10 +886,9 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
     floatyPressed = other.floatyPressed
     floatyText = other.floatyText
 
-    shadowNorm = other.shadowNorm
     shadowRaised = other.shadowRaised
     shadowLifted = other.shadowLifted
-    shadowWeak = other.shadowWeak
+    shadowSoft = other.shadowSoft
 
     starDefault = other.starDefault
     starSelected = other.starSelected

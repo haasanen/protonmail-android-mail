@@ -64,8 +64,8 @@ fun BottomActionBar(
         modifier = modifier
             .shadow(
                 elevation = ProtonDimens.ShadowElevation.Large,
-                ambientColor = ProtonTheme.colors.shadowNorm,
-                spotColor = ProtonTheme.colors.shadowNorm
+                ambientColor = ProtonTheme.colors.shadowSoft,
+                spotColor = ProtonTheme.colors.shadowSoft
             )
             .background(ProtonTheme.colors.backgroundNorm)
     ) {

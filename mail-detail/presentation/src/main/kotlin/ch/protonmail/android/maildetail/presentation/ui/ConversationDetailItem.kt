@@ -147,8 +147,8 @@ private fun ConversationDetailCard(modifier: Modifier = Modifier, content: @Comp
                     MailDimens.ConversationCollapseHeaderElevation
                 },
                 shape = ProtonTheme.shapes.conversation,
-                ambientColor = ProtonTheme.colors.shadowNorm.copy(alpha = ShadowAlpha),
-                spotColor = ProtonTheme.colors.shadowNorm.copy(alpha = ShadowAlpha)
+                ambientColor = ProtonTheme.colors.shadowSoft.copy(alpha = ShadowAlpha),
+                spotColor = ProtonTheme.colors.shadowSoft.copy(alpha = ShadowAlpha)
             ),
         shape = ProtonTheme.shapes.conversation,
         colors = CardDefaults.elevatedCardColors(
