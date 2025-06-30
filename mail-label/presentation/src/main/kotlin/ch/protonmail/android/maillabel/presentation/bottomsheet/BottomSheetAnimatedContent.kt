@@ -43,6 +43,7 @@ fun <T> BottomSheetAnimatedContent(
     expandOnTransition: (initialState: T, targetState: T) -> Boolean = { initial, target ->
         initial == loadingState && target != loadingState && target !in errorStates
     },
+    animationKey: (T) -> Boolean,
     animationSpec: FiniteAnimationSpec<IntSize> = spring(
         dampingRatio = Spring.DampingRatioNoBouncy,
         stiffness = Spring.StiffnessMediumLow
@@ -72,6 +73,7 @@ fun <T> BottomSheetAnimatedContent(
         },
         modifier = modifier,
         label = label,
-        content = content
+        content = content,
+        contentKey = animationKey
     )
 }

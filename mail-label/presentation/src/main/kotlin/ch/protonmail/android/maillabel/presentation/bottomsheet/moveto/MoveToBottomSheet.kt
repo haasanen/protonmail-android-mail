@@ -63,7 +63,8 @@ fun MoveToBottomSheetScreen(
     BottomSheetAnimatedContent(
         state = state,
         loadingState = MoveToState.Loading,
-        errorStates = setOf(MoveToState.Error)
+        errorStates = setOf(MoveToState.Error),
+        animationKey = { state is MoveToState.Data }
     ) { currentState ->
         when (currentState) {
             is MoveToState.Data -> MoveToBottomSheetContent(

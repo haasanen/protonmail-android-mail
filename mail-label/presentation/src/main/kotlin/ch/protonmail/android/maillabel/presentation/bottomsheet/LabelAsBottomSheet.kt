@@ -62,7 +62,8 @@ fun LabelAsBottomSheetScreen(
     BottomSheetAnimatedContent(
         state = state,
         loadingState = LabelAsState.Loading,
-        errorStates = setOf(LabelAsState.Error)
+        errorStates = setOf(LabelAsState.Error),
+        animationKey = { state is LabelAsState.Data }
     ) { currentState ->
         when (currentState) {
             is LabelAsState.Data -> LabelAsBottomSheetContent(
