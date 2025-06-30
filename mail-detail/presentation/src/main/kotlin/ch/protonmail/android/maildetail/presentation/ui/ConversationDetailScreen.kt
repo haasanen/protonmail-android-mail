@@ -896,17 +896,14 @@ private fun MessagesContent(
     // The webview for the message that we will scroll to has loaded
     // this is important as the listview will need its final height
     var isScrollToMessageWebViewLoaded by remember { mutableStateOf(false) }
-    // finished scroll calculations, items have loaded and we have heights
     val viewHasFinishedScrollingAndMeasuring = derivedStateOf {
         itemsHeight.isNotEmpty() &&
             isScrollToMessageWebViewLoaded &&
             isAllItemsMeasured.value
     }
-    // conversations slightly overlay / stack each other
     val headerOverlapHeightPx = MailDimens.ConversationCollapseHeaderOverlapHeight.dpToPx()
     LaunchedEffect(listState) {
         snapshotFlow { viewHasFinishedScrollingAndMeasuring.value }
-            // have we finished ?
             .filter { it == true }
             // debounce as sometimes there are multiple passes and we should wait for the view to settle
             .debounce(timeoutMillis = 300L)
@@ -917,7 +914,6 @@ private fun MessagesContent(
                 // account when calculating heights
                 val sumOfCardOverlap = (itemsHeight.size - 1) * headerOverlapHeightPx
 
-                // any available space after conversation items are rendered in the column
                 val availableSpace = lazyColumnHeight.intValue - verticalPaddingPx - sumOfHeights + sumOfCardOverlap
                 if (itemsHeight.entries.last().value < availableSpace) {
                     // then we should expand to fit space
