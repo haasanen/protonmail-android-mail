@@ -53,6 +53,8 @@ import ch.protonmail.android.mailattachments.presentation.model.AttachmentMetada
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.Attachment.TotalIconAndPaddingDp
+import kotlin.math.max
+import kotlin.math.min
 
 @Composable
 fun AttachmentList(
@@ -101,7 +103,7 @@ private fun SubcomposeMeasureScope.measureAttachments(
 
     val minTruncatedAttachmentWidth = measureMinTruncatedWidth(constraints)
     val attachmentsFullWidth =
-        measureAttachmentsFullWidth(attachments, textColor, onAttachmentClicked = onAttachmentClicked)
+        measureAttachmentsFullWidth(attachments, textColor, constraints, onAttachmentClicked = onAttachmentClicked)
 
     var attachmentsWidth = 0
     var notPlacedCount = attachments.size
@@ -122,9 +124,9 @@ private fun SubcomposeMeasureScope.measureAttachments(
             return calculateCoordinates(attachmentPlaceables)
         }
 
-
-        // For the first attachment, we can use at most half of the available width.
-        val maxAttachmentWidth = if (index == 0) {
+        // For the first attachment, if there's only one attachment total, use full width
+        // Otherwise, use at most half of the available width
+        val maxAttachmentWidth = if (index == 0 && attachments.size > 1) {
             constraints.maxWidth / 2
         } else {
             availableWidth
@@ -167,18 +169,22 @@ private fun SubcomposeMeasureScope.createTruncatedPlaceable(
     baseNameWidth: Int,
     onAttachmentClicked: (AttachmentIdUiModel) -> Unit
 ): Placeable {
+    // Ensure minWidth doesn't exceed maxWidth to prevent constraint errors
+    val safeMinWidth = min(minTruncatedAttachmentWidth, maxAttachmentWidth)
+    val safeBaseNameWidth = max(0, baseNameWidth)
+
     return subcompose(generateSlotId("place-attachment", attachment.id.value)) {
         Attachment(
             attachment = attachment,
             textColor = textColor,
-            minWidth = minTruncatedAttachmentWidth,
+            minWidth = safeMinWidth,
             maxWidth = maxAttachmentWidth,
-            baseNameWidth = baseNameWidth,
+            baseNameWidth = safeBaseNameWidth,
             onAttachmentClicked = onAttachmentClicked
         )
     }.single().measure(
         Constraints(
-            minWidth = minTruncatedAttachmentWidth,
+            minWidth = safeMinWidth,
             maxWidth = maxAttachmentWidth
         )
     )
@@ -203,6 +209,7 @@ private fun calculatePlusWidth(
 private fun SubcomposeMeasureScope.measureAttachmentsFullWidth(
     attachments: List<AttachmentMetadataUiModel>,
     textColor: Color,
+    constraints: Constraints,
     onAttachmentClicked: (AttachmentIdUiModel) -> Unit
 ): List<FullWidthAttachmentInfo> {
     val result = mutableListOf<FullWidthAttachmentInfo>()
@@ -217,10 +224,10 @@ private fun SubcomposeMeasureScope.measureAttachmentsFullWidth(
                 attachment = attachment,
                 textColor = textColor,
                 minWidth = 0,
-                maxWidth = Int.MAX_VALUE,
+                maxWidth = constraints.maxWidth,
                 onAttachmentClicked = onAttachmentClicked
             )
-        }.single().measure(Constraints())
+        }.single().measure(constraints)
 
         result += FullWidthAttachmentInfo(attachment, placeable, extensionWidth)
     }
@@ -231,7 +238,7 @@ private fun SubcomposeMeasureScope.measureAttachmentsFullWidth(
 private fun SubcomposeMeasureScope.measureMinTruncatedWidth(constraints: Constraints): Int {
     return subcompose("Min-Truncated-Attachment") {
         MinTruncatedAttachment(maxWidth = constraints.maxWidth)
-    }.single().measure(Constraints()).width
+    }.single().measure(constraints).width
 }
 
 private fun SubcomposeMeasureScope.measurePlusWidths(constraints: Constraints): Triple<Int, Int, Int> {
@@ -468,4 +475,3 @@ object Attachment {
     internal const val Plus2CharsLimit = 99
     internal const val Plus3CharsLimit = 999
 }
-
