@@ -815,7 +815,7 @@ private fun MessagesContent(
             top = (
                 padding.calculateTopPadding() + ProtonDimens.Spacing.Standard + paddingOffsetDp
                 ).coerceAtLeast(0f.dp),
-            bottom = padding.calculateBottomPadding() - ProtonDimens.Spacing.Tiny
+            bottom = (padding.calculateBottomPadding() - ProtonDimens.Spacing.Tiny).coerceAtLeast(0f.dp)
         )
 
     val verticalPaddingPx =
