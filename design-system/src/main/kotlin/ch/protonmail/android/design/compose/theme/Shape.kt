@@ -19,7 +19,6 @@ package ch.protonmail.android.design.compose.theme
 
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Shape
@@ -41,18 +40,13 @@ data class ProtonShapes(
         bottomStart = 0.dp,
         bottomEnd = 0.dp
     ),
+
     val conversation: Shape = RoundedCornerShape(
         topStart = ProtonDimens.ExtraLargeCornerRadius,
         topEnd = ProtonDimens.ExtraLargeCornerRadius,
         bottomStart = 0.dp,
         bottomEnd = 0.dp
     )
-)
-
-fun ProtonShapes.toMaterialThemeShapes() = Shapes(
-    small = small,
-    medium = medium,
-    large = large
 )
 
 val LocalShapes = staticCompositionLocalOf { ProtonShapes() }

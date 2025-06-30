@@ -65,7 +65,7 @@ fun OpenInProtonCalendarBanner(modifier: Modifier = Modifier, onOpenInProtonCale
             )
             .fillMaxWidth()
             .shadow(
-                elevation = ProtonDimens.ShadowElevation.Small,
+                elevation = ProtonDimens.ShadowElevation.Soft,
                 shape = ProtonTheme.shapes.extraLarge,
                 spotColor = ProtonTheme.colors.shadowSoft,
                 ambientColor = ProtonTheme.colors.shadowSoft

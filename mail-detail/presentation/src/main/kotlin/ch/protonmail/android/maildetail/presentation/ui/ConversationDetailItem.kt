@@ -141,9 +141,9 @@ private fun ConversationDetailCard(modifier: Modifier = Modifier, content: @Comp
             )
             .shadow(
                 elevation = if (isSystemInDarkTheme()) {
-                    MailDimens.ConversationCollapseHeaderElevationDark
+                    ProtonDimens.ShadowElevation.Raised
                 } else {
-                    MailDimens.ConversationCollapseHeaderElevation
+                    ProtonDimens.ShadowElevation.Lifted
                 },
                 shape = ProtonTheme.shapes.conversation,
                 ambientColor = ProtonTheme.colors.shadowSoft,

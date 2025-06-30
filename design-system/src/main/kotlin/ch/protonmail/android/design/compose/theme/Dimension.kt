@@ -69,9 +69,9 @@ object ProtonDimens {
 
     object ShadowElevation {
 
-        val Small = 4.dp
-        val Medium = 8.dp
-        val Large = 16.dp
+        val Soft = 4.dp
+        val Raised = 8.dp
+        val Lifted = 16.dp
     }
 
     object IconSize {
