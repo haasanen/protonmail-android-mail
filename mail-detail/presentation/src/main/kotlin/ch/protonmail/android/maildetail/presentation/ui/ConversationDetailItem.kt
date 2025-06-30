@@ -135,7 +135,7 @@ private fun ConversationDetailCard(modifier: Modifier = Modifier, content: @Comp
         modifier = modifier
             .fillMaxWidth()
             .border(
-                width = if (isSystemInDarkTheme()) MailDimens.ThinBorder else MailDimens.MediumBorder,
+                width = MailDimens.DefaultBorder,
                 color = ProtonTheme.colors.borderNorm,
                 shape = ProtonTheme.shapes.conversation
             )

@@ -649,7 +649,7 @@ class ProtonColors(
             shade15 = ProtonPalette.FrostGray,
             shade10 = ProtonPalette.Porcelain,
             shade0 = Color.White,
-            shadowSoft = Color.Black.copy(alpha = 0.8f),
+            shadowSoft = Color.Black.copy(alpha = 0.6f),
             shadowRaised = Color.Black.copy(alpha = 0.8f),
             shadowLifted = Color.Black.copy(alpha = 0.8f),
             blenderNorm = ProtonPalette.EerieBlack.copy(alpha = 0.48f),
