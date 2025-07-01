@@ -60,6 +60,10 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.SnackbarError
+import ch.protonmail.android.mailcommon.presentation.SnackbarNormal
+import ch.protonmail.android.mailcommon.presentation.SnackbarType
+import ch.protonmail.android.mailcommon.presentation.SnackbarUndo
 import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSnackbar
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
@@ -178,6 +182,21 @@ fun Home(
         )
     }
 
+
+    val undoActionEffect = remember { mutableStateOf(Effect.empty<ActionResult>()) }
+    UndoableOperationSnackbar(snackbarHostState = snackbarHostNormState, actionEffect = undoActionEffect.value)
+    fun showUndoableOperationSnackbar(actionResult: ActionResult) = scope.launch {
+        undoActionEffect.value = Effect.of(actionResult)
+    }
+
+    fun showSnackbar(snackbarType: SnackbarType) {
+        when (snackbarType) {
+            is SnackbarError -> showErrorSnackbar(snackbarType.message)
+            is SnackbarNormal -> showNormalSnackbar(snackbarType.message)
+            is SnackbarUndo -> showUndoableOperationSnackbar(snackbarType.result)
+        }
+    }
+
     val draftDiscardedMessage = stringResource(id = R.string.mailbox_draft_discarded)
     fun showDraftDiscardedSnackbar() = scope.launch {
         showNormalSnackbar(text = draftDiscardedMessage)
@@ -278,12 +297,6 @@ fun Home(
             SnackbarResult.ActionPerformed -> viewModel.navigateToDrafts(navController)
             SnackbarResult.Dismissed -> Unit
         }
-    }
-
-    val undoActionEffect = remember { mutableStateOf(Effect.empty<ActionResult>()) }
-    UndoableOperationSnackbar(snackbarHostState = snackbarHostNormState, actionEffect = undoActionEffect.value)
-    fun showUndoableOperationSnackbar(actionResult: ActionResult) = scope.launch {
-        undoActionEffect.value = Effect.of(actionResult)
     }
 
     ConsumableLaunchedEffect(state.messageSendingStatusEffect) { sendingStatus ->
@@ -557,8 +570,7 @@ fun Home(
                             fabHostState,
                             openDrawerMenu = { scope.launch { drawerState.open() } },
                             setDrawerEnabled = { isDrawerSwipeGestureEnabled.value = it },
-                            showNormalSnackbar = { showNormalSnackbar(it) },
-                            showErrorSnackbar = { showErrorSnackbar(it) },
+                            showSnackbar = { showSnackbar(it) },
                             onEvent = eventHandler,
                             showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
                             onAttachmentReady = activityActions.openIntentChooser

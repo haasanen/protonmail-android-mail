@@ -103,8 +103,6 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
-import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
-import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
@@ -115,8 +113,10 @@ import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
+import ch.protonmail.android.mailcommon.presentation.SnackbarError
+import ch.protonmail.android.mailcommon.presentation.SnackbarType
+import ch.protonmail.android.mailcommon.presentation.SnackbarUndo
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSnackbar
 import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetVisibilityEffect
@@ -153,7 +153,6 @@ import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMore
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
 import ch.protonmail.android.uicomponents.fab.LazyFab
 import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
-import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.launch
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
 import me.proton.android.core.accountmanager.presentation.switcher.v2.AccountsSwitcherBottomSheetScreen
@@ -302,7 +301,7 @@ fun MailboxScreen(
                     )
                     val actions = MoveToBottomSheet.Actions(
                         onCreateNewFolderClick = actions.onAddFolder,
-                        onError = { actions.showErrorSnackbar(it) },
+                        onError = { actions.showSnackbar(SnackbarError(it)) },
                         onMoveToComplete = { _, _ -> viewModel.submit(MailboxViewAction.DismissBottomSheet) },
                         onDismiss = { viewModel.submit(MailboxViewAction.DismissBottomSheet) }
                     )
@@ -320,7 +319,7 @@ fun MailboxScreen(
 
                     val actions = LabelAsBottomSheet.Actions(
                         onCreateNewLabelClick = actions.onAddLabel,
-                        onError = { actions.showErrorSnackbar(it) },
+                        onError = { actions.showSnackbar(SnackbarError(it)) },
                         onLabelAsComplete = { _, _ -> viewModel.submit(MailboxViewAction.DismissBottomSheet) },
                         onDismiss = { viewModel.submit(MailboxViewAction.DismissBottomSheet) }
                     )
@@ -376,8 +375,6 @@ fun MailboxScreen(
 ) {
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
-    val snackbarHostState = remember { ProtonSnackbarHostState() }
-    val snackbarHostErrorState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR) }
     val rememberTopBarHeight = remember { mutableStateOf(0.dp) }
     val refreshErrorText = stringResource(id = R.string.mailbox_error_message_generic)
     val context = LocalContext.current
@@ -395,10 +392,12 @@ fun MailboxScreen(
         onDeselectAllClicked = actions.onDeselectAllClicked
     )
 
-    UndoableOperationSnackbar(snackbarHostState = snackbarHostState, actionEffect = mailboxState.actionResult)
-
     ConsumableTextEffect(effect = mailboxState.error) {
-        snackbarHostErrorState.showSnackbar(message = it, type = ProtonSnackbarType.ERROR)
+        actions.showSnackbar(SnackbarError(it))
+    }
+
+    ConsumableLaunchedEffect(effect = mailboxState.actionResult) {
+        actions.showSnackbar(SnackbarUndo(it))
     }
 
     DeleteDialog(state = mailboxState.deleteDialogState, actions.deleteConfirmed, actions.deleteDialogDismissed)
@@ -479,10 +478,6 @@ fun MailboxScreen(
                     onCustomizeToolbar = { Timber.d("mailbox onCustomizeToolbar clicked") }
                 )
             )
-        },
-        snackbarHost = {
-            DismissableSnackbarHost(protonSnackbarHostState = snackbarHostState)
-            DismissableSnackbarHost(protonSnackbarHostState = snackbarHostErrorState)
         }
     ) { paddingValues ->
 
@@ -499,7 +494,7 @@ fun MailboxScreen(
             }
 
             ConsumableLaunchedEffect(mailboxListState.refreshErrorEffect) {
-                actions.showErrorSnackbar(refreshErrorText)
+                actions.showSnackbar(SnackbarError(refreshErrorText))
             }
 
             ConsumableTextEffect(mailboxListState.attachmentOpeningStarted) {
@@ -511,7 +506,7 @@ fun MailboxScreen(
             }
 
             ConsumableTextEffect(mailboxListState.displayAttachmentError) {
-                actions.showErrorSnackbar(it)
+                actions.showSnackbar(SnackbarError(it))
             }
         }
 
@@ -1099,8 +1094,7 @@ object MailboxScreen {
         val onRefreshList: () -> Unit,
         val onRefreshListCompleted: () -> Unit,
         val openDrawerMenu: () -> Unit,
-        val showNormalSnackbar: (String) -> Unit,
-        val showErrorSnackbar: (String) -> Unit,
+        val showSnackbar: (SnackbarType) -> Unit,
         val onOfflineWithData: () -> Unit,
         val onErrorWithData: () -> Unit,
         val markAsRead: () -> Unit,
@@ -1154,8 +1148,7 @@ object MailboxScreen {
                 onRefreshList = {},
                 onRefreshListCompleted = {},
                 openDrawerMenu = {},
-                showNormalSnackbar = {},
-                showErrorSnackbar = {},
+                showSnackbar = {},
                 onOfflineWithData = {},
                 onErrorWithData = {},
                 markAsRead = {},
