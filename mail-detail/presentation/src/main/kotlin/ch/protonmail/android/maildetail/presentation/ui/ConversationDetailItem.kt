@@ -19,6 +19,9 @@
 package ch.protonmail.android.maildetail.presentation.ui
 
 import android.net.Uri
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -33,8 +36,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
@@ -179,6 +186,16 @@ private fun ColumnScope.ConversationDetailExpandedItem(
     onMessageBodyLoadFinished: (messageId: MessageId, height: Int) -> Unit,
     cachedWebContentHeight: Int = 0
 ) {
+    var viewLoaded = remember { mutableStateOf(cachedWebContentHeight > 0) }
+    val revealFooterAfterLoad by animateFloatAsState(
+        targetValue = if (viewLoaded.value) 1.0f else 0f,
+        label = "footer-alpha",
+        animationSpec = tween(
+            durationMillis = if (viewLoaded.value) 200 else 0,
+            easing = FastOutSlowInEasing,
+            delayMillis = 250
+        )
+    )
     val headerActions = MessageDetailHeader.Actions.Empty.copy(
         onReply = actions.onReply,
         onReplyAll = actions.onReplyAll,
@@ -216,6 +233,7 @@ private fun ColumnScope.ConversationDetailExpandedItem(
             },
             onExpandCollapseButtonClicked = {
                 actions.onBodyExpandCollapseButtonClicked(uiModel.messageId)
+                viewLoaded.value = false
             },
             loadEmbeddedImage = actions.loadEmbeddedImage,
             onReply = actions.onReply,
@@ -227,12 +245,20 @@ private fun ColumnScope.ConversationDetailExpandedItem(
             onOpenInProtonCalendar = { actions.onOpenInProtonCalendar(it) },
             onPrint = { actions.onPrint(it) }
         ),
-        onMessageBodyLoaded = onMessageBodyLoadFinished,
+        onMessageBodyLoaded = { id: MessageId, i: Int ->
+            onMessageBodyLoadFinished(id, i)
+            viewLoaded.value = true
+        },
         cachedMessageBodyHeight = cachedWebContentHeight
     )
     // to bring buttons to the bottom of the page
     Spacer(modifier = Modifier.weight(1f))
     MessageDetailFooter(
+        modifier = Modifier
+            .graphicsLayer {
+                alpha = revealFooterAfterLoad
+                alpha = 1f
+            },
         uiModel = uiModel.messageDetailFooterUiModel,
         actions = MessageDetailFooter.Actions.fromConversationDetailItemActions(actions)
     )
