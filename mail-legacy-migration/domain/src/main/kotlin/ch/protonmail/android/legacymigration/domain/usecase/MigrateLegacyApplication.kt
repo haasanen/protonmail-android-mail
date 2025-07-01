@@ -29,7 +29,8 @@ class MigrateLegacyApplication @Inject constructor(
     private val destroyLegacyDatabases: DestroyLegacyDatabases,
     private val isLegacyAutoLockEnabled: IsLegacyAutoLockEnabled,
     private val migrateAutoLockLegacyPreference: MigrateAutoLockLegacyPreference,
-    private val clearLegacyAutoLockPreferences: ClearLegacyAutoLockPreferences
+    private val clearLegacyAutoLockPreferences: ClearLegacyAutoLockPreferences,
+    private val cleanupLegacyNotificationChannels: CleanupLegacyNotificationChannels
 ) {
 
     suspend operator fun invoke() {
@@ -46,6 +47,8 @@ class MigrateLegacyApplication @Inject constructor(
             Timber.d("Legacy migration: Legacy auto-lock is not enabled, skipping migration")
             clearLegacyAutoLockPreferences()
         }
+
+        cleanupLegacyNotificationChannels()
     }
 
     private fun Either<List<MigrationError>, Unit>.handleAccountMigration() {

@@ -39,13 +39,16 @@ class MigrateLegacyApplicationTest {
     private val migrateAutoLockLegacyPreference = mockk<MigrateAutoLockLegacyPreference>()
     private val clearLegacyAutoLockPreferences = mockk<ClearLegacyAutoLockPreferences>()
 
+    private val cleanupLegacyNotificationChannels = mockk<CleanupLegacyNotificationChannels>()
+
     private val migrateLegacyApplication = MigrateLegacyApplication(
         migrateLegacyAccounts,
         shouldMigrateLegacyAccount,
         destroyLegacyDatabases,
         isLegacyAutoLockEnabled,
         migrateAutoLockLegacyPreference,
-        clearLegacyAutoLockPreferences
+        clearLegacyAutoLockPreferences,
+        cleanupLegacyNotificationChannels
     )
 
     @Test
@@ -56,6 +59,7 @@ class MigrateLegacyApplicationTest {
         coEvery { isLegacyAutoLockEnabled() } returns true
         coEvery { migrateAutoLockLegacyPreference() } returns Unit.right()
         coEvery { clearLegacyAutoLockPreferences() } just runs
+        coEvery { cleanupLegacyNotificationChannels() } just runs
 
         // When
         migrateLegacyApplication()
@@ -68,6 +72,7 @@ class MigrateLegacyApplicationTest {
             isLegacyAutoLockEnabled()
             migrateAutoLockLegacyPreference()
             clearLegacyAutoLockPreferences()
+            cleanupLegacyNotificationChannels()
         }
     }
 
@@ -78,6 +83,7 @@ class MigrateLegacyApplicationTest {
         coEvery { isLegacyAutoLockEnabled() } returns true
         coEvery { migrateAutoLockLegacyPreference() } returns Unit.right()
         coEvery { clearLegacyAutoLockPreferences() } just runs
+        coEvery { cleanupLegacyNotificationChannels() } just runs
 
         // When
         migrateLegacyApplication()
@@ -89,6 +95,7 @@ class MigrateLegacyApplicationTest {
             isLegacyAutoLockEnabled()
             migrateAutoLockLegacyPreference()
             clearLegacyAutoLockPreferences()
+            cleanupLegacyNotificationChannels()
         }
 
         coVerify(exactly = 0) { migrateLegacyAccounts() }
@@ -101,6 +108,7 @@ class MigrateLegacyApplicationTest {
         coEvery { migrateLegacyAccounts() } returns Unit.right()
         coEvery { isLegacyAutoLockEnabled() } returns false
         coEvery { clearLegacyAutoLockPreferences() } just runs
+        coEvery { cleanupLegacyNotificationChannels() } just runs
 
         // When
         migrateLegacyApplication()
@@ -112,6 +120,7 @@ class MigrateLegacyApplicationTest {
             destroyLegacyDatabases()
             isLegacyAutoLockEnabled()
             clearLegacyAutoLockPreferences()
+            cleanupLegacyNotificationChannels()
         }
 
         coVerify(exactly = 0) { migrateAutoLockLegacyPreference() }
@@ -126,6 +135,7 @@ class MigrateLegacyApplicationTest {
         coEvery {
             migrateAutoLockLegacyPreference()
         } returns MigrationError.AutoLockFailure.FailedToSetAutoLockPin.left()
+        coEvery { cleanupLegacyNotificationChannels() } just runs
 
         // When
         migrateLegacyApplication()
@@ -136,6 +146,7 @@ class MigrateLegacyApplicationTest {
             migrateLegacyAccounts()
             isLegacyAutoLockEnabled()
             migrateAutoLockLegacyPreference()
+            cleanupLegacyNotificationChannels()
         }
 
         coVerify(exactly = 0) { destroyLegacyDatabases() }
