@@ -20,15 +20,19 @@ package ch.protonmail.android.mailmessage.presentation.ui
 
 import java.io.ByteArrayInputStream
 import android.net.Uri
+import android.view.ViewGroup.LayoutParams
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.FrameLayout
 import androidx.compose.animation.core.ExperimentalAnimatableApi
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -48,7 +52,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,6 +67,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -84,14 +88,12 @@ import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.webview.MessageBodyWebViewOperation
 import ch.protonmail.android.mailmessage.presentation.viewmodel.MessageBodyWebViewViewModel
-import com.google.accompanist.web.AccompanistWebViewClient
-import com.google.accompanist.web.WebView
-import com.google.accompanist.web.rememberWebViewStateWithHTMLData
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
+import timber.log.Timber
 
 @OptIn(ExperimentalAnimatableApi::class)
 @Composable
@@ -99,16 +101,12 @@ fun MessageBodyWebView(
     modifier: Modifier = Modifier,
     messageBodyUiModel: MessageBodyUiModel,
     webViewActions: MessageBodyWebView.Actions,
+    onBuildWebView: (Context) -> WebView,
     onMessageBodyLoaded: (messageId: MessageId, height: Int) -> Unit = { _, _ -> },
     viewModel: MessageBodyWebViewViewModel = hiltViewModel(),
     cachedHeight: Int = 0
 ) {
     val context = LocalContext.current
-
-    val state = rememberWebViewStateWithHTMLData(
-        data = messageBodyUiModel.messageBody,
-        mimeType = MimeType.Html.value
-    )
 
     val webViewInteractionState = viewModel.state.collectAsStateWithLifecycle().value
     val longClickDialogState = remember { mutableStateOf(false) }
@@ -139,16 +137,24 @@ fun MessageBodyWebView(
     val isSystemInDarkTheme = isSystemInDarkTheme()
 
     var webView by remember { mutableStateOf<WebView?>(null) }
-    var contentLoaded = remember { mutableStateOf(false) }
+    val contentLoaded = remember { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = messageBodyUiModel.viewModePreference) {
-        webView?.let {
-            configureDarkLightMode(it, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
+    webView?.let {
+        LaunchedEffect(it) {
+            Timber.d("message-webview: setting initial value on webview (should happen only once!)")
+            it.loadDataWithBaseURL(null, messageBodyUiModel.messageBody, MimeType.Html.value, "utf-8", null)
+        }
+
+        LaunchedEffect(messageBodyUiModel.messageBody, messageBodyUiModel.viewModePreference) {
+            if (contentLoaded.value) {
+                Timber.d("message-webview: reload webview data when the body or the view preference has changed")
+                it.loadDataWithBaseURL(null, messageBodyUiModel.messageBody, MimeType.Html.value, "utf-8", null)
+            }
         }
     }
 
     val client = remember(messageBodyUiModel.messageId) {
-        object : AccompanistWebViewClient() {
+        object : WebViewClient() {
 
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 request?.let {
@@ -175,38 +181,50 @@ fun MessageBodyWebView(
     }
 
     Column(modifier) {
-        key(client) {
-            val attachmentsUiModel = messageBodyUiModel.attachments
-            if (attachmentsUiModel != null && attachmentsUiModel.attachments.isNotEmpty()) {
-                AttachmentList(
-                    modifier = Modifier.background(color = ProtonTheme.colors.backgroundNorm),
-                    messageAttachmentsUiModel = attachmentsUiModel,
-                    actions = AttachmentList.Actions(
-                        onShowAllAttachments = actions.onShowAllAttachments,
-                        onAttachmentClicked = actions.onAttachmentClicked,
-                        onToggleExpandCollapseMode = actions.onToggleAttachmentsExpandCollapseMode
-                    )
+        val attachmentsUiModel = messageBodyUiModel.attachments
+        if (attachmentsUiModel != null && attachmentsUiModel.attachments.isNotEmpty()) {
+            AttachmentList(
+                modifier = Modifier.background(color = ProtonTheme.colors.backgroundNorm),
+                messageAttachmentsUiModel = attachmentsUiModel,
+                actions = AttachmentList.Actions(
+                    onShowAllAttachments = actions.onShowAllAttachments,
+                    onAttachmentClicked = actions.onAttachmentClicked,
+                    onToggleExpandCollapseMode = actions.onToggleAttachmentsExpandCollapseMode
                 )
-            }
-            RevealWebView(contentLoaded = contentLoaded, cachedHeight = cachedHeight, onHeightFinalised = { height ->
-                onMessageBodyLoaded(messageId, height)
-            }) {
-                WebView(
-                    onCreated = {
-                        it.settings.builtInZoomControls = true
-                        it.settings.displayZoomControls = false
-                        it.settings.javaScriptEnabled = false
-                        it.settings.safeBrowsingEnabled = true
-                        it.settings.allowContentAccess = false
-                        it.settings.allowFileAccess = false
-                        it.settings.loadWithOverviewMode = true
-                        it.isVerticalScrollBarEnabled = false
-                        configureDarkLightMode(it, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
-                        configureLongClick(it, actions.onMessageBodyLinkLongClicked)
-                        webView = it
+            )
+        }
+        RevealWebView(contentLoaded = contentLoaded, cachedHeight = cachedHeight, onHeightFinalised = { height ->
+            onMessageBodyLoaded(messageId, height)
+        }) {
+            BoxWithConstraints {
+                // WebView changes it's layout strategy based on
+                // it's layoutParams. We convert from Compose Modifier to
+                // layout params here.
+                val layoutParams = FrameLayout.LayoutParams(
+                    if (constraints.hasFixedWidth) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT,
+                    if (constraints.hasFixedHeight) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT
+                )
+
+                AndroidView(
+                    factory = { context ->
+                        onBuildWebView(context).apply {
+                            this.settings.builtInZoomControls = true
+                            this.settings.displayZoomControls = false
+                            this.settings.javaScriptEnabled = false
+                            this.settings.safeBrowsingEnabled = true
+                            this.settings.allowContentAccess = false
+                            this.settings.allowFileAccess = false
+                            this.settings.loadWithOverviewMode = true
+                            this.isVerticalScrollBarEnabled = false
+                            this.layoutParams = layoutParams
+                            this.webViewClient = client
+
+                            configureDarkLightMode(this, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
+                            configureLongClick(this, actions.onMessageBodyLinkLongClicked)
+
+                            webView = this
+                        }
                     },
-                    captureBackPresses = false,
-                    state = state,
                     modifier = Modifier
                         .testTag(MessageBodyWebViewTestTags.WebView)
                         // there's a bug where if the message is too long the webview will crash
@@ -214,7 +232,9 @@ fun MessageBodyWebView(
                         .padding(ProtonDimens.Spacing.Large)
                         .fillMaxWidth()
                         .wrapContentSize(),
-                    client = client
+                    onRelease = {
+                        webView = null
+                    }
                 )
             }
         }

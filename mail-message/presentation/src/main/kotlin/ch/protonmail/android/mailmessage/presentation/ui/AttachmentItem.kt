@@ -53,9 +53,7 @@ import ch.protonmail.android.mailattachments.presentation.model.AttachmentMetada
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun AttachmentItem(
     modifier: Modifier = Modifier,

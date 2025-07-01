@@ -60,8 +60,6 @@ dependencies {
     debugImplementation(libs.bundles.compose.debug)
 
     implementation(libs.bundles.module.presentation)
-    implementation(libs.accompanist.permissions)
-    implementation(libs.accompanist.webview)
     implementation(libs.androidx.webkit)
     implementation(libs.androidx.compose.material3)
     implementation(libs.coil.compose)

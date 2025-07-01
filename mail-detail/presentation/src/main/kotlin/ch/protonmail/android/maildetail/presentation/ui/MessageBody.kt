@@ -18,12 +18,17 @@
 
 package ch.protonmail.android.maildetail.presentation.ui
 
+import android.content.Context
 import android.net.Uri
+import android.webkit.WebView
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -38,6 +43,7 @@ import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.ui.MessageBodyWebView
+import timber.log.Timber
 
 @Composable
 @Suppress("LongParameterList", "LongMethod")
@@ -89,6 +95,7 @@ fun MessageBody(
     MailDivider(modifier = Modifier.padding(top = ProtonDimens.Spacing.Standard))
 
     if (hasWebView) {
+        val webViewCache = remember { mutableStateOf<WebView?>(null) }
         MessageBodyWebView(
             modifier = modifier,
             messageBodyUiModel = messageBodyUiModel,
@@ -102,6 +109,7 @@ fun MessageBody(
                 loadEmbeddedImage = actions.loadEmbeddedImage,
                 onPrint = actions.onPrint
             ),
+            onBuildWebView = onBuildWebView(webViewCache),
             onMessageBodyLoaded = onMessageBodyLoaded,
             cachedHeight = cachedMessageBodyHeight
         )
@@ -151,6 +159,17 @@ fun MessageBodyButtonBannerPreview() {
             onButtonClicked = {}
         )
     }
+}
+
+@Composable
+private fun onBuildWebView(webView: MutableState<WebView?>) = { context: Context ->
+    if (webView.value == null) {
+        Timber.d("message-webview: factory creating new webview")
+        webView.value = WebView(context)
+    }
+
+    Timber.d("message-webview: factory returning webview")
+    webView.value ?: throw IllegalStateException("WebView wasn't initialized.")
 }
 
 object MessageBody {
