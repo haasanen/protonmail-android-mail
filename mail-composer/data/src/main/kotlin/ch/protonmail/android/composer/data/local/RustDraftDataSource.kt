@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
@@ -37,8 +38,8 @@ import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 interface RustDraftDataSource {
 
     suspend fun getMessageId(): Either<DataError, MessageId>
-    suspend fun open(userId: UserId, messageId: MessageId): Either<DataError, LocalDraftWithSyncStatus>
-    suspend fun create(userId: UserId, action: DraftAction): Either<DataError, LocalDraft>
+    suspend fun open(userId: UserId, messageId: MessageId): Either<OpenDraftError, LocalDraftWithSyncStatus>
+    suspend fun create(userId: UserId, action: DraftAction): Either<OpenDraftError, LocalDraft>
     suspend fun discard(userId: UserId, messageId: MessageId): Either<DataError, Unit>
     suspend fun saveSubject(subject: Subject): Either<SaveDraftError, Unit>
     suspend fun saveBody(body: DraftBody): Either<SaveDraftError, Unit>

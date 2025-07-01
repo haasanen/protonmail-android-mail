@@ -46,6 +46,7 @@ import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
@@ -103,11 +104,11 @@ class RustDraftDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun open(userId: UserId, messageId: MessageId): Either<DataError, LocalDraftWithSyncStatus> {
+    override suspend fun open(userId: UserId, messageId: MessageId): Either<OpenDraftError, LocalDraftWithSyncStatus> {
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-draft: Trying to open draft with null session; Failing.")
-            return DataError.Local.Unknown.left()
+            return OpenDraftError.Other(DataError.Local.NoUserSession).left()
         }
 
         Timber.d("rust-draft: Opening draft...")
@@ -119,17 +120,17 @@ class RustDraftDataSourceImpl @Inject constructor(
             .map { it.toLocalDraftWithSyncStatus() }
     }
 
-    override suspend fun create(userId: UserId, action: DraftAction): Either<DataError, LocalDraft> {
+    override suspend fun create(userId: UserId, action: DraftAction): Either<OpenDraftError, LocalDraft> {
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-draft: Trying to create draft with null session; Failing.")
-            return DataError.Local.Unknown.left()
+            return OpenDraftError.Other(DataError.Local.NoUserSession).left()
         }
 
         val draftCreateMode = action.toDraftCreateMode()
         if (draftCreateMode == null) {
             Timber.e("rust-draft: Trying to create draft with invalid create mode; Failing.")
-            return DataError.Local.UnsupportedOperation.left()
+            return OpenDraftError.Other(DataError.Local.UnsupportedOperation).left()
         }
 
         return createRustDraft(session, draftCreateMode)

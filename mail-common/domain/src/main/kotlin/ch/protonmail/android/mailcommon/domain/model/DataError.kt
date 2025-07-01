@@ -66,8 +66,6 @@ sealed interface DataError {
             data object EncryptionError : SendDraftError
         }
 
-        data object OpenDraftError : Local
-
         data object DiscardDraftError : Local
 
         data object UndoSendError : Local

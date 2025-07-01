@@ -29,8 +29,6 @@ import uniffi.proton_mail_uniffi.DraftCancelScheduleSendError
 import uniffi.proton_mail_uniffi.DraftCancelScheduleSendErrorReason
 import uniffi.proton_mail_uniffi.DraftDiscardError
 import uniffi.proton_mail_uniffi.DraftDiscardErrorReason
-import uniffi.proton_mail_uniffi.DraftOpenError
-import uniffi.proton_mail_uniffi.DraftOpenErrorReason
 import uniffi.proton_mail_uniffi.DraftSendError
 import uniffi.proton_mail_uniffi.DraftSendErrorReason
 import uniffi.proton_mail_uniffi.DraftUndoSendError
@@ -74,17 +72,6 @@ fun DraftSendError.toDataError(): DataError = when (this) {
         is DraftSendErrorReason.ScheduleSendExpired,
         is DraftSendErrorReason.ScheduleSendMessageLimitExceeded,
         is DraftSendErrorReason.PackageError -> DataError.Local.Unknown
-    }
-}
-
-fun DraftOpenError.toDataError(): DataError = when (this) {
-    is DraftOpenError.Other -> this.v1.toDataError()
-    is DraftOpenError.Reason -> when (this.v1) {
-        DraftOpenErrorReason.MESSAGE_DOES_NOT_EXIST,
-        DraftOpenErrorReason.MESSAGE_IS_NOT_A_DRAFT,
-        DraftOpenErrorReason.REPLY_OR_FORWARD_DRAFT,
-        DraftOpenErrorReason.ADDRESS_NOT_FOUND,
-        DraftOpenErrorReason.MESSAGE_BODY_MISSING -> DataError.Local.OpenDraftError
     }
 }
 

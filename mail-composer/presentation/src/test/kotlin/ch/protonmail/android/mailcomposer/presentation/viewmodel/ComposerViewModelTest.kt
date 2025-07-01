@@ -36,6 +36,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
@@ -494,7 +495,7 @@ class ComposerViewModelTest {
         expectObservedMessageAttachments()
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
-        expectInitComposerWithNewEmptyDraftFails(expectedUserId) { DataError.Local.NoDataCached }
+        expectInitComposerWithNewEmptyDraftFails(expectedUserId) { OpenDraftError.OpenDraftFailed }
 
         // When
         val actual = viewModel.composerStates.value
@@ -757,7 +758,7 @@ class ComposerViewModelTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
-        expectInitComposerWithExistingDraftError(expectedUserId, expectedDraftId) { DataError.Local.NoDataCached }
+        expectInitComposerWithExistingDraftError(expectedUserId, expectedDraftId) { OpenDraftError.OpenDraftFailed }
         expectStoreDraftSubjectSucceeds(Subject(""))
         expectObservedMessageAttachments()
         expectNoInputDraftAction()
@@ -1163,7 +1164,7 @@ class ComposerViewModelTest {
     private fun expectInitComposerWithExistingDraftError(
         userId: UserId,
         draftId: MessageId,
-        error: () -> DataError
+        error: () -> OpenDraftError
     ) = error().also { coEvery { openExistingDraft(userId, draftId) } returns it.left() }
 
     private fun expectInitComposerWithExistingDraftSuccess(
@@ -1227,7 +1228,7 @@ class ComposerViewModelTest {
         coEvery { observePrimaryUserIdMock() } returns flowOf(it)
     }
 
-    private fun expectInitComposerWithNewEmptyDraftFails(userId: UserId, dataError: () -> DataError) =
+    private fun expectInitComposerWithNewEmptyDraftFails(userId: UserId, dataError: () -> OpenDraftError) =
         dataError().also {
             coEvery { createEmptyDraft(userId) } returns it.left()
         }

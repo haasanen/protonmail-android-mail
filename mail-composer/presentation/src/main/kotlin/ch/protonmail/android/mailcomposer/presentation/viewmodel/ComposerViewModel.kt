@@ -23,6 +23,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.text.TextRange
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -118,7 +119,6 @@ import me.proton.core.util.kotlin.deserialize
 import me.proton.core.util.kotlin.takeIfNotEmpty
 import timber.log.Timber
 import kotlin.time.Instant
-import androidx.core.net.toUri
 
 @Suppress("LargeClass", "LongParameterList", "TooManyFunctions", "UnusedPrivateMember")
 @HiltViewModel(assistedFactory = ComposerViewModel.Factory::class)
@@ -433,6 +433,7 @@ class ComposerViewModel @AssistedInject constructor(
                     is ChangeSenderError.AddressDisabled,
                     is ChangeSenderError.AddressNotFound ->
                         emitNewStateFor(EffectsEvent.ErrorEvent.OnAddressNotValidForSending)
+
                     is ChangeSenderError.Other -> emitNewStateFor(EffectsEvent.ErrorEvent.OnChangeSenderFailure)
                     ChangeSenderError.RefreshBodyError -> emitNewStateFor(EffectsEvent.ErrorEvent.OnRefreshBodyFailed)
                 }

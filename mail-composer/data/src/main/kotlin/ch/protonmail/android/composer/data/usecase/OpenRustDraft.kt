@@ -20,10 +20,10 @@ package ch.protonmail.android.composer.data.usecase
 
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.composer.data.mapper.toOpenDraftError
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.OpenDraftResult
 import uniffi.proton_mail_uniffi.openDraft
@@ -33,7 +33,7 @@ class OpenRustDraft @Inject constructor() {
 
     suspend operator fun invoke(mailSession: MailUserSessionWrapper, messageId: LocalMessageId) =
         when (val result = openDraft(mailSession.getRustUserSession(), messageId)) {
-            is OpenDraftResult.Error -> result.v1.toDataError().left()
+            is OpenDraftResult.Error -> result.v1.toOpenDraftError().left()
             is OpenDraftResult.Ok -> DraftWrapperWithSyncStatus(
                 DraftWrapper(result.v1.draft),
                 result.v1.syncStatus

@@ -16,20 +16,11 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.usecase
+package ch.protonmail.android.mailcomposer.domain.model
 
-import arrow.core.Either
-import ch.protonmail.android.mailcomposer.domain.model.DraftFields
-import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
-import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import ch.protonmail.android.mailmessage.domain.model.DraftAction
-import me.proton.core.domain.entity.UserId
-import javax.inject.Inject
+import ch.protonmail.android.mailcommon.domain.model.DataError
 
-class CreateDraftForAction @Inject constructor(
-    private val draftRepository: DraftRepository
-) {
-
-    suspend operator fun invoke(userId: UserId, action: DraftAction): Either<OpenDraftError, DraftFields> =
-        draftRepository.createDraft(userId, action)
+sealed interface OpenDraftError {
+    data object OpenDraftFailed : OpenDraftError
+    data class Other(val error: DataError) : OpenDraftError
 }

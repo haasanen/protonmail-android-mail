@@ -33,6 +33,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
+import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
@@ -51,6 +52,8 @@ import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 import uniffi.proton_mail_uniffi.DraftCreateMode
+import uniffi.proton_mail_uniffi.DraftOpenError
+import uniffi.proton_mail_uniffi.DraftOpenErrorReason
 import uniffi.proton_mail_uniffi.DraftSaveError
 import uniffi.proton_mail_uniffi.DraftSaveErrorReason
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
@@ -285,6 +288,18 @@ fun DraftSenderAddressChangeError.toChangeSenderError() = when (this) {
         is DraftSenderAddressChangeErrorReason.AddressNotSendEnabled -> ChangeSenderError.AddressCanNotSend
     }
 }
+
+fun DraftOpenError.toOpenDraftError(): OpenDraftError = when (this) {
+    is DraftOpenError.Other -> OpenDraftError.Other(this.v1.toDataError())
+    is DraftOpenError.Reason -> when (this.v1) {
+        DraftOpenErrorReason.MESSAGE_DOES_NOT_EXIST,
+        DraftOpenErrorReason.MESSAGE_IS_NOT_A_DRAFT,
+        DraftOpenErrorReason.REPLY_OR_FORWARD_DRAFT,
+        DraftOpenErrorReason.ADDRESS_NOT_FOUND,
+        DraftOpenErrorReason.MESSAGE_BODY_MISSING -> OpenDraftError.OpenDraftFailed
+    }
+}
+
 
 @MissingRustApi
 // Hardcoded values in the mapping

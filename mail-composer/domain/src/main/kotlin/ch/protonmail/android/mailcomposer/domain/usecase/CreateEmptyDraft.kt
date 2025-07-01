@@ -19,8 +19,8 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
+import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import me.proton.core.domain.entity.UserId
@@ -30,7 +30,7 @@ class CreateEmptyDraft @Inject constructor(
     private val draftRepository: DraftRepository
 ) {
 
-    suspend operator fun invoke(userId: UserId): Either<DataError, DraftFields> =
+    suspend operator fun invoke(userId: UserId): Either<OpenDraftError, DraftFields> =
         draftRepository.createDraft(userId, DraftAction.Compose)
 
 }

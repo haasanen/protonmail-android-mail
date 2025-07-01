@@ -2,8 +2,8 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -43,7 +43,7 @@ class CreateDraftForActionTest {
         val userId = UserIdSample.Primary
         val parentMessageId = MessageIdSample.PlainTextMessage
         val action = DraftAction.Forward(parentMessageId)
-        val expected = DataError.Local.Unknown
+        val expected = OpenDraftError.OpenDraftFailed
         coEvery { draftRepository.createDraft(userId, action) } returns expected.left()
 
         // When

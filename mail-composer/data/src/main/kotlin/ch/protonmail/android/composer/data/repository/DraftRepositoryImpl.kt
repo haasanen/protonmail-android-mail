@@ -31,6 +31,7 @@ import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
 import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
@@ -57,10 +58,13 @@ class DraftRepositoryImpl @Inject constructor(
     override fun getEmbeddedImage(contentId: String): Either<DataError, EmbeddedImage> =
         draftDataSource.getEmbeddedImage(contentId).map { it.toEmbeddedImage() }
 
-    override suspend fun openDraft(userId: UserId, messageId: MessageId): Either<DataError, DraftFieldsWithSyncStatus> =
+    override suspend fun openDraft(
+        userId: UserId,
+        messageId: MessageId
+    ): Either<OpenDraftError, DraftFieldsWithSyncStatus> =
         draftDataSource.open(userId, messageId).map { it.toDraftFieldsWithSyncStatus() }
 
-    override suspend fun createDraft(userId: UserId, action: DraftAction): Either<DataError, DraftFields> =
+    override suspend fun createDraft(userId: UserId, action: DraftAction): Either<OpenDraftError, DraftFields> =
         draftDataSource.create(userId, action).map { it.toDraftFields() }
 
     override suspend fun discardDraft(userId: UserId, messageId: MessageId) = draftDataSource.discard(userId, messageId)

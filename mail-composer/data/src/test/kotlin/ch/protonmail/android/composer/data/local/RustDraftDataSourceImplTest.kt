@@ -19,6 +19,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
@@ -88,7 +89,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
-        val expected = DataError.Local.Unknown
+        val expected = OpenDraftError.Other(DataError.Local.NoUserSession)
         coEvery { userSessionRepository.getUserSession(userId) } returns null
 
         // When
@@ -169,7 +170,7 @@ class RustDraftDataSourceImplTest {
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
         val action = DraftAction.Reply(messageId)
-        val expected = DataError.Local.Unknown
+        val expected = OpenDraftError.Other(DataError.Local.NoUserSession)
         coEvery { userSessionRepository.getUserSession(userId) } returns null
 
         // When
@@ -184,7 +185,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val userId = UserIdSample.Primary
         val action = DraftAction.ComposeToAddresses(emptyList())
-        val expected = DataError.Local.UnsupportedOperation
+        val expected = OpenDraftError.Other(DataError.Local.UnsupportedOperation)
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
 
         // When

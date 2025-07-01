@@ -8,6 +8,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
 import ch.protonmail.android.mailcomposer.domain.model.Subject
@@ -52,7 +53,7 @@ class DraftRepositoryImplTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
-        val expected = DataError.Local.Unknown
+        val expected = OpenDraftError.OpenDraftFailed
         coEvery { draftDataSource.open(userId, messageId) } returns expected.left()
 
         // When
@@ -82,7 +83,7 @@ class DraftRepositoryImplTest {
     fun `returns error when create draft fails`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        val expected = DataError.Local.Unknown
+        val expected = OpenDraftError.Other(DataError.Local.UnsupportedOperation)
         val action = DraftAction.Compose
         coEvery { draftDataSource.create(userId, action) } returns expected.left()
 

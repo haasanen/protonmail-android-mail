@@ -21,9 +21,9 @@ package ch.protonmail.android.composer.data.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.composer.data.mapper.toOpenDraftError
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
-import ch.protonmail.android.mailcommon.data.mapper.toDataError
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.NewDraftResult
@@ -35,10 +35,11 @@ class CreateRustDraft @Inject constructor() {
     suspend operator fun invoke(
         mailSession: MailUserSessionWrapper,
         createMode: DraftCreateMode
-    ): Either<DataError, DraftWrapper> = when (val result = newDraft(mailSession.getRustUserSession(), createMode)) {
-        is NewDraftResult.Error -> result.v1.toDataError().left()
-        is NewDraftResult.Ok -> DraftWrapper(result.v1).right()
-    }
+    ): Either<OpenDraftError, DraftWrapper> =
+        when (val result = newDraft(mailSession.getRustUserSession(), createMode)) {
+            is NewDraftResult.Error -> result.v1.toOpenDraftError().left()
+            is NewDraftResult.Ok -> DraftWrapper(result.v1).right()
+        }
 
 
 }
