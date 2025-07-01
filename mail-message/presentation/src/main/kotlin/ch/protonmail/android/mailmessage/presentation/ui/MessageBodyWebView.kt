@@ -19,7 +19,10 @@
 package ch.protonmail.android.mailmessage.presentation.ui
 
 import java.io.ByteArrayInputStream
+import android.content.Context
 import android.net.Uri
+import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.ViewGroup.LayoutParams
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -101,7 +104,7 @@ fun MessageBodyWebView(
     modifier: Modifier = Modifier,
     messageBodyUiModel: MessageBodyUiModel,
     webViewActions: MessageBodyWebView.Actions,
-    onBuildWebView: (Context) -> WebView,
+    onBuildWebView: (Context) -> ZoomableWebView,
     onMessageBodyLoaded: (messageId: MessageId, height: Int) -> Unit = { _, _ -> },
     viewModel: MessageBodyWebViewViewModel = hiltViewModel(),
     cachedHeight: Int = 0
@@ -136,7 +139,7 @@ fun MessageBodyWebView(
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
 
-    var webView by remember { mutableStateOf<WebView?>(null) }
+    var webView by remember { mutableStateOf<ZoomableWebView?>(null) }
     val contentLoaded = remember { mutableStateOf(false) }
 
     webView?.let {
@@ -221,6 +224,7 @@ fun MessageBodyWebView(
 
                             configureDarkLightMode(this, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
                             configureLongClick(this, actions.onMessageBodyLinkLongClicked)
+                            configureOnTouchListener(this)
 
                             webView = this
                         }
@@ -283,6 +287,28 @@ private fun configureDarkLightMode(
         webView.showInLightMode()
     }
     // In other cases, media query in Html content will be used to render correctly
+}
+
+private fun configureOnTouchListener(webView: ZoomableWebView) {
+    webView.setOnTouchListener { view, motionEvent ->
+        if (motionEvent.pointerCount > 1) {
+            // Multitouch (zoom), disallow parent intercepting
+            view.parent.requestDisallowInterceptTouchEvent(true)
+        } else if (
+            motionEvent.action == MotionEvent.ACTION_UP ||
+            motionEvent.action == MotionEvent.ACTION_CANCEL
+        ) {
+            // Re-allow intercept after zoom ends
+            view.parent.requestDisallowInterceptTouchEvent(false)
+        }
+
+        // This is needed for accessibility
+        if (motionEvent.action == MotionEvent.ACTION_UP) {
+            view.performClick()
+        }
+
+        false // Let the WebView handle the event
+    }
 }
 
 /** reveals the content when heights are finalised and content is loaded
@@ -409,6 +435,19 @@ private fun ExpandCollapseBodyButtonPreview() {
     }
 }
 
+class ZoomableWebView(
+    context: Context,
+    attrs: AttributeSet? = null
+) : WebView(context, attrs) {
+
+    // When setting an OnTouchListener directly on the WebView,
+    // Android assumes you are customizing touch behavior and
+    // should be responsible for accessibility by overriding performClick().
+    override fun performClick(): Boolean {
+        super.performClick()
+        return true
+    }
+}
 
 object MessageBodyWebView {
 

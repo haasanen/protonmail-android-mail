@@ -20,7 +20,6 @@ package ch.protonmail.android.maildetail.presentation.ui
 
 import android.content.Context
 import android.net.Uri
-import android.webkit.WebView
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -43,6 +42,7 @@ import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.ui.MessageBodyWebView
+import ch.protonmail.android.mailmessage.presentation.ui.ZoomableWebView
 import timber.log.Timber
 
 @Composable
@@ -95,7 +95,7 @@ fun MessageBody(
     MailDivider(modifier = Modifier.padding(top = ProtonDimens.Spacing.Standard))
 
     if (hasWebView) {
-        val webViewCache = remember { mutableStateOf<WebView?>(null) }
+        val webViewCache = remember { mutableStateOf<ZoomableWebView?>(null) }
         MessageBodyWebView(
             modifier = modifier,
             messageBodyUiModel = messageBodyUiModel,
@@ -162,10 +162,10 @@ fun MessageBodyButtonBannerPreview() {
 }
 
 @Composable
-private fun onBuildWebView(webView: MutableState<WebView?>) = { context: Context ->
+private fun onBuildWebView(webView: MutableState<ZoomableWebView?>) = { context: Context ->
     if (webView.value == null) {
         Timber.d("message-webview: factory creating new webview")
-        webView.value = WebView(context)
+        webView.value = ZoomableWebView(context)
     }
 
     Timber.d("message-webview: factory returning webview")
