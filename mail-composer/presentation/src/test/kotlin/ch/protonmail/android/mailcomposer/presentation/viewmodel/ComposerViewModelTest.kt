@@ -754,7 +754,7 @@ class ComposerViewModelTest {
     }
 
     @Test
-    fun `emits state with error loading existing draft when open draft fails`() = runTest {
+    fun `emits state with unrecoverable exit error when open existing draft fails`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
@@ -770,7 +770,7 @@ class ComposerViewModelTest {
         val actual = viewModel.composerStates.value
 
         // Then
-        assertEquals(TextUiModel(R.string.composer_error_loading_draft), actual.effects.error.consume())
+        assertEquals(TextUiModel(R.string.composer_error_loading_draft), actual.effects.exitError.consume())
     }
 
     @Test

@@ -25,7 +25,6 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.CompletionEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
-import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.LoadingError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.UnrecoverableError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -60,7 +59,7 @@ internal class EffectsEventTest(
             arrayOf(
                 "OnDraftLoadingFailed to modification",
                 EffectsEvent.DraftEvent.OnDraftLoadingFailed,
-                ComposerStateModifications(effectsModification = LoadingError.DraftContent)
+                ComposerStateModifications(effectsModification = UnrecoverableError.DraftContentUnavailable)
             ),
             arrayOf(
                 "OnParentLoadingFailed to modification",

@@ -27,19 +27,12 @@ import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 
-internal sealed class LoadingError(@StringRes val resId: Int) : EffectsStateModification {
-
-    override fun apply(state: ComposerState.Effects): ComposerState.Effects =
-        state.copy(error = Effect.of(TextUiModel(resId)))
-
-    data object DraftContent : LoadingError(R.string.composer_error_loading_draft)
-}
-
 internal sealed class UnrecoverableError(@StringRes val resId: Int) : EffectsStateModification {
 
     override fun apply(state: ComposerState.Effects): ComposerState.Effects =
         state.copy(exitError = Effect.of(TextUiModel(resId)))
 
+    data object DraftContentUnavailable : UnrecoverableError(R.string.composer_error_loading_draft)
     data object InvalidSenderAddress : UnrecoverableError(R.string.composer_error_invalid_sender)
     data object ParentMessageMetadata : UnrecoverableError(R.string.composer_error_loading_parent_message)
 }

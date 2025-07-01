@@ -43,7 +43,6 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.EffectsStateModification
-import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.LoadingError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.UnrecoverableError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -98,8 +97,8 @@ internal class EffectsStateModificationTest(
             arrayOf(
                 "shows draft content loading error",
                 initialState,
-                LoadingError.DraftContent,
-                initialState.copy(error = Effect.of(TextUiModel(R.string.composer_error_loading_draft)))
+                UnrecoverableError.DraftContentUnavailable,
+                initialState.copy(exitError = Effect.of(TextUiModel(R.string.composer_error_loading_draft)))
             ),
             arrayOf(
                 "shows parent message loading error",

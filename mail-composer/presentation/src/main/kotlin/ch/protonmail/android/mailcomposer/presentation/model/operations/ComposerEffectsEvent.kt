@@ -25,7 +25,6 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.CompletionEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
-import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.LoadingError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.UnrecoverableError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -39,7 +38,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
 
         override fun toStateModifications(): ComposerStateModifications = ComposerStateModifications(
             effectsModification = when (this) {
-                is OnDraftLoadingFailed -> LoadingError.DraftContent
+                is OnDraftLoadingFailed -> UnrecoverableError.DraftContentUnavailable
                 is OnDiscardDraftRequested -> ConfirmationsEffectsStateModification.DiscardDraftConfirmationRequested
             }
         )
