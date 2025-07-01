@@ -103,6 +103,7 @@ import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.unmockkStatic
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -754,7 +755,7 @@ class ComposerViewModelTest {
     }
 
     @Test
-    fun `emits state with unrecoverable exit error when open existing draft fails`() = runTest {
+    fun `stops init and emits state with unrecoverable exit error when open existing draft fails`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
@@ -771,6 +772,8 @@ class ComposerViewModelTest {
 
         // Then
         assertEquals(TextUiModel(R.string.composer_error_loading_draft), actual.effects.exitError.consume())
+        verify { observeMessageAttachments wasNot Called }
+        verify { updateRecipients wasNot Called }
     }
 
     @Test

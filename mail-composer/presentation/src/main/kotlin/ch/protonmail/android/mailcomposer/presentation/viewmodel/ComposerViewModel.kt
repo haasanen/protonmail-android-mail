@@ -27,6 +27,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
 import arrow.core.getOrElse
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
@@ -40,6 +41,7 @@ import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
@@ -201,7 +203,10 @@ class ComposerViewModel @AssistedInject constructor(
                 return false
             }
 
-            inputDraftId != null -> prefillWithExistingDraft(inputDraftId)
+            inputDraftId != null -> prefillWithExistingDraft(inputDraftId).onLeft {
+                return false
+            }
+
             draftAction != null -> prefillForDraftAction(draftAction)
             else -> prefillForNewDraft()
         }
@@ -336,11 +341,13 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun prefillWithExistingDraft(inputDraftId: String) {
+    private suspend fun prefillWithExistingDraft(
+        inputDraftId: String
+    ): Either<OpenDraftError, DraftFieldsWithSyncStatus> {
         Timber.d("Opening composer with $inputDraftId")
         emitNewStateFor(MainEvent.InitialLoadingToggled)
 
-        openExistingDraft(primaryUserId(), MessageId(inputDraftId))
+        return openExistingDraft(primaryUserId(), MessageId(inputDraftId))
             .onRight { draftFieldsWithSyncStatus ->
                 val draftFields = draftFieldsWithSyncStatus.draftFields
                 initComposerFields(draftFields)
