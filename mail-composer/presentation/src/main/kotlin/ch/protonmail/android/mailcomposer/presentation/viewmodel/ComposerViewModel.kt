@@ -500,7 +500,7 @@ class ComposerViewModel @AssistedInject constructor(
             observeMessageAttachments().onEach { result ->
                 result.onLeft {
                     Timber.e("Failed to observe message attachments: $it")
-                    emitNewStateFor(EffectsEvent.DraftEvent.OnDraftLoadingFailed)
+                    emitNewStateFor(EffectsEvent.AttachmentEvent.OnLoadAttachmentsFailed)
                 }.onRight { attachments ->
                     emitNewStateFor(CompositeEvent.AttachmentListChanged(attachments))
                 }

@@ -62,6 +62,7 @@ internal sealed interface RecoverableError : EffectsStateModification {
         data object FreeUser : SenderChange(R.string.composer_change_sender_paid_feature)
         data object GetAddressesError :
             SenderChange(R.string.composer_error_change_sender_failed_getting_addresses)
+
         data object AddressCanNotSend : SenderChange(R.string.composer_change_sender_invalid_address)
         data object ChangeSenderFailure : SenderChange(R.string.composer_change_sender_unexpected_failure)
         data object RefreshBodyFailure : SenderChange(R.string.composer_change_sender_error_refreshing_body)
@@ -158,10 +159,17 @@ internal sealed interface RecoverableError : EffectsStateModification {
         override fun apply(state: ComposerState.Effects): ComposerState.Effects =
             state.copy(error = Effect.of(TextUiModel(R.string.composer_error_send_message)))
     }
+
     data object GetScheduleSendOptionsFailed : RecoverableError {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects =
             state.copy(error = Effect.of(TextUiModel(R.string.composer_error_retrieving_schedule_send_options)))
+    }
+
+    data object LoadingAttachmentsFailed : RecoverableError {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects =
+            state.copy(error = Effect.of(TextUiModel(R.string.composer_loading_attachments_error)))
     }
 
 }

@@ -74,6 +74,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
                 is OnAttachFromOptionsRequest -> BottomSheetEffectsStateModification.ShowBottomSheet
                 is OnInlineImageActionsRequested -> BottomSheetEffectsStateModification.ShowBottomSheet
                 is RemoveAttachmentError -> RecoverableError.AttachmentRemove(error)
+                is OnLoadAttachmentsFailed -> RecoverableError.LoadingAttachmentsFailed
             }
         )
 
@@ -87,6 +88,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
         data object OnAddFileRequest : AttachmentEvent
         data object OnAddMediaRequest : AttachmentEvent
         data object OnAddFromCameraRequest : AttachmentEvent
+        data object OnLoadAttachmentsFailed : AttachmentEvent
     }
 
     sealed interface ComposerControlEvent : EffectsEvent {
