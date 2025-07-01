@@ -36,101 +36,93 @@ package ch.protonmail.android.mailpinlock.domain.autolock.usecase
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
 import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.domain.usecase.ShouldPresentPinInsertionScreen
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
-import io.mockk.spyk
-import io.mockk.unmockkAll
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import kotlin.test.BeforeTest
 
 internal class ShouldPresentPinInsertionScreenTest {
 
-    private val autoLockRepository = mockk<AutoLockRepository>()
+    private val autoLockRepository: AutoLockRepository = mockk()
+    private val autoLockCheckPendingState: AutoLockCheckPendingState = mockk()
 
-    private val autoLockCheckPendingState = spyk(AutoLockCheckPendingState())
+    private val lockCheckEvents = MutableSharedFlow<Unit>()
 
-    private fun useCase() = ShouldPresentPinInsertionScreen(
-        autoLockRepository,
-        autoLockCheckPendingState = autoLockCheckPendingState
-    )
+    private lateinit var shouldPresentPinInsertionScreen: ShouldPresentPinInsertionScreen
 
-    @After
-    fun teardown() {
-        unmockkAll()
+    @BeforeTest
+    fun setUp() {
+        every { autoLockCheckPendingState.autoLockCheckEvents } returns lockCheckEvents
+
+        shouldPresentPinInsertionScreen = ShouldPresentPinInsertionScreen(
+            autoLockRepository,
+            autoLockCheckPendingState
+        )
     }
 
     @Test
-    fun `should not trigger pin request when shouldShowPin is false`() = runTest {
+    fun `invoke() should emit true immediately on collection due to onStart`() = runTest {
+        // When + Then
+        shouldPresentPinInsertionScreen().test {
+            assertTrue("Expected initial emission to be true", awaitItem())
+            expectNoEvents()
+        }
+    }
+
+    @Test
+    fun `should emit true when check event is received and repository returns true`() = runTest {
+        // Given
+        coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
+
+        // When + Then
+        shouldPresentPinInsertionScreen().test {
+            awaitItem() // onStart (true)
+
+            lockCheckEvents.emit(Unit)
+
+            assertTrue("Expected emission after event to be true", awaitItem())
+        }
+    }
+
+    @Test
+    fun `should emit false when check event is received and repository returns false`() = runTest {
         // Given
         coEvery { autoLockRepository.shouldAutoLock() } returns false.right()
 
-        // When
-        val result = useCase().invoke().first()
+        // When + Then
+        shouldPresentPinInsertionScreen().test {
+            awaitItem() // onStart (true)
 
-        // Then
-        assertFalse(result)
+            lockCheckEvents.emit(Unit)
+
+            assertFalse("Expected emission after event to be false", awaitItem())
+        }
     }
 
     @Test
-    fun `should not trigger pin request when it is already completed`() = runTest {
-        // Given
-        coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
-        autoLockCheckPendingState.emitCheckPendingState(AutoLockCheckPending(false))
-
-        // When
-        val result = useCase().invoke().first()
-
-        // Then
-        assertFalse(result)
-    }
-
-    @Test
-    fun `should trigger pin request when it's not already completed`() = runTest {
-        // Given
-        coEvery { autoLockRepository.shouldAutoLock() } returns true.right()
-        autoLockCheckPendingState.emitCheckPendingState(AutoLockCheckPending(true))
-
-        // When
-        val result = useCase().invoke().first()
-
-        // Then
-        assertTrue(result)
-    }
-
-    @Test
-    fun `should not trigger pin request when it's not necessary`() = runTest {
-        // Given
-        coEvery { autoLockRepository.shouldAutoLock() } returns false.right()
-        autoLockCheckPendingState.emitCheckPendingState(AutoLockCheckPending(true))
-
-        // When
-        val result = useCase().invoke().first()
-
-        // Then
-        assertFalse(result)
-    }
-
-    @Test
-    fun `should not trigger pin request on pending attempt but shouldAutoLock fails`() = runTest {
+    fun `should emit false when check event is received and repository call fails`() = runTest {
         // Given
         coEvery { autoLockRepository.shouldAutoLock() } returns DataError.Local.NoDataCached.left()
-        autoLockCheckPendingState.emitCheckPendingState(AutoLockCheckPending(true))
 
-        // When
-        val result = useCase().invoke().first()
+        // When + Then
+        shouldPresentPinInsertionScreen().test {
+            awaitItem() // onStart (true)
 
-        // Then
-        assertFalse(result)
+            lockCheckEvents.emit(Unit)
+
+            assertFalse("Expected fallback emission to be false on repository error", awaitItem())
+        }
     }
 }

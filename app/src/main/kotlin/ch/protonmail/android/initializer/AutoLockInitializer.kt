@@ -25,7 +25,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.startup.Initializer
 import ch.protonmail.android.mailpinlock.data.StartAutoLockCountdown
-import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
 import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -55,12 +54,8 @@ class AutoLockInitializer : Initializer<Unit>, LifecycleEventObserver {
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         when (event) {
-            Lifecycle.Event.ON_STOP -> {
-                // Set pending check when app goes to background and explicitly trigger the Rust countdown
-                autoLockCheckPendingState?.emitCheckPendingState(AutoLockCheckPending(true))
-                startAutoLockCountdown?.invoke()
-            }
-
+            Lifecycle.Event.ON_RESUME -> autoLockCheckPendingState?.triggerAutoLockCheck()
+            Lifecycle.Event.ON_STOP -> startAutoLockCountdown?.invoke()
             else -> Unit
         }
     }

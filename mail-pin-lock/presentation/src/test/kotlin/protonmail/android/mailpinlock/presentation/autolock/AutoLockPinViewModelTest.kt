@@ -26,7 +26,6 @@ import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinError
 import ch.protonmail.android.mailcommon.domain.model.autolock.VerifyAutoLockPinError
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
 import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInsertionMode
@@ -296,7 +295,6 @@ internal class AutoLockPinViewModelTest {
         // Then
         coVerify {
             reducer.newStateFrom(any(), AutoLockPinEvent.Update.VerificationCompleted)
-            autoLockCheckPendingState.emitCheckPendingState(AutoLockCheckPending(false))
         }
     }
 
@@ -323,10 +321,6 @@ internal class AutoLockPinViewModelTest {
         // Then
         verify {
             reducer.newStateFrom(any(), expectedEvent)
-        }
-
-        coVerify(exactly = 0) {
-            autoLockCheckPendingState.emitCheckPendingState(AutoLockCheckPending(true))
         }
     }
 

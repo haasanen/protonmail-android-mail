@@ -20,53 +20,43 @@ package ch.protonmail.android.navigation
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailpinlock.domain.usecase.ShouldPresentPinInsertionScreen
-import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.unmockkAll
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.runTest
-import org.junit.Rule
-import kotlin.test.AfterTest
 import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
-internal class LauncherRouterViewModelTest {
+class LauncherRouterViewModelTest {
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
-
-    private val shouldPresentPinInsertionScreen = mockk<ShouldPresentPinInsertionScreen>()
-
-    private val viewModel by lazy {
-        LauncherRouterViewModel(shouldPresentPinInsertionScreen)
-    }
-
-    @AfterTest
-    fun teardown() {
-        unmockkAll()
-    }
+    private val shouldPresentPinInsertionScreen: ShouldPresentPinInsertionScreen = mockk()
 
     @Test
     fun `should proxy the value from the UC (true)`() = runTest {
         // Given
-        every { shouldPresentPinInsertionScreen() } returns flowOf(true)
+        val sharedFlow = MutableSharedFlow<Boolean>()
+        every { shouldPresentPinInsertionScreen() } returns sharedFlow
+        val viewModel = LauncherRouterViewModel(shouldPresentPinInsertionScreen)
 
         // When + Then
-        viewModel.displayAutoLockState.test {
-            assertTrue(awaitItem())
+        viewModel.showLockScreenEvent.test {
+            sharedFlow.emit(true)
+            awaitItem()
+            ensureAllEventsConsumed()
         }
     }
 
     @Test
-    fun `should proxy the value from the UC (false)`() = runTest {
+    fun `should not emit an event if the UC returns false`() = runTest {
         // Given
-        every { shouldPresentPinInsertionScreen() } returns flowOf(false)
+        val sharedFlow = MutableSharedFlow<Boolean>()
+        every { shouldPresentPinInsertionScreen() } returns sharedFlow
+
+        val viewModel = LauncherRouterViewModel(shouldPresentPinInsertionScreen)
 
         // When + Then
-        viewModel.displayAutoLockState.test {
-            assertFalse(awaitItem())
+        viewModel.showLockScreenEvent.test {
+            sharedFlow.emit(false)
+            expectNoEvents()
         }
     }
 }

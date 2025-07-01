@@ -18,27 +18,22 @@
 
 package ch.protonmail.android.mailpinlock.domain
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import javax.inject.Inject
 import javax.inject.Singleton
-
-@JvmInline
-value class AutoLockCheckPending(val value: Boolean)
 
 @Singleton
 class AutoLockCheckPendingState @Inject constructor() {
 
-    private val mutableState = MutableStateFlow(AutoLockCheckPending(true))
+    private val mutableAutoLockCheckEvents = MutableSharedFlow<Unit>(
+        replay = 1,
+        extraBufferCapacity = 1
+    )
 
-    /**
-     * Signals whether there is a "pending" auto lock check ongoing to avoid multiple
-     * navigation actions to the auto lock overlay if the verification is intentionally
-     * skipped across multiple lifecycle changes.
-     */
-    val state = mutableState.asStateFlow()
+    val autoLockCheckEvents = mutableAutoLockCheckEvents.asSharedFlow()
 
-    fun emitCheckPendingState(value: AutoLockCheckPending) {
-        mutableState.tryEmit(value)
+    fun triggerAutoLockCheck() {
+        mutableAutoLockCheckEvents.tryEmit(Unit)
     }
 }

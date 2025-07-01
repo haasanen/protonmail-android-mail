@@ -19,8 +19,6 @@
 package protonmail.android.mailpinlock.presentation
 
 import app.cash.turbine.test
-import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
-import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.Protection
@@ -32,7 +30,6 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
-import io.mockk.spyk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -47,7 +44,6 @@ internal class LockScreenViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val autoLockRepository = mockk<AutoLockRepository>()
-    private val autoLockPendingState = spyk<AutoLockCheckPendingState>()
 
     @AfterTest
     fun teardown() {
@@ -123,11 +119,9 @@ internal class LockScreenViewModelTest {
 
         // Then
         coVerify { autoLockRepository.signalBiometricsCheckPassed() }
-        coVerify { autoLockPendingState.emitCheckPendingState(AutoLockCheckPending(false)) }
     }
 
     private fun viewModel() = LockScreenViewModel(
-        autoLockRepository = autoLockRepository,
-        autoLockCheckPendingState = autoLockPendingState
+        autoLockRepository = autoLockRepository
     )
 }

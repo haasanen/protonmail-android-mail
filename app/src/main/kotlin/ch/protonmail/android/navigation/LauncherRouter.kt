@@ -19,9 +19,8 @@
 package ch.protonmail.android.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.MainActivity
 
 @Composable
@@ -30,10 +29,10 @@ internal fun LauncherRouter(
     launcherActions: Launcher.Actions,
     viewModel: LauncherRouterViewModel = hiltViewModel()
 ) {
-    val showAutoLock by viewModel.displayAutoLockState.collectAsStateWithLifecycle()
-
-    if (showAutoLock) {
-        activityActions.onNavigateToLockScreen()
+    LaunchedEffect(Unit) {
+        viewModel.showLockScreenEvent.collect {
+            activityActions.onNavigateToLockScreen()
+        }
     }
 
     Home(activityActions, launcherActions)

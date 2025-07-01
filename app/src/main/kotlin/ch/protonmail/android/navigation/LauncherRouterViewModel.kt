@@ -22,8 +22,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailpinlock.domain.usecase.ShouldPresentPinInsertionScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,10 +33,16 @@ internal class LauncherRouterViewModel @Inject constructor(
     shouldPresentPinInsertionScreen: ShouldPresentPinInsertionScreen
 ) : ViewModel() {
 
-    val displayAutoLockState = shouldPresentPinInsertionScreen()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = false
-        )
+    private val mutableShowLockScreenEvent = MutableSharedFlow<Unit>()
+    val showLockScreenEvent = mutableShowLockScreenEvent.asSharedFlow()
+
+    init {
+        shouldPresentPinInsertionScreen()
+            .onEach { shouldShow ->
+                if (shouldShow) {
+                    mutableShowLockScreenEvent.emit(Unit)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
 }

@@ -23,6 +23,7 @@ import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -31,18 +32,16 @@ class ShouldPresentPinInsertionScreen @Inject constructor(
     private val autoLockCheckPendingState: AutoLockCheckPendingState
 ) {
 
-    operator fun invoke(): Flow<Boolean> = autoLockCheckPendingState.state
-        .map { pendingCheck ->
-            if (pendingCheck.value) {
-                val shouldLock = autoLockRepository.shouldAutoLock()
-                    .getOrElse {
-                        Timber.tag("AutoLock").e("Unable to get a value for shouldAutolock")
-                        false
-                    }
-
-                shouldLock
-            } else {
-                false
-            }
+    operator fun invoke(): Flow<Boolean> = autoLockCheckPendingState.autoLockCheckEvents
+        .map {
+            val shouldLock = autoLockRepository.shouldAutoLock()
+                .getOrElse {
+                    Timber.tag("ShouldPresentPin").e("Unable to get a value for shouldAutolock")
+                    false
+                }
+            shouldLock
+        }
+        .onStart {
+            emit(true) // Check by default on cold start
         }
 }

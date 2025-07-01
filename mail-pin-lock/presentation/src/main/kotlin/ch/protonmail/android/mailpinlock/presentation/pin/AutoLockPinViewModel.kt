@@ -25,7 +25,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
-import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
 import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInsertionMode
@@ -145,7 +144,6 @@ class AutoLockPinViewModel @Inject constructor(
                 )
             )
         }.onRight {
-            autoLockCheckPendingState.emitCheckPendingState(AutoLockCheckPending(false))
             continuation()
         }
     }

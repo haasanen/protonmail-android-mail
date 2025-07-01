@@ -21,8 +21,6 @@ package ch.protonmail.android.mailpinlock.presentation.autolock.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
-import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPending
-import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.model.AutoLock
 import ch.protonmail.android.mailpinlock.model.Protection
@@ -36,8 +34,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LockScreenViewModel @Inject constructor(
-    private val autoLockRepository: AutoLockRepository,
-    private val autoLockCheckPendingState: AutoLockCheckPendingState
+    private val autoLockRepository: AutoLockRepository
 ) : ViewModel() {
 
     val state = autoLockRepository.observeAppLock().map {
@@ -57,7 +54,6 @@ class LockScreenViewModel @Inject constructor(
     fun onSuccessfulBiometrics() {
         viewModelScope.launch {
             autoLockRepository.signalBiometricsCheckPassed()
-            autoLockCheckPendingState.emitCheckPendingState(AutoLockCheckPending(false))
         }
     }
 }
