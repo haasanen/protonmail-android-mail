@@ -27,6 +27,7 @@ import me.proton.android.core.auth.presentation.onSignUpResult
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.presentation.ui.ProtonActivity
 import me.proton.core.presentation.utils.addOnBackPressedCallback
+import me.proton.core.presentation.utils.showToast
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -53,7 +54,11 @@ class AddAccountActivity : ProtonActivity() {
             ProtonTheme {
                 AddAccountScreenMail(
                     onSignInClicked = { authOrchestrator.startLoginWorkflow() },
-                    onSignUpClicked = { authOrchestrator.startSignUpWorkflow() }
+                    onSignUpClicked = {
+                        showToast("Coming soon")
+                        // Enable when ready:
+                        // authOrchestrator.startSignUpWorkflow()
+                    }
                 )
             }
         }
