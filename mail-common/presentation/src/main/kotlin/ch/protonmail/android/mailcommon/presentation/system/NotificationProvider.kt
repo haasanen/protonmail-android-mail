@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailcommon.presentation.system
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -38,14 +37,6 @@ class NotificationProvider @Inject constructor(
 ) {
 
     fun initNotificationChannels() {
-        // Attachments
-        createNotificationChannel(
-            context = context,
-            channelId = ATTACHMENT_CHANNEL_ID,
-            channelName = R.string.attachment_download_notification_channel_name,
-            channelDescription = R.string.attachment_download_notification_channel_description
-        )
-
         // Email
         createNotificationChannel(
             context = context,
@@ -67,18 +58,6 @@ class NotificationProvider @Inject constructor(
 
     fun provideNotificationChannel(channelId: ChannelId): NotificationChannel =
         notificationManager.getNotificationChannel(channelId)
-
-    fun provideNotification(
-        context: Context,
-        channel: NotificationChannel,
-        @StringRes title: Int
-    ): Notification {
-        return NotificationCompat.Builder(context, channel.id).apply {
-            setContentTitle(context.getString(title))
-            setSmallIcon(R.drawable.ic_proton_brand_proton_mail)
-            setOngoing(true)
-        }.build()
-    }
 
     fun provideEmailNotificationBuilder(
         context: Context,
@@ -143,7 +122,6 @@ class NotificationProvider @Inject constructor(
 
     companion object {
 
-        const val ATTACHMENT_CHANNEL_ID: ChannelId = "v7_attachment_channel_id"
         const val EMAIL_CHANNEL_ID: ChannelId = "v7_email_channel_id"
         const val LOGIN_CHANNEL_ID: ChannelId = "v7_login_channel_id"
     }
