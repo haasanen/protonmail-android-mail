@@ -143,8 +143,8 @@ class NotificationProvider @Inject constructor(
 
     companion object {
 
-        const val ATTACHMENT_CHANNEL_ID: ChannelId = "attachment_channel_id"
-        const val EMAIL_CHANNEL_ID: ChannelId = "email_channel_id"
-        const val LOGIN_CHANNEL_ID: ChannelId = "login_channel_id"
+        const val ATTACHMENT_CHANNEL_ID: ChannelId = "v7_attachment_channel_id"
+        const val EMAIL_CHANNEL_ID: ChannelId = "v7_email_channel_id"
+        const val LOGIN_CHANNEL_ID: ChannelId = "v7_login_channel_id"
     }
 }
