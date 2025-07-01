@@ -241,6 +241,7 @@ class ProtonColors(
     sidebarIconWeak: Color,
     sidebarIconSelected: Color
 ) {
+
     var isDark: Boolean by mutableStateOf(isDark, structuralEqualityPolicy())
         internal set
 
@@ -649,9 +650,9 @@ class ProtonColors(
             shade15 = ProtonPalette.FrostGray,
             shade10 = ProtonPalette.Porcelain,
             shade0 = Color.White,
-            shadowSoft = Color.Black.copy(alpha = 0.6f),
-            shadowRaised = Color.Black.copy(alpha = 0.8f),
-            shadowLifted = Color.Black.copy(alpha = 0.8f),
+            shadowSoft = ProtonPalette.Charade.copy(alpha = 0.6f),
+            shadowRaised = ProtonPalette.Charade.copy(alpha = 0.8f),
+            shadowLifted = ProtonPalette.Charade.copy(alpha = 0.8f),
             blenderNorm = ProtonPalette.EerieBlack.copy(alpha = 0.48f),
             textAccent = brandPlus10,
             iconAccent = brandPlus10,
@@ -698,9 +699,9 @@ class ProtonColors(
             shade15 = ProtonPalette.Obsidian,
             shade10 = ProtonPalette.Swamp,
             shade0 = ProtonPalette.EerieBlack,
-            shadowSoft = ProtonPalette.White.copy(alpha = 0.8f),
-            shadowRaised = Color.White.copy(alpha = 0.8f),
-            shadowLifted = Color.White.copy(alpha = 0.86f),
+            shadowSoft = Color.Black.copy(alpha = 0.8f),
+            shadowRaised = Color.Black.copy(alpha = 0.8f),
+            shadowLifted = Color.Black.copy(alpha = 0.86f),
             blenderNorm = Color.Black.copy(alpha = 0.52f),
             textAccent = brandPlus10,
             iconAccent = brandPlus10,
