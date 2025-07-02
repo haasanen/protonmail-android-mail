@@ -45,7 +45,6 @@ import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
-import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import kotlinx.collections.immutable.ImmutableList
 
 sealed interface ConversationDetailOperation {
@@ -142,11 +141,6 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
         val messageId: MessageIdUiModel,
         val attachmentId: AttachmentId,
         val status: AttachmentState
-    ) : ConversationDetailEvent, AffectingMessages
-
-    data class AttachmentListExpandCollapseModeChanged(
-        val messageId: MessageIdUiModel,
-        val expandCollapseMode: AttachmentListExpandCollapseMode
     ) : ConversationDetailEvent, AffectingMessages
 
     data class OpenAttachmentEvent(val values: OpenAttachmentIntentValues) : ConversationDetailEvent

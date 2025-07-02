@@ -28,7 +28,6 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMe
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
-import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import kotlinx.collections.immutable.toImmutableList
 import javax.inject.Inject
 
@@ -86,12 +85,6 @@ class ConversationDetailMessagesReducer @Inject constructor() {
 
         is ConversationDetailEvent.AttachmentStatusChanged ->
             currentState.newStateFromMessageAttachmentStatus(operation)
-
-        is ConversationDetailEvent.AttachmentListExpandCollapseModeChanged ->
-            currentState.newStateFromAttachmentsExpandCollapseMode(
-                operation.messageId,
-                operation.expandCollapseMode
-            )
 
         is ConversationDetailViewAction.EditScheduleSendMessageConfirmed -> currentState.toNewStateForEditScheduleSend(
             messageId = operation.messageId,
@@ -226,35 +219,6 @@ class ConversationDetailMessagesReducer @Inject constructor() {
                     messages = this.messages.map {
                         if (it.messageId == operation.messageId && it is ConversationDetailMessageUiModel.Expanded) {
                             it.copy(messageBodyUiModel = createMessageBodyState(it.messageBodyUiModel, operation))
-                        } else
-                            it
-                    }.toImmutableList()
-                )
-            }
-
-            else -> this
-        }
-    }
-
-    @Suppress("FunctionMaxLength")
-    private fun ConversationDetailsMessagesState.newStateFromAttachmentsExpandCollapseMode(
-        messageId: MessageIdUiModel,
-        expandCollapseMode: AttachmentListExpandCollapseMode
-    ): ConversationDetailsMessagesState {
-        return when (this) {
-            is ConversationDetailsMessagesState.Data -> {
-                this.copy(
-                    messages = this.messages.map {
-                        if (it.messageId == messageId && it is ConversationDetailMessageUiModel.Expanded) {
-                            it.messageBodyUiModel.attachments?.let { attachmentGroupUiModel ->
-                                it.copy(
-                                    messageBodyUiModel = it.messageBodyUiModel.copy(
-                                        attachments = attachmentGroupUiModel.copy(
-                                            expandCollapseMode = expandCollapseMode
-                                        )
-                                    )
-                                )
-                            } ?: it
                         } else
                             it
                     }.toImmutableList()

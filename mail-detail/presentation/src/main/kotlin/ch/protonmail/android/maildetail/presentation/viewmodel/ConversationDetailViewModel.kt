@@ -1006,11 +1006,12 @@ class ConversationDetailViewModel @Inject constructor(
 
                         else -> AttachmentListExpandCollapseMode.Expanded
                     }
-                    val operation = ConversationDetailEvent.AttachmentListExpandCollapseModeChanged(
-                        messageId = messageId,
-                        expandCollapseMode = expandCollapseMode
-                    )
-                    viewModelScope.launch { emitNewStateFrom(operation) }
+                    viewModelScope.launch {
+                        messageViewStateCache.updateAttachmentsExpandCollapseMode(
+                            MessageId(messageId.id),
+                            expandCollapseMode
+                        )
+                    }
                 }
             }
     }

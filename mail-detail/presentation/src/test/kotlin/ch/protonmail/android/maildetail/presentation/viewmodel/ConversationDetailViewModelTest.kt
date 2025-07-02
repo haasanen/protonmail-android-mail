@@ -94,6 +94,7 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
+import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
@@ -1689,6 +1690,51 @@ class ConversationDetailViewModelTest {
                 getDecryptedMessageBody(userId, MessageId(messageId.id), expected)
             }
             cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `should update expand collapse mode when expand or collapse attachment list is invoked`() = runTest {
+        // Given
+        val messageId = InvoiceWithLabelExpanded.messageId
+        val messages = nonEmptyListOf(InvoiceWithLabelExpanded).toImmutableList()
+        val expectedExpandCollapseMode = AttachmentListExpandCollapseMode.Collapsed
+
+        coEvery {
+            conversationMessageMapper.toUiModel(
+                message = MessageSample.Invoice,
+                avatarImageState = any(),
+                primaryUserAddress = primaryUserAddress,
+                decryptedMessageBody = any()
+            )
+        } returns messages.first()
+
+        coEvery {
+            reducer.newStateFrom(
+                currentState = any(),
+                operation = any()
+            )
+        } returns ConversationDetailState.Loading.copy(
+            messagesState = ConversationDetailsMessagesState.Data(messages)
+        )
+
+        // When
+        viewModel.state.test {
+            initialStateEmitted()
+            advanceUntilIdle()
+
+            viewModel.submit(ConversationDetailViewAction.ExpandOrCollapseAttachmentList(messageId))
+            advanceUntilIdle()
+
+            cancelAndIgnoreRemainingEvents()
+        }
+
+        // Then
+        coVerify {
+            messageViewStateCache.updateAttachmentsExpandCollapseMode(
+                MessageId(messageId.id),
+                expectedExpandCollapseMode
+            )
         }
     }
 
