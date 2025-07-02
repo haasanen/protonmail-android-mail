@@ -21,11 +21,11 @@ package ch.protonmail.android.mailmessage.presentation.model.attachment
 import ch.protonmail.android.mailattachments.presentation.model.AttachmentMetadataUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 
-const val DEFAULT_ATTACHMENT_LIMIT = 3
+const val VISIBLE_ATTACHMENT_LIMIT = 3
 const val NO_ATTACHMENT_LIMIT = Int.MAX_VALUE
 
 data class AttachmentGroupUiModel(
-    val limit: Int = DEFAULT_ATTACHMENT_LIMIT,
+    val limit: Int = VISIBLE_ATTACHMENT_LIMIT,
     val attachments: List<AttachmentMetadataUiModel>,
     val expandCollapseMode: AttachmentListExpandCollapseMode = AttachmentListExpandCollapseMode.NotApplicable
 )

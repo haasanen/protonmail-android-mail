@@ -21,22 +21,30 @@ package ch.protonmail.android.mailmessage.presentation.mapper
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
-import ch.protonmail.android.mailmessage.presentation.model.attachment.DEFAULT_ATTACHMENT_LIMIT
+import ch.protonmail.android.mailmessage.presentation.model.attachment.VISIBLE_ATTACHMENT_LIMIT
 import javax.inject.Inject
 
 class AttachmentGroupUiModelMapper @Inject constructor(
     private val attachmentMetadataUiModelMapper: AttachmentMetadataUiModelMapper
 ) {
 
-    fun toUiModel(attachments: List<AttachmentMetadata>): AttachmentGroupUiModel {
+    fun toUiModel(
+        attachments: List<AttachmentMetadata>,
+        attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode?
+    ): AttachmentGroupUiModel {
         val attachmentsUiModel = attachments.map(attachmentMetadataUiModelMapper::toUiModel)
         return AttachmentGroupUiModel(
             attachments = attachmentsUiModel,
-            expandCollapseMode = if (attachmentsUiModel.size < DEFAULT_ATTACHMENT_LIMIT) {
-                AttachmentListExpandCollapseMode.NotApplicable
-            } else {
-                AttachmentListExpandCollapseMode.Collapsed
-            }
+            expandCollapseMode = attachmentListExpandCollapseMode
+                ?: attachments.getDefaultMode()
         )
+    }
+
+    private fun List<AttachmentMetadata>.getDefaultMode(): AttachmentListExpandCollapseMode {
+        return if (size <= VISIBLE_ATTACHMENT_LIMIT) {
+            AttachmentListExpandCollapseMode.NotApplicable
+        } else {
+            AttachmentListExpandCollapseMode.Collapsed
+        }
     }
 }
