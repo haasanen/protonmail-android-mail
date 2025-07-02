@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -827,11 +828,6 @@ private fun MessagesContent(
     var scrollCount by remember { mutableIntStateOf(0) }
 
     val visibleUiModels = uiModels.filter { it !is ConversationDetailMessageUiModel.Hidden }
-    val visibleItems by remember(listState) {
-        derivedStateOf {
-            listState.layoutInfo.visibleItemsInfo.map { uiModels[it.index] }
-        }
-    }
     var scrollToIndex = remember(scrollToMessageId, visibleUiModels) {
         if (scrollToMessageId == null) return@remember -1
         else visibleUiModels.indexOfFirst { uiModel -> uiModel.messageId.id == scrollToMessageId }
@@ -910,11 +906,14 @@ private fun MessagesContent(
 
     }
 
+    fun LazyListState.getVisibleScrollToMessageOrNull() =
+        layoutInfo.visibleItemsInfo.firstOrNull { it.index == scrollToIndex }
+
     // The webview for the message that we will scroll to has loaded
     // this is important as the listview will need its final height
     LaunchedEffect(Unit) {
         // is it on the screen, if its off the screen the height will never be calculated
-        val scrollToMessageIsVisible = visibleItems.firstOrNull { it.messageId.id == scrollToMessageId } != null
+        val scrollToMessageIsVisible = listState.getVisibleScrollToMessageOrNull() != null
         if (!scrollToMessageIsVisible) {
             listState.scrollToItem(scrollToIndex)
         }
@@ -923,7 +922,11 @@ private fun MessagesContent(
             .filter { it && !userScrolled && scrollToIndex > 0 }
             .distinctUntilChanged()
             .collectLatest {
-                listState.animateScrollToItem(scrollToIndex)
+                var scrollOffset = 0
+                loadedItemsHeight[scrollToMessageId]?.let {
+                    if (it >= listState.layoutInfo.viewportSize.height) scrollOffset += 1
+                }
+                listState.animateScrollToItem((scrollToIndex - scrollOffset).coerceAtLeast(0))
             }
     }
 
@@ -1018,6 +1021,7 @@ object ConversationDetail {
         val onExitWithOpenInComposer: (MessageId) -> Unit
     )
 }
+
 
 object ConversationDetailScreen {
 
