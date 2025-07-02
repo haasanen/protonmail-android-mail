@@ -35,12 +35,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import ch.protonmail.android.maildetail.presentation.R
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.net.toUri
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.maildetail.presentation.R
 import timber.log.Timber
 
 @Composable
@@ -65,26 +67,7 @@ fun ExternalLinkConfirmationDialog(
                     modifier = modifier
                 )
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
-                Row(
-                    modifier = modifier,
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = checkedDoNotShowAgain.value,
-                        onCheckedChange = {
-                            checkedDoNotShowAgain.value = it
-                        }
-                    )
-                    Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
-                    Text(
-                        text = stringResource(id = R.string.external_link_confirmation_dialog_do_not_ask_again),
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        style = ProtonTheme.typography.bodyMediumWeak,
-                        modifier = modifier
-                    )
-                }
+                // DoNotAskAgainCheckboxText composable to be added here. See ET-3590.
             }
         },
         dismissButton = {
@@ -104,9 +87,48 @@ fun ExternalLinkConfirmationDialog(
 // Function to encode Unicode string to ASCII using Punycode (IDN)
 fun encodeToPunycode(unicodeString: String): String {
     return try {
-        IDN.toASCII(unicodeString.toString())
+        IDN.toASCII(unicodeString)
     } catch (e: IllegalArgumentException) {
         Timber.d("Error encoding to Punycode: $e")
         unicodeString // Return the original string in case of an error
+    }
+}
+
+@Suppress("UnusedPrivateMember") // ET-3590
+@Composable
+private fun DoNotAskAgainCheckboxText(
+    modifier: Modifier = Modifier,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(
+            checked = checked,
+            onCheckedChange = onCheckedChange
+        )
+        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
+        Text(
+            text = stringResource(id = R.string.external_link_confirmation_dialog_do_not_ask_again),
+            maxLines = 3,
+            overflow = TextOverflow.Ellipsis,
+            style = ProtonTheme.typography.bodyMediumWeak,
+            modifier = modifier
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ExternalLinkConfirmationDialogPreview() {
+    ProtonTheme {
+        ExternalLinkConfirmationDialog(
+            onCancelClicked = {},
+            onContinueClicked = {},
+            linkUri = "https://proton.me".toUri()
+        )
     }
 }
