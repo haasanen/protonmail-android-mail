@@ -21,12 +21,15 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
 import ch.protonmail.android.design.compose.component.ProtonBannerWithLink
 import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllStateUiModel
 
@@ -100,4 +103,17 @@ private fun ClearUpsellBannerWithLink(
         ),
         onLinkClicked = onLinkClicked
     )
+}
+
+@AdaptivePreviews
+@Composable
+private fun ClearAllBannerPreview(
+    @PreviewParameter(ClearAllOperationBannerPreviewData::class) uiModel: ClearAllStateUiModel
+) {
+    ProtonTheme {
+        ClearAllOperationBannerContent(
+            state = uiModel,
+            actions = ClearAllOperationBanner.Actions.Empty
+        )
+    }
 }
