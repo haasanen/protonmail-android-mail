@@ -24,12 +24,14 @@ import app.cash.turbine.test
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessageState.Collapsed
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessageState.Expanded
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessageState.Expanding
+import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertFalse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -42,8 +44,12 @@ class InMemoryConversationStateRepositoryImplTest {
         val repo = buildRepository()
 
         repo.conversationState.test {
+            val initialState = awaitItem()
             // Then
-            assertEquals(emptyMap(), awaitItem().messagesState)
+            assertEquals(emptyMap(), initialState.messagesState)
+            assertEquals(emptyMap(), initialState.attachmentsListExpandCollapseMode)
+            assertEquals(emptyMap(), initialState.messagesTransformations)
+
         }
     }
 
@@ -60,8 +66,9 @@ class InMemoryConversationStateRepositoryImplTest {
             val conversationState = awaitItem()
 
             // Then
-            assertEquals(conversationState.messagesState[messageId], Collapsed)
+            assertEquals(Collapsed, conversationState.messagesState[messageId])
             assertEquals(1, conversationState.messagesState.size)
+            assertFalse(conversationState.attachmentsListExpandCollapseMode.containsKey(messageId))
         }
     }
 
@@ -173,6 +180,25 @@ class InMemoryConversationStateRepositoryImplTest {
 
             // Then
             assertNotEquals(illegal, awaitItem().shouldHideMessagesBasedOnTrashFilter)
+        }
+    }
+
+    @Test
+    fun `Should update attachments expand collapse mode`() = runTest {
+        // Given
+        val repo = buildRepository()
+        val messageId = MessageIdSample.Invoice
+        val mode = AttachmentListExpandCollapseMode.Expanded
+
+        // When
+        repo.updateAttachmentsExpandCollapseMode(messageId, mode)
+
+        repo.conversationState.test {
+            val conversationState = awaitItem()
+
+            // Then
+            assertEquals(mode, conversationState.attachmentsListExpandCollapseMode[messageId])
+            assertEquals(1, conversationState.attachmentsListExpandCollapseMode.size)
         }
     }
 

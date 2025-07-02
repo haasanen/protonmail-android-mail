@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessageState
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessagesState
+import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -38,11 +39,13 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
     private val transformationCache = ConcurrentHashMap<MessageId, MessageBodyTransformations>()
     private var shouldHideMessagesBasedOnTrashFilter = true
     private val conversationStateFlow = MutableSharedFlow<MessagesState>(1)
+    private val attachmentsListExpandCollapseMode = ConcurrentHashMap<MessageId, AttachmentListExpandCollapseMode>()
 
     init {
         conversationStateFlow.tryEmit(
             MessagesState(
                 transformationCache,
+                attachmentsListExpandCollapseMode,
                 conversationCache,
                 shouldHideMessagesBasedOnTrashFilter
             )
@@ -57,6 +60,7 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
         conversationStateFlow.emit(
             MessagesState(
                 transformationCache,
+                attachmentsListExpandCollapseMode,
                 conversationCache,
                 shouldHideMessagesBasedOnTrashFilter
             )
@@ -68,6 +72,7 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
         conversationStateFlow.emit(
             MessagesState(
                 transformationCache,
+                attachmentsListExpandCollapseMode,
                 conversationCache,
                 shouldHideMessagesBasedOnTrashFilter
             )
@@ -75,10 +80,27 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
     }
 
     override suspend fun collapseMessage(messageId: MessageId) {
+        attachmentsListExpandCollapseMode.remove(messageId)
         conversationCache[messageId] = MessageState.Collapsed
         conversationStateFlow.emit(
             MessagesState(
                 transformationCache,
+                attachmentsListExpandCollapseMode,
+                conversationCache,
+                shouldHideMessagesBasedOnTrashFilter
+            )
+        )
+    }
+
+    override suspend fun updateAttachmentsExpandCollapseMode(
+        messageId: MessageId,
+        attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode
+    ) {
+        attachmentsListExpandCollapseMode[messageId] = attachmentListExpandCollapseMode
+        conversationStateFlow.emit(
+            MessagesState(
+                transformationCache,
+                attachmentsListExpandCollapseMode,
                 conversationCache,
                 shouldHideMessagesBasedOnTrashFilter
             )
@@ -90,6 +112,7 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
         conversationStateFlow.emit(
             MessagesState(
                 transformationCache,
+                attachmentsListExpandCollapseMode,
                 conversationCache,
                 shouldHideMessagesBasedOnTrashFilter
             )

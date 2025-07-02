@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.domain.usecase
 
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
+import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -48,5 +49,14 @@ class MessageViewStateCache @Inject constructor(
 
     suspend fun switchTrashedMessagesFilter() {
         inMemoryConversationStateRepository.switchTrashedMessagesFilter()
+    }
+
+    suspend fun updateAttachmentsExpandCollapseMode(
+        messageId: MessageId,
+        attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode
+    ) {
+        inMemoryConversationStateRepository.updateAttachmentsExpandCollapseMode(
+            messageId, attachmentListExpandCollapseMode
+        )
     }
 }
