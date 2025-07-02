@@ -28,7 +28,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMe
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
+import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import kotlinx.collections.immutable.toImmutableList
 import javax.inject.Inject
 

@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.presentation.model.attachment
+package ch.protonmail.android.mailmessage.domain.model
 
 enum class AttachmentListExpandCollapseMode {
     Collapsed,

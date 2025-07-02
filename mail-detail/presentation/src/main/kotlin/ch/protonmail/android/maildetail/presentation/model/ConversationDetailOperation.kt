@@ -45,7 +45,7 @@ import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
+import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import kotlinx.collections.immutable.ImmutableList
 
 sealed interface ConversationDetailOperation {

@@ -49,7 +49,7 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.extension.getTotalAttachmentByteSizeReadable
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
+import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import me.proton.core.presentation.R.drawable
 
