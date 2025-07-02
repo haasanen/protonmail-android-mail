@@ -75,8 +75,7 @@ class InitRustCommonLibrary @Inject constructor(
                 params = sessionParams,
                 keyChain = keyChain,
                 hvNotifier = challengeNotifierCallback,
-                deviceInfoProvider = deviceInfoProvider,
-                productName = PRODUCT_NAME
+                deviceInfoProvider = deviceInfoProvider
             )
         ) {
             is CreateMailSessionResult.Error -> {
@@ -95,6 +94,5 @@ class InitRustCommonLibrary @Inject constructor(
     companion object {
 
         private const val CACHE_SIZE = 500_000_000uL
-        private const val PRODUCT_NAME = "android-mail"
     }
 }
