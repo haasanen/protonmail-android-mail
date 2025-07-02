@@ -71,6 +71,7 @@ class ProtonSnackbarHostState(
         withDismissAction: Boolean = false
     ): SnackbarResult = mutex.withLock {
         this.type = type
+        dismissAll()
         snackbarHostState.showSnackbar(message, actionLabel, withDismissAction, duration)
     }
 
