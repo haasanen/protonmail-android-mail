@@ -827,7 +827,11 @@ private fun MessagesContent(
     var scrollCount by remember { mutableIntStateOf(0) }
 
     val visibleUiModels = uiModels.filter { it !is ConversationDetailMessageUiModel.Hidden }
-
+    val visibleItems by remember(listState) {
+        derivedStateOf {
+            listState.layoutInfo.visibleItemsInfo.map { uiModels[it.index] }
+        }
+    }
     var scrollToIndex = remember(scrollToMessageId, visibleUiModels) {
         if (scrollToMessageId == null) return@remember -1
         else visibleUiModels.indexOfFirst { uiModel -> uiModel.messageId.id == scrollToMessageId }
@@ -908,13 +912,17 @@ private fun MessagesContent(
 
     // The webview for the message that we will scroll to has loaded
     // this is important as the listview will need its final height
-    var scrollToMessageLoaded by remember { mutableStateOf(false) }
-    LaunchedEffect(listState) {
+    LaunchedEffect(Unit) {
+        // is it on the screen, if its off the screen the height will never be calculated
+        val scrollToMessageIsVisible = visibleItems.firstOrNull { it.messageId.id == scrollToMessageId } != null
+        if (!scrollToMessageIsVisible) {
+            listState.scrollToItem(scrollToIndex)
+        }
         // wait for the final height of our target expanded message before scrolling
-        snapshotFlow { scrollToMessageLoaded }
+        snapshotFlow { viewHasFinishedScrollingAndMeasuring.value }
+            .filter { it && !userScrolled && scrollToIndex > 0 }
             .distinctUntilChanged()
-            .filter { !userScrolled && scrollToIndex > 0 }
-            .collect {
+            .collectLatest {
                 listState.animateScrollToItem(scrollToIndex)
             }
     }
