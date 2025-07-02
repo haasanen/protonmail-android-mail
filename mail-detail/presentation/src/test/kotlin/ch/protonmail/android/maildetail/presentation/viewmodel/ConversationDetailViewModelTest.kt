@@ -500,7 +500,8 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
-                decryptedMessageBody = any()
+                decryptedMessageBody = any(),
+                attachmentListExpandCollapseMode = null
             )
         } returns InvoiceWithLabelExpanded
 
@@ -631,7 +632,8 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
-                decryptedMessageBody = any()
+                decryptedMessageBody = any(),
+                attachmentListExpandCollapseMode = null
             )
         } returns messages.first()
         val actions = listOf(Action.Archive)
@@ -670,7 +672,8 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
-                decryptedMessageBody = any()
+                decryptedMessageBody = any(),
+                attachmentListExpandCollapseMode = null
             )
         } returns messages.first()
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
@@ -1164,7 +1167,8 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
-                decryptedMessageBody = any()
+                decryptedMessageBody = any(),
+                attachmentListExpandCollapseMode = null
             )
         } returns messages.first()
         coEvery {
@@ -1204,7 +1208,8 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
-                decryptedMessageBody = any()
+                decryptedMessageBody = any(),
+                attachmentListExpandCollapseMode = null
             )
         } returns messages.first()
 
@@ -1251,7 +1256,8 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
-                decryptedMessageBody = any()
+                decryptedMessageBody = any(),
+                attachmentListExpandCollapseMode = null
             )
         } returns messages.first()
 
@@ -1298,7 +1304,8 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
-                decryptedMessageBody = any()
+                decryptedMessageBody = any(),
+                attachmentListExpandCollapseMode = null
             )
         } returns messages.first()
 
@@ -1345,7 +1352,8 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
-                decryptedMessageBody = any()
+                decryptedMessageBody = any(),
+                attachmentListExpandCollapseMode = null
             )
         } returns messages.first()
 
@@ -1393,7 +1401,8 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
-                decryptedMessageBody = any()
+                decryptedMessageBody = any(),
+                attachmentListExpandCollapseMode = null
             )
         } returns messages.first()
 
@@ -1416,7 +1425,8 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
-                decryptedMessageBody = any()
+                decryptedMessageBody = any(),
+                attachmentListExpandCollapseMode = null
             )
         } returns messages.first()
         val participant = Participant(
@@ -1652,7 +1662,8 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
-                decryptedMessageBody = any()
+                decryptedMessageBody = any(),
+                attachmentListExpandCollapseMode = null
             )
         } returns messages.first()
         coEvery {
@@ -1705,7 +1716,8 @@ class ConversationDetailViewModelTest {
                 message = MessageSample.Invoice,
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
-                decryptedMessageBody = any()
+                decryptedMessageBody = any(),
+                attachmentListExpandCollapseMode = null
             )
         } returns messages.first()
 
@@ -1846,7 +1858,8 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
-                decryptedMessageBody = any()
+                decryptedMessageBody = any(),
+                attachmentListExpandCollapseMode = null
             )
         } returns
             InvoiceWithLabelExpanded

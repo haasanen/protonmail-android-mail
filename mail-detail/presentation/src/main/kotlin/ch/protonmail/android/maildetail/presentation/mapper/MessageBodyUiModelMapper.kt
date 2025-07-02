@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.mapper
 
 import ch.protonmail.android.mailattachments.domain.model.isCalendarAttachment
+import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
@@ -36,6 +37,7 @@ class MessageBodyUiModelMapper @Inject constructor(
 
     suspend fun toUiModel(
         decryptedMessageBody: DecryptedMessageBody,
+        attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode?,
         existingMessageBodyUiModel: MessageBodyUiModel? = null
     ): MessageBodyUiModel {
         val decryptedMessageBodyWithType = MessageBodyWithType(
@@ -62,7 +64,8 @@ class MessageBodyUiModelMapper @Inject constructor(
             shouldShowOpenInProtonCalendar = decryptedMessageBody.attachments.any { it.isCalendarAttachment() },
             attachments = if (decryptedMessageBody.attachments.isNotEmpty()) {
                 attachmentGroupUiModelMapper.toUiModel(
-                    decryptedMessageBody.attachments
+                    decryptedMessageBody.attachments,
+                    attachmentListExpandCollapseMode
                 )
             } else null,
             viewModePreference = viewModePreference

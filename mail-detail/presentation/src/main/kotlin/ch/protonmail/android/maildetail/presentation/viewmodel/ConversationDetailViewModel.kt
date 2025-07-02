@@ -502,6 +502,7 @@ class ConversationDetailViewModel @Inject constructor(
     ): NonEmptyList<ConversationDetailMessageUiModel> {
         val messagesList = messages.map { message ->
             val avatarImageState = avatarImageStates.getStateForAddress(message.sender.address)
+            val attachmentListExpandCollapseMode = currentViewState.attachmentsListExpandCollapseMode[message.messageId]
             when (val viewState = currentViewState.messagesState[message.messageId]) {
                 is InMemoryConversationStateRepository.MessageState.Expanding ->
                     buildExpandingMessage(
@@ -513,7 +514,8 @@ class ConversationDetailViewModel @Inject constructor(
                         message,
                         avatarImageState,
                         primaryUserAddress,
-                        viewState.decryptedBody
+                        viewState.decryptedBody,
+                        attachmentListExpandCollapseMode
                     )
                 }
 
@@ -560,12 +562,14 @@ class ConversationDetailViewModel @Inject constructor(
         message: Message,
         avatarImageState: AvatarImageState,
         primaryUserAddress: String?,
-        decryptedBody: DecryptedMessageBody
+        decryptedBody: DecryptedMessageBody,
+        attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode?
     ): ConversationDetailMessageUiModel.Expanded = conversationMessageMapper.toUiModel(
         message,
         avatarImageState,
         primaryUserAddress,
-        decryptedBody
+        decryptedBody,
+        attachmentListExpandCollapseMode
     )
 
     private fun observeBottomBarActions(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->

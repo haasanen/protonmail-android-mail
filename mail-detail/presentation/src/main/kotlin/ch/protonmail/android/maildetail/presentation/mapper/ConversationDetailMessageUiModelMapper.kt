@@ -27,6 +27,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMes
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
+import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -86,8 +87,10 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         message: Message,
         avatarImageState: AvatarImageState,
         primaryUserAddress: String?,
-        decryptedMessageBody: DecryptedMessageBody
+        decryptedMessageBody: DecryptedMessageBody,
+        attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode?
     ): ConversationDetailMessageUiModel.Expanded {
+
         return ConversationDetailMessageUiModel.Expanded(
             messageId = messageIdUiModelMapper.toUiModel(message.messageId),
             isUnread = message.isUnread,
@@ -100,7 +103,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             messageDetailFooterUiModel = messageDetailFooterUiModelMapper.toUiModel(message),
             messageBannersUiModel = messageBannersUiModelMapper.toUiModel(decryptedMessageBody.banners),
             requestPhishingLinkConfirmation = decryptedMessageBody.banners.contains(MessageBanner.PhishingAttempt),
-            messageBodyUiModel = messageBodyUiModelMapper.toUiModel(decryptedMessageBody)
+            messageBodyUiModel = messageBodyUiModelMapper
+                .toUiModel(decryptedMessageBody, attachmentListExpandCollapseMode)
         )
     }
 

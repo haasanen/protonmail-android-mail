@@ -43,21 +43,29 @@ class MessageBodyUiModelMapperTest {
     private val decryptedMessageBodyWithCss = "Decrypted message body with CSS."
 
     private val attachmentGroupUiModelMapper = mockk<AttachmentGroupUiModelMapper> {
-        every { this@mockk.toUiModel(listOf(AttachmentMetadataSamples.Invoice)) } returns AttachmentGroupUiModel(
+        every { this@mockk.toUiModel(listOf(AttachmentMetadataSamples.Invoice), any()) } returns AttachmentGroupUiModel(
             attachments = listOf(AttachmentMetadataUiModelSamples.Invoice)
         )
 
-        every { this@mockk.toUiModel(listOf(AttachmentMetadataSamples.Document)) } returns AttachmentGroupUiModel(
+        every {
+            this@mockk.toUiModel(
+                listOf(AttachmentMetadataSamples.Document), any()
+            )
+        } returns AttachmentGroupUiModel(
             attachments = listOf(AttachmentMetadataUiModelSamples.Document)
         )
 
         every {
-            this@mockk.toUiModel(listOf(AttachmentMetadataSamples.DocumentWithMultipleDots))
+            this@mockk.toUiModel(listOf(AttachmentMetadataSamples.DocumentWithMultipleDots), any())
         } returns AttachmentGroupUiModel(
             attachments = listOf(AttachmentMetadataUiModelSamples.DocumentWithMultipleDots)
         )
 
-        every { this@mockk.toUiModel(listOf(AttachmentMetadataSamples.Calendar)) } returns AttachmentGroupUiModel(
+        every {
+            this@mockk.toUiModel(
+                listOf(AttachmentMetadataSamples.Calendar), any()
+            )
+        } returns AttachmentGroupUiModel(
             attachments = listOf(AttachmentMetadataUiModelSamples.Calendar)
         )
 
@@ -67,7 +75,8 @@ class MessageBodyUiModelMapperTest {
                     AttachmentMetadataSamples.Invoice,
                     AttachmentMetadataSamples.Document,
                     AttachmentMetadataSamples.DocumentWithMultipleDots
-                )
+                ),
+                any()
             )
         } returns AttachmentGroupUiModel(
             attachments = listOf(
@@ -107,7 +116,7 @@ class MessageBodyUiModelMapperTest {
         )
 
         // When
-        val actual = messageBodyUiModelMapper.toUiModel(messageBody)
+        val actual = messageBodyUiModelMapper.toUiModel(messageBody, null)
 
         // Then
         assertEquals(expected, actual)
@@ -152,7 +161,7 @@ class MessageBodyUiModelMapperTest {
         )
 
         // When
-        val actual = messageBodyUiModelMapper.toUiModel(messageBody)
+        val actual = messageBodyUiModelMapper.toUiModel(messageBody, null)
 
         // Then
         assertEquals(expected, actual)
@@ -192,7 +201,7 @@ class MessageBodyUiModelMapperTest {
         )
 
         // When
-        val actual = messageBodyUiModelMapper.toUiModel(messageBody)
+        val actual = messageBodyUiModelMapper.toUiModel(messageBody, null)
 
         // Then
         assertEquals(expected, actual)
@@ -235,14 +244,15 @@ class MessageBodyUiModelMapperTest {
                 attachmentGroupUiModelMapper.toUiModel(
                     attachments = listOf(
                         AttachmentMetadataSamples.InvoiceWithBinaryContentType
-                    )
+                    ),
+                    null
                 )
             } returns AttachmentGroupUiModel(
                 attachments = listOf(AttachmentMetadataUiModelSamples.InvoiceWithBinaryContentType)
             )
 
             // When
-            val actual = messageBodyUiModelMapper.toUiModel(messageBody)
+            val actual = messageBodyUiModelMapper.toUiModel(messageBody, null)
 
             // Then
             assertEquals(expected, actual)
@@ -273,7 +283,7 @@ class MessageBodyUiModelMapperTest {
         )
 
         // When
-        val actual = messageBodyUiModelMapper.toUiModel(messageBody)
+        val actual = messageBodyUiModelMapper.toUiModel(messageBody, null)
 
         // Then
         assertEquals(expected, actual)
@@ -305,7 +315,7 @@ class MessageBodyUiModelMapperTest {
             )
 
             // When
-            val actual = messageBodyUiModelMapper.toUiModel(messageBody)
+            val actual = messageBodyUiModelMapper.toUiModel(messageBody, null)
 
             // Then
             assertEquals(expected, actual)
@@ -337,7 +347,7 @@ class MessageBodyUiModelMapperTest {
             )
 
             // When
-            val actual = messageBodyUiModelMapper.toUiModel(messageBody)
+            val actual = messageBodyUiModelMapper.toUiModel(messageBody, null)
 
             // Then
             assertEquals(expected, actual)
@@ -369,7 +379,7 @@ class MessageBodyUiModelMapperTest {
             )
 
             // When
-            val actual = messageBodyUiModelMapper.toUiModel(messageBody)
+            val actual = messageBodyUiModelMapper.toUiModel(messageBody, null)
 
             // Then
             assertEquals(expected, actual)
@@ -401,7 +411,7 @@ class MessageBodyUiModelMapperTest {
             )
 
             // When
-            val actual = messageBodyUiModelMapper.toUiModel(messageBody)
+            val actual = messageBodyUiModelMapper.toUiModel(messageBody, null)
 
             // Then
             assertEquals(expected, actual)
@@ -456,7 +466,7 @@ class MessageBodyUiModelMapperTest {
         )
 
         // When
-        val actual = messageBodyUiModelMapper.toUiModel(messageBody, existingState)
+        val actual = messageBodyUiModelMapper.toUiModel(messageBody, null, existingState)
 
         // Then
         assertEquals(existingState.viewModePreference, actual.viewModePreference)

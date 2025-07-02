@@ -33,6 +33,7 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.sample.MessageDetailBodyUiModelSample
 import ch.protonmail.android.maildetail.presentation.sample.MessageLocationUiModelSample
 import ch.protonmail.android.maildetail.presentation.viewmodel.EmailBodyTestSamples
+import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
@@ -42,7 +43,10 @@ import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
+import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import ch.protonmail.android.testdata.maildetail.MessageBannersUiModelTestData.messageBannersUiModel
+import ch.protonmail.android.testdata.message.DecryptedMessageBodyTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -55,6 +59,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 internal class ConversationDetailMessageUiModelMapperTest {
@@ -189,7 +194,8 @@ internal class ConversationDetailMessageUiModelMapperTest {
             message = message,
             avatarImageState = avatarImageState,
             primaryUserAddress = primaryUserAddress,
-            decryptedMessageBody = decryptedMessageBody
+            decryptedMessageBody = decryptedMessageBody,
+            attachmentListExpandCollapseMode = AttachmentListExpandCollapseMode.Collapsed
         )
 
         // then
@@ -200,7 +206,9 @@ internal class ConversationDetailMessageUiModelMapperTest {
                 message, primaryUserAddress, avatarImageState, ViewModePreference.ThemeDefault
             )
         }
-        coVerify { messageBodyUiModelMapper.toUiModel(decryptedMessageBody) }
+        coVerify {
+            messageBodyUiModelMapper.toUiModel(decryptedMessageBody, AttachmentListExpandCollapseMode.Collapsed)
+        }
     }
 
     @Test
@@ -372,5 +380,49 @@ internal class ConversationDetailMessageUiModelMapperTest {
 
         // then
         assertEquals(expected, result)
+    }
+
+    @Test
+    fun `map to ui model sets attachment expand collapse mode`() = runTest {
+        // Given
+        val message = MessageSample.AugWeatherForecast
+        val decryptedMessageBody = DecryptedMessageBodyTestData.htmlInvoice.copy(
+            messageId = message.messageId
+        )
+        val expectedAttachmentsUiModel = AttachmentGroupUiModel(
+            attachments = listOf(
+                AttachmentMetadataUiModelSamples.Document,
+                AttachmentMetadataUiModelSamples.Invoice,
+                AttachmentMetadataUiModelSamples.Image,
+                AttachmentMetadataUiModelSamples.Video
+            ),
+            expandCollapseMode = AttachmentListExpandCollapseMode.Expanded
+        )
+        val expectedIds = expectedAttachmentsUiModel.attachments.map { it.id }
+
+        val avatarImageState = AvatarImageState.NoImageAvailable
+        val attachmentMode = AttachmentListExpandCollapseMode.Expanded
+
+        coEvery {
+            messageBodyUiModelMapper.toUiModel(
+                decryptedMessageBody, AttachmentListExpandCollapseMode.Expanded
+            )
+        } returns messageBodyUiModel.copy(attachments = expectedAttachmentsUiModel)
+
+        // When
+        val result = mapper.toUiModel(
+            message = message,
+            avatarImageState = avatarImageState,
+            primaryUserAddress = primaryUserAddress,
+            decryptedMessageBody = decryptedMessageBody,
+            attachmentListExpandCollapseMode = attachmentMode
+        )
+
+        // Then
+        val resultAttachments = result.messageBodyUiModel.attachments
+        assertNotNull(resultAttachments)
+        assertEquals(attachmentMode, resultAttachments.expandCollapseMode)
+        val actualIds = resultAttachments.attachments.map { it.id }
+        assertEquals(expectedIds, actualIds)
     }
 }
