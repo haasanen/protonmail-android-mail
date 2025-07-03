@@ -41,7 +41,7 @@ internal class CreateIssueReportTest {
         val expectedIssueReport = IssueReport(
             operatingSystem = IssueReportField.OperatingSystem("Android"),
             operatingSystemVersion = IssueReportField.OperatingSystemVersion("0"),
-            client = IssueReportField.Client("Android_Native"),
+            client = IssueReportField.Client("Android Proton Mail"),
             clientVersion = IssueReportField.ClientVersion("0.0.0 (0)"),
             title = IssueReportField.Title("Proton Mail Android App - Bug report"),
             summary = summary,

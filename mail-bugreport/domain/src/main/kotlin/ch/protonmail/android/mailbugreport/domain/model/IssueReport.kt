@@ -32,7 +32,7 @@ import ch.protonmail.android.mailbugreport.domain.model.IssueReportField.Title
 data class IssueReport(
     val operatingSystem: OperatingSystem = OperatingSystem("Android"),
     val operatingSystemVersion: OperatingSystemVersion,
-    val client: Client = Client("Android_Native"),
+    val client: Client = Client("Android Proton Mail"),
     val clientVersion: ClientVersion,
     val title: Title = Title("Proton Mail Android App - Bug report"),
     val summary: Summary,
