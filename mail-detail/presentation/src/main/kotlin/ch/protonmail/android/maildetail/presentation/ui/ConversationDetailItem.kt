@@ -137,7 +137,7 @@ private fun ConversationDetailCard(modifier: Modifier = Modifier, content: @Comp
             .border(
                 width = MailDimens.DefaultBorder,
                 color = ProtonTheme.colors.borderNorm,
-                shape = ProtonTheme.shapes.conversation
+                shape = ProtonTheme.shapes.large
             )
             .shadow(
                 elevation = if (isSystemInDarkTheme()) {
@@ -145,11 +145,11 @@ private fun ConversationDetailCard(modifier: Modifier = Modifier, content: @Comp
                 } else {
                     ProtonDimens.ShadowElevation.Lifted
                 },
-                shape = ProtonTheme.shapes.conversation,
+                shape = ProtonTheme.shapes.large,
                 ambientColor = ProtonTheme.colors.shadowSoft,
                 spotColor = ProtonTheme.colors.shadowSoft
             ),
-        shape = ProtonTheme.shapes.conversation,
+        shape = ProtonTheme.shapes.large,
         colors = CardDefaults.elevatedCardColors(
             containerColor = ProtonTheme.colors.backgroundNorm
         ),
@@ -185,7 +185,7 @@ private fun ColumnScope.ConversationDetailExpandedItem(
     onMessageBodyLoadFinished: (messageId: MessageId, height: Int) -> Unit,
     cachedWebContentHeight: Int = 0
 ) {
-    var viewLoaded = remember { mutableStateOf(cachedWebContentHeight > 0) }
+    val viewLoaded = remember { mutableStateOf(cachedWebContentHeight > 0) }
     val revealFooterAfterLoad by animateFloatAsState(
         targetValue = if (viewLoaded.value) 1.0f else 0f,
         label = "footer-alpha",
