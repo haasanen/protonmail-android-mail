@@ -914,7 +914,7 @@ private fun MessagesContent(
     LaunchedEffect(Unit) {
         // is it on the screen, if its off the screen the height will never be calculated
         val scrollToMessageIsVisible = listState.getVisibleScrollToMessageOrNull() != null
-        if (!scrollToMessageIsVisible) {
+        if (!scrollToMessageIsVisible && scrollToIndex >= 0) {
             listState.scrollToItem(scrollToIndex)
         }
         // wait for the final height of our target expanded message before scrolling
