@@ -874,15 +874,19 @@ private fun MessagesContent(
         }
     }
 
-    val isAllItemsMeasured = derivedStateOf { itemsHeight.size >= visibleUiModels.size }
+    val isAllItemsMeasured = remember {
+        derivedStateOf { itemsHeight.size >= visibleUiModels.size }
+    }
 
     // The webview for the message that we will scroll to has loaded
     // this is important as the listview will need its final height
     var isScrollToMessageWebViewLoaded by remember { mutableStateOf(false) }
-    val viewHasFinishedScrollingAndMeasuring = derivedStateOf {
-        itemsHeight.isNotEmpty() &&
-            isScrollToMessageWebViewLoaded &&
-            isAllItemsMeasured.value
+    val viewHasFinishedScrollingAndMeasuring = remember {
+        derivedStateOf {
+            itemsHeight.isNotEmpty() &&
+                isScrollToMessageWebViewLoaded &&
+                isAllItemsMeasured.value
+        }
     }
     val headerOverlapHeightPx = MailDimens.ConversationCollapseHeaderOverlapHeight.dpToPx()
     LaunchedEffect(listState) {
