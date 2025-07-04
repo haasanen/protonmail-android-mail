@@ -829,12 +829,12 @@ private fun MessagesContent(
 
     val visibleUiModels = uiModels.filter { it !is ConversationDetailMessageUiModel.Hidden }
     var scrollToIndex = remember(scrollToMessageId, visibleUiModels) {
-        if (scrollToMessageId == null) return@remember -1
+        if (scrollToMessageId == null) return@remember null
         else visibleUiModels.indexOfFirst { uiModel -> uiModel.messageId.id == scrollToMessageId }
     }
 
     LaunchedEffect(key1 = scrollToIndex, key2 = webContentLoaded) {
-        if (scrollToIndex >= 0) {
+        if (scrollToIndex != null) {
 
             // We are having frequent state updates at the beginning which are causing recompositions and
             // animateScrollToItem to be cancelled or delayed. Therefore we use scrollToItem for
@@ -855,7 +855,7 @@ private fun MessagesContent(
                 // Scrolled message expanded, so we can conclude that scrolling is completed
                 actions.onScrollRequestCompleted()
                 scrollCompleted = true
-                scrollToIndex = -1
+                scrollToIndex = null
             }
         }
     }
@@ -914,19 +914,21 @@ private fun MessagesContent(
     LaunchedEffect(Unit) {
         // is it on the screen, if its off the screen the height will never be calculated
         val scrollToMessageIsVisible = listState.getVisibleScrollToMessageOrNull() != null
-        if (!scrollToMessageIsVisible && scrollToIndex >= 0) {
-            listState.scrollToItem(scrollToIndex)
+        if (!scrollToMessageIsVisible) {
+            scrollToIndex?.let { listState.scrollToItem(it) }
         }
         // wait for the final height of our target expanded message before scrolling
         snapshotFlow { viewHasFinishedScrollingAndMeasuring.value }
-            .filter { it && !userScrolled && scrollToIndex > 0 }
+            .filter { it && !userScrolled && scrollToIndex != null }
             .distinctUntilChanged()
             .collectLatest {
                 var scrollOffset = 0
                 loadedItemsHeight[scrollToMessageId]?.let {
                     if (it >= listState.layoutInfo.viewportSize.height) scrollOffset += 1
                 }
-                listState.animateScrollToItem((scrollToIndex - scrollOffset).coerceAtLeast(0))
+                scrollToIndex?.let {
+                    listState.animateScrollToItem((it - scrollOffset).coerceAtLeast(0))
+                }
             }
     }
 
