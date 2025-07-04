@@ -891,10 +891,10 @@ private fun MessagesContent(
     val headerOverlapHeightPx = MailDimens.ConversationCollapseHeaderOverlapHeight.dpToPx()
     LaunchedEffect(listState) {
         snapshotFlow { viewHasFinishedScrollingAndMeasuring.value }
-            .filter { it == true }
+            .filter { it }
             // debounce as sometimes there are multiple passes and we should wait for the view to settle
             .debounce(timeoutMillis = 300L)
-            .collectLatest { map ->
+            .collectLatest {
                 val sumOfHeights = itemsHeight.entries.sumOf { it.value } - itemsHeight.entries.last().value
 
                 // there is a designed overlap / stacking of conversation cards, so we need to take this into
@@ -904,7 +904,7 @@ private fun MessagesContent(
                 val availableSpace = lazyColumnHeight.intValue - verticalPaddingPx - sumOfHeights + sumOfCardOverlap
                 if (itemsHeight.entries.last().value < availableSpace) {
                     // then we should expand to fit space
-                    scrollToMessageMinimumHeightPx = availableSpace.toInt()
+                    scrollToMessageMinimumHeightPx = availableSpace
                 }
             }
 
