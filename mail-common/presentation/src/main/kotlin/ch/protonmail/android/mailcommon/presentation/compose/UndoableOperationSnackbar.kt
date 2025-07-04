@@ -65,7 +65,6 @@ fun UndoableOperationSnackbar(
 
         val featureComingSoon = stringResource(id = R.string.feature_coming_soon)
         coroutineScope.launch {
-            snackbarHostState.dismissAll()
             if (it is ActionResult.UndoableActionResult) {
                 val result = snackbarHostState.showSnackbar(ProtonSnackbarType.NORM, message, undoActionLabel)
                 if (result == SnackbarResult.ActionPerformed) {
