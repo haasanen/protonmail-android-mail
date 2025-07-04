@@ -21,6 +21,7 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
+import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
@@ -428,7 +429,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = LocalMessageIdSample.AugWeatherForecast
-        val expectedError = DataError.Local.SendDraftError.InvalidRecipient
+        val expectedError = SendDraftError.InvalidRecipient
 
         val expectedDraftWrapper = expectDraftWrapperReturns(
             messageId = messageId,
@@ -718,7 +719,7 @@ class RustDraftDataSourceImplTest {
     fun `schedule send returns DataError when unsuccessful`() = runTest {
         // Given
         val timestamp = 1234L
-        val expected = DataError.Local.SendDraftError.InvalidRecipient
+        val expected = SendDraftError.InvalidRecipient
         val expectedDraftWrapper = expectDraftWrapperReturns()
         dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { expectedDraftWrapper.scheduleSend(timestamp.toULong()) } returns VoidDraftSendResult.Error(

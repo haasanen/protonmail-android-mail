@@ -20,7 +20,7 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -53,7 +53,7 @@ class ScheduleSendMessageTest {
     fun `schedule send message returns failure when repository fails`() = runTest {
         // Given
         val time = Instant.fromEpochSeconds(123)
-        val expected = DataError.Local.DbWriteFailed.left()
+        val expected = SendDraftError.ScheduleSendError.left()
         coEvery { draftRepository.scheduleSend(time) } returns expected
 
         // When

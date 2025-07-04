@@ -34,6 +34,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
+import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
@@ -93,9 +94,9 @@ class DraftRepositoryImpl @Inject constructor(
     override suspend fun changeSender(sender: SenderEmail): Either<ChangeSenderError, Unit> =
         draftDataSource.changeSender(sender)
 
-    override suspend fun send(): Either<DataError, Unit> = draftDataSource.send()
+    override suspend fun send(): Either<SendDraftError, Unit> = draftDataSource.send()
 
-    override suspend fun scheduleSend(time: Instant): Either<DataError, Unit> =
+    override suspend fun scheduleSend(time: Instant): Either<SendDraftError, Unit> =
         draftDataSource.scheduleSend(time.epochSeconds)
 
     override suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit> =

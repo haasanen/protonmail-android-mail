@@ -11,6 +11,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
+import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -191,7 +192,7 @@ class DraftRepositoryImplTest {
     @Test
     fun `returns error when send draft fails`() = runTest {
         // Given
-        val expected = DataError.Local.Unknown
+        val expected = SendDraftError.AlreadySent
         coEvery { draftDataSource.send() } returns expected.left()
 
         // When
@@ -253,7 +254,7 @@ class DraftRepositoryImplTest {
         // Given
         val timestamp = 123L
         val time = Instant.fromEpochSeconds(timestamp)
-        val expected = DataError.Local.Unknown
+        val expected = SendDraftError.ScheduleSendError
         coEvery { draftDataSource.scheduleSend(timestamp) } returns expected.left()
 
         // When

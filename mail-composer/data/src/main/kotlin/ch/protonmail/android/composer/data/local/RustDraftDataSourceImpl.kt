@@ -26,6 +26,7 @@ import arrow.core.raise.either
 import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toChangeSenderError
 import ch.protonmail.android.composer.data.mapper.toDraftCreateMode
+import ch.protonmail.android.composer.data.mapper.toDraftSendError
 import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.mapper.toLocalDraftWithSyncStatus
 import ch.protonmail.android.composer.data.mapper.toLocalSenderAddresses
@@ -48,6 +49,7 @@ import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
+import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
@@ -202,10 +204,10 @@ class RustDraftDataSourceImpl @Inject constructor(
     override suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>> = flowOf(emptyList())
 
 
-    override suspend fun send(): Either<DataError, Unit> = withValidRustDraftWrapper {
+    override suspend fun send(): Either<SendDraftError, Unit> = withValidRustDraftWrapper {
         Timber.d("rust-draft: Sending draft...")
         return@withValidRustDraftWrapper when (val result = it.send()) {
-            is VoidDraftSendResult.Error -> result.v1.toDataError().left()
+            is VoidDraftSendResult.Error -> result.v1.toDraftSendError().left()
             is VoidDraftSendResult.Ok -> {
                 startSendingStatusWorker()
                 Unit.right()
@@ -213,9 +215,9 @@ class RustDraftDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun scheduleSend(timestamp: Long): Either<DataError, Unit> = withValidRustDraftWrapper {
+    override suspend fun scheduleSend(timestamp: Long): Either<SendDraftError, Unit> = withValidRustDraftWrapper {
         when (val result = it.scheduleSend(timestamp.toULong())) {
-            is VoidDraftSendResult.Error -> result.v1.toDataError().left()
+            is VoidDraftSendResult.Error -> result.v1.toDraftSendError().left()
             VoidDraftSendResult.Ok -> Unit.right()
         }
     }

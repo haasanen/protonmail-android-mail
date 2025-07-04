@@ -39,6 +39,7 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
+import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
 import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
@@ -57,6 +58,7 @@ import uniffi.proton_mail_uniffi.DraftOpenErrorReason
 import uniffi.proton_mail_uniffi.DraftSaveError
 import uniffi.proton_mail_uniffi.DraftSaveErrorReason
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
+import uniffi.proton_mail_uniffi.DraftSendError
 import uniffi.proton_mail_uniffi.DraftSendErrorReason
 import uniffi.proton_mail_uniffi.DraftSendFailure
 import uniffi.proton_mail_uniffi.DraftSendResultOrigin
@@ -297,6 +299,25 @@ fun DraftOpenError.toOpenDraftError(): OpenDraftError = when (this) {
         DraftOpenErrorReason.REPLY_OR_FORWARD_DRAFT,
         DraftOpenErrorReason.ADDRESS_NOT_FOUND,
         DraftOpenErrorReason.MESSAGE_BODY_MISSING -> OpenDraftError.OpenDraftFailed
+    }
+}
+
+fun DraftSendError.toDraftSendError(): SendDraftError = when (this) {
+    is DraftSendError.Other -> SendDraftError.Other(this.v1.toDataError())
+    is DraftSendError.Reason -> when (this.v1) {
+        is DraftSendErrorReason.AlreadySent,
+        is DraftSendErrorReason.MessageAlreadySent,
+        is DraftSendErrorReason.MessageIsNotADraft -> SendDraftError.AlreadySent
+        is DraftSendErrorReason.AddressDisabled,
+        is DraftSendErrorReason.AddressDoesNotHavePrimaryKey -> SendDraftError.InvalidSenderAddress
+        is DraftSendErrorReason.RecipientEmailInvalid,
+        is DraftSendErrorReason.ProtonRecipientDoesNotExist,
+        is DraftSendErrorReason.NoRecipients -> SendDraftError.InvalidRecipient
+        is DraftSendErrorReason.MissingAttachmentUploads -> SendDraftError.AttachmentsError
+        is DraftSendErrorReason.ScheduleSendExpired,
+        is DraftSendErrorReason.ScheduleSendMessageLimitExceeded -> SendDraftError.ScheduleSendError
+        is DraftSendErrorReason.MessageDoesNotExist,
+        is DraftSendErrorReason.PackageError -> SendDraftError.CorruptedData
     }
 }
 

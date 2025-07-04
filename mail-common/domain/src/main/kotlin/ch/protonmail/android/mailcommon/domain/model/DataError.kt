@@ -52,13 +52,6 @@ sealed interface DataError {
 
         data object UnsupportedOperation : Local
 
-        sealed interface SendDraftError : Local {
-            data object AlreadySent : SendDraftError
-            data object InvalidSenderAddress : SendDraftError
-            data object InvalidRecipient : SendDraftError
-            data object AttachmentsError : SendDraftError
-        }
-
         sealed interface AttachmentError : Local {
             data object AttachmentTooLarge : AttachmentError
             data object TooManyAttachments : AttachmentError

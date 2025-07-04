@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
+import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -44,8 +45,8 @@ interface RustDraftDataSource {
     suspend fun saveSubject(subject: Subject): Either<SaveDraftError, Unit>
     suspend fun saveBody(body: DraftBody): Either<SaveDraftError, Unit>
     suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>>
-    suspend fun send(): Either<DataError, Unit>
-    suspend fun scheduleSend(timestamp: Long): Either<DataError, Unit>
+    suspend fun send(): Either<SendDraftError, Unit>
+    suspend fun scheduleSend(timestamp: Long): Either<SendDraftError, Unit>
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>
     suspend fun attachmentList(): Either<DataError, AttachmentsWrapper>
     suspend fun updateToRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>

@@ -29,8 +29,6 @@ import uniffi.proton_mail_uniffi.DraftCancelScheduleSendError
 import uniffi.proton_mail_uniffi.DraftCancelScheduleSendErrorReason
 import uniffi.proton_mail_uniffi.DraftDiscardError
 import uniffi.proton_mail_uniffi.DraftDiscardErrorReason
-import uniffi.proton_mail_uniffi.DraftSendError
-import uniffi.proton_mail_uniffi.DraftSendErrorReason
 import uniffi.proton_mail_uniffi.DraftUndoSendError
 import uniffi.proton_mail_uniffi.DraftUndoSendErrorReason
 import uniffi.proton_mail_uniffi.EventError
@@ -53,25 +51,6 @@ fun ActionError.toDataError(): DataError = when (this) {
         ActionErrorReason.UNKNOWN_LABEL,
         ActionErrorReason.UNKNOWN_MESSAGE,
         ActionErrorReason.UNKNOWN_CONTENT_ID -> DataError.Local.NoDataCached
-    }
-}
-
-fun DraftSendError.toDataError(): DataError = when (this) {
-    is DraftSendError.Other -> this.v1.toDataError()
-    is DraftSendError.Reason -> when (this.v1) {
-        is DraftSendErrorReason.AlreadySent,
-        is DraftSendErrorReason.MessageAlreadySent,
-        is DraftSendErrorReason.MessageIsNotADraft -> DataError.Local.SendDraftError.AlreadySent
-        is DraftSendErrorReason.AddressDisabled,
-        is DraftSendErrorReason.AddressDoesNotHavePrimaryKey -> DataError.Local.SendDraftError.InvalidSenderAddress
-        is DraftSendErrorReason.RecipientEmailInvalid,
-        is DraftSendErrorReason.ProtonRecipientDoesNotExist,
-        is DraftSendErrorReason.NoRecipients -> DataError.Local.SendDraftError.InvalidRecipient
-        is DraftSendErrorReason.MissingAttachmentUploads -> DataError.Local.SendDraftError.AttachmentsError
-        is DraftSendErrorReason.MessageDoesNotExist,
-        is DraftSendErrorReason.ScheduleSendExpired,
-        is DraftSendErrorReason.ScheduleSendMessageLimitExceeded,
-        is DraftSendErrorReason.PackageError -> DataError.Local.Unknown
     }
 }
 
