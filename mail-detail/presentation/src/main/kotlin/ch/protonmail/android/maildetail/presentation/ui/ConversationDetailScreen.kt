@@ -984,7 +984,7 @@ private fun MessagesContent(
                                     .heightIn(min = scrollToMessageMinimumHeightPx.pxToDp())
                             } else Modifier
                         } else {
-                            Modifier.padding(bottom = MailDimens.ConversationCollapseHeaderOverlapHeight)
+                            Modifier.padding(bottom = MailDimens.ConversationItemBottomPadding)
                         }
                     }
 
