@@ -20,12 +20,12 @@ package ch.protonmail.android.mailattachments.domain.model
 
 import ch.protonmail.android.mailcommon.domain.model.DataError
 
-sealed interface AttachmentError {
-    data object AttachmentTooLarge : AttachmentError
-    data object TooManyAttachments : AttachmentError
-    data object InvalidDraftMessage : AttachmentError
-    data object EncryptionError : AttachmentError
-    data object InvalidState : AttachmentError
+sealed interface AddAttachmentError {
+    data object AttachmentTooLarge : AddAttachmentError
+    data object TooManyAttachments : AddAttachmentError
+    data object InvalidDraftMessage : AddAttachmentError
+    data object EncryptionError : AddAttachmentError
+    data object InvalidState : AddAttachmentError
 
-    data class Other(val error: DataError) : AttachmentError
+    data class Other(val error: DataError) : AddAttachmentError
 }

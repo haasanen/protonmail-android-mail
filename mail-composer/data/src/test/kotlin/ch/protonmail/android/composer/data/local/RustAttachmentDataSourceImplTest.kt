@@ -32,7 +32,7 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWith
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailcommon.data.file.FileInformation
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailattachments.domain.model.AttachmentError
+import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailmessage.data.local.AttachmentFileStorage
 import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -172,7 +172,7 @@ class RustAttachmentDataSourceImplTest {
     fun `addAttachment fails when accessing attachmentList fails`() = runTest {
         // Given
         val dataError = DataError.Local.NoDataCached
-        val expected = AttachmentError.Other(dataError)
+        val expected = AddAttachmentError.Other(dataError)
         coEvery { rustDraftDataSource.attachmentList() } returns dataError.left()
 
         // When
@@ -196,7 +196,7 @@ class RustAttachmentDataSourceImplTest {
         val result = dataSource.addAttachment(uri)
 
         // Then
-        val expected = AttachmentError.Other(DataError.Local.FailedToStoreFile)
+        val expected = AddAttachmentError.Other(DataError.Local.FailedToStoreFile)
         assertEquals(expected.left(), result)
     }
 

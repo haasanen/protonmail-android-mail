@@ -22,36 +22,37 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWith
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddErrorWithList
-import ch.protonmail.android.mailattachments.domain.model.AttachmentError
+import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 
 object AttachmentListErrorMapper {
 
     fun toAttachmentAddErrorWithList(attachments: List<AttachmentMetadataWithState>): AttachmentAddErrorWithList? {
-        val itemsWithError: List<Pair<AttachmentMetadataWithState, AttachmentError>> = attachments.mapNotNull { item ->
-            val errorState = item.attachmentState as? AttachmentState.Error
-            errorState?.reason?.let { reason ->
-                item to reason
+        val itemsWithError: List<Pair<AttachmentMetadataWithState, AddAttachmentError>> =
+            attachments.mapNotNull { item ->
+                val errorState = item.attachmentState as? AttachmentState.Error
+                errorState?.reason?.let { reason ->
+                    item to reason
+                }
             }
-        }
 
         if (itemsWithError.isEmpty()) {
             return null
         }
 
         val tooManyAttachmentItems = itemsWithError.filter {
-            it.second is AttachmentError.TooManyAttachments
+            it.second is AddAttachmentError.TooManyAttachments
         }
 
         val attachmentTooLargeItems = itemsWithError.filter {
-            it.second is AttachmentError.AttachmentTooLarge
+            it.second is AddAttachmentError.AttachmentTooLarge
         }
 
         val invalidDraftMessageItems = itemsWithError.filter {
-            it.second is AttachmentError.InvalidDraftMessage
+            it.second is AddAttachmentError.InvalidDraftMessage
         }
 
         val encryptionErrorItems = itemsWithError.filter {
-            it.second is AttachmentError.EncryptionError
+            it.second is AddAttachmentError.EncryptionError
         }
 
         return if (tooManyAttachmentItems.isNotEmpty()) {

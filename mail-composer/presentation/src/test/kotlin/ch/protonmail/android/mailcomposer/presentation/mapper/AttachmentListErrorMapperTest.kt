@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.mapper
 
-import ch.protonmail.android.mailattachments.domain.model.AttachmentError
+import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
@@ -30,7 +30,7 @@ import kotlin.test.assertEquals
 
 class AttachmentListErrorMapperTest {
 
-    private fun createAttachmentWithError(reason: AttachmentError): AttachmentMetadataWithState {
+    private fun createAttachmentWithError(reason: AddAttachmentError): AttachmentMetadataWithState {
         val item = mockk<AttachmentMetadataWithState>()
         every { item.attachmentState } returns AttachmentState.Error(reason)
         return item
@@ -52,7 +52,7 @@ class AttachmentListErrorMapperTest {
     @Test
     fun `returns TooManyAttachments error when present`() {
         // Given
-        val attachment = createAttachmentWithError(AttachmentError.TooManyAttachments)
+        val attachment = createAttachmentWithError(AddAttachmentError.TooManyAttachments)
 
         // When
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(attachment))
@@ -65,7 +65,7 @@ class AttachmentListErrorMapperTest {
     @Test
     fun `returns AttachmentTooLarge when no higher-priority error exists`() {
         // Given
-        val attachment = createAttachmentWithError(AttachmentError.AttachmentTooLarge)
+        val attachment = createAttachmentWithError(AddAttachmentError.AttachmentTooLarge)
 
         // When
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(attachment))
@@ -78,7 +78,7 @@ class AttachmentListErrorMapperTest {
     @Test
     fun `returns InvalidDraftMessage when no higher-priority error exists`() {
         // Given
-        val attachment = createAttachmentWithError(AttachmentError.InvalidDraftMessage)
+        val attachment = createAttachmentWithError(AddAttachmentError.InvalidDraftMessage)
 
         // When
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(attachment))
@@ -91,7 +91,7 @@ class AttachmentListErrorMapperTest {
     @Test
     fun `returns EncryptionError when no higher-priority error exists`() {
         // Given
-        val attachment = createAttachmentWithError(AttachmentError.EncryptionError)
+        val attachment = createAttachmentWithError(AddAttachmentError.EncryptionError)
 
         // When
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(attachment))
@@ -104,8 +104,8 @@ class AttachmentListErrorMapperTest {
     @Test
     fun `returns highest priority error when multiple errors exist`() {
         // Given
-        val tooManyAttachment = createAttachmentWithError(AttachmentError.TooManyAttachments)
-        val encryptionError = createAttachmentWithError(AttachmentError.EncryptionError)
+        val tooManyAttachment = createAttachmentWithError(AddAttachmentError.TooManyAttachments)
+        val encryptionError = createAttachmentWithError(AddAttachmentError.EncryptionError)
 
         // When
         val result = AttachmentListErrorMapper.toAttachmentAddErrorWithList(listOf(tooManyAttachment, encryptionError))

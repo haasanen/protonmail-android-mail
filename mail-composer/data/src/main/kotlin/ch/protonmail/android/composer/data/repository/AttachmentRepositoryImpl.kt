@@ -21,7 +21,7 @@ package ch.protonmail.android.composer.data.repository
 import android.net.Uri
 import arrow.core.Either
 import ch.protonmail.android.composer.data.local.RustAttachmentDataSource
-import ch.protonmail.android.mailattachments.domain.model.AttachmentError
+import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -43,10 +43,10 @@ class AttachmentRepositoryImpl @Inject constructor(
     override suspend fun deleteInlineAttachment(contentId: String): Either<DataError, Unit> =
         rustAttachmentDataSource.removeInlineAttachment(contentId)
 
-    override suspend fun addAttachment(fileUri: Uri): Either<AttachmentError, Unit> =
+    override suspend fun addAttachment(fileUri: Uri): Either<AddAttachmentError, Unit> =
         rustAttachmentDataSource.addAttachment(fileUri)
 
-    override suspend fun addInlineAttachment(fileUri: Uri): Either<AttachmentError, String> =
+    override suspend fun addInlineAttachment(fileUri: Uri): Either<AddAttachmentError, String> =
         rustAttachmentDataSource.addInlineAttachment(fileUri)
 
 }

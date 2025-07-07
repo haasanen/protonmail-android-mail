@@ -23,13 +23,13 @@ import arrow.core.Either
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailattachments.domain.model.AttachmentError
+import ch.protonmail.android.mailattachments.domain.model.AddAttachmentError
 import kotlinx.coroutines.flow.Flow
 
 interface RustAttachmentDataSource {
     suspend fun observeAttachments(): Flow<Either<DataError, List<AttachmentMetadataWithState>>>
-    suspend fun addAttachment(fileUri: Uri): Either<AttachmentError, Unit>
-    suspend fun addInlineAttachment(fileUri: Uri): Either<AttachmentError, String>
+    suspend fun addAttachment(fileUri: Uri): Either<AddAttachmentError, Unit>
+    suspend fun addInlineAttachment(fileUri: Uri): Either<AddAttachmentError, String>
     suspend fun removeAttachment(attachmentId: AttachmentId): Either<DataError, Unit>
     suspend fun removeInlineAttachment(cid: String): Either<DataError, Unit>
 }
