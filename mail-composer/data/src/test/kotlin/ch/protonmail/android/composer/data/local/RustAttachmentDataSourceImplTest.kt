@@ -22,6 +22,7 @@ import android.net.Uri
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailattachments.data.mapper.toAttachmentError
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.mailattachments.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailattachments.data.mapper.toLocalAttachmentId
@@ -29,8 +30,8 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
 import ch.protonmail.android.mailcommon.data.file.FileInformation
-import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailmessage.data.local.AttachmentFileStorage
 import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -128,7 +129,7 @@ class RustAttachmentDataSourceImplTest {
         } returns AttachmentListAttachmentsResult.Error(protonError)
         coEvery { wrapper.createWatcher(capture(callbackSlot)) } returns AttachmentListWatcherResult.Ok(watcher)
 
-        val expected = protonError.toDataError()
+        val expected = protonError.toAttachmentError()
 
         // When
         dataSource.observeAttachments().test {
@@ -169,15 +170,15 @@ class RustAttachmentDataSourceImplTest {
     @Test
     fun `addAttachment fails when accessing attachmentList fails`() = runTest {
         // Given
-        val error = DataError.Local.Unknown
-        coEvery { rustDraftDataSource.attachmentList() } returns error.left()
+        val dataError = DataError.Local.NoDataCached
+        val expected = AttachmentError.Other(dataError)
+        coEvery { rustDraftDataSource.attachmentList() } returns dataError.left()
 
         // When
         val result = dataSource.addAttachment(mockk())
 
         // Then
-        assertTrue(result.isLeft())
-        assertEquals(error, result.swap().getOrNull())
+        assertEquals(expected.left(), result)
     }
 
     @Test
@@ -194,8 +195,8 @@ class RustAttachmentDataSourceImplTest {
         val result = dataSource.addAttachment(uri)
 
         // Then
-        assertTrue(result.isLeft())
-        assertEquals(DataError.Local.FailedToStoreFile, result.swap().getOrNull())
+        val expected = AttachmentError.Other(DataError.Local.FailedToStoreFile)
+        assertEquals(expected.left(), result)
     }
 
     @Test
@@ -222,8 +223,7 @@ class RustAttachmentDataSourceImplTest {
         val result = dataSource.addAttachment(uri)
 
         // Then
-        assertTrue(result.isLeft())
-        assertEquals(rustError.toDataError(), result.swap().getOrNull())
+        assertEquals(rustError.toAttachmentError().left(), result)
     }
 
     @Test
@@ -328,7 +328,7 @@ class RustAttachmentDataSourceImplTest {
         val result = dataSource.addInlineAttachment(uri)
 
         // Then
-        assertEquals(rustError.toDataError().left(), result)
+        assertEquals(rustError.toAttachmentError().left(), result)
     }
 
     @Test
@@ -361,7 +361,7 @@ class RustAttachmentDataSourceImplTest {
         val result = dataSource.removeInlineAttachment(cid)
 
         // Then
-        assertEquals(rustError.toDataError().left(), result)
+        assertEquals(rustError.toAttachmentError().left(), result)
     }
 
 }

@@ -47,32 +47,6 @@ class DeleteAttachmentTest {
         assertEquals(expected, actual)
     }
 
-    @Test
-    fun `deleteAttachment should map invalid message error`() = runTest {
-        // Given
-        val expected = AttachmentDeleteError.InvalidDraftMessage.left()
-        expectComposerAttachmentDeleteFails(DataError.Local.AttachmentError.InvalidDraftMessage.left())
-
-        // When
-        val actual = deleteAttachment(attachmentId)
-
-        // Then
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `deleteAttachment should return unknown error when not relevant error is returned from the repo`() = runTest {
-        // Given
-        val expected = AttachmentDeleteError.Unknown.left()
-        expectComposerAttachmentDeleteFails(DataError.Local.AttachmentError.TooManyAttachments.left())
-
-        // When
-        val actual = deleteAttachment(attachmentId)
-
-        // Then
-        assertEquals(expected, actual)
-    }
-
     private fun expectComposerDeleteAttachmentSucceeds() {
         coEvery { attachmentRepository.deleteAttachment(attachmentId) } returns Unit.right()
     }

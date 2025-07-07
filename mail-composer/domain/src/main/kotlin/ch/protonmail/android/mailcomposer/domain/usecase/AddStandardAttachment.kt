@@ -20,8 +20,8 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import android.net.Uri
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
+import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import javax.inject.Inject
 
@@ -32,12 +32,12 @@ class AddStandardAttachment @Inject constructor(
     suspend operator fun invoke(fileUri: Uri): Either<AttachmentAddError, Unit> =
         attachmentRepository.addAttachment(fileUri).mapLeft {
             when (it) {
-                DataError.Local.AttachmentError.AttachmentTooLarge -> AttachmentAddError.AttachmentTooLarge
-                DataError.Local.AttachmentError.EncryptionError -> AttachmentAddError.EncryptionError
-                DataError.Local.AttachmentError.InvalidDraftMessage -> AttachmentAddError.InvalidDraftMessage
-                DataError.Local.AttachmentError.TooManyAttachments -> AttachmentAddError.TooManyAttachments
-                DataError.Local.Unknown -> AttachmentAddError.Unknown
-                else -> AttachmentAddError.Unknown
+                AttachmentError.AttachmentTooLarge -> AttachmentAddError.AttachmentTooLarge
+                AttachmentError.EncryptionError -> AttachmentAddError.EncryptionError
+                AttachmentError.InvalidDraftMessage -> AttachmentAddError.InvalidDraftMessage
+                AttachmentError.TooManyAttachments -> AttachmentAddError.TooManyAttachments
+                AttachmentError.InvalidState -> AttachmentAddError.RetryUpload
+                is AttachmentError.Other -> AttachmentAddError.Unknown
             }
         }
 

@@ -34,7 +34,6 @@ class DeleteInlineAttachment @Inject constructor(
             .mapLeft {
                 when (it) {
                     DataError.Local.FailedToDeleteFile -> AttachmentDeleteError.FailedToDeleteFile
-                    DataError.Local.AttachmentError.InvalidDraftMessage -> AttachmentDeleteError.InvalidDraftMessage
                     else -> AttachmentDeleteError.Unknown
                 }
             }

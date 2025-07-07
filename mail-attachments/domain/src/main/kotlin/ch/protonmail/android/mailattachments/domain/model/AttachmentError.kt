@@ -18,9 +18,14 @@
 
 package ch.protonmail.android.mailattachments.domain.model
 
-sealed interface AttachmentState {
-    data object Pending : AttachmentState
-    data object Uploading : AttachmentState
-    data object Uploaded : AttachmentState
-    data class Error(val reason: AttachmentError) : AttachmentState
+import ch.protonmail.android.mailcommon.domain.model.DataError
+
+sealed interface AttachmentError {
+    data object AttachmentTooLarge : AttachmentError
+    data object TooManyAttachments : AttachmentError
+    data object InvalidDraftMessage : AttachmentError
+    data object EncryptionError : AttachmentError
+    data object InvalidState : AttachmentError
+
+    data class Other(val error: DataError) : AttachmentError
 }

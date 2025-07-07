@@ -4,6 +4,7 @@ import android.net.Uri
 import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
+import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -39,30 +40,34 @@ class AddStandardAttachmentTest(private val testInput: TestInput) {
         @Parameterized.Parameters(name = "{0}")
         fun data() = arrayOf(
             TestInput(
-                error = DataError.Local.AttachmentError.TooManyAttachments,
+                error = AttachmentError.TooManyAttachments,
                 expected = AttachmentAddError.TooManyAttachments
             ),
             TestInput(
-                error = DataError.Local.AttachmentError.AttachmentTooLarge,
+                error = AttachmentError.AttachmentTooLarge,
                 expected = AttachmentAddError.AttachmentTooLarge
             ),
             TestInput(
-                error = DataError.Local.AttachmentError.EncryptionError,
+                error = AttachmentError.EncryptionError,
                 expected = AttachmentAddError.EncryptionError
             ),
             TestInput(
-                error = DataError.Local.AttachmentError.InvalidDraftMessage,
+                error = AttachmentError.InvalidDraftMessage,
                 expected = AttachmentAddError.InvalidDraftMessage
             ),
             TestInput(
-                error = DataError.Local.NoDataCached,
+                error = AttachmentError.InvalidState,
+                expected = AttachmentAddError.RetryUpload
+            ),
+            TestInput(
+                error = AttachmentError.Other(DataError.Local.NoDataCached),
                 expected = AttachmentAddError.Unknown
             )
         )
     }
 
     data class TestInput(
-        val error: DataError.Local,
+        val error: AttachmentError,
         val expected: AttachmentAddError
     )
 }

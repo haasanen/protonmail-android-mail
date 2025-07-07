@@ -23,5 +23,6 @@ sealed interface AttachmentAddError {
     data object TooManyAttachments : AttachmentAddError
     data object InvalidDraftMessage : AttachmentAddError
     data object EncryptionError : AttachmentAddError
+    data object RetryUpload : AttachmentAddError
     data object Unknown : AttachmentAddError
 }

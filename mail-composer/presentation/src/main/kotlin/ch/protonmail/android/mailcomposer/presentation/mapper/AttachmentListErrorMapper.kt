@@ -20,14 +20,14 @@ package ch.protonmail.android.mailcomposer.presentation.mapper
 
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddErrorWithList
+import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 
 object AttachmentListErrorMapper {
 
     fun toAttachmentAddErrorWithList(attachments: List<AttachmentMetadataWithState>): AttachmentAddErrorWithList? {
-        val itemsWithError: List<Pair<AttachmentMetadataWithState, DataError>> = attachments.mapNotNull { item ->
+        val itemsWithError: List<Pair<AttachmentMetadataWithState, AttachmentError>> = attachments.mapNotNull { item ->
             val errorState = item.attachmentState as? AttachmentState.Error
             errorState?.reason?.let { reason ->
                 item to reason
@@ -39,19 +39,19 @@ object AttachmentListErrorMapper {
         }
 
         val tooManyAttachmentItems = itemsWithError.filter {
-            it.second is DataError.Local.AttachmentError.TooManyAttachments
+            it.second is AttachmentError.TooManyAttachments
         }
 
         val attachmentTooLargeItems = itemsWithError.filter {
-            it.second is DataError.Local.AttachmentError.AttachmentTooLarge
+            it.second is AttachmentError.AttachmentTooLarge
         }
 
         val invalidDraftMessageItems = itemsWithError.filter {
-            it.second is DataError.Local.AttachmentError.InvalidDraftMessage
+            it.second is AttachmentError.InvalidDraftMessage
         }
 
         val encryptionErrorItems = itemsWithError.filter {
-            it.second is DataError.Local.AttachmentError.EncryptionError
+            it.second is AttachmentError.EncryptionError
         }
 
         return if (tooManyAttachmentItems.isNotEmpty()) {

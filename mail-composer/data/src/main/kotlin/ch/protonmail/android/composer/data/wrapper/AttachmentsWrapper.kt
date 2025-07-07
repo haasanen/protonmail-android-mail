@@ -23,10 +23,12 @@ import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
 import uniffi.proton_mail_uniffi.AttachmentList
 
 class AttachmentsWrapper(private val rustAttachmentList: AttachmentList) {
+
     fun attachmentUploadDirectory() = rustAttachmentList.attachmentUploadDirectory()
     suspend fun addAttachment(filePath: String, displayName: String) = rustAttachmentList.add(filePath, displayName)
     suspend fun addInlineAttachment(filePath: String, displayName: String) =
         rustAttachmentList.addInline(filePath, displayName)
+
     suspend fun removeAttachment(attachmentId: LocalAttachmentId) = rustAttachmentList.remove(attachmentId)
     suspend fun removeInlineAttachment(cid: String) = rustAttachmentList.removeWithCid(cid)
     suspend fun attachments() = rustAttachmentList.attachments()

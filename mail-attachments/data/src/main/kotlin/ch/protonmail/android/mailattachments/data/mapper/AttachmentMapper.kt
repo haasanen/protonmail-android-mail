@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailattachments.data.mapper
 
 import ch.protonmail.android.mailattachments.domain.model.AttachmentDisposition
+import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMimeType
@@ -31,6 +32,8 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentMimeType
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeTypeCategory
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import uniffi.proton_mail_uniffi.DraftAttachmentState
+import uniffi.proton_mail_uniffi.DraftAttachmentUploadError
+import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 
 fun LocalAttachmentId.toAttachmentId(): AttachmentId = AttachmentId(this.value.toString())
 fun AttachmentId.toLocalAttachmentId(): LocalAttachmentId = LocalAttachmentId(this.id.toULong())
@@ -88,5 +91,19 @@ fun DraftAttachmentState.toAttachmentState(): AttachmentState = when (this) {
     DraftAttachmentState.Uploading -> AttachmentState.Uploading
     DraftAttachmentState.Pending -> AttachmentState.Pending
     DraftAttachmentState.Offline -> AttachmentState.Pending
-    is DraftAttachmentState.Error -> AttachmentState.Error(this.v1.toDataError())
+    is DraftAttachmentState.Error -> AttachmentState.Error(this.v1.toAttachmentError())
 }
+
+fun DraftAttachmentUploadError.toAttachmentError(): AttachmentError = when (this) {
+    is DraftAttachmentUploadError.Other -> AttachmentError.Other(this.v1.toDataError())
+    is DraftAttachmentUploadError.Reason -> when (this.v1) {
+        DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST,
+        DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST_ON_SERVER,
+        DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT -> AttachmentError.InvalidDraftMessage
+        DraftAttachmentUploadErrorReason.CRYPTO -> AttachmentError.EncryptionError
+        DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE -> AttachmentError.AttachmentTooLarge
+        DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS -> AttachmentError.TooManyAttachments
+        DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE -> AttachmentError.InvalidState
+    }
+}
+

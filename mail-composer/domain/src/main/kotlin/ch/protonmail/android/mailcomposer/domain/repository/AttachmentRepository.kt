@@ -23,6 +23,7 @@ import arrow.core.Either
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import kotlinx.coroutines.flow.Flow
 
 interface AttachmentRepository {
@@ -31,8 +32,8 @@ interface AttachmentRepository {
 
     suspend fun deleteAttachment(attachmentId: AttachmentId): Either<DataError, Unit>
 
-    suspend fun addAttachment(fileUri: Uri): Either<DataError, Unit>
+    suspend fun addAttachment(fileUri: Uri): Either<AttachmentError, Unit>
 
     suspend fun deleteInlineAttachment(contentId: String): Either<DataError, Unit>
-    suspend fun addInlineAttachment(fileUri: Uri): Either<DataError, String>
+    suspend fun addInlineAttachment(fileUri: Uri): Either<AttachmentError, String>
 }

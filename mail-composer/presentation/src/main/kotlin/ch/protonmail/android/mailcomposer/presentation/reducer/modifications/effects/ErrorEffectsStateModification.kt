@@ -75,12 +75,14 @@ internal sealed interface RecoverableError : EffectsStateModification {
                         }
                     )
                 )
+                AttachmentAddError.RetryUpload -> state.copy(
+                    warning = Effect.of(TextUiModel(R.string.composer_attachment_upload_error_retry))
+                )
 
                 AttachmentAddError.EncryptionError,
                 AttachmentAddError.Unknown,
                 AttachmentAddError.InvalidDraftMessage ->
                     state.copy(error = Effect.of(TextUiModel(R.string.composer_unexpected_attachments_error)))
-
 
             }
     }
@@ -92,6 +94,10 @@ internal sealed interface RecoverableError : EffectsStateModification {
             AttachmentAddError.EncryptionError -> state.copy(attachmentsEncryptionFailed = Effect.of(Unit))
             AttachmentAddError.TooManyAttachments ->
                 state.copy(error = Effect.of(TextUiModel(R.string.composer_too_many_attachments_error)))
+
+
+            AttachmentAddError.RetryUpload ->
+                state.copy(error = Effect.of(TextUiModel(R.string.composer_attachment_upload_error_retry)))
 
             AttachmentAddError.Unknown,
             AttachmentAddError.InvalidDraftMessage ->

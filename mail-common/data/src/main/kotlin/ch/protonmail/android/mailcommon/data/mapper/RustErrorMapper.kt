@@ -23,8 +23,6 @@ import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import uniffi.proton_mail_uniffi.ActionError
 import uniffi.proton_mail_uniffi.ActionErrorReason
 import uniffi.proton_mail_uniffi.ContextReason
-import uniffi.proton_mail_uniffi.DraftAttachmentUploadError
-import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 import uniffi.proton_mail_uniffi.DraftCancelScheduleSendError
 import uniffi.proton_mail_uniffi.DraftCancelScheduleSendErrorReason
 import uniffi.proton_mail_uniffi.DraftDiscardError
@@ -69,19 +67,6 @@ fun DraftUndoSendError.toDataError(): DataError = when (this) {
         DraftUndoSendErrorReason.MESSAGE_IS_NOT_A_DRAFT,
         DraftUndoSendErrorReason.MESSAGE_CAN_NOT_BE_UNDO_SENT,
         DraftUndoSendErrorReason.SEND_CAN_NO_LONGER_BE_UNDONE -> DataError.Local.UndoSendError
-    }
-}
-
-fun DraftAttachmentUploadError.toDataError(): DataError = when (this) {
-    is DraftAttachmentUploadError.Other -> this.v1.toDataError()
-    is DraftAttachmentUploadError.Reason -> when (this.v1) {
-        DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST,
-        DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST_ON_SERVER,
-        DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT -> DataError.Local.AttachmentError.InvalidDraftMessage
-        DraftAttachmentUploadErrorReason.CRYPTO -> DataError.Local.AttachmentError.EncryptionError
-        DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE -> DataError.Local.AttachmentError.AttachmentTooLarge
-        DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS -> DataError.Local.AttachmentError.TooManyAttachments
-        DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE -> DataError.Local.Unknown
     }
 }
 
