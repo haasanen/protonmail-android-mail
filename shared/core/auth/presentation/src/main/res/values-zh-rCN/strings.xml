@@ -39,11 +39,13 @@
   <string name="auth_password_placeholder">密码</string>
   <string name="auth_login_assistive_text">请输入您的 Proton 邮箱或用户名。</string>
   <string name="auth_account_details">请输入您的 Proton 账户信息。</string>
-  <string name="auth_login_error_invalid_action_cannot_unlock_keys">密码、口令或密钥盐错误。</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">登录失败，请重试。</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">需要您进行人工验证。</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">登录信息错误，请重新尝试。</string>
-  <string name="auth_login_error_invalid_action_unsupported_tfa">不支持双因素身份验证。</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Incorrect username or password. Please try again.</string>
   <string name="auth_second_factor_title">双因素身份验证</string>
+  <string name="auth_second_factor_subtitle">Your account has several 2FA mechanisms configured. Please pick how you want to confirm your identity.</string>
+  <string name="auth_second_factor_tab_security_key">安全密钥</string>
+  <string name="auth_second_factor_tab_otp">一次性验证码</string>
   <string name="auth_second_factor_authenticate">验证身份</string>
   <string name="auth_second_factor_totp_input_help">请输入 6 位数字代码。</string>
   <string name="auth_second_factor_totp_input_label">2FA 验证码</string>
@@ -51,6 +53,8 @@
   <string name="auth_second_factor_recovery_label">恢复码</string>
   <string name="auth_second_factor_switch_to_recovery">使用恢复码</string>
   <string name="auth_second_factor_switch_to_totp">使用 2FA 验证码</string>
+  <string name="auth_second_factor_insert_security_key">Present a security key linked to your Proton Account. </string>
+  <string name="auth_second_factor_insert_security_key_link">了解详情</string>
   <string name="auth_two_pass_title">解锁您的邮箱</string>
   <string name="auth_two_pass_input_label">邮箱密码</string>
   <string name="auth_two_pass_unlock">解锁</string>
@@ -93,11 +97,19 @@
   <string name="auth_signup_validation_password">密码不能为空。</string>
   <string name="auth_signup_validation_passwords_do_not_match">密码不一致。</string>
   <string name="auth_signup_validation_password_input_invalid">密码输入无效。</string>
-  <string name="auth_signup_validation_username">用户名不能为空。</string>
+  <string name="auth_signup_validation_username">请输入用户名</string>
   <string name="auth_signup_validation_email">邮箱地址不能为空。</string>
   <string name="auth_signup_validation_username_input_invalid">用户名输入无效。</string>
   <string name="auth_signup_validation_email_input_invalid">用户名输入无效。</string>
   <string name="auth_signup_countries_search">搜索国家/地区</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">无法设置用户。</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">无法设置地址。</string>
+  <string name="auth_fido_security_keys_error">Error fetching security keys, please try again.</string>
+  <string name="auth_fido_security_keys_title">安全密钥</string>
+  <string name="auth_fido_manage_security_keys_info">To manage, add, or remove security keys, please use the Proton web application. %s</string>
+  <string name="auth_fido_security_keys_empty_list">There are no security keys registered to your account. To add a security key use the Proton web application. %s</string>
+  <string name="auth_fido_security_keys_registered">这些是注册到您账户的安全密钥。</string>
+  <string name="auth_fido_manage_security_keys">管理安全密钥</string>
+  <string name="auth_fido_add_security_key">添加安全密钥</string>
+  <string name="auth_fido_security_keys_learn_more">了解详情</string>
 </resources>

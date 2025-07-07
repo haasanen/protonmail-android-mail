@@ -37,7 +37,8 @@
     <item quantity="other">%d pièces jointes</item>
   </plurals>
   <string name="hide_details">Masquer les détails</string>
-  <string name="undisclosed_recipients">Destinataires non divulgués</string>
+  <string name="undisclosed_recipients">…</string>
+  <string name="collapsed_header_draft">(Brouillon)</string>
   <string name="error_mark_as_read_failed">Le marquage comme lu n\'a pas abouti. Nous vous invitons à réessayer.</string>
   <string name="error_mark_as_unread_failed">Le marquage comme non lu n\'a pas abouti. Nous vous invitons à réessayer.</string>
   <string name="error_star_operation_failed">Le marquage comme favori n\'a pas abouti. Nous vous invitons à réessayer.</string>
@@ -53,6 +54,7 @@
   <string name="message_moved_to_selected_destination">Le message a été déplacé vers %1$s.</string>
   <string name="error_move_message_failed">Le message n\'a pas pu être déplacé. Veuillez réessayer.</string>
   <string name="conversation_moved_to_trash">La conversation a été déplacée dans le dossier Corbeille.</string>
+  <string name="conversation_moved_to_inbox">La conversation a été déplacée vers la boîte de réception.</string>
   <string name="conversation_moved_to_selected_destination">La conversation a été déplacée vers %1$s.</string>
   <string name="conversation_moved_to_spam">La conversation a été déplacée dans le dossier Indésirables/spam.</string>
   <string name="conversation_moved_to_archive">La conversation a été déplacée dans le dossier Archives.</string>

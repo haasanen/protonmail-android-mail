@@ -37,8 +37,9 @@
     <item quantity="other">%d file allegati</item>
   </plurals>
   <string name="hide_details">Nascondi i dettagli</string>
-  <string name="undisclosed_recipients">Destinatari nascosti</string>
-  <string name="error_mark_as_read_failed">Contrassegnazione come letto non riuscita</string>
+  <string name="undisclosed_recipients">...</string>
+  <string name="collapsed_header_draft">(Bozza)</string>
+  <string name="error_mark_as_read_failed">Contrassegnazione come letto non riuscita</string>
   <string name="error_mark_as_unread_failed">Contrassegnazione come non letto non riuscita</string>
   <string name="error_star_operation_failed">Contrassegnazione come importante non riuscita</string>
   <string name="error_unstar_operation_failed">Contrassegnazione come non importante non riuscita</string>
@@ -53,6 +54,7 @@
   <string name="message_moved_to_selected_destination">Messaggio spostato in %1$s</string>
   <string name="error_move_message_failed">Spostamento del messaggio non riuscito</string>
   <string name="conversation_moved_to_trash">Conversazione spostata nel cestino</string>
+  <string name="conversation_moved_to_inbox">Conversazione spostata nella Posta in arrivo</string>
   <string name="conversation_moved_to_selected_destination">Conversazione spostata in %1$s</string>
   <string name="conversation_moved_to_spam">Conversazione spostata in spam</string>
   <string name="conversation_moved_to_archive">Conversazione spostata nell\'archivio</string>
@@ -92,9 +94,9 @@
   <string name="phishing_link_confirmation_dialog_button_continue">Ignora l\'avviso e prosegui</string>
   <!-- Mark as legitimate confirmation dialog -->
   <string name="mark_as_legitimate_phishing_dialog_title">Segna come attendibile</string>
-  <string name="mark_as_legitimate_phishing_dialog_message">Sei sicuro di voler contrassegnare questo messaggio come attendibile?</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">Sei sicuro di voler contrassegnare questo messaggio come attendibile?</string>
   <string name="mark_as_legitimate_spam_dialog_title">Sposta nella casella di posta</string>
-  <string name="mark_as_legitimate_spam_dialog_message">Sei sicuro di voler spostare questo messaggio nella casella di posta?</string>
+  <string name="mark_as_legitimate_spam_dialog_message">Sei sicuro di voler spostare questo messaggio nella casella di posta?</string>
   <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">Elimina il messaggio</string>
   <string name="message_delete_dialog_message">Sei sicuro di voler eliminare definitivamente questo messaggio?</string>

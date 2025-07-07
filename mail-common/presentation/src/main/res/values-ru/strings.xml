@@ -40,6 +40,7 @@
   <string name="action_unstar_description">Снять звёздочку</string>
   <string name="action_label_description">Пометить как</string>
   <string name="action_move_description">Переместить в</string>
+  <string name="action_inbox_description">Переместить во Входящие</string>
   <string name="action_trash_description">Переместить в Корзину</string>
   <string name="action_delete_description">Удалить</string>
   <string name="action_archive_description">Архив</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Установить действие для последующих писем от этого отправителя</string>
   <string name="action_save_attachments_description">Сохранить вложения</string>
   <string name="action_more_description">Ещё</string>
-  <string name="action_inbox_description">Входящие</string>
   <string name="action_pin_description">Закрепить</string>
   <string name="action_unpin_description">Открепить</string>
   <string name="action_reply_content_description">Ответить</string>

@@ -34,12 +34,13 @@
   <string name="action_reply_to_description">Адказаць на %s</string>
   <string name="action_reply_all_description">Адказаць усім</string>
   <string name="action_forward_description">Пераслаць</string>
-  <string name="action_mark_read_description">Пазначыць прачытаным</string>
-  <string name="action_mark_unread_description">Пазначыць непрачытаным</string>
+  <string name="action_mark_read_description">Пазначыць як прачытанае</string>
+  <string name="action_mark_unread_description">Пазначыць як непрачытанае</string>
   <string name="action_star_description">Пазначыць зорачкай</string>
   <string name="action_unstar_description">Прыбраць зорачку</string>
   <string name="action_label_description">Пазначыць як</string>
   <string name="action_move_description">Перамясціць у</string>
+  <string name="action_inbox_description">Перамясціць ва ўваходныя</string>
   <string name="action_trash_description">Перамясціць у сметніцу</string>
   <string name="action_delete_description">Выдаліць</string>
   <string name="action_archive_description">Архіваваць</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Задаць дзеянне для будучых лістоў ад гэтага адпраўніка</string>
   <string name="action_save_attachments_description">Захаваць далучэнні</string>
   <string name="action_more_description">Больш</string>
-  <string name="action_inbox_description">Уваходныя</string>
   <string name="action_pin_description">Замацаваць</string>
   <string name="action_unpin_description">Адмацаваць</string>
   <string name="action_reply_content_description">Адказаць</string>

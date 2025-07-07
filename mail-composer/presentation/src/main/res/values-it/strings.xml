@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Destinatari duplicati rimossi</string>
   <string name="composer_error_store_draft_subject">Salvataggio dell\'oggetto della bozza non riuscito</string>
   <string name="composer_error_store_draft_recipients">Salvataggio dei destinatari della bozza non riuscito</string>
-  <string name="composer_error_loading_draft">Contenuto della bozza momentaneamente non disponibile. Modificarla sovrascriverà qualsiasi contenuto già esistente.</string>
+  <string name="composer_error_loading_draft">Il contenuto della bozza non è a questo momento disponibile. Non è possibile modificarlo.</string>
   <string name="composer_add_attachments_content_description">Aggiungi degli allegati</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importa da...</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Carica dal dispositivo</string>
@@ -49,7 +49,7 @@
   <string name="composer_attachment_size_exceeded_dialog_message">Il limite di dimensione per gli allegati è %1$s</string>
   <string name="composer_attachment_encryption_failed_message">Crittografia dell\'allegato non riuscita. Allegati rimossi per motivi di sicurezza.</string>
   <string name="composer_too_many_attachments_error">Limite di 100 allegati superato</string>
-  <string name="composer_delete_attachment_error">Eliminazione dell\'allegato non riuscita</string>
+  <string name="composer_delete_attachment_error">Eliminazione del file allegato non riuscita</string>
   <string name="composer_unexpected_attachments_error">Si è verificato un errore</string>
   <string name="composer_attach_capture_from_camera_error">Scatto della foto non riuscito</string>
   <string name="composer_warning_local_data_shown">Caricamento dell\'ultima versione della bozza non riuscito. Qualsiasi modifica sovrascriverà il suo contenuto.</string>
@@ -110,10 +110,10 @@
   <string name="composer_recipient_suggestion_device">Mostra i contatti del dispositivo</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">Scarta la bozza</string>
-  <string name="discard_draft_dialog_text">Sei sicuro di voler scartare questa bozza?</string>
+  <string name="discard_draft_dialog_text">Sei sicuro di voler scartare questa bozza?</string>
   <string name="discard_draft_dialog_confirm_button">Scarta</string>
   <string name="discard_draft_dialog_dismiss_button">Annulla</string>
-  <string name="discard_draft_error">Scartamento della bozza non riuscito</string>
+  <string name="discard_draft_error">Scartamento della bozza non riuscito</string>
   <string name="composer_remove_inline_image">Rimuovi</string>
   <string name="composer_send_as_attachment">Invia come allegato</string>
   <string name="composer_remove_recipient_action_item">Rimuovi</string>
@@ -132,8 +132,9 @@
   <string name="composer_schedule_send_dialog_ok">Invia</string>
   <string name="composer_schedule_send_dialog_enter_time">Inserisci l\'orario</string>
   <string name="composer_change_sender_title">Da</string>
-  <string name="composer_error_change_sender_failed_getting_addresses">Caricamento degli indirizzi email non riuscito. Cambio dell\'indirizzo mittente non riuscito.</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Caricamento degli indirizzi email non riuscito. Cambio dell\'indirizzo mittente non riuscito.</string>
   <string name="composer_change_sender_invalid_address">Indirizzo email non valido per l\'invio</string>
   <string name="composer_change_sender_unexpected_failure">Cambio dell\'indirizzo mittente non riuscito</string>
-  <string name="composer_change_sender_error_refreshing_body">Aggiornamento del corpo del messaggio non riuscito. Verifica la validità della firma.</string>
+  <string name="composer_change_sender_error_refreshing_body">Aggiornamento del corpo del messaggio non riuscito. Verifica la validità della firma.</string>
+  <string name="composer_loading_attachments_error">Caricamento degli allegati non riuscito</string>
 </resources>

@@ -84,12 +84,12 @@
   <string name="mailbox_search_placeholder_text">Etsi viestejä</string>
   <string name="mailbox_search_no_results_title">Ei tuloksia</string>
   <string name="mailbox_search_no_results_explanation">Voit joko päivittää hakusi tai tyhjentää sen.</string>
-  <string name="mailbox_action_button_clear_trash">Tyhjennä roskakori</string>
-  <string name="mailbox_action_button_clear_spam">Tyhjennä roskaposti</string>
+  <string name="mailbox_action_button_clear_trash">Empty trash</string>
+  <string name="mailbox_action_button_clear_spam">Empty spam</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Päivitä poistaaksesi automaattisesti yli 30 päivää roskakorissa tai roskapostikansiossa olleet sähköpostit</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Lue lisää</string>
-  <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Messages in trash and spam for over 30 days will be automatically deleted.</string>
-  <string name="mailbox_action_auto_delete_off_clear_trash_spam_banner_text">Auto-delete is turned off. Messages in trash and spam will remain until you delete them manually.</string>
+  <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Roskakorissa tai roskapostissa yli 30 päivää olleet viestit poistetaan automaattisesti.</string>
+  <string name="mailbox_action_auto_delete_off_clear_trash_spam_banner_text">Automaattipoisto ei ole päällä. Roskakorissa ja roskapostikansiossa olevat on poistettava käsin.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Tyhjennä roskakorikansio</string>
   <string name="mailbox_action_clear_spam_dialog_title">Tyhjennä roskapostikansio</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">Haluatko varmasti poistaa kaikki roskakorissa olevat viestit pysyvästi?</string>
@@ -126,4 +126,6 @@
     <item quantity="other">Erääntyy %d minuutin kuluttua</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">Erääntyy alle minuutin kuluttua</string>
+  <string name="schedule_send_tomorrow">Huomenna, %1$s</string>
+  <string name="schedule_send_today">Today, %1$s</string>
 </resources>

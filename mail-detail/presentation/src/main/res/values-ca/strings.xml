@@ -37,7 +37,8 @@
     <item quantity="other">%d adjunts</item>
   </plurals>
   <string name="hide_details">Amaga els detalls</string>
-  <string name="undisclosed_recipients">Destinataris ocults</string>
+  <string name="undisclosed_recipients">...</string>
+  <string name="collapsed_header_draft">(Esborrany)</string>
   <string name="error_mark_as_read_failed">No s\'ha pogut marcar com a llegit. Torneu-ho a provar.</string>
   <string name="error_mark_as_unread_failed">No s\'ha pogut marcar com a no llegit. Proveu-ho de nou.</string>
   <string name="error_star_operation_failed">No s\'ha pogut destacar. Torneu-ho a provar.</string>
@@ -53,6 +54,7 @@
   <string name="message_moved_to_selected_destination">S\'ha mogut el missatge a %1$s.</string>
   <string name="error_move_message_failed">No s\'ha pogut moure el missatge. Proveu de nou.</string>
   <string name="conversation_moved_to_trash">La conversa s\'ha mogut a la paperera.</string>
+  <string name="conversation_moved_to_inbox">Conversa moguda a la safata d\'entrada</string>
   <string name="conversation_moved_to_selected_destination">S\'ha mogut la conversa a %1$s.</string>
   <string name="conversation_moved_to_spam">S\'ha mogut la conversa al correu brossa.</string>
   <string name="conversation_moved_to_archive">La conversa s\'ha mogut a l\'arxiu.</string>

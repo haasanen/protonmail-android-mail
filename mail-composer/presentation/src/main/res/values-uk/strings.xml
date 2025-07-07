@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Вилучено дублікати отримувачів</string>
   <string name="composer_error_store_draft_subject">Рядок теми не збережено</string>
   <string name="composer_error_store_draft_recipients">Не вдалося зберегти отримувачів цієї чернетки</string>
-  <string name="composer_error_loading_draft">Наразі вміст цієї чернетки недоступний. Редагування перезапише будь-який попередній вміст.</string>
+  <string name="composer_error_loading_draft">The content of this draft is not available at this time, editing isn\'t possible.</string>
   <string name="composer_add_attachments_content_description">Додати вкладення</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Імпортувати з…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">З бібліотеки фотографій</string>
@@ -138,4 +138,5 @@
   <string name="composer_change_sender_invalid_address">The selected address can not be used for sending</string>
   <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
   <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
+  <string name="composer_loading_attachments_error">Failed loading attachments</string>
 </resources>

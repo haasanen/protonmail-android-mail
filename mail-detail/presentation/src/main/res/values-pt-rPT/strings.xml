@@ -37,7 +37,8 @@
     <item quantity="other">%d Anexos</item>
   </plurals>
   <string name="hide_details">Ocultar detalhes</string>
-  <string name="undisclosed_recipients">Destinatários não revelados</string>
+  <string name="undisclosed_recipients">…</string>
+  <string name="collapsed_header_draft">(Rascunho)</string>
   <string name="error_mark_as_read_failed">Erro ao marcar como lido. Tente novamente.</string>
   <string name="error_mark_as_unread_failed">Erro na operação de marcar como não lido. Tente novamente.</string>
   <string name="error_star_operation_failed">A operação de adicionar estrela falhou. Tente novamente.</string>
@@ -53,6 +54,7 @@
   <string name="message_moved_to_selected_destination">A mensagem foi movida para %1$s</string>
   <string name="error_move_message_failed">Erro ao mover a mensagem. Tente novamente.</string>
   <string name="conversation_moved_to_trash">Conversa movida para o Lixo</string>
+  <string name="conversation_moved_to_inbox">A conversa foi movida para a caixa de entrada.</string>
   <string name="conversation_moved_to_selected_destination">A conversa foi movida para %1$s.</string>
   <string name="conversation_moved_to_spam">A conversa foi movida para o spam.</string>
   <string name="conversation_moved_to_archive">Conversa movida para a pasta Arquivo</string>

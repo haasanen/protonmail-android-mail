@@ -126,4 +126,6 @@
     <item quantity="other">Verloopt over %d minuten</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">Verloopt in minder dan één minuut</string>
+  <string name="schedule_send_tomorrow">Morgen, %1$s</string>
+  <string name="schedule_send_today">Vandaag, %1$s</string>
 </resources>

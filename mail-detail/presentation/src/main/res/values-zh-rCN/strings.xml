@@ -35,7 +35,8 @@
     <item quantity="other">%d 个附件</item>
   </plurals>
   <string name="hide_details">隐藏详情</string>
-  <string name="undisclosed_recipients">匿名收件人</string>
+  <string name="undisclosed_recipients">…</string>
+  <string name="collapsed_header_draft">(草稿)</string>
   <string name="error_mark_as_read_failed">标记为已读操作失败，请重试。</string>
   <string name="error_mark_as_unread_failed">标为未读失败，请重试。</string>
   <string name="error_star_operation_failed">添加星标失败，请重试。</string>
@@ -51,6 +52,7 @@
   <string name="message_moved_to_selected_destination">消息已移动到 %1$s</string>
   <string name="error_move_message_failed">转移邮件失败，请重试。</string>
   <string name="conversation_moved_to_trash">会话已移至回收站</string>
+  <string name="conversation_moved_to_inbox">会话已移至收件箱</string>
   <string name="conversation_moved_to_selected_destination">会话已移至 %1$s</string>
   <string name="conversation_moved_to_spam">会话已移至垃圾邮件</string>
   <string name="conversation_moved_to_archive">会话已归档</string>

@@ -150,4 +150,6 @@
     <item quantity="other">Vyprší o %d minút</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">Vyprší o menej ako minútu</string>
+  <string name="schedule_send_tomorrow">Zajtra, %1$s</string>
+  <string name="schedule_send_today">Dnes, %1$s</string>
 </resources>

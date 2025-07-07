@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Un ou plusieurs destinataires dupliqués ont été retirés.</string>
   <string name="composer_error_store_draft_subject">L\'enregistrement de l\'objet n\'a pas abouti.</string>
   <string name="composer_error_store_draft_recipients">L\'enregistrement des destinataires du brouillon n\'a pas abouti.</string>
-  <string name="composer_error_loading_draft">Le contenu de ce brouillon n\'est pas disponible pour l\'instant. Sa modification remplacera tout contenu déjà existant.</string>
+  <string name="composer_error_loading_draft">Le contenu de ce brouillon n\'est pas disponible pour l\'instant. La modification n\'est pas possible.</string>
   <string name="composer_add_attachments_content_description">Ajouter des pièces jointes</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importer depuis…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Depuis votre bibliothèque de photos</string>
@@ -127,7 +127,7 @@
   <string name="composer_schedule_send_custom_description">Choisir l\'heure et la date</string>
   <string name="composer_error_send_message">Une erreur s\'est produite lors de l\'envoi du message.</string>
   <string name="composer_schedule_send_previously_set">Précédemment défini</string>
-  <string name="composer_schedule_send_custom_time_label">Temps</string>
+  <string name="composer_schedule_send_custom_time_label">Heure</string>
   <string name="composer_schedule_send_custom_date_label">Date</string>
   <string name="composer_schedule_send_dialog_ok">Ok</string>
   <string name="composer_schedule_send_dialog_enter_time">Saisir l\'heure</string>
@@ -135,5 +135,6 @@
   <string name="composer_error_change_sender_failed_getting_addresses">Impossible de changer l\'expéditeur : les adresses de l\'utilisateur n\'ont pu être récupérées. Veuillez réessayer.</string>
   <string name="composer_change_sender_invalid_address">L\'adresse sélectionnée ne peut pas être utilisée pour l\'envoi</string>
   <string name="composer_change_sender_unexpected_failure">Une erreur est survenue en tentant de changer l\'expéditeur. Merci de réessayer</string>
-  <string name="composer_change_sender_error_refreshing_body">L\'actualisation du corps après l\'échec du changement d\'expéditeur a échoué. La signature pourrait être obsolète.</string>
+  <string name="composer_change_sender_error_refreshing_body">L\'actualisation du corps après l\'échec du changement d\'expéditeur n\'a pas abouti. La signature pourrait être obsolète.</string>
+  <string name="composer_loading_attachments_error">Les pièces jointes n\'ont pas pu être chargées.</string>
 </resources>

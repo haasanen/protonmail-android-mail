@@ -34,12 +34,13 @@
   <string name="action_reply_to_description">回覆 %s</string>
   <string name="action_reply_all_description">全部回覆</string>
   <string name="action_forward_description">轉寄</string>
-  <string name="action_mark_read_description">標示為已讀取</string>
-  <string name="action_mark_unread_description">標示為未讀取</string>
+  <string name="action_mark_read_description">Mark as read</string>
+  <string name="action_mark_unread_description">Mark as unread</string>
   <string name="action_star_description">標注星號</string>
   <string name="action_unstar_description">取消星號</string>
   <string name="action_label_description">加上標籤</string>
   <string name="action_move_description">移至</string>
+  <string name="action_inbox_description">Move to inbox</string>
   <string name="action_trash_description">移至垃圾桶</string>
   <string name="action_delete_description">刪除</string>
   <string name="action_archive_description">封存</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">設定動作套用於日後接獲寄件者傳送的電郵</string>
   <string name="action_save_attachments_description">儲存附件</string>
   <string name="action_more_description">更多</string>
-  <string name="action_inbox_description">收件匣</string>
   <string name="action_pin_description">釘選</string>
   <string name="action_unpin_description">取消釘選</string>
   <string name="action_reply_content_description">回覆</string>

@@ -23,5 +23,5 @@
   <string name="human_verification_visit_help_center_title">Vai al Centro Assistenza</string>
   <string name="human_verification_visit_help_center_description">Scopri di più sulla verifica umana e sul motivo per cui la chiediamo.</string>
   <string name="human_verification_help">Aiuto</string>
-  <string name="human_verification_general_error">Verifica non riuscita</string>
+  <string name="human_verification_general_error">Verifica non riuscita</string>
 </resources>

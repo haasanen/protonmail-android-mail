@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Se han borrado un o más destinatarios duplicados.</string>
   <string name="composer_error_store_draft_subject">Error al guardar el asunto</string>
   <string name="composer_error_store_draft_recipients">Error al guardar los destinatarios de este borrador</string>
-  <string name="composer_error_loading_draft">El contenido de este borrador no está disponible en este momento. Editarlo sobrescribirá cualquier contenido preexistente.</string>
+  <string name="composer_error_loading_draft">El contenido de este borrador no está disponible en este momento, no es posible editarlo.</string>
   <string name="composer_add_attachments_content_description">Añadir archivos adjuntos</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importar desde…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Desde tu biblioteca de fotos</string>
@@ -135,5 +135,6 @@
   <string name="composer_error_change_sender_failed_getting_addresses">No se puede cambiar el remitente porque no se han podido obtener las direcciones del usuario. Inténtalo otra vez.</string>
   <string name="composer_change_sender_invalid_address">La dirección seleccionada no se puede usar para enviar</string>
   <string name="composer_change_sender_unexpected_failure">Error al cambiar el remitente. Inténtalo de nuevo.</string>
-  <string name="composer_change_sender_error_refreshing_body">Actualizando el cuerpo después de que fallara el cambio de remitente. La firma podría estar obsoleta.</string>
+  <string name="composer_change_sender_error_refreshing_body">Se ha actualizado el cuerpo tras un error al cambiar el remitente. La firma podría no estar actualizada.</string>
+  <string name="composer_loading_attachments_error">Error al cargar archivos adjuntos</string>
 </resources>

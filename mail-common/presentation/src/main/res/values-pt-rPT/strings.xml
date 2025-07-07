@@ -34,12 +34,13 @@
   <string name="action_reply_to_description">Responder a %s</string>
   <string name="action_reply_all_description">Responder a todos</string>
   <string name="action_forward_description">Reencaminhar</string>
-  <string name="action_mark_read_description">Marcar como lida</string>
-  <string name="action_mark_unread_description">Marcar como não lida</string>
+  <string name="action_mark_read_description">Marcar como lido</string>
+  <string name="action_mark_unread_description">Marcar como não lido</string>
   <string name="action_star_description">Estrela</string>
   <string name="action_unstar_description">Remover estrela</string>
   <string name="action_label_description">Etiquetar como</string>
   <string name="action_move_description">Mover para</string>
+  <string name="action_inbox_description">Mover para a caixa de entrada</string>
   <string name="action_trash_description">Mover para o lixo</string>
   <string name="action_delete_description">Eliminar</string>
   <string name="action_archive_description">Arquivar</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Definir a ação para os futuros e-mails deste remetente</string>
   <string name="action_save_attachments_description">Guardar anexos</string>
   <string name="action_more_description">Mais</string>
-  <string name="action_inbox_description">Caixa de entrada</string>
   <string name="action_pin_description">Fixar</string>
   <string name="action_unpin_description">Desafixar</string>
   <string name="action_reply_content_description">Responder</string>

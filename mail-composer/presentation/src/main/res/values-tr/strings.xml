@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Çift alıcılar kaldırıldı</string>
   <string name="composer_error_store_draft_subject">Konu satırı kaydedilemedi</string>
   <string name="composer_error_store_draft_recipients">Bu taslağın alıcıları kaydedilemedi</string>
-  <string name="composer_error_loading_draft">Bu taslağın içeriği şu anda kullanılamıyor. Düzenleme daha önce var olan içerikleri değiştirecek.</string>
+  <string name="composer_error_loading_draft">The content of this draft is not available at this time, editing isn\'t possible.</string>
   <string name="composer_add_attachments_content_description">Dosyalar ekle</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Şuradan içe aktar…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Fotoğraf albümünüzden seçin</string>
@@ -136,4 +136,5 @@
   <string name="composer_change_sender_invalid_address">Seçilmiş adres gönderim için kullanılamaz</string>
   <string name="composer_change_sender_unexpected_failure">Gönderici değiştirilirken bir sorun çıktı. Lütfen yeniden deneyin.</string>
   <string name="composer_change_sender_error_refreshing_body">Gönderici değiştirildikten sonra içerik yenilenemedi. İmza güncel olmayabilir.</string>
+  <string name="composer_loading_attachments_error">Failed loading attachments</string>
 </resources>

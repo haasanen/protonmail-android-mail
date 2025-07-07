@@ -39,6 +39,7 @@
   <string name="mail_settings_auto_lock">Automatické uzamčení</string>
   <string name="mail_settings_alternative_routing">Alternativní směrování</string>
   <string name="mail_settings_app_language">Jazyk aplikace</string>
+  <string name="mail_settings_app_language_sys_default">Podle systému</string>
   <string name="mail_settings_combined_contacts">Sloučené kontakty</string>
   <string name="mail_settings_swipe_actions">Akce po přejetí prstem</string>
   <string name="mail_settings_combined_contacts_hint">Zapněte tuto funkci pro automatické vyplňování e-mailových adres pomocí kontaktů ze všech vašich přihlášených účtů.</string>
@@ -48,7 +49,7 @@
   <string name="mail_settings_app_customization_notification">Upozornění</string>
   <string name="mail_settings_app_customization_language">Jazyk</string>
   <string name="mail_settings_app_customization_appearance">Vzhled</string>
-  <string name="mail_settings_app_customization_protection">Ochrana</string>
+  <string name="mail_settings_app_customization_protection">Zámek aplikace</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Automatické uzamčení povoleno</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Automatické uzamčení deaktivováno</string>
   <string name="mail_settings_app_customization_use_device_contacts">Použít kontakty ze zařízení</string>
@@ -111,53 +112,6 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Přejděte do nastavení systémových oznámení</string>
   <string name="mail_settings_notifications_update_error">Chyba při aktualizaci nastavení</string>
   <string name="mail_settings_notifications_loading_error">Chyba při načítání nastavení</string>
-  <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Automatické uzamčení</string>
-  <string name="mail_settings_auto_lock_item_title">Automatické uzamčení aplikace</string>
-  <string name="mail_settings_auto_lock_item_description">Zapněte tuto funkci pro automatické uzamčení vaší aplikace a použijte PIN kód pro odemčení.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Změnit PIN kód</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Časovač automatického uzamčení</string>
-  <string name="mail_settings_auto_lock_immediately">Okamžitě</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minut nečinnosti</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minut nečinnosti</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 hodina nečinnosti</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 den nečinnosti</string>
-  <string name="mail_settings_auto_lock_update_error">Chyba při aktualizaci nastavení</string>
-  <string name="mail_settings_pin_insertion_input_title">Zadejte PIN kód</string>
-  <string name="mail_settings_pin_insertion_set_title">Nastavte PIN kód</string>
-  <string name="mail_settings_pin_insertion_confirm_title">Potvrďte PIN kód</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">Ikona zámku</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">Tečky PIN kódu</string>
-  <string name="mail_settings_pin_insertion_backspace_description">Vymazat</string>
-  <string name="mail_settings_pin_insertion_biometric_description">Biometrické ověření</string>
-  <string name="mail_settings_pin_insertion_button_create">Vytvořit</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Potvrdit</string>
-  <string name="mail_settings_pin_insertion_error_no_match">PIN kódy se neshodují.</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="one">Zbývá %s pokus.</item>
-    <item quantity="few">Zbývají %s pokusy.</item>
-    <item quantity="many">Zbývá %s pokusů.</item>
-    <item quantity="other">Zbývá %s pokusů.</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="one">Zbývá %s pokus před bezpečným smazáním dat.</item>
-    <item quantity="few">Zbývají %s pokusy před bezpečným smazáním dat.</item>
-    <item quantity="many">Zbývá %s pokusů před bezpečným smazáním dat.</item>
-    <item quantity="other">Zbývá %s pokusů před bezpečným smazáním dat.</item>
-  </plurals>
-  <string name="mail_settings_pin_insertion_error_unknown">Při ověřování PIN kódu došlo k chybě.</string>
-  <string name="mail_settings_pin_insertion_signout_text">Odhlásit se</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_title">Odhlásit se</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_description">Opravdu se chcete odhlásit?</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Ano</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_cancel">Ne</string>
-  <string name="mail_settings_pin_insertion_created_success">PIN kód úspěšně vytvořen.</string>
-  <string name="mail_settings_pin_insertion_changed_success">PIN kód úspěšně změněn.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Došlo k chybě. Zkuste to znovu.</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">Nebyly zapsány žádné biometrické údaje</string>
-  <string name="log_in_using_biometric_credential">Odemknout pomocí vašich biometrických údajů</string>
-  <string name="unlock_using_biometrics">Odemknout pomocí biometrie</string>
-  <string name="biometric_error_hw_not_available">Biometrický hardware není k dispozici.</string>
 </resources>

@@ -41,7 +41,8 @@
     <item quantity="other">%d Вложения</item>
   </plurals>
   <string name="hide_details">Скрыть подробности</string>
-  <string name="undisclosed_recipients">Неразглашаемые получатели</string>
+  <string name="undisclosed_recipients">…</string>
+  <string name="collapsed_header_draft">(Черновик)</string>
   <string name="error_mark_as_read_failed">Не удалось отметить как прочитанное. Повторите попытку.</string>
   <string name="error_mark_as_unread_failed">Не удалось пометить как непрочитанное. Попробуйте еще раз.</string>
   <string name="error_star_operation_failed">Не удалось отметить звездочкой. Пожалуйста, попробуйте еще раз.</string>
@@ -57,6 +58,7 @@
   <string name="message_moved_to_selected_destination">Сообщение перемещено в %1$s</string>
   <string name="error_move_message_failed">Не удалось переместить сообщение. Пожалуйста, повторите попытку.</string>
   <string name="conversation_moved_to_trash">Цепочка писем помещена в Корзину</string>
+  <string name="conversation_moved_to_inbox">Conversation moved to Inbox</string>
   <string name="conversation_moved_to_selected_destination">Цепочка сообщений перемещена в %1$s</string>
   <string name="conversation_moved_to_spam">Цепочка писем перемещена в спам</string>
   <string name="conversation_moved_to_archive">Цепочка писем помещена в Архив</string>
@@ -131,8 +133,8 @@
   <string name="schedule_send_tomorrow">завтра в %1$s</string>
   <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
   <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
-  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
-  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
-  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
-  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Изменить черновик</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Отменить</string>
+  <string name="message_cancel_schedule_send_dialog_title">Редактировать и снова запланировать</string>
+  <string name="message_cancel_schedule_send_dialog_message">Это сообщение будет перемещено в Черновики, чтобы вы могли его редактировать. Его отправку нужно будет снова запланировать.</string>
 </resources>

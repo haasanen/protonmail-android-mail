@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">중복된 참가자 삭제됨</string>
   <string name="composer_error_store_draft_subject">이 초안의 제목을 저장하는 것을 실패했습니다.</string>
   <string name="composer_error_store_draft_recipients">이 초안의 수신자를 저장하는 것을 실패했습니다.</string>
-  <string name="composer_error_loading_draft">이 초안의 내용은 현재 사용할 수 없습니다. 기존 내용의 편집을 사용할 수 없습니댜.</string>
+  <string name="composer_error_loading_draft">해당 초안의 내용은 현재 사용 불가하며 편집할 수 없습니다.</string>
   <string name="composer_add_attachments_content_description">첨부 파일 추가</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">다음에서 가져오기…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">사진 앨범에서 선택</string>
@@ -126,13 +126,14 @@
   <string name="composer_schedule_send_custom_description">시간 및 날짜 선택</string>
   <string name="composer_error_send_message">메시지 전송 오류</string>
   <string name="composer_schedule_send_previously_set">이전에 설정됨</string>
-  <string name="composer_schedule_send_custom_time_label">Time</string>
-  <string name="composer_schedule_send_custom_date_label">Date</string>
-  <string name="composer_schedule_send_dialog_ok">Ok</string>
-  <string name="composer_schedule_send_dialog_enter_time">Enter time</string>
-  <string name="composer_change_sender_title">From</string>
-  <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
-  <string name="composer_change_sender_invalid_address">The selected address can not be used for sending</string>
-  <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
-  <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
+  <string name="composer_schedule_send_custom_time_label">시간</string>
+  <string name="composer_schedule_send_custom_date_label">날짜</string>
+  <string name="composer_schedule_send_dialog_ok">확인</string>
+  <string name="composer_schedule_send_dialog_enter_time">시간 입력</string>
+  <string name="composer_change_sender_title">보낸 사람</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">사용자의 주소를 가져오는데 실패하여 발신자 변경이 불가능합니다. 다시 시도하십시오.</string>
+  <string name="composer_change_sender_invalid_address">선택된 주소를 메시지 전송에 사용할 수 없습니다.</string>
+  <string name="composer_change_sender_unexpected_failure">보낸 사람 변경 중 오류가 발생했습니다. 다시 시도하십시오.</string>
+  <string name="composer_change_sender_error_refreshing_body">보낸 사람 변경 후 본문 새로고침에 오류가 발생했습니다. 서명이 노후화되었을 수 있습니다.</string>
+  <string name="composer_loading_attachments_error">첨부 파일 불러오기 실패</string>
 </resources>

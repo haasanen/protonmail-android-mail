@@ -19,7 +19,7 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Назад</string>
   <!-- Auto lock -->
-  <string name="mail_pinlock_settings_title">App lock</string>
+  <string name="mail_pinlock_settings_title">Блокировка приложения</string>
   <string name="mail_pinlock_settings_no_lock">Don\'t lock</string>
   <string name="mail_pinlock_settings_with_pin">Secure with PIN</string>
   <string name="mail_pinlock_settings_with_biometrics">Secure with biometrics</string>
@@ -30,24 +30,22 @@
   <string name="mail_pinlock_settings_confirm_pin_topbar">Confirm PIN</string>
   <string name="mail_pinlock_settings_confirm_pin_title">Repeat PIN</string>
   <string name="mail_pinlock_settings_confirm_pin_description">Re-enter your PIN to make sure it’s correct</string>
-  <string name="mail_pinlock_settings_verify_pin_topbar">Enter your PIN</string>
-  <string name="mail_pinlock_settings_verify_pin_title">Enter your PIN</string>
+  <string name="mail_pinlock_settings_verify_pin_topbar">Введите свой PIN</string>
+  <string name="mail_pinlock_settings_verify_pin_title">Введите свой PIN</string>
   <string name="mail_pinlock_settings_verify_pin_description">Confirm it\'s you to continue</string>
   <string name="mail_pinlock_settings_change_pin_description">Change PIN</string>
-  <string name="mail_pinlock_settings_change_interval_title">Auto-lock</string>
+  <string name="mail_pinlock_settings_change_interval_title">Автоблокировка</string>
   <string name="mail_pinlock_settings_autolock_immediately">Сразу</string>
   <string name="mail_pinlock_settings_autolock_never">Никогда</string>
-  <string name="mail_pinlock_settings_autolock_description_one_minute">After 1 minute</string>
-  <string name="mail_pinlock_settings_autolock_description_two_minutes">After 2 minutes</string>
-  <string name="mail_pinlock_settings_autolock_description_five_minutes">After 5 minutes</string>
-  <string name="mail_pinlock_settings_autolock_description_ten_minutes">After 10 minutes</string>
-  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">After 15 minutes</string>
-  <string name="mail_pinlock_settings_autolock_description_thirty_minutes">After 30 minutes</string>
-  <string name="mail_pinlock_settings_autolock_description_sixty_minutes">After 60 minutes</string>
-  <string name="mail_settings_auto_lock_update_error">Ошибка сохранения настроек</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">Точка PIN-кода</string>
-  <string name="mail_settings_pin_insertion_button_create">Confirm</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Next</string>
+  <string name="mail_pinlock_settings_autolock_description_one_minute">Через 1 минуту</string>
+  <string name="mail_pinlock_settings_autolock_description_two_minutes">Через 2 минуты</string>
+  <string name="mail_pinlock_settings_autolock_description_five_minutes">Через 5 минуты</string>
+  <string name="mail_pinlock_settings_autolock_description_ten_minutes">Через 10 минуты</string>
+  <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">Через 15 минуты</string>
+  <string name="mail_pinlock_settings_autolock_description_thirty_minutes">Через 30 минуты</string>
+  <string name="mail_pinlock_settings_autolock_description_sixty_minutes">Через 60 минуты</string>
+  <string name="mail_settings_pin_insertion_confirm_button">Подтвердить</string>
+  <string name="mail_settings_pin_insertion_next_button">Далее</string>
   <string name="mail_settings_pin_insertion_error_no_match">PIN-коды не совпадают.</string>
   <plurals name="mail_settings_pin_insertion_error_wrong_code_threshold">
     <item quantity="one">%s remaining attempt before sign-out.</item>
@@ -58,7 +56,7 @@
   <string name="mail_settings_pin_insertion_error_unknown">Произошла ошибка при проверке PIN-кода.</string>
   <string name="mail_settings_pin_insertion_error_too_short">PIN must be at least 4 digits</string>
   <string name="mail_settings_pin_verification_error_too_many">Too many attempts. Please try again later.</string>
-  <string name="mail_settings_pin_verification_error_no_match">Incorrect PIN</string>
+  <string name="mail_settings_pin_verification_error_no_match">Неверный PIN</string>
   <string name="mail_settings_pin_verification_error_too_many_frequent">Too many frequent attempts. Please try again later.</string>
   <string name="mail_settings_pin_insertion_signout_text">Выйти</string>
   <string name="mail_settings_pin_insertion_signout_dialog_title">Выйти</string>
@@ -69,21 +67,21 @@
   <string name="mail_settings_pin_insertion_changed_success">PIN-код изменён</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Произошла ошибка. Попробуйте ещё раз.</string>
-  <string name="mail_settings_pin_verify_generic_error_message">An error occurred. Try again.</string>
+  <string name="mail_settings_pin_verify_generic_error_message">Произошла ошибка. Попробуйте ещё раз.</string>
   <string name="mail_settings_pin_verify_too_many_attempts">Too many incorrect attempts</string>
-  <string name="mail_settings_pin_verify_wrong_pin">Incorrect PIN</string>
+  <string name="mail_settings_pin_verify_wrong_pin">Неверный PIN</string>
   <string name="mail_settings_biometrics_unable_to_set">An error occurred while setting Biometrics preferences.</string>
   <string name="mail_settings_biometrics_unable_to_unset">An error occurred while resetting Biometrics preferences.</string>
   <string name="mail_settings_biometrics_unknown_lock">An error occurred while fetching the current lock policy.</string>
   <!-- Auto lock dialog -->
   <string name="mail_settings_pin_lock_dialog_title">Confirm PIN</string>
   <string name="mail_settings_pin_lock_dialog_subtitle">For security, enter your current PIN to continue.</string>
-  <string name="mail_settings_pin_lock_dialog_button_next">Next</string>
-  <string name="mail_settings_pin_lock_dialog_button_cancel">Cancel</string>
+  <string name="mail_settings_pin_lock_dialog_button_next">Далее</string>
+  <string name="mail_settings_pin_lock_dialog_button_cancel">Отменить</string>
   <!-- Biometrics unlock -->
   <string name="mail_settings_biometrics_title_confirm">Confirm operation</string>
   <string name="mail_settings_biometrics_subtitle_default">Use your fingerprint to confirm the operation</string>
-  <string name="mail_settings_biometrics_button_negative">Cancel</string>
+  <string name="mail_settings_biometrics_button_negative">Отменить</string>
   <string name="mail_settings_biometrics_title_app_locked">App locked</string>
   <string name="mail_settings_biometrics_subtitle_app_locked">Unlock using your biometric credentials</string>
 </resources>

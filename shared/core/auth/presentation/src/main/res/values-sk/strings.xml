@@ -39,11 +39,13 @@
   <string name="auth_password_placeholder">Heslo</string>
   <string name="auth_login_assistive_text">Zadajte svoj Proton email alebo používateľské meno.</string>
   <string name="auth_account_details">Zadajte podrobnosti o svojom Proton účte.</string>
-  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Nesprávne heslo, prístupová fráza alebo salt kľúč.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problém pri prihlasovaní. Skúste to znova, prosím.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Je potrebné overenie ľudským faktorom.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Nesprávne prihlasovacie údaje. Skúste to znova, prosím.</string>
-  <string name="auth_login_error_invalid_action_unsupported_tfa">Nepodporovaný dvojfaktor.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Nesprávne používateľské meno alebo heslo. Skúste to znova, prosím.</string>
   <string name="auth_second_factor_title">Dvojstupňové overenie</string>
+  <string name="auth_second_factor_subtitle">Váš účet má nakonfigurovaných niekoľko mechanizmov 2FA. Vyberte si, ako chcete potvrdiť svoju totožnosť.</string>
+  <string name="auth_second_factor_tab_security_key">Bezpečnostný kľúč</string>
+  <string name="auth_second_factor_tab_otp">Jednorazový kód</string>
   <string name="auth_second_factor_authenticate">Overiť</string>
   <string name="auth_second_factor_totp_input_help">Zadajte 6-miestny kód.</string>
   <string name="auth_second_factor_totp_input_label">Kód pre dvojstupňové overenie</string>
@@ -51,6 +53,8 @@
   <string name="auth_second_factor_recovery_label">Obnovovací kód</string>
   <string name="auth_second_factor_switch_to_recovery">Použiť obnovovací kód</string>
   <string name="auth_second_factor_switch_to_totp">Použiť kód pre dvojstupňové overenie</string>
+  <string name="auth_second_factor_insert_security_key">Predložte bezpečnostný kľúč prepojený s vaším účtom Proton. </string>
+  <string name="auth_second_factor_insert_security_key_link">Zistiť viac</string>
   <string name="auth_two_pass_title">Odomknúť vašu poštovú schránku</string>
   <string name="auth_two_pass_input_label">Heslo poštovej schránky</string>
   <string name="auth_two_pass_unlock">Odomknúť</string>
@@ -93,11 +97,19 @@
   <string name="auth_signup_validation_password">Heslo nesmie byť prázdne.</string>
   <string name="auth_signup_validation_passwords_do_not_match">Heslá sa nezhodujú.</string>
   <string name="auth_signup_validation_password_input_invalid">Neplatný vstup hesla.</string>
-  <string name="auth_signup_validation_username">Používateľské meno nesmie byť prázdne.</string>
+  <string name="auth_signup_validation_username">Zadajte používateľské meno, prosím</string>
   <string name="auth_signup_validation_email">Email nesmie byť prázdny.</string>
   <string name="auth_signup_validation_username_input_invalid">Neplatný vstup používateľského mena.</string>
   <string name="auth_signup_validation_email_input_invalid">Neplatný vstup používateľského mena.</string>
   <string name="auth_signup_countries_search">Hľadať krajinu</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Používateľa nie je možné nastaviť.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Adresu nie je možné nastaviť.</string>
+  <string name="auth_fido_security_keys_error">Chyba pri načítaní bezpečnostných kľúčov, skúste to znova, prosím.</string>
+  <string name="auth_fido_security_keys_title">Bezpečnostné kľúče</string>
+  <string name="auth_fido_manage_security_keys_info">Ak chcete spravovať, pridávať alebo odstraňovať bezpečnostné kľúče, použite, prosím, webovú aplikáciu Proton. %s</string>
+  <string name="auth_fido_security_keys_empty_list">K vášmu účtu nie sú zaregistrované žiadne bezpečnostné kľúče. Ak chcete pridať bezpečnostný kľúč, použite webovú aplikáciu Proton. %s</string>
+  <string name="auth_fido_security_keys_registered">Toto sú bezpečnostné kľúče zaregistrované k vášmu účtu.</string>
+  <string name="auth_fido_manage_security_keys">Spravovať bezpečnostné kľúče</string>
+  <string name="auth_fido_add_security_key">Pridať bezpečnostný kľúč</string>
+  <string name="auth_fido_security_keys_learn_more">Zistiť viac</string>
 </resources>

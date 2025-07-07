@@ -84,8 +84,8 @@
   <string name="mailbox_search_placeholder_text">Cerca missatges</string>
   <string name="mailbox_search_no_results_title">Sense coincidències</string>
   <string name="mailbox_search_no_results_explanation">Podeu actualitzar la consulta de cerca o esborrar-la.</string>
-  <string name="mailbox_action_button_clear_trash">Buida la paperera</string>
-  <string name="mailbox_action_button_clear_spam">Buida el correu brossa</string>
+  <string name="mailbox_action_button_clear_trash">Buideu la paperera</string>
+  <string name="mailbox_action_button_clear_spam">Buideu el correu brossa</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Milloreu el pla per a eliminar automàticament els missatges que han estat a la paperera o al correu brossa durant més de 30 dies</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Més informació</string>
   <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Els missatges que faci més de 30 dies que estan a la paperera o al correu brossa s\'eliminaran automàticament.</string>
@@ -126,4 +126,6 @@
     <item quantity="other">Caduca en %d minuts</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">Caduca en menys d\'un minut</string>
+  <string name="schedule_send_tomorrow">Demà, %1$s</string>
+  <string name="schedule_send_today">Avui, %1$s</string>
 </resources>

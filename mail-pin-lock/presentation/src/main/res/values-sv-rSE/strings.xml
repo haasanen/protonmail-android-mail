@@ -19,7 +19,7 @@
 <resources>
   <string name="mail_pin_lock_toolbar_button_content_description">Tillbaka</string>
   <!-- Auto lock -->
-  <string name="mail_pinlock_settings_title">App lock</string>
+  <string name="mail_pinlock_settings_title">Applås</string>
   <string name="mail_pinlock_settings_no_lock">Lås inte</string>
   <string name="mail_pinlock_settings_with_pin">Säkra med PIN</string>
   <string name="mail_pinlock_settings_with_biometrics">Säkra med biometri</string>
@@ -44,17 +44,15 @@
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">Efter 15 minuter</string>
   <string name="mail_pinlock_settings_autolock_description_thirty_minutes">Efter 30 minuter</string>
   <string name="mail_pinlock_settings_autolock_description_sixty_minutes">Efter 60 minuter</string>
-  <string name="mail_settings_auto_lock_update_error">Fel vid uppdatering av inställningar</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">Fästpunkt</string>
-  <string name="mail_settings_pin_insertion_button_create">Bekräfta</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Nästa</string>
+  <string name="mail_settings_pin_insertion_confirm_button">Bekräfta</string>
+  <string name="mail_settings_pin_insertion_next_button">Nästa</string>
   <string name="mail_settings_pin_insertion_error_no_match">PIN-koder matchar inte.</string>
   <plurals name="mail_settings_pin_insertion_error_wrong_code_threshold">
     <item quantity="one">%s remaining attempt before sign-out.</item>
     <item quantity="other">%s remaining attempts before sign-out.</item>
   </plurals>
   <string name="mail_settings_pin_insertion_error_unknown">Ett fel uppstod vid verifieringen av din PIN-kod.</string>
-  <string name="mail_settings_pin_insertion_error_too_short">PIN-koden måste vara minst 4 siffror</string>
+  <string name="mail_settings_pin_insertion_error_too_short">PIN måste vara minst 4 siffror</string>
   <string name="mail_settings_pin_verification_error_too_many">För många försök. Försök igen senare.</string>
   <string name="mail_settings_pin_verification_error_no_match">Felaktig PIN</string>
   <string name="mail_settings_pin_verification_error_too_many_frequent">Too many frequent attempts. Please try again later.</string>

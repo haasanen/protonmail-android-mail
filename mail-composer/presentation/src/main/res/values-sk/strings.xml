@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Duplicitní príjemcovia odstránení</string>
   <string name="composer_error_store_draft_subject">Riadok predmetu nebol uložený</string>
   <string name="composer_error_store_draft_recipients">Uloženie príjemcov tohto konceptu zlyhalo</string>
-  <string name="composer_error_loading_draft">Obsah tohto konceptu nie je momentálne dostupný. Úpravou sa prepíše akýkoľvek už existujúci obsah.</string>
+  <string name="composer_error_loading_draft">Obsah tohto konceptu nie je momentálne dostupný, úprava nie je možná.</string>
   <string name="composer_add_attachments_content_description">Pripojiť prílohy</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importovať z…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Z vašej knižnice fotografií</string>
@@ -109,7 +109,7 @@
     <item quantity="many">%d členov</item>
     <item quantity="other">%d členov</item>
   </plurals>
-  <string name="composer_recipient_suggestion_device">Show device contacts</string>
+  <string name="composer_recipient_suggestion_device">Zobraziť kontakty zo zariadenia</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">Zahodiť túto správu?</string>
   <string name="discard_draft_dialog_text">Vaša koncept sa neuloží</string>
@@ -129,13 +129,14 @@
   <string name="composer_schedule_send_custom_description">Vyberte čas a dátum</string>
   <string name="composer_error_send_message">Chyba pri odosielaní správy</string>
   <string name="composer_schedule_send_previously_set">Predtým nastavené</string>
-  <string name="composer_schedule_send_custom_time_label">Time</string>
-  <string name="composer_schedule_send_custom_date_label">Date</string>
-  <string name="composer_schedule_send_dialog_ok">Ok</string>
-  <string name="composer_schedule_send_dialog_enter_time">Enter time</string>
-  <string name="composer_change_sender_title">From</string>
-  <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
-  <string name="composer_change_sender_invalid_address">The selected address can not be used for sending</string>
-  <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
-  <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
+  <string name="composer_schedule_send_custom_time_label">Čas</string>
+  <string name="composer_schedule_send_custom_date_label">Dátum</string>
+  <string name="composer_schedule_send_dialog_ok">OK</string>
+  <string name="composer_schedule_send_dialog_enter_time">Zadajte čas</string>
+  <string name="composer_change_sender_title">Od</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Nepodarilo sa zmeniť odosielateľa, pretože získanie adries používateľa zlyhalo. Skúste znova.</string>
+  <string name="composer_change_sender_invalid_address">Vybratá adresa sa nedá použiť na odosielanie</string>
+  <string name="composer_change_sender_unexpected_failure">Pri zmene odosielateľa sa vyskytla chyba. Skúste to znova, prosím.</string>
+  <string name="composer_change_sender_error_refreshing_body">Obnovenie tela po zmene odosielateľa zlyhalo. Podpis môže byť neaktuálny.</string>
+  <string name="composer_loading_attachments_error">Načítanie príloh zlyhalo</string>
 </resources>

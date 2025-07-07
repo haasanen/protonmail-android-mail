@@ -37,6 +37,7 @@
   <string name="bottom_sheet_archive_action">Tudi arhiviraj?</string>
   <string name="bottom_sheet_label_as_title">Označi kot</string>
   <string name="bottom_sheet_label_as_error_fetch">Oznak ni bilo mogoče pridobiti.</string>
+  <string name="bottom_sheet_move_to_error_fetch">Map ni bilo mogoče pridobiti.</string>
   <string name="bottom_sheet_label_as_error_apply">Oznak ni bilo mogoče uporabiti.</string>
   <string name="bottom_sheet_move_to_action_error">Premikanje ni uspelo.</string>
 </resources>

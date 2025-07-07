@@ -28,7 +28,7 @@
   <string name="manage_accounts_signed_out">Odhlášen(a)</string>
   <string name="manage_accounts_add_account">Přidat účet</string>
   <string name="manage_accounts_switch_to">Přepnout na</string>
-  <string name="primary_account_avatar_camera_content_description">Fotoaparát k avataru účtu</string>
+  <string name="primary_account_avatar_camera_content_description">Fotoaparát k obrázku účtu</string>
   <string name="manage_accounts_on_device">Správa účtů v tomto zařízení</string>
   <string name="add_another_account">Přidejte jiný účet</string>
   <string name="account_switcher_no_initials">N/A</string>

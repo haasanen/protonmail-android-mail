@@ -40,6 +40,7 @@
   <string name="action_unstar_description">スターを外す</string>
   <string name="action_label_description">ラベル付け</string>
   <string name="action_move_description">移動先</string>
+  <string name="action_inbox_description">受信トレイに移動</string>
   <string name="action_trash_description">ごみ箱に移動</string>
   <string name="action_delete_description">削除</string>
   <string name="action_archive_description">アーカイブ</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">この送信者からのメールに既定の動作を設定</string>
   <string name="action_save_attachments_description">添付ファイルを保存</string>
   <string name="action_more_description">もっと見る</string>
-  <string name="action_inbox_description">受信トレイ</string>
   <string name="action_pin_description">ピン留め</string>
   <string name="action_unpin_description">ピン留めを解除</string>
   <string name="action_reply_content_description">返信</string>

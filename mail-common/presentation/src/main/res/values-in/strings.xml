@@ -34,12 +34,13 @@
   <string name="action_reply_to_description">Balas ke %s</string>
   <string name="action_reply_all_description">Balas semua</string>
   <string name="action_forward_description">Teruskan</string>
-  <string name="action_mark_read_description">Tandai dibaca</string>
+  <string name="action_mark_read_description">Tandai sebagai terbaca</string>
   <string name="action_mark_unread_description">Tandai belum dibaca</string>
   <string name="action_star_description">Bintangi</string>
   <string name="action_unstar_description">Hapus bintang</string>
   <string name="action_label_description">Labeli sebagai</string>
   <string name="action_move_description">Pindahkan ke</string>
+  <string name="action_inbox_description">Pindahkan ke kotak masuk</string>
   <string name="action_trash_description">Pindahkan ke sampah</string>
   <string name="action_delete_description">Hapus</string>
   <string name="action_archive_description">Arsipkan</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Tentukan tindakan untuk email dari pengirim ini ke depannya</string>
   <string name="action_save_attachments_description">Simpan lampiran</string>
   <string name="action_more_description">Lainnya</string>
-  <string name="action_inbox_description">Kotak masuk</string>
   <string name="action_pin_description">Sematkan</string>
   <string name="action_unpin_description">Lepas sematan</string>
   <string name="action_reply_content_description">Balas</string>

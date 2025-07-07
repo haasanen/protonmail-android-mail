@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Дубліраваныя атрымальнік(і) выдалены</string>
   <string name="composer_error_store_draft_subject">Радок тэмы не захаваны</string>
   <string name="composer_error_store_draft_recipients">Збой захавання атрымальнікаў гэтага чарнавіка</string>
-  <string name="composer_error_loading_draft">Змесціва гэтага чарнавіка недаступна ў цяперашні час. Рэдагаванне перавызначыць любое змесціва, якое было створана да гэтага.</string>
+  <string name="composer_error_loading_draft">Змесціва гэтага чарнавіка недаступна ў цяперашні час. Рэдагаванне немагчыма.</string>
   <string name="composer_add_attachments_content_description">Дадаць далучэнні</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Імпартаваць з…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">З вашай фотатэкі</string>
@@ -54,7 +54,7 @@
   <string name="composer_attach_capture_from_camera_error">Захоп далучэння з камеры у цяперашні час немагчымы</string>
   <string name="composer_warning_local_data_shown">Збой загрузкі апошняй версіі гэтага чарнавіка. Любыя змены перавызначаць яго змесцівам.</string>
   <string name="composer_button_add_password">Дадаць пароль</string>
-  <string name="composer_button_discard_draft">Скасаваць чарнавік</string>
+  <string name="composer_button_discard_draft">Адхіліць чарнавік</string>
   <string name="composer_button_set_expiration">Задаць тэрмін дзеяння</string>
   <string name="composer_expiration_time_bottom_sheet_title">Тэрмін дзеяння паведамлення</string>
   <string name="composer_expiration_time_bottom_sheet_done">Задаць</string>
@@ -111,11 +111,11 @@
   </plurals>
   <string name="composer_recipient_suggestion_device">Паказаць кантакты прылады</string>
   <!-- Discard draft dialog -->
-  <string name="discard_draft_dialog_title">Скасаваць гэта паведамленне?</string>
+  <string name="discard_draft_dialog_title">Адхіліць гэта паведамленне?</string>
   <string name="discard_draft_dialog_text">Ваш чарнавік не будзе захаваны</string>
-  <string name="discard_draft_dialog_confirm_button">Скасаваць</string>
+  <string name="discard_draft_dialog_confirm_button">Адхіліць</string>
   <string name="discard_draft_dialog_dismiss_button">Скасаваць</string>
-  <string name="discard_draft_error">Памылка пры скасаванні чарнавіка</string>
+  <string name="discard_draft_error">Памылка пры адхіленні чарнавіка</string>
   <string name="composer_remove_inline_image">Выдаліць</string>
   <string name="composer_send_as_attachment">Адправіць як далучэнне</string>
   <string name="composer_remove_recipient_action_item">Выдаліць</string>
@@ -138,4 +138,5 @@
   <string name="composer_change_sender_invalid_address">Выбраны адрас не можа быць выкарыстаны для адпраўкі.</string>
   <string name="composer_change_sender_unexpected_failure">Нешта пайшло не так пры змене адпраўніка. Паспрабуйце яшчэ раз.</string>
   <string name="composer_change_sender_error_refreshing_body">Збой абнаўлення змесціва пасля змены адпраўніка. Подпіс можа быць састарэлым.</string>
+  <string name="composer_loading_attachments_error">Не ўдалося загрузіць далучэнні</string>
 </resources>

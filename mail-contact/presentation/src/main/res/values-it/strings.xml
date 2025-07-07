@@ -45,7 +45,7 @@
   <string name="new_group">Crea un gruppo</string>
   <string name="import_contact">Carica i contatti dal dispositivo</string>
   <string name="contact_delete_dialog_title">Elimina il contatto \"%1$s\"</string>
-  <string name="contact_delete_dialog_text">Sei sicuro di voler eliminare questo contatto?</string>
+  <string name="contact_delete_dialog_text">Sei sicuro di voler eliminare questo contatto?</string>
   <string name="contact_delete_dialog_cancel_button">Annulla</string>
   <string name="contact_delete_dialog_confirm_button">Elimina</string>
   <string name="contact_details_loading_error">Caricamento del contatto non riuscito</string>
@@ -88,4 +88,6 @@
   <string name="contact_details_quick_action_call">Chiama</string>
   <string name="contact_details_quick_action_share">Condividi</string>
   <string name="contact_details_action_copy_label">Copia</string>
+  <string name="contact_details_action_message_label">Scrivi</string>
+  <string name="contact_details_action_call_label">Chiama</string>
 </resources>

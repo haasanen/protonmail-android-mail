@@ -40,6 +40,7 @@
   <string name="action_unstar_description">Retirer des favoris</string>
   <string name="action_label_description">Labelliser</string>
   <string name="action_move_description">Déplacer vers</string>
+  <string name="action_inbox_description">Déplacer vers la boite de réception</string>
   <string name="action_trash_description">Déplacer vers la corbeille</string>
   <string name="action_delete_description">Supprimer</string>
   <string name="action_archive_description">Déplacer vers les archives</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Définir l\'action pour les prochains messages de cet expéditeur</string>
   <string name="action_save_attachments_description">Enregistrer les pièces jointes</string>
   <string name="action_more_description">Plus</string>
-  <string name="action_inbox_description">Boite de réception</string>
   <string name="action_pin_description">Épingler</string>
   <string name="action_unpin_description">Désépingler</string>
   <string name="action_reply_content_description">Répondre</string>

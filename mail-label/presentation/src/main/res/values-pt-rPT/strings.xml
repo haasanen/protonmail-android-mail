@@ -37,6 +37,7 @@
   <string name="bottom_sheet_archive_action">Arquivar também?</string>
   <string name="bottom_sheet_label_as_title">Etiquetar como</string>
   <string name="bottom_sheet_label_as_error_fetch">Erro ao obter as etiquetas.</string>
+  <string name="bottom_sheet_move_to_error_fetch">Erro ao obter as pastas</string>
   <string name="bottom_sheet_label_as_error_apply">Erro ao aplicar as etiquetas.</string>
   <string name="bottom_sheet_move_to_action_error">Erro ao mover.</string>
 </resources>

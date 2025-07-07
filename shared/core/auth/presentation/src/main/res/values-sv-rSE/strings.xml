@@ -39,11 +39,13 @@
   <string name="auth_password_placeholder">Lösenord</string>
   <string name="auth_login_assistive_text">Ange din e-postadress eller användarnamn för Proton.</string>
   <string name="auth_account_details">Ange dina kontodetaljer för Proton.</string>
-  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Fel lösenord, lösenfras eller nyckelsalt.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problem att logga in dig. Försök igen.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Mänsklig verifiering krävs.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Felaktiga inloggningsuppgifter. Försök igen.</string>
-  <string name="auth_login_error_invalid_action_unsupported_tfa">Tvåfaktorsautentisering stöds inte.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Felaktigt användarnamn eller lösenord. Försök igen.</string>
   <string name="auth_second_factor_title">Tvåfaktorsautentisering</string>
+  <string name="auth_second_factor_subtitle">Ditt konto har flera 2FA-mekanismer konfigurerade. Välj hur du vill bekräfta din identitet.</string>
+  <string name="auth_second_factor_tab_security_key">Säkerhetsnyckel</string>
+  <string name="auth_second_factor_tab_otp">Engångskod</string>
   <string name="auth_second_factor_authenticate">Autentisera</string>
   <string name="auth_second_factor_totp_input_help">Ange den 6-siffriga koden.</string>
   <string name="auth_second_factor_totp_input_label">Tvåfaktorskod</string>
@@ -51,6 +53,8 @@
   <string name="auth_second_factor_recovery_label">Återställningskod</string>
   <string name="auth_second_factor_switch_to_recovery">Använd återställningskod</string>
   <string name="auth_second_factor_switch_to_totp">Använd tvåfaktorskod</string>
+  <string name="auth_second_factor_insert_security_key">Visa en säkerhetsnyckel länkat till ditt Proton-konto. </string>
+  <string name="auth_second_factor_insert_security_key_link">Lär dig mer</string>
   <string name="auth_two_pass_title">Lås upp din brevlåda</string>
   <string name="auth_two_pass_input_label">Lösenord för brevlåda</string>
   <string name="auth_two_pass_unlock">Lås upp</string>
@@ -93,11 +97,19 @@
   <string name="auth_signup_validation_password">Lösenord kan inte vara tomt.</string>
   <string name="auth_signup_validation_passwords_do_not_match">Lösenorden matchar inte.</string>
   <string name="auth_signup_validation_password_input_invalid">Ogiltig lösenordsinmatning.</string>
-  <string name="auth_signup_validation_username">Användarnamn kan inte vara tomt.</string>
+  <string name="auth_signup_validation_username">Ange ett användarnamn</string>
   <string name="auth_signup_validation_email">E-post kan inte vara tomt.</string>
   <string name="auth_signup_validation_username_input_invalid">Ogiltig användarnamnsinmatning.</string>
   <string name="auth_signup_validation_email_input_invalid">Ogiltig användarnamnsinmatning.</string>
   <string name="auth_signup_countries_search">Sök land</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Kunde inte ställa in användaren.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Kunde inte ställa in adressen.</string>
+  <string name="auth_fido_security_keys_error">Fel vid hämtning av säkerhetsnycklar, försök igen.</string>
+  <string name="auth_fido_security_keys_title">Säkerhetsnycklar</string>
+  <string name="auth_fido_manage_security_keys_info">För att hantera, lägga till eller ta bort säkerhetsnycklar, använd webbapplikationen för Proton. %s</string>
+  <string name="auth_fido_security_keys_empty_list">Det finns inga säkerhetsnycklar registrerade på ditt konto. För att lägga till en säkerhetsnyckel, använd webbapplikationen för Proton. %s</string>
+  <string name="auth_fido_security_keys_registered">Dessa är säkerhetsnycklarna registrerade till ditt konto.</string>
+  <string name="auth_fido_manage_security_keys">Hantera säkerhetsnycklar</string>
+  <string name="auth_fido_add_security_key">Lägg till säkerhetsnyckel</string>
+  <string name="auth_fido_security_keys_learn_more">Lär dig mer</string>
 </resources>

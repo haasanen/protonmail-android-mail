@@ -39,7 +39,8 @@
     <item quantity="other">Fișiere atașate: %d</item>
   </plurals>
   <string name="hide_details">Ascundere detalii</string>
-  <string name="undisclosed_recipients">Destinatari confidențiali</string>
+  <string name="undisclosed_recipients">…</string>
+  <string name="collapsed_header_draft">(Ciornă)</string>
   <string name="error_mark_as_read_failed">Operația de marcare ca mesaj citit a eșuat. Reîncercați.</string>
   <string name="error_mark_as_unread_failed">Operația de marcare ca mesaj citit a eșuat. Reîncercați.</string>
   <string name="error_star_operation_failed">Operația de marcare cu stea a eșuat. Reîncercați.</string>
@@ -55,6 +56,7 @@
   <string name="message_moved_to_selected_destination">Mesajul a fost mutat în «%1$s».</string>
   <string name="error_move_message_failed">Mutarea mesajului a eșuat. Reîncercați.</string>
   <string name="conversation_moved_to_trash">Conversația a fost mutată în «Gunoi».</string>
+  <string name="conversation_moved_to_inbox">Conversația a fost mutată în «Primite».</string>
   <string name="conversation_moved_to_selected_destination">Conversația a fost mutată în «%1$s».</string>
   <string name="conversation_moved_to_spam">Conversația a fost mutată în «Nedorite».</string>
   <string name="conversation_moved_to_archive">Conversația a fost mutată în «Arhivă».</string>

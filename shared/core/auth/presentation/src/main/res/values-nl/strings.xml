@@ -39,11 +39,13 @@
   <string name="auth_password_placeholder">Wachtwoord</string>
   <string name="auth_login_assistive_text">Voer uw Proton e-mailadres of gebruikersnaam in.</string>
   <string name="auth_account_details">Vul uw Proton-accountgegevens in.</string>
-  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Verkeerd wachtwoord, wachtwoordzin of sleutel salt</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Probleem bij uw aanmelding. Probeer het opnieuw.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Er is menselijke verificatie nodig.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Onjuiste inloggegevens. Probeer het opnieuw.</string>
-  <string name="auth_login_error_invalid_action_unsupported_tfa">Niet-ondersteunde tweestapsverificatie.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Onjuiste gebruikersnaam of wachtwoord. Probeer het opnieuw.</string>
   <string name="auth_second_factor_title">Tweestapsverificatie</string>
+  <string name="auth_second_factor_subtitle">Uw account heeft meerdere 2FA mechanismen geconfigureerd. Selecteer hoe u uw identiteit wilt bevestigen.</string>
+  <string name="auth_second_factor_tab_security_key">Beveiligingssleutel</string>
+  <string name="auth_second_factor_tab_otp">Eenmalige code</string>
   <string name="auth_second_factor_authenticate">Authenticeren</string>
   <string name="auth_second_factor_totp_input_help">Voer de 6-cijferige code in.</string>
   <string name="auth_second_factor_totp_input_label">Tweestapsverificatiecode</string>
@@ -51,6 +53,8 @@
   <string name="auth_second_factor_recovery_label">Herstelcode</string>
   <string name="auth_second_factor_switch_to_recovery">Herstelcode gebruiken</string>
   <string name="auth_second_factor_switch_to_totp">Tweestapsverificatiecode gebruiken</string>
+  <string name="auth_second_factor_insert_security_key">Vul een beveiligingssleutel in die gekoppeld is aan uw Proton Account. </string>
+  <string name="auth_second_factor_insert_security_key_link">Meer informatie</string>
   <string name="auth_two_pass_title">Ontgrendel uw mailbox</string>
   <string name="auth_two_pass_input_label">Wachtwoord mailbox</string>
   <string name="auth_two_pass_unlock">Ontgrendelen</string>
@@ -93,11 +97,19 @@
   <string name="auth_signup_validation_password">Het wachtwoord mag niet leeg zijn.</string>
   <string name="auth_signup_validation_passwords_do_not_match">Wachtwoorden komen niet overeen.</string>
   <string name="auth_signup_validation_password_input_invalid">Wachtwoordinvoer ongeldig.</string>
-  <string name="auth_signup_validation_username">De gebruikersnaam mag niet leeg zijn.</string>
+  <string name="auth_signup_validation_username">Voer een gebruikersnaam in</string>
   <string name="auth_signup_validation_email">E-mail mag niet leeg zijn.</string>
   <string name="auth_signup_validation_username_input_invalid">Gebruikersnaam invoer ongeldig.</string>
   <string name="auth_signup_validation_email_input_invalid">Gebruikersnaam invoer ongeldig.</string>
   <string name="auth_signup_countries_search">Zoek land</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">De gebruiker kon niet worden ingesteld.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Kon het adres niet instellen.</string>
+  <string name="auth_fido_security_keys_error">Fout bij het ophalen van beveiligingssleutels, probeer het opnieuw.</string>
+  <string name="auth_fido_security_keys_title">Beveiligingssleutels</string>
+  <string name="auth_fido_manage_security_keys_info">Gebruik de Proton-webapplicatie om beveiligingssleutels te beheren, toe te voegen of te verwijderen. %s</string>
+  <string name="auth_fido_security_keys_empty_list">Er zijn geen beveiligingssleutels geregistreerd voor uw account. Gebruik de Proton-webapplicatie om een beveiligingssleutel toe te voegen. %s</string>
+  <string name="auth_fido_security_keys_registered">Dit zijn de beveiligingssleutels die geregistreerd zijn op uw account.</string>
+  <string name="auth_fido_manage_security_keys">Beveiligingssleutels beheren</string>
+  <string name="auth_fido_add_security_key">Beveiligingssleutel toevoegen</string>
+  <string name="auth_fido_security_keys_learn_more">Meer info</string>
 </resources>

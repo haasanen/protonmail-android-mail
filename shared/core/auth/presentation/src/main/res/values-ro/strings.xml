@@ -39,11 +39,13 @@
   <string name="auth_password_placeholder">Parola</string>
   <string name="auth_login_assistive_text">Introduceți adresa de e-mail Proton sau numele de utilizator.</string>
   <string name="auth_account_details">Introduceți detaliile contului Proton.</string>
-  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Parolă, frază sau cod cheie greșită.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problema la autentificare. Mai încercați.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Este necesară verificarea ca persoană.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Date de conectare incorecte. Reîncercați.</string>
-  <string name="auth_login_error_invalid_action_unsupported_tfa">Autentificare cu doi factori nesuportată.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Nume de utilizator sau parolă incorectă. Reîncercați.</string>
   <string name="auth_second_factor_title">Autentificare cu doi factori</string>
+  <string name="auth_second_factor_subtitle">Contul are mai multe mecanisme de A2F. Alegeți cum doriți să vă confirmați identitatea.</string>
+  <string name="auth_second_factor_tab_security_key">Cheie de securitate</string>
+  <string name="auth_second_factor_tab_otp">Cod de unică folosință</string>
   <string name="auth_second_factor_authenticate">Autentificare</string>
   <string name="auth_second_factor_totp_input_help">Introduceți codul din 6 cifre.</string>
   <string name="auth_second_factor_totp_input_label">Cod A2F</string>
@@ -51,6 +53,8 @@
   <string name="auth_second_factor_recovery_label">Cod de recuperare</string>
   <string name="auth_second_factor_switch_to_recovery">Folosire cod de recuperare</string>
   <string name="auth_second_factor_switch_to_totp">Folosire cod A2F</string>
+  <string name="auth_second_factor_insert_security_key">Prezentați o cheie de securitate conectată la contul Proton. </string>
+  <string name="auth_second_factor_insert_security_key_link">Detalii</string>
   <string name="auth_two_pass_title">Deblocare mesaje</string>
   <string name="auth_two_pass_input_label">Parolă mesaje</string>
   <string name="auth_two_pass_unlock">Deblocare</string>
@@ -93,11 +97,19 @@
   <string name="auth_signup_validation_password">Parola nu poate fi goală.</string>
   <string name="auth_signup_validation_passwords_do_not_match">Parolele nu sunt identice.</string>
   <string name="auth_signup_validation_password_input_invalid">Parola introdusă nu e validă.</string>
-  <string name="auth_signup_validation_username">Numele de utilizator nu poate fi gol.</string>
+  <string name="auth_signup_validation_username">Introduceți un nume de utilizator</string>
   <string name="auth_signup_validation_email">Adresa de e-mail nu poate fi goală.</string>
   <string name="auth_signup_validation_username_input_invalid">Numele de utilizator introdus nu e valid.</string>
   <string name="auth_signup_validation_email_input_invalid">Adresa de e-mail introdusă nu e validă.</string>
   <string name="auth_signup_countries_search">Căutare țară</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Nu s-a putut configura utilizatorul.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Nu s-a putut configura adresa.</string>
+  <string name="auth_fido_security_keys_error">Eroare la preluarea cheilor de securitate. Mai încercați.</string>
+  <string name="auth_fido_security_keys_title">Chei de securitate</string>
+  <string name="auth_fido_manage_security_keys_info">Pentru a gestiona, adăuga sau elimina cheile de securitate, utilizați aplicația web Proton. %s</string>
+  <string name="auth_fido_security_keys_empty_list">Nu există chei de securitate înregistrate în cont. Pentru a adăuga o cheie de securitate, utilizați aplicația web Proton. %s</string>
+  <string name="auth_fido_security_keys_registered">Acestea sunt cheile de securitate înregistrate în cont.</string>
+  <string name="auth_fido_manage_security_keys">Gestionare chei de securitate</string>
+  <string name="auth_fido_add_security_key">Adăugare cheie de securitate</string>
+  <string name="auth_fido_security_keys_learn_more">Detalii</string>
 </resources>

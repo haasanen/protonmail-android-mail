@@ -22,7 +22,7 @@
   <string name="report_a_problem_submit_button">Invia</string>
   <string name="report_a_problem_disclaimer_e2ee">Le segnalazioni non sono crittografate end-to-end.\nNon includere informazioni sensibili.</string>
   <string name="report_a_problem_include_errors_title">Includi il registro degli eventi</string>
-  <string name="report_a_problem_include_errors_description">Questo registro include tutte le azioni che hanno portato a un errore.\nVerrà usato solamente per correggere i bug.</string>
+  <string name="report_a_problem_include_errors_description">Questo registro include tutte le azioni che hanno portato a un errore.\nVerrà usato solamente per correggere i bug.</string>
   <string name="report_a_problem_summary_title">Breve descrizione (necessaria)</string>
   <string name="report_a_problem_summary_description">Esempio: L\'app Proton Mail si blocca quando apro
 un\'email con allegati di grandi dimensioni.</string>
@@ -34,7 +34,7 @@ un\'email con allegati di grandi dimensioni.</string>
   <string name="report_a_problem_actual_results_title">Risultato effettivo</string>
   <string name="report_a_problem_actual_results_description">Esempio: L\'app Proton Mail si blocca quando apro
 un\'email con allegati di grandi dimensioni.</string>
-  <string name="report_a_problem_leave_dialog_description_1">Sei sicuro di voler chiudere questa pagina?</string>
+  <string name="report_a_problem_leave_dialog_description_1">Sei sicuro di voler chiudere questa pagina?</string>
   <string name="report_a_problem_leave_dialog_description_2">Tutte le informazioni verranno rimosse.</string>
   <string name="report_a_problem_leave_dialog_cancel_btn">Annulla</string>
   <string name="report_a_problem_leave_dialog_close_btn">Chiudi</string>

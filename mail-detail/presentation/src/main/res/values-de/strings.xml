@@ -37,7 +37,8 @@
     <item quantity="other">%d Anhänge</item>
   </plurals>
   <string name="hide_details">Details ausblenden</string>
-  <string name="undisclosed_recipients">Verborgene Empfänger</string>
+  <string name="undisclosed_recipients"> …</string>
+  <string name="collapsed_header_draft">(Entwurf)</string>
   <string name="error_mark_as_read_failed">Der Vorgang „Als gelesen markieren“ ist fehlgeschlagen. Bitte versuche es erneut.</string>
   <string name="error_mark_as_unread_failed">Der Vorgang „Als ungelesen markieren“ ist fehlgeschlagen. Bitte versuche es erneut.</string>
   <string name="error_star_operation_failed">Der Vorgang „Markierung hinzufügen“ ist fehlgeschlagen. Bitte erneut versuchen.</string>
@@ -53,6 +54,7 @@
   <string name="message_moved_to_selected_destination">Nachricht verschoben nach %1$s</string>
   <string name="error_move_message_failed">Verschieben der Nachricht fehlgeschlagen. Bitte versuche es erneut.</string>
   <string name="conversation_moved_to_trash">Unterhaltung in den Papierkorb verschoben</string>
+  <string name="conversation_moved_to_inbox">Unterhaltung in „Posteingang“ verschoben</string>
   <string name="conversation_moved_to_selected_destination">Unterhaltung nach „%1$s“ verschoben</string>
   <string name="conversation_moved_to_spam">Unterhaltung in Spam verschoben</string>
   <string name="conversation_moved_to_archive">Unterhaltung ins Archiv verschoben</string>

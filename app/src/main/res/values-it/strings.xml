@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="dialog_sign_out_account_title">Esci dall\'account</string>
-  <string name="dialog_sign_out_account_description">Sei sicuro di voler uscire dall\'account?</string>
+  <string name="dialog_sign_out_account_description">Sei sicuro di voler uscire da questo account?</string>
   <string name="dialog_sign_out_account_confirm">Esci</string>
   <string name="dialog_sign_out_account_cancel">Annulla</string>
   <string name="dialog_remove_account_title">Rimuovi l\'account</string>

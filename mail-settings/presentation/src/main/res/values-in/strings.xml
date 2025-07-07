@@ -39,6 +39,7 @@
   <string name="mail_settings_auto_lock">Kunci otomatis</string>
   <string name="mail_settings_alternative_routing">Pengalihan lalu lintas alternatif</string>
   <string name="mail_settings_app_language">Bahasa aplikasi</string>
+  <string name="mail_settings_app_language_sys_default">Bawaan sistem</string>
   <string name="mail_settings_combined_contacts">Kontak gabungan</string>
   <string name="mail_settings_swipe_actions">Tindakan gestur</string>
   <string name="mail_settings_combined_contacts_hint">Aktifkan fitur ini agar alamat email yang Anda ketik dapat dilengkapi secara otomatis dengan data kontak dari seluruh akun yang terhubung masuk.</string>
@@ -48,7 +49,7 @@
   <string name="mail_settings_app_customization_notification">Notifikasi</string>
   <string name="mail_settings_app_customization_language">Bahasa</string>
   <string name="mail_settings_app_customization_appearance">Tampilan</string>
-  <string name="mail_settings_app_customization_protection">Perlindungan</string>
+  <string name="mail_settings_app_customization_protection">Kunci aplikasi</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Kunci otomatis diaktifkan</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Kunci otomatis dinonaktifkan</string>
   <string name="mail_settings_app_customization_use_device_contacts">Gunakan kontak perangkat</string>
@@ -111,47 +112,6 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Tuju pengaturan notifikasi sistem</string>
   <string name="mail_settings_notifications_update_error">Terdapat kesalahan dalam memperbarui pengaturan</string>
   <string name="mail_settings_notifications_loading_error">Terdapat kesalahan dalam memuat pengaturan</string>
-  <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Kunci otomatis</string>
-  <string name="mail_settings_auto_lock_item_title">Kunci aplikasi secara otomatis</string>
-  <string name="mail_settings_auto_lock_item_description">Aktifkan fitur ini untuk mengunci aplikasi Anda secara otomatis dan gunakan kode PIN untuk membukanya.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Ubah kode PIN</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Waktu penguncian otomatis</string>
-  <string name="mail_settings_auto_lock_immediately">Segera</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 menit tidak aktif</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 menit tidak aktif</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 jam tidak aktif</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 hari tidak aktif</string>
-  <string name="mail_settings_auto_lock_update_error">Terdapat kesalahan dalam memperbarui pengaturan</string>
-  <string name="mail_settings_pin_insertion_input_title">Masukkan kode PIN</string>
-  <string name="mail_settings_pin_insertion_set_title">Atur kode PIN</string>
-  <string name="mail_settings_pin_insertion_confirm_title">Konfirmasikan kode PIN</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">Ikon kunci</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">Titik pin</string>
-  <string name="mail_settings_pin_insertion_backspace_description">Hapus</string>
-  <string name="mail_settings_pin_insertion_biometric_description">Autentikasi Biometrik</string>
-  <string name="mail_settings_pin_insertion_button_create">Buat</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Konfirmasi</string>
-  <string name="mail_settings_pin_insertion_error_no_match">Kode PIN tidak sesuai.</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="other">%s upaya tersisa.</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="other">%s upaya tersisa sebelum penghapusan data.</item>
-  </plurals>
-  <string name="mail_settings_pin_insertion_error_unknown">Terdapat masalah dalam memverifikasi kode PIN Anda.</string>
-  <string name="mail_settings_pin_insertion_signout_text">Keluar</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_title">Keluar</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_description">Apakah Anda yakin ingin keluar?</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Ya</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_cancel">Tidak</string>
-  <string name="mail_settings_pin_insertion_created_success">Kode PIN berhasil dibuat.</string>
-  <string name="mail_settings_pin_insertion_changed_success">Kode PIN berhasil diubah.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Terdapat suatu kesalahan. Silakan coba lagi.</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">Tidak ada data biometrik yang terdaftar</string>
-  <string name="log_in_using_biometric_credential">Buka kunci dengan kredensial biometrik</string>
-  <string name="unlock_using_biometrics">Buka kunci dengan biometrik</string>
-  <string name="biometric_error_hw_not_available">Perangkat keras biometrik tidak tersedia.</string>
 </resources>

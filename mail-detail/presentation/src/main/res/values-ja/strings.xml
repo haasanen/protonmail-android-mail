@@ -35,7 +35,8 @@
     <item quantity="other">%d個の添付ファイル</item>
   </plurals>
   <string name="hide_details">詳細を非表示</string>
-  <string name="undisclosed_recipients">非公開の宛先</string>
+  <string name="undisclosed_recipients">…</string>
+  <string name="collapsed_header_draft">(下書き)</string>
   <string name="error_mark_as_read_failed">既読に失敗しました。もう一度やり直してください。</string>
   <string name="error_mark_as_unread_failed">未読にする操作に失敗しました。もう一度試してください。</string>
   <string name="error_star_operation_failed">スターの追加に失敗しました。再度お試しください。</string>
@@ -51,6 +52,7 @@
   <string name="message_moved_to_selected_destination">メッセージが %1$s に移動されました</string>
   <string name="error_move_message_failed">メッセージの移動に失敗しました。再度お試しください。</string>
   <string name="conversation_moved_to_trash">会話をごみ箱に移動しました</string>
+  <string name="conversation_moved_to_inbox">会話を受信トレイに移動しました</string>
   <string name="conversation_moved_to_selected_destination">会話を %1$s に移動しました</string>
   <string name="conversation_moved_to_spam">会話をスパムに移動しました</string>
   <string name="conversation_moved_to_archive">会話をアーカイブに移動しました</string>
@@ -76,7 +78,7 @@
   <string name="message_blocked_sender_banner_text">この差出人は過去にブロックされています。</string>
   <string name="message_blocked_sender_button_text">ブロックを解除する</string>
   <string name="message_expiration_banner_text">このメッセージは %1$s後に失効します</string>
-  <string name="message_auto_delete_banner_text">This message will be automatically deleted in %1$s</string>
+  <string name="message_auto_delete_banner_text">このメッセージは%1$s日で自動的に削除されます</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">アプリを終了して次のページに移動しようとしています：</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">今後表示しない</string>
@@ -120,13 +122,13 @@
   <string name="message_details_header_to">宛先</string>
   <string name="message_details_header_cc">Cc</string>
   <string name="message_details_header_bcc">Bcc</string>
-  <string name="schedule_message_sent_at_banner_title">This message will be sent</string>
-  <string name="schedule_message_edit_message_button">Edit message</string>
-  <string name="schedule_send_tomorrow">tomorrow at %1$s</string>
-  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
-  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
-  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
-  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
-  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
-  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
+  <string name="schedule_message_sent_at_banner_title">メッセージの送信時刻</string>
+  <string name="schedule_message_edit_message_button">メッセージを編集</string>
+  <string name="schedule_send_tomorrow">明日の %1$s</string>
+  <string name="error_cancel_schedule_send_failed">このメッセージの送信予定時刻のキャンセルに失敗しました</string>
+  <string name="offline_error_cancel_schedule_send_failed">オフライン中にスケジュールされたメッセージをキャンセルできません</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">下書き編集</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">キャンセル</string>
+  <string name="message_cancel_schedule_send_dialog_title">編集してもう一度送信予約</string>
+  <string name="message_cancel_schedule_send_dialog_message">メッセージは、編集できるように下書きに移動されます。送信される時間の再スケジュールが必要になります。</string>
 </resources>

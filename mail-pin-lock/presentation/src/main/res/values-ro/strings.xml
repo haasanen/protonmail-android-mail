@@ -44,10 +44,8 @@
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">După 15 minute</string>
   <string name="mail_pinlock_settings_autolock_description_thirty_minutes">După 30 minute</string>
   <string name="mail_pinlock_settings_autolock_description_sixty_minutes">După 60 de minute</string>
-  <string name="mail_settings_auto_lock_update_error">Eroare la actualizarea setărilor.</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">Ascundere PIN</string>
-  <string name="mail_settings_pin_insertion_button_create">Confirmare</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Înainte</string>
+  <string name="mail_settings_pin_insertion_confirm_button">Confirmare</string>
+  <string name="mail_settings_pin_insertion_next_button">Următorul</string>
   <string name="mail_settings_pin_insertion_error_no_match">Codurile PIN nu coincid.</string>
   <plurals name="mail_settings_pin_insertion_error_wrong_code_threshold">
     <item quantity="one">Încercări rămase înainte de deconectare: %s</item>

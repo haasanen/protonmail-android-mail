@@ -22,7 +22,7 @@
   <string name="dialog_sign_out_account_confirm">サインアウト</string>
   <string name="dialog_sign_out_account_cancel">キャンセル</string>
   <string name="dialog_remove_account_title">アカウントを削除?</string>
-  <string name="dialog_remove_account_description">Remove all associated data</string>
+  <string name="dialog_remove_account_description">関連データをすべて削除</string>
   <string name="dialog_remove_account_confirm">削除</string>
   <string name="dialog_remove_account_cancel">キャンセル</string>
   <string name="feature_coming_soon">近日公開予定です。</string>
@@ -39,7 +39,7 @@
   <string name="label_deleted">ラベルが削除されました</string>
   <string name="app_locked">アプリがロックされました</string>
   <string name="use_pin_instead">代わりにPINコードを使用する</string>
-  <string name="mailbox_message_scheduling">Scheduling message…</string>
-  <string name="mailbox_message_scheduling_offline">Offline: message queued for scheduling</string>
-  <string name="mailbox_message_scheduled_for_sending_success">This message will be sent on %1$s</string>
+  <string name="mailbox_message_scheduling">メッセージを送信予約中…</string>
+  <string name="mailbox_message_scheduling_offline">オフライン: メッセージをスケジュール設定待ちにしました</string>
+  <string name="mailbox_message_scheduled_for_sending_success">このメッセージは %1$s に送信されます</string>
 </resources>

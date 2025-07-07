@@ -88,4 +88,6 @@
   <string name="contact_details_quick_action_call">Ring</string>
   <string name="contact_details_quick_action_share">Del</string>
   <string name="contact_details_action_copy_label">Kopier</string>
+  <string name="contact_details_action_message_label">Melding</string>
+  <string name="contact_details_action_call_label">Ring</string>
 </resources>

@@ -37,7 +37,8 @@
     <item quantity="other">%d vedlegg</item>
   </plurals>
   <string name="hide_details">Skjul detaljer</string>
-  <string name="undisclosed_recipients">Ikke avslørte mottakere</string>
+  <string name="undisclosed_recipients">…</string>
+  <string name="collapsed_header_draft">(Utkast)</string>
   <string name="error_mark_as_read_failed">Kunne ikke merke som lest. Prøv på nytt.</string>
   <string name="error_mark_as_unread_failed">Kunne ikke merke som ulest. Prøv på nytt.</string>
   <string name="error_star_operation_failed">Kunne ikke legge til stjernemerke. Prøv på nytt.</string>
@@ -53,6 +54,7 @@
   <string name="message_moved_to_selected_destination">Meldingen flyttet til %1$s</string>
   <string name="error_move_message_failed">Kunne ikke flytte melding. Prøv på nytt.</string>
   <string name="conversation_moved_to_trash">Samtale flyttet til papirkurven</string>
+  <string name="conversation_moved_to_inbox">Samtalen ble flyttet til innboks</string>
   <string name="conversation_moved_to_selected_destination">Samtalen flyttet til %1$s</string>
   <string name="conversation_moved_to_spam">Samtale flyttet til søppelpost</string>
   <string name="conversation_moved_to_archive">Samtale flyttet til arkiv</string>

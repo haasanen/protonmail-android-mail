@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Οι διπλότυποι παραλήπτες καταργήθηκαν</string>
   <string name="composer_error_store_draft_subject">Αποτυχία αποθήκευσης θέματος του προχείρου</string>
   <string name="composer_error_store_draft_recipients">Η αποθήκευση των παραληπτών αυτού του πρόχειρου απέτυχε</string>
-  <string name="composer_error_loading_draft">Το περιεχόμενο αυτού του πρόχειρου δεν είναι διαθέσιμο προς το παρόν. Η επεξεργασία θα αντικαταστήσει τυχόν προϋπάρχον περιεχόμενο.</string>
+  <string name="composer_error_loading_draft">Το περιεχόμενο αυτού του πρόχειρου δεν είναι διαθέσιμο προς το παρόν, η επεξεργασία δεν είναι εφικτή.</string>
   <string name="composer_add_attachments_content_description">Προσθήκη συνημμένων</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Εισαγωγή από…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Από τη βιβλιοθήκη φωτογραφιών σας</string>
@@ -136,4 +136,5 @@
   <string name="composer_change_sender_invalid_address">Η επιλεγμένη διεύθυνση δεν μπορεί να χρησιμοποιηθεί για αποστολή</string>
   <string name="composer_change_sender_unexpected_failure">Παρουσιάστηκε κάποιο πρόβλημα κατά την αλλαγή του αποστολέα. Παρακαλούμε προσπαθήστε ξανά.</string>
   <string name="composer_change_sender_error_refreshing_body">Η ανανέωση του σώματος απέτυχε μετά την αλλαγή αποστολέα. Η υπογραφή ενδέχεται να είναι παλιά.</string>
+  <string name="composer_loading_attachments_error">Αποτυχία φόρτωσης συνημμένων</string>
 </resources>

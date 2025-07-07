@@ -40,6 +40,7 @@
   <string name="action_unstar_description">Ta bort stjärnmärkning</string>
   <string name="action_label_description">Märk som</string>
   <string name="action_move_description">Flytta till</string>
+  <string name="action_inbox_description">Flytta till inkorg</string>
   <string name="action_trash_description">Flytta till papperskorg</string>
   <string name="action_delete_description">Ta bort</string>
   <string name="action_archive_description">Arkivera</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Ställ in åtgärd för framtida e-postmeddelanden från denna avsändare</string>
   <string name="action_save_attachments_description">Spara bilagorna</string>
   <string name="action_more_description">Mer</string>
-  <string name="action_inbox_description">Inkorg</string>
   <string name="action_pin_description">Fäst</string>
   <string name="action_unpin_description">Lossa</string>
   <string name="action_reply_content_description">Svara</string>

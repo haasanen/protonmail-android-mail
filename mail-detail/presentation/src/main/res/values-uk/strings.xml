@@ -41,7 +41,8 @@
     <item quantity="other">%d вкладень</item>
   </plurals>
   <string name="hide_details">Сховати подробиці</string>
-  <string name="undisclosed_recipients">Приховані отримувачі</string>
+  <string name="undisclosed_recipients">…</string>
+  <string name="collapsed_header_draft">(Draft)</string>
   <string name="error_mark_as_read_failed">Не вдалося позначити прочитаним. Повторіть спробу.</string>
   <string name="error_mark_as_unread_failed">Не вдалося позначити непрочитаним. Повторіть спробу.</string>
   <string name="error_star_operation_failed">Не вдалося додати зірочку. Повторіть спробу.</string>
@@ -57,6 +58,7 @@
   <string name="message_moved_to_selected_destination">Повідомлення переміщено до %1$s</string>
   <string name="error_move_message_failed">Не вдалося перемістити повідомлення. Повторіть спробу.</string>
   <string name="conversation_moved_to_trash">Розмову переміщено до смітника</string>
+  <string name="conversation_moved_to_inbox">Conversation moved to Inbox</string>
   <string name="conversation_moved_to_selected_destination">Розмову переміщено до %1$s</string>
   <string name="conversation_moved_to_spam">Розмову переміщено до спаму</string>
   <string name="conversation_moved_to_archive">Розмову переміщено до архіву</string>

@@ -126,4 +126,6 @@
     <item quantity="other">Utløper om %d minutter</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">Utløper om mindre enn et minutt</string>
+  <string name="schedule_send_tomorrow">I morgen, %1$s</string>
+  <string name="schedule_send_today">I dag, %1$s</string>
 </resources>

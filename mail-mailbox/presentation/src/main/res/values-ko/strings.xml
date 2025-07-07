@@ -76,7 +76,7 @@
   <string name="mailbox_search_no_results_title">일치하는 항목 없음</string>
   <string name="mailbox_search_no_results_explanation">검색 쿼리를 업데이트 및 삭제할 수 있습니다.</string>
   <string name="mailbox_action_button_clear_trash">휴지통 비우기</string>
-  <string name="mailbox_action_button_clear_spam">스팸 메일함 비우기</string>
+  <string name="mailbox_action_button_clear_spam">스팸함 비우기</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">휴지통 또는 스팸함에 30일 넘게 보관된 메시지를 자동으로 삭제하려면 업그레이드하세요.</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">더 알아보기</string>
   <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">휴지통 및 스팸함의 메시지가 30일 동아 방치되면 자동으로 삭제됩니다.</string>
@@ -114,4 +114,6 @@
     <item quantity="other">%d분 후 만료됨</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">1분 이내에 만료됨</string>
+  <string name="schedule_send_tomorrow">내일, %1$s</string>
+  <string name="schedule_send_today">오늘, %1$s</string>
 </resources>

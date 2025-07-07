@@ -39,6 +39,7 @@
   <string name="mail_settings_auto_lock">Bloqueig automàtic</string>
   <string name="mail_settings_alternative_routing">Enrutament alternatiu</string>
   <string name="mail_settings_app_language">Idioma de l\'aplicació</string>
+  <string name="mail_settings_app_language_sys_default">Valor per defecte del sistema</string>
   <string name="mail_settings_combined_contacts">Contactes combinats</string>
   <string name="mail_settings_swipe_actions">Accions de lliscament</string>
   <string name="mail_settings_combined_contacts_hint">Activeu aquesta característica per a completar automàticament les adreces de correu electrònic utilitzant els contactes de tots els vostres comptes amb la sessió iniciada.</string>
@@ -48,7 +49,7 @@
   <string name="mail_settings_app_customization_notification">Notificacions</string>
   <string name="mail_settings_app_customization_language">Idioma</string>
   <string name="mail_settings_app_customization_appearance">Aparença</string>
-  <string name="mail_settings_app_customization_protection">Protecció</string>
+  <string name="mail_settings_app_customization_protection">Bloqueig de l\'aplicació</string>
   <string name="mail_settings_app_customization_protection_enabled_description">S\'ha activat el bloqueig automàtic.</string>
   <string name="mail_settings_app_customization_protection_disabled_description">S\'ha desactivat el bloqueig automàtic.</string>
   <string name="mail_settings_app_customization_use_device_contacts">Utilitza els contactes del dispositiu</string>
@@ -111,49 +112,6 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Navega a les preferències de notificacions del sistema</string>
   <string name="mail_settings_notifications_update_error">S\'ha produït un error en actualitzar les preferències.</string>
   <string name="mail_settings_notifications_loading_error">S\'ha produït un error en carregar les preferències.</string>
-  <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Bloqueig automàtic</string>
-  <string name="mail_settings_auto_lock_item_title">Bloqueig automàtic de l\'aplicació</string>
-  <string name="mail_settings_auto_lock_item_description">Activeu aquesta funcionalitat per bloquejar automàticament la vostra aplicació i utilitzar un codi PIN per desbloquejar-la.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Canvia el codi PIN</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Temps de bloqueig automàtic</string>
-  <string name="mail_settings_auto_lock_immediately">Immediatament</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minuts d\'inactivitat</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minuts d\'inactivitat</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 hora d\'inactivitat</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 dia d\'inactivitat</string>
-  <string name="mail_settings_auto_lock_update_error">S\'ha produït un error en actualitzar les preferències.</string>
-  <string name="mail_settings_pin_insertion_input_title">Introduïu el codi PIN</string>
-  <string name="mail_settings_pin_insertion_set_title">Estableix el codi PIN</string>
-  <string name="mail_settings_pin_insertion_confirm_title">Confirma el codi PIN</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">Icona de bloqueig</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">Punt del codi PIN</string>
-  <string name="mail_settings_pin_insertion_backspace_description">Retrocés</string>
-  <string name="mail_settings_pin_insertion_biometric_description">Autenticació biomètrica</string>
-  <string name="mail_settings_pin_insertion_button_create">Crea</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Confirma</string>
-  <string name="mail_settings_pin_insertion_error_no_match">Els codis PIN no coincideixen.</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="one">%s intent restant.</item>
-    <item quantity="other">%s intents restants.</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="one">%s intent restant fins a l\'eliminació segura de les dades.</item>
-    <item quantity="other">%s intents restants fins a l\'eliminació segura de les dades.</item>
-  </plurals>
-  <string name="mail_settings_pin_insertion_error_unknown">S\'ha produït un error en verificar el codi PIN.</string>
-  <string name="mail_settings_pin_insertion_signout_text">Tanca la sessió</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_title">Tanca la sessió</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_description">Segur que desitgeu tancar la sessió?</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Sí</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_cancel">No</string>
-  <string name="mail_settings_pin_insertion_created_success">S\'ha creat el codi PIN.</string>
-  <string name="mail_settings_pin_insertion_changed_success">S\'ha canviat el codi PIN.</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">S\'ha produït un error. Proveu de nou.</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">No s’han registrat dades biomètriques</string>
-  <string name="log_in_using_biometric_credential">Desbloquejar amb les vostres credencials biomètriques</string>
-  <string name="unlock_using_biometrics">Desbloquejar usant biomètrica</string>
-  <string name="biometric_error_hw_not_available">El sensor biomètric no està disponible.</string>
 </resources>

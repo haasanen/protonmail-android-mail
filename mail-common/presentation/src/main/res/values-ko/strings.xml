@@ -40,6 +40,7 @@
   <string name="action_unstar_description">별표 제거</string>
   <string name="action_label_description">라벨 추가</string>
   <string name="action_move_description">다음으로 이동</string>
+  <string name="action_inbox_description">받은 편지함으로 이동</string>
   <string name="action_trash_description">휴지통으로 이동하기</string>
   <string name="action_delete_description">삭제</string>
   <string name="action_archive_description">보관 편지함</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">이 발신자의 향후 이메일에 대한 작업 설정</string>
   <string name="action_save_attachments_description">첨부 파일 저장</string>
   <string name="action_more_description">더보기</string>
-  <string name="action_inbox_description">받은 편지함</string>
   <string name="action_pin_description">고정</string>
   <string name="action_unpin_description">고정 해제</string>
   <string name="action_reply_content_description">답장</string>

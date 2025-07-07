@@ -30,8 +30,8 @@
     <item quantity="other">%d sélectionnés</item>
   </plurals>
   <plurals name="filter_unread_button_text">
-    <item quantity="one">Non lu %s</item>
-    <item quantity="other">Non lus %s</item>
+    <item quantity="one">%s non lu</item>
+    <item quantity="other">%s non lus</item>
   </plurals>
   <string name="mailbox_default_recipient">(aucun destinataire)</string>
   <string name="mailbox_default_sender">(aucun expéditeur)</string>
@@ -84,7 +84,7 @@
   <string name="mailbox_search_placeholder_text">Rechercher des messages.</string>
   <string name="mailbox_search_no_results_title">Aucune correspondance.</string>
   <string name="mailbox_search_no_results_explanation">Vous pouvez soit mettre à jour votre recherche, soit l\'effacer.</string>
-  <string name="mailbox_action_button_clear_trash">Vider le dossier Corbeille</string>
+  <string name="mailbox_action_button_clear_trash">Vider la corbeille</string>
   <string name="mailbox_action_button_clear_spam">Vider le dossier Indésirables/spam</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Changez d\'abonnement pour supprimer automatiquement les messages dans les dossiers Corbeille ou Indésirables/spam depuis plus de 30 jours</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">En savoir plus</string>
@@ -126,4 +126,6 @@
     <item quantity="other">Expire dans %d minutes</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">Expire dans moins d\'une minute</string>
+  <string name="schedule_send_tomorrow">Demain, %1$s</string>
+  <string name="schedule_send_today">Aujourd\'hui, %1$s</string>
 </resources>

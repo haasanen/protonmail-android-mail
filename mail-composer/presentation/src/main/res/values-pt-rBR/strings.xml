@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">As duplicações do destinatário foram removidas</string>
   <string name="composer_error_store_draft_subject">O assunto não foi salvo</string>
   <string name="composer_error_store_draft_recipients">Erro ao salvar os destinatários deste rascunho</string>
-  <string name="composer_error_loading_draft">O conteúdo deste rascunho não está disponível no momento. A edição substituirá qualquer conteúdo pré-existente.</string>
+  <string name="composer_error_loading_draft">O conteúdo deste rascunho não está disponível no momento. Não é possível editar.</string>
   <string name="composer_add_attachments_content_description">Adicionar anexos</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importar de…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Da sua biblioteca de fotos</string>
@@ -127,7 +127,7 @@
   <string name="composer_schedule_send_custom_description">Selecionar hora e data</string>
   <string name="composer_error_send_message">Erro no envio da mensagem</string>
   <string name="composer_schedule_send_previously_set">Definido anteriormente</string>
-  <string name="composer_schedule_send_custom_time_label">Tempo</string>
+  <string name="composer_schedule_send_custom_time_label">Hora</string>
   <string name="composer_schedule_send_custom_date_label">Data</string>
   <string name="composer_schedule_send_dialog_ok">OK</string>
   <string name="composer_schedule_send_dialog_enter_time">Inserir hora</string>
@@ -135,5 +135,6 @@
   <string name="composer_error_change_sender_failed_getting_addresses">Não é possível alterar o remetente, pois os endereços do usuário não puderam ser obtidos. Tente novamente.</string>
   <string name="composer_change_sender_invalid_address">O endereço selecionado não pode ser usado para envio</string>
   <string name="composer_change_sender_unexpected_failure">Algo deu errado ao mudar o remetente. Tente novamente.</string>
-  <string name="composer_change_sender_error_refreshing_body">Falha ao atualizar o corpo após a mudança do remetente. A assinatura pode estar desatualizada.</string>
+  <string name="composer_change_sender_error_refreshing_body">Erro ao atualizar o corpo após a mudança do remetente. A assinatura pode estar desatualizada.</string>
+  <string name="composer_loading_attachments_error">Erro ao carregar anexos</string>
 </resources>

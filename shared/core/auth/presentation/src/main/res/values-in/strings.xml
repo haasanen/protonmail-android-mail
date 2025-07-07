@@ -39,11 +39,13 @@
   <string name="auth_password_placeholder">Kata sandi</string>
   <string name="auth_login_assistive_text">Silakan masukkan alamat email atau nama pengguna Proton Anda.</string>
   <string name="auth_account_details">Masukkan rincian Akun Proton Anda.</string>
-  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Kata sandi, frasa sandi, atau salt kunci salah.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Terdapat masalah saat Anda masuk. Silakan coba lagi.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Verifikasi manusia dibutuhkan.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Kredensial masuk salah. Silakan coba lagi.</string>
-  <string name="auth_login_error_invalid_action_unsupported_tfa">Kode dua faktor tidak didukung</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Nama pengguna atau kata sandi salah. Silakan coba lagi.</string>
   <string name="auth_second_factor_title">Autentikasi dua-faktor</string>
+  <string name="auth_second_factor_subtitle">Akun Anda memiliki beberapa mekanisme 2FA yang terpasang. Silakan tentukan bagaimana Anda ingin mengonfirmasi identitas Anda.</string>
+  <string name="auth_second_factor_tab_security_key">Kunci Keamanan</string>
+  <string name="auth_second_factor_tab_otp">Kode sekali pakai</string>
   <string name="auth_second_factor_authenticate">Autentikasi</string>
   <string name="auth_second_factor_totp_input_help">Masukkan kode 6 digit Anda.</string>
   <string name="auth_second_factor_totp_input_label">Kode dua faktor</string>
@@ -51,6 +53,8 @@
   <string name="auth_second_factor_recovery_label">Kode pemulihan</string>
   <string name="auth_second_factor_switch_to_recovery">Gunakan kode pemulihan</string>
   <string name="auth_second_factor_switch_to_totp">Gunakan kode dua faktor</string>
+  <string name="auth_second_factor_insert_security_key">Perlihatkan kunci keamanan yang terhubung dengan Akun Proton Anda. </string>
+  <string name="auth_second_factor_insert_security_key_link">Pelajari lebih lanjut</string>
   <string name="auth_two_pass_title">Buka kunci kotak surat Anda</string>
   <string name="auth_two_pass_input_label">Kata sandi kotak surat</string>
   <string name="auth_two_pass_unlock">Buka kunci</string>
@@ -93,11 +97,19 @@
   <string name="auth_signup_validation_password">Kata sandi tidak boleh kosong.</string>
   <string name="auth_signup_validation_passwords_do_not_match">Kata sandi tidak cocok.</string>
   <string name="auth_signup_validation_password_input_invalid">Masukan kata sandi tidak valid.</string>
-  <string name="auth_signup_validation_username">Nama pengguna tidak boleh kosong.</string>
+  <string name="auth_signup_validation_username">Silakan masukkan nama pengguna</string>
   <string name="auth_signup_validation_email">Email tidak boleh kosong.</string>
   <string name="auth_signup_validation_username_input_invalid">Masukan nama pengguna tidak valid.</string>
   <string name="auth_signup_validation_email_input_invalid">Masukan nama pengguna tidak valid.</string>
   <string name="auth_signup_countries_search">Cari negara</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Tidak dapat menyiapkan pengguna.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Tidak dapat menyiapkan alamat.</string>
+  <string name="auth_fido_security_keys_error">Terjadi kesalahan pada saat memperoleh kunci keamanan. Silakan coba lagi.</string>
+  <string name="auth_fido_security_keys_title">Kunci keamanan</string>
+  <string name="auth_fido_manage_security_keys_info">Untuk mengelola, menambahkan, atau menghapus kunci keamanan, silakan gunakan aplikasi web Proton. %s</string>
+  <string name="auth_fido_security_keys_empty_list">Tidak ada kunci keamanan yang didaftarkan dengan akun Anda. Untuk menambahkan kunci keamanan, gunakan aplikasi web Proton. %s</string>
+  <string name="auth_fido_security_keys_registered">Berikut merupakan kunci keamanan yang terdaftar ke akun Anda.</string>
+  <string name="auth_fido_manage_security_keys">Kelola kunci keamanan</string>
+  <string name="auth_fido_add_security_key">Tambahkan kunci keamanan</string>
+  <string name="auth_fido_security_keys_learn_more">Pelajari lebih lanjut</string>
 </resources>

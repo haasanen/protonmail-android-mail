@@ -30,13 +30,13 @@
   <string name="composer_error_invalid_email">Sähköpostiosoite on virheellinen</string>
   <string name="composer_error_invalid_sender">Lähettäjän osoite on virheellinen</string>
   <string name="change_sender_button_content_description">Vaihda lähettäjä</string>
-  <string name="composer_change_sender_paid_feature">Upgrade to a paid plan to change the sender address</string>
+  <string name="composer_change_sender_paid_feature">Päivitä maksulliseen tilaukseen muuttaaksesi lähettäjän osoitetta</string>
   <string name="composer_error_store_draft_sender_address">Luonnoksen lähetysosoitteen tallennus epäonnistui</string>
   <string name="composer_error_store_draft_body">Luonnoksen sisällön tallennus epäonnistui</string>
   <string name="composer_error_duplicate_recipient">Vastaanottajien kaksoiskappaleet poistettiin</string>
   <string name="composer_error_store_draft_subject">Luonnoksen otsikon tallennus epäonnistui</string>
   <string name="composer_error_store_draft_recipients">Luonnoksen vastaanottajien tallennus epäonnistui</string>
-  <string name="composer_error_loading_draft">Luonnoksen sisältö ei ole tällä hetkellä käytettävissä ja sen muokkaus korvaa kaiken olemassa olevan sisällön.</string>
+  <string name="composer_error_loading_draft">The content of this draft is not available at this time, editing isn\'t possible.</string>
   <string name="composer_add_attachments_content_description">Lisää liitteitä</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Tuo lähteestä…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Kuvakirjastostasi</string>
@@ -107,7 +107,7 @@
     <item quantity="one">%d jäsen</item>
     <item quantity="other">%d jäsentä</item>
   </plurals>
-  <string name="composer_recipient_suggestion_device">Show device contacts</string>
+  <string name="composer_recipient_suggestion_device">Näytä laitteen yhteystiedot</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">Hylätäänkö tämä viesti?</string>
   <string name="discard_draft_dialog_text">Luonnostasi ei tallenneta</string>
@@ -127,13 +127,14 @@
   <string name="composer_schedule_send_custom_description">Valitse aika ja päivämäärä</string>
   <string name="composer_error_send_message">Virhe lähetettäessä viestiä</string>
   <string name="composer_schedule_send_previously_set">Aiemmin asetettu</string>
-  <string name="composer_schedule_send_custom_time_label">Time</string>
-  <string name="composer_schedule_send_custom_date_label">Date</string>
+  <string name="composer_schedule_send_custom_time_label">Aika</string>
+  <string name="composer_schedule_send_custom_date_label">Päiväys</string>
   <string name="composer_schedule_send_dialog_ok">Ok</string>
-  <string name="composer_schedule_send_dialog_enter_time">Enter time</string>
-  <string name="composer_change_sender_title">From</string>
+  <string name="composer_schedule_send_dialog_enter_time">Syötä aika</string>
+  <string name="composer_change_sender_title">Lähettäjä</string>
   <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
   <string name="composer_change_sender_invalid_address">The selected address can not be used for sending</string>
   <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
   <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
+  <string name="composer_loading_attachments_error">Failed loading attachments</string>
 </resources>

@@ -39,11 +39,13 @@
   <string name="auth_password_placeholder">Пароль</string>
   <string name="auth_login_assistive_text">Введите свой адрес электронной почты или имя пользователя Proton.</string>
   <string name="auth_account_details">Введите данные своего аккаунта Proton.</string>
-  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Неверный пароль, парольная фраза или ключ-соль.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problem signing you in. Please try again.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Требуется проверка пользователя.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Неверные учётные данные. Попробуйте еще раз.</string>
-  <string name="auth_login_error_invalid_action_unsupported_tfa">Неподдерживаемый двухфакторный метод.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Incorrect username or password. Please try again.</string>
   <string name="auth_second_factor_title">Двухфакторная аутентификация</string>
+  <string name="auth_second_factor_subtitle">В вашем аккаунте настроено несколько способов 2FA. Пожалуйста, выберите, как вы хотите подтвердить свою личность.</string>
+  <string name="auth_second_factor_tab_security_key">Ключ безопасности</string>
+  <string name="auth_second_factor_tab_otp">Одноразовый код</string>
   <string name="auth_second_factor_authenticate">Аутентификация</string>
   <string name="auth_second_factor_totp_input_help">Введите 6-значный код.</string>
   <string name="auth_second_factor_totp_input_label">Код двухфакторной аутентификации</string>
@@ -51,6 +53,8 @@
   <string name="auth_second_factor_recovery_label">Код восстановления</string>
   <string name="auth_second_factor_switch_to_recovery">Использовать код восстановления</string>
   <string name="auth_second_factor_switch_to_totp">Использовать код двухфакторной аутентификации</string>
+  <string name="auth_second_factor_insert_security_key">Предоставить ключ безопасности, связанный с вашим аккаунтом Proton. </string>
+  <string name="auth_second_factor_insert_security_key_link">Подробнее</string>
   <string name="auth_two_pass_title">Разблокируйте свой почтовый ящик</string>
   <string name="auth_two_pass_input_label">Пароль почтового ящика</string>
   <string name="auth_two_pass_unlock">Разблокировать</string>
@@ -93,11 +97,19 @@
   <string name="auth_signup_validation_password">Пароль не может быть пустым.</string>
   <string name="auth_signup_validation_passwords_do_not_match">Пароли не совпадают.</string>
   <string name="auth_signup_validation_password_input_invalid">Неверный ввод пароля.</string>
-  <string name="auth_signup_validation_username">Имя пользователя не может быть пустым.</string>
+  <string name="auth_signup_validation_username">Введите имя пользователя</string>
   <string name="auth_signup_validation_email">Адрес электронной почты не может быть пустым.</string>
   <string name="auth_signup_validation_username_input_invalid">Неверный ввод имени пользователя.</string>
   <string name="auth_signup_validation_email_input_invalid">Неверный ввод имени пользователя.</string>
   <string name="auth_signup_countries_search">Поиск страны</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Could not setup the user.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Could not setup the address.</string>
+  <string name="auth_fido_security_keys_error">Ошибка при получении ключей безопасности, попробуйте еще раз.</string>
+  <string name="auth_fido_security_keys_title">Ключи безопасности</string>
+  <string name="auth_fido_manage_security_keys_info">Для управления, добавления или удаления ключей безопасности используйте веб-приложение Proton. %s</string>
+  <string name="auth_fido_security_keys_empty_list">Для вашего акаунта не зарегистрировано ни одного ключа безопасности. Чтобы добавить ключ безопасности, воспользуйтесь веб-приложением Proton. %s</string>
+  <string name="auth_fido_security_keys_registered">Это ключи безопасности, зарегистрированные в вашем аккаунте.</string>
+  <string name="auth_fido_manage_security_keys">Управление ключами безопасности</string>
+  <string name="auth_fido_add_security_key">Добавить ключ безопасности</string>
+  <string name="auth_fido_security_keys_learn_more">Подробнее</string>
 </resources>

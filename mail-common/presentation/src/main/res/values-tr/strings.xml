@@ -34,12 +34,13 @@
   <string name="action_reply_to_description">%s alıcısına yanıt verilsin</string>
   <string name="action_reply_all_description">Tümünü yanıtla</string>
   <string name="action_forward_description">İlet</string>
-  <string name="action_mark_read_description">Okunmuş olarak işaretle</string>
-  <string name="action_mark_unread_description">Okunmamış olarak işaretle</string>
+  <string name="action_mark_read_description">Mark as read</string>
+  <string name="action_mark_unread_description">Mark as unread</string>
   <string name="action_star_description">Yıldız koy</string>
   <string name="action_unstar_description">Yıldızı kaldır</string>
   <string name="action_label_description">Şöyle etiketlensin</string>
   <string name="action_move_description">Şuraya taşınsın</string>
+  <string name="action_inbox_description">Gelen kutusuna taşı</string>
   <string name="action_trash_description">Çöpe at</string>
   <string name="action_delete_description">Sil</string>
   <string name="action_archive_description">Arşivle</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Gelecekte bu göndericinin e-postalarına yapılacak işlemi ayarlayın</string>
   <string name="action_save_attachments_description">Ek dosyaları kaydet</string>
   <string name="action_more_description">Diğer</string>
-  <string name="action_inbox_description">Gelen kutusu</string>
   <string name="action_pin_description">Sabitlensin</string>
   <string name="action_unpin_description">Sabitleme kaldırılsın</string>
   <string name="action_reply_content_description">Yanıtla</string>

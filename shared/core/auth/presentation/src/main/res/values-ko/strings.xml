@@ -39,11 +39,13 @@
   <string name="auth_password_placeholder">비밀번호</string>
   <string name="auth_login_assistive_text">Proton 이메일 또는 사용자 이름을 입력해 주세요.</string>
   <string name="auth_account_details">Proton 계정 상세 정보를 입력해 주세요.</string>
-  <string name="auth_login_error_invalid_action_cannot_unlock_keys">비밀번호, 암호문구 또는 키 솔트가 틀렸습니다.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">로그인에 문제가 발생했습니다. 다시 시도하세요.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">사람임을 인증해야 합니다.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">로그인 자격 증명이 잘못되었습니다. 다시 시도해 주세요.</string>
-  <string name="auth_login_error_invalid_action_unsupported_tfa">지원되지 않는 2단계 인증입니다.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">사용자 이름 및 비밀번호가 일치하지 않습니다. 다시 시도해 주세요.</string>
   <string name="auth_second_factor_title">2단계 인증</string>
+  <string name="auth_second_factor_subtitle">계정에 여러 2단계 인증 매커니즘이 구성되어 있습니다. 어떤 방식으로 신원을 확인할 것인지 선택해 주세요.</string>
+  <string name="auth_second_factor_tab_security_key">보안 키</string>
+  <string name="auth_second_factor_tab_otp">일회용 코드</string>
   <string name="auth_second_factor_authenticate">인증</string>
   <string name="auth_second_factor_totp_input_help">6자리 인증 코드를 입력하세요.</string>
   <string name="auth_second_factor_totp_input_label">2단계 인증 코드</string>
@@ -51,6 +53,8 @@
   <string name="auth_second_factor_recovery_label">복구 코드</string>
   <string name="auth_second_factor_switch_to_recovery">복구 코드 사용</string>
   <string name="auth_second_factor_switch_to_totp">2단계 인증 코드 사용</string>
+  <string name="auth_second_factor_insert_security_key">Proton 계정에 연결된 보안 키를 제시해 주세요. </string>
+  <string name="auth_second_factor_insert_security_key_link">더 알아보기</string>
   <string name="auth_two_pass_title">메일함 잠금 해제</string>
   <string name="auth_two_pass_input_label">메일함 비밀번호</string>
   <string name="auth_two_pass_unlock">잠금 해제</string>
@@ -93,11 +97,19 @@
   <string name="auth_signup_validation_password">비밀번호는 비워둘 수 없습니다.</string>
   <string name="auth_signup_validation_passwords_do_not_match">비밀번호가 일치하지 않습니다.</string>
   <string name="auth_signup_validation_password_input_invalid">비밀번호 입력이 유효하지 않습니다.</string>
-  <string name="auth_signup_validation_username">사용자 이름은 비워둘 수 없습니다.</string>
+  <string name="auth_signup_validation_username">사용자 이름을 입력해 주세요</string>
   <string name="auth_signup_validation_email">이메일은 비워 둘 수 없습니다.</string>
   <string name="auth_signup_validation_username_input_invalid">사용자 이름 입력이 유효하지 않습니다.</string>
   <string name="auth_signup_validation_email_input_invalid">사용자 이름 입력이 유효하지 않습니다.</string>
   <string name="auth_signup_countries_search">국가 검색</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">사용자를 설정할 수 없습니다.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">주소를 설정할 수 없습니다.</string>
+  <string name="auth_fido_security_keys_error">보안 키를 불러오는 도중 오류가 발생했습니다, 나중에 다시 시도하세요.</string>
+  <string name="auth_fido_security_keys_title">보안 키</string>
+  <string name="auth_fido_manage_security_keys_info">보안 키를 관리, 추가하거나 제거하려면 Proton 웹 앱을 사용해 주세요. %s</string>
+  <string name="auth_fido_security_keys_empty_list">계정에 등록된 보안 키가 없습니다. 보안 키를 추가하려면 Proton 웹 애플리케이션을 사용하세요. %s</string>
+  <string name="auth_fido_security_keys_registered">사용자의 계정에 등록된 보안 키들 입니다.</string>
+  <string name="auth_fido_manage_security_keys">보안 키 관리</string>
+  <string name="auth_fido_add_security_key">보안 키 추가</string>
+  <string name="auth_fido_security_keys_learn_more">더 알아보기</string>
 </resources>

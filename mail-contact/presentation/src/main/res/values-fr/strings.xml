@@ -88,4 +88,6 @@
   <string name="contact_details_quick_action_call">Appeler</string>
   <string name="contact_details_quick_action_share">Partager</string>
   <string name="contact_details_action_copy_label">Copier</string>
+  <string name="contact_details_action_message_label">Message</string>
+  <string name="contact_details_action_call_label">Appeler</string>
 </resources>

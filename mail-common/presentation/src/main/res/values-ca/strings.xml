@@ -40,6 +40,7 @@
   <string name="action_unstar_description">No destaquis</string>
   <string name="action_label_description">Etiqueta com a</string>
   <string name="action_move_description">Mou a</string>
+  <string name="action_inbox_description">Mou a la safata d\'entrada</string>
   <string name="action_trash_description">Mou a la paperera</string>
   <string name="action_delete_description">Elimina</string>
   <string name="action_archive_description">Arxiva</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Estableix l\'acció per a correus electrònics futurs d\'aquest remitent</string>
   <string name="action_save_attachments_description">Desa els adjunts</string>
   <string name="action_more_description">Més</string>
-  <string name="action_inbox_description">Safata d\'entrada</string>
   <string name="action_pin_description">Fixa</string>
   <string name="action_unpin_description">No fixis</string>
   <string name="action_reply_content_description">Respon</string>

@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">已移除重复收件人</string>
   <string name="composer_error_store_draft_subject">无法存储此草稿的主题</string>
   <string name="composer_error_store_draft_recipients">无法存储此草稿的收件人信息</string>
-  <string name="composer_error_loading_draft">此草稿的内容暂时无法加载，继续编辑将覆盖此前保存的内容。</string>
+  <string name="composer_error_loading_draft">The content of this draft is not available at this time, editing isn\'t possible.</string>
   <string name="composer_add_attachments_content_description">添加附件</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">导入自…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">从相册选择</string>
@@ -128,11 +128,12 @@
   <string name="composer_schedule_send_previously_set">先前设定</string>
   <string name="composer_schedule_send_custom_time_label">Time</string>
   <string name="composer_schedule_send_custom_date_label">Date</string>
-  <string name="composer_schedule_send_dialog_ok">Ok</string>
+  <string name="composer_schedule_send_dialog_ok">确定</string>
   <string name="composer_schedule_send_dialog_enter_time">Enter time</string>
   <string name="composer_change_sender_title">From</string>
   <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
   <string name="composer_change_sender_invalid_address">The selected address can not be used for sending</string>
   <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
   <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
+  <string name="composer_loading_attachments_error">加载附件失败</string>
 </resources>

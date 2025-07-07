@@ -40,6 +40,7 @@
   <string name="action_unstar_description">Usuń gwiazdkę</string>
   <string name="action_label_description">Oznacz jako</string>
   <string name="action_move_description">Przenieś do</string>
+  <string name="action_inbox_description">Przenieś do Odebranych</string>
   <string name="action_trash_description">Przenieś do kosza</string>
   <string name="action_delete_description">Usuń</string>
   <string name="action_archive_description">Archiwizuj</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Ustaw akcję dla przyszłych wiadomości od tego nadawcy</string>
   <string name="action_save_attachments_description">Zapisz załączniki</string>
   <string name="action_more_description">Więcej</string>
-  <string name="action_inbox_description">Skrzynka odbiorcza</string>
   <string name="action_pin_description">Przypnij</string>
   <string name="action_unpin_description">Odepnij</string>
   <string name="action_reply_content_description">Odpowiedz</string>

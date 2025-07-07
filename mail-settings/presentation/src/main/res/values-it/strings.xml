@@ -39,6 +39,7 @@
   <string name="mail_settings_auto_lock">Blocco automatico</string>
   <string name="mail_settings_alternative_routing">Percorso alternativo</string>
   <string name="mail_settings_app_language">Lingua dell\'interfaccia</string>
+  <string name="mail_settings_app_language_sys_default">Predefinito di sistema</string>
   <string name="mail_settings_combined_contacts">Inclusione dei contatti</string>
   <string name="mail_settings_swipe_actions">Azioni di scorrimento</string>
   <string name="mail_settings_combined_contacts_hint">Abilita questa opzione per completare automaticamente gli indirizzi email con i contatti di tutti gli account a cui hai effettuato l\'accesso.</string>
@@ -48,7 +49,7 @@
   <string name="mail_settings_app_customization_notification">Notifiche</string>
   <string name="mail_settings_app_customization_language">Lingua</string>
   <string name="mail_settings_app_customization_appearance">Aspetto</string>
-  <string name="mail_settings_app_customization_protection">Protezione</string>
+  <string name="mail_settings_app_customization_protection">Blocco automatico</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Blocco automatico abilitato</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Blocco automatico disabilitato</string>
   <string name="mail_settings_app_customization_use_device_contacts">Caricamento dei contatti dal dispositivo</string>
@@ -111,49 +112,6 @@
   <string name="mail_settings_notifications_notifications_settings_hint">Vai alle impostazioni di notifica di sistema</string>
   <string name="mail_settings_notifications_update_error">Aggiornamento delle impostazioni non riuscito</string>
   <string name="mail_settings_notifications_loading_error">Caricamento delle impostazioni non riuscito</string>
-  <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">Blocco automatico</string>
-  <string name="mail_settings_auto_lock_item_title">Blocco automatico</string>
-  <string name="mail_settings_auto_lock_item_description">Abilita questa opzione per bloccare automaticamente l\'app dopo un determinato periodo di tempo. Se questa opzione è abilitata, l\'app viene sbloccata con un codice PIN o con la biometria.</string>
-  <string name="mail_settings_auto_lock_change_pin_description">Cambio del codice PIN</string>
-  <string name="mail_settings_auto_lock_item_timer_title">Blocco per inattività</string>
-  <string name="mail_settings_auto_lock_immediately">Immediato</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5 minuti</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15 minuti</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1 ora</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1 giorno</string>
-  <string name="mail_settings_auto_lock_update_error">Aggiornamento delle impostazioni non riuscito</string>
-  <string name="mail_settings_pin_insertion_input_title">Inserisci il codice PIN</string>
-  <string name="mail_settings_pin_insertion_set_title">Imposta il codice PIN</string>
-  <string name="mail_settings_pin_insertion_confirm_title">Conferma il codice PIN</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">Icona del lucchetto</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">Cifra del PIN</string>
-  <string name="mail_settings_pin_insertion_backspace_description">Cancella</string>
-  <string name="mail_settings_pin_insertion_biometric_description">Autenticazione biometrica</string>
-  <string name="mail_settings_pin_insertion_button_create">Salva</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Continua</string>
-  <string name="mail_settings_pin_insertion_error_no_match">Conferma correttamente il nuovo codice PIN</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="one">%s tentativo rimanente</item>
-    <item quantity="other">%s tentativi rimanenti</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="one">Dopo %s altro tentativo i dati verranno rimossi</item>
-    <item quantity="other">%s tentativi rimanenti. I dati verranno rimossi.</item>
-  </plurals>
-  <string name="mail_settings_pin_insertion_error_unknown">Verifica del codice PIN non riuscita</string>
-  <string name="mail_settings_pin_insertion_signout_text">Esci</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_title">Esci dagli account</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_description">Sei sicuro di voler uscire da tutti gli account?</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_confirm">Esci</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_cancel">Annulla</string>
-  <string name="mail_settings_pin_insertion_created_success">Codice PIN applicato</string>
-  <string name="mail_settings_pin_insertion_changed_success">Codice PIN cambiato</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Si è verificato un errore. Riprova.</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">Nessuna biometria registrata</string>
-  <string name="log_in_using_biometric_credential">Sblocca con la biometria</string>
-  <string name="unlock_using_biometrics">Sblocco con la biometria</string>
-  <string name="biometric_error_hw_not_available">Hardware biometrico non disponibile</string>
 </resources>

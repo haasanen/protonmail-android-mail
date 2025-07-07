@@ -41,7 +41,8 @@
     <item quantity="other">%d далучэнняў</item>
   </plurals>
   <string name="hide_details">Схаваць падрабязнасці</string>
-  <string name="undisclosed_recipients">Схаваныя атрымальнікі</string>
+  <string name="undisclosed_recipients">…</string>
+  <string name="collapsed_header_draft">(Чарнавік)</string>
   <string name="error_mark_as_read_failed">Не ўдалося пазначыць як прачытанае. Паўтарыце спробу.</string>
   <string name="error_mark_as_unread_failed">Не ўдалося пазначыць як непрачытанае. Паўтарыце спробу.</string>
   <string name="error_star_operation_failed">Не ўдалося дадаць зорачку. Паўтарыце спробу.</string>
@@ -57,6 +58,7 @@
   <string name="message_moved_to_selected_destination">Паведамленне перамешчана ў %1$s</string>
   <string name="error_move_message_failed">Не ўдалося перамясціць паведамленне. Паўтарыце спробу.</string>
   <string name="conversation_moved_to_trash">Размова перамешчана ў Сметніцу</string>
+  <string name="conversation_moved_to_inbox">Размова перамешчана ва ўваходныя</string>
   <string name="conversation_moved_to_selected_destination">Размова перамешчана ў %1$s</string>
   <string name="conversation_moved_to_spam">Размова перамешчана ў Спам</string>
   <string name="conversation_moved_to_archive">Размова перамешчана ў Архіў</string>

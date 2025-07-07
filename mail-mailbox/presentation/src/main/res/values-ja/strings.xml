@@ -77,12 +77,12 @@
   <string name="mailbox_search_placeholder_text">メッセージを検索</string>
   <string name="mailbox_search_no_results_title">一致するものがありません</string>
   <string name="mailbox_search_no_results_explanation">検索クエリを更新するか、消去することができます。</string>
-  <string name="mailbox_action_button_clear_trash">ごみ箱を空にする</string>
-  <string name="mailbox_action_button_clear_spam">迷惑メールを空にする</string>
+  <string name="mailbox_action_button_clear_trash">Empty trash</string>
+  <string name="mailbox_action_button_clear_spam">Empty spam</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">ゴミ箱・迷惑メールへ移動したメッセージを 30 日後に自動的に削除するには、アップグレードしましょう。</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">もっと詳しく</string>
-  <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Messages in trash and spam for over 30 days will be automatically deleted.</string>
-  <string name="mailbox_action_auto_delete_off_clear_trash_spam_banner_text">Auto-delete is turned off. Messages in trash and spam will remain until you delete them manually.</string>
+  <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">ごみ箱と迷惑メールに 30 日以上入っているメッセージは自動的に削除されます。</string>
+  <string name="mailbox_action_auto_delete_off_clear_trash_spam_banner_text">自動削除はオフになっています。ごみ箱と迷惑メール内のメッセージは、手動で削除するまで残ります。</string>
   <string name="mailbox_action_clear_trash_dialog_title">ごみ箱フォルダーを空にする</string>
   <string name="mailbox_action_clear_spam_dialog_title">迷惑メールフォルダーを空にする</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">「ごみ箱」フォルダー内のすべてのメッセージを完全に削除してよろしいですか？</string>
@@ -90,8 +90,8 @@
   <string name="mailbox_action_clear_spam_dialog_body_conversation">「迷惑メール」フォルダー内のすべての会話を完全に削除してよろしいですか？</string>
   <string name="mailbox_action_clear_operation_scheduled">"クリア操作が予定されています"</string>
   <!-- Attachment download -->
-  <string name="mailbox_attachment_download_started">Opening attachment…</string>
-  <string name="mailbox_attachment_download_error">Unable to open the attachment. Please try again.</string>
+  <string name="mailbox_attachment_download_started">添付ファイルを開いています…</string>
+  <string name="mailbox_attachment_download_error">添付ファイルを開けませんでした。もう一度お試しください。</string>
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">警告</string>
   <string name="storage_first_limit_exceeded_warning_dialog_text">Proton アカウントのストレージ使用率が 80% を超えています。容量を解放するか、ストレージ追加のためアップグレードしてください。</string>
@@ -116,4 +116,6 @@
     <item quantity="other">%d 分で期限切れ</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">1分以内に期限切れになります</string>
+  <string name="schedule_send_tomorrow">明日、%1$s</string>
+  <string name="schedule_send_today">今日、%1$s</string>
 </resources>

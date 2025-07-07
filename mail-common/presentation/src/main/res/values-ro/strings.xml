@@ -34,12 +34,13 @@
   <string name="action_reply_to_description">Răspuns la %s</string>
   <string name="action_reply_all_description">Răspuns tuturor</string>
   <string name="action_forward_description">Redirecționare</string>
-  <string name="action_mark_read_description">Marcare ca citit</string>
-  <string name="action_mark_unread_description">Marcare ca necitit</string>
+  <string name="action_mark_read_description">Marcare: citit</string>
+  <string name="action_mark_unread_description">Marcare: necitit</string>
   <string name="action_star_description">Cu stea</string>
   <string name="action_unstar_description">Fără stea</string>
   <string name="action_label_description">Etichetare cu</string>
   <string name="action_move_description">Mutare în</string>
+  <string name="action_inbox_description">Mutare în «Primite»</string>
   <string name="action_trash_description">Mutare în gunoi</string>
   <string name="action_delete_description">Ștergere</string>
   <string name="action_archive_description">Arhivare</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Setare acțiuni mesaje ulterioare de la acest expeditor</string>
   <string name="action_save_attachments_description">Salvare atașamente</string>
   <string name="action_more_description">Mai multe</string>
-  <string name="action_inbox_description">Primite</string>
   <string name="action_pin_description">Fixare</string>
   <string name="action_unpin_description">Anulare fixare</string>
   <string name="action_reply_content_description">Răspuns</string>

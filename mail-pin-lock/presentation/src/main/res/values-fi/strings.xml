@@ -37,17 +37,15 @@
   <string name="mail_pinlock_settings_change_interval_title">Automaattilukitus</string>
   <string name="mail_pinlock_settings_autolock_immediately">Välittömästi</string>
   <string name="mail_pinlock_settings_autolock_never">Ei koskaan</string>
-  <string name="mail_pinlock_settings_autolock_description_one_minute">After 1 minute</string>
-  <string name="mail_pinlock_settings_autolock_description_two_minutes">After 2 minutes</string>
+  <string name="mail_pinlock_settings_autolock_description_one_minute">Minuutin kuluttua</string>
+  <string name="mail_pinlock_settings_autolock_description_two_minutes">Kahden minuutin kuluttua</string>
   <string name="mail_pinlock_settings_autolock_description_five_minutes">Viiden minuutin kuluttua</string>
-  <string name="mail_pinlock_settings_autolock_description_ten_minutes">After 10 minutes</string>
+  <string name="mail_pinlock_settings_autolock_description_ten_minutes">10 minuutin kuluttua</string>
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15 minuutin kuluttua</string>
-  <string name="mail_pinlock_settings_autolock_description_thirty_minutes">After 30 minutes</string>
-  <string name="mail_pinlock_settings_autolock_description_sixty_minutes">After 60 minutes</string>
-  <string name="mail_settings_auto_lock_update_error">Virhe päivitettäessä asetuksia</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">PIN-koodin täplä</string>
-  <string name="mail_settings_pin_insertion_button_create">Vahvista</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Seuraava</string>
+  <string name="mail_pinlock_settings_autolock_description_thirty_minutes">30 minuutin kuluttua</string>
+  <string name="mail_pinlock_settings_autolock_description_sixty_minutes">60 minuutin kuluttua</string>
+  <string name="mail_settings_pin_insertion_confirm_button">Vahvista</string>
+  <string name="mail_settings_pin_insertion_next_button">Seuraava</string>
   <string name="mail_settings_pin_insertion_error_no_match">PIN-koodit eivät täsmää.</string>
   <plurals name="mail_settings_pin_insertion_error_wrong_code_threshold">
     <item quantity="one">%s jäljellä oleva yritys ennen uloskirjautumista.</item>
@@ -83,5 +81,5 @@
   <string name="mail_settings_biometrics_subtitle_default">Vahvista toimenpide sormenjäljelläsi</string>
   <string name="mail_settings_biometrics_button_negative">Peruuta</string>
   <string name="mail_settings_biometrics_title_app_locked">Sovellus on lukittu</string>
-  <string name="mail_settings_biometrics_subtitle_app_locked">Unlock using your biometric credentials</string>
+  <string name="mail_settings_biometrics_subtitle_app_locked">Avaa biometrisillä tunnistetiedoillasi</string>
 </resources>

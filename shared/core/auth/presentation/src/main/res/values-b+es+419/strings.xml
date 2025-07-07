@@ -39,11 +39,13 @@
   <string name="auth_password_placeholder">Contraseña</string>
   <string name="auth_login_assistive_text">Ingrese el correo electrónico o nombre de usuario de Proton.</string>
   <string name="auth_account_details">Ingrese los datos de la cuenta de Proton.</string>
-  <string name="auth_login_error_invalid_action_cannot_unlock_keys">La contraseña, frase de contraseña o clave de cifrado no es correcta.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problema al iniciar sesión. Inténtelo de nuevo.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Se necesita verificación humana.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Credenciales de acceso incorrectas. Intente de nuevo.</string>
-  <string name="auth_login_error_invalid_action_unsupported_tfa">Doble factor no soportado.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Nombre de usuario o contraseña incorrectos. Inténtelo nuevamente.</string>
   <string name="auth_second_factor_title">Autenticación de dos factores</string>
+  <string name="auth_second_factor_subtitle">Su cuenta tiene varios mecanismos de 2FA configurados. Elija cómo desea confirmar su identidad.</string>
+  <string name="auth_second_factor_tab_security_key">Clave de seguridad</string>
+  <string name="auth_second_factor_tab_otp">Código de un solo uso</string>
   <string name="auth_second_factor_authenticate">Autenticar</string>
   <string name="auth_second_factor_totp_input_help">Ingrese el código de 6 dígitos.</string>
   <string name="auth_second_factor_totp_input_label">Código de dos factores</string>
@@ -51,6 +53,8 @@
   <string name="auth_second_factor_recovery_label">Código de recuperación</string>
   <string name="auth_second_factor_switch_to_recovery">Usar el código de recuperación</string>
   <string name="auth_second_factor_switch_to_totp">Usar código de dos factores</string>
+  <string name="auth_second_factor_insert_security_key">Presente una clave de seguridad vinculada a la cuenta de Proton. </string>
+  <string name="auth_second_factor_insert_security_key_link">Más información</string>
   <string name="auth_two_pass_title">Desbloquee el buzón</string>
   <string name="auth_two_pass_input_label">Contraseña del buzón</string>
   <string name="auth_two_pass_unlock">Desbloquear</string>
@@ -93,11 +97,19 @@
   <string name="auth_signup_validation_password">La contraseña no debe estar vacía.</string>
   <string name="auth_signup_validation_passwords_do_not_match">Las contraseñas no coinciden.</string>
   <string name="auth_signup_validation_password_input_invalid">La contraseña ingresada no es válida.</string>
-  <string name="auth_signup_validation_username">El nombre de usuario no puede estar vacío.</string>
+  <string name="auth_signup_validation_username">Ingrese un nombre de usuario</string>
   <string name="auth_signup_validation_email">El correo electrónico no puede estar vacío.</string>
   <string name="auth_signup_validation_username_input_invalid">El nombre de usuario ingresado no es válido.</string>
   <string name="auth_signup_validation_email_input_invalid">El nombre de usuario ingresado no es válido.</string>
   <string name="auth_signup_countries_search">Buscar un país</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">No se pudo configurar el usuario.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">No se pudo configurar la dirección.</string>
+  <string name="auth_fido_security_keys_error">Error al obtener las claves de seguridad. Intente de nuevo.</string>
+  <string name="auth_fido_security_keys_title">Claves de seguridad</string>
+  <string name="auth_fido_manage_security_keys_info">Para administrar, agregar o eliminar claves de seguridad, use la aplicación web de Proton. %s</string>
+  <string name="auth_fido_security_keys_empty_list">No hay claves de seguridad registradas en su cuenta. Para agregar una clave de seguridad use la aplicación web de Proton. %s</string>
+  <string name="auth_fido_security_keys_registered">Estas son las claves de seguridad registradas en su cuenta.</string>
+  <string name="auth_fido_manage_security_keys">Gestionar claves de seguridad</string>
+  <string name="auth_fido_add_security_key">Agregar clave de seguridad</string>
+  <string name="auth_fido_security_keys_learn_more">Más información</string>
 </resources>

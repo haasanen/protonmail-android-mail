@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Doppelte Empfänger entfernt</string>
   <string name="composer_error_store_draft_subject">Betreffzeile wurde nicht gespeichert</string>
   <string name="composer_error_store_draft_recipients">Das Speichern der Empfänger dieses Entwurfs ist fehlgeschlagen</string>
-  <string name="composer_error_loading_draft">Der Inhalt dieses Entwurfs ist zu diesem Zeitpunkt nicht verfügbar. Durch die Bearbeitung wird der bereits vorhandene Inhalt überschrieben.</string>
+  <string name="composer_error_loading_draft">Der Inhalt dieses Entwurfs ist zu diesem Zeitpunkt nicht verfügbar, eine Bearbeitung ist daher nicht möglich.</string>
   <string name="composer_add_attachments_content_description">Anhänge hinzufügen</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importieren aus…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Aus deiner Fotobibliothek</string>
@@ -136,4 +136,5 @@
   <string name="composer_change_sender_invalid_address">Die ausgewählte Adresse kann nicht zum Senden verwendet werden</string>
   <string name="composer_change_sender_unexpected_failure">Beim Ändern des Absenders ist ein Problem aufgetreten. Bitte erneut versuchen.</string>
   <string name="composer_change_sender_error_refreshing_body">Das Aktualisieren des Textes nach dem Wechsel des Absenders ist fehlgeschlagen. Die Signatur ist möglicherweise nicht mehr aktuell.</string>
+  <string name="composer_loading_attachments_error">Anhang konnten nicht geladen werden</string>
 </resources>

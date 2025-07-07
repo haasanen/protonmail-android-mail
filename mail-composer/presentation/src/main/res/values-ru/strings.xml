@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Дублирующиеся получатели удалены</string>
   <string name="composer_error_store_draft_subject">Не удалось сохранить тему этого черновика</string>
   <string name="composer_error_store_draft_recipients">Получатели черновика не сохранены</string>
-  <string name="composer_error_loading_draft">Содержимое этого черновика в данный момент недоступно. Изменение приведет к замене всего ранее существовавшего содержимого.</string>
+  <string name="composer_error_loading_draft">The content of this draft is not available at this time, editing isn\'t possible.</string>
   <string name="composer_add_attachments_content_description">Добавить вложения</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Импортировать из…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Из библиотеки фото</string>
@@ -109,7 +109,7 @@
     <item quantity="many">%d участников</item>
     <item quantity="other">%d участника</item>
   </plurals>
-  <string name="composer_recipient_suggestion_device">Show device contacts</string>
+  <string name="composer_recipient_suggestion_device">Показать контакты устройства</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">Отменить это сообщение?</string>
   <string name="discard_draft_dialog_text">Черновик не будет сохранен</string>
@@ -128,14 +128,15 @@
   <string name="composer_schedule_send_custom_title">Другое время</string>
   <string name="composer_schedule_send_custom_description">Выбрать дату и время</string>
   <string name="composer_error_send_message">Ошибка отправки сообщения</string>
-  <string name="composer_schedule_send_previously_set">Previously set</string>
-  <string name="composer_schedule_send_custom_time_label">Time</string>
-  <string name="composer_schedule_send_custom_date_label">Date</string>
-  <string name="composer_schedule_send_dialog_ok">Ok</string>
+  <string name="composer_schedule_send_previously_set">Установлено ранее</string>
+  <string name="composer_schedule_send_custom_time_label">Время</string>
+  <string name="composer_schedule_send_custom_date_label">Дата</string>
+  <string name="composer_schedule_send_dialog_ok">OK</string>
   <string name="composer_schedule_send_dialog_enter_time">Enter time</string>
-  <string name="composer_change_sender_title">From</string>
-  <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
+  <string name="composer_change_sender_title">От</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Не удаётся изменить отправителя, так как не удалось получить адреса пользователя. Попробуйте ещё раз.</string>
   <string name="composer_change_sender_invalid_address">The selected address can not be used for sending</string>
   <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
   <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
+  <string name="composer_loading_attachments_error">Failed loading attachments</string>
 </resources>

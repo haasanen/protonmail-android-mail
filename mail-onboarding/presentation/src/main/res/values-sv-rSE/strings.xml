@@ -28,11 +28,11 @@
   <string name="onboarding_neat_and_tidy_description">Sortera, märk och färgkoda meddelanden tills du får dina drömmars inkorg.</string>
   <!--  New Onboarding 1  -->
   <string name="onboarding_welcome_title">Välkommen till den\nnya Proton Mail-appen!</string>
-  <string name="onboarding_welcome_headline">Transformed from the ground up</string>
+  <string name="onboarding_welcome_headline">Omgjord från grunden</string>
   <string name="onboarding_welcome_description">Thank you for joining this limited group of early beta testers. Your feedback is critical for helping us build an even better Proton Mail ready for public release.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Ombyggd för att vara bättre och snabbare</string>
-  <string name="onboarding_rebuilt_headline">New inbox unboxed</string>
+  <string name="onboarding_rebuilt_headline">Ny inkorg uppackad</string>
   <string name="onboarding_rebuilt_description">The new Proton Mail is faster with a vibrant design and highly-requested features, like offline mode.</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">Tack för ditt deltagande!</string>

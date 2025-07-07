@@ -40,6 +40,7 @@
   <string name="action_unstar_description">Odznači</string>
   <string name="action_label_description">Označi kot</string>
   <string name="action_move_description">Premakni v</string>
+  <string name="action_inbox_description">Premakni v mapo Prejeto</string>
   <string name="action_trash_description">Premakni v smetnjak</string>
   <string name="action_delete_description">Izbriši</string>
   <string name="action_archive_description">Arhiviraj</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Nastavi dejanje za prihodnja sporočila tega pošiljatelja</string>
   <string name="action_save_attachments_description">Shrani priponke</string>
   <string name="action_more_description">Več</string>
-  <string name="action_inbox_description">Prejeto</string>
   <string name="action_pin_description">Pripni</string>
   <string name="action_unpin_description">Odpni</string>
   <string name="action_reply_content_description">Odgovori</string>

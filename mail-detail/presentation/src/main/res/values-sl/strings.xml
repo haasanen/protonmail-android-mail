@@ -41,7 +41,8 @@
     <item quantity="other">%d Priponk</item>
   </plurals>
   <string name="hide_details">Skrij podrobnosti</string>
-  <string name="undisclosed_recipients">Skriti prejemniki</string>
+  <string name="undisclosed_recipients">...</string>
+  <string name="collapsed_header_draft">(osnutek)</string>
   <string name="error_mark_as_read_failed">Označevanje kot prebrano ni uspelo. Poskusite znova.</string>
   <string name="error_mark_as_unread_failed">Označevanje kot neprebrano ni uspelo. Poskusite znova.</string>
   <string name="error_star_operation_failed">Označevanje z zvezdico ni uspelo. Poskusite znova.</string>
@@ -57,6 +58,7 @@
   <string name="message_moved_to_selected_destination">Sporočilo je premaknjeno v mapo %1$s</string>
   <string name="error_move_message_failed">Premikanje sporočila ni uspelo. Poskusite znova.</string>
   <string name="conversation_moved_to_trash">Pogovor je premaknjen v smetnjak</string>
+  <string name="conversation_moved_to_inbox">Pogovor premaknjen med prejeto pošto</string>
   <string name="conversation_moved_to_selected_destination">Pogovor je premaknjen v %1$s</string>
   <string name="conversation_moved_to_spam">Pogovor premaknjen med neželeno pošto</string>
   <string name="conversation_moved_to_archive">Pogovor je premaknjen v arhiv</string>
@@ -82,7 +84,7 @@
   <string name="message_blocked_sender_banner_text">Ta pošiljatelj je bil v preteklosti blokiran.</string>
   <string name="message_blocked_sender_button_text">Odblokiraj</string>
   <string name="message_expiration_banner_text">To sporočilo bo poteklo v %1$s.</string>
-  <string name="message_auto_delete_banner_text">This message will be automatically deleted in %1$s</string>
+  <string name="message_auto_delete_banner_text">To sporočilo bo samodejno izbrisano v %1$s</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Zapustili boste aplikacijo in se pomaknili do:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">Ne sprašuj več</string>
@@ -126,13 +128,13 @@
   <string name="message_details_header_to">Za</string>
   <string name="message_details_header_cc">Kp</string>
   <string name="message_details_header_bcc">Skp</string>
-  <string name="schedule_message_sent_at_banner_title">This message will be sent</string>
-  <string name="schedule_message_edit_message_button">Edit message</string>
-  <string name="schedule_send_tomorrow">tomorrow at %1$s</string>
-  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
-  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
-  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
-  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
-  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
-  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
+  <string name="schedule_message_sent_at_banner_title">To sporočilo bo poslano</string>
+  <string name="schedule_message_edit_message_button">Uredi sporočilo</string>
+  <string name="schedule_send_tomorrow">jutri ob %1$s</string>
+  <string name="error_cancel_schedule_send_failed">Ni bilo mogoče preklicati načrtovanega časa pošiljanja tega sporočila.</string>
+  <string name="offline_error_cancel_schedule_send_failed">Ni mogoče preklicati načrtovanega sporočila, ko ste brez povezave</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Uredi osnutek</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Prekliči</string>
+  <string name="message_cancel_schedule_send_dialog_title">Uredi in prestavi</string>
+  <string name="message_cancel_schedule_send_dialog_message">Sporočilo se bo premaknilo med osnutke, kjer ga lahko urejate. Čas pošiljanja morate ponovno nastaviti.</string>
 </resources>

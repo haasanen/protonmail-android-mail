@@ -37,6 +37,7 @@
   <string name="bottom_sheet_archive_action">同時封存?</string>
   <string name="bottom_sheet_label_as_title">加上標籤</string>
   <string name="bottom_sheet_label_as_error_fetch">擷取標籤失敗。</string>
+  <string name="bottom_sheet_move_to_error_fetch">Failed to fetch folders.</string>
   <string name="bottom_sheet_label_as_error_apply">套用標籤失敗。</string>
   <string name="bottom_sheet_move_to_action_error">移動操作失敗。</string>
 </resources>

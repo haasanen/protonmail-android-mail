@@ -126,4 +126,6 @@
     <item quantity="other">Expira en %d minutos</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">Expira en menos de un minuto</string>
+  <string name="schedule_send_tomorrow">Mañana, %1$s</string>
+  <string name="schedule_send_today">Hoy, %1$s</string>
 </resources>

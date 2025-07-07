@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Um ou mais destinatários duplicados foram removidos.</string>
   <string name="composer_error_store_draft_subject">Erro ao guardar a linha de assunto</string>
   <string name="composer_error_store_draft_recipients">Erro ao guardar os destinatários deste rascunho</string>
-  <string name="composer_error_loading_draft">O conteúdo deste rascunho não está disponível no momento. A edição anulará qualquer conteúdo pré-existente.</string>
+  <string name="composer_error_loading_draft">O conteúdo deste rascunho não está disponível no momento. A edição não é possível.</string>
   <string name="composer_add_attachments_content_description">Adicionar anexos</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importar de…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Da sua biblioteca de fotografias</string>
@@ -119,7 +119,7 @@
   <string name="composer_remove_recipient_action_item">Remover</string>
   <string name="composer_copy_recipient_action_item">Copiar</string>
   <string name="schedule_send_content_description">Agendar envio</string>
-  <string name="composer_error_retrieving_schedule_send_options"/>
+  <string name="composer_error_retrieving_schedule_send_options">Falha ao gerar os horários para \"agendar envio\".</string>
   <string name="composer_schedule_send_content_description">Agendar o envio</string>
   <string name="composer_schedule_send_tomorrow_title">Amanhã</string>
   <string name="composer_schedule_send_monday_title">Segunda-feira</string>
@@ -127,13 +127,14 @@
   <string name="composer_schedule_send_custom_description">Escolher data e hora</string>
   <string name="composer_error_send_message">Erro no envio da mensagem</string>
   <string name="composer_schedule_send_previously_set">Definido anteriormente</string>
-  <string name="composer_schedule_send_custom_time_label">Horário</string>
+  <string name="composer_schedule_send_custom_time_label">Hora</string>
   <string name="composer_schedule_send_custom_date_label">Data</string>
   <string name="composer_schedule_send_dialog_ok">Ok</string>
   <string name="composer_schedule_send_dialog_enter_time">Introduzir horário</string>
   <string name="composer_change_sender_title">De</string>
-  <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Não é possível alterar o remetente porque não foi possível obter os endereços do utilizador. Tente novamente.</string>
   <string name="composer_change_sender_invalid_address">O endereço selecionado não pode ser utilizado para envio</string>
   <string name="composer_change_sender_unexpected_failure">Ocorreu um erro ao mudar o remetente. Por favor, tente novamente.</string>
-  <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
+  <string name="composer_change_sender_error_refreshing_body">Erro ao atualizar o corpo após a alteração do remetente. A assinatura pode estar desatualizada.</string>
+  <string name="composer_loading_attachments_error">Erro ao carregar os anexos</string>
 </resources>

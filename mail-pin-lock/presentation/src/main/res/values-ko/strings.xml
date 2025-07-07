@@ -44,10 +44,8 @@
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">15분 후</string>
   <string name="mail_pinlock_settings_autolock_description_thirty_minutes">30분 후</string>
   <string name="mail_pinlock_settings_autolock_description_sixty_minutes">60분 후</string>
-  <string name="mail_settings_auto_lock_update_error">설정 업데이트 중 실패</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">PIN 도트</string>
-  <string name="mail_settings_pin_insertion_button_create">확인</string>
-  <string name="mail_settings_pin_insertion_button_confirm">다음</string>
+  <string name="mail_settings_pin_insertion_confirm_button">확인</string>
+  <string name="mail_settings_pin_insertion_next_button">다음</string>
   <string name="mail_settings_pin_insertion_error_no_match">PIN 코드가 일치하지 않습니다.</string>
   <plurals name="mail_settings_pin_insertion_error_wrong_code_threshold">
     <item quantity="other">%s번 더 시도하면 로그아웃됩니다.</item>

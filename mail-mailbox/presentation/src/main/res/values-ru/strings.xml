@@ -102,8 +102,8 @@
   <string name="mailbox_search_placeholder_text">Поиск сообщений</string>
   <string name="mailbox_search_no_results_title">Совпадений не найдено</string>
   <string name="mailbox_search_no_results_explanation">Вы можете изменить свой поисковый запрос либо удалить его.</string>
-  <string name="mailbox_action_button_clear_trash">Очистить Корзину</string>
-  <string name="mailbox_action_button_clear_spam">Очистить Спам</string>
+  <string name="mailbox_action_button_clear_trash">Empty trash</string>
+  <string name="mailbox_action_button_clear_spam">Empty spam</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Перейдите на платный тариф, чтобы автоматически удалять сообщения, которые находятся в корзине или спаме более 30 дней</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Подробнее</string>
   <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Сообщения в корзине и спаме старше 30 дней будут автоматически удалены.</string>
@@ -150,4 +150,6 @@
     <item quantity="other">Срок истекает через %d минут</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">Срок истекает менее чем через минуту</string>
+  <string name="schedule_send_tomorrow">Завтра, %1$s</string>
+  <string name="schedule_send_today">Сегодня, %1$s</string>
 </resources>

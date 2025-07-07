@@ -39,11 +39,13 @@
   <string name="auth_password_placeholder">Jelszó</string>
   <string name="auth_login_assistive_text">Kérem, adja meg a Proton e-mail címét vagy felhasználónevét.</string>
   <string name="auth_account_details">Kérem, adja meg Proton fiókja részleteit.</string>
-  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Hibás jelszó, jelmondat vagy kulcssó.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problem signing you in. Please try again.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Emberi ellenőrzés szükséges.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Helytelen bejelentkezési adatok. Kérem, próbálja újra.</string>
-  <string name="auth_login_error_invalid_action_unsupported_tfa">Az azonosítás második lépcsője nem támogatott.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Incorrect username or password. Please try again.</string>
   <string name="auth_second_factor_title">Kétlépcsős hitelesítés</string>
+  <string name="auth_second_factor_subtitle">Többféle kétlépcsős hitelesítést is beállított. Válassza ki, hogyan szeretné folytatni a hitelesítést.</string>
+  <string name="auth_second_factor_tab_security_key">Hitelesítési kulcs</string>
+  <string name="auth_second_factor_tab_otp">Egyszer használatos kód</string>
   <string name="auth_second_factor_authenticate">Azonosítás</string>
   <string name="auth_second_factor_totp_input_help">Írja be a 6 jegyű kódot.</string>
   <string name="auth_second_factor_totp_input_label">Kétlépcsős kód</string>
@@ -51,6 +53,8 @@
   <string name="auth_second_factor_recovery_label">Helyreállítási kód</string>
   <string name="auth_second_factor_switch_to_recovery">Helyreállítási kód használata</string>
   <string name="auth_second_factor_switch_to_totp">Kétlépcsős kód használata</string>
+  <string name="auth_second_factor_insert_security_key">Csatlakoztassa a fiókjához való hitelesítési kulcsot.</string>
+  <string name="auth_second_factor_insert_security_key_link">További információk</string>
   <string name="auth_two_pass_title">Postafiókja feloldása</string>
   <string name="auth_two_pass_input_label">E-mail jelszó</string>
   <string name="auth_two_pass_unlock">Feloldás</string>
@@ -93,11 +97,19 @@
   <string name="auth_signup_validation_password">A jelszó nem lehet üres.</string>
   <string name="auth_signup_validation_passwords_do_not_match">A jelszavak nem egyeznek.</string>
   <string name="auth_signup_validation_password_input_invalid">Jelszó érvénytelen.</string>
-  <string name="auth_signup_validation_username">A felhasználónév nem lehet üres.</string>
+  <string name="auth_signup_validation_username">Please enter a username</string>
   <string name="auth_signup_validation_email">Az e-mail nem lehet üres.</string>
   <string name="auth_signup_validation_username_input_invalid">Felhasználónév érvénytelen.</string>
   <string name="auth_signup_validation_email_input_invalid">Felhasználónév érvénytelen.</string>
   <string name="auth_signup_countries_search">Ország keresése</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Nem sikerült beállítani a felhasználót.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Nem sikerült beállítani a címet.</string>
+  <string name="auth_fido_security_keys_error">Error fetching security keys, please try again.</string>
+  <string name="auth_fido_security_keys_title">Security keys</string>
+  <string name="auth_fido_manage_security_keys_info">To manage, add, or remove security keys, please use the Proton web application. %s</string>
+  <string name="auth_fido_security_keys_empty_list">There are no security keys registered to your account. To add a security key use the Proton web application. %s</string>
+  <string name="auth_fido_security_keys_registered">These are the security keys registered to your account.</string>
+  <string name="auth_fido_manage_security_keys">Manage security keys</string>
+  <string name="auth_fido_add_security_key">Add security key</string>
+  <string name="auth_fido_security_keys_learn_more">Learn more</string>
 </resources>

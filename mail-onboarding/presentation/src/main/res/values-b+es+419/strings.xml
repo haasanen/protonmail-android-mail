@@ -31,13 +31,13 @@
   <string name="onboarding_welcome_headline">Rediseñada desde la base.</string>
   <string name="onboarding_welcome_description">Gracias por hacer parte de este grupo limitado de primeros probadores para la versión beta. Gracias a sus comentarios, podemos mejorar Proton Mail antes de su lanzamiento oficial.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Completamente rediseñada para más rendimiento y velocidad</string>
+  <string name="onboarding_rebuilt_title">Completamente rediseñado para más rendimiento y velocidad</string>
   <string name="onboarding_rebuilt_headline">Nueva bandeja de entrada por descubrir</string>
-  <string name="onboarding_rebuilt_description">La nueva Proton Mail es más rápida con un diseño dinámico y funciones muy solicitadas, como el modo sin conexión.</string>
+  <string name="onboarding_rebuilt_description">El nuevo Proton Mail es más rápido con un diseño dinámico y funciones muy solicitadas, como el modo sin conexión.</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">¡Gracias por su participación!</string>
   <string name="onboarding_feedback_headline">Su opinión es importante</string>
-  <string name="onboarding_feedback_description">Implementaremos nuevas funciones en los próximos meses. Le invitamos a probar la aplicación y hacer clic en «Notificar un problema» para contarnos sobre sus sugerencias de mejora. ¡Su contribución es preciosa!</string>
+  <string name="onboarding_feedback_description">Implementaremos nuevas funciones en los próximos meses. Le invitamos a probar la aplicación y hacer clic en «Notificar un problema» para contarnos sobre sus sugerencias de mejora. ¡Su contribución es invaluable!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Siguiente</string>
   <string name="onboarding_get_started">Comenzar la prueba</string>

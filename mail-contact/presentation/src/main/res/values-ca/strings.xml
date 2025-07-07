@@ -88,4 +88,6 @@
   <string name="contact_details_quick_action_call">Truca</string>
   <string name="contact_details_quick_action_share">Comparteix</string>
   <string name="contact_details_action_copy_label">Copia</string>
+  <string name="contact_details_action_message_label">Missatge</string>
+  <string name="contact_details_action_call_label">Trucada</string>
 </resources>

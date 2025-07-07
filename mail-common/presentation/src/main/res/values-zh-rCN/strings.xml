@@ -40,6 +40,7 @@
   <string name="action_unstar_description">取消星标</string>
   <string name="action_label_description">加标签</string>
   <string name="action_move_description">移动到</string>
+  <string name="action_inbox_description">移至收件箱</string>
   <string name="action_trash_description">移至回收站</string>
   <string name="action_delete_description">刪除</string>
   <string name="action_archive_description">归档</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">对此发件人今后的邮件设置收信规则</string>
   <string name="action_save_attachments_description">保存附件</string>
   <string name="action_more_description">更多</string>
-  <string name="action_inbox_description">收件箱</string>
   <string name="action_pin_description">固定</string>
   <string name="action_unpin_description">取消固定</string>
   <string name="action_reply_content_description">回复</string>

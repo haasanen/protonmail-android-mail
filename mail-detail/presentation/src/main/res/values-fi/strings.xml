@@ -37,7 +37,8 @@
     <item quantity="other">%d Liitettä</item>
   </plurals>
   <string name="hide_details">Piilota tiedot</string>
-  <string name="undisclosed_recipients">Piilotetut vastaanottajat</string>
+  <string name="undisclosed_recipients">…</string>
+  <string name="collapsed_header_draft">(Luonnos)</string>
   <string name="error_mark_as_read_failed">Lukemattomaksi merkitseminen epäonnistui. Yritä uudelleen.</string>
   <string name="error_mark_as_unread_failed">Merkintä lukemattomaksi epäonnistui. Yritä uudelleen.</string>
   <string name="error_star_operation_failed">Merkintä tähdellä epäonnistui. Yritä uudelleen.</string>
@@ -53,6 +54,7 @@
   <string name="message_moved_to_selected_destination">Viesti siirrettiin kohteeseen %1$s</string>
   <string name="error_move_message_failed">Viestin siirto epäonnistui. Yritä uudelleen.</string>
   <string name="conversation_moved_to_trash">Keskustelu siirrettiin roskakoriin</string>
+  <string name="conversation_moved_to_inbox">Keskustelu siirrettiin saapuneisiin</string>
   <string name="conversation_moved_to_selected_destination">Keskustelu siirrettiin kohteeseen %1$s</string>
   <string name="conversation_moved_to_spam">Keskustelu siirrettiin roskapostiin</string>
   <string name="conversation_moved_to_archive">Keskustelu siirrettiin arkistoon</string>
@@ -124,11 +126,11 @@
   <string name="message_details_header_bcc">Piilokopio</string>
   <string name="schedule_message_sent_at_banner_title">Tämä viesti lähetetään</string>
   <string name="schedule_message_edit_message_button">Muokkaa viestiä</string>
-  <string name="schedule_send_tomorrow">tomorrow at %1$s</string>
+  <string name="schedule_send_tomorrow">huomenna klo %1$s</string>
   <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
   <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
   <string name="message_cancel_schedule_send_dialog_confim_button">Muokkaa luonnosta</string>
   <string name="message_cancel_schedule_send_dialog_cancel_button">Peruuta</string>
   <string name="message_cancel_schedule_send_dialog_title">Muokkaa ja ajoita uudelleen</string>
-  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
+  <string name="message_cancel_schedule_send_dialog_message">Viesti siirretään luonnoksiin, jotta voit muokata sitä. Joudut ajoittamaan sen lähettämisen uudelleen.</string>
 </resources>

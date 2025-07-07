@@ -40,6 +40,7 @@
   <string name="action_unstar_description">Odstrániť hviezdičku</string>
   <string name="action_label_description">Označiť ako</string>
   <string name="action_move_description">Presunúť do</string>
+  <string name="action_inbox_description">Presunúť do priečinka Doručená pošta</string>
   <string name="action_trash_description">Presunúť do koša</string>
   <string name="action_delete_description">Odstrániť</string>
   <string name="action_archive_description">Archivovať</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Nastaviť akciu pre budúce emaily od tohto odosielateľa</string>
   <string name="action_save_attachments_description">Uložiť prílohy</string>
   <string name="action_more_description">Viac</string>
-  <string name="action_inbox_description">Doručená pošta</string>
   <string name="action_pin_description">Pripnúť</string>
   <string name="action_unpin_description">Odopnúť</string>
   <string name="action_reply_content_description">Odpovedať</string>

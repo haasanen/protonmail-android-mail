@@ -37,6 +37,7 @@
   <string name="bottom_sheet_archive_action">Również archiwizuj?</string>
   <string name="bottom_sheet_label_as_title">Oznacz jako</string>
   <string name="bottom_sheet_label_as_error_fetch">Nie udało się pobrać etykiet.</string>
+  <string name="bottom_sheet_move_to_error_fetch">Nie udało się pobrać folderów.</string>
   <string name="bottom_sheet_label_as_error_apply">Nie udało się zastosować etykiet.</string>
   <string name="bottom_sheet_move_to_action_error">Przeniesienie nie powiodło się.</string>
 </resources>

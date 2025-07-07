@@ -39,11 +39,13 @@
   <string name="auth_password_placeholder">Mot de passe</string>
   <string name="auth_login_assistive_text">Saisissez votre adresse e-mail Proton ou votre nom d\'utilisateur.</string>
   <string name="auth_account_details">Saisissez les informations de votre compte Proton.</string>
-  <string name="auth_login_error_invalid_action_cannot_unlock_keys">La clé de salage, la phrase secrète ou le mot de passe n\'est pas correct.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Un problème est survenu lors de votre connexion. Nous vous invitons à réessayer.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Une vérification humaine est nécessaire.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Les identifiants de connexion ne sont pas corrects. Nous vous invitons à réessayer.</string>
-  <string name="auth_login_error_invalid_action_unsupported_tfa">Authentification à deux facteurs non prise en charge.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Le nom d\'utilisateur ou le mot de passe n\'est pas correct. Veuillez réessayer.</string>
   <string name="auth_second_factor_title">Authentification à deux facteurs</string>
+  <string name="auth_second_factor_subtitle">Plusieurs mécanismes A2F sont configurés sur votre compte. Choisissez la manière dont vous voulez confirmer votre identité.</string>
+  <string name="auth_second_factor_tab_security_key">Clé de sécurité</string>
+  <string name="auth_second_factor_tab_otp">Code à usage unique</string>
   <string name="auth_second_factor_authenticate">S\'authentifier</string>
   <string name="auth_second_factor_totp_input_help">Saisissez le code à 6 chiffres.</string>
   <string name="auth_second_factor_totp_input_label">Code à deux facteurs</string>
@@ -51,6 +53,8 @@
   <string name="auth_second_factor_recovery_label">Code de récupération</string>
   <string name="auth_second_factor_switch_to_recovery">Utiliser un code de récupération</string>
   <string name="auth_second_factor_switch_to_totp">Utiliser un code à deux facteurs</string>
+  <string name="auth_second_factor_insert_security_key">Présentez une clé de sécurité liée à votre compte Proton. </string>
+  <string name="auth_second_factor_insert_security_key_link">En savoir plus</string>
   <string name="auth_two_pass_title">Déverrouillez votre messagerie</string>
   <string name="auth_two_pass_input_label">Mot de passe de la messagerie</string>
   <string name="auth_two_pass_unlock">Déverrouiller</string>
@@ -93,11 +97,19 @@
   <string name="auth_signup_validation_password">Le mot de passe ne doit pas être vide.</string>
   <string name="auth_signup_validation_passwords_do_not_match">Les mots de passe ne correspondent pas.</string>
   <string name="auth_signup_validation_password_input_invalid">La saisie du mot de passe n\'est pas valide.</string>
-  <string name="auth_signup_validation_username">Le nom d\'utilisateur ne doit pas être vide.</string>
+  <string name="auth_signup_validation_username">Saisissez un nom d\'utilisateur</string>
   <string name="auth_signup_validation_email">L\'adresse e-mail ne doit pas être vide.</string>
   <string name="auth_signup_validation_username_input_invalid">La saisie du nom d’utilisateur n\'est pas valide.</string>
   <string name="auth_signup_validation_email_input_invalid">La saisie du nom d’utilisateur n\'est pas valide.</string>
   <string name="auth_signup_countries_search">Rechercher un pays</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">L\'utilisateur n\'a pas pu être configuré.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">L\'adresse n\'a pas pu être configurée.</string>
+  <string name="auth_fido_security_keys_error">Les clés de sécurité n\'ont pas pu être récupérées. Nous vous invitons à réessayer.</string>
+  <string name="auth_fido_security_keys_title">Clés de sécurité</string>
+  <string name="auth_fido_manage_security_keys_info">Pour gérer, ajouter ou retirer des clés de sécurité, utilisez l\'application web de Proton. %s</string>
+  <string name="auth_fido_security_keys_empty_list">Il n\'y a aucune clé de sécurité enregistrée pour votre compte. Pour ajouter une clé de sécurité, utilisez l\'application web de Proton. %s</string>
+  <string name="auth_fido_security_keys_registered">Voici les clés de sécurité enregistrées pour votre compte.</string>
+  <string name="auth_fido_manage_security_keys">Gérer les clés de sécurité</string>
+  <string name="auth_fido_add_security_key">Ajouter une clé de sécurité</string>
+  <string name="auth_fido_security_keys_learn_more">En savoir plus</string>
 </resources>

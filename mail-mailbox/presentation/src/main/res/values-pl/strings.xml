@@ -150,4 +150,6 @@
     <item quantity="other">Wygasa za %d minuty</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">Wygasa za mniej niż minutę</string>
+  <string name="schedule_send_tomorrow">Jutro, %1$s</string>
+  <string name="schedule_send_today">Dzisiaj, %1$s</string>
 </resources>

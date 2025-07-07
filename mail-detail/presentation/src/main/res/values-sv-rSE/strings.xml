@@ -37,7 +37,8 @@
     <item quantity="other">%d bilagor</item>
   </plurals>
   <string name="hide_details">Dölj detaljer</string>
-  <string name="undisclosed_recipients">Hemliga mottagare</string>
+  <string name="undisclosed_recipients">…</string>
+  <string name="collapsed_header_draft">(Utkast)</string>
   <string name="error_mark_as_read_failed">Åtgärden Markera som läst misslyckades. Försök igen.</string>
   <string name="error_mark_as_unread_failed">Åtgärd att markera som oläst misslyckades. Försök igen.</string>
   <string name="error_star_operation_failed">Det gick inte att stjärnmärka. Försök igen.</string>
@@ -53,6 +54,7 @@
   <string name="message_moved_to_selected_destination">Meddelandet flyttades till %1$s</string>
   <string name="error_move_message_failed">Misslyckades att flytta meddelande. Försök igen.</string>
   <string name="conversation_moved_to_trash">Konversation flyttad till papperskorg</string>
+  <string name="conversation_moved_to_inbox">Konversation flyttad till inkorg</string>
   <string name="conversation_moved_to_selected_destination">Konversation flyttad till %1$s</string>
   <string name="conversation_moved_to_spam">Konversation flyttad till skräppost</string>
   <string name="conversation_moved_to_archive">Konversation flyttad till arkiv</string>

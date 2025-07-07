@@ -40,6 +40,7 @@
   <string name="action_unstar_description">Ster verwijderen</string>
   <string name="action_label_description">Label als</string>
   <string name="action_move_description">Verplaats naar</string>
+  <string name="action_inbox_description">Naar Postvak IN verplaatsen</string>
   <string name="action_trash_description">Verplaats naar prullenbak</string>
   <string name="action_delete_description">Verwijderen</string>
   <string name="action_archive_description">Archief</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Actie instellen voor toekomstige e-mails van deze afzender</string>
   <string name="action_save_attachments_description">Bijlagen opslaan</string>
   <string name="action_more_description">Meer</string>
-  <string name="action_inbox_description">Postvak</string>
   <string name="action_pin_description">Vastmaken</string>
   <string name="action_unpin_description">Losmaken</string>
   <string name="action_reply_content_description">Beantwoorden</string>

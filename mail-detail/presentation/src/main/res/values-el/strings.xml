@@ -37,7 +37,8 @@
     <item quantity="other">%d Συνημμένα</item>
   </plurals>
   <string name="hide_details">Απόκρυψη λεπτομερειών</string>
-  <string name="undisclosed_recipients">Μη κοινοποιημένοι παραλήπτες</string>
+  <string name="undisclosed_recipients">…</string>
+  <string name="collapsed_header_draft">(Πρόχειρο)</string>
   <string name="error_mark_as_read_failed">Αποτυχία σήμανσης ως διαβασμένου. Παρακαλούμε προσπαθήστε ξανά.</string>
   <string name="error_mark_as_unread_failed">Αποτυχία σήμανσης ως μη διαβασμένου. Παρακαλούμε ξαναδοκιμάστε.</string>
   <string name="error_star_operation_failed">Η λειτουργία προσθήκης αστεριού απέτυχε. Παρακαλούμε προσπαθήστε ξανά.</string>
@@ -53,6 +54,7 @@
   <string name="message_moved_to_selected_destination">Το μήνυμα μετακινήθηκε στα %1$s</string>
   <string name="error_move_message_failed">Η μετακινηση μυνημάτων απέτυχε. Παρακαλούμε προσπαθήστε ξανά.</string>
   <string name="conversation_moved_to_trash">Η συνομιλία μετακινήθηκε στα Διαγραμμένα</string>
+  <string name="conversation_moved_to_inbox">Η συνομιλία μεταφέρθηκε στα Εισερχόμενα</string>
   <string name="conversation_moved_to_selected_destination">Η συνομιλία μετακινήθηκε στο %1$s</string>
   <string name="conversation_moved_to_spam">Η συνομιλία μεταφέρθηκε στα Ενοχλητικά</string>
   <string name="conversation_moved_to_archive">Η συνομιλία μετακινήθηκε στα Αρχειοθετημένα</string>

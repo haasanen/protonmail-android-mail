@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Penerima yang terduplikasi dihapus</string>
   <string name="composer_error_store_draft_subject">Baris subjek tidak disimpan</string>
   <string name="composer_error_store_draft_recipients">Gagal menyimpan draf penerima</string>
-  <string name="composer_error_loading_draft">Konten draf ini sedang tidak tersedia. Dengan menyunting pesan, isi draf yang telah ada sebelumnya akan tertimpa.</string>
+  <string name="composer_error_loading_draft">Konten draf ini sedang tidak tersedia saat ini, penyuntingan tidak dimungkinkan.</string>
   <string name="composer_add_attachments_content_description">Tambah lampiran</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Impor dari…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Dari pustaka foto Anda</string>
@@ -126,13 +126,14 @@
   <string name="composer_schedule_send_custom_description">Pilih waktu dan tanggal</string>
   <string name="composer_error_send_message">Kesalahan mengirim pesan</string>
   <string name="composer_schedule_send_previously_set">Sebelumnya diatur</string>
-  <string name="composer_schedule_send_custom_time_label">Time</string>
-  <string name="composer_schedule_send_custom_date_label">Date</string>
-  <string name="composer_schedule_send_dialog_ok">Ok</string>
-  <string name="composer_schedule_send_dialog_enter_time">Enter time</string>
-  <string name="composer_change_sender_title">From</string>
-  <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
-  <string name="composer_change_sender_invalid_address">The selected address can not be used for sending</string>
-  <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
-  <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
+  <string name="composer_schedule_send_custom_time_label">Waktu</string>
+  <string name="composer_schedule_send_custom_date_label">Tanggal</string>
+  <string name="composer_schedule_send_dialog_ok">Oke</string>
+  <string name="composer_schedule_send_dialog_enter_time">Masukkan nama</string>
+  <string name="composer_change_sender_title">Dari</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Pengirim tidak dapat diubah karena alamat pengguna gagal diperoleh. Silakan coba lagi.</string>
+  <string name="composer_change_sender_invalid_address">Alamat yang dipilih tidak dapat digunakan untuk pengiriman</string>
+  <string name="composer_change_sender_unexpected_failure">Terjadi kesalahan pada saat mengubah pengirim. Silakan coba lagi.</string>
+  <string name="composer_change_sender_error_refreshing_body">Badan pesan gagal dimuat ulang setelah pengirim diubah. Tanda tangan yang tertera mungkin telah kedaluwarsa.</string>
+  <string name="composer_loading_attachments_error">Lampiran gagal dimuat</string>
 </resources>

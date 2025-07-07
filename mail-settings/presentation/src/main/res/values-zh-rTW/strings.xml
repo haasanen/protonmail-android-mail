@@ -39,6 +39,7 @@
   <string name="mail_settings_auto_lock">自動鎖定</string>
   <string name="mail_settings_alternative_routing">替代路由</string>
   <string name="mail_settings_app_language">應用程式語言</string>
+  <string name="mail_settings_app_language_sys_default">System default</string>
   <string name="mail_settings_combined_contacts">合併聯絡人</string>
   <string name="mail_settings_swipe_actions">滑動動作</string>
   <string name="mail_settings_combined_contacts_hint">啟用此功能以使用您所有已登入帳號中的聯絡人來自動完成電子郵件位址。</string>
@@ -48,7 +49,7 @@
   <string name="mail_settings_app_customization_notification">通知</string>
   <string name="mail_settings_app_customization_language">語言</string>
   <string name="mail_settings_app_customization_appearance">外觀</string>
-  <string name="mail_settings_app_customization_protection">保護</string>
+  <string name="mail_settings_app_customization_protection">App lock</string>
   <string name="mail_settings_app_customization_protection_enabled_description">已啟用自動鎖定</string>
   <string name="mail_settings_app_customization_protection_disabled_description">已停用自動鎖定</string>
   <string name="mail_settings_app_customization_use_device_contacts">使用裝置通訊錄</string>
@@ -111,47 +112,6 @@
   <string name="mail_settings_notifications_notifications_settings_hint">導覽至系統通知設定值</string>
   <string name="mail_settings_notifications_update_error">更新設定值發生錯誤</string>
   <string name="mail_settings_notifications_loading_error">載入設定值發生錯誤</string>
-  <!-- Auto lock -->
-  <string name="mail_settings_auto_lock_title">自動鎖定</string>
-  <string name="mail_settings_auto_lock_item_title">自動鎖定應用程式</string>
-  <string name="mail_settings_auto_lock_item_description">啟用此功能可讓應用程式自動鎖定，並使用 PIN 碼來解鎖。</string>
-  <string name="mail_settings_auto_lock_change_pin_description">變更 PIN 碼</string>
-  <string name="mail_settings_auto_lock_item_timer_title">自動鎖定計時器</string>
-  <string name="mail_settings_auto_lock_immediately">立即</string>
-  <string name="mail_settings_auto_lock_item_timer_description_five_minutes">5分鐘內未有任何動作</string>
-  <string name="mail_settings_auto_lock_item_timer_description_fifteen_minutes">15分鐘內未有任何動作</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_hour">1小時內未有任何動作</string>
-  <string name="mail_settings_auto_lock_item_timer_description_one_day">1天內未有任何動作</string>
-  <string name="mail_settings_auto_lock_update_error">設定更新時發生錯誤</string>
-  <string name="mail_settings_pin_insertion_input_title">輸入 PIN 碼</string>
-  <string name="mail_settings_pin_insertion_set_title">設定 PIN 碼</string>
-  <string name="mail_settings_pin_insertion_confirm_title">確認個人識別數字代碼</string>
-  <string name="mail_settings_pin_insertion_lock_icon_description">鎖定圖示</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">Pin 點點</string>
-  <string name="mail_settings_pin_insertion_backspace_description">倒退鍵</string>
-  <string name="mail_settings_pin_insertion_biometric_description">生物辨識驗證</string>
-  <string name="mail_settings_pin_insertion_button_create">建立</string>
-  <string name="mail_settings_pin_insertion_button_confirm">確認</string>
-  <string name="mail_settings_pin_insertion_error_no_match">PIN 碼不符.</string>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code">
-    <item quantity="other">最後 %s 次嘗試機會.</item>
-  </plurals>
-  <plurals name="mail_settings_pin_insertion_error_wrong_code_ultimatum">
-    <item quantity="other">%s 次嘗試錯誤後將清除資料。</item>
-  </plurals>
-  <string name="mail_settings_pin_insertion_error_unknown">驗證 PIN 碼時出了一些錯誤。</string>
-  <string name="mail_settings_pin_insertion_signout_text">登出</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_title">登出</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_description">您確定要登出嗎？</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_confirm">是</string>
-  <string name="mail_settings_pin_insertion_signout_dialog_cancel">否</string>
-  <string name="mail_settings_pin_insertion_created_success">PIN 碼成功創建。</string>
-  <string name="mail_settings_pin_insertion_changed_success">PIN 碼變更成功。</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">發生錯誤，請再試一次。</string>
-  <!-- strings used for biometric enrollment -->
-  <string name="no_biometric_data_enrolled">未註冊任何生物特徵辨識資料</string>
-  <string name="log_in_using_biometric_credential">使用您的生物特徵辨識認證解鎖</string>
-  <string name="unlock_using_biometrics">使用生物特徵辨識解鎖</string>
-  <string name="biometric_error_hw_not_available">無適用的生物特徵辨識硬體</string>
 </resources>

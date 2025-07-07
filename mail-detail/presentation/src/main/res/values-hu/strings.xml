@@ -37,7 +37,8 @@
     <item quantity="other">%d Mellékletek</item>
   </plurals>
   <string name="hide_details">Részletek elrejtése</string>
-  <string name="undisclosed_recipients">Meg nem nevezett címzettek</string>
+  <string name="undisclosed_recipients">…</string>
+  <string name="collapsed_header_draft">(Piszkozat)</string>
   <string name="error_mark_as_read_failed">Olvasottnak megjelölés művelet sikertelen. Kérjük, próbálja újra.</string>
   <string name="error_mark_as_unread_failed">Olvasatlanként megjelölés sikertelen. Próbálja újra.</string>
   <string name="error_star_operation_failed">Megcsillagozás sikertelen. Próbálja újra.</string>
@@ -53,6 +54,7 @@
   <string name="message_moved_to_selected_destination">Üzenet áthelyezve a %1$s mappába</string>
   <string name="error_move_message_failed">Az üzenet áthelyezése sikertelen. Próbálja újra.</string>
   <string name="conversation_moved_to_trash">A beszélgetés átkerült a lomtárba</string>
+  <string name="conversation_moved_to_inbox">A beszélgetés áthelyezve a beérkezett üzenetekhez</string>
   <string name="conversation_moved_to_selected_destination">A beszélgetés átkerült a %1$s mappába</string>
   <string name="conversation_moved_to_spam">Beszélgetés áthelyezve a levélszemétbe.</string>
   <string name="conversation_moved_to_archive">Beszélgetés áthelyezve az archívumba</string>

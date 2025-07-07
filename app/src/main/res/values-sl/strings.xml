@@ -39,7 +39,7 @@
   <string name="label_deleted">Oznaka izbrisana</string>
   <string name="app_locked">Aplikacija zaklenjena</string>
   <string name="use_pin_instead">Namesto tega uporabi kodo PIN</string>
-  <string name="mailbox_message_scheduling">Scheduling message…</string>
-  <string name="mailbox_message_scheduling_offline">Offline: message queued for scheduling</string>
-  <string name="mailbox_message_scheduled_for_sending_success">This message will be sent on %1$s</string>
+  <string name="mailbox_message_scheduling">Načrtovanje sporočila …</string>
+  <string name="mailbox_message_scheduling_offline">Ni povezave: sporočilo čaka na načrtovanje</string>
+  <string name="mailbox_message_scheduled_for_sending_success">To sporočilo bo poslano %1$s</string>
 </resources>

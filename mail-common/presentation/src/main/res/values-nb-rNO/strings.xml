@@ -40,6 +40,7 @@
   <string name="action_unstar_description">Fjern stjernemerking</string>
   <string name="action_label_description">Merk som</string>
   <string name="action_move_description">Flytt til</string>
+  <string name="action_inbox_description">Flytt til innboks</string>
   <string name="action_trash_description">Flytt til papirkurven</string>
   <string name="action_delete_description">Slett</string>
   <string name="action_archive_description">Arkiver</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Velg handling for fremtidige e-poster fra denne avsenderen.</string>
   <string name="action_save_attachments_description">Lagre vedlegg</string>
   <string name="action_more_description">Mer</string>
-  <string name="action_inbox_description">Innboks</string>
   <string name="action_pin_description">Fest</string>
   <string name="action_unpin_description">Løsne</string>
   <string name="action_reply_content_description">Svar</string>

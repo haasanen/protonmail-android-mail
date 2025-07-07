@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Duplicerad mottagare borttagen</string>
   <string name="composer_error_store_draft_subject">Ämnesrad sparades inte</string>
   <string name="composer_error_store_draft_recipients">Det gick inte att lagra utkastets mottagare</string>
-  <string name="composer_error_loading_draft">Innehållet i detta utkast är inte tillgängligt just nu. Redigering kommer att åsidosätta allt befintligt innehåll.</string>
+  <string name="composer_error_loading_draft">Innehållet i detta utkast är inte tillgängligt för närvarande, redigering är inte möjlig.</string>
   <string name="composer_add_attachments_content_description">Lägg till bilagor</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importera från…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Från ditt fotobibliotek</string>
@@ -136,4 +136,5 @@
   <string name="composer_change_sender_invalid_address">Den valda adressen kan inte användas för att skicka</string>
   <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
   <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
+  <string name="composer_loading_attachments_error">Misslyckades ladda bilagor</string>
 </resources>

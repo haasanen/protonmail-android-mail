@@ -40,6 +40,7 @@
   <string name="action_unstar_description">Poista tähti</string>
   <string name="action_label_description">Merkitse tunnisteella</string>
   <string name="action_move_description">Siirrä kohteeseen</string>
+  <string name="action_inbox_description">Siirrä saapuneisiin</string>
   <string name="action_trash_description">Siirrä roskakoriin</string>
   <string name="action_delete_description">Poista</string>
   <string name="action_archive_description">Arkistoi</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Aseta tämän lähettäjän viesteille jatkossa suoritettava toiminto</string>
   <string name="action_save_attachments_description">Tallenna liitteet</string>
   <string name="action_more_description">Lisää</string>
-  <string name="action_inbox_description">Saapuneet</string>
   <string name="action_pin_description">Kiinnitä</string>
   <string name="action_unpin_description">Irrota</string>
   <string name="action_reply_content_description">Vastaa</string>

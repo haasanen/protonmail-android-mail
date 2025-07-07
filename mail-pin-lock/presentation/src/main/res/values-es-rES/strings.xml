@@ -44,10 +44,8 @@
   <string name="mail_pinlock_settings_autolock_description_fifteen_minutes">Después de 15 minutos</string>
   <string name="mail_pinlock_settings_autolock_description_thirty_minutes">Después de 30 minutos</string>
   <string name="mail_pinlock_settings_autolock_description_sixty_minutes">Después de 60 minutos</string>
-  <string name="mail_settings_auto_lock_update_error">Error al actualizar los ajustes</string>
-  <string name="mail_settings_pin_insertion_pin_dot_description">Código PIN de puntos</string>
-  <string name="mail_settings_pin_insertion_button_create">Confirmar</string>
-  <string name="mail_settings_pin_insertion_button_confirm">Siguiente</string>
+  <string name="mail_settings_pin_insertion_confirm_button">Confirmar</string>
+  <string name="mail_settings_pin_insertion_next_button">Siguiente</string>
   <string name="mail_settings_pin_insertion_error_no_match">Los códigos PIN no coinciden.</string>
   <plurals name="mail_settings_pin_insertion_error_wrong_code_threshold">
     <item quantity="one">%s intento restante antes de cerrar sesión.</item>

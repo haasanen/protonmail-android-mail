@@ -46,7 +46,7 @@
   <string name="account_recovery_reset">Nollaa salasana</string>
   <!-- Account Recovery Info -->
   <string name="account_recovery_info_grace_title">Salasanan nollausta pyydettiin</string>
-  <string name="account_recovery_info_grace_subtitle">You can reset your password in %1s.</string>
+  <string name="account_recovery_info_grace_subtitle">Voit nollata salasanasi %1s kuluttua.</string>
   <string name="account_recovery_info_grace_description">Odotamme 72 tuntia ennen pyyntöjen hyväksyntää varmistaaksemme juuri sinun pyytäneen salasanasi nollausta.\n\nJos et pyytänyt nollausta, peru pyyntö nyt.</string>
   <string name="account_recovery_info_cancelled_title">Salasanan nollaus peruttiin</string>
   <string name="account_recovery_info_cancelled_subtitle">Salasanan nollausta pyydettiin tilille %1s.</string>

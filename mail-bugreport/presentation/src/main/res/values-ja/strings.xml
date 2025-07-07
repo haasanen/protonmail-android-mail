@@ -25,7 +25,7 @@
   <string name="report_a_problem_include_errors_description">ログには、エラーに至ったアクションがすべて表示されます。\nバグの修正に役立てる目的でのみ使用します。</string>
   <string name="report_a_problem_summary_title">概要（必須）</string>
   <string name="report_a_problem_summary_description">例：大きな添付ファイルがあるメールを開くとMailアプリがクラッシュします。</string>
-  <string name="report_a_problem_field_length_error">This field must be more than 10 characters</string>
+  <string name="report_a_problem_field_length_error">このフィールドは 10 文字以上なければなりません</string>
   <string name="report_a_problem_expected_results_title">期待される結果</string>
   <string name="report_a_problem_expected_results_description">例：メールを開くと、メッセージの内容と添付ファイルが表示されます。</string>
   <string name="report_a_problem_repro_steps_title">再現する手順</string>
@@ -38,5 +38,5 @@
   <string name="report_a_problem_leave_dialog_close_btn">閉じる</string>
   <string name="report_a_problem_success">ご報告ありがとうございます！カスタマーサポートよりご連絡いたします。</string>
   <string name="report_a_problem_generic_error">エラーが発生しました。再度お試しください。</string>
-  <string name="report_a_problem_offline_error">You are currently offline. Please try again with internet connection.</string>
+  <string name="report_a_problem_offline_error">現在オフラインです。インターネットに接続してもう一度お試しください。</string>
 </resources>

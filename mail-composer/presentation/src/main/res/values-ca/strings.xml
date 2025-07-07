@@ -36,10 +36,10 @@
   <string name="composer_error_duplicate_recipient">S\'han eliminat un o més destinataris duplicats.</string>
   <string name="composer_error_store_draft_subject">L\'assumpte no s\'ha desat</string>
   <string name="composer_error_store_draft_recipients">S\'ha produït un error en desar els destinataris de l\'esborrany.</string>
-  <string name="composer_error_loading_draft">El contingut d\'aquest esborrany no està disponible en aquest moment. L\'edició substituirà qualsevol contingut preexistent.</string>
+  <string name="composer_error_loading_draft">El contingut d\'aquest esborrany no està disponible en aquest moment, no es pot editar.</string>
   <string name="composer_add_attachments_content_description">Afegiu fitxers adjunts</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importar des de…</string>
-  <string name="composer_add_attachments_bottom_sheet_from_photos">Des de la vostra biblioteca fotogràfica</string>
+  <string name="composer_add_attachments_bottom_sheet_from_photos">Des de la biblioteca de fotos</string>
   <string name="composer_add_attachments_bottom_sheet_from_camera">Fes una foto nova</string>
   <string name="composer_error_loading_parent_message">No s\'ha pogut carregar la informació del missatge.</string>
   <string name="composer_original_message_quote">Missatge original</string>
@@ -133,7 +133,8 @@
   <string name="composer_schedule_send_dialog_enter_time">Introduïu l\'hora</string>
   <string name="composer_change_sender_title">De</string>
   <string name="composer_error_change_sender_failed_getting_addresses">No es pot canviar el remitent perquè no s\'han pogut obtenir les adreces de l\'usuari. Torneu-ho a provar.</string>
-  <string name="composer_change_sender_invalid_address">L\'adreça seleccionada no es pot utilitzar per enviar correus</string>
-  <string name="composer_change_sender_unexpected_failure">Alguna cosa ha anat malament mentre es canviava el remitent. Torneu-ho a provar.</string>
-  <string name="composer_change_sender_error_refreshing_body">S\'està actualitzant el cos després d\'un error en el canvi del remitent. És possible que la signatura hagi caducat.</string>
+  <string name="composer_change_sender_invalid_address">L\'adreça seleccionada no es pot utilitzar per a enviar</string>
+  <string name="composer_change_sender_unexpected_failure">S\'ha produït un error en canviar el remitent. Torneu-ho a provar.</string>
+  <string name="composer_change_sender_error_refreshing_body">S\'està actualitzant el cos després d\'un error en el canvi del remitent. És possible que la signatura no estigui actualitzada.</string>
+  <string name="composer_loading_attachments_error">No s\'han pogut carregar els adjunts</string>
 </resources>

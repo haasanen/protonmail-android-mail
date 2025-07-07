@@ -41,7 +41,8 @@
     <item quantity="other">%d załączników</item>
   </plurals>
   <string name="hide_details">Ukryj szczegóły</string>
-  <string name="undisclosed_recipients">Nieznani odbiorcy</string>
+  <string name="undisclosed_recipients">…</string>
+  <string name="collapsed_header_draft">(szkic)</string>
   <string name="error_mark_as_read_failed">Operacja oznaczania jako przeczytane nie powiodła się. Spróbuj ponownie.</string>
   <string name="error_mark_as_unread_failed">Oznaczenie jako nieprzeczytane nie powiodło się. Spróbuj ponownie.</string>
   <string name="error_star_operation_failed">Oznaczenie gwiazdką nie powiodło się. Spróbuj ponownie.</string>
@@ -57,6 +58,7 @@
   <string name="message_moved_to_selected_destination">Wiadomość została przeniesiona do folderu %1$s</string>
   <string name="error_move_message_failed">Przenoszenie wiadomości nie powiodło się. Spróbuj ponownie.</string>
   <string name="conversation_moved_to_trash">Wątek został przeniesiony do kosza</string>
+  <string name="conversation_moved_to_inbox">Wątek został przeniesiony do Odebranych</string>
   <string name="conversation_moved_to_selected_destination">Wątek został przeniesiony do folderu %1$s</string>
   <string name="conversation_moved_to_spam">Wątek został przeniesiony do spamu</string>
   <string name="conversation_moved_to_archive">Wątek został przeniesiony do archiwum</string>

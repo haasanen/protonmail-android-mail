@@ -40,6 +40,7 @@
   <string name="action_unstar_description">No destacar</string>
   <string name="action_label_description">Etiquetar como</string>
   <string name="action_move_description">Mover a</string>
+  <string name="action_inbox_description">Mover a la bandeja de entrada</string>
   <string name="action_trash_description">Mover a la papelera</string>
   <string name="action_delete_description">Eliminar</string>
   <string name="action_archive_description">Archivar</string>
@@ -55,7 +56,6 @@
   <string name="action_sender_emails_description">Definir acciones para futuros correos de este remitente</string>
   <string name="action_save_attachments_description">Guardar adjuntos</string>
   <string name="action_more_description">Más</string>
-  <string name="action_inbox_description">Bandeja de entrada</string>
   <string name="action_pin_description">Anclar</string>
   <string name="action_unpin_description">Desanclar</string>
   <string name="action_reply_content_description">Responder</string>

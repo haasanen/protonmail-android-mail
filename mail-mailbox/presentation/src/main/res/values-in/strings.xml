@@ -75,8 +75,8 @@
   <string name="mailbox_search_placeholder_text">Cari pesan</string>
   <string name="mailbox_search_no_results_title">Tidak ada kecocokan</string>
   <string name="mailbox_search_no_results_explanation">Anda dapat memperbarui atau menghapus kueri pencarian Anda.</string>
-  <string name="mailbox_action_button_clear_trash">Kosongkan Sampah</string>
-  <string name="mailbox_action_button_clear_spam">Kosongkan Spam</string>
+  <string name="mailbox_action_button_clear_trash">Kosongkan sampah</string>
+  <string name="mailbox_action_button_clear_spam">Kosongkan spam</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Tingkatkan akun Anda untuk menghapus email yang telah berada di sampah atau spam selama lebih dari 30 hari secara otomatis</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Pelajari lebih lanjut</string>
   <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Pesan yang telah berada di sampah dan spam selama lebih dari 30 hari akan dihapus secara otomatis.</string>
@@ -114,4 +114,6 @@
     <item quantity="other">Kedaluwarsa dalam %d menit</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">Kedaluwarsa dalam kurang dari satu menit</string>
+  <string name="schedule_send_tomorrow">Besok, %1$s</string>
+  <string name="schedule_send_today">Hari ini, %1$s</string>
 </resources>
