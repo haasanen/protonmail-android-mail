@@ -20,10 +20,13 @@ package ch.protonmail.android.mailsession.data.usecase
 
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.onFailure
+import kotlinx.coroutines.channels.onSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.BackgroundExecutionCallback
+import uniffi.proton_mail_uniffi.BackgroundExecutionResult
 import uniffi.proton_mail_uniffi.BackgroundExecutionStatus
 import uniffi.proton_mail_uniffi.MailSessionStartBackgroundExecutionResult
 import javax.inject.Inject
@@ -34,18 +37,17 @@ class StartBackgroundExecution @Inject constructor(
 
     operator fun invoke(): Flow<BackgroundExecutionStatus> = callbackFlow {
         val callback = object : BackgroundExecutionCallback {
-            override suspend fun onExecutionCompleted(status: BackgroundExecutionStatus) {
-                Timber.tag("BackgroundExecution").d("Background execution status received: $status")
+            override suspend fun onExecutionCompleted(result: BackgroundExecutionResult) {
+                Timber.tag("BackgroundExecution").d("Background execution result received: $result")
 
-                val result = trySend(status)
-                if (result.isSuccess) {
-                    Timber.tag("BackgroundExecution").d("Status sent to flow successfully.")
-                } else {
-                    Timber.tag("BackgroundExecution").d("Failed to send status to flow.")
-                }
+                trySend(result.status)
+                    .onSuccess { Timber.tag("BackgroundExecution").d("Status sent to flow successfully.") }
+                    .onFailure { Timber.tag("BackgroundExecution").d("Failed to send status to flow.") }
+
                 close()
                 Timber.tag("BackgroundExecution").d("Flow closed after sending status.")
             }
+
         }
 
         var activeHandle: MailSessionStartBackgroundExecutionResult? = null

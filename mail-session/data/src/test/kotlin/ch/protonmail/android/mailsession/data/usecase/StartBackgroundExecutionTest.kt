@@ -29,6 +29,7 @@ import io.mockk.runs
 import io.mockk.slot
 import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.BackgroundExecutionCallback
+import uniffi.proton_mail_uniffi.BackgroundExecutionResult
 import uniffi.proton_mail_uniffi.BackgroundExecutionStatus
 import uniffi.proton_mail_uniffi.MailSessionStartBackgroundExecutionResult
 import uniffi.proton_mail_uniffi.ProtonError
@@ -57,7 +58,7 @@ internal class StartBackgroundExecutionTest {
 
         // When
         startBackgroundExecution().test {
-            callback.captured.onExecutionCompleted(BackgroundExecutionStatus.Executed)
+            callback.captured.onExecutionCompleted(BackgroundExecutionResult(BackgroundExecutionStatus.Executed, false))
             assertEquals(BackgroundExecutionStatus.Executed, awaitItem())
             awaitComplete()
         }

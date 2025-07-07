@@ -64,6 +64,7 @@ fun LoginError.getErrorMessage(context: Context): String = when (this) {
     is LoginError.QrLoginEncoding -> "LoginError.QrLoginEncoding"
     is LoginError.WithCodePollFlowFailed -> v1
     is LoginError.UserKeySetupNonPrivate -> "LoginError.UserKeySetupNonPrivate"
+    is LoginError.Incorrect2FaCode -> "LoginError.Incorrect2FaCode"
 }
 
 fun UserApiServiceError.getErrorMessage() = when (this) {
