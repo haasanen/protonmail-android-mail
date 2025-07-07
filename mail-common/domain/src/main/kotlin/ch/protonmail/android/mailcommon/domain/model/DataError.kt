@@ -46,10 +46,6 @@ sealed interface DataError {
 
         data object FailedToDeleteFile : Local
 
-        data object DeletingFailed : Local
-
-        data object DbWriteFailed : Local
-
         data object UnsupportedOperation : Local
 
         data object DiscardDraftError : Local
@@ -65,7 +61,7 @@ sealed interface DataError {
          * Its purpose is to notify the logging tool that a case that should be handled
          * is not and to allow dedicated handling to be put in place.
          */
-        object Unknown : Local
+        data object Unknown : Local
     }
 
     /**
@@ -83,19 +79,12 @@ sealed interface DataError {
         ) : Remote
 
         /**
-         * The API returned a success, but proton code is not OK
-         */
-        data class Proton(val protonError: ProtonError) : Remote
-
-        /**
          * This object is not meant to be actively used.
          * Its purpose is to notify the logging tool that a case that should be handled
          * is not and to allow dedicated handling to be put in place.
          */
-        object Unknown : Remote
+        data object Unknown : Remote
     }
-
-    object AddressNotFound : DataError
 }
 
 fun DataError.isOfflineError() = this is DataError.Remote.Http && this.networkError is NetworkError.NoNetwork
