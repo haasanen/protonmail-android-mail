@@ -31,5 +31,5 @@ interface RustAttachmentDataSource {
     suspend fun addAttachment(fileUri: Uri): Either<AttachmentError, Unit>
     suspend fun addInlineAttachment(fileUri: Uri): Either<AttachmentError, String>
     suspend fun removeAttachment(attachmentId: AttachmentId): Either<DataError, Unit>
-    suspend fun removeInlineAttachment(cid: String): Either<AttachmentError, Unit>
+    suspend fun removeInlineAttachment(cid: String): Either<DataError, Unit>
 }

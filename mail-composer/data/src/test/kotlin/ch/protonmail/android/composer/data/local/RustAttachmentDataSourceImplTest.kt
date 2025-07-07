@@ -362,7 +362,7 @@ class RustAttachmentDataSourceImplTest {
         val result = dataSource.removeInlineAttachment(cid)
 
         // Then
-        assertEquals(rustError.toAttachmentError().left(), result)
+        assertEquals(rustError.toObserveAttachmentsError().left(), result)
     }
 
 }

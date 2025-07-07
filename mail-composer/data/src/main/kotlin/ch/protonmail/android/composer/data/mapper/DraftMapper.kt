@@ -323,7 +323,11 @@ fun DraftSendError.toDraftSendError(): SendDraftError = when (this) {
     }
 }
 
-fun DraftAttachmentUploadError.toObserveAttachmentsError(): DataError = when (this) {
+fun DraftAttachmentUploadError.toObserveAttachmentsError() = this.toDataError()
+
+fun DraftAttachmentUploadError.toDeleteAttachmentError() = this.toDataError()
+
+private fun DraftAttachmentUploadError.toDataError() = when (this) {
     is DraftAttachmentUploadError.Other -> this.v1.toDataError()
     is DraftAttachmentUploadError.Reason -> when (this.v1) {
         DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST,
@@ -332,9 +336,11 @@ fun DraftAttachmentUploadError.toObserveAttachmentsError(): DataError = when (th
         DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS,
         DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE,
         DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT -> DataError.Local.Unknown
+
         DraftAttachmentUploadErrorReason.CRYPTO -> DataError.Local.DecryptionError
     }
 }
+
 
 @MissingRustApi
 // Hardcoded values in the mapping

@@ -27,7 +27,6 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWith
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import kotlinx.coroutines.flow.Flow
-import timber.log.Timber
 import javax.inject.Inject
 
 class AttachmentRepositoryImpl @Inject constructor(
@@ -42,20 +41,7 @@ class AttachmentRepositoryImpl @Inject constructor(
         rustAttachmentDataSource.removeAttachment(attachmentId)
 
     override suspend fun deleteInlineAttachment(contentId: String): Either<DataError, Unit> =
-        rustAttachmentDataSource.removeInlineAttachment(contentId).mapLeft { error ->
-            when (error) {
-                AttachmentError.AttachmentTooLarge,
-                AttachmentError.EncryptionError,
-                AttachmentError.TooManyAttachments,
-                AttachmentError.InvalidState -> {
-                    // All these errors are exposed by the rust lib but do not make sense for observing
-                    Timber.w("Attachment repo got an unexpected error deleting attachments: $error")
-                    DataError.Local.Unknown
-                }
-                AttachmentError.InvalidDraftMessage -> DataError.Local.Unknown
-                is AttachmentError.Other -> error.error
-            }
-        }
+        rustAttachmentDataSource.removeInlineAttachment(contentId)
 
     override suspend fun addAttachment(fileUri: Uri): Either<AttachmentError, Unit> =
         rustAttachmentDataSource.addAttachment(fileUri)
