@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.navigation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -143,6 +145,11 @@ fun Home(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestinationRoute = navBackStackEntry?.destination?.route
 
+    val fabVisibleInLocation by remember {
+        derivedStateOf {
+            navBackStackEntry?.destination?.route == Screen.Mailbox.route
+        }
+    }
     val fabHostState = remember { ProtonFabHostState() }
     val snackbarHostSuccessState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.SUCCESS) }
     val snackbarHostWarningState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.WARNING) }
@@ -473,7 +480,11 @@ fun Home(
             gesturesEnabled = currentDestinationRoute == Screen.Mailbox.route && isDrawerSwipeGestureEnabled.value
         ) {
             Scaffold(
-                floatingActionButton = { FabHost(fabHostState = fabHostState) },
+                floatingActionButton = {
+                    AnimatedVisibility(fabVisibleInLocation) {
+                        FabHost(fabHostState = fabHostState)
+                    }
+                },
                 snackbarHost = {
                     DismissableSnackbarHost(
                         modifier = Modifier.testTag(CommonTestTags.SnackbarHostSuccess),
