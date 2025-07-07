@@ -27,7 +27,7 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import kotlinx.coroutines.flow.Flow
 
 interface RustAttachmentDataSource {
-    suspend fun observeAttachments(): Flow<Either<AttachmentError, List<AttachmentMetadataWithState>>>
+    suspend fun observeAttachments(): Flow<Either<DataError, List<AttachmentMetadataWithState>>>
     suspend fun addAttachment(fileUri: Uri): Either<AttachmentError, Unit>
     suspend fun addInlineAttachment(fileUri: Uri): Either<AttachmentError, String>
     suspend fun removeAttachment(attachmentId: AttachmentId): Either<DataError, Unit>

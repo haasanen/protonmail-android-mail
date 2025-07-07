@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalDraftSendResult
 import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
@@ -51,6 +52,7 @@ import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipient
+import uniffi.proton_mail_uniffi.DraftAttachmentUploadError
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.DraftOpenError
@@ -321,6 +323,18 @@ fun DraftSendError.toDraftSendError(): SendDraftError = when (this) {
     }
 }
 
+fun DraftAttachmentUploadError.toObserveAttachmentsError(): DataError = when (this) {
+    is DraftAttachmentUploadError.Other -> this.v1.toDataError()
+    is DraftAttachmentUploadError.Reason -> when (this.v1) {
+        DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST,
+        DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST_ON_SERVER,
+        DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE,
+        DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS,
+        DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE,
+        DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT -> DataError.Local.Unknown
+        DraftAttachmentUploadErrorReason.CRYPTO -> DataError.Local.DecryptionError
+    }
+}
 
 @MissingRustApi
 // Hardcoded values in the mapping

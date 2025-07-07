@@ -22,6 +22,7 @@ import android.net.Uri
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.composer.data.mapper.toObserveAttachmentsError
 import ch.protonmail.android.mailattachments.data.mapper.toAttachmentError
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.mailattachments.data.mapper.toAttachmentMetadata
@@ -129,7 +130,7 @@ class RustAttachmentDataSourceImplTest {
         } returns AttachmentListAttachmentsResult.Error(protonError)
         coEvery { wrapper.createWatcher(capture(callbackSlot)) } returns AttachmentListWatcherResult.Ok(watcher)
 
-        val expected = protonError.toAttachmentError()
+        val expected = protonError.toObserveAttachmentsError()
 
         // When
         dataSource.observeAttachments().test {

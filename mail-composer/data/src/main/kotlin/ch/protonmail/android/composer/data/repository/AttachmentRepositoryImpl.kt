@@ -21,13 +21,12 @@ package ch.protonmail.android.composer.data.repository
 import android.net.Uri
 import arrow.core.Either
 import ch.protonmail.android.composer.data.local.RustAttachmentDataSource
+import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailattachments.domain.model.AttachmentError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -36,22 +35,7 @@ class AttachmentRepositoryImpl @Inject constructor(
 ) : AttachmentRepository {
 
     override suspend fun observeAttachments(): Flow<Either<DataError, List<AttachmentMetadataWithState>>> =
-        rustAttachmentDataSource.observeAttachments().map {
-            it.mapLeft { attError ->
-                when (attError) {
-                    is AttachmentError.AttachmentTooLarge,
-                    is AttachmentError.EncryptionError,
-                    is AttachmentError.InvalidDraftMessage,
-                    is AttachmentError.TooManyAttachments,
-                    is AttachmentError.InvalidState -> {
-                        // All these errors are exposed by the rust lib but do not make sense for observing
-                        Timber.w("Attachment repo got an unexpected error observing attachments: $attError")
-                        DataError.Local.Unknown
-                    }
-                    is AttachmentError.Other -> attError.error
-                }
-            }
-        }
+        rustAttachmentDataSource.observeAttachments()
 
 
     override suspend fun deleteAttachment(attachmentId: AttachmentId): Either<DataError, Unit> =

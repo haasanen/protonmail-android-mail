@@ -23,6 +23,7 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toAttachmentMetaDataWithState
+import ch.protonmail.android.composer.data.mapper.toObserveAttachmentsError
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.mailattachments.data.mapper.toAttachmentError
 import ch.protonmail.android.mailattachments.data.mapper.toLocalAttachmentId
@@ -56,7 +57,7 @@ class RustAttachmentDataSourceImpl @Inject constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RustAttachmentDataSource {
 
-    override suspend fun observeAttachments(): Flow<Either<AttachmentError, List<AttachmentMetadataWithState>>> =
+    override suspend fun observeAttachments(): Flow<Either<DataError, List<AttachmentMetadataWithState>>> =
         callbackFlow {
             Timber.d("rust-draft-attachments: Starting attachment observation")
 
@@ -66,7 +67,7 @@ class RustAttachmentDataSourceImpl @Inject constructor(
                 override suspend fun onUpdate() {
                     Timber.d("rust-draft-attachments: Attachment list updated")
                     rustDraftDataSource.attachmentList().onLeft { error ->
-                        send(AttachmentError.Other(error).left())
+                        send(error.left())
                     }.onRight { attachmentListWrapper ->
                         send(attachmentListWrapper.getAttachments())
                     }
@@ -74,7 +75,7 @@ class RustAttachmentDataSourceImpl @Inject constructor(
             }
             result.onLeft { error ->
                 Timber.e("rust-draft-attachments: Failed to get attachment list: $error")
-                send(AttachmentError.Other(error).left())
+                send(error.left())
                 close()
                 return@callbackFlow
 
@@ -85,7 +86,7 @@ class RustAttachmentDataSourceImpl @Inject constructor(
                 when (val watcherResult = attachmentListWrapper.createWatcher(updateCallback)) {
                     is AttachmentListWatcherResult.Error -> {
                         Timber.e("rust-draft-attachments: Failed to create watcher: ${watcherResult.v1}")
-                        send(watcherResult.v1.toAttachmentError().left())
+                        send(watcherResult.v1.toObserveAttachmentsError().left())
                         close()
                         return@callbackFlow
                     }
@@ -188,8 +189,7 @@ class RustAttachmentDataSourceImpl @Inject constructor(
             )
         }
 
-    @Suppress("MaxLineLength")
-    private suspend fun AttachmentsWrapper.getAttachments(): Either<AttachmentError, List<AttachmentMetadataWithState>> {
+    private suspend fun AttachmentsWrapper.getAttachments(): Either<DataError, List<AttachmentMetadataWithState>> {
         return when (val result = this.attachments()) {
             is AttachmentListAttachmentsResult.Ok -> {
                 val attachments = result.v1.map { it.toAttachmentMetaDataWithState() }
@@ -197,7 +197,7 @@ class RustAttachmentDataSourceImpl @Inject constructor(
             }
 
             is AttachmentListAttachmentsResult.Error -> {
-                result.v1.toAttachmentError().left()
+                result.v1.toObserveAttachmentsError().left()
             }
         }
     }
