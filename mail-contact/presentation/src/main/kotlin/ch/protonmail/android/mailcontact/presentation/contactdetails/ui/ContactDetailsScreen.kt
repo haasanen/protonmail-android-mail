@@ -36,12 +36,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,16 +57,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
-import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
-import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
+import ch.protonmail.android.mailcontact.presentation.ui.ContactDetailsError
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.contactdetails.ContactDetailsViewModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.AvatarUiModel
@@ -79,6 +76,7 @@ import ch.protonmail.android.mailcontact.presentation.contactdetails.model.Conta
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.QuickActionType
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.QuickActionUiModel
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactDetailsPreviewData
+import ch.protonmail.android.mailcontact.presentation.ui.ContactDetailsTopBar
 
 @Composable
 fun ContactDetailsScreen(
@@ -146,7 +144,13 @@ private fun ContactDetailsScreen(
         Scaffold(
             modifier = modifier,
             containerColor = ProtonTheme.colors.backgroundInvertedNorm,
-            topBar = { ContactDetailsTopBar(state, actions.onBack, actions.showFeatureMissingSnackbar) }
+            topBar = {
+                ContactDetailsTopBar(
+                    shouldShowActions = state is ContactDetailsState.Data,
+                    onBack = actions.onBack,
+                    showFeatureMissingSnackbar = actions.showFeatureMissingSnackbar
+                )
+            }
         ) {
             when (state) {
                 is ContactDetailsState.Data -> ContactDetails(
@@ -197,7 +201,7 @@ private fun ContactDetails(
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
         Text(
             text = uiModel.headerUiModel.displayName,
-            style = ProtonTheme.typography.titleLargeNorm
+            style = ProtonTheme.typography.titleLargeMedium
         )
         uiModel.headerUiModel.displayEmailAddress?.let {
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Compact))
@@ -224,50 +228,6 @@ private fun ContactDetails(
             }
         }
     }
-}
-
-@Composable
-private fun ContactDetailsTopBar(
-    state: ContactDetailsState,
-    onBack: () -> Unit,
-    showFeatureMissingSnackbar: () -> Unit
-) {
-    ProtonTopAppBar(
-        modifier = Modifier.fillMaxWidth(),
-        backgroundColor = ProtonTheme.colors.backgroundInvertedNorm,
-        title = {},
-        navigationIcon = {
-            IconButton(onClick = onBack) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_arrow_back),
-                    tint = ProtonTheme.colors.iconNorm,
-                    contentDescription = stringResource(id = R.string.presentation_back)
-                )
-            }
-        },
-        actions = {
-            if (state is ContactDetailsState.Data) {
-                IconButton(onClick = showFeatureMissingSnackbar) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_proton_pen),
-                        tint = ProtonTheme.colors.iconNorm,
-                        contentDescription = stringResource(
-                            id = R.string.contact_details_edit_contact_content_description
-                        )
-                    )
-                }
-                IconButton(onClick = showFeatureMissingSnackbar) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_proton_trash),
-                        tint = ProtonTheme.colors.iconNorm,
-                        contentDescription = stringResource(
-                            id = R.string.contact_details_delete_contact_content_description
-                        )
-                    )
-                }
-            }
-        }
-    )
 }
 
 @Composable
@@ -393,16 +353,6 @@ private fun ContactDetailsItemGroup(
                 MailDivider()
             }
         }
-    }
-}
-
-@Composable
-private fun ContactDetailsError(onBack: () -> Unit, onShowErrorSnackbar: (String) -> Unit) {
-    val errorMessage = stringResource(id = R.string.contact_details_loading_error)
-
-    LaunchedEffect(Unit) {
-        onShowErrorSnackbar(errorMessage)
-        onBack()
     }
 }
 
