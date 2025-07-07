@@ -102,6 +102,8 @@ object MailDimens {
     }
 
     val ContactAvatarSize = 100.dp
+    val SmallContactAvatarSize = 40.dp
+    val ContactAvatarIconSize = 40.dp
 
     val NotificationDotSize = 8.dp
 

@@ -22,6 +22,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
@@ -45,26 +46,31 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 fun InitialsContactAvatar(
     modifier: Modifier = Modifier,
     initials: String,
-    color: Color
+    color: Color,
+    isSmall: Boolean = false
 ) {
+    val size = if (isSmall) MailDimens.SmallContactAvatarSize else MailDimens.ContactAvatarSize
+    val shape = if (isSmall) ProtonTheme.shapes.large else ProtonTheme.shapes.jumbo
+    val style = if (isSmall) ProtonTheme.typography.titleSmall else ProtonTheme.typography.headlineLarge
+
     Box(
         modifier = modifier
             .sizeIn(
-                minWidth = MailDimens.ContactAvatarSize,
-                minHeight = MailDimens.ContactAvatarSize
+                minWidth = size,
+                minHeight = size
             )
             .background(
                 color = color,
-                shape = ProtonTheme.shapes.jumbo
+                shape = shape
             )
             .clip(
-                shape = ProtonTheme.shapes.jumbo
+                shape = shape
             ),
         contentAlignment = Alignment.Center
     ) {
         Text(
             textAlign = TextAlign.Center,
-            style = ProtonTheme.typography.headlineLarge,
+            style = style,
             color = Color.White,
             text = initials
         )
@@ -93,6 +99,7 @@ fun IconContactAvatar(
         contentAlignment = Alignment.Center
     ) {
         Icon(
+            modifier = Modifier.size(MailDimens.ContactAvatarIconSize),
             tint = Color.White,
             painter = painterResource(id = iconResId),
             contentDescription = NO_CONTENT_DESCRIPTION
@@ -101,19 +108,26 @@ fun IconContactAvatar(
 }
 
 @Composable
-fun ImageContactAvatar(modifier: Modifier = Modifier, imageBitmap: ImageBitmap) {
+fun ImageContactAvatar(
+    modifier: Modifier = Modifier,
+    imageBitmap: ImageBitmap,
+    isSmall: Boolean = false
+) {
+    val size = if (isSmall) MailDimens.SmallContactAvatarSize else MailDimens.ContactAvatarSize
+    val shape = if (isSmall) ProtonTheme.shapes.large else ProtonTheme.shapes.jumbo
+
     Image(
         modifier = modifier
             .sizeIn(
-                minWidth = MailDimens.ContactAvatarSize,
-                minHeight = MailDimens.ContactAvatarSize
+                minWidth = size,
+                minHeight = size
             )
             .clip(
-                shape = ProtonTheme.shapes.jumbo
+                shape = shape
             )
             .background(
                 color = ProtonTheme.colors.backgroundSecondary,
-                shape = ProtonTheme.shapes.jumbo
+                shape = shape
             ),
         bitmap = imageBitmap,
         contentScale = ContentScale.Crop,
