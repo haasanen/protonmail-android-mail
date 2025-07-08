@@ -16,35 +16,23 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcontact.domain.repository
+package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.domain.repository.ContactGroupRepository
 import me.proton.core.domain.entity.UserId
+import javax.inject.Inject
 
-interface ContactGroupRepository {
+class GetContactGroupDetails @Inject constructor(
+    private val contactGroupRepository: ContactGroupRepository
+) {
 
-    suspend fun getContactGroupDetails(
+    suspend operator fun invoke(
         userId: UserId,
         contactGroupId: ContactGroupId
-    ): Either<DataError, ContactMetadata.ContactGroup>
-
-    suspend fun addContactEmailIdsToContactGroup(
-        userId: UserId,
-        contactGroupId: ContactGroupId,
-        contactEmailIds: Set<ContactEmailId>
-    ): Either<ContactGroupErrors, Unit>
-
-    suspend fun removeContactEmailIdsFromContactGroup(
-        userId: UserId,
-        contactGroupId: ContactGroupId,
-        contactEmailIds: Set<ContactEmailId>
-    ): Either<ContactGroupErrors, Unit>
-
-    sealed class ContactGroupErrors {
-        object RemoteDataSourceError : ContactGroupErrors()
-    }
+    ): Either<DataError, ContactMetadata.ContactGroup> =
+        contactGroupRepository.getContactGroupDetails(userId, contactGroupId)
 }

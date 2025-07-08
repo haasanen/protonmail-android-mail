@@ -16,21 +16,30 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcontact.data
+package ch.protonmail.android.mailcontact.data.repository
 
 import arrow.core.Either
 import arrow.core.left
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
-import ch.protonmail.android.mailcontact.domain.repository.ContactGroupRepository
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcontact.data.local.RustContactGroupDataSource
+import ch.protonmail.android.mailcontact.data.mapper.toLocalContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.domain.repository.ContactGroupRepository
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
-@MissingRustApi
-// Bind this to rust lib when functionality is available
-class ContactGroupRepositoryImpl @Inject constructor() : ContactGroupRepository {
+class ContactGroupRepositoryImpl @Inject constructor(
+    private val rustContactGroupDataSource: RustContactGroupDataSource
+) : ContactGroupRepository {
+
+    override suspend fun getContactGroupDetails(
+        userId: UserId,
+        contactGroupId: ContactGroupId
+    ): Either<DataError, ContactMetadata.ContactGroup> =
+        rustContactGroupDataSource.getContactGroupDetails(userId, contactGroupId.toLocalContactGroupId())
 
     override suspend fun addContactEmailIdsToContactGroup(
         userId: UserId,

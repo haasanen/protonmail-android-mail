@@ -34,6 +34,7 @@ fun LocalContactId.toContactId(): ContactId = ContactId(this.value.toString())
 fun LocalContactGroupId.toContactGroupId(): ContactGroupId = ContactGroupId(this.value.toString())
 
 fun ContactId.toLocalContactId(): LocalContactId = LocalContactId(this.id.toULong())
+fun ContactGroupId.toLocalContactGroupId(): LocalContactGroupId = LocalContactGroupId(this.id.toULong())
 
 fun LocalContactEmail.toContactEmail(): ContactEmail {
     return ContactEmail(

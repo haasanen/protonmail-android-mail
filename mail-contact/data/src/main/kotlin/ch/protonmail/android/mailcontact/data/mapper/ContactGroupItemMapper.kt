@@ -19,18 +19,27 @@
 package ch.protonmail.android.mailcontact.data.mapper
 
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactItemTypeGroup
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import uniffi.proton_mail_uniffi.ContactGroupItem
 import javax.inject.Inject
 
-@MissingRustApi
 class ContactGroupItemMapper @Inject constructor() {
+
     fun toContactGroup(localContactGroupItem: LocalContactItemTypeGroup): ContactMetadata.ContactGroup {
         return ContactMetadata.ContactGroup(
             id = localContactGroupItem.v1.id.toContactGroupId(),
             name = localContactGroupItem.v1.name,
             color = localContactGroupItem.v1.avatarColor,
-            members = emptyList() // Will be mapped from Rust (emails will be replaced by Contacts)
+            members = localContactGroupItem.v1.contactEmails.map { it.toContactEmail() }
+        )
+    }
+
+    fun toContactGroup(contactGroupItem: ContactGroupItem): ContactMetadata.ContactGroup {
+        return ContactMetadata.ContactGroup(
+            id = contactGroupItem.id.toContactGroupId(),
+            name = contactGroupItem.name,
+            color = contactGroupItem.avatarColor,
+            members = contactGroupItem.contactEmails.map { it.toContactEmail() }
         )
     }
 }

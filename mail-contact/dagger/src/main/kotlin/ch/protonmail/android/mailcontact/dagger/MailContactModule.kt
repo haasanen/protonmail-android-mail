@@ -18,12 +18,14 @@
 
 package ch.protonmail.android.mailcontact.dagger
 
-import ch.protonmail.android.mailcontact.data.ContactGroupRepositoryImpl
+import ch.protonmail.android.mailcontact.data.repository.ContactGroupRepositoryImpl
 import ch.protonmail.android.mailcontact.data.ContactRustCoroutineScope
 import ch.protonmail.android.mailcontact.data.DeviceContactsRepositoryImpl
 import ch.protonmail.android.mailcontact.data.DeviceContactsSuggestionsPromptImpl
 import ch.protonmail.android.mailcontact.data.local.RustContactDataSource
 import ch.protonmail.android.mailcontact.data.local.RustContactDataSourceImpl
+import ch.protonmail.android.mailcontact.data.local.RustContactGroupDataSource
+import ch.protonmail.android.mailcontact.data.local.RustContactGroupDataSourceImpl
 import ch.protonmail.android.mailcontact.data.repository.ContactRepositoryImpl
 import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
 import ch.protonmail.android.mailcontact.domain.repository.ContactGroupRepository
@@ -60,6 +62,10 @@ object MailContactModule {
         @Binds
         @Reusable
         fun bindContactRepository(impl: ContactRepositoryImpl): ContactRepository
+
+        @Binds
+        @Reusable
+        fun bindRustContactGroupDataSource(impl: RustContactGroupDataSourceImpl): RustContactGroupDataSource
 
         @Binds
         @Reusable
