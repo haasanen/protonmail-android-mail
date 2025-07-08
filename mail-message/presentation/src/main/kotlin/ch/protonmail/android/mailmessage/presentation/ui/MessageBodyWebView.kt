@@ -30,8 +30,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.compose.animation.core.ExperimentalAnimatableApi
-import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -52,8 +50,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -62,9 +58,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -98,7 +92,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import timber.log.Timber
 
-@OptIn(ExperimentalAnimatableApi::class)
+@OptIn(ExperimentalAnimatableApi::class, FlowPreview::class)
 @Composable
 fun MessageBodyWebView(
     modifier: Modifier = Modifier,
@@ -113,6 +107,13 @@ fun MessageBodyWebView(
 
     val webViewInteractionState = viewModel.state.collectAsStateWithLifecycle().value
     val longClickDialogState = remember { mutableStateOf(false) }
+
+    // During loading phase, WebView size can change multiple times. It may both
+    // increase and decrease in size. We will track measured heights and loading state to decide
+    // on the final height when it's loaded.
+    var lastMeasuredWebViewHeight by remember { mutableIntStateOf(0) }
+
+    var targetHeightWhenLoaded by remember { mutableIntStateOf(cachedHeight) }
 
     val actions = webViewActions.copy(
         onMessageBodyLinkLongClicked = {
@@ -183,6 +184,24 @@ fun MessageBodyWebView(
         }
     }
 
+    LaunchedEffect(Unit) {
+        combine(
+            snapshotFlow { lastMeasuredWebViewHeight }
+                // allow measuring passes and webview to settle
+                .debounce(timeoutMillis = 250L),
+            // also listen for changes in content loaded, there can be multiple calls to this
+            snapshotFlow { contentLoaded.value }
+        ) { measuredHeight, isLoaded ->
+            // in order to get the settled height after the webpage has loaded
+            // For empty messages, we can get 0 height
+            if (isLoaded) measuredHeight else -1
+        }.filter { it >= 0 }
+            .collectLatest { height ->
+                targetHeightWhenLoaded = height
+                onMessageBodyLoaded(messageId, height)
+            }
+    }
+
     Column(modifier) {
         val attachmentsUiModel = messageBodyUiModel.attachments
         if (attachmentsUiModel != null && attachmentsUiModel.attachments.isNotEmpty()) {
@@ -196,52 +215,65 @@ fun MessageBodyWebView(
                 )
             )
         }
-        RevealWebView(contentLoaded = contentLoaded, cachedHeight = cachedHeight, onHeightFinalised = { height ->
-            onMessageBodyLoaded(messageId, height)
-        }) {
-            BoxWithConstraints {
-                // WebView changes it's layout strategy based on
-                // it's layoutParams. We convert from Compose Modifier to
-                // layout params here.
-                val layoutParams = FrameLayout.LayoutParams(
-                    if (constraints.hasFixedWidth) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT,
-                    if (constraints.hasFixedHeight) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT
-                )
 
-                AndroidView(
-                    factory = { context ->
-                        onBuildWebView(context).apply {
-                            this.settings.builtInZoomControls = true
-                            this.settings.displayZoomControls = false
-                            this.settings.javaScriptEnabled = false
-                            this.settings.safeBrowsingEnabled = true
-                            this.settings.allowContentAccess = false
-                            this.settings.allowFileAccess = false
-                            this.settings.loadWithOverviewMode = true
-                            this.isVerticalScrollBarEnabled = false
-                            this.layoutParams = layoutParams
-                            this.webViewClient = client
+        BoxWithConstraints {
+            // WebView changes it's layout strategy based on
+            // it's layoutParams. We convert from Compose Modifier to
+            // layout params here.
+            val layoutParams = FrameLayout.LayoutParams(
+                if (constraints.hasFixedWidth) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT,
+                if (constraints.hasFixedHeight) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT
+            )
 
-                            configureDarkLightMode(this, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
-                            configureLongClick(this, actions.onMessageBodyLinkLongClicked)
-                            configureOnTouchListener(this)
+            AndroidView(
+                factory = { context ->
+                    onBuildWebView(context).apply {
+                        this.settings.builtInZoomControls = true
+                        this.settings.displayZoomControls = false
+                        this.settings.javaScriptEnabled = false
+                        this.settings.safeBrowsingEnabled = true
+                        this.settings.allowContentAccess = false
+                        this.settings.allowFileAccess = false
+                        this.settings.loadWithOverviewMode = true
+                        this.isVerticalScrollBarEnabled = false
+                        this.layoutParams = layoutParams
+                        this.webViewClient = client
 
-                            webView = this
-                        }
-                    },
-                    modifier = Modifier
-                        .testTag(MessageBodyWebViewTestTags.WebView)
-                        // there's a bug where if the message is too long the webview will crash
-                        .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
-                        .padding(ProtonDimens.Spacing.Large)
-                        .fillMaxWidth()
-                        .wrapContentSize(),
-                    onRelease = {
-                        webView = null
+                        configureDarkLightMode(this, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
+                        configureLongClick(this, actions.onMessageBodyLinkLongClicked)
+                        configureOnTouchListener(this)
+
+                        webView = this
                     }
-                )
-            }
+                },
+                modifier = Modifier
+                    .testTag(MessageBodyWebViewTestTags.WebView)
+                    // there's a bug where if the message is too long the webview will crash
+                    .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
+                    .padding(ProtonDimens.Spacing.Large)
+                    .fillMaxWidth()
+                    .layout { measurable, constraints ->
+                        val placeable = measurable.measure(
+                            constraints
+                        )
+
+                        lastMeasuredWebViewHeight = placeable.height
+
+                        // Do not use intermediary measured heights. That can lead to flickering
+                        layout(placeable.width, targetHeightWhenLoaded) {
+                            placeable.placeRelative(
+                                0,
+                                0
+                            )
+                        }
+                    }
+                    .wrapContentSize(),
+                onRelease = {
+                    webView = null
+                }
+            )
         }
+
 
         if (messageBodyUiModel.shouldShowExpandCollapseButton) {
             ExpandCollapseBodyButton(
@@ -308,96 +340,6 @@ private fun configureOnTouchListener(webView: ZoomableWebView) {
         }
 
         false // Let the WebView handle the event
-    }
-}
-
-/** reveals the content when heights are finalised and content is loaded
-avoids weird height glitching where the height changes 3X whilst the webview loads
-its content.  This view will wait for loading, all measure passes then perform a reveal
-animation **/
-@OptIn(FlowPreview::class)
-@Composable
-fun RevealWebView(
-    contentLoaded: MutableState<Boolean>,
-    onHeightFinalised: (height: Int) -> Unit = { _ -> },
-    cachedHeight: Int = 0,
-    mainContent: @Composable () -> Unit
-) {
-    var reportedWebViewHeight by remember { mutableIntStateOf(cachedHeight) }
-    val webViewTargetHeightPx = remember { mutableIntStateOf(cachedHeight) }
-
-    val webviewHeightAnimationValues: Int by animateIntAsState(
-        targetValue = webViewTargetHeightPx.intValue,
-        animationSpec = tween(
-            durationMillis = 200
-        )
-    )
-
-    // if the height is already cached, just show the webview at its cached height
-    val shouldAnimate = cachedHeight == 0
-    // alpha is calculated as a percentage of the current height reveal
-    val alphaTween =
-        remember {
-            derivedStateOf {
-                if (shouldAnimate) {
-                    webviewHeightAnimationValues.divideBy(webViewTargetHeightPx.intValue.toFloat())
-                } else 1f
-            }
-        }
-
-    LaunchedEffect(Unit) {
-        combine(
-            snapshotFlow { reportedWebViewHeight }
-                // allow measuring passes and webview to settle
-                .debounce(timeoutMillis = 250L),
-            // also listen for changes in content loaded, there can be multiple calls to this
-            snapshotFlow { contentLoaded.value }
-        ) { height, isLoaded ->
-            // in order to get the settled height after the webpage has loaded
-            if (isLoaded) height else 0
-        }.filter { it > 0 }
-            .collectLatest { height ->
-                webViewTargetHeightPx.intValue = height
-                onHeightFinalised(height)
-            }
-    }
-
-    /**
-     * Although this code is  normally possible with the modifiers onSizeChanged() and .height(),
-     * it's not possible here since we need these values _before_ the webview has a change to render.
-     *
-     * We need to go down to the measuring pass in order to buffer the reported heights before the webview renders.
-     * Until we are confident with a height the webview will be laid out with a height of 0
-     * (note if you do this using modifiers then your onSizeChanged will always stay at 0 and you'll never get a
-     * calculated height).
-     * As soon as we are happy with our target height (using throttling until the reported height settles)
-     * we animate the rendered height (in the layout) to our target height
-     */
-    Layout(
-        content = mainContent,
-        modifier = Modifier.graphicsLayer {
-            // its recommended to set alpha in the graphics layer if you are
-            // setting alpha according to a state
-            alpha = alphaTween.value
-        }
-    ) { measurables, constraints ->
-
-        val placeables: List<Placeable> = measurables.map { measurable ->
-            measurable.measure(constraints).apply {
-                if (height > 0) {
-                    // set our reported height state will will be throttled until it has settled
-                    reportedWebViewHeight = height
-                }
-            }
-        }
-        val itemsTotalWidth = placeables.sumOf { placeable -> placeable.width }
-        val height = if (shouldAnimate) webviewHeightAnimationValues else cachedHeight
-        // layout according to our reveal animation height
-        layout(itemsTotalWidth, height) {
-            placeables.forEach { placeable ->
-                placeable.placeRelative(0, 0)
-            }
-        }
     }
 }
 
@@ -469,6 +411,3 @@ object MessageBodyWebViewTestTags {
 }
 
 private const val WEB_VIEW_FIXED_MAX_HEIGHT = 262_143
-
-// we can't divide by 0 so guard
-private fun Int.divideBy(value: Float): Float = if (value == 0f) 0f else this.div(value)
