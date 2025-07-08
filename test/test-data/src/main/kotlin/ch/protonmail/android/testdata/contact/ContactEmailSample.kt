@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.testdata.contact
 
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 
@@ -27,61 +28,61 @@ object ContactEmailSample {
         ContactIdTestData.contactEmailId1,
         "email (contact email 1)",
         false,
-        lastUsedTime = 0
+        lastUsedTime = 0,
+        name = "email",
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 
     val contactEmail2 = ContactEmail(
         ContactIdTestData.contactEmailId2,
         "email (contact email 2)",
         false,
-        lastUsedTime = 0
+        lastUsedTime = 0,
+        name = "email",
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 
     val contactEmail3 = ContactEmail(
         ContactIdTestData.contactEmailId3,
         "email (contact email 3)",
         false,
-        lastUsedTime = 0
+        lastUsedTime = 0,
+        name = "email",
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 
     val contactEmail4 = ContactEmail(
         ContactIdTestData.contactEmailId4,
         "email (contact email 4)",
         false,
-        lastUsedTime = 0
-    )
-
-    val contactEmailLastUsedRecently = ContactEmail(
-        ContactIdTestData.contactEmailId5,
-        "testing@last.used.time -- recently",
-        false,
-        lastUsedTime = 100
-    )
-
-    val contactEmailLastUsedLongTimeAgo = ContactEmail(
-        ContactIdTestData.contactEmailId6,
-        "testing@last.used.time -- long time ago",
-        false,
-        lastUsedTime = 1
+        lastUsedTime = 0,
+        name = "email",
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 
     val contactSuggestionEmail = ContactEmail(
         ContactIdTestData.contactSuggestionEmailId,
         "contact suggestion email",
         false,
-        lastUsedTime = 0
+        lastUsedTime = 0,
+        name = "contact being suggested",
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 
     val contactGroupSuggestionEmail1 = ContactEmail(
-        ContactEmailId("contactgroup@first.email"),
+        ContactEmailId("8"),
         "contactgroup@first.email",
         false,
-        lastUsedTime = 0
+        lastUsedTime = 0,
+        name = "Contact Group First",
+        avatarInformation = AvatarInformationSample.avatarSample
     )
     val contactGroupSuggestionEmail2 = ContactEmail(
-        ContactEmailId("contactgroup@second.email"),
+        ContactEmailId("9"),
         "contactgroup@second.email",
         false,
-        lastUsedTime = 0
+        lastUsedTime = 0,
+        name = "Contact Group Second",
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 }

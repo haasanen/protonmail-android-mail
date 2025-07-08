@@ -32,7 +32,6 @@ import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.contact.ContactEmailSample
 import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import ch.protonmail.android.testdata.contact.ContactIdTestData
-import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.uicomponents.utils.getHexStringFromColor
 import io.mockk.every
 import io.mockk.mockk
@@ -68,9 +67,9 @@ class ContactSearchUiModelMapperTest {
             name = "Group 1",
             color = Color.Red.getHexStringFromColor(),
             members = listOf(
-                ContactSample.Stefano,
-                ContactSample.Doe,
-                ContactSample.Mario
+                ContactEmailSample.contactEmail1,
+                ContactEmailSample.contactEmail2,
+                ContactEmailSample.contactEmail3
             )
         )
         val expectedContactUiModel = ContactListItemUiModel.Contact(

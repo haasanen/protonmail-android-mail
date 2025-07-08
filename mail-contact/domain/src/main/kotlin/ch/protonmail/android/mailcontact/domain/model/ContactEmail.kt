@@ -18,9 +18,13 @@
 
 package ch.protonmail.android.mailcontact.domain.model
 
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
+
 data class ContactEmail(
     val id: ContactEmailId,
     val email: String,
     val isProton: Boolean,
-    val lastUsedTime: Long
+    val lastUsedTime: Long,
+    val name: String,
+    val avatarInformation: AvatarInformation
 )

@@ -70,7 +70,9 @@ class ContactListViewModelTest {
                 ContactEmailId("contact email id 1"),
                 "First contact email",
                 true,
-                lastUsedTime = 0
+                lastUsedTime = 0,
+                name = "first contact",
+                avatarInformation = AvatarInformationSample.avatarSample
             )
         )
     )
@@ -79,7 +81,14 @@ class ContactListViewModelTest {
         name = "first contact group",
         color = "#FF0000",
         members = listOf(
-            defaultTestContactMetadata
+            ContactEmail(
+                ContactEmailId("contact email id 1"),
+                "First contact email",
+                true,
+                lastUsedTime = 0,
+                name = "first contact",
+                avatarInformation = AvatarInformationSample.avatarSample
+            )
         )
     )
     private val defaultTestGroupedContacts = GroupedContacts(

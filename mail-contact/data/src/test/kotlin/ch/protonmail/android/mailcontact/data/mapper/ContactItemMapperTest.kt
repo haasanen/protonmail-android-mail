@@ -42,13 +42,17 @@ class ContactItemMapperTest {
                     id = ContactEmailId("101"),
                     email = "alice.johnson@example.com",
                     isProton = false,
-                    lastUsedTime = 0
+                    lastUsedTime = 0,
+                    name = localContact.v1.name,
+                    avatarInformation = localContact.v1.avatarInformation.toAvatarInformation()
                 ),
                 ContactEmail(
                     id = ContactEmailId("102"),
                     email = "alice.work@example.com",
                     isProton = false,
-                    lastUsedTime = 0
+                    lastUsedTime = 0,
+                    name = localContact.v1.name,
+                    avatarInformation = localContact.v1.avatarInformation.toAvatarInformation()
                 )
             ),
             avatar = AvatarInformation(

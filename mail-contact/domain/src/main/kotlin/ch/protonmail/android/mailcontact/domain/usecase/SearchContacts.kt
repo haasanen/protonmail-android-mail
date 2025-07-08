@@ -74,7 +74,13 @@ class SearchContacts @Inject constructor(
         query: String
     ): ContactMetadata.ContactGroup? {
         val matchingMembers = contactGroup.members.mapNotNull { member ->
-            searchInContact(member, query)
+            val nameMatches = member.name.containsNoCase(query)
+            val contactEmailMatches = member.email.containsNoCase(query)
+            when {
+                nameMatches -> member
+                contactEmailMatches -> member
+                else -> null
+            }
         }
 
         return if (contactGroup.name.containsNoCase(query) || matchingMembers.isNotEmpty()) {

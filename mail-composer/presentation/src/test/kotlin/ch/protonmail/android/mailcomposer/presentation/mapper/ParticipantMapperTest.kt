@@ -45,7 +45,9 @@ class ParticipantMapperTest {
                     ContactEmailId("contact email id 1"),
                     "test1@protonmail.com",
                     true,
-                    lastUsedTime = 0
+                    lastUsedTime = 0,
+                    name = "first contact",
+                    avatarInformation = AvatarInformationSample.avatarSample
                 )
             )
         ),
@@ -58,13 +60,17 @@ class ParticipantMapperTest {
                     ContactEmailId("contact email id 2"),
                     "test2@protonmail.com",
                     false,
-                    lastUsedTime = 0
+                    lastUsedTime = 0,
+                    name = "",
+                    avatarInformation = AvatarInformationSample.avatarSample
                 ),
                 ContactEmail(
                     ContactEmailId("contact email id 3"),
                     "test3@protonmail.com",
                     false,
-                    lastUsedTime = 0
+                    lastUsedTime = 0,
+                    name = "",
+                    avatarInformation = AvatarInformationSample.avatarSample
                 )
             )
         )

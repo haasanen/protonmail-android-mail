@@ -22,19 +22,18 @@ import app.cash.turbine.test
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
+import ch.protonmail.android.mailcontact.domain.model.ContactEmail
+import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.domain.model.GetContactError
+import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
+import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
-import ch.protonmail.android.mailcontact.domain.model.ContactId
-import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
-import ch.protonmail.android.mailcontact.domain.model.GetContactError
-import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
-import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -47,18 +46,13 @@ class ObserveContactGroupTest {
         name = "Friends",
         color = "#FF0000",
         members = listOf(
-            ContactMetadata.Contact(
-                id = ContactId("contact id 1"),
-                avatar = AvatarInformationSample.avatarSample,
+            ContactEmail(
+                id = ContactEmailId("contact email id"),
+                email = "test1@protonmail.com",
+                isProton = false,
+                lastUsedTime = 0,
                 name = "Contact Name",
-                emails = listOf(
-                    ContactEmail(
-                        id = ContactEmailId("contact email id"),
-                        email = "test1@protonmail.com",
-                        isProton = false,
-                        lastUsedTime = 0
-                    )
-                )
+                avatarInformation = AvatarInformation("C", "")
             )
         )
     )

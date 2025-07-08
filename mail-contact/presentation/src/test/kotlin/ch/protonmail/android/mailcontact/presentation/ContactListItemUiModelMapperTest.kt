@@ -58,7 +58,9 @@ class ContactListItemUiModelMapperTest {
                     ContactEmailId("contact email id 1"),
                     "First contact email",
                     true,
-                    lastUsedTime = 0
+                    lastUsedTime = 0,
+                    name = "first contact",
+                    avatarInformation = AvatarInformationSample.avatarSample
                 )
             )
         )

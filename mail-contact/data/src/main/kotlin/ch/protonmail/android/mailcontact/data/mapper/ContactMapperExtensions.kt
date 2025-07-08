@@ -35,13 +35,14 @@ fun LocalContactGroupId.toContactGroupId(): ContactGroupId = ContactGroupId(this
 
 fun ContactId.toLocalContactId(): LocalContactId = LocalContactId(this.id.toULong())
 
-@MissingRustApi
 fun LocalContactEmail.toContactEmail(): ContactEmail {
     return ContactEmail(
         id = ContactEmailId(this.id.value.toString()),
         email = this.email,
-        isProton = false, // This value should be provided by Rust
-        lastUsedTime = 0 // This value should be provided by Rust
+        isProton = this.isProton,
+        lastUsedTime = this.lastUsedTime.toLong(),
+        name = this.name,
+        avatarInformation = this.avatarInformation.toAvatarInformation()
     )
 }
 
@@ -55,6 +56,8 @@ fun DeviceContactSuggestion.toContactEmail() = ContactEmail(
     ContactEmailId(this.email), // Rust doesn't expose any id for device contacts
     this.email,
     false, // This value should be provided by Rust
-    0L // This value should be provided by Rust
+    0L, // This value should be provided by Rust
+    name = "", // This value should be provided by Rust
+    avatarInformation = AvatarInformation("", "") // This value should be provided by Rust
 )
 

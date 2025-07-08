@@ -19,13 +19,9 @@
 package ch.protonmail.android.mailcontact.data.mapper
 
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactSuggestion
-import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
-import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
-import uniffi.proton_mail_uniffi.ContactEmailItem
 import uniffi.proton_mail_uniffi.ContactSuggestionKind
 import javax.inject.Inject
 
@@ -60,30 +56,10 @@ class ContactSuggestionsMapper @Inject constructor() {
                     id = contact.key.toContactGroupId(),
                     name = contact.name,
                     color = contact.avatarInformation.color,
-                    members = type.v1.map { contactEmailItemToContact(it) }
+                    members = type.v1.map { it.toContactEmail() }
                 )
             }
         }
-
-    // The model exposed by rust doesn't map well the ContactMetadata used here
-    // In particular, rust "Contact Group" contains only a collection of emails
-    // while android's client ContactGroup contains a list of "members"
-    // (full Contact models).
-    private fun contactEmailItemToContact(contactEmailItem: ContactEmailItem) = ContactMetadata.Contact(
-        contactEmailItem.email.toContactId(),
-        avatar = AvatarInformation("", ""),
-        name = contactEmailItem.email,
-        emails = listOf(
-            ContactEmail(
-                id = contactEmailItem.email.toContactEmailId(),
-                email = contactEmailItem.email,
-                isProton = false,
-                lastUsedTime = 0L
-            )
-        )
-    )
-
-    private fun String.toContactEmailId() = ContactEmailId(this)
 
     private fun String.toContactId() = ContactId(this)
 

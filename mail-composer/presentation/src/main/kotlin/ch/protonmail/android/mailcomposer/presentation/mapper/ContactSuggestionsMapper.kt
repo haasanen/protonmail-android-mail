@@ -37,7 +37,7 @@ class ContactSuggestionsMapper @Inject constructor() {
 
             is ContactMetadata.ContactGroup -> ContactSuggestionUiModel.Data.ContactGroup(
                 name = contact.name,
-                emails = contact.members.map { it.emails.firstOrNull()?.email ?: it.name },
+                emails = contact.members.map { it.email },
                 color = contact.color
             )
         }

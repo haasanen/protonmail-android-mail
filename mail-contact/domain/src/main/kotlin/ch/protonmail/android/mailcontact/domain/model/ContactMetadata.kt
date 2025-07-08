@@ -36,7 +36,7 @@ sealed interface ContactMetadata {
         val id: ContactGroupId,
         override val name: String,
         val color: String,
-        val members: List<Contact>
+        val members: List<ContactEmail>
     ) : ContactMetadata
 
 }

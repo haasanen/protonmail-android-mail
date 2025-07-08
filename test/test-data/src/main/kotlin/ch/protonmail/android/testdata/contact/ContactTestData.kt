@@ -73,8 +73,8 @@ object ContactTestData {
         name = "contact group here",
         color = AvatarInformationSample.avatarSample.color,
         members = listOf(
-            contactGroupSuggestionEmail1,
-            contactGroupSuggestionEmail2
+            ContactEmailSample.contactGroupSuggestionEmail1,
+            ContactEmailSample.contactGroupSuggestionEmail2
         )
     )
 
@@ -99,7 +99,9 @@ object ContactTestData {
             id = contactEmailId,
             email = address,
             isProton = false,
-            lastUsedTime = 0
+            lastUsedTime = 0,
+            name = "",
+            avatarInformation = AvatarInformation("", "")
         )
 }
 

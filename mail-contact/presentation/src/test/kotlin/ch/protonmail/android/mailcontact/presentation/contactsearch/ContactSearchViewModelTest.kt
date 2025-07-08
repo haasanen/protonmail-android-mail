@@ -30,6 +30,7 @@ import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiMod
 import ch.protonmail.android.mailcontact.presentation.model.ContactSearchUiModelMapper
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import ch.protonmail.android.testdata.contact.ContactEmailSample
 import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -76,7 +77,7 @@ class ContactSearchViewModelTest {
             ContactGroupIdSample.Work,
             "Coworkers contact group",
             "#AABBCC",
-            listOf(ContactSample.Stefano)
+            listOf(ContactEmailSample.contactEmail1)
         )
     )
     private val expectedContactSearchUiModels = listOf(

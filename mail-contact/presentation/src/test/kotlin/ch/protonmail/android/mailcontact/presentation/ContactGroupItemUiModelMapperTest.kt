@@ -25,7 +25,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
-import ch.protonmail.android.testdata.contact.ContactSample
+import ch.protonmail.android.testdata.contact.ContactEmailSample
 import ch.protonmail.android.uicomponents.utils.getHexStringFromColor
 import org.junit.Rule
 import org.junit.Test
@@ -46,9 +46,9 @@ class ContactGroupItemUiModelMapperTest {
             name = "Label 1",
             color = Color.Red.getHexStringFromColor(),
             members = listOf(
-                ContactSample.Doe,
-                ContactSample.John,
-                ContactSample.Stefano
+                ContactEmailSample.contactEmail1,
+                ContactEmailSample.contactEmail2,
+                ContactEmailSample.contactEmail3
             )
         )
 
