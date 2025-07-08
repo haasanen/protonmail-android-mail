@@ -79,6 +79,7 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.mailcommon.presentation.compose.dpToPx
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
 import ch.protonmail.android.mailcommon.presentation.extension.openShareIntentForUri
@@ -206,7 +207,10 @@ fun MessageBodyWebView(
                 val layoutParams = FrameLayout.LayoutParams(
                     if (constraints.hasFixedWidth) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT,
                     if (constraints.hasFixedHeight) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT
-                )
+                ).apply {
+                    // Fix: WRAP_CONTENT with 0 height causes message header & attachments to disappear
+                    height = WEB_VIEW_MIN_HEIGHT_DP.dpToPx()
+                }
 
                 AndroidView(
                     factory = { context ->
@@ -469,6 +473,7 @@ object MessageBodyWebViewTestTags {
 }
 
 private const val WEB_VIEW_FIXED_MAX_HEIGHT = 262_143
+private val WEB_VIEW_MIN_HEIGHT_DP = 48.dp
 
 // we can't divide by 0 so guard
 private fun Int.divideBy(value: Float): Float = if (value == 0f) 0f else this.div(value)
