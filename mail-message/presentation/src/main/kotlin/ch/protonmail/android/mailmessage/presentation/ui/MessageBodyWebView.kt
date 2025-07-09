@@ -89,7 +89,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
 import timber.log.Timber
 
 @OptIn(ExperimentalAnimatableApi::class, FlowPreview::class)
@@ -188,14 +188,14 @@ fun MessageBodyWebView(
         combine(
             snapshotFlow { lastMeasuredWebViewHeight }
                 // allow measuring passes and webview to settle
-                .debounce(timeoutMillis = 250L),
+                .debounce(timeoutMillis = WEB_PAGE_CONTENT_LOAD_TIMEOUT),
             // also listen for changes in content loaded, there can be multiple calls to this
             snapshotFlow { contentLoaded.value }
         ) { measuredHeight, isLoaded ->
             // in order to get the settled height after the webpage has loaded
             // For empty messages, we can get 0 height
-            if (isLoaded) measuredHeight else -1
-        }.filter { it >= 0 }
+            if (isLoaded) measuredHeight else null
+        }.filterNotNull()
             .collectLatest { height ->
                 targetHeightWhenLoaded = height
                 onMessageBodyLoaded(messageId, height)
@@ -410,4 +410,9 @@ object MessageBodyWebViewTestTags {
     const val WebView = "MessageBodyWebView"
 }
 
+private const val WEB_PAGE_CONTENT_LOAD_TIMEOUT = 250L
+
+// Max constraint for WebView height. If the height is greater
+// than this value, we will not fix the height of the WebView or it will crash.
+// (Limit set in androidx.compose.ui.unit.Constraints)
 private const val WEB_VIEW_FIXED_MAX_HEIGHT = 262_143
