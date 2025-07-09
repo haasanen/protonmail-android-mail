@@ -60,7 +60,7 @@ fun PrimaryAccountAvatar(
             Text(
                 textAlign = TextAlign.Center,
                 style = ProtonTheme.typography.headlineSmallNorm,
-                color = ProtonTheme.colors.textInverted,
+                color = Color.White,
                 text = initials
             )
         } else {

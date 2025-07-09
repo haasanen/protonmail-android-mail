@@ -73,7 +73,7 @@ internal fun BaseAccountSwitcherRow(
                 Text(
                     text = accountListItem.accountItem.initials
                         ?: stringResource(R.string.account_switcher_no_initials),
-                    color = ProtonTheme.colors.textInverted,
+                    color = Color.White,
                     style = LocalTypography.current.bodyMedium,
                     modifier = Modifier.align(Alignment.Center)
                 )

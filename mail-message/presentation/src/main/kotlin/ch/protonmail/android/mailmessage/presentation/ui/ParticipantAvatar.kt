@@ -258,7 +258,7 @@ private fun SenderInitialsAvatar(
             text = initials,
             style = ProtonTheme.typography.bodyLargeNorm,
             fontWeight = FontWeight.Bold,
-            color = ProtonTheme.colors.textInverted.copy(alpha = 0.9f)
+            color = Color.White
 
         )
     }
