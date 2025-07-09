@@ -57,26 +57,55 @@ class GetMessageBodyWithClickableLinksTest(
 
     companion object {
 
-        private val testInputList = listOf(
+        private val expectedHitList = listOf(
             TestInput(
                 "Here goes a link www.proton.me",
-                "Here goes a link <a href=\"www.proton.me\">www.proton.me</a>"
+                """Here goes a link <a href="www.proton.me">www.proton.me</a>"""
             ),
             TestInput(
                 "Here goes a link https://proton.me",
-                "Here goes a link <a href=\"https://proton.me\">https://proton.me</a>"
+                """Here goes a link <a href="https://proton.me">https://proton.me</a>"""
+            ),
+            TestInput(
+                "Url www.proton.me with following text that is not.a.url",
+                """Url <a href="www.proton.me">www.proton.me</a> with following text that is not.a.url"""
             ),
             TestInput(
                 """
                     |Here goes two links www.proton.me and
-                    | www.not-proton.me
+                    |www.not-proton.me
                 """.trimMargin(),
                 """
                     |Here goes two links <a href="www.proton.me">www.proton.me</a> and
-                    | <a href="www.not-proton.me">www.not-proton.me</a>
+                    |<a href="www.not-proton.me">www.not-proton.me</a>
+                """.trimMargin()
+            ),
+            TestInput(
+                """
+                    |One link already clickable, one not
+                    |<a href="www.proton.me">www.proton.me</a> and
+                    |https://another.me
+                """.trimMargin(),
+                """
+                    |One link already clickable, one not
+                    |<a href="www.proton.me">www.proton.me</a> and
+                    |<a href="https://another.me">https://another.me</a>
                 """.trimMargin()
             )
         )
+
+        private val expectedMissList = listOf(
+            TestInput(
+                "Here goes proton.me",
+                "Here goes proton.me"
+            ),
+            TestInput(
+                "Here goes ww.proton.me",
+                "Here goes ww.proton.me"
+            )
+        )
+
+        private val testInputList = expectedHitList + expectedMissList
 
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")

@@ -24,6 +24,7 @@ import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
 class GetMessageBodyWithClickableLinks @Inject constructor(
@@ -44,19 +45,61 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
     }
 
     private fun makeUrlsClickable(value: String): String {
-        val urlRegex = URL_REGEX.toRegex()
+        val urlRegex = urlPattern.toRegex()
 
         val linkifiedBody = value.replace(urlRegex) { matchedUrl ->
+            Timber.d("linkify-body: found url ${matchedUrl.value}")
 
-            val linkifiedUrl = "<a href=\"${matchedUrl.value}\">${matchedUrl.value}</a>"
-            println("linkify-body: found url ${matchedUrl.value}")
-            linkifiedUrl
+            "<a href=\"${matchedUrl.value}\">${matchedUrl.value}</a>"
         }
 
         return linkifiedBody
     }
 
-}
 
-private const val URL_REGEX = """(https?://)?(www\.)?([a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,6})(/[^\s]*)?"""
+    companion object {
+
+        /**
+         * Exclude links that are already in an <a> tag
+         */
+        private const val NEGATIVE_LOOKBACK = """(?<!href="|>)"""
+
+        /**
+         * Match the protocols
+         * - http://
+         * - https://
+         * - https://www.
+         * - www.
+         */
+        private const val PROTOCOL = """(https?://(www\.)?|www\.)"""
+
+        /**
+         * Match an alphanumeric host allowing hyphen and any number of subdomains
+         */
+        private const val HOST = """[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*"""
+
+        /**
+         * Match any alphanumeric top level domain 2 to 6 char long, eg.
+         * .com
+         * .ch
+         * .me
+         */
+        private const val DOMAIN = """\.[a-zA-Z]{2,6}"""
+
+        /**
+         * Match any following path
+         */
+        private const val PATH = """(/[^\s]*)?"""
+
+        private val urlPattern = StringBuilder()
+            .append(NEGATIVE_LOOKBACK)
+            .append(PROTOCOL)
+            .append("(")
+            .append(HOST)
+            .append(DOMAIN)
+            .append(")")
+            .append(PATH)
+            .toString()
+    }
+}
 
