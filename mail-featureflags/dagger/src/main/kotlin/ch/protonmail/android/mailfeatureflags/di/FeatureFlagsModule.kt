@@ -24,9 +24,11 @@ import ch.protonmail.android.mailfeatureflags.domain.ChangeSenderEnabled
 import ch.protonmail.android.mailfeatureflags.domain.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
+import ch.protonmail.android.mailfeatureflags.domain.LinkifyUrlEnabled
 import ch.protonmail.android.mailfeatureflags.domain.ScheduledSendEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsChangeSenderEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ScheduleSendEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import dagger.Module
@@ -39,6 +41,16 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object FeatureFlagsModule {
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideLinkifyUrlEnabledDefinitions(): FeatureFlagDefinition = LinkifyUrlEnabled
+
+    @Provides
+    @Singleton
+    @IsLinkifyUrlsEnabled
+    fun provideLinkifyUrlEnabled(resolver: FeatureFlagResolver) = resolver.observeFeatureFlag(LinkifyUrlEnabled.key)
 
     @Provides
     @IntoSet

@@ -44,3 +44,11 @@ data object ChangeSenderEnabled : FeatureFlagDefinition(
     description = "Allow to change the message sender in composer",
     defaultValue = true
 )
+
+data object LinkifyUrlEnabled : FeatureFlagDefinition(
+    key = "linkify_url_enabled",
+    name = "Linkify Urls in Detail",
+    category = FeatureFlagCategory.Details,
+    description = "Makes urls clickable in Message Detail",
+    defaultValue = true
+)
