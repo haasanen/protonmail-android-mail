@@ -95,6 +95,7 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBot
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.mapper.MessageBodyTransformationsMapper
+import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
@@ -108,12 +109,11 @@ import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
-import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageBodyWithClickableLinks
 import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
-import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.attachment.isExpandable
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
@@ -172,7 +172,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val starMessages: StarMessages,
     private val unStarMessages: UnStarMessages,
     private val savedStateHandle: SavedStateHandle,
-    private val getDecryptedMessageBody: GetDecryptedMessageBody,
+    private val getMessageBodyWithClickableLinks: GetMessageBodyWithClickableLinks,
     private val markMessageAsRead: MarkMessageAsRead,
     private val messageViewStateCache: MessageViewStateCache,
     private val observeConversationViewState: ObserveConversationViewState,
@@ -915,7 +915,7 @@ class ConversationDetailViewModel @Inject constructor(
         uiMessageId: MessageIdUiModel,
         transformations: MessageBodyTransformations
     ) {
-        getDecryptedMessageBody(userId, domainMsgId, transformations)
+        getMessageBodyWithClickableLinks(userId, domainMsgId, transformations)
             .onRight { message ->
                 messageViewStateCache.setExpanded(domainMsgId, message)
                 messageViewStateCache.setTransformations(domainMsgId, transformations)

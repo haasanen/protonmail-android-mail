@@ -148,8 +148,8 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
-import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageBodyWithClickableLinks
 import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
@@ -295,7 +295,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val unStarMessages = mockk<UnStarMessages>()
     private val starConversations: StarConversations = mockk()
     private val unStarConversations: UnStarConversations = mockk()
-    private val getDecryptedMessageBody: GetDecryptedMessageBody = mockk {
+    private val getDecryptedMessageBody: GetMessageBodyWithClickableLinks = mockk {
         coEvery { this@mockk.invoke(any(), any()) } returns DecryptedMessageBody(
             MessageId("default"), "", isUnread = false, MimeType.Html, hasQuotedText = false, emptyList()
         ).right()
@@ -2193,7 +2193,7 @@ class ConversationDetailViewModelIntegrationTest {
         unStarMsg: UnStarMessages = unStarMessages,
         star: StarConversations = starConversations,
         unStar: UnStarConversations = unStarConversations,
-        decryptedMessageBody: GetDecryptedMessageBody = getDecryptedMessageBody,
+        decryptedMessageBody: GetMessageBodyWithClickableLinks = getDecryptedMessageBody,
         markMessageAndConversationRead: MarkMessageAsRead = markMessageAsRead,
         getIntentValues: GetAttachmentIntentValues = getAttachmentIntentValues,
         ioDispatcher: CoroutineDispatcher = testDispatcher,
@@ -2221,7 +2221,7 @@ class ConversationDetailViewModelIntegrationTest {
         starMessages = starMsg,
         unStarMessages = unStarMsg,
         savedStateHandle = savedState,
-        getDecryptedMessageBody = decryptedMessageBody,
+        getMessageBodyWithClickableLinks = decryptedMessageBody,
         markMessageAsRead = markMessageAndConversationRead,
         messageViewStateCache = messageViewStateCache,
         observeConversationViewState = observeConversationViewState,

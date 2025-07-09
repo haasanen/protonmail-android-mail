@@ -108,7 +108,7 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
-import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageBodyWithClickableLinks
 import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
@@ -257,7 +257,7 @@ class ConversationDetailViewModelTest {
             this@mockk.invoke(any(), any())
         } returns listOf(ConversationTestData.conversation).right()
     }
-    private val getDecryptedMessageBody: GetDecryptedMessageBody = mockk {
+    private val getDecryptedMessageBody: GetMessageBodyWithClickableLinks = mockk {
         coEvery { this@mockk.invoke(any(), any(), any()) } returns DecryptedMessageBody(
             MessageIdSample.build(), "", isUnread = false, MimeType.Html, hasQuotedText = false, banners = emptyList()
         ).right()
@@ -334,7 +334,7 @@ class ConversationDetailViewModelTest {
             starMessages = starMessages,
             unStarMessages = unStarMessages,
             savedStateHandle = savedStateHandle,
-            getDecryptedMessageBody = getDecryptedMessageBody,
+            getMessageBodyWithClickableLinks = getDecryptedMessageBody,
             markMessageAsRead = markMessageAsRead,
             messageViewStateCache = messageViewStateCache,
             observeConversationViewState = observeConversationViewState,
