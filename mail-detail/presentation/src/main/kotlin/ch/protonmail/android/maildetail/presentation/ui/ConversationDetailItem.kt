@@ -73,7 +73,7 @@ fun ConversationDetailItem(
     actions: ConversationDetailItem.Actions,
     modifier: Modifier = Modifier,
     onMessageBodyLoadFinished: (messageId: MessageId, height: Int) -> Unit,
-    cachedWebContentHeight: Int = 0
+    cachedWebContentHeight: Int? = null
 ) {
     val avatarActions = ParticipantAvatar.Actions.Empty.copy(
         onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested
@@ -183,9 +183,9 @@ private fun ColumnScope.ConversationDetailExpandedItem(
     uiModel: Expanded,
     actions: ConversationDetailItem.Actions,
     onMessageBodyLoadFinished: (messageId: MessageId, height: Int) -> Unit,
-    cachedWebContentHeight: Int = 0
+    cachedWebContentHeight: Int? = null
 ) {
-    val viewLoaded = remember { mutableStateOf(cachedWebContentHeight > 0) }
+    val viewLoaded = remember { mutableStateOf(cachedWebContentHeight != null) }
     val revealFooterAfterLoad by animateFloatAsState(
         targetValue = if (viewLoaded.value) 1.0f else 0f,
         label = "footer-alpha",

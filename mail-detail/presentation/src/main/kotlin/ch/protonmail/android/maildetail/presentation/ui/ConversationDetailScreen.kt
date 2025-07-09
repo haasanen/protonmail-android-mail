@@ -999,7 +999,7 @@ private fun MessagesContent(
                     }
                     webContentLoaded++
                 },
-                cachedWebContentHeight = loadedItemsHeight.getOrDefault(uiModel.messageId.id, 0)
+                cachedWebContentHeight = loadedItemsHeight[uiModel.messageId.id]
             )
         }
     }

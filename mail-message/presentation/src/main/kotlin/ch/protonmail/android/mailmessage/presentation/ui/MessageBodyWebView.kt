@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmessage.presentation.ui
 
 import java.io.ByteArrayInputStream
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -101,7 +102,7 @@ fun MessageBodyWebView(
     onBuildWebView: (Context) -> ZoomableWebView,
     onMessageBodyLoaded: (messageId: MessageId, height: Int) -> Unit = { _, _ -> },
     viewModel: MessageBodyWebViewViewModel = hiltViewModel(),
-    cachedHeight: Int = 0
+    cachedHeight: Int? = null
 ) {
     val context = LocalContext.current
 
@@ -113,7 +114,7 @@ fun MessageBodyWebView(
     // on the final height when it's loaded.
     var lastMeasuredWebViewHeight by remember { mutableIntStateOf(0) }
 
-    var targetHeightWhenLoaded by remember { mutableIntStateOf(cachedHeight) }
+    var targetHeightWhenLoaded by remember { mutableStateOf(cachedHeight) }
 
     val actions = webViewActions.copy(
         onMessageBodyLinkLongClicked = {
@@ -177,6 +178,19 @@ fun MessageBodyWebView(
                 }
             }
 
+            override fun onPageStarted(
+                view: WebView?,
+                url: String?,
+                favicon: Bitmap?
+            ) {
+                super.onPageStarted(view, url, favicon)
+
+                // Reset state
+                lastMeasuredWebViewHeight = 0
+                targetHeightWhenLoaded = null
+                contentLoaded.value = false
+            }
+
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 contentLoaded.value = true
@@ -220,7 +234,7 @@ fun MessageBodyWebView(
             // WebView changes it's layout strategy based on
             // it's layoutParams. We convert from Compose Modifier to
             // layout params here.
-            val layoutParams = FrameLayout.LayoutParams(
+            val initialLayoutParams = FrameLayout.LayoutParams(
                 if (constraints.hasFixedWidth) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT,
                 if (constraints.hasFixedHeight) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT
             )
@@ -236,7 +250,7 @@ fun MessageBodyWebView(
                         this.settings.allowFileAccess = false
                         this.settings.loadWithOverviewMode = true
                         this.isVerticalScrollBarEnabled = false
-                        this.layoutParams = layoutParams
+                        this.layoutParams = initialLayoutParams
                         this.webViewClient = client
 
                         configureDarkLightMode(this, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
@@ -245,6 +259,23 @@ fun MessageBodyWebView(
 
                         webView = this
                     }
+                },
+                update = { webView ->
+                    // When the content is loaded with 0 height, we set the minimum height. Otherwise, the
+                    // layout collapses
+                    targetHeightWhenLoaded?.let { loadedHeight ->
+                        val params = webView.layoutParams as FrameLayout.LayoutParams
+                        params.height = if (loadedHeight == 0) {
+                            WEB_VIEW_MIN_HEIGHT_PX
+                        } else {
+                            params.height
+                        }
+                        webView.layoutParams = params
+                    } ?: run {
+                        // When reload happens, we reset the height to initial layout params
+                        webView.layoutParams = initialLayoutParams
+                    }
+
                 },
                 modifier = Modifier
                     .testTag(MessageBodyWebViewTestTags.WebView)
@@ -260,7 +291,7 @@ fun MessageBodyWebView(
                         lastMeasuredWebViewHeight = placeable.height
 
                         // Do not use intermediary measured heights. That can lead to flickering
-                        layout(placeable.width, targetHeightWhenLoaded) {
+                        layout(placeable.width, targetHeightWhenLoaded ?: WEB_VIEW_MIN_HEIGHT_PX) {
                             placeable.placeRelative(
                                 0,
                                 0
@@ -416,3 +447,5 @@ private const val WEB_PAGE_CONTENT_LOAD_TIMEOUT = 250L
 // than this value, we will not fix the height of the WebView or it will crash.
 // (Limit set in androidx.compose.ui.unit.Constraints)
 private const val WEB_VIEW_FIXED_MAX_HEIGHT = 262_143
+private const val WEB_VIEW_MIN_HEIGHT_PX: Int = 48
+

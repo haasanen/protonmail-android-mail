@@ -52,7 +52,7 @@ fun MessageBody(
     messageBodyUiModel: MessageBodyUiModel,
     actions: MessageBody.Actions,
     onMessageBodyLoaded: (messageId: MessageId, height: Int) -> Unit = { _, _ -> },
-    cachedMessageBodyHeight: Int = 0
+    cachedMessageBodyHeight: Int? = null
 ) {
     val hasWebView = LocalDeviceCapabilitiesProvider.current.hasWebView
 
