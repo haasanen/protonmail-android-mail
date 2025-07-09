@@ -19,17 +19,15 @@
 package ch.protonmail.android.mailcommon.presentation.compose
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.extension.tintColor
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 
 @Composable
@@ -40,13 +38,16 @@ fun SmallClickableIcon(
     onClick: () -> Unit,
     iconSize: Dp = ProtonDimens.IconSize.Small
 ) {
-    Icon(
+
+    IconButton(
         modifier = modifier
-            .clickable(onClick = onClick)
-            .semantics { tintColor = iconColor }
             .size(iconSize),
-        painter = painterResource(id = iconId),
-        contentDescription = NO_CONTENT_DESCRIPTION,
-        tint = iconColor
-    )
+        onClick = onClick
+    ) {
+        Icon(
+            painter = painterResource(id = iconId),
+            contentDescription = NO_CONTENT_DESCRIPTION,
+            tint = iconColor
+        )
+    }
 }
