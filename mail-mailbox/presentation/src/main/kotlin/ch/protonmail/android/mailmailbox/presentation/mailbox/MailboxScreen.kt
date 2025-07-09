@@ -341,7 +341,11 @@ fun MailboxScreen(
                         onDelete = { viewModel.submit(MailboxViewAction.Delete) },
                         onInbox = { viewModel.submit(MailboxViewAction.MoveToInbox) },
                         onMoveTo = { viewModel.submit(MailboxViewAction.RequestMoveToBottomSheet) },
-                        onCustomizeToolbar = { viewModel.submit(MailboxViewAction.CustomizeToolbar) }
+                        onCustomizeToolbar = {
+//                            viewModel.submit(MailboxViewAction.CustomizeToolbar)
+                            showBottomSheet = false
+                            actions.showMissingFeature()
+                        }
                     )
                 )
 
