@@ -8,6 +8,7 @@ import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,7 +24,8 @@ class GetMessageBodyWithClickableLinksTest(
     private val getDecryptedMessageBody = mockk<GetDecryptedMessageBody>()
 
     private val getMessageBodyWithClikableLinks = GetMessageBodyWithClickableLinks(
-        getDecryptedMessageBody = getDecryptedMessageBody
+        getDecryptedMessageBody = getDecryptedMessageBody,
+        isLinkifyUrlEnabled = flowOf(true)
     )
 
     @Test
@@ -90,6 +92,24 @@ class GetMessageBodyWithClickableLinksTest(
                     |One link already clickable, one not
                     |<a href="www.proton.me">www.proton.me</a> and
                     |<a href="https://another.me">https://another.me</a>
+                """.trimMargin()
+            ),
+            TestInput(
+                """
+                    |<pre>www.hello.com<br><br>www.proton.me<br><br>
+                    |<br><br>Signature<br><br>
+                """.trimMargin(),
+                """
+                    |<pre><a href="www.hello.com">www.hello.com</a><br><br><a href="www.proton.me">www.proton.me</a><br><br>
+                    |<br><br>Signature<br><br>
+                """.trimMargin()
+            ),
+            TestInput(
+                """
+                    |Link 1 www.proton.me and link 2 <a href="www.mail.proton.me">www.mail.proton.me</a>
+                """.trimMargin(),
+                """
+                    |Link 1 <a href="www.proton.me">www.proton.me</a> and link 2 <a href="www.mail.proton.me">www.mail.proton.me</a>
                 """.trimMargin()
             )
         )

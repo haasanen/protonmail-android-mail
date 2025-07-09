@@ -54,7 +54,9 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
     }
 
     private fun makeUrlsClickable(value: String): String {
+        Timber.d("linkify-body: processing body $value")
         val urlRegex = urlPattern.toRegex()
+        Timber.d("linkify-body: using pattern: $urlPattern")
 
         val linkifiedBody = value.replace(urlRegex) { matchedUrl ->
             Timber.d("linkify-body: found url ${matchedUrl.value}")
@@ -62,6 +64,7 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
             "<a href=\"${matchedUrl.value}\">${matchedUrl.value}</a>"
         }
 
+        Timber.d("linkify-body: processed body $linkifiedBody")
         return linkifiedBody
     }
 
@@ -69,9 +72,9 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
     companion object {
 
         /**
-         * Exclude links that are already in an <a> tag
+         * Exclude links that are already in the href of an <a> tag
          */
-        private const val NEGATIVE_LOOKBACK = """(?<!href="|>)"""
+        private const val NEGATIVE_LOOKBACK = """(?<!href=")"""
 
         /**
          * Match the protocols
@@ -96,10 +99,18 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
         private const val DOMAIN = """\.[a-zA-Z]{2,6}"""
 
         /**
-         * Match any following path
+         * Match any following chars (path) that is not an empty space
          */
         private const val PATH = """(/[^\s]*)?"""
 
+        /**
+         * Exclude links that are in the description of an <a> tag
+         */
+        private const val NEGATIVE_LOOKAHEAD = """(?![^<]*</a>)"""
+
+        /**
+         * Pattern to match urls in a block of text
+         */
         private val urlPattern = StringBuilder()
             .append(NEGATIVE_LOOKBACK)
             .append(PROTOCOL)
@@ -108,6 +119,7 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
             .append(DOMAIN)
             .append(")")
             .append(PATH)
+            .append(NEGATIVE_LOOKAHEAD)
             .toString()
     }
 }
