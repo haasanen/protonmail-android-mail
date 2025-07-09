@@ -23,7 +23,7 @@ import arrow.core.flatMap
 import arrow.core.right
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
+import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -43,11 +43,11 @@ class GetDecryptedMessageBody @Inject constructor(
         userId: UserId,
         messageId: MessageId,
         transformations: MessageBodyTransformations = MessageBodyTransformations.MessageDetailsDefaults
-    ): Either<GetDecryptedMessageBodyError, DecryptedMessageBody> = messageRepository.getMessage(userId, messageId)
-        .mapLeft { GetDecryptedMessageBodyError.Data(it) }
+    ): Either<GetMessageBodyError, DecryptedMessageBody> = messageRepository.getMessage(userId, messageId)
+        .mapLeft { GetMessageBodyError.Data(it) }
         .flatMap { messageMetadata ->
             messageBodyRepository.getMessageBody(userId, messageId, transformations)
-                .mapLeft { GetDecryptedMessageBodyError.Data(it) }
+                .mapLeft { GetMessageBodyError.Data(it) }
                 .flatMap { messageBody ->
                     val attachments = when {
                         messageBody.mimeType == MimeType.MultipartMixed ->

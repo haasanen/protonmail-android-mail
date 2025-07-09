@@ -20,7 +20,7 @@ package ch.protonmail.android.maildetail.presentation.mapper
 
 import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
+import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -435,7 +435,7 @@ class MessageBodyUiModelMapperTest {
         )
 
         // When
-        val actual = messageBodyUiModelMapper.toUiModel(GetDecryptedMessageBodyError.Decryption(messageId, messageBody))
+        val actual = messageBodyUiModelMapper.toUiModel(GetMessageBodyError.Decryption(messageId, messageBody))
 
         // Then
         assertEquals(expected, actual)

@@ -21,7 +21,7 @@ package ch.protonmail.android.maildetail.presentation.mapper
 import ch.protonmail.android.mailattachments.domain.model.isCalendarAttachment
 import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
+import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentGroupUiModelMapper
@@ -72,7 +72,7 @@ class MessageBodyUiModelMapper @Inject constructor(
         )
     }
 
-    fun toUiModel(decryptionError: GetDecryptedMessageBodyError.Decryption) = MessageBodyUiModel(
+    fun toUiModel(decryptionError: GetMessageBodyError.Decryption) = MessageBodyUiModel(
         messageId = decryptionError.messageId,
         messageBody = decryptionError.encryptedMessageBody,
         mimeType = MimeTypeUiModel.PlainText,

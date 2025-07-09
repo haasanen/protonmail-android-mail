@@ -97,7 +97,7 @@ import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
+import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
@@ -1072,7 +1072,7 @@ class ConversationDetailViewModelTest {
                 userId,
                 MessageId(messageIds.first().id)
             )
-        } returns GetDecryptedMessageBodyError.Decryption(MessageId(messageIds.first().id), "").left()
+        } returns GetMessageBodyError.Decryption(MessageId(messageIds.first().id), "").left()
 
         viewModel.state.test {
             conversationMessagesEmitted()
@@ -1103,7 +1103,7 @@ class ConversationDetailViewModelTest {
                     userId,
                     MessageId(messageIds.first().id)
                 )
-            } returns GetDecryptedMessageBodyError.Data(DataErrorSample.Unreachable).left()
+            } returns GetMessageBodyError.Data(DataErrorSample.Unreachable).left()
 
             viewModel.state.test {
                 conversationMessagesEmitted()
@@ -1134,7 +1134,7 @@ class ConversationDetailViewModelTest {
                     userId,
                     MessageId(messageIds.first().id)
                 )
-            } returns GetDecryptedMessageBodyError.Data(DataErrorSample.Offline).left()
+            } returns GetMessageBodyError.Data(DataErrorSample.Offline).left()
 
             viewModel.state.test {
                 conversationMessagesEmitted()

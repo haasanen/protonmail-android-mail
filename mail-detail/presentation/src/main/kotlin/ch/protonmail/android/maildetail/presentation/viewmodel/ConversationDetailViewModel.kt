@@ -99,7 +99,7 @@ import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
+import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformationsOverride
@@ -951,15 +951,15 @@ class ConversationDetailViewModel @Inject constructor(
         viewModelScope.launch { updateLinkConfirmationSetting(false) }
     }
 
-    private suspend fun emitMessageBodyDecryptError(error: GetDecryptedMessageBodyError, messageId: MessageIdUiModel) {
+    private suspend fun emitMessageBodyDecryptError(error: GetMessageBodyError, messageId: MessageIdUiModel) {
         val errorState = when (error) {
-            is GetDecryptedMessageBodyError.Data -> if (error.dataError.isOfflineError()) {
+            is GetMessageBodyError.Data -> if (error.dataError.isOfflineError()) {
                 ConversationDetailEvent.ErrorExpandingRetrievingMessageOffline(messageId)
             } else {
                 ConversationDetailEvent.ErrorExpandingRetrieveMessageError(messageId)
             }
 
-            is GetDecryptedMessageBodyError.Decryption ->
+            is GetMessageBodyError.Decryption ->
                 ConversationDetailEvent.ErrorExpandingDecryptMessageError(messageId)
         }
 

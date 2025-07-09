@@ -138,7 +138,7 @@ import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
-import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
+import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -1252,7 +1252,7 @@ class ConversationDetailViewModelIntegrationTest {
             // Add a delay, so we're able to receive the `Expanding` state.
             // Without it, we'd only get the final `Expanded` state.
             delay(1)
-            GetDecryptedMessageBodyError.Decryption(defaultExpanded.messageId, "").left()
+            GetMessageBodyError.Decryption(defaultExpanded.messageId, "").left()
         }
 
         val viewModel = buildConversationDetailViewModel()

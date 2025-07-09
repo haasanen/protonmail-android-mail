@@ -22,7 +22,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
+import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
@@ -99,7 +99,7 @@ class GetDecryptedMessageBodyTest(
     @Test
     fun `when message repository returns an error then the use case returns the error`() = runTest {
         // Given
-        val expected = GetDecryptedMessageBodyError.Data(DataError.Local.NoDataCached).left()
+        val expected = GetMessageBodyError.Data(DataError.Local.NoDataCached).left()
         coEvery {
             messageRepository.getMessage(
                 UserIdTestData.userId,
@@ -117,7 +117,7 @@ class GetDecryptedMessageBodyTest(
     @Test
     fun `when body repository returns an error then the use case returns the error`() = runTest {
         // Given
-        val expected = GetDecryptedMessageBodyError.Data(DataError.Local.NoDataCached).left()
+        val expected = GetMessageBodyError.Data(DataError.Local.NoDataCached).left()
         coEvery {
             messageRepository.getMessage(
                 UserIdTestData.userId,
