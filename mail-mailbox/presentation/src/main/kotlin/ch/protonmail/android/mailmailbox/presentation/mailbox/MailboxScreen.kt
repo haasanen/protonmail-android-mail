@@ -299,14 +299,14 @@ fun MailboxScreen(
                         contentState.itemIds,
                         entryPoint = contentState.entryPoint
                     )
-                    val actions = MoveToBottomSheet.Actions(
+                    val moveSheetActions = MoveToBottomSheet.Actions(
                         onCreateNewFolderClick = actions.onAddFolder,
                         onError = { actions.showSnackbar(SnackbarError(it)) },
                         onMoveToComplete = { _, _ -> viewModel.submit(MailboxViewAction.DismissBottomSheet) },
                         onDismiss = { viewModel.submit(MailboxViewAction.DismissBottomSheet) }
                     )
 
-                    MoveToBottomSheetScreen(providedData = initialData, actions = actions)
+                    MoveToBottomSheetScreen(providedData = initialData, actions = moveSheetActions)
                 }
 
                 is LabelAsBottomSheetState.Requested -> {
@@ -317,14 +317,14 @@ fun MailboxScreen(
                         entryPoint = contentState.entryPoint
                     )
 
-                    val actions = LabelAsBottomSheet.Actions(
+                    val labelSheetActions = LabelAsBottomSheet.Actions(
                         onCreateNewLabelClick = actions.onAddLabel,
                         onError = { actions.showSnackbar(SnackbarError(it)) },
                         onLabelAsComplete = { _, _ -> viewModel.submit(MailboxViewAction.DismissBottomSheet) },
                         onDismiss = { viewModel.submit(MailboxViewAction.DismissBottomSheet) }
                     )
 
-                    LabelAsBottomSheetScreen(providedData = initialData, actions = actions)
+                    LabelAsBottomSheetScreen(providedData = initialData, actions = labelSheetActions)
                 }
 
                 is MailboxMoreActionsBottomSheetState -> MailboxMoreActionBottomSheetContent(
