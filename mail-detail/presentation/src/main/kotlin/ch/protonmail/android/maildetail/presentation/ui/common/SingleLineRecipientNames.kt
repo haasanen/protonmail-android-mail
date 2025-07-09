@@ -21,10 +21,8 @@ package ch.protonmail.android.maildetail.presentation.ui.common
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
@@ -34,8 +32,6 @@ import kotlinx.collections.immutable.ImmutableList
 fun SingleLineRecipientNames(
     modifier: Modifier = Modifier,
     textStyle: TextStyle,
-    fontColor: Color,
-    fontWeight: FontWeight,
     recipients: ImmutableList<ParticipantUiModel>,
     hasUndisclosedRecipients: Boolean = false
 ) {
@@ -55,8 +51,6 @@ fun SingleLineRecipientNames(
     Text(
         modifier = modifier,
         text = toRecipientsLine,
-        fontWeight = fontWeight,
-        color = fontColor,
         style = textStyle,
         overflow = TextOverflow.Ellipsis,
         maxLines = 1

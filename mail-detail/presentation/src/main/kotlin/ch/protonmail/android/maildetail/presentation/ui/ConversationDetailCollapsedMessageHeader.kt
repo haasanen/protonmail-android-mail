@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,9 +52,13 @@ import androidx.constraintlayout.compose.Visibility
 import androidx.constraintlayout.compose.atLeast
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyLargeNorm
-import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumHint
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.design.compose.theme.bodySmallWeak
+import ch.protonmail.android.design.compose.theme.labelMediumNorm
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
+import ch.protonmail.android.design.compose.theme.titleSmallNorm
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge
@@ -73,9 +78,24 @@ internal fun ConversationDetailCollapsedMessageHeader(
     avatarActions: ParticipantAvatar.Actions,
     modifier: Modifier = Modifier
 ) {
-    val fontWeight = if (uiModel.isUnread) FontWeight.Medium else FontWeight.Normal
-    val labelFontWeight = if (uiModel.isUnread) FontWeight.Bold else FontWeight.Normal
-    val fontColor = if (uiModel.isUnread) ProtonTheme.colors.textNorm else ProtonTheme.colors.textHint
+    val senderTextStyle = if (uiModel.isUnread) {
+        ProtonTheme.typography.titleMediumNorm
+    } else {
+        ProtonTheme.typography.bodyLargeWeak
+    }
+    val labelTextStyle = if (uiModel.isUnread) {
+        ProtonTheme.typography.labelMediumNorm.copy(
+            fontWeight = FontWeight.Bold
+        )
+    } else {
+        ProtonTheme.typography.bodySmallWeak
+    }
+    val fontColor = if (uiModel.isUnread) ProtonTheme.colors.textNorm else ProtonTheme.colors.textWeak
+    val recipientsTextStyle = if (uiModel.isUnread) {
+        ProtonTheme.typography.titleSmallNorm
+    } else {
+        ProtonTheme.typography.bodyMediumHint
+    }
 
     ConstraintLayout(
         modifier = modifier
@@ -145,8 +165,7 @@ internal fun ConversationDetailCollapsedMessageHeader(
         ) {
             Sender(
                 uiModel = uiModel,
-                fontWeight = fontWeight,
-                fontColor = fontColor
+                textStyle = senderTextStyle
             )
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Compact))
@@ -161,8 +180,7 @@ internal fun ConversationDetailCollapsedMessageHeader(
                     modifier = Modifier
                         .wrapContentHeight()
                         .padding(end = ProtonDimens.Spacing.Small),
-                    fontWeight = fontWeight,
-                    fontColor = fontColor
+                    textStyle = recipientsTextStyle
                 )
 
                 SingleLineRecipientNames(
@@ -170,9 +188,7 @@ internal fun ConversationDetailCollapsedMessageHeader(
                         .wrapContentHeight(),
                     recipients = uiModel.recipients,
                     hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients,
-                    textStyle = ProtonTheme.typography.bodyMediumNorm,
-                    fontColor = fontColor,
-                    fontWeight = fontWeight
+                    textStyle = recipientsTextStyle
                 )
             }
         }
@@ -216,24 +232,17 @@ internal fun ConversationDetailCollapsedMessageHeader(
                 centerVerticallyTo(parent)
             },
             uiModel = uiModel,
-            fontWeight = labelFontWeight,
-            fontColor = fontColor
+            textStyle = labelTextStyle
         )
     }
 }
 
 @Composable
-private fun ToRecipientsTitle(
-    modifier: Modifier = Modifier,
-    fontWeight: FontWeight,
-    fontColor: Color
-) {
+private fun ToRecipientsTitle(modifier: Modifier = Modifier, textStyle: TextStyle) {
     Text(
         modifier = modifier,
         text = stringResource(id = R.string.to),
-        style = ProtonTheme.typography.bodyMedium,
-        fontWeight = fontWeight,
-        color = fontColor
+        style = textStyle
     )
 }
 
@@ -321,8 +330,7 @@ private fun RepliedIcon(
 @Composable
 private fun Sender(
     uiModel: ConversationDetailMessageUiModel.Collapsed,
-    fontWeight: FontWeight,
-    fontColor: Color,
+    textStyle: TextStyle,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -334,9 +342,7 @@ private fun Sender(
                 .testTag(ConversationDetailCollapsedMessageHeaderTestTags.Sender)
                 .weight(1f, fill = false),
             text = uiModel.sender.participantName,
-            fontWeight = fontWeight,
-            color = fontColor,
-            style = ProtonTheme.typography.bodyLargeNorm,
+            style = textStyle,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1
         )
@@ -347,7 +353,7 @@ private fun Sender(
             Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
             Text(
                 text = stringResource(R.string.collapsed_header_draft),
-                style = ProtonTheme.typography.bodyLarge,
+                style = textStyle,
                 color = ProtonTheme.colors.notificationError
             )
         }
@@ -369,8 +375,7 @@ private fun StarIcon(modifier: Modifier) {
 @Composable
 private fun Time(
     uiModel: ConversationDetailMessageUiModel.Collapsed,
-    fontWeight: FontWeight,
-    fontColor: Color,
+    textStyle: TextStyle,
     modifier: Modifier
 ) {
     Text(
@@ -378,9 +383,7 @@ private fun Time(
             .testTag(ConversationDetailCollapsedMessageHeaderTestTags.Time)
             .padding(start = ProtonDimens.Spacing.Small),
         text = uiModel.shortTime.string(),
-        fontWeight = fontWeight,
-        color = fontColor,
-        style = ProtonTheme.typography.bodySmallNorm,
+        style = textStyle,
         maxLines = 1
     )
 }

@@ -88,6 +88,9 @@ val ProtonTypography.bodyMediumNorm: TextStyle
 val ProtonTypography.bodyMediumWeak: TextStyle
     @Composable get() = bodyMedium.copy(color = ProtonTheme.colors.textWeak)
 
+val ProtonTypography.bodyMediumHint: TextStyle
+    @Composable get() = bodyMedium.copy(color = ProtonTheme.colors.textHint)
+
 val ProtonTypography.bodyMediumInverted: TextStyle
     @Composable get() = bodyMedium.copy(color = ProtonTheme.colors.textInverted)
 
