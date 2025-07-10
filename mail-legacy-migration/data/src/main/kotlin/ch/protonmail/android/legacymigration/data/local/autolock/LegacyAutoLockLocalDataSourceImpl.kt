@@ -21,8 +21,11 @@ package ch.protonmail.android.legacymigration.data.local.autolock
 import androidx.datastore.preferences.core.stringPreferencesKey
 import arrow.core.Either
 import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.legacymigration.data.local.model.AutoLockInterval
 import ch.protonmail.android.legacymigration.data.usecase.DecryptLegacySerializableValue
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockBiometricsPreference
+import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockIntervalPreference
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPin
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPreference
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
@@ -32,6 +35,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
     dataStoreProvider: LegacyAutoLockDataStoreProvider,
@@ -42,6 +46,7 @@ class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
     private val hasAutoLockKey = stringPreferencesKey(LEGACY_AUTO_LOCK_ENABLED_PREF_KEY)
     private val pinKey = stringPreferencesKey(LEGACY_PIN_CODE_PREF_KEY)
     private val autoLockBiometricsKey = stringPreferencesKey(LEGACY_AUTO_LOCK_BIOMETRICS_PREF_KEY)
+    private val autoLockIntervalKey = stringPreferencesKey(LEGACY_AUTO_LOCK_INTERVAL_KEY)
 
     override suspend fun autoLockEnabled(): Either<MigrationError, LegacyAutoLockPreference> {
         return runCatching {
@@ -100,10 +105,27 @@ class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun getAutoLockInterval(): Either<MigrationError, LegacyAutoLockIntervalPreference> {
+        return try {
+            val encryptedValue = dataStore.data.first()[autoLockIntervalKey]
+                ?.takeIf { it.isNotEmpty() }
+                ?: return LegacyAutoLockIntervalPreference(DEFAULT_PIN_LOCK_INTERVAL_SECONDS.seconds).right()
+
+            decryptLegacySerializableValue<AutoLockInterval>(encryptedValue)
+                .mapLeft { MigrationError.AutoLockFailure.FailedToDecryptAutoLockInterval }
+                .map { LegacyAutoLockIntervalPreference(it.duration) }
+        } catch (_: Exception) {
+            MigrationError.AutoLockFailure.FailedToReadAutoLockInterval.left()
+        }
+    }
+
     private companion object {
 
         const val LEGACY_PIN_CODE_PREF_KEY = "pinCodePrefKey"
         const val LEGACY_AUTO_LOCK_BIOMETRICS_PREF_KEY = "autoLockBiometricsKey"
         const val LEGACY_AUTO_LOCK_ENABLED_PREF_KEY = "hasAutoLockPrefKey"
+        const val LEGACY_AUTO_LOCK_INTERVAL_KEY = "autoLockIntervalPrefKey"
+
+        const val DEFAULT_PIN_LOCK_INTERVAL_SECONDS = 0
     }
 }

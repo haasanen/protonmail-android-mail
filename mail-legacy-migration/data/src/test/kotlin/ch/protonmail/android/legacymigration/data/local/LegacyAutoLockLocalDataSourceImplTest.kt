@@ -29,6 +29,7 @@ import ch.protonmail.android.legacymigration.data.local.autolock.LegacyAutoLockD
 import ch.protonmail.android.legacymigration.data.local.autolock.LegacyAutoLockLocalDataSourceImpl
 import ch.protonmail.android.legacymigration.data.usecase.DecryptLegacySerializableValue
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockBiometricsPreference
+import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockIntervalPreference
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPin
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPreference
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
@@ -44,6 +45,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 class LegacyAutoLockLocalDataSourceImplTest {
 
@@ -69,6 +72,7 @@ class LegacyAutoLockLocalDataSourceImplTest {
     private val pinKey = stringPreferencesKey("pinCodePrefKey")
     private val biometricKey = stringPreferencesKey("autoLockBiometricsKey")
     private val autoLockEnabledKey = stringPreferencesKey("hasAutoLockPrefKey")
+    private val autoLockIntervalKey = stringPreferencesKey("autoLockIntervalPrefKey")
 
     @Test
     fun `autoLockEnabled returns decrypted preference when key is present and valid`() = runTest {
@@ -206,4 +210,46 @@ class LegacyAutoLockLocalDataSourceImplTest {
         // Then
         assertEquals(expected, result)
     }
+
+    @Test
+    fun `getAutoLockInterval returns duration when value is present and valid`() = runTest {
+        // Given
+        every { preferences[autoLockIntervalKey] } returns "encryptedInterval"
+        coEvery { keyStoreCrypto.decrypt("encryptedInterval") } returns "\"FiveMinutes\""
+        val expected = LegacyAutoLockIntervalPreference(5.minutes).right()
+
+        // When
+        val result = dataSource.getAutoLockInterval()
+
+        // Then
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun `getAutoLockInterval returns Immediately as default duration when value is not present`() = runTest {
+        // Given
+        every { preferences[autoLockIntervalKey] } returns null
+        val expected = LegacyAutoLockIntervalPreference(0.seconds).right()
+
+        // When
+        val result = dataSource.getAutoLockInterval()
+
+        // Then
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun `getAutoLockInterval returns error when value fails decrypting`() = runTest {
+        // Given
+        every { preferences[autoLockIntervalKey] } returns "encryptedInterval"
+        coEvery { keyStoreCrypto.decrypt("encryptedInterval") } throws IOException("decryption failed")
+        val expected = MigrationError.AutoLockFailure.FailedToDecryptAutoLockInterval.left()
+
+        // When
+        val result = dataSource.getAutoLockInterval()
+
+        // Then
+        assertEquals(expected, result)
+    }
+
 }
