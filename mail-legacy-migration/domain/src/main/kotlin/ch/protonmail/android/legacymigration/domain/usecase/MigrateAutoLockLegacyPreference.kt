@@ -24,9 +24,12 @@ import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.raise.either
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockBiometricsPreference
+import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockIntervalPreference
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import ch.protonmail.android.legacymigration.domain.model.toAutoLockPin
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAutoLockRepository
+import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
+import ch.protonmail.android.mailpinlock.model.AutoLockInterval
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.firstOrNull
@@ -34,7 +37,8 @@ import timber.log.Timber
 
 class MigrateAutoLockLegacyPreference @Inject constructor(
     private val legacyAutoLockRepository: LegacyAutoLockRepository,
-    private val userSessionRepository: UserSessionRepository
+    private val userSessionRepository: UserSessionRepository,
+    private val autoLockRepository: AutoLockRepository
 ) {
 
     suspend operator fun invoke(): Either<MigrationError, Unit> = either {
@@ -45,13 +49,17 @@ class MigrateAutoLockLegacyPreference @Inject constructor(
             // Biometrics always has precedence over PIN lock in V7
             shouldMigrateAutoLockBiometricPreference -> {
                 migrationResultWrapper("legacy auto-lock biometric preference") {
-                    migrateLegacyAutoLockBiometricPreference()
+                    migrateLegacyAutoLockBiometricPreference().flatMap {
+                        migrateLegacyAutoLockInterval()
+                    }
                 }.bind()
             }
 
             shouldMigrateAutoLockPin -> {
                 migrationResultWrapper("legacy auto-lock pin code") {
-                    migrateLegacyAutoLockPinCode()
+                    migrateLegacyAutoLockPinCode().flatMap {
+                        migrateLegacyAutoLockInterval()
+                    }
                 }.bind()
             }
 
@@ -60,6 +68,22 @@ class MigrateAutoLockLegacyPreference @Inject constructor(
                 raise(MigrationError.Unknown)
             }
         }
+    }
+
+    private suspend fun migrateLegacyAutoLockInterval(): Either<MigrationError, Unit> =
+        legacyAutoLockRepository.getAutoLockInterval().map {
+            migrationResultWrapper("legacy auto-lock interval") {
+                migrateAutoLockInterval(it)
+            }
+        }
+
+    private suspend fun migrateAutoLockInterval(
+        legacyInterval: LegacyAutoLockIntervalPreference
+    ): Either<MigrationError, Unit> {
+
+        val interval = AutoLockInterval.fromMinutes(legacyInterval.duration.inWholeMinutes)
+        return autoLockRepository.updateAutoLockInterval(interval)
+            .mapLeft { MigrationError.AutoLockFailure.FailedToSetAutoLockInterval }
     }
 
     private suspend fun migrateLegacyAutoLockPinCode(): Either<MigrationError, Unit> {

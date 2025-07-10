@@ -20,6 +20,7 @@ package ch.protonmail.android.legacymigration.domain.repository
 
 import arrow.core.Either
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockBiometricsPreference
+import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockIntervalPreference
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPin
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPreference
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
@@ -35,4 +36,5 @@ interface LegacyAutoLockRepository {
     suspend fun getAutoLockBiometricsPreference(): Either<MigrationError, LegacyAutoLockBiometricsPreference>
 
     suspend fun clearPreferences()
+    suspend fun getAutoLockInterval(): Either<MigrationError, LegacyAutoLockIntervalPreference>
 }

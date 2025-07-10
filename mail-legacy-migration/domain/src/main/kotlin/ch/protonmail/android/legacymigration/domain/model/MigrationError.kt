@@ -44,6 +44,10 @@ sealed interface MigrationError {
         data object FailedToReadAutoLockPin : MigrationError
         data object FailedToDecryptAutoLockPin : MigrationError
         data object FailedToSetAutoLockPin : MigrationError
+
+        data object FailedToReadAutoLockInterval : MigrationError
+        data object FailedToDecryptAutoLockInterval : MigrationError
+        data object FailedToSetAutoLockInterval : MigrationError
     }
 
     // Error during migration with specific known reason

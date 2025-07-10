@@ -21,12 +21,15 @@ package ch.protonmail.android.legacymigration.domain.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockBiometricsPreference
+import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockIntervalPreference
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPin
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAutoLockRepository
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinError
+import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
+import ch.protonmail.android.mailpinlock.model.AutoLockInterval
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -40,11 +43,14 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 internal class MigrateAutoLockLegacyPreferenceTest {
 
     private val legacyAutoLockRepository = mockk<LegacyAutoLockRepository>()
     private val userSessionRepository = mockk<UserSessionRepository>()
+    private val autoLockRepository = mockk<AutoLockRepository>()
 
     private lateinit var migrateAutoLockLegacyPreference: MigrateAutoLockLegacyPreference
 
@@ -52,7 +58,8 @@ internal class MigrateAutoLockLegacyPreferenceTest {
     fun setup() {
         migrateAutoLockLegacyPreference = MigrateAutoLockLegacyPreference(
             legacyAutoLockRepository = legacyAutoLockRepository,
-            userSessionRepository = userSessionRepository
+            userSessionRepository = userSessionRepository,
+            autoLockRepository = autoLockRepository
         )
     }
 
@@ -67,6 +74,12 @@ internal class MigrateAutoLockLegacyPreferenceTest {
         expectPinLockEnabled(true)
         expectBiometricsEnabled(true)
         coEvery { userSessionRepository.setBiometricAppProtection() } returns Unit.right()
+        coEvery {
+            legacyAutoLockRepository.getAutoLockInterval()
+        } returns LegacyAutoLockIntervalPreference(0.seconds).right()
+        coEvery {
+            autoLockRepository.updateAutoLockInterval(AutoLockInterval.Immediately)
+        } returns Unit.right()
 
         // When
         val result = migrateAutoLockLegacyPreference()
@@ -77,8 +90,10 @@ internal class MigrateAutoLockLegacyPreferenceTest {
             legacyAutoLockRepository.hasAutoLockPinCode()
             legacyAutoLockRepository.getAutoLockBiometricsPreference()
             userSessionRepository.setBiometricAppProtection()
+            legacyAutoLockRepository.getAutoLockInterval()
+            autoLockRepository.updateAutoLockInterval(AutoLockInterval.Immediately)
         }
-        confirmVerified(legacyAutoLockRepository, userSessionRepository)
+        confirmVerified(legacyAutoLockRepository, userSessionRepository, autoLockRepository)
     }
 
     @Test
@@ -90,10 +105,16 @@ internal class MigrateAutoLockLegacyPreferenceTest {
         coEvery {
             legacyAutoLockRepository.observeAutoLockPinCode()
         } returns flowOf(LegacyAutoLockPin(pinCode).right())
+        coEvery {
+            legacyAutoLockRepository.getAutoLockInterval()
+        } returns LegacyAutoLockIntervalPreference(5.minutes).right()
         val autoLockPin = AutoLockPin(pinCode)
 
         coEvery {
             userSessionRepository.setAutoLockPinCode(autoLockPin)
+        } returns Unit.right()
+        coEvery {
+            autoLockRepository.updateAutoLockInterval(AutoLockInterval.FiveMinutes)
         } returns Unit.right()
 
         // When
