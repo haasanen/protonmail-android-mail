@@ -60,6 +60,7 @@ import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
+import me.proton.android.core.devicemigration.presentation.origin.settings.SignInOnTargetDeviceItem
 
 @Composable
 fun MainSettingsScreen(
@@ -248,6 +249,17 @@ fun AccountSettingsItem(
                 }
             },
             onClick = onAccountClicked
+        )
+        SettingsItemDivider()
+
+        SignInOnTargetDeviceItem(
+            content = { label, onClick ->
+                ProtonMainSettingsItem(
+                    name = label,
+                    iconRes = R.drawable.ic_proton_qr_code,
+                    onClick = onClick
+                )
+            }
         )
     }
 }

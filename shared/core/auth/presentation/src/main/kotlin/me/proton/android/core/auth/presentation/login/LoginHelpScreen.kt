@@ -52,7 +52,8 @@ fun LoginHelpScreen(
     onCustomerSupportClicked: () -> Unit = {},
     onForgotPasswordClicked: () -> Unit = {},
     onForgotUsernameClicked: () -> Unit = {},
-    onOtherLoginIssuesClicked: () -> Unit = {}
+    onOtherLoginIssuesClicked: () -> Unit = {},
+    onSignInWithQrCodeClicked: () -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier,
@@ -70,6 +71,7 @@ fun LoginHelpScreen(
                 onForgotPasswordClicked = onForgotPasswordClicked,
                 onForgotUsernameClicked = onForgotUsernameClicked,
                 onOtherLoginIssuesClicked = onOtherLoginIssuesClicked,
+                onSignInWithQrCodeClicked = onSignInWithQrCodeClicked,
                 modifier = Modifier.padding(paddingValues)
             )
         }
@@ -82,7 +84,8 @@ private fun HelpColumn(
     onCustomerSupportClicked: () -> Unit = {},
     onForgotPasswordClicked: () -> Unit = {},
     onForgotUsernameClicked: () -> Unit = {},
-    onOtherLoginIssuesClicked: () -> Unit = {}
+    onOtherLoginIssuesClicked: () -> Unit = {},
+    onSignInWithQrCodeClicked: () -> Unit = {}
 ) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState())
@@ -94,6 +97,11 @@ private fun HelpColumn(
                 horizontal = ProtonDimens.DefaultSpacing,
                 vertical = ProtonDimens.MediumSpacing
             )
+        )
+        LoginHelpItem(
+            icon = CoreR.drawable.ic_proton_qr_code,
+            title = R.string.login_help_sign_in_with_qr_code,
+            onClick = onSignInWithQrCodeClicked
         )
         LoginHelpItem(
             icon = CoreR.drawable.ic_proton_user_circle,

@@ -26,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import me.proton.android.core.auth.presentation.AuthOrchestrator
 import me.proton.android.core.auth.presentation.ProtonSecureActivity
 import me.proton.android.core.auth.presentation.R
+import me.proton.android.core.auth.presentation.onLoginHelpResult
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.presentation.utils.addOnBackPressedCallback
 import me.proton.core.presentation.utils.errorToast
@@ -51,6 +52,12 @@ class LoginActivity : ProtonSecureActivity() {
         addOnBackPressedCallback { onClose() }
 
         authOrchestrator.register(this)
+        authOrchestrator.onLoginHelpResult { result ->
+            when (result) {
+                is LoginHelpOutput.SignedInWithQrCode -> onSuccess(result.userId)
+                null -> Unit
+            }
+        }
 
         setContent {
             ProtonTheme {

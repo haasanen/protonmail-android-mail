@@ -20,6 +20,7 @@ package me.proton.android.core.auth.presentation
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.ActivityResultLauncher
+import me.proton.android.core.auth.presentation.login.LoginHelpOutput
 import me.proton.android.core.auth.presentation.login.LoginInput
 import me.proton.android.core.auth.presentation.login.LoginOutput
 import me.proton.android.core.auth.presentation.signup.SignupOutput
@@ -36,7 +37,7 @@ class AuthOrchestrator @Inject constructor() {
 
     private var onAddAccountResultListener: ((result: Boolean) -> Unit)? = {}
     private var onLoginResultListener: ((result: LoginOutput?) -> Unit)? = {}
-    private var onLoginHelpResultListener: ((result: Boolean) -> Unit)? = {}
+    private var onLoginHelpResultListener: ((result: LoginHelpOutput?) -> Unit)? = {}
     private var onSecondFactorResultListener: ((result: Boolean) -> Unit)? = {}
     private var onTwoPassModeResultListener: ((result: Boolean) -> Unit)? = {}
     private var onSignUpResultListener: ((result: SignupOutput?) -> Unit)? = {}
@@ -82,7 +83,7 @@ class AuthOrchestrator @Inject constructor() {
         onLoginResultListener = block
     }
 
-    fun setOnLoginHelpResult(block: (result: Boolean) -> Unit) {
+    fun setOnLoginHelpResult(block: (result: LoginHelpOutput?) -> Unit) {
         onLoginHelpResultListener = block
     }
 
@@ -191,7 +192,7 @@ fun AuthOrchestrator.onLoginResult(block: (result: LoginOutput?) -> Unit): AuthO
     return this
 }
 
-fun AuthOrchestrator.onLoginHelpResult(block: (result: Boolean) -> Unit): AuthOrchestrator {
+fun AuthOrchestrator.onLoginHelpResult(block: (result: LoginHelpOutput?) -> Unit): AuthOrchestrator {
     setOnLoginHelpResult { block(it) }
     return this
 }

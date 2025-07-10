@@ -25,6 +25,7 @@ import androidx.core.content.IntentCompat
 import me.proton.android.core.auth.presentation.addaccount.AddAccountActivity
 import me.proton.android.core.auth.presentation.login.LoginActivity
 import me.proton.android.core.auth.presentation.login.LoginHelpActivity
+import me.proton.android.core.auth.presentation.login.LoginHelpOutput
 import me.proton.android.core.auth.presentation.login.LoginInput
 import me.proton.android.core.auth.presentation.login.LoginOutput
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorActivity
@@ -63,15 +64,18 @@ object StartLogin : ActivityResultContract<LoginInput, LoginOutput?>() {
 
 }
 
-object StartLoginHelp : ActivityResultContract<Unit, Boolean>() {
+object StartLoginHelp : ActivityResultContract<Unit, LoginHelpOutput?>() {
 
     override fun createIntent(context: Context, input: Unit) = Intent(context, LoginHelpActivity::class.java).apply {
         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): Boolean = when (resultCode) {
-        Activity.RESULT_OK -> true
-        else -> false
+    override fun parseResult(resultCode: Int, intent: Intent?): LoginHelpOutput? = when (resultCode) {
+        Activity.RESULT_OK -> intent?.let {
+            IntentCompat.getParcelableExtra(intent, LoginHelpActivity.ARG_OUTPUT, LoginHelpOutput::class.java)
+        }
+
+        else -> null
     }
 }
 

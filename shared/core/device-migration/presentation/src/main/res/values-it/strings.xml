@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton AG
+  ~ This file is part of Proton AG and ProtonCore.
+  ~
+  ~ ProtonCore is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ ProtonCore is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with ProtonCore.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <string name="edm_code_not_recognized">Codice non valido</string>
+  <string name="edm_code_verifying">Verifica in corso</string>
+  <string name="edm_missing_camera_permission_headline">Autorizzazione necessaria</string>
+  <string name="edm_missing_camera_permission_body">Consenti a %1$s l\'accesso alla fotocamera per scansionare il codice QR.</string>
+  <string name="edm_missing_camera_permission_footer">Puoi cambiare questa opzione in qualsiasi momento nelle impostazioni del dispositivo.</string>
+  <string name="edm_missing_camera_permission_settings">Consenti</string>
+  <string name="intro_origin_sign_in_title">Accedi con un altro dispositivo</string>
+  <string name="intro_origin_sign_in_subtitle">Come accedere con un codice QR</string>
+  <string name="intro_origin_sign_in_hint_1">1. Apri qualsiasi app Proton nel dispositivo con cui vuoi effettuare l\'accesso</string>
+  <string name="intro_origin_sign_in_hint_2">2. Nella pagina di accesso, seleziona <b>Password dimenticata</b> o <b>Problemi di accesso</b></string>
+  <string name="intro_origin_sign_in_hint_3">3. Seleziona <b>Accedi con un codice QR</b>. Apparirà un codice QR.</string>
+  <string name="intro_origin_sign_in_hint_4">4. Con questo dispositivo, tocca <b>Scansiona il codice QR</b> e scansiona il codice.</string>
+  <string name="intro_origin_sign_in_tips">Consigli di sicurezza</string>
+  <string name="intro_origin_sign_in_tip_1">Non scansionare mai un codice QR proveniente da un messaggio o un sito web non affidabile.</string>
+  <string name="intro_origin_sign_in_tip_2">Proton non ti contatterà mai chiedendo di accedere con un codice QR.</string>
+  <string name="intro_origin_sign_in_tip_3">Proton non chiederà mai di scansionare un codice QR che non proviene dal dominio <b>https://proton.me</b> o da un\'app Proton ufficiale.</string>
+  <string name="intro_origin_sign_in_begin">Scansiona un codice QR</string>
+  <string name="intro_origin_biometrics_title">Sblocca il dispositivo per continuare</string>
+  <string name="manual_code_input_title">Inserisci manualmente il codice</string>
+  <string name="manual_code_input_description">Tocca <b>Accedi con un codice QR</b> nel menu di aiuto della pagina di accesso, poi tocca <b>Inserisci manualmente il codice</b> per visualizzare il codice.</string>
+  <string name="manual_code_input_code_label">Codice</string>
+  <string name="manual_code_input_clear_code">Cancella</string>
+  <string name="manual_code_input_submit">Continua</string>
+  <string name="origin_success_signed_in">Accesso condiviso</string>
+  <string name="origin_success_ack">Torna alle impostazioni</string>
+  <string name="qr_code_scan_hint">Posiziona il codice QR all\'interno del quadrato</string>
+  <string name="qr_code_scan_enter_manually">Inserisci manualmente il codice</string>
+  <string name="target_sign_in_title">Accedi con un codice QR</string>
+  <string name="target_sign_in_scan_code">Come accedere con un altro dispositivo</string>
+  <string name="target_sign_in_instruction_1">1. Prendi un altro dispositivo con cui hai già effettuato l\'accesso all\'account Proton.</string>
+  <string name="target_sign_in_instruction_2">2. Con quel dispositivo, apri qualsiasi app Proton e seleziona <b>Impostazioni</b></string>
+  <string name="target_sign_in_instruction_3">3. Seleziona <b>Accedi con un altro dispositivo → Scansiona un codice QR</b></string>
+  <string name="target_sign_in_instruction_4">4. Scansiona il codice QR per accedere</string>
+  <string name="target_sign_in_error_title">Accesso non riuscito</string>
+  <string name="target_sign_in_retryable_error">Generazione del codice QR non riuscita</string>
+    <string name="target_sign_in_error_new_qr">Genera un codice QR</string>
+  <string name="target_sign_in_error_back_to_signin">Torna alla pagina di accesso</string>
+    <string name="target_sign_in_learn_more">Scopri di più</string>
+</resources>

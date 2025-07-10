@@ -17,19 +17,49 @@
 
 package me.proton.android.core.auth.presentation.login
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.parcelize.Parcelize
+import me.proton.android.core.auth.presentation.AuthOrchestrator
 import me.proton.android.core.auth.presentation.R
+import me.proton.android.core.devicemigration.presentation.StartMigrationFromTarget
+import me.proton.android.core.devicemigration.presentation.TargetDeviceMigrationResult
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.presentation.ui.ProtonActivity
 import me.proton.core.presentation.utils.openBrowserLink
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginHelpActivity : ProtonActivity() {
 
+    @Inject
+    lateinit var authOrchestrator: AuthOrchestrator
+
+    private lateinit var qrLoginLauncher: ActivityResultLauncher<Unit>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        authOrchestrator.register(this)
+
+        qrLoginLauncher = registerForActivityResult(StartMigrationFromTarget()) {
+            when (it) {
+                is TargetDeviceMigrationResult.NavigateToSignIn -> authOrchestrator.startLoginWorkflow()
+                is TargetDeviceMigrationResult.SignedIn -> {
+                    setResult(
+                        RESULT_OK,
+                        Intent().apply { putExtra(ARG_OUTPUT, LoginHelpOutput.SignedInWithQrCode(it.userId)) }
+                    )
+                    finish()
+                }
+
+                null -> Unit
+            }
+        }
 
         setContent {
             ProtonTheme {
@@ -46,9 +76,29 @@ class LoginHelpActivity : ProtonActivity() {
                     },
                     onOtherLoginIssuesClicked = {
                         openBrowserLink(getString(R.string.login_help_link_other_issues))
+                    },
+                    onSignInWithQrCodeClicked = {
+                        qrLoginLauncher.launch(Unit)
                     }
                 )
             }
         }
     }
+
+    override fun onDestroy() {
+        authOrchestrator.unregister()
+        super.onDestroy()
+    }
+
+    companion object {
+
+        const val ARG_OUTPUT = "arg.loginHelpOutput"
+    }
+}
+
+@Parcelize
+sealed interface LoginHelpOutput : Parcelable {
+
+    /** User has signed in using Easy Device Migration (QR code). */
+    data class SignedInWithQrCode(val userId: String) : LoginHelpOutput
 }

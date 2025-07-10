@@ -75,6 +75,7 @@ dependencies {
     implementation(project(":design-system"))
     implementation(project(":mail-session:domain"))
     implementation(project(":shared:core:auth:data"))
+    implementation(project(":shared:core:device-migration:presentation"))
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 

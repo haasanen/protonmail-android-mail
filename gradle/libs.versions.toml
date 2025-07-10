@@ -74,6 +74,7 @@ kotlinpoet-ksp = "2.2.0"
 leakcanary = "2.14"
 okhttp = "4.12.0"
 sentry = "7.21.0"
+zxing-embedded = "4.3.0"
 
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
@@ -192,10 +193,12 @@ sentry-compose = { module = "io.sentry:sentry-compose", version.ref = "sentry" }
 sentry = { module = "io.sentry:sentry", version.ref = "sentry" }
 plumber = { module = "com.squareup.leakcanary:plumber-android", version.ref = "leakcanary" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+zxing-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxing-embedded" }
 
 # Proton Core libraries
 proton-core-auth-domain = { module = "me.proton.core:auth-domain", version.ref = "proton-core" }
 proton-core-account-domain = { module = "me.proton.core:account-domain", version.ref = "proton-core" }
+proton-core-biometric = { module = "me.proton.core:biometric", version.ref = "proton-core" }
 proton-core-challenge-data = { module = "me.proton.core:challenge-data", version.ref = "proton-core" }
 proton-core-challenge-domain = { module = "me.proton.core:challenge-domain", version.ref = "proton-core" }
 proton-core-challenge-presentation = { module = "me.proton.core:challenge-presentation-compose", version.ref = "proton-core" }
