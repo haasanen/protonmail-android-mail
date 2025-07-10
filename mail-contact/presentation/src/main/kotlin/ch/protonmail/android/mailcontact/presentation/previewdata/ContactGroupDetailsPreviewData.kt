@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailcontact.presentation.previewdata
 
 import androidx.compose.ui.graphics.Color
-import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.AvatarUiModel
 import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsState
 import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsUiModel
@@ -34,7 +34,7 @@ object ContactGroupDetailsPreviewData {
             memberCount = 3,
             members = listOf(
                 ContactGroupMemberUiModel(
-                    id = ContactId("1"),
+                    id = ContactEmailId("1"),
                     avatarUiModel = AvatarUiModel.Initials(
                         value = "P",
                         color = Color.Magenta
@@ -43,7 +43,7 @@ object ContactGroupDetailsPreviewData {
                     emailAddress = "proton1@protonmail.com"
                 ),
                 ContactGroupMemberUiModel(
-                    id = ContactId("2"),
+                    id = ContactEmailId("2"),
                     avatarUiModel = AvatarUiModel.Initials(
                         value = "P",
                         color = Color.Yellow
@@ -52,7 +52,7 @@ object ContactGroupDetailsPreviewData {
                     emailAddress = "proton2@protonmail.com"
                 ),
                 ContactGroupMemberUiModel(
-                    id = ContactId("3"),
+                    id = ContactEmailId("3"),
                     avatarUiModel = AvatarUiModel.Initials(
                         value = "P",
                         color = Color.Green

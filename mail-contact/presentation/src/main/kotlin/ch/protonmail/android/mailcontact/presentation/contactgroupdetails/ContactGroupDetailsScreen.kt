@@ -41,6 +41,8 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -60,6 +62,19 @@ import ch.protonmail.android.mailcontact.presentation.ui.ContactDetailsTopBar
 
 @Composable
 fun ContactGroupDetailsScreen(
+    actions: ContactGroupDetailsScreen.Actions,
+    viewModel: ContactGroupDetailsViewModel = hiltViewModel<ContactGroupDetailsViewModel>()
+) {
+    val state = viewModel.state.collectAsStateWithLifecycle().value
+
+    ContactGroupDetailsScreen(
+        state = state,
+        actions = actions
+    )
+}
+
+@Composable
+private fun ContactGroupDetailsScreen(
     state: ContactGroupDetailsState,
     actions: ContactGroupDetailsScreen.Actions,
     modifier: Modifier = Modifier
@@ -236,6 +251,7 @@ fun ContactGroupDetailsScreenPreview() {
 }
 
 object ContactGroupDetailsScreen {
+    const val CONTACT_GROUP_DETAILS_ID_KEY = "ContactGroupDetailsIdKey"
 
     data class Actions(
         val onBack: () -> Unit,
