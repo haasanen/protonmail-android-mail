@@ -20,12 +20,15 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailcommon.presentation.mapper.UnreadCountValueMapper
@@ -70,6 +73,7 @@ fun UnreadItemsFilter(
                         onFilterEnabled()
                     }
                 },
+                trailingIcon = addCloseIconForEnabledState(state),
                 elevation = null,
                 leadingIcon = {},
                 label = {
@@ -84,6 +88,22 @@ fun UnreadItemsFilter(
                 }
             )
         }
+    }
+}
+
+@Composable
+private fun addCloseIconForEnabledState(state: UnreadFilterState.Data): @Composable (() -> Unit)? {
+    return if (state.isFilterEnabled) {
+        {
+            Icon(
+                modifier = Modifier.size(ProtonDimens.IconSize.Medium),
+                painter = painterResource(R.drawable.ic_proton_cross_small),
+                contentDescription = null,
+                tint = ProtonTheme.colors.iconNorm
+            )
+        }
+    } else {
+        null
     }
 }
 
