@@ -87,11 +87,10 @@ internal fun ProgressItem(item: ProductEntitlement.Progress, modifier: Modifier 
     val level1 = ProtonTheme.colors.notificationSuccess
     val level2 = ProtonTheme.colors.notificationWarning
     val level3 = ProtonTheme.colors.notificationError
-    val progress = remember { (item.current - item.min) / item.max.toFloat() }
     val color = remember {
-        when (progress) {
-            in 0.0f..0.5f -> level1
-            in 0.5f..0.8f -> level2
+        when (item.normalizedProgress) {
+            in 0.0..<0.5 -> level1
+            in 0.5..<0.8 -> level2
             else -> level3
         }
     }
@@ -116,7 +115,7 @@ internal fun ProgressItem(item: ProductEntitlement.Progress, modifier: Modifier 
         }
         LinearProgressIndicator(
             modifier = Modifier.fillMaxWidth().padding(vertical = Spacing.MediumLight),
-            progress = { progress },
+            progress = { item.normalizedProgress.toFloat() },
             drawStopIndicator = {},
             color = color
         )

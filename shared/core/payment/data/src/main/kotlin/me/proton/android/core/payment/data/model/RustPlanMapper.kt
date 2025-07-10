@@ -113,7 +113,7 @@ fun PlanEntitlement.Progress.toProductEntitlement() = ProductEntitlement.Progres
     startText = title ?: "",
     iconName = iconName,
     endText = text,
-    min = min.toInt(),
-    max = max.toInt(),
-    current = current.toInt()
+    min = min.toLong(),
+    max = max.toLong(),
+    current = current.toLong()
 )

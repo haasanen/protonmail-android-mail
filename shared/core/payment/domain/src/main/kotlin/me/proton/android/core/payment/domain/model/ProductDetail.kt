@@ -55,8 +55,12 @@ sealed interface ProductEntitlement {
         val startText: String,
         val iconName: String?,
         val endText: String,
-        val min: Int,
-        val max: Int,
-        val current: Int
-    ) : ProductEntitlement
+        val min: Long,
+        val max: Long,
+        val current: Long
+    ) : ProductEntitlement {
+
+        /** Returns a value between 0.0 and 1.0. */
+        val normalizedProgress: Double = (current.toDouble() - min) / (max.toDouble() - min)
+    }
 }
