@@ -62,7 +62,7 @@ class GetMessageBodyWithClickableLinksTest(
         private val expectedHitList = listOf(
             TestInput(
                 "Here goes a link www.proton.me",
-                """Here goes a link <a href="www.proton.me">www.proton.me</a>"""
+                """Here goes a link <a href="https://www.proton.me">www.proton.me</a>"""
             ),
             TestInput(
                 "Here goes a link https://proton.me",
@@ -70,46 +70,46 @@ class GetMessageBodyWithClickableLinksTest(
             ),
             TestInput(
                 "Url www.proton.me with following text that is not.a.url",
-                """Url <a href="www.proton.me">www.proton.me</a> with following text that is not.a.url"""
+                """Url <a href="https://www.proton.me">www.proton.me</a> with following text that is not.a.url"""
             ),
             TestInput(
                 """
-                    |Here goes two links www.proton.me and
+                    |Two links https://proton.me and
                     |www.not-proton.me
                 """.trimMargin(),
                 """
-                    |Here goes two links <a href="www.proton.me">www.proton.me</a> and
-                    |<a href="www.not-proton.me">www.not-proton.me</a>
+                    |Two links <a href="https://proton.me">https://proton.me</a> and
+                    |<a href="https://www.not-proton.me">www.not-proton.me</a>
                 """.trimMargin()
             ),
             TestInput(
                 """
                     |One link already clickable, one not
-                    |<a href="www.proton.me">www.proton.me</a> and
+                    |<a href=https://www.proton.me">www.proton.me</a> and
                     |https://another.me
                 """.trimMargin(),
                 """
                     |One link already clickable, one not
-                    |<a href="www.proton.me">www.proton.me</a> and
+                    |<a href=https://www.proton.me">www.proton.me</a> and
                     |<a href="https://another.me">https://another.me</a>
                 """.trimMargin()
             ),
             TestInput(
                 """
-                    |<pre>www.hello.com<br><br>www.proton.me<br><br>
+                    |<pre>https://hello.com<br><br>www.proton.me<br><br>
                     |<br><br>Signature<br><br>
                 """.trimMargin(),
                 """
-                    |<pre><a href="www.hello.com">www.hello.com</a><br><br><a href="www.proton.me">www.proton.me</a><br><br>
+                    |<pre><a href="https://hello.com">https://hello.com</a><br><br><a href="https://www.proton.me">www.proton.me</a><br><br>
                     |<br><br>Signature<br><br>
                 """.trimMargin()
             ),
             TestInput(
                 """
-                    |Link 1 www.proton.me and link 2 <a href="www.mail.proton.me">www.mail.proton.me</a>
+                    |Link 1 www.proton.me and link 2 <a href="https://mail.proton.me">mail.proton.me</a>
                 """.trimMargin(),
                 """
-                    |Link 1 <a href="www.proton.me">www.proton.me</a> and link 2 <a href="www.mail.proton.me">www.mail.proton.me</a>
+                    |Link 1 <a href="https://www.proton.me">www.proton.me</a> and link 2 <a href="https://mail.proton.me">mail.proton.me</a>
                 """.trimMargin()
             )
         )

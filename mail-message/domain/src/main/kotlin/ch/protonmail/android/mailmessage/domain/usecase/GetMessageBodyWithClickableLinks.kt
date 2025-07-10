@@ -27,6 +27,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import me.proton.core.domain.entity.UserId
+import me.proton.core.util.kotlin.startsWith
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -61,11 +62,17 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
         val linkifiedBody = value.replace(urlRegex) { matchedUrl ->
             Timber.d("linkify-body: found url ${matchedUrl.value}")
 
-            "<a href=\"${matchedUrl.value}\">${matchedUrl.value}</a>"
+            val matchedUrlWithProtocol = prependHttpsWhenMissing(matchedUrl.value)
+            "<a href=\"$matchedUrlWithProtocol\">${matchedUrl.value}</a>"
         }
 
         Timber.d("linkify-body: processed body $linkifiedBody")
         return linkifiedBody
+    }
+
+    private fun prependHttpsWhenMissing(url: String): String = when {
+        url.startsWith("http") -> url
+        else -> "https://$url"
     }
 
 
