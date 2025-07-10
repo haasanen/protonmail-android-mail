@@ -59,7 +59,9 @@ import kotlinx.coroutines.flow.onEach
 import ch.protonmail.android.legacymigration.domain.model.LegacyMigrationStatus
 import ch.protonmail.android.legacymigration.domain.usecase.MigrateLegacyApplication
 import ch.protonmail.android.legacymigration.domain.usecase.SetLegacyMigrationStatus
+import ch.protonmail.android.legacymigration.domain.usecase.ShouldMigrateLegacyAccount
 import kotlinx.coroutines.flow.first
+import timber.log.Timber
 
 @HiltViewModel
 @SuppressWarnings("NotImplementedDeclaration", "UnusedPrivateMember")
@@ -71,7 +73,8 @@ class LauncherViewModel @Inject constructor(
     private val notificationsPermissionOrchestrator: NotificationsPermissionOrchestrator,
     private val observeLegacyMigrationStatus: ObserveLegacyMigrationStatus,
     private val setLegacyMigrationStatus: SetLegacyMigrationStatus,
-    private val migrateLegacyApplication: MigrateLegacyApplication
+    private val migrateLegacyApplication: MigrateLegacyApplication,
+    private val shouldMigrateLegacyAccount: ShouldMigrateLegacyAccount
 ) : ViewModel() {
 
     private val mutableState = MutableStateFlow(Processing)
@@ -137,15 +140,38 @@ class LauncherViewModel @Inject constructor(
             onAddAccountResult { result -> if (!result) context.finish() }
             onLoginResult { result -> if (result != null) { onSwitchToAccount(result.userId.toUserId()) } }
             onSignUpResult { result -> if (result != null) { onSwitchToAccount(result.userId.toUserId()) } }
-            userSessionRepository.observe(context.lifecycle, minActiveState = Lifecycle.State.RESUMED)
-                .onAccountTwoFactorNeeded { startSecondFactorWorkflow(it.userId.toLocalUserId()) }
-                .onAccountTwoPasswordNeeded { startTwoPassModeWorkflow(it.userId.toLocalUserId()) }
+
+            viewModelScope.launch {
+                if (shouldMigrateLegacyAccount()) {
+                    // Wait for the legacy migration to complete before registering observers.
+                    observeLegacyMigrationStatus()
+                        .first { it == LegacyMigrationStatus.Done }
+
+                    if (context.lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+                        Timber.d("Legacy migration: Activity is still alive. Registering user session observers.")
+                        registerUserSessionObservers(context)
+                    } else {
+                        Timber.w("Legacy migration: Activity no longer alive. Skipping registration.")
+                    }
+                } else {
+                    registerUserSessionObservers(context)
+                }
+            }
         }
 
         notificationsPermissionOrchestrator.register(context)
         with(paymentOrchestrator) {
             register(context)
             onUpgradeResult { }
+        }
+    }
+
+    private fun registerUserSessionObservers(context: AppCompatActivity) {
+        with(authOrchestrator) {
+            userSessionRepository
+                .observe(context.lifecycle, minActiveState = Lifecycle.State.RESUMED)
+                .onAccountTwoFactorNeeded { startSecondFactorWorkflow(it.userId.toLocalUserId()) }
+                .onAccountTwoPasswordNeeded { startTwoPassModeWorkflow(it.userId.toLocalUserId()) }
         }
     }
 

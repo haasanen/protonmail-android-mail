@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.proton.core.utilKotlin)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.lottie.compose)
+    implementation(libs.timber)
 
     implementation(project(":design-system"))
     implementation(project(":mail-session:domain"))

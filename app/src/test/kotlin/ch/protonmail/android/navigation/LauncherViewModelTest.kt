@@ -43,6 +43,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import ch.protonmail.android.legacymigration.domain.model.LegacyMigrationStatus
 import ch.protonmail.android.legacymigration.domain.usecase.MigrateLegacyApplication
+import ch.protonmail.android.legacymigration.domain.usecase.ShouldMigrateLegacyAccount
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 @ExperimentalCoroutinesApi
@@ -59,6 +60,7 @@ class LauncherViewModelTest {
     private val observeLegacyMigrationStatus = mockk<ObserveLegacyMigrationStatus>()
     private val setLegacyMigrationStatus = mockk<SetLegacyMigrationStatus>(relaxUnitFun = true)
     private val migrateLegacyApplication = mockk<MigrateLegacyApplication>(relaxUnitFun = true)
+    private val shouldMigrateLegacyAccount = mockk<ShouldMigrateLegacyAccount>()
 
     private lateinit var viewModel: LauncherViewModel
 
@@ -83,7 +85,8 @@ class LauncherViewModelTest {
                 notificationsPermissionOrchestrator,
                 observeLegacyMigrationStatus,
                 setLegacyMigrationStatus,
-                migrateLegacyApplication
+                migrateLegacyApplication,
+                shouldMigrateLegacyAccount
             )
 
             viewModel.state.test {
@@ -104,7 +107,8 @@ class LauncherViewModelTest {
             notificationsPermissionOrchestrator,
             observeLegacyMigrationStatus,
             setLegacyMigrationStatus,
-            migrateLegacyApplication
+            migrateLegacyApplication,
+            shouldMigrateLegacyAccount
         )
 
         viewModel.state.test {
@@ -127,7 +131,8 @@ class LauncherViewModelTest {
             notificationsPermissionOrchestrator,
             observeLegacyMigrationStatus,
             setLegacyMigrationStatus,
-            migrateLegacyApplication
+            migrateLegacyApplication,
+            shouldMigrateLegacyAccount
         )
 
         viewModel.state.test {
