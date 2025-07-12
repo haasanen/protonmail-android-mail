@@ -146,8 +146,15 @@ class GetMessageBodyWithClickableLinksTest(
                 """
                     |@import url(https://media-cdn.style.css)
                 """.trimMargin()
+            ),
+            TestInput(
+                """
+                    |src="https://website.com/www.why.com/senp.png;
+                """.trimMargin(),
+                """
+                    |src="https://website.com/www.why.com/senp.png;
+                """.trimMargin()
             )
-
         )
 
         private val testInputList = expectedHitList + expectedMissList

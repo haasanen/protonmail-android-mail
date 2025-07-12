@@ -84,12 +84,6 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
         private const val LOOKBACK_ATTRIBUTE_MATCHER = """=""""
 
         /**
-         * Look back matcher for '"http://' and '"https://' to avoid the 'www' part of
-         * (eg.) 'href="https://www.proton.me"' to hit while the whole url is part of an attribute
-         */
-        private const val LOOKBACK_HTTP_INTO_ATTRIBUTE_MATCHER = """"https?://"""
-
-        /**
          * Look back matcher for remote css stylesheet import
          */
         private const val LOOKBACK_CSS_IMPORT_URL_MATCHER = """@import url\("""
@@ -106,8 +100,6 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
             .append("(?<!")
             .append(LOOKBACK_ATTRIBUTE_MATCHER)
             .append("|")
-            .append(LOOKBACK_HTTP_INTO_ATTRIBUTE_MATCHER)
-            .append("|")
             .append(LOOKBACK_CSS_IMPORT_URL_MATCHER)
             .append("|")
             .append(LOOKBACK_BACKGROUND_IMAGE_URL_MATCHER)
@@ -115,11 +107,14 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
             .toString()
 
         /**
-         * Match the protocols
-         * - http://
-         * - https://
-         * - https://www.
-         * - www.
+         * Allow matching urls only if they are at beginning of the line,
+         * after a blank space, following a <pre> tag, following a <br> tag
+         */
+        private const val POSITIVE_LOOKBACK = """(?<=(^|\s|<pre>|<br>))"""
+
+        /**
+         * Match the https protocol or a www identifier
+         * http://, https://, https://www., www.
          */
         private const val PROTOCOL = """(https?://(www\.)?|www\.)"""
 
@@ -151,6 +146,7 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
          */
         private val URL_PATTERN = StringBuilder()
             .append(NEGATIVE_LOOKBACK)
+            .append(POSITIVE_LOOKBACK)
             .append(PROTOCOL)
             .append("(")
             .append(HOST)
