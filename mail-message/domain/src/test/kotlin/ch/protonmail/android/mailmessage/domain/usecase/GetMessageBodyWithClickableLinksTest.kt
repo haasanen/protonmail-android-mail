@@ -122,6 +122,22 @@ class GetMessageBodyWithClickableLinksTest(
             TestInput(
                 "Here goes ww.proton.me",
                 "Here goes ww.proton.me"
+            ),
+            TestInput(
+                """
+                    |xmlns="http://www.w3.org/1999/xhtml"
+                """.trimMargin(),
+                """
+                    |xmlns="http://www.w3.org/1999/xhtml"
+                """.trimMargin()
+            ),
+            TestInput(
+                """
+                    |xmlns="https://www.w3.org/1999/xhtml"
+                """.trimMargin(),
+                """
+                    |xmlns="https://www.w3.org/1999/xhtml"
+                """.trimMargin()
             )
         )
 

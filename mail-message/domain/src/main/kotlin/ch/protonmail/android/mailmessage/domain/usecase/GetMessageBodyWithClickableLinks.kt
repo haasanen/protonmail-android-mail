@@ -56,8 +56,8 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
 
     private fun makeUrlsClickable(value: String): String {
         Timber.d("linkify-body: processing body $value")
-        val urlRegex = urlPattern.toRegex()
-        Timber.d("linkify-body: using pattern: $urlPattern")
+        val urlRegex = URL_PATTERN.toRegex()
+        Timber.d("linkify-body: using pattern: $URL_PATTERN")
 
         val linkifiedBody = value.replace(urlRegex) { matchedUrl ->
             Timber.d("linkify-body: found url ${matchedUrl.value}")
@@ -79,9 +79,26 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
     companion object {
 
         /**
-         * Exclude links that are already in the href of an <a> tag
+         * matching '="' to hit any attribute eg. 'href="', 'xmlns="'
          */
-        private const val NEGATIVE_LOOKBACK = """(?<!href=")"""
+        private const val LOOKBACK_ATTRIBUTE_MATCHER = """=""""
+
+        /**
+         * Look back matcher for '"http://' and '"https://' to avoid the 'www' part of
+         * (eg.) 'href="https://www.proton.me"' to hit while the whole url is part of an attribute
+         */
+        private const val LOOKBACK_HTTP_INTO_ATTRIBUTE_MATCHER = """"https?://"""
+
+        /**
+         * Look back to exclude links that are already in any html tag
+         */
+        private val NEGATIVE_LOOKBACK = StringBuilder()
+            .append("(?<!")
+            .append(LOOKBACK_ATTRIBUTE_MATCHER)
+            .append("|")
+            .append(LOOKBACK_HTTP_INTO_ATTRIBUTE_MATCHER)
+            .append(")")
+            .toString()
 
         /**
          * Match the protocols
@@ -118,7 +135,7 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
         /**
          * Pattern to match urls in a block of text
          */
-        private val urlPattern = StringBuilder()
+        private val URL_PATTERN = StringBuilder()
             .append(NEGATIVE_LOOKBACK)
             .append(PROTOCOL)
             .append("(")
