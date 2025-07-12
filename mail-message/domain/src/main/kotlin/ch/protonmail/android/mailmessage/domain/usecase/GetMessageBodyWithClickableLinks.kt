@@ -79,7 +79,7 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
     companion object {
 
         /**
-         * matching '="' to hit any attribute eg. 'href="', 'xmlns="'
+         * Look back matcher for '="' to hit any attribute eg. 'href="', 'xmlns="'
          */
         private const val LOOKBACK_ATTRIBUTE_MATCHER = """=""""
 
@@ -90,6 +90,11 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
         private const val LOOKBACK_HTTP_INTO_ATTRIBUTE_MATCHER = """"https?://"""
 
         /**
+         * Look back matcher for remote css stylesheet import
+         */
+        private const val LOOKBACK_CSS_IMPORT_URL_MATCHER = """@import url\("""
+
+        /**
          * Look back to exclude links that are already in any html tag
          */
         private val NEGATIVE_LOOKBACK = StringBuilder()
@@ -97,6 +102,8 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
             .append(LOOKBACK_ATTRIBUTE_MATCHER)
             .append("|")
             .append(LOOKBACK_HTTP_INTO_ATTRIBUTE_MATCHER)
+            .append("|")
+            .append(LOOKBACK_CSS_IMPORT_URL_MATCHER)
             .append(")")
             .toString()
 
