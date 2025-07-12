@@ -95,6 +95,11 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
         private const val LOOKBACK_CSS_IMPORT_URL_MATCHER = """@import url\("""
 
         /**
+         * Look back matcher for remote background image
+         */
+        private const val LOOKBACK_BACKGROUND_IMAGE_URL_MATCHER = """background-image: url\('"""
+
+        /**
          * Look back to exclude links that are already in any html tag
          */
         private val NEGATIVE_LOOKBACK = StringBuilder()
@@ -104,6 +109,8 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
             .append(LOOKBACK_HTTP_INTO_ATTRIBUTE_MATCHER)
             .append("|")
             .append(LOOKBACK_CSS_IMPORT_URL_MATCHER)
+            .append("|")
+            .append(LOOKBACK_BACKGROUND_IMAGE_URL_MATCHER)
             .append(")")
             .toString()
 
