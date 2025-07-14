@@ -19,9 +19,6 @@
 package ch.protonmail.android.maildetail.presentation.ui
 
 import android.net.Uri
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -36,7 +33,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -186,15 +183,9 @@ private fun ColumnScope.ConversationDetailExpandedItem(
     cachedWebContentHeight: Int? = null
 ) {
     val viewLoaded = remember { mutableStateOf(cachedWebContentHeight != null) }
-    val revealFooterAfterLoad by animateFloatAsState(
-        targetValue = if (viewLoaded.value) 1.0f else 0f,
-        label = "footer-alpha",
-        animationSpec = tween(
-            durationMillis = if (viewLoaded.value) 200 else 0,
-            easing = FastOutSlowInEasing,
-            delayMillis = 250
-        )
-    )
+    val isExpanding = remember { mutableStateOf(!viewLoaded.value) }
+
+    val showFooter = remember { derivedStateOf { viewLoaded.value && !isExpanding.value } }
     val headerActions = MessageDetailHeader.Actions.Empty.copy(
         onReply = actions.onReply,
         onReplyAll = actions.onReplyAll,
@@ -233,6 +224,7 @@ private fun ColumnScope.ConversationDetailExpandedItem(
             onExpandCollapseButtonClicked = {
                 actions.onBodyExpandCollapseButtonClicked(uiModel.messageId)
                 viewLoaded.value = false
+                isExpanding.value = true
             },
             loadEmbeddedImage = actions.loadEmbeddedImage,
             onReply = actions.onReply,
@@ -247,6 +239,7 @@ private fun ColumnScope.ConversationDetailExpandedItem(
         onMessageBodyLoaded = { id: MessageId, i: Int ->
             onMessageBodyLoadFinished(id, i)
             viewLoaded.value = true
+            isExpanding.value = false
         },
         cachedMessageBodyHeight = cachedWebContentHeight
     )
@@ -255,8 +248,7 @@ private fun ColumnScope.ConversationDetailExpandedItem(
     MessageDetailFooter(
         modifier = Modifier
             .graphicsLayer {
-                alpha = revealFooterAfterLoad
-                alpha = 1f
+                alpha = if (showFooter.value) 1f else 0f
             },
         uiModel = uiModel.messageDetailFooterUiModel,
         actions = MessageDetailFooter.Actions.fromConversationDetailItemActions(actions)

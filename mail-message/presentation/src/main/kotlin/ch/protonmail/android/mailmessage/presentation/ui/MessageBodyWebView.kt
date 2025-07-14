@@ -20,7 +20,6 @@ package ch.protonmail.android.mailmessage.presentation.ui
 
 import java.io.ByteArrayInputStream
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -92,7 +91,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.filter
 import timber.log.Timber
 
 @OptIn(ExperimentalAnimatableApi::class, FlowPreview::class)
@@ -182,19 +181,6 @@ fun MessageBodyWebView(
                 }
             }
 
-            override fun onPageStarted(
-                view: WebView?,
-                url: String?,
-                favicon: Bitmap?
-            ) {
-                super.onPageStarted(view, url, favicon)
-
-                // Reset state
-                lastMeasuredWebViewHeight = 0
-                targetHeightWhenLoaded = null
-                contentLoaded.value = false
-            }
-
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 contentLoaded.value = true
@@ -208,16 +194,15 @@ fun MessageBodyWebView(
                 // allow measuring passes and webview to settle
                 .debounce(timeoutMillis = WEB_PAGE_CONTENT_LOAD_TIMEOUT),
             // also listen for changes in content loaded, there can be multiple calls to this
-            snapshotFlow { contentLoaded.value }
+            snapshotFlow { contentLoaded.value }.filter { it }
         ) { measuredHeight, isLoaded ->
             // in order to get the settled height after the webpage has loaded
             // For empty messages, we can get 0 height
-            if (isLoaded) measuredHeight else null
-        }.filterNotNull()
-            .collectLatest { height ->
-                targetHeightWhenLoaded = height
-                onMessageBodyLoaded(messageId, height)
-            }
+            measuredHeight
+        }.collectLatest { height ->
+            targetHeightWhenLoaded = height
+            onMessageBodyLoaded(messageId, height)
+        }
     }
 
     Column(modifier) {
