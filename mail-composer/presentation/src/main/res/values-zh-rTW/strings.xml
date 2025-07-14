@@ -136,4 +136,5 @@
   <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
   <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
   <string name="composer_loading_attachments_error">Failed loading attachments</string>
+  <string name="composer_attachment_upload_error_retry">Some attachments failed uploading. Please, retry.</string>
 </resources>

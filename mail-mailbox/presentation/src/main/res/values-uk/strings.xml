@@ -102,8 +102,8 @@
   <string name="mailbox_search_placeholder_text">Пошук повідомлень</string>
   <string name="mailbox_search_no_results_title">Немає збігів</string>
   <string name="mailbox_search_no_results_explanation">Ви можете оновити пошуковий запит або очистити його.</string>
-  <string name="mailbox_action_button_clear_trash">Empty trash</string>
-  <string name="mailbox_action_button_clear_spam">Empty spam</string>
+  <string name="mailbox_action_button_clear_trash">Очистити смітник</string>
+  <string name="mailbox_action_button_clear_spam">Очистити спам</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Передплатіть тариф, аби повідомлення, які перебувають у смітнику або спамі понад 30 днів, видалялися автоматично</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Докладніше</string>
   <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Повідомлення в смітнику та спамі, що перебувають там понад 30 днів, автоматично видалятимуться.</string>
@@ -150,6 +150,6 @@
     <item quantity="other">Завершиться через %d хвилин</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">Завершується менш ніж за хвилину</string>
-  <string name="schedule_send_tomorrow">Tomorrow, %1$s</string>
-  <string name="schedule_send_today">Today, %1$s</string>
+  <string name="schedule_send_tomorrow">Завтра о %1$s</string>
+  <string name="schedule_send_today">Сьогодні о %1$s</string>
 </resources>

@@ -137,4 +137,5 @@
   <string name="composer_change_sender_unexpected_failure">Algo deu errado ao mudar o remetente. Tente novamente.</string>
   <string name="composer_change_sender_error_refreshing_body">Erro ao atualizar o corpo após a mudança do remetente. A assinatura pode estar desatualizada.</string>
   <string name="composer_loading_attachments_error">Erro ao carregar anexos</string>
+  <string name="composer_attachment_upload_error_retry">Erro ao carregar alguns anexos. Tente novamente.</string>
 </resources>

@@ -39,7 +39,7 @@
   <string name="mail_settings_auto_lock">Автоблокування</string>
   <string name="mail_settings_alternative_routing">Альтернативна маршрутизація</string>
   <string name="mail_settings_app_language">Мова програми</string>
-  <string name="mail_settings_app_language_sys_default">System default</string>
+  <string name="mail_settings_app_language_sys_default">Як у системі</string>
   <string name="mail_settings_combined_contacts">Об\'єднані контакти</string>
   <string name="mail_settings_swipe_actions">Жести посування</string>
   <string name="mail_settings_combined_contacts_hint">Увімкніть цю функцію для автозавершення адрес електронної пошти, використовуючи контакти з усіх ваших під\'єднаних облікових записів.</string>
@@ -49,7 +49,7 @@
   <string name="mail_settings_app_customization_notification">Сповіщення</string>
   <string name="mail_settings_app_customization_language">Мова</string>
   <string name="mail_settings_app_customization_appearance">Вигляд</string>
-  <string name="mail_settings_app_customization_protection">App lock</string>
+  <string name="mail_settings_app_customization_protection">Блокування застосунку</string>
   <string name="mail_settings_app_customization_protection_enabled_description">Автоблокування ввімкнено</string>
   <string name="mail_settings_app_customization_protection_disabled_description">Автоблокування вимкнено</string>
   <string name="mail_settings_app_customization_use_device_contacts">Використовувати контакти пристрою</string>

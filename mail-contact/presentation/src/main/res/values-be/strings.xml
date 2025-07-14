@@ -66,8 +66,8 @@
   <string name="contact_type_address">Адрас</string>
   <string name="contact_type_text">Тэкст</string>
   <string name="contact_type_text_phone">Тэкставы тэлефон</string>
-  <string name="contact_type_video">Відэасувязь</string>
-  <string name="contact_type_voice">Галасавая сувязь</string>
+  <string name="contact_type_video">Відэа</string>
+  <string name="contact_type_voice">Голас</string>
   <string name="contact_property_birthday">Дзень нараджэння</string>
   <string name="contact_property_note">Нататка</string>
   <string name="contact_property_photo">Фатаграфія</string>
@@ -91,7 +91,14 @@
   <string name="contact_details_quick_action_message">Паведамленне</string>
   <string name="contact_details_quick_action_call">Патэлефанаваць</string>
   <string name="contact_details_quick_action_share">Абагуліць</string>
-  <string name="contact_details_action_copy_label">Капіяваць</string>
+  <string name="contact_details_action_copy_label">Скапіяваць</string>
   <string name="contact_details_action_message_label">Паведамленне</string>
-  <string name="contact_details_action_call_label">Выклік</string>
+  <string name="contact_details_action_call_label">Патэлефанаваць</string>
+  <string name="contact_group_details_send_message_action">Адправіць групавое паведамленне</string>
+  <plurals name="contact_group_details_number_of_contacts">
+    <item quantity="one">%1$d кантакт</item>
+    <item quantity="few">%1$d кантакты</item>
+    <item quantity="many">%1$d кантактаў</item>
+    <item quantity="other">%1$d кантактаў</item>
+  </plurals>
 </resources>

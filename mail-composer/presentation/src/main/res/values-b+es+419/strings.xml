@@ -137,4 +137,5 @@
   <string name="composer_change_sender_unexpected_failure">Algo salió mal al cambiar el remitente. Inténtelo de nuevo.</string>
   <string name="composer_change_sender_error_refreshing_body">Se actualizó el cuerpo tras un error al cambiar el remitente. La firma podría no estar actualizada.</string>
   <string name="composer_loading_attachments_error">Error al cargar archivos adjuntos</string>
+  <string name="composer_attachment_upload_error_retry">No se pudieron cargar algunos archivos adjuntos. Inténtelo de nuevo.</string>
 </resources>

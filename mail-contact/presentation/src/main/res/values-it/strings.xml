@@ -90,4 +90,9 @@
   <string name="contact_details_action_copy_label">Copia</string>
   <string name="contact_details_action_message_label">Scrivi</string>
   <string name="contact_details_action_call_label">Chiama</string>
+  <string name="contact_group_details_send_message_action">Invia un messaggio al gruppo</string>
+  <plurals name="contact_group_details_number_of_contacts">
+    <item quantity="one">%1$d contatto</item>
+    <item quantity="other">%1$d contatti</item>
+  </plurals>
 </resources>

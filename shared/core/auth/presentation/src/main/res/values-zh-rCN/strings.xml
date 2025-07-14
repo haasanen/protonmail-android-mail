@@ -41,9 +41,9 @@
   <string name="auth_account_details">请输入您的 Proton 账户信息。</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">登录失败，请重试。</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">需要您进行人工验证。</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Incorrect username or password. Please try again.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">用户名或密码不正确，请重试。</string>
   <string name="auth_second_factor_title">双因素身份验证</string>
-  <string name="auth_second_factor_subtitle">Your account has several 2FA mechanisms configured. Please pick how you want to confirm your identity.</string>
+  <string name="auth_second_factor_subtitle">您的账户配置了多种 2FA 机制。请选择确认身份的方式。</string>
   <string name="auth_second_factor_tab_security_key">安全密钥</string>
   <string name="auth_second_factor_tab_otp">一次性验证码</string>
   <string name="auth_second_factor_authenticate">验证身份</string>
@@ -53,7 +53,7 @@
   <string name="auth_second_factor_recovery_label">恢复码</string>
   <string name="auth_second_factor_switch_to_recovery">使用恢复码</string>
   <string name="auth_second_factor_switch_to_totp">使用 2FA 验证码</string>
-  <string name="auth_second_factor_insert_security_key">Present a security key linked to your Proton Account. </string>
+  <string name="auth_second_factor_insert_security_key">请出示与您的 Proton 账户关联的安全密钥。</string>
   <string name="auth_second_factor_insert_security_key_link">了解详情</string>
   <string name="auth_two_pass_title">解锁您的邮箱</string>
   <string name="auth_two_pass_input_label">邮箱密码</string>
@@ -104,10 +104,10 @@
   <string name="auth_signup_countries_search">搜索国家/地区</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">无法设置用户。</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">无法设置地址。</string>
-  <string name="auth_fido_security_keys_error">Error fetching security keys, please try again.</string>
+  <string name="auth_fido_security_keys_error">获取安全密钥时出错，请重试。</string>
   <string name="auth_fido_security_keys_title">安全密钥</string>
-  <string name="auth_fido_manage_security_keys_info">To manage, add, or remove security keys, please use the Proton web application. %s</string>
-  <string name="auth_fido_security_keys_empty_list">There are no security keys registered to your account. To add a security key use the Proton web application. %s</string>
+  <string name="auth_fido_manage_security_keys_info">若要管理、添加或删除安全密钥，请使用 Proton 网页端。%s</string>
+  <string name="auth_fido_security_keys_empty_list">您的账户没有注册安全密钥。若要添加安全密钥，请使用 Proton 网页端。%s</string>
   <string name="auth_fido_security_keys_registered">这些是注册到您账户的安全密钥。</string>
   <string name="auth_fido_manage_security_keys">管理安全密钥</string>
   <string name="auth_fido_add_security_key">添加安全密钥</string>

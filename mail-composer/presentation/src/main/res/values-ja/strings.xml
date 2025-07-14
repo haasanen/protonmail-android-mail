@@ -136,4 +136,5 @@
   <string name="composer_change_sender_unexpected_failure">差出人の変更中に問題が発生しました。もう一度お試しください。</string>
   <string name="composer_change_sender_error_refreshing_body">差出人を変更した後の本文の再読み込みに失敗しました。署名が古い可能性があります。</string>
   <string name="composer_loading_attachments_error">添付ファイルの読み込みに失敗しました</string>
+  <string name="composer_attachment_upload_error_retry">Some attachments failed uploading. Please, retry.</string>
 </resources>

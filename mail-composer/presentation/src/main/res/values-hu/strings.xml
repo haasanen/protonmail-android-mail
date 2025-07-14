@@ -137,4 +137,5 @@
   <string name="composer_change_sender_unexpected_failure">Hiba történt a feladó módosítása során. Próbálja meg újra.</string>
   <string name="composer_change_sender_error_refreshing_body">A szövegtörzs frissítése a feladóváltás után sikertelen volt. Az aláírás elavult lehet.</string>
   <string name="composer_loading_attachments_error">Failed loading attachments</string>
+  <string name="composer_attachment_upload_error_retry">Some attachments failed uploading. Please, retry.</string>
 </resources>

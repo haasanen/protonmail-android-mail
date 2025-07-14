@@ -42,7 +42,7 @@
   </plurals>
   <string name="hide_details">Сховати подробиці</string>
   <string name="undisclosed_recipients">…</string>
-  <string name="collapsed_header_draft">(Draft)</string>
+  <string name="collapsed_header_draft">(Чернетка)</string>
   <string name="error_mark_as_read_failed">Не вдалося позначити прочитаним. Повторіть спробу.</string>
   <string name="error_mark_as_unread_failed">Не вдалося позначити непрочитаним. Повторіть спробу.</string>
   <string name="error_star_operation_failed">Не вдалося додати зірочку. Повторіть спробу.</string>
@@ -58,7 +58,7 @@
   <string name="message_moved_to_selected_destination">Повідомлення переміщено до %1$s</string>
   <string name="error_move_message_failed">Не вдалося перемістити повідомлення. Повторіть спробу.</string>
   <string name="conversation_moved_to_trash">Розмову переміщено до смітника</string>
-  <string name="conversation_moved_to_inbox">Conversation moved to Inbox</string>
+  <string name="conversation_moved_to_inbox">Розмову переміщено до вхідних</string>
   <string name="conversation_moved_to_selected_destination">Розмову переміщено до %1$s</string>
   <string name="conversation_moved_to_spam">Розмову переміщено до спаму</string>
   <string name="conversation_moved_to_archive">Розмову переміщено до архіву</string>
@@ -131,10 +131,10 @@
   <string name="schedule_message_sent_at_banner_title">Це повідомлення буде надіслано</string>
   <string name="schedule_message_edit_message_button">Редагувати повідомлення</string>
   <string name="schedule_send_tomorrow">завтра о %1$s</string>
-  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
-  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
-  <string name="message_cancel_schedule_send_dialog_confim_button">Edit draft</string>
-  <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel</string>
-  <string name="message_cancel_schedule_send_dialog_title">Edit and reschedule</string>
-  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
+  <string name="error_cancel_schedule_send_failed">Не вдалося скасувати запланований час надсилання цього повідомлення</string>
+  <string name="offline_error_cancel_schedule_send_failed">Неможливо скасувати заплановане повідомлення в автономному режимі</string>
+  <string name="message_cancel_schedule_send_dialog_confim_button">Редагувати чернетку</string>
+  <string name="message_cancel_schedule_send_dialog_cancel_button">Скасувати</string>
+  <string name="message_cancel_schedule_send_dialog_title">Змінити та перезапланувати</string>
+  <string name="message_cancel_schedule_send_dialog_message">Це повідомлення буде переміщено до чернеток, щоби ви могли його змінити. Вам потрібно буде перепланувати, коли його буде надіслано.</string>
 </resources>

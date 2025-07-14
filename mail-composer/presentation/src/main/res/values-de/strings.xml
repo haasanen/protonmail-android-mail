@@ -137,4 +137,5 @@
   <string name="composer_change_sender_unexpected_failure">Beim Ändern des Absenders ist ein Problem aufgetreten. Bitte erneut versuchen.</string>
   <string name="composer_change_sender_error_refreshing_body">Das Aktualisieren des Textes nach dem Wechsel des Absenders ist fehlgeschlagen. Die Signatur ist möglicherweise nicht mehr aktuell.</string>
   <string name="composer_loading_attachments_error">Anhang konnten nicht geladen werden</string>
+  <string name="composer_attachment_upload_error_retry">Einige Anhänge konnten nicht hochgeladen werden. Bitte versuche es erneut.</string>
 </resources>

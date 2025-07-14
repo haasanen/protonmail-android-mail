@@ -139,4 +139,5 @@
   <string name="composer_change_sender_unexpected_failure">Нешта пайшло не так пры змене адпраўніка. Паспрабуйце яшчэ раз.</string>
   <string name="composer_change_sender_error_refreshing_body">Збой абнаўлення змесціва пасля змены адпраўніка. Подпіс можа быць састарэлым.</string>
   <string name="composer_loading_attachments_error">Не ўдалося загрузіць далучэнні</string>
+  <string name="composer_attachment_upload_error_retry">Не ўдалося запампаваць некаторыя далучэнні. Паспрабуйце яшчэ раз.</string>
 </resources>

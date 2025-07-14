@@ -136,4 +136,5 @@
   <string name="composer_change_sender_unexpected_failure">보낸 사람 변경 중 오류가 발생했습니다. 다시 시도하십시오.</string>
   <string name="composer_change_sender_error_refreshing_body">보낸 사람 변경 후 본문 새로고침에 오류가 발생했습니다. 서명이 노후화되었을 수 있습니다.</string>
   <string name="composer_loading_attachments_error">첨부 파일 불러오기 실패</string>
+  <string name="composer_attachment_upload_error_retry">일부 첨부 파일이 업로드에 실패했습니다. 다시 시도하십시오.</string>
 </resources>

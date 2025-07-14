@@ -79,7 +79,7 @@
   <string name="mail_settings_pin_lock_dialog_button_next">Далей</string>
   <string name="mail_settings_pin_lock_dialog_button_cancel">Скасаваць</string>
   <!-- Biometrics unlock -->
-  <string name="mail_settings_biometrics_title_confirm">Пацвердзіце аперацыю</string>
+  <string name="mail_settings_biometrics_title_confirm">Пацвердзіць аперацыю</string>
   <string name="mail_settings_biometrics_subtitle_default">Скарыстайцеся сваім адбіткам пальца, каб пацвердзіць аперацыю</string>
   <string name="mail_settings_biometrics_button_negative">Скасаваць</string>
   <string name="mail_settings_biometrics_title_app_locked">Праграма заблакіравана</string>

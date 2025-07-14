@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Вилучено дублікати отримувачів</string>
   <string name="composer_error_store_draft_subject">Рядок теми не збережено</string>
   <string name="composer_error_store_draft_recipients">Не вдалося зберегти отримувачів цієї чернетки</string>
-  <string name="composer_error_loading_draft">The content of this draft is not available at this time, editing isn\'t possible.</string>
+  <string name="composer_error_loading_draft">Наразі вміст цієї чернетки недоступний, редагування неможливе.</string>
   <string name="composer_add_attachments_content_description">Додати вкладення</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Імпортувати з…</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">З бібліотеки фотографій</string>
@@ -109,7 +109,7 @@
     <item quantity="many">%d учасників</item>
     <item quantity="other">%d учасників</item>
   </plurals>
-  <string name="composer_recipient_suggestion_device">Show device contacts</string>
+  <string name="composer_recipient_suggestion_device">Показати контакти пристрою</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">Відхилити це повідомлення?</string>
   <string name="discard_draft_dialog_text">Чернетку не буде збережено</string>
@@ -128,15 +128,16 @@
   <string name="composer_schedule_send_custom_title">Власний</string>
   <string name="composer_schedule_send_custom_description">Виберіть час та дату</string>
   <string name="composer_error_send_message">Помилка надсилання повідомлення</string>
-  <string name="composer_schedule_send_previously_set">Previously set</string>
-  <string name="composer_schedule_send_custom_time_label">Time</string>
-  <string name="composer_schedule_send_custom_date_label">Date</string>
-  <string name="composer_schedule_send_dialog_ok">Ok</string>
-  <string name="composer_schedule_send_dialog_enter_time">Enter time</string>
-  <string name="composer_change_sender_title">From</string>
-  <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
-  <string name="composer_change_sender_invalid_address">The selected address can not be used for sending</string>
-  <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
-  <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
-  <string name="composer_loading_attachments_error">Failed loading attachments</string>
+  <string name="composer_schedule_send_previously_set">Раніше встановлено</string>
+  <string name="composer_schedule_send_custom_time_label">Час</string>
+  <string name="composer_schedule_send_custom_date_label">Дата</string>
+  <string name="composer_schedule_send_dialog_ok">Гаразд</string>
+  <string name="composer_schedule_send_dialog_enter_time">Введіть час</string>
+  <string name="composer_change_sender_title">Від</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">Неможливо змінити відправника, оскільки не вдалося отримати адреси користувача. Спробуйте ще раз.</string>
+  <string name="composer_change_sender_invalid_address">Вибрана адреса не може бути використана для надсилання.</string>
+  <string name="composer_change_sender_unexpected_failure">Щось пішло не так під час зміни відправника. Спробуйте знову.</string>
+  <string name="composer_change_sender_error_refreshing_body">Не вдалося оновити зміст після зміни відправника. Підпис може бути застарілим.</string>
+  <string name="composer_loading_attachments_error">Не вдалося завантажити вкладення</string>
+  <string name="composer_attachment_upload_error_retry">Деякі вкладення не вдалося завантажити. Повторіть спробу.</string>
 </resources>

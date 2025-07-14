@@ -150,6 +150,6 @@
     <item quantity="other">Міне праз %d хвілін</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">Тэрмін дзеяння міне менш чым праз адну хвіліну</string>
-  <string name="schedule_send_tomorrow">Заўтра у %1$s</string>
+  <string name="schedule_send_tomorrow">Заўтра ў %1$s</string>
   <string name="schedule_send_today">Сёння ў %1$s</string>
 </resources>

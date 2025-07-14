@@ -139,4 +139,5 @@
   <string name="composer_change_sender_unexpected_failure">Coś poszło nie tak podczas zmiany nadawcy. Spróbuj ponownie.</string>
   <string name="composer_change_sender_error_refreshing_body">Odświeżenie treści po zmianie nadawcy nie powiodło się. Podpis może być nieaktualny.</string>
   <string name="composer_loading_attachments_error">Ładowanie załączników nie powiodło się</string>
+  <string name="composer_attachment_upload_error_retry">Przesyłanie niektórych załączników nie powiodło się. Spróbuj ponownie.</string>
 </resources>

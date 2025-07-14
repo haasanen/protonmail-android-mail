@@ -137,4 +137,5 @@
   <string name="composer_change_sender_unexpected_failure">Noe gikk galt under bytte av avsenderen. Prøv igjen.</string>
   <string name="composer_change_sender_error_refreshing_body">Oppdatering av brødteksten etter endring av avsender mislyktes. Signaturen kan være utdatert.</string>
   <string name="composer_loading_attachments_error">Feil ved henting av vedlegg</string>
+  <string name="composer_attachment_upload_error_retry">Enkelte vedlegg kunne ikke lastes opp. Prøv igjen.</string>
 </resources>

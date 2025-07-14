@@ -37,7 +37,7 @@
   <string name="bottom_sheet_archive_action">Також архівувати?</string>
   <string name="bottom_sheet_label_as_title">Позначити міткою</string>
   <string name="bottom_sheet_label_as_error_fetch">Не вдалося отримати мітки.</string>
-  <string name="bottom_sheet_move_to_error_fetch">Failed to fetch folders.</string>
+  <string name="bottom_sheet_move_to_error_fetch">Не вдалося отримати теки.</string>
   <string name="bottom_sheet_label_as_error_apply">Не вдалося застосувати мітки.</string>
   <string name="bottom_sheet_move_to_action_error">Помилка операції переміщення.</string>
 </resources>

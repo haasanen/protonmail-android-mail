@@ -136,4 +136,5 @@
   <string name="composer_change_sender_unexpected_failure">Terjadi kesalahan pada saat mengubah pengirim. Silakan coba lagi.</string>
   <string name="composer_change_sender_error_refreshing_body">Badan pesan gagal dimuat ulang setelah pengirim diubah. Tanda tangan yang tertera mungkin telah kedaluwarsa.</string>
   <string name="composer_loading_attachments_error">Lampiran gagal dimuat</string>
+  <string name="composer_attachment_upload_error_retry">Some attachments failed uploading. Please, retry.</string>
 </resources>

@@ -138,4 +138,5 @@
   <string name="composer_change_sender_unexpected_failure">Ceva a funcționat greșit în timpul schimbării expeditorului. Reîncercați.</string>
   <string name="composer_change_sender_error_refreshing_body">Împrospătarea conținutului după schimbarea expeditorului a eșuat. Semnătura ar putea fi învechită.</string>
   <string name="composer_loading_attachments_error">Încărcarea fișierelor a eșuat.</string>
+  <string name="composer_attachment_upload_error_retry">Câteva atașamente nu au putut fi încărcate. Mai încercați.</string>
 </resources>

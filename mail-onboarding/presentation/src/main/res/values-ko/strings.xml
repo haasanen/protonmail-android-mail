@@ -28,7 +28,7 @@
   <string name="onboarding_neat_and_tidy_description">폴더, 라벨 및 색상 코드 메시지를 사용하여 맞춤형 메일함을 만들어보세요.</string>
   <!--  New Onboarding 1  -->
   <string name="onboarding_welcome_title">새로운 Proton Mail 앱에\n오신 것을 환영합니다!</string>
-  <string name="onboarding_welcome_headline">기초부터 완전히 거듭나다</string>
+  <string name="onboarding_welcome_headline">기초부터 완전히 새로워지다</string>
   <string name="onboarding_welcome_description">소수 정예 초기 베타 테스터 그룹에 참여해 주셔서 감사합니다. 주시는 피드백은 한층 더 나은 Proton Mail의 공개 릴리즈를 만드는 데 매우 큰 도움이 됩니다.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">더 좋게, 더 빠르게 재구축되다</string>

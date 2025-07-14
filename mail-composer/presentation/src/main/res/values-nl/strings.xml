@@ -137,4 +137,5 @@
   <string name="composer_change_sender_unexpected_failure">Er is iets fout gegaan bij het wijzigen van de afzender. Probeer het opnieuw.</string>
   <string name="composer_change_sender_error_refreshing_body">Het vernieuwen van de inhoud na het wijzigen van de afzender is mislukt. De handtekening is mogelijk verouderd.</string>
   <string name="composer_loading_attachments_error">Bijlagen ophalen mislukt</string>
+  <string name="composer_attachment_upload_error_retry">Sommige bijlagen konden niet worden geüpload. Probeer het opnieuw.</string>
 </resources>

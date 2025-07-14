@@ -88,4 +88,8 @@
   <string name="contact_details_action_copy_label">복사</string>
   <string name="contact_details_action_message_label">메시지</string>
   <string name="contact_details_action_call_label">전화</string>
+  <string name="contact_group_details_send_message_action">그룹 메시지 전송</string>
+  <plurals name="contact_group_details_number_of_contacts">
+    <item quantity="other">연락처 %1$d개</item>
+  </plurals>
 </resources>

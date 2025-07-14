@@ -137,4 +137,5 @@
   <string name="composer_change_sender_unexpected_failure">Une erreur est survenue en tentant de changer l\'expéditeur. Merci de réessayer</string>
   <string name="composer_change_sender_error_refreshing_body">L\'actualisation du corps après l\'échec du changement d\'expéditeur n\'a pas abouti. La signature pourrait être obsolète.</string>
   <string name="composer_loading_attachments_error">Les pièces jointes n\'ont pas pu être chargées.</string>
+  <string name="composer_attachment_upload_error_retry">Certaines pièces jointes n\'ont pas pu être chargées. Veuillez réessayer.</string>
 </resources>
