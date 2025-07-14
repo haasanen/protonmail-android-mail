@@ -92,9 +92,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 
-@OptIn(ExperimentalAnimatableApi::class, FlowPreview::class)
+@OptIn(FlowPreview::class)
 @Composable
 fun MessageBodyWebView(
     modifier: Modifier = Modifier,
@@ -219,80 +221,79 @@ fun MessageBodyWebView(
             )
         }
 
-        BoxWithConstraints {
-            // WebView changes it's layout strategy based on
-            // it's layoutParams. We convert from Compose Modifier to
-            // layout params here.
-            val initialLayoutParams = FrameLayout.LayoutParams(
-                if (constraints.hasFixedWidth) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT,
-                if (constraints.hasFixedHeight) LayoutParams.MATCH_PARENT else LayoutParams.WRAP_CONTENT
-            )
+        // WebView changes it's layout strategy based on
+        // it's layoutParams. We convert from Compose Modifier to
+        // layout params here.
+        val initialLayoutParams = FrameLayout.LayoutParams(
+            LayoutParams.WRAP_CONTENT,
+            LayoutParams.WRAP_CONTENT
+        )
 
-            AndroidView(
-                factory = { context ->
-                    onBuildWebView(context).apply {
-                        this.settings.builtInZoomControls = true
-                        this.settings.displayZoomControls = false
-                        this.settings.javaScriptEnabled = false
-                        this.settings.safeBrowsingEnabled = true
-                        this.settings.allowContentAccess = false
-                        this.settings.allowFileAccess = false
-                        this.settings.loadWithOverviewMode = true
-                        this.isVerticalScrollBarEnabled = false
-                        this.layoutParams = initialLayoutParams
-                        this.webViewClient = client
+        AndroidView(
+            factory = { context ->
+                onBuildWebView(context).apply {
+                    this.settings.builtInZoomControls = true
+                    this.settings.displayZoomControls = false
+                    this.settings.javaScriptEnabled = false
+                    this.settings.safeBrowsingEnabled = true
+                    this.settings.allowContentAccess = false
+                    this.settings.allowFileAccess = false
+                    this.settings.loadWithOverviewMode = true
+                    this.isVerticalScrollBarEnabled = false
+                    this.layoutParams = initialLayoutParams
+                    this.webViewClient = client
 
-                        configureDarkLightMode(this, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
-                        configureLongClick(this, actions.onMessageBodyLinkLongClicked)
-                        configureOnTouchListener(this)
+                    configureDarkLightMode(this, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
+                    configureLongClick(this, actions.onMessageBodyLinkLongClicked)
+                    configureOnTouchListener(this)
 
-                        webView = this
-                    }
-                },
-                update = { webView ->
-                    // When the content is loaded with 0 height, we set the minimum height. Otherwise, the
-                    // layout collapses
-                    targetHeightWhenLoaded?.let { loadedHeight ->
-                        val params = webView.layoutParams as FrameLayout.LayoutParams
-                        params.height = if (loadedHeight == 0) {
-                            WEB_VIEW_MIN_HEIGHT_PX
-                        } else {
-                            params.height
-                        }
-                        webView.layoutParams = params
-                    } ?: run {
-                        // When reload happens, we reset the height to initial layout params
-                        webView.layoutParams = initialLayoutParams
-                    }
-
-                },
-                modifier = Modifier
-                    .testTag(MessageBodyWebViewTestTags.WebView)
-                    // there's a bug where if the message is too long the webview will crash
-                    .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
-                    .padding(ProtonDimens.Spacing.Large)
-                    .fillMaxWidth()
-                    .layout { measurable, constraints ->
-                        val placeable = measurable.measure(
-                            constraints
-                        )
-
-                        lastMeasuredWebViewHeight = placeable.height
-
-                        // Do not use intermediary measured heights. That can lead to flickering
-                        layout(placeable.width, targetHeightWhenLoaded ?: WEB_VIEW_MIN_HEIGHT_PX) {
-                            placeable.placeRelative(
-                                0,
-                                0
-                            )
-                        }
-                    }
-                    .wrapContentSize(),
-                onRelease = {
-                    webView = null
+                    webView = this
                 }
-            )
-        }
+            },
+            update = { webView ->
+                Timber.d("webweirdooo: recompose webivew, target height $targetHeightWhenLoaded")
+                // When the content is loaded with 0 height, we set the minimum height. Otherwise, the
+                // layout collapses
+                targetHeightWhenLoaded?.let { loadedHeight ->
+                    val params = webView.layoutParams as FrameLayout.LayoutParams
+                    params.height = if (loadedHeight == 0) {
+                        WEB_VIEW_MIN_HEIGHT_PX
+                    } else {
+                        params.height
+                    }
+                    webView.layoutParams = params
+                } ?: run {
+                    // When reload happens, we reset the height to initial layout params
+                    webView.layoutParams = initialLayoutParams
+                }
+
+            },
+            modifier = Modifier
+                .testTag(MessageBodyWebViewTestTags.WebView)
+                // there's a bug where if the message is too long the webview will crash
+                .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
+                .padding(ProtonDimens.Spacing.Large)
+                .fillMaxWidth()
+                .layout { measurable, constraints ->
+                    val placeable = measurable.measure(
+                        constraints
+                    )
+
+                    lastMeasuredWebViewHeight = placeable.height
+
+                    // Do not use intermediary measured heights. That can lead to flickering
+                    layout(placeable.width, targetHeightWhenLoaded ?: WEB_VIEW_MIN_HEIGHT_PX) {
+                        placeable.placeRelative(
+                            0,
+                            0
+                        )
+                    }
+                }
+                .wrapContentSize(),
+            onRelease = {
+                webView = null
+            }
+        )
 
 
         if (messageBodyUiModel.shouldShowExpandCollapseButton) {
