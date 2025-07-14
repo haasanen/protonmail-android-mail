@@ -154,6 +154,14 @@ class GetMessageBodyWithClickableLinksTest(
                 """
                     |src="https://website.com/www.why.com/senp.png;
                 """.trimMargin()
+            ),
+            TestInput(
+                """
+                    |src=" https://website.com/www.why.com/senp.png;
+                """.trimMargin(),
+                """
+                    |src=" https://website.com/www.why.com/senp.png;
+                """.trimMargin()
             )
         )
 
