@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.proton.core.challenge.presentation)
     implementation(libs.proton.core.account.domain)
     implementation(libs.proton.core.domain)
+    implementation(libs.proton.core.pass.validator.presentation)
     implementation(libs.proton.core.presentation)
     implementation(libs.proton.core.presentationCompose)
     implementation(libs.proton.core.utilKotlin)
@@ -73,6 +74,7 @@ dependencies {
 
     implementation(project(":design-system"))
     implementation(project(":mail-session:domain"))
+    implementation(project(":shared:core:auth:data"))
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 

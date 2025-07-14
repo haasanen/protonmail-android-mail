@@ -49,6 +49,8 @@ import me.proton.core.account.domain.entity.AccountType
 import me.proton.core.compose.viewmodel.BaseViewModel
 import me.proton.core.presentation.savedstate.state
 import me.proton.core.util.kotlin.CoreLogger
+import me.proton.core.util.kotlin.CoroutineScopeProvider
+import uniffi.proton_account_uniffi.PasswordValidatorService
 import uniffi.proton_account_uniffi.SignupException
 import uniffi.proton_account_uniffi.SignupFlow
 import uniffi.proton_account_uniffi.SignupFlowCompleteResult
@@ -94,6 +96,9 @@ class SignUpViewModel @Inject constructor(
         getFlow = { getSignUpFlow() }
     )
 
+    @Inject
+    internal lateinit var scopeProvider: CoroutineScopeProvider
+
     private suspend fun getSignUpFlow(): SignupFlow {
         return when (val result = signUpFlowDeferred.await()) {
             is MailSessionNewSignupFlowResult.Ok -> result.v1
@@ -120,6 +125,11 @@ class SignUpViewModel @Inject constructor(
         }
         emit(errorState)
     }
+
+    suspend fun getPasswordValidatorService(): PasswordValidatorService =
+        requireNotNull(getSignUpFlow().passwordValidator()) {
+            "Could not get password validator service."
+        }
 
     private fun handleCreateUser() = flow {
         emit(SigningUp)

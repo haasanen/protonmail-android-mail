@@ -44,7 +44,9 @@ class CreatePasswordStateScreenTest(
             every { viewModelStore } returns fakeViewModelStore
         }
         paparazzi.snapshot {
-            CompositionLocalProvider(LocalViewModelStoreOwner provides fakeViewModelStoreOwner) {
+            CompositionLocalProvider(
+                LocalViewModelStoreOwner provides fakeViewModelStoreOwner
+            ) {
                 ProtonTheme {
                     CreatePasswordContent(
                         state = CreatePasswordState.Idle

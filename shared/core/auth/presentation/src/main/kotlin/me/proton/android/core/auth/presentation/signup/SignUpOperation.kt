@@ -21,6 +21,7 @@ package me.proton.android.core.auth.presentation.signup
 import me.proton.android.core.auth.presentation.signup.ui.Country
 import me.proton.core.account.domain.entity.AccountType
 import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
+import me.proton.core.passvalidator.domain.entity.PasswordValidatorToken
 
 sealed interface SignUpOperation
 
@@ -55,7 +56,8 @@ sealed interface CreatePasswordAction : SignUpAction {
     data class Perform(
         val unused: Long = System.currentTimeMillis(),
         val password: String,
-        val confirmPassword: String
+        val confirmPassword: String,
+        val token: PasswordValidatorToken?
     ) : CreatePasswordAction
 
     data class CreatePasswordClosed(

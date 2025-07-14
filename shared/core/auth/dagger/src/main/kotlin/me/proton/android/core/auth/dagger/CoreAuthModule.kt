@@ -18,13 +18,17 @@
 
 package me.proton.android.core.auth.dagger
 
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import me.proton.android.core.auth.data.usecase.ValidatePasswordImpl
 import me.proton.android.core.auth.presentation.IODispatcher
+import me.proton.core.passvalidator.domain.usecase.ValidatePassword
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -36,4 +40,12 @@ object CoreAuthModule {
     @IODispatcher
     fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 
+}
+
+@InstallIn(ActivityRetainedComponent::class)
+@Module
+interface CorePasswordValidatorModule {
+
+    @Binds
+    fun bindValidatePassword(impl: ValidatePasswordImpl): ValidatePassword
 }

@@ -110,6 +110,7 @@ sealed interface CreatePasswordState : DataInput {
     data object Creating : CreatePasswordState
     sealed interface ValidationError : CreatePasswordState {
         data object PasswordEmpty : ValidationError
+        data object PasswordInvalid : ValidationError
         data object ConfirmPasswordMissMatch : ValidationError
         data class Other(
             val message: String?

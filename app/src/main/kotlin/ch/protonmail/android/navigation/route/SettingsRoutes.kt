@@ -24,6 +24,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
+import ch.protonmail.android.design.compose.navigation.require
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsPeekView
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsScreen
@@ -56,7 +57,6 @@ import ch.protonmail.android.mailsettings.presentation.webprivacysettings.WebPri
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsScreenActions
 import ch.protonmail.android.mailsettings.presentation.webspamsettings.WebSpamFilterSettingsScreen
 import ch.protonmail.android.navigation.model.Destination.Screen
-import me.proton.core.compose.navigation.require
 import me.proton.core.util.kotlin.deserialize
 
 fun NavGraphBuilder.addWebAccountSettings(navController: NavHostController) {

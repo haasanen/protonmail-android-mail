@@ -261,8 +261,6 @@ dependencies {
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
 
-    implementation(libs.proton.core.pass.validator)
-
     debugImplementation(libs.bundles.app.debug)
 
     // Environment configuration

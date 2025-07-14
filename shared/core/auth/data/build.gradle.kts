@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -19,13 +19,11 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
-    id("dagger.hilt.android.plugin")
     id("app-config-plugin")
 }
 
 android {
-    namespace = "me.proton.android.core.auth.dagger"
+    namespace = "me.proton.android.core.auth.data"
 
     compileSdk = AppConfiguration.compileSdk.get()
 
@@ -45,11 +43,9 @@ android {
 }
 
 dependencies {
-    kapt(libs.bundles.app.annotationProcessors)
-
-    implementation(libs.kotlin.coroutines.core)
+    compileOnly(libs.proton.rust.core)
+    api(libs.proton.core.pass.validator.domain)
     implementation(libs.dagger.hilt.android)
-
-    implementation(project(":shared:core:auth:data"))
-    implementation(project(":shared:core:auth:presentation"))
+    implementation(libs.proton.core.utilKotlin)
+    implementation(libs.proton.core.utilAndroidDagger)
 }

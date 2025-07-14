@@ -22,9 +22,12 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import me.proton.android.core.auth.data.passvalidator.PasswordValidatorServiceHolder
 import me.proton.android.core.auth.presentation.AuthOrchestrator
 import me.proton.android.core.auth.presentation.ProtonSecureActivity
 import me.proton.android.core.auth.presentation.R
@@ -47,6 +50,9 @@ class SignUpActivity : ProtonSecureActivity() {
     @Inject
     lateinit var authOrchestrator: AuthOrchestrator
 
+    @Inject
+    lateinit var passwordValidatorServiceHolder: PasswordValidatorServiceHolder
+
     private val signUpViewModel: SignUpViewModel by viewModels()
 
     override fun onDestroy() {
@@ -60,6 +66,7 @@ class SignUpActivity : ProtonSecureActivity() {
         addOnBackPressedCallback { onClose() }
 
         authOrchestrator.register(this)
+        bindPasswordValidatorService()
 
         setContent {
             ProtonTheme {
@@ -110,6 +117,10 @@ class SignUpActivity : ProtonSecureActivity() {
                 }
             }
         }
+    }
+
+    private fun bindPasswordValidatorService() = lifecycleScope.launch {
+        passwordValidatorServiceHolder.bind(signUpViewModel::getPasswordValidatorService)
     }
 
     private fun onErrorMessage(message: String?) {

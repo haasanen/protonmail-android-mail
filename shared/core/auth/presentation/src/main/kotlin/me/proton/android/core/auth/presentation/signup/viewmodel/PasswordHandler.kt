@@ -20,6 +20,7 @@ package me.proton.android.core.auth.presentation.signup.viewmodel
 
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import me.proton.android.core.auth.data.entity.PasswordValidatorTokenWrapper
 import me.proton.android.core.auth.presentation.signup.CreatePasswordAction
 import me.proton.android.core.auth.presentation.signup.CreatePasswordAction.CreatePasswordClosed
 import me.proton.android.core.auth.presentation.signup.CreatePasswordAction.LoadData
@@ -29,13 +30,16 @@ import me.proton.android.core.auth.presentation.signup.CreatePasswordState.Creat
 import me.proton.android.core.auth.presentation.signup.CreatePasswordState.Error
 import me.proton.android.core.auth.presentation.signup.CreatePasswordState.Idle
 import me.proton.android.core.auth.presentation.signup.CreatePasswordState.Success
-import me.proton.android.core.auth.presentation.signup.CreatePasswordState.ValidationError.PasswordEmpty
 import me.proton.android.core.auth.presentation.signup.CreatePasswordState.ValidationError.ConfirmPasswordMissMatch
+import me.proton.android.core.auth.presentation.signup.CreatePasswordState.ValidationError.PasswordEmpty
+import me.proton.android.core.auth.presentation.signup.CreatePasswordState.ValidationError.PasswordInvalid
 import me.proton.android.core.auth.presentation.signup.SignUpState
 import me.proton.android.core.auth.presentation.signup.mapToNavigationRoute
+import me.proton.core.passvalidator.domain.entity.PasswordValidatorToken
+import uniffi.proton_account_uniffi.PasswordValidatorServiceToken
 import uniffi.proton_account_uniffi.SignupException
 import uniffi.proton_account_uniffi.SignupFlow
-import uniffi.proton_account_uniffi.SignupFlowSubmitPasswordResult
+import uniffi.proton_account_uniffi.SignupFlowSubmitValidatedPasswordResult
 
 /**
  * Handler responsible for password-related actions during signup process.
@@ -48,28 +52,33 @@ class PasswordHandler private constructor(
         is LoadData -> flowOf(Idle)
         is Perform -> handlePasswordSubmit(
             password = action.password,
-            confirmPassword = action.confirmPassword
+            confirmPassword = action.confirmPassword,
+            token = action.token
         )
 
         is CreatePasswordClosed -> handleClose(action.back)
     }
 
-    private fun handlePasswordSubmit(password: String, confirmPassword: String) = flow {
+    private fun handlePasswordSubmit(
+        password: String,
+        confirmPassword: String,
+        token: PasswordValidatorToken?
+    ) = flow {
         emit(Creating)
 
-        when (val result = getFlow().submitPassword(password, confirmPassword)) {
-            is SignupFlowSubmitPasswordResult.Error -> {
+        when (val result = getFlow().submitValidatedPassword(password, confirmPassword, token?.toRust())) {
+            is SignupFlowSubmitValidatedPasswordResult.Error -> {
                 val state = when (result.v1) {
                     is SignupException.PasswordEmpty -> PasswordEmpty
-
                     is SignupException.PasswordsNotMatching -> ConfirmPasswordMissMatch
-
+                    is SignupException.PasswordNotValidated -> PasswordInvalid
+                    is SignupException.PasswordValidationMismatch -> PasswordInvalid
                     else -> Error(message = result.v1.getErrorMessage())
                 }
                 emit(state)
             }
 
-            is SignupFlowSubmitPasswordResult.Ok -> {
+            is SignupFlowSubmitValidatedPasswordResult.Ok -> {
                 val route = result.v1.mapToNavigationRoute()
                 emit(Success(route))
             }
@@ -90,3 +99,6 @@ class PasswordHandler private constructor(
         fun create(getFlow: suspend () -> SignupFlow) = PasswordHandler(getFlow)
     }
 }
+
+private fun PasswordValidatorToken.toRust(): PasswordValidatorServiceToken? =
+    (this as? PasswordValidatorTokenWrapper)?.toRust()

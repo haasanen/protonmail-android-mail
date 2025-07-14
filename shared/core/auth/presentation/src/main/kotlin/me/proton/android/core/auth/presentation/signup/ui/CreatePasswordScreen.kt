@@ -46,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
+import me.proton.android.core.auth.presentation.passvalidator.PasswordValidatorViewModel
 import me.proton.android.core.auth.presentation.signup.CreatePasswordAction
 import me.proton.android.core.auth.presentation.signup.CreatePasswordState.Closed
 import me.proton.android.core.auth.presentation.signup.CreatePasswordState.Creating
@@ -55,16 +56,21 @@ import me.proton.android.core.auth.presentation.signup.CreatePasswordState.Succe
 import me.proton.android.core.auth.presentation.signup.CreatePasswordState.ValidationError.ConfirmPasswordMissMatch
 import me.proton.android.core.auth.presentation.signup.CreatePasswordState.ValidationError.Other
 import me.proton.android.core.auth.presentation.signup.CreatePasswordState.ValidationError.PasswordEmpty
+import me.proton.android.core.auth.presentation.signup.CreatePasswordState.ValidationError.PasswordInvalid
 import me.proton.android.core.auth.presentation.signup.SignUpState
 import me.proton.android.core.auth.presentation.signup.viewmodel.SignUpViewModel
 import me.proton.core.compose.component.HyperlinkText
 import me.proton.core.compose.component.ProtonPasswordOutlinedTextFieldWithError
 import me.proton.core.compose.component.ProtonSolidButton
+import me.proton.core.compose.component.ProtonTextFieldError
 import me.proton.core.compose.component.appbar.ProtonTopAppBar
 import me.proton.core.compose.theme.LocalColors
 import me.proton.core.compose.theme.LocalTypography
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
+import me.proton.core.compose.viewmodel.hiltViewModelOrNull
+import me.proton.core.passvalidator.domain.entity.PasswordValidatorToken
+import me.proton.core.passvalidator.presentation.report.PasswordPolicyReport
 
 @Composable
 fun CreatePasswordScreen(
@@ -78,6 +84,10 @@ fun CreatePasswordScreen(
 
     BackHandler(enabled = true) {
         viewModel.perform(CreatePasswordAction.CreatePasswordClosed(back = true))
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.perform(CreatePasswordAction.LoadData)
     }
 
     when (state) {
@@ -106,8 +116,6 @@ fun CreatePasswordContent(
     onSuccess: (String) -> Unit = {},
     state: SignUpState = Idle
 ) {
-    val isLoading = state is Creating
-
     LaunchedEffect(state) {
         when (state) {
             is Error -> onErrorMessage(state.message)
@@ -116,11 +124,14 @@ fun CreatePasswordContent(
         }
     }
 
+    val isLoading = state is Creating
+    var passwordValidatorToken by remember { mutableStateOf<PasswordValidatorToken?>(null) }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
     val passwordError = when (state) {
         is PasswordEmpty -> stringResource(R.string.auth_signup_validation_password)
+        is PasswordInvalid -> stringResource(R.string.auth_signup_validation_password_input_invalid)
         is Other -> state.message ?: stringResource(R.string.auth_signup_validation_password_input_invalid)
         else -> null
     }
@@ -159,6 +170,7 @@ fun CreatePasswordContent(
                 PasswordField(
                     password = password,
                     onPasswordChanged = { password = it },
+                    onPasswordValidatorToken = { passwordValidatorToken = it },
                     enabled = !isLoading,
                     errorText = passwordError,
                     modifier = Modifier.padding(top = ProtonDimens.MediumSpacing)
@@ -178,7 +190,8 @@ fun CreatePasswordContent(
                         onPasswordSubmitted(
                             CreatePasswordAction.Perform(
                                 password = password,
-                                confirmPassword = confirmPassword
+                                confirmPassword = confirmPassword,
+                                token = passwordValidatorToken
                             )
                         )
                     },
@@ -195,6 +208,7 @@ fun CreatePasswordContent(
 private fun PasswordField(
     password: String,
     onPasswordChanged: (String) -> Unit,
+    onPasswordValidatorToken: (PasswordValidatorToken?) -> Unit,
     enabled: Boolean,
     errorText: String?,
     modifier: Modifier = Modifier
@@ -206,7 +220,25 @@ private fun PasswordField(
         singleLine = true,
         label = { Text(text = stringResource(id = R.string.auth_signup_password)) },
         errorText = errorText,
-        modifier = modifier
+        modifier = modifier,
+        errorContent = { errorMsg ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = ProtonDimens.ExtraSmallSpacing)
+            ) {
+                if (errorMsg != null) {
+                    ProtonTextFieldError(errorText = errorMsg)
+                }
+
+                PasswordPolicyReport(
+                    password = password,
+                    userId = null,
+                    onResult = onPasswordValidatorToken,
+                    viewModel = hiltViewModelOrNull<PasswordValidatorViewModel>()
+                )
+            }
+        }
     )
 }
 
