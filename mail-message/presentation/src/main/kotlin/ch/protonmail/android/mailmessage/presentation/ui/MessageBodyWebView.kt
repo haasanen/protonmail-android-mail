@@ -29,11 +29,9 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
-import androidx.compose.animation.core.ExperimentalAnimatableApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,7 +56,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -92,8 +90,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 
 @OptIn(FlowPreview::class)
@@ -116,8 +112,6 @@ fun MessageBodyWebView(
     // increase and decrease in size. We will track measured heights and loading state to decide
     // on the final height when it's loaded.
     var lastMeasuredWebViewHeight by remember { mutableIntStateOf(0) }
-
-    var targetHeightWhenLoaded by remember { mutableStateOf(cachedHeight) }
 
     val actions = webViewActions.copy(
         onMessageBodyLinkLongClicked = {
@@ -202,7 +196,6 @@ fun MessageBodyWebView(
             // For empty messages, we can get 0 height
             measuredHeight
         }.collectLatest { height ->
-            targetHeightWhenLoaded = height
             onMessageBodyLoaded(messageId, height)
         }
     }
@@ -250,44 +243,15 @@ fun MessageBodyWebView(
                     webView = this
                 }
             },
-            update = { webView ->
-                Timber.d("webweirdooo: recompose webivew, target height $targetHeightWhenLoaded")
-                // When the content is loaded with 0 height, we set the minimum height. Otherwise, the
-                // layout collapses
-                targetHeightWhenLoaded?.let { loadedHeight ->
-                    val params = webView.layoutParams as FrameLayout.LayoutParams
-                    params.height = if (loadedHeight == 0) {
-                        WEB_VIEW_MIN_HEIGHT_PX
-                    } else {
-                        params.height
-                    }
-                    webView.layoutParams = params
-                } ?: run {
-                    // When reload happens, we reset the height to initial layout params
-                    webView.layoutParams = initialLayoutParams
-                }
-
-            },
             modifier = Modifier
                 .testTag(MessageBodyWebViewTestTags.WebView)
                 // there's a bug where if the message is too long the webview will crash
                 .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
                 .padding(ProtonDimens.Spacing.Large)
                 .fillMaxWidth()
-                .layout { measurable, constraints ->
-                    val placeable = measurable.measure(
-                        constraints
-                    )
-
-                    lastMeasuredWebViewHeight = placeable.height
-
-                    // Do not use intermediary measured heights. That can lead to flickering
-                    layout(placeable.width, targetHeightWhenLoaded ?: WEB_VIEW_MIN_HEIGHT_PX) {
-                        placeable.placeRelative(
-                            0,
-                            0
-                        )
-                    }
+                .onSizeChanged {
+                    Timber.d("webweirdooo: size changed ${it.height}")
+                    lastMeasuredWebViewHeight = it.height
                 }
                 .wrapContentSize(),
             onRelease = {
@@ -437,5 +401,4 @@ private const val WEB_PAGE_CONTENT_LOAD_TIMEOUT = 250L
 // than this value, we will not fix the height of the WebView or it will crash.
 // (Limit set in androidx.compose.ui.unit.Constraints)
 private const val WEB_VIEW_FIXED_MAX_HEIGHT = 262_143
-private const val WEB_VIEW_MIN_HEIGHT_PX: Int = 48
 
