@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -105,21 +104,12 @@ fun ConversationDetailItem(
         }
 
         is Expanded -> {
-            Box(Modifier.fillMaxHeight()) {
-                ConversationDetailCard(modifier = modifier.fillMaxHeight()) {
-                    ConversationDetailExpandedItem(
-                        uiModel = uiModel,
-                        actions = actions,
-                        onMessageBodyLoadFinished = onMessageBodyLoadFinished,
-                        cachedWebContentHeight = cachedWebContentHeight
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .testTag(ConversationDetailItemTestTags.CollapseAnchor)
-                        .clickable { actions.onCollapse(uiModel.messageId) }
-                        .fillMaxWidth()
-                        .height(MailDimens.ConversationMessageCollapseBarHeight)
+            ConversationDetailCard(modifier = modifier) {
+                ConversationDetailExpandedItem(
+                    uiModel = uiModel,
+                    actions = actions,
+                    onMessageBodyLoadFinished = onMessageBodyLoadFinished,
+                    cachedWebContentHeight = cachedWebContentHeight
                 )
             }
         }
@@ -196,6 +186,14 @@ private fun ColumnScope.ConversationDetailExpandedItem(
             actions.onParticipantClicked(participantUiModel, avatarUiModel)
         },
         onShowFeatureMissingSnackbar = actions.showFeatureMissingSnackbar
+    )
+
+    Box(
+        modifier = Modifier
+            .testTag(ConversationDetailItemTestTags.CollapseAnchor)
+            .clickable { actions.onCollapse(uiModel.messageId) }
+            .fillMaxWidth()
+            .height(MailDimens.ConversationMessageCollapseBarHeight)
     )
 
     MessageDetailHeader(
