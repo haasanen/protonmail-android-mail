@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.mapper.effects
 
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
+import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.operations.MainEvent
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification
@@ -43,6 +44,7 @@ internal class MainEventTest(
 
     companion object {
         private val senderEmail = SenderEmail("sender-email@proton.me")
+        private val displayBodyUpdated = DraftDisplayBodyUiModel("<html>with sender-email@ signature</html>")
 
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
@@ -85,9 +87,9 @@ internal class MainEventTest(
             ),
             arrayOf(
                 "SenderChanged to modification",
-                MainEvent.SenderChanged(newSender = senderEmail),
+                MainEvent.SenderChanged(newSender = senderEmail, displayBodyUpdated),
                 ComposerStateModifications(
-                    mainModification = MainStateModification.UpdateSender(senderEmail)
+                    mainModification = MainStateModification.UpdateSender(senderEmail, displayBodyUpdated)
                 )
             )
         )

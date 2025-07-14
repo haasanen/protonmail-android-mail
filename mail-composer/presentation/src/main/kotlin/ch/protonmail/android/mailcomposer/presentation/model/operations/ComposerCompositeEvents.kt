@@ -65,7 +65,7 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
         )
 
         is UserChangedSender -> ComposerStateModifications(
-            mainModification = MainStateModification.UpdateSender(newSender),
+            mainModification = MainStateModification.UpdateSender(newSender, refreshedBody),
             effectsModification = ContentEffectsStateModifications.DraftSenderChanged(refreshedBody)
         )
 

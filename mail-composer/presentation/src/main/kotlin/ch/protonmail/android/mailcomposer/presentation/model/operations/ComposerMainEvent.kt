@@ -35,7 +35,7 @@ internal sealed interface MainEvent : ComposerStateEvent {
             is InitialLoadingToggled -> UpdateLoading(ComposerState.LoadingType.Initial)
             is CoreLoadingToggled -> UpdateLoading(ComposerState.LoadingType.Save)
             is LoadingDismissed -> UpdateLoading(ComposerState.LoadingType.None)
-            is SenderChanged -> UpdateSender(newSender)
+            is SenderChanged -> UpdateSender(newSender, bodyWithNewSenderSignature)
             is RecipientsChanged -> UpdateSubmittable(areSubmittable)
             is OnDraftBodyUpdated -> UpdateBody(draftBody, displayBodyUiModel)
         }
@@ -45,7 +45,10 @@ internal sealed interface MainEvent : ComposerStateEvent {
     data object CoreLoadingToggled : MainEvent
     data object LoadingDismissed : MainEvent
     data class RecipientsChanged(val areSubmittable: Boolean) : MainEvent
-    data class SenderChanged(val newSender: SenderEmail) : MainEvent
+    data class SenderChanged(
+        val newSender: SenderEmail,
+        val bodyWithNewSenderSignature: DraftDisplayBodyUiModel
+    ) : MainEvent
     data class OnDraftBodyUpdated(
         val draftBody: DraftBody,
         val displayBodyUiModel: DraftDisplayBodyUiModel

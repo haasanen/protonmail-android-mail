@@ -45,10 +45,16 @@ internal sealed interface MainStateModification : ComposerStateModification<Comp
         override fun apply(state: ComposerState.Main): ComposerState.Main = state.copy(loadingType = value)
     }
 
-    data class UpdateSender(val sender: SenderEmail) : MainStateModification {
+    data class UpdateSender(
+        val sender: SenderEmail,
+        val bodyWithNewSenderSignature: DraftDisplayBodyUiModel
+    ) : MainStateModification {
 
         override fun apply(state: ComposerState.Main): ComposerState.Main = state.copy(
-            fields = state.fields.copy(sender = SenderUiModel(sender.value))
+            fields = state.fields.copy(
+                sender = SenderUiModel(sender.value),
+                displayBody = bodyWithNewSenderSignature
+            )
         )
     }
 

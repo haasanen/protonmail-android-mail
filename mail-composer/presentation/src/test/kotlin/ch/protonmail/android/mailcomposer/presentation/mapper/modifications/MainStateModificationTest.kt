@@ -56,6 +56,8 @@ internal class MainStateModificationTest(
 
         private val initialState = ComposerState.Main.initial()
 
+        private val senderEmail = SenderEmail("sender-email@proton.me")
+        private val displayBodyUpdated = DraftDisplayBodyUiModel("<html>with sender-email@ signature</html>")
         private val draftDisplayBody = DraftDisplayBodyUiModel("<html>draft display body</html>")
         private val draftFields = DraftFields(
             SenderEmail("author@proton.me"),
@@ -127,6 +129,17 @@ internal class MainStateModificationTest(
                 initialState.copy(isSubmittable = true),
                 MainStateModification.UpdateSubmittable(false),
                 initialState.copy(isSubmittable = false)
+            ),
+            arrayOf(
+                "Update sender and display body when sender changes",
+                initialState.copy(),
+                MainStateModification.UpdateSender(senderEmail, displayBodyUpdated),
+                initialState.copy(
+                    fields = initialState.fields.copy(
+                        sender = SenderUiModel(senderEmail.value),
+                        displayBody = displayBodyUpdated
+                    )
+                )
             )
         )
     }
