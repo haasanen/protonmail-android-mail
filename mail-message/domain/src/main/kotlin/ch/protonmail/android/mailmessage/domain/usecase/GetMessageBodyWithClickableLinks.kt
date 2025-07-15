@@ -117,7 +117,7 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
          * Allow matching urls only if they are at beginning of the line,
          * after a blank space, following a <pre> tag, following a <br> tag
          */
-        private const val POSITIVE_LOOKBACK = """(?<=(^|\s|<pre>|<br>))"""
+        private const val POSITIVE_LOOKBACK = """(?<=(^|\s|<pre>|<br>|<body>|<div>|<span>))"""
 
         /**
          * Match the https protocol or a www identifier

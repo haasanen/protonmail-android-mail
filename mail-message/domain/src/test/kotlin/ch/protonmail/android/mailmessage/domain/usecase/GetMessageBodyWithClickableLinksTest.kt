@@ -106,6 +106,30 @@ class GetMessageBodyWithClickableLinksTest(
             ),
             TestInput(
                 """
+                    |<body>https://hello.com</body>
+                """.trimMargin(),
+                """
+                    |<body><a href="https://hello.com">https://hello.com</a></body>
+                """.trimMargin()
+            ),
+            TestInput(
+                """
+                    |<div>https://hello.com</div>
+                """.trimMargin(),
+                """
+                    |<div><a href="https://hello.com">https://hello.com</a></div>
+                """.trimMargin()
+            ),
+            TestInput(
+                """
+                    |<span>https://hello.com</span>
+                """.trimMargin(),
+                """
+                    |<span><a href="https://hello.com">https://hello.com</a></span>
+                """.trimMargin()
+            ),
+            TestInput(
+                """
                     |Link 1 www.proton.me and link 2 <a href="https://mail.proton.me">mail.proton.me</a>
                 """.trimMargin(),
                 """
