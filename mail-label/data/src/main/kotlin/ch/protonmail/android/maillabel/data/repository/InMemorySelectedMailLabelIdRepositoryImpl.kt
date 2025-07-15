@@ -19,7 +19,6 @@
 package ch.protonmail.android.maillabel.data.repository
 
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
-import ch.protonmail.android.maillabel.domain.model.LocationChangeStatus
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelIdWithLocationChangeStatus
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -39,12 +38,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -52,26 +53,21 @@ import javax.inject.Singleton
 class InMemorySelectedMailLabelIdRepositoryImpl @Inject constructor(
     @AppScope private val appScope: CoroutineScope,
     private val findLocalSystemLabelId: FindLocalSystemLabelId,
-    observePrimaryUserId: ObservePrimaryUserId
+    private val observePrimaryUserId: ObservePrimaryUserId
 ) : SelectedMailLabelIdRepository {
 
-    private val tentativeInitialLocation = MailLabelId.System(SystemLabelId.Inbox.labelId)
+    private val mutableFlow = MutableStateFlow<MailLabelIdWithLocationChangeStatus?>(null)
 
-    private val mutableFlow = MutableStateFlow(
-        MailLabelIdWithLocationChangeStatus(
-            tentativeInitialLocation,
-            LocationChangeStatus.LocationRequested
-        )
-    )
-
-    private val baseFlowOfAllLabelChanges: StateFlow<MailLabelIdWithLocationChangeStatus> = mutableFlow.asStateFlow()
+    private val baseFlowOfAllLabelChanges: StateFlow<MailLabelIdWithLocationChangeStatus?> = mutableFlow.asStateFlow()
 
     private val loadedFlow: Flow<MailLabelId> = baseFlowOfAllLabelChanges
+        .filterNotNull()
         .filter { it.isLoaded() }
         .map { it.mailLabelId }
         .distinctUntilChanged()
 
     private val requestedFlow: Flow<MailLabelId> = baseFlowOfAllLabelChanges
+        .filterNotNull()
         .filter { it.isRequested() }
         .map { it.mailLabelId }
         .distinctUntilChanged()
@@ -85,9 +81,7 @@ class InMemorySelectedMailLabelIdRepositoryImpl @Inject constructor(
         observePrimaryUserId()
             .filterNotNull()
             .onEach { userId ->
-                getInitialLabelId(userId)?.let {
-                    selectLocation(it)
-                }
+                selectInitialLocation(userId)
             }
             .launchIn(appScope)
     }
@@ -104,11 +98,29 @@ class InMemorySelectedMailLabelIdRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getSelectedMailLabelId(): MailLabelId = baseFlowOfAllLabelChanges.value.mailLabelId
+    override suspend fun getSelectedMailLabelId(): MailLabelId {
+        val mailLabelId = baseFlowOfAllLabelChanges.value?.mailLabelId
+        return if (mailLabelId == null) {
+            // The initial label id was not selected. Try again.
+            val userId = observePrimaryUserId().filterNotNull().first()
+            selectInitialLocation(userId)
+            baseFlowOfAllLabelChanges.value?.mailLabelId ?: MailLabelId.System(SystemLabelId.Inbox.labelId).also {
+                Timber.w("Failed to recover from initial label id not being selected")
+            }
+        } else {
+            mailLabelId
+        }
+    }
 
     override fun observeLoadedMailLabelId(): Flow<MailLabelId> = loadedFlow
 
     override fun observeSelectedMailLabelId(): Flow<MailLabelId> = requestedFlow
+
+    private suspend fun selectInitialLocation(userId: UserId) {
+        getInitialLabelId(userId)?.let {
+            selectLocation(it)
+        } ?: Timber.d("Initial label id was not selected")
+    }
 
     private suspend fun getInitialLabelId(userId: UserId): MailLabelId? =
         findLocalSystemLabelId(userId, SystemLabelId.Inbox)

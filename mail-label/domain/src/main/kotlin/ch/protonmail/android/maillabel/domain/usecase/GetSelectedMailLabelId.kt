@@ -25,6 +25,6 @@ class GetSelectedMailLabelId @Inject constructor(
     private val selectedMailLabelIdRepository: SelectedMailLabelIdRepository
 ) {
 
-    operator fun invoke() = selectedMailLabelIdRepository.getSelectedMailLabelId()
+    suspend operator fun invoke() = selectedMailLabelIdRepository.getSelectedMailLabelId()
 
 }

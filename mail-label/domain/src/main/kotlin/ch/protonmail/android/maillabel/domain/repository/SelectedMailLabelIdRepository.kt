@@ -36,7 +36,7 @@ interface SelectedMailLabelIdRepository {
     /**
      * Returns the currently selected MailLabelId synchronously.
      */
-    fun getSelectedMailLabelId(): MailLabelId
+    suspend fun getSelectedMailLabelId(): MailLabelId
 
     /**
      * Emits new MailLabelId values only when the corresponding location has been loaded.

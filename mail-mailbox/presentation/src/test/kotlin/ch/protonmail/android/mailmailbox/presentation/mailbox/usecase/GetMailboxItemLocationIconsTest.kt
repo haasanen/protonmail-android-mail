@@ -58,7 +58,7 @@ class GetMailboxItemLocationIconTest {
         val mailboxItem = buildMailboxItem()
         val folderColorSettings = FolderColorSettings(useFolderColor = true, inheritParentFolderColor = false)
 
-        every { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.Inbox.labelId)
+        coEvery { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.Inbox.labelId)
         coEvery { shouldShowLocationIndicator(userId, any(), any()) } returns false
 
         // When
@@ -82,7 +82,7 @@ class GetMailboxItemLocationIconTest {
         )
         val folderColorSettings = FolderColorSettings(useFolderColor = false, inheritParentFolderColor = false)
 
-        every { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.AllMail.labelId)
+        coEvery { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.AllMail.labelId)
         coEvery { shouldShowLocationIndicator(userId, any(), any()) } returns true
 
         // When
@@ -102,7 +102,7 @@ class GetMailboxItemLocationIconTest {
 
         every { colorMapper.toColor(any()) } returns Color(0xFFFF5733).right()
         coEvery { shouldShowLocationIndicator(userId, any(), any()) } returns true
-        every { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.AllMail.labelId)
+        coEvery { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.AllMail.labelId)
 
         // When
         val result = getMailboxItemLocationIcon(userId, mailboxItem, folderColorSettings, isShowingSearchResults = true)
@@ -121,7 +121,7 @@ class GetMailboxItemLocationIconTest {
         )
         val folderColorSettings = FolderColorSettings(useFolderColor = false, inheritParentFolderColor = false)
         coEvery { shouldShowLocationIndicator(userId, any(), any()) } returns true
-        every { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.AllMail.labelId)
+        coEvery { getSelectedMailLabelId() } returns MailLabelId.System(SystemLabelId.AllMail.labelId)
 
         // When
         val result = getMailboxItemLocationIcon(userId, mailboxItem, folderColorSettings, isShowingSearchResults = true)

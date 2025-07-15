@@ -23,6 +23,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
+import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.every
 import io.mockk.verify
@@ -39,7 +40,7 @@ class GetCurrentMailLabelTest {
     private val observeMailLabels = mockk<ObserveMailLabels>()
     private val mutableSelectedIdFlow = MutableStateFlow<MailLabelId>(MailLabelTestData.sentSystemLabel.id)
     private val getSelectedMailLabelId = mockk<GetSelectedMailLabelId> {
-        every { this@mockk.invoke() } returns MailLabelTestData.sentSystemLabel.id
+        coEvery { this@mockk.invoke() } returns MailLabelTestData.sentSystemLabel.id
     }
 
     private val getCurrentMailLabel = GetCurrentMailLabel(observeMailLabels, getSelectedMailLabelId)

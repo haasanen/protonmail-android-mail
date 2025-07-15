@@ -139,7 +139,6 @@ class InMemorySelectedMailLabelIdRepositoryImplTest {
 
         // When
         repository.observeSelectedMailLabelId().test {
-            assertEquals(initialSystemLabel, awaitItem())
 
             repository.selectLocation(newLabel)
             assertEquals(newLabel, awaitItem())
