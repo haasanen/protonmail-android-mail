@@ -21,6 +21,7 @@ package ch.protonmail.android.initializer
 import android.content.Context
 import androidx.startup.Initializer
 import ch.protonmail.android.BuildConfig
+import ch.protonmail.android.logging.RustLogsAttachmentProcessor
 import ch.protonmail.android.logging.SentryUserObserver
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -35,6 +36,11 @@ import me.proton.core.configuration.EnvironmentConfigurationDefaults
 class SentryInitializer : Initializer<Unit> {
 
     override fun create(context: Context) {
+        val entryPoint = EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            SentryInitializerEntryPoint::class.java
+        )
+
         SentryAndroid.init(context.applicationContext) { options: SentryOptions ->
             options.dsn = BuildConfig.SENTRY_DSN
             options.release = BuildConfig.VERSION_NAME
@@ -45,14 +51,10 @@ class SentryInitializer : Initializer<Unit> {
                     minBreadcrumbLevel = SentryLevel.INFO
                 )
             )
+            options.addEventProcessor(entryPoint.rustLogsAttachmentProcessor())
         }
 
-        val entryPoint = EntryPointAccessors.fromApplication(
-            context.applicationContext,
-            SentryInitializerEntryPoint::class.java
-        )
         entryPoint.observer().start()
-
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()
@@ -60,6 +62,8 @@ class SentryInitializer : Initializer<Unit> {
     @EntryPoint
     @InstallIn(SingletonComponent::class)
     interface SentryInitializerEntryPoint {
+
         fun observer(): SentryUserObserver
+        fun rustLogsAttachmentProcessor(): RustLogsAttachmentProcessor
     }
 }
