@@ -44,12 +44,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ChainStyle
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
-import androidx.constraintlayout.compose.Visibility
-import androidx.constraintlayout.compose.atLeast
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
@@ -97,78 +91,69 @@ internal fun ConversationDetailCollapsedMessageHeader(
         ProtonTheme.typography.bodyMediumHint
     }
 
-    ConstraintLayout(
+    Row(
         modifier = modifier
             .testTag(ConversationDetailCollapsedMessageHeaderTestTags.RootItem)
             .padding(ProtonDimens.Spacing.Large)
             .fillMaxWidth()
     ) {
-        val (
-            avatarRef,
-            forwardedIconRef,
-            repliedIconRef,
-            senderRef,
-            expirationRef,
-            labelsRef,
-            starIconRef,
-            attachmentIconRef,
-            timeRef
-        ) = createRefs()
-
-        createHorizontalChain(
-            avatarRef,
-            forwardedIconRef,
-            repliedIconRef,
-            senderRef,
-            expirationRef,
-            labelsRef,
-            starIconRef,
-            attachmentIconRef,
-            timeRef,
-            chainStyle = ChainStyle.Packed
-        )
-
         ParticipantAvatar(
-            modifier = Modifier
-                .padding(end = ProtonDimens.Spacing.Large)
-                .constrainAs(avatarRef) {
-                    centerVerticallyTo(parent)
-                },
             avatarUiModel = uiModel.avatar,
             avatarImageUiModel = uiModel.avatarImage,
             actions = avatarActions
         )
 
+        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
+
         ForwardedIcon(
-            modifier = Modifier.constrainAs(forwardedIconRef) {
-                centerVerticallyTo(parent)
-            },
+            modifier = Modifier,
             uiModel = uiModel,
             fontColor = fontColor
         )
 
         RepliedIcon(
-            modifier = Modifier.constrainAs(repliedIconRef) {
-                centerVerticallyTo(parent)
-            },
+            modifier = Modifier,
             uiModel = uiModel,
             fontColor = fontColor
         )
 
         Column(
-            modifier = Modifier
-                .padding(end = ProtonDimens.Spacing.Small)
-                .constrainAs(senderRef) {
-                    width = Dimension.preferredWrapContent
-                    centerVerticallyTo(parent)
-                }
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Sender(
+            SenderNameRow(
                 uiModel = uiModel,
                 textStyle = senderTextStyle
-            )
+            ) {
 
-            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Compact))
+                if (uiModel.isStarred) {
+                    StarIcon(
+                        modifier = Modifier
+                    )
+                }
+
+                if (uiModel.hasAttachments) {
+
+                    AttachmentIcon(
+                        fontColor = fontColor,
+                        modifier = Modifier
+                    )
+                }
+
+                Time(
+                    modifier = Modifier,
+                    uiModel = uiModel,
+                    textStyle = labelTextStyle
+                )
+
+                if (uiModel.expiration != null) {
+                    Expiration(
+                        modifier = Modifier,
+                        uiModel = uiModel
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
 
             Row(
                 modifier = Modifier
@@ -192,48 +177,6 @@ internal fun ConversationDetailCollapsedMessageHeader(
                 )
             }
         }
-
-        Expiration(
-            modifier = Modifier.constrainAs(expirationRef) {
-                visibility = visibleWhen(uiModel.expiration != null)
-                centerVerticallyTo(parent)
-            },
-            uiModel = uiModel
-        )
-
-        Text(
-            modifier = Modifier.constrainAs(labelsRef) {
-                visibility = Visibility.Invisible
-                width = Dimension.fillToConstraints.atLeast(1.dp)
-                centerVerticallyTo(parent)
-            },
-            text = "Labels",
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
-
-        StarIcon(
-            modifier = Modifier.constrainAs(starIconRef) {
-                visibility = visibleWhen(uiModel.isStarred)
-                centerVerticallyTo(parent)
-            }
-        )
-
-        AttachmentIcon(
-            fontColor = fontColor,
-            modifier = Modifier.constrainAs(attachmentIconRef) {
-                visibility = visibleWhen(uiModel.hasAttachments)
-                centerVerticallyTo(parent)
-            }
-        )
-
-        Time(
-            modifier = Modifier.constrainAs(timeRef) {
-                centerVerticallyTo(parent)
-            },
-            uiModel = uiModel,
-            textStyle = labelTextStyle
-        )
     }
 }
 
@@ -328,35 +271,43 @@ private fun RepliedIcon(
 }
 
 @Composable
-private fun Sender(
+private fun SenderNameRow(
     uiModel: ConversationDetailMessageUiModel.Collapsed,
     textStyle: TextStyle,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    icons: @Composable () -> Unit
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            modifier = modifier
-                .testTag(ConversationDetailCollapsedMessageHeaderTestTags.Sender)
-                .weight(1f, fill = false),
-            text = uiModel.sender.participantName,
-            style = textStyle,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
-        if (uiModel.sender.shouldShowOfficialBadge) {
-            OfficialBadge()
-        }
-        if (uiModel.isDraft) {
-            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
-                text = stringResource(R.string.collapsed_header_draft),
+                modifier = modifier
+                    .testTag(ConversationDetailCollapsedMessageHeaderTestTags.Sender)
+                    .weight(1f, fill = false),
+                text = uiModel.sender.participantName,
                 style = textStyle,
-                color = ProtonTheme.colors.notificationError
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
             )
+            if (uiModel.sender.shouldShowOfficialBadge) {
+                OfficialBadge()
+            }
+            if (uiModel.isDraft) {
+                Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
+                Text(
+                    text = stringResource(R.string.collapsed_header_draft),
+                    style = textStyle,
+                    color = ProtonTheme.colors.notificationError
+                )
+            }
         }
+
+        icons()
     }
 }
 
@@ -387,8 +338,6 @@ private fun Time(
         maxLines = 1
     )
 }
-
-private fun visibleWhen(isVisible: Boolean) = if (isVisible) Visibility.Visible else Visibility.Gone
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable

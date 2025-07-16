@@ -165,7 +165,7 @@ private fun MessageDetailHeaderLayout(
                     modifier = Modifier
                         .fillMaxWidth(),
                     participantUiModel = uiModel.sender, icons = {
-                        Icons(uiModel = uiModel, isExpanded = isExpanded)
+                        Icons(uiModel = uiModel)
                         Spacer(modifier.width(ProtonDimens.Spacing.Small))
                         Time(time = uiModel.time)
                     }
@@ -264,11 +264,7 @@ private fun ParticipantAddress(
 }
 
 @Composable
-private fun Icons(
-    modifier: Modifier = Modifier,
-    uiModel: MessageDetailHeaderUiModel,
-    isExpanded: Boolean
-) {
+private fun Icons(modifier: Modifier = Modifier, uiModel: MessageDetailHeaderUiModel) {
     Row(modifier = modifier) {
         // Display it when the handling is implemented https://jira.protontech.ch/browse/MAILANDR-214
         //        if (uiModel.shouldShowTrackerProtectionIcon && !isExpanded) {
