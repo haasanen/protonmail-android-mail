@@ -22,12 +22,10 @@ import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -38,7 +36,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -185,15 +182,8 @@ private fun ColumnScope.ConversationDetailExpandedItem(
         onParticipantClicked = { participantUiModel, avatarUiModel ->
             actions.onParticipantClicked(participantUiModel, avatarUiModel)
         },
-        onShowFeatureMissingSnackbar = actions.showFeatureMissingSnackbar
-    )
-
-    Box(
-        modifier = Modifier
-            .testTag(ConversationDetailItemTestTags.CollapseAnchor)
-            .clickable { actions.onCollapse(uiModel.messageId) }
-            .fillMaxWidth()
-            .height(MailDimens.ConversationMessageCollapseBarHeight)
+        onShowFeatureMissingSnackbar = actions.showFeatureMissingSnackbar,
+        onCollapseMessage = actions.onCollapse
     )
 
     MessageDetailHeader(

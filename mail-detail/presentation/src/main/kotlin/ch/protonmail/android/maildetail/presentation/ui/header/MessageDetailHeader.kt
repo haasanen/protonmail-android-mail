@@ -70,9 +70,11 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
+import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.previewdata.MessageDetailHeaderPreview
 import ch.protonmail.android.maildetail.presentation.previewdata.MessageDetailHeaderPreviewProvider
+import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailItemTestTags
 import ch.protonmail.android.maildetail.presentation.ui.common.SingleLineRecipientNames
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.maillabel.presentation.ui.LabelsList
@@ -104,12 +106,23 @@ fun MessageDetailHeader(
                 SizeTransform()
         }
     ) { targetState ->
-        MessageDetailHeaderLayout(
-            modifier = modifier,
-            uiModel = uiModel,
-            isExpanded = targetState,
-            actions = actions
-        )
+
+        Box {
+            Box(
+                modifier = Modifier
+                    .testTag(ConversationDetailItemTestTags.CollapseAnchor)
+                    .clickable { headerActions.onCollapseMessage(uiModel.messageIdUiModel) }
+                    .fillMaxWidth()
+                    .height(MailDimens.ConversationMessageCollapseBarHeight)
+            )
+
+            MessageDetailHeaderLayout(
+                modifier = modifier,
+                uiModel = uiModel,
+                isExpanded = targetState,
+                actions = actions
+            )
+        }
     }
 }
 
@@ -596,7 +609,8 @@ object MessageDetailHeader {
         val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
         val onAvatarImageLoadFailed: () -> Unit,
-        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit
+        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit,
+        val onCollapseMessage: (MessageIdUiModel) -> Unit
     ) {
 
         companion object {
@@ -610,7 +624,8 @@ object MessageDetailHeader {
                 onAvatarClicked = { _, _ -> },
                 onAvatarImageLoadRequested = { },
                 onAvatarImageLoadFailed = { },
-                onParticipantClicked = { _, _ -> }
+                onParticipantClicked = { _, _ -> },
+                onCollapseMessage = {}
             )
         }
     }
