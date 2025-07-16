@@ -36,6 +36,8 @@ import me.proton.core.compose.viewmodel.BaseViewModel
 import me.proton.core.domain.entity.Product
 import me.proton.core.domain.entity.displayName
 import me.proton.core.util.kotlin.coroutine.flowWithResultContext
+import uniffi.proton_account_uniffi.QrLoginScanScreenViewTotalScreenId
+import uniffi.proton_account_uniffi.qrLoginScanScreenTotal
 import javax.inject.Inject
 
 @HiltViewModel
@@ -65,6 +67,20 @@ internal class OriginQrSignInViewModel @Inject constructor(
                 )
             )
         )
+    }
+
+    fun onScreenView(state: OriginQrSignInState) = when (state) {
+        is OriginQrSignInState.Idle -> QrLoginScanScreenViewTotalScreenId.INSTRUCTIONS
+        is OriginQrSignInState.Loading -> null
+        is OriginQrSignInState.MissingCameraPermission -> QrLoginScanScreenViewTotalScreenId.CAMERA_ACCESS_NOT_ALLOWED
+        is OriginQrSignInState.SignedInSuccessfully -> null
+        is OriginQrSignInState.Verifying -> QrLoginScanScreenViewTotalScreenId.VERIFYING
+    }?.let {
+        qrLoginScanScreenTotal(it)
+    }
+
+    fun onFailureScreenView() {
+        qrLoginScanScreenTotal(QrLoginScanScreenViewTotalScreenId.FAILURE)
     }
 
     private fun onLoad() = flow {

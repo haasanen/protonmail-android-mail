@@ -79,6 +79,7 @@ import me.proton.core.compose.theme.LocalColors
 import me.proton.core.compose.theme.LocalTypography
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
+import me.proton.core.compose.util.LaunchOnScreenView
 import me.proton.core.compose.util.annotatedStringResource
 
 private val MAX_CONTENT_WIDTH = 520.dp
@@ -102,8 +103,10 @@ internal fun OriginQrSignInScreen(
         navigateToAppSettings = navigateToAppSettings,
         onBiometricAuthResult = viewModel::perform,
         onCameraPermissionGranted = { viewModel.perform(OriginQrSignInAction.OnCameraPermissionGranted) },
+        onFailureScreenView = viewModel::onFailureScreenView,
         onManualCodeInput = onManualCodeInput,
         onNavigateBack = onNavigateBack,
+        onScreenView = viewModel::onScreenView,
         onStart = { viewModel.perform(OriginQrSignInAction.Start) },
         onQrScanResult = { viewModel.perform(it) },
         onSuccess = onSuccess
@@ -119,8 +122,10 @@ internal fun OriginQrSignInScreen(
     navigateToAppSettings: () -> Unit = {},
     onBiometricAuthResult: (OriginQrSignInAction.OnBiometricAuthResult) -> Unit = {},
     onCameraPermissionGranted: () -> Unit = {},
+    onFailureScreenView: () -> Unit = {},
     onManualCodeInput: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
+    onScreenView: (OriginQrSignInState) -> Unit = {},
     onStart: () -> Unit = {},
     onQrScanResult: (OriginQrSignInAction.OnQrScanResult) -> Unit = {},
     onSuccess: () -> Unit = {}
@@ -130,6 +135,7 @@ internal fun OriginQrSignInScreen(
     OriginQrSignInEvents(
         effect = effect,
         onBiometricAuthResult = onBiometricAuthResult,
+        onFailureScreenView = onFailureScreenView,
         onManualCodeInput = onManualCodeInput,
         onQrScanResult = onQrScanResult,
         onSuccess = onSuccess,
@@ -156,6 +162,7 @@ internal fun OriginQrSignInScreen(
                     productName = state.productName,
                     navigateToAppSettings = navigateToAppSettings,
                     onCameraPermissionGranted = onCameraPermissionGranted,
+                    onScreenView = { onScreenView(state) },
                     modifier = Modifier
                         .padding(ProtonDimens.DefaultSpacing)
                         .widthIn(max = MAX_CONTENT_WIDTH)
@@ -166,11 +173,13 @@ internal fun OriginQrSignInScreen(
 
                 is OriginQrSignInState.SignedInSuccessfully,
                 is OriginQrSignInState.Verifying -> OriginQrSignInVerifying(
+                    onScreenView = { onScreenView(state) },
                     modifier = Modifier.fillMaxSize()
                 )
 
                 else -> OriginQrSignInContent(
                     isInteractionDisabled = state.shouldDisableInteraction(),
+                    onScreenView = { onScreenView(state) },
                     onStart = onStart,
                     modifier = Modifier
                         .padding(ProtonDimens.MediumSpacing)
@@ -189,6 +198,7 @@ internal fun OriginQrSignInScreen(
 private fun OriginQrSignInEvents(
     effect: Effect<OriginQrSignInEvent>?,
     onBiometricAuthResult: (OriginQrSignInAction.OnBiometricAuthResult) -> Unit,
+    onFailureScreenView: () -> Unit,
     onManualCodeInput: () -> Unit,
     onQrScanResult: (OriginQrSignInAction.OnQrScanResult) -> Unit,
     onSuccess: () -> Unit,
@@ -209,6 +219,8 @@ private fun OriginQrSignInEvents(
         effect?.consume { event ->
             when (event) {
                 is OriginQrSignInEvent.ErrorMessage -> {
+                    onFailureScreenView()
+
                     val result = snackbarHostState.showSnackbar(
                         ProtonSnackbarType.ERROR,
                         message = event.message,
@@ -241,9 +253,12 @@ private fun OriginQrSignInEvents(
 @Composable
 private fun OriginQrSignInContent(
     isInteractionDisabled: Boolean,
+    onScreenView: () -> Unit,
     onStart: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LaunchOnScreenView(onScreenView)
+
     val hints = remember {
         arrayOf(
             R.string.intro_origin_sign_in_hint_1,
@@ -305,10 +320,12 @@ private fun OriginQrSignInContent(
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
+@Suppress("UseComposableActions")
 private fun OriginQrSignInMissingCameraPermission(
     productName: String,
     navigateToAppSettings: () -> Unit,
     onCameraPermissionGranted: () -> Unit,
+    onScreenView: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
@@ -318,6 +335,8 @@ private fun OriginQrSignInMissingCameraPermission(
             onCameraPermissionGranted()
         }
     }
+
+    LaunchOnScreenView(onScreenView)
 
     Column(
         modifier = modifier
@@ -373,7 +392,9 @@ private fun OriginQrSignInMissingCameraPermission(
 }
 
 @Composable
-private fun OriginQrSignInVerifying(modifier: Modifier = Modifier) {
+private fun OriginQrSignInVerifying(onScreenView: () -> Unit, modifier: Modifier = Modifier) {
+    LaunchOnScreenView(onScreenView)
+
     Box(
         modifier = modifier
     ) {

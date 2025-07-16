@@ -69,6 +69,7 @@ import me.proton.core.compose.effect.Effect
 import me.proton.core.compose.theme.LocalTypography
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
+import me.proton.core.compose.util.LaunchOnScreenView
 import me.proton.core.compose.util.annotatedStringResource
 import me.proton.core.compose.viewmodel.hiltViewModelOrNull
 import me.proton.core.presentation.utils.openBrowserLink
@@ -91,6 +92,8 @@ internal fun TargetQrSignInScreen(
         state = state,
         modifier = modifier,
         onBackToSignIn = onBackToSignIn,
+        onFailureScreenView = { viewModel?.onFailureScreenView() },
+        onInstructionsScreenView = { viewModel?.onInstructionsScreenView() },
         onNavigateBack = onNavigateBack,
         onSuccess = onSuccess
     )
@@ -102,6 +105,8 @@ internal fun TargetQrSignInScreen(
     state: TargetQrSignInState,
     modifier: Modifier = Modifier,
     onBackToSignIn: () -> Unit = {},
+    onFailureScreenView: () -> Unit = {},
+    onInstructionsScreenView: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
     onSuccess: (userId: CoreUserId) -> Unit = {}
 ) {
@@ -118,9 +123,9 @@ internal fun TargetQrSignInScreen(
     ) { padding ->
         Box(modifier = modifier.padding(padding)) {
             if (state is TargetQrSignInState.Failure) {
-                TargetQrSignInErrorContent(state, onBackToSignIn = onBackToSignIn)
+                TargetQrSignInErrorContent(state, onBackToSignIn = onBackToSignIn, onScreenView = onFailureScreenView)
             } else {
-                TargetQrSignInContent(state)
+                TargetQrSignInContent(state, onScreenView = onInstructionsScreenView)
             }
         }
     }
@@ -142,7 +147,11 @@ private fun TargetQrSignInTopBar(onBackClicked: () -> Unit, title: String) {
 }
 
 @Composable
-private fun TargetQrSignInContent(state: TargetQrSignInState, modifier: Modifier = Modifier) {
+private fun TargetQrSignInContent(
+    state: TargetQrSignInState,
+    onScreenView: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val qrBitmapSize = remember { 200.dp }
     val qrBoxSize = remember { qrBitmapSize + 2 * ProtonDimens.LargeSpacing }
     val emptyBitmap = remember { createBitmap(1, 1) }
@@ -162,6 +171,8 @@ private fun TargetQrSignInContent(state: TargetQrSignInState, modifier: Modifier
             else -> emptyBitmap
         }
     }
+
+    LaunchOnScreenView(onScreenView)
 
     Column(
         modifier = modifier
@@ -250,8 +261,11 @@ private fun LearnMoreButton(modifier: Modifier = Modifier) {
 private fun TargetQrSignInErrorContent(
     state: TargetQrSignInState.Failure,
     onBackToSignIn: () -> Unit,
+    onScreenView: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LaunchOnScreenView(onScreenView)
+
     Column(
         modifier = modifier
             .fillMaxWidth()

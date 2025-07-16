@@ -39,6 +39,8 @@ import me.proton.core.presentation.utils.doOnApplyWindowInsets
 import me.proton.core.presentation.utils.launchOnScreenView
 import me.proton.core.presentation.utils.onClick
 import me.proton.core.presentation.utils.viewBinding
+import uniffi.proton_account_uniffi.QrLoginScanScreenViewTotalScreenId
+import uniffi.proton_account_uniffi.qrLoginScanScreenTotal
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -67,7 +69,7 @@ public class EdmQrCaptureActivity : ComponentActivity() {
         capture.setShowMissingCameraPermissionDialog(false)
 
         launchOnScreenView {
-            // Observability: EdmScreenViewTotal.ScreenId.origin_qr_code_input
+            qrLoginScanScreenTotal(QrLoginScanScreenViewTotalScreenId.CAMERA)
         }
     }
 

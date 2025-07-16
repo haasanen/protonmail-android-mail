@@ -22,7 +22,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.devicemigration.presentation.target.signin.TargetQrSignInScreen
-import me.proton.core.compose.util.LaunchOnScreenView
 
 internal object TargetDeviceMigrationRoutes {
     object Route {
@@ -40,9 +39,6 @@ internal object TargetDeviceMigrationRoutes {
         composable(
             route = Route.SignIn.Deeplink
         ) {
-            LaunchOnScreenView {
-                // Observability: EdmScreenViewTotal.ScreenId.target_sign_in
-            }
             TargetQrSignInScreen(
                 onBackToSignIn = onBackToSignIn,
                 onNavigateBack = onNavigateBack,

@@ -28,6 +28,8 @@ import kotlinx.coroutines.flow.flow
 import me.proton.android.core.account.domain.usecase.ObservePrimaryCoreAccount
 import me.proton.android.core.devicemigration.presentation.R
 import me.proton.core.compose.viewmodel.BaseViewModel
+import uniffi.proton_account_uniffi.QrLoginScanScreenViewTotalScreenId
+import uniffi.proton_account_uniffi.qrLoginScanScreenTotal
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,6 +48,10 @@ internal class OriginSuccessViewModel @Inject constructor(
                 throwable.localizedMessage ?: context.getString(R.string.presentation_error_general)
             )
         )
+    }
+
+    fun onScreenView() {
+        qrLoginScanScreenTotal(QrLoginScanScreenViewTotalScreenId.SUCCESS)
     }
 
     private fun onLoad() = flow {

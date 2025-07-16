@@ -56,6 +56,7 @@ import me.proton.core.compose.theme.LocalColors
 import me.proton.core.compose.theme.LocalTypography
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
+import me.proton.core.compose.util.LaunchOnScreenView
 
 /**
  * The screen that is presented on the origin device (the one with active login session),
@@ -72,7 +73,8 @@ internal fun OriginSuccessScreen(
     OriginSuccessScreen(
         state = state,
         modifier = modifier,
-        onClose = onClose
+        onClose = onClose,
+        onScreenView = viewModel::onScreenView
     )
 }
 
@@ -80,9 +82,13 @@ internal fun OriginSuccessScreen(
 internal fun OriginSuccessScreen(
     state: OriginSuccessState,
     modifier: Modifier = Modifier,
-    onClose: () -> Unit = {}
+    onClose: () -> Unit = {},
+    onScreenView: () -> Unit = {}
 ) {
     val snackbarHostState = remember { ProtonSnackbarHostState() }
+
+    LaunchOnScreenView(onScreenView)
+
     Scaffold(
         modifier = modifier,
         snackbarHost = { ProtonSnackbarHost(snackbarHostState) },
