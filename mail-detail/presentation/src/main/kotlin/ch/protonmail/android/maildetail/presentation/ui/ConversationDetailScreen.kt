@@ -886,6 +886,7 @@ private fun MessagesContent(
         }
     }
     val headerOverlapHeightPx = MailDimens.ConversationCollapseHeaderOverlapHeight.dpToPx()
+    var finishedResizingOperations by remember { mutableStateOf(false) }
     LaunchedEffect(listState) {
         snapshotFlow { viewHasFinishedScrollingAndMeasuring.value }
             .filter { it }
@@ -903,6 +904,7 @@ private fun MessagesContent(
                     // then we should expand to fit space
                     scrollToMessageMinimumHeightPx = availableSpace
                 }
+                finishedResizingOperations = true
             }
 
     }
@@ -956,19 +958,28 @@ private fun MessagesContent(
 
         itemsIndexed(visibleUiModels) { index, uiModel ->
             val isLastItem = index == visibleUiModels.size - 1
+            val rememberCachedHeight = remember { loadedItemsHeight[uiModel.messageId.id] }
+            val itemFinishedResizing =
+                remember {
+                    derivedStateOf {
+                        finishedResizingOperations && loadedItemsHeight.contains(uiModel.messageId.id)
+                    }
+                }
 
             ConversationDetailItem(
                 uiModel = uiModel,
                 actions = actions,
                 modifier = when (uiModel) {
                     is ConversationDetailMessageUiModel.Collapsed,
-                    is ConversationDetailMessageUiModel.Expanding -> Modifier.animateItem()
+                    is ConversationDetailMessageUiModel.Expanding -> {
+                        loadedItemsHeight.remove(uiModel.messageId.id)
+                        Modifier.animateItem()
+                    }
 
                     is ConversationDetailMessageUiModel.Expanded -> {
                         if (isLastItem) {
                             if (scrollToMessageMinimumHeightPx > 0) {
-                                Modifier
-                                    .heightIn(min = scrollToMessageMinimumHeightPx.pxToDp())
+                                Modifier.heightIn(min = scrollToMessageMinimumHeightPx.pxToDp())
                             } else Modifier
                         } else {
                             Modifier.padding(bottom = MailDimens.ConversationItemBottomPadding)
@@ -986,7 +997,9 @@ private fun MessagesContent(
                     }
                     webContentLoaded++
                 },
-                cachedWebContentHeight = loadedItemsHeight[uiModel.messageId.id]
+                previouslyLoadedHeight = rememberCachedHeight,
+                finishedResizing = itemFinishedResizing.value
+
             )
         }
     }

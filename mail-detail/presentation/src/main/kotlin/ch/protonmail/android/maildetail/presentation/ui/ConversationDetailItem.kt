@@ -19,23 +19,33 @@
 package ch.protonmail.android.maildetail.presentation.ui
 
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -66,7 +76,13 @@ fun ConversationDetailItem(
     actions: ConversationDetailItem.Actions,
     modifier: Modifier = Modifier,
     onMessageBodyLoadFinished: (messageId: MessageId, height: Int) -> Unit,
-    cachedWebContentHeight: Int? = null
+    // we won't bother waiting for the heights to be calculated as we already know, this can happen when you scroll
+    // back to an expanded item. We don't want to re-animate the card into view and we don't need to wait for load
+    previouslyLoadedHeight: Int? = null,
+    // we need to know when the parent view has finished resizing and scrolling as it calculates and adjusts item
+    // heights. We should only reveal the expanded card once we have finished loading the parent view and
+    // have calculated all the heights
+    finishedResizing: Boolean
 ) {
     val avatarActions = ParticipantAvatar.Actions.Empty.copy(
         onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested
@@ -92,7 +108,7 @@ fun ConversationDetailItem(
         }
 
         is Expanding -> {
-            ConversationDetailCard(modifier) {
+            ConversationDetailCard(modifier = modifier) {
                 ConversationDetailExpandingItem(
                     uiModel = uiModel,
                     avatarActions = avatarActions
@@ -106,7 +122,8 @@ fun ConversationDetailItem(
                     uiModel = uiModel,
                     actions = actions,
                     onMessageBodyLoadFinished = onMessageBodyLoadFinished,
-                    cachedWebContentHeight = cachedWebContentHeight
+                    cachedWebContentHeight = previouslyLoadedHeight,
+                    finishedResizing = finishedResizing
                 )
             }
         }
@@ -167,12 +184,25 @@ private fun ColumnScope.ConversationDetailExpandedItem(
     uiModel: Expanded,
     actions: ConversationDetailItem.Actions,
     onMessageBodyLoadFinished: (messageId: MessageId, height: Int) -> Unit,
-    cachedWebContentHeight: Int? = null
+    // we've already seen this card expanded and so we don't want to re-animate the card into view
+    cachedWebContentHeight: Int? = null,
+    // we need to know when the parent view has finished resizing and scrolling as it calculates and adjusts item
+    // heights. We should only reveal the expanded card once we have finished loading the parent view and
+    // have calculated all the heights
+    finishedResizing: Boolean
 ) {
-    val viewLoaded = remember { mutableStateOf(cachedWebContentHeight != null) }
-    val isExpanding = remember { mutableStateOf(!viewLoaded.value) }
+    // we are likely scrolling back to the view in the list
+    val viewPreviouslyLoaded = remember { cachedWebContentHeight != null }
+    val isExpanding = remember { mutableStateOf(!viewPreviouslyLoaded) }
 
-    val showFooter = remember { derivedStateOf { viewLoaded.value && !isExpanding.value } }
+    // play reveal animation on first load, do not play if we are expanding content or if we are scrolling back to
+    // the content.
+    // (We know that we are scrolling back to previously loaded content if we have a cachedHeight )
+    val playRevealAnimations = cachedWebContentHeight == null && !isExpanding.value && finishedResizing
+    // hide the footer whilst we are expanding the content so that the footer does not overlay the expanding content
+    val showFooter = !isExpanding.value && finishedResizing
+    val showLoadingSpinner = !finishedResizing
+
     val headerActions = MessageDetailHeader.Actions.Empty.copy(
         onReply = actions.onReply,
         onReplyAll = actions.onReplyAll,
@@ -186,58 +216,96 @@ private fun ColumnScope.ConversationDetailExpandedItem(
         onCollapseMessage = actions.onCollapse
     )
 
+    Box(
+        modifier = Modifier
+            .testTag(ConversationDetailItemTestTags.CollapseAnchor)
+            .clickable { actions.onCollapse(uiModel.messageId) }
+            .fillMaxWidth()
+            .height(MailDimens.ConversationMessageCollapseBarHeight)
+    )
     MessageDetailHeader(
         uiModel = uiModel.messageDetailHeaderUiModel,
         headerActions = headerActions
     )
-    MessageBanners(
-        messageBannersUiModel = uiModel.messageBannersUiModel,
-        onMarkMessageAsLegitimate = { isPhishing ->
-            actions.onMarkMessageAsLegitimate(uiModel.messageId, isPhishing)
-        },
-        onUnblockSender = {
-            actions.onUnblockSender(uiModel.messageId, uiModel.messageDetailHeaderUiModel.sender.participantAddress)
-        },
-        onCancelScheduleMessage = { actions.onEditScheduleSendMessage(uiModel.messageId) }
-    )
-    MessageBody(
-        messageBodyUiModel = uiModel.messageBodyUiModel,
-        actions = MessageBody.Actions(
-            onMessageBodyLinkClicked = { actions.onMessageBodyLinkClicked(uiModel.messageId, it) },
-            onShowAllAttachments = { actions.onShowAllAttachmentsForMessage(uiModel.messageId) },
-            onAttachmentClicked = { actions.onAttachmentClicked(uiModel.messageId, it) },
-            onToggleAttachmentsExpandCollapseMode = {
-                actions.onToggleAttachmentsExpandCollapseMode(uiModel.messageId)
-            },
-            onExpandCollapseButtonClicked = {
-                actions.onBodyExpandCollapseButtonClicked(uiModel.messageId)
-                viewLoaded.value = false
-                isExpanding.value = true
-            },
-            loadEmbeddedImage = actions.loadEmbeddedImage,
-            onReply = actions.onReply,
-            onReplyAll = actions.onReplyAll,
-            onForward = actions.onForward,
-            onLoadRemoteContent = { actions.onLoadRemoteContent(it) },
-            onLoadEmbeddedImages = { actions.onLoadEmbeddedImages(it) },
-            onLoadRemoteAndEmbeddedContent = { actions.onLoadRemoteAndEmbeddedContent(it) },
-            onOpenInProtonCalendar = { actions.onOpenInProtonCalendar(it) },
-            onPrint = { actions.onPrint(it) }
-        ),
-        onMessageBodyLoaded = { id: MessageId, i: Int ->
-            onMessageBodyLoadFinished(id, i)
-            viewLoaded.value = true
-            isExpanding.value = false
-        },
-        cachedMessageBodyHeight = cachedWebContentHeight
-    )
-    // to bring buttons to the bottom of the page
+    Box {
+        // Although we have a loading (expanding) card and this is the expanded state, we need to show a loader here
+        // whilst the webview is loading content and resizing
+        //
+        // it's important to use AnimatedVisibility instead of alpha here because AnimatedVisibility actually removes
+        // the view after it's invisible and so won't be read out by screen-readers. Also the in-build look-ahead means
+        // that the column will be shown at the same time (without a bounce to 0px whilst the card briefly has no
+        // content to show)
+        this@ConversationDetailExpandedItem.AnimatedVisibility(
+            visible = showLoadingSpinner,
+            exit = fadeOut(tween()), content = {
+                ProtonCenteredProgress(
+                    modifier = Modifier
+                        .padding(ProtonDimens.Spacing.Massive)
+                )
+            }
+        )
+
+        Column(
+            // only reveal the content of this card once the webview content has loaded and resizing has finished
+            modifier = Modifier.reveal(
+                itemState = {
+                    if (showLoadingSpinner) ItemState.Loading
+                    else ItemState.Visible
+                }, viewPreviouslyLoaded
+            )
+        ) {
+            MessageBanners(
+                messageBannersUiModel = uiModel.messageBannersUiModel,
+                onMarkMessageAsLegitimate = { isPhishing ->
+                    actions.onMarkMessageAsLegitimate(uiModel.messageId, isPhishing)
+                },
+                onUnblockSender = {
+                    actions.onUnblockSender(
+                        uiModel.messageId,
+                        uiModel.messageDetailHeaderUiModel.sender.participantAddress
+                    )
+                },
+                onCancelScheduleMessage = { actions.onEditScheduleSendMessage(uiModel.messageId) }
+            )
+            MessageBody(
+                messageBodyUiModel = uiModel.messageBodyUiModel,
+                actions = MessageBody.Actions(
+                    onMessageBodyLinkClicked = { actions.onMessageBodyLinkClicked(uiModel.messageId, it) },
+                    onShowAllAttachments = { actions.onShowAllAttachmentsForMessage(uiModel.messageId) },
+                    onAttachmentClicked = { actions.onAttachmentClicked(uiModel.messageId, it) },
+                    onToggleAttachmentsExpandCollapseMode = {
+                        actions.onToggleAttachmentsExpandCollapseMode(uiModel.messageId)
+                    },
+                    onExpandCollapseButtonClicked = {
+                        actions.onBodyExpandCollapseButtonClicked(uiModel.messageId)
+                        isExpanding.value = true
+                    },
+                    loadEmbeddedImage = actions.loadEmbeddedImage,
+                    onReply = actions.onReply,
+                    onReplyAll = actions.onReplyAll,
+                    onForward = actions.onForward,
+                    onLoadRemoteContent = { actions.onLoadRemoteContent(it) },
+                    onLoadEmbeddedImages = { actions.onLoadEmbeddedImages(it) },
+                    onLoadRemoteAndEmbeddedContent = { actions.onLoadRemoteAndEmbeddedContent(it) },
+                    onOpenInProtonCalendar = { actions.onOpenInProtonCalendar(it) },
+                    onPrint = { actions.onPrint(it) }
+                ),
+                onMessageBodyLoaded = { id: MessageId, i: Int ->
+                    onMessageBodyLoadFinished(id, i)
+                    isExpanding.value = false
+                }
+            )
+        }
+    }
+    // Weight - to bring buttons to the bottom of the page
     Spacer(modifier = Modifier.weight(1f))
     MessageDetailFooter(
         modifier = Modifier
-            .graphicsLayer {
-                alpha = if (showFooter.value) 1f else 0f
-            },
+            .show(
+                isVisible = showFooter,
+                // important, we should not animate if we are recreating this view whilst scrolling
+                shouldAnimate = playRevealAnimations
+            ),
         uiModel = uiModel.messageDetailFooterUiModel,
         actions = MessageDetailFooter.Actions.fromConversationDetailItemActions(actions)
     )
@@ -250,7 +318,8 @@ fun ConversationDetailItemCollapsedPreview() {
         ConversationDetailMessageUiModelSample.ExpiringInvitation,
         actions = previewActions,
         modifier = Modifier,
-        onMessageBodyLoadFinished = { id: MessageId, i: Int -> }
+        onMessageBodyLoadFinished = { id: MessageId, i: Int -> },
+        finishedResizing = true
     )
 }
 
@@ -261,7 +330,8 @@ fun ConversationDetailItemExpandedPreview() {
         ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded,
         actions = previewActions,
         modifier = Modifier,
-        onMessageBodyLoadFinished = { id: MessageId, i: Int -> }
+        onMessageBodyLoadFinished = { id: MessageId, i: Int -> },
+        finishedResizing = true
     )
 }
 
@@ -325,6 +395,54 @@ object ConversationDetailItem {
         { model: MessageIdUiModel, string: String -> },
         { model: MessageIdUiModel -> }
     )
+}
+
+@Composable
+fun Modifier.show(isVisible: Boolean, shouldAnimate: Boolean): Modifier {
+    val targetState = if (isVisible) 1f else 0f
+    val animatedAlpha by animateFloatAsState(
+        targetValue = targetState,
+        label = "alpha"
+    )
+    return this.graphicsLayer {
+        alpha = if (shouldAnimate) animatedAlpha else targetState
+    }
+}
+
+@Composable
+fun Modifier.reveal(itemState: () -> ItemState, snap: Boolean): Modifier {
+    return this
+        .clipToBounds()
+        .let {
+            if (snap) {
+                it
+            } else {
+                it.animateContentSize()
+            }
+        }
+
+        .layout { measurable, constraints ->
+            val placeable = measurable.measure(
+                constraints
+            )
+            // known bugs ET-3800 when clicking ... expand the listview resizes and scrolls bizarely caused by
+            // the height of the webview resizing, this can also be seen when scrolling up and down the list when
+            // the webview is recreated and reloaded
+            val height = when (itemState()) {
+                ItemState.Loading -> 0
+                ItemState.Visible -> placeable.height
+            }
+            layout(placeable.width, height) {
+                placeable.placeRelative(
+                    0,
+                    0
+                )
+            }
+        }
+}
+
+enum class ItemState {
+    Loading, Visible
 }
 
 object ConversationDetailItemTestTags {

@@ -100,8 +100,7 @@ fun MessageBodyWebView(
     webViewActions: MessageBodyWebView.Actions,
     onBuildWebView: (Context) -> ZoomableWebView,
     onMessageBodyLoaded: (messageId: MessageId, height: Int) -> Unit = { _, _ -> },
-    viewModel: MessageBodyWebViewViewModel = hiltViewModel(),
-    cachedHeight: Int? = null
+    viewModel: MessageBodyWebViewViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
 
