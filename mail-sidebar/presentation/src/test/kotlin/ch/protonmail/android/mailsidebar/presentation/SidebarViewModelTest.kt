@@ -52,8 +52,8 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import me.proton.core.domain.entity.UserId
-import org.junit.Before
-import org.junit.Test
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SidebarViewModelTest {
@@ -88,7 +88,7 @@ class SidebarViewModelTest {
 
     private lateinit var sidebarViewModel: SidebarViewModel
 
-    @Before
+    @BeforeTest
     fun setUp() {
         Dispatchers.setMain(UnconfinedTestDispatcher())
         sidebarViewModel = SidebarViewModel(
@@ -104,6 +104,30 @@ class SidebarViewModelTest {
 
     @Test
     fun `emits initial sidebar state when data is being loaded`() = runTest {
+        // When
+        sidebarViewModel.state.test {
+            // Initial state is Disabled.
+            assertEquals(Disabled, awaitItem())
+
+            // Given
+            primaryUserId.emit(UserIdTestData.Primary)
+
+            // Then
+            val actual = awaitItem() as Enabled
+            val expected = Enabled(
+                selectedMailLabelId = MailLabelId.System(SystemLabelId.Inbox.labelId),
+                canChangeSubscription = false,
+                mailLabels = MailLabelsUiModel.Loading
+            )
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun `emits initial sidebar state after user id recovers from being null`() = runTest {
+        // Given
+        primaryUserId.emit(null)
+
         // When
         sidebarViewModel.state.test {
             // Initial state is Disabled.

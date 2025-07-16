@@ -65,24 +65,22 @@ class SidebarViewModel @Inject constructor(
     )
 
     val state: StateFlow<State> = primaryUser.flatMapLatest { userId ->
-        if (userId == null) {
-            return@flatMapLatest flowOf(State.Disabled)
-        }
-
-        combine(
-            observeLoadedMailLabelId(),
-            observeMailLabels(userId),
-            observeUnreadCounters(userId)
-        ) { loadedMailLabelId, mailLabels, counters ->
-            State.Enabled(
-                selectedMailLabelId = loadedMailLabelId,
-                // Pending Account team to migrate "paymentManager" to rust
-                // (current implementation isn't aware of the rust session and throws
-                // exception crashing the app if no user is logged into "core"
-                canChangeSubscription = false,
-                mailLabels = mailLabels.toUiModels(counters.toMap(), loadedMailLabelId)
-            )
-        }
+        userId?.let {
+            combine(
+                observeLoadedMailLabelId(),
+                observeMailLabels(userId),
+                observeUnreadCounters(userId)
+            ) { loadedMailLabelId, mailLabels, counters ->
+                State.Enabled(
+                    selectedMailLabelId = loadedMailLabelId,
+                    // Pending Account team to migrate "paymentManager" to rust
+                    // (current implementation isn't aware of the rust session and throws
+                    // exception crashing the app if no user is logged into "core"
+                    canChangeSubscription = false,
+                    mailLabels = mailLabels.toUiModels(counters.toMap(), loadedMailLabelId)
+                )
+            }
+        } ?: flowOf(State.Disabled)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
