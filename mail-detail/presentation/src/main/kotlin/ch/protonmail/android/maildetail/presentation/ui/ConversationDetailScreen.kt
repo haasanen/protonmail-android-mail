@@ -36,7 +36,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -805,7 +804,6 @@ private fun MessagesContent(
 ) {
     val listState = rememberLazyListState()
     var webContentLoaded by remember { mutableIntStateOf(0) }
-    var scrollCompleted by remember { mutableStateOf(false) }
     val loadedItemsHeight = remember { mutableStateMapOf<String, Int>() }
 
     val layoutDirection = LocalLayoutDirection.current
@@ -854,7 +852,6 @@ private fun MessagesContent(
 
                 // Scrolled message expanded, so we can conclude that scrolling is completed
                 actions.onScrollRequestCompleted()
-                scrollCompleted = true
                 scrollToIndex = null
             }
         }
@@ -910,17 +907,10 @@ private fun MessagesContent(
 
     }
 
-    fun LazyListState.getVisibleScrollToMessageOrNull() =
-        layoutInfo.visibleItemsInfo.firstOrNull { it.index == scrollToIndex }
-
     // The webview for the message that we will scroll to has loaded
     // this is important as the listview will need its final height
     LaunchedEffect(Unit) {
-        // is it on the screen, if its off the screen the height will never be calculated
-        val scrollToMessageIsVisible = listState.getVisibleScrollToMessageOrNull() != null
-        if (!scrollToMessageIsVisible) {
-            scrollToIndex?.let { listState.scrollToItem(it) }
-        }
+        scrollToIndex?.let { listState.scrollToItem(it) }
         // wait for the final height of our target expanded message before scrolling
         snapshotFlow { viewHasFinishedScrollingAndMeasuring.value }
             .filter { it && !userScrolled && scrollToIndex != null }
