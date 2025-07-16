@@ -916,12 +916,9 @@ private fun MessagesContent(
             .filter { it && !userScrolled && scrollToIndex != null }
             .distinctUntilChanged()
             .collectLatest {
-                var scrollOffset = 0
-                loadedItemsHeight[scrollToMessageId]?.let {
-                    if (it >= listState.layoutInfo.viewportSize.height) scrollOffset += 1
-                }
                 scrollToIndex?.let {
-                    listState.animateScrollToItem((it - scrollOffset).coerceAtLeast(0))
+                    // show one item before
+                    listState.animateScrollToItem((it - 1).coerceAtLeast(0))
                 }
             }
     }
