@@ -144,7 +144,7 @@ private fun MessageDetailHeaderLayout(
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
-                    onClick = { actions.onParticipantClicked(uiModel.sender, uiModel.avatar) }
+                    onClick = { actions.onCollapseMessage(uiModel.messageIdUiModel) }
                 )
         ) {
             ParticipantAvatar(
