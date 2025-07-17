@@ -43,6 +43,7 @@ import ch.protonmail.android.mailsession.data.usecase.SignOutAllAccounts
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.coVerifySequence
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
@@ -385,6 +386,28 @@ internal class AutoLockPinViewModelTest {
         verify {
             reducer.newStateFrom(any(), AutoLockPinEvent.Update.SignOutRequested)
             reducer.newStateFrom(any(), AutoLockPinEvent.Update.Error.UnknownError)
+        }
+    }
+
+    @Test
+    fun `should request remaining attempts after executing the pin verification when wrong pin entered`() = runTest {
+        // Given
+        expectValidOpeningMode(AutoLockInsertionMode.VerifyPin)
+        val wrongPin = AutoLockPin("1234")
+        coEvery { autoLockRepository.getRemainingAttempts() } returns 9.right()
+        coEvery { autoLockRepository.verifyAutoLockPinCode(wrongPin) } returns
+            VerifyAutoLockPinError.IncorrectPin.left()
+
+        // When
+        val viewModel = viewModel()
+        viewModel.pinTextFieldState.edit { append(wrongPin.value) }
+        viewModel.submit(AutoLockPinViewAction.PerformConfirm)
+
+        // Then
+        coVerifySequence {
+            autoLockRepository.getRemainingAttempts() // At VM launch, to show the "remaining count" across app restart
+            autoLockRepository.verifyAutoLockPinCode(wrongPin)
+            autoLockRepository.getRemainingAttempts() // After wrong pin, to update the remaining attempt in the state
         }
     }
 

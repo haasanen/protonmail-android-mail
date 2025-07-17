@@ -132,11 +132,12 @@ class AutoLockPinViewModel @Inject constructor(
 
     private suspend inline fun matchExistingPin(continuation: () -> Unit) {
         val autoLockPin = AutoLockPin(pinTextFieldState.text.toString())
-        val remainingAttempts = autoLockRepository.getRemainingAttempts().getOrElse {
-            return emitNewStateFrom(AutoLockPinEvent.Update.Error.UnknownError)
-        }
 
         autoLockRepository.verifyAutoLockPinCode(autoLockPin).onLeft { it ->
+            val remainingAttempts = autoLockRepository.getRemainingAttempts().getOrElse {
+                return emitNewStateFrom(AutoLockPinEvent.Update.Error.UnknownError)
+            }
+
             emitNewStateFrom(
                 AutoLockPinEvent.Update.Error.Verify(
                     error = it,
