@@ -74,6 +74,17 @@ internal class AutoLockPinReducerTest(private val testName: String, private val 
                 )
             ),
             arrayOf(
+                "from loading to state with 3 attempts remaining",
+                TestInput(
+                    state = AutoLockPinState.Loading,
+                    event = AutoLockPinEvent.Data.Loaded(
+                        PinInsertionStep.PinInsertion,
+                        AutoLockTestData.ThreeRemainingAttempts
+                    ),
+                    expected = AutoLockTestData.LoadedState3AttemptsRemaining
+                )
+            ),
+            arrayOf(
                 "from base state to error (> 3 attempts)",
                 TestInput(
                     state = AutoLockTestData.BaseLoadedState,

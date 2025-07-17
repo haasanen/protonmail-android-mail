@@ -19,6 +19,7 @@
 package protonmail.android.mailpinlock.presentation.autolock.helpers
 
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.pin.AutoLockPinState
 import ch.protonmail.android.mailpinlock.presentation.pin.ConfirmButtonUiModel
@@ -97,6 +98,19 @@ internal object AutoLockTestData {
         Effect.empty()
     )
 
+    val LoadedState3AttemptsRemaining = AutoLockPinState.DataLoaded(
+        topBarState = BaseTopBarState,
+        pinInsertionState = BasePinInsertionState.copy(
+            remainingAttempts = 3,
+            error = TextUiModel.PluralisedText(R.plurals.mail_settings_pin_insertion_error_wrong_code_threshold, 3)
+        ),
+        confirmButtonState = BaseConfirmButtonState,
+        signOutButtonState = BaseSignOutState,
+        Effect.empty(),
+        Effect.empty()
+    )
+
+
     val SignOutShownUiModel = SignOutUiModel(
         isDisplayed = true,
         isRequested = true
@@ -108,6 +122,7 @@ internal object AutoLockTestData {
     )
 
     const val OneRemainingAttempt = 1
+    const val ThreeRemainingAttempts = 3
     const val NineRemainingAttempts = 9
     const val DefaultRemainingAttempts = 10
 }

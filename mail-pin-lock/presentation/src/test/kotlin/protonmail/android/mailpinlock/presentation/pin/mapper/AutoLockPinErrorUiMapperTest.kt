@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.domain.model.autolock.VerifyAutoLockPinE
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailpinlock.presentation.R
 import ch.protonmail.android.mailpinlock.presentation.pin.AutoLockPinEvent
+import ch.protonmail.android.mailpinlock.presentation.pin.PinInsertionStep
 import ch.protonmail.android.mailpinlock.presentation.pin.mapper.AutoLockPinErrorUiMapper
 import org.junit.Test
 import org.junit.experimental.runners.Enclosed
@@ -121,6 +122,79 @@ internal class AutoLockPinErrorUiMapperTest {
                 TestInput(
                     6,
                     TextUiModel(R.string.mail_settings_pin_verification_error_no_match)
+                )
+            )
+        }
+
+        data class TestInput(
+            val remainingAttempts: Int,
+            val expectedValue: TextUiModel?
+        )
+    }
+
+    @RunWith(Parameterized::class)
+    internal class AutoLockPinErrorUiMapperLoadedStateRemainingAttemptsTest(private val testInput: TestInput) {
+
+        private val autoLockPinSettingsErrorUiMapper = AutoLockPinErrorUiMapper()
+
+        @Test
+        fun `should map the remaining attempts at load state to the appropriate error ui model`() = with(testInput) {
+            // When
+            val actual = autoLockPinSettingsErrorUiMapper.toUiErrorWithRemainingAttemptsAtLoad(
+                state = AutoLockPinEvent.Data.Loaded(
+                    step = PinInsertionStep.PinInsertion,
+                    remainingAttempts = remainingAttempts
+                )
+            )
+
+            // Then
+            assertEquals(expectedValue, actual)
+        }
+
+        companion object {
+
+            @JvmStatic
+            @Parameterized.Parameters(name = "{0}")
+            fun data() = arrayOf(
+                TestInput(
+                    10,
+                    null
+                ),
+                TestInput(
+                    9,
+                    null
+                ),
+                TestInput(
+                    8,
+                    null
+                ),
+                TestInput(
+                    7,
+                    null
+                ),
+                TestInput(
+                    6,
+                    null
+                ),
+                TestInput(
+                    5,
+                    null
+                ),
+                TestInput(
+                    4,
+                    null
+                ),
+                TestInput(
+                    3,
+                    TextUiModel.PluralisedText(R.plurals.mail_settings_pin_insertion_error_wrong_code_threshold, 3)
+                ),
+                TestInput(
+                    2,
+                    TextUiModel.PluralisedText(R.plurals.mail_settings_pin_insertion_error_wrong_code_threshold, 2)
+                ),
+                TestInput(
+                    1,
+                    TextUiModel.PluralisedText(R.plurals.mail_settings_pin_insertion_error_wrong_code_threshold, 1)
                 )
             )
         }

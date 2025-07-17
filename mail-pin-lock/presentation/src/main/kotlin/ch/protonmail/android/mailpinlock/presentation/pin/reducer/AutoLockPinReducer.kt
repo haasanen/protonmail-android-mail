@@ -130,7 +130,7 @@ class AutoLockPinReducer @Inject constructor(
                 startingStep = step,
                 step = step,
                 remainingAttempts = remainingAttempts,
-                error = null,
+                error = errorsUiMapper.toUiErrorWithRemainingAttemptsAtLoad(this),
                 triggerError = Effect.empty()
             ),
             confirmButtonState = AutoLockPinState.ConfirmButtonState(confirmButtonUiModel),
