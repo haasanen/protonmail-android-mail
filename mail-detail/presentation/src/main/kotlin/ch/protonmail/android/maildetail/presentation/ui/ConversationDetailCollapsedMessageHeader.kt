@@ -122,36 +122,9 @@ internal fun ConversationDetailCollapsedMessageHeader(
         ) {
             SenderNameRow(
                 uiModel = uiModel,
-                textStyle = senderTextStyle
-            ) {
-
-                if (uiModel.isStarred) {
-                    StarIcon(
-                        modifier = Modifier
-                    )
-                }
-
-                if (uiModel.hasAttachments) {
-
-                    AttachmentIcon(
-                        fontColor = fontColor,
-                        modifier = Modifier
-                    )
-                }
-
-                Time(
-                    modifier = Modifier,
-                    uiModel = uiModel,
-                    textStyle = labelTextStyle
-                )
-
-                if (uiModel.expiration != null) {
-                    Expiration(
-                        modifier = Modifier,
-                        uiModel = uiModel
-                    )
-                }
-            }
+                textStyle = senderTextStyle,
+                icons = { Icons(uiModel, fontColor, labelTextStyle) }
+            )
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
 
@@ -177,6 +150,40 @@ internal fun ConversationDetailCollapsedMessageHeader(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun Icons(
+    uiModel: ConversationDetailMessageUiModel.Collapsed,
+    fontColor: Color,
+    labelTextStyle: TextStyle
+) {
+    if (uiModel.isStarred) {
+        StarIcon(
+            modifier = Modifier
+        )
+    }
+
+    if (uiModel.hasAttachments) {
+
+        AttachmentIcon(
+            fontColor = fontColor,
+            modifier = Modifier
+        )
+    }
+
+    Time(
+        modifier = Modifier,
+        uiModel = uiModel,
+        textStyle = labelTextStyle
+    )
+
+    if (uiModel.expiration != null) {
+        Expiration(
+            modifier = Modifier,
+            uiModel = uiModel
+        )
     }
 }
 
