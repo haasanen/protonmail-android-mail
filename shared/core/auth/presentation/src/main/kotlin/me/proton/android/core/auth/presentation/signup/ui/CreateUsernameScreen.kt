@@ -362,7 +362,8 @@ private fun InternalAccountForm(
     onCreateExternalClicked: (CreateExternalAccount) -> Unit,
     validationError: String?,
     domains: List<Domain>,
-    @StringRes subtitleText: Int = R.string.auth_signup_subtitle
+    @StringRes subtitleText: Int = R.string.auth_signup_subtitle,
+    showExternalAccountOption: Boolean = false
 ) {
     val scope = rememberCoroutineScope()
     var username by rememberSaveable { mutableStateOf("") }
@@ -420,14 +421,16 @@ private fun InternalAccountForm(
                 onClick = ::onSubmit
             )
 
-            FormDivider()
+            if (showExternalAccountOption) {
+                FormDivider()
 
-            AlternateAccountOption(
-                onClick = { onCreateExternalClicked(CreateExternalAccount) },
-                textRes = R.string.auth_signup_use_current_email
-            )
+                AlternateAccountOption(
+                    onClick = { onCreateExternalClicked(CreateExternalAccount) },
+                    textRes = R.string.auth_signup_use_current_email
+                )
 
-            FormFootnote(R.string.auth_signup_internal_footnote)
+                FormFootnote(R.string.auth_signup_internal_footnote)
+            }
         }
     }
 }
