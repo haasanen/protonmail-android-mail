@@ -48,7 +48,8 @@ class CreateUsernameStateScreenTest(
             CompositionLocalProvider(LocalViewModelStoreOwner provides fakeViewModelStoreOwner) {
                 ProtonTheme {
                     CreateUsernameScreen(
-                        state = CreateUsernameState.Idle(AccountType.Internal)
+                        state = CreateUsernameState.Idle(AccountType.Internal),
+                        onScreenView = {}
                     )
                 }
             }
@@ -56,6 +57,7 @@ class CreateUsernameStateScreenTest(
     }
 
     companion object {
+
         @Parameters
         @JvmStatic
         fun configurations() = listOf(

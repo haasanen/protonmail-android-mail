@@ -54,6 +54,7 @@ import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.ProtonTypography
 import me.proton.core.compose.theme.defaultSmallWeak
+import uniffi.proton_mail_uniffi.SignupScreenId
 
 @Composable
 fun SignUpCongratsScreen(
@@ -66,6 +67,8 @@ fun SignUpCongratsScreen(
     @StringRes buttonText: Int = R.string.auth_signup_start_using_proton,
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
+    SignupScreenId.CONGRATULATIONS.LaunchOnScreenView(viewModel::onScreenView)
+
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val currentState = state

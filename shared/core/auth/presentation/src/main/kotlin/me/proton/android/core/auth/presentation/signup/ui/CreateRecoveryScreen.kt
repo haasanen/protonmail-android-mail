@@ -114,6 +114,7 @@ import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.ProtonTypography
 import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.compose.theme.defaultStrongNorm
+import uniffi.proton_mail_uniffi.SignupScreenId
 
 @Composable
 fun CreateRecoveryScreen(
@@ -125,6 +126,8 @@ fun CreateRecoveryScreen(
     onSuccess: (String) -> Unit = { },
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
+    SignupScreenId.SET_RECOVERY_METHOD.LaunchOnScreenView(viewModel::onScreenView)
+
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     BackHandler(enabled = true) {

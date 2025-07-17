@@ -88,6 +88,7 @@ import me.proton.core.compose.theme.ProtonDimens.DefaultSpacing
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.ProtonTypography
 import me.proton.core.compose.theme.defaultSmallWeak
+import uniffi.proton_mail_uniffi.SignupScreenId
 
 internal const val USERNAME_FIELD_TAG = "USERNAME_FIELD_TAG"
 internal const val EMAIL_FIELD_TAG = "EMAIL_FIELD_TAG"
@@ -117,6 +118,7 @@ fun CreateUsernameScreen(
 
     CreateUsernameScreen(
         modifier = modifier,
+        onScreenView = { viewModel.onScreenView(it) },
         onCloseClicked = onCloseClicked,
         onUsernameSubmitted = { viewModel.perform(it) },
         onCreateExternalClicked = { viewModel.perform(it) },
@@ -131,6 +133,7 @@ fun CreateUsernameScreen(
 @Composable
 fun CreateUsernameScreen(
     modifier: Modifier = Modifier,
+    onScreenView: (SignupScreenId) -> Unit,
     onCloseClicked: () -> Unit = {},
     onUsernameSubmitted: (Perform) -> Unit = {},
     onCreateExternalClicked: (CreateExternalAccount) -> Unit = {},
@@ -152,6 +155,7 @@ fun CreateUsernameScreen(
 
     UsernameScreenScaffold(
         modifier = modifier,
+        onScreenView = onScreenView,
         onCloseClicked = onCloseClicked,
         onUsernameSubmitted = onUsernameSubmitted,
         onCreateExternalClicked = onCreateExternalClicked,
@@ -163,6 +167,7 @@ fun CreateUsernameScreen(
 @Composable
 fun UsernameScreenScaffold(
     modifier: Modifier = Modifier,
+    onScreenView: (SignupScreenId) -> Unit,
     onCloseClicked: () -> Unit = {},
     onUsernameSubmitted: (Perform) -> Unit = {},
     onCreateExternalClicked: (CreateExternalAccount) -> Unit,
@@ -174,6 +179,8 @@ fun UsernameScreenScaffold(
     val isLoading = (state as? CreateUsernameState)?.isLoading ?: false
     val accountType = (state as? CreateUsernameState)?.accountType ?: AccountType.Internal // default
     var domains by rememberSaveable { mutableStateOf<List<Domain>>(emptyList()) }
+
+    accountType.toSignupScreenId().LaunchOnScreenView(onScreenView)
 
     LaunchedEffect(state) {
         if (state is CreateUsernameState.LoadingComplete) {
@@ -621,6 +628,12 @@ private fun FormFootnote(@StringRes textRes: Int) {
     )
 }
 
+private fun AccountType.toSignupScreenId() = when (this) {
+    AccountType.Username -> SignupScreenId.CHOOSE_USERNAME
+    AccountType.Internal -> SignupScreenId.CHOOSE_INTERNAL_EMAIL
+    AccountType.External -> SignupScreenId.CHOOSE_EXTERNAL_EMAIL
+}
+
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
@@ -631,7 +644,8 @@ private fun FormFootnote(@StringRes textRes: Int) {
 internal fun CreateUsernameScreenPreview() {
     ProtonTheme {
         CreateUsernameScreen(
-            state = CreateUsernameState.Load(AccountType.Internal)
+            state = CreateUsernameState.Load(AccountType.Internal),
+            onScreenView = {}
         )
     }
 }

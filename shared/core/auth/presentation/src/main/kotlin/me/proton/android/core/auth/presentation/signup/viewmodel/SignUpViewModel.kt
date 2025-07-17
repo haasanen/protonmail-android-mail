@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.LogTag
 import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.signup.CreatePasswordAction
@@ -59,8 +60,10 @@ import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionNewSignupFlowResult
+import uniffi.proton_mail_uniffi.SignupScreenId
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
+import uniffi.proton_mail_uniffi.recordSignupScreenView
 import javax.inject.Inject
 
 @Suppress("TooGenericExceptionCaught")
@@ -130,6 +133,12 @@ class SignUpViewModel @Inject constructor(
         requireNotNull(getSignUpFlow().passwordValidator()) {
             "Could not get password validator service."
         }
+
+    fun onScreenView(screenId: SignupScreenId) {
+        viewModelScope.launch {
+            recordSignupScreenView(screenId = screenId)
+        }
+    }
 
     private fun handleCreateUser() = flow {
         emit(SigningUp)

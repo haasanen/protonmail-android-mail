@@ -71,6 +71,7 @@ import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.viewmodel.hiltViewModelOrNull
 import me.proton.core.passvalidator.domain.entity.PasswordValidatorToken
 import me.proton.core.passvalidator.presentation.report.PasswordPolicyReport
+import uniffi.proton_mail_uniffi.SignupScreenId
 
 @Composable
 fun CreatePasswordScreen(
@@ -80,6 +81,8 @@ fun CreatePasswordScreen(
     onSuccess: (String) -> Unit = { },
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
+    SignupScreenId.CREATE_PASSWORD.LaunchOnScreenView(viewModel::onScreenView)
+
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     BackHandler(enabled = true) {
