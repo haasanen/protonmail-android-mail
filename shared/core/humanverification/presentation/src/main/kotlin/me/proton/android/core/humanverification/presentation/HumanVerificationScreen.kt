@@ -26,16 +26,22 @@ import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -260,6 +266,11 @@ private fun HumanVerificationWebViewSetup(
     state: HumanVerificationViewState.Load
 ) {
     val scope = rememberCoroutineScope()
+    var progress by remember { mutableIntStateOf(0) }
+    val animatedProgress by animateFloatAsState(
+        targetValue = progress / 100.0f,
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+    )
 
     AndroidView(
         modifier = modifier,
@@ -299,6 +310,11 @@ private fun HumanVerificationWebViewSetup(
                         )
                         return true
                     }
+
+                    override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                        super.onProgressChanged(view, newProgress)
+                        progress = newProgress
+                    }
                 }
             }
         }, update = {
@@ -307,6 +323,16 @@ private fun HumanVerificationWebViewSetup(
             it.loadUrl(state.fullUrl, extraHeaders)
         }
     )
+
+    AnimatedVisibility(
+        visible = animatedProgress < 1.0f,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        LinearProgressIndicator(
+            progress = animatedProgress,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
 }
 
 @Preview(name = "Light mode", uiMode = Configuration.UI_MODE_NIGHT_NO)
