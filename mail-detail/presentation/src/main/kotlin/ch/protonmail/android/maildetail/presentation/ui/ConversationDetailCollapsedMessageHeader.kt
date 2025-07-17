@@ -117,27 +117,7 @@ internal fun ConversationDetailCollapsedMessageHeader(
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                ToRecipientsTitle(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .padding(end = ProtonDimens.Spacing.Small),
-                    textStyle = recipientsTextStyle
-                )
-
-                SingleLineRecipientNames(
-                    modifier = Modifier
-                        .wrapContentHeight(),
-                    recipients = uiModel.recipients,
-                    hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients,
-                    textStyle = recipientsTextStyle
-                )
-            }
+            ToRecipientsRow(recipientsTextStyle, uiModel)
         }
     }
 }
@@ -185,6 +165,31 @@ private fun Icons(
         Expiration(
             modifier = Modifier,
             uiModel = uiModel
+        )
+    }
+}
+
+@Composable
+private fun ToRecipientsRow(recipientsTextStyle: TextStyle, uiModel: ConversationDetailMessageUiModel.Collapsed) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ToRecipientsTitle(
+            modifier = Modifier
+                .wrapContentHeight()
+                .padding(end = ProtonDimens.Spacing.Small),
+            textStyle = recipientsTextStyle
+        )
+
+        SingleLineRecipientNames(
+            modifier = Modifier
+                .wrapContentHeight(),
+            recipients = uiModel.recipients,
+            hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients,
+            textStyle = recipientsTextStyle
         )
     }
 }
