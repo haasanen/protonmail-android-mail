@@ -105,25 +105,14 @@ internal fun ConversationDetailCollapsedMessageHeader(
 
         Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
 
-        ForwardedIcon(
-            modifier = Modifier,
-            uiModel = uiModel,
-            fontColor = fontColor
-        )
-
-        RepliedIcon(
-            modifier = Modifier,
-            uiModel = uiModel,
-            fontColor = fontColor
-        )
-
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
             SenderNameRow(
                 uiModel = uiModel,
                 textStyle = senderTextStyle,
-                icons = { Icons(uiModel, fontColor, labelTextStyle) }
+                leadingIcons = { ReplyForwardIcons(uiModel, fontColor) },
+                trailingIcons = { Icons(uiModel, fontColor, labelTextStyle) }
             )
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
@@ -151,6 +140,19 @@ internal fun ConversationDetailCollapsedMessageHeader(
             }
         }
     }
+}
+
+@Composable
+private fun ReplyForwardIcons(uiModel: ConversationDetailMessageUiModel.Collapsed, fontColor: Color) {
+    ForwardedIcon(
+        uiModel = uiModel,
+        fontColor = fontColor
+    )
+
+    RepliedIcon(
+        uiModel = uiModel,
+        fontColor = fontColor
+    )
 }
 
 @Composable
@@ -239,12 +241,14 @@ private fun Expiration(uiModel: ConversationDetailMessageUiModel.Collapsed, modi
 private fun ForwardedIcon(
     uiModel: ConversationDetailMessageUiModel.Collapsed,
     fontColor: Color,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     when (uiModel.forwardedIcon) {
         ConversationDetailMessageUiModel.ForwardedIcon.None -> Box(modifier)
         ConversationDetailMessageUiModel.ForwardedIcon.Forwarded -> SmallNonClickableIcon(
-            modifier = modifier.testTag(ConversationDetailCollapsedMessageHeaderTestTags.ForwardedIcon),
+            modifier = modifier
+                .testTag(ConversationDetailCollapsedMessageHeaderTestTags.ForwardedIcon)
+                .padding(horizontal = ProtonDimens.Spacing.Tiny),
             iconId = R.drawable.ic_proton_arrow_right,
             iconColor = fontColor
         )
@@ -255,7 +259,7 @@ private fun ForwardedIcon(
 private fun RepliedIcon(
     uiModel: ConversationDetailMessageUiModel.Collapsed,
     fontColor: Color,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     when (uiModel.repliedIcon) {
         ConversationDetailMessageUiModel.RepliedIcon.None -> Box(modifier)
@@ -282,12 +286,15 @@ private fun SenderNameRow(
     uiModel: ConversationDetailMessageUiModel.Collapsed,
     textStyle: TextStyle,
     modifier: Modifier = Modifier,
-    icons: @Composable () -> Unit
+    leadingIcons: @Composable () -> Unit,
+    trailingIcons: @Composable () -> Unit
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        leadingIcons()
+
         Row(
             modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically
@@ -314,7 +321,7 @@ private fun SenderNameRow(
             }
         }
 
-        icons()
+        trailingIcons()
     }
 }
 
