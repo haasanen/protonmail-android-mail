@@ -37,8 +37,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
@@ -240,7 +242,8 @@ private fun ColumnScope.ConversationDetailExpandedItem(
             // only reveal the content of this card once the webview content has loaded and resizing has finished
             modifier = Modifier.reveal(
                 itemState = {
-                    if (showLoadingSpinner) ItemState.Loading
+                    if (isExpanding.value) ItemState.Expanding
+                    else if (showLoadingSpinner) ItemState.Loading
                     else ItemState.Visible
                 }, viewPreviouslyLoaded
             )
@@ -402,6 +405,7 @@ fun Modifier.show(isVisible: Boolean, shouldAnimate: Boolean): Modifier {
 
 @Composable
 fun Modifier.reveal(itemState: () -> ItemState, snap: Boolean): Modifier {
+    var lastHeight by remember { mutableIntStateOf(0) }
     return this
         .clipToBounds()
         .let {
@@ -412,17 +416,30 @@ fun Modifier.reveal(itemState: () -> ItemState, snap: Boolean): Modifier {
             }
         }
 
+        // embedded images are loaded into the webview asynchronously causing various different height adjustments when
+        // expanding
         .layout { measurable, constraints ->
             val placeable = measurable.measure(
                 constraints
             )
-            // known bugs ET-3800 when clicking ... expand the listview resizes and scrolls bizarely caused by
-            // the height of the webview resizing, this can also be seen when scrolling up and down the list when
-            // the webview is recreated and reloaded
+
             val height = when (itemState()) {
-                ItemState.Loading -> 0
-                ItemState.Visible -> placeable.height
+                ItemState.Loading -> {
+                    // don't render the view until we are ready
+                    0
+                }
+                ItemState.Expanding -> {
+                    // when expanding use the cached height until the view is loaded to prevent jumping
+                    lastHeight
+                }
+                ItemState.Visible -> {
+                    // cache this height for later if we need to maintain a sensible height during resizing
+                    // like when we click on the dots to expand
+                    lastHeight = placeable.height
+                    placeable.height
+                }
             }
+
             layout(placeable.width, height) {
                 placeable.placeRelative(
                     0,
@@ -433,7 +450,7 @@ fun Modifier.reveal(itemState: () -> ItemState, snap: Boolean): Modifier {
 }
 
 enum class ItemState {
-    Loading, Visible
+    Loading, Visible, Expanding
 }
 
 object ConversationDetailItemTestTags {
