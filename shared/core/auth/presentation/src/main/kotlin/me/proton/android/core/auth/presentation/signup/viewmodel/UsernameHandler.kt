@@ -55,6 +55,7 @@ import uniffi.proton_account_uniffi.SignupFlowSubmitInternalUsernameResult
 class UsernameHandler private constructor(
     private val getFlow: suspend () -> SignupFlow,
     private val getCurrentAccountType: () -> AccountType,
+    private val getString: (resId: Int) -> String,
     private val updateAccountType: (AccountType) -> Unit
 ) : ErrorHandler {
 
@@ -94,7 +95,7 @@ class UsernameHandler private constructor(
             is SignupFlowAvailableDomainsResult.Error -> Error(
                 accountType = getCurrentAccountType(),
                 isLoading = false,
-                message = result.v1.getErrorMessage()
+                message = result.v1.getErrorMessage(getString)
             )
 
             is SignupFlowAvailableDomainsResult.Ok -> emit(LoadingComplete(AccountType.Internal, domains = result.v1))
@@ -156,13 +157,13 @@ class UsernameHandler private constructor(
                         Other(
                             accountType = accountType,
                             field = ValidationField.USERNAME,
-                            message = result.v1.getErrorMessage()
+                            message = result.v1.getErrorMessage(getString)
                         )
 
                     else -> Error(
                         accountType = accountType,
                         isLoading = false,
-                        message = result.v1.getErrorMessage()
+                        message = result.v1.getErrorMessage(getString)
                     )
                 }
             }
@@ -194,14 +195,14 @@ class UsernameHandler private constructor(
                         Other(
                             accountType = accountType,
                             field = ValidationField.EMAIL,
-                            message = result.v1.getErrorMessage()
+                            message = result.v1.getErrorMessage(getString)
                         )
 
                     is SignupException.UsernameEmpty -> UsernameEmpty
 
                     else -> Error(
                         accountType = accountType,
-                        message = result.v1.getErrorMessage()
+                        message = result.v1.getErrorMessage(getString)
                     )
                 }
             }
@@ -230,7 +231,8 @@ class UsernameHandler private constructor(
         fun create(
             getFlow: suspend () -> SignupFlow,
             getCurrentAccountType: () -> AccountType,
+            getString: (resId: Int) -> String,
             updateAccountType: (AccountType) -> Unit
-        ): UsernameHandler = UsernameHandler(getFlow, getCurrentAccountType, updateAccountType)
+        ): UsernameHandler = UsernameHandler(getFlow, getCurrentAccountType, getString, updateAccountType)
     }
 }

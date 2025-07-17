@@ -59,7 +59,8 @@ import uniffi.proton_account_uniffi.Country as RustCountry
  * Handler responsible for account recovery actions during signup process.
  */
 class RecoveryHandler private constructor(
-    private val getFlow: suspend () -> SignupFlow
+    private val getFlow: suspend () -> SignupFlow,
+    private val getString: (resId: Int) -> String
 ) : ErrorHandler {
 
     @Volatile
@@ -129,7 +130,7 @@ class RecoveryHandler private constructor(
 
         when (val result = getFlow().submitRecoveryEmail(email, recoveryFrameDetails.toUserBehavior())) {
             is SignupFlowSubmitRecoveryEmailResult.Error -> {
-                emit(Email(message = result.v1.getErrorMessage()))
+                emit(Email(message = result.v1.getErrorMessage(getString)))
             }
 
             is SignupFlowSubmitRecoveryEmailResult.Ok -> {
@@ -155,7 +156,7 @@ class RecoveryHandler private constructor(
         val fullPhoneNumber = "$callingCode$phoneNumber"
         when (val result = getFlow().submitRecoveryPhone(fullPhoneNumber, recoveryFrameDetails.toUserBehavior())) {
             is SignupFlowSubmitRecoveryPhoneResult.Error -> {
-                emit(Phone(message = result.v1.getErrorMessage()))
+                emit(Phone(message = result.v1.getErrorMessage(getString)))
             }
 
             is SignupFlowSubmitRecoveryPhoneResult.Ok -> {
@@ -184,7 +185,7 @@ class RecoveryHandler private constructor(
                 emit(
                     Error(
                         recoveryMethod = selectedRecoveryMethod,
-                        message = result.v1.getErrorMessage()
+                        message = result.v1.getErrorMessage(getString)
                     )
                 )
             }
@@ -221,7 +222,8 @@ class RecoveryHandler private constructor(
 
     companion object {
 
-        fun create(getFlow: suspend () -> SignupFlow): RecoveryHandler = RecoveryHandler(getFlow)
+        fun create(getFlow: suspend () -> SignupFlow, getString: (resId: Int) -> String): RecoveryHandler =
+            RecoveryHandler(getFlow, getString)
     }
 }
 

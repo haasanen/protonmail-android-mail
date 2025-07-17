@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.LogTag
+import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.signup.CreatePasswordAction
 import me.proton.android.core.auth.presentation.signup.CreatePasswordState
@@ -88,15 +89,18 @@ class SignUpViewModel @Inject constructor(
     private val usernameHandler = UsernameHandler.create(
         getFlow = { getSignUpFlow() },
         getCurrentAccountType = { currentAccountType },
+        getString = context::getString,
         updateAccountType = { type -> currentAccountType = type }
     )
 
     private val passwordHandler = PasswordHandler.create(
-        getFlow = { getSignUpFlow() }
+        getFlow = { getSignUpFlow() },
+        getString = context::getString
     )
 
     private val recoveryHandler = RecoveryHandler.create(
-        getFlow = { getSignUpFlow() }
+        getFlow = { getSignUpFlow() },
+        getString = context::getString
     )
 
     @Inject
@@ -165,7 +169,7 @@ class SignUpViewModel @Inject constructor(
 
     private fun SignupException.onSignUpError() = flow {
         getSignUpFlow().stepBack()
-        emit(SignUpError(message = getErrorMessage()))
+        emit(SignUpError(message = getErrorMessage(context::getString)))
     }
 
     private suspend fun getSession(account: StoredAccount?): List<StoredSession>? {
@@ -207,10 +211,22 @@ interface ErrorHandler {
     fun handleError(throwable: Throwable): SignUpState
 }
 
-fun SignupException.getErrorMessage(): String? {
-    return when (this) {
-        is SignupException.Api -> v1.takeIf { it.isNotEmpty() } ?: message
-        is SignupException.Crypto -> v1.takeIf { it.isNotEmpty() } ?: message
-        else -> message
-    }
+fun SignupException.getErrorMessage(getString: (resId: Int) -> String): String = when (this) {
+    is SignupException.PasswordEmpty -> R.string.auth_signup_validation_password
+    is SignupException.PasswordValidationMismatch -> R.string.auth_signup_createpassword_error_password_not_equal
+    is SignupException.PasswordsNotMatching -> R.string.auth_signup_validation_passwords_do_not_match
+    is SignupException.RecoveryEmailInvalid -> R.string.auth_signup_recovery_email_validation_error
+    is SignupException.RecoveryPhoneNumberInvalid -> R.string.auth_signup_recovery_phone_validation_error
+    is SignupException.UsernameEmpty -> R.string.auth_signup_validation_username
+    is SignupException.UsernameUnavailable -> R.string.auth_signup_username_unavailable_error
+    is SignupException.AccountCreationFailed,
+    is SignupException.AddressSetupFailed,
+    is SignupException.Api,
+    is SignupException.Crypto,
+    is SignupException.Internal,
+    is SignupException.KeySetupFailed,
+    is SignupException.PasswordNotValidated,
+    is SignupException.SignupBlockedByServer -> R.string.auth_signup_generic_error
+}.let {
+    getString(it)
 }

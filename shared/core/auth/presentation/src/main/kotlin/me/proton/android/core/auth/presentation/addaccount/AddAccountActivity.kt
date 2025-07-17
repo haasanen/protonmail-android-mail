@@ -53,9 +53,7 @@ class AddAccountActivity : ProtonActivity() {
             ProtonTheme {
                 AddAccountScreenMail(
                     onSignInClicked = { authOrchestrator.startLoginWorkflow() },
-                    onSignUpClicked = {
-                         authOrchestrator.startSignUpWorkflow()
-                    }
+                    onSignUpClicked = { authOrchestrator.startSignUpWorkflow() }
                 )
             }
         }
