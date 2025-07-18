@@ -32,7 +32,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -45,7 +44,6 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -216,13 +214,6 @@ private fun ColumnScope.ConversationDetailExpandedItem(
         onCollapseMessage = actions.onCollapse
     )
 
-    Box(
-        modifier = Modifier
-            .testTag(ConversationDetailItemTestTags.CollapseAnchor)
-            .clickable { actions.onCollapse(uiModel.messageId) }
-            .fillMaxWidth()
-            .height(MailDimens.ConversationMessageCollapseBarHeight)
-    )
     MessageDetailHeader(
         uiModel = uiModel.messageDetailHeaderUiModel,
         headerActions = headerActions
