@@ -71,6 +71,7 @@ import uniffi.proton_mail_uniffi.ShowMoved
 import uniffi.proton_mail_uniffi.SpamOrTrash
 import uniffi.proton_mail_uniffi.SwipeAction
 import uniffi.proton_mail_uniffi.SystemLabel
+import uniffi.proton_mail_uniffi.UserSettings
 import uniffi.proton_mail_uniffi.VCardUrl
 import uniffi.proton_mail_uniffi.VcardPropType
 import uniffi.proton_mail_uniffi.ViewLayout
@@ -190,3 +191,4 @@ typealias LocalVCardPropTypePager = VcardPropType.Pager
 typealias LocalVCardPropTypeTextPhone = VcardPropType.TextPhone
 typealias LocalVCardPropTypeString = VcardPropType.String
 typealias LocalMailScrollerError = MailScrollerError
+typealias LocalUserSettings = UserSettings

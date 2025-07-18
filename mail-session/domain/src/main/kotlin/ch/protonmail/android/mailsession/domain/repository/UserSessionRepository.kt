@@ -26,6 +26,7 @@ import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
+import ch.protonmail.android.mailsession.domain.model.UserSettings
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -54,6 +55,8 @@ interface UserSessionRepository {
     suspend fun disableAccount(userId: UserId)
 
     suspend fun getUserSession(userId: UserId): MailUserSessionWrapper?
+
+    suspend fun getUserSettings(userId: UserId): UserSettings?
 
     suspend fun forkSession(userId: UserId): Either<SessionError, ForkedSessionId>
 

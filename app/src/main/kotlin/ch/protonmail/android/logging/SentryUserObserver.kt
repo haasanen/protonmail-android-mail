@@ -23,7 +23,8 @@ import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import io.sentry.Sentry
 import io.sentry.protocol.User
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.CoroutineScopeProvider
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,10 +35,20 @@ class SentryUserObserver @Inject constructor(
     private val sessionRepository: UserSessionRepository
 ) {
 
-    fun start() = sessionRepository.observePrimaryUserId()
-        .map { userId ->
-            val user = User().apply { id = userId?.id ?: UUID.randomUUID().toString() }
-            Sentry.setUser(user)
+    fun start(onCrashReportSettingChange: (enabled: Boolean) -> Unit) = sessionRepository.observePrimaryUserId()
+        .onEach { userId ->
+            assignSentryUser(userId)
+            onCrashReportSettingChange(isCrashReportsEnabled(userId))
         }
         .launchIn(scopeProvider.GlobalDefaultSupervisedScope)
+
+    private fun assignSentryUser(userId: UserId?) {
+        val user = User().apply { id = userId?.id ?: UUID.randomUUID().toString() }
+        Sentry.setUser(user)
+    }
+
+    private suspend fun isCrashReportsEnabled(userId: UserId?): Boolean {
+        userId ?: return true
+        return sessionRepository.getUserSettings(userId)?.crashReports ?: false
+    }
 }

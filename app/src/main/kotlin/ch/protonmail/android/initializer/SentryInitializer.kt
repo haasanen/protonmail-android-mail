@@ -31,6 +31,7 @@ import io.sentry.SentryLevel
 import io.sentry.SentryOptions
 import io.sentry.android.core.SentryAndroid
 import io.sentry.android.timber.SentryTimberIntegration
+import kotlinx.coroutines.flow.MutableStateFlow
 import me.proton.core.configuration.EnvironmentConfigurationDefaults
 
 class SentryInitializer : Initializer<Unit> {
@@ -40,6 +41,7 @@ class SentryInitializer : Initializer<Unit> {
             context.applicationContext,
             SentryInitializerEntryPoint::class.java
         )
+        val isCrashReportsEnabled = MutableStateFlow(true)
 
         SentryAndroid.init(context.applicationContext) { options: SentryOptions ->
             options.dsn = BuildConfig.SENTRY_DSN
@@ -52,9 +54,14 @@ class SentryInitializer : Initializer<Unit> {
                 )
             )
             options.addEventProcessor(entryPoint.rustLogsAttachmentProcessor())
+            options.setBeforeSend { event, _ ->
+                if (isCrashReportsEnabled.value) event else null
+            }
         }
 
-        entryPoint.observer().start()
+        entryPoint.observer().start {
+            isCrashReportsEnabled.value = it
+        }
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()

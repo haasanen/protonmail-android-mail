@@ -27,10 +27,12 @@ import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinErro
 import ch.protonmail.android.mailsession.data.mapper.toAccount
 import ch.protonmail.android.mailsession.data.mapper.toLocalAutoLockPin
 import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
+import ch.protonmail.android.mailsession.data.mapper.toUserSettings
 import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
+import ch.protonmail.android.mailsession.domain.model.UserSettings
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.flow.Flow
@@ -41,6 +43,7 @@ import me.proton.android.core.account.domain.usecase.ObserveStoredAccounts
 import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.session.SessionId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.MailUserSessionUserSettingsResult
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -112,6 +115,12 @@ class UserSessionRepositoryImpl @Inject constructor(
         return userContext
     }
 
+    override suspend fun getUserSettings(userId: UserId): UserSettings? {
+        return when (val result = getUserSession(userId)?.getRustUserSession()?.userSettings()) {
+            is MailUserSessionUserSettingsResult.Ok -> result.v1
+            else -> null
+        }?.toUserSettings()
+    }
 
     override suspend fun forkSession(userId: UserId): Either<SessionError, ForkedSessionId> {
         val userSession = getUserSession(userId) ?: return SessionError.Local.Unknown.left()

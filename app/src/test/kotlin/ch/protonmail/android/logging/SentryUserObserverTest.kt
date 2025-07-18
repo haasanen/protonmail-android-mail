@@ -19,6 +19,7 @@
 package ch.protonmail.android.logging
 
 import java.util.UUID
+import ch.protonmail.android.mailsession.domain.model.UserSettings
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
@@ -70,7 +71,7 @@ class SentryUserObserverTest {
     @Test
     fun `register userId in Sentry for valid primary account`() = runTest {
         // When
-        sentryUserObserver.start().join()
+        sentryUserObserver.start(onCrashReportSettingChange = {}).join()
         // Then
         val sentryUserSlot = slot<User>()
         verify { Sentry.setUser(capture(sentryUserSlot)) }
@@ -82,11 +83,35 @@ class SentryUserObserverTest {
         // Given
         every { sessionRepository.observePrimaryUserId() } returns flowOf(null)
         // When
-        sentryUserObserver.start().join()
+        sentryUserObserver.start(onCrashReportSettingChange = {}).join()
         // Then
         val sentryUserSlot = slot<User>()
         verify { Sentry.setUser(capture(sentryUserSlot)) }
         val actual = UUID.fromString(sentryUserSlot.captured.id)
         assertTrue(actual.toString().isNotBlank())
+    }
+
+    @Test
+    fun `crash reports user setting is disabled`() = runTest {
+        // Given
+        var isEnabled: Boolean? = null
+        coEvery { sessionRepository.getUserSettings(any()) } returns mockk<UserSettings> {
+            every { crashReports } returns false
+        }
+        // When
+        sentryUserObserver.start(onCrashReportSettingChange = { isEnabled = it }).join()
+        // Then
+        assertEquals(false, isEnabled)
+    }
+
+    @Test
+    fun `crash reports are enabled when no primary account available`() = runTest {
+        // Given
+        var isEnabled: Boolean? = null
+        every { sessionRepository.observePrimaryUserId() } returns flowOf(null)
+        // When
+        sentryUserObserver.start(onCrashReportSettingChange = { isEnabled = it }).join()
+        // Then
+        assertEquals(true, isEnabled)
     }
 }
