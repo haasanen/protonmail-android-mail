@@ -1,6 +1,5 @@
 package ch.protonmail.android.mailconversation.data.local
 
-import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
@@ -12,7 +11,6 @@ import ch.protonmail.android.mailpagination.domain.cache.PagingCacheWithInvalida
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
-import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -22,17 +20,18 @@ import io.mockk.Called
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.coVerifySequence
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
-import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.ConversationScrollerLiveQueryCallback
+import uniffi.proton_mail_uniffi.ConversationScrollerUpdate
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -71,28 +70,33 @@ class RustConversationsQueryImplTest {
     }
 
     @Test
-    fun `returns first page when called with PageToLoad First`() = runTest {
+    fun `returns first page when called with PageToLoad First and rust emits items in the callback`() = runTest {
         // Given
         val expectedConversations = listOf(LocalConversationTestData.AugConversation)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val session = mockk<MailUserSessionWrapper>()
+        val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
         val paginator = mockk<ConversationPaginatorWrapper> {
-            coEvery { this@mockk.nextPage() } returns expectedConversations.right()
+            coEvery { this@mockk.nextPage() } answers {
+                launch {
+                    delay(100) // Simulate callback delay compared to nextPage invocation
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(expectedConversations))
+                }
+                Unit.right()
+            }
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
-            createRustConversationPaginator(session, labelId.toLocalLabelId(), false, any())
+            createRustConversationPaginator(session, labelId.toLocalLabelId(), false, capture(callbackSlot))
         } returns paginator.right()
-        coEvery { cacheWithInvalidationFilter.replaceData(expectedConversations, true) } just Runs
 
         // When
         val actual = rustConversationsQuery.getConversations(userId, pageKey)
 
         // Then
         assertEquals(expectedConversations, actual)
-        coVerify { cacheWithInvalidationFilter.replaceData(expectedConversations, true) }
     }
 
     @Test
@@ -103,8 +107,15 @@ class RustConversationsQueryImplTest {
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.Next)
         val session = mockk<MailUserSessionWrapper>()
+        val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
         val paginator = mockk<ConversationPaginatorWrapper> {
-            coEvery { this@mockk.nextPage() } returns expectedConversations.right()
+            coEvery { this@mockk.nextPage() } answers {
+                launch {
+                    delay(100) // Simulate callback delay compared to nextPage invocation
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(expectedConversations))
+                }
+                Unit.right()
+            }
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
@@ -112,10 +123,9 @@ class RustConversationsQueryImplTest {
                 session,
                 labelId.toLocalLabelId(),
                 false,
-                any()
+                capture(callbackSlot)
             )
         } returns paginator.right()
-        coEvery { cacheWithInvalidationFilter.storeNextPage(expectedConversations) } just Runs
 
 
         // When
@@ -123,7 +133,6 @@ class RustConversationsQueryImplTest {
 
         // Then
         assertEquals(expectedConversations, actual)
-        coVerify { cacheWithInvalidationFilter.storeNextPage(expectedConversations) }
     }
 
     @Test
@@ -134,8 +143,13 @@ class RustConversationsQueryImplTest {
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.All)
         val session = mockk<MailUserSessionWrapper>()
+        val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
         val paginator = mockk<ConversationPaginatorWrapper> {
-            coEvery { this@mockk.reload() } returns expectedConversations.right()
+            launch {
+                delay(100) // Simulate callback delay compared to nextPage invocation
+                callbackSlot.captured.onUpdate(ConversationScrollerUpdate.ReplaceFrom(0uL, expectedConversations))
+            }
+            coEvery { this@mockk.reload() } returns Unit.right()
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
@@ -143,26 +157,19 @@ class RustConversationsQueryImplTest {
                 session,
                 labelId.toLocalLabelId(),
                 false,
-                any()
+                capture(callbackSlot)
             )
         } returns paginator.right()
-        coEvery {
-            cacheWithInvalidationFilter.popUnseenData(
-                PageInvalidationEvent.ConversationsInvalidated, any()
-            )
-        } returns null
-        coEvery { cacheWithInvalidationFilter.replaceData(expectedConversations, true) } just Runs
 
         // When
         val actual = rustConversationsQuery.getConversations(userId, pageKey)
 
         // Then
         assertEquals(expectedConversations, actual)
-        coVerify { cacheWithInvalidationFilter.replaceData(expectedConversations, true) }
     }
 
     @Test
-    fun `initialised paginator only once for any given label`() = runTest {
+    fun `initialises paginator only once for any given label`() = runTest {
         // Given
         val firstPage = listOf(LocalConversationTestData.AugConversation)
         val nextPage = listOf(LocalConversationTestData.OctConversation)
@@ -171,8 +178,21 @@ class RustConversationsQueryImplTest {
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val nextPageKey = pageKey.copy(pageToLoad = PageToLoad.Next)
         val session = mockk<MailUserSessionWrapper>()
+        val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
+        var methodCallCounter = 0
         val paginator = mockk<ConversationPaginatorWrapper> {
-            coEvery { this@mockk.nextPage() } returns firstPage.right()
+            coEvery { this@mockk.nextPage() } answers {
+                methodCallCounter++
+                val expectedPage = when {
+                    methodCallCounter == 1 -> firstPage
+                    else -> nextPage
+                }
+                launch {
+                    delay(100) // Simulate callback delay compared to nextPage invocation
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(expectedPage))
+                }
+                Unit.right()
+            }
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
@@ -180,21 +200,16 @@ class RustConversationsQueryImplTest {
                 session,
                 labelId.toLocalLabelId(),
                 false,
-                any()
+                capture(callbackSlot)
             )
         } returns paginator.right()
-        coEvery { cacheWithInvalidationFilter.replaceData(firstPage, true) } just Runs
-        coEvery { cacheWithInvalidationFilter.storeNextPage(nextPage) } just Runs
 
         // When
         rustConversationsQuery.getConversations(userId, pageKey)
-        coEvery { paginator.nextPage() } returns nextPage.right()
         rustConversationsQuery.getConversations(userId, nextPageKey)
 
         // Then
         coVerify(exactly = 1) { createRustConversationPaginator(session, labelId.toLocalLabelId(), false, any()) }
-        coVerify { cacheWithInvalidationFilter.replaceData(firstPage, true) }
-        coVerify { cacheWithInvalidationFilter.storeNextPage(nextPage) }
     }
 
     @Test
@@ -207,24 +222,30 @@ class RustConversationsQueryImplTest {
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val newPageKey = pageKey.copy(newLabelId)
         val session = mockk<MailUserSessionWrapper>()
+        val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
         val paginator = mockk<ConversationPaginatorWrapper> {
-            coEvery { this@mockk.nextPage() } returns firstPage.right()
+            coEvery { this@mockk.nextPage() } answers {
+                launch {
+                    delay(100) // Simulate callback delay compared to nextPage invocation
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(firstPage))
+                }
+                Unit.right()
+            }
             coEvery { this@mockk.disconnect() } just Runs
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
             createRustConversationPaginator(
                 session, labelId.toLocalLabelId(),
-                false, any()
+                false, capture(callbackSlot)
             )
         } returns paginator.right()
         coEvery {
             createRustConversationPaginator(
                 session, newLabelId.toLocalLabelId(),
-                false, any()
+                false, capture(callbackSlot)
             )
         } returns paginator.right()
-        coEvery { cacheWithInvalidationFilter.replaceData(firstPage, true) } just Runs
 
         // When
         rustConversationsQuery.getConversations(userId, pageKey)
@@ -246,8 +267,6 @@ class RustConversationsQueryImplTest {
                 false, any()
             )
         }
-
-        coVerify { cacheWithInvalidationFilter.reset() }
     }
 
     @Test
@@ -261,8 +280,15 @@ class RustConversationsQueryImplTest {
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, readStatus = readStatus)
         val newPageKey = pageKey.copy(readStatus = newReadStatus)
         val session = mockk<MailUserSessionWrapper>()
+        val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
         val paginator = mockk<ConversationPaginatorWrapper> {
-            coEvery { this@mockk.nextPage() } returns firstPage.right()
+            coEvery { this@mockk.nextPage() } answers {
+                launch {
+                    delay(100) // Simulate callback delay compared to nextPage invocation
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(firstPage))
+                }
+                Unit.right()
+            }
             coEvery { this@mockk.disconnect() } just Runs
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
@@ -271,7 +297,7 @@ class RustConversationsQueryImplTest {
                 session,
                 labelId.toLocalLabelId(),
                 false,
-                any()
+                capture(callbackSlot)
             )
         } returns paginator.right()
         coEvery {
@@ -279,10 +305,9 @@ class RustConversationsQueryImplTest {
                 session,
                 labelId.toLocalLabelId(),
                 true,
-                any()
+                capture(callbackSlot)
             )
         } returns paginator.right()
-        coEvery { cacheWithInvalidationFilter.replaceData(firstPage, true) } just Runs
 
         // When
         rustConversationsQuery.getConversations(userId, pageKey)
@@ -294,12 +319,11 @@ class RustConversationsQueryImplTest {
         coVerify { paginator.disconnect() }
 
         coVerify(exactly = 1) { createRustConversationPaginator(session, labelId.toLocalLabelId(), true, any()) }
-        coVerify { cacheWithInvalidationFilter.reset() }
 
     }
 
     @Test
-    fun `submits invalidation when onUpdate callback is fired`() = runTest {
+    fun `submits invalidation when onUpdate callback is fired with ReplaceBefore event`() = runTest {
         // Given
         val firstPage = listOf(LocalConversationTestData.AugConversation)
         val userId = UserIdSample.Primary
@@ -307,11 +331,16 @@ class RustConversationsQueryImplTest {
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
 
         val session = mockk<MailUserSessionWrapper>()
+        val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
         val paginator = mockk<ConversationPaginatorWrapper> {
-            coEvery { nextPage() } returns firstPage.right()
+            coEvery { nextPage() } answers {
+                launch {
+                    delay(100) // Simulate callback delay compared to nextPage invocation
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(firstPage))
+                }
+                Unit.right()
+            }
         }
-
-        val callbackSlot = slot<LiveQueryCallback>()
 
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
@@ -323,49 +352,58 @@ class RustConversationsQueryImplTest {
             )
         } returns paginator.right()
 
-        coEvery { cacheWithInvalidationFilter.submitInvalidation(any(), any()) } just Runs
-        coEvery { cacheWithInvalidationFilter.replaceData(firstPage, true) } just Runs
+        coEvery {
+            cacheWithInvalidationFilter.submitInvalidation(PageInvalidationEvent.ConversationsInvalidated)
+        } just Runs
 
         // When
         rustConversationsQuery.getConversations(userId, pageKey)
-        callbackSlot.captured.onUpdate()
-
-        advanceUntilIdle()
+        callbackSlot.captured.onUpdate(ConversationScrollerUpdate.ReplaceBefore(2uL, firstPage))
 
         // Then
-        coVerify {
-            cacheWithInvalidationFilter.submitInvalidation(
-                PageInvalidationEvent.ConversationsInvalidated,
-                any()
-            )
-        }
+        coVerify { cacheWithInvalidationFilter.submitInvalidation(PageInvalidationEvent.ConversationsInvalidated) }
     }
 
     @Test
-    fun `calls reload when paginator throw 'dirty state' error`() = runTest {
+    fun `submits invalidation when onUpdate is fired with ReplaceFrom event with index greater than 0`() = runTest {
         // Given
+        val firstPage = listOf(LocalConversationTestData.AugConversation)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
-        val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.Next)
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId)
+
         val session = mockk<MailUserSessionWrapper>()
-        val dirtyStateError = PaginationError.DirtyPaginationData
+        val callbackSlot = slot<ConversationScrollerLiveQueryCallback>()
         val paginator = mockk<ConversationPaginatorWrapper> {
-            coEvery { this@mockk.reload() } returns emptyList<LocalConversation>().right()
-            coEvery { this@mockk.nextPage() } returns dirtyStateError.left()
+            coEvery { nextPage() } answers {
+                launch {
+                    delay(100) // Simulate callback delay compared to nextPage invocation
+                    callbackSlot.captured.onUpdate(ConversationScrollerUpdate.Append(firstPage))
+                }
+                Unit.right()
+            }
         }
+
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
-            createRustConversationPaginator(session, labelId.toLocalLabelId(), false, any())
+            createRustConversationPaginator(
+                session,
+                labelId.toLocalLabelId(),
+                false,
+                capture(callbackSlot)
+            )
         } returns paginator.right()
+
+        coEvery {
+            cacheWithInvalidationFilter.submitInvalidation(PageInvalidationEvent.ConversationsInvalidated)
+        } just Runs
 
         // When
         rustConversationsQuery.getConversations(userId, pageKey)
+        callbackSlot.captured.onUpdate(ConversationScrollerUpdate.ReplaceFrom(2uL, firstPage))
 
         // Then
-        coVerifySequence {
-            paginator.nextPage()
-            paginator.reload()
-        }
+        coVerify { cacheWithInvalidationFilter.submitInvalidation(PageInvalidationEvent.ConversationsInvalidated) }
     }
 
 }
