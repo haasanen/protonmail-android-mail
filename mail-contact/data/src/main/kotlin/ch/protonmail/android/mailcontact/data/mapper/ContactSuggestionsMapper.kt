@@ -42,7 +42,7 @@ class ContactSuggestionsMapper @Inject constructor() {
                 )
             }
 
-            is ContactSuggestionKind.ContactItem -> {
+            is ContactSuggestionKind.Contact -> {
                 ContactMetadata.Contact(
                     id = contact.key.toContactId(),
                     name = contact.name,
@@ -56,6 +56,8 @@ class ContactSuggestionsMapper @Inject constructor() {
                     id = contact.key.toContactGroupId(),
                     name = contact.name,
                     color = contact.avatarInformation.color,
+                    // Temporary mapping due to conflicts, will be dropped with rust 105.6 which goes back
+                    // to returning list of contact emails here
                     members = type.v1.map { it.toContactEmail() }
                 )
             }

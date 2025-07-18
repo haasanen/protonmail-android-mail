@@ -21,7 +21,6 @@ package ch.protonmail.android.mailcommon.data.mapper
 import uniffi.proton_mail_uniffi.AlmostAllMail
 import uniffi.proton_mail_uniffi.AppProtection
 import uniffi.proton_mail_uniffi.AppSettings
-import uniffi.proton_mail_uniffi.AppSettingsDiff
 import uniffi.proton_mail_uniffi.AttachmentMetadata
 import uniffi.proton_mail_uniffi.AttachmentMimeType
 import uniffi.proton_mail_uniffi.AutoDeleteBanner
@@ -38,9 +37,9 @@ import uniffi.proton_mail_uniffi.ContactDetailsEmail
 import uniffi.proton_mail_uniffi.ContactDetailsTelephones
 import uniffi.proton_mail_uniffi.ContactEmailItem
 import uniffi.proton_mail_uniffi.ContactField
+import uniffi.proton_mail_uniffi.ContactItem
 import uniffi.proton_mail_uniffi.ContactItemType
 import uniffi.proton_mail_uniffi.ContactSuggestion
-import uniffi.proton_mail_uniffi.ContactSuggestionKind
 import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.DecryptedAttachment
 import uniffi.proton_mail_uniffi.DeviceContact
@@ -132,12 +131,11 @@ typealias LocalComposerRecipient = ComposerRecipient
 typealias LocalDraftSendResult = DraftSendResult
 typealias LocalDeviceContact = DeviceContact
 typealias LocalContactSuggestion = ContactSuggestion
-typealias LocalContactSuggestionKind = ContactSuggestionKind
+typealias LocalContactItem = ContactItem
 typealias LocalIssueReport = IssueReport
 typealias RemoteMessageId = RemoteId
 typealias LocalEmbeddedImageInfo = EmbeddedAttachmentInfo
 typealias LocalAppSettings = AppSettings
-typealias LocalAppSettingsDiff = AppSettingsDiff
 typealias LocalAutoLock = AutoLock
 typealias LocalProtection = AppProtection
 typealias LocalAutoLockPin = List<UInt>

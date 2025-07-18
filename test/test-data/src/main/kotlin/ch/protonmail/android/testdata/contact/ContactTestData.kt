@@ -56,15 +56,21 @@ object ContactTestData {
 
 
     val contactGroupSuggestionEmail1 = ContactMetadata.Contact(
-        id = ContactId("contactgroup@first.email"),
-        avatar = AvatarInformation("", ""),
-        name = "contactgroup@first.email",
+        id = ContactIdTestData.contactId3,
+        avatar = AvatarInformation(
+            color = AvatarInformationSample.avatarSample.color,
+            initials = AvatarInformationSample.avatarSample.initials
+        ),
+        name = "Contact Group First",
         emails = listOf(ContactEmailSample.contactGroupSuggestionEmail1)
     )
     val contactGroupSuggestionEmail2 = ContactMetadata.Contact(
-        id = ContactId("contactgroup@second.email"),
-        avatar = AvatarInformation("", ""),
-        name = "contactgroup@second.email",
+        id = ContactIdTestData.contactId4,
+        avatar = AvatarInformation(
+            color = AvatarInformationSample.avatarSample.color,
+            initials = AvatarInformationSample.avatarSample.initials
+        ),
+        name = "Contact Group Second",
         emails = listOf(ContactEmailSample.contactGroupSuggestionEmail2)
     )
 

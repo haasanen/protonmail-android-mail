@@ -27,6 +27,7 @@ sealed interface SendDraftError {
     data object AttachmentsError : SendDraftError
     data object ScheduleSendError : SendDraftError
     data object CorruptedData : SendDraftError
+    data object ExternalPasswordDecryptError : SendDraftError
 
     data class Other(val error: DataError) : SendDraftError
 }

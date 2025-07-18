@@ -266,6 +266,8 @@ fun DraftSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
 
     is DraftSendErrorReason.PackageError ->
         SendErrorReason.ErrorWithMessage.PackageError(v1)
+
+    is DraftSendErrorReason.EoPasswordDecrypt -> SendErrorReason.ErrorNoMessage.ExternalPasswordDecryptFailed
 }
 
 fun DraftSaveError.toSaveDraftError(): SaveDraftError = when (this) {
@@ -310,16 +312,22 @@ fun DraftSendError.toDraftSendError(): SendDraftError = when (this) {
         is DraftSendErrorReason.AlreadySent,
         is DraftSendErrorReason.MessageAlreadySent,
         is DraftSendErrorReason.MessageIsNotADraft -> SendDraftError.AlreadySent
+
         is DraftSendErrorReason.AddressDisabled,
         is DraftSendErrorReason.AddressDoesNotHavePrimaryKey -> SendDraftError.InvalidSenderAddress
+
         is DraftSendErrorReason.RecipientEmailInvalid,
         is DraftSendErrorReason.ProtonRecipientDoesNotExist,
         is DraftSendErrorReason.NoRecipients -> SendDraftError.InvalidRecipient
+
         is DraftSendErrorReason.MissingAttachmentUploads -> SendDraftError.AttachmentsError
         is DraftSendErrorReason.ScheduleSendExpired,
         is DraftSendErrorReason.ScheduleSendMessageLimitExceeded -> SendDraftError.ScheduleSendError
+
         is DraftSendErrorReason.MessageDoesNotExist,
         is DraftSendErrorReason.PackageError -> SendDraftError.CorruptedData
+
+        DraftSendErrorReason.EoPasswordDecrypt -> SendDraftError.ExternalPasswordDecryptError
     }
 }
 

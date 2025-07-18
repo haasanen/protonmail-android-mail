@@ -20,7 +20,6 @@ package ch.protonmail.android.testdata.contact
 
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 
 object ContactEmailSample {
 
