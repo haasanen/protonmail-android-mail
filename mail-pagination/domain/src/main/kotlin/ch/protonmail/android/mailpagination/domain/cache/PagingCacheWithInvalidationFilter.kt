@@ -21,7 +21,10 @@ package ch.protonmail.android.mailpagination.domain.cache
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 
 interface PagingCacheWithInvalidationFilter<T> {
+    @Deprecated("Drop after ET-3836")
     suspend fun submitInvalidation(pageInvalidationEvent: PageInvalidationEvent, fetcher: PagingFetcher<T>)
+
+    suspend fun submitInvalidation(pageInvalidationEvent: PageInvalidationEvent)
 
     suspend fun replaceData(newData: List<T>, markAsSeen: Boolean)
 

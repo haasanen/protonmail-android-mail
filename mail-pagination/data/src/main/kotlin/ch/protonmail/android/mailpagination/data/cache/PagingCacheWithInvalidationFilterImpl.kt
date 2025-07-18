@@ -106,6 +106,11 @@ class PagingCacheWithInvalidationFilterImpl<T> @Inject constructor(
         }
     }
 
+    override suspend fun submitInvalidation(pageInvalidationEvent: PageInvalidationEvent) {
+        Timber.d("paging-cache-invalidation: invalidation accepted (trusting rust on data change check)")
+        pageInvalidationRepository.submit(pageInvalidationEvent)
+    }
+
     override suspend fun reset() {
         Timber.d("paging-cache-invalidation: Resetting cache.")
         mutex.withLock {
