@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailmessage.data.wrapper
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 
@@ -27,9 +26,9 @@ interface MessagePaginatorWrapper {
 
     val params: PaginatorParams
 
-    suspend fun nextPage(): Either<PaginationError, List<LocalMessageMetadata>>
+    suspend fun nextPage(): Either<PaginationError, Unit>
 
-    suspend fun reload(): Either<PaginationError, List<LocalMessageMetadata>>
+    suspend fun reload(): Either<PaginationError, Unit>
 
     fun destroy()
 }

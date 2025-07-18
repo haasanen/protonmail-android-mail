@@ -28,8 +28,8 @@ import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxMessagePaginatorWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
-import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSessionUserIdResult
+import uniffi.proton_mail_uniffi.MessageScrollerLiveQueryCallback
 import uniffi.proton_mail_uniffi.ReadFilter
 import uniffi.proton_mail_uniffi.ScrollMessagesForLabelResult
 import uniffi.proton_mail_uniffi.scrollMessagesForLabel
@@ -41,7 +41,7 @@ class CreateRustMessagesPaginator @Inject constructor() {
         session: MailUserSessionWrapper,
         labelId: LocalLabelId,
         unread: Boolean,
-        callback: LiveQueryCallback
+        callback: MessageScrollerLiveQueryCallback
     ): Either<DataError, MessagePaginatorWrapper> {
         val filterParam = if (unread) ReadFilter.UNREAD else ReadFilter.ALL
         return when (

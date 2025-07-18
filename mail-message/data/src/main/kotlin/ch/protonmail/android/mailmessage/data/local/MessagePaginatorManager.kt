@@ -36,7 +36,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.MessageScrollerLiveQueryCallback
 import javax.inject.Inject
 
 class MessagePaginatorManager @Inject constructor(
@@ -53,7 +53,7 @@ class MessagePaginatorManager @Inject constructor(
     suspend fun getOrCreatePaginator(
         userId: UserId,
         pageKey: PageKey,
-        callback: LiveQueryCallback,
+        callback: MessageScrollerLiveQueryCallback,
         onNewPaginator: suspend () -> Unit
     ): Either<DataError, MessagePaginatorWrapper> = paginatorMutex.withLock {
         if (!shouldInitPaginator(userId, pageKey)) {
@@ -80,7 +80,7 @@ class MessagePaginatorManager @Inject constructor(
     private suspend fun createDefaultPaginator(
         session: MailUserSessionWrapper,
         pageKey: PageKey.DefaultPageKey,
-        callback: LiveQueryCallback
+        callback: MessageScrollerLiveQueryCallback
     ): Either<DataError, MessagePaginatorWrapper> {
         val labelId = pageKey.labelId.toLocalLabelId()
         val unread = pageKey.readStatus == ReadStatus.Unread
@@ -91,7 +91,7 @@ class MessagePaginatorManager @Inject constructor(
     private suspend fun createSearchPaginator(
         session: MailUserSessionWrapper,
         pageKey: PageKey.PageKeyForSearch,
-        callback: LiveQueryCallback
+        callback: MessageScrollerLiveQueryCallback
     ): Either<DataError, MessagePaginatorWrapper> {
         val keyword = pageKey.keyword
 

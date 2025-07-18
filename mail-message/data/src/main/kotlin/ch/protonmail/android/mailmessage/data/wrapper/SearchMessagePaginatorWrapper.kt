@@ -21,30 +21,27 @@ package ch.protonmail.android.mailmessage.data.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import uniffi.proton_mail_uniffi.SearchScroller
-import uniffi.proton_mail_uniffi.SearchScrollerAllItemsResult
 import uniffi.proton_mail_uniffi.SearchScrollerFetchMoreResult
+import uniffi.proton_mail_uniffi.SearchScrollerRefreshResult
 
 class SearchMessagePaginatorWrapper(
     private val rustPaginator: SearchScroller,
     override val params: PaginatorParams
 ) : MessagePaginatorWrapper {
 
-    override suspend fun nextPage(): Either<PaginationError, List<LocalMessageMetadata>> =
-        when (val result = rustPaginator.fetchMore()) {
-            is SearchScrollerFetchMoreResult.Error -> result.v1.toPaginationError().left()
-            is SearchScrollerFetchMoreResult.Ok -> result.v1.right()
-        }
+    override suspend fun nextPage(): Either<PaginationError, Unit> = when (val result = rustPaginator.fetchMore()) {
+        is SearchScrollerFetchMoreResult.Error -> result.v1.toPaginationError().left()
+        is SearchScrollerFetchMoreResult.Ok -> Unit.right()
+    }
 
-    override suspend fun reload(): Either<PaginationError, List<LocalMessageMetadata>> =
-        when (val result = rustPaginator.allItems()) {
-            is SearchScrollerAllItemsResult.Error -> result.v1.toPaginationError().left()
-            is SearchScrollerAllItemsResult.Ok -> result.v1.right()
-        }
+    override suspend fun reload(): Either<PaginationError, Unit> = when (val result = rustPaginator.refresh()) {
+        is SearchScrollerRefreshResult.Error -> result.v1.toPaginationError().left()
+        is SearchScrollerRefreshResult.Ok -> Unit.right()
+    }
 
     override fun destroy() {
         rustPaginator.handle().disconnect()

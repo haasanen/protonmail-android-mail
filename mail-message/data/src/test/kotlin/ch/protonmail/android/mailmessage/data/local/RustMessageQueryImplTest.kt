@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
-import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
@@ -30,22 +29,23 @@ import ch.protonmail.android.mailpagination.domain.cache.PagingCacheWithInvalida
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
-import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.coVerifySequence
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
-import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.MessageScrollerLiveQueryCallback
+import uniffi.proton_mail_uniffi.MessageScrollerUpdate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -76,17 +76,22 @@ class RustMessageQueryImplTest {
     @Test
     fun `returns initial value from watcher when messages watcher is initialized`() = runTest {
         // Given
-        val mailboxCallbackSlot = slot<LiveQueryCallback>()
         val userId = UserIdTestData.userId
         val localLabelId = LocalLabelId(1u)
         val pageKey = PageKey.DefaultPageKey(labelId = localLabelId.toLabelId())
+        val callbackSlot = slot<MessageScrollerLiveQueryCallback>()
+        coEvery { messagePaginator.nextPage() } answers {
+            launch {
+                delay(100) // Simulate callback delay compared to nextPage invocation
+                callbackSlot.captured.onUpdate(MessageScrollerUpdate.Append(expectedMessages))
+            }
+            Unit.right()
+        }
         coEvery {
             messagePaginatorManager.getOrCreatePaginator(
-                userId, pageKey, capture(mailboxCallbackSlot), any()
+                userId, pageKey, capture(callbackSlot), any()
             )
         } returns messagePaginator.right()
-        coEvery { messagePaginator.nextPage() } returns expectedMessages.right()
-        coEvery { cacheWithInvalidationFilter.replaceData(expectedMessages, true) } just Runs
 
         // When
         val actual = rustMessageQuery.getMessages(userId, pageKey)
@@ -95,10 +100,9 @@ class RustMessageQueryImplTest {
         assertEquals(expectedMessages, actual)
         coVerify {
             messagePaginatorManager.getOrCreatePaginator(
-                userId, pageKey, mailboxCallbackSlot.captured, any()
+                userId, pageKey, callbackSlot.captured, any()
             )
         }
-        coVerify { cacheWithInvalidationFilter.replaceData(expectedMessages, true) }
     }
 
     @Test
@@ -108,22 +112,27 @@ class RustMessageQueryImplTest {
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
+        val callbackSlot = slot<MessageScrollerLiveQueryCallback>()
         val paginator = mockk<MailboxMessagePaginatorWrapper> {
-            coEvery { this@mockk.nextPage() } returns expectedMessages.right()
+            coEvery { this@mockk.nextPage() } answers {
+                launch {
+                    delay(100) // Simulate callback delay compared to nextPage invocation
+                    callbackSlot.captured.onUpdate(MessageScrollerUpdate.Append(expectedMessages))
+                }
+                Unit.right()
+            }
         }
         coEvery {
             messagePaginatorManager.getOrCreatePaginator(
-                userId, pageKey, any(), any()
+                userId, pageKey, capture(callbackSlot), any()
             )
         } returns paginator.right()
-        coEvery { cacheWithInvalidationFilter.replaceData(expectedMessages, true) } just Runs
 
         // When
         val actual = rustMessageQuery.getMessages(userId, pageKey)
 
         // Then
         assertEquals(expectedMessages, actual)
-        coVerify { cacheWithInvalidationFilter.replaceData(expectedMessages, true) }
     }
 
     @Test
@@ -133,22 +142,27 @@ class RustMessageQueryImplTest {
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.Next)
+        val callbackSlot = slot<MessageScrollerLiveQueryCallback>()
         val paginator = mockk<MailboxMessagePaginatorWrapper> {
-            coEvery { this@mockk.nextPage() } returns expectedMessages.right()
+            coEvery { this@mockk.nextPage() } answers {
+                launch {
+                    delay(100) // Simulate callback delay compared to nextPage invocation
+                    callbackSlot.captured.onUpdate(MessageScrollerUpdate.Append(expectedMessages))
+                }
+                Unit.right()
+            }
         }
         coEvery {
             messagePaginatorManager.getOrCreatePaginator(
-                userId, pageKey, any(), any()
+                userId, pageKey, capture(callbackSlot), any()
             )
         } returns paginator.right()
-        coEvery { cacheWithInvalidationFilter.storeNextPage(expectedMessages) } just Runs
 
         // When
         val actual = rustMessageQuery.getMessages(userId, pageKey)
 
         // Then
         assertEquals(expectedMessages, actual)
-        coVerify { cacheWithInvalidationFilter.storeNextPage(expectedMessages) }
     }
 
     @Test
@@ -158,56 +172,32 @@ class RustMessageQueryImplTest {
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.All)
+        val callbackSlot = slot<MessageScrollerLiveQueryCallback>()
         val paginator = mockk<MailboxMessagePaginatorWrapper> {
-            coEvery { this@mockk.reload() } returns expectedMessages.right()
+            coEvery { this@mockk.reload() } answers {
+                launch {
+                    delay(100) // Simulate callback delay compared to nextPage invocation
+                    callbackSlot.captured.onUpdate(MessageScrollerUpdate.ReplaceFrom(0uL, expectedMessages))
+                }
+                Unit.right()
+            }
         }
         coEvery {
             messagePaginatorManager.getOrCreatePaginator(
-                userId, pageKey, any(), any()
+                userId, pageKey, capture(callbackSlot), any()
             )
         } returns paginator.right()
         coEvery { messagePaginatorManager.getPaginator() } returns paginator
-        coEvery { cacheWithInvalidationFilter.popUnseenData(any(), any()) } returns null
-        coEvery { cacheWithInvalidationFilter.replaceData(expectedMessages, true) } just Runs
 
         // When
         val actual = rustMessageQuery.getMessages(userId, pageKey)
 
         // Then
         assertEquals(expectedMessages, actual)
-        coVerify { cacheWithInvalidationFilter.replaceData(expectedMessages, true) }
-
     }
 
     @Test
-    fun `calls reload when paginator throw 'dirty state' error`() = runTest {
-        // Given
-        val userId = UserIdSample.Primary
-        val labelId = SystemLabelId.Inbox.labelId
-        val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.Next)
-        val dirtyStateError = PaginationError.DirtyPaginationData
-        val paginator = mockk<MailboxMessagePaginatorWrapper> {
-            coEvery { this@mockk.reload() } returns emptyList<LocalMessageMetadata>().right()
-            coEvery { this@mockk.nextPage() } returns dirtyStateError.left()
-        }
-        coEvery {
-            messagePaginatorManager.getOrCreatePaginator(
-                userId, pageKey, any(), any()
-            )
-        } returns paginator.right()
-
-        // When
-        rustMessageQuery.getMessages(userId, pageKey)
-
-        // Then
-        coVerifySequence {
-            paginator.nextPage()
-            paginator.reload()
-        }
-    }
-
-    @Test
-    fun `submits invalidation when onUpdate callback is fired`() = runTest {
+    fun `submits invalidation when onUpdate callback is fired with ReplaceBefore event`() = runTest {
         // Given
         val event = PageInvalidationEvent.MessagesInvalidated
         val firstPage = listOf(LocalMessageTestData.AugWeatherForecast)
@@ -215,11 +205,17 @@ class RustMessageQueryImplTest {
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
 
+        val callbackSlot = slot<MessageScrollerLiveQueryCallback>()
         val paginator = mockk<MailboxMessagePaginatorWrapper> {
-            coEvery { nextPage() } returns firstPage.right()
+            coEvery { this@mockk.nextPage() } answers {
+                launch {
+                    delay(100) // Simulate callback delay compared to nextPage invocation
+                    callbackSlot.captured.onUpdate(MessageScrollerUpdate.Append(expectedMessages))
+                }
+                Unit.right()
+            }
         }
         coEvery { messagePaginatorManager.getPaginator() } returns paginator
-        val callbackSlot = slot<LiveQueryCallback>()
 
         coEvery {
             messagePaginatorManager.getOrCreatePaginator(
@@ -227,21 +223,16 @@ class RustMessageQueryImplTest {
             )
         } returns paginator.right()
 
-        coEvery { cacheWithInvalidationFilter.submitInvalidation(event, any()) } just Runs
+        coEvery { cacheWithInvalidationFilter.submitInvalidation(event) } just Runs
         coEvery { cacheWithInvalidationFilter.replaceData(firstPage, true) } just Runs
 
         // When
         rustMessageQuery.getMessages(userId, pageKey)
-        callbackSlot.captured.onUpdate()
+        callbackSlot.captured.onUpdate(MessageScrollerUpdate.ReplaceBefore(1uL, emptyList()))
 
         advanceUntilIdle()
 
         // Then
-        coVerify {
-            cacheWithInvalidationFilter.submitInvalidation(
-                event,
-                any()
-            )
-        }
+        coVerify { cacheWithInvalidationFilter.submitInvalidation(event) }
     }
 }

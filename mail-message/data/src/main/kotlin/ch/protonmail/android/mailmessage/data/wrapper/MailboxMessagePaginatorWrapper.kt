@@ -21,30 +21,27 @@ package ch.protonmail.android.mailmessage.data.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import uniffi.proton_mail_uniffi.MessageScroller
-import uniffi.proton_mail_uniffi.MessageScrollerAllItemsResult
 import uniffi.proton_mail_uniffi.MessageScrollerFetchMoreResult
+import uniffi.proton_mail_uniffi.MessageScrollerRefreshResult
 
 class MailboxMessagePaginatorWrapper(
     private val rustPaginator: MessageScroller,
     override val params: PaginatorParams
 ) : MessagePaginatorWrapper {
 
-    override suspend fun nextPage(): Either<PaginationError, List<LocalMessageMetadata>> =
-        when (val result = rustPaginator.fetchMore()) {
-            is MessageScrollerFetchMoreResult.Error -> result.v1.toPaginationError().left()
-            is MessageScrollerFetchMoreResult.Ok -> result.v1.right()
-        }
+    override suspend fun nextPage(): Either<PaginationError, Unit> = when (val result = rustPaginator.fetchMore()) {
+        is MessageScrollerFetchMoreResult.Error -> result.v1.toPaginationError().left()
+        is MessageScrollerFetchMoreResult.Ok -> Unit.right()
+    }
 
-    override suspend fun reload(): Either<PaginationError, List<LocalMessageMetadata>> =
-        when (val result = rustPaginator.allItems()) {
-            is MessageScrollerAllItemsResult.Error -> result.v1.toPaginationError().left()
-            is MessageScrollerAllItemsResult.Ok -> result.v1.right()
-        }
+    override suspend fun reload(): Either<PaginationError, Unit> = when (val result = rustPaginator.refresh()) {
+        is MessageScrollerRefreshResult.Error -> result.v1.toPaginationError().left()
+        is MessageScrollerRefreshResult.Ok -> Unit.right()
+    }
 
     override fun destroy() {
         rustPaginator.handle().disconnect()

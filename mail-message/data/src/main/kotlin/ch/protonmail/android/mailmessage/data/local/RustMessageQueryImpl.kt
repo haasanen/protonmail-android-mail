@@ -18,22 +18,24 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
-import arrow.core.Either
-import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
+import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
+import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
+import ch.protonmail.android.mailpagination.data.model.PagingEvent
+import ch.protonmail.android.mailpagination.domain.cache.PagingCacheWithInvalidationFilter
+import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
-import ch.protonmail.android.mailpagination.domain.model.PaginationError
-import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
-import ch.protonmail.android.mailpagination.domain.cache.PagingCacheWithInvalidationFilter
-import ch.protonmail.android.mailpagination.domain.cache.PagingFetcher
-import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.Message
+import uniffi.proton_mail_uniffi.MessageScrollerLiveQueryCallback
+import uniffi.proton_mail_uniffi.MessageScrollerUpdate
 import javax.inject.Inject
 
 class RustMessageQueryImpl @Inject constructor(
@@ -42,20 +44,41 @@ class RustMessageQueryImpl @Inject constructor(
     private val cacheWithInvalidationFilter: PagingCacheWithInvalidationFilter<LocalMessageMetadata>
 ) : RustMessageQuery {
 
-    private val messagesUpdatedCallback = object : LiveQueryCallback {
-        override fun onUpdate() {
-            Timber.d("rust-message: messages updated, submitting page invalidation")
+    private val pagingEvents = MutableSharedFlow<PagingEvent<Message>>()
 
+    private val messagesUpdatedCallback = object : MessageScrollerLiveQueryCallback {
+
+        override fun onUpdate(update: MessageScrollerUpdate) {
+            Timber.d("rust-message: messages update received $update")
+
+            val event = when (update) {
+                is MessageScrollerUpdate.Append -> PagingEvent.Append(update.v1)
+                is MessageScrollerUpdate.Error -> PagingEvent.Error(update.error.toPaginationError())
+                is MessageScrollerUpdate.None -> PagingEvent.Append(emptyList())
+                is MessageScrollerUpdate.ReplaceBefore -> {
+                    // Paging3 doesn't handle granular data updates. Invalidate to cause a full reload
+                    invalidateLoadedItems()
+                    PagingEvent.None
+                }
+                is MessageScrollerUpdate.ReplaceFrom -> {
+                    when {
+                        update.isReplaceAllItemsEvent() -> PagingEvent.Refresh(update.items)
+                        else -> {
+                            // Paging3 doesn't handle granular data updates. Invalidate to cause a full reload
+                            invalidateLoadedItems()
+                            PagingEvent.None
+                        }
+                    }
+
+                }
+            }
             coroutineScope.launch {
-                cacheWithInvalidationFilter.submitInvalidation(
-                    pageInvalidationEvent = PageInvalidationEvent.MessagesInvalidated,
-                    fetcher = DefaultMessageFetcher(messagePaginatorManager.getPaginator())
-                )
+                pagingEvents.emit(event)
             }
         }
     }
 
-    override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata>? {
+    override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata> {
         val paginator = messagePaginatorManager.getOrCreatePaginator(userId, pageKey, messagesUpdatedCallback) {
             cacheWithInvalidationFilter.reset()
         }.getOrNull()
@@ -63,72 +86,34 @@ class RustMessageQueryImpl @Inject constructor(
         Timber.v("rust-message: Paging: querying ${pageKey.pageToLoad.name} page for messages")
 
         val messages = when (pageKey.pageToLoad) {
+            PageToLoad.First,
+            PageToLoad.Next -> {
+                paginator?.nextPage()
+                pagingEvents
+                    .filterIsInstance<PagingEvent.Append<Message>>()
+                    .first()
+                    .items
+            }
 
-            PageToLoad.First ->
-                paginator
-                    ?.loadNextPageAndCache { cacheWithInvalidationFilter.replaceData(it, markAsSeen = true) }
-                    ?: emptyList()
-
-            PageToLoad.Next ->
-                paginator
-                    ?.loadNextPageAndCache { cacheWithInvalidationFilter.storeNextPage(it) }
-                    ?: emptyList()
-
-            PageToLoad.All -> reloadAllData()
+            PageToLoad.All -> {
+                paginator?.reload()
+                pagingEvents
+                    .filterIsInstance<PagingEvent.Refresh<Message>>()
+                    .first()
+                    .items
+            }
         }
 
         Timber.v("rust-message: init value for messages is $messages")
         return messages
     }
 
-    private suspend fun reloadAllData(): List<LocalMessageMetadata> {
-        Timber.v("rust-message: reload all data")
-
-        val fetcher = DefaultMessageFetcher(messagePaginatorManager.getPaginator())
-
-        // Return unseen data from the cache, if present.
-        cacheWithInvalidationFilter.popUnseenData(
-            PageInvalidationEvent.MessagesInvalidated, fetcher
-        )?.let { return it }
-
-        // Otherwise fetch fresh data and update the cache.
-        val freshData = fetcher.reload()
-        cacheWithInvalidationFilter.replaceData(freshData, markAsSeen = true)
-        return freshData
-    }
-
-    private class DefaultMessageFetcher(
-        private val paginatorWrapper: MessagePaginatorWrapper?
-    ) : PagingFetcher<LocalMessageMetadata> {
-
-        override suspend fun reload(): List<LocalMessageMetadata> {
-            val paginator = paginatorWrapper ?: return emptyList()
-            val result = paginator.reload()
-            return result
-                .reloadOnDirtyData(paginator)
-                .getOrElse { emptyList() }
+    private fun invalidateLoadedItems() {
+        coroutineScope.launch {
+            cacheWithInvalidationFilter.submitInvalidation(PageInvalidationEvent.MessagesInvalidated)
         }
     }
+
+    private fun MessageScrollerUpdate.ReplaceFrom.isReplaceAllItemsEvent() = this.idx.toInt() == 0
 }
 
-/**
- * Due to internal state management, the rust lib requires clients to call `all_items` (reload)
- * before any `fetch_items` (nextPage) when the Dirty state happens in order to recover from such state.
- * Here we force the reload and let the paging3 lib call nextPage as needed.
- *
- * Note that dirty state shouldn't happen, as paging3 is already calling a reload each time data is invalidated!
- */
-private suspend fun Either<PaginationError, List<LocalMessageMetadata>>.reloadOnDirtyData(
-    paginator: MessagePaginatorWrapper?
-) = this.onLeft { error ->
-    if (error is PaginationError.DirtyPaginationData) {
-        paginator?.reload()
-    }
-}
-
-private suspend fun MessagePaginatorWrapper.loadNextPageAndCache(
-    cache: suspend (List<LocalMessageMetadata>) -> Unit
-): List<LocalMessageMetadata> = nextPage().onRight { results ->
-    cache(results)
-}.reloadOnDirtyData(this)
-    .getOrElse { emptyList() }
