@@ -63,8 +63,11 @@ fun LoginError.getErrorMessage(context: Context): String = when (this) {
     is LoginError.InvalidCredentials -> context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
     is LoginError.QrLoginEncoding -> "LoginError.QrLoginEncoding"
     is LoginError.WithCodePollFlowFailed -> v1
-    is LoginError.UserKeySetupNonPrivate -> "LoginError.UserKeySetupNonPrivate"
     is LoginError.Incorrect2FaCode -> "LoginError.Incorrect2FaCode"
+    is LoginError.AddressKeySetupAborted -> "LoginError.AddressKeySetupAborted"
+    is LoginError.NoAddress -> "LoginError.NoAddress"
+    is LoginError.NoLogin -> "LoginError.NoLogin"
+    is LoginError.UserKeySetupAborted -> "LoginError.UserKeySetupAborted"
 }
 
 fun UserApiServiceError.getErrorMessage() = when (this) {

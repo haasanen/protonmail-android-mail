@@ -21,17 +21,13 @@ package me.proton.android.core.auth.data.passvalidator
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import me.proton.android.core.auth.data.LogTag
 import me.proton.core.util.kotlin.CoreLogger
-import me.proton.core.util.kotlin.DispatcherProvider
 import uniffi.proton_account_uniffi.PasswordValidatorService
 import javax.inject.Inject
 
 @ActivityRetainedScoped
-class PasswordValidatorServiceHolder @Inject constructor(
-    private val dispatcherProvider: DispatcherProvider
-) {
+class PasswordValidatorServiceHolder @Inject constructor() {
 
     private val mutex = Mutex()
     private lateinit var passwordValidatorService: PasswordValidatorService
@@ -46,14 +42,6 @@ class PasswordValidatorServiceHolder @Inject constructor(
             }.onFailure {
                 CoreLogger.e(LogTag.DEFAULT, it, "Failed to initialize password validator service.")
             }.getOrNull()
-        }
-
-        withContext(dispatcherProvider.Io) {
-            runCatching {
-                passwordValidatorService.fetchValidators()
-            }.onFailure {
-                CoreLogger.e(LogTag.DEFAULT, it, "Failed to fetch password validators.")
-            }
         }
     }
 
