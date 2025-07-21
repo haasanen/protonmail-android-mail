@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmessage.presentation.ui
 
 import java.io.ByteArrayInputStream
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -50,6 +51,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -139,6 +141,10 @@ fun MessageBodyWebView(
 
     var webView by remember { mutableStateOf<ZoomableWebView?>(null) }
     val contentLoaded = remember { mutableStateOf(false) }
+    val contentLoadStartedTimeStamp = remember { mutableLongStateOf(0) }
+
+    fun loadWaitTimeExceeded(): Boolean = contentLoadStartedTimeStamp.longValue > 0 &&
+        contentLoadStartedTimeStamp.longValue + WEB_PAGE_CONTENT_LOAD_WAIT_LIMIT < System.currentTimeMillis()
 
     webView?.let {
         LaunchedEffect(it) {
@@ -156,6 +162,15 @@ fun MessageBodyWebView(
 
     val client = remember(messageBodyUiModel.messageId) {
         object : WebViewClient() {
+
+            override fun onPageStarted(
+                view: WebView?,
+                url: String?,
+                favicon: Bitmap?
+            ) {
+                super.onPageStarted(view, url, favicon)
+                contentLoadStartedTimeStamp.longValue = System.currentTimeMillis()
+            }
 
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 request?.let {
@@ -178,6 +193,7 @@ fun MessageBodyWebView(
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
+                Timber.d("webweirdooo: onPageFinished")
                 contentLoaded.value = true
             }
         }
@@ -189,7 +205,15 @@ fun MessageBodyWebView(
                 // allow measuring passes and webview to settle
                 .debounce(timeoutMillis = WEB_PAGE_CONTENT_LOAD_TIMEOUT),
             // also listen for changes in content loaded, there can be multiple calls to this
-            snapshotFlow { contentLoaded.value }.filter { it }
+            snapshotFlow { contentLoaded.value }.filter {
+                if (!it && loadWaitTimeExceeded()) {
+                    Timber.d(
+                        "webweirdooo: loading started At: $contentLoadStartedTimeStamp " +
+                            "diff = ${System.currentTimeMillis() - contentLoadStartedTimeStamp.longValue}"
+                    )
+                }
+                it || loadWaitTimeExceeded()
+            }
         ) { measuredHeight, isLoaded ->
             // in order to get the settled height after the webpage has loaded
             // For empty messages, we can get 0 height
@@ -395,6 +419,7 @@ object MessageBodyWebViewTestTags {
 }
 
 private const val WEB_PAGE_CONTENT_LOAD_TIMEOUT = 250L
+private const val WEB_PAGE_CONTENT_LOAD_WAIT_LIMIT = 2000L
 
 // Max constraint for WebView height. If the height is greater
 // than this value, we will not fix the height of the WebView or it will crash.
