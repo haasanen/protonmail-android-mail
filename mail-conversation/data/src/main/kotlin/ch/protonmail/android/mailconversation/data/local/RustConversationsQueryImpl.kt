@@ -25,11 +25,11 @@ import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginator
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
+import ch.protonmail.android.mailpagination.data.model.PagingEvent
 import ch.protonmail.android.mailpagination.domain.cache.PagingCacheWithInvalidationFilter
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
-import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -56,7 +56,7 @@ class RustConversationsQueryImpl @Inject constructor(
 
     private var paginatorState: PaginatorState? = null
     private val paginatorMutex = Mutex()
-    private val pagingEvents = MutableSharedFlow<PagingEvent>()
+    private val pagingEvents = MutableSharedFlow<PagingEvent<Conversation>>()
 
     private val conversationsUpdatedCallback = object : ConversationScrollerLiveQueryCallback {
         override fun onUpdate(update: ConversationScrollerUpdate) {
@@ -117,7 +117,7 @@ class RustConversationsQueryImpl @Inject constructor(
             PageToLoad.Next -> {
                 paginatorState?.paginatorWrapper?.nextPage()
                 pagingEvents
-                    .filterIsInstance<PagingEvent.Append>()
+                    .filterIsInstance<PagingEvent.Append<Conversation>>()
                     .first()
                     .items
             }
@@ -125,7 +125,7 @@ class RustConversationsQueryImpl @Inject constructor(
             PageToLoad.All -> {
                 paginatorState?.paginatorWrapper?.reload()
                 pagingEvents
-                    .filterIsInstance<PagingEvent.Refresh>()
+                    .filterIsInstance<PagingEvent.Refresh<Conversation>>()
                     .first()
                     .items
             }
@@ -193,10 +193,4 @@ class RustConversationsQueryImpl @Inject constructor(
 
     private fun ConversationScrollerUpdate.ReplaceFrom.isReplaceAllItemsEvent() = this.idx.toInt() == 0
 
-    private sealed interface PagingEvent {
-        data class Append(val items: List<Conversation>) : PagingEvent
-        data class Refresh(val items: List<Conversation>) : PagingEvent
-        data object None : PagingEvent
-        data class Error(val error: PaginationError) : PagingEvent
-    }
 }
