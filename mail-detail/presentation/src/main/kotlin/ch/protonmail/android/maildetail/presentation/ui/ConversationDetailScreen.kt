@@ -62,7 +62,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInteropFilter
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -135,6 +134,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -858,7 +858,6 @@ private fun MessagesContent(
         }
     }
 
-    val lazyColumnHeight = remember { mutableIntStateOf(0) }
     // height calculated based on whether there is space to fill (in the case where we have not many messages
     // then the message should take up the rest of the screen space
     var scrollToMessageMinimumHeightPx by remember { mutableIntStateOf(0) }
@@ -873,7 +872,7 @@ private fun MessagesContent(
     }
 
     val isAllItemsMeasured = remember {
-        derivedStateOf { itemsHeight.size >= visibleUiModels.size }
+        derivedStateOf { itemsHeight.size >= listState.layoutInfo.visibleItemsInfo.size }
     }
 
     // The webview for the message that we will scroll to has loaded
@@ -900,7 +899,8 @@ private fun MessagesContent(
                 // account when calculating heights
                 val sumOfCardOverlap = (itemsHeight.size - 1) * headerOverlapHeightPx
 
-                val availableSpace = lazyColumnHeight.intValue - verticalPaddingPx - sumOfHeights + sumOfCardOverlap
+                val availableSpace =
+                    listState.layoutInfo.viewportSize.height - verticalPaddingPx - sumOfHeights + sumOfCardOverlap
                 if (itemsHeight.entries.last().value < availableSpace) {
                     // then we should expand to fit space
                     scrollToMessageMinimumHeightPx = availableSpace
@@ -915,9 +915,11 @@ private fun MessagesContent(
     LaunchedEffect(Unit) {
         scrollToIndex?.let { listState.scrollToItem(it) }
         // wait for the final height of our target expanded message before scrolling
-        snapshotFlow { viewHasFinishedScrollingAndMeasuring.value }
+        snapshotFlow { finishedResizingOperations }
             .filter { it && !userScrolled && scrollToIndex != null }
             .distinctUntilChanged()
+            // a small delay before collecting so that the list items have a chance to render before scrolling
+            .sample(periodMillis = 200)
             .collectLatest {
                 scrollToIndex?.let {
                     // show one item before
@@ -935,9 +937,6 @@ private fun MessagesContent(
                     userTapped = true
                 }
                 false // Allow the event to propagate
-            }
-            .onGloballyPositioned {
-                lazyColumnHeight.intValue = it.size.height
             },
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(-MailDimens.ConversationCollapseHeaderOverlapHeight),
