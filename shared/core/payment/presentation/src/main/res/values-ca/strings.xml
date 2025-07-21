@@ -26,8 +26,8 @@
   <string name="payment_pay_annually">Pagament anual</string>
   <string name="payment_pay_biennially">Pagament cada 2 anys</string>
   <plurals name="payment_pay_other">
-    <item quantity="one">Paga durant %d mes</item>
-    <item quantity="other">Paga durant %d mesos</item>
+    <item quantity="one">Paga per %d mes</item>
+    <item quantity="other">Paga per %d mesos</item>
   </plurals>
   <string name="payment_welcome_offer_renew_monthly">Oferta de benvinguda. Es renova automàticament a %1$s/mes.</string>
   <string name="payment_welcome_offer_renew_annually">Oferta de benvinguda. Es renova automàticament a %1$s/any.</string>

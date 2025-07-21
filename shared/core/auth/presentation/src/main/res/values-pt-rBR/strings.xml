@@ -112,4 +112,12 @@
   <string name="auth_fido_manage_security_keys">Gerenciar chaves de segurança</string>
   <string name="auth_fido_add_security_key">Adicionar chave de segurança</string>
   <string name="auth_fido_security_keys_learn_more">Saiba mais</string>
+  <plurals name="password_validator_min_length_error">
+    <item quantity="one">A senha deve conter pelo menos 1 caractere</item>
+    <item quantity="other">A senha deve conter pelo menos %1$s caracteres</item>
+  </plurals>
+  <plurals name="password_validator_min_length_requirement">
+    <item quantity="one">Pelo menos 1 caractere</item>
+    <item quantity="other">Pelo menos %1$s caracteres</item>
+  </plurals>
 </resources>

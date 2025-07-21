@@ -112,4 +112,16 @@
   <string name="auth_fido_manage_security_keys">Кіраваць ключамі бяспекі</string>
   <string name="auth_fido_add_security_key">Дадаць ключ бяспекі</string>
   <string name="auth_fido_security_keys_learn_more">Даведацца больш</string>
+  <plurals name="password_validator_min_length_error">
+    <item quantity="one">Пароль павінен змяшчаць прынамсі 1 сімвал</item>
+    <item quantity="few">Пароль павінен змяшчаць прынамсі %1$s сімвалы</item>
+    <item quantity="many">Пароль павінен змяшчаць %1$s сімвалаў</item>
+    <item quantity="other">Пароль павінен змяшчаць прынамсі %1$s сімвалаў</item>
+  </plurals>
+  <plurals name="password_validator_min_length_requirement">
+    <item quantity="one">Прынамсі 1 сімвал</item>
+    <item quantity="few">Прынамсі %1$s сімвалы</item>
+    <item quantity="many">Прынамсі %1$s сімвалаў</item>
+    <item quantity="other">Прынамсі %1$s сімвалаў</item>
+  </plurals>
 </resources>

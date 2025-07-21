@@ -49,7 +49,7 @@
   <string name="auth_second_factor_authenticate">인증</string>
   <string name="auth_second_factor_totp_input_help">6자리 인증 코드를 입력하세요.</string>
   <string name="auth_second_factor_totp_input_label">2단계 인증 코드</string>
-  <string name="auth_second_factor_recovery_help">8자 복구 코드를 입력하세요.</string>
+  <string name="auth_second_factor_recovery_help">8자리 복구 코드를 입력하세요.</string>
   <string name="auth_second_factor_recovery_label">복구 코드</string>
   <string name="auth_second_factor_switch_to_recovery">복구 코드 사용</string>
   <string name="auth_second_factor_switch_to_totp">2단계 인증 코드 사용</string>
@@ -112,4 +112,10 @@
   <string name="auth_fido_manage_security_keys">보안 키 관리</string>
   <string name="auth_fido_add_security_key">보안 키 추가</string>
   <string name="auth_fido_security_keys_learn_more">더 알아보기</string>
+  <plurals name="password_validator_min_length_error">
+    <item quantity="other">비밀번호는 %1$s자 이상이어야 합니다</item>
+  </plurals>
+  <plurals name="password_validator_min_length_requirement">
+    <item quantity="other">최소 %1$s자</item>
+  </plurals>
 </resources>

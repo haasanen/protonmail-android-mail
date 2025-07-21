@@ -94,11 +94,11 @@
   <string name="contact_details_action_copy_label">Kopírovať</string>
   <string name="contact_details_action_message_label">Správa</string>
   <string name="contact_details_action_call_label">Zavolať</string>
-  <string name="contact_group_details_send_message_action">Send group message</string>
+  <string name="contact_group_details_send_message_action">Poslať skupinovú správu</string>
   <plurals name="contact_group_details_number_of_contacts">
-    <item quantity="one">%1$d contact</item>
-    <item quantity="few">%1$d contacts</item>
-    <item quantity="many">%1$d contacts</item>
-    <item quantity="other">%1$d contacts</item>
+    <item quantity="one">%1$d kontakt</item>
+    <item quantity="few">%1$d kontakty</item>
+    <item quantity="many">%1$d kontaktov</item>
+    <item quantity="other">%1$d kontaktov</item>
   </plurals>
 </resources>

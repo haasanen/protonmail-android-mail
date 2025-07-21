@@ -112,4 +112,16 @@
   <string name="auth_fido_manage_security_keys">Spravovat bezpečnostní klíče</string>
   <string name="auth_fido_add_security_key">Přidat bezpečnostní klíč</string>
   <string name="auth_fido_security_keys_learn_more">Více informací</string>
+  <plurals name="password_validator_min_length_error">
+    <item quantity="one">Heslo musí obsahovat alespoň 1 znak</item>
+    <item quantity="few">Heslo musí obsahovat alespoň %1$s znaky</item>
+    <item quantity="many">Heslo musí obsahovat alespoň %1$s znaků</item>
+    <item quantity="other">Heslo musí obsahovat alespoň %1$s znaků</item>
+  </plurals>
+  <plurals name="password_validator_min_length_requirement">
+    <item quantity="one">Alespoň 1 znak</item>
+    <item quantity="few">Alespoň %1$s znaky</item>
+    <item quantity="many">Alespoň %1$s znaků</item>
+    <item quantity="other">Alespoň %1$s znaků</item>
+  </plurals>
 </resources>

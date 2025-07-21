@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">已移除重複的收件人</string>
   <string name="composer_error_store_draft_subject">未儲存主旨行</string>
   <string name="composer_error_store_draft_recipients">無法儲存此草稿的收件者</string>
-  <string name="composer_error_loading_draft">The content of this draft is not available at this time, editing isn\'t possible.</string>
+  <string name="composer_error_loading_draft">此草稿的內容目前無法使用，無法編輯。</string>
   <string name="composer_add_attachments_content_description">新增附件</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">匯入自……</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">從您的相片圖庫挑選</string>
@@ -51,7 +51,7 @@
   <string name="composer_too_many_attachments_error">超過附件數量上限 (100)。</string>
   <string name="composer_delete_attachment_error">刪除附件時發生意外錯誤。</string>
   <string name="composer_unexpected_attachments_error">有與附件相關的意外錯誤。</string>
-  <string name="composer_attach_capture_from_camera_error">Capturing an attachment from camera isn\'t possible at this time</string>
+  <string name="composer_attach_capture_from_camera_error">目前無法從相機拍攝附件</string>
   <string name="composer_warning_local_data_shown">此草稿的最新版本無法載入。任何變更將覆蓋其內容。</string>
   <string name="composer_button_add_password">新增密碼</string>
   <string name="composer_button_discard_draft">捨棄草稿</string>
@@ -106,7 +106,7 @@
   <plurals name="composer_recipient_suggestion_contacts">
     <item quantity="other">%d 位成員</item>
   </plurals>
-  <string name="composer_recipient_suggestion_device">Show device contacts</string>
+  <string name="composer_recipient_suggestion_device">顯示裝置聯絡人</string>
   <!-- Discard draft dialog -->
   <string name="discard_draft_dialog_title">放棄此訊息？</string>
   <string name="discard_draft_dialog_text">將不會儲存您的草稿</string>
@@ -114,27 +114,27 @@
   <string name="discard_draft_dialog_dismiss_button">取消</string>
   <string name="discard_draft_error">放棄草稿時發生錯誤</string>
   <string name="composer_remove_inline_image">移除</string>
-  <string name="composer_send_as_attachment">Send as attachment</string>
+  <string name="composer_send_as_attachment">作為附件傳送</string>
   <string name="composer_remove_recipient_action_item">移除</string>
   <string name="composer_copy_recipient_action_item">複製</string>
-  <string name="schedule_send_content_description">Schedule send</string>
-  <string name="composer_error_retrieving_schedule_send_options">Generating the times to \"schedule send\" at failed</string>
-  <string name="composer_schedule_send_content_description">Schedule send</string>
+  <string name="schedule_send_content_description">排程送出</string>
+  <string name="composer_error_retrieving_schedule_send_options">產生排程傳送時間失敗</string>
+  <string name="composer_schedule_send_content_description">排程送出</string>
   <string name="composer_schedule_send_tomorrow_title">明天</string>
   <string name="composer_schedule_send_monday_title">週一</string>
   <string name="composer_schedule_send_custom_title">自訂</string>
-  <string name="composer_schedule_send_custom_description">Pick time and date</string>
+  <string name="composer_schedule_send_custom_description">選擇時間與日期</string>
   <string name="composer_error_send_message">傳送郵件時發生錯誤</string>
-  <string name="composer_schedule_send_previously_set">Previously set</string>
-  <string name="composer_schedule_send_custom_time_label">Time</string>
+  <string name="composer_schedule_send_previously_set">之前已設定</string>
+  <string name="composer_schedule_send_custom_time_label">時間</string>
   <string name="composer_schedule_send_custom_date_label">日期</string>
   <string name="composer_schedule_send_dialog_ok">確定</string>
-  <string name="composer_schedule_send_dialog_enter_time">Enter time</string>
+  <string name="composer_schedule_send_dialog_enter_time">輸入時間</string>
   <string name="composer_change_sender_title">寄件者</string>
-  <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
-  <string name="composer_change_sender_invalid_address">The selected address can not be used for sending</string>
-  <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
-  <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
-  <string name="composer_loading_attachments_error">Failed loading attachments</string>
-  <string name="composer_attachment_upload_error_retry">Some attachments failed uploading. Please, retry.</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">無法變更寄件者，因為無法取得使用者位址。請再試一次。</string>
+  <string name="composer_change_sender_invalid_address">所選位址無法用於傳送</string>
+  <string name="composer_change_sender_unexpected_failure">變更寄件者時發生錯誤。請再試一次。</string>
+  <string name="composer_change_sender_error_refreshing_body">變更寄件者後重新整理內文失敗。簽名可能已過時。</string>
+  <string name="composer_loading_attachments_error">載入附件失敗</string>
+  <string name="composer_attachment_upload_error_retry">部分附件上傳失敗。請重試。</string>
 </resources>

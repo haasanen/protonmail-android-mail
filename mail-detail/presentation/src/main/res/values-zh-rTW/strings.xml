@@ -36,7 +36,7 @@
   </plurals>
   <string name="hide_details">隱藏詳細資料</string>
   <string name="undisclosed_recipients">…</string>
-  <string name="collapsed_header_draft">(Draft)</string>
+  <string name="collapsed_header_draft">(草稿)</string>
   <string name="error_mark_as_read_failed">標記為已讀的操作失敗。請重試。</string>
   <string name="error_mark_as_unread_failed">標記為未讀的操作失敗。請重試。</string>
   <string name="error_star_operation_failed">加上星號操作失敗。請重試。</string>
@@ -52,7 +52,7 @@
   <string name="message_moved_to_selected_destination">訊息已移至 %1$s</string>
   <string name="error_move_message_failed">無法移動郵件。請再試一次。</string>
   <string name="conversation_moved_to_trash">無法將往來對話訊息丟進垃圾桶</string>
-  <string name="conversation_moved_to_inbox">Conversation moved to Inbox</string>
+  <string name="conversation_moved_to_inbox">對話內容已移至收件匣</string>
   <string name="conversation_moved_to_selected_destination">對話內容已移至 %1$s</string>
   <string name="conversation_moved_to_spam">無法將往來對話訊息丟進垃圾郵件</string>
   <string name="conversation_moved_to_archive">往來對話訊息已移至封存檔</string>
@@ -71,14 +71,14 @@
   <string name="message_body_embedded_images_banner_text">已經關閉內嵌影像的自動載入。這可以在設定中變更。</string>
   <string name="message_body_remote_content_banner_text">已經關閉遠端內容的自動載入。這可以在設定中變更。</string>
   <string name="message_body_embedded_and_remote_content_banner_text">已經關閉內嵌影像與遠端內容的自動載入。這可以在設定中變更。</string>
-  <string name="message_phishing_banner_text">This message was flagged as suspicious, either by our system or by you. If you believe it’s safe, mark it as legitimate.</string>
+  <string name="message_phishing_banner_text">這則訊息已被標記為可疑，無論是由我們的系統還是您所標記。如果您認為它是安全的，請將它標記為合法。</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">標記為正常郵件</string>
-  <string name="message_spam_banner_text">This message was flagged as Spam, either by our system or by you.</string>
+  <string name="message_spam_banner_text">此訊息被我們的系統或您標記為垃圾郵件。</string>
   <string name="message_spam_banner_not_spam_button">非垃圾郵件</string>
   <string name="message_blocked_sender_banner_text">此寄件者過去曾遭封鎖。</string>
   <string name="message_blocked_sender_button_text">解除封鎖</string>
   <string name="message_expiration_banner_text">此郵件的有效期限尚餘 %1$s</string>
-  <string name="message_auto_delete_banner_text">This message will be automatically deleted in %1$s</string>
+  <string name="message_auto_delete_banner_text">此郵件將會自動於%1$s刪除</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">您將離開應用程式並導覽到:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">下次無需再詢問</string>
@@ -91,10 +91,10 @@
   <string name="phishing_link_confirmation_dialog_button_go_back">返回(推薦)</string>
   <string name="phishing_link_confirmation_dialog_button_continue">忽略警告並繼續</string>
   <!-- Mark as legitimate confirmation dialog -->
-  <string name="mark_as_legitimate_phishing_dialog_title">Confirm mark as legitimate</string>
-  <string name="mark_as_legitimate_phishing_dialog_message">We apologize. This might have been a mistake from our side. Please confirm if you want to mark this email as legitimate.</string>
-  <string name="mark_as_legitimate_spam_dialog_title">Confirm not Spam</string>
-  <string name="mark_as_legitimate_spam_dialog_message">We apologize. This might have been a mistake from our side. Please confirm this email is not Spam.</string>
+  <string name="mark_as_legitimate_phishing_dialog_title">確認標記為合法</string>
+  <string name="mark_as_legitimate_phishing_dialog_message">不好意思，說不好是我們搞錯了。請確認您是否要將此電子郵件標記為合法的。</string>
+  <string name="mark_as_legitimate_spam_dialog_title">確認不是垃圾郵件</string>
+  <string name="mark_as_legitimate_spam_dialog_message">不好意思，說不好是我們搞錯了。請確認這封電子郵件不是垃圾郵件。</string>
   <!-- Delete message dialog -->
   <string name="message_delete_dialog_title">刪除訊息</string>
   <string name="message_delete_dialog_message">您確定要永久刪除此郵件嗎？</string>
@@ -122,13 +122,13 @@
   <string name="message_details_header_to">收件者</string>
   <string name="message_details_header_cc">副本</string>
   <string name="message_details_header_bcc">密件副本</string>
-  <string name="schedule_message_sent_at_banner_title">This message will be sent</string>
+  <string name="schedule_message_sent_at_banner_title">此訊息將會傳送</string>
   <string name="schedule_message_edit_message_button">編輯訊息</string>
   <string name="schedule_send_tomorrow">明天，於 %1$s</string>
-  <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
-  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
+  <string name="error_cancel_schedule_send_failed">無法取消此訊息的預定傳送時間</string>
+  <string name="offline_error_cancel_schedule_send_failed">無法在離線時取消已排程的訊息</string>
   <string name="message_cancel_schedule_send_dialog_confim_button">編輯草稿</string>
   <string name="message_cancel_schedule_send_dialog_cancel_button">取消</string>
   <string name="message_cancel_schedule_send_dialog_title">編輯與重新排程</string>
-  <string name="message_cancel_schedule_send_dialog_message">This message will be moved to Drafts so you can edit it. You\'ll need to reschedule when it will be sent.</string>
+  <string name="message_cancel_schedule_send_dialog_message">此郵件將被移動至「草稿」，讓您可以繼續編輯。您必須重新安排寄送時間。</string>
 </resources>

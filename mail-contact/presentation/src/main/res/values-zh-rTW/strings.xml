@@ -47,9 +47,9 @@
   <string name="contact_delete_dialog_cancel_button">取消</string>
   <string name="contact_delete_dialog_confirm_button">刪除</string>
   <string name="contact_details_loading_error">載入聯絡人時發生錯誤，請稍後再試</string>
-  <string name="contact_details_edit_contact_content_description">Edit contact</string>
-  <string name="contact_details_delete_contact_content_description">Delete contact</string>
-  <string name="contact_details_avatar_image_content_description">Contact avatar</string>
+  <string name="contact_details_edit_contact_content_description">編輯聯絡人</string>
+  <string name="contact_details_delete_contact_content_description">刪除聯絡人</string>
+  <string name="contact_details_avatar_image_content_description">聯絡人頭像</string>
   <string name="contact_type_email">電子郵件</string>
   <string name="contact_type_phone">電話</string>
   <string name="contact_type_home">住家</string>
@@ -59,9 +59,9 @@
   <string name="contact_type_pager">呼叫器</string>
   <string name="contact_type_address">地址</string>
   <string name="contact_type_text">文字</string>
-  <string name="contact_type_text_phone">Text phone</string>
+  <string name="contact_type_text_phone">文字電話</string>
   <string name="contact_type_video">影片</string>
-  <string name="contact_type_voice">Voice</string>
+  <string name="contact_type_voice">語音</string>
   <string name="contact_property_birthday">生日</string>
   <string name="contact_property_note">備註</string>
   <string name="contact_property_photo">照片</string>
@@ -75,21 +75,21 @@
   <string name="contact_property_gender">性別</string>
   <string name="contact_property_language">語言</string>
   <string name="contact_property_time_zone">時區</string>
-  <string name="contact_gender_female">Female</string>
-  <string name="contact_gender_male">Male</string>
-  <string name="contact_gender_none">None</string>
-  <string name="contact_gender_not_applicable">Not applicable</string>
-  <string name="contact_gender_other">Other</string>
+  <string name="contact_gender_female">女性</string>
+  <string name="contact_gender_male">男</string>
+  <string name="contact_gender_none">無</string>
+  <string name="contact_gender_not_applicable">不適用</string>
+  <string name="contact_gender_other">其它</string>
   <string name="contact_gender_unknown">未知</string>
-  <string name="contact_details_missing_date">Missing date</string>
+  <string name="contact_details_missing_date">遺漏日期</string>
   <string name="contact_details_quick_action_message">郵件訊息</string>
-  <string name="contact_details_quick_action_call">Call</string>
+  <string name="contact_details_quick_action_call">撥打</string>
   <string name="contact_details_quick_action_share">共享</string>
   <string name="contact_details_action_copy_label">複製</string>
   <string name="contact_details_action_message_label">郵件訊息</string>
   <string name="contact_details_action_call_label">撥打</string>
-  <string name="contact_group_details_send_message_action">Send group message</string>
+  <string name="contact_group_details_send_message_action">傳送群組訊息</string>
   <plurals name="contact_group_details_number_of_contacts">
-    <item quantity="other">%1$d contacts</item>
+    <item quantity="other">%1$d 位聯絡人</item>
   </plurals>
 </resources>

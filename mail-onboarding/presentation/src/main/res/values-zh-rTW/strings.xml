@@ -27,17 +27,17 @@
   <string name="onboarding_neat_and_tidy_headline">整齊俐落</string>
   <string name="onboarding_neat_and_tidy_description">資料夾、標籤與顏色等模式，助您創造理想中完美、自訂的收件匣。</string>
   <!--  New Onboarding 1  -->
-  <string name="onboarding_welcome_title">Welcome to the\nnew Proton Mail app!</string>
+  <string name="onboarding_welcome_title">歡迎使用新的\nProton Mail 程式！</string>
   <string name="onboarding_welcome_headline">徹底改變</string>
-  <string name="onboarding_welcome_description">Thank you for joining this limited group of early beta testers. Your feedback is critical for helping us build an even better Proton Mail ready for public release.</string>
+  <string name="onboarding_welcome_description">感謝您加入這個有限的早期體驗版測試人員群組。您的意見反饋對於幫助我們建立一個更棒、準備好公開發布的Proton Mail至關重要。</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Rebuilt to be better and faster</string>
+  <string name="onboarding_rebuilt_title">重新打造，更優更快</string>
   <string name="onboarding_rebuilt_headline">開箱全新收件匣</string>
-  <string name="onboarding_rebuilt_description">The new Proton Mail is faster with a vibrant design and highly-requested features, like offline mode.</string>
+  <string name="onboarding_rebuilt_description">全新的 Proton Mail 速度更快，設計更充滿活力，並具備眾多使用者要求的功能，例如離線模式。</string>
   <!--  New Onboarding 3  -->
-  <string name="onboarding_feedback_title">Thank you for your participation!</string>
+  <string name="onboarding_feedback_title">感謝您的參與！</string>
   <string name="onboarding_feedback_headline">您的意見回饋非常重要</string>
-  <string name="onboarding_feedback_description">We\'ll be rolling out new features in the coming months. Please test the app and tap \"Report a problem\" to let us know how we can keep improving. Your input is invaluable!</string>
+  <string name="onboarding_feedback_description">我們將在未來幾個月內推出新功能。請測試應用程式並輕點「回報問題」，以讓我們知道如何持續改進。您的輸入非常寶貴！</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">下一步</string>
   <string name="onboarding_get_started">開始測試</string>

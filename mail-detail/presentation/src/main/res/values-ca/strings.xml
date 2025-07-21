@@ -73,14 +73,14 @@
   <string name="message_body_embedded_images_banner_text">La càrrega automàtica d\'imatges incrustades està desactivada. Això es pot canviar a les preferències.</string>
   <string name="message_body_remote_content_banner_text">La càrrega automàtica de contingut remot està desactivada. Això es pot canviar a les preferències.</string>
   <string name="message_body_embedded_and_remote_content_banner_text">La càrrega automàtica d\'imatges incrustades i contingut remot està desactivada. Això es pot canviar a les preferències.</string>
-  <string name="message_phishing_banner_text">Aquest missatge es va marcar com a sospitós sigui pel nostre sistema o per vosaltres. Si creieu que és segur, marqueu-lo com a legítim.</string>
+  <string name="message_phishing_banner_text">Aquest missatge es va marcar com a sospitós, pel nostre sistema o per vós. Si creieu que és segur, marqueu-lo com a legítim.</string>
   <string name="message_phishing_banner_mark_as_legitimate_button">Marca com a legítim</string>
   <string name="message_spam_banner_text">Aquest missatge ha estat marcat com a correu brossa, sigui pel nostre sistema o</string>
   <string name="message_spam_banner_not_spam_button">No és brossa</string>
   <string name="message_blocked_sender_banner_text">Aquest remitent ha estat blocat en el passat.</string>
   <string name="message_blocked_sender_button_text">Desbloqueja</string>
   <string name="message_expiration_banner_text">Aquest missatge expirarà en %1$s</string>
-  <string name="message_auto_delete_banner_text">Aquest missatge s\'eliminarà automàticament d\'aquí a %1$s.</string>
+  <string name="message_auto_delete_banner_text">Aquest missatge s\'eliminarà automàticament en %1$s.</string>
   <!-- External link confirmation dialog -->
   <string name="external_link_confirmation_dialog_text">Esteu a punt de deixar l\'aplicació i navegar a:</string>
   <string name="external_link_confirmation_dialog_do_not_ask_again">No tornis a preguntar</string>

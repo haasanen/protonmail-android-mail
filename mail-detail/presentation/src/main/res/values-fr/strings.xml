@@ -38,7 +38,7 @@
   </plurals>
   <string name="hide_details">Masquer les détails</string>
   <string name="undisclosed_recipients">…</string>
-  <string name="collapsed_header_draft">(Brouillon)</string>
+  <string name="collapsed_header_draft">(Brouillons)</string>
   <string name="error_mark_as_read_failed">Le marquage comme lu n\'a pas abouti. Nous vous invitons à réessayer.</string>
   <string name="error_mark_as_unread_failed">Le marquage comme non lu n\'a pas abouti. Nous vous invitons à réessayer.</string>
   <string name="error_star_operation_failed">Le marquage comme favori n\'a pas abouti. Nous vous invitons à réessayer.</string>

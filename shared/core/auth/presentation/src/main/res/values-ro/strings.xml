@@ -112,4 +112,14 @@
   <string name="auth_fido_manage_security_keys">Gestionare chei de securitate</string>
   <string name="auth_fido_add_security_key">Adăugare cheie de securitate</string>
   <string name="auth_fido_security_keys_learn_more">Detalii</string>
+  <plurals name="password_validator_min_length_error">
+    <item quantity="one">Parola trebuie să conțină cel puțin un caracter.</item>
+    <item quantity="few">Parola trebuie să conțină cel puțin %1$s caractere.</item>
+    <item quantity="other">Parola trebuie să conțină cel puțin %1$s de caractere.</item>
+  </plurals>
+  <plurals name="password_validator_min_length_requirement">
+    <item quantity="one">Cel puțin un caracter.</item>
+    <item quantity="few">Cel puțin %1$s caractere.</item>
+    <item quantity="other">Cel puțin %1$s de caractere.</item>
+  </plurals>
 </resources>

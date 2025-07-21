@@ -112,4 +112,16 @@
   <string name="auth_fido_manage_security_keys">Spravovať bezpečnostné kľúče</string>
   <string name="auth_fido_add_security_key">Pridať bezpečnostný kľúč</string>
   <string name="auth_fido_security_keys_learn_more">Zistiť viac</string>
+  <plurals name="password_validator_min_length_error">
+    <item quantity="one">Heslo musí obsahovať aspoň 1 znak</item>
+    <item quantity="few">Heslo musí obsahovať aspoň %1$s znaky</item>
+    <item quantity="many">Heslo musí obsahovať aspoň %1$s znakov</item>
+    <item quantity="other">Heslo musí obsahovať aspoň %1$s znakov</item>
+  </plurals>
+  <plurals name="password_validator_min_length_requirement">
+    <item quantity="one">Aspoň 1 znak</item>
+    <item quantity="few">Aspoň %1$s znaky</item>
+    <item quantity="many">Aspoň %1$s znakov</item>
+    <item quantity="other">Aspoň %1$s znakov</item>
+  </plurals>
 </resources>

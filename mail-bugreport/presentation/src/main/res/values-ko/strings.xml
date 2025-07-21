@@ -20,7 +20,7 @@
   <!-- Report a problem flow -->
   <string name="report_a_problem_title">문제 신고</string>
   <string name="report_a_problem_submit_button">제출</string>
-  <string name="report_a_problem_disclaimer_e2ee">신고는 종단간 암호화되지 않습니다. \n민감한 정보를 포함하지 마세요.</string>
+  <string name="report_a_problem_disclaimer_e2ee">신고는 종단간 암호화되지 않습니다.\n민감한 정보를 포함하지 마세요.</string>
   <string name="report_a_problem_include_errors_title">로그 포함</string>
   <string name="report_a_problem_include_errors_description">로그는 오류로 이어지는 모든 작업을 보여줍니다.\n당사는 로그를 버그 수정에 한해 사용합니다.</string>
   <string name="report_a_problem_summary_title">요약 (필수)</string>

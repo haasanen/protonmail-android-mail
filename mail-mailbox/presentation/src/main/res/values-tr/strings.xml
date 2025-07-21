@@ -84,8 +84,8 @@
   <string name="mailbox_search_placeholder_text">İleti arama</string>
   <string name="mailbox_search_no_results_title">Herhangi bir eşleşme yok</string>
   <string name="mailbox_search_no_results_explanation">Arama sorgunuzu güncelleyebilir ya da temizleyebilirsiniz.</string>
-  <string name="mailbox_action_button_clear_trash">Empty trash</string>
-  <string name="mailbox_action_button_clear_spam">Empty spam</string>
+  <string name="mailbox_action_button_clear_trash">Çöp kutusunu boşalt</string>
+  <string name="mailbox_action_button_clear_spam">İstenmeyen kutusunu boşalt</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Çöp veya istenmeyen kutularında 30 günden uzun süredir duran iletilerin otomatik olarak silinmesi için tarifenizi yükseltin</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Ayrıntılı bilgi alın</string>
   <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Çöp ve istenmeyen kutularında 30 günden fazla kalan iletiler otomatik olarak silinir.</string>
@@ -126,6 +126,6 @@
     <item quantity="other">%d dakika sonra geçerlilik süresi dolacak</item>
   </plurals>
   <string name="expires_in_less_than_a_minute">Bir dakika içinde geçerlilik süresi dolacak</string>
-  <string name="schedule_send_tomorrow">Tomorrow, %1$s</string>
-  <string name="schedule_send_today">Today, %1$s</string>
+  <string name="schedule_send_tomorrow">Yarın, %1$s</string>
+  <string name="schedule_send_today">Bugün, %1$s</string>
 </resources>

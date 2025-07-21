@@ -139,5 +139,5 @@
   <string name="composer_change_sender_unexpected_failure">Med spreminjanjem pošiljatelja je prišlo do napake. Poskusite znova.</string>
   <string name="composer_change_sender_error_refreshing_body">Osvežitev vsebine po spremembi pošiljatelja ni uspela. Morda ni prikazan najnovejši podpis.</string>
   <string name="composer_loading_attachments_error">Neuspešno nalaganje priponk</string>
-  <string name="composer_attachment_upload_error_retry">Some attachments failed uploading. Please, retry.</string>
+  <string name="composer_attachment_upload_error_retry">Nekatere priponke se niso naložile. Poskusite znova.</string>
 </resources>

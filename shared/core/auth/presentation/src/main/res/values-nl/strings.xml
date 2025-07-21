@@ -112,4 +112,12 @@
   <string name="auth_fido_manage_security_keys">Beveiligingssleutels beheren</string>
   <string name="auth_fido_add_security_key">Beveiligingssleutel toevoegen</string>
   <string name="auth_fido_security_keys_learn_more">Meer info</string>
+  <plurals name="password_validator_min_length_error">
+    <item quantity="one">Wachtwoord moet tenminste 1 teken bevatten</item>
+    <item quantity="other">Wachtwoord moet tenminste %1$s tekens bevatten</item>
+  </plurals>
+  <plurals name="password_validator_min_length_requirement">
+    <item quantity="one">Minstens 1 teken</item>
+    <item quantity="other">Minstens %1$s tekens</item>
+  </plurals>
 </resources>

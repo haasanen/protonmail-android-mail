@@ -112,4 +112,16 @@
   <string name="auth_fido_manage_security_keys">Zarządzaj kluczami bezpieczeństwa</string>
   <string name="auth_fido_add_security_key">Dodaj klucz bezpieczeństwa</string>
   <string name="auth_fido_security_keys_learn_more">Dowiedz się więcej</string>
+  <plurals name="password_validator_min_length_error">
+    <item quantity="one">Hasło musi zawierać co najmniej 1 znak</item>
+    <item quantity="few">Hasło musi zawierać co najmniej %1$s znaki</item>
+    <item quantity="many">Hasło musi zawierać co najmniej %1$s znaków</item>
+    <item quantity="other">Hasło musi zawierać co najmniej %1$s znaków</item>
+  </plurals>
+  <plurals name="password_validator_min_length_requirement">
+    <item quantity="one">Minimum 1 znak</item>
+    <item quantity="few">Minimum %1$s znaki</item>
+    <item quantity="many">Minimum %1$s znaków</item>
+    <item quantity="other">Minimum %1$s znaków</item>
+  </plurals>
 </resources>

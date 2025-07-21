@@ -112,4 +112,12 @@
   <string name="auth_fido_manage_security_keys">Hantera säkerhetsnycklar</string>
   <string name="auth_fido_add_security_key">Lägg till säkerhetsnyckel</string>
   <string name="auth_fido_security_keys_learn_more">Lär dig mer</string>
+  <plurals name="password_validator_min_length_error">
+    <item quantity="one">Lösenord måste innehålla minst 1 tecken</item>
+    <item quantity="other">Lösenord måste innehålla minst %1$s tecken</item>
+  </plurals>
+  <plurals name="password_validator_min_length_requirement">
+    <item quantity="one">Minst 1 tecken</item>
+    <item quantity="other">Minst %1$s tecken</item>
+  </plurals>
 </resources>

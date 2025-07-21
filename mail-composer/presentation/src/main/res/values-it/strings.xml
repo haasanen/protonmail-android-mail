@@ -36,7 +36,7 @@
   <string name="composer_error_duplicate_recipient">Destinatari duplicati rimossi</string>
   <string name="composer_error_store_draft_subject">Salvataggio dell\'oggetto della bozza non riuscito</string>
   <string name="composer_error_store_draft_recipients">Salvataggio dei destinatari della bozza non riuscito</string>
-  <string name="composer_error_loading_draft">Caricamento del contenuto della bozza non riuscito. Bozza non modificabile.</string>
+  <string name="composer_error_loading_draft">Caricamento del contenuto della bozza non riuscito. Modifica della bozza non disponibile.</string>
   <string name="composer_add_attachments_content_description">Aggiungi degli allegati</string>
   <string name="composer_add_attachments_bottom_sheet_import_from">Importa da...</string>
   <string name="composer_add_attachments_bottom_sheet_from_photos">Carica dal dispositivo</string>
@@ -137,5 +137,5 @@
   <string name="composer_change_sender_unexpected_failure">Cambio dell\'indirizzo mittente non riuscito</string>
   <string name="composer_change_sender_error_refreshing_body">Aggiornamento del corpo del messaggio non riuscito. Verifica la validità della firma.</string>
   <string name="composer_loading_attachments_error">Caricamento degli allegati non riuscito</string>
-  <string name="composer_attachment_upload_error_retry">Alcuni allegati non sono stati caricati. Riprova.</string>
+  <string name="composer_attachment_upload_error_retry">Caricamento di alcuni allegati non riuscito</string>
 </resources>

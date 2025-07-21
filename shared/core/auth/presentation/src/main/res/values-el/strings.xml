@@ -112,4 +112,12 @@
   <string name="auth_fido_manage_security_keys">Διαχείριση κλειδιών ασφαλείας</string>
   <string name="auth_fido_add_security_key">Προσθήκη κλειδιού ασφαλείας</string>
   <string name="auth_fido_security_keys_learn_more">Μάθετε περισσότερα</string>
+  <plurals name="password_validator_min_length_error">
+    <item quantity="one">Ο κωδικός πρέπει να περιέχει τουλάχιστον 1 χαρακτήρα</item>
+    <item quantity="other">Ο κωδικός πρέπει να περιέχει τουλάχιστον %1$s χαρακτήρες</item>
+  </plurals>
+  <plurals name="password_validator_min_length_requirement">
+    <item quantity="one">Τουλάχιστον 1 χαρακτήρα</item>
+    <item quantity="other">Τουλάχιστον %1$s χαρακτήρες</item>
+  </plurals>
 </resources>

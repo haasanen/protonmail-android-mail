@@ -69,7 +69,7 @@
   <string name="auth_signup_create_password">Creeu la contrasenya</string>
   <string name="auth_signup_password">Contrasenya</string>
   <string name="auth_signup_repeat_password">Repeteix la contrasenya</string>
-  <string name="auth_signup_terms_privacy_conditions_footer">En fer clic a Següent, accepteu els %1$s i %2$s de Proton.</string>
+  <string name="auth_signup_terms_privacy_conditions_footer">En fer clic a següent, accepteu els %1$s i %2$s del Proton.</string>
   <string name="auth_signup_terms_learn_more">Termes i condicions</string>
   <string name="auth_signup_privacy_policy_learn_more">Política de privacitat</string>
   <string name="auth_signup_internal_footnote">Necessiteu una adreça del Proton per a utilitzar el Proton Mail i el Proton Calendar.</string>
@@ -86,7 +86,7 @@
   <string name="auth_signup_recovery_select_country">Selecciona un país</string>
   <string name="auth_signup_phone_placeholder">XXX XX XX XX</string>
   <string name="auth_signup_skip_recovery_title">Voleu ometre el mètode de recuperació?</string>
-  <string name="auth_signup_skip_recovery_description">Un mètode de recuperació us ajudarà a accedir al vostre compte si oblideu la contrasenya o no podeu entrar al compte.</string>
+  <string name="auth_signup_skip_recovery_description">Un mètode de recuperació us ajudarà a accedir al compte si oblideu la contrasenya o no podeu entrar al compte.</string>
   <string name="auth_signup_skip_recovery">Omet</string>
   <string name="auth_signup_set_recovery">Estableix el mètode de recuperació</string>
   <string name="auth_signup_your_account_is_being_setup">S\'està creant el compte…</string>
@@ -112,4 +112,12 @@
   <string name="auth_fido_manage_security_keys">Gestiona les claus de seguretat</string>
   <string name="auth_fido_add_security_key">Afegeix una clau de seguretat</string>
   <string name="auth_fido_security_keys_learn_more">Més informació</string>
+  <plurals name="password_validator_min_length_error">
+    <item quantity="one">La contrasenya ha de contenir com a mínim 1 caràcter</item>
+    <item quantity="other">La contrasenya ha de contenir com a mínim %1$s caràcters</item>
+  </plurals>
+  <plurals name="password_validator_min_length_requirement">
+    <item quantity="one">Com a mínim 1 caràcter</item>
+    <item quantity="other">Com a mínim %1$s caràcters</item>
+  </plurals>
 </resources>

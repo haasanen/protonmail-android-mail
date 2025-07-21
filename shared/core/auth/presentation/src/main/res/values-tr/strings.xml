@@ -39,13 +39,13 @@
   <string name="auth_password_placeholder">Parola</string>
   <string name="auth_login_assistive_text">Lütfen Proton e-posta adresinizi ya da kullanıcı adınızı yazın.</string>
   <string name="auth_account_details">Proton hesabınızın bilgilerini yazın.</string>
-  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problem signing you in. Please try again.</string>
+  <string name="auth_login_error_invalid_action_cannot_unlock_keys">Oturum açılırken sorun çıktı. Lütfen yeniden deneyin.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">İnsan doğrulaması gerekli.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Incorrect username or password. Please try again.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Kullanıcı adı veya parola yanlış. Lütfen yeniden deneyin.</string>
   <string name="auth_second_factor_title">İki adımlı doğrulama</string>
-  <string name="auth_second_factor_subtitle">Your account has several 2FA mechanisms configured. Please pick how you want to confirm your identity.</string>
-  <string name="auth_second_factor_tab_security_key">Security Key</string>
-  <string name="auth_second_factor_tab_otp">One-time Code</string>
+  <string name="auth_second_factor_subtitle">Hesabınızda yapılandırılmış birkaç iki adımlı doğrulama yöntemi var. Lütfen kimliğinizi nasıl doğrulamak istediğinizi seçin.</string>
+  <string name="auth_second_factor_tab_security_key">Güvenlik anahtarı</string>
+  <string name="auth_second_factor_tab_otp">Tek kullanımlık kod</string>
   <string name="auth_second_factor_authenticate">Kimliği doğrula</string>
   <string name="auth_second_factor_totp_input_help">6 rakamlı kodu yazın.</string>
   <string name="auth_second_factor_totp_input_label">İki adımlı doğrulama kodu</string>
@@ -53,8 +53,8 @@
   <string name="auth_second_factor_recovery_label">Kurtarma kodu</string>
   <string name="auth_second_factor_switch_to_recovery">Kurtarma kodu kullan</string>
   <string name="auth_second_factor_switch_to_totp">İki adımlı doğrulama kodu kullanılsın</string>
-  <string name="auth_second_factor_insert_security_key">Present a security key linked to your Proton Account. </string>
-  <string name="auth_second_factor_insert_security_key_link">Learn more</string>
+  <string name="auth_second_factor_insert_security_key">Proton hesabınızla ilişkilendirilmiş güvenlik anahtarını takın. </string>
+  <string name="auth_second_factor_insert_security_key_link">Ayrıntılı bilgi alın</string>
   <string name="auth_two_pass_title">E-posta kutunuzun kilidini açın</string>
   <string name="auth_two_pass_input_label">E-posta kutusu parolası</string>
   <string name="auth_two_pass_unlock">Kilidi aç</string>
@@ -97,19 +97,27 @@
   <string name="auth_signup_validation_password">Parola boş olamaz.</string>
   <string name="auth_signup_validation_passwords_do_not_match">Parola ile onayı aynı değil.</string>
   <string name="auth_signup_validation_password_input_invalid">Yazılan parola geçersiz.</string>
-  <string name="auth_signup_validation_username">Please enter a username</string>
+  <string name="auth_signup_validation_username">Lütfen bir kullanıcı adı yazın</string>
   <string name="auth_signup_validation_email">E-posta adresi boş olamaz.</string>
   <string name="auth_signup_validation_username_input_invalid">Yazılan kullanıcı adı geçersiz.</string>
   <string name="auth_signup_validation_email_input_invalid">Yazılan kullanıcı adı geçersiz.</string>
   <string name="auth_signup_countries_search">Ülke ara</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Kullanıcı kurulamadı.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Adres kurulamadı.</string>
-  <string name="auth_fido_security_keys_error">Error fetching security keys, please try again.</string>
-  <string name="auth_fido_security_keys_title">Security keys</string>
-  <string name="auth_fido_manage_security_keys_info">To manage, add, or remove security keys, please use the Proton web application. %s</string>
-  <string name="auth_fido_security_keys_empty_list">There are no security keys registered to your account. To add a security key use the Proton web application. %s</string>
-  <string name="auth_fido_security_keys_registered">These are the security keys registered to your account.</string>
-  <string name="auth_fido_manage_security_keys">Manage security keys</string>
-  <string name="auth_fido_add_security_key">Add security key</string>
-  <string name="auth_fido_security_keys_learn_more">Learn more</string>
+  <string name="auth_fido_security_keys_error">Güvenlik anahtarları alınırken sorun çıktı. Lütfen yeniden deneyin.</string>
+  <string name="auth_fido_security_keys_title">Güvenlik anahtarları</string>
+  <string name="auth_fido_manage_security_keys_info">Güvenlik anahtarlarını yönetmek, eklemek ya da kaldırmak için lütfen Proton internet uygulamasını kullanın. %s</string>
+  <string name="auth_fido_security_keys_empty_list">Hesabınızda kaydedilmiş bir güvenlik anahtarı yok. Bir güvenlik anahtarı eklemek için Proton internet uygulamasını kullanın. %s</string>
+  <string name="auth_fido_security_keys_registered">Hesabınıza kayıtlı güvenlik anahtarları.</string>
+  <string name="auth_fido_manage_security_keys">Güvenlik anahtarları yönetimi</string>
+  <string name="auth_fido_add_security_key">Güvenlik anahtarı ekle</string>
+  <string name="auth_fido_security_keys_learn_more">Ayrıntılı bilgi alın</string>
+  <plurals name="password_validator_min_length_error">
+    <item quantity="one">Parola en az 1 karakter uzunluğunda olmalıdır</item>
+    <item quantity="other">Parola en az %1$s karakter uzunluğunda olmalıdır</item>
+  </plurals>
+  <plurals name="password_validator_min_length_requirement">
+    <item quantity="one">En az 1 karakter</item>
+    <item quantity="other">En az %1$s karakter</item>
+  </plurals>
 </resources>

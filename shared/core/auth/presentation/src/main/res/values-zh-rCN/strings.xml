@@ -112,4 +112,10 @@
   <string name="auth_fido_manage_security_keys">管理安全密钥</string>
   <string name="auth_fido_add_security_key">添加安全密钥</string>
   <string name="auth_fido_security_keys_learn_more">了解详情</string>
+  <plurals name="password_validator_min_length_error">
+    <item quantity="other">密码必须至少包含%1$s个字符</item>
+  </plurals>
+  <plurals name="password_validator_min_length_requirement">
+    <item quantity="other">至少%1$s个字符</item>
+  </plurals>
 </resources>
