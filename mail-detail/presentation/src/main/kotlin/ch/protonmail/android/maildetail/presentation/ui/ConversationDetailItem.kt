@@ -46,6 +46,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -194,6 +195,8 @@ private fun ColumnScope.ConversationDetailExpandedItem(
     // we are likely scrolling back to the view in the list
     val viewPreviouslyLoaded = remember { cachedWebContentHeight != null }
     val isExpanding = remember { mutableStateOf(!viewPreviouslyLoaded) }
+    val isWebViewLoading = remember { mutableStateOf(true) }
+    val columnHeight = remember { mutableIntStateOf(0) }
 
     // play reveal animation on first load, do not play if we are expanding content or if we are scrolling back to
     // the content.
@@ -240,13 +243,21 @@ private fun ColumnScope.ConversationDetailExpandedItem(
 
         Column(
             // only reveal the content of this card once the webview content has loaded and resizing has finished
-            modifier = Modifier.reveal(
-                itemState = {
-                    if (isExpanding.value) ItemState.Expanding
-                    else if (showLoadingSpinner) ItemState.Loading
-                    else ItemState.Visible
-                }, viewPreviouslyLoaded
-            )
+            modifier = Modifier
+                .reveal(
+                    itemState = {
+                        if (isWebViewLoading.value && viewPreviouslyLoaded) ItemState.ReLoading(
+                            cachedHeight = cachedWebContentHeight ?: 0
+                        )
+                        else if (isExpanding.value) ItemState.Expanding
+                        else if (showLoadingSpinner) ItemState.Loading
+                        else ItemState.Visible
+                    },
+                    snap = viewPreviouslyLoaded
+                )
+                .onSizeChanged {
+                    columnHeight.intValue = it.height
+                }
         ) {
             MessageBanners(
                 messageBannersUiModel = uiModel.messageBannersUiModel,
@@ -285,8 +296,10 @@ private fun ColumnScope.ConversationDetailExpandedItem(
                     onPrint = { actions.onPrint(it) }
                 ),
                 onMessageBodyLoaded = { id: MessageId, i: Int ->
-                    onMessageBodyLoadFinished(id, i)
+                    // now that the webview is loaded send the more recent height so it can be cached
+                    onMessageBodyLoadFinished(id, columnHeight.intValue)
                     isExpanding.value = false
+                    isWebViewLoading.value = false
                 }
             )
         }
@@ -423,18 +436,28 @@ fun Modifier.reveal(itemState: () -> ItemState, snap: Boolean): Modifier {
                 constraints
             )
 
-            val height = when (itemState()) {
+            val height = when (val state = itemState()) {
                 ItemState.Loading -> {
-                    // don't render the view until we are ready
+                    // don't render the view until we are ready, so we don't see the black box of the webview
                     0
                 }
+
+                is ItemState.ReLoading -> {
+                    // when reloading, for example we scroll back to this view then we don't want to show a loading
+                    // spinner, but we don't want the view to jump as it scrolls in, therefore use the cached height
+                    // that was saved by the parent view
+                    state.cachedHeight
+                }
+
                 ItemState.Expanding -> {
-                    // when expanding use the cached height until the view is loaded to prevent jumping
+                    // when expanding use the last known height until the view is loaded to prevent jumping
+                    // We will ignore placeable requested heights until expanding is finished
                     lastHeight
                 }
+
                 ItemState.Visible -> {
                     // cache this height for later if we need to maintain a sensible height during resizing
-                    // like when we click on the dots to expand
+                    // like when we click on the dots to expand.
                     lastHeight = placeable.height
                     placeable.height
                 }
@@ -449,8 +472,11 @@ fun Modifier.reveal(itemState: () -> ItemState, snap: Boolean): Modifier {
         }
 }
 
-enum class ItemState {
-    Loading, Visible, Expanding
+sealed class ItemState {
+    object Loading : ItemState()
+    object Visible : ItemState()
+    object Expanding : ItemState()
+    data class ReLoading(val cachedHeight: Int = 0) : ItemState()
 }
 
 object ConversationDetailItemTestTags {
