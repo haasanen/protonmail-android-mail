@@ -59,6 +59,7 @@ internal class CleanupLegacyNotificationChannelsTest {
             notificationManagerCompat.deleteNotificationChannel(V5_CHANNEL_ACCOUNT_ID)
             notificationManagerCompat.deleteNotificationChannel(V5_CHANNEL_ATTACHMENTS_ID)
             notificationManagerCompat.deleteNotificationChannel(V5_CHANNEL_EMAIL_ID)
+            notificationManagerCompat.deleteNotificationChannel(V6_CHANNEL_ACCOUNT_ID)
             notificationManagerCompat.deleteNotificationChannel(V6_CHANNEL_ATTACHMENTS_ID)
             notificationManagerCompat.deleteNotificationChannel(V6_CHANNEL_EMAIL_CHANNEL_ID)
             notificationManagerCompat.deleteNotificationChannel(V6_CHANNEL_LOGIN_CHANNEL_ID)
@@ -73,6 +74,7 @@ internal class CleanupLegacyNotificationChannelsTest {
         const val V5_CHANNEL_ACCOUNT_ID = "account"
         const val V5_CHANNEL_ATTACHMENTS_ID = "attachments"
         const val V5_CHANNEL_EMAIL_ID = "emails"
+        const val V6_CHANNEL_ACCOUNT_ID = "me.proton.core.notification.default"
         const val V6_CHANNEL_ATTACHMENTS_ID = "attachment_channel_id"
         const val V6_CHANNEL_EMAIL_CHANNEL_ID = "email_channel_id"
         const val V6_CHANNEL_LOGIN_CHANNEL_ID = "login_channel_id"

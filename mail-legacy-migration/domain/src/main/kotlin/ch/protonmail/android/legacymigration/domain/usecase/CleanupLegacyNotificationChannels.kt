@@ -42,9 +42,10 @@ class CleanupLegacyNotificationChannels @Inject constructor(
         const val V5_CHANNEL_ACCOUNT_ID = "account"
         const val V5_CHANNEL_ATTACHMENTS_ID = "attachments"
         const val V5_CHANNEL_EMAIL_ID = "emails"
+        const val V6_CHANNEL_ACCOUNT_ID = "me.proton.core.notification.default"
         const val V6_CHANNEL_ATTACHMENTS_ID = "attachment_channel_id"
-        const val V6_CHANNEL_EMAIL_CHANNEL_ID = "email_channel_id"
-        const val V6_CHANNEL_LOGIN_CHANNEL_ID = "login_channel_id"
+        const val V6_CHANNEL_EMAIL_ID = "email_channel_id"
+        const val V6_CHANNEL_LOGIN_ID = "login_channel_id"
 
         val v5ChannelIds = listOf(
             V5_CHANNEL_EMAIL_ID,
@@ -54,9 +55,10 @@ class CleanupLegacyNotificationChannels @Inject constructor(
         )
 
         val v6ChannelIds = listOf(
+            V6_CHANNEL_ACCOUNT_ID,
             V6_CHANNEL_ATTACHMENTS_ID,
-            V6_CHANNEL_EMAIL_CHANNEL_ID,
-            V6_CHANNEL_LOGIN_CHANNEL_ID
+            V6_CHANNEL_EMAIL_ID,
+            V6_CHANNEL_LOGIN_ID
         )
     }
 }
