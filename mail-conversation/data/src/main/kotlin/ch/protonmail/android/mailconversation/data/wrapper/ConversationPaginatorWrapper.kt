@@ -25,7 +25,7 @@ import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import uniffi.proton_mail_uniffi.ConversationScroller
 import uniffi.proton_mail_uniffi.ConversationScrollerFetchMoreResult
-import uniffi.proton_mail_uniffi.ConversationScrollerRefreshResult
+import uniffi.proton_mail_uniffi.ConversationScrollerForceRefreshResult
 
 class ConversationPaginatorWrapper(private val rustPaginator: ConversationScroller) {
 
@@ -34,9 +34,9 @@ class ConversationPaginatorWrapper(private val rustPaginator: ConversationScroll
         is ConversationScrollerFetchMoreResult.Ok -> Unit.right()
     }
 
-    suspend fun reload(): Either<PaginationError, Unit> = when (val result = rustPaginator.refresh()) {
-        is ConversationScrollerRefreshResult.Error -> result.v1.toPaginationError().left()
-        is ConversationScrollerRefreshResult.Ok -> Unit.right()
+    suspend fun reload(): Either<PaginationError, Unit> = when (val result = rustPaginator.forceRefresh()) {
+        is ConversationScrollerForceRefreshResult.Error -> result.v1.toPaginationError().left()
+        is ConversationScrollerForceRefreshResult.Ok -> Unit.right()
     }
 
     fun disconnect() {
