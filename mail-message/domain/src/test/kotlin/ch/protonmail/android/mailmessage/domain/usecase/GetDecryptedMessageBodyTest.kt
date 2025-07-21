@@ -34,6 +34,7 @@ import ch.protonmail.android.testdata.message.MessageBodyTestData
 import ch.protonmail.android.testdata.message.MessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
@@ -50,8 +51,10 @@ class GetDecryptedMessageBodyTest(
     private val messageId = MessageId("messageId")
     private val messageRepository = mockk<MessageRepository>()
     private val messageBodyRepository = mockk<MessageBodyRepository>()
+    private val injectViewPortMetaTagIntoMessageBody = mockk<InjectViewPortMetaTagIntoMessageBody>()
 
     private val getDecryptedMessageBody = GetDecryptedMessageBody(
+        injectViewPortMetaTagIntoMessageBody,
         messageRepository,
         messageBodyRepository
     )
@@ -88,6 +91,9 @@ class GetDecryptedMessageBodyTest(
                 MessageBodyTransformations.MessageDetailsDefaults
             )
         } returns testInput.messageBody.right()
+        every {
+            injectViewPortMetaTagIntoMessageBody(testInput.messageBody.body)
+        } returns testInput.messageBody.body
 
         // When
         val actual = getDecryptedMessageBody(UserIdTestData.userId, messageId)

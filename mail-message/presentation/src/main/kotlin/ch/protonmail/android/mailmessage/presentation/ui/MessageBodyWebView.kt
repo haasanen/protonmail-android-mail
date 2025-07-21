@@ -232,6 +232,7 @@ fun MessageBodyWebView(
                     this.settings.allowContentAccess = false
                     this.settings.allowFileAccess = false
                     this.settings.loadWithOverviewMode = true
+                    this.settings.useWideViewPort = true
                     this.isVerticalScrollBarEnabled = false
                     this.layoutParams = initialLayoutParams
                     this.webViewClient = client

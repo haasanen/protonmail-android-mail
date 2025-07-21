@@ -35,6 +35,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class GetDecryptedMessageBody @Inject constructor(
+    private val injectViewPortMetaTagIntoMessageBody: InjectViewPortMetaTagIntoMessageBody,
     private val messageRepository: MessageRepository,
     private val messageBodyRepository: MessageBodyRepository
 ) {
@@ -56,9 +57,12 @@ class GetDecryptedMessageBody @Inject constructor(
                         else -> messageMetadata.attachments
                     }
 
+                    // Handle zoomed in newsletters
+                    val transformedMessageBody = injectViewPortMetaTagIntoMessageBody(messageBody.body)
+
                     DecryptedMessageBody(
                         messageId = messageId,
-                        value = messageBody.body,
+                        value = transformedMessageBody,
                         isUnread = messageMetadata.isUnread,
                         mimeType = messageBody.mimeType,
                         hasQuotedText = messageBody.hasQuotedText,
