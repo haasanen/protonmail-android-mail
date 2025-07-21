@@ -181,7 +181,7 @@ fun MessageBodyWebView(
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                Timber.d("webweirdooo: onPageFinished")
+                Timber.d("message-webview: onPageFinished")
                 contentLoaded.value = true
             }
         }
@@ -197,7 +197,7 @@ fun MessageBodyWebView(
                 .timeout(WEB_PAGE_CONTENT_LOAD_WAIT_LIMIT.milliseconds)
                 .catch { e ->
                     Timber.d(
-                        "webweirdooo: load finished was not called and exceeded maximum wait time, forcing" +
+                        "message-webview: load finished was not called and exceeded maximum wait time, forcing" +
                             "onMessageBodyLoaded to be called with latest height $lastMeasuredWebViewHeight"
                     )
                     onMessageBodyLoaded(messageId, lastMeasuredWebViewHeight)
@@ -263,7 +263,7 @@ fun MessageBodyWebView(
                 .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
                 .fillMaxWidth()
                 .onSizeChanged {
-                    Timber.d("webweirdooo: size changed ${it.height}")
+                    Timber.d("message-webview: size changed ${it.height}")
                     lastMeasuredWebViewHeight = it.height
                 }
                 .wrapContentSize(),
