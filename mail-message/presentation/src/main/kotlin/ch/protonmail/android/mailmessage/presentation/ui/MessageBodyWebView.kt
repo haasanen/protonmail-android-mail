@@ -86,14 +86,17 @@ import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.webview.MessageBodyWebViewOperation
 import ch.protonmail.android.mailmessage.presentation.viewmodel.MessageBodyWebViewViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.timeout
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.take
 import timber.log.Timber
-import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(FlowPreview::class)
 @Composable
@@ -194,15 +197,8 @@ fun MessageBodyWebView(
                 .debounce(timeoutMillis = WEB_PAGE_CONTENT_LOAD_TIMEOUT),
             // also listen for changes in content loaded, there can be multiple calls to this
             snapshotFlow { contentLoaded.value }
-                .timeout(WEB_PAGE_CONTENT_LOAD_WAIT_LIMIT.milliseconds)
-                .catch { e ->
-                    Timber.d(
-                        "message-webview: load finished was not called and exceeded maximum wait time, forcing" +
-                            "onMessageBodyLoaded to be called with latest height $lastMeasuredWebViewHeight"
-                    )
-                    onMessageBodyLoaded(messageId, lastMeasuredWebViewHeight)
-                }
                 .filter { it }
+                .withDefaultIfTimeout(WEB_PAGE_CONTENT_LOAD_WAIT_LIMIT, true)
 
         ) { measuredHeight, isLoaded ->
             // in order to get the settled height after the webpage has loaded
@@ -402,6 +398,19 @@ object MessageBodyWebView {
         val onPrint: (MessageId) -> Unit
     )
 }
+
+@OptIn(FlowPreview::class)
+fun <T> Flow<T>.withDefaultIfTimeout(timeoutMs: Long, valueIfTimeout: T): Flow<T> = merge(
+    this,
+    flow {
+        delay(timeoutMs)
+        emit(valueIfTimeout)
+    }.map {
+        Timber.d("message-webview: load finished was not called and exceeded maximum wait time")
+        it
+    }
+).take(1)
+
 
 object MessageBodyWebViewTestTags {
 
