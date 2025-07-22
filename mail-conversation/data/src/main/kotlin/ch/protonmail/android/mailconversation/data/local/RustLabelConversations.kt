@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
+import uniffi.proton_mail_uniffi.LabelAsOutput
 import uniffi.proton_mail_uniffi.LabelConversationsAsResult
 import uniffi.proton_mail_uniffi.labelConversationsAs
 import javax.inject.Inject
@@ -38,7 +39,7 @@ class RustLabelConversations @Inject constructor() {
         selectedLabelIds: List<LocalLabelId>,
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
-    ): Either<DataError, Boolean> = when (
+    ): Either<DataError, LabelAsOutput> = when (
         val result = labelConversationsAs(
             mailbox.getRustMailbox(),
             conversationIds,

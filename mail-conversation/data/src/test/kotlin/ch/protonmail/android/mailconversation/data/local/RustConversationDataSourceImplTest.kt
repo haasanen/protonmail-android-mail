@@ -56,6 +56,7 @@ import uniffi.proton_mail_uniffi.CustomFolderAction
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.LabelAsAction
+import uniffi.proton_mail_uniffi.LabelAsOutput
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MovableSystemFolderAction
@@ -303,10 +304,11 @@ class RustConversationDataSourceImplTest {
         val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))
         val shouldArchive = false
         val mailbox = mockk<MailboxWrapper>()
+        val labelAsOutput = mockk<LabelAsOutput>()
 
         coEvery {
             rustLabelConversations(mailbox, conversationIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
-        } returns true.right()
+        } returns labelAsOutput.right()
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
 
         // When
