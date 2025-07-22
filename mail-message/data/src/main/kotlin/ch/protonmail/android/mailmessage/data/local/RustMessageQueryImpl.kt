@@ -22,10 +22,10 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.data.model.PagingEvent
-import ch.protonmail.android.mailpagination.domain.cache.PagingCacheWithInvalidationFilter
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
+import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filterIsInstance
@@ -41,7 +41,7 @@ import javax.inject.Inject
 class RustMessageQueryImpl @Inject constructor(
     private val messagePaginatorManager: MessagePaginatorManager,
     @MessageRustCoroutineScope private val coroutineScope: CoroutineScope,
-    private val cacheWithInvalidationFilter: PagingCacheWithInvalidationFilter<LocalMessageMetadata>
+    private val invalidationRepository: PageInvalidationRepository
 ) : RustMessageQuery {
 
     private val pagingEvents = MutableSharedFlow<PagingEvent<Message>>()
@@ -80,7 +80,6 @@ class RustMessageQueryImpl @Inject constructor(
 
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata> {
         val paginator = messagePaginatorManager.getOrCreatePaginator(userId, pageKey, messagesUpdatedCallback) {
-            cacheWithInvalidationFilter.reset()
         }.getOrNull()
 
         Timber.v("rust-message: Paging: querying ${pageKey.pageToLoad.name} page for messages")
@@ -110,7 +109,7 @@ class RustMessageQueryImpl @Inject constructor(
 
     private fun invalidateLoadedItems() {
         coroutineScope.launch {
-            cacheWithInvalidationFilter.submitInvalidation(PageInvalidationEvent.MessagesInvalidated)
+            invalidationRepository.submit(PageInvalidationEvent.MessagesInvalidated)
         }
     }
 

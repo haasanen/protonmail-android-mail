@@ -1,17 +1,16 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import arrow.core.right
-import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.mailpagination.domain.cache.PagingCacheWithInvalidationFilter
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
+import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -42,16 +41,14 @@ class RustConversationsQueryImplTest {
 
     private val createRustConversationPaginator = mockk<CreateRustConversationPaginator>()
     private val userSessionRepository = mockk<UserSessionRepository>()
-    private val cacheWithInvalidationFilter = mockk<PagingCacheWithInvalidationFilter<LocalConversation>> {
-        coEvery { reset() } just Runs
-    }
+    private val invalidationRepository = mockk<PageInvalidationRepository>()
 
 
     private val rustConversationsQuery = RustConversationsQueryImpl(
         userSessionRepository,
         createRustConversationPaginator,
         CoroutineScope(mainDispatcherRule.testDispatcher),
-        cacheWithInvalidationFilter
+        invalidationRepository
     )
 
     @Test
@@ -353,7 +350,7 @@ class RustConversationsQueryImplTest {
         } returns paginator.right()
 
         coEvery {
-            cacheWithInvalidationFilter.submitInvalidation(PageInvalidationEvent.ConversationsInvalidated)
+            invalidationRepository.submit(PageInvalidationEvent.ConversationsInvalidated)
         } just Runs
 
         // When
@@ -361,7 +358,7 @@ class RustConversationsQueryImplTest {
         callbackSlot.captured.onUpdate(ConversationScrollerUpdate.ReplaceBefore(2uL, firstPage))
 
         // Then
-        coVerify { cacheWithInvalidationFilter.submitInvalidation(PageInvalidationEvent.ConversationsInvalidated) }
+        coVerify { invalidationRepository.submit(PageInvalidationEvent.ConversationsInvalidated) }
     }
 
     @Test
@@ -395,7 +392,7 @@ class RustConversationsQueryImplTest {
         } returns paginator.right()
 
         coEvery {
-            cacheWithInvalidationFilter.submitInvalidation(PageInvalidationEvent.ConversationsInvalidated)
+            invalidationRepository.submit(PageInvalidationEvent.ConversationsInvalidated)
         } just Runs
 
         // When
@@ -403,7 +400,7 @@ class RustConversationsQueryImplTest {
         callbackSlot.captured.onUpdate(ConversationScrollerUpdate.ReplaceFrom(2uL, firstPage))
 
         // Then
-        coVerify { cacheWithInvalidationFilter.submitInvalidation(PageInvalidationEvent.ConversationsInvalidated) }
+        coVerify { invalidationRepository.submit(PageInvalidationEvent.ConversationsInvalidated) }
     }
 
 }

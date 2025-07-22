@@ -26,11 +26,11 @@ import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.data.model.PagingEvent
-import ch.protonmail.android.mailpagination.domain.cache.PagingCacheWithInvalidationFilter
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
+import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.CoroutineScope
@@ -51,7 +51,7 @@ class RustConversationsQueryImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val createRustConversationPaginator: CreateRustConversationPaginator,
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope,
-    private val cacheWithInvalidationFilter: PagingCacheWithInvalidationFilter<LocalConversation>
+    private val invalidationRepository: PageInvalidationRepository
 ) : RustConversationsQuery {
 
     private var paginatorState: PaginatorState? = null
@@ -106,7 +106,6 @@ class RustConversationsQueryImpl @Inject constructor(
         paginatorMutex.withLock {
             if (shouldInitPaginator(pageDescriptor, pageKey)) {
                 initPaginator(pageDescriptor, session)
-                cacheWithInvalidationFilter.reset()
             }
         }
 
@@ -166,9 +165,7 @@ class RustConversationsQueryImpl @Inject constructor(
 
     private fun invalidateLoadedItems() {
         coroutineScope.launch {
-            cacheWithInvalidationFilter.submitInvalidation(
-                pageInvalidationEvent = PageInvalidationEvent.ConversationsInvalidated
-            )
+            invalidationRepository.submit(PageInvalidationEvent.ConversationsInvalidated)
         }
     }
 

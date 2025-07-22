@@ -20,15 +20,14 @@ package ch.protonmail.android.mailmessage.data.local
 
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxMessagePaginatorWrapper
-import ch.protonmail.android.mailpagination.domain.cache.PagingCacheWithInvalidationFilter
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
+import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -63,14 +62,12 @@ class RustMessageQueryImplTest {
     private val messagePaginator: MailboxMessagePaginatorWrapper = mockk()
 
     private val messagePaginatorManager = mockk<MessagePaginatorManager>()
-    private val cacheWithInvalidationFilter = mockk<PagingCacheWithInvalidationFilter<LocalMessageMetadata>> {
-        coEvery { reset() } just Runs
-    }
+    private val invalidationRepository = mockk<PageInvalidationRepository>()
 
     private val rustMessageQuery = RustMessageQueryImpl(
         messagePaginatorManager,
         CoroutineScope(mainDispatcherRule.testDispatcher),
-        cacheWithInvalidationFilter
+        invalidationRepository
     )
 
     @Test
@@ -200,7 +197,6 @@ class RustMessageQueryImplTest {
     fun `submits invalidation when onUpdate callback is fired with ReplaceBefore event`() = runTest {
         // Given
         val event = PageInvalidationEvent.MessagesInvalidated
-        val firstPage = listOf(LocalMessageTestData.AugWeatherForecast)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
@@ -223,8 +219,7 @@ class RustMessageQueryImplTest {
             )
         } returns paginator.right()
 
-        coEvery { cacheWithInvalidationFilter.submitInvalidation(event) } just Runs
-        coEvery { cacheWithInvalidationFilter.replaceData(firstPage, true) } just Runs
+        coEvery { invalidationRepository.submit(event) } just Runs
 
         // When
         rustMessageQuery.getMessages(userId, pageKey)
@@ -233,6 +228,6 @@ class RustMessageQueryImplTest {
         advanceUntilIdle()
 
         // Then
-        coVerify { cacheWithInvalidationFilter.submitInvalidation(event) }
+        coVerify { invalidationRepository.submit(event) }
     }
 }
