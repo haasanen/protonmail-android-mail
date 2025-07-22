@@ -53,6 +53,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -877,7 +878,7 @@ private fun MessagesContent(
 
     // The webview for the message that we will scroll to has loaded
     // this is important as the listview will need its final height
-    var isScrollToMessageWebViewLoaded by remember { mutableStateOf(false) }
+    var isScrollToMessageWebViewLoaded by rememberSaveable { mutableStateOf(false) }
     val viewHasFinishedScrollingAndMeasuring = remember {
         derivedStateOf {
             itemsHeight.isNotEmpty() &&
@@ -886,7 +887,7 @@ private fun MessagesContent(
         }
     }
     val headerOverlapHeightPx = MailDimens.ConversationCollapseHeaderOverlapHeight.dpToPx()
-    var finishedResizingOperations by remember { mutableStateOf(false) }
+    var finishedResizingOperations by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(listState) {
         snapshotFlow { viewHasFinishedScrollingAndMeasuring.value }
             .filter { it }

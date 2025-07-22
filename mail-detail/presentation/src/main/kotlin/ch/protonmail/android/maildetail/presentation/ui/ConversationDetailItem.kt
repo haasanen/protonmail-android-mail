@@ -39,7 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -193,10 +193,10 @@ private fun ColumnScope.ConversationDetailExpandedItem(
     finishedResizing: Boolean
 ) {
     // we are likely scrolling back to the view in the list
-    val viewPreviouslyLoaded = remember { cachedWebContentHeight != null }
-    val isExpanding = remember { mutableStateOf(!viewPreviouslyLoaded) }
-    val isWebViewLoading = remember { mutableStateOf(true) }
-    val columnHeight = remember { mutableIntStateOf(0) }
+    val viewPreviouslyLoaded = rememberSaveable { cachedWebContentHeight != null }
+    val isExpanding = rememberSaveable { mutableStateOf(!viewPreviouslyLoaded) }
+    val isWebViewLoading = rememberSaveable { mutableStateOf(true) }
+    val columnHeight = rememberSaveable { mutableIntStateOf(0) }
 
     // play reveal animation on first load, do not play if we are expanding content or if we are scrolling back to
     // the content.
@@ -418,7 +418,7 @@ fun Modifier.show(isVisible: Boolean, shouldAnimate: Boolean): Modifier {
 
 @Composable
 fun Modifier.reveal(itemState: () -> ItemState, snap: Boolean): Modifier {
-    var lastHeight by remember { mutableIntStateOf(0) }
+    var lastHeight by rememberSaveable { mutableIntStateOf(0) }
     return this
         .clipToBounds()
         .let {
