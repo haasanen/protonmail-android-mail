@@ -658,6 +658,13 @@ fun Home(
                             onShowErrorSnackbar = {
                                 showErrorSnackbar(it)
                             },
+                            onSendGroupMessage = {
+                                navController.navigate(
+                                    Screen.MessageActionComposer(
+                                        DraftAction.ComposeToAddresses(it)
+                                    )
+                                )
+                            },
                             showFeatureMissingSnackbar = {
                                 showFeatureMissingSnackbar()
                             }

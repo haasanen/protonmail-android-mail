@@ -315,6 +315,7 @@ internal fun NavGraphBuilder.addContactSearch(
 internal fun NavGraphBuilder.addContactGroupDetails(
     navController: NavHostController,
     onShowErrorSnackbar: (String) -> Unit,
+    onSendGroupMessage: (List<String>) -> Unit,
     showFeatureMissingSnackbar: () -> Unit
 ) {
     composable(route = Destination.Screen.ContactGroupDetails.route) {
@@ -322,6 +323,7 @@ internal fun NavGraphBuilder.addContactGroupDetails(
             actions = ContactGroupDetailsScreen.Actions(
                 onBack = { navController.navigateBack() },
                 onShowErrorSnackbar = onShowErrorSnackbar,
+                onSendGroupMessage = onSendGroupMessage,
                 showFeatureMissingSnackbar = showFeatureMissingSnackbar
             )
         )

@@ -93,6 +93,7 @@ private fun ContactGroupDetailsScreen(
         when (state) {
             is ContactGroupDetailsState.Data -> ContactGroupDetails(
                 uiModel = state.uiModel,
+                actions = actions,
                 modifier = Modifier.padding(it)
             )
             is ContactGroupDetailsState.Error -> ContactDetailsError(
@@ -107,7 +108,11 @@ private fun ContactGroupDetailsScreen(
 }
 
 @Composable
-private fun ContactGroupDetails(uiModel: ContactGroupDetailsUiModel, modifier: Modifier = Modifier) {
+private fun ContactGroupDetails(
+    uiModel: ContactGroupDetailsUiModel,
+    actions: ContactGroupDetailsScreen.Actions,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -126,7 +131,10 @@ private fun ContactGroupDetails(uiModel: ContactGroupDetailsUiModel, modifier: M
         )
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
 
-        SendGroupMessageAction(memberCount = uiModel.memberCount, onClick = {})
+        SendGroupMessageAction(
+            memberCount = uiModel.memberCount,
+            onClick = { actions.onSendGroupMessage(uiModel.members.map { it.emailAddress }) }
+        )
 
         Column(
             modifier = Modifier
@@ -163,6 +171,7 @@ private fun SendGroupMessageAction(
             )
             .clip(ProtonTheme.shapes.extraLarge)
             .clickable(
+                enabled = memberCount > 0,
                 role = Role.Button,
                 onClick = onClick
             )
@@ -187,7 +196,8 @@ private fun SendGroupMessageAction(
             Text(
                 text = pluralStringResource(
                     id = R.plurals.contact_group_details_number_of_contacts,
-                    count = memberCount
+                    count = memberCount,
+                    memberCount
                 ),
                 style = ProtonTheme.typography.bodyMedium.copy(color = ProtonTheme.colors.textHint)
             )
@@ -245,6 +255,7 @@ fun ContactGroupDetailsScreenPreview() {
         actions = ContactGroupDetailsScreen.Actions(
             onBack = {},
             onShowErrorSnackbar = {},
+            onSendGroupMessage = {},
             showFeatureMissingSnackbar = {}
         )
     )
@@ -256,6 +267,7 @@ object ContactGroupDetailsScreen {
     data class Actions(
         val onBack: () -> Unit,
         val onShowErrorSnackbar: (String) -> Unit,
+        val onSendGroupMessage: (List<String>) -> Unit,
         val showFeatureMissingSnackbar: () -> Unit
     )
 }
