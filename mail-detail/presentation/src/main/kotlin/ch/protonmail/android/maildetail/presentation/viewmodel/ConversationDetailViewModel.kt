@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.viewmodel
 
 import java.util.concurrent.CopyOnWriteArrayList
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -63,6 +64,7 @@ import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.mapper.MessageIdUiModelMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
@@ -86,6 +88,8 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
+import ch.protonmail.android.maildetail.presentation.usecase.print.PrintConfiguration
+import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -194,7 +198,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val getMessagesInSameExclusiveLocation: GetMessagesInSameExclusiveLocation,
     private val markMessageAsLegitimate: MarkMessageAsLegitimate,
     private val unblockSender: UnblockSender,
-    private val cancelScheduleSendMessage: CancelScheduleSendMessage
+    private val cancelScheduleSendMessage: CancelScheduleSendMessage,
+    private val printMessage: PrintMessage
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -353,6 +358,38 @@ class ConversationDetailViewModel @Inject constructor(
 
             is ConversationDetailViewAction.UnblockSender -> handleUnblockSender(action.messageId, action.email)
             is ConversationDetailViewAction.EditScheduleSendMessageConfirmed -> handleEditScheduleSendMessage(action)
+            is ConversationDetailViewAction.PrintMessage -> handlePrintMessage(action.context, action.messageId)
+        }
+    }
+
+    private fun handlePrintMessage(context: Context, messageId: MessageId) {
+        val conversationState = state.value.conversationState
+        val messagesState = state.value.messagesState
+
+        viewModelScope.launch {
+            if (
+                conversationState is ConversationDetailMetadataState.Data &&
+                messagesState is ConversationDetailsMessagesState.Data
+            ) {
+                messagesState.messages.find { it.messageId.id == messageId.id }?.let {
+                    if (it is ConversationDetailMessageUiModel.Expanded) {
+                        printMessage(
+                            context = context,
+                            subject = conversationState.conversationUiModel.subject,
+                            messageHeader = it.messageDetailHeaderUiModel,
+                            messageBody = it.messageBodyUiModel,
+                            loadEmbeddedImage = this@ConversationDetailViewModel::loadEmbeddedImage,
+                            printConfiguration = PrintConfiguration(
+                                showRemoteContent = !it.messageBodyUiModel.shouldShowRemoteContentBanner,
+                                showEmbeddedImages = !it.messageBodyUiModel.shouldShowEmbeddedImagesBanner
+                            )
+                        )
+                    } else {
+                        Timber.e("Can't print a message that is not expanded")
+                    }
+                    emitNewStateFrom(ConversationDetailViewAction.DismissBottomSheet)
+                }
+            }
         }
     }
 

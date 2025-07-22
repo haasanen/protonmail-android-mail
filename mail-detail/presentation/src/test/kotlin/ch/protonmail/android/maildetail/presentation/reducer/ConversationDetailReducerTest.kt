@@ -278,7 +278,9 @@ class ConversationDetailReducerTest(
             ConversationDetailViewAction.EditScheduleSendMessageRequested(messageId)
                 affects listOf(EditScheduleSendDialog),
             ConversationDetailViewAction.EditScheduleSendMessageConfirmed(messageId)
-                affects listOf(EditScheduleSendDialog, Messages)
+                affects listOf(EditScheduleSendDialog, Messages),
+            ConversationDetailViewAction.PrintMessage(mockk(), MessageId(messageId.id))
+                affects listOf(BottomSheet)
         )
 
         val events = listOf(

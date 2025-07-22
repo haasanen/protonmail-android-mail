@@ -105,6 +105,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteSta
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Collapsed
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanded
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanding
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ExpandMessage
@@ -130,6 +131,8 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
+import ch.protonmail.android.maildetail.presentation.usecase.print.PrintConfiguration
+import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
@@ -183,8 +186,10 @@ import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.runs
 import io.mockk.spyk
 import io.mockk.unmockkStatic
 import io.mockk.verify
@@ -352,6 +357,8 @@ class ConversationDetailViewModelIntegrationTest {
         every { this@mockk.invoke() } returns Locale.ITALIAN
     }
     private val formatScheduleSendTime = FormatScheduleSendTime(GetLocalisedCalendar(getAppLocale), getAppLocale)
+
+    private val printMessage = mockk<PrintMessage>()
 
     private val mailLabelTextMapper = mockk<MailLabelTextMapper> {
         every { this@mockk.mapToString(MailLabelText.TextString("Spam")) } returns "Spam"
@@ -2172,6 +2179,78 @@ class ConversationDetailViewModelIntegrationTest {
         }
     }
 
+    @Test
+    fun `should call print message for the given messageId`() = runTest {
+        // Given
+        val messages = nonEmptyListOf(
+            ConversationDetailMessageUiModelSample.invoiceExpandedWithAttachments(3)
+        )
+        val messageId = MessageId(messages.first().messageId.id)
+        every { printMessage(any(), any(), any(), any(), any(), any()) } just runs
+
+        coEvery { getDecryptedMessageBody.invoke(userId, any()) } returns DecryptedMessageBody(
+            messageId = messageId,
+            value = EmailBodyTestSamples.BodyWithoutQuotes,
+            mimeType = MimeType.Html,
+            isUnread = false,
+            hasQuotedText = false,
+            banners = emptyList(),
+            attachments = listOf(
+                AttachmentMetadataSamples.Document,
+                AttachmentMetadataSamples.DocumentWithReallyLongFileName,
+                AttachmentMetadataSamples.Invoice,
+                AttachmentMetadataSamples.Image
+            )
+        ).right()
+
+        val viewModel = buildConversationDetailViewModel()
+        viewModel.state.test {
+            skipItems(3)
+
+            // When
+            val newState = awaitItem().messagesState as ConversationDetailsMessagesState.Data
+
+            // Then
+            val collapsedMessage = newState.messages.first { it.messageId == messages.first().messageId }
+            assertIs<Collapsed>(collapsedMessage)
+
+            // When
+            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(messageId)))
+            advanceUntilIdle()
+
+            // Then
+            val newExpandedState = awaitItem().messagesState as ConversationDetailsMessagesState.Data
+            val expandedMessage = newExpandedState.messages.first { it.messageId == messages.first().messageId }
+            assertIs<Expanded>(expandedMessage)
+            assertEquals(
+                messages.first().messageBodyUiModel.attachments,
+                expandedMessage.messageBodyUiModel.attachments
+            )
+            assertFalse(expandedMessage.messageBodyUiModel.shouldShowExpandCollapseButton)
+
+            viewModel.submit(ConversationDetailViewAction.PrintMessage(context, messageId))
+            val newItem = awaitItem()
+            val conversationState = newItem.conversationState as ConversationDetailMetadataState.Data
+            val messageState = newItem.messagesState as ConversationDetailsMessagesState.Data
+
+            val message = messageState.messages.first() as Expanded
+
+            verify {
+                printMessage(
+                    context,
+                    conversationState.conversationUiModel.subject,
+                    message.messageDetailHeaderUiModel,
+                    message.messageBodyUiModel,
+                    any(),
+                    PrintConfiguration(
+                        showRemoteContent = !message.messageBodyUiModel.shouldShowRemoteContentBanner,
+                        showEmbeddedImages = !message.messageBodyUiModel.shouldShowEmbeddedImagesBanner
+                    )
+                )
+            }
+        }
+    }
+
     @Suppress("LongParameterList")
     private fun buildConversationDetailViewModel(
         observePrimaryUser: ObservePrimaryUserId = observePrimaryUserId,
@@ -2243,7 +2322,8 @@ class ConversationDetailViewModelIntegrationTest {
         getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
         markMessageAsLegitimate = markMessageAsLegitimate,
         unblockSender = unblockSender,
-        cancelScheduleSendMessage = cancelScheduleSendMessage
+        cancelScheduleSendMessage = cancelScheduleSendMessage,
+        printMessage = printMessage
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(

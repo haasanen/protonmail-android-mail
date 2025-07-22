@@ -90,6 +90,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
+import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
@@ -309,6 +310,8 @@ class ConversationDetailViewModelTest {
     private val unblockSender = mockk<UnblockSender>()
     private val cancelScheduleSendMessage = mockk<CancelScheduleSendMessage>()
 
+    private val printMessage = mockk<PrintMessage>()
+
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
     }
@@ -356,7 +359,8 @@ class ConversationDetailViewModelTest {
             getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
             markMessageAsLegitimate = markMessageAsLegitimate,
             unblockSender = unblockSender,
-            cancelScheduleSendMessage = cancelScheduleSendMessage
+            cancelScheduleSendMessage = cancelScheduleSendMessage,
+            printMessage = printMessage
         )
     }
 

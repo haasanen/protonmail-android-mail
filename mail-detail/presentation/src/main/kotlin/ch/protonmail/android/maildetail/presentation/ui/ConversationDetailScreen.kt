@@ -327,7 +327,7 @@ fun ConversationDetailScreen(
                         onDelete = { viewModel.submit(ConversationDetailViewAction.DeleteMessageRequested(it)) },
                         onMoveToSpam = { viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Spam(it)) },
                         onMove = { viewModel.submit(ConversationDetailViewAction.RequestMessageMoveToBottomSheet(it)) },
-                        onPrint = { actions.showFeatureMissingSnackbar() },
+                        onPrint = { viewModel.submit(ConversationDetailViewAction.PrintMessage(context, it)) },
                         onReportPhishing = { viewModel.submit(ConversationDetailViewAction.ReportPhishing(it)) },
 
                         onMarkReadConversation = { viewModel.submit(ConversationDetailViewAction.MarkRead) },

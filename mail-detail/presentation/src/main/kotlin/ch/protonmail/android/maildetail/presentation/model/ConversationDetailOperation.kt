@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.model
 
+import android.content.Context
 import android.net.Uri
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailattachments.domain.model.AttachmentState
@@ -322,9 +323,13 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
 
     data object EditScheduleSendMessageDismissed :
         ConversationDetailViewAction, AffectingEditScheduleMessageDialog
+
     data class EditScheduleSendMessageConfirmed(val messageId: MessageIdUiModel) :
         ConversationDetailViewAction, AffectingMessages, AffectingEditScheduleMessageDialog
 
     data class EditScheduleSendMessageRequested(val messageId: MessageIdUiModel) :
         ConversationDetailViewAction, AffectingEditScheduleMessageDialog
+
+    data class PrintMessage(val context: Context, val messageId: MessageId) :
+        ConversationDetailViewAction, AffectingBottomSheet
 }
