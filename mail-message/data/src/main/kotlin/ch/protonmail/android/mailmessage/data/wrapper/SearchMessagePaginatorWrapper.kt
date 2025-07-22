@@ -26,7 +26,7 @@ import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import uniffi.proton_mail_uniffi.SearchScroller
 import uniffi.proton_mail_uniffi.SearchScrollerFetchMoreResult
-import uniffi.proton_mail_uniffi.SearchScrollerRefreshResult
+import uniffi.proton_mail_uniffi.SearchScrollerForceRefreshResult
 
 class SearchMessagePaginatorWrapper(
     private val rustPaginator: SearchScroller,
@@ -38,9 +38,9 @@ class SearchMessagePaginatorWrapper(
         is SearchScrollerFetchMoreResult.Ok -> Unit.right()
     }
 
-    override suspend fun reload(): Either<PaginationError, Unit> = when (val result = rustPaginator.refresh()) {
-        is SearchScrollerRefreshResult.Error -> result.v1.toPaginationError().left()
-        is SearchScrollerRefreshResult.Ok -> Unit.right()
+    override suspend fun reload(): Either<PaginationError, Unit> = when (val result = rustPaginator.forceRefresh()) {
+        is SearchScrollerForceRefreshResult.Error -> result.v1.toPaginationError().left()
+        is SearchScrollerForceRefreshResult.Ok -> Unit.right()
     }
 
     override fun destroy() {
