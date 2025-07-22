@@ -29,9 +29,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.feature.lockscreen.LockScreenActivity
 import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
@@ -39,13 +37,11 @@ import ch.protonmail.android.mailcommon.domain.system.DeviceCapabilities
 import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilitiesProvider
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.util.ProtonCalendarUtil
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShareViaEnabled
 import ch.protonmail.android.navigation.Launcher
 import ch.protonmail.android.navigation.LauncherViewModel
 import ch.protonmail.android.navigation.model.LauncherState
 import ch.protonmail.android.navigation.share.NewIntentObserver
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -59,10 +55,6 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var newIntentObserver: NewIntentObserver
 
-    @Inject
-    @IsShareViaEnabled
-    lateinit var isShareViaEnabled: Flow<Boolean>
-
     private val launcherViewModel: LauncherViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,17 +66,9 @@ class MainActivity : AppCompatActivity() {
         // Register activities for result.
         launcherViewModel.register(this)
 
-        // Register "Share via"
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                isShareViaEnabled.collect { isEnabled ->
-                    if (isEnabled) {
-                        newIntentObserver.onNewIntent(intent)
-                    } else {
-                        Timber.d("Share via is currently not enabled - check the FF definition.")
-                    }
-                }
-            }
+        // Check if this is a share intent on initial creation
+        if (savedInstanceState == null) {
+            handleIncomingIntent(intent)
         }
 
         disableRecentAppsScreenshotPreview()
@@ -102,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                             openSecurityKeys = {
                                 launcherViewModel.submit(LauncherViewModel.Action.OpenSecurityKeys)
                             },
-                            finishActivity = { finishAfterTransition() },
+                            finishActivity = { finishAndRemoveTask() },
                             onNavigateToLockScreen = {
                                 val intent = Intent(this, LockScreenActivity::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -118,7 +102,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        newIntentObserver.onNewIntent(intent)
+        setIntent(intent)
+        handleIncomingIntent(intent)
+    }
+
+    private fun handleIncomingIntent(intent: Intent) {
+        lifecycleScope.launch {
+            Timber.d("Handling intent with action: ${intent.action}")
+            newIntentObserver.onNewIntent(intent)
+        }
     }
 
     private fun disableRecentAppsScreenshotPreview() {

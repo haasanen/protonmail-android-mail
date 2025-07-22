@@ -24,6 +24,7 @@ import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelpe
 import ch.protonmail.android.navigation.share.NewIntentObserver
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -32,10 +33,11 @@ import kotlin.test.assertEquals
 class NewIntentObserverTest {
 
     private lateinit var newIntentObserver: NewIntentObserver
+    private val isShareViaEnabled = flowOf(true)
 
     @Before
     fun setUp() {
-        newIntentObserver = NewIntentObserver()
+        newIntentObserver = NewIntentObserver(isShareViaEnabled)
     }
 
     @Test

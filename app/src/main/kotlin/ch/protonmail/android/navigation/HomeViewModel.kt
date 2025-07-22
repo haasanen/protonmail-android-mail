@@ -172,33 +172,59 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun emitNewStateForIntent(intent: Intent) {
-        val currentState = state.value
-        if (intent.isStartedFromLauncher()) {
-            mutableState.value = currentState.copy(startedFromLauncher = true)
-        } else if (!currentState.startedFromLauncher) {
-            emitNavigationForIntent(intent)
-        } else {
-            Timber.d("Share intent is not processed as this instance was started from launcher!")
-        }
+        Timber.tag("intent-navigation").d("Processing intent: ${intent.action}, data: ${intent.data}")
 
-        emitNavigationForIntent(intent)
+        val currentState = state.value
+        val isNotificationIntent = intent.data?.host == NotificationsDeepLinkHelper.NotificationHost
+
+        when {
+            // Notification intents should always be processed, regardless of how app was started
+            isNotificationIntent -> {
+                Timber.tag("intent-navigation").d("Processing notification intent")
+                emitNavigationForIntent(intent)
+            }
+
+            // For share intents, check if app was started from launcher
+            intent.isStartedFromLauncher() -> {
+                mutableState.value = currentState.copy(startedFromLauncher = true)
+                Timber.tag("intent-navigation").d("App started from launcher")
+            }
+
+            // Process share intent only if app wasn't previously started from launcher
+            !currentState.startedFromLauncher -> {
+                Timber.tag("intent-navigation").d("Processing share intent")
+                emitNavigationForIntent(intent)
+            }
+
+            else -> {
+                Timber.tag("intent-navigation")
+                    .d("Share intent is not processed as this instance was started from launcher!")
+            }
+        }
     }
 
     private fun emitNavigationForIntent(intent: Intent) {
+        Timber.tag("intent-navigation").d("emitNavigationForIntent called")
+
         val isNotificationIntent = intent.data?.host == NotificationsDeepLinkHelper.NotificationHost
 
         val event = when {
-            isNotificationIntent -> NavigationEffect.NavigateToUri(intent.data!!) // Smart null check not triggered
+            isNotificationIntent -> {
+                Timber.tag("intent-navigation").d("Creating notification navigation: ${intent.data}")
+                NavigationEffect.NavigateToUri(intent.data!!)
+            }
+
             else -> {
                 val intentShareInfo = intent.getShareInfo()
                     .takeIf { it.isNotEmpty() }
-                    ?: return Timber.e("Unable to determine uri from share intent.")
+                    ?: return Timber.tag("intent-navigation").e("Unable to determine uri from share intent.")
 
                 val draftAction = DraftAction.PrefillForShare(intentShareInfo.encode())
                 NavigationEffect.NavigateTo(Destination.Screen.ShareFileComposer(draftAction))
             }
         }
 
+        Timber.tag("intent-navigation").d("Updating state with navigation effect: $event")
         mutableState.update { it.copy(navigateToEffect = Effect.of(event)) }
     }
 }

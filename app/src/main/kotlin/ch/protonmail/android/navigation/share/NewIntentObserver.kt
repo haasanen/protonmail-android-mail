@@ -19,17 +19,22 @@
 package ch.protonmail.android.navigation.share
 
 import android.content.Intent
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShareViaEnabled
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NewIntentObserver @Inject constructor() {
+class NewIntentObserver @Inject constructor(
+    @IsShareViaEnabled private val isShareViaEnabled: Flow<Boolean>
+) {
 
     private val _intentFlow = MutableStateFlow<Intent?>(null)
     private val intentFlow: StateFlow<Intent?> = _intentFlow
@@ -45,12 +50,18 @@ class NewIntentObserver @Inject constructor() {
     }
 
     private fun StateFlow<Intent?>.filterIntentValues() = this.filterNotNull().filter { intent ->
-        intent.action in setOf(
-            Intent.ACTION_SEND,
-            Intent.ACTION_SEND_MULTIPLE,
-            Intent.ACTION_VIEW,
-            Intent.ACTION_SENDTO,
-            Intent.ACTION_MAIN
-        )
+        val availableIntentActions = buildSet {
+            // Standard intents (launch, notifications)
+            addAll(listOf(Intent.ACTION_MAIN, Intent.ACTION_VIEW))
+
+            // Share via (Send) intents
+            if (isShareViaEnabled.first()) {
+                addAll(listOf(Intent.ACTION_SEND, Intent.ACTION_SEND_MULTIPLE, Intent.ACTION_SENDTO))
+            } else {
+                Timber.d("Share via is currently not enabled. Check the FF definition.")
+            }
+        }
+
+        intent.action in availableIntentActions
     }
 }

@@ -351,7 +351,7 @@ class HomeViewModelTest {
         // When + Then
         homeViewModel.state.test {
             val effect = awaitItem().navigateToEffect.consume()
-            assertTrue { effect is NavigationEffect.NavigateTo }
+            assertNull(effect)
         }
     }
 
