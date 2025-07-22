@@ -40,8 +40,8 @@ class PrintMessageHeaderBuilder @Inject constructor(
         attachments: AttachmentGroupUiModel?
     ): String {
         return buildString {
-            // Header CSS to prettify it.
-            append("<style>${getPrintHeaderCss()}</style>")
+            // Try to add the header custom CSS to prettify it
+            getPrintHeaderCss().getOrNull()?.let { append("<style>$it</style>") }
             append("<div class='print-header'>")
 
             // Subject as title
@@ -49,14 +49,14 @@ class PrintMessageHeaderBuilder @Inject constructor(
 
             // From
             append("<div class='print-header-row'>")
-            append("<span class='print-header-label'>${context.getString(R.string.from)}</span>")
+            append("<span class='print-header-label'>${context.getString(R.string.from)} </span>")
             append("<span class='print-header-value'>${messageHeader.sender.format()}</span>")
             append("</div>")
 
             // To recipients
             if (messageHeader.toRecipients.isNotEmpty()) {
                 append("<div class='print-header-row'>")
-                append("<span class='print-header-label'>${context.getString(R.string.to)}</span>")
+                append("<span class='print-header-label'>${context.getString(R.string.to)} </span>")
                 append("<span class='print-header-value'>")
                 messageHeader.toRecipients.forEachIndexed { index, recipient ->
                     append("<span class='print-header-recipient'>${recipient.format()}</span>")
@@ -69,7 +69,7 @@ class PrintMessageHeaderBuilder @Inject constructor(
             // CC recipients
             if (messageHeader.ccRecipients.isNotEmpty()) {
                 append("<div class='print-header-row'>")
-                append("<span class='print-header-label'>${context.getString(R.string.cc)}</span>")
+                append("<span class='print-header-label'>${context.getString(R.string.cc)} </span>")
                 append("<span class='print-header-value'>")
                 messageHeader.ccRecipients.forEachIndexed { index, recipient ->
                     append("<span class='print-header-recipient'>${recipient.format()}</span>")
@@ -82,7 +82,7 @@ class PrintMessageHeaderBuilder @Inject constructor(
             // BCC recipients
             if (messageHeader.bccRecipients.isNotEmpty()) {
                 append("<div class='print-header-row'>")
-                append("<span class='print-header-label'>${context.getString(R.string.bcc)}</span>")
+                append("<span class='print-header-label'>${context.getString(R.string.bcc)} </span>")
                 append("<span class='print-header-value'>")
                 messageHeader.bccRecipients.forEachIndexed { index, recipient ->
                     append("<span class='print-header-recipient'>${recipient.format()}</span>")
@@ -95,7 +95,7 @@ class PrintMessageHeaderBuilder @Inject constructor(
             // Date
             val dateText = (messageHeader.extendedTime as? TextUiModel.Text)?.value ?: ""
             append("<div class='print-header-row'>")
-            append("<span class='print-header-label'>${context.getString(R.string.date)}</span>")
+            append("<span class='print-header-label'>${context.getString(R.string.date)} </span>")
             append("<span class='print-header-value'>$dateText</span>")
             append("</div>")
 

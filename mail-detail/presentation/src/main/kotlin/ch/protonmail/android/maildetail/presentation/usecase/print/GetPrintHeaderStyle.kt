@@ -19,17 +19,27 @@
 package ch.protonmail.android.maildetail.presentation.usecase.print
 
 import android.content.Context
+import arrow.core.Either
+import arrow.core.raise.either
 import ch.protonmail.android.maildetail.presentation.R
 import dagger.hilt.android.qualifiers.ApplicationContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class GetPrintHeaderStyle @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    operator fun invoke(): String {
-        return context.resources.openRawResource(R.raw.print_header_props)
-            .bufferedReader()
-            .use { it.readText() }
+    operator fun invoke(): Either<GetPrintHeaderStyleError, String> = either {
+        runCatching {
+            context.resources.openRawResource(R.raw.print_header_props)
+                .bufferedReader()
+                .use { it.readText() }
+        }.getOrElse {
+            Timber.e(it, "Unable to read print_header_props file.")
+            raise(GetPrintHeaderStyleError)
+        }
     }
 }
+
+data object GetPrintHeaderStyleError

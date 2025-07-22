@@ -18,8 +18,11 @@
 
 package ch.protonmail.android.maildetail.presentation.usecase
 
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.usecase.print.GetPrintHeaderStyle
+import ch.protonmail.android.maildetail.presentation.usecase.print.GetPrintHeaderStyleError
 import ch.protonmail.android.maildetail.presentation.usecase.print.PrintMessageHeaderBuilder
 import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
@@ -54,9 +57,9 @@ internal class PrintMessageHeaderBuilderTest {
     }
 
     @Test
-    fun `should provide the formatted print layout (To)`() {
+    fun `should provide the unformatted print layout on style fetch failure`() {
         // Given
-        every { getPrintHeaderStyle.invoke() } returns "style"
+        every { getPrintHeaderStyle.invoke() } returns GetPrintHeaderStyleError.left()
         val header = MessageDetailHeaderUiModelTestData.messageDetailHeaderUiModel.copy(
             toRecipients = toRecipients,
             ccRecipients = noRecipients,
@@ -67,7 +70,30 @@ internal class PrintMessageHeaderBuilderTest {
 
         @Suppress("MaxLineLength")
         val expectedBody =
-            "<style>style</style><div class='print-header'><div class='print-header-title'>subject</div><div class='print-header-row'><span class='print-header-label'>From:</span><span class='print-header-value'>Sender &lt;sender@pm.com&gt;</span></div><div class='print-header-row'><span class='print-header-label'>To:</span><span class='print-header-value'><span class='print-header-recipient'>RecipientTo1 &lt;recipientTo1@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientTo2 &lt;recipientTo2@pm.com&gt;</span></span></div><div class='print-header-row'><span class='print-header-label'>Date:</span><span class='print-header-value'>08/11/2022, 17:16</span></div></div>"
+            "<div class='print-header'><div class='print-header-title'>subject</div><div class='print-header-row'><span class='print-header-label'>From: </span><span class='print-header-value'>Sender &lt;sender@pm.com&gt;</span></div><div class='print-header-row'><span class='print-header-label'>To: </span><span class='print-header-value'><span class='print-header-recipient'>RecipientTo1 &lt;recipientTo1@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientTo2 &lt;recipientTo2@pm.com&gt;</span></span></div><div class='print-header-row'><span class='print-header-label'>Date: </span><span class='print-header-value'>08/11/2022, 17:16</span></div></div>"
+
+        // When
+        val actual = builder.buildHeader(subject, header, attachments)
+
+        // Then
+        assertEquals(expectedBody, actual)
+    }
+
+    @Test
+    fun `should provide the formatted print layout (To)`() {
+        // Given
+        every { getPrintHeaderStyle.invoke() } returns "style".right()
+        val header = MessageDetailHeaderUiModelTestData.messageDetailHeaderUiModel.copy(
+            toRecipients = toRecipients,
+            ccRecipients = noRecipients,
+            bccRecipients = noRecipients
+        )
+        val attachments = null
+        val subject = "subject"
+
+        @Suppress("MaxLineLength")
+        val expectedBody =
+            "<style>style</style><div class='print-header'><div class='print-header-title'>subject</div><div class='print-header-row'><span class='print-header-label'>From: </span><span class='print-header-value'>Sender &lt;sender@pm.com&gt;</span></div><div class='print-header-row'><span class='print-header-label'>To: </span><span class='print-header-value'><span class='print-header-recipient'>RecipientTo1 &lt;recipientTo1@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientTo2 &lt;recipientTo2@pm.com&gt;</span></span></div><div class='print-header-row'><span class='print-header-label'>Date: </span><span class='print-header-value'>08/11/2022, 17:16</span></div></div>"
 
         // When
         val actual = builder.buildHeader(subject, header, attachments)
@@ -79,7 +105,7 @@ internal class PrintMessageHeaderBuilderTest {
     @Test
     fun `should provide the formatted print layout (Cc)`() {
         // Given
-        every { getPrintHeaderStyle.invoke() } returns "style"
+        every { getPrintHeaderStyle.invoke() } returns "style".right()
         val header = MessageDetailHeaderUiModelTestData.messageDetailHeaderUiModel.copy(
             toRecipients = noRecipients,
             ccRecipients = ccRecipients,
@@ -90,7 +116,7 @@ internal class PrintMessageHeaderBuilderTest {
 
         @Suppress("MaxLineLength")
         val expectedBody =
-            "<style>style</style><div class='print-header'><div class='print-header-title'>subject</div><div class='print-header-row'><span class='print-header-label'>From:</span><span class='print-header-value'>Sender &lt;sender@pm.com&gt;</span></div><div class='print-header-row'><span class='print-header-label'>Cc:</span><span class='print-header-value'><span class='print-header-recipient'>RecipientCc1 &lt;recipientCc1@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientCc2 &lt;recipientCc2@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientCc3 &lt;recipientCc3@pm.com&gt;</span></span></div><div class='print-header-row'><span class='print-header-label'>Date:</span><span class='print-header-value'>08/11/2022, 17:16</span></div></div>"
+            "<style>style</style><div class='print-header'><div class='print-header-title'>subject</div><div class='print-header-row'><span class='print-header-label'>From: </span><span class='print-header-value'>Sender &lt;sender@pm.com&gt;</span></div><div class='print-header-row'><span class='print-header-label'>Cc: </span><span class='print-header-value'><span class='print-header-recipient'>RecipientCc1 &lt;recipientCc1@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientCc2 &lt;recipientCc2@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientCc3 &lt;recipientCc3@pm.com&gt;</span></span></div><div class='print-header-row'><span class='print-header-label'>Date: </span><span class='print-header-value'>08/11/2022, 17:16</span></div></div>"
 
         // When
         val actual = builder.buildHeader(subject, header, attachments)
@@ -102,7 +128,7 @@ internal class PrintMessageHeaderBuilderTest {
     @Test
     fun `should provide the formatted print layout (all fields)`() {
         // Given
-        every { getPrintHeaderStyle.invoke() } returns "style"
+        every { getPrintHeaderStyle.invoke() } returns "style".right()
         val header = MessageDetailHeaderUiModelTestData.messageDetailHeaderUiModel.copy(
             toRecipients = toRecipients,
             ccRecipients = ccRecipients,
@@ -117,7 +143,7 @@ internal class PrintMessageHeaderBuilderTest {
 
         @Suppress("MaxLineLength")
         val expectedBody =
-            "<style>style</style><div class='print-header'><div class='print-header-title'>subject</div><div class='print-header-row'><span class='print-header-label'>From:</span><span class='print-header-value'>Sender &lt;sender@pm.com&gt;</span></div><div class='print-header-row'><span class='print-header-label'>To:</span><span class='print-header-value'><span class='print-header-recipient'>RecipientTo1 &lt;recipientTo1@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientTo2 &lt;recipientTo2@pm.com&gt;</span></span></div><div class='print-header-row'><span class='print-header-label'>Cc:</span><span class='print-header-value'><span class='print-header-recipient'>RecipientCc1 &lt;recipientCc1@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientCc2 &lt;recipientCc2@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientCc3 &lt;recipientCc3@pm.com&gt;</span></span></div><div class='print-header-row'><span class='print-header-label'>Bcc:</span><span class='print-header-value'><span class='print-header-recipient'>RecipientBcc1 &lt;recipientBcc1@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientBcc2 &lt;recipientBcc2@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientBcc3 &lt;recipientBcc3@pm.com&gt;</span></span></div><div class='print-header-row'><span class='print-header-label'>Date:</span><span class='print-header-value'>08/11/2022, 17:16</span></div><div class='print-header-attachment'>2 Attachments (6.9 kB)</div></div>"
+            "<style>style</style><div class='print-header'><div class='print-header-title'>subject</div><div class='print-header-row'><span class='print-header-label'>From: </span><span class='print-header-value'>Sender &lt;sender@pm.com&gt;</span></div><div class='print-header-row'><span class='print-header-label'>To: </span><span class='print-header-value'><span class='print-header-recipient'>RecipientTo1 &lt;recipientTo1@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientTo2 &lt;recipientTo2@pm.com&gt;</span></span></div><div class='print-header-row'><span class='print-header-label'>Cc: </span><span class='print-header-value'><span class='print-header-recipient'>RecipientCc1 &lt;recipientCc1@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientCc2 &lt;recipientCc2@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientCc3 &lt;recipientCc3@pm.com&gt;</span></span></div><div class='print-header-row'><span class='print-header-label'>Bcc: </span><span class='print-header-value'><span class='print-header-recipient'>RecipientBcc1 &lt;recipientBcc1@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientBcc2 &lt;recipientBcc2@pm.com&gt;</span>, <span class='print-header-recipient'>RecipientBcc3 &lt;recipientBcc3@pm.com&gt;</span></span></div><div class='print-header-row'><span class='print-header-label'>Date: </span><span class='print-header-value'>08/11/2022, 17:16</span></div><div class='print-header-attachment'>2 Attachments (6.9 kB)</div></div>"
 
         // When
         val actual = builder.buildHeader(subject, header, attachments)
