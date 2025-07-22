@@ -253,8 +253,12 @@ class ComposerViewModel @AssistedInject constructor(
         }
 
         if (fileShareInfo.hasEmailData()) {
-            val draftFields = prepareDraftFieldsFor(fileShareInfo)
+            val draftFields = prefillDraftFieldsFromShareInfo(fileShareInfo)
             initComposerFields(draftFields)
+
+            // Needs to trigger a save on Rust side
+            onDraftBodyChanged(draftFields.body)
+
             emitNewStateFor(
                 CompositeEvent.DraftContentReady(
                     draftUiModel = draftFields.toDraftUiModel(), isDataRefreshed = true, bodyShouldTakeFocus = false
@@ -263,8 +267,15 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun prepareDraftFieldsFor(intentShareInfo: IntentShareInfo): DraftFields {
-        val draftBody = DraftBody(intentShareInfo.emailBody ?: "")
+    private suspend fun prefillDraftFieldsFromShareInfo(intentShareInfo: IntentShareInfo): DraftFields {
+        val draftBody = DraftBody(
+            // Temporarily concatenate the shared text + the initial Rust body (to include the signature if present)
+            buildString {
+                append(intentShareInfo.emailBody ?: "")
+                appendLine()
+                append(mutableComposerStates.value.main.fields.body)
+            }
+        )
         val subject = Subject(intentShareInfo.emailSubject ?: "")
         val recipientsTo = RecipientsTo(
             intentShareInfo.emailRecipientTo.takeIfNotEmpty()?.map {
