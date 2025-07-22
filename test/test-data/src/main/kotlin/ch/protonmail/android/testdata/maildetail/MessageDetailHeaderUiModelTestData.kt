@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.testdata.maildetail
 
+import androidx.annotation.DrawableRes
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -30,6 +31,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 object MessageDetailHeaderUiModelTestData {
+
     val recipientOne = ParticipantUiModel(
         "Recipient1",
         "recipient1@pm.com",
@@ -85,5 +87,17 @@ object MessageDetailHeaderUiModelTestData {
         messageIdUiModel = MessageIdUiModel("id"),
         themeOverride = null,
         shouldShowQuickReply = true
+    )
+
+    fun buildParticipant(
+        name: String,
+        address: String,
+        @DrawableRes padlock: Int = R.drawable.ic_proton_lock,
+        showOfficialBadge: Boolean = false
+    ) = ParticipantUiModel(
+        name,
+        address,
+        padlock,
+        shouldShowOfficialBadge = showOfficialBadge
     )
 }
