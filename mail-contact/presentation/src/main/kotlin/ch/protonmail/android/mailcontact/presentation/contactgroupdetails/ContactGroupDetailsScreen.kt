@@ -51,6 +51,7 @@ import ch.protonmail.android.design.compose.theme.bodyLargeWeak
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.AvatarUiModel
 import ch.protonmail.android.mailcontact.presentation.contactdetails.ui.IconContactAvatar
@@ -146,7 +147,10 @@ private fun ContactGroupDetails(
                 .clip(ProtonTheme.shapes.extraLarge)
         ) {
             uiModel.members.forEachIndexed { index, memberUiModel ->
-                ContactGroupMember(memberUiModel)
+                ContactGroupMember(
+                    uiModel = memberUiModel,
+                    onOpenContact = actions.onOpenContact
+                )
                 if (index != uiModel.members.size - 1) {
                     MailDivider()
                 }
@@ -206,13 +210,17 @@ private fun SendGroupMessageAction(
 }
 
 @Composable
-private fun ContactGroupMember(uiModel: ContactGroupMemberUiModel, modifier: Modifier = Modifier) {
+private fun ContactGroupMember(
+    uiModel: ContactGroupMemberUiModel,
+    onOpenContact: (ContactId) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clickable(
                 role = Role.Button,
-                onClick = {}
+                onClick = { onOpenContact(uiModel.id) }
             )
             .padding(
                 horizontal = ProtonDimens.Spacing.Large,
@@ -256,6 +264,7 @@ fun ContactGroupDetailsScreenPreview() {
             onBack = {},
             onShowErrorSnackbar = {},
             onSendGroupMessage = {},
+            onOpenContact = {},
             showFeatureMissingSnackbar = {}
         )
     )
@@ -268,6 +277,7 @@ object ContactGroupDetailsScreen {
         val onBack: () -> Unit,
         val onShowErrorSnackbar: (String) -> Unit,
         val onSendGroupMessage: (List<String>) -> Unit,
+        val onOpenContact: (ContactId) -> Unit,
         val showFeatureMissingSnackbar: () -> Unit
     )
 }

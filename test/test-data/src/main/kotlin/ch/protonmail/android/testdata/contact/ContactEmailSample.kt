@@ -24,7 +24,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 object ContactEmailSample {
 
     val contactEmail1 = ContactEmail(
-        ContactIdTestData.contactEmailId1,
+        ContactIdTestData.contactId1,
         "email (contact email 1)",
         false,
         lastUsedTime = 0,
@@ -33,7 +33,7 @@ object ContactEmailSample {
     )
 
     val contactEmail2 = ContactEmail(
-        ContactIdTestData.contactEmailId2,
+        ContactIdTestData.contactId2,
         "email (contact email 2)",
         false,
         lastUsedTime = 0,
@@ -42,7 +42,7 @@ object ContactEmailSample {
     )
 
     val contactEmail3 = ContactEmail(
-        ContactIdTestData.contactEmailId3,
+        ContactIdTestData.contactId3,
         "email (contact email 3)",
         false,
         lastUsedTime = 0,
@@ -51,7 +51,7 @@ object ContactEmailSample {
     )
 
     val contactEmail4 = ContactEmail(
-        ContactIdTestData.contactEmailId4,
+        ContactIdTestData.contactId4,
         "email (contact email 4)",
         false,
         lastUsedTime = 0,
@@ -60,7 +60,7 @@ object ContactEmailSample {
     )
 
     val contactSuggestionEmail = ContactEmail(
-        ContactIdTestData.contactSuggestionEmailId,
+        ContactIdTestData.contactSuggestionId,
         "contact suggestion email",
         false,
         lastUsedTime = 0,
@@ -69,7 +69,7 @@ object ContactEmailSample {
     )
 
     val contactGroupSuggestionEmail1 = ContactEmail(
-        ContactIdTestData.contactEmailId1,
+        ContactIdTestData.contactId1,
         "contactgroup@first.email",
         false,
         lastUsedTime = 0,
@@ -77,7 +77,7 @@ object ContactEmailSample {
         avatarInformation = AvatarInformationSample.avatarSample
     )
     val contactGroupSuggestionEmail2 = ContactEmail(
-        ContactIdTestData.contactEmailId2,
+        ContactIdTestData.contactId2,
         "contactgroup@second.email",
         false,
         lastUsedTime = 0,

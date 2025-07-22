@@ -40,7 +40,7 @@ object LocalContactSuggestionTestData {
         avatarInformation = localAvatar,
         kind = ContactSuggestionKind.ContactItem(
             ContactEmailItem(
-                id = Id(7uL),
+                id = Id(6uL),
                 email = "contact suggestion email",
                 isProton = false,
                 lastUsedTime = 0uL,

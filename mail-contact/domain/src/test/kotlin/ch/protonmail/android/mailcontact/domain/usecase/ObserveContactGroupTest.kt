@@ -24,7 +24,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
@@ -47,7 +47,7 @@ class ObserveContactGroupTest {
         color = "#FF0000",
         members = listOf(
             ContactEmail(
-                id = ContactEmailId("contact email id"),
+                id = ContactId("contact email id"),
                 email = "test1@protonmail.com",
                 isProton = false,
                 lastUsedTime = 0,

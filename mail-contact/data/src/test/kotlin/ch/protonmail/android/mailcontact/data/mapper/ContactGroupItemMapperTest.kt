@@ -20,7 +20,7 @@ package ch.protonmail.android.mailcontact.data.mapper
 
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.testdata.contact.rust.LocalContactTestData
 import org.junit.Assert.assertEquals
@@ -40,7 +40,7 @@ class ContactGroupItemMapperTest {
             color = "#FFD700",
             members = listOf(
                 ContactEmail(
-                    id = ContactEmailId("1"),
+                    id = ContactId("1"),
                     "family@example.com",
                     isProton = false,
                     lastUsedTime = 0,

@@ -28,7 +28,6 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
@@ -67,7 +66,7 @@ class ContactListViewModelTest {
         name = "first contact",
         emails = listOf(
             ContactEmail(
-                ContactEmailId("contact email id 1"),
+                ContactId("contact email id 1"),
                 "First contact email",
                 true,
                 lastUsedTime = 0,
@@ -82,7 +81,7 @@ class ContactListViewModelTest {
         color = "#FF0000",
         members = listOf(
             ContactEmail(
-                ContactEmailId("contact email id 1"),
+                ContactId("contact email id 1"),
                 "First contact email",
                 true,
                 lastUsedTime = 0,

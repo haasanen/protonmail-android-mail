@@ -25,7 +25,6 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalContactId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import uniffi.proton_mail_uniffi.DeviceContactSuggestion
@@ -38,7 +37,7 @@ fun ContactGroupId.toLocalContactGroupId(): LocalContactGroupId = LocalContactGr
 
 fun LocalContactEmail.toContactEmail(): ContactEmail {
     return ContactEmail(
-        id = ContactEmailId(this.id.value.toString()),
+        id = ContactId(this.id.value.toString()),
         email = this.email,
         isProton = this.isProton,
         lastUsedTime = this.lastUsedTime.toLong(),
@@ -54,7 +53,7 @@ fun LocalAvatarInformation.toAvatarInformation() = AvatarInformation(
 
 @MissingRustApi
 fun DeviceContactSuggestion.toContactEmail() = ContactEmail(
-    ContactEmailId(this.email), // Rust doesn't expose any id for device contacts
+    ContactId(this.email), // Rust doesn't expose any id for device contacts
     this.email,
     false, // This value should be provided by Rust
     0L, // This value should be provided by Rust

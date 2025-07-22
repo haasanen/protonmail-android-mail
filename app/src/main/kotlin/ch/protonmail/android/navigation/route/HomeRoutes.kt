@@ -33,6 +33,7 @@ import ch.protonmail.android.mailcommon.presentation.SnackbarType
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.contactdetails.ui.ContactDetailsScreen
 import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
@@ -316,6 +317,7 @@ internal fun NavGraphBuilder.addContactGroupDetails(
     navController: NavHostController,
     onShowErrorSnackbar: (String) -> Unit,
     onSendGroupMessage: (List<String>) -> Unit,
+    onOpenContact: (ContactId) -> Unit,
     showFeatureMissingSnackbar: () -> Unit
 ) {
     composable(route = Destination.Screen.ContactGroupDetails.route) {
@@ -324,6 +326,7 @@ internal fun NavGraphBuilder.addContactGroupDetails(
                 onBack = { navController.navigateBack() },
                 onShowErrorSnackbar = onShowErrorSnackbar,
                 onSendGroupMessage = onSendGroupMessage,
+                onOpenContact = onOpenContact,
                 showFeatureMissingSnackbar = showFeatureMissingSnackbar
             )
         )

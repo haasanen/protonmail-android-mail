@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailcontact.presentation.contactgroupdetails
 
 import androidx.compose.ui.graphics.Color
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.AvatarUiModel
 
 data class ContactGroupDetailsUiModel(
@@ -30,7 +30,7 @@ data class ContactGroupDetailsUiModel(
 )
 
 data class ContactGroupMemberUiModel(
-    val id: ContactEmailId,
+    val id: ContactId,
     val avatarUiModel: AvatarUiModel,
     val name: String,
     val emailAddress: String

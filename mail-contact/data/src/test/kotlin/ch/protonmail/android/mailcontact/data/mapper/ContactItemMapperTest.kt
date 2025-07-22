@@ -20,7 +20,7 @@ package ch.protonmail.android.mailcontact.data.mapper
 
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.testdata.contact.rust.LocalContactTestData
 import org.junit.Assert.assertEquals
@@ -39,7 +39,7 @@ class ContactItemMapperTest {
             name = localContact.v1.name,
             emails = listOf(
                 ContactEmail(
-                    id = ContactEmailId("101"),
+                    id = ContactId("101"),
                     email = "alice.johnson@example.com",
                     isProton = false,
                     lastUsedTime = 0,
@@ -47,7 +47,7 @@ class ContactItemMapperTest {
                     avatarInformation = localContact.v1.avatarInformation.toAvatarInformation()
                 ),
                 ContactEmail(
-                    id = ContactEmailId("102"),
+                    id = ContactId("102"),
                     email = "alice.work@example.com",
                     isProton = false,
                     lastUsedTime = 0,

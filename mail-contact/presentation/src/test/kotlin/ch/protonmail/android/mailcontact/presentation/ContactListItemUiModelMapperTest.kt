@@ -25,7 +25,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModelMapper
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactItemUiModelMapper
@@ -55,7 +55,7 @@ class ContactListItemUiModelMapperTest {
             name = "first contact",
             emails = listOf(
                 ContactEmail(
-                    ContactEmailId("contact email id 1"),
+                    ContactId("contact email id 1"),
                     "First contact email",
                     true,
                     lastUsedTime = 0,
