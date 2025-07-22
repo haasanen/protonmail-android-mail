@@ -27,8 +27,10 @@ import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.DraftAc
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.DraftMessageIdKey
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.SerializedDraftActionKey
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.contactdetails.ui.ContactDetailsScreen.CONTACT_DETAILS_ID_KEY
+import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen.CONTACT_GROUP_DETAILS_ID_KEY
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
@@ -143,6 +145,11 @@ sealed class Destination(val route: String) {
         object ContactDetails : Destination("contacts/contact/${CONTACT_DETAILS_ID_KEY.wrap()}") {
 
             operator fun invoke(contactId: ContactId) = route.replace(CONTACT_DETAILS_ID_KEY.wrap(), contactId.id)
+        }
+        object ContactGroupDetails : Destination("contacts/group/${CONTACT_GROUP_DETAILS_ID_KEY.wrap()}") {
+
+            operator fun invoke(contactGroupId: ContactGroupId) =
+                route.replace(CONTACT_GROUP_DETAILS_ID_KEY.wrap(), contactGroupId.id)
         }
 
         object CreateContact : Destination("contacts/contact/form")

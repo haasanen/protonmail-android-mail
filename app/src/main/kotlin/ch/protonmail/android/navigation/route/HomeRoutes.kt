@@ -34,6 +34,7 @@ import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
 import ch.protonmail.android.mailcontact.presentation.contactdetails.ui.ContactDetailsScreen
+import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
 import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearchScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
@@ -255,8 +256,8 @@ internal fun NavGraphBuilder.addContacts(
                 onContactSelected = { contactId ->
                     navController.navigate(Destination.Screen.ContactDetails(contactId))
                 },
-                onContactGroupSelected = { _ ->
-                    showFeatureMissingSnackbar()
+                onContactGroupSelected = { contactGroupId ->
+                    navController.navigate(Destination.Screen.ContactGroupDetails(contactGroupId))
                 },
                 onBackClick = {
                     navController.navigateBack()
@@ -307,6 +308,22 @@ internal fun NavGraphBuilder.addContactSearch(
     composable(route = Destination.Screen.ContactSearch.route) {
         ContactSearchScreen(
             actions
+        )
+    }
+}
+
+internal fun NavGraphBuilder.addContactGroupDetails(
+    navController: NavHostController,
+    onShowErrorSnackbar: (String) -> Unit,
+    showFeatureMissingSnackbar: () -> Unit
+) {
+    composable(route = Destination.Screen.ContactGroupDetails.route) {
+        ContactGroupDetailsScreen(
+            actions = ContactGroupDetailsScreen.Actions(
+                onBack = { navController.navigateBack() },
+                onShowErrorSnackbar = onShowErrorSnackbar,
+                showFeatureMissingSnackbar = showFeatureMissingSnackbar
+            )
         )
     }
 }
