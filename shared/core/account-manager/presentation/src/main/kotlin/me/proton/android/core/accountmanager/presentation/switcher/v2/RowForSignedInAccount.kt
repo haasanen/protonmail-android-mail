@@ -21,7 +21,6 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,10 +35,10 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.accountmanager.presentation.R
+import me.proton.android.core.accountmanager.presentation.switcher.BaseAccountSwitcherRow
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountItem
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountListItem
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
-import me.proton.android.core.accountmanager.presentation.switcher.BaseAccountSwitcherRow
 
 /**
  * Displays a row with the given [accountListItem].
@@ -59,7 +58,7 @@ fun RowForSignedInAccount(
             }
             .padding(ProtonDimens.Spacing.Standard),
         accountListItem = accountListItem,
-        accountInitialsShape = CircleShape,
+        accountInitialsShape = ProtonTheme.shapes.large,
         trailingRowContent = {
             if (accountListItem is AccountListItem.Ready) {
                 ProtonSecondaryButton(
@@ -85,7 +84,7 @@ fun RowForSignedInAccount(
 fun RowForSignedInAccountManagerPreview() {
     ProtonTheme {
         Column {
-            RowForSignedOutAccount(
+            RowForSignedInAccount(
                 accountListItem = AccountListItem.Ready.Primary(
                     accountItem = AccountItem(
                         userId = CoreUserId("1"),
@@ -97,7 +96,7 @@ fun RowForSignedInAccountManagerPreview() {
                 onEvent = {}
             )
 
-            RowForSignedOutAccount(
+            RowForSignedInAccount(
                 accountListItem = AccountListItem.Disabled(
                     accountItem = AccountItem(
                         userId = CoreUserId("1"),
