@@ -25,16 +25,16 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.MailUserSessionForkResult
+import uniffi.proton_mail_uniffi.MailUserSessionForkWithVersionResult
 import uniffi.proton_mail_uniffi.VoidEventResult
 
 class MailUserSessionWrapper(private val userSession: MailUserSession) {
 
     fun getRustUserSession() = userSession
 
-    suspend fun fork(): Either<DataError, String> = when (val result = userSession.fork()) {
-        is MailUserSessionForkResult.Error -> result.v1.toDataError().left()
-        is MailUserSessionForkResult.Ok -> result.v1.right()
+    suspend fun fork(): Either<DataError, String> = when (val result = userSession.forkWithVersion(PRODUCT_NAME)) {
+        is MailUserSessionForkWithVersionResult.Error -> result.v1.toDataError().left()
+        is MailUserSessionForkWithVersionResult.Ok -> result.v1.right()
     }
 
     suspend fun pollEvents(): Either<DataError, Unit> = when (val result = userSession.forceEventLoopPoll()) {
@@ -53,3 +53,5 @@ class MailUserSessionWrapper(private val userSession: MailUserSession) {
 
     suspend fun getAttachment(attachmentId: LocalAttachmentId) = userSession.getAttachment(attachmentId)
 }
+
+private const val PRODUCT_NAME = "android-mail"

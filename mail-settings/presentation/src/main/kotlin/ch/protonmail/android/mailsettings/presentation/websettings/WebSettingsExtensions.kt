@@ -21,6 +21,7 @@ package ch.protonmail.android.mailsettings.presentation.websettings
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
+import ch.protonmail.android.mailsettings.presentation.BuildConfig
 import timber.log.Timber
 
 fun WebSettingsConfig.toPrivacyAndSecuritySettingsUrl(forkedSessionId: ForkedSessionId, theme: Theme): String =
@@ -46,8 +47,10 @@ private fun Theme.getUriParam(): String = when (this) {
     Theme.DARK -> "1"
 }
 
+@Suppress("MaxLineLength")
 private fun WebSettingsConfig.toSettingsUrl(
     forkedSessionId: ForkedSessionId,
     theme: Theme,
     action: String
-): String = "$baseUrl?action=$action&theme=${theme.getUriParam()}#selector=${forkedSessionId.id}"
+) =
+    "$baseUrl?action=$action&theme=${theme.getUriParam()}&app-version=${BuildConfig.WEBVIEW_APP_VERSION}#selector=${forkedSessionId.id}"

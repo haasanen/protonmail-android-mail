@@ -32,6 +32,8 @@ android {
     defaultConfig {
         minSdk = AppConfiguration.minSdk.get()
         lint.targetSdk = AppConfiguration.targetSdk.get()
+
+        buildConfigField("String", "WEBVIEW_APP_VERSION", "\"android-mail@${AppConfiguration.versionName.get()}\"")
     }
 
     compileOptions {
@@ -45,6 +47,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     packaging {
