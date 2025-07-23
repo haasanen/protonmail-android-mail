@@ -132,7 +132,6 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -890,8 +889,6 @@ private fun MessagesContent(
     LaunchedEffect(listState) {
         snapshotFlow { viewHasFinishedScrollingAndMeasuring.value }
             .filter { it }
-            // debounce as sometimes there are multiple passes and we should wait for the view to settle
-            .debounce(timeoutMillis = 300L)
             .collectLatest {
                 val sumOfHeights = itemsHeight.entries.sumOf { it.value } - itemsHeight.entries.last().value
 
