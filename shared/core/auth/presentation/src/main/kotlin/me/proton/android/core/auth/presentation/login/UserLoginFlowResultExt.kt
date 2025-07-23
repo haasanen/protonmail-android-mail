@@ -70,9 +70,9 @@ fun LoginError.getErrorMessage(context: Context): String = when (this) {
     is LoginError.NoAddress -> "LoginError.NoAddress"
     is LoginError.NoLogin -> "LoginError.NoLogin"
     is LoginError.UserKeySetupAborted -> "LoginError.UserKeySetupAborted"
-    is LoginError.DuplicateSession -> "LoginError.DuplicateSession"
-    is LoginError.MissingSession -> "LoginError.MissingSession"
     is LoginError.SettingsFetch -> "LoginError.SettingsFetch"
+    is LoginError.DuplicateSession -> v1
+    is LoginError.MissingSession -> context.getString(R.string.auth_login_error_invalid_action_cannot_unlock_keys)
 }
 
 fun UserApiServiceError.getErrorMessage() = when (this) {

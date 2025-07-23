@@ -25,6 +25,7 @@ sealed interface LoginViewState {
     data class LoggedIn(val userId: String) : LoginViewState
     sealed interface Error : LoginViewState {
         data object Validation : Error
+        data class AlreadyLoggedIn(val userId: String) : Error
         data class LoginFlow(val error: String) : Error
     }
 

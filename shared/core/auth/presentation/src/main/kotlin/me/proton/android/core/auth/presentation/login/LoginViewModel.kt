@@ -37,9 +37,11 @@ import uniffi.proton_account_uniffi.LoginFlowLoginResult
 import uniffi.proton_account_uniffi.LoginFlowUserIdResult
 import uniffi.proton_mail_uniffi.LoginScreenId
 import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailSessionGetSessionResult
 import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
 import uniffi.proton_mail_uniffi.MailSessionToUserContextResult
 import uniffi.proton_mail_uniffi.ProtonError
+import uniffi.proton_mail_uniffi.StoredSession
 import uniffi.proton_mail_uniffi.recordLoginScreenView
 import javax.inject.Inject
 
@@ -110,11 +112,20 @@ class LoginViewModel @Inject internal constructor(
         mutableState.emit(getError(error))
     }
 
-    private fun getError(error: LoginError): LoginViewState =
-        LoginViewState.Error.LoginFlow(error.getErrorMessage(context))
+    private suspend fun getError(error: LoginError): LoginViewState {
+        return when (error) {
+            is LoginError.DuplicateSession -> {
+                sessionInterface.getSession(error.v1).getOrNull()
+                    ?.let { LoginViewState.Error.AlreadyLoggedIn(it.userId()) }
+                    ?: LoginViewState.Error.LoginFlow(error.getErrorMessage(context))
+            }
+
+            else -> LoginViewState.Error.LoginFlow(error.getErrorMessage(context))
+        }
+    }
 
     private fun getError(error: ProtonError): LoginViewState =
-        LoginViewState.Error.LoginFlow(error.getErrorMessage(context))
+        LoginViewState.Error.LoginFlow(error = error.getErrorMessage(context))
 
     private suspend fun getLoginViewState(): LoginViewState {
         val userId = when (val result = getLoginFlow().userId()) {
@@ -134,7 +145,8 @@ class LoginViewModel @Inject internal constructor(
     private fun onTwoFa(userId: String): LoginViewState.Awaiting2fa = LoginViewState.Awaiting2fa(userId)
 
     private suspend fun onLoggedIn(userId: String): LoginViewState {
-        return when (val result = sessionInterface.toUserContext(getLoginFlow())) {
+        val loginFlow = getLoginFlow()
+        return when (val result = sessionInterface.toUserContext(loginFlow)) {
             is MailSessionToUserContextResult.Error -> LoginViewState.Error.LoginFlow("${result.v1}")
             is MailSessionToUserContextResult.Ok -> LoginViewState.LoggedIn(userId)
         }
@@ -146,5 +158,12 @@ class LoginViewModel @Inject internal constructor(
 
     fun onScreenView() = viewModelScope.launch {
         recordLoginScreenView(LoginScreenId.CHOOSE_INTERNAL_ADDRESS)
+    }
+
+    private inline fun MailSessionGetSessionResult.getOrNull(): StoredSession? {
+        return when (this) {
+            is MailSessionGetSessionResult.Ok -> this.v1
+            is MailSessionGetSessionResult.Error -> null
+        }
     }
 }
