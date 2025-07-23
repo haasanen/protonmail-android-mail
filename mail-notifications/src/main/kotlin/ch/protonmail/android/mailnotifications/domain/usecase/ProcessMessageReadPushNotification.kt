@@ -30,7 +30,7 @@ internal class ProcessMessageReadPushNotification @Inject constructor(
         val userId = notificationData.userPushData.userId
         val notificationId = notificationData.pushData.messageId.hashCode()
 
-        dismissEmailNotificationsForUser(userId, notificationId, isSilentNotification = true)
+        dismissEmailNotificationsForUser(userId, notificationId, true)
         return ListenableWorker.Result.success()
     }
 }
