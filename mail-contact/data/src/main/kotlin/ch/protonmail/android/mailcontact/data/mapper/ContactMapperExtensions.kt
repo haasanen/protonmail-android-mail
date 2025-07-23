@@ -22,7 +22,6 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalAvatarInformation
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactEmail
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactGroupId
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactId
-import ch.protonmail.android.mailcommon.data.mapper.LocalContactItem
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
@@ -43,18 +42,6 @@ fun LocalContactEmail.toContactEmail(): ContactEmail {
         email = this.email,
         isProton = this.isProton,
         lastUsedTime = this.lastUsedTime.toLong(),
-        name = this.name,
-        avatarInformation = this.avatarInformation.toAvatarInformation()
-    )
-}
-
-@Deprecated("Temporary mapping due to conflicts, will be dropped with rust 105.6")
-fun LocalContactItem.toContactEmail(): ContactEmail {
-    return ContactEmail(
-        id = ContactEmailId(this.id.value.toString()),
-        email = this.emails.first().email,
-        isProton = this.emails.first().isProton,
-        lastUsedTime = this.emails.first().lastUsedTime.toLong(),
         name = this.name,
         avatarInformation = this.avatarInformation.toAvatarInformation()
     )

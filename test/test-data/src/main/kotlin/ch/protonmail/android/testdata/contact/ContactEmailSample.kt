@@ -69,7 +69,7 @@ object ContactEmailSample {
     )
 
     val contactGroupSuggestionEmail1 = ContactEmail(
-        ContactEmailId("8"),
+        ContactIdTestData.contactEmailId1,
         "contactgroup@first.email",
         false,
         lastUsedTime = 0,
@@ -77,7 +77,7 @@ object ContactEmailSample {
         avatarInformation = AvatarInformationSample.avatarSample
     )
     val contactGroupSuggestionEmail2 = ContactEmail(
-        ContactEmailId("9"),
+        ContactIdTestData.contactEmailId2,
         "contactgroup@second.email",
         false,
         lastUsedTime = 0,

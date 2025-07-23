@@ -21,10 +21,8 @@ package ch.protonmail.android.testdata.contact.rust
 import ch.protonmail.android.mailcommon.data.mapper.LocalAvatarInformation
 import ch.protonmail.android.mailcommon.data.mapper.LocalContactSuggestion
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
-import ch.protonmail.android.mailcontact.data.mapper.toLocalContactId
 import ch.protonmail.android.testdata.contact.ContactIdTestData
 import uniffi.proton_mail_uniffi.ContactEmailItem
-import uniffi.proton_mail_uniffi.ContactItem
 import uniffi.proton_mail_uniffi.ContactSuggestionKind
 import uniffi.proton_mail_uniffi.Id
 
@@ -40,7 +38,7 @@ object LocalContactSuggestionTestData {
         key = ContactIdTestData.contactSuggestionId.id,
         name = CONTACT_NAME,
         avatarInformation = localAvatar,
-        kind = ContactSuggestionKind.Contact(
+        kind = ContactSuggestionKind.ContactItem(
             ContactEmailItem(
                 id = Id(7uL),
                 email = "contact suggestion email",
@@ -58,37 +56,22 @@ object LocalContactSuggestionTestData {
         avatarInformation = localAvatar,
         kind = ContactSuggestionKind.ContactGroup(
             listOf(
-                ContactItem(
-                    id = ContactIdTestData.contactId3.toLocalContactId(),
+                ContactEmailItem(
+                    id = Id(ContactIdTestData.contactEmailId1.id.toULong()),
+                    email = "contactgroup@first.email",
+                    isProton = false,
+                    lastUsedTime = 0uL,
                     name = "Contact Group First",
-                    avatarInformation = localAvatar,
-                    emails = listOf(
-                        ContactEmailItem(
-                            id = Id(ContactIdTestData.contactEmailId1.id.toULong()),
-                            email = "contactgroup@first.email",
-                            isProton = false,
-                            lastUsedTime = 0uL,
-                            name = "Contact Group First",
-                            avatarInformation = localAvatar
-                        )
-                    )
+                    avatarInformation = localAvatar
                 ),
-                ContactItem(
-                    id = ContactIdTestData.contactId4.toLocalContactId(),
+                ContactEmailItem(
+                    id = Id(ContactIdTestData.contactEmailId2.id.toULong()),
+                    email = "contactgroup@second.email",
+                    isProton = false,
+                    lastUsedTime = 0uL,
                     name = "Contact Group Second",
-                    avatarInformation = localAvatar,
-                    emails = listOf(
-                        ContactEmailItem(
-                            id = Id(ContactIdTestData.contactEmailId2.id.toULong()),
-                            email = "contactgroup@second.email",
-                            isProton = false,
-                            lastUsedTime = 0uL,
-                            name = "Contact Group Second",
-                            avatarInformation = localAvatar
-                        )
-                    )
+                    avatarInformation = localAvatar
                 )
-
             )
         )
     )
