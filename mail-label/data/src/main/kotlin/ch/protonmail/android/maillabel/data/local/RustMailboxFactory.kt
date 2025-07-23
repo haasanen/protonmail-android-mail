@@ -76,6 +76,12 @@ class RustMailboxFactory @Inject constructor(
             }
     }
 
+    suspend fun createSkipCache(userId: UserId, labelId: LocalLabelId): Either<DataError, MailboxWrapper> =
+        mutex.withLock {
+            return executeWithUserSession(userId) { session -> createMailbox(session, labelId) }.flatten()
+        }
+
+
     suspend fun createAllMail(userId: UserId): Either<DataError, MailboxWrapper> = mutex.withLock {
         return executeWithUserSession(userId) { session -> createAllMailMailbox(session) }
             .flatten()

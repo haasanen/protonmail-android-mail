@@ -87,6 +87,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAp
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveViewModeChanged
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
@@ -176,7 +177,8 @@ class MailboxViewModel @Inject constructor(
     private val observePrimaryAccountAvatarItem: ObservePrimaryAccountAvatarItem,
     private val getAttachmentIntentValues: GetAttachmentIntentValues,
     private val deleteAllMessagesInLocation: DeleteAllMessagesInLocation,
-    private val observePageInvalidationEvents: ObservePageInvalidationEvents
+    private val observePageInvalidationEvents: ObservePageInvalidationEvents,
+    private val observeViewModeChanged: ObserveViewModeChanged
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId().filterNotNull()
@@ -516,8 +518,9 @@ class MailboxViewModel @Inject constructor(
             combine(
                 observeMailLabelChangeRequests(),
                 state.observeUnreadFilterState(),
-                state.observeSearchQuery()
-            ) { selectedMailLabel, unreadFilterEnabled, query ->
+                state.observeSearchQuery(),
+                observeViewModeChanged(userId)
+            ) { selectedMailLabel, unreadFilterEnabled, query, _ ->
 
                 val isInSearchMode = state.value.isInSearchMode()
                 if (selectedMailLabel != currentMailLabel || currentSearchModeState != isInSearchMode) {

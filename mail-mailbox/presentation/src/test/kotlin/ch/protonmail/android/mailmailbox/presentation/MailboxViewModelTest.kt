@@ -90,6 +90,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.Mailbo
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.SwipeUiModelSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveViewModeChanged
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -278,6 +279,10 @@ class MailboxViewModelTest {
         every { this@mockk() } returns flowOf()
     }
 
+    private val observeViewModeChanged = mockk<ObserveViewModeChanged> {
+        every { this@mockk(any()) } returns flowOf(Unit)
+    }
+
     private val mailboxViewModel by lazy {
         MailboxViewModel(
             mailboxPagerFactory = pagerFactory,
@@ -318,7 +323,8 @@ class MailboxViewModelTest {
             observePrimaryAccountAvatarItem = observePrimaryAccountAvatarItem,
             deleteAllMessagesInLocation = deleteAllMessagesInLocation,
             getAttachmentIntentValues = getAttachmentIntentValues,
-            observePageInvalidationEvents = observePageInvalidationEvents
+            observePageInvalidationEvents = observePageInvalidationEvents,
+            observeViewModeChanged = observeViewModeChanged
         )
     }
 
@@ -1419,6 +1425,48 @@ class MailboxViewModelTest {
             awaitItem()
             // mailbox pager is recreated only once when view mode for the newly selected location does not change
             verify(exactly = 1) { pagerFactory.create(userId, inboxLabel.id, false, Message, any()) }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `mailbox pager is recreated when view mode changes`() = runTest {
+        // Given
+        val expectedMailBoxState = createMailboxDataState()
+        every { mailboxReducer.newStateFrom(any(), any()) } returns expectedMailBoxState
+        val pagingData = PagingData.from(listOf(unreadMailboxItem))
+        expectPagerMock(
+            selectedLabelId = MailLabelTestData.archiveSystemLabel.id,
+            itemType = Message,
+            pagingDataFlow = flowOf(pagingData)
+        )
+        expectPagerMock(
+            selectedLabelId = MailLabelTestData.archiveSystemLabel.id,
+            itemType = Conversation,
+            pagingDataFlow = flowOf(pagingData)
+        )
+        val viewModeChangedSignal = MutableSharedFlow<Unit>()
+        every { observeViewModeChanged(userId) } returns viewModeChangedSignal
+
+        mailboxViewModel.items.test {
+            // When
+            viewModeChangedSignal.emit(Unit)
+
+            // Then
+            awaitItem()
+            verify {
+                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any())
+            }
+
+            // When
+            expectViewModeForCurrentLocation(ConversationGrouping)
+            viewModeChangedSignal.emit(Unit)
+
+            // Then
+            awaitItem()
+            verify {
+                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Conversation, any())
+            }
             cancelAndIgnoreRemainingEvents()
         }
     }
