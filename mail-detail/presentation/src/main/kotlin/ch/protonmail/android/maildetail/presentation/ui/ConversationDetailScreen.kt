@@ -22,6 +22,7 @@ import android.view.MotionEvent
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.AnimationConstants
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -134,7 +135,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -916,13 +916,14 @@ private fun MessagesContent(
         scrollToIndex?.let { listState.scrollToItem(it) }
         // wait for the final height of our target expanded message before scrolling
         snapshotFlow { finishedResizingOperations }
-            .filter { it && !userScrolled && scrollToIndex != null }
+            .filter {
+                it && !userScrolled && scrollToIndex != null
+            }
             .distinctUntilChanged()
-            // a small delay before collecting so that the list items have a chance to render before scrolling
-            .sample(periodMillis = 200)
+            // creates a delay to wait for item to finish expanding animations
+            .debounce(AnimationConstants.DefaultDurationMillis.toLong())
             .collectLatest {
                 scrollToIndex?.let {
-                    // show one item before
                     listState.animateScrollToItem((it - 1).coerceAtLeast(0))
                 }
             }
