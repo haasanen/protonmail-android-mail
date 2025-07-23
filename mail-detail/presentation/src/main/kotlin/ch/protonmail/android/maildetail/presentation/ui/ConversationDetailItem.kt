@@ -39,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -193,9 +194,9 @@ private fun ColumnScope.ConversationDetailExpandedItem(
     finishedResizing: Boolean
 ) {
     // we are likely scrolling back to the view in the list
-    val viewPreviouslyLoaded = rememberSaveable { cachedWebContentHeight != null }
+    val viewPreviouslyLoaded = remember { cachedWebContentHeight != null }
     val isExpanding = rememberSaveable { mutableStateOf(!viewPreviouslyLoaded) }
-    val isWebViewLoading = rememberSaveable { mutableStateOf(true) }
+    val isWebViewLoading = remember { mutableStateOf(true) }
     val columnHeight = rememberSaveable { mutableIntStateOf(0) }
 
     // play reveal animation on first load, do not play if we are expanding content or if we are scrolling back to
