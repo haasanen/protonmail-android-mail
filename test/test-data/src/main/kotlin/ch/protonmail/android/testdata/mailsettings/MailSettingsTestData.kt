@@ -39,6 +39,8 @@ import me.proton.core.mailsettings.domain.entity.ViewMode
 object MailSettingsTestData {
 
     val mailSettings = buildMailSettings()
+    val mailSettingsMessageViewMode = buildMailSettings(viewMode = IntEnum(1, ViewMode.NoConversationGrouping))
+    val mailSettingsConvoViewMode = buildMailSettings(viewMode = IntEnum(0, ViewMode.ConversationGrouping))
 
     val mailSettingsFromRust = buildMailSettings(
         userId = DeprecatedId.UserId,
@@ -58,7 +60,8 @@ object MailSettingsTestData {
         enableFolderColor: Boolean = true,
         inheritParentFolderColor: Boolean = true,
         confirmLink: Boolean = true,
-        pgpScheme: IntEnum<PackageType> = IntEnum(1, PackageType.ProtonMail)
+        pgpScheme: IntEnum<PackageType> = IntEnum(1, PackageType.ProtonMail),
+        viewMode: IntEnum<ViewMode> = IntEnum(1, ViewMode.NoConversationGrouping)
     ) = MailSettings(
         userId = userId,
         displayName = "displayName",
@@ -68,7 +71,7 @@ object MailSettingsTestData {
         messageButtons = IntEnum(1, MessageButtons.UnreadFirst),
         showImages = showImages,
         showMoved = showMoved,
-        viewMode = IntEnum(1, ViewMode.NoConversationGrouping),
+        viewMode = viewMode,
         viewLayout = IntEnum(1, ViewLayout.Row),
         swipeLeft = swipeLeft?.let { IntEnum(it.value, it) },
         swipeRight = swipeRight?.let { IntEnum(it.value, it) },
