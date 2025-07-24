@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -18,34 +18,9 @@
 
 package ch.protonmail.android.mailcommon.domain.model
 
-enum class Action {
-    Reply,
-    ReplyAll,
-    Forward,
-    MarkRead,
-    MarkUnread,
-    Star,
-    Unstar,
-    Label,
-    Move,
-    Trash,
-    Delete,
-    Archive,
-    Inbox,
-    Spam,
-    ViewInLightMode,
-    ViewInDarkMode,
-    Print,
-    ViewHeaders,
-    ViewHtml,
-    ReportPhishing,
-    Remind,
-    SavePdf,
-    SenderEmails,
-    SaveAttachments,
-    Pin,
-    Unpin,
-    CustomizeToolbar,
-    More,
-    Snooze
+sealed class SnoozeActionOption {
+    object Tomorrow : SnoozeActionOption()
+    object LaterThisWeek : SnoozeActionOption()
+    object ThisWeekend : SnoozeActionOption()
+    object NextWeek : SnoozeActionOption()
 }

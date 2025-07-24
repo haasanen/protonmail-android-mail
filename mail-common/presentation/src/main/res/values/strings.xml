@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2022 Proton Technologies AG
   ~ This file is part of Proton Technologies AG and Proton Mail.
   ~
@@ -64,6 +63,7 @@
     <string name="action_forward_content_description">Forward</string>
     <string name="action_mark_read_content_description">Mark read</string>
     <string name="action_mark_unread_content_description">Mark unread</string>
+    <string name="action_snooze_description">Snooze</string>
     <string name="action_star_content_description">Star</string>
     <string name="action_unstar_content_description">Unstar</string>
     <string name="action_label_content_description">Label as</string>
@@ -86,6 +86,7 @@
     <string name="action_sender_emails_content_description">Set action for future emails from this sender</string>
     <string name="action_save_attachments_content_description">Save attachments</string>
     <string name="action_more_content_description">More</string>
+    <string name="action_snooze_content_description">Snooze</string>
     <string name="common_error_loading_actions">Failed loading actions</string>
     <string name="yesterday">Yesterday</string>
 

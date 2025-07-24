@@ -681,7 +681,8 @@ fun ConversationDetailScreen(
                     onSenderEmail = { Timber.d("conversation onSenderEmail clicked") },
                     onSaveAttachments = { Timber.d("conversation onSaveAttachments clicked") },
                     onMore = actions.onMoreActionsClick,
-                    onCustomizeToolbar = { Timber.d("conversation onCustomizeToolbar clicked") }
+                    onCustomizeToolbar = { Timber.d("conversation onCustomizeToolbar clicked") },
+                    onSnooze = { Timber.d("conversation onSnooze clicked") }
                 )
             )
         }

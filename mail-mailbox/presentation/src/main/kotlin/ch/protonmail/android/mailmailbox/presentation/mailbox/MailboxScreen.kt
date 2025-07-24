@@ -345,6 +345,12 @@ fun MailboxScreen(
 //                            viewModel.submit(MailboxViewAction.CustomizeToolbar)
                             showBottomSheet = false
                             actions.showMissingFeature()
+                        },
+                        onSnooze = {
+                            // Show actionsheet https://protonag.atlassian.net/browse/ET-593
+//                            viewModel.submit(MailboxViewAction.OnSnooze)
+                            showBottomSheet = false
+                            actions.showMissingFeature()
                         }
                     )
                 )
@@ -479,7 +485,8 @@ fun MailboxScreen(
                     onMarkUnread = actions.markAsUnread,
                     onStar = { Timber.d("mailbox onStar clicked") },
                     onUnstar = { Timber.d("mailbox onUnstar clicked") },
-                    onCustomizeToolbar = { Timber.d("mailbox onCustomizeToolbar clicked") }
+                    onCustomizeToolbar = { Timber.d("mailbox onCustomizeToolbar clicked") },
+                    onSnooze = { Timber.d("mailbox onSnooze clicked") }
                 )
             )
         }

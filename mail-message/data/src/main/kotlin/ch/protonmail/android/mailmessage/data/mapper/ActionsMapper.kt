@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.mapper
 
+import ch.protonmail.android.mailcommon.data.BuildConfig
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
@@ -138,9 +139,21 @@ private fun List<MessageAction>.messageActionsToActions() = this.map { messageAc
     }
 }
 
+private const val SNOOZE_DEV_FLAG_ON = false
 fun AllBottomBarMessageActions.toAllBottomBarActions(): AllBottomBarActions {
     return AllBottomBarActions(
-        this.hiddenBottomBarActions.bottombarActionsToActions(),
+        this.hiddenBottomBarActions.bottombarActionsToActions().let {
+            // ET-3899 wire into rust, for now manually adding for testing
+            if (BuildConfig.DEBUG && SNOOZE_DEV_FLAG_ON) {
+                it.toMutableList().apply {
+                    this.add(
+                        Action.Snooze
+                    )
+                }
+            } else {
+                it
+            }
+        },
         this.visibleBottomBarActions.bottombarActionsToActions()
     )
 }
@@ -156,6 +169,7 @@ private fun List<BottomBarActions>.bottombarActionsToActions() = this.map { bott
         BottomBarActions.PermanentDelete -> Action.Delete
         BottomBarActions.Star -> Action.Star
         BottomBarActions.Unstar -> Action.Unstar
+        // ET-3899 map snooze  BottomBarActions.Snooze -> Action.Snooze.v1.toAction()
         is BottomBarActions.NotSpam -> Action.Inbox
     }
 }

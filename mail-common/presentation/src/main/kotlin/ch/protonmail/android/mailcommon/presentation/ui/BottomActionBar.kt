@@ -146,6 +146,7 @@ fun callbackForAction(action: Action, viewActionCallbacks: BottomActionBar.Actio
     Action.More -> viewActionCallbacks.onMore
     Action.Inbox -> viewActionCallbacks.onMoveToInbox
     Action.CustomizeToolbar -> viewActionCallbacks.onCustomizeToolbar
+    Action.Snooze -> viewActionCallbacks.onSnooze
     Action.Pin,
     Action.Unpin,
     Action.Reply,
@@ -205,7 +206,8 @@ object BottomActionBar {
         val onSenderEmail: () -> Unit,
         val onSaveAttachments: () -> Unit,
         val onMore: () -> Unit,
-        val onCustomizeToolbar: () -> Unit
+        val onCustomizeToolbar: () -> Unit,
+        val onSnooze: () -> Unit
     ) {
 
         companion object {
@@ -233,7 +235,8 @@ object BottomActionBar {
                 onSenderEmail = {},
                 onSaveAttachments = {},
                 onMore = {},
-                onCustomizeToolbar = {}
+                onCustomizeToolbar = {},
+                onSnooze = {}
             )
         }
     }

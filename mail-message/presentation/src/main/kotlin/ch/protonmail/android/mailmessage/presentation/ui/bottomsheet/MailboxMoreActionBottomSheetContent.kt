@@ -159,6 +159,7 @@ private fun callbackForAction(action: Action, actionCallbacks: MoreActionBottomS
         Action.Move -> actionCallbacks.onMoveTo
         Action.Inbox -> actionCallbacks.onInbox
         Action.CustomizeToolbar -> actionCallbacks.onCustomizeToolbar
+        Action.Snooze -> actionCallbacks.onSnooze
         else -> {
             {}
         }
@@ -178,7 +179,8 @@ object MoreActionBottomSheetContent {
         val onDelete: () -> Unit,
         val onMoveTo: () -> Unit,
         val onInbox: () -> Unit,
-        val onCustomizeToolbar: () -> Unit
+        val onCustomizeToolbar: () -> Unit,
+        val onSnooze: () -> Unit
     ) {
 
         companion object {
@@ -195,7 +197,8 @@ object MoreActionBottomSheetContent {
                 onDelete = {},
                 onMoveTo = {},
                 onInbox = {},
-                onCustomizeToolbar = {}
+                onCustomizeToolbar = {},
+                onSnooze = {}
             )
         }
     }

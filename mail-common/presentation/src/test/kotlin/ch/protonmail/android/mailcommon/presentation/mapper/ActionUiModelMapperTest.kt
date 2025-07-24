@@ -276,6 +276,18 @@ class ActionUiModelMapperTest(
                         TextUiModel(commonRes.string.action_save_attachments_content_description)
                     )
                 )
+            ),
+            TestParams(
+                "Map Snooze action to UiModel",
+                TestParams.TestInput(
+                    action = Action.Snooze,
+                    expected = ActionUiModel(
+                        Action.Snooze,
+                        R.drawable.ic_proton_clock,
+                        TextUiModel(commonRes.string.action_snooze_description),
+                        TextUiModel(commonRes.string.action_snooze_content_description)
+                    )
+                )
             )
         )
 
