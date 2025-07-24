@@ -257,7 +257,7 @@ private fun OriginQrSignInContent(
     onStart: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LaunchOnScreenView(onScreenView)
+    LaunchOnScreenView(enqueue = onScreenView)
 
     val hints = remember {
         arrayOf(
@@ -336,7 +336,7 @@ private fun OriginQrSignInMissingCameraPermission(
         }
     }
 
-    LaunchOnScreenView(onScreenView)
+    LaunchOnScreenView(enqueue = onScreenView)
 
     Column(
         modifier = modifier
@@ -393,7 +393,7 @@ private fun OriginQrSignInMissingCameraPermission(
 
 @Composable
 private fun OriginQrSignInVerifying(onScreenView: () -> Unit, modifier: Modifier = Modifier) {
-    LaunchOnScreenView(onScreenView)
+    LaunchOnScreenView(enqueue = onScreenView)
 
     Box(
         modifier = modifier

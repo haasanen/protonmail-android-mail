@@ -47,6 +47,7 @@ import uniffi.uniffi_common.UserApiServiceError.TooManyRequests
 import uniffi.uniffi_common.UserApiServiceError.Unauthorized
 import uniffi.uniffi_common.UserApiServiceError.UnprocessableEntity
 
+// todo: dinka all these errors should come localized from Rust.
 fun LoginError.getErrorMessage(context: Context): String = when (this) {
     is LoginError.FlowLogin -> v1.getErrorMessage()
     is LoginError.FlowTotp -> v1.getErrorMessage()

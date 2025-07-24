@@ -222,6 +222,7 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController, activ
                         navController.navigate(Destination.Screen.PrivacyAndSecuritySettings.route)
                     },
                     onSecurityKeysClicked = activityActions.openSecurityKeys,
+                    onPasswordManagementClicked = activityActions.openPasswordManagement,
                     onBackClick = {
                         navController.navigateBack()
                     }

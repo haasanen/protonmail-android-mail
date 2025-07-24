@@ -87,7 +87,7 @@ internal fun OriginSuccessScreen(
 ) {
     val snackbarHostState = remember { ProtonSnackbarHostState() }
 
-    LaunchOnScreenView(onScreenView)
+    LaunchOnScreenView(enqueue = onScreenView)
 
     Scaffold(
         modifier = modifier,

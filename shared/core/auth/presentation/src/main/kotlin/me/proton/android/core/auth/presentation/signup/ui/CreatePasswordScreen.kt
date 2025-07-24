@@ -69,6 +69,7 @@ import me.proton.core.compose.theme.LocalTypography
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.viewmodel.hiltViewModelOrNull
+import me.proton.core.passvalidator.domain.entity.PasswordValidationType
 import me.proton.core.passvalidator.domain.entity.PasswordValidatorToken
 import me.proton.core.passvalidator.presentation.report.PasswordPolicyReport
 import uniffi.proton_mail_uniffi.SignupScreenId
@@ -235,6 +236,7 @@ private fun PasswordField(
                 }
 
                 PasswordPolicyReport(
+                    passwordValidationType = PasswordValidationType.Main,
                     password = password,
                     userId = null,
                     onResult = onPasswordValidatorToken,

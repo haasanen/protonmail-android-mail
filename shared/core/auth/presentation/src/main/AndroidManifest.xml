@@ -50,11 +50,7 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".humanverification.HumanVerificationActivity"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name=".humanverification.HumanVerificationHelpActivity"
+            android:name=".passmanagement.PasswordManagementActivity"
             android:windowSoftInputMode="adjustResize" />
     </application>
 

@@ -30,9 +30,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorFlowManager
 import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputAction.Authenticate
 import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputAction.Load
-import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputAction.Reset
 import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputAction.SecurityKeyResult
 import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputState.Closed
 import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputState.Error
@@ -55,7 +55,7 @@ class Fido2InputViewModel @Inject constructor(
     private val getFidoOptions: GetFidoOptions,
     private val submitFido: SubmitFido,
     private val sessionInterface: MailSession,
-    private val sessionManager: SessionManager
+    private val secondFactorFlowManager: SecondFactorFlowManager
 ) : BaseViewModel<Fido2InputAction, Fido2InputState>(
     initialAction = Load(),
     initialState = Idle,
@@ -67,7 +67,6 @@ class Fido2InputViewModel @Inject constructor(
     override fun onAction(action: Fido2InputAction): Flow<Fido2InputState> {
         return when (action) {
             is Load -> flowOf(Idle)
-            is Reset -> onReset()
             is Authenticate -> onInitiatedReadingSecurityKey()
             is SecurityKeyResult -> handleSecurityKeyResult(action.result, action.proof)
             is Fido2InputAction.ReadSecurityKey -> onReadSecurityKey(action.options)
@@ -91,17 +90,13 @@ class Fido2InputViewModel @Inject constructor(
         emit(Closed)
     }
 
-    private fun onReset() = flow {
-        sessionManager.clearCache()
-        emit(Idle)
-    }
-
     private fun onInitiatedReadingSecurityKey() = flow {
         emit(Fido2InputState.InitiatedReadingSecurityKey)
 
         val fido2Options = getFidoOptions.invoke(userId)
-        if (fido2Options != null) {
-            perform(Fido2InputAction.ReadSecurityKey(fido2Options))
+        val authenticationOptions = fido2Options?.authenticationOptions?.toNative()
+        if (authenticationOptions != null) {
+            perform(Fido2InputAction.ReadSecurityKey(authenticationOptions))
         } else {
             emit(Error.StoredKeysConfig)
         }
@@ -135,10 +130,14 @@ class Fido2InputViewModel @Inject constructor(
 
     private fun submitFido2(proof: SecondFactorProof.Fido2) = flow {
         when (val result = submitFido.execute(userId, proof)) {
-            is SubmitFidoResult.Success -> emitAll(handleLoginSuccess(result.loginFlow))
-            is SubmitFidoResult.Error -> emitAll(onError(result.error))
+            is SubmitFidoResult.Success ->
+                if (result.loginFlow != null)
+                    emitAll(handleLoginSuccess(result.loginFlow))
+                else emit(Fido2InputState.LoggedIn)
+
+            is SubmitFidoResult.ProtonError -> emitAll(onError(result.error))
             is SubmitFidoResult.SessionClosed -> emitAll(onClose())
-            is SubmitFidoResult.GeneralError -> emit(Error.General(result.message))
+            is SubmitFidoResult.OtherError -> emit(Error.General(result.message))
         }
     }
 
@@ -152,10 +151,7 @@ class Fido2InputViewModel @Inject constructor(
     private suspend fun FlowCollector<Fido2InputState>.handleUserContextConversion(loginFlow: LoginFlow) {
         when (val result = submitFido.convertToUserContext(loginFlow)) {
             is MailSessionToUserSessionResult.Error -> emit(Error.General(result.v1.getErrorMessage(context)))
-            is MailSessionToUserSessionResult.Ok -> {
-                result.v1.userSettings()
-                emit(Fido2InputState.LoggedIn)
-            }
+            is MailSessionToUserSessionResult.Ok -> emit(Fido2InputState.LoggedIn)
         }
     }
 }

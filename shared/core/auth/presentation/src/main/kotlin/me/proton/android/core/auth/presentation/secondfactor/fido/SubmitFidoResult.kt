@@ -19,11 +19,10 @@
 package me.proton.android.core.auth.presentation.secondfactor.fido
 
 import uniffi.proton_account_uniffi.LoginFlow
-import uniffi.proton_mail_uniffi.ProtonError
 
 sealed class SubmitFidoResult {
-    data class Success(val loginFlow: LoginFlow) : SubmitFidoResult()
-    data class Error(val error: ProtonError) : SubmitFidoResult()
-    data class GeneralError(val message: String) : SubmitFidoResult()
+    data class Success(val loginFlow: LoginFlow? = null) : SubmitFidoResult()
+    data class ProtonError(val error: uniffi.proton_mail_uniffi.ProtonError) : SubmitFidoResult()
+    data class OtherError(val message: String) : SubmitFidoResult()
     data object SessionClosed : SubmitFidoResult()
 }

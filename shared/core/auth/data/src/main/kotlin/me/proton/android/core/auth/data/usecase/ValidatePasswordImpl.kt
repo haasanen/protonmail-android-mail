@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
 import me.proton.android.core.auth.data.passvalidator.PasswordValidatorServiceHolder
 import me.proton.core.domain.entity.UserId
+import me.proton.core.passvalidator.domain.entity.PasswordValidationType
 import me.proton.core.passvalidator.domain.usecase.ValidatePassword
 import uniffi.proton_account_uniffi.PasswordType
 import javax.inject.Inject
@@ -35,13 +36,22 @@ class ValidatePasswordImpl @Inject constructor(
     private val passwordValidatorServiceHolder: PasswordValidatorServiceHolder
 ) : ValidatePassword {
 
-    override fun invoke(password: String, userId: UserId?): Flow<ValidatePassword.Result> = callbackFlow {
+    override fun invoke(
+        passwordValidationType: PasswordValidationType,
+        password: String,
+        userId: UserId?
+    ): Flow<ValidatePassword.Result> = callbackFlow {
         val callback = PasswordValidatorServiceCallbackImpl(producerScope = this)
         val handle = passwordValidatorServiceHolder.get().validate(
             plainPassword = password,
             callback = callback,
-            passwordType = PasswordType.MAIN
+            passwordType = passwordValidationType.toPasswordType()
         )
         awaitClose { handle.cancel() }
     }.buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+}
+
+internal fun PasswordValidationType.toPasswordType() = when (this) {
+    PasswordValidationType.Main -> PasswordType.MAIN
+    PasswordValidationType.Secondary -> PasswordType.SECONDARY
 }

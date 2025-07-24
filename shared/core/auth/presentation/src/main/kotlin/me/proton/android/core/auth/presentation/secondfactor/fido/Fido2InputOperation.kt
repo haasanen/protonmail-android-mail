@@ -26,7 +26,6 @@ sealed interface Fido2InputOperation
 
 sealed interface Fido2InputAction : Fido2InputOperation {
     data class Load(val unused: Long = System.currentTimeMillis()) : Fido2InputAction
-    data object Reset : Fido2InputAction
     data class Authenticate(val unused: Long = System.currentTimeMillis()) : Fido2InputAction
     data class ReadSecurityKey(val options: Fido2AuthenticationOptions) : Fido2InputAction
 

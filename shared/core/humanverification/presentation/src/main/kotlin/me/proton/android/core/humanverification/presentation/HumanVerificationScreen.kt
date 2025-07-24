@@ -84,7 +84,7 @@ fun HumanVerificationScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val connectivityErrorMessage = stringResource(R.string.presentation_connectivity_issues)
 
-    LaunchOnScreenView(viewModel::onScreenView)
+    LaunchOnScreenView(enqueue = viewModel::onScreenView)
 
     HumanVerificationScreen(
         modifier = modifier,

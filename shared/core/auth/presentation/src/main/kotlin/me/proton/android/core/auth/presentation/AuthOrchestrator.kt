@@ -26,6 +26,7 @@ import me.proton.android.core.auth.presentation.login.LoginOutput
 import me.proton.android.core.auth.presentation.signup.SignupOutput
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 class AuthOrchestrator @Inject constructor() {
 
     private var addAccountWorkflowLauncher: ActivityResultLauncher<Unit>? = null
@@ -34,6 +35,7 @@ class AuthOrchestrator @Inject constructor() {
     private var secondFactorWorkflowLauncher: ActivityResultLauncher<String>? = null
     private var twoPassModeWorkflowLauncher: ActivityResultLauncher<String>? = null
     private var signupWorkflowLauncher: ActivityResultLauncher<Unit>? = null
+    private var passManagementWorkflowLauncher: ActivityResultLauncher<Unit>? = null
     private var securityKeysLauncher: ActivityResultLauncher<Unit>? = null
 
     private var onAddAccountResultListener: ((result: Boolean) -> Unit)? = {}
@@ -42,6 +44,7 @@ class AuthOrchestrator @Inject constructor() {
     private var onSecondFactorResultListener: ((result: Boolean) -> Unit)? = {}
     private var onTwoPassModeResultListener: ((result: Boolean) -> Unit)? = {}
     private var onSignUpResultListener: ((result: SignupOutput?) -> Unit)? = {}
+    private var onPassManagementResultListener: ((result: Boolean) -> Unit)? = {}
     private var onSecurityKeysResultListener: ((result: Boolean) -> Unit)? = {}
 
     private fun registerAddAccountResult(caller: ActivityResultCaller): ActivityResultLauncher<Unit> =
@@ -72,6 +75,11 @@ class AuthOrchestrator @Inject constructor() {
     private fun registerSignUpResult(caller: ActivityResultCaller): ActivityResultLauncher<Unit> =
         caller.registerForActivityResult(StartSignUp) {
             onSignUpResultListener?.invoke(it)
+        }
+
+    private fun registerPassManagementResult(caller: ActivityResultCaller): ActivityResultLauncher<Unit> =
+        caller.registerForActivityResult(StartPasswordManagement) {
+            onPassManagementResultListener?.invoke(it)
         }
 
     private fun registerSecurityKeysResult(caller: ActivityResultCaller): ActivityResultLauncher<Unit> =
@@ -106,6 +114,10 @@ class AuthOrchestrator @Inject constructor() {
         onSignUpResultListener = block
     }
 
+    fun setOnPassManagementResult(block: (result: Boolean) -> Unit) {
+        onPassManagementResultListener = block
+    }
+
     fun setOnSecurityKeysResult(block: (result: Boolean) -> Unit) {
         onSecurityKeysResultListener = block
     }
@@ -122,6 +134,7 @@ class AuthOrchestrator @Inject constructor() {
         secondFactorWorkflowLauncher = registerSecondFactorResult(caller)
         twoPassModeWorkflowLauncher = registerTwoPassModeResult(caller)
         signupWorkflowLauncher = registerSignUpResult(caller)
+        passManagementWorkflowLauncher = registerPassManagementResult(caller)
         securityKeysLauncher = registerSecurityKeysResult(caller)
     }
 
@@ -135,6 +148,7 @@ class AuthOrchestrator @Inject constructor() {
         secondFactorWorkflowLauncher?.unregister()
         twoPassModeWorkflowLauncher?.unregister()
         signupWorkflowLauncher?.unregister()
+        passManagementWorkflowLauncher?.unregister()
         securityKeysLauncher?.unregister()
 
         addAccountWorkflowLauncher = null
@@ -143,6 +157,7 @@ class AuthOrchestrator @Inject constructor() {
         secondFactorWorkflowLauncher = null
         twoPassModeWorkflowLauncher = null
         signupWorkflowLauncher = null
+        passManagementWorkflowLauncher = null
         securityKeysLauncher = null
 
         onAddAccountResultListener = null
@@ -151,6 +166,7 @@ class AuthOrchestrator @Inject constructor() {
         onSecondFactorResultListener = null
         onTwoPassModeResultListener = null
         onSignUpResultListener = null
+        onPassManagementResultListener = null
         onSecurityKeysResultListener = null
     }
 
@@ -194,6 +210,13 @@ class AuthOrchestrator @Inject constructor() {
      */
     fun startSignUpWorkflow() {
         checkRegistered(signupWorkflowLauncher).launch(Unit)
+    }
+
+    /**
+     * Starts the Signup workflow.
+     */
+    fun startPassManagement() {
+        checkRegistered(passManagementWorkflowLauncher).launch(Unit)
     }
 
     /**

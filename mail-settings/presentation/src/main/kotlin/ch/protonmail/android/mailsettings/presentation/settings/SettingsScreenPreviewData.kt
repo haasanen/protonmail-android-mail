@@ -36,6 +36,7 @@ object SettingsScreenPreviewData {
         onSpamFilterSettingsClicked = {},
         onPrivacyAndSecuritySettingsClicked = {},
         onSecurityKeysClicked = {},
+        onPasswordManagementClicked = {},
         onBackClick = {}
     )
 }

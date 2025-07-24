@@ -170,7 +170,9 @@ class LauncherViewModel @Inject constructor(
         with(authOrchestrator) {
             userSessionRepository
                 .observe(context.lifecycle, minActiveState = Lifecycle.State.RESUMED)
-                .onAccountTwoFactorNeeded { startSecondFactorWorkflow(it.userId.toLocalUserId()) }
+                .onAccountTwoFactorNeeded {
+                    startSecondFactorWorkflow(it.userId.toLocalUserId())
+                }
                 .onAccountTwoPasswordNeeded { startTwoPassModeWorkflow(it.userId.toLocalUserId()) }
         }
     }
@@ -197,7 +199,7 @@ class LauncherViewModel @Inject constructor(
     }
 
     private fun onOpenPasswordManagement() {
-        TODO("ET - Not yet implemented")
+        authOrchestrator.startPassManagement()
     }
 
     private fun onOpenRecoveryEmail() {

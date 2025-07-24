@@ -88,6 +88,9 @@ class MainActivity : AppCompatActivity() {
                                 launcherViewModel.submit(LauncherViewModel.Action.OpenSecurityKeys)
                             },
                             finishActivity = { finishAndRemoveTask() },
+                            openPasswordManagement = {
+                                launcherViewModel.submit(LauncherViewModel.Action.OpenPasswordManagement)
+                            },
                             onNavigateToLockScreen = {
                                 val intent = Intent(this, LockScreenActivity::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -175,6 +178,7 @@ class MainActivity : AppCompatActivity() {
         val openProtonCalendarIntentValues: (values: OpenProtonCalendarIntentValues) -> Unit,
         val onNavigateToLockScreen: () -> Unit,
         val openSecurityKeys: () -> Unit,
+        val openPasswordManagement: () -> Unit,
         val finishActivity: () -> Unit
     )
 }

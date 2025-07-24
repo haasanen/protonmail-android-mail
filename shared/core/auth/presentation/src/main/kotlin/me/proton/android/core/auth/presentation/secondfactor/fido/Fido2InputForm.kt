@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -72,12 +71,6 @@ fun Fido2InputForm(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val externalActionValue by externalAction.collectAsStateWithLifecycle()
     val context = LocalContext.current
-
-    DisposableEffect(Unit) {
-        onDispose {
-            viewModel.perform(Fido2InputAction.Reset)
-        }
-    }
 
     LaunchedEffect(externalActionValue) {
         externalActionValue?.let { action ->

@@ -133,7 +133,8 @@ fun MainSettingsScreen(
                 modifier = Modifier.testTag(SettingsScreenTestTags.AccountSettingsItem),
                 accountInfo = state.accountInfoUiModel,
                 onAccountClicked = actions.onAccountClick,
-                onSecurityKeysClicked = actions.onSecurityKeysClicked
+                onSecurityKeysClicked = actions.onSecurityKeysClicked,
+                onPasswordManagementClicked = actions.onPasswordManagementClicked
             )
 
             Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Medium))
@@ -216,7 +217,8 @@ fun AccountSettingsItem(
     modifier: Modifier = Modifier,
     accountInfo: AccountInformationUiModel?,
     onAccountClicked: () -> Unit,
-    onSecurityKeysClicked: () -> Unit
+    onSecurityKeysClicked: () -> Unit,
+    onPasswordManagementClicked: () -> Unit
 ) {
     val header = accountInfo?.name
         ?: stringResource(id = string.mail_settings_no_information_available)
@@ -269,6 +271,14 @@ fun AccountSettingsItem(
             iconRes = R.drawable.ic_proton_key,
             onClick = onSecurityKeysClicked
         )
+
+        SettingsItemDivider()
+
+        ProtonMainSettingsItem(
+            name = stringResource(id = string.mail_settings_change_password),
+            iconRes = R.drawable.ic_proton_lock,
+            onClick = onPasswordManagementClicked
+        )
     }
 }
 
@@ -282,6 +292,7 @@ object MainSettingsScreen {
         val onSpamFilterSettingsClicked: () -> Unit,
         val onPrivacyAndSecuritySettingsClicked: () -> Unit,
         val onSecurityKeysClicked: () -> Unit,
+        val onPasswordManagementClicked: () -> Unit,
         val onBackClick: () -> Unit
     )
 }

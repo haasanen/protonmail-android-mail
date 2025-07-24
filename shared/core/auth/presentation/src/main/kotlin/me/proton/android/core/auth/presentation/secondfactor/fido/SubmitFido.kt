@@ -21,35 +21,31 @@ package me.proton.android.core.auth.presentation.secondfactor.fido
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import me.proton.android.core.auth.presentation.login.getErrorMessage
+import me.proton.android.core.auth.presentation.passmanagement.getErrorMessage
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorFlowCache.SecondFactorFlow
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorFlowManager
 import me.proton.core.auth.fido.domain.entity.SecondFactorProof
 import uniffi.proton_account_uniffi.LoginFlow
 import uniffi.proton_account_uniffi.LoginFlowSubmitFidoResult
-import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
+import uniffi.proton_account_uniffi.PasswordFlow
+import uniffi.proton_account_uniffi.PasswordFlowSubmitFidoResult
 import uniffi.proton_mail_uniffi.MailSessionToUserSessionResult
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class SubmitFido @Inject constructor(
-    private val sessionManager: SessionManager,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val secondFactorFlowManager: SecondFactorFlowManager
 ) {
 
     suspend fun execute(userId: String, proof: SecondFactorProof.Fido2): SubmitFidoResult {
-        val loginFlowResult = sessionManager.getOrResumeLoginFlow(userId)
+        val submitFidoFlow = secondFactorFlowManager.getSecondFactorFlow(userId)
             ?: return SubmitFidoResult.SessionClosed
 
-        return when (loginFlowResult) {
-            is MailSessionResumeLoginFlowResult.Error ->
-                SubmitFidoResult.Error(loginFlowResult.v1)
-
-            is MailSessionResumeLoginFlowResult.Ok ->
-                handleLoginFlowSubmission(loginFlowResult.v1, proof)
+        return when (submitFidoFlow) {
+            is SecondFactorFlow.LoggingIn -> handleLoginFlowSubmission(submitFidoFlow.flow, proof)
+            is SecondFactorFlow.ChangingPassword -> handlePasswordFlowSubmission(submitFidoFlow.flow, proof)
         }
     }
-
-    suspend fun convertToUserContext(loginFlow: LoginFlow): MailSessionToUserSessionResult =
-        sessionManager.convertToUserContext(loginFlow)
 
     private suspend fun handleLoginFlowSubmission(
         loginFlow: LoginFlow,
@@ -58,10 +54,24 @@ class SubmitFido @Inject constructor(
         val fidoData = proof.toFido2Data()
         return when (val submit = loginFlow.submitFido(fidoData)) {
             is LoginFlowSubmitFidoResult.Error ->
-                SubmitFidoResult.GeneralError(submit.v1.getErrorMessage(context))
+                SubmitFidoResult.OtherError(submit.v1.getErrorMessage(context))
 
             is LoginFlowSubmitFidoResult.Ok ->
                 SubmitFidoResult.Success(loginFlow)
         }
     }
+
+    private suspend fun handlePasswordFlowSubmission(
+        passwordFlow: PasswordFlow,
+        proof: SecondFactorProof.Fido2
+    ): SubmitFidoResult {
+        val fidoData = proof.toFido2Data()
+        return when (val submit = passwordFlow.submitFido(fidoData)) {
+            is PasswordFlowSubmitFidoResult.Error -> SubmitFidoResult.OtherError(submit.v1.getErrorMessage(context))
+            is PasswordFlowSubmitFidoResult.Ok -> SubmitFidoResult.Success()
+        }
+    }
+
+    suspend fun convertToUserContext(loginFlow: LoginFlow): MailSessionToUserSessionResult =
+        secondFactorFlowManager.convertToUserContext(loginFlow)
 }

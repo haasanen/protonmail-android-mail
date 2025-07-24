@@ -78,7 +78,6 @@ class PasswordHandler private constructor(
                 }
                 emit(state)
             }
-
             is SignupFlowSubmitPasswordResult.Ok -> {
                 val route = result.v1.mapToNavigationRoute()
                 emit(Success(route))

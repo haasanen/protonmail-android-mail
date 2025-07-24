@@ -18,13 +18,12 @@
 
 package me.proton.android.core.auth.presentation.secondfactor
 
-import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -37,6 +36,7 @@ import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputSt
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Error
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Idle
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Loading
+import me.proton.android.core.auth.presentation.secondfactor.fido.GetFidoOptions
 import me.proton.core.compose.viewmodel.BaseViewModel
 import uniffi.proton_mail_uniffi.LoginScreenId
 import uniffi.proton_mail_uniffi.MailSession
@@ -47,12 +47,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SecondFactorInputViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val savedStateHandle: SavedStateHandle,
-    private val sessionInterface: MailSession
+    private val sessionInterface: MailSession,
+    private val getFidoOptions: GetFidoOptions,
+    private val secondFactorFlowManager: SecondFactorFlowManager
 ) : BaseViewModel<SecondFactorInputAction, SecondFactorInputState>(
     initialState = Idle,
-    initialAction = Load
+    initialAction = Load,
+    sharingStarted = SharingStarted.Lazily
 ) {
 
     private val userId by lazy { savedStateHandle.getUserId() }
@@ -89,19 +91,15 @@ class SecondFactorInputViewModel @Inject constructor(
             return@flow
         }
 
-        when (val loginFlow = sessionInterface.resumeLoginFlow(userId, session.sessionId())) {
-            is MailSessionResumeLoginFlowResult.Error -> emitAll(onError(loginFlow.v1))
-            is MailSessionResumeLoginFlowResult.Ok -> {
-                userAvailableTabs = determineAvailableTabs(loginFlow)
-                val defaultTab = getDefaultTab()
+        userAvailableTabs = determineAvailableTabs()
+        val defaultTab = getDefaultTab()
 
-                emit(Loading(selectedTab = defaultTab, tabs = userAvailableTabs))
-            }
-        }
+        emit(Loading(selectedTab = defaultTab, tabs = userAvailableTabs))
     }
 
-    private fun determineAvailableTabs(loginFlow: MailSessionResumeLoginFlowResult.Ok): List<SecondFactorTab> {
-        val securityKeys = loginFlow.v1.getFidoDetails()?.registeredKeys ?: emptyList()
+    private suspend fun determineAvailableTabs(): List<SecondFactorTab> {
+        val fido2Options = getFidoOptions.invoke(userId)
+        val securityKeys = fido2Options?.registeredKeys ?: emptyList()
         val hasSecurityKeys = securityKeys.isNotEmpty()
 
         return if (hasSecurityKeys) {
@@ -127,17 +125,7 @@ class SecondFactorInputViewModel @Inject constructor(
     }
 
     private fun onClose(): Flow<SecondFactorInputState> = flow {
-        sessionInterface.deleteAccount(userId)
+        secondFactorFlowManager.clearCache()
         emit(Closed)
-    }
-
-    private fun onError(error: ProtonError): Flow<SecondFactorInputState> = flow {
-        val errorMessage = error.getErrorMessage(context)
-        emit(Error.LoginFlow(errorMessage))
-
-        when (error) {
-            is ProtonError.Unexpected -> emitAll(onClose())
-            else -> Unit
-        }
     }
 }

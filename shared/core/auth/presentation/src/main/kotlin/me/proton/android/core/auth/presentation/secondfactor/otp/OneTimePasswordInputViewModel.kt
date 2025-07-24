@@ -28,9 +28,10 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.login.getErrorMessage
+import me.proton.android.core.auth.presentation.passmanagement.getErrorMessage
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
-import me.proton.android.core.auth.presentation.secondfactor.getAccountById
-import me.proton.android.core.auth.presentation.secondfactor.getSessionsForAccount
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorFlowCache.SecondFactorFlow
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorFlowManager
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Authenticate
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Load
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Awaiting2Pass
@@ -43,10 +44,9 @@ import me.proton.core.compose.viewmodel.BaseViewModel
 import uniffi.proton_account_uniffi.LoginError
 import uniffi.proton_account_uniffi.LoginFlow
 import uniffi.proton_account_uniffi.LoginFlowSubmitTotpResult
+import uniffi.proton_account_uniffi.PasswordFlowSubmitTotpResult
 import uniffi.proton_mail_uniffi.MailSession
-import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
 import uniffi.proton_mail_uniffi.MailSessionToUserSessionResult
-import uniffi.proton_mail_uniffi.ProtonError
 import javax.inject.Inject
 
 @HiltViewModel
@@ -54,7 +54,8 @@ class OneTimePasswordInputViewModel @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val savedStateHandle: SavedStateHandle,
-    private val sessionInterface: MailSession
+    private val sessionInterface: MailSession,
+    private val secondFactorFlowManager: SecondFactorFlowManager
 ) : BaseViewModel<OneTimePasswordInputAction, OneTimePasswordInputState>(
     initialState = Idle,
     initialAction = Load()
@@ -92,18 +93,25 @@ class OneTimePasswordInputViewModel @Inject constructor(
 
     private fun onAuthenticate(action: Authenticate): Flow<OneTimePasswordInputState> = flow {
         emit(Loading)
-        val session = sessionInterface.getSessionsForAccount(sessionInterface.getAccountById(userId))?.firstOrNull()
-        val loginFlow =
-            session?.let { sessionInterface.resumeLoginFlow(userId, session.sessionId()) }
-        when (loginFlow) {
-            null -> emitAll(onClose())
-            is MailSessionResumeLoginFlowResult.Error -> emitAll(onError(loginFlow.v1))
-            is MailSessionResumeLoginFlowResult.Ok -> {
-                when (val submit = loginFlow.v1.submitTotp(action.code)) {
-                    is LoginFlowSubmitTotpResult.Error -> emitAll(onSubmitTotpError(submit, loginFlow.v1))
-                    is LoginFlowSubmitTotpResult.Ok -> emitAll(onSuccess(loginFlow.v1))
+        when (val twoFaFlow = secondFactorFlowManager.getSecondFactorFlow(userId)) {
+            is SecondFactorFlow.ChangingPassword -> {
+                when (val submit = twoFaFlow.flow.submitTotp(action.code)) {
+                    is PasswordFlowSubmitTotpResult.Error -> {
+                        emit(Error.LoginFlow(submit.v1.getErrorMessage(context)))
+                    }
+
+                    is PasswordFlowSubmitTotpResult.Ok -> emit(LoggedIn)
                 }
             }
+
+            is SecondFactorFlow.LoggingIn -> {
+                when (val submit = twoFaFlow.flow.submitTotp(action.code)) {
+                    is LoginFlowSubmitTotpResult.Error -> emitAll(onSubmitTotpError(submit, twoFaFlow.flow))
+                    is LoginFlowSubmitTotpResult.Ok -> emitAll(onSuccess(twoFaFlow.flow))
+                }
+            }
+
+            null -> emitAll(onClose())
         }
     }
 
@@ -112,15 +120,6 @@ class OneTimePasswordInputViewModel @Inject constructor(
             emitAll(onError(err.v1))
         } else {
             emitAll(onClose(message = context.getString(R.string.auth_second_factor_incorrect_code)))
-        }
-    }
-
-    private fun onError(error: ProtonError): Flow<OneTimePasswordInputState> = flow {
-        emit(Error.LoginFlow(error.getErrorMessage(context)))
-
-        when (error) {
-            is ProtonError.Unexpected -> emitAll(onClose())
-            else -> Unit
         }
     }
 

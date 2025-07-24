@@ -172,7 +172,7 @@ private fun TargetQrSignInContent(
         }
     }
 
-    LaunchOnScreenView(onScreenView)
+    LaunchOnScreenView(enqueue = onScreenView)
 
     Column(
         modifier = modifier
@@ -264,7 +264,7 @@ private fun TargetQrSignInErrorContent(
     onScreenView: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LaunchOnScreenView(onScreenView)
+    LaunchOnScreenView(enqueue = onScreenView)
 
     Column(
         modifier = modifier
