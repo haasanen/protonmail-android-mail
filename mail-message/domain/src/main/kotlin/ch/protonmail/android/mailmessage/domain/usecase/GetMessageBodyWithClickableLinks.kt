@@ -55,18 +55,15 @@ class GetMessageBodyWithClickableLinks @Inject constructor(
     }
 
     private fun makeUrlsClickable(value: String): String {
-        Timber.d("linkify-body: processing body $value")
         val urlRegex = URL_PATTERN.toRegex()
         Timber.d("linkify-body: using pattern: $URL_PATTERN")
 
         val linkifiedBody = value.replace(urlRegex) { matchedUrl ->
-            Timber.d("linkify-body: found url ${matchedUrl.value}")
 
             val matchedUrlWithProtocol = prependHttpsWhenMissing(matchedUrl.value)
             "<a href=\"$matchedUrlWithProtocol\">${matchedUrl.value}</a>"
         }
 
-        Timber.d("linkify-body: processed body $linkifiedBody")
         return linkifiedBody
     }
 
