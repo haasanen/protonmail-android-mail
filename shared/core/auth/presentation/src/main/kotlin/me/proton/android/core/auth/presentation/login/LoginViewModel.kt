@@ -88,7 +88,7 @@ class LoginViewModel @Inject internal constructor(
         mutableState.emit(LoginViewState.LoggingIn)
 
         val result = getLoginFlow().login(
-            email = username,
+            username = username,
             password = password,
             userBehavior = usernameFrameDetails.toUserBehavior()
         )

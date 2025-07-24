@@ -22,6 +22,7 @@ import me.proton.android.core.auth.presentation.LogTag
 import me.proton.android.core.auth.presentation.R
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_account_uniffi.LoginError
+import uniffi.proton_mail_uniffi.ContextReason
 import uniffi.proton_mail_uniffi.OtherErrorReason
 import uniffi.proton_mail_uniffi.OtherErrorReason.InvalidParameter
 import uniffi.proton_mail_uniffi.OtherErrorReason.Other
@@ -31,6 +32,7 @@ import uniffi.proton_mail_uniffi.ProtonError.OtherReason
 import uniffi.proton_mail_uniffi.ProtonError.ServerError
 import uniffi.proton_mail_uniffi.ProtonError.Unexpected
 import uniffi.proton_mail_uniffi.UnexpectedError
+import uniffi.proton_mail_uniffi.UserContextError
 import uniffi.uniffi_common.UserApiServiceError
 import uniffi.uniffi_common.UserApiServiceError.BadGateway
 import uniffi.uniffi_common.UserApiServiceError.BadRequest
@@ -68,6 +70,9 @@ fun LoginError.getErrorMessage(context: Context): String = when (this) {
     is LoginError.NoAddress -> "LoginError.NoAddress"
     is LoginError.NoLogin -> "LoginError.NoLogin"
     is LoginError.UserKeySetupAborted -> "LoginError.UserKeySetupAborted"
+    is LoginError.DuplicateSession -> "LoginError.DuplicateSession"
+    is LoginError.MissingSession -> "LoginError.MissingSession"
+    is LoginError.SettingsFetch -> "LoginError.SettingsFetch"
 }
 
 fun UserApiServiceError.getErrorMessage() = when (this) {
@@ -115,4 +120,13 @@ fun ProtonError.getErrorMessage(context: Context) = when (this) {
     is ServerError -> v1.getErrorMessage()
     is Unexpected -> v1.getErrorMessage()
     is Network -> context.getString(R.string.presentation_general_connection_error)
+}
+
+fun UserContextError.getErrorMessage(context: Context) = when (this) {
+    is UserContextError.Other -> this.v1.getErrorMessage(context)
+    is UserContextError.Reason -> when (this.v1) {
+        ContextReason.UNKNOWN_LABEL -> "UNKNOWN_LABEL"
+        ContextReason.DUPLICATE_CONTEXT -> "DUPLICATE_CONTEXT "
+        ContextReason.USER_CONTEXT_NOT_INITIALIZED -> "USER_CONTEXT_NOT_INITIALIZED "
+    }
 }

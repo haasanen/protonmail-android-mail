@@ -122,7 +122,7 @@ class TwoPassInputViewModel @Inject constructor(
 
     private fun onSuccess(loginFlow: LoginFlow): Flow<TwoPassInputState> = flow {
         when (val result = sessionInterface.toUserContext(loginFlow)) {
-            is MailSessionToUserContextResult.Error -> emitAll(onError(result.v1))
+            is MailSessionToUserContextResult.Error -> emit(Error.LoginFlow(result.v1.getErrorMessage(context)))
             is MailSessionToUserContextResult.Ok -> emit(TwoPassInputState.Success)
         }
     }

@@ -32,12 +32,12 @@ import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.get
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Authenticate
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Close
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Load
-import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Idle
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Awaiting2Pass
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Closed
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Error
-import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.LoggedIn
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Idle
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Loading
-import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Awaiting2Pass
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.LoggedIn
 import me.proton.core.compose.viewmodel.BaseViewModel
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_account_uniffi.LoginError
@@ -129,7 +129,7 @@ class OneTimePasswordInputViewModel @Inject constructor(
         when (loginFlow.isAwaitingMailboxPassword()) {
             true -> emit(Awaiting2Pass)
             false -> when (val result = sessionInterface.toUserContext(loginFlow)) {
-                is MailSessionToUserContextResult.Error -> emitAll(onError(result.v1))
+                is MailSessionToUserContextResult.Error -> emit(Error.LoginFlow(result.v1.getErrorMessage(context)))
                 is MailSessionToUserContextResult.Ok -> emit(LoggedIn)
             }
         }
