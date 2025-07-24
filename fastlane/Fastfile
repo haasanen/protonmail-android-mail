@@ -112,11 +112,11 @@ platform :android do
     )
   end
 
-  desc "Publish alpha build to firebase alpha group"
+  desc "Publish prod build to firebase alpha group"
   lane :deployToFirebaseInternalAlphaGroup do
     firebase_app_distribution(
-      app: '1:75309174866:android:d354e9e5da9113aa78cf8b',
-      android_artifact_path: 'app/build/outputs/apk/alpha/release/app-alpha-release.apk',
+      app: '1:75309174866:android:e4f24581e0ac723978cf8b',
+      android_artifact_path: 'app/build/outputs/apk/prod/release/app-prod-release.apk',
       # Service account is created on the CI from an env var each run (destroyed when finishing)
       service_credentials_file: '/tmp/service-account.json',
       groups: 'et-closed-alpha-testers',
