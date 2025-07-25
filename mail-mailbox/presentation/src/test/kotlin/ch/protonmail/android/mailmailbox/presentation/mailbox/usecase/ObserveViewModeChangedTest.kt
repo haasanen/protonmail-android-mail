@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveMailSettings
 import ch.protonmail.android.testdata.mailsettings.MailSettingsTestData
+import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -57,6 +58,31 @@ class ObserveViewModeChangedTest {
             settingsFlow.emit(MailSettingsTestData.mailSettingsMessageViewMode)
 
             // Then
+            expectNoEvents()
+        }
+    }
+
+    @Test
+    fun `triggers flow when observe is re-subscribed with new userId even if view mode is the same`() = runTest {
+        // Given
+        val firstUserId = UserIdTestData.userId
+        val secondUserId = UserIdTestData.userId1
+        every { observeMailSettings.invoke(firstUserId) } returns settingsFlow
+        every { observeMailSettings.invoke(secondUserId) } returns settingsFlow
+
+        // When
+        observeViewModeChanged(firstUserId).test {
+            settingsFlow.emit(MailSettingsTestData.mailSettingsMessageViewMode)
+            // Then
+            awaitItem() // first emission due to initializing the use case
+            expectNoEvents()
+        }
+
+        // When
+        observeViewModeChanged(secondUserId).test {
+            settingsFlow.emit(MailSettingsTestData.mailSettingsMessageViewMode)
+            // Then
+            awaitItem() // first emission due to calling the use case with a new userId
             expectNoEvents()
         }
     }

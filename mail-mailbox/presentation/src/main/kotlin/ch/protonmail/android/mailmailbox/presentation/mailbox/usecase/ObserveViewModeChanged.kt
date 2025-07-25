@@ -31,11 +31,12 @@ class ObserveViewModeChanged @Inject constructor(
     private val observeMailSettings: ObserveMailSettings
 ) {
 
-    private var viewModeCache: IntEnum<ViewMode>? = null
+    private var viewModeCache: Pair<UserId, IntEnum<ViewMode>?>? = null
 
     operator fun invoke(userId: UserId): Flow<Unit> = observeMailSettings(userId)
-        .filter { it?.viewMode != viewModeCache }
+        .filter { Pair(userId, it?.viewMode) != viewModeCache }
         .mapLatest {
-            viewModeCache = it?.viewMode
+            viewModeCache = Pair(userId, it?.viewMode)
         }
+
 }
