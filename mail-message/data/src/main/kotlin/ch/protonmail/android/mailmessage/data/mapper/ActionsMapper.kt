@@ -77,7 +77,7 @@ fun List<MoveAction.SystemFolder>.toMailLabels() = this.map { systemAction ->
 
 fun MessageAvailableActions.toAvailableActions(): AvailableActions {
     return AvailableActions(
-        this.replyActions.replyActionsToActions().filterNotNull(),
+        this.replyActions.replyActionsToActions(),
         this.messageActions.messageActionsToActions().filterNotNull(),
         this.moveActions.systemFolderActionsToActions(),
         this.generalActions.generalActionsToActions().filterNotNull()
@@ -171,6 +171,7 @@ private fun List<BottomBarActions>.bottombarActionsToActions() = this.map { bott
         BottomBarActions.Unstar -> Action.Unstar
         // ET-3899 map snooze  BottomBarActions.Snooze -> Action.Snooze.v1.toAction()
         is BottomBarActions.NotSpam -> Action.Inbox
+        BottomBarActions.Snooze -> Action.Snooze
     }
 }
 

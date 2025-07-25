@@ -44,6 +44,7 @@ private fun List<ConversationAction>.conversationActionsToActions() = this.map {
         ConversationAction.MARK_READ -> Action.MarkRead
         ConversationAction.MARK_UNREAD -> Action.MarkUnread
         ConversationAction.DELETE -> Action.Delete
+        ConversationAction.SNOOZE -> Action.Snooze
         ConversationAction.PIN,
         ConversationAction.UNPIN -> {
             Timber.i("rust-message: Found unhandled action while mapping: $messageAction")
