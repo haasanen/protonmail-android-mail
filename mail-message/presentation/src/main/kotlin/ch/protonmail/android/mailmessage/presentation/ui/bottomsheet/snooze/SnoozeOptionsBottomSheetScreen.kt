@@ -46,7 +46,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonButton
 import ch.protonmail.android.design.compose.component.ProtonHorizontallyCenteredProgress
-import ch.protonmail.android.design.compose.component.ProtonSecondaryButton
 import ch.protonmail.android.design.compose.component.protonSecondaryButtonColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -153,7 +152,7 @@ fun UnsnoozeButton(modifier: Modifier = Modifier, onEvent: () -> Unit = {}) {
         elevation = null,
         shape = ProtonTheme.shapes.extraLarge,
         border = null
-    )  {
+    ) {
         Text(
             modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Large),
             text = stringResource(R.string.snooze_sheet_option_unsnooze),
@@ -173,7 +172,7 @@ fun CustomSnoozeButton(modifier: Modifier = Modifier, onEvent: () -> Unit = {}) 
         elevation = null,
         shape = ProtonTheme.shapes.extraLarge,
         border = null
-    )  {
+    ) {
         Column(
             modifier = modifier
                 .padding(all = ProtonDimens.Spacing.Large)
