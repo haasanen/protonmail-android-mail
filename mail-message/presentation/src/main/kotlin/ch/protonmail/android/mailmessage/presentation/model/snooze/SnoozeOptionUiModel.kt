@@ -49,7 +49,7 @@ private fun snoozeUntil(
 
 internal fun SnoozeOption.toSnoozeOptionUiModel() = when (this) {
     is SnoozeOption.NextWeek -> snoozeUntil(
-        R.drawable.ic_proton_suitcase,
+        R.drawable.ic_proton_briefcase,
         R.string.snooze_sheet_option_next_week,
         this.description
     )
