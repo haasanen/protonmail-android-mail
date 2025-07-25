@@ -164,3 +164,12 @@ sealed interface ContactActionsBottomSheetState : BottomSheetContentState {
         ) : ContactActionsBottomSheetEvent
     }
 }
+
+sealed interface SnoozeSheetState : BottomSheetContentState {
+    data object Requested : BottomSheetContentState
+
+    sealed interface SnoozeOptionsBottomSheetOperation : BottomSheetOperation
+    sealed interface SnoozeOptionsBottomSheetEvent : SnoozeOptionsBottomSheetOperation {
+        data object Ready : SnoozeOptionsBottomSheetEvent
+    }
+}

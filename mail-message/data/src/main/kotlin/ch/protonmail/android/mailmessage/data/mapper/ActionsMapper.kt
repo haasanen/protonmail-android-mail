@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmessage.data.mapper
 
-import ch.protonmail.android.mailcommon.data.BuildConfig
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
@@ -139,21 +138,9 @@ private fun List<MessageAction>.messageActionsToActions() = this.map { messageAc
     }
 }
 
-private const val SNOOZE_DEV_FLAG_ON = false
 fun AllBottomBarMessageActions.toAllBottomBarActions(): AllBottomBarActions {
     return AllBottomBarActions(
-        this.hiddenBottomBarActions.bottombarActionsToActions().let {
-            // ET-3899 wire into rust, for now manually adding for testing
-            if (BuildConfig.DEBUG && SNOOZE_DEV_FLAG_ON) {
-                it.toMutableList().apply {
-                    this.add(
-                        Action.Snooze
-                    )
-                }
-            } else {
-                it
-            }
-        },
+        this.hiddenBottomBarActions.bottombarActionsToActions(),
         this.visibleBottomBarActions.bottombarActionsToActions()
     )
 }

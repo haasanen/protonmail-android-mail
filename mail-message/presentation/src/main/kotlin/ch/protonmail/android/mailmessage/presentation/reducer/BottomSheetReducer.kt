@@ -28,12 +28,13 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsB
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAccountSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import javax.inject.Inject
 
 class BottomSheetReducer @Inject constructor(
     private val mailboxMoreActionsBottomSheetReducer: MailboxMoreActionsBottomSheetReducer,
     private val detailMoreActionsBottomSheetReducer: DetailMoreActionsBottomSheetReducer,
-    private val contactActionsBottomSheetReducer: ContactActionsBottomSheetReducer
+    private val contactActionsBottomSheetReducer: ContactActionsBottomSheetReducer,
 ) {
 
     fun newStateFrom(currentState: BottomSheetState?, operation: BottomSheetOperation): BottomSheetState? {
@@ -72,6 +73,12 @@ class BottomSheetReducer @Inject constructor(
             is ManageAccountSheetState.ManageAccountsBottomSheetEvent ->
                 BottomSheetState(
                     contentState = ManageAccountSheetState.Requested,
+                    bottomSheetVisibilityEffect = currentState?.bottomSheetVisibilityEffect ?: Effect.empty()
+                )
+
+            is SnoozeSheetState.SnoozeOptionsBottomSheetEvent ->
+                BottomSheetState(
+                    contentState = SnoozeSheetState.Requested,
                     bottomSheetVisibilityEffect = currentState?.bottomSheetVisibilityEffect ?: Effect.empty()
                 )
 

@@ -106,6 +106,7 @@ import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
@@ -3130,6 +3131,20 @@ class MailboxViewModelTest {
 
         // Then
         verify { mailboxReducer.newStateFrom(any(), MailboxEvent.PaginatorInvalidated(invalidationEvent)) }
+    }
+
+    @Test
+    fun `when RequestSnooze then Snooze bottomsheet is shown`() = runTest {
+        // Given
+        mailboxViewModel.submit(MailboxViewAction.RequestSnoozeBottomSheet)
+        verify {
+            mailboxReducer.newStateFrom(
+                any(),
+                MailboxEvent.MailboxBottomSheetEvent(
+                    SnoozeSheetState.SnoozeOptionsBottomSheetEvent.Ready
+                )
+            )
+        }
     }
 
     private fun returnExpectedStateForBottomBarEvent(

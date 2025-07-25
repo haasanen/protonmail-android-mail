@@ -16,6 +16,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import ch.protonmail.android.maillabel.domain.model.ViewMode
+import kotlinx.coroutines.flow.flow
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -24,9 +25,13 @@ class GetBottomSheetActionsTest {
     private val getAllConversationBottomBarActions = mockk<GetAllConversationBottomBarActions>()
     private val getAllMessageBottomBarActions = mockk<GetAllMessageBottomBarActions>()
 
+    private var snoozeEnabled = false
     private val getBottomSheetActions = GetBottomSheetActions(
         getAllMessageBottomBarActions,
-        getAllConversationBottomBarActions
+        getAllConversationBottomBarActions,
+        flow {
+            emit(snoozeEnabled)
+        }
     )
 
     @Test
@@ -70,6 +75,34 @@ class GetBottomSheetActionsTest {
         // Then
         assertEquals(expected.right(), actual)
     }
+
+    @Test
+    fun `gets available actions for conversations when snooze enabled`() = runTest {
+        // Given
+        snoozeEnabled = true
+        val userId = UserIdSample.Primary
+        val labelId = LabelIdSample.Trash
+        val items = listOf(MailboxItemId("1"))
+        val convoIds = items.map { ConversationId(it.value) }
+        val viewMode = ViewMode.ConversationGrouping
+        val expected = AllBottomBarActions(
+            listOf(Action.Star, Action.Label, Action.Snooze),
+            listOf(Action.Spam, Action.Archive)
+        )
+
+        val input = AllBottomBarActions(
+            listOf(Action.Star, Action.Label),
+            listOf(Action.Spam, Action.Archive)
+        )
+        coEvery { getAllConversationBottomBarActions(userId, labelId, convoIds) } returns input.right()
+
+        // When
+        val actual = getBottomSheetActions(userId, labelId, items, viewMode)
+
+        // Then
+        assertEquals(expected.right(), actual)
+    }
+
 
     @Test
     fun `returns error when failing to get available actions`() = runTest {

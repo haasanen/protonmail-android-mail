@@ -106,6 +106,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsB
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAccountSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
@@ -340,6 +341,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.ClearAll -> handleClearAll()
                 is MailboxViewAction.ClearAllConfirmed -> handleClearAllConfirmed(viewAction)
                 is MailboxViewAction.ClearAllDismissed -> emitNewStateFrom(viewAction)
+                is MailboxViewAction.RequestSnoozeBottomSheet -> showSnoozeOptionsBottomSheet(viewAction)
             }
         }
     }
@@ -811,6 +813,15 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
+
+    private fun showSnoozeOptionsBottomSheet(operation: MailboxViewAction) {
+        emitNewStateFrom(operation)
+        emitNewStateFrom(
+            MailboxEvent.MailboxBottomSheetEvent(
+                SnoozeSheetState.SnoozeOptionsBottomSheetEvent.Ready
+            )
+        )
+    }
 
     private fun showAccountManagerBottomSheet(operation: MailboxViewAction) {
         emitNewStateFrom(operation)

@@ -26,10 +26,12 @@ import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.LinkifyUrlEnabled
 import ch.protonmail.android.mailfeatureflags.domain.ShareViaEnabled
+import ch.protonmail.android.mailfeatureflags.domain.SnoozeEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShareViaEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsExternalEncryptionEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsSnoozeEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import dagger.Module
 import dagger.Provides
@@ -64,6 +66,11 @@ object FeatureFlagsModule {
     fun provideLinkifyUrlEnabled(resolver: FeatureFlagResolver) = resolver.observeFeatureFlag(LinkifyUrlEnabled.key)
 
     @Provides
+    @Singleton
+    @IsSnoozeEnabled
+    fun provideSnoozeEnabled(resolver: FeatureFlagResolver) = resolver.observeFeatureFlag(SnoozeEnabled.key)
+
+    @Provides
     @IntoSet
     @Singleton
     fun provideShareViaDefinition(): FeatureFlagDefinition = ShareViaEnabled
@@ -93,4 +100,9 @@ object FeatureFlagsModule {
     @IntoSet
     @Singleton
     fun provideDataStoreProvider(impl: DataStoreFeatureFlagValueProvider): FeatureFlagValueProvider = impl
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideSnoozeEnabledDefinitions(): FeatureFlagDefinition = SnoozeEnabled
 }

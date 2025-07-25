@@ -148,9 +148,11 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsB
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAccountSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMoreActionBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.snooze.SnoozeOptionsBottomSheetScreen
 import ch.protonmail.android.uicomponents.fab.LazyFab
 import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
 import kotlinx.coroutines.launch
@@ -346,12 +348,7 @@ fun MailboxScreen(
                             showBottomSheet = false
                             actions.showMissingFeature()
                         },
-                        onSnooze = {
-                            // Show actionsheet https://protonag.atlassian.net/browse/ET-593
-//                            viewModel.submit(MailboxViewAction.OnSnooze)
-                            showBottomSheet = false
-                            actions.showMissingFeature()
-                        }
+                        onSnooze = { viewModel.submit(MailboxViewAction.RequestSnoozeBottomSheet) }
                     )
                 )
 
@@ -360,6 +357,7 @@ fun MailboxScreen(
                     viewModel.submit(MailboxViewAction.DismissBottomSheet)
                 })
 
+                is SnoozeSheetState.Requested -> SnoozeOptionsBottomSheetScreen()
                 else -> Unit
             }
         }
@@ -486,7 +484,7 @@ fun MailboxScreen(
                     onStar = { Timber.d("mailbox onStar clicked") },
                     onUnstar = { Timber.d("mailbox onUnstar clicked") },
                     onCustomizeToolbar = { Timber.d("mailbox onCustomizeToolbar clicked") },
-                    onSnooze = { Timber.d("mailbox onSnooze clicked") }
+                    onSnooze = { actions.onSnooze }
                 )
             )
         }
@@ -1138,7 +1136,8 @@ object MailboxScreen {
         val onNavigateToUpselling: (type: UpsellingVisibility) -> Unit,
         val onClearAll: () -> Unit,
         val onClearAllConfirmed: () -> Unit,
-        val onClearAllDismissed: () -> Unit
+        val onClearAllDismissed: () -> Unit,
+        val onSnooze: () -> Unit
     ) {
 
         companion object {
@@ -1196,7 +1195,8 @@ object MailboxScreen {
                 onClearAll = {},
                 onClearAllConfirmed = {},
                 onClearAllDismissed = {},
-                onNavigateToUpselling = {}
+                onNavigateToUpselling = {},
+                onSnooze = {}
             )
         }
     }

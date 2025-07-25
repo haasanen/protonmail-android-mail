@@ -139,6 +139,7 @@ class MailboxReducer @Inject constructor(
                 is MailboxViewAction.RequestLabelAsBottomSheet,
                 is MailboxViewAction.SwipeLabelAsAction,
                 is MailboxViewAction.SwipeMoveToAction,
+                is MailboxViewAction.RequestSnoozeBottomSheet,
                 is MailboxViewAction.RequestManageAccountsBottomSheet -> BottomSheetOperation.Requested
 
                 is MailboxEvent.ErrorRetrievingCustomMailLabels,

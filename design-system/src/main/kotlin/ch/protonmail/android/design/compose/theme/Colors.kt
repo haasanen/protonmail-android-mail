@@ -28,6 +28,9 @@ import androidx.compose.ui.graphics.Color
 
 private object ProtonPalette {
 
+    // ------------------------ Upsell Gradients  -----------------------------
+    val upsell = listOf(Color(0xFF00FF96), Color(0xFF00D9FF), Color(0xFF2A7FFF), Color(0xFFB144F8), Color(0xFFFF4FD8))
+
     // ------------------------ All Colors Light UI -----------------------------
     // Dark Gray Tones
     val Charade = Color(0xFF0F0F0F)
@@ -261,7 +264,8 @@ class ProtonColors(
     sidebarTextSelected: Color,
     sidebarIconNorm: Color,
     sidebarIconWeak: Color,
-    sidebarIconSelected: Color
+    sidebarIconSelected: Color,
+    upsell: List<Color> = ProtonPalette.upsell
 ) {
 
     var isDark: Boolean by mutableStateOf(isDark, structuralEqualityPolicy())
@@ -468,6 +472,9 @@ class ProtonColors(
     var sidebarIconSelected: Color by mutableStateOf(sidebarIconSelected, structuralEqualityPolicy())
         internal set
 
+    var upsell: List<Color> by mutableStateOf(upsell, structuralEqualityPolicy())
+        internal set
+
     @Suppress("LongMethod")
     fun copy(
         isDark: Boolean = this.isDark,
@@ -556,7 +563,8 @@ class ProtonColors(
         sidebarTextSelected: Color = this.sidebarTextSelected,
         sidebarIconNorm: Color = this.sidebarIconNorm,
         sidebarIconWeak: Color = this.sidebarIconWeak,
-        sidebarIconSelected: Color = this.sidebarIconSelected
+        sidebarIconSelected: Color = this.sidebarIconSelected,
+        upsell: List<Color> = this.upsell
     ) = ProtonColors(
         isDark = isDark,
 
@@ -666,7 +674,8 @@ class ProtonColors(
         sidebarTextSelected = sidebarTextSelected,
         sidebarIconNorm = sidebarIconNorm,
         sidebarIconWeak = sidebarIconWeak,
-        sidebarIconSelected = sidebarIconSelected
+        sidebarIconSelected = sidebarIconSelected,
+        upsell = upsell
     )
 
     companion object {

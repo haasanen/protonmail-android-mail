@@ -18,9 +18,12 @@
 
 package ch.protonmail.android.mailcommon.domain.model
 
-sealed class SnoozeActionOption {
-    object Tomorrow : SnoozeActionOption()
-    object LaterThisWeek : SnoozeActionOption()
-    object ThisWeekend : SnoozeActionOption()
-    object NextWeek : SnoozeActionOption()
+sealed class SnoozeOption {
+    data class Tomorrow(val description: String) : SnoozeOption()
+    data class LaterThisWeek(val description: String) : SnoozeOption()
+    data class ThisWeekend(val description: String) : SnoozeOption()
+    data class NextWeek(val description: String) : SnoozeOption()
+
+    object Allowed : SnoozeOption()
+    object UpgradeRequired : SnoozeOption()
 }
