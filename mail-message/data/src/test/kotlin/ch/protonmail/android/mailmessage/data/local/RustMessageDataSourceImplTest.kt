@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
@@ -44,7 +45,6 @@ import ch.protonmail.android.mailmessage.data.usecase.RustReportPhishing
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustUnblockAddress
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
-import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -179,14 +179,14 @@ class RustMessageDataSourceImplTest {
             LocalMessageTestData.SepWeatherForecast,
             LocalMessageTestData.OctWeatherForecast
         )
-        coEvery { rustMessageQuery.getMessages(userId, pageKey) } returns messages
+        coEvery { rustMessageQuery.getMessages(userId, pageKey) } returns messages.right()
 
         // When
         val result = dataSource.getMessages(userId, pageKey)
 
         // Then
         coVerify { rustMessageQuery.getMessages(userId, pageKey) }
-        assertEquals(messages, result)
+        assertEquals(messages.right(), result)
     }
 
     @Test

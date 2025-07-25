@@ -51,12 +51,14 @@ import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
+import uniffi.proton_mail_uniffi.Message
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ThemeOpts
@@ -116,15 +118,12 @@ class RustMessageDataSourceImpl @Inject constructor(
             .onLeft { Timber.e("rust-message: Failed to get remote message $it") }
     }
 
-    override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata> =
+    override suspend fun getMessages(userId: UserId, pageKey: PageKey): Either<PaginationError, List<Message>> =
         withContext(ioDispatcher) {
             Timber.d("rust-message: getMessages for pageKey: $pageKey")
             val messages = rustMessageQuery.getMessages(userId, pageKey)
-            Timber.d("rust-message: paginator returning messages ${messages?.joinToString { it.id.toString() }}")
-            return@withContext messages ?: run {
-                Timber.w("rust-message: paginator returned null result for $pageKey")
-                emptyList()
-            }
+            Timber.d("rust-message: paginator returned ${messages.map { it.joinToString { it.id.toString() } }}")
+            return@withContext messages
         }
 
     override suspend fun getSenderImage(

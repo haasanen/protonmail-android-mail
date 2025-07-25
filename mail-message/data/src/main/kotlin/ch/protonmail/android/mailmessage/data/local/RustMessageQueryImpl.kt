@@ -18,18 +18,21 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
-import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
+import arrow.core.Either
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
+import ch.protonmail.android.mailpagination.data.extension.appendEventToEither
+import ch.protonmail.android.mailpagination.data.extension.filterAppendEvents
+import ch.protonmail.android.mailpagination.data.extension.filterRefreshEvents
+import ch.protonmail.android.mailpagination.data.extension.refreshEventToEither
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.data.model.PagingEvent
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -78,33 +81,28 @@ class RustMessageQueryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata> {
+    override suspend fun getMessages(userId: UserId, pageKey: PageKey): Either<PaginationError, List<Message>> {
         val paginator = messagePaginatorManager.getOrCreatePaginator(userId, pageKey, messagesUpdatedCallback) {
         }.getOrNull()
 
         Timber.v("rust-message: Paging: querying ${pageKey.pageToLoad.name} page for messages")
 
-        val messages = when (pageKey.pageToLoad) {
+        return when (pageKey.pageToLoad) {
             PageToLoad.First,
             PageToLoad.Next -> {
                 paginator?.nextPage()
                 pagingEvents
-                    .filterIsInstance<PagingEvent.Append<Message>>()
-                    .first()
-                    .items
+                    .filterAppendEvents()
+                    .appendEventToEither()
             }
 
             PageToLoad.All -> {
                 paginator?.reload()
                 pagingEvents
-                    .filterIsInstance<PagingEvent.Refresh<Message>>()
-                    .first()
-                    .items
+                    .filterRefreshEvents()
+                    .refreshEventToEither()
             }
         }
-
-        Timber.v("rust-message: init value for messages is $messages")
-        return messages
     }
 
     private fun invalidateLoadedItems() {

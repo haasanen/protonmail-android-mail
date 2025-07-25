@@ -27,6 +27,7 @@ import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 
@@ -42,7 +43,10 @@ interface MessageRepository {
     /**
      * Load all [Message] from local cache for [userId] filtered by [PageKey].
      */
-    suspend fun getMessages(userId: UserId, pageKey: PageKey = PageKey.DefaultPageKey()): List<Message>
+    suspend fun getMessages(
+        userId: UserId,
+        pageKey: PageKey = PageKey.DefaultPageKey()
+    ): Either<PaginationError, List<Message>>
 
     /**
      * Gets a [Message] metadata for [userId] from the local storage

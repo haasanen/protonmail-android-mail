@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailmailbox.domain.usecase
 
 import arrow.core.Either
-import arrow.core.right
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailmailbox.domain.mapper.ConversationMailboxItemMapper
 import ch.protonmail.android.mailmailbox.domain.mapper.MessageMailboxItemMapper
@@ -46,9 +45,9 @@ class GetMailboxItems @Inject constructor(
         type: MailboxItemType,
         pageKey: PageKey = PageKey.DefaultPageKey()
     ): Either<PaginationError, List<MailboxItem>> = when (type) {
-        MailboxItemType.Message -> messageRepository.getMessages(userId, pageKey).let { list ->
+        MailboxItemType.Message -> messageRepository.getMessages(userId, pageKey).map { list ->
             list.map { messageMailboxItemMapper.toMailboxItem(it) }
-        }.right()
+        }
 
         MailboxItemType.Conversation -> conversationRepository.getLocalConversations(userId, pageKey).map { list ->
             list.map { conversationMailboxItemMapper.toMailboxItem(it) }

@@ -65,15 +65,15 @@ class RustMessageRepositoryImplTest {
             LocalMessageTestData.SepWeatherForecast,
             LocalMessageTestData.OctWeatherForecast
         )
-        coEvery { rustMessageDataSource.getMessages(userId, any()) } returns expectedMessages
+        coEvery { rustMessageDataSource.getMessages(userId, any()) } returns expectedMessages.right()
 
         // When
         val result = repository.getMessages(userId, pageKey)
 
         // Then
         coVerify { rustMessageDataSource.getMessages(userId, any()) }
-        assertEquals(expectedMessages.size, result.size)
-        result.forEachIndexed { index, message ->
+        assertEquals(expectedMessages.size, result.getOrNull()!!.size)
+        result.getOrNull()!!.forEachIndexed { index, message ->
             assertEquals(expectedMessages[index].subject, message.subject)
         }
     }

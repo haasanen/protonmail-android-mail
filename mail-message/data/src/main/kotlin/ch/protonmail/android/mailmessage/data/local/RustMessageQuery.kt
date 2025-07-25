@@ -18,10 +18,12 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
-import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
+import arrow.core.Either
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.Message
 
 interface RustMessageQuery {
-    suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata>?
+    suspend fun getMessages(userId: UserId, pageKey: PageKey): Either<PaginationError, List<Message>>
 }

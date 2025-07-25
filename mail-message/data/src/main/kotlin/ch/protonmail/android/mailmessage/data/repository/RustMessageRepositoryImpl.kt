@@ -34,6 +34,7 @@ import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -54,9 +55,9 @@ class RustMessageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<Message> {
+    override suspend fun getMessages(userId: UserId, pageKey: PageKey): Either<PaginationError, List<Message>> {
         return rustMessageDataSource.getMessages(userId, pageKey)
-            .map { it.toMessage() }
+            .map { list -> list.map { it.toMessage() } }
     }
 
     override suspend fun getMessage(userId: UserId, messageId: MessageId): Either<DataError, Message> =

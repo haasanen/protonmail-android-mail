@@ -94,7 +94,7 @@ class RustMessageQueryImplTest {
         val actual = rustMessageQuery.getMessages(userId, pageKey)
 
         // Then
-        assertEquals(expectedMessages, actual)
+        assertEquals(expectedMessages.right(), actual)
         coVerify {
             messagePaginatorManager.getOrCreatePaginator(
                 userId, pageKey, callbackSlot.captured, any()
@@ -129,7 +129,7 @@ class RustMessageQueryImplTest {
         val actual = rustMessageQuery.getMessages(userId, pageKey)
 
         // Then
-        assertEquals(expectedMessages, actual)
+        assertEquals(expectedMessages.right(), actual)
     }
 
     @Test
@@ -159,7 +159,7 @@ class RustMessageQueryImplTest {
         val actual = rustMessageQuery.getMessages(userId, pageKey)
 
         // Then
-        assertEquals(expectedMessages, actual)
+        assertEquals(expectedMessages.right(), actual)
     }
 
     @Test
@@ -190,7 +190,7 @@ class RustMessageQueryImplTest {
         val actual = rustMessageQuery.getMessages(userId, pageKey)
 
         // Then
-        assertEquals(expectedMessages, actual)
+        assertEquals(expectedMessages.right(), actual)
     }
 
     @Test
