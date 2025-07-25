@@ -23,6 +23,6 @@ import ch.protonmail.android.mailpagination.domain.model.PaginationError
 sealed interface PagingEvent<out T> {
     data class Append<T>(val items: List<T>) : PagingEvent<T>
     data class Refresh<T>(val items: List<T>) : PagingEvent<T>
-    data object None : PagingEvent<Nothing>
+    data object Invalidate : PagingEvent<Nothing>
     data class Error<T>(val error: PaginationError) : PagingEvent<T>
 }

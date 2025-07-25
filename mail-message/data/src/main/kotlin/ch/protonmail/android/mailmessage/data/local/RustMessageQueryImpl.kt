@@ -58,7 +58,7 @@ class RustMessageQueryImpl @Inject constructor(
                 is MessageScrollerUpdate.ReplaceBefore -> {
                     // Paging3 doesn't handle granular data updates. Invalidate to cause a full reload
                     invalidateLoadedItems()
-                    PagingEvent.None
+                    PagingEvent.Invalidate
                 }
                 is MessageScrollerUpdate.ReplaceFrom -> {
                     when {
@@ -66,7 +66,7 @@ class RustMessageQueryImpl @Inject constructor(
                         else -> {
                             // Paging3 doesn't handle granular data updates. Invalidate to cause a full reload
                             invalidateLoadedItems()
-                            PagingEvent.None
+                            PagingEvent.Invalidate
                         }
                     }
 
