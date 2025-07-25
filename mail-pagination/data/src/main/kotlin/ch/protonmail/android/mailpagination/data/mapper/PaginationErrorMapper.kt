@@ -23,9 +23,15 @@ import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import uniffi.proton_mail_uniffi.MailScrollerError
 import uniffi.proton_mail_uniffi.MailScrollerErrorReason
+import uniffi.proton_mail_uniffi.ProtonError
 
 fun LocalMailScrollerError.toPaginationError(): PaginationError = when (this) {
-    is MailScrollerError.Other -> PaginationError.Other(this.v1.toDataError())
+    is MailScrollerError.Other -> when (this.v1) {
+        is ProtonError.Network -> PaginationError.Offline
+        is ProtonError.OtherReason,
+        is ProtonError.ServerError,
+        is ProtonError.Unexpected -> PaginationError.Other(this.v1.toDataError())
+    }
     is MailScrollerError.Reason -> when (this.v1) {
         MailScrollerErrorReason.DIRTY -> PaginationError.DirtyPaginationData
     }
