@@ -21,10 +21,10 @@ package ch.protonmail.android.mailmailbox.presentation.paging
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import ch.protonmail.android.mailcommon.domain.model.isOfflineError
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreenState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
-import ch.protonmail.android.mailmailbox.presentation.paging.exception.DataErrorException
+import ch.protonmail.android.mailmailbox.presentation.paging.exception.PaginationErrorException
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import timber.log.Timber
 
 fun LazyPagingItems<MailboxItemUiModel>.mapToUiStates(refreshRequested: Boolean): MailboxScreenState {
@@ -58,19 +58,19 @@ fun LazyPagingItems<MailboxItemUiModel>.mapToUiStates(refreshRequested: Boolean)
 
 fun appendErrorToUiState(pagingItems: LazyPagingItems<MailboxItemUiModel>): MailboxScreenState {
     val exception = (pagingItems.loadState.append as? LoadState.Error)?.error
-    if (exception !is DataErrorException) {
+    if (exception !is PaginationErrorException) {
         return MailboxScreenState.UnexpectedError
     }
 
     return when {
-        exception.error.isOfflineError() -> MailboxScreenState.AppendOfflineError
+        exception.error is PaginationError.Offline -> MailboxScreenState.AppendOfflineError
         else -> MailboxScreenState.AppendError
     }
 }
 
 fun refreshErrorToUiState(pagingItems: LazyPagingItems<MailboxItemUiModel>): MailboxScreenState {
     val exception = (pagingItems.loadState.refresh as? LoadState.Error)?.error
-    if (exception !is DataErrorException) {
+    if (exception !is PaginationErrorException) {
         return MailboxScreenState.UnexpectedError
     }
 
@@ -78,13 +78,13 @@ fun refreshErrorToUiState(pagingItems: LazyPagingItems<MailboxItemUiModel>): Mai
     val listHasItems = pagingItems.itemCount > 0
     if (listHasItems) {
         return when {
-            exception.error.isOfflineError() -> MailboxScreenState.OfflineWithData
+            exception.error is PaginationError.Offline -> MailboxScreenState.OfflineWithData
             else -> MailboxScreenState.ErrorWithData
         }
     }
 
     return when {
-        exception.error.isOfflineError() -> MailboxScreenState.Offline
+        exception.error is PaginationError.Offline -> MailboxScreenState.Offline
         else -> MailboxScreenState.Error
     }
 }

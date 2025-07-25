@@ -24,7 +24,7 @@ import androidx.paging.compose.LazyPagingItems
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreenState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearchMode
-import ch.protonmail.android.mailmailbox.presentation.paging.exception.DataErrorException
+import ch.protonmail.android.mailmailbox.presentation.paging.exception.PaginationErrorException
 import ch.protonmail.android.mailmailbox.presentation.paging.search.mapToUiStatesInSearch
 import ch.protonmail.android.test.annotations.suite.SmokeTest
 import io.mockk.every
@@ -437,9 +437,9 @@ class SearchPagingLoadingStateMapperKtTest {
     ): LazyPagingItems<MailboxItemUiModel> {
         val loadState =
             CombinedLoadStates(
-                refresh = if (refreshError) LoadState.Error(DataErrorException(mockk()))
+                refresh = if (refreshError) LoadState.Error(PaginationErrorException(mockk()))
                 else LoadState.NotLoading(true),
-                append = if (appendError) LoadState.Error(DataErrorException(mockk()))
+                append = if (appendError) LoadState.Error(PaginationErrorException(mockk()))
                 else LoadState.NotLoading(true),
                 prepend = mockk(),
                 source = mockk()

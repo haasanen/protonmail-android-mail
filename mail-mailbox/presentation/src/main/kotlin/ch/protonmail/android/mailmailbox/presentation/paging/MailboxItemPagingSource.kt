@@ -20,11 +20,11 @@ package ch.protonmail.android.mailmailbox.presentation.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import arrow.core.getOrElse
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxItems
+import ch.protonmail.android.mailmailbox.presentation.paging.exception.PaginationErrorException
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.copyWithNewPageToLoad
@@ -52,19 +52,23 @@ class RustMailboxItemPagingSource(
         val key = params.key ?: mailboxPageKey
         val pageKey = key.pageKey
 
-        val items = getMailboxItems(key.userId, type, pageKey).getOrElse {
-            Timber.e("Paging: loadItems: Error $it")
-            return LoadResult.Error(Exception("Failed loading page: $it"))
-        }
+        return getMailboxItems(key.userId, type, pageKey)
+            .fold(
+                ifLeft = {
+                    Timber.e("Paging: loadItems: Error $it")
+                    LoadResult.Error(PaginationErrorException(it))
+                },
+                ifRight = { items ->
+                    val nextPageKey = getNextPageKey(items, key)
+                    logPageLoaded(items, params, pageKey, nextPageKey?.pageKey)
 
-        val nextPageKey = getNextPageKey(items, key)
-        logPageLoaded(items, params, pageKey, nextPageKey?.pageKey)
-
-        return LoadResult.Page(
-            data = items,
-            prevKey = null,
-            nextKey = nextPageKey
-        )
+                    LoadResult.Page(
+                        data = items,
+                        prevKey = null,
+                        nextKey = nextPageKey
+                    )
+                }
+            )
     }
 
     private fun getNextPageKey(items: List<MailboxItem>, key: MailboxPageKey): MailboxPageKey? {

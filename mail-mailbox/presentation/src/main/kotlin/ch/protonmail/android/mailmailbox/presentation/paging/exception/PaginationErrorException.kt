@@ -18,6 +18,6 @@
 
 package ch.protonmail.android.mailmailbox.presentation.paging.exception
 
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 
-class DataErrorException(val error: DataError.Remote) : Exception()
+class PaginationErrorException(val error: PaginationError) : Exception()

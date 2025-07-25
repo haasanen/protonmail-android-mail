@@ -48,7 +48,7 @@ class GetMailboxItemsTest {
             buildMessage(userId, "1", time = 1000, customLabels = emptyList()),
             buildMessage(userId, "2", time = 2000, customLabels = listOf("4").map(::buildLabel)),
             buildMessage(userId, "3", time = 3000, customLabels = listOf("0", "1").map(::buildLabel))
-        )
+        ).right()
     }
     private val conversationRepository = mockk<ConversationRepository> {
         coEvery { getLocalConversations(any(), any()) } returns listOf(
