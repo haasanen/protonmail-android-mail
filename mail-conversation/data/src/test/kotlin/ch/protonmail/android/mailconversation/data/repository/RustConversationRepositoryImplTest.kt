@@ -73,14 +73,14 @@ class RustConversationRepositoryImplTest {
             LocalConversationTestData.AugConversation, LocalConversationTestData.SepConversation
         )
         val expectedConversations = localConversations.map { it.toConversation() }
-        coEvery { rustConversationDataSource.getConversations(userId, any()) } returns localConversations
+        coEvery { rustConversationDataSource.getConversations(userId, any()) } returns localConversations.right()
 
         // When
         val result = rustConversationRepository.getLocalConversations(userId, pageKey)
 
         // Then
         coVerify { rustConversationDataSource.getConversations(userId, any()) }
-        assertEquals(expectedConversations, result)
+        assertEquals(expectedConversations.right(), result)
     }
 
     @Test

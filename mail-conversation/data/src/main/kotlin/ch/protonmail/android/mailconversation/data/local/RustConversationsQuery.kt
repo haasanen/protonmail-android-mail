@@ -18,10 +18,16 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import arrow.core.Either
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import me.proton.core.domain.entity.UserId
 
 interface RustConversationsQuery {
-    suspend fun getConversations(userId: UserId, pageKey: PageKey.DefaultPageKey): List<LocalConversation>?
+
+    suspend fun getConversations(
+        userId: UserId,
+        pageKey: PageKey.DefaultPageKey
+    ): Either<PaginationError, List<LocalConversation>>
 }

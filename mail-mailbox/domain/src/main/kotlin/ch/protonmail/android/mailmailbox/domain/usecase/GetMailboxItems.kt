@@ -19,8 +19,7 @@
 package ch.protonmail.android.mailmailbox.domain.usecase
 
 import arrow.core.Either
-import arrow.core.raise.either
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import arrow.core.right
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailmailbox.domain.mapper.ConversationMailboxItemMapper
 import ch.protonmail.android.mailmailbox.domain.mapper.MessageMailboxItemMapper
@@ -28,6 +27,7 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -45,15 +45,13 @@ class GetMailboxItems @Inject constructor(
         userId: UserId,
         type: MailboxItemType,
         pageKey: PageKey = PageKey.DefaultPageKey()
-    ): Either<DataError, List<MailboxItem>> = either {
-        return@either when (type) {
-            MailboxItemType.Message -> messageRepository.getMessages(userId, pageKey).let { list ->
-                list.map { messageMailboxItemMapper.toMailboxItem(it) }
-            }
+    ): Either<PaginationError, List<MailboxItem>> = when (type) {
+        MailboxItemType.Message -> messageRepository.getMessages(userId, pageKey).let { list ->
+            list.map { messageMailboxItemMapper.toMailboxItem(it) }
+        }.right()
 
-            MailboxItemType.Conversation -> conversationRepository.getLocalConversations(userId, pageKey).let { list ->
-                list.map { conversationMailboxItemMapper.toMailboxItem(it) }
-            }
+        MailboxItemType.Conversation -> conversationRepository.getLocalConversations(userId, pageKey).map { list ->
+            list.map { conversationMailboxItemMapper.toMailboxItem(it) }
         }
     }
 }

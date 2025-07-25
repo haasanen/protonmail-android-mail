@@ -1,6 +1,8 @@
 package ch.protonmail.android.mailconversation.data.local
 
+import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
@@ -9,6 +11,7 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -32,7 +35,6 @@ import org.junit.Test
 import uniffi.proton_mail_uniffi.ConversationScrollerLiveQueryCallback
 import uniffi.proton_mail_uniffi.ConversationScrollerUpdate
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 class RustConversationsQueryImplTest {
 
@@ -52,7 +54,7 @@ class RustConversationsQueryImplTest {
     )
 
     @Test
-    fun `returns null when no valid session is found`() = runTest {
+    fun `returns NoUserSession when no valid session is found`() = runTest {
         // Given
         val userId = UserIdSample.Primary
         val pageKey = PageKey.DefaultPageKey()
@@ -62,7 +64,7 @@ class RustConversationsQueryImplTest {
         val actual = rustConversationsQuery.getConversations(userId, pageKey)
 
         // Then
-        assertNull(actual)
+        assertEquals(PaginationError.Other(DataError.Local.NoUserSession).left(), actual)
         verify { createRustConversationPaginator wasNot Called }
     }
 
@@ -93,7 +95,7 @@ class RustConversationsQueryImplTest {
         val actual = rustConversationsQuery.getConversations(userId, pageKey)
 
         // Then
-        assertEquals(expectedConversations, actual)
+        assertEquals(expectedConversations.right(), actual)
     }
 
     @Test
@@ -129,7 +131,7 @@ class RustConversationsQueryImplTest {
         val actual = rustConversationsQuery.getConversations(userId, pageKey)
 
         // Then
-        assertEquals(expectedConversations, actual)
+        assertEquals(expectedConversations.right(), actual)
     }
 
     @Test
@@ -162,7 +164,7 @@ class RustConversationsQueryImplTest {
         val actual = rustConversationsQuery.getConversations(userId, pageKey)
 
         // Then
-        assertEquals(expectedConversations, actual)
+        assertEquals(expectedConversations.right(), actual)
     }
 
     @Test

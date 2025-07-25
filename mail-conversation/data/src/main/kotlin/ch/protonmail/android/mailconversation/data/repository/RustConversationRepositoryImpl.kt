@@ -34,6 +34,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithM
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -45,9 +46,17 @@ class RustConversationRepositoryImpl @Inject constructor(
     private val rustConversationDataSource: RustConversationDataSource
 ) : ConversationRepository {
 
-    override suspend fun getLocalConversations(userId: UserId, pageKey: PageKey): List<Conversation> {
+    override suspend fun getLocalConversations(
+        userId: UserId,
+        pageKey: PageKey
+    ): Either<PaginationError, List<Conversation>> {
         Timber.v("rust-conversation-repo: getConversations, pageKey: $pageKey")
-        return rustConversationDataSource.getConversations(userId, pageKey).map { it.toConversation() }
+        return rustConversationDataSource.getConversations(userId, pageKey)
+            .map { localConversations ->
+                localConversations.map {
+                    it.toConversation()
+                }
+            }
     }
 
     override fun observeConversation(

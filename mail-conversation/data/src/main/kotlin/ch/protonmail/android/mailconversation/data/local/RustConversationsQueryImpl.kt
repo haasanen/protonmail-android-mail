@@ -18,25 +18,31 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import arrow.core.Either
+import arrow.core.left
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailpagination.data.extension.appendEventToEither
+import ch.protonmail.android.mailpagination.data.extension.filterAppendEvents
+import ch.protonmail.android.mailpagination.data.extension.filterRefreshEvents
+import ch.protonmail.android.mailpagination.data.extension.refreshEventToEither
 import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.data.model.PagingEvent
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailpagination.domain.repository.PageInvalidationRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -71,6 +77,7 @@ class RustConversationsQueryImpl @Inject constructor(
                     invalidateLoadedItems()
                     PagingEvent.Invalidate
                 }
+
                 is ConversationScrollerUpdate.ReplaceFrom -> {
                     when {
                         update.isReplaceAllItemsEvent() -> PagingEvent.Refresh(update.items)
@@ -90,11 +97,14 @@ class RustConversationsQueryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getConversations(userId: UserId, pageKey: PageKey.DefaultPageKey): List<LocalConversation>? {
+    override suspend fun getConversations(
+        userId: UserId,
+        pageKey: PageKey.DefaultPageKey
+    ): Either<PaginationError, List<LocalConversation>> {
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-conversation-query: trying to load conversation with a null session")
-            return null
+            return PaginationError.Other(DataError.Local.NoUserSession).left()
         }
 
         val labelId = pageKey.labelId
@@ -111,26 +121,22 @@ class RustConversationsQueryImpl @Inject constructor(
 
         Timber.v("rust-conversation-query: Paging: querying ${pageKey.pageToLoad.name} page for conversation")
 
-        val items = when (pageKey.pageToLoad) {
+        return when (pageKey.pageToLoad) {
             PageToLoad.First,
             PageToLoad.Next -> {
                 paginatorState?.paginatorWrapper?.nextPage()
                 pagingEvents
-                    .filterIsInstance<PagingEvent.Append<Conversation>>()
-                    .first()
-                    .items
+                    .filterAppendEvents()
+                    .appendEventToEither()
             }
 
             PageToLoad.All -> {
                 paginatorState?.paginatorWrapper?.reload()
                 pagingEvents
-                    .filterIsInstance<PagingEvent.Refresh<Conversation>>()
-                    .first()
-                    .items
+                    .filterRefreshEvents()
+                    .refreshEventToEither()
             }
         }
-
-        return items
     }
 
     private suspend fun initPaginator(pageDescriptor: PageDescriptor, session: MailUserSessionWrapper) {

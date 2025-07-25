@@ -26,6 +26,7 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 
@@ -35,7 +36,10 @@ interface ConversationRepository {
     /**
      * Load all [Conversation] from local cache for [userId].
      */
-    suspend fun getLocalConversations(userId: UserId, pageKey: PageKey = PageKey.DefaultPageKey()): List<Conversation>
+    suspend fun getLocalConversations(
+        userId: UserId,
+        pageKey: PageKey = PageKey.DefaultPageKey()
+    ): Either<PaginationError, List<Conversation>>
 
     /**
      * Get a conversation.

@@ -26,3 +26,13 @@ sealed interface PagingEvent<out T> {
     data object Invalidate : PagingEvent<Nothing>
     data class Error<T>(val error: PaginationError) : PagingEvent<T>
 }
+
+sealed interface AppendEvent<out T> {
+    data class Append<T>(val items: List<T>) : AppendEvent<T>
+    data class Error<T>(val error: PaginationError) : AppendEvent<T>
+}
+
+sealed interface RefreshEvent<out T> {
+    data class Refresh<T>(val items: List<T>) : RefreshEvent<T>
+    data class Error<T>(val error: PaginationError) : RefreshEvent<T>
+}

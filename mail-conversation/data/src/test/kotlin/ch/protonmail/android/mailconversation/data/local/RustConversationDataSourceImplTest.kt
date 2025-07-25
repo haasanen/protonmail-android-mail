@@ -28,10 +28,10 @@ import ch.protonmail.android.mailconversation.data.usecase.GetRustAllConversatio
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
-import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
-import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
+import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -110,14 +110,14 @@ class RustConversationDataSourceImplTest {
             LocalConversationTestData.SepConversation,
             LocalConversationTestData.OctConversation
         )
-        coEvery { rustConversationsQuery.getConversations(userId, pageKey) } returns conversations
+        coEvery { rustConversationsQuery.getConversations(userId, pageKey) } returns conversations.right()
 
         // When
         val result = dataSource.getConversations(userId, pageKey)
 
         // Then
         coVerify { rustConversationsQuery.getConversations(userId, pageKey) }
-        assertEquals(conversations, result)
+        assertEquals(conversations.right(), result)
     }
 
     @Test

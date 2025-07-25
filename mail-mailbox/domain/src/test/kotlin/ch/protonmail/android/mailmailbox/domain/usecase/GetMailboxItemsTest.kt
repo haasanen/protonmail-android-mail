@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmailbox.domain.usecase
 
 import arrow.core.getOrHandle
+import arrow.core.right
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.mailmailbox.domain.mapper.ConversationMailboxItemMapper
@@ -55,7 +56,7 @@ class GetMailboxItemsTest {
             ConversationWithContextTestData.conversation1Labeled,
             ConversationWithContextTestData.conversation2Labeled,
             ConversationWithContextTestData.conversation3Labeled
-        )
+        ).right()
     }
 
     private val messageMailboxItemMapper = MessageMailboxItemMapper()
