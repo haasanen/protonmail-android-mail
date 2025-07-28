@@ -73,7 +73,6 @@ import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcommon.presentation.compose.toPx
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
-import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
@@ -594,7 +593,7 @@ object ComposerScreen {
 
     data class Actions(
         val onCloseComposerClick: () -> Unit,
-        val onSetMessagePasswordClick: (MessageId, SenderEmail) -> Unit,
+        val onSetMessagePasswordClick: () -> Unit,
         val showDraftSavedSnackbar: (MessageId) -> Unit,
         val showMessageSendingSnackbar: () -> Unit,
         val showMessageSendingOfflineSnackbar: () -> Unit,
@@ -608,7 +607,7 @@ object ComposerScreen {
             val Empty = Actions(
 
                 onCloseComposerClick = {},
-                onSetMessagePasswordClick = { _, _ -> },
+                onSetMessagePasswordClick = {},
                 showDraftSavedSnackbar = {},
                 showMessageSendingSnackbar = {},
                 showMessageSendingOfflineSnackbar = {},

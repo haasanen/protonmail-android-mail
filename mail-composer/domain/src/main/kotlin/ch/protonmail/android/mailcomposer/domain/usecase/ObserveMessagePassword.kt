@@ -21,11 +21,9 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
-import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.crypto.common.keystore.KeyStoreCrypto
-import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -36,7 +34,7 @@ class ObserveMessagePassword @Inject constructor(
     private val messagePasswordRepository: MessagePasswordRepository
 ) {
 
-    suspend operator fun invoke(userId: UserId, messageId: MessageId): Flow<MessagePassword?> {
+    suspend operator fun invoke(): Flow<MessagePassword?> {
         Timber.w("ObserveMessagePassword Not implemented")
         return flowOf()
     }

@@ -18,34 +18,25 @@
 
 package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
-import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessagePassword
-import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessagePasswordAction
 import ch.protonmail.android.mailcomposer.presentation.model.MessagePasswordOperation
 import ch.protonmail.android.mailcomposer.presentation.model.SetMessagePasswordState
 import ch.protonmail.android.mailcomposer.presentation.reducer.SetMessagePasswordReducer
-import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
-import io.mockk.runs
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.util.kotlin.EMPTY_STRING
-import me.proton.core.util.kotlin.serialize
 import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -55,37 +46,23 @@ class SetMessagePasswordViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val userId = UserIdTestData.userId
-    private val messageId = MessageIdSample.NewDraftWithSubjectAndBody
-    private val senderEmail = SenderEmail("sender@pm.me")
-
     private val deleteMessagePassword = mockk<DeleteMessagePassword>()
     private val observeMessagePassword = mockk<ObserveMessagePassword>()
     private val saveMessagePassword = mockk<SaveMessagePassword>()
-    private val observePrimaryUserId = mockk<ObservePrimaryUserId> {
-        every { this@mockk.invoke() } returns flowOf(userId)
-    }
-    private val savedStateHandle = mockk<SavedStateHandle> {
-        every {
-            get<String>(SetMessagePasswordScreen.InputParamsKey)
-        } returns SetMessagePasswordScreen.InputParams(messageId, senderEmail).serialize()
-    }
 
     private val setMessagePasswordViewModel by lazy {
         SetMessagePasswordViewModel(
             deleteMessagePassword,
             observeMessagePassword,
             SetMessagePasswordReducer(),
-            saveMessagePassword,
-            observePrimaryUserId,
-            savedStateHandle
+            saveMessagePassword
         )
     }
 
     @Test
     fun `should initialize screen with correct values when message password does not exist`() = runTest {
         // Given
-        coEvery { observeMessagePassword(userId, messageId) } returns flowOf(null)
+        coEvery { observeMessagePassword() } returns flowOf(null)
 
         // When
         setMessagePasswordViewModel.state.test {
@@ -105,10 +82,12 @@ class SetMessagePasswordViewModelTest {
     @Test
     fun `should initialize screen with correct values when message password exists`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val messageId = MessageIdSample.NewDraftWithSubjectAndBody
         val password = "password"
         val passwordHint = "password hint"
         val messagePassword = MessagePassword(userId, messageId, password, passwordHint)
-        coEvery { observeMessagePassword(userId, messageId) } returns flowOf(messagePassword)
+        coEvery { observeMessagePassword() } returns flowOf(messagePassword)
 
         // When
         setMessagePasswordViewModel.state.test {
@@ -129,7 +108,7 @@ class SetMessagePasswordViewModelTest {
     fun `should validate password when validate password action is submitted and password length is 3`() = runTest {
         // Given
         val password = "123"
-        coEvery { observeMessagePassword(userId, messageId) } returns flowOf(null)
+        coEvery { observeMessagePassword() } returns flowOf(null)
 
         // When
         setMessagePasswordViewModel.submit(MessagePasswordOperation.Action.ValidatePassword(password))
@@ -152,7 +131,7 @@ class SetMessagePasswordViewModelTest {
     fun `should validate password when validate password action is submitted and password length is 22`() = runTest {
         // Given
         val password = "1234567890123456789012"
-        coEvery { observeMessagePassword(userId, messageId) } returns flowOf(null)
+        coEvery { observeMessagePassword() } returns flowOf(null)
 
         // When
         setMessagePasswordViewModel.submit(MessagePasswordOperation.Action.ValidatePassword(password))
@@ -175,7 +154,7 @@ class SetMessagePasswordViewModelTest {
     fun `should validate password when validate password action is submitted and password length is 12`() = runTest {
         // Given
         val password = "123456789012"
-        coEvery { observeMessagePassword(userId, messageId) } returns flowOf(null)
+        coEvery { observeMessagePassword() } returns flowOf(null)
 
         // When
         setMessagePasswordViewModel.submit(MessagePasswordOperation.Action.ValidatePassword(password))
@@ -199,7 +178,7 @@ class SetMessagePasswordViewModelTest {
         // Given
         val password = "123456789012"
         val repeatedPassword = "123456789012"
-        coEvery { observeMessagePassword(userId, messageId) } returns flowOf(null)
+        coEvery { observeMessagePassword() } returns flowOf(null)
 
         // When
         setMessagePasswordViewModel.submit(
@@ -227,7 +206,7 @@ class SetMessagePasswordViewModelTest {
         // Given
         val password = "123456789012"
         val repeatedPassword = "123456789"
-        coEvery { observeMessagePassword(userId, messageId) } returns flowOf(null)
+        coEvery { observeMessagePassword() } returns flowOf(null)
 
         // When
         setMessagePasswordViewModel.submit(
@@ -255,8 +234,8 @@ class SetMessagePasswordViewModelTest {
         // Given
         val password = "password"
         val passwordHint = "password hint"
-        coEvery { observeMessagePassword(userId, messageId) } returns flowOf(null)
-        coEvery { saveMessagePassword(userId, messageId, password, passwordHint) } returns Unit.right()
+        coEvery { observeMessagePassword() } returns flowOf(null)
+        coEvery { saveMessagePassword(password, passwordHint) } returns Unit.right()
 
         // When
         setMessagePasswordViewModel.submit(MessagePasswordOperation.Action.ApplyPassword(password, passwordHint))
@@ -265,7 +244,7 @@ class SetMessagePasswordViewModelTest {
         setMessagePasswordViewModel.state.test {
             val item = awaitItem() as SetMessagePasswordState.Data
             assertEquals(Effect.of(Unit), item.exitScreen)
-            coVerify { saveMessagePassword(userId, messageId, password, passwordHint) }
+            coVerify { saveMessagePassword(password, passwordHint) }
         }
     }
 
@@ -274,12 +253,8 @@ class SetMessagePasswordViewModelTest {
         // Given
         val password = "password"
         val passwordHint = "password hint"
-        coEvery { observeMessagePassword(userId, messageId) } returns flowOf(null)
-        coEvery {
-            saveMessagePassword(
-                userId, messageId, password, passwordHint, SaveMessagePasswordAction.Update
-            )
-        } returns Unit.right()
+        coEvery { observeMessagePassword() } returns flowOf(null)
+        coEvery { saveMessagePassword(password, passwordHint) } returns Unit.right()
 
         // When
         setMessagePasswordViewModel.submit(MessagePasswordOperation.Action.UpdatePassword(password, passwordHint))
@@ -288,22 +263,15 @@ class SetMessagePasswordViewModelTest {
         setMessagePasswordViewModel.state.test {
             val item = awaitItem() as SetMessagePasswordState.Data
             assertEquals(Effect.of(Unit), item.exitScreen)
-            coVerify {
-                saveMessagePassword(
-                    userId, messageId, password, passwordHint, SaveMessagePasswordAction.Update
-                )
-            }
+            coVerify { saveMessagePassword(password, passwordHint) }
         }
     }
 
     @Test
     fun `should delete message password and close the screen when delete password action is submitted`() = runTest {
         // Given
-        val password = "password"
-        val passwordHint = "password hint"
-        val messagePassword = MessagePassword(userId, messageId, password, passwordHint)
-        coEvery { observeMessagePassword(userId, messageId) } returns flowOf(messagePassword)
-        coEvery { deleteMessagePassword(userId, messageId) } just runs
+        coEvery { deleteMessagePassword() } returns Unit.right()
+        coEvery { observeMessagePassword() } returns flowOf(null)
 
         // When
         setMessagePasswordViewModel.submit(MessagePasswordOperation.Action.RemovePassword)
@@ -312,7 +280,7 @@ class SetMessagePasswordViewModelTest {
         setMessagePasswordViewModel.state.test {
             val item = awaitItem() as SetMessagePasswordState.Data
             assertEquals(Effect.of(Unit), item.exitScreen)
-            coVerify { deleteMessagePassword(userId, messageId) }
+            coVerify { deleteMessagePassword() }
         }
     }
 }

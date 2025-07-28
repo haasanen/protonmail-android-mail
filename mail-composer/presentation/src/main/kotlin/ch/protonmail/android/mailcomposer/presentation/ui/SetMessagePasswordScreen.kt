@@ -44,16 +44,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.compose.HyperlinkText
-import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
-import ch.protonmail.android.mailcomposer.presentation.R
-import ch.protonmail.android.mailcomposer.presentation.model.MessagePasswordOperation
-import ch.protonmail.android.mailcomposer.presentation.model.SetMessagePasswordState
-import ch.protonmail.android.mailcomposer.presentation.viewmodel.SetMessagePasswordViewModel
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import kotlinx.serialization.Serializable
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonOutlinedButton
 import ch.protonmail.android.design.compose.component.ProtonSolidButton
@@ -61,10 +51,17 @@ import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeInverted
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
-import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
+import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
+import ch.protonmail.android.mailcommon.presentation.compose.HyperlinkText
+import ch.protonmail.android.mailcomposer.presentation.R
+import ch.protonmail.android.mailcomposer.presentation.model.MessagePasswordOperation
+import ch.protonmail.android.mailcomposer.presentation.model.SetMessagePasswordState
+import ch.protonmail.android.mailcomposer.presentation.viewmodel.SetMessagePasswordViewModel
 
 @Composable
 fun SetMessagePasswordScreen(
@@ -294,17 +291,6 @@ private fun MessagePasswordButtons(
 @Composable
 private fun MessagePasswordSpacer(modifier: Modifier = Modifier, height: Dp = ProtonDimens.Spacing.ExtraLarge) {
     Spacer(modifier = modifier.height(height))
-}
-
-object SetMessagePasswordScreen {
-
-    const val InputParamsKey = "InputParams"
-
-    @Serializable
-    data class InputParams(
-        val messageId: MessageId,
-        val senderEmail: SenderEmail
-    )
 }
 
 object SetMessagePasswordContent {

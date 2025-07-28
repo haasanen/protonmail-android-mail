@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteMessagePassword
@@ -27,16 +26,12 @@ import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessagePassword
 import ch.protonmail.android.mailcomposer.presentation.model.MessagePasswordOperation
 import ch.protonmail.android.mailcomposer.presentation.model.SetMessagePasswordState
 import ch.protonmail.android.mailcomposer.presentation.reducer.SetMessagePasswordReducer
-import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import me.proton.core.util.kotlin.deserializeOrNull
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,15 +39,8 @@ class SetMessagePasswordViewModel @Inject constructor(
     private val deleteMessagePassword: DeleteMessagePassword,
     private val observeMessagePassword: ObserveMessagePassword,
     private val reducer: SetMessagePasswordReducer,
-    private val saveMessagePassword: SaveMessagePassword,
-    observePrimaryUserId: ObservePrimaryUserId,
-    savedStateHandle: SavedStateHandle
+    private val saveMessagePassword: SaveMessagePassword
 ) : ViewModel() {
-
-    private val primaryUserId = observePrimaryUserId().filterNotNull()
-    private val inputParams: SetMessagePasswordScreen.InputParams? = savedStateHandle.get<String>(
-        SetMessagePasswordScreen.InputParamsKey
-    )?.deserializeOrNull()
 
     private val mutableState = MutableStateFlow<SetMessagePasswordState>(SetMessagePasswordState.Loading)
     val state: StateFlow<SetMessagePasswordState> = mutableState.asStateFlow()
@@ -86,43 +74,29 @@ class SetMessagePasswordViewModel @Inject constructor(
 
     private fun onApplyPassword(password: String, passwordHint: String?) {
         viewModelScope.launch {
-            inputParams?.let { inputParams ->
-                saveMessagePassword(
-                    password,
-                    passwordHint
-                )
-                emitNewStateFrom(MessagePasswordOperation.Event.ExitScreen)
-            }
+            saveMessagePassword(password, passwordHint)
+            emitNewStateFrom(MessagePasswordOperation.Event.ExitScreen)
         }
     }
 
     private fun onUpdatePassword(password: String, passwordHint: String?) {
         viewModelScope.launch {
-            inputParams?.let { inputParams ->
-                saveMessagePassword(
-                    password,
-                    passwordHint
-                )
-                emitNewStateFrom(MessagePasswordOperation.Event.ExitScreen)
-            }
+            saveMessagePassword(password, passwordHint)
+            emitNewStateFrom(MessagePasswordOperation.Event.ExitScreen)
         }
     }
 
     private fun onRemovePassword() {
         viewModelScope.launch {
-            inputParams?.let {
-                deleteMessagePassword()
-                emitNewStateFrom(MessagePasswordOperation.Event.ExitScreen)
-            }
+            deleteMessagePassword()
+            emitNewStateFrom(MessagePasswordOperation.Event.ExitScreen)
         }
     }
 
     private fun initializeScreen() {
         viewModelScope.launch {
-            inputParams?.let {
-                val messagePassword = observeMessagePassword(primaryUserId.first(), inputParams.messageId).first()
-                emitNewStateFrom(MessagePasswordOperation.Event.InitializeScreen(messagePassword))
-            }
+            val messagePassword = observeMessagePassword().first()
+            emitNewStateFrom(MessagePasswordOperation.Event.InitializeScreen(messagePassword))
         }
     }
 
