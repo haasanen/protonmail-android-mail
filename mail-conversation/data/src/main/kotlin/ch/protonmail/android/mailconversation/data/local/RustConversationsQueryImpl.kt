@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import arrow.atomic.AtomicBoolean
 import arrow.core.Either
 import arrow.core.left
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
@@ -63,6 +64,7 @@ class RustConversationsQueryImpl @Inject constructor(
     private var paginatorState: PaginatorState? = null
     private val paginatorMutex = Mutex()
     private val pagingEvents = MutableSharedFlow<PagingEvent<Conversation>>()
+    private val refreshRequested = AtomicBoolean(false)
 
     private val conversationsUpdatedCallback = object : ConversationScrollerLiveQueryCallback {
         override fun onUpdate(update: ConversationScrollerUpdate) {
@@ -80,7 +82,12 @@ class RustConversationsQueryImpl @Inject constructor(
 
                 is ConversationScrollerUpdate.ReplaceFrom -> {
                     when {
-                        update.isReplaceAllItemsEvent() -> PagingEvent.Refresh(update.items)
+                        // Only refresh when we get a "replace all items" (ie. `ReplaceFrom(0)`) from rust
+                        // *and* the UI did request a refresh (with no request, items wouldn't be updated on UI).
+                        // invalidate otherwise to let UI request the refresh.
+                        update.isReplaceAllItemsEvent() && refreshRequested.getAndSet(false) -> {
+                            PagingEvent.Refresh(update.items)
+                        }
                         else -> {
                             // Paging3 doesn't handle granular data updates. Invalidate to cause a full reload
                             invalidateLoadedItems()
@@ -131,6 +138,7 @@ class RustConversationsQueryImpl @Inject constructor(
             }
 
             PageToLoad.All -> {
+                refreshRequested.set(true)
                 paginatorState?.paginatorWrapper?.reload()
                 pagingEvents
                     .filterRefreshEvents()
