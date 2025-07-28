@@ -51,6 +51,7 @@ dagger = "2.56.2"
 detekt = "1.23.8"
 firebase-bom = "33.14.0"
 guava = "33.4.8-jre"
+haze = "1.6.9"
 timber = "5.0.1"
 javax-inject = "1"
 jna = "5.14.0"
@@ -167,6 +168,7 @@ firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax-inject" }
 java-jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
+haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlinCompileTesting = { module = "dev.zacsweers.kctfork:ksp", version.ref = "kotlin-compile-testing" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
