@@ -18,17 +18,11 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import me.proton.core.domain.entity.UserId
-import timber.log.Timber
+import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
 import javax.inject.Inject
 
-@MissingRustApi
-// To be bound to rust or dropped when implementing send
-class DeleteMessagePassword @Inject constructor() {
+class DeleteMessagePassword @Inject constructor(
+    private val messagePasswordRepository: MessagePasswordRepository
+) {
 
-    suspend operator fun invoke(userId: UserId, messageId: MessageId) {
-        Timber.w("Not implemented")
-    }
-}
+    suspend operator fun invoke() = messagePasswordRepository.removePassword() }

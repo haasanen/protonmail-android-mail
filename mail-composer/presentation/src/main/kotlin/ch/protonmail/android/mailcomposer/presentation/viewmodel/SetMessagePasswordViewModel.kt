@@ -111,7 +111,7 @@ class SetMessagePasswordViewModel @Inject constructor(
     private fun onRemovePassword() {
         viewModelScope.launch {
             inputParams?.let {
-                deleteMessagePassword(primaryUserId.first(), it.messageId)
+                deleteMessagePassword()
                 emitNewStateFrom(MessagePasswordOperation.Event.ExitScreen)
             }
         }
