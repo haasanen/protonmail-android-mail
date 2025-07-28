@@ -24,6 +24,8 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
@@ -36,6 +38,7 @@ import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 
+@Suppress("ComplexInterface", "TooManyFunctions")
 interface RustDraftDataSource {
 
     suspend fun getMessageId(): Either<DataError, MessageId>
@@ -55,6 +58,11 @@ interface RustDraftDataSource {
     suspend fun listSenderAddresses(): Either<DataError, LocalSenderAddresses>
     suspend fun changeSender(sender: SenderEmail): Either<ChangeSenderError, Unit>
     suspend fun body(): Either<DataError, String>
+    suspend fun isPasswordProtected(): Either<DataError, Boolean>
+    suspend fun setExternalEncryptionPassword(
+        password: ExternalEncryptionPassword
+    ): Either<ExternalEncryptionPasswordError, Unit>
+    suspend fun removeExternalEncryptionPassword(): Either<ExternalEncryptionPasswordError, Unit>
 
     fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo>
     fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions>

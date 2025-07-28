@@ -59,4 +59,10 @@ class DraftWrapper(private val rustDraft: Draft) {
     suspend fun listSenderAddresses() = rustDraft.listSenderAddresses()
 
     suspend fun changeSender(address: String) = rustDraft.changeSenderAddress(address)
+
+    suspend fun isPasswordProtected() = rustDraft.isPasswordProtected()
+
+    suspend fun setPassword(password: String, hint: String) = rustDraft.setPassword(password, hint)
+
+    suspend fun removePassword() = rustDraft.removePassword()
 }

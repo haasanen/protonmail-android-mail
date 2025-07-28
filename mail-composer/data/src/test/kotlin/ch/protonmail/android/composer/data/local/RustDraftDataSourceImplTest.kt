@@ -19,6 +19,8 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
@@ -47,8 +49,11 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.DraftChangeSenderAddressResult
 import uniffi.proton_mail_uniffi.DraftCreateMode
+import uniffi.proton_mail_uniffi.DraftIsPasswordProtectedResult
 import uniffi.proton_mail_uniffi.DraftListSenderAddressesResult
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
+import uniffi.proton_mail_uniffi.DraftPasswordError
+import uniffi.proton_mail_uniffi.DraftPasswordErrorReason
 import uniffi.proton_mail_uniffi.DraftSaveError
 import uniffi.proton_mail_uniffi.DraftSaveErrorReason
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
@@ -60,6 +65,7 @@ import uniffi.proton_mail_uniffi.DraftSyncStatus
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.UnexpectedError
+import uniffi.proton_mail_uniffi.VoidDraftPasswordResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
 import kotlin.test.Test
@@ -795,6 +801,103 @@ class RustDraftDataSourceImplTest {
 
         // When
         val actual = dataSource.listSenderAddresses()
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `is password protected returns value when successful`() = runTest {
+        // Given
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.isPasswordProtected() } returns DraftIsPasswordProtectedResult.Ok(true)
+
+        // When
+        val actual = dataSource.isPasswordProtected()
+
+        // Then
+        assertEquals(true.right(), actual)
+    }
+
+    @Test
+    fun `is password protected returns error when unsuccessful`() = runTest {
+        // Given
+        val expected = DataError.Local.Unknown
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.isPasswordProtected() } returns DraftIsPasswordProtectedResult.Error(
+            ProtonError.Unexpected(UnexpectedError.DRAFT)
+        )
+
+        // When
+        val actual = dataSource.isPasswordProtected()
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `set external encryption password returns Unit when successful`() = runTest {
+        // Given
+        val password = "password"
+        val hint = "hint"
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.setPassword(password, hint) } returns VoidDraftPasswordResult.Ok
+
+        // When
+        val actual = dataSource.setExternalEncryptionPassword(ExternalEncryptionPassword(password, hint))
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `set external encryption password returns error when unsuccessful`() = runTest {
+        // Given
+        val expected = ExternalEncryptionPasswordError.PasswordTooShort
+        val password = "password"
+        val hint = "hint"
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.setPassword(password, hint) } returns VoidDraftPasswordResult.Error(
+            DraftPasswordError.Reason(DraftPasswordErrorReason.PASSWORD_TOO_SHORT)
+        )
+
+        // When
+        val actual = dataSource.setExternalEncryptionPassword(ExternalEncryptionPassword(password, hint))
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `remove external encryption password returns Unit when successful`() = runTest {
+        // Given
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.removePassword() } returns VoidDraftPasswordResult.Ok
+
+        // When
+        val actual = dataSource.removeExternalEncryptionPassword()
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `remove external encryption password returns error when unsuccessful`() = runTest {
+        // Given
+        val expected = ExternalEncryptionPasswordError.Other(DataError.Local.Unknown)
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.removePassword() } returns VoidDraftPasswordResult.Error(
+            DraftPasswordError.Other(ProtonError.Unexpected(UnexpectedError.DRAFT))
+        )
+
+        // When
+        val actual = dataSource.removeExternalEncryptionPassword()
 
         // Then
         assertEquals(expected.left(), actual)

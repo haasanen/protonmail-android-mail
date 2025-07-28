@@ -27,6 +27,7 @@ import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toChangeSenderError
 import ch.protonmail.android.composer.data.mapper.toDraftCreateMode
 import ch.protonmail.android.composer.data.mapper.toDraftSendError
+import ch.protonmail.android.composer.data.mapper.toExternalEncryptionPasswordError
 import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.mapper.toLocalDraftWithSyncStatus
 import ch.protonmail.android.composer.data.mapper.toLocalSenderAddresses
@@ -47,6 +48,8 @@ import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
@@ -70,11 +73,13 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
 import uniffi.proton_mail_uniffi.DraftChangeSenderAddressResult
+import uniffi.proton_mail_uniffi.DraftIsPasswordProtectedResult
 import uniffi.proton_mail_uniffi.DraftListSenderAddressesResult
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptionsResult
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
+import uniffi.proton_mail_uniffi.VoidDraftPasswordResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
 import javax.inject.Inject
@@ -261,6 +266,30 @@ class RustDraftDataSourceImpl @Inject constructor(
     }
 
     override suspend fun body(): Either<DataError, String> = withValidRustDraftWrapper { it.body().right() }
+
+    override suspend fun isPasswordProtected(): Either<DataError, Boolean> = withValidRustDraftWrapper {
+        when (val result = it.isPasswordProtected()) {
+            is DraftIsPasswordProtectedResult.Error -> result.v1.toDataError().left()
+            is DraftIsPasswordProtectedResult.Ok -> result.v1.right()
+        }
+    }
+
+    override suspend fun setExternalEncryptionPassword(
+        password: ExternalEncryptionPassword
+    ): Either<ExternalEncryptionPasswordError, Unit> = withValidRustDraftWrapper {
+        when (val result = it.setPassword(password.password, password.hint)) {
+            is VoidDraftPasswordResult.Error -> result.v1.toExternalEncryptionPasswordError().left()
+            VoidDraftPasswordResult.Ok -> Unit.right()
+        }
+    }
+
+    override suspend fun removeExternalEncryptionPassword(): Either<ExternalEncryptionPasswordError, Unit> =
+        withValidRustDraftWrapper {
+            when (val result = it.removePassword()) {
+                is VoidDraftPasswordResult.Error -> result.v1.toExternalEncryptionPasswordError().left()
+                VoidDraftPasswordResult.Ok -> Unit.right()
+            }
+        }
 
     private fun updateRecipients(
         recipientsWrapper: ComposerRecipientListWrapper,
