@@ -44,7 +44,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsettings.presentation.appsettings.AppSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsScreen
-import ch.protonmail.android.mailupselling.presentation.usecase.UpsellingVisibility
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent

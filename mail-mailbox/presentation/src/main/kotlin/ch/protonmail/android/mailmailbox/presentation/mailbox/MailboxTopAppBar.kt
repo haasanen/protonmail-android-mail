@@ -48,6 +48,8 @@ import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxTopAppBarTestTags.NavigationButton
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+import ch.protonmail.android.mailupselling.presentation.ui.UpsellingMailButton
 import ch.protonmail.android.uicomponents.SearchView
 import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountAvatar
@@ -133,6 +135,7 @@ fun MailboxTopAppBar(
                 },
                 actions = {
                     if (uiModel.shouldShowActions) {
+                        UpsellingMailButton(onClick = actions.onNavigateToUpselling)
                         IconButton(
                             modifier = Modifier
                                 .size(ProtonDimens.DefaultButtonMinHeight)
@@ -240,7 +243,8 @@ object MailboxTopAppBar {
         val onSearch: (query: String) -> Unit,
         val onOpenUpsellingPage: () -> Unit,
         val onCloseUpsellingPage: () -> Unit,
-        val onAccountAvatarClicked: () -> Unit
+        val onAccountAvatarClicked: () -> Unit,
+        val onNavigateToUpselling: (type: UpsellingVisibility) -> Unit
     )
 }
 
@@ -282,7 +286,8 @@ fun LoadingMailboxTopAppBarPreview() {
             onSearch = {},
             onOpenUpsellingPage = {},
             onCloseUpsellingPage = {},
-            onAccountAvatarClicked = {}
+            onAccountAvatarClicked = {},
+            onNavigateToUpselling = {}
         )
     )
 }
@@ -308,7 +313,8 @@ fun MailboxTopAppBarPreview() {
             onSearch = {},
             onOpenUpsellingPage = {},
             onCloseUpsellingPage = {},
-            onAccountAvatarClicked = {}
+            onAccountAvatarClicked = {},
+            onNavigateToUpselling = {}
         )
     )
 }

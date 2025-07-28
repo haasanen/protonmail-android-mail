@@ -150,6 +150,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAc
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMoreActionBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.uicomponents.fab.LazyFab
 import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
 import kotlinx.coroutines.launch
@@ -443,7 +444,8 @@ fun MailboxScreen(
                         onSearch = { query -> actions.onSearchQuery(query) },
                         onOpenUpsellingPage = actions.onOpenUpsellingPage,
                         onCloseUpsellingPage = actions.onCloseUpsellingPage,
-                        onAccountAvatarClicked = actions.onAccountAvatarClicked
+                        onAccountAvatarClicked = actions.onAccountAvatarClicked,
+                        onNavigateToUpselling = actions.onNavigateToUpselling
                     )
                 )
 
@@ -1133,6 +1135,7 @@ object MailboxScreen {
         val onOpenUpsellingPage: () -> Unit,
         val onCloseUpsellingPage: () -> Unit,
         val onAccountAvatarClicked: () -> Unit,
+        val onNavigateToUpselling: (type: UpsellingVisibility) -> Unit,
         val onClearAll: () -> Unit,
         val onClearAllConfirmed: () -> Unit,
         val onClearAllDismissed: () -> Unit
@@ -1192,7 +1195,8 @@ object MailboxScreen {
                 onAttachmentReady = {},
                 onClearAll = {},
                 onClearAllConfirmed = {},
-                onClearAllDismissed = {}
+                onClearAllDismissed = {},
+                onNavigateToUpselling = {}
             )
         }
     }
