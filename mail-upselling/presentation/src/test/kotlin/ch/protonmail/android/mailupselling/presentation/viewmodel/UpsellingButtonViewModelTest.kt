@@ -22,16 +22,21 @@ import app.cash.turbine.test
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingButtonState
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveMailboxOneClickUpsellingVisibility
+import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class UpsellingButtonViewModelTest {
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     private val observeVisibilityUseCase = mockk<ObserveMailboxOneClickUpsellingVisibility>()
 
