@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model
 
-import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
 
 sealed interface MessagePasswordOperation {
     sealed interface Action : MessagePasswordOperation {
@@ -29,7 +29,7 @@ sealed interface MessagePasswordOperation {
         object RemovePassword : Action
     }
     sealed interface Event : MessagePasswordOperation {
-        data class InitializeScreen(val messagePassword: MessagePassword?) : Event
+        data class InitializeScreen(val messagePassword: ExternalEncryptionPassword?) : Event
         data class PasswordValidated(val hasMessagePasswordError: Boolean) : Event
         data class RepeatedPasswordValidated(val hasRepeatedMessagePasswordError: Boolean) : Event
         object ExitScreen : Event

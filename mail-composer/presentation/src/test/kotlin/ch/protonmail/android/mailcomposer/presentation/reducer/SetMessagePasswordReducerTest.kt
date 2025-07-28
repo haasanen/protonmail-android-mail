@@ -19,11 +19,9 @@
 package ch.protonmail.android.mailcomposer.presentation.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
 import ch.protonmail.android.mailcomposer.presentation.model.MessagePasswordOperation
 import ch.protonmail.android.mailcomposer.presentation.model.SetMessagePasswordState
-import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.testdata.user.UserIdTestData
 import me.proton.core.util.kotlin.EMPTY_STRING
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,7 +47,7 @@ class SetMessagePasswordReducerTest(
 
         private const val Password = "password"
         private const val Hint = "hint"
-        private val messagePassword = MessagePassword(UserIdTestData.userId, MessageIdSample.EmptyDraft, Password, Hint)
+        private val messagePassword = ExternalEncryptionPassword(Password, Hint)
 
         private val testInputList = listOf(
             TestInput(

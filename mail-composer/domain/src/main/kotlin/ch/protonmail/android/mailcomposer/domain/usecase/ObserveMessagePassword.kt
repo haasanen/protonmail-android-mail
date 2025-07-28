@@ -19,23 +19,19 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
-import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import me.proton.core.crypto.common.keystore.KeyStoreCrypto
 import timber.log.Timber
 import javax.inject.Inject
 
 @MissingRustApi
 // To be bound to rust or dropped when implementing send
 class ObserveMessagePassword @Inject constructor(
-    private val keyStoreCrypto: KeyStoreCrypto,
     private val messagePasswordRepository: MessagePasswordRepository
 ) {
 
-    suspend operator fun invoke(): Flow<MessagePassword?> {
+    suspend operator fun invoke(): ExternalEncryptionPassword? {
         Timber.w("ObserveMessagePassword Not implemented")
-        return flowOf()
+        return null
     }
 }
