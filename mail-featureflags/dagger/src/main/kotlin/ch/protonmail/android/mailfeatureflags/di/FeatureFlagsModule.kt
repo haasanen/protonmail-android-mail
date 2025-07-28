@@ -21,10 +21,12 @@ package ch.protonmail.android.mailfeatureflags.di
 import ch.protonmail.android.mailfeatureflags.data.local.DataStoreFeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.data.local.DefaultFeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.DebugInspectDbEnabled
+import ch.protonmail.android.mailfeatureflags.domain.ExternalEncryptionEnabled
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.LinkifyUrlEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsExternalEncryptionEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import dagger.Module
@@ -37,6 +39,17 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object FeatureFlagsModule {
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideExtEncryptionEnabledDefinitions(): FeatureFlagDefinition = ExternalEncryptionEnabled
+
+    @Provides
+    @Singleton
+    @IsExternalEncryptionEnabled
+    fun provideExternalEncryptionEnabled(resolver: FeatureFlagResolver) =
+        resolver.observeFeatureFlag(ExternalEncryptionEnabled.key)
 
     @Provides
     @IntoSet

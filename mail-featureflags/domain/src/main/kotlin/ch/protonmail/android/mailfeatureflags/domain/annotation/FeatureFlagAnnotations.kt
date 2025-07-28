@@ -22,6 +22,10 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class IsExternalEncryptionEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class IsLinkifyUrlsEnabled
 
 @Qualifier

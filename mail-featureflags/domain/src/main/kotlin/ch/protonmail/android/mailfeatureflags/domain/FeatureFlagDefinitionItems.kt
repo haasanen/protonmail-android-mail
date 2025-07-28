@@ -36,3 +36,11 @@ data object LinkifyUrlEnabled : FeatureFlagDefinition(
     description = "Makes urls clickable in Message Detail",
     defaultValue = true
 )
+
+data object ExternalEncryptionEnabled : FeatureFlagDefinition(
+    key = "external_encryption_enabled",
+    name = "External Encryption",
+    category = FeatureFlagCategory.Details,
+    description = "Allow to set password to encrypt message to external recipients",
+    defaultValue = true
+)
