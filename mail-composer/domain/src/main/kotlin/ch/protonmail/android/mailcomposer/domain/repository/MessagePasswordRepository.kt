@@ -20,23 +20,12 @@ package ch.protonmail.android.mailcomposer.domain.repository
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import kotlinx.coroutines.flow.Flow
-import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
 
 interface MessagePasswordRepository {
 
-    suspend fun saveMessagePassword(messagePassword: MessagePassword): Either<DataError.Local, Unit>
-
-    suspend fun updateMessagePassword(
-        userId: UserId,
-        messageId: MessageId,
-        password: String,
-        passwordHint: String?
-    ): Either<DataError.Local, Unit>
-
-    suspend fun observeMessagePassword(userId: UserId, messageId: MessageId): Flow<MessagePassword?>
-
-    suspend fun deleteMessagePassword(userId: UserId, messageId: MessageId)
+    suspend fun isPasswordProtected(): Either<DataError, Boolean>
+    suspend fun savePassword(password: ExternalEncryptionPassword): Either<ExternalEncryptionPasswordError, Unit>
+    suspend fun removePassword(): Either<ExternalEncryptionPasswordError, Unit>
 }

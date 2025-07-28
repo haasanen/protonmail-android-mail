@@ -19,40 +19,24 @@
 package ch.protonmail.android.composer.data.repository
 
 import arrow.core.Either
-import arrow.core.left
+import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
-class MessagePasswordRepositoryImpl @Inject constructor() : MessagePasswordRepository {
+class MessagePasswordRepositoryImpl @Inject constructor(
+    private val draftDataSource: RustDraftDataSource
+) : MessagePasswordRepository {
 
-    override suspend fun saveMessagePassword(messagePassword: MessagePassword): Either<DataError.Local, Unit> {
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
-    }
+    override suspend fun isPasswordProtected(): Either<DataError, Boolean> = draftDataSource.isPasswordProtected()
 
-    override suspend fun updateMessagePassword(
-        userId: UserId,
-        messageId: MessageId,
-        password: String,
-        passwordHint: String?
-    ): Either<DataError.Local, Unit> {
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
-    }
+    override suspend fun savePassword(
+        password: ExternalEncryptionPassword
+    ): Either<ExternalEncryptionPasswordError, Unit> = draftDataSource.setExternalEncryptionPassword(password)
 
-    override suspend fun observeMessagePassword(userId: UserId, messageId: MessageId): Flow<MessagePassword?> {
-        Timber.w("Not implemented")
-        return flowOf()
-    }
+    override suspend fun removePassword(): Either<ExternalEncryptionPasswordError, Unit> =
+        draftDataSource.removeExternalEncryptionPassword()
 
-    override suspend fun deleteMessagePassword(userId: UserId, messageId: MessageId) {
-        Timber.w("Not implemented")
-    }
 }
