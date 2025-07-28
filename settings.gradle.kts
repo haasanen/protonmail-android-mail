@@ -133,6 +133,10 @@ include(":mail-session:data")
 include(":mail-session:domain")
 include(":mail-session:presentation")
 
+include(":mail-upselling:dagger")
+include(":mail-upselling:domain")
+include(":mail-upselling:presentation")
+
 include(":mail-legacy-migration:dagger")
 include(":mail-legacy-migration:data")
 include(":mail-legacy-migration:domain")
