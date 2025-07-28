@@ -19,45 +19,18 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
-import arrow.core.raise.either
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
-import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import me.proton.core.crypto.common.keystore.KeyStoreCrypto
-import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-@MissingRustApi
-// Rust not exposing API to save message password yet
 class SaveMessagePassword @Inject constructor(
-    private val keyStoreCrypto: KeyStoreCrypto,
     private val messagePasswordRepository: MessagePasswordRepository
 ) {
 
     suspend operator fun invoke(
-        userId: UserId,
-        messageId: MessageId,
         password: String,
-        passwordHint: String?,
-        action: SaveMessagePasswordAction = SaveMessagePasswordAction.Create
-    ): Either<DataError.Local, Unit> = either {
-        val encryptedPassword = runCatching { keyStoreCrypto.encrypt(password) }.fold(
-            onSuccess = { it },
-            onFailure = { raise(DataError.Local.EncryptionError) }
-        )
-
-        if (action == SaveMessagePasswordAction.Create) {
-            messagePasswordRepository.saveMessagePassword(
-                MessagePassword(userId, messageId, encryptedPassword, passwordHint)
-            )
-        } else {
-            messagePasswordRepository.updateMessagePassword(
-                userId, messageId, encryptedPassword, passwordHint
-            )
-        }.bind()
-    }
+        passwordHint: String?
+    ): Either<ExternalEncryptionPasswordError, Unit> =
+        messagePasswordRepository.savePassword(ExternalEncryptionPassword(password, passwordHint!!))
 }
-
-enum class SaveMessagePasswordAction { Create, Update }

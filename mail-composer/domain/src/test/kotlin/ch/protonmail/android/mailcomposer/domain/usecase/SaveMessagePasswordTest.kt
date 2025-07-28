@@ -21,138 +21,59 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
-import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import me.proton.core.crypto.common.keystore.KeyStoreCrypto
-import me.proton.core.crypto.common.pgp.exception.CryptoException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SaveMessagePasswordTest {
 
-    private val userId = UserIdTestData.userId
-    private val messageId = MessageIdSample.NewDraftWithSubjectAndBody
-
-    private val keyStoreCrypto = mockk<KeyStoreCrypto>()
     private val messagePasswordRepository = mockk<MessagePasswordRepository>()
 
     private val saveMessagePassword = SaveMessagePassword(
-        keyStoreCrypto = keyStoreCrypto,
         messagePasswordRepository = messagePasswordRepository
     )
 
     @Test
-    fun `should return unit when message password is encrypted and stored successfully`() = runTest {
+    fun `should return unit when message password stored successfully`() = runTest {
         // Given
         val password = "password"
         val passwordHint = "password hint"
-        val encryptedPassword = "encryptedPassword"
-        every { keyStoreCrypto.encrypt(password) } returns encryptedPassword
         coEvery {
-            messagePasswordRepository.saveMessagePassword(
-                MessagePassword(
-                    userId,
-                    messageId,
-                    encryptedPassword,
+            messagePasswordRepository.savePassword(
+                ExternalEncryptionPassword(
+                    password,
                     passwordHint
                 )
             )
         } returns Unit.right()
 
         // When
-        val actual = saveMessagePassword(userId, messageId, password, passwordHint)
+        val actual = saveMessagePassword(password, passwordHint)
 
         // Then
         assertEquals(Unit.right(), actual)
     }
 
     @Test
-    fun `should return encryption error when password encryption fails`() = runTest {
+    fun `should return error when saving password fails`() = runTest {
         // Given
         val password = "password"
         val passwordHint = "password hint"
-        every { keyStoreCrypto.encrypt(password) } throws CryptoException()
-
-        // When
-        val actual = saveMessagePassword(userId, messageId, password, passwordHint)
-
-        // Then
-        assertEquals(DataError.Local.EncryptionError.left(), actual)
-    }
-
-    @Test
-    fun `should return error when saving of encrypted password fails`() = runTest {
-        // Given
-        val password = "password"
-        val passwordHint = "password hint"
-        val encryptedPassword = "encryptedPassword"
-        every { keyStoreCrypto.encrypt(password) } returns encryptedPassword
+        val expected = ExternalEncryptionPasswordError.Other(DataError.Local.Unknown)
         coEvery {
-            messagePasswordRepository.saveMessagePassword(
-                MessagePassword(
-                    userId,
-                    messageId,
-                    encryptedPassword,
-                    passwordHint
-                )
-            )
-        } returns DataError.Local.Unknown.left()
+            messagePasswordRepository.savePassword(ExternalEncryptionPassword(password, passwordHint))
+        } returns expected.left()
 
         // When
-        val actual = saveMessagePassword(userId, messageId, password, passwordHint)
+        val actual = saveMessagePassword(password, passwordHint)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), actual)
-    }
-
-    @Test
-    fun `should return unit when message password is encrypted and updated successfully`() = runTest {
-        // Given
-        val password = "password"
-        val passwordHint = "password hint"
-        val encryptedPassword = "encryptedPassword"
-        every { keyStoreCrypto.encrypt(password) } returns encryptedPassword
-        coEvery {
-            messagePasswordRepository.updateMessagePassword(
-                userId, messageId, encryptedPassword, passwordHint
-            )
-        } returns Unit.right()
-
-        // When
-        val actual = saveMessagePassword(
-            userId, messageId, password, passwordHint, SaveMessagePasswordAction.Update
-        )
-
-        // Then
-        assertEquals(Unit.right(), actual)
-    }
-
-    @Test
-    fun `should return error when updating of encrypted password fails`() = runTest {
-        // Given
-        val password = "password"
-        val passwordHint = "password hint"
-        val encryptedPassword = "encryptedPassword"
-        every { keyStoreCrypto.encrypt(password) } returns encryptedPassword
-        coEvery {
-            messagePasswordRepository.updateMessagePassword(
-                userId, messageId, encryptedPassword, passwordHint
-            )
-        } returns DataError.Local.Unknown.left()
-
-        // When
-        val actual = saveMessagePassword(
-            userId, messageId, password, passwordHint, SaveMessagePasswordAction.Update
-        )
-
-        // Then
-        assertEquals(DataError.Local.Unknown.left(), actual)
+        assertEquals(expected.left(), actual)
     }
 
 }
