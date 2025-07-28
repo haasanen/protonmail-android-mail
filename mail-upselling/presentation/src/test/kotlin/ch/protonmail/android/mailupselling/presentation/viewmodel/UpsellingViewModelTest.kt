@@ -25,6 +25,7 @@ import ch.protonmail.android.mailupselling.presentation.UpsellingContentReducer
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentOperation.UpsellingScreenContentEvent
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibilityOverrideSignal
+import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -33,11 +34,15 @@ import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import me.proton.android.core.payment.domain.model.ProductDetail
+import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class UpsellingViewModelTest {
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     private val getMailPlusUpgradePlans = mockk<GetMailPlusUpgradePlans>()
     private val upsellingVisibilityOverrideSignal = mockk<UpsellingVisibilityOverrideSignal>()
@@ -60,7 +65,6 @@ internal class UpsellingViewModelTest {
         // When
         viewModel().state.test {
             // Then
-            assertEquals(UpsellingScreenContentState.Loading, awaitItem())
             assertEquals(expectedFailure, awaitItem())
         }
 
@@ -89,7 +93,6 @@ internal class UpsellingViewModelTest {
         // When
         viewModel().state.test {
             // Then
-            assertEquals(UpsellingScreenContentState.Loading, awaitItem())
             assertEquals(expectedModel, awaitItem())
         }
 

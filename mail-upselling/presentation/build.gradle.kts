@@ -77,5 +77,6 @@ dependencies {
     implementation(libs.proton.core.presentationCompose)
 
     testImplementation(project(":test:test-data"))
+    testImplementation(project(":test:utils"))
     testImplementation(libs.bundles.test)
 }
