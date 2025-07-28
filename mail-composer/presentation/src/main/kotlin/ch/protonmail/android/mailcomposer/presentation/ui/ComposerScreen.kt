@@ -107,7 +107,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     val attachmentsState = composerStates.attachments
     val accessoriesState = composerStates.accessories
     val effectsState = composerStates.effects
-    val isScheduleSendEnabled by viewModel.isScheduleSendEnabled.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { ProtonSnackbarHostState() }
     val bottomSheetType = rememberSaveable(stateSaver = BottomSheetType.Saver) {
@@ -257,8 +256,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                         bottomSheetType.value = BottomSheetType.ScheduleSendOptions
                         viewModel.submit(ComposerAction.OnScheduleSendRequested)
                     },
-                    isSendMessageEnabled = mainState.isSubmittable,
-                    isScheduleSendFeatureFlagEnabled = isScheduleSendEnabled
+                    isSendMessageEnabled = mainState.isSubmittable
                 )
             },
             bottomBar = {

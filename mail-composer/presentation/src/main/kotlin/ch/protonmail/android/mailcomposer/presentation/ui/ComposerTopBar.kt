@@ -48,8 +48,7 @@ internal fun ComposerTopBar(
     onCloseComposerClick: () -> Unit,
     onSendMessageComposerClick: () -> Unit,
     onScheduleSendClick: () -> Unit,
-    isSendMessageEnabled: Boolean,
-    isScheduleSendFeatureFlagEnabled: Boolean
+    isSendMessageEnabled: Boolean
 ) {
     ProtonTopAppBar(
         modifier = Modifier.testTag(ComposerTestTags.TopAppBar),
@@ -72,23 +71,21 @@ internal fun ComposerTopBar(
             Row(
                 modifier = Modifier.padding(end = ProtonDimens.Spacing.Medium)
             ) {
-                if (isScheduleSendFeatureFlagEnabled) {
-                    IconButton(
-                        modifier = Modifier
-                            .size(ProtonDimens.IconSize.ExtraLarge)
-                            .thenIf(!isSendMessageEnabled) { semantics { disabled() } },
-                        enabled = isSendMessageEnabled,
-                        onClick = onScheduleSendClick,
-                        colors = IconButtonDefaults.iconButtonColors(
-                            contentColor = ProtonTheme.colors.textAccent,
-                            disabledContentColor = ProtonTheme.colors.brandMinus20
-                        )
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_proton_clock_paper_plane),
-                            contentDescription = stringResource(R.string.schedule_send_content_description)
-                        )
-                    }
+                IconButton(
+                    modifier = Modifier
+                        .size(ProtonDimens.IconSize.ExtraLarge)
+                        .thenIf(!isSendMessageEnabled) { semantics { disabled() } },
+                    enabled = isSendMessageEnabled,
+                    onClick = onScheduleSendClick,
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = ProtonTheme.colors.textAccent,
+                        disabledContentColor = ProtonTheme.colors.brandMinus20
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_proton_clock_paper_plane),
+                        contentDescription = stringResource(R.string.schedule_send_content_description)
+                    )
                 }
                 Button(
                     onClick = onSendMessageComposerClick,
@@ -126,8 +123,7 @@ private fun ComposerTopBarPreviewSendButtonDisabled() {
             onCloseComposerClick = {},
             onSendMessageComposerClick = {},
             onScheduleSendClick = {},
-            isSendMessageEnabled = false,
-            isScheduleSendFeatureFlagEnabled = true
+            isSendMessageEnabled = false
         )
     }
 }
@@ -141,8 +137,7 @@ private fun ComposerTopBarPreviewSendButtonEnabled() {
             onCloseComposerClick = {},
             onSendMessageComposerClick = {},
             onScheduleSendClick = {},
-            isSendMessageEnabled = true,
-            isScheduleSendFeatureFlagEnabled = true
+            isSendMessageEnabled = true
         )
     }
 }
@@ -155,8 +150,7 @@ private fun PreviewScheduleSendDisabled() {
             onCloseComposerClick = {},
             onSendMessageComposerClick = {},
             onScheduleSendClick = {},
-            isSendMessageEnabled = true,
-            isScheduleSendFeatureFlagEnabled = false
+            isSendMessageEnabled = true
         )
     }
 }

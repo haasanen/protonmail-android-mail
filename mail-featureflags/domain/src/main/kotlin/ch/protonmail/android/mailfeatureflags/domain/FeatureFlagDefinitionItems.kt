@@ -29,14 +29,6 @@ data object DebugInspectDbEnabled : FeatureFlagDefinition(
     defaultValue = false
 )
 
-data object ScheduledSendEnabled : FeatureFlagDefinition(
-    key = "schedule_send_enabled",
-    name = "Schedule send",
-    category = FeatureFlagCategory.Composer,
-    description = "Allow to schedule messages for sending at a later time",
-    defaultValue = true
-)
-
 data object ChangeSenderEnabled : FeatureFlagDefinition(
     key = "change_sender_enabled",
     name = "Change sender",

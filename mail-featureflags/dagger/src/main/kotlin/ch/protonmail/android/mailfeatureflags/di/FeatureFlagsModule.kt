@@ -25,11 +25,9 @@ import ch.protonmail.android.mailfeatureflags.domain.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.LinkifyUrlEnabled
-import ch.protonmail.android.mailfeatureflags.domain.ScheduledSendEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsChangeSenderEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.ScheduleSendEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import dagger.Module
 import dagger.Provides
@@ -61,17 +59,6 @@ object FeatureFlagsModule {
     @Singleton
     @IsChangeSenderEnabled
     fun provideChangeSenderEnabled(resolver: FeatureFlagResolver) = resolver.observeFeatureFlag(ChangeSenderEnabled.key)
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideScheduledSendDefinition(): FeatureFlagDefinition = ScheduledSendEnabled
-
-    @Provides
-    @Singleton
-    @ScheduleSendEnabled
-    fun provideScheduledSendEnabled(resolver: FeatureFlagResolver) =
-        resolver.observeFeatureFlag(ScheduledSendEnabled.key)
 
     @Provides
     @IntoSet

@@ -162,7 +162,6 @@ class ComposerViewModelTest {
         }
     }
     private val reducer = ComposerStateReducer()
-    private val isScheduleSendEnabled = flowOf(false)
     private val isChangeSenderEnabled = MutableStateFlow(true)
 
     private val viewModel by lazy {
@@ -193,7 +192,6 @@ class ComposerViewModelTest {
             scheduleSendMessage,
             getSenderAddresses,
             changeSenderAddress,
-            isScheduleSendEnabled,
             isChangeSenderEnabled,
             observePrimaryUserIdMock
         )

@@ -30,8 +30,4 @@ annotation class IsChangeSenderEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class ScheduleSendEnabled
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 annotation class IsDebugInspectDbEnabled

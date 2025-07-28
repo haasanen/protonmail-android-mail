@@ -29,7 +29,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import arrow.core.getOrElse
-import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
@@ -86,7 +85,6 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplay
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsChangeSenderEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.ScheduleSendEnabled
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Compose
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.ComposeToAddresses
@@ -108,13 +106,11 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.proton.core.util.kotlin.deserialize
@@ -151,7 +147,6 @@ class ComposerViewModel @AssistedInject constructor(
     private val scheduleSend: ScheduleSendMessage,
     private val getSenderAddresses: GetSenderAddresses,
     private val changeSenderAddress: ChangeSenderAddress,
-    @ScheduleSendEnabled private val scheduleSendEnabled: Flow<Boolean>,
     @IsChangeSenderEnabled private val isChangeSenderEnabled: Flow<Boolean>,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
@@ -172,12 +167,6 @@ class ComposerViewModel @AssistedInject constructor(
 
     internal val composerStates = mutableComposerStates.asStateFlow()
 
-
-    val isScheduleSendEnabled = scheduleSendEnabled.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
-        initialValue = false
-    )
 
     init {
         viewModelScope.launch {
