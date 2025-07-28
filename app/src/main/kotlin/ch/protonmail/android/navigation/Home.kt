@@ -83,6 +83,7 @@ import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingSte
 import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepViewModel
 import ch.protonmail.android.mailsession.data.mapper.toUserId
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
+import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
 import ch.protonmail.android.navigation.model.HomeState
@@ -115,6 +116,7 @@ import ch.protonmail.android.navigation.route.addSettings
 import ch.protonmail.android.navigation.route.addSignOutAccountDialog
 import ch.protonmail.android.navigation.route.addSwipeActionsSettings
 import ch.protonmail.android.navigation.route.addThemeSettings
+import ch.protonmail.android.navigation.route.addUpsellingRoutes
 import ch.protonmail.android.navigation.route.addWebAccountSettings
 import ch.protonmail.android.navigation.route.addWebEmailSettings
 import ch.protonmail.android.navigation.route.addWebFolderAndLabelSettings
@@ -691,6 +693,14 @@ fun Home(
                         addFeatureFlagsOverrides(navController)
                         addBugReporting(navController, onShowNormalSnackbar = { showNormalSnackbar(it) })
                         addDeepLinkHandler(navController)
+                        addUpsellingRoutes(
+                            UpsellingScreen.Actions.Empty.copy(
+                                onSuccess = { navController.navigateBack() },
+                                onDismiss = { navController.navigateBack() },
+                                onUpgrade = { message -> scope.launch { showNormalSnackbar(message) } },
+                                onError = { message -> scope.launch { showErrorSnackbar(message) } }
+                            )
+                        )
                     }
                 }
             }

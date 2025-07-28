@@ -44,6 +44,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsettings.presentation.appsettings.AppSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsScreen
+import ch.protonmail.android.mailupselling.presentation.usecase.UpsellingVisibility
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
@@ -90,6 +91,14 @@ internal fun NavGraphBuilder.addMailbox(
                 onAddFolder = { navController.navigate(Destination.Screen.FolderAndLabelSettings.route) },
                 onAccountAvatarClicked = {
                     navController.navigate(Destination.Screen.AccountsManager.route)
+                },
+                onNavigateToUpselling = { type ->
+                    val destination = when (type) {
+                        UpsellingVisibility.HIDDEN -> return@copy
+                        UpsellingVisibility.PROMO -> Destination.Screen.Upselling.StandaloneMailboxPromo.route
+                        UpsellingVisibility.NORMAL -> Destination.Screen.Upselling.StandaloneMailbox.route
+                    }
+                    navController.navigate(destination)
                 },
                 showMissingFeature = showFeatureMissingSnackbar,
                 onEnterSearchMode = {

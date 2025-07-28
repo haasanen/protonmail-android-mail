@@ -153,6 +153,12 @@ sealed class Destination(val route: String) {
         }
 
         object BugReporting : Destination("support/bugreporting")
+
+        object Upselling {
+            data object StandaloneMailbox : Destination("upselling/standalone/mailbox")
+            data object StandaloneMailboxPromo : Destination("upselling/standalone/mailboxPromo")
+            data object StandaloneNavbar : Destination("upselling/standalone/navbar")
+        }
     }
 
     object Dialog {

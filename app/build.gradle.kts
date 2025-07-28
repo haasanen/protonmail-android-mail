@@ -250,6 +250,7 @@ dependencies {
     implementation(project(":mail-sidebar"))
     implementation(project(":mail-session"))
     implementation(project(":mail-legacy-migration"))
+    implementation(project(":mail-upselling"))
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
