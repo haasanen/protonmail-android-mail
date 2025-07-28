@@ -58,6 +58,7 @@
   <string name="conversation_moved_to_selected_destination">La conversation a été déplacée vers %1$s.</string>
   <string name="conversation_moved_to_spam">La conversation a été déplacée dans le dossier Indésirables/spam.</string>
   <string name="conversation_moved_to_archive">La conversation a été déplacée dans le dossier Archives.</string>
+  <string name="error_print_message">Le message n\'a pas pu être imprimé. Veuillez réessayer.</string>
   <string name="error_move_conversation_failed">La conversation n\'a pas pu être déplacée. Veuillez réessayer.</string>
   <string name="error_offline_loading_message">Vous n\'êtes pas connecté. Une connexion internet est nécessaire pour afficher le contenu de ce message.</string>
   <string name="error_get_attachment_failed">La pièce jointe n\'a pas pu être obtenue.</string>

@@ -56,6 +56,7 @@
   <string name="conversation_moved_to_selected_destination">對話內容已移至 %1$s</string>
   <string name="conversation_moved_to_spam">無法將往來對話訊息丟進垃圾郵件</string>
   <string name="conversation_moved_to_archive">往來對話訊息已移至封存檔</string>
+  <string name="error_print_message">無法列印訊息內容。請再嘗試。</string>
   <string name="error_move_conversation_failed">無法移動往來對話。請再試一次。</string>
   <string name="error_offline_loading_message">您目前是離線狀態。需要網際網路連線才能顯示此訊息的內容。</string>
   <string name="error_get_attachment_failed">無法取得附件。</string>

@@ -58,6 +58,7 @@
   <string name="conversation_moved_to_selected_destination">Konversation flyttad till %1$s</string>
   <string name="conversation_moved_to_spam">Konversation flyttad till skräppost</string>
   <string name="conversation_moved_to_archive">Konversation flyttad till arkiv</string>
+  <string name="error_print_message">Kan inte skriva ut meddelande. Försök igen.</string>
   <string name="error_move_conversation_failed">Misslyckades att flytta konversation. Försök igen.</string>
   <string name="error_offline_loading_message">Du är offline. En Internetanslutning krävs för att visa innehållet i detta meddelande.</string>
   <string name="error_get_attachment_failed">Misslyckades att hämta bilaga.</string>

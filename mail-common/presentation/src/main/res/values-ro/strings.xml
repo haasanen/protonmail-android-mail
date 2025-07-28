@@ -64,6 +64,7 @@
   <string name="action_forward_content_description">Redirecționare</string>
   <string name="action_mark_read_content_description">Marcare ca citit</string>
   <string name="action_mark_unread_content_description">Marcare ca necitit</string>
+  <string name="action_snooze_description">Amânare</string>
   <string name="action_star_content_description">Stea</string>
   <string name="action_unstar_content_description">Fără stea</string>
   <string name="action_label_content_description">Etichetare cu</string>
@@ -86,6 +87,7 @@
   <string name="action_sender_emails_content_description">Setare acțiuni mesaje ulterioare de la acest expeditor</string>
   <string name="action_save_attachments_content_description">Salvare atașamente</string>
   <string name="action_more_content_description">Detalii</string>
+  <string name="action_snooze_content_description">Amânare</string>
   <string name="common_error_loading_actions">Încărcarea acțiunilor a eșuat.</string>
   <string name="yesterday">Ieri</string>
   <!-- notification channels -->

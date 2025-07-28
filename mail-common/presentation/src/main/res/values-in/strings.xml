@@ -64,6 +64,7 @@
   <string name="action_forward_content_description">Teruskan</string>
   <string name="action_mark_read_content_description">Tandai dibaca</string>
   <string name="action_mark_unread_content_description">Tandai belum dibaca</string>
+  <string name="action_snooze_description">Snooze</string>
   <string name="action_star_content_description">Bintangi</string>
   <string name="action_unstar_content_description">Hapus bintang</string>
   <string name="action_label_content_description">Labeli sebagai</string>
@@ -86,6 +87,7 @@
   <string name="action_sender_emails_content_description">Tentukan tindakan untuk email dari pengirim ini ke depannya</string>
   <string name="action_save_attachments_content_description">Simpan lampiran</string>
   <string name="action_more_content_description">Lainnya</string>
+  <string name="action_snooze_content_description">Snooze</string>
   <string name="common_error_loading_actions">Tindakan gagal dimuat</string>
   <string name="yesterday">Kemarin</string>
   <!-- notification channels -->

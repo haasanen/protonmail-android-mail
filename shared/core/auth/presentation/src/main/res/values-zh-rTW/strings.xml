@@ -101,6 +101,11 @@
   <string name="auth_signup_validation_email">電子郵件不能為空。</string>
   <string name="auth_signup_validation_username_input_invalid">使用者名稱輸入無效。</string>
   <string name="auth_signup_validation_email_input_invalid">使用者名稱輸入無效。</string>
+  <string name="auth_signup_username_unavailable_error">使用者名稱已被佔用。請選擇其他使用者名稱。</string>
+  <string name="auth_signup_recovery_email_validation_error">電子郵件驗證失敗</string>
+  <string name="auth_signup_recovery_phone_validation_error">電話號碼驗證失敗</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">密碼不一致。請再試一次。</string>
+  <string name="auth_signup_generic_error">發生錯誤，請稍後再試。</string>
   <string name="auth_signup_countries_search">搜尋國家</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">無法設定使用者。</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">無法設定位址。</string>

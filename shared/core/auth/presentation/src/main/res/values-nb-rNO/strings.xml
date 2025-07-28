@@ -101,6 +101,11 @@
   <string name="auth_signup_validation_email">E-post kan ikke være tomt.</string>
   <string name="auth_signup_validation_username_input_invalid">Brukernavninndata ugyldig.</string>
   <string name="auth_signup_validation_email_input_invalid">Brukernavninndata ugyldig.</string>
+  <string name="auth_signup_username_unavailable_error">Brukernavn allerede tatt. Velg et annet brukernavn.</string>
+  <string name="auth_signup_recovery_email_validation_error">E-postvalidering mislyktes</string>
+  <string name="auth_signup_recovery_phone_validation_error">Telefonnummervalidering mislyktes</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">Passordene samsvarer ikke. Forsøk igjen.</string>
+  <string name="auth_signup_generic_error">Noe gikk galt. Forsøk igjen.</string>
   <string name="auth_signup_countries_search">Søk etter land</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Kunne ikke sette opp brukeren.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Kunne ikke sette opp adressen.</string>

@@ -101,6 +101,11 @@
   <string name="auth_signup_validation_email">Adresa de e-mail nu poate fi goală.</string>
   <string name="auth_signup_validation_username_input_invalid">Numele de utilizator introdus nu e valid.</string>
   <string name="auth_signup_validation_email_input_invalid">Adresa de e-mail introdusă nu e validă.</string>
+  <string name="auth_signup_username_unavailable_error">Nume utilizator deja folosit. Alegeți un alt nume de utilizator.</string>
+  <string name="auth_signup_recovery_email_validation_error">Validarea adresei de e-mail a eșuat.</string>
+  <string name="auth_signup_recovery_phone_validation_error">Validarea numărului de telefon a eșuat.</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">Parolele nu coincid. Reîncercați.</string>
+  <string name="auth_signup_generic_error">Ceva nu a funcționat bine. Reîncercați.</string>
   <string name="auth_signup_countries_search">Căutare țară</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Nu s-a putut configura utilizatorul.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Nu s-a putut configura adresa.</string>

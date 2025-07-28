@@ -64,6 +64,7 @@
   <string name="action_forward_content_description">전달</string>
   <string name="action_mark_read_content_description">읽음으로 표시</string>
   <string name="action_mark_unread_content_description">읽지 않음으로 표시</string>
+  <string name="action_snooze_description">Snooze</string>
   <string name="action_star_content_description">별표 표시</string>
   <string name="action_unstar_content_description">별표 삭제</string>
   <string name="action_label_content_description">라벨 추가</string>
@@ -86,6 +87,7 @@
   <string name="action_sender_emails_content_description">이 발신자의 향후 이메일에 대한 작업 설정</string>
   <string name="action_save_attachments_content_description">첨부 파일 저장</string>
   <string name="action_more_content_description">더 보기</string>
+  <string name="action_snooze_content_description">Snooze</string>
   <string name="common_error_loading_actions">동작을 불러오는 데 실패했습니다</string>
   <string name="yesterday">어제</string>
   <!-- notification channels -->

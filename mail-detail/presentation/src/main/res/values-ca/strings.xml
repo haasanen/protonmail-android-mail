@@ -58,6 +58,7 @@
   <string name="conversation_moved_to_selected_destination">S\'ha mogut la conversa a %1$s.</string>
   <string name="conversation_moved_to_spam">S\'ha mogut la conversa al correu brossa.</string>
   <string name="conversation_moved_to_archive">La conversa s\'ha mogut a l\'arxiu.</string>
+  <string name="error_print_message">No s\'ha pogut imprimir el missatge. Torneu-ho a provar.</string>
   <string name="error_move_conversation_failed">No s\'ha pogut moure la conversa. Proveu de nou.</string>
   <string name="error_offline_loading_message">No esteu connectat. Cal una connexió a internet per a mostrar el contingut d\'aquest missatge.</string>
   <string name="error_get_attachment_failed">No s\'ha pogut obtenir l\'adjunt.</string>

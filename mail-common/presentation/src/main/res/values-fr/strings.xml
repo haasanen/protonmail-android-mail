@@ -64,6 +64,7 @@
   <string name="action_forward_content_description">Transférer</string>
   <string name="action_mark_read_content_description">Marquer comme lu</string>
   <string name="action_mark_unread_content_description">Marquer comme non lu</string>
+  <string name="action_snooze_description">Mise en attente</string>
   <string name="action_star_content_description">Ajouter aux Favoris</string>
   <string name="action_unstar_content_description">Retirer des Favoris</string>
   <string name="action_label_content_description">Labelliser</string>
@@ -86,6 +87,7 @@
   <string name="action_sender_emails_content_description">Définir l\'action pour les prochains messages de cet expéditeur</string>
   <string name="action_save_attachments_content_description">Enregistrer les pièces jointes</string>
   <string name="action_more_content_description">Plus</string>
+  <string name="action_snooze_content_description">Mise en attente</string>
   <string name="common_error_loading_actions">Les actions n\'ont pu être chargées.</string>
   <string name="yesterday">Hier</string>
   <!-- notification channels -->

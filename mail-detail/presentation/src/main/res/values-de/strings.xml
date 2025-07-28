@@ -58,6 +58,7 @@
   <string name="conversation_moved_to_selected_destination">Unterhaltung nach „%1$s“ verschoben</string>
   <string name="conversation_moved_to_spam">Unterhaltung in Spam verschoben</string>
   <string name="conversation_moved_to_archive">Unterhaltung ins Archiv verschoben</string>
+  <string name="error_print_message">Nachricht kann nicht gedruckt werden. Bitte erneut versuchen.</string>
   <string name="error_move_conversation_failed">Verschieben der Unterhaltung fehlgeschlagen. Bitte versuche es erneut.</string>
   <string name="error_offline_loading_message">Du bist offline. Um den Inhalt dieser Nachricht anzuzeigen, ist eine Internetverbindung erforderlich.</string>
   <string name="error_get_attachment_failed">Fehler beim Abrufen des Anhangs.</string>

@@ -101,6 +101,11 @@
   <string name="auth_signup_validation_email">E-pošta ne sme biti prazna.</string>
   <string name="auth_signup_validation_username_input_invalid">Neveljaven vnos uporabniškega imena.</string>
   <string name="auth_signup_validation_email_input_invalid">Neveljaven vnos uporabniškega imena.</string>
+  <string name="auth_signup_username_unavailable_error">Username already taken. Choose a different username.</string>
+  <string name="auth_signup_recovery_email_validation_error">Email validation failed</string>
+  <string name="auth_signup_recovery_phone_validation_error">Phone number validation failed</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">Passwords do not match. Please try again.</string>
+  <string name="auth_signup_generic_error">Something went wrong. Please try again.</string>
   <string name="auth_signup_countries_search">Iskanje po državah</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Ni bilo mogoče nastaviti uporabnika.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Ni bilo mogoče nastaviti uporabnika.</string>

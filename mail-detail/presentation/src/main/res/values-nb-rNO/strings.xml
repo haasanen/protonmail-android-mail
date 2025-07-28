@@ -58,6 +58,7 @@
   <string name="conversation_moved_to_selected_destination">Samtalen flyttet til %1$s</string>
   <string name="conversation_moved_to_spam">Samtale flyttet til søppelpost</string>
   <string name="conversation_moved_to_archive">Samtale flyttet til arkiv</string>
+  <string name="error_print_message">Kan ikke skrive ut melding. Prøv på nytt.</string>
   <string name="error_move_conversation_failed">Kunne ikke flytte samtale. Prøv på nytt.</string>
   <string name="error_offline_loading_message">Du er frakoblet. En internettforbindelse kreves for å vise innholdet i denne meldingen.</string>
   <string name="error_get_attachment_failed">Kunne ikke hente vedlegg.</string>

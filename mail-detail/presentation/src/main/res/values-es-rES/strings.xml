@@ -58,6 +58,7 @@
   <string name="conversation_moved_to_selected_destination">Conversación movida a %1$s</string>
   <string name="conversation_moved_to_spam">Se ha movido la conversación al spam.</string>
   <string name="conversation_moved_to_archive">Conversación movida al archivo</string>
+  <string name="error_print_message">No se puede imprimir el mensaje. Inténtalo de nuevo.</string>
   <string name="error_move_conversation_failed">Error al mover la conversación. Inténtalo de nuevo.</string>
   <string name="error_offline_loading_message">No estás conectado. Se necesita una conexión a internet para mostrar el contenido de este mensaje.</string>
   <string name="error_get_attachment_failed">Error al obtener el archivo adjunto.</string>

@@ -64,6 +64,7 @@
   <string name="action_forward_content_description">Preposlať</string>
   <string name="action_mark_read_content_description">Označiť ako prečítané</string>
   <string name="action_mark_unread_content_description">Označiť ako neprečítané</string>
+  <string name="action_snooze_description">Snooze</string>
   <string name="action_star_content_description">Označiť hviezdičkou</string>
   <string name="action_unstar_content_description">Odstrániť hviezdičku</string>
   <string name="action_label_content_description">Označiť ako</string>
@@ -86,6 +87,7 @@
   <string name="action_sender_emails_content_description">Nastaviť akciu pre budúce emaily od tohto odosielateľa</string>
   <string name="action_save_attachments_content_description">Uložiť prílohy</string>
   <string name="action_more_content_description">Viac</string>
+  <string name="action_snooze_content_description">Snooze</string>
   <string name="common_error_loading_actions">Načítanie akcií zlyhalo</string>
   <string name="yesterday">Včera</string>
   <!-- notification channels -->

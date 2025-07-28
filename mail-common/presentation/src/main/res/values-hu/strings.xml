@@ -64,6 +64,7 @@
   <string name="action_forward_content_description">Továbbítás</string>
   <string name="action_mark_read_content_description">Megjelölés olvasottként</string>
   <string name="action_mark_unread_content_description">Megjelölés olvasatlanként</string>
+  <string name="action_snooze_description">Snooze</string>
   <string name="action_star_content_description">Csillagozás</string>
   <string name="action_unstar_content_description">Csillagozás törlése</string>
   <string name="action_label_content_description">Címkézés mint</string>
@@ -86,6 +87,7 @@
   <string name="action_sender_emails_content_description">A feladó jövőbeli e-mailjeihez tartozó művelet beállítása</string>
   <string name="action_save_attachments_content_description">Mellékletek mentése</string>
   <string name="action_more_content_description">Továbbiak</string>
+  <string name="action_snooze_content_description">Snooze</string>
   <string name="common_error_loading_actions">Töltés sikertelen</string>
   <string name="yesterday">Tegnap</string>
   <!-- notification channels -->

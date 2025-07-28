@@ -56,6 +56,7 @@
   <string name="conversation_moved_to_selected_destination">会話を %1$s に移動しました</string>
   <string name="conversation_moved_to_spam">会話をスパムに移動しました</string>
   <string name="conversation_moved_to_archive">会話をアーカイブに移動しました</string>
+  <string name="error_print_message">Unable to print message. Please retry.</string>
   <string name="error_move_conversation_failed">会話の移動に失敗しました。再度お試しください。</string>
   <string name="error_offline_loading_message">現在、オフラインです。このメッセージの内容を表示するには、インターネット接続が必要です。</string>
   <string name="error_get_attachment_failed">添付ファイルの取得に失敗しました</string>

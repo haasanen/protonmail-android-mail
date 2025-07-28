@@ -20,8 +20,8 @@
   <!-- Grace period - info -->
   <string name="account_recovery_grace_period_info_title">S\'ha sol·licitat un restabliment de contrasenya.</string>
   <plurals name="account_recovery_grace_period_info_subtitle">
-    <item quantity="one">S\'ha sol·licitat un restabliment de la contrasenya per a <b>%1$s</b>. Podeu canviar la vostra contrasenya en %2$d hora.\n\nSi no heu fet aquesta sol·licitud, Cancel·leu-la ara.</item>
-    <item quantity="other">S\'ha sol·licitat un restabliment de la contrasenya per a <b>%1$s</b>. Podeu canviar la vostra contrasenya en %2$d hores.\n\nSi no heu fet aquesta sol·licitud, Cancel·leu-la ara.</item>
+    <item quantity="one">S\'ha sol·licitat un restabliment de la contrasenya per a <b>%1$s</b>. Podeu canviar la contrasenya en %2$d hora.\n\nSi no heu fet aquesta sol·licitud, cancel·leu-la ara.</item>
+    <item quantity="other">S\'ha sol·licitat un restabliment de lacontrasenya per a <b>%1$s</b>. Podeu canviar la contrasenya en %2$d hores.\n\nSi no heu fet aquesta sol·licitud, cancel·leu-la ara.</item>
   </plurals>
   <!-- Grace period - cancellation form -->
   <string name="account_recovery_cancel_title">Voleu cancel·lar el restabliment de la contrasenya?</string>

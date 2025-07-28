@@ -58,6 +58,7 @@
   <string name="conversation_moved_to_selected_destination">Keskustelu siirrettiin kohteeseen %1$s</string>
   <string name="conversation_moved_to_spam">Keskustelu siirrettiin roskapostiin</string>
   <string name="conversation_moved_to_archive">Keskustelu siirrettiin arkistoon</string>
+  <string name="error_print_message">Unable to print message. Please retry.</string>
   <string name="error_move_conversation_failed">Keskustelun siirto epäonnistui. Yritä uudelleen.</string>
   <string name="error_offline_loading_message">Ei yhteyttä. Viestin sisällön näyttäminen vaatii Internet-yhteyden.</string>
   <string name="error_get_attachment_failed">Liitteen nouto epäonnistui.</string>

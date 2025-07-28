@@ -64,6 +64,7 @@
   <string name="action_forward_content_description">İlet</string>
   <string name="action_mark_read_content_description">Okunmuş olarak işaretle</string>
   <string name="action_mark_unread_content_description">Okunmamış olarak işaretle</string>
+  <string name="action_snooze_description">Snooze</string>
   <string name="action_star_content_description">Yıldız koy</string>
   <string name="action_unstar_content_description">Yıldızı kaldır</string>
   <string name="action_label_content_description">Şöyle etiketlensin</string>
@@ -86,6 +87,7 @@
   <string name="action_sender_emails_content_description">Gelecekte bu göndericinin e-postalarına yapılacak işlemi ayarlayın</string>
   <string name="action_save_attachments_content_description">Ek dosyaları kaydet</string>
   <string name="action_more_content_description">Diğer</string>
+  <string name="action_snooze_content_description">Snooze</string>
   <string name="common_error_loading_actions">İşlemler yüklenemedi</string>
   <string name="yesterday">Dün</string>
   <!-- notification channels -->

@@ -64,6 +64,7 @@
   <string name="action_forward_content_description">Пераслаць</string>
   <string name="action_mark_read_content_description">Пазначыць прачытаным</string>
   <string name="action_mark_unread_content_description">Пазначыць непрачытаным</string>
+  <string name="action_snooze_description">Адкласці</string>
   <string name="action_star_content_description">Пазначыць зорачкай</string>
   <string name="action_unstar_content_description">Прыбраць зорачку</string>
   <string name="action_label_content_description">Пазначыць як</string>
@@ -86,6 +87,7 @@
   <string name="action_sender_emails_content_description">Задаць дзеянне для будучых лістоў ад гэтага адпраўніка</string>
   <string name="action_save_attachments_content_description">Захаваць далучэнні</string>
   <string name="action_more_content_description">Больш</string>
+  <string name="action_snooze_content_description">Адкласці</string>
   <string name="common_error_loading_actions">Не ўдалося загрузіць дзеянні</string>
   <string name="yesterday">Учора</string>
   <!-- notification channels -->

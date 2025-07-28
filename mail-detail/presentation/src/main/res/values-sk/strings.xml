@@ -62,6 +62,7 @@
   <string name="conversation_moved_to_selected_destination">Konverzácia presunutá do %1$s</string>
   <string name="conversation_moved_to_spam">Konverzácia bola presunutá do spamu</string>
   <string name="conversation_moved_to_archive">Konverzácia bola presunutá do archívu</string>
+  <string name="error_print_message">Správu sa nepodarilo vytlačiť. Skúste znovu, prosím.</string>
   <string name="error_move_conversation_failed">Presun správy zlyhal. Skúste to znova.</string>
   <string name="error_offline_loading_message">Ste offline. Na zobrazenie obsahu tejto správy je potrebné internetové pripojenie.</string>
   <string name="error_get_attachment_failed">Nepodarilo sa získať prílohu.</string>

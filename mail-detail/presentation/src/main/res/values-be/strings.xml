@@ -62,6 +62,7 @@
   <string name="conversation_moved_to_selected_destination">Размова перамешчана ў %1$s</string>
   <string name="conversation_moved_to_spam">Размова перамешчана ў Спам</string>
   <string name="conversation_moved_to_archive">Размова перамешчана ў Архіў</string>
+  <string name="error_print_message">Немагчыма вывесці паведамленне. Паўтарыце спробу.</string>
   <string name="error_move_conversation_failed">Не ўдалося перамясціць размову. Паўтарыце спробу.</string>
   <string name="error_offline_loading_message">Вы па-за сеткай. Для адлюстравання змесціва гэтага паведамлення неабходна падключэнне да інтэрнэту.</string>
   <string name="error_get_attachment_failed">Не ўдалося атрымаць далучэнне.</string>

@@ -39,6 +39,6 @@ un\'email con allegati di grandi dimensioni.</string>
   <string name="report_a_problem_leave_dialog_cancel_btn">Annulla</string>
   <string name="report_a_problem_leave_dialog_close_btn">Chiudi</string>
   <string name="report_a_problem_success">Grazie per la segnalazione. Verrai contattato dalla nostra assistenza clienti.</string>
-  <string name="report_a_problem_generic_error">Si è verificato un errore</string>
+  <string name="report_a_problem_generic_error">Si è verificato un errore</string>
   <string name="report_a_problem_offline_error">Nessuna connessione a Internet</string>
 </resources>

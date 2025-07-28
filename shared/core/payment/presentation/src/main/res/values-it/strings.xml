@@ -17,7 +17,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="payment_error_title">Si è verificato un errore</string>
+  <string name="payment_error_title">Si è verificato un errore</string>
   <string name="payment_error_description">Caricamento della pagina non riuscito. Controlla la connessione a Internet e aggiorna la pagina.</string>
   <string name="payment_purchase_button_get">Ottieni %1$s</string>
   <string name="payment_purchase_button_subscribed">Abbonato a %1$s</string>

@@ -88,8 +88,8 @@
   <string name="contact_details_action_copy_label">复制</string>
   <string name="contact_details_action_message_label">消息</string>
   <string name="contact_details_action_call_label">呼叫</string>
-  <string name="contact_group_details_send_message_action">Send group message</string>
+  <string name="contact_group_details_send_message_action">发送群组消息</string>
   <plurals name="contact_group_details_number_of_contacts">
-    <item quantity="other">%1$d contacts</item>
+    <item quantity="other">%1$d 位联系人</item>
   </plurals>
 </resources>

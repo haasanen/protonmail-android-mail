@@ -58,6 +58,7 @@
   <string name="conversation_moved_to_selected_destination">A beszélgetés átkerült a %1$s mappába</string>
   <string name="conversation_moved_to_spam">Beszélgetés áthelyezve a levélszemétbe.</string>
   <string name="conversation_moved_to_archive">Beszélgetés áthelyezve az archívumba</string>
+  <string name="error_print_message">Unable to print message. Please retry.</string>
   <string name="error_move_conversation_failed">A beszélgetés áthelyezése sikertelen. Próbálja újra.</string>
   <string name="error_offline_loading_message">Ön jelenleg offline. Internet kapcsolat szükséges az üzenet tartalmának betöltéséhez.</string>
   <string name="error_get_attachment_failed">A melléklet elérése sikertelen.</string>

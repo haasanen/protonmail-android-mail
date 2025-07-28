@@ -65,7 +65,7 @@
   <string name="mail_settings_pin_insertion_changed_success">Codice PIN cambiato</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Si è verificato un errore. Riprova.</string>
-  <string name="mail_settings_pin_verify_generic_error_message">Si è verificato un errore</string>
+  <string name="mail_settings_pin_verify_generic_error_message">Si è verificato un errore</string>
   <string name="mail_settings_pin_verify_too_many_attempts">Troppi tentativi falliti</string>
   <string name="mail_settings_pin_verify_wrong_pin">Codice PIN non valido</string>
   <string name="mail_settings_biometrics_unable_to_set">Impostazione del blocco biometrico non riuscita</string>

@@ -131,10 +131,10 @@
   <string name="composer_schedule_send_dialog_ok">确定</string>
   <string name="composer_schedule_send_dialog_enter_time">时间录入</string>
   <string name="composer_change_sender_title">发件人</string>
-  <string name="composer_error_change_sender_failed_getting_addresses">Cannot change sender as getting user\'s addresses failed. Try again.</string>
-  <string name="composer_change_sender_invalid_address">The selected address can not be used for sending</string>
-  <string name="composer_change_sender_unexpected_failure">Something went wrong while changing the sender. Please try again.</string>
-  <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
+  <string name="composer_error_change_sender_failed_getting_addresses">无法更改发件人，系统未能获取用户地址。请重试。</string>
+  <string name="composer_change_sender_invalid_address">所选地址无法用于发送</string>
+  <string name="composer_change_sender_unexpected_failure">更改发件人时出错，请重试。</string>
+  <string name="composer_change_sender_error_refreshing_body">更改发件人后重新整理正文失败，签名可能已过期。</string>
   <string name="composer_loading_attachments_error">加载附件失败</string>
-  <string name="composer_attachment_upload_error_retry">Some attachments failed uploading. Please, retry.</string>
+  <string name="composer_attachment_upload_error_retry">部分附件上传失败，请重试。</string>
 </resources>

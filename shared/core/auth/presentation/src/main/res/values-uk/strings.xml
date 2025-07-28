@@ -101,6 +101,11 @@
   <string name="auth_signup_validation_email">Поштова адреса не може бути порожньою.</string>
   <string name="auth_signup_validation_username_input_invalid">Недійсний ввід імені користувача.</string>
   <string name="auth_signup_validation_email_input_invalid">Недійсний ввід імені користувача.</string>
+  <string name="auth_signup_username_unavailable_error">Username already taken. Choose a different username.</string>
+  <string name="auth_signup_recovery_email_validation_error">Email validation failed</string>
+  <string name="auth_signup_recovery_phone_validation_error">Phone number validation failed</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">Passwords do not match. Please try again.</string>
+  <string name="auth_signup_generic_error">Something went wrong. Please try again.</string>
   <string name="auth_signup_countries_search">Пошук країни</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Не вдалося налаштувати користувача.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Не вдалося налаштувати адресу.</string>

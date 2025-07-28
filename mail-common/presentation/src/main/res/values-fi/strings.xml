@@ -64,6 +64,7 @@
   <string name="action_forward_content_description">Välitä</string>
   <string name="action_mark_read_content_description">Merkitse luetuksi</string>
   <string name="action_mark_unread_content_description">Merkitse lukemattomaksi</string>
+  <string name="action_snooze_description">Snooze</string>
   <string name="action_star_content_description">Lisää tähti</string>
   <string name="action_unstar_content_description">Poista tähti</string>
   <string name="action_label_content_description">Merkitse tunnisteella</string>
@@ -86,6 +87,7 @@
   <string name="action_sender_emails_content_description">Aseta tämän lähettäjän viesteille jatkossa suoritettava toiminto</string>
   <string name="action_save_attachments_content_description">Tallenna liitteet</string>
   <string name="action_more_content_description">Lisää</string>
+  <string name="action_snooze_content_description">Snooze</string>
   <string name="common_error_loading_actions">Toimintojen lataus epäonnistui</string>
   <string name="yesterday">Eilen</string>
   <!-- notification channels -->

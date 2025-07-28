@@ -101,6 +101,11 @@
   <string name="auth_signup_validation_email">E-Mail-Adresse darf nicht leer sein.</string>
   <string name="auth_signup_validation_username_input_invalid">Benutzernameeingabe ungültig.</string>
   <string name="auth_signup_validation_email_input_invalid">Benutzernameeingabe ungültig.</string>
+  <string name="auth_signup_username_unavailable_error">Benutzername bereits vergeben. Bitte einen anderen Benutzernamen wählen.</string>
+  <string name="auth_signup_recovery_email_validation_error">Überprüfung der E-Mail-Adresse fehlgeschlagen</string>
+  <string name="auth_signup_recovery_phone_validation_error">Überprüfung der Rufnummer fehlgeschlagen</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">Passwörter stimmen nicht überein. Bitte erneut versuchen.</string>
+  <string name="auth_signup_generic_error">Es ist ein Fehler aufgetreten. Bitte erneut versuchen.</string>
   <string name="auth_signup_countries_search">Land suchen</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Nutzer konnte nicht eingerichtet werden.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Adresse konnte nicht eingerichtet werden.</string>

@@ -101,6 +101,11 @@
   <string name="auth_signup_validation_email">E-post kan inte vara tomt.</string>
   <string name="auth_signup_validation_username_input_invalid">Ogiltig användarnamnsinmatning.</string>
   <string name="auth_signup_validation_email_input_invalid">Ogiltig användarnamnsinmatning.</string>
+  <string name="auth_signup_username_unavailable_error">Användarnamn redan taget. Välj ett annat användarnamn.</string>
+  <string name="auth_signup_recovery_email_validation_error">E-postvalidering misslyckades</string>
+  <string name="auth_signup_recovery_phone_validation_error">Telefonnummervalidering misslyckades</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">Lösenorden matchar inte. Försök igen.</string>
+  <string name="auth_signup_generic_error">Något gick fel. Försök igen.</string>
   <string name="auth_signup_countries_search">Sök land</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Kunde inte ställa in användaren.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Kunde inte ställa in adressen.</string>

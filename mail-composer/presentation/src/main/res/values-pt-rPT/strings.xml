@@ -31,7 +31,7 @@
   <string name="composer_error_invalid_sender">O endereço do remetente é inválido</string>
   <string name="change_sender_button_content_description">Alterar o remetente</string>
   <string name="composer_change_sender_paid_feature">Melhore para um plano pago para alterar o endereço do remetente.</string>
-  <string name="composer_error_store_draft_sender_address">Erro ao guardar o endereço do remetente</string>
+  <string name="composer_error_store_draft_sender_address">O endereço do remetente não foi guardado</string>
   <string name="composer_error_store_draft_body">O corpo do rascunho do e-mail não foi guardado.</string>
   <string name="composer_error_duplicate_recipient">Um ou mais destinatários duplicados foram removidos.</string>
   <string name="composer_error_store_draft_subject">Erro ao guardar a linha de assunto</string>
@@ -43,7 +43,7 @@
   <string name="composer_add_attachments_bottom_sheet_from_camera">Tirar uma nova foto</string>
   <string name="composer_error_loading_parent_message">Não foi possível carregar as informações da mensagem.</string>
   <string name="composer_original_message_quote">Mensagem original</string>
-  <string name="composer_sender_quote">Em %s, %s &lt; %s&gt; escreveu:</string>
+  <string name="composer_sender_quote">A %s, %s &lt; %s&gt; escreveu:</string>
   <string name="composer_attachment_size_exceeded_dialog_confirm_button">OK</string>
   <string name="composer_attachment_size_exceeded_dialog_title">O limite de anexos foi atingido.</string>
   <string name="composer_attachment_size_exceeded_dialog_message">O limite de tamanho para anexos é de %1$s.</string>
@@ -52,7 +52,7 @@
   <string name="composer_delete_attachment_error">Ocorreu um erro inesperado ao eliminar um anexo.</string>
   <string name="composer_unexpected_attachments_error">Ocorreu um erro inesperado relacionado com anexos.</string>
   <string name="composer_attach_capture_from_camera_error">Capturar um anexo da câmara não é possível polo momento.</string>
-  <string name="composer_warning_local_data_shown">A versão mais recente deste rascunho não conseguiu carregar. Qualquer alteração substituirá o seu conteúdo.</string>
+  <string name="composer_warning_local_data_shown">A versão mais recente deste rascunho falhou ao carregar. Qualquer alteração irá substituir o seu conteúdo.</string>
   <string name="composer_button_add_password">Adicionar uma palavra-passe</string>
   <string name="composer_button_discard_draft">Descartar o rascunho</string>
   <string name="composer_button_set_expiration">Definir tempo de expiração</string>

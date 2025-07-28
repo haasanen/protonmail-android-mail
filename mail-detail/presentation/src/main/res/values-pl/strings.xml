@@ -62,6 +62,7 @@
   <string name="conversation_moved_to_selected_destination">Wątek został przeniesiony do folderu %1$s</string>
   <string name="conversation_moved_to_spam">Wątek został przeniesiony do spamu</string>
   <string name="conversation_moved_to_archive">Wątek został przeniesiony do archiwum</string>
+  <string name="error_print_message">Nie można wydrukować wiadomości. Spróbuj ponownie.</string>
   <string name="error_move_conversation_failed">Przenoszenie wątku nie powiodło się. Spróbuj ponownie.</string>
   <string name="error_offline_loading_message">Jesteś w trybie offline. Połączenie internetowe jest wymagane, aby wyświetlić zawartość wiadomości.</string>
   <string name="error_get_attachment_failed">Nie udało się pobrać załącznika.</string>

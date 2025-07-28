@@ -101,6 +101,11 @@
   <string name="auth_signup_validation_email">Email nesmie byť prázdny.</string>
   <string name="auth_signup_validation_username_input_invalid">Neplatný vstup používateľského mena.</string>
   <string name="auth_signup_validation_email_input_invalid">Neplatný vstup používateľského mena.</string>
+  <string name="auth_signup_username_unavailable_error">Používateľské meno je už obsadené. Zvoľte si iné používateľské meno.</string>
+  <string name="auth_signup_recovery_email_validation_error">Overenie e-mailu zlyhalo</string>
+  <string name="auth_signup_recovery_phone_validation_error">Overenie telefónneho čísla zlyhalo</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">Heslá sa nezhodujú. Skúste to prosím znova.</string>
+  <string name="auth_signup_generic_error">Niečo sa pokazilo. Skúste to prosím znova.</string>
   <string name="auth_signup_countries_search">Hľadať krajinu</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Používateľa nie je možné nastaviť.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Adresu nie je možné nastaviť.</string>

@@ -64,6 +64,7 @@
   <string name="action_forward_content_description">Inoltra</string>
   <string name="action_mark_read_content_description">Segna come letto</string>
   <string name="action_mark_unread_content_description">Segna come non letto</string>
+  <string name="action_snooze_description">Posticipa</string>
   <string name="action_star_content_description">Segna come importante</string>
   <string name="action_unstar_content_description">Segna come non importante</string>
   <string name="action_label_content_description">Etichetta l\'elemento</string>
@@ -86,6 +87,7 @@
   <string name="action_sender_emails_content_description">Imposta un\'azione per tutte le email future provenienti da questo mittente</string>
   <string name="action_save_attachments_content_description">Salva gli allegati</string>
   <string name="action_more_content_description">Altro</string>
+  <string name="action_snooze_content_description">Posticipa</string>
   <string name="common_error_loading_actions">Caricamento delle azioni non riuscito</string>
   <string name="yesterday">Ieri</string>
   <!-- notification channels -->

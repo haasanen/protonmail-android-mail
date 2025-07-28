@@ -56,6 +56,7 @@
   <string name="conversation_moved_to_selected_destination">대화가 %1$s로 이동됨</string>
   <string name="conversation_moved_to_spam">대화가 스팸함으로 이동됨</string>
   <string name="conversation_moved_to_archive">대화가 보관함으로 이동함</string>
+  <string name="error_print_message">Unable to print message. Please retry.</string>
   <string name="error_move_conversation_failed">대화 이동에 실패하였습니다. 다시 시도해 주세요.</string>
   <string name="error_offline_loading_message">오프라인입니다. 이 메시지의 내용을 표시하려면 인터넷 연결이 필요합니다.</string>
   <string name="error_get_attachment_failed">첨부 파일을 받을 수 없습니다.</string>

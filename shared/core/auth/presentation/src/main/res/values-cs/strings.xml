@@ -101,10 +101,15 @@
   <string name="auth_signup_validation_email">E-mail nesmí být prázdný.</string>
   <string name="auth_signup_validation_username_input_invalid">Neplatné zadání uživatelského jména.</string>
   <string name="auth_signup_validation_email_input_invalid">Neplatné zadání uživatelského jména.</string>
+  <string name="auth_signup_username_unavailable_error">Uživatelské jméno je již obsazeno. Zvolte jiné uživatelské jméno.</string>
+  <string name="auth_signup_recovery_email_validation_error">Ověření e-mailu selhalo</string>
+  <string name="auth_signup_recovery_phone_validation_error">Ověření telefonního čísla selhalo</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">Hesla se neshodují. Prosím, zkuste to znovu.</string>
+  <string name="auth_signup_generic_error">Něco se pokazilo. Prosím, zkuste to znovu.</string>
   <string name="auth_signup_countries_search">Vyhledat zemi</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Nepodařilo se nastavit uživatele.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Nepodařilo se nastavit adresu.</string>
-  <string name="auth_fido_security_keys_error">Chyba při načítání bezpečnostních klíčů, zkuste to prosím znovu.</string>
+  <string name="auth_fido_security_keys_error">Chyba při stahování bezpečnostních klíčů, zkuste to prosím znovu.</string>
   <string name="auth_fido_security_keys_title">Bezpečnostní klíče</string>
   <string name="auth_fido_manage_security_keys_info">Chcete-li spravovat, přidávat nebo odebírat bezpečnostní klíče, použijte webovou aplikaci Proton. %s</string>
   <string name="auth_fido_security_keys_empty_list">K vašemu účtu nejsou zaregistrovány žádné bezpečnostní klíče. Chcete-li přidat bezpečnostní klíč, použijte webovou aplikaci Proton. %s</string>

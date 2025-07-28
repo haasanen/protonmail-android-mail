@@ -56,6 +56,7 @@
   <string name="conversation_moved_to_selected_destination">Percakapan dipindahkan ke %1$s</string>
   <string name="conversation_moved_to_spam">Percakapan dipindahkan ke Spam</string>
   <string name="conversation_moved_to_archive">Percakapan dipindahkan ke Arsip</string>
+  <string name="error_print_message">Unable to print message. Please retry.</string>
   <string name="error_move_conversation_failed">Percakapan gagal dipindahkan. Silakan coba lagi.</string>
   <string name="error_offline_loading_message">Anda sedang offline. Koneksi internet diperlukan untuk menampilkan konten pesan ini.</string>
   <string name="error_get_attachment_failed">Lampiran gagal diperoleh.</string>

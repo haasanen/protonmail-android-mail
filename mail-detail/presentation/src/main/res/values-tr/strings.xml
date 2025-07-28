@@ -58,6 +58,7 @@
   <string name="conversation_moved_to_selected_destination">Yazışma %1$s klasörüne taşındı</string>
   <string name="conversation_moved_to_spam">Yazışma İstenmeyen kutusuna taşındı</string>
   <string name="conversation_moved_to_archive">Yazışma arşivlendi</string>
+  <string name="error_print_message">Unable to print message. Please retry.</string>
   <string name="error_move_conversation_failed">Yazışma taşınamadı. Lütfen yeniden deneyin.</string>
   <string name="error_offline_loading_message">Çevrim dışısınız. Bu iletinin içeriğini görüntüleyebilmek için internet bağlantınız olmalı.</string>
   <string name="error_get_attachment_failed">Ek dosya alınamadı.</string>

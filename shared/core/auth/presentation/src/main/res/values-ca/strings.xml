@@ -101,6 +101,11 @@
   <string name="auth_signup_validation_email">El correu electrònic no pot estar en blanc.</string>
   <string name="auth_signup_validation_username_input_invalid">El nom d\'usuari introduït no és vàlid.</string>
   <string name="auth_signup_validation_email_input_invalid">El nom d\'usuari introduït no és vàlid.</string>
+  <string name="auth_signup_username_unavailable_error">Aquest nom d\'usuari ja està en ús. Trieu-ne un de diferent.</string>
+  <string name="auth_signup_recovery_email_validation_error">No s\'ha pogut validar el correu electrònic.</string>
+  <string name="auth_signup_recovery_phone_validation_error">No s\'ha pogut validar el número de telèfon.</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">Les contrasenyes no coincideixen. Torneu-ho a provar.</string>
+  <string name="auth_signup_generic_error">Alguna cosa ha anat malament. Torneu-ho a provar.</string>
   <string name="auth_signup_countries_search">Cerca un país</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">No s\'ha pogut configurar l\'usuari.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">No s\'ha pogut configurar l\'adreça.</string>

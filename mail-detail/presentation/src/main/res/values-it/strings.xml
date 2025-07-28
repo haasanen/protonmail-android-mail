@@ -58,6 +58,7 @@
   <string name="conversation_moved_to_selected_destination">Conversazione spostata in %1$s</string>
   <string name="conversation_moved_to_spam">Conversazione spostata in spam</string>
   <string name="conversation_moved_to_archive">Conversazione spostata nell\'archivio</string>
+  <string name="error_print_message">Stampa del messaggio non riuscita</string>
   <string name="error_move_conversation_failed">Spostamento della conversazione non riuscito</string>
   <string name="error_offline_loading_message">Nessuna connessione a Internet. Caricamento dei contenuti del messaggio non riuscito.</string>
   <string name="error_get_attachment_failed">Caricamento dell\'allegato non riuscito</string>
