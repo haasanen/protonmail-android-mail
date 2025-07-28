@@ -57,11 +57,11 @@ import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.GetCurrentViewMode
 import ch.protonmail.android.maillabel.domain.usecase.GetSelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveLoadedMailLabelId
-import ch.protonmail.android.maillabel.domain.usecase.ObserveSelectedMailLabelId
-import ch.protonmail.android.maillabel.domain.usecase.GetCurrentViewMode
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
+import ch.protonmail.android.maillabel.domain.usecase.ObserveSelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.SelectMailLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
@@ -106,7 +106,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsB
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAccountSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
@@ -333,7 +332,6 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.ExitSearchMode -> handleExitSearchMode(viewAction)
                 is MailboxViewAction.SearchQuery -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.SearchResult -> emitNewStateFrom(viewAction)
-                is MailboxViewAction.RequestUpsellingBottomSheet -> showUpsellingBottomSheet(viewAction)
                 is MailboxViewAction.NavigateToInboxLabel -> handleNavigateToInbox()
                 is MailboxViewAction.SelectAll -> handleSelectAllAction(viewAction)
                 is MailboxViewAction.DeselectAll -> handleDeselectAllAction()
@@ -1020,16 +1018,6 @@ class MailboxViewModel @Inject constructor(
 
     private fun handleDeleteDialogDismissed() {
         emitNewStateFrom(MailboxViewAction.DeleteDialogDismissed)
-    }
-
-    private fun showUpsellingBottomSheet(operation: MailboxViewAction) {
-        viewModelScope.launch {
-            emitNewStateFrom(operation)
-
-            emitNewStateFrom(
-                MailboxEvent.MailboxBottomSheetEvent(UpsellingBottomSheetState.UpsellingBottomSheetEvent.Ready)
-            )
-        }
     }
 
     private fun observeCurrentMailLabel() = observeMailLabels()

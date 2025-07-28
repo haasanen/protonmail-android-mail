@@ -56,9 +56,9 @@ import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.maillabel.domain.model.ViewMode.ConversationGrouping
 import ch.protonmail.android.maillabel.domain.model.ViewMode.NoConversationGrouping
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.GetCurrentViewMode
 import ch.protonmail.android.maillabel.domain.usecase.GetSelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveLoadedMailLabelId
-import ch.protonmail.android.maillabel.domain.usecase.GetCurrentViewMode
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveSelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.SelectMailLabelId
@@ -106,7 +106,6 @@ import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
 import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidationEvents
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
@@ -2869,35 +2868,6 @@ class MailboxViewModelTest {
     }
 
     @Test
-    fun `should emit upselling data event when showing the upselling bottom sheet was requested`() = runTest {
-        // Given
-        val initialState = createMailboxDataState()
-        expectViewModeForCurrentLocation(NoConversationGrouping)
-        expectedSelectedLabelCountStateChange(initialState)
-        expectRequestUpsellingBottomSheet(initialState)
-        expectUpsellingBottomSheetDataLoaded(initialState)
-        expectPagerMock()
-
-        mailboxViewModel.state.test {
-            awaitItem() // First emission for selected user
-
-            // When
-            mailboxViewModel.submit(MailboxViewAction.RequestUpsellingBottomSheet)
-
-            // Then
-            verify(exactly = 1) {
-                mailboxReducer.newStateFrom(initialState, MailboxViewAction.RequestUpsellingBottomSheet)
-            }
-            verify(exactly = 1) {
-                mailboxReducer.newStateFrom(
-                    initialState,
-                    MailboxEvent.MailboxBottomSheetEvent(UpsellingBottomSheetState.UpsellingBottomSheetEvent.Ready)
-                )
-            }
-        }
-    }
-
-    @Test
     fun `navigate to inbox label will trigger selected mail label use case`() = runTest {
         // Given
         val expectedLabel = MailLabelTestData.inboxSystemLabel
@@ -3368,21 +3338,6 @@ class MailboxViewModelTest {
             unStarConversations(userId, items.map { ConversationId(it.id) })
         } returns
             emptyList<ch.protonmail.android.mailconversation.domain.entity.Conversation>().right()
-    }
-
-    private fun expectRequestUpsellingBottomSheet(initialState: MailboxState) {
-        every {
-            mailboxReducer.newStateFrom(initialState, MailboxViewAction.RequestUpsellingBottomSheet)
-        } returns initialState
-    }
-
-    private fun expectUpsellingBottomSheetDataLoaded(initialState: MailboxState) {
-        every {
-            mailboxReducer.newStateFrom(
-                initialState,
-                MailboxEvent.MailboxBottomSheetEvent(UpsellingBottomSheetState.UpsellingBottomSheetEvent.Ready)
-            )
-        } returns initialState
     }
 
     private fun createMailboxStateWithMoreActionBottomSheet(

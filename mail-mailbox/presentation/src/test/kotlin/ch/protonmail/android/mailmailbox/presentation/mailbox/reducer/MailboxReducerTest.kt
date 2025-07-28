@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.maillabel.presentation.text
@@ -46,7 +47,6 @@ import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import ch.protonmail.android.maillabel.domain.model.ViewMode
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -391,17 +391,6 @@ internal class MailboxReducerTest(
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
                 shouldReduceBottomAppBarState = true,
-                shouldReduceActionMessage = false,
-                shouldReduceDeleteDialog = false,
-                shouldReduceClearAllDialog = false,
-                shouldReduceBottomSheetState = true
-            ),
-            TestInput(
-                MailboxViewAction.RequestUpsellingBottomSheet,
-                shouldReduceMailboxListState = false,
-                shouldReduceTopAppBarState = false,
-                shouldReduceUnreadFilterState = false,
-                shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
                 shouldReduceClearAllDialog = false,

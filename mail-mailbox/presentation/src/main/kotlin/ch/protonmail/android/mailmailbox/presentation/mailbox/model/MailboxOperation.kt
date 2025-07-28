@@ -24,22 +24,22 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetOperation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.mailmailbox.domain.model.SpamOrTrash
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingActionMessage
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingBottomAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingBottomSheet
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingDeleteDialog
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingClearAllDialog
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingDeleteDialog
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingErrorBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingMailboxList
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingTopAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingUnreadFilter
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
-import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
-import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.mailpagination.domain.model.PageInvalidationEvent
+import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
 
 internal sealed interface MailboxOperation {
     sealed interface AffectingTopAppBar
@@ -141,7 +141,6 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     object OnOfflineWithData : MailboxViewAction, AffectingMailboxList
     object OnErrorWithData : MailboxViewAction, AffectingMailboxList
     object NavigateToInboxLabel : MailboxViewAction
-    object RequestUpsellingBottomSheet : MailboxViewAction, AffectingBottomSheet
     data class SelectAll(val allItems: List<MailboxItemUiModel>) : MailboxViewAction
     data object DeselectAll : MailboxViewAction
     object CustomizeToolbar : MailboxViewAction

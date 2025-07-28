@@ -128,14 +128,6 @@ sealed interface DetailMoreActionsBottomSheetState : BottomSheetContentState {
     )
 }
 
-sealed interface UpsellingBottomSheetState : BottomSheetContentState {
-    data object Requested : UpsellingBottomSheetState
-    sealed interface UpsellingBottomSheetOperation : BottomSheetOperation
-    sealed interface UpsellingBottomSheetEvent : UpsellingBottomSheetOperation {
-        data object Ready : UpsellingBottomSheetEvent
-    }
-}
-
 sealed interface ManageAccountSheetState : BottomSheetContentState {
     data object Requested : ManageAccountSheetState
 

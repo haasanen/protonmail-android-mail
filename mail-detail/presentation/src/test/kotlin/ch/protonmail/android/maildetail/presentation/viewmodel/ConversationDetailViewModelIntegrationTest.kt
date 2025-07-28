@@ -171,7 +171,6 @@ import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.ContactActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.DetailMoreActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.MailboxMoreActionsBottomSheetReducer
-import ch.protonmail.android.mailmessage.presentation.reducer.UpsellingBottomSheetReducer
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
@@ -407,8 +406,7 @@ class ConversationDetailViewModelIntegrationTest {
                 DetailMoreActionsBottomSheetUiMapper(),
                 ActionUiModelMapper()
             ),
-            contactActionsBottomSheetReducer = ContactActionsBottomSheetReducer(),
-            upsellingBottomSheetReducer = UpsellingBottomSheetReducer()
+            contactActionsBottomSheetReducer = ContactActionsBottomSheetReducer()
         ),
         deleteDialogReducer = ConversationDeleteDialogReducer(),
         reportPhishingDialogReducer = ConversationReportPhishingDialogReducer(),

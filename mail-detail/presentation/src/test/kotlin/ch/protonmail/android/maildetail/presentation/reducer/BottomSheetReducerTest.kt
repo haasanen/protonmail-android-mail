@@ -27,12 +27,10 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.ContactActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.DetailMoreActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.MailboxMoreActionsBottomSheetReducer
-import ch.protonmail.android.mailmessage.presentation.reducer.UpsellingBottomSheetReducer
 import ch.protonmail.android.testdata.action.AvailableActionsTestData
 import io.mockk.Called
 import io.mockk.mockk
@@ -52,13 +50,11 @@ internal class BottomSheetReducerTest(
 
     private val mailboxMoreActionsBottomSheetReducer: MailboxMoreActionsBottomSheetReducer = mockk(relaxed = true)
     private val detailMoreActionsBottomSheetReducer: DetailMoreActionsBottomSheetReducer = mockk(relaxed = true)
-    private val upsellingBottomSheetReducer: UpsellingBottomSheetReducer = mockk(relaxed = true)
     private val contactActionsBottomSheetReducer: ContactActionsBottomSheetReducer = mockk(relaxed = true)
     private val reducer = BottomSheetReducer(
         mailboxMoreActionsBottomSheetReducer,
         detailMoreActionsBottomSheetReducer,
-        contactActionsBottomSheetReducer,
-        upsellingBottomSheetReducer
+        contactActionsBottomSheetReducer
     )
 
     @Test
@@ -91,17 +87,6 @@ internal class BottomSheetReducerTest(
         } else {
             verify { detailMoreActionsBottomSheetReducer wasNot Called }
         }
-
-        if (reducesUpselling) {
-            verify {
-                upsellingBottomSheetReducer.newStateFrom(
-                    currentState,
-                    testInput.operation as UpsellingBottomSheetState.UpsellingBottomSheetOperation
-                )
-            }
-        } else {
-            verify { upsellingBottomSheetReducer wasNot Called }
-        }
     }
 
     companion object {
@@ -113,8 +98,7 @@ internal class BottomSheetReducerTest(
                 expectedState = BottomSheetState(null, Effect.of(BottomSheetVisibilityEffect.Show)),
                 reducesBottomSheetVisibilityEffects = true,
                 reducesMailboxMoreActions = false,
-                reducesDetailMoreActions = false,
-                reducesUpselling = false
+                reducesDetailMoreActions = false
             ),
             TestInput(
                 currentState = BottomSheetState(
@@ -129,8 +113,7 @@ internal class BottomSheetReducerTest(
                 expectedState = BottomSheetState(null, Effect.of(BottomSheetVisibilityEffect.Hide)),
                 reducesBottomSheetVisibilityEffects = true,
                 reducesMailboxMoreActions = false,
-                reducesDetailMoreActions = false,
-                reducesUpselling = false
+                reducesDetailMoreActions = false
             )
         )
 
@@ -153,8 +136,7 @@ internal class BottomSheetReducerTest(
                 ),
                 reducesBottomSheetVisibilityEffects = false,
                 reducesMailboxMoreActions = true,
-                reducesDetailMoreActions = false,
-                reducesUpselling = false
+                reducesDetailMoreActions = false
             )
         )
 
@@ -183,20 +165,7 @@ internal class BottomSheetReducerTest(
                 ),
                 reducesBottomSheetVisibilityEffects = false,
                 reducesMailboxMoreActions = false,
-                reducesDetailMoreActions = true,
-                reducesUpselling = false
-            )
-        )
-
-        private val upsellingBottomSheetOperation = listOf(
-            TestInput(
-                currentState = BottomSheetState(null, Effect.empty()),
-                operation = UpsellingBottomSheetState.UpsellingBottomSheetEvent.Ready,
-                expectedState = BottomSheetState(UpsellingBottomSheetState.Requested),
-                reducesBottomSheetVisibilityEffects = false,
-                reducesMailboxMoreActions = false,
-                reducesDetailMoreActions = false,
-                reducesUpselling = true
+                reducesDetailMoreActions = true
             )
         )
 
@@ -205,8 +174,7 @@ internal class BottomSheetReducerTest(
         fun data() = (
             bottomSheetVisibilityOperations +
                 mailboxMoreActionsBottomSheetOperation +
-                detailMoreActionsBottomSheetOperation +
-                upsellingBottomSheetOperation
+                detailMoreActionsBottomSheetOperation
             )
             .map { testInput ->
                 val testName = """
@@ -225,7 +193,6 @@ internal class BottomSheetReducerTest(
         val expectedState: BottomSheetState?,
         val reducesBottomSheetVisibilityEffects: Boolean,
         val reducesMailboxMoreActions: Boolean,
-        val reducesDetailMoreActions: Boolean,
-        val reducesUpselling: Boolean
+        val reducesDetailMoreActions: Boolean
     )
 }

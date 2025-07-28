@@ -148,7 +148,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsB
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAccountSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMoreActionBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
 import ch.protonmail.android.uicomponents.fab.LazyFab
@@ -250,7 +249,7 @@ fun MailboxScreen(
             actions.onExitSearchMode()
             viewModel.submit(MailboxViewAction.ExitSearchMode)
         },
-        onOpenUpsellingPage = { viewModel.submit(MailboxViewAction.RequestUpsellingBottomSheet) },
+        onOpenUpsellingPage = { Timber.d("On open upselling page") },
         onCloseUpsellingPage = { viewModel.submit(MailboxViewAction.DismissBottomSheet) },
         onAttachmentClicked = { viewModel.submit(MailboxViewAction.RequestAttachment(it)) },
         onClearAll = { viewModel.submit(MailboxViewAction.ClearAll) },
@@ -360,7 +359,6 @@ fun MailboxScreen(
                     viewModel.submit(MailboxViewAction.DismissBottomSheet)
                 })
 
-                is UpsellingBottomSheetState -> Unit
                 else -> Unit
             }
         }
