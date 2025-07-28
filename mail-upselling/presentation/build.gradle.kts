@@ -19,11 +19,14 @@
 plugins {
     id("com.android.library")
     kotlin("android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("app-config-plugin")
 }
 
 android {
-    namespace = "ch.protonmail.android.testdata"
+    namespace = "ch.protonmail.android.mailupselling.presentation"
     compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
@@ -39,28 +42,37 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
+
+
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
 }
 
 dependencies {
-    compileOnly(libs.proton.rust.core)
+    kapt(libs.bundles.app.annotationProcessors)
+    implementation(libs.dagger.hilt.android)
 
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.kotlinx.immutableCollections)
-
-    implementation(libs.proton.core.mailSettings.domain)
-    implementation(libs.proton.core.presentation)
-    implementation(libs.proton.core.user.domain)
-
-    implementation(project(":mail-attachments"))
-    implementation(project(":mail-contact"))
-    implementation(project(":mail-common"))
-    implementation(project(":mail-composer"))
-    implementation(project(":mail-conversation"))
-    implementation(project(":mail-detail"))
-    implementation(project(":mail-featureflags"))
-    implementation(project(":mail-label"))
-    implementation(project(":mail-mailbox"))
-    implementation(project(":mail-message"))
-    implementation(project(":mail-session"))
+    implementation(project(":mail-upselling:domain"))
+    implementation(project(":mail-common:presentation"))
+    implementation(project(":design-system"))
+    implementation(project(":presentation-compose"))
+    implementation(project(":uicomponents"))
     implementation(project(":shared:core:payment:domain"))
+    implementation(project(":shared:core:payment:presentation"))
+    implementation(project(":shared:core:payment-google:presentation"))
+
+    debugImplementation(libs.bundles.compose.debug)
+
+    implementation(libs.bundles.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.arrow.core)
+    implementation(libs.coil.compose)
+    implementation(libs.haze)
+    implementation(libs.timber)
+    implementation(libs.proton.core.presentationCompose)
+
+    testImplementation(project(":test:test-data"))
+    testImplementation(libs.bundles.test)
 }

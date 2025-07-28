@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -19,11 +19,13 @@
 plugins {
     id("com.android.library")
     kotlin("android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
     id("app-config-plugin")
 }
 
 android {
-    namespace = "ch.protonmail.android.testdata"
+    namespace = "ch.protonmail.android.mailupselling.dagger"
     compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
@@ -42,25 +44,9 @@ android {
 }
 
 dependencies {
-    compileOnly(libs.proton.rust.core)
+    kapt(libs.bundles.app.annotationProcessors)
+    implementation(libs.dagger.hilt.android)
 
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.kotlinx.immutableCollections)
-
-    implementation(libs.proton.core.mailSettings.domain)
-    implementation(libs.proton.core.presentation)
-    implementation(libs.proton.core.user.domain)
-
-    implementation(project(":mail-attachments"))
-    implementation(project(":mail-contact"))
-    implementation(project(":mail-common"))
-    implementation(project(":mail-composer"))
-    implementation(project(":mail-conversation"))
-    implementation(project(":mail-detail"))
-    implementation(project(":mail-featureflags"))
-    implementation(project(":mail-label"))
-    implementation(project(":mail-mailbox"))
-    implementation(project(":mail-message"))
-    implementation(project(":mail-session"))
-    implementation(project(":shared:core:payment:domain"))
+    implementation(project(":mail-upselling:domain"))
+    implementation(project(":mail-upselling:presentation"))
 }
