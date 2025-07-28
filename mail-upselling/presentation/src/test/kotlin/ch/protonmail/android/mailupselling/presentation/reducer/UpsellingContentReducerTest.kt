@@ -26,8 +26,8 @@ import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.UpsellingContentReducer
 import ch.protonmail.android.mailupselling.presentation.mapper.PlanMappingError
 import ch.protonmail.android.mailupselling.presentation.mapper.PlanUpgradeUiMapper
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentOperation.UpsellingScreenContentEvent
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState
-import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState.UpsellingScreenContentOperation.UpsellingScreenContentEvent
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeUiModel
 import io.mockk.every
 import io.mockk.mockk
@@ -51,21 +51,6 @@ internal class UpsellingContentReducerTest {
     @AfterTest
     fun teardown() {
         unmockkAll()
-    }
-
-    @Test
-    fun `should reduce to error when mapping fails (no user id)`() = runTest {
-        // Given
-        val expected = UpsellingScreenContentState.Error(
-            error = Effect.of(TextUiModel.TextRes(R.string.upselling_snackbar_error_no_user_id))
-        )
-
-        // When
-
-        val actual = reducer.newStateFrom(UpsellingScreenContentEvent.LoadingError.NoUserId)
-
-        // Then
-        assertEquals(expected, actual)
     }
 
     @Test

@@ -21,9 +21,9 @@ package ch.protonmail.android.mailupselling.presentation
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailupselling.presentation.mapper.PlanUpgradeUiMapper
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentOperation
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentOperation.UpsellingScreenContentEvent
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState
-import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState.UpsellingScreenContentOperation
-import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState.UpsellingScreenContentOperation.UpsellingScreenContentEvent
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.ProductInstances
 import javax.inject.Inject
 
@@ -56,10 +56,6 @@ internal class UpsellingContentReducer @Inject constructor(
     }
 
     private fun reduceErrorEvent(event: UpsellingScreenContentEvent.LoadingError) = when (event) {
-        UpsellingScreenContentEvent.LoadingError.NoUserId -> UpsellingScreenContentState.Error(
-            error = Effect.of(TextUiModel.TextRes(R.string.upselling_snackbar_error_no_user_id))
-        )
-
         UpsellingScreenContentEvent.LoadingError.NoSubscriptions -> UpsellingScreenContentState.Error(
             error = Effect.of(TextUiModel.TextRes(R.string.upselling_snackbar_error_no_subscriptions))
         )

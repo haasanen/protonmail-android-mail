@@ -29,20 +29,19 @@ internal sealed interface UpsellingScreenContentState {
     data object Loading : UpsellingScreenContentState
     data class Data(val plans: PlanUpgradeUiModel) : UpsellingScreenContentState
     data class Error(val error: Effect<TextUiModel>) : UpsellingScreenContentState
+}
 
-    sealed interface UpsellingScreenContentOperation {
+sealed interface UpsellingScreenContentOperation {
 
-        sealed interface UpsellingScreenContentEvent : UpsellingScreenContentOperation {
+    sealed interface UpsellingScreenContentEvent : UpsellingScreenContentOperation {
 
-            data class DataLoaded(
-                val plans: List<ProductDetail>,
-                val upsellingEntryPoint: UpsellingEntryPoint.Feature
-            ) : UpsellingScreenContentEvent
+        data class DataLoaded(
+            val plans: List<ProductDetail>,
+            val upsellingEntryPoint: UpsellingEntryPoint.Feature
+        ) : UpsellingScreenContentEvent
 
-            sealed interface LoadingError : UpsellingScreenContentEvent {
-                data object NoUserId : LoadingError
-                data object NoSubscriptions : LoadingError
-            }
+        sealed interface LoadingError : UpsellingScreenContentEvent {
+            data object NoSubscriptions : LoadingError
         }
     }
 }
