@@ -43,6 +43,9 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
 
     buildFeatures {
         compose = true

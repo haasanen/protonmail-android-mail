@@ -40,7 +40,7 @@ object UpsellingTestData {
                 productId = "productId",
                 customerId = "customerId",
                 cycle = 1,
-                amount = 12,
+                amount = 12 * 1000 * 1000,
                 currency = "EUR",
                 formatted = "EUR 12.00"
             ),
@@ -48,7 +48,7 @@ object UpsellingTestData {
                 productId = "productId",
                 customerId = "customerId",
                 cycle = 1,
-                amount = 12,
+                amount = 12 * 1000 * 1000,
                 currency = "EUR",
                 formatted = "EUR 12.00"
             ),
@@ -69,7 +69,7 @@ object UpsellingTestData {
                 productId = "productId",
                 customerId = "customerId",
                 cycle = 1,
-                amount = 9,
+                amount = 9 * 1000 * 1000,
                 currency = "EUR",
                 formatted = "EUR 9.00"
             ),
@@ -77,7 +77,7 @@ object UpsellingTestData {
                 productId = "productId",
                 customerId = "customerId",
                 cycle = 1,
-                amount = 12,
+                amount = 12 * 1000 * 1000,
                 currency = "EUR",
                 formatted = "EUR 12.00"
             ),
@@ -98,7 +98,7 @@ object UpsellingTestData {
                 productId = "productId",
                 customerId = "customerId",
                 cycle = 12,
-                amount = 108,
+                amount = 108 * 1000 * 1000,
                 currency = "EUR",
                 formatted = "EUR 108.00"
             ),
@@ -106,7 +106,36 @@ object UpsellingTestData {
                 productId = "productId",
                 customerId = "customerId",
                 cycle = 12,
-                amount = 108,
+                amount = 108 * 1000 * 1000,
+                currency = "EUR",
+                formatted = "EUR 108.00"
+            ),
+            entitlements = emptyList()
+        )
+
+        val YearlyPromoProductDetail = ProductDetail(
+            productId = "productId",
+            planName = "mail2022",
+            header = ProductHeader(
+                title = "Mail Plus",
+                description = "Description",
+                priceText = "108.00 EUR",
+                cycleText = "/year",
+                starred = false
+            ),
+            price = ProductPrice(
+                productId = "productId",
+                customerId = "customerId",
+                cycle = 12,
+                amount = 54 * 1000 * 1000,
+                currency = "EUR",
+                formatted = "EUR 108.00"
+            ),
+            renew = ProductPrice(
+                productId = "productId",
+                customerId = "customerId",
+                cycle = 12,
+                amount = 108 * 1000 * 1000,
                 currency = "EUR",
                 formatted = "EUR 108.00"
             ),
@@ -130,7 +159,7 @@ object UpsellingTestData {
                 productId = "productId",
                 customerId = "customerId",
                 cycle = 1,
-                amount = 12,
+                amount = 12 * 1000 * 1000,
                 currency = "EUR",
                 formatted = "EUR 12.00"
             ),
@@ -138,7 +167,7 @@ object UpsellingTestData {
                 productId = "productId",
                 customerId = "customerId",
                 cycle = 1,
-                amount = 12,
+                amount = 12 * 1024 * 1024,
                 currency = "EUR",
                 formatted = "EUR 12.00"
             ),
@@ -159,7 +188,7 @@ object UpsellingTestData {
                 productId = "productId",
                 customerId = "customerId",
                 cycle = 1,
-                amount = 9,
+                amount = 9 * 1000 * 1000,
                 currency = "EUR",
                 formatted = "EUR 9.00"
             ),
@@ -167,7 +196,7 @@ object UpsellingTestData {
                 productId = "productId",
                 customerId = "customerId",
                 cycle = 1,
-                amount = 12,
+                amount = 12 * 1000 * 1000,
                 currency = "EUR",
                 formatted = "EUR 12.00"
             ),
@@ -188,7 +217,7 @@ object UpsellingTestData {
                 productId = "productId",
                 customerId = "customerId",
                 cycle = 12,
-                amount = 108,
+                amount = 108 * 1000 * 1000,
                 currency = "EUR",
                 formatted = "EUR 108.00"
             ),
@@ -196,7 +225,7 @@ object UpsellingTestData {
                 productId = "productId",
                 customerId = "customerId",
                 cycle = 12,
-                amount = 108,
+                amount = 108 * 1000 * 1000,
                 currency = "EUR",
                 formatted = "EUR 108.00"
             ),
