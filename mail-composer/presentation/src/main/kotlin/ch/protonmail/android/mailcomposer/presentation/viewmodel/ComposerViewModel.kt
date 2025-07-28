@@ -84,7 +84,6 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsChangeSenderEnabled
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Compose
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.ComposeToAddresses
@@ -104,7 +103,6 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -147,7 +145,6 @@ class ComposerViewModel @AssistedInject constructor(
     private val scheduleSend: ScheduleSendMessage,
     private val getSenderAddresses: GetSenderAddresses,
     private val changeSenderAddress: ChangeSenderAddress,
-    @IsChangeSenderEnabled private val isChangeSenderEnabled: Flow<Boolean>,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -444,11 +441,6 @@ class ComposerViewModel @AssistedInject constructor(
     }
 
     private suspend fun onChangeSenderRequested() {
-        if (isChangeSenderEnabled.first().not()) {
-            Timber.d("Change sender requested, feature is disabled. Doing nothing.")
-            return
-        }
-
         getSenderAddresses()
             .onLeft {
                 emitNewStateFor(EffectsEvent.ErrorEvent.OnGetAddressesError)

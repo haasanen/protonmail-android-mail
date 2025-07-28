@@ -29,14 +29,6 @@ data object DebugInspectDbEnabled : FeatureFlagDefinition(
     defaultValue = false
 )
 
-data object ChangeSenderEnabled : FeatureFlagDefinition(
-    key = "change_sender_enabled",
-    name = "Change sender",
-    category = FeatureFlagCategory.Composer,
-    description = "Allow to change the message sender in composer",
-    defaultValue = true
-)
-
 data object LinkifyUrlEnabled : FeatureFlagDefinition(
     key = "linkify_url_enabled",
     name = "Linkify Urls in Detail",

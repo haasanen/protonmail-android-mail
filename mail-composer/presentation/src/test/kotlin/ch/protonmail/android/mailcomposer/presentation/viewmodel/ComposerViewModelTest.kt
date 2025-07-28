@@ -106,7 +106,6 @@ import io.mockk.unmockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -162,7 +161,6 @@ class ComposerViewModelTest {
         }
     }
     private val reducer = ComposerStateReducer()
-    private val isChangeSenderEnabled = MutableStateFlow(true)
 
     private val viewModel by lazy {
         ComposerViewModel(
@@ -192,7 +190,6 @@ class ComposerViewModelTest {
             scheduleSendMessage,
             getSenderAddresses,
             changeSenderAddress,
-            isChangeSenderEnabled,
             observePrimaryUserIdMock
         )
     }
@@ -1027,44 +1024,6 @@ class ComposerViewModelTest {
         // Then
         coVerify { sendMessageMock wasNot Called }
         assertEquals(Effect.of(Unit), viewModel.composerStates.value.effects.confirmSendingWithoutSubject)
-    }
-
-    @Test
-    fun `should not trigger change sender flow when feature flag is disabled`() = runTest {
-        // Given
-        val expectedSubject = Subject("")
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val expectedDraftBody = DraftBody("I am plaintext")
-        val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
-        val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
-        val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
-        val expectedMessageId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
-        mockParticipantMapper()
-        expectNetworkManagerIsConnected()
-        expectNoInputDraftAction()
-        expectStoreDraftSubjectSucceeds(expectedSubject)
-        expectObservedMessageAttachments()
-        expectNoFileShareVia()
-        expectNoRestoredState(savedStateHandle)
-        expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedMessageId) {
-            DraftFields(
-                sender = expectedSenderEmail,
-                subject = expectedSubject,
-                body = expectedDraftBody,
-                recipientsTo = recipientsTo,
-                recipientsCc = recipientsCc,
-                recipientsBcc = recipientsBcc
-            )
-        }
-        expectUpdateRecipientsSucceeds(recipientsTo.value, recipientsCc.value, recipientsBcc.value)
-        isChangeSenderEnabled.value = false
-
-        // When
-        viewModel.submit(ComposerAction.ChangeSender)
-
-        // Then
-        coVerify { getSenderAddresses wasNot Called }
     }
 
     @Test

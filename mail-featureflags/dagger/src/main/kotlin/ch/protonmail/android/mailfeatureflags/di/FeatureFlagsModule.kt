@@ -20,12 +20,10 @@ package ch.protonmail.android.mailfeatureflags.di
 
 import ch.protonmail.android.mailfeatureflags.data.local.DataStoreFeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.data.local.DefaultFeatureFlagValueProvider
-import ch.protonmail.android.mailfeatureflags.domain.ChangeSenderEnabled
 import ch.protonmail.android.mailfeatureflags.domain.DebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.LinkifyUrlEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsChangeSenderEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
@@ -49,16 +47,6 @@ object FeatureFlagsModule {
     @Singleton
     @IsLinkifyUrlsEnabled
     fun provideLinkifyUrlEnabled(resolver: FeatureFlagResolver) = resolver.observeFeatureFlag(LinkifyUrlEnabled.key)
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideChangeSenderDefinition(): FeatureFlagDefinition = ChangeSenderEnabled
-
-    @Provides
-    @Singleton
-    @IsChangeSenderEnabled
-    fun provideChangeSenderEnabled(resolver: FeatureFlagResolver) = resolver.observeFeatureFlag(ChangeSenderEnabled.key)
 
     @Provides
     @IntoSet

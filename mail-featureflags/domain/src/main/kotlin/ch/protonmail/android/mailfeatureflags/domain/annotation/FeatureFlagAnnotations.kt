@@ -26,8 +26,4 @@ annotation class IsLinkifyUrlsEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class IsChangeSenderEnabled
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 annotation class IsDebugInspectDbEnabled
