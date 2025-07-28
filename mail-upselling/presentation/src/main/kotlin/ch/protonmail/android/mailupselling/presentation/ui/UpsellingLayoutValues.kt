@@ -48,6 +48,11 @@ internal object UpsellingLayoutValues {
     const val topSpacingWeight = 0.25f
     const val bottomSpacingWeight = 0.4f
 
+    object SocialProof {
+
+        val height = 76.dp
+    }
+
     object ComparisonTable {
 
         val highlightBarColor = Color.White.copy(alpha = 0.08f)
