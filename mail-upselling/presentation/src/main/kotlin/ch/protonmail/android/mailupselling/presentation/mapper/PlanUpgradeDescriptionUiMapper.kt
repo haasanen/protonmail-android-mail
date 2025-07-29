@@ -49,34 +49,22 @@ internal class PlanUpgradeDescriptionUiMapper @Inject constructor() {
 
     private fun getDefaultDescription(productDetail: ProductDetail) = TextUiModel.Text(productDetail.header.description)
     private fun getUnlimitedDescription() = TextUiModel.TextRes(R.string.upselling_unlimited_description_override)
-    private fun getPlusDescription(upsellingEntryPoint: UpsellingEntryPoint.Feature) = when (upsellingEntryPoint) {
-        UpsellingEntryPoint.Feature.ContactGroups -> TextUiModel.TextRes(
-            R.string.upselling_contact_groups_plus_description_override
-        )
+    private fun getPlusDescription(upsellingEntryPoint: UpsellingEntryPoint.Feature): TextUiModel.TextRes {
 
-        UpsellingEntryPoint.Feature.Folders -> TextUiModel.TextRes(
-            R.string.upselling_folders_plus_description_override
-        )
+        val stringRes = when (upsellingEntryPoint) {
+            UpsellingEntryPoint.Feature.AutoDelete -> R.string.upselling_auto_delete_plus_description_override
+            UpsellingEntryPoint.Feature.ContactGroups -> R.string.upselling_contact_groups_plus_description_override
+            UpsellingEntryPoint.Feature.Folders -> R.string.upselling_folders_plus_description_override
+            UpsellingEntryPoint.Feature.Labels -> R.string.upselling_labels_plus_description_override
+            UpsellingEntryPoint.Feature.MailboxPromo -> R.string.upselling_mailbox_plus_promo_description_override
+            UpsellingEntryPoint.Feature.MobileSignature -> R.string.upselling_mobile_signature_plus_description_override
+            UpsellingEntryPoint.Feature.ScheduleSend -> R.string.upselling_schedule_send_plus_description_override
+            UpsellingEntryPoint.Feature.Snooze -> R.string.upselling_snooze_plus_description_override
 
-        UpsellingEntryPoint.Feature.Labels -> TextUiModel.TextRes(
-            R.string.upselling_labels_plus_description_override
-        )
+            UpsellingEntryPoint.Feature.Mailbox,
+            UpsellingEntryPoint.Feature.Navbar -> R.string.upselling_mailbox_plus_description_override
+        }
 
-        UpsellingEntryPoint.Feature.MailboxPromo -> TextUiModel.TextRes(
-            R.string.upselling_mailbox_plus_promo_description_override
-        )
-
-        UpsellingEntryPoint.Feature.Mailbox,
-        UpsellingEntryPoint.Feature.Navbar -> TextUiModel.TextRes(
-            R.string.upselling_mailbox_plus_description_override
-        )
-
-        UpsellingEntryPoint.Feature.MobileSignature -> TextUiModel.TextRes(
-            R.string.upselling_mobile_signature_plus_description_override
-        )
-
-        UpsellingEntryPoint.Feature.AutoDelete -> TextUiModel.TextRes(
-            R.string.upselling_auto_delete_plus_description_override
-        )
+        return TextUiModel.TextRes(stringRes)
     }
 }

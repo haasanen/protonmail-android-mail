@@ -192,6 +192,42 @@ internal class PlanUpgradeDescriptionUiMapperTest(
                 PlanUpgradeDescriptionUiModel.Simple(
                     TextUiModel.TextRes(R.string.upselling_auto_delete_plus_description_override)
                 )
+            ),
+            arrayOf(
+                "schedule send entry point - normal variant",
+                UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
+                UpsellingEntryPoint.Feature.ScheduleSend,
+                PlanUpgradeVariant.Normal,
+                PlanUpgradeDescriptionUiModel.Simple(
+                    TextUiModel.TextRes(R.string.upselling_schedule_send_plus_description_override)
+                )
+            ),
+            arrayOf(
+                "schedule send entry point - promo variant",
+                UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
+                UpsellingEntryPoint.Feature.ScheduleSend,
+                PlanUpgradeVariant.IntroductoryPrice,
+                PlanUpgradeDescriptionUiModel.Simple(
+                    TextUiModel.TextRes(R.string.upselling_schedule_send_plus_description_override)
+                )
+            ),
+            arrayOf(
+                "snooze entry point - normal variant",
+                UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
+                UpsellingEntryPoint.Feature.Snooze,
+                PlanUpgradeVariant.Normal,
+                PlanUpgradeDescriptionUiModel.Simple(
+                    TextUiModel.TextRes(R.string.upselling_snooze_plus_description_override)
+                )
+            ),
+            arrayOf(
+                "snoozeentry point - promo variant",
+                UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
+                UpsellingEntryPoint.Feature.Snooze,
+                PlanUpgradeVariant.IntroductoryPrice,
+                PlanUpgradeDescriptionUiModel.Simple(
+                    TextUiModel.TextRes(R.string.upselling_snooze_plus_description_override)
+                )
             )
         )
     }

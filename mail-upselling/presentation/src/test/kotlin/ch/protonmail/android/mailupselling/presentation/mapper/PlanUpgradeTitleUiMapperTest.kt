@@ -54,6 +54,12 @@ internal class PlanUpgradeTitleUiMapperTest {
             ),
             UpsellingEntryPoint.Feature.MailboxPromo to PlanUpgradeTitleUiModel(
                 TextUiModel(R.string.upselling_mailbox_plus_title)
+            ),
+            UpsellingEntryPoint.Feature.ScheduleSend to PlanUpgradeTitleUiModel(
+                TextUiModel(R.string.upselling_schedule_send_plus_title)
+            ),
+            UpsellingEntryPoint.Feature.Snooze to PlanUpgradeTitleUiModel(
+                TextUiModel(R.string.upselling_snooze_plus_title)
             )
         )
 
@@ -85,6 +91,14 @@ internal class PlanUpgradeTitleUiMapperTest {
             ),
             UpsellingEntryPoint.Feature.MailboxPromo to mapper.toUiModel(
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.MailboxPromo,
+                variant = PlanUpgradeVariant.IntroductoryPrice
+            ),
+            UpsellingEntryPoint.Feature.ScheduleSend to mapper.toUiModel(
+                upsellingEntryPoint = UpsellingEntryPoint.Feature.ScheduleSend,
+                variant = PlanUpgradeVariant.IntroductoryPrice
+            ),
+            UpsellingEntryPoint.Feature.Snooze to mapper.toUiModel(
+                upsellingEntryPoint = UpsellingEntryPoint.Feature.Snooze,
                 variant = PlanUpgradeVariant.IntroductoryPrice
             )
         )

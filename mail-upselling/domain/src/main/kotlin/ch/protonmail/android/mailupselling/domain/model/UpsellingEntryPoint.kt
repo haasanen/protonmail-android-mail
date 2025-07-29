@@ -29,5 +29,7 @@ sealed interface UpsellingEntryPoint {
         data object Folders : Feature
         data object MobileSignature : Feature
         data object AutoDelete : Feature
+        data object Snooze : Feature
+        data object ScheduleSend : Feature
     }
 }

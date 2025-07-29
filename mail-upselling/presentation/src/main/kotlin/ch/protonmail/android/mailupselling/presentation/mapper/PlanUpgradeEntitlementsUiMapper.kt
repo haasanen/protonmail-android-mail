@@ -69,6 +69,8 @@ class PlanUpgradeEntitlementsUiMapper @Inject constructor() {
 
         UpsellingEntryPoint.Feature.MobileSignature -> MobileSignaturePlusOverriddenEntitlements
         UpsellingEntryPoint.Feature.AutoDelete -> AutoDeletePlusOverriddenEntitlements
+        UpsellingEntryPoint.Feature.ScheduleSend -> ScheduleSendPlusOverriddenEntitlements
+        UpsellingEntryPoint.Feature.Snooze -> SnoozeSendPlusOverriddenEntitlements
     }
 
     private fun getUnlimitedEntitlements() = UnlimitedOverriddenEntitlements
@@ -127,6 +129,8 @@ class PlanUpgradeEntitlementsUiMapper @Inject constructor() {
         private val MobileSignaturePlusOverriddenEntitlements = SharedPlusOverriddenEntitlements
 
         private val AutoDeletePlusOverriddenEntitlements = SharedPlusOverriddenEntitlements
+        private val ScheduleSendPlusOverriddenEntitlements = SharedPlusOverriddenEntitlements
+        private val SnoozeSendPlusOverriddenEntitlements = SharedPlusOverriddenEntitlements
 
         private val UnlimitedOverriddenEntitlements = listOf(
             PlanUpgradeEntitlementListUiModel.Overridden(

@@ -34,16 +34,21 @@ internal class PlanUpgradeIconUiMapper @Inject constructor() {
         if (variant == PlanUpgradeVariant.SocialProof) {
             return PlanUpgradeIconUiModel(R.drawable.ic_mail_social_proof)
         }
-        return when (upsellingEntryPoint) {
-            UpsellingEntryPoint.Feature.ContactGroups -> PlanUpgradeIconUiModel(R.drawable.illustration_upselling_contact_groups)
-            UpsellingEntryPoint.Feature.Folders -> PlanUpgradeIconUiModel(R.drawable.illustration_upselling_labels)
-            UpsellingEntryPoint.Feature.Labels -> PlanUpgradeIconUiModel(R.drawable.illustration_upselling_labels)
-            UpsellingEntryPoint.Feature.MobileSignature -> PlanUpgradeIconUiModel(R.drawable.illustration_upselling_mobile_signature)
-            UpsellingEntryPoint.Feature.MailboxPromo -> PlanUpgradeIconUiModel(R.drawable.illustration_upselling_mailbox_promo)
-            UpsellingEntryPoint.Feature.Mailbox,
-            UpsellingEntryPoint.Feature.Navbar -> PlanUpgradeIconUiModel(R.drawable.illustration_upselling_mailbox)
 
-            UpsellingEntryPoint.Feature.AutoDelete -> PlanUpgradeIconUiModel(R.drawable.illustration_upselling_auto_delete)
+        val drawableRes = when (upsellingEntryPoint) {
+            UpsellingEntryPoint.Feature.AutoDelete -> R.drawable.illustration_upselling_auto_delete
+            UpsellingEntryPoint.Feature.ContactGroups -> R.drawable.illustration_upselling_contact_groups
+            UpsellingEntryPoint.Feature.Folders -> R.drawable.illustration_upselling_labels
+            UpsellingEntryPoint.Feature.Labels -> R.drawable.illustration_upselling_labels
+            UpsellingEntryPoint.Feature.MobileSignature -> R.drawable.illustration_upselling_mobile_signature
+            UpsellingEntryPoint.Feature.MailboxPromo -> R.drawable.illustration_upselling_mailbox_promo
+            UpsellingEntryPoint.Feature.ScheduleSend -> R.drawable.illustration_upselling_schedule_send
+            UpsellingEntryPoint.Feature.Snooze -> R.drawable.illustration_upselling_snooze
+
+            UpsellingEntryPoint.Feature.Mailbox,
+            UpsellingEntryPoint.Feature.Navbar -> R.drawable.illustration_upselling_mailbox
         }
+
+        return PlanUpgradeIconUiModel(drawableRes)
     }
 }

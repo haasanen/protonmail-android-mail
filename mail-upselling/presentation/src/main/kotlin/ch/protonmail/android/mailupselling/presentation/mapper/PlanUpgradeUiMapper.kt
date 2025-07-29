@@ -121,7 +121,9 @@ internal class PlanUpgradeUiMapper @Inject constructor(
         UpsellingEntryPoint.Feature.ContactGroups,
         UpsellingEntryPoint.Feature.Folders,
         UpsellingEntryPoint.Feature.Labels,
-        UpsellingEntryPoint.Feature.MobileSignature -> false
+        UpsellingEntryPoint.Feature.MobileSignature,
+        UpsellingEntryPoint.Feature.ScheduleSend,
+        UpsellingEntryPoint.Feature.Snooze -> false
     }
 }
 
