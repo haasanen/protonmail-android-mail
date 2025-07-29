@@ -69,10 +69,11 @@ fun SubscriptionList(
 @Composable
 fun SubscriptionList(list: List<Subscription>, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
-        list.forEach { item ->
+        list.forEachIndexed { index, item ->
             SubscriptionItem(
                 subscription = item,
-                modifier = Modifier.padding(bottom = Spacing.Medium)
+                modifier = Modifier.padding(bottom = Spacing.Medium),
+                expandedInitially = index == 0
             )
         }
     }

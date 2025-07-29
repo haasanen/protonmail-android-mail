@@ -26,10 +26,15 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.android.core.payment.presentation.model.Subscription
 
 @Composable
-fun SubscriptionItem(subscription: Subscription, modifier: Modifier = Modifier) {
+fun SubscriptionItem(
+    subscription: Subscription,
+    modifier: Modifier = Modifier,
+    expandedInitially: Boolean = true
+) {
     SubscriptionCard(
         subscription = subscription,
-        modifier = modifier
+        modifier = modifier,
+        expandedInitially = expandedInitially
     )
 }
 

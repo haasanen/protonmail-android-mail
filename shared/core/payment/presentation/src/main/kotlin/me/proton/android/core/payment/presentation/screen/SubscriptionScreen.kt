@@ -83,6 +83,7 @@ fun SubscriptionScreen(
     )
 }
 
+@Suppress("UnusedBoxWithConstraintsScope")
 @Composable
 fun SubscriptionScreen(
     onClose: () -> Unit = {},
