@@ -131,7 +131,7 @@ internal fun UpsellingScreenContent(
                     .padding(bottom = footerHeight),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Huge))
                 Spacer(modifier = Modifier.weight(UpsellingLayoutValues.topSpacingWeight))
 
                 Image(
