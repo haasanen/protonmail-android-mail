@@ -47,7 +47,7 @@ object LocalContactTestData {
             avatarInformation = avatar1,
             emails = listOf(
                 ContactEmailItem(
-                    id = Id(101u),
+                    contactId = Id(101u),
                     email = "alice.johnson@example.com",
                     isProton = false,
                     lastUsedTime = 0uL,
@@ -55,7 +55,7 @@ object LocalContactTestData {
                     avatarInformation = avatar1
                 ),
                 ContactEmailItem(
-                    id = Id(102u),
+                    contactId = Id(102u),
                     email = "alice.work@example.com",
                     isProton = false,
                     lastUsedTime = 0uL,
@@ -78,7 +78,7 @@ object LocalContactTestData {
             avatarInformation = avatar2,
             emails = listOf(
                 ContactEmailItem(
-                    id = Id(104u),
+                    contactId = Id(104u),
                     email = "bob.smith@example.com",
                     isProton = false,
                     lastUsedTime = 0uL,
@@ -96,7 +96,7 @@ object LocalContactTestData {
             avatarColor = "#FFD700",
             contactEmails = listOf(
                 ContactEmailItem(
-                    id = Id(1u),
+                    contactId = Id(1u),
                     "family@example.com",
                     isProton = false,
                     lastUsedTime = 0uL,
@@ -114,7 +114,7 @@ object LocalContactTestData {
             avatarColor = "#8A2BE2",
             contactEmails = listOf(
                 ContactEmailItem(
-                    id = Id(1u),
+                    contactId = Id(1u),
                     email = "work@example.com",
                     isProton = false,
                     lastUsedTime = 0uL,
@@ -122,7 +122,7 @@ object LocalContactTestData {
                     avatarInformation = AvatarInformation("Wk", "#8A2BE2")
                 ),
                 ContactEmailItem(
-                    id = Id(1u),
+                    contactId = Id(1u),
                     email = "team@example.com",
                     isProton = false,
                     lastUsedTime = 0uL,

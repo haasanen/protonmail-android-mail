@@ -37,7 +37,7 @@ fun ContactGroupId.toLocalContactGroupId(): LocalContactGroupId = LocalContactGr
 
 fun LocalContactEmail.toContactEmail(): ContactEmail {
     return ContactEmail(
-        id = ContactId(this.id.value.toString()),
+        id = ContactId(contactId.value.toString()),
         email = this.email,
         isProton = this.isProton,
         lastUsedTime = this.lastUsedTime.toLong(),
