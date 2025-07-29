@@ -23,7 +23,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.testdata.contact.ContactIdTestData
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -42,7 +42,7 @@ class ParticipantMapperTest {
             avatar = AvatarInformationSample.avatarSample,
             emails = listOf(
                 ContactEmail(
-                    ContactEmailId("contact email id 1"),
+                    ContactId("contact email id 1"),
                     "test1@protonmail.com",
                     true,
                     lastUsedTime = 0,
@@ -57,7 +57,7 @@ class ParticipantMapperTest {
             avatar = AvatarInformationSample.avatarSample,
             emails = listOf(
                 ContactEmail(
-                    ContactEmailId("contact email id 2"),
+                    ContactId("contact email id 2"),
                     "test2@protonmail.com",
                     false,
                     lastUsedTime = 0,
@@ -65,7 +65,7 @@ class ParticipantMapperTest {
                     avatarInformation = AvatarInformationSample.avatarSample
                 ),
                 ContactEmail(
-                    ContactEmailId("contact email id 3"),
+                    ContactId("contact email id 3"),
                     "test3@protonmail.com",
                     false,
                     lastUsedTime = 0,

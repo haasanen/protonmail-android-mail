@@ -57,7 +57,7 @@ object LocalContactSuggestionTestData {
         kind = ContactSuggestionKind.ContactGroup(
             listOf(
                 ContactEmailItem(
-                    id = Id(ContactIdTestData.contactEmailId1.id.toULong()),
+                    id = Id(ContactIdTestData.contactId1.id.toULong()),
                     email = "contactgroup@first.email",
                     isProton = false,
                     lastUsedTime = 0uL,
@@ -65,7 +65,7 @@ object LocalContactSuggestionTestData {
                     avatarInformation = localAvatar
                 ),
                 ContactEmailItem(
-                    id = Id(ContactIdTestData.contactEmailId2.id.toULong()),
+                    id = Id(ContactIdTestData.contactId2.id.toULong()),
                     email = "contactgroup@second.email",
                     isProton = false,
                     lastUsedTime = 0uL,

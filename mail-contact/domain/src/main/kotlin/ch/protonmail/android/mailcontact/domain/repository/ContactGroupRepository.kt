@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcontact.domain.repository
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import me.proton.core.domain.entity.UserId
@@ -31,20 +30,4 @@ interface ContactGroupRepository {
         userId: UserId,
         contactGroupId: ContactGroupId
     ): Either<DataError, ContactMetadata.ContactGroup>
-
-    suspend fun addContactEmailIdsToContactGroup(
-        userId: UserId,
-        contactGroupId: ContactGroupId,
-        contactEmailIds: Set<ContactEmailId>
-    ): Either<ContactGroupErrors, Unit>
-
-    suspend fun removeContactEmailIdsFromContactGroup(
-        userId: UserId,
-        contactGroupId: ContactGroupId,
-        contactEmailIds: Set<ContactEmailId>
-    ): Either<ContactGroupErrors, Unit>
-
-    sealed class ContactGroupErrors {
-        object RemoteDataSourceError : ContactGroupErrors()
-    }
 }

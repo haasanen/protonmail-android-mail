@@ -19,16 +19,13 @@
 package ch.protonmail.android.mailcontact.data.repository
 
 import arrow.core.Either
-import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontact.data.local.RustContactGroupDataSource
 import ch.protonmail.android.mailcontact.data.mapper.toLocalContactGroupId
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.repository.ContactGroupRepository
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
 class ContactGroupRepositoryImpl @Inject constructor(
@@ -40,23 +37,5 @@ class ContactGroupRepositoryImpl @Inject constructor(
         contactGroupId: ContactGroupId
     ): Either<DataError, ContactMetadata.ContactGroup> =
         rustContactGroupDataSource.getContactGroupDetails(userId, contactGroupId.toLocalContactGroupId())
-
-    override suspend fun addContactEmailIdsToContactGroup(
-        userId: UserId,
-        contactGroupId: ContactGroupId,
-        contactEmailIds: Set<ContactEmailId>
-    ): Either<ContactGroupRepository.ContactGroupErrors, Unit> {
-        Timber.w("Not implemented")
-        return ContactGroupRepository.ContactGroupErrors.RemoteDataSourceError.left()
-    }
-
-    override suspend fun removeContactEmailIdsFromContactGroup(
-        userId: UserId,
-        contactGroupId: ContactGroupId,
-        contactEmailIds: Set<ContactEmailId>
-    ): Either<ContactGroupRepository.ContactGroupErrors, Unit> {
-        Timber.w("Not implemented")
-        return ContactGroupRepository.ContactGroupErrors.RemoteDataSourceError.left()
-    }
 
 }

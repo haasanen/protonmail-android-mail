@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.testdata.contact
 
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 
@@ -30,14 +29,6 @@ object ContactIdTestData {
     val contactId4 = ContactId("4")
     val contactId5 = ContactId("5")
     val contactSuggestionId = ContactId("6")
-
-    val contactEmailId1 = ContactEmailId("1")
-    val contactEmailId2 = ContactEmailId("2")
-    val contactEmailId3 = ContactEmailId("3")
-    val contactEmailId4 = ContactEmailId("4")
-    val contactEmailId5 = ContactEmailId("5")
-    val contactEmailId6 = ContactEmailId("6")
-    val contactSuggestionEmailId = ContactEmailId("7")
 
     val contactGroupSuggestionId = ContactGroupId("7")
 }
