@@ -40,12 +40,12 @@ internal class PlanUpgradeTitleUiMapper @Inject constructor() {
             UpsellingEntryPoint.Feature.ContactGroups -> R.string.upselling_contact_groups_plus_title
             UpsellingEntryPoint.Feature.Folders -> R.string.upselling_folders_plus_title
             UpsellingEntryPoint.Feature.Labels -> R.string.upselling_labels_plus_title
+            UpsellingEntryPoint.Feature.MailboxPromo -> R.string.upselling_mailbox_plus_promo_title
             UpsellingEntryPoint.Feature.MobileSignature -> R.string.upselling_mobile_signature_plus_title
             UpsellingEntryPoint.Feature.ScheduleSend -> R.string.upselling_schedule_send_plus_title
             UpsellingEntryPoint.Feature.Snooze -> R.string.upselling_snooze_plus_title
 
             UpsellingEntryPoint.Feature.Mailbox,
-            UpsellingEntryPoint.Feature.MailboxPromo,
             UpsellingEntryPoint.Feature.Navbar -> R.string.upselling_mailbox_plus_title
         }
 

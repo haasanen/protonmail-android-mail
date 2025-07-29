@@ -29,8 +29,10 @@
     <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
 
     <!-- Upselling: Mailbox Promo -->
-    <string name="upselling_mailbox_plus_promo_description_override">Limited-time offer, cancel anytime.</string>
-    <string name="upselling_mailbox_plus_promo_title">Try Mail Plus for %s</string>
+    <string name="upselling_mailbox_plus_promo_description_override">Get the best of Mail with this limited time offer</string>
+    <string name="upselling_mailbox_plus_promo_title">Try Mail Plus</string>
+    <string name="upselling_mailbox_plus_promo_skip">Skip offer</string>
+    <string name="upselling_mailbox_plus_promo_renewal">%s for the 1st month, then %s per month</string>
 
     <!-- Upselling: Contact Groups -->
     <string name="upselling_contact_groups_plus_description_override">Send group emails with ease. Enjoy this and more with Mail Plus.</string>

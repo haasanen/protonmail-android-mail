@@ -41,11 +41,11 @@ internal class PlanUpgradeIconUiMapper @Inject constructor() {
             UpsellingEntryPoint.Feature.Folders -> R.drawable.illustration_upselling_labels
             UpsellingEntryPoint.Feature.Labels -> R.drawable.illustration_upselling_labels
             UpsellingEntryPoint.Feature.MobileSignature -> R.drawable.illustration_upselling_mobile_signature
-            UpsellingEntryPoint.Feature.MailboxPromo -> R.drawable.illustration_upselling_mailbox_promo
             UpsellingEntryPoint.Feature.ScheduleSend -> R.drawable.illustration_upselling_schedule_send
             UpsellingEntryPoint.Feature.Snooze -> R.drawable.illustration_upselling_snooze
 
             UpsellingEntryPoint.Feature.Mailbox,
+            UpsellingEntryPoint.Feature.MailboxPromo,
             UpsellingEntryPoint.Feature.Navbar -> R.drawable.illustration_upselling_mailbox
         }
 

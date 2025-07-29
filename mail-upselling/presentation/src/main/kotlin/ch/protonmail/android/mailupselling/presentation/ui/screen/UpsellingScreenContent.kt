@@ -111,8 +111,8 @@ internal fun UpsellingScreenContent(
                 ) {
                     UpsellingPlanButtonsFooter(
                         modifier = Modifier.fillMaxWidth(),
-                        plans.list,
-                        actions
+                        plans = plans.list,
+                        actions = actions
                     )
                 }
             }
@@ -141,6 +141,8 @@ internal fun UpsellingScreenContent(
                     painter = painterResource(id = plans.icon.iconResId),
                     contentDescription = NO_CONTENT_DESCRIPTION
                 )
+
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
 
                 Text(
                     modifier = Modifier

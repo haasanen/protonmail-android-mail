@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceListUiModel
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingContentPreviewData
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen
@@ -41,6 +42,9 @@ internal fun UpsellingPlanButtonsFooter(
     plans: PlanUpgradeInstanceListUiModel.Data,
     actions: UpsellingScreen.Actions
 ) {
+    val shouldShowIntroPriceFooter = plans is PlanUpgradeInstanceListUiModel.Data.IntroPrice &&
+        plans.shorterCycle is PlanUpgradeInstanceUiModel.Promotional
+
     Column(
         modifier.background(UpsellingLayoutValues.UpsellingPlanButtonsFooter.backgroundColor)
     ) {
@@ -51,7 +55,11 @@ internal fun UpsellingPlanButtonsFooter(
                 .background(UpsellingLayoutValues.UpsellingPlanButtonsFooter.spacerColor)
         )
 
-        PaymentButtonsHorizontalLayout(plans, actions)
+        if (shouldShowIntroPriceFooter) {
+            PaymentButtonsIntroPricing(plans.shorterCycle, actions)
+        } else {
+            PaymentButtonsHorizontalLayout(plans, actions)
+        }
     }
 }
 
