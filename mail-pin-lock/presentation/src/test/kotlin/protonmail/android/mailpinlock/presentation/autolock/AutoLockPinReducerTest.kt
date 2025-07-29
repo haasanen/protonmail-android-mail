@@ -180,6 +180,23 @@ internal class AutoLockPinReducerTest(private val testName: String, private val 
                 )
             ),
             arrayOf(
+                "from verification to no accounts present",
+                TestInput(
+                    state = AutoLockTestData.BaseLoadedState.copy(
+                        pinInsertionState = AutoLockTestData.BasePinInsertionState.copy(
+                            step = PinInsertionStep.PinVerification
+                        )
+                    ),
+                    event = AutoLockPinEvent.Update.NoAccountSignedIn,
+                    expected = AutoLockTestData.BaseLoadedState.copy(
+                        pinInsertionState = AutoLockTestData.BasePinInsertionState.copy(
+                            step = PinInsertionStep.PinVerification
+                        ),
+                        closeScreenEffect = Effect.of(Unit)
+                    )
+                )
+            ),
+            arrayOf(
                 "from sign out requested to cancelled",
                 TestInput(
                     state = AutoLockTestData.BaseLoadedState.copy(

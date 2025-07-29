@@ -25,15 +25,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
-import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInsertionMode
 import ch.protonmail.android.mailpinlock.presentation.pin.reducer.AutoLockPinReducer
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.AutoLockPinScreen
 import ch.protonmail.android.mailsession.data.usecase.SignOutAllAccounts
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.proton.core.util.kotlin.deserialize
@@ -42,8 +45,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AutoLockPinViewModel @Inject constructor(
     private val autoLockRepository: AutoLockRepository,
-    private val autoLockCheckPendingState: AutoLockCheckPendingState,
     private val signOutAllAccounts: SignOutAllAccounts,
+    private val userSessionRepository: UserSessionRepository,
     private val reducer: AutoLockPinReducer,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -69,6 +72,15 @@ class AutoLockPinViewModel @Inject constructor(
         viewModelScope.launch {
             val remainingAttempts = autoLockRepository.getRemainingAttempts().getOrNull()
             emitNewStateFrom(AutoLockPinEvent.Data.Loaded(step, remainingAttempts))
+
+            // Observe accounts to ensure that once forced logout (for all accounts) happens, the screen is dismissed.
+            userSessionRepository.observeAccounts()
+                .map { it.isEmpty() }
+                .distinctUntilChanged()
+                .filter { it }
+                .collect {
+                    emitNewStateFrom(AutoLockPinEvent.Update.NoAccountSignedIn)
+                }
         }
     }
 

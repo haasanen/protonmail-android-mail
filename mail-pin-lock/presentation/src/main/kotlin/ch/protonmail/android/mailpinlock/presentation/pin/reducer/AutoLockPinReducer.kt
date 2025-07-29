@@ -36,7 +36,6 @@ class AutoLockPinReducer @Inject constructor(
     fun newStateFrom(currentState: AutoLockPinState, operation: AutoLockPinEvent) =
         currentState.toNewStateFromEvent(operation)
 
-    @Suppress("ComplexMethod")
     private fun AutoLockPinState.toNewStateFromEvent(event: AutoLockPinEvent): AutoLockPinState {
         return when (this) {
             is AutoLockPinState.Loading -> when (event) {
@@ -53,10 +52,14 @@ class AutoLockPinReducer @Inject constructor(
                 AutoLockPinEvent.Update.SignOutRequested -> handleSignOutRequested(this)
                 AutoLockPinEvent.Update.SignOutCanceled -> handleSignOutCanceled(this)
                 AutoLockPinEvent.Update.SignOutConfirmed -> handleSignOutConfirmed(this)
+                AutoLockPinEvent.Update.NoAccountSignedIn -> handleNoAccountsSignedIn(this)
                 else -> this
             }
         }
     }
+
+    private fun handleNoAccountsSignedIn(state: AutoLockPinState.DataLoaded) =
+        state.copy(closeScreenEffect = Effect.of(Unit))
 
     private fun handleError(
         state: AutoLockPinState.DataLoaded,

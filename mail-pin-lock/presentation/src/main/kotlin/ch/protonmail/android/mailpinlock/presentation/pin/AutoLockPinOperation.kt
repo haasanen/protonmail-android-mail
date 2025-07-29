@@ -50,6 +50,8 @@ sealed interface AutoLockPinEvent : AutoLockPinOperation {
         object SignOutConfirmed : Update
         object SignOutCanceled : Update
 
+        object NoAccountSignedIn : Update
+
         sealed interface Error : Update {
 
             data class Verify(

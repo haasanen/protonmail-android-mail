@@ -19,6 +19,7 @@
 package protonmail.android.mailpinlock.presentation.autolock
 
 import androidx.lifecycle.SavedStateHandle
+import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -26,7 +27,6 @@ import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinError
 import ch.protonmail.android.mailcommon.domain.model.autolock.VerifyAutoLockPinError
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailpinlock.domain.AutoLockCheckPendingState
 import ch.protonmail.android.mailpinlock.domain.AutoLockRepository
 import ch.protonmail.android.mailpinlock.presentation.autolock.model.AutoLockInsertionMode
 import ch.protonmail.android.mailpinlock.presentation.pin.AutoLockPinEvent
@@ -40,6 +40,8 @@ import ch.protonmail.android.mailpinlock.presentation.pin.mapper.AutoLockSuccess
 import ch.protonmail.android.mailpinlock.presentation.pin.reducer.AutoLockPinReducer
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.AutoLockPinScreen
 import ch.protonmail.android.mailsession.data.usecase.SignOutAllAccounts
+import ch.protonmail.android.mailsession.domain.model.Account
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -49,11 +51,13 @@ import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 internal class AutoLockPinViewModelTest {
@@ -62,7 +66,9 @@ internal class AutoLockPinViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val autoLockRepository = mockk<AutoLockRepository>()
-    private val autoLockCheckPendingState = spyk<AutoLockCheckPendingState>()
+    private val userSessionRepository = mockk<UserSessionRepository> {
+        every { observeAccounts() } returns flowOf(listOf<Account>(mockk()))
+    }
     private val signOutAllAccounts = mockk<SignOutAllAccounts>()
     private val savedStateHandle = mockk<SavedStateHandle>()
 
@@ -76,7 +82,7 @@ internal class AutoLockPinViewModelTest {
 
     private fun viewModel() = AutoLockPinViewModel(
         autoLockRepository = autoLockRepository,
-        autoLockCheckPendingState = autoLockCheckPendingState,
+        userSessionRepository = userSessionRepository,
         signOutAllAccounts = signOutAllAccounts,
         reducer = reducer,
         savedStateHandle = savedStateHandle
@@ -408,6 +414,23 @@ internal class AutoLockPinViewModelTest {
             autoLockRepository.getRemainingAttempts() // At VM launch, to show the "remaining count" across app restart
             autoLockRepository.verifyAutoLockPinCode(wrongPin)
             autoLockRepository.getRemainingAttempts() // After wrong pin, to update the remaining attempt in the state
+        }
+    }
+
+    @Test
+    fun `should emit close request on no signed in accounts`() = runTest {
+        // Given
+        expectValidOpeningMode(AutoLockInsertionMode.VerifyPin)
+        every { userSessionRepository.observeAccounts() } returns flowOf(listOf())
+
+        // When
+        viewModel().state.test {
+            val state = awaitItem() as? AutoLockPinState.DataLoaded
+            assertEquals(Effect.of(Unit), state?.closeScreenEffect)
+        }
+
+        verify {
+            reducer.newStateFrom(any(), AutoLockPinEvent.Update.NoAccountSignedIn)
         }
     }
 
