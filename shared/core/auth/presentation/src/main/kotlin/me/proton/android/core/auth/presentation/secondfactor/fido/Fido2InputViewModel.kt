@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorFlowManager
 import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputAction.Authenticate
 import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputAction.Load
 import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputAction.SecurityKeyResult
@@ -39,12 +38,15 @@ import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputStat
 import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputState.Idle
 import me.proton.core.auth.fido.domain.entity.Fido2AuthenticationOptions
 import me.proton.core.auth.fido.domain.entity.SecondFactorProof
+import me.proton.core.auth.fido.domain.usecase.PerformTwoFaWithSecurityKey
 import me.proton.core.auth.fido.domain.usecase.PerformTwoFaWithSecurityKey.Result
 import me.proton.core.compose.viewmodel.BaseViewModel
 import uniffi.proton_account_uniffi.LoginFlow
+import uniffi.proton_mail_uniffi.FidoSignResultStatus
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionToUserSessionResult
 import uniffi.proton_mail_uniffi.ProtonError
+import uniffi.proton_mail_uniffi.recordFidoSignResult
 import javax.inject.Inject
 
 @Suppress("TooGenericExceptionCaught")
@@ -54,8 +56,7 @@ class Fido2InputViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val getFidoOptions: GetFidoOptions,
     private val submitFido: SubmitFido,
-    private val sessionInterface: MailSession,
-    private val secondFactorFlowManager: SecondFactorFlowManager
+    private val sessionInterface: MailSession
 ) : BaseViewModel<Fido2InputAction, Fido2InputState>(
     initialAction = Load(),
     initialState = Idle,
@@ -107,6 +108,7 @@ class Fido2InputViewModel @Inject constructor(
     }
 
     private fun handleSecurityKeyResult(result: Result, secondFactorProof: SecondFactorProof.Fido2?) = flow {
+        onFidoSignResult(result)
         when (result) {
             is Result.Success -> handleSuccessfulSecurityKeyRead(secondFactorProof)
             is Result.Error -> emit(Error.ReadingSecurityKey.Message(result.error.message))
@@ -154,4 +156,34 @@ class Fido2InputViewModel @Inject constructor(
             is MailSessionToUserSessionResult.Ok -> emit(Fido2InputState.LoggedIn)
         }
     }
+
+    private fun onFidoSignResult(result: Result) {
+        val fidoSignResult = result.toFidoStatus()
+        recordFidoSignResult(fidoSignResult)
+    }
+}
+
+internal fun Result.toFidoStatus(): FidoSignResultStatus = when (this) {
+    is Result.Cancelled -> FidoSignResultStatus.USER_CANCELLED
+    is Result.EmptyResult -> FidoSignResultStatus.EMPTY
+    is Result.Error -> when (error.code) {
+        PerformTwoFaWithSecurityKey.ErrorCode.NOT_SUPPORTED_ERR -> FidoSignResultStatus.FAILURE_NOT_SUPPORTED
+        PerformTwoFaWithSecurityKey.ErrorCode.INVALID_STATE_ERR -> FidoSignResultStatus.FAILURE_INVALID_STATE
+        PerformTwoFaWithSecurityKey.ErrorCode.SECURITY_ERR -> FidoSignResultStatus.FAILURE_SECURITY
+        PerformTwoFaWithSecurityKey.ErrorCode.NETWORK_ERR -> FidoSignResultStatus.FAILURE_NETWORK
+        PerformTwoFaWithSecurityKey.ErrorCode.ABORT_ERR -> FidoSignResultStatus.FAILURE_ABORT
+        PerformTwoFaWithSecurityKey.ErrorCode.TIMEOUT_ERR -> FidoSignResultStatus.FAILURE_TIMEOUT
+        PerformTwoFaWithSecurityKey.ErrorCode.ENCODING_ERR -> FidoSignResultStatus.FAILURE_ENCODING
+        PerformTwoFaWithSecurityKey.ErrorCode.CONSTRAINT_ERR -> FidoSignResultStatus.FAILURE_CONSTRAINT
+        PerformTwoFaWithSecurityKey.ErrorCode.DATA_ERR -> FidoSignResultStatus.FAILURE_DATA
+        PerformTwoFaWithSecurityKey.ErrorCode.NOT_ALLOWED_ERR -> FidoSignResultStatus.FAILURE_NOT_ALLOWED
+        PerformTwoFaWithSecurityKey.ErrorCode.ATTESTATION_NOT_PRIVATE_ERR ->
+            FidoSignResultStatus.FAILURE_ATTESTATION_NOT_PRIVATE
+
+        PerformTwoFaWithSecurityKey.ErrorCode.UNKNOWN_ERR -> FidoSignResultStatus.FAILURE_UNKNOWN
+    }
+
+    is Result.Success -> FidoSignResultStatus.SUCCESS
+    is Result.UnknownResult -> FidoSignResultStatus.UNKNOWN
+    is Result.NoCredentialsResponse -> FidoSignResultStatus.FAILURE_NO_RESPONSE
 }

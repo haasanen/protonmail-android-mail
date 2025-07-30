@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputAction.Close
@@ -37,9 +38,14 @@ import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputSt
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Idle
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Loading
 import me.proton.android.core.auth.presentation.secondfactor.fido.GetFidoOptions
+import me.proton.core.auth.fido.domain.usecase.PerformTwoFaWithSecurityKey.LaunchResult
 import me.proton.core.compose.viewmodel.BaseViewModel
+import uniffi.proton_mail_uniffi.FidoLaunchResultStatus
+import uniffi.proton_mail_uniffi.LoginScreenId
 import uniffi.proton_mail_uniffi.LoginScreenId
 import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.recordFidoLaunchResult
+import uniffi.proton_mail_uniffi.recordLoginScreenView
 import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.recordLoginScreenView
@@ -128,4 +134,18 @@ class SecondFactorInputViewModel @Inject constructor(
         secondFactorFlowManager.clearCache()
         emit(Closed)
     }
+
+    internal fun onScreenView() = viewModelScope.launch {
+        recordLoginScreenView(LoginScreenId.SECOND_FACTOR)
+    }
+
+    internal fun onFidoLaunchResult(result: LaunchResult?) = viewModelScope.launch {
+        val fidoStatus = result?.toFidoResultStatus() ?: FidoLaunchResultStatus.FAILURE
+        recordFidoLaunchResult(fidoStatus)
+    }
+}
+
+internal fun LaunchResult.toFidoResultStatus(): FidoLaunchResultStatus = when (this) {
+    is LaunchResult.Failure -> FidoLaunchResultStatus.FAILURE
+    is LaunchResult.Success -> FidoLaunchResultStatus.SUCCESS
 }

@@ -23,12 +23,14 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultCaller
+import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputAction
+import me.proton.android.core.auth.presentation.signup.viewmodel.SignUpViewModel
 import me.proton.core.auth.fido.domain.entity.Fido2PublicKeyCredentialRequestOptions
 import me.proton.core.auth.fido.domain.entity.SecondFactorProof
 import me.proton.core.auth.fido.domain.usecase.PerformTwoFaWithSecurityKey
@@ -40,6 +42,7 @@ import me.proton.core.presentation.utils.addOnBackPressedCallback
 import me.proton.core.presentation.utils.errorToast
 import javax.inject.Inject
 import kotlin.jvm.optionals.getOrNull
+import me.proton.core.auth.fido.domain.usecase.PerformTwoFaWithSecurityKey.LaunchResult
 
 @AndroidEntryPoint
 class SecondFactorActivity : ProtonActivity() {
@@ -50,6 +53,8 @@ class SecondFactorActivity : ProtonActivity() {
 
     @Inject
     lateinit var performTwoFaWithSecurityKey: Optional<PerformTwoFaWithSecurityKey<ActivityResultCaller, Activity>>
+
+    private val secondFactoryViewModel: SecondFactorInputViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,16 +71,16 @@ class SecondFactorActivity : ProtonActivity() {
                                 action.options.publicKey
                             )
 
-                        // add observability
+                        secondFactoryViewModel.onFidoLaunchResult(launchResult)
 
                         when (launchResult) {
-                            is PerformTwoFaWithSecurityKey.LaunchResult.Failure ->
+                            is LaunchResult.Failure ->
                                 onError(
                                     launchResult.exception.localizedMessage
                                         ?: getString(R.string.auth_login_general_error)
                                 )
 
-                            is PerformTwoFaWithSecurityKey.LaunchResult.Success -> Unit
+                            is LaunchResult.Success -> Unit
                             null -> {
                                 onError(getString(R.string.auth_login_general_error))
                                 mutableAction.tryEmit(
@@ -130,7 +135,6 @@ class SecondFactorActivity : ProtonActivity() {
         result: PerformTwoFaWithSecurityKey.Result,
         options: Fido2PublicKeyCredentialRequestOptions
     ) {
-        // add observability
         when (result) {
             is PerformTwoFaWithSecurityKey.Result.Success -> onResultSuccess(result = result, options = options)
             else -> mutableAction.tryEmit(Fido2InputAction.SecurityKeyResult(result = result, proof = null))
