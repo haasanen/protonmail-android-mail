@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.snooze
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,15 +32,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonButton
@@ -195,43 +189,7 @@ fun CustomSnoozeButton(modifier: Modifier = Modifier, onEvent: () -> Unit = {}) 
 
 @Composable
 fun UpsellSnoozeButton(modifier: Modifier = Modifier, onEvent: () -> Unit = {}) {
-    val stroke = Brush.linearGradient(ProtonTheme.colors.upsell)
-    ProtonButton(
-        modifier = modifier.border(width = 0.5.dp, brush = stroke, shape = ProtonTheme.shapes.extraLarge),
-        onClick = { onEvent() },
-        colors = ButtonDefaults.protonSecondaryButtonColors(false),
-        elevation = null,
-        shape = ProtonTheme.shapes.extraLarge,
-        border = null
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-
-            Column(
-                modifier = modifier
-                    .padding(all = ProtonDimens.Spacing.Large)
-                    .weight(1f)
-            ) {
-                Text(
-                    modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Tiny),
-                    text = stringResource(R.string.snooze_sheet_option_custom),
-                    style = ProtonTheme.typography.bodyLargeNorm,
-                    maxLines = 1
-                )
-                Text(
-                    text = stringResource(R.string.snooze_sheet_option_upsell_detail),
-                    style = ProtonTheme.typography.bodyMediumWeak,
-                    maxLines = 1
-                )
-            }
-            Icon(
-                contentDescription = null,
-                modifier = Modifier
-                    .defaultMinSize(minWidth = ProtonDimens.IconSize.MediumLarge),
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_proton_mail_upsell),
-                tint = Color.Unspecified
-            )
-        }
-    }
+    // coming from another feature MR
 }
 
 @Composable
