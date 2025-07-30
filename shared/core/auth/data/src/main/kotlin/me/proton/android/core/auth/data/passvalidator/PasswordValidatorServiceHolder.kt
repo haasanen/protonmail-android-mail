@@ -30,15 +30,12 @@ import javax.inject.Inject
 class PasswordValidatorServiceHolder @Inject constructor() {
 
     private val mutex = Mutex()
-    private lateinit var passwordValidatorService: PasswordValidatorService
+    private var passwordValidatorService: PasswordValidatorService? = null
 
     suspend fun bind(provider: suspend () -> PasswordValidatorService) {
         mutex.withLock {
-            check(!this::passwordValidatorService.isInitialized) {
-                "PasswordValidatorService is already initialized."
-            }
-            runCatching {
-                passwordValidatorService = provider()
+            passwordValidatorService = passwordValidatorService ?: runCatching {
+                provider()
             }.onFailure {
                 CoreLogger.e(LogTag.DEFAULT, it, "Failed to initialize password validator service.")
             }.getOrNull()
@@ -46,6 +43,8 @@ class PasswordValidatorServiceHolder @Inject constructor() {
     }
 
     suspend fun get(): PasswordValidatorService = mutex.withLock {
-        passwordValidatorService
+        requireNotNull(passwordValidatorService) {
+            "Password validator service is not initialized (call bind() first)."
+        }
     }
 }
