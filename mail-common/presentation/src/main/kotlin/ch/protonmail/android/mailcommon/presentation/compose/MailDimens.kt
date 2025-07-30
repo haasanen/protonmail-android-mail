@@ -152,4 +152,7 @@ object MailDimens {
     val UnreadFilterChipHeight = 36.dp
 
     val MailboxSkeletonRowHeight = 40.dp
+
+    val RsvpButtonHeight = 56.dp
+    val RsvpCalendarLogoSize = 58.dp
 }
