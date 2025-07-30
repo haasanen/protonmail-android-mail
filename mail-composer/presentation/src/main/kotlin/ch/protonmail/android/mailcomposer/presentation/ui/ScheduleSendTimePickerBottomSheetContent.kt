@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Calendar
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
@@ -30,11 +31,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
@@ -55,11 +59,13 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -91,6 +97,8 @@ internal fun ScheduleSendTimePickerBottomSheetContent(
     onScheduleSendConfirmed: (Instant) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    val pickedDate = remember { mutableStateOf("") }
 
     val timePickerState = rememberTimePickerState(initialHour = INITIAL_TIME_HOUR, initialMinute = INITIAL_TIME_MINUTE)
     val datePickerState = rememberDatePickerState(
@@ -152,18 +160,22 @@ internal fun ScheduleSendTimePickerBottomSheetContent(
                 .padding(ProtonDimens.Spacing.Large)
         ) {
 
-            ScheduleSendTime(timePickerState)
+            ScheduleSendTime(timePickerState = timePickerState, pickedDate = pickedDate)
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
 
-            ScheduleSendDatePicker(datePickerState)
+            ScheduleSendDatePicker(modifier = Modifier, datePickerState = datePickerState, pickedDate = pickedDate)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ScheduleSendTime(timePickerState: TimePickerState, modifier: Modifier = Modifier) {
+private fun ScheduleSendTime(
+    modifier: Modifier = Modifier,
+    timePickerState: TimePickerState,
+    pickedDate: MutableState<String>
+) {
 
     val pickedTime = remember { mutableStateOf("") }
     val showTimePicker = remember { mutableStateOf(false) }
@@ -189,6 +201,10 @@ private fun ScheduleSendTime(timePickerState: TimePickerState, modifier: Modifie
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
+        if (isLandscape()) {
+            DateHeadline(pickedDate = pickedDate)
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+        }
         Text(
             modifier = Modifier,
             text = stringResource(R.string.composer_schedule_send_custom_time_label),
@@ -255,18 +271,20 @@ private fun ScheduleSendTime(timePickerState: TimePickerState, modifier: Modifie
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ScheduleSendDatePicker(datePickerState: DatePickerState, modifier: Modifier = Modifier) {
-
-    val pickedDate = remember { mutableStateOf("") }
+private fun ScheduleSendDatePicker(
+    modifier: Modifier = Modifier,
+    datePickerState: DatePickerState,
+    pickedDate: MutableState<String>
+) {
     val formatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
 
     LaunchedEffect(datePickerState.getSelectedDate()) {
         pickedDate.value = datePickerState.getSelectedDate()?.format(formatter) ?: ""
     }
-
     Column {
         DatePicker(
             modifier = modifier
+                .verticalScroll(rememberScrollState())
                 .clip(ProtonTheme.shapes.extraLarge)
                 .background(
                     color = ProtonTheme.colors.backgroundInvertedSecondary,
@@ -280,40 +298,51 @@ private fun ScheduleSendDatePicker(datePickerState: DatePickerState, modifier: M
             ),
             title = null,
             headline = {
-                Row(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(ProtonDimens.Spacing.Large),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        modifier = Modifier,
-                        text = stringResource(R.string.composer_schedule_send_custom_date_label),
-                        style = ProtonTheme.typography.bodyMediumNorm,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-
-                    Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
-
-                    Text(
-                        modifier = Modifier
-                            .background(
-                                color = ProtonTheme.colors.backgroundInvertedDeep,
-                                shape = ProtonTheme.shapes.medium
-                            )
-                            .padding(ProtonDimens.Spacing.Medium)
-                            .align(Alignment.CenterVertically),
-                        text = pickedDate.value,
-                        style = ProtonTheme.typography.bodyLargeNorm,
-                        maxLines = 1
-                    )
+                if (!isLandscape()) {
+                    Row(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .padding(ProtonDimens.Spacing.Large),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DateHeadline(pickedDate = pickedDate)
+                    }
                 }
             }
         )
     }
 }
+
+@Composable
+fun RowScope.DateHeadline(pickedDate: MutableState<String>) {
+
+    Text(
+        modifier = Modifier,
+        text = stringResource(R.string.composer_schedule_send_custom_date_label),
+        style = ProtonTheme.typography.bodyMediumNorm,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+    )
+
+    Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
+
+    Text(
+        modifier = Modifier
+            .background(
+                color = ProtonTheme.colors.backgroundInvertedDeep,
+                shape = ProtonTheme.shapes.medium
+            )
+            .padding(ProtonDimens.Spacing.Medium)
+            .align(Alignment.CenterVertically),
+        text = pickedDate.value,
+        style = ProtonTheme.typography.bodyLargeNorm,
+        maxLines = 1
+    )
+}
+
+@Composable
+fun isLandscape() = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
 @Composable
 private fun TopBar(
@@ -378,6 +407,23 @@ private const val INITIAL_TIME_MINUTE = 0
 @Preview(showBackground = true)
 @Composable
 private fun PreviewScheduleSendTimePickerBottomSheet() {
+    ProtonTheme {
+        ScheduleSendTimePickerBottomSheetContent(
+            onClose = {},
+            onScheduleSendConfirmed = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Landscape Preview",
+    showBackground = true,
+    widthDp = 640,
+    heightDp = 360,
+    uiMode = Configuration.ORIENTATION_LANDSCAPE
+)
+@Composable
+private fun PreviewScheduleSendTimePickerLandscape() {
     ProtonTheme {
         ScheduleSendTimePickerBottomSheetContent(
             onClose = {},
