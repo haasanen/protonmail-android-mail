@@ -189,6 +189,7 @@ import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
+import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
 import ch.protonmail.android.testdata.action.AvailableActionsTestData
 import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.contact.ContactSample
@@ -273,6 +274,10 @@ class ConversationDetailViewModelIntegrationTest {
     }
     private val observeAvatarImageStates = mockk<ObserveAvatarImageStates> {
         every { this@mockk() } returns flowOf(AvatarImageStatesTestData.SampleData1)
+    }
+
+    private val snoozeRepository = mockk<SnoozeRepository> {
+        coEvery { this@mockk.unSnoozeConversation(any(), any(), any()) } returns Unit.right()
     }
 
     // Privacy settings for link confirmation dialog
@@ -2518,7 +2523,8 @@ class ConversationDetailViewModelIntegrationTest {
         cancelScheduleSendMessage = cancelScheduleSendMessage,
         printMessage = printMessage,
         getRsvpEvent = getRsvpEvent,
-        answerRsvpEvent = answerRsvpEvent
+        answerRsvpEvent = answerRsvpEvent,
+        snoozeRepository = snoozeRepository
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(

@@ -66,7 +66,8 @@ internal class MessageDetailFooterActionsTest {
             onEditScheduleSendMessage = {},
             onRetryRsvpEventLoading = {},
             onAnswerRsvpEvent = { _, _ -> },
-            onMessage = {}
+            onMessage = {},
+            onUnsnoozeMessage = {}
         )
 
         // When

@@ -34,6 +34,7 @@ import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiMode
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
+import ch.protonmail.android.maildetail.presentation.model.SnoozeBannerUiModel
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -296,14 +297,16 @@ object ConversationDetailMessageUiModelSample {
     )
 
     private fun messageBannersUiModel(
-        scheduleSendBannerUiModel: ScheduleSendBannerUiModel = ScheduleSendBannerUiModel.NoScheduleSend
+        scheduleSendBannerUiModel: ScheduleSendBannerUiModel = ScheduleSendBannerUiModel.NoScheduleSend,
+        snoozeUiModel: SnoozeBannerUiModel = SnoozeBannerUiModel.NotSnoozed
     ) = MessageBannersUiModel(
         shouldShowPhishingBanner = true,
         shouldShowSpamBanner = false,
         shouldShowBlockedSenderBanner = false,
         expirationBannerUiModel = ExpirationBannerUiModel.NoExpiration,
         autoDeleteBannerUiModel = AutoDeleteBannerUiModel.NoAutoDelete,
-        scheduleSendBannerUiModel = scheduleSendBannerUiModel
+        scheduleSendBannerUiModel = scheduleSendBannerUiModel,
+        snoozeBannerUiModel = snoozeUiModel
     )
 
     private fun buildExpanding(

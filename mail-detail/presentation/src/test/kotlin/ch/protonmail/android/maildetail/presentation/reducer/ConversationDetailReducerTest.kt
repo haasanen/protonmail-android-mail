@@ -351,7 +351,8 @@ class ConversationDetailReducerTest(
                 )
             ),
             ConversationDetailEvent.MessageMoved(MailLabelText("String")) affects listOf(BottomSheet, MessageBar),
-            ConversationDetailEvent.ErrorMovingMessage affects listOf(BottomSheet, ErrorBar)
+            ConversationDetailEvent.ErrorMovingMessage affects listOf(BottomSheet, ErrorBar),
+            ConversationDetailEvent.ErrorUnsnoozing affects listOf(ErrorBar)
         )
 
         @JvmStatic

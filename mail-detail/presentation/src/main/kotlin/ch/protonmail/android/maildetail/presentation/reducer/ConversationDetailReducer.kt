@@ -28,18 +28,30 @@ import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentVal
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.mapper.ActionResultMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteState
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.HandleOpenProtonCalendarRequest
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.OfflineErrorCancellingScheduleSend
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ExitScreenWithMessage
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ExitScreen
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.LastMessageMoved
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.MessageMoved
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorDeletingMessage
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.MessageBottomSheetEvent
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ScheduleSendCancelled
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorUnsnoozing
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ConversationBottomBarEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ConversationBottomSheetEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorAddStar
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMarkingAsRead
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorAttachmentDownloadInProgress
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorDeletingConversation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorExpandingDecryptMessageError
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorAnsweringRsvpEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorExpandingRetrieveMessageError
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorExpandingRetrievingMessageOffline
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorGettingAttachment
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorGettingAttachmentNotEnoughSpace
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorLabelingConversation
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorCancellingScheduleSend
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMarkingAsUnread
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMovingConversation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMovingMessage
@@ -113,7 +125,7 @@ class ConversationDetailReducer @Inject constructor(
     private fun ConversationDetailState.toOpenComposerEffectState(
         operation: ConversationDetailOperation
     ): Effect<MessageIdUiModel> = when (operation) {
-        is ConversationDetailEvent.ScheduleSendCancelled -> Effect.of(operation.messageId)
+        is ScheduleSendCancelled -> Effect.of(operation.messageId)
 
         else -> onExitWithNavigateToComposer
     }
@@ -143,7 +155,7 @@ class ConversationDetailReducer @Inject constructor(
         if (operation is ConversationDetailOperation.AffectingBottomSheet) {
             val bottomSheetOperation = when (operation) {
                 is ConversationBottomSheetEvent -> operation.bottomSheetOperation
-                is ConversationDetailEvent.MessageBottomSheetEvent -> operation.bottomSheetOperation
+                is MessageBottomSheetEvent -> operation.bottomSheetOperation
                 is ConversationDetailViewAction.RequestContactActionsBottomSheet,
                 is ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet,
                 is ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet,
@@ -156,8 +168,8 @@ class ConversationDetailReducer @Inject constructor(
                 is ErrorLabelingConversation,
                 is ErrorAddStar,
                 is ErrorDeletingConversation,
-                is ConversationDetailEvent.ErrorDeletingMessage,
-                is ConversationDetailEvent.ErrorMarkingAsRead,
+                is ErrorDeletingMessage,
+                is ErrorMarkingAsRead,
                 is ErrorMarkingAsUnread,
                 is ErrorMovingMessage,
                 is ErrorMovingToTrash,
@@ -182,10 +194,11 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.LabelAsCompleted,
                 is ConversationDetailViewAction.MoveToCompleted,
                 is ConversationDetailViewAction.PrintMessage,
-                is ConversationDetailEvent.MessageMoved,
-                is ConversationDetailEvent.LastMessageMoved,
-                is ConversationDetailEvent.ExitScreen,
-                is ConversationDetailEvent.ExitScreenWithMessage -> BottomSheetOperation.Dismiss
+                is MessageMoved,
+                is LastMessageMoved,
+                is ExitScreen,
+                is ConversationDetailViewAction.OnUnsnoozeConversationRequested,
+                is ExitScreenWithMessage -> BottomSheetOperation.Dismiss
             }
             bottomSheetReducer.newStateFrom(bottomSheetState, bottomSheetOperation)
         } else {
@@ -198,7 +211,7 @@ class ConversationDetailReducer @Inject constructor(
             val textResource = when (operation) {
                 is ErrorAddStar -> R.string.error_star_operation_failed
                 is ErrorRemoveStar -> R.string.error_unstar_operation_failed
-                is ConversationDetailEvent.ErrorMarkingAsRead -> R.string.error_mark_as_read_failed
+                is ErrorMarkingAsRead -> R.string.error_mark_as_read_failed
                 is ErrorMarkingAsUnread -> R.string.error_mark_as_unread_failed
                 is ErrorMovingToTrash -> R.string.error_move_to_trash_failed
                 is ErrorMovingConversation -> R.string.error_move_conversation_failed
@@ -211,11 +224,12 @@ class ConversationDetailReducer @Inject constructor(
                 is ErrorGettingAttachmentNotEnoughSpace -> R.string.error_get_attachment_not_enough_memory
                 is ErrorAttachmentDownloadInProgress -> R.string.error_attachment_download_in_progress
                 is ErrorDeletingConversation -> R.string.error_delete_conversation_failed
-                is ConversationDetailEvent.ErrorDeletingMessage -> R.string.error_delete_message_failed
-                is ConversationDetailEvent.ErrorCancellingScheduleSend -> R.string.error_cancel_schedule_send_failed
-                is ConversationDetailEvent.OfflineErrorCancellingScheduleSend ->
+                is ErrorUnsnoozing -> R.string.snooze_sheet_error_unable_to_unsnooze
+                is ErrorDeletingMessage -> R.string.error_delete_message_failed
+                is ErrorCancellingScheduleSend -> R.string.error_cancel_schedule_send_failed
+                is OfflineErrorCancellingScheduleSend ->
                     R.string.offline_error_cancel_schedule_send_failed
-                is ConversationDetailEvent.ErrorAnsweringRsvpEvent -> R.string.rsvp_widget_error_answering
+                is ErrorAnsweringRsvpEvent -> R.string.rsvp_widget_error_answering
             }
             Effect.of(TextUiModel(textResource))
         } else {
@@ -240,7 +254,7 @@ class ConversationDetailReducer @Inject constructor(
 
     private fun ConversationDetailState.toExitState(operation: ConversationDetailOperation): Effect<Unit> =
         when (operation) {
-            is ConversationDetailEvent.ExitScreen -> Effect.of(Unit)
+            is ExitScreen -> Effect.of(Unit)
             is ConversationDetailViewAction.ReportPhishingConfirmed -> when (messagesState) {
                 is ConversationDetailsMessagesState.Data -> if (messagesState.messages.size > 1) {
                     exitScreenEffect
@@ -257,7 +271,7 @@ class ConversationDetailReducer @Inject constructor(
     private fun ConversationDetailState.toExitWithMessageState(
         operation: ConversationDetailOperation
     ): Effect<ActionResult> = when (operation) {
-        is ConversationDetailEvent.ExitScreenWithMessage -> {
+        is ExitScreenWithMessage -> {
             val actionResult = actionResultMapper.toActionResult(operation.operation)
             if (actionResult != null) {
                 Effect.of(actionResult)
@@ -266,7 +280,7 @@ class ConversationDetailReducer @Inject constructor(
             }
         }
 
-        is ConversationDetailEvent.LastMessageMoved -> {
+        is LastMessageMoved -> {
             val actionResult = actionResultMapper.toActionResult(operation)
             if (actionResult != null) {
                 Effect.of(actionResult)
@@ -316,7 +330,7 @@ class ConversationDetailReducer @Inject constructor(
     private fun ConversationDetailState.toNewOpenProtonCalendarIntentFrom(
         operation: ConversationDetailOperation
     ): Effect<OpenProtonCalendarIntentValues> = when (operation) {
-        is ConversationDetailEvent.HandleOpenProtonCalendarRequest -> Effect.of(operation.intent)
+        is HandleOpenProtonCalendarRequest -> Effect.of(operation.intent)
         else -> openProtonCalendarIntent
     }
 

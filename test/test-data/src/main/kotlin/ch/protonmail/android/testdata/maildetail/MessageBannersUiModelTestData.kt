@@ -22,6 +22,7 @@ import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiMod
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
+import ch.protonmail.android.maildetail.presentation.model.SnoozeBannerUiModel
 import kotlin.time.Instant
 
 @Suppress("LongParameterList")
@@ -33,7 +34,8 @@ object MessageBannersUiModelTestData {
         shouldShowBlockedSenderBanner = true,
         expirationBannerUiModel = ExpirationBannerUiModel.Expiration(Instant.DISTANT_FUTURE),
         autoDeleteBannerUiModel = AutoDeleteBannerUiModel.AutoDelete(Instant.DISTANT_FUTURE),
-        scheduleSendUiModel = ScheduleSendBannerUiModel.NoScheduleSend
+        scheduleSendUiModel = ScheduleSendBannerUiModel.NoScheduleSend,
+        snoozeBannerUiModel = SnoozeBannerUiModel.NotSnoozed
     )
 
     fun build(
@@ -42,13 +44,15 @@ object MessageBannersUiModelTestData {
         shouldShowBlockedSenderBanner: Boolean,
         expirationBannerUiModel: ExpirationBannerUiModel,
         autoDeleteBannerUiModel: AutoDeleteBannerUiModel,
-        scheduleSendUiModel: ScheduleSendBannerUiModel
+        scheduleSendUiModel: ScheduleSendBannerUiModel,
+        snoozeBannerUiModel: SnoozeBannerUiModel
     ) = MessageBannersUiModel(
         shouldShowPhishingBanner = shouldShowPhishingBanner,
         shouldShowSpamBanner = shouldShowSpamBanner,
         shouldShowBlockedSenderBanner = shouldShowBlockedSenderBanner,
         expirationBannerUiModel = expirationBannerUiModel,
         autoDeleteBannerUiModel = autoDeleteBannerUiModel,
-        scheduleSendBannerUiModel = scheduleSendUiModel
+        scheduleSendBannerUiModel = scheduleSendUiModel,
+        snoozeBannerUiModel = snoozeBannerUiModel
     )
 }

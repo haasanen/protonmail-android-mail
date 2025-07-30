@@ -23,6 +23,7 @@ import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiMod
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
+import ch.protonmail.android.maildetail.presentation.model.SnoozeBannerUiModel
 import ch.protonmail.android.maildetail.presentation.usecase.FormatScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -39,7 +40,8 @@ class MessageBannersUiModelMapper @Inject constructor(
         shouldShowBlockedSenderBanner = messageBanners.contains(MessageBanner.BlockedSender),
         expirationBannerUiModel = toExpirationBannerUiModel(messageBanners),
         autoDeleteBannerUiModel = toAutoDeleteBannerUiModel(messageBanners),
-        scheduleSendBannerUiModel = toScheduleSendBannerUiModel(messageBanners)
+        scheduleSendBannerUiModel = toScheduleSendBannerUiModel(messageBanners),
+        snoozeBannerUiModel = toSnoozeBannerUiModel(messageBanners)
     )
 
     private fun toExpirationBannerUiModel(messageBanners: List<MessageBanner>): ExpirationBannerUiModel {
@@ -61,5 +63,13 @@ class MessageBannersUiModelMapper @Inject constructor(
                 isScheduleBeingCancelled = false
             )
         } ?: ScheduleSendBannerUiModel.NoScheduleSend
+    }
+
+    private fun toSnoozeBannerUiModel(messageBanners: List<MessageBanner>): SnoozeBannerUiModel {
+        return messageBanners.filterIsInstance<MessageBanner.Snoozed>().firstOrNull()?.let {
+            SnoozeBannerUiModel.SnoozeScheduled(
+                snoozedUntil = formatScheduleSendTime(it.snoozedUntil)
+            )
+        } ?: SnoozeBannerUiModel.NotSnoozed
     }
 }

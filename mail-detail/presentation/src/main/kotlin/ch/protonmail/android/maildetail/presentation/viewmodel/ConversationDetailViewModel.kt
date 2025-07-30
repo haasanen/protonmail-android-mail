@@ -128,6 +128,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBo
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
+import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineDispatcher
@@ -204,7 +205,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val cancelScheduleSendMessage: CancelScheduleSendMessage,
     private val printMessage: PrintMessage,
     private val getRsvpEvent: GetRsvpEvent,
-    private val answerRsvpEvent: AnswerRsvpEvent
+    private val answerRsvpEvent: AnswerRsvpEvent,
+    private val snoozeRepository: SnoozeRepository
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -366,7 +368,9 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.PrintMessage -> handlePrintMessage(action.context, action.messageId)
             is ConversationDetailViewAction.RetryRsvpEventLoading ->
                 handleGetRsvpEvent(action.messageId, refresh = true)
+
             is ConversationDetailViewAction.AnswerRsvpEvent -> handleAnswerRsvpEvent(action.messageId, action.answer)
+            is ConversationDetailViewAction.OnUnsnoozeConversationRequested -> handleUnsnoozeMessage(action.messageId)
         }
     }
 
@@ -1315,6 +1319,20 @@ class ConversationDetailViewModel @Inject constructor(
                 emitNewStateFrom(ConversationDetailEvent.ErrorAnsweringRsvpEvent)
             }
             handleGetRsvpEvent(messageId, refresh = false)
+        }
+    }
+
+    private fun handleUnsnoozeMessage(messageId: MessageIdUiModel) {
+        viewModelScope.launch {
+            snoozeRepository.unSnoozeConversation(
+                userId = primaryUserId.first(),
+                labelId = openedFromLocation,
+                conversationIds = listOf(conversationId)
+            ).onLeft { error ->
+                emitNewStateFrom(ConversationDetailEvent.ErrorUnsnoozing)
+            }.onRight {
+                setOrRefreshMessageBody(messageId)
+            }
         }
     }
 

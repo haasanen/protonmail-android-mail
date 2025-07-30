@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
+import ch.protonmail.android.maildetail.presentation.model.SnoozeBannerUiModel
 import ch.protonmail.android.maildetail.presentation.usecase.FormatScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import io.mockk.every
@@ -188,5 +189,35 @@ class MessageBannersUiModelMapperTest {
 
         // Then
         assertEquals(ScheduleSendBannerUiModel.NoScheduleSend, result.scheduleSendBannerUiModel)
+    }
+
+    @Test
+    fun `should map to ui model with snooze banner when banners list contains it`() {
+        // Given
+        val expected = TextUiModel.Text("in the far future")
+        every { formatScheduleSendTime(Instant.DISTANT_FUTURE) } returns expected
+
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            listOf(MessageBanner.Snoozed(Instant.DISTANT_FUTURE))
+        )
+
+        // Then
+        assertEquals(
+            SnoozeBannerUiModel.SnoozeScheduled(expected),
+            result.snoozeBannerUiModel
+        )
+    }
+
+
+    @Test
+    fun `should map to ui model with no snooze banner when banners list does not contain it`() {
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            emptyList()
+        )
+
+        // Then
+        assertEquals(SnoozeBannerUiModel.NotSnoozed, result.snoozeBannerUiModel)
     }
 }

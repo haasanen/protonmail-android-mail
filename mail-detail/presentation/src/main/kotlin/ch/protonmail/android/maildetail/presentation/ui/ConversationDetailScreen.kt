@@ -525,7 +525,10 @@ fun ConversationDetailScreen(
                 onAnswerRsvpEvent = { messageId, answer ->
                     viewModel.submit(ConversationDetailViewAction.AnswerRsvpEvent(MessageId(messageId.id), answer))
                 },
-                onMessage = actions.onComposeNewMessage
+                onMessage = actions.onComposeNewMessage,
+                onUnsnoozeMessage = { messageId ->
+                    viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested(messageId))
+                }
             ),
             scrollToMessageId = state.scrollToMessage?.id
         )
@@ -724,7 +727,8 @@ fun ConversationDetailScreen(
                     onEditScheduleSendMessage = actions.onEditScheduleSendMessage,
                     onRetryRsvpEventLoading = actions.onRetryRsvpEventLoading,
                     onAnswerRsvpEvent = actions.onAnswerRsvpEvent,
-                    onMessage = actions.onMessage
+                    onMessage = actions.onMessage,
+                    onUnsnoozeMessage = actions.onUnsnoozeMessage
                 )
                 MessagesContentWithHiddenEdges(
                     uiModels = state.messagesState.messages,
@@ -1092,7 +1096,8 @@ object ConversationDetailScreen {
         val onExitWithOpenInComposer: (MessageIdUiModel) -> Unit,
         val onRetryRsvpEventLoading: (MessageIdUiModel) -> Unit,
         val onAnswerRsvpEvent: (MessageIdUiModel, RsvpAnswer) -> Unit,
-        val onMessage: (String) -> Unit
+        val onMessage: (String) -> Unit,
+        val onUnsnoozeMessage: (MessageIdUiModel) -> Unit
     ) {
 
         companion object {
@@ -1146,7 +1151,8 @@ object ConversationDetailScreen {
                 onExitWithOpenInComposer = {},
                 onRetryRsvpEventLoading = {},
                 onAnswerRsvpEvent = { _, _ -> },
-                onMessage = {}
+                onMessage = {},
+                onUnsnoozeMessage = {}
             )
         }
     }

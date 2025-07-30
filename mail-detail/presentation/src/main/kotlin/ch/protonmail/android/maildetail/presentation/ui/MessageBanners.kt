@@ -29,6 +29,7 @@ import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiMod
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
+import ch.protonmail.android.maildetail.presentation.model.SnoozeBannerUiModel
 import ch.protonmail.android.maildetail.presentation.util.toFormattedAutoDeleteTime
 import ch.protonmail.android.maildetail.presentation.util.toFormattedExpirationTime
 import kotlinx.coroutines.delay
@@ -42,7 +43,8 @@ fun MessageBanners(
     messageBannersUiModel: MessageBannersUiModel,
     onMarkMessageAsLegitimate: (Boolean) -> Unit,
     onUnblockSender: () -> Unit,
-    onCancelScheduleMessage: () -> Unit
+    onCancelScheduleMessage: () -> Unit,
+    onUnsnoozeMessage: () -> Unit
 ) {
     Column {
         if (messageBannersUiModel.shouldShowPhishingBanner) {
@@ -85,6 +87,10 @@ fun MessageBanners(
             ScheduleSendBannerUiModel.NoScheduleSend -> Unit
             is ScheduleSendBannerUiModel.SendScheduled -> ScheduleSendBanner(uiModel, onCancelScheduleMessage)
         }
+        when (val uiModel = messageBannersUiModel.snoozeBannerUiModel) {
+            SnoozeBannerUiModel.NotSnoozed -> Unit
+            is SnoozeBannerUiModel.SnoozeScheduled -> SnoozeBanner(uiModel, onUnsnoozeMessage)
+        }
         if (messageBannersUiModel.shouldShowBlockedSenderBanner) {
             ProtonBannerWithButton(
                 bannerText = stringResource(R.string.message_blocked_sender_banner_text),
@@ -94,6 +100,25 @@ fun MessageBanners(
             )
         }
     }
+}
+
+@Composable
+private fun SnoozeBanner(uiModel: SnoozeBannerUiModel.SnoozeScheduled, onUnsnoozeMessage: () -> Unit) {
+    val bannerBaseText = stringResource(R.string.snooze_message_snoozed_until_banner_title)
+    val sendTimeFormatted = uiModel.snoozedUntil.string()
+    val bannerText = buildAnnotatedString {
+        append(bannerBaseText)
+        appendLine()
+        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+            append(sendTimeFormatted)
+        }
+    }
+    ProtonBannerWithButton(
+        bannerText = bannerText,
+        buttonText = stringResource(R.string.snooze_message_unsnooze_banner_button),
+        icon = R.drawable.ic_proton_clock,
+        onButtonClicked = onUnsnoozeMessage
+    )
 }
 
 @Composable
@@ -219,11 +244,15 @@ fun PreviewMessageBanners() {
                 scheduleSendBannerUiModel = ScheduleSendBannerUiModel.SendScheduled(
                     sendAt = TextUiModel.Text("tomorrow at 08:00"),
                     isScheduleBeingCancelled = false
+                ),
+                snoozeBannerUiModel = SnoozeBannerUiModel.SnoozeScheduled(
+                    snoozedUntil = TextUiModel.Text("tomorrow at 08:00")
                 )
             ),
             onMarkMessageAsLegitimate = {},
             onUnblockSender = {},
-            onCancelScheduleMessage = {}
+            onCancelScheduleMessage = {},
+            onUnsnoozeMessage = {}
         )
     }
 }

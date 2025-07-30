@@ -121,6 +121,8 @@ import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
+import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
+import ch.protonmail.android.mailsnooze.domain.model.UnsnoozeError
 import ch.protonmail.android.testdata.action.ActionUiModelTestData
 import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.contact.ContactActionsGroupsSample
@@ -323,6 +325,10 @@ class ConversationDetailViewModelTest {
     private val getRsvpEvent = mockk<GetRsvpEvent>()
     private val answerRsvpEvent = mockk<AnswerRsvpEvent>()
 
+    private val snoozeRepository = mockk<SnoozeRepository> {
+        coEvery { this@mockk.unSnoozeConversation(any(), any(), any()) } returns Unit.right()
+    }
+
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
     }
@@ -373,7 +379,8 @@ class ConversationDetailViewModelTest {
             cancelScheduleSendMessage = cancelScheduleSendMessage,
             printMessage = printMessage,
             getRsvpEvent = getRsvpEvent,
-            answerRsvpEvent = answerRsvpEvent
+            answerRsvpEvent = answerRsvpEvent,
+            snoozeRepository = snoozeRepository
         )
     }
 
@@ -1902,6 +1909,58 @@ class ConversationDetailViewModelTest {
         every { conversationMessageMapper.toUiModel(any<ConversationDetailMessageUiModel.Collapsed>()) } returns
             InvoiceWithLabelExpanding
         return Pair(allCollapsed.map { it.messageId }, InvoiceWithLabelExpanded)
+    }
+
+    @Test
+    fun `given unsnoozed successfully then message body is refreshed`() = runTest {
+        // given
+        val labelId = LabelIdSample.AllMail
+        val messageId = MessageIdUiModel("Id")
+        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
+
+        // when
+        viewModel.state.test {
+            initialStateEmitted()
+            viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested(messageId))
+            advanceUntilIdle()
+            // then
+            coVerify { snoozeRepository.unSnoozeConversation(userId, labelId, listOf(conversationId)) }
+
+            advanceUntilIdle()
+
+            val expected = MessageBodyTransformations.MessageDetailsDefaults.copy()
+
+            coVerify(exactly = 1) {
+                getDecryptedMessageBody(userId, MessageId(messageId.id), expected)
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `error message is emitted when unsnooze fails`() = runTest {
+        // given
+        coEvery {
+            snoozeRepository.unSnoozeConversation(any(), any(), any())
+        } returns UnsnoozeError.Other().left()
+        coEvery {
+            reducer.newStateFrom(
+                currentState = ConversationDetailState.Loading,
+                operation = ConversationDetailEvent.ErrorUnsnoozing
+            )
+        } returns ConversationDetailState.Loading.copy(
+            error = Effect.of(TextUiModel(string.snooze_sheet_error_unable_to_unsnooze))
+        )
+
+        // when
+        viewModel.state.test {
+            initialStateEmitted()
+            viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested(MessageIdUiModel("id")))
+
+            // then
+            assertEquals(TextUiModel(string.snooze_sheet_error_unable_to_unsnooze), awaitItem().error.consume())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     private fun setupLinkClickState(messageId: MessageIdUiModel, link: Uri) {

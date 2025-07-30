@@ -27,7 +27,8 @@ data class MessageBannersUiModel(
     val shouldShowBlockedSenderBanner: Boolean,
     val expirationBannerUiModel: ExpirationBannerUiModel,
     val autoDeleteBannerUiModel: AutoDeleteBannerUiModel,
-    val scheduleSendBannerUiModel: ScheduleSendBannerUiModel
+    val scheduleSendBannerUiModel: ScheduleSendBannerUiModel,
+    val snoozeBannerUiModel: SnoozeBannerUiModel
 )
 
 sealed class ExpirationBannerUiModel {
@@ -50,4 +51,11 @@ sealed class ScheduleSendBannerUiModel {
         val sendAt: TextUiModel,
         val isScheduleBeingCancelled: Boolean
     ) : ScheduleSendBannerUiModel()
+}
+
+sealed class SnoozeBannerUiModel {
+    data object NotSnoozed : SnoozeBannerUiModel()
+    data class SnoozeScheduled(
+        val snoozedUntil: TextUiModel
+    ) : SnoozeBannerUiModel()
 }

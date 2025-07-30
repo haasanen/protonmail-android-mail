@@ -168,6 +168,9 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
         ConversationDetailEvent, AffectingErrorBar, AffectingMessages
 
     object ErrorAnsweringRsvpEvent : ConversationDetailEvent, AffectingErrorBar
+
+    object ErrorUnsnoozing : ConversationDetailEvent, AffectingErrorBar
+
 }
 
 sealed interface ConversationDetailViewAction : ConversationDetailOperation {
@@ -332,6 +335,9 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
 
     data class EditScheduleSendMessageRequested(val messageId: MessageIdUiModel) :
         ConversationDetailViewAction, AffectingEditScheduleMessageDialog
+
+    data class OnUnsnoozeConversationRequested(val messageId: MessageIdUiModel) :
+        ConversationDetailViewAction, AffectingBottomSheet
 
     data class PrintMessage(val context: Context, val messageId: MessageId) :
         ConversationDetailViewAction, AffectingBottomSheet
