@@ -60,18 +60,30 @@ private object ProtonPalette {
     val Magnolia = Color(0xFFF5F2FF) // minus-40
 
     // Warm Tones
+    val Stiletto = Color(0xFF8A2E3F)
+    val MexicanRed = Color(0xFFA51F3E)
     val MaroonFlush = Color(0xFFBA1E55)
     val Amaranth = Color(0xFFE9345B)
+    val Cosmos = Color(0xFFFFD8DE)
+    val Azalea = Color(0xFFF9CDD6)
+    val PeruTan = Color(0xFF8A3600)
+    val Pearl = Color(0xFFA4512F)
     val Orange = Color(0xFFFF6713)
+    val Romantic = Color(0xFFFFD0B3)
+    val SeashellPeach = Color(0xFFFFF0E8)
     val TexasRose = Color(0xFFFFB84D)
     val BrightSun = Color(0xFFFFD143)
 
     // Green Tones
+    val GreenPea = Color(0xFF1E5C4F)
+    val TePapaGreen = Color(0xFF1E574B)
     val Genoa = Color(0xFF0F735A)
     val Gossamer = Color(0xFF059A6F)
     val MountainMeadow = Color(0xFF1ED19C)
     val Apple = Color(0xFF3CBB3A)
     val Paradiso = Color(0xFF3C8B8C)
+    val AquaIsland = Color(0xFFB1E1D4)
+    val Iceberg = Color(0xFFDBF3EE)
 
     // Purple Tones
     val RoyalPurple = Color(0xFF6638B7)
@@ -213,9 +225,18 @@ class ProtonColors(
     blenderNorm: Color,
 
     notificationNorm: Color = shade100,
+
+    notificationError100: Color = ProtonPalette.Azalea,
     notificationError: Color = ProtonPalette.Amaranth,
+    notificationError900: Color = ProtonPalette.MexicanRed,
+
+    notificationWarning100: Color = ProtonPalette.Romantic,
     notificationWarning: Color = ProtonPalette.Orange,
+    notificationWarning900: Color = ProtonPalette.PeruTan,
+
+    notificationSuccess100: Color = ProtonPalette.AquaIsland,
     notificationSuccess: Color = ProtonPalette.Gossamer,
+    notificationSuccess900: Color = ProtonPalette.TePapaGreen,
 
     interactionBrandDefaultNorm: Color = brandNorm,
     interactionBrandDefaultPressed: Color = brandPlus10,
@@ -376,11 +397,26 @@ class ProtonColors(
 
     var notificationNorm: Color by mutableStateOf(notificationNorm, structuralEqualityPolicy())
         internal set
+
+    var notificationError100: Color by mutableStateOf(notificationError100, structuralEqualityPolicy())
+        internal set
     var notificationError: Color by mutableStateOf(notificationError, structuralEqualityPolicy())
+        internal set
+    var notificationError900: Color by mutableStateOf(notificationError900, structuralEqualityPolicy())
+        internal set
+
+    var notificationWarning100: Color by mutableStateOf(notificationWarning100, structuralEqualityPolicy())
         internal set
     var notificationWarning: Color by mutableStateOf(notificationWarning, structuralEqualityPolicy())
         internal set
+    var notificationWarning900: Color by mutableStateOf(notificationWarning900, structuralEqualityPolicy())
+        internal set
+
+    var notificationSuccess100: Color by mutableStateOf(notificationSuccess100, structuralEqualityPolicy())
+        internal set
     var notificationSuccess: Color by mutableStateOf(notificationSuccess, structuralEqualityPolicy())
+        internal set
+    var notificationSuccess900: Color by mutableStateOf(notificationSuccess900, structuralEqualityPolicy())
         internal set
 
     var interactionBrandDefaultNorm: Color by mutableStateOf(interactionBrandDefaultNorm, structuralEqualityPolicy())
@@ -492,9 +528,15 @@ class ProtonColors(
         brandMinus30: Color = this.brandMinus30,
         brandMinus40: Color = this.brandMinus40,
         notificationNorm: Color = this.notificationNorm,
+        notificationError100: Color = this.notificationError100,
         notificationError: Color = this.notificationError,
+        notificationError900: Color = this.notificationError900,
+        notificationWarning100: Color = this.notificationWarning100,
         notificationWarning: Color = this.notificationWarning,
+        notificationWarning900: Color = this.notificationWarning900,
+        notificationSuccess100: Color = this.notificationSuccess100,
         notificationSuccess: Color = this.notificationSuccess,
+        notificationSuccess900: Color = this.notificationSuccess900,
         interactionBrandDefaultNorm: Color = this.interactionBrandDefaultNorm,
         interactionBrandDefaultPressed: Color = this.interactionBrandDefaultPressed,
         interactionBrandDefaultDisabled: Color = this.interactionBrandDefaultDisabled,
@@ -588,9 +630,18 @@ class ProtonColors(
         brandMinus40 = brandMinus40,
 
         notificationNorm = notificationNorm,
+
+        notificationError100 = notificationError100,
         notificationError = notificationError,
+        notificationError900 = notificationError900,
+
+        notificationWarning100 = notificationWarning100,
         notificationWarning = notificationWarning,
+        notificationWarning900 = notificationWarning900,
+
+        notificationSuccess100 = notificationSuccess100,
         notificationSuccess = notificationSuccess,
+        notificationSuccess900 = notificationSuccess900,
 
         interactionBrandDefaultNorm = interactionBrandDefaultNorm,
         interactionBrandDefaultPressed = interactionBrandDefaultPressed,
@@ -642,9 +693,15 @@ class ProtonColors(
             brandMinus20 = brandMinus20,
             brandMinus30 = brandMinus30,
             brandMinus40 = brandMinus40,
+            notificationError100 = ProtonPalette.Azalea,
             notificationError = ProtonPalette.Amaranth,
+            notificationError900 = ProtonPalette.MexicanRed,
+            notificationWarning100 = ProtonPalette.Romantic,
             notificationWarning = ProtonPalette.Orange,
+            notificationWarning900 = ProtonPalette.PeruTan,
+            notificationSuccess100 = ProtonPalette.AquaIsland,
             notificationSuccess = ProtonPalette.Gossamer,
+            notificationSuccess900 = ProtonPalette.TePapaGreen,
             shade100 = ProtonPalette.Charade,
             shade80 = ProtonPalette.Trout,
             shade60 = ProtonPalette.OsloGray,
@@ -672,6 +729,7 @@ class ProtonColors(
             sidebarIconSelected = ProtonPalette.Portage
         )
 
+        @Suppress("LongMethod")
         private fun baseDark(
             brandPlus30: Color = ProtonPalette.PaleBlue,
             brandPlus20: Color = ProtonPalette.Periwinkle,
@@ -691,9 +749,15 @@ class ProtonColors(
             brandMinus20 = brandMinus20,
             brandMinus30 = brandMinus30,
             brandMinus40 = brandMinus40,
-            notificationError = ProtonPalette.Amaranth,
-            notificationWarning = ProtonPalette.Orange,
+            notificationError100 = ProtonPalette.Stiletto,
+            notificationError = ProtonPalette.FlamingoPink,
+            notificationError900 = ProtonPalette.Cosmos,
+            notificationWarning100 = ProtonPalette.Pearl,
+            notificationWarning = ProtonPalette.AtomicTangerine,
+            notificationWarning900 = ProtonPalette.SeashellPeach,
+            notificationSuccess100 = ProtonPalette.GreenPea,
             notificationSuccess = ProtonPalette.Gossamer,
+            notificationSuccess900 = ProtonPalette.Iceberg,
             shade100 = ProtonPalette.Platinum,
             shade80 = ProtonPalette.SantasGray,
             shade60 = ProtonPalette.SonicSilver,
@@ -882,9 +946,18 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
     brandMinus40 = other.brandMinus40
 
     notificationNorm = other.notificationNorm
+
+    notificationError100 = other.notificationError100
     notificationError = other.notificationError
+    notificationError900 = other.notificationError900
+
+    notificationWarning100 = other.notificationWarning100
     notificationWarning = other.notificationWarning
+    notificationWarning900 = other.notificationWarning900
+
+    notificationSuccess100 = other.notificationSuccess100
     notificationSuccess = other.notificationSuccess
+    notificationSuccess900 = other.notificationSuccess900
 
     interactionBrandDefaultNorm = other.interactionBrandDefaultNorm
     interactionBrandDefaultPressed = other.interactionBrandDefaultPressed
