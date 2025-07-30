@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import me.proton.android.core.auth.presentation.LogTag
+import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Authenticate
@@ -82,9 +83,9 @@ class OneTimePasswordInputViewModel @Inject constructor(
         emit(Idle)
     }
 
-    private fun onClose(): Flow<OneTimePasswordInputState> = flow {
+    private fun onClose(message: String? = null): Flow<OneTimePasswordInputState> = flow {
         sessionInterface.deleteAccount(userId)
-        emit(Closed)
+        emit(Closed(message = message))
     }
 
     private fun onValidateAndAuthenticate(action: Authenticate) = flow {
@@ -105,10 +106,18 @@ class OneTimePasswordInputViewModel @Inject constructor(
             is MailSessionResumeLoginFlowResult.Error -> emitAll(onError(loginFlow.v1))
             is MailSessionResumeLoginFlowResult.Ok -> {
                 when (val submit = loginFlow.v1.submitTotp(action.code)) {
-                    is LoginFlowSubmitTotpResult.Error -> emitAll(onError(submit.v1))
+                    is LoginFlowSubmitTotpResult.Error -> emitAll(onSubmitTotpError(submit, loginFlow.v1))
                     is LoginFlowSubmitTotpResult.Ok -> emitAll(onSuccess(loginFlow.v1))
                 }
             }
+        }
+    }
+
+    private fun onSubmitTotpError(err: LoginFlowSubmitTotpResult.Error, loginFlow: LoginFlow) = flow {
+        if (loginFlow.isAwaiting2fa()) {
+            emitAll(onError(err.v1))
+        } else {
+            emitAll(onClose(message = context.getString(R.string.auth_second_factor_incorrect_code)))
         }
     }
 

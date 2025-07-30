@@ -58,6 +58,7 @@
     <string name="auth_second_factor_switch_to_totp">Use two-factor code</string>
     <string name="auth_second_factor_insert_security_key">Present a security key linked to your Proton Account. </string>
     <string name="auth_second_factor_insert_security_key_link">Learn more</string>
+    <string name="auth_second_factor_incorrect_code">Incorrect code. Please try again.</string>
     <string name="auth_two_pass_title">Unlock your mailbox</string>
     <string name="auth_two_pass_input_label">Mailbox password</string>
     <string name="auth_two_pass_unlock">Unlock</string>

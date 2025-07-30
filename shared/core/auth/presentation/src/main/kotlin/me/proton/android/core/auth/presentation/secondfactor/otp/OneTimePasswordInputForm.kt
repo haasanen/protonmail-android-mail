@@ -90,7 +90,11 @@ fun OneTimePasswordInputForm(
             is OneTimePasswordInputState.Error.LoginFlow -> onError(state.error)
             is OneTimePasswordInputState.Awaiting2Pass -> onSuccess()
             is OneTimePasswordInputState.LoggedIn -> onSuccess()
-            is OneTimePasswordInputState.Closed -> onClose()
+            is OneTimePasswordInputState.Closed -> {
+                if (state.message != null) onError(state.message)
+                onClose()
+            }
+
             else -> Unit
         }
     }

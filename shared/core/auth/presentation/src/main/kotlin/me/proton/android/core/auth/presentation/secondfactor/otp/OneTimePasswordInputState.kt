@@ -20,7 +20,7 @@ package me.proton.android.core.auth.presentation.secondfactor.otp
 
 sealed interface OneTimePasswordInputState {
     data object Idle : OneTimePasswordInputState
-    data object Closed : OneTimePasswordInputState
+    data class Closed(val message: String? = null) : OneTimePasswordInputState
     data object Loading : OneTimePasswordInputState
     data object Awaiting2Pass : OneTimePasswordInputState
     data object LoggedIn : OneTimePasswordInputState
