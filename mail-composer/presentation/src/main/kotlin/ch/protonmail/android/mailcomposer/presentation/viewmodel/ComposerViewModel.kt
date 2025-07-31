@@ -617,11 +617,11 @@ class ComposerViewModel @AssistedInject constructor(
     private fun onDiscardDraftConfirmed() {
         viewModelScope.launch {
             getDraftId()
-                .onLeft { emitNewStateFor(EffectsEvent.ComposerControlEvent.OnCloseRequest) }
+                .onLeft { emitNewStateFor(EffectsEvent.ComposerControlEvent.OnCloseRequestWithDraftDiscarded) }
                 .onRight {
                     discardDraft(primaryUserId(), it)
                         .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnDiscardDraftError) }
-                        .onRight { emitNewStateFor(EffectsEvent.ComposerControlEvent.OnCloseRequest) }
+                        .onRight { emitNewStateFor(EffectsEvent.ComposerControlEvent.OnCloseRequestWithDraftDiscarded) }
                 }
         }
     }

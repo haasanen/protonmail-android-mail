@@ -205,6 +205,12 @@ internal class EffectsStateModificationTest(
                 initialState.copy(closeComposer = Effect.of(Unit))
             ),
             arrayOf(
+                "closes composer discarding draft",
+                initialState,
+                CompletionEffectsStateModification.CloseComposer.CloseComposerDraftDiscarded,
+                initialState.copy(closeComposerWithDraftDiscarded = Effect.of(Unit))
+            ),
+            arrayOf(
                 "sends message and exit",
                 initialState,
                 CompletionEffectsStateModification.SendMessage.SendAndExit,

@@ -982,7 +982,7 @@ class ComposerViewModelTest {
 
         // Then
         viewModel.composerStates.test {
-            assertEquals(Unit, awaitItem().effects.closeComposer.consume())
+            assertEquals(Unit, awaitItem().effects.closeComposerWithDraftDiscarded.consume())
         }
         coVerify { discardDraft(expectedUserId, expectedMessageId) }
     }
@@ -1005,7 +1005,7 @@ class ComposerViewModelTest {
 
             // Then
             viewModel.composerStates.test {
-                assertEquals(Unit, awaitItem().effects.closeComposer.consume())
+                assertEquals(Unit, awaitItem().effects.closeComposerWithDraftDiscarded.consume())
             }
             coVerify { discardDraft wasNot Called }
         }

@@ -28,10 +28,12 @@ internal sealed interface CompletionEffectsStateModification : EffectsStateModif
         override fun apply(state: ComposerState.Effects): ComposerState.Effects = when (this) {
             is CloseComposerNoDraft -> state.copy(closeComposer = Effect.of(Unit))
             is CloseComposerDraftSaved -> state.copy(closeComposerWithDraftSaved = Effect.of(draftId))
+            is CloseComposerDraftDiscarded -> state.copy(closeComposerWithDraftDiscarded = Effect.of(Unit))
         }
 
         data object CloseComposerNoDraft : CloseComposer
         data class CloseComposerDraftSaved(val draftId: MessageId) : CloseComposer
+        data object CloseComposerDraftDiscarded : CloseComposer
     }
 
     sealed interface SendMessage : EffectsStateModification {

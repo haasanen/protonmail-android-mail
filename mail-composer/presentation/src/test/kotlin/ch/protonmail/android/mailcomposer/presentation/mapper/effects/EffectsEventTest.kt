@@ -114,6 +114,13 @@ internal class EffectsEventTest(
                 )
             ),
             arrayOf(
+                "ComposerControlEvent OnCloseRequestWithDraftDiscarded to modification",
+                EffectsEvent.ComposerControlEvent.OnCloseRequestWithDraftDiscarded,
+                ComposerStateModifications(
+                    effectsModification = CompletionEffectsStateModification.CloseComposer.CloseComposerDraftDiscarded
+                )
+            ),
+            arrayOf(
                 "ComposerControlEvent OnComposerRestored to modification",
                 EffectsEvent.ComposerControlEvent.OnComposerRestored,
                 ComposerStateModifications(

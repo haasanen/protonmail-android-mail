@@ -98,11 +98,14 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
                 is OnComposerRestored -> CompletionEffectsStateModification.CloseComposer.CloseComposerNoDraft
                 is OnCloseRequestWithDraft ->
                     CompletionEffectsStateModification.CloseComposer.CloseComposerDraftSaved(this.draftId)
+                is OnCloseRequestWithDraftDiscarded ->
+                    CompletionEffectsStateModification.CloseComposer.CloseComposerDraftDiscarded
             }
         )
 
         data object OnCloseRequest : ComposerControlEvent
         data class OnCloseRequestWithDraft(val draftId: MessageId) : ComposerControlEvent
+        data object OnCloseRequestWithDraftDiscarded : ComposerControlEvent
         data object OnComposerRestored : ComposerControlEvent
     }
 

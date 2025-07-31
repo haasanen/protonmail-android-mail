@@ -414,7 +414,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 ) {
                     viewModel.submit(ComposerAction.DiscardDraftConfirmed)
                     discardDraftDialogState.value = false
-                    actions.showDraftDiscardedSnackbar()
                 }
             },
             onDismissRequest = { discardDraftDialogState.value = false }
@@ -573,6 +572,12 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
 
     ConsumableLaunchedEffect(effect = effectsState.confirmDiscardDraft) {
         discardDraftDialogState.value = true
+    }
+
+    ConsumableLaunchedEffect(effect = effectsState.closeComposerWithDraftDiscarded) {
+        dismissKeyboard(context, view, keyboardController)
+        actions.onCloseComposerClick()
+        actions.showDraftDiscardedSnackbar()
     }
 
     BackHandler(true) {
