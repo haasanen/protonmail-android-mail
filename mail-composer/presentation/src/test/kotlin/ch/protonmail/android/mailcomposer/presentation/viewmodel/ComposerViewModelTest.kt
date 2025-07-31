@@ -988,6 +988,29 @@ class ComposerViewModelTest {
     }
 
     @Test
+    fun `should close composer without calling use case when discard draft is confirmed while no draft was created`() =
+        runTest {
+            // Given
+            val expectedUserId = expectedUserId { UserIdSample.Primary }
+            expectNoInputDraftMessageId()
+            expectInputDraftAction { DraftAction.Compose }
+            expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+            expectStoreDraftSubjectSucceeds(Subject(""))
+            expectObservedMessageAttachments()
+            ignoreRecipientsUpdates()
+            expectedNoDraftSaved()
+
+            // When
+            viewModel.submit(ComposerAction.DiscardDraftConfirmed)
+
+            // Then
+            viewModel.composerStates.test {
+                assertEquals(Unit, awaitItem().effects.closeComposer.consume())
+            }
+            coVerify { discardDraft wasNot Called }
+        }
+
+    @Test
     fun `should show warning when send button is clicked while subject is empty`() = runTest {
         // Given
         val expectedSubject = Subject("")
