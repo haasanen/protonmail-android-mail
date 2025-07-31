@@ -166,7 +166,7 @@ private fun CyclePrices(modifier: Modifier = Modifier, uiModel: PlanUpgradeInsta
     ) {
         FlowRow {
             Text(
-                text = "${uiModel.currency} ${displayedPrice.string()}",
+                text = displayedPrice.getFullFormat(),
                 style = ProtonTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.White
@@ -184,7 +184,7 @@ private fun CyclePrices(modifier: Modifier = Modifier, uiModel: PlanUpgradeInsta
         if (uiModel.cycle != PlanUpgradeCycle.Monthly) {
             Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Tiny))
             Text(
-                text = "${uiModel.currency} ${pricePerCycle.string()}${stringResource(R.string.upselling_month)}",
+                text = "${pricePerCycle.getFullFormat()} ${stringResource(R.string.upselling_month)}",
                 style = ProtonTheme.typography.labelMediumNorm,
                 color = Color.White.copy(alpha = 0.7f),
                 textAlign = TextAlign.End

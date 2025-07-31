@@ -28,6 +28,7 @@ import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanU
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeIconUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceListUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeTitleUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
@@ -38,9 +39,8 @@ internal object UpsellingContentPreviewData {
 
     private val MailPlusPlanModelMonthly = PlanUpgradeInstanceUiModel.Standard(
         name = "Mail Plus",
-        currency = "EUR",
-        pricePerCycle = TextUiModel("0.99"),
-        totalPrice = TextUiModel("4.99"),
+        pricePerCycle = PlanUpgradePriceUiModel(amount = 4.99f, currencyCode = "EUR"),
+        totalPrice = PlanUpgradePriceUiModel(amount = 4.99f, currencyCode = "EUR"),
         discountRate = null,
         cycle = PlanUpgradeCycle.Monthly,
         product = Product(
@@ -56,10 +56,9 @@ internal object UpsellingContentPreviewData {
 
     private val MailPlusPlanModelMonthlyPromo = PlanUpgradeInstanceUiModel.Promotional(
         name = "Mail Plus",
-        currency = "EUR",
-        pricePerCycle = TextUiModel("5.99"),
-        promotionalPrice = TextUiModel("4.99"),
-        renewalPrice = TextUiModel("5.99"),
+        pricePerCycle = PlanUpgradePriceUiModel(amount = 5.99f, currencyCode = "EUR"),
+        promotionalPrice = PlanUpgradePriceUiModel(amount = 4.99f, currencyCode = "EUR"),
+        renewalPrice = PlanUpgradePriceUiModel(amount = 5.99f, currencyCode = "EUR"),
         discountRate = null,
         cycle = PlanUpgradeCycle.Monthly,
         product = Product(
@@ -75,9 +74,8 @@ internal object UpsellingContentPreviewData {
 
     private val MailPusPlanModelYearly = PlanUpgradeInstanceUiModel.Standard(
         name = "Mail Plus",
-        currency = "EUR",
-        pricePerCycle = TextUiModel("4.99"),
-        totalPrice = TextUiModel("49.99"),
+        pricePerCycle = PlanUpgradePriceUiModel(amount = 4.99f, currencyCode = "EUR"),
+        totalPrice = PlanUpgradePriceUiModel(amount = 49.99f, currencyCode = "EUR"),
         discountRate = null,
         cycle = PlanUpgradeCycle.Yearly,
         product = Product(
@@ -93,10 +91,9 @@ internal object UpsellingContentPreviewData {
 
     private val MailPusPlanModelYearlyPromo = PlanUpgradeInstanceUiModel.Promotional(
         name = "Mail Plus",
-        currency = "EUR",
-        pricePerCycle = TextUiModel("49.99"),
-        promotionalPrice = TextUiModel("39.99"),
-        renewalPrice = TextUiModel("49.99"),
+        pricePerCycle = PlanUpgradePriceUiModel(amount = 49.99f, currencyCode = "EUR"),
+        promotionalPrice = PlanUpgradePriceUiModel(amount = 39.99f, currencyCode = "EUR"),
+        renewalPrice = PlanUpgradePriceUiModel(amount = 49.99f, currencyCode = "EUR"),
         discountRate = 20,
         cycle = PlanUpgradeCycle.Monthly,
         product = Product(

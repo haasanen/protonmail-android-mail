@@ -37,7 +37,6 @@ import ch.protonmail.android.design.compose.component.ProtonSolidButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
-import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingContentPreviewData
@@ -48,6 +47,8 @@ internal fun PaymentButtonsIntroPricing(
     instance: PlanUpgradeInstanceUiModel.Promotional,
     actions: UpsellingScreen.Actions
 ) {
+    val initialPrice = instance.primaryPrice.highlightedPrice.getShorthandFormat()
+
     Box(modifier = Modifier.fillMaxWidth()) {
         Column {
             Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
@@ -69,6 +70,7 @@ internal fun PaymentButtonsIntroPricing(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = ProtonDimens.Spacing.Large),
+                ctaText = stringResource(R.string.upselling_mailbox_plus_promo_cta, initialPrice),
                 product = instance.product,
                 onSuccess = { _ -> actions.onSuccess() },
                 onErrorMessage = actions.onError
@@ -98,10 +100,9 @@ internal fun PaymentButtonsIntroPricing(
 private fun promoAutoRenewalNotice(plan: PlanUpgradeInstanceUiModel.Promotional): String {
     val price = plan.primaryPrice
     val baseText = R.string.upselling_mailbox_plus_promo_renewal
-    val currency = plan.currency
     val secondaryPrice = price.secondaryPrice ?: price.highlightedPrice
-    val firstMonthPrice = "$currency ${price.highlightedPrice.string()}"
-    val renewalPrice = "$currency ${secondaryPrice.string()}"
+    val firstMonthPrice = price.highlightedPrice.getShorthandFormat()
+    val renewalPrice = secondaryPrice.getShorthandFormat()
 
     return stringResource(baseText, firstMonthPrice, renewalPrice)
 }

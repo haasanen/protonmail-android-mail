@@ -21,6 +21,8 @@ package ch.protonmail.android.mailupselling.presentation.mapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.R
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceDisplayUiModel
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeTitleUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
 import kotlin.test.Test
@@ -53,7 +55,10 @@ internal class PlanUpgradeTitleUiMapperTest {
                 TextUiModel(R.string.upselling_auto_delete_plus_title)
             ),
             UpsellingEntryPoint.Feature.MailboxPromo to PlanUpgradeTitleUiModel(
-                TextUiModel(R.string.upselling_mailbox_plus_title)
+                TextUiModel(
+                    R.string.upselling_mailbox_plus_promo_title,
+                    initialPrice.highlightedPrice.getShorthandFormat()
+                )
             ),
             UpsellingEntryPoint.Feature.ScheduleSend to PlanUpgradeTitleUiModel(
                 TextUiModel(R.string.upselling_schedule_send_plus_title)
@@ -66,38 +71,47 @@ internal class PlanUpgradeTitleUiMapperTest {
         // When
         val actual = mapOf(
             UpsellingEntryPoint.Feature.ContactGroups to mapper.toUiModel(
+                initialPrice = initialPrice,
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.ContactGroups,
                 variant = PlanUpgradeVariant.Normal
             ),
             UpsellingEntryPoint.Feature.Folders to mapper.toUiModel(
+                initialPrice = initialPrice,
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.Folders,
                 variant = PlanUpgradeVariant.Normal
             ),
             UpsellingEntryPoint.Feature.Labels to mapper.toUiModel(
+                initialPrice = initialPrice,
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.Labels,
                 variant = PlanUpgradeVariant.Normal
             ),
             UpsellingEntryPoint.Feature.MobileSignature to mapper.toUiModel(
+                initialPrice = initialPrice,
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.MobileSignature,
                 variant = PlanUpgradeVariant.Normal
             ),
             UpsellingEntryPoint.Feature.Mailbox to mapper.toUiModel(
+                initialPrice = initialPrice,
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.Mailbox,
                 variant = PlanUpgradeVariant.Normal
             ),
             UpsellingEntryPoint.Feature.AutoDelete to mapper.toUiModel(
+                initialPrice = initialPrice,
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.AutoDelete,
                 variant = PlanUpgradeVariant.Normal
             ),
             UpsellingEntryPoint.Feature.MailboxPromo to mapper.toUiModel(
+                initialPrice = initialPrice,
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.MailboxPromo,
                 variant = PlanUpgradeVariant.IntroductoryPrice
             ),
             UpsellingEntryPoint.Feature.ScheduleSend to mapper.toUiModel(
+                initialPrice = initialPrice,
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.ScheduleSend,
                 variant = PlanUpgradeVariant.IntroductoryPrice
             ),
             UpsellingEntryPoint.Feature.Snooze to mapper.toUiModel(
+                initialPrice = initialPrice,
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.Snooze,
                 variant = PlanUpgradeVariant.IntroductoryPrice
             )
@@ -107,5 +121,14 @@ internal class PlanUpgradeTitleUiMapperTest {
         for (pair in expected) {
             assertEquals(pair.value, actual[pair.key])
         }
+    }
+
+    private companion object {
+
+        val initialPrice = PlanUpgradePriceDisplayUiModel(
+            pricePerCycle = PlanUpgradePriceUiModel(amount = 4.5f, currencyCode = "EUR"),
+            highlightedPrice = PlanUpgradePriceUiModel(amount = 54f, currencyCode = "EUR"),
+            secondaryPrice = PlanUpgradePriceUiModel(amount = 108f, currencyCode = "EUR")
+        )
     }
 }

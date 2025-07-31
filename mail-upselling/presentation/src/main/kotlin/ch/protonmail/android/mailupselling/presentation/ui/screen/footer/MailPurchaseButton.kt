@@ -59,6 +59,7 @@ import me.proton.android.core.payment.presentation.model.Product
 fun MailPurchaseButton(
     product: Product,
     modifier: Modifier = Modifier,
+    ctaText: String = stringResource(R.string.payment_purchase_button_get, product.header.title),
     onSuccess: (Product) -> Unit = {},
     onErrorMessage: (String) -> Unit = {},
     viewModel: PurchaseButtonViewModel? = hiltViewModelOrNull<PurchaseButtonViewModel>(product.productId)
@@ -79,6 +80,7 @@ fun MailPurchaseButton(
 
     MailPurchaseButton(
         product = product,
+        ctaText = ctaText,
         state = state ?: Idle,
         modifier = modifier,
         onClick = { viewModel?.perform(PurchaseButtonAction.Purchase(product)) }
@@ -88,13 +90,14 @@ fun MailPurchaseButton(
 @Composable
 private fun MailPurchaseButton(
     product: Product,
+    ctaText: String,
     state: PurchaseButtonState,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     val text = when (state) {
         is Success -> stringResource(R.string.payment_purchase_button_subscribed, product.header.title)
-        else -> stringResource(R.string.payment_purchase_button_get, product.header.title)
+        else -> ctaText
     }
     MailPurchaseButton(
         onClick,

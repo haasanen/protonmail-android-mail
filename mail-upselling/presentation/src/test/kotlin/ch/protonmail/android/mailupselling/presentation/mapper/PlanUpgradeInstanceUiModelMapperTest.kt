@@ -19,10 +19,10 @@
 package ch.protonmail.android.mailupselling.presentation.mapper
 
 import android.content.Context
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailupselling.domain.usecase.GetDiscountRate
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeCycle
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceUiModel
 import ch.protonmail.android.testdata.upselling.UpsellingTestData
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -52,20 +52,18 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
 
         val monthlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = monthlyPlan.header.title,
-            pricePerCycle = TextUiModel.Text("12"),
-            totalPrice = TextUiModel.Text("12"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
+            totalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
             discountRate = null,
-            currency = "EUR",
             cycle = PlanUpgradeCycle.Monthly,
             product = monthlyPlan.toProduct(context)
         )
 
         val yearlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = yearlyPlan.header.title,
-            pricePerCycle = TextUiModel.Text("9"),
-            totalPrice = TextUiModel.Text("108"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = 9f, currencyCode = "EUR"),
+            totalPrice = PlanUpgradePriceUiModel(amount = 108f, currencyCode = "EUR"),
             discountRate = 25,
-            currency = "EUR",
             cycle = PlanUpgradeCycle.Yearly,
             product = yearlyPlan.toProduct(context)
         )
@@ -88,21 +86,19 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
 
         val monthlyExpected = PlanUpgradeInstanceUiModel.Promotional(
             name = monthlyPlan.header.title,
-            pricePerCycle = TextUiModel.Text("9"),
-            promotionalPrice = TextUiModel.Text("9"),
-            renewalPrice = TextUiModel.Text("12"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = 9f, currencyCode = "EUR"),
+            promotionalPrice = PlanUpgradePriceUiModel(amount = 9f, currencyCode = "EUR"),
+            renewalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
             discountRate = 25,
-            currency = "EUR",
             cycle = PlanUpgradeCycle.Monthly,
             product = monthlyPlan.toProduct(context)
         )
 
         val yearlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = yearlyPlan.header.title,
-            pricePerCycle = TextUiModel.Text("9"),
-            totalPrice = TextUiModel.Text("108"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = 9f, currencyCode = "EUR"),
+            totalPrice = PlanUpgradePriceUiModel(amount = 108f, currencyCode = "EUR"),
             discountRate = null,
-            currency = "EUR",
             cycle = PlanUpgradeCycle.Yearly,
             product = yearlyPlan.toProduct(context)
         )
@@ -125,21 +121,19 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
 
         val monthlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = monthlyPlan.header.title,
-            pricePerCycle = TextUiModel.Text("12"),
-            totalPrice = TextUiModel.Text("12"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
+            totalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
             discountRate = null,
-            currency = "EUR",
             cycle = PlanUpgradeCycle.Monthly,
             product = monthlyPlan.toProduct(context)
         )
 
         val yearlyExpected = PlanUpgradeInstanceUiModel.Promotional(
             name = yearlyPlan.header.title,
-            pricePerCycle = TextUiModel.Text("4.5"),
-            promotionalPrice = TextUiModel.Text("54"),
-            renewalPrice = TextUiModel.Text("108"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = 4.5f, currencyCode = "EUR"),
+            promotionalPrice = PlanUpgradePriceUiModel(amount = 54f, currencyCode = "EUR"),
+            renewalPrice = PlanUpgradePriceUiModel(amount = 108f, currencyCode = "EUR"),
             discountRate = 50,
-            currency = "EUR",
             cycle = PlanUpgradeCycle.Yearly,
             product = yearlyPlan.toProduct(context)
         )

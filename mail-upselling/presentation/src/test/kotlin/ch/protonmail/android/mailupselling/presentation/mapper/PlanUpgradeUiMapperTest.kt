@@ -32,6 +32,7 @@ import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanU
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeIconUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceListUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeTitleUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
@@ -121,20 +122,18 @@ internal class PlanUpgradeUiMapperTest {
 
         val monthlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = shorterInstance.header.title,
-            pricePerCycle = TextUiModel.Text("12"),
-            totalPrice = TextUiModel.Text("12"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
+            totalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
             discountRate = null,
-            currency = "EUR",
             cycle = PlanUpgradeCycle.Monthly,
             product = shorterInstance.toProduct(context)
         )
 
         val yearlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = longerInstance.header.title,
-            pricePerCycle = TextUiModel.Text("12"),
-            totalPrice = TextUiModel.Text("12"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
+            totalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
             discountRate = null,
-            currency = "EUR",
             cycle = PlanUpgradeCycle.Yearly,
             product = longerInstance.toProduct(context)
         )
@@ -178,20 +177,18 @@ internal class PlanUpgradeUiMapperTest {
 
         val monthlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = shorterInstance.header.title,
-            pricePerCycle = TextUiModel.Text("12"),
-            totalPrice = TextUiModel.Text("12"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
+            totalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
             discountRate = null,
-            currency = "EUR",
             cycle = PlanUpgradeCycle.Monthly,
             product = shorterInstance.toProduct(context)
         )
 
         val yearlyExpected = PlanUpgradeInstanceUiModel.Standard(
             name = longerInstance.header.title,
-            pricePerCycle = TextUiModel.Text("12"),
-            totalPrice = TextUiModel.Text("12"),
+            pricePerCycle = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
+            totalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
             discountRate = null,
-            currency = "EUR",
             cycle = PlanUpgradeCycle.Yearly,
             product = longerInstance.toProduct(context)
         )
@@ -200,11 +197,6 @@ internal class PlanUpgradeUiMapperTest {
             monthlyInstance = shorterInstance,
             yearlyInstance = longerInstance,
             expectedInstance = Pair(monthlyExpected, yearlyExpected)
-        )
-
-        val expectedPriceFormatted = TextUiModel.TextResWithArgs(
-            R.string.upselling_get_button_promotional,
-            listOf("EUR", "0.1")
         )
 
         val expectedPlansUiModel = PlanUpgradeUiModel(
@@ -231,11 +223,17 @@ internal class PlanUpgradeUiMapperTest {
     }
 
     private fun expectTitleUiModel() {
-        every { titleUiMapper.toUiModel(any(), any()) } returns ExpectedTitleUiModel
+        every { titleUiMapper.toUiModel(any(), any(), any()) } returns ExpectedTitleUiModel
     }
 
     private fun expectTitleUiModelPromo() {
-        every { titleUiMapper.toUiModel(UpsellingEntryPoint.Feature.MailboxPromo, any()) } returns
+        every {
+            titleUiMapper.toUiModel(
+                initialPrice = any(),
+                upsellingEntryPoint = UpsellingEntryPoint.Feature.MailboxPromo,
+                variant = any()
+            )
+        } returns
             ExpectedTitleUiModelPromo
     }
 

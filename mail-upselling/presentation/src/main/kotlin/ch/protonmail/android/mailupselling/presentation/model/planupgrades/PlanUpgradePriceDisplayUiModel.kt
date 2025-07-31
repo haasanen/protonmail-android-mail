@@ -18,10 +18,8 @@
 
 package ch.protonmail.android.mailupselling.presentation.model.planupgrades
 
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-
 data class PlanUpgradePriceDisplayUiModel(
-    val pricePerCycle: TextUiModel,
-    val highlightedPrice: TextUiModel,
-    val secondaryPrice: TextUiModel?
+    val pricePerCycle: PlanUpgradePriceUiModel,
+    val highlightedPrice: PlanUpgradePriceUiModel,
+    val secondaryPrice: PlanUpgradePriceUiModel?
 )

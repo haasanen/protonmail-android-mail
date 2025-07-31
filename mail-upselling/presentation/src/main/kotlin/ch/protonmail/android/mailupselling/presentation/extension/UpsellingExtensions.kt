@@ -18,24 +18,18 @@
 
 package ch.protonmail.android.mailupselling.presentation.extension
 
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailupselling.presentation.R
-import me.proton.android.core.payment.domain.model.ProductDetail
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceUiModel
 import me.proton.android.core.payment.domain.model.ProductPrice
 
-internal fun ProductPrice.normalizedPrice(cycle: Int): TextUiModel {
+internal fun ProductPrice.normalizedPrice(currency: String, cycle: Int): PlanUpgradePriceUiModel {
     val actualPrice = this.amount.normalized(cycle)
-    return TextUiModel.Text(actualPrice.toDecimalString())
+    return PlanUpgradePriceUiModel(actualPrice, currency)
 }
 
-internal fun ProductPrice.promoPrice(cycle: Int): TextUiModel {
-    val actualPrice = this.amount.normalized(cycle)
-    return TextUiModel
-        .TextResWithArgs(R.string.upselling_get_button_promotional, listOf(currency, actualPrice.toDecimalString()))
+internal fun ProductPrice.totalPrice(currency: String): PlanUpgradePriceUiModel {
+    val actualPrice = this.amount.toActualPrice()
+    return PlanUpgradePriceUiModel(actualPrice, currency)
 }
-
-internal fun ProductDetail.totalPrice(): Float = price.amount.toActualPrice()
-internal fun ProductDetail.totalDefaultPrice(): Float = renew.amount.toActualPrice()
 
 @Suppress("MagicNumber")
 internal fun Int.toActualPrice() = (this / (1000 * 1000f)).takeIf {

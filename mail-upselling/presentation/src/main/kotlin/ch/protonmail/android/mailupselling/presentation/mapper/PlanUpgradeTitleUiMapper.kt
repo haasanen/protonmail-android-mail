@@ -18,9 +18,12 @@
 
 package ch.protonmail.android.mailupselling.presentation.mapper
 
+import androidx.annotation.StringRes
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.R
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceDisplayUiModel
+import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeTitleUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
 import javax.inject.Inject
@@ -28,6 +31,7 @@ import javax.inject.Inject
 internal class PlanUpgradeTitleUiMapper @Inject constructor() {
 
     fun toUiModel(
+        initialPrice: PlanUpgradePriceDisplayUiModel,
         upsellingEntryPoint: UpsellingEntryPoint.Feature,
         variant: PlanUpgradeVariant
     ): PlanUpgradeTitleUiModel {
@@ -35,7 +39,15 @@ internal class PlanUpgradeTitleUiMapper @Inject constructor() {
         if (variant == PlanUpgradeVariant.SocialProof)
             return PlanUpgradeTitleUiModel(TextUiModel(R.string.upselling_mailbox_plus_title_social_proof))
 
-        val stringResource = when (upsellingEntryPoint) {
+        val stringResource = getStringResource(upsellingEntryPoint)
+        val textUiModel = getTextUiModel(upsellingEntryPoint, stringResource, initialPrice.highlightedPrice)
+
+        return PlanUpgradeTitleUiModel(textUiModel)
+    }
+
+    @StringRes
+    private fun getStringResource(upsellingEntryPoint: UpsellingEntryPoint): Int {
+        return when (upsellingEntryPoint) {
             UpsellingEntryPoint.Feature.AutoDelete -> R.string.upselling_auto_delete_plus_title
             UpsellingEntryPoint.Feature.ContactGroups -> R.string.upselling_contact_groups_plus_title
             UpsellingEntryPoint.Feature.Folders -> R.string.upselling_folders_plus_title
@@ -48,7 +60,19 @@ internal class PlanUpgradeTitleUiMapper @Inject constructor() {
             UpsellingEntryPoint.Feature.Mailbox,
             UpsellingEntryPoint.Feature.Navbar -> R.string.upselling_mailbox_plus_title
         }
+    }
 
-        return PlanUpgradeTitleUiModel(TextUiModel(stringResource))
+    private fun getTextUiModel(
+        entryPoint: UpsellingEntryPoint.Feature,
+        stringResource: Int,
+        initialPrice: PlanUpgradePriceUiModel
+    ): TextUiModel {
+        return when (entryPoint) {
+            UpsellingEntryPoint.Feature.MailboxPromo ->
+                TextUiModel.TextResWithArgs(stringResource, listOf(initialPrice.getShorthandFormat()))
+
+            else ->
+                TextUiModel(stringResource)
+        }
     }
 }

@@ -19,12 +19,9 @@
 package ch.protonmail.android.mailupselling.presentation.mapper
 
 import android.content.Context
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailupselling.domain.usecase.GetDiscountRate
 import ch.protonmail.android.mailupselling.presentation.extension.normalized
 import ch.protonmail.android.mailupselling.presentation.extension.normalizedPrice
-import ch.protonmail.android.mailupselling.presentation.extension.toDecimalString
-import ch.protonmail.android.mailupselling.presentation.extension.totalDefaultPrice
 import ch.protonmail.android.mailupselling.presentation.extension.totalPrice
 import ch.protonmail.android.mailupselling.presentation.mapper.RenewalCycle.BiYearly
 import ch.protonmail.android.mailupselling.presentation.mapper.RenewalCycle.Monthly
@@ -70,27 +67,26 @@ class PlanUpgradeInstanceUiModelMapper @Inject constructor(
         val defaultPrice = productDetail.renew.amount
 
         val isPromotional = currentPrice < defaultPrice
+        val currency = productDetail.price.currency
 
         return if (isPromotional) {
             val promotionalPrice = currentPrice.normalized(cycle.months)
             val renewalPrice = defaultPrice.normalized(cycle.months)
             PlanUpgradeInstanceUiModel.Promotional(
                 name = productDetail.header.title,
-                pricePerCycle = productDetail.price.normalizedPrice(cycle.months),
-                promotionalPrice = TextUiModel.Text(productDetail.totalPrice().toDecimalString()),
-                renewalPrice = TextUiModel.Text(productDetail.totalDefaultPrice().toDecimalString()),
+                pricePerCycle = productDetail.price.normalizedPrice(currency, cycle.months),
+                promotionalPrice = productDetail.price.totalPrice(currency),
+                renewalPrice = productDetail.renew.totalPrice(currency),
                 discountRate = getDiscountRate(promotionalPrice, renewalPrice),
-                currency = productDetail.price.currency,
                 cycle = cycle,
                 product = productDetail.toProduct(context)
             )
         } else {
             PlanUpgradeInstanceUiModel.Standard(
                 name = productDetail.header.title,
-                pricePerCycle = productDetail.price.normalizedPrice(cycle.months),
-                totalPrice = TextUiModel.Text(productDetail.totalPrice().toDecimalString()),
+                pricePerCycle = productDetail.price.normalizedPrice(currency, cycle.months),
+                totalPrice = productDetail.price.totalPrice(currency),
                 discountRate = comparisonPriceInstance?.let { getDiscountRate(it, productDetail) },
-                currency = productDetail.price.currency,
                 cycle = cycle,
                 product = productDetail.toProduct(context)
             )

@@ -63,13 +63,14 @@ private fun getRenewalNoticeForPromotion(planUiModel: PlanUpgradeInstanceUiModel
         is PlanUpgradeInstanceUiModel.Promotional ->
             Pair(
                 if (short) R.string.upselling_auto_renew_text_promo_short else R.string.upselling_auto_renew_text_promo,
-                displayedPrice.secondaryPrice ?: displayedPrice.highlightedPrice
+                displayedPrice.secondaryPrice?.getShorthandFormat()
+                    ?: displayedPrice.highlightedPrice.getShorthandFormat()
             )
 
         is PlanUpgradeInstanceUiModel.Standard ->
-            Pair(R.string.upselling_auto_renew_text_standard, displayedPrice.highlightedPrice)
+            Pair(R.string.upselling_auto_renew_text_standard, displayedPrice.highlightedPrice.getShorthandFormat())
     }
 
 
-    return stringResource(baseText, planUiModel.currency, price.string(), period.string())
+    return stringResource(baseText, price, period.string())
 }

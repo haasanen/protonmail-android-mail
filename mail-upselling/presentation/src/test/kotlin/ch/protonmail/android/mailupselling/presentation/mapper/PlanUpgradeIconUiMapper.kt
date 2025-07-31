@@ -49,7 +49,7 @@ internal class DynamicPlanIconUiMapperTest {
                 iconResId = R.drawable.illustration_upselling_mailbox
             ),
             UpsellingEntryPoint.Feature.MailboxPromo to PlanUpgradeIconUiModel(
-                iconResId = R.drawable.illustration_upselling_mailbox_promo
+                iconResId = R.drawable.illustration_upselling_mailbox
             ),
             UpsellingEntryPoint.Feature.AutoDelete to PlanUpgradeIconUiModel(
                 iconResId = R.drawable.illustration_upselling_auto_delete
