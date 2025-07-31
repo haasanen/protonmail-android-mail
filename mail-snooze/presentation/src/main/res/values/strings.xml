@@ -27,4 +27,18 @@
     <string name="snooze_sheet_option_upsell_detail">Paid feature</string>
     <string name="snooze_sheet_snooze_title">Snooze until</string>
     <string name="snooze_sheet_option_unsnooze">Unsnooze</string>
+
+    <!--    Snooze messages-->
+    <plurals name="snoozed_in_days">
+        <item quantity="one">Snoozed until tomorrow</item>
+        <item quantity="other">Snoozed for %d days</item>
+    </plurals>
+    <plurals name="snooze_in_hours">
+        <item quantity="one">Snoozed for %d hour</item>
+        <item quantity="other">Snoozed for %d hours</item>
+    </plurals>
+    <plurals name="snooze_in_minutes">
+        <item quantity="one">Snoozed for %d minute</item>
+        <item quantity="other">Snoozed for %d minutes</item>
+    </plurals>
 </resources>

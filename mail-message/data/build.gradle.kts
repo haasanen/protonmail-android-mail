@@ -58,6 +58,8 @@ dependencies {
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-session:data"))
     implementation(project(":mail-session:domain"))
+    implementation(project(":mail-snooze:data"))
+    implementation(project(":mail-snooze:domain"))
 
     testImplementation(project(":test:utils"))
     testImplementation(project(":test:test-data"))

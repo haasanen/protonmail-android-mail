@@ -48,6 +48,10 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.GetMailbox
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
+import ch.protonmail.android.mailsnooze.domain.model.NoSnooze
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeReminder
+import ch.protonmail.android.mailsnooze.presentation.mapper.SnoozeStatusUiModelMapper
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeStatusUiModel
 import ch.protonmail.android.testdata.mailbox.MailboxTestData
 import ch.protonmail.android.testdata.mailbox.MailboxTestData.buildMailboxItem
 import io.mockk.coEvery
@@ -114,6 +118,10 @@ class MailboxItemUiModelMapperTest {
         every { this@mockk.toUiModel(any()) } returns mockk()
     }
 
+    private val snoozeStatusUiModelMapper: SnoozeStatusUiModelMapper = mockk {
+        every { this@mockk.toUiModel(any()) } returns SnoozeStatusUiModel.NoStatus
+    }
+
     private val mapper = MailboxItemUiModelMapper(
         mailboxAvatarUiModelMapper = mailboxAvatarUiModelMapper,
         colorMapper = colorMapper,
@@ -122,7 +130,8 @@ class MailboxItemUiModelMapperTest {
         getMailboxItemLocationIcon = getMailboxItemLocationIcons,
         getParticipantsResolvedNames = getParticipantsResolvedNames,
         expiryInformationUiModelMapper = expiryInformationUiModelMapper,
-        attachmentMetadataUiModelMapper = attachmentMetadataUiModelMapper
+        attachmentMetadataUiModelMapper = attachmentMetadataUiModelMapper,
+        snoozeStatusUiModelMapper = snoozeStatusUiModelMapper
     )
 
     @BeforeTest
@@ -496,12 +505,48 @@ class MailboxItemUiModelMapperTest {
     @Test
     fun `when mailbox item has displaySnoozeReminder then map displaySnoozeReminder`() = runTest {
         // Given
-        val mailboxItem = buildMailboxItem(calendarAttachmentCount = 1).copy(displaySnoozeReminder = true)
+        val mailboxItem = buildMailboxItem(calendarAttachmentCount = 1).copy(snoozeStatus = SnoozeReminder)
         // When
         val mailboxItemUiModel = mapper.toUiModel(
             userId, mailboxItem, defaultFolderColorSettings, false
         )
         // Then
         assertTrue(mailboxItemUiModel.displaySnoozeReminder)
+    }
+
+    @Test
+    fun `when mailbox item has no snooze, snoozeInformation should be NoSecondaryDate`() = runTest {
+        // Given
+        val mailboxItem = buildMailboxItem(expirationTime = 0L)
+        every {
+            snoozeStatusUiModelMapper
+                .toUiModel(NoSnooze)
+
+        } returns SnoozeStatusUiModel.NoStatus
+
+        // When
+        val mailboxItemUiModel = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
+
+        // Then
+        assertEquals(SnoozeStatusUiModel.NoStatus, mailboxItemUiModel.snoozedUntil)
+    }
+
+    @Test
+    fun `when mailbox item has snooze, snoozeInformation should be SecondaryDateInformationUiModel`() = runTest {
+        // Given
+        val mailboxItem = buildMailboxItem()
+        val expected = SnoozeStatusUiModel.SnoozeStatus(
+            TextUiModel("Snoozed for 19 days")
+        )
+        every {
+            snoozeStatusUiModelMapper
+                .toUiModel(any())
+        } returns expected
+
+        // When
+        val mailboxItemUiModel = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
+
+        // Then
+        assertEquals(expected, mailboxItemUiModel.snoozedUntil)
     }
 }

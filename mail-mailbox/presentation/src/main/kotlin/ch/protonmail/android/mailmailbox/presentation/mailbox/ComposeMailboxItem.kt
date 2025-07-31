@@ -65,6 +65,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemU
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxItemUiModelPreviewData
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeStatusUiModel
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -205,8 +206,26 @@ fun MailboxItem(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         ExpiryInformation(
-                            expiryInformation = item.expiryInformation,
+                            textUiModel = item.expiryInformation.expiryText,
+                            urgent = item.expiryInformation.isLessThanOneHour,
                             fontColor = fontColor
+                        )
+                    }
+                }
+
+                if (item.snoozedUntil is SnoozeStatusUiModel.SnoozeStatus) {
+
+                    Row(
+                        modifier = Modifier
+                            .padding(top = ProtonDimens.Spacing.Small, bottom = ProtonDimens.Spacing.Small)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        ExpiryInformation(
+                            textUiModel = item.snoozedUntil.formattedDateText,
+                            urgent = item.snoozedUntil.highlight,
+                            fontColor = ProtonTheme.colors.notificationWarning,
+                            fontWeight = FontWeight.Medium
                         )
                     }
                 }
@@ -403,16 +422,19 @@ private fun StarIcon(
 @Composable
 private fun ExpiryInformation(
     modifier: Modifier = Modifier,
-    expiryInformation: ExpiryInformationUiModel.HasExpiry,
-    fontColor: Color
+    textUiModel: TextUiModel,
+    urgent: Boolean,
+    fontColor: Color,
+    fontWeight: FontWeight = FontWeight.Normal
 ) {
 
-    val color = if (expiryInformation.isLessThanOneHour) ProtonTheme.colors.notificationError else fontColor
+    val color = if (urgent) ProtonTheme.colors.notificationError else fontColor
     Text(
         modifier = modifier.testTag(MailboxItemTestTags.ExpiryInformation),
-        text = expiryInformation.expiryText.string(),
+        text = textUiModel.string(),
         overflow = TextOverflow.Ellipsis,
         maxLines = 1,
+        fontWeight = fontWeight,
         style = ProtonTheme.typography.bodyLargeNorm.copy(color = color)
     )
 }
@@ -509,6 +531,25 @@ private fun LongRecipientItemWithExpiryPreview() {
     val itemWithExpiry = MailboxItemUiModelPreviewData.Conversation.MultipleRecipientWithLabel.copy(
         expiryInformation = ExpiryInformationUiModel.HasExpiry(
             TextUiModel.PluralisedText(R.plurals.expires_in_minutes, 10),
+            true
+        )
+    )
+    ProtonTheme {
+        MailboxItem(
+            modifier = Modifier,
+            item = itemWithExpiry,
+            actions = ComposeMailboxItem.Actions.Empty,
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded
+        )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun SnoozedUntilPreview() {
+    val itemWithExpiry = MailboxItemUiModelPreviewData.Conversation.MultipleRecipientWithLabel.copy(
+        snoozedUntil = SnoozeStatusUiModel.SnoozeStatus(
+            TextUiModel.PluralisedText(R.plurals.snoozed_in_days, 10),
             true
         )
     )

@@ -39,6 +39,7 @@ import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
+import ch.protonmail.android.mailsnooze.domain.model.NoSnooze
 import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import me.proton.core.domain.entity.UserId
@@ -236,6 +237,7 @@ object MessageTestData {
         attachments = attachments,
         isDraft = false,
         isScheduled = false,
-        isReplyAllowed = true
+        isReplyAllowed = true,
+        snoozeInformation = NoSnooze
     )
 }

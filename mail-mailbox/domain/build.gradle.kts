@@ -54,6 +54,7 @@ dependencies {
     implementation(project(":mail-settings:domain"))
     implementation(project(":mail-pagination:domain"))
     implementation(project(":mail-featureflags:domain"))
+    implementation(project(":mail-snooze:domain"))
 
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))

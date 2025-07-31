@@ -35,6 +35,7 @@ import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
+import ch.protonmail.android.mailsnooze.domain.model.NoSnooze
 import me.proton.core.domain.entity.UserId
 import me.proton.core.user.domain.entity.AddressId
 
@@ -289,6 +290,7 @@ object MessageSample {
         exclusiveLocation = exclusiveLocation,
         isDraft = false,
         isScheduled = false,
-        isReplyAllowed = true
+        isReplyAllowed = true,
+        snoozeInformation = NoSnooze
     )
 }

@@ -30,6 +30,8 @@ import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
+import ch.protonmail.android.mailsnooze.domain.model.NoSnooze
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeReminder
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
@@ -73,7 +75,7 @@ class ConversationMapperTest {
         assertEquals(localConversation.time.toLong(), conversation.time)
         assertEquals(localConversation.size.toLong(), conversation.size)
         assertEquals(localConversation.exclusiveLocation.toExclusiveLocation(), conversation.exclusiveLocation)
-        assertEquals(localConversation.displaySnoozeReminder, conversation.displaySnoozeReminder)
+        assertEquals(NoSnooze, conversation.snoozeInformation)
     }
 
 
@@ -178,13 +180,12 @@ class ConversationMapperTest {
     @Test
     fun `conversation with displaySnoozeReminder  should convert correctly`() {
         // Given
-        val expected = true
+        val expected = SnoozeReminder
 
-        // When
-        val conversation = createLocalConversation(displaySnoozeReminder = expected).toConversation()
+        val conversation = createLocalConversation(displaySnoozeReminder = true).toConversation()
 
         // Then
-        assertEquals(expected, conversation.displaySnoozeReminder)
+        assertEquals(expected, conversation.snoozeInformation)
     }
 
     private fun createLocalConversation(
@@ -238,7 +239,7 @@ class ConversationMapperTest {
             avatar = avatar,
             totalMessages = totalMessages,
             totalUnread = totalUnread,
-            snoozedUntil = 0uL
+            snoozedUntil = null
         )
     }
 

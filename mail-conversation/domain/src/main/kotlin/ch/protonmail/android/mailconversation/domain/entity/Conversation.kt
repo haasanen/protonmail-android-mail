@@ -26,6 +26,7 @@ import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
+import ch.protonmail.android.mailsnooze.domain.model.ConversationSnoozeStatus
 
 data class Conversation(
     val conversationId: ConversationId,
@@ -45,5 +46,5 @@ data class Conversation(
     val customLabels: List<Label>,
     val avatarInformation: AvatarInformation,
     val exclusiveLocation: ExclusiveLocation,
-    val displaySnoozeReminder: Boolean
+    val snoozeInformation: ConversationSnoozeStatus
 )

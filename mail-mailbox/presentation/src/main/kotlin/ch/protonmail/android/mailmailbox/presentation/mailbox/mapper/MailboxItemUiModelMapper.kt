@@ -38,6 +38,8 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.FormatMail
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.GetMailboxItemLocationIcon
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeReminder
+import ch.protonmail.android.mailsnooze.presentation.mapper.SnoozeStatusUiModelMapper
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.domain.arch.Mapper
@@ -54,7 +56,8 @@ class MailboxItemUiModelMapper @Inject constructor(
     private val getMailboxItemLocationIcon: GetMailboxItemLocationIcon,
     private val getParticipantsResolvedNames: GetParticipantsResolvedNames,
     private val expiryInformationUiModelMapper: ExpiryInformationUiModelMapper,
-    private val attachmentMetadataUiModelMapper: AttachmentMetadataUiModelMapper
+    private val attachmentMetadataUiModelMapper: AttachmentMetadataUiModelMapper,
+    private val snoozeStatusUiModelMapper: SnoozeStatusUiModelMapper
 ) : Mapper<MailboxItem, MailboxItemUiModel> {
 
     suspend fun toUiModel(
@@ -87,7 +90,8 @@ class MailboxItemUiModelMapper @Inject constructor(
             shouldOpenInComposer = mailboxItem.isDraft,
             attachments = mailboxItem.attachments.map(attachmentMetadataUiModelMapper::toUiModel).toImmutableList(),
             shouldShowScheduleSendTime = mailboxItem.isScheduled,
-            displaySnoozeReminder = mailboxItem.displaySnoozeReminder
+            displaySnoozeReminder = mailboxItem.snoozeStatus is SnoozeReminder,
+            snoozedUntil = snoozeStatusUiModelMapper.toUiModel(mailboxItem.snoozeStatus)
         )
     }
 

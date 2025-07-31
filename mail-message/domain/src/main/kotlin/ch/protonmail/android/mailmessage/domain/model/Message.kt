@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.mailsnooze.domain.model.ConversationSnoozeStatus
 import kotlinx.serialization.Serializable
 import me.proton.core.user.domain.entity.AddressId
 import kotlin.time.Duration
@@ -68,7 +69,8 @@ data class Message(
     val exclusiveLocation: ExclusiveLocation,
     val isDraft: Boolean,
     val isScheduled: Boolean,
-    val isReplyAllowed: Boolean
+    val isReplyAllowed: Boolean,
+    val snoozeInformation: ConversationSnoozeStatus
 ) {
     val allRecipients = toList + ccList + bccList
 

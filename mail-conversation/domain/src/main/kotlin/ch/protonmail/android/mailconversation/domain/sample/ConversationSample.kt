@@ -33,6 +33,7 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
+import ch.protonmail.android.mailsnooze.domain.model.NoSnooze
 import me.proton.core.domain.entity.UserId
 
 object ConversationSample {
@@ -105,6 +106,6 @@ object ConversationSample {
         customLabels = emptyList(),
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
-        displaySnoozeReminder = false
+        snoozeInformation = NoSnooze
     )
 }

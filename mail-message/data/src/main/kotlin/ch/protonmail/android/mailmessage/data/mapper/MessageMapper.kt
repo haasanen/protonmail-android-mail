@@ -62,6 +62,7 @@ import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
+import ch.protonmail.android.mailsnooze.data.mapper.toSnoozeInformation
 import me.proton.core.user.domain.entity.AddressId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.BodyOutput
@@ -122,7 +123,8 @@ fun LocalMessageMetadata.toMessage(): Message {
         exclusiveLocation = this.exclusiveLocation.toExclusiveLocation(),
         isDraft = this.isDraft,
         isScheduled = this.isScheduled,
-        isReplyAllowed = this.canReply
+        isReplyAllowed = this.canReply,
+        snoozeInformation = this.toSnoozeInformation()
     )
 }
 

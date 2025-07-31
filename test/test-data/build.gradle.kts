@@ -62,5 +62,6 @@ dependencies {
     implementation(project(":mail-mailbox"))
     implementation(project(":mail-message"))
     implementation(project(":mail-session"))
+    implementation(project(":mail-snooze"))
     implementation(project(":shared:core:payment:domain"))
 }

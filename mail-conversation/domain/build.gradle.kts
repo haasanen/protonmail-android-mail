@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":mail-label:domain"))
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-pagination:domain"))
+    implementation(project(":mail-snooze:domain"))
 
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))

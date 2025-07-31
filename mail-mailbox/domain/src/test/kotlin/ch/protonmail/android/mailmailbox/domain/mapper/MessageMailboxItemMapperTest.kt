@@ -22,6 +22,7 @@ import ch.protonmail.android.mailattachments.domain.model.AttachmentCount
 import ch.protonmail.android.mailattachments.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
+import ch.protonmail.android.mailsnooze.domain.model.NoSnooze
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.message.MessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
@@ -153,13 +154,13 @@ class MessageMailboxItemMapperTest {
 
 
     @Test
-    fun `when mapping message to displaySnoozeReminder is always false`() {
+    fun `when mapping message to displaySnoozeReminder is always NoSnooze`() {
         // Given
         val message = MessageTestData.buildMessage(userId, "id").copy()
         // When
         val actual = mapper.toMailboxItem(message)
         // Then
-        assertFalse(actual.displaySnoozeReminder)
+        assertEquals(actual.snoozeStatus, NoSnooze)
     }
 
     private fun buildLabel(value: String) = LabelTestData.buildLabel(

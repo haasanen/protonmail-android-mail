@@ -26,6 +26,7 @@ import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
+import ch.protonmail.android.mailsnooze.domain.model.ConversationSnoozeStatus
 
 enum class MailboxItemType {
     Message,
@@ -62,7 +63,7 @@ data class MailboxItem(
     val attachments: List<AttachmentMetadata>,
     val isDraft: Boolean,
     val isScheduled: Boolean,
-    val displaySnoozeReminder: Boolean
+    val snoozeStatus: ConversationSnoozeStatus
 )
 
 fun ViewMode.toMailboxItemType() = when (this) {

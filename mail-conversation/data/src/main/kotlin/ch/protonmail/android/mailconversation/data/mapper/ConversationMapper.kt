@@ -30,6 +30,7 @@ import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.mapper.toAvatarInformation
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
+import ch.protonmail.android.mailsnooze.data.mapper.toSnoozeInformation
 
 fun LocalConversation.toConversation() = Conversation(
     conversationId = this.id.toConversationId(),
@@ -53,7 +54,7 @@ fun LocalConversation.toConversation() = Conversation(
     customLabels = this.customLabels.map { it.toLabel() },
     avatarInformation = this.avatar.toAvatarInformation(),
     exclusiveLocation = this.exclusiveLocation.toExclusiveLocation(),
-    displaySnoozeReminder = this.displaySnoozeReminder
+    snoozeInformation = this.toSnoozeInformation()
 )
 
 private fun LocalConversationId.toConversationId(): ConversationId = ConversationId(this.value.toString())

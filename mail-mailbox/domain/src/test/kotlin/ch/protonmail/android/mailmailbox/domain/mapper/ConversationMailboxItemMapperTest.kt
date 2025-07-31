@@ -21,6 +21,8 @@ package ch.protonmail.android.mailmailbox.domain.mapper
 import ch.protonmail.android.mailattachments.domain.model.AttachmentCount
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeReminder
+import ch.protonmail.android.mailsnooze.domain.model.Snoozed
 import ch.protonmail.android.testdata.conversation.ConversationWithContextTestData
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
@@ -28,6 +30,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 class ConversationMailboxItemMapperTest {
 
@@ -133,16 +136,30 @@ class ConversationMailboxItemMapperTest {
     }
 
     @Test
-    fun `when mapping conversation displaySnoozeReminder is mapped`() {
+    fun `when mapping conversation snoozeReminder is mapped`() {
         // Given
-        val expectedSnoozeReminder = true
+        val expectedSnoozeReminder = SnoozeReminder
         val conversation = ConversationWithContextTestData.getConversation(
             userId, "id"
-        ).copy(displaySnoozeReminder = expectedSnoozeReminder)
+        ).copy(snoozeInformation = expectedSnoozeReminder)
         // When
         val mailboxItem = mapper.toMailboxItem(conversation)
         // Then
-        assertEquals(expectedSnoozeReminder, mailboxItem.displaySnoozeReminder)
+        assertEquals(expectedSnoozeReminder, mailboxItem.snoozeStatus)
+    }
+
+    @Test
+    fun `when mapping conversation snoozeUtil is mapped`() {
+        // Given
+        val future = Instant.fromEpochMilliseconds(1_753_975_178_201L)
+        val expectedSnooze = Snoozed(future)
+        val conversation = ConversationWithContextTestData.getConversation(
+            userId, "id"
+        ).copy(snoozeInformation = expectedSnooze)
+        // When
+        val mailboxItem = mapper.toMailboxItem(conversation)
+        // Then
+        assertEquals(expectedSnooze, mailboxItem.snoozeStatus)
     }
 
     private fun buildLabel(value: String) = LabelTestData.buildLabel(

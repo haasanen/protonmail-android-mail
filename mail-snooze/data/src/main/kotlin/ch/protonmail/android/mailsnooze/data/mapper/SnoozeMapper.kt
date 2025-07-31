@@ -18,13 +18,17 @@
 
 package ch.protonmail.android.mailsnooze.data.mapper
 
+import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalNonDefaultWeekStart
+import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeWeekStart
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.SnoozeActions
 import uniffi.proton_mail_uniffi.SnoozeTime
 import kotlin.time.Instant
+
+fun ConversationId.toLocalConversationId(): LocalConversationId = LocalConversationId(this.id.toULong())
 
 fun SnoozeWeekStart.toLocalWeekStart() = when (this) {
     SnoozeWeekStart.MONDAY -> LocalNonDefaultWeekStart.MONDAY

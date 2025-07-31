@@ -136,4 +136,18 @@
     <string name="expires_in_less_than_a_minute">Expires in less than a minute</string>
     <string name="schedule_send_tomorrow">Tomorrow, %1$s</string>
     <string name="schedule_send_today">Today, %1$s</string>
+
+    <!--    Snooze messages-->
+    <plurals name="snoozed_in_days">
+        <item quantity="one">Snoozed until tomorrow</item>
+        <item quantity="other">Snoozed for %d days</item>
+    </plurals>
+    <plurals name="snooze_in_hours">
+        <item quantity="one">Snoozed for %d hour</item>
+        <item quantity="other">Snoozed for %d hours</item>
+    </plurals>
+    <plurals name="snooze_in_minutes">
+        <item quantity="one">Snoozed for %d minute</item>
+        <item quantity="other">Snoozed for %d minutes</item>
+    </plurals>
 </resources>

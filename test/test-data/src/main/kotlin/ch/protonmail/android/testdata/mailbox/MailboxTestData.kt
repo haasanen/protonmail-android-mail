@@ -36,6 +36,8 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemU
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
+import ch.protonmail.android.mailsnooze.domain.model.NoSnooze
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeStatusUiModel
 import ch.protonmail.android.testdata.R
 import ch.protonmail.android.testdata.label.LabelTestData.buildLabel
 import kotlinx.collections.immutable.ImmutableList
@@ -95,7 +97,7 @@ object MailboxTestData {
         attachments = attachments,
         isDraft = false,
         isScheduled = isScheduled,
-        displaySnoozeReminder = false
+        snoozeStatus = NoSnooze
     )
 
     private fun buildMessageMailboxItem(
@@ -132,7 +134,7 @@ object MailboxTestData {
         attachments = attachments,
         isDraft = false,
         isScheduled = false,
-        displaySnoozeReminder = false
+        snoozeStatus = NoSnooze
     )
 
     private fun buildConversationMailboxItem(id: String) = MailboxItem(
@@ -160,7 +162,7 @@ object MailboxTestData {
         attachments = emptyList(),
         isDraft = false,
         isScheduled = false,
-        displaySnoozeReminder = false
+        snoozeStatus = NoSnooze
     )
 
 }
@@ -226,6 +228,7 @@ object MailboxItemUiModelTestData {
         shouldOpenInComposer = shouldOpenInComposer,
         attachments = persistentListOf(),
         shouldShowScheduleSendTime = false,
-        displaySnoozeReminder = false
+        displaySnoozeReminder = false,
+        snoozedUntil = SnoozeStatusUiModel.NoStatus
     )
 }

@@ -90,6 +90,7 @@ dependencies {
     implementation(project(":mail-upselling:domain"))
     implementation(project(":mail-upselling:presentation"))
     implementation(project(":mail-snooze:presentation"))
+    implementation(project(":mail-snooze:domain"))
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))

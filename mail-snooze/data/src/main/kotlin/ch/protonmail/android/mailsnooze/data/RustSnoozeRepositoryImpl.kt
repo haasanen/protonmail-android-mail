@@ -21,7 +21,7 @@ package ch.protonmail.android.mailsnooze.data
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
+import ch.protonmail.android.mailsnooze.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailsnooze.data.mapper.toLocalWeekStart
 import ch.protonmail.android.mailsnooze.data.mapper.toSnoozeActions
 import ch.protonmail.android.mailsnooze.domain.SnoozeRepository

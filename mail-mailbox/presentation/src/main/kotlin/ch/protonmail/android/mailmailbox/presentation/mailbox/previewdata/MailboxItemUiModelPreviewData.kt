@@ -32,6 +32,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemL
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeStatusUiModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.domain.entity.UserId
@@ -69,7 +70,8 @@ object MailboxItemUiModelPreviewData {
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
             shouldShowScheduleSendTime = false,
-            displaySnoozeReminder = false
+            displaySnoozeReminder = false,
+            snoozedUntil = SnoozeStatusUiModel.NoStatus
         )
 
         val DroidConLondonWithZeroMessages = MailboxItemUiModel(
@@ -96,6 +98,7 @@ object MailboxItemUiModelPreviewData {
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
             shouldShowScheduleSendTime = false,
+            snoozedUntil = SnoozeStatusUiModel.NoStatus,
             displaySnoozeReminder = false
         )
 
@@ -126,7 +129,8 @@ object MailboxItemUiModelPreviewData {
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
             shouldShowScheduleSendTime = false,
-            displaySnoozeReminder = false
+            displaySnoozeReminder = false,
+            snoozedUntil = SnoozeStatusUiModel.NoStatus
         )
 
         val MultipleRecipientWithLabel = MailboxItemUiModel(
@@ -179,7 +183,8 @@ object MailboxItemUiModelPreviewData {
                 )
             ),
             shouldShowScheduleSendTime = false,
-            displaySnoozeReminder = false
+            displaySnoozeReminder = false,
+            snoozedUntil = SnoozeStatusUiModel.NoStatus
         )
 
         val LongSubjectWithIcons = MailboxItemUiModel(
@@ -209,7 +214,8 @@ object MailboxItemUiModelPreviewData {
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
             shouldShowScheduleSendTime = false,
-            displaySnoozeReminder = false
+            displaySnoozeReminder = false,
+            snoozedUntil = SnoozeStatusUiModel.NoStatus
         )
 
         val LongSubjectWithoutIcons = MailboxItemUiModel(
@@ -236,7 +242,8 @@ object MailboxItemUiModelPreviewData {
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
             shouldShowScheduleSendTime = false,
-            displaySnoozeReminder = false
+            displaySnoozeReminder = false,
+            snoozedUntil = SnoozeStatusUiModel.NoStatus
         )
 
         val NoParticipant = MailboxItemUiModel(
@@ -261,7 +268,8 @@ object MailboxItemUiModelPreviewData {
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
             shouldShowScheduleSendTime = false,
-            displaySnoozeReminder = false
+            displaySnoozeReminder = false,
+            snoozedUntil = SnoozeStatusUiModel.NoStatus
         )
     }
 
@@ -291,7 +299,8 @@ object MailboxItemUiModelPreviewData {
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
             shouldShowScheduleSendTime = false,
-            displaySnoozeReminder = false
+            displaySnoozeReminder = false,
+            snoozedUntil = SnoozeStatusUiModel.NoStatus
         )
 
         val WeatherForecastSep = MailboxItemUiModel(
@@ -318,7 +327,8 @@ object MailboxItemUiModelPreviewData {
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
             shouldShowScheduleSendTime = false,
-            displaySnoozeReminder = false
+            displaySnoozeReminder = false,
+            snoozedUntil = SnoozeStatusUiModel.NoStatus
         )
     }
 }
