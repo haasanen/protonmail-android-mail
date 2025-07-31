@@ -151,6 +151,17 @@ class MessageMailboxItemMapperTest {
         assertEquals(attachments, mailboxItem.attachments)
     }
 
+
+    @Test
+    fun `when mapping message to displaySnoozeReminder is always false`() {
+        // Given
+        val message = MessageTestData.buildMessage(userId, "id").copy()
+        // When
+        val actual = mapper.toMailboxItem(message)
+        // Then
+        assertFalse(actual.displaySnoozeReminder)
+    }
+
     private fun buildLabel(value: String) = LabelTestData.buildLabel(
         id = value,
         type = LabelType.MessageLabel,

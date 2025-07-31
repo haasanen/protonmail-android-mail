@@ -23,9 +23,9 @@ import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
-import ch.protonmail.android.maillabel.domain.model.ViewMode
 
 enum class MailboxItemType {
     Message,
@@ -61,7 +61,8 @@ data class MailboxItem(
     val exclusiveLocation: ExclusiveLocation,
     val attachments: List<AttachmentMetadata>,
     val isDraft: Boolean,
-    val isScheduled: Boolean
+    val isScheduled: Boolean,
+    val displaySnoozeReminder: Boolean
 )
 
 fun ViewMode.toMailboxItemType() = when (this) {

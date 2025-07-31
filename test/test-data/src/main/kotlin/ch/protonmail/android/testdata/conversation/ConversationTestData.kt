@@ -140,7 +140,8 @@ object ConversationTestData {
         customLabels = labelIds.map { buildLabel(id) },
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
-        attachments = listOf(AttachmentMetadataSamples.Pdf)
+        attachments = listOf(AttachmentMetadataSamples.Pdf),
+        displaySnoozeReminder = false
     )
 
     private fun buildConversationWithConversationLabels(
@@ -170,7 +171,8 @@ object ConversationTestData {
         customLabels = labels,
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
-        attachments = listOf(AttachmentMetadataSamples.Pdf)
+        attachments = listOf(AttachmentMetadataSamples.Pdf),
+        displaySnoozeReminder = true
     )
 
     private fun buildLabel(labelId: String) = Label(

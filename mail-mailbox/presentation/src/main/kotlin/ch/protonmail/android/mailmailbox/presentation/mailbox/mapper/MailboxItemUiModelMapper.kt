@@ -86,7 +86,8 @@ class MailboxItemUiModelMapper @Inject constructor(
             shouldShowCalendarIcon = hasCalendarAttachment(mailboxItem),
             shouldOpenInComposer = mailboxItem.isDraft,
             attachments = mailboxItem.attachments.map(attachmentMetadataUiModelMapper::toUiModel).toImmutableList(),
-            shouldShowScheduleSendTime = mailboxItem.isScheduled
+            shouldShowScheduleSendTime = mailboxItem.isScheduled,
+            displaySnoozeReminder = mailboxItem.displaySnoozeReminder
         )
     }
 

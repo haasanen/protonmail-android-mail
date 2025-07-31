@@ -116,7 +116,8 @@ object ConversationWithContextTestData {
         customLabels = labelIds.map { buildLabel(it) },
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
-        attachments = listOf(AttachmentMetadataSamples.Pdf)
+        attachments = listOf(AttachmentMetadataSamples.Pdf),
+        displaySnoozeReminder = false
     )
 
     private fun buildLabel(labelId: String) = Label(

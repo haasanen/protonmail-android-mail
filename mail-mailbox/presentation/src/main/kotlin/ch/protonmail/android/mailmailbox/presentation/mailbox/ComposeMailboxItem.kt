@@ -115,8 +115,9 @@ fun MailboxItem(
                 )
         ) {
             val fontWeight = if (item.isRead) FontWeight.Normal else FontWeight.Medium
-            val fontColor = if (item.isRead) ProtonTheme.colors.textWeak else ProtonTheme.colors.textNorm
+            val fontColor = if (item.isRead) ProtonTheme.colors.iconWeak else ProtonTheme.colors.iconNorm
             val iconColor = if (item.isRead) ProtonTheme.colors.iconWeak else ProtonTheme.colors.iconNorm
+            val timeFontColor = if (item.displaySnoozeReminder) ProtonTheme.colors.notificationWarning else fontColor
             val avatarActions = ParticipantAvatar.Actions(
                 onAvatarClicked = { actions.onAvatarClicked(item) },
                 onAvatarImageLoadRequested = { actions.onAvatarImageLoadRequested(item) },
@@ -162,7 +163,7 @@ fun MailboxItem(
                         Spacer(Modifier.size(ProtonDimens.Spacing.Small))
                     }
 
-                    Time(time = item.time, fontWeight = fontWeight, fontColor = fontColor)
+                    Time(time = item.time, fontWeight = fontWeight, fontColor = timeFontColor)
                 }
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
                 Row(

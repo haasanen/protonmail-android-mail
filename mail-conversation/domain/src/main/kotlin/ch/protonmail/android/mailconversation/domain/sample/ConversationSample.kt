@@ -104,6 +104,7 @@ object ConversationSample {
         size = 0,
         customLabels = emptyList(),
         avatarInformation = AvatarInformationSample.avatarSample,
-        exclusiveLocation = exclusiveLocation
+        exclusiveLocation = exclusiveLocation,
+        displaySnoozeReminder = false
     )
 }

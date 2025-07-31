@@ -94,7 +94,8 @@ object MailboxTestData {
         exclusiveLocation = exclusiveLocation,
         attachments = attachments,
         isDraft = false,
-        isScheduled = isScheduled
+        isScheduled = isScheduled,
+        displaySnoozeReminder = false
     )
 
     private fun buildMessageMailboxItem(
@@ -130,7 +131,8 @@ object MailboxTestData {
         exclusiveLocation = exclusiveLocation,
         attachments = attachments,
         isDraft = false,
-        isScheduled = false
+        isScheduled = false,
+        displaySnoozeReminder = false
     )
 
     private fun buildConversationMailboxItem(id: String) = MailboxItem(
@@ -157,7 +159,8 @@ object MailboxTestData {
         exclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")),
         attachments = emptyList(),
         isDraft = false,
-        isScheduled = false
+        isScheduled = false,
+        displaySnoozeReminder = false
     )
 
 }
@@ -222,6 +225,7 @@ object MailboxItemUiModelTestData {
         shouldShowCalendarIcon = false,
         shouldOpenInComposer = shouldOpenInComposer,
         attachments = persistentListOf(),
-        shouldShowScheduleSendTime = false
+        shouldShowScheduleSendTime = false,
+        displaySnoozeReminder = false
     )
 }

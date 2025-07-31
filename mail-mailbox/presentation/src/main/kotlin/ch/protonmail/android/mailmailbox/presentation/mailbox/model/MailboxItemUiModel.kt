@@ -49,5 +49,6 @@ data class MailboxItemUiModel(
     val expiryInformation: ExpiryInformationUiModel,
     val shouldShowCalendarIcon: Boolean,
     val shouldOpenInComposer: Boolean,
-    val shouldShowScheduleSendTime: Boolean
+    val shouldShowScheduleSendTime: Boolean,
+    val displaySnoozeReminder: Boolean
 )

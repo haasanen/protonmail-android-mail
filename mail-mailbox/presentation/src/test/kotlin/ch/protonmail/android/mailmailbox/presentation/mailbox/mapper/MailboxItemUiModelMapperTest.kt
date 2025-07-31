@@ -493,4 +493,15 @@ class MailboxItemUiModelMapperTest {
         assertTrue(actual.attachments.isEmpty())
     }
 
+    @Test
+    fun `when mailbox item has displaySnoozeReminder then map displaySnoozeReminder`() = runTest {
+        // Given
+        val mailboxItem = buildMailboxItem(calendarAttachmentCount = 1).copy(displaySnoozeReminder = true)
+        // When
+        val mailboxItemUiModel = mapper.toUiModel(
+            userId, mailboxItem, defaultFolderColorSettings, false
+        )
+        // Then
+        assertTrue(mailboxItemUiModel.displaySnoozeReminder)
+    }
 }

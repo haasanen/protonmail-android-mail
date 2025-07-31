@@ -44,5 +44,6 @@ data class Conversation(
     val size: Long,
     val customLabels: List<Label>,
     val avatarInformation: AvatarInformation,
-    val exclusiveLocation: ExclusiveLocation
+    val exclusiveLocation: ExclusiveLocation,
+    val displaySnoozeReminder: Boolean
 )

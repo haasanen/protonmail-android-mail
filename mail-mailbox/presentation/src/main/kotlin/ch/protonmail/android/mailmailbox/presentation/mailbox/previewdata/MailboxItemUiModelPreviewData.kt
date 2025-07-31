@@ -68,7 +68,8 @@ object MailboxItemUiModelPreviewData {
             shouldShowCalendarIcon = true,
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
-            shouldShowScheduleSendTime = false
+            shouldShowScheduleSendTime = false,
+            displaySnoozeReminder = false
         )
 
         val DroidConLondonWithZeroMessages = MailboxItemUiModel(
@@ -94,7 +95,8 @@ object MailboxItemUiModelPreviewData {
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
-            shouldShowScheduleSendTime = false
+            shouldShowScheduleSendTime = false,
+            displaySnoozeReminder = false
         )
 
         val WeatherForecast = MailboxItemUiModel(
@@ -123,7 +125,8 @@ object MailboxItemUiModelPreviewData {
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
-            shouldShowScheduleSendTime = false
+            shouldShowScheduleSendTime = false,
+            displaySnoozeReminder = false
         )
 
         val MultipleRecipientWithLabel = MailboxItemUiModel(
@@ -175,8 +178,8 @@ object MailboxItemUiModelPreviewData {
                     size = 5678L
                 )
             ),
-            shouldShowScheduleSendTime = false
-
+            shouldShowScheduleSendTime = false,
+            displaySnoozeReminder = false
         )
 
         val LongSubjectWithIcons = MailboxItemUiModel(
@@ -205,7 +208,8 @@ object MailboxItemUiModelPreviewData {
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
-            shouldShowScheduleSendTime = false
+            shouldShowScheduleSendTime = false,
+            displaySnoozeReminder = false
         )
 
         val LongSubjectWithoutIcons = MailboxItemUiModel(
@@ -231,7 +235,8 @@ object MailboxItemUiModelPreviewData {
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
-            shouldShowScheduleSendTime = false
+            shouldShowScheduleSendTime = false,
+            displaySnoozeReminder = false
         )
 
         val NoParticipant = MailboxItemUiModel(
@@ -255,7 +260,8 @@ object MailboxItemUiModelPreviewData {
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
-            shouldShowScheduleSendTime = false
+            shouldShowScheduleSendTime = false,
+            displaySnoozeReminder = false
         )
     }
 
@@ -284,7 +290,8 @@ object MailboxItemUiModelPreviewData {
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
-            shouldShowScheduleSendTime = false
+            shouldShowScheduleSendTime = false,
+            displaySnoozeReminder = false
         )
 
         val WeatherForecastSep = MailboxItemUiModel(
@@ -310,7 +317,8 @@ object MailboxItemUiModelPreviewData {
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false,
             attachments = persistentListOf(),
-            shouldShowScheduleSendTime = false
+            shouldShowScheduleSendTime = false,
+            displaySnoozeReminder = false
         )
     }
 }

@@ -51,6 +51,9 @@ class MessageMailboxItemMapper @Inject constructor() : Mapper<Message, MailboxIt
         exclusiveLocation = message.exclusiveLocation,
         attachments = message.attachments.filter { it.isCalendarAttachment().not() },
         isDraft = message.isDraft,
-        isScheduled = message.isScheduled
+        isScheduled = message.isScheduled,
+
+        // can't snooze a message, at least currently
+        displaySnoozeReminder = false
     )
 }

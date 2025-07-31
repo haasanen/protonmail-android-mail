@@ -132,6 +132,19 @@ class ConversationMailboxItemMapperTest {
         assertEquals(calendarAttachmentCount, mailboxItem.calendarAttachmentCount)
     }
 
+    @Test
+    fun `when mapping conversation displaySnoozeReminder is mapped`() {
+        // Given
+        val expectedSnoozeReminder = true
+        val conversation = ConversationWithContextTestData.getConversation(
+            userId, "id"
+        ).copy(displaySnoozeReminder = expectedSnoozeReminder)
+        // When
+        val mailboxItem = mapper.toMailboxItem(conversation)
+        // Then
+        assertEquals(expectedSnoozeReminder, mailboxItem.displaySnoozeReminder)
+    }
+
     private fun buildLabel(value: String) = LabelTestData.buildLabel(
         id = value,
         type = LabelType.MessageLabel,

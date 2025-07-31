@@ -73,6 +73,7 @@ class ConversationMapperTest {
         assertEquals(localConversation.time.toLong(), conversation.time)
         assertEquals(localConversation.size.toLong(), conversation.size)
         assertEquals(localConversation.exclusiveLocation.toExclusiveLocation(), conversation.exclusiveLocation)
+        assertEquals(localConversation.displaySnoozeReminder, conversation.displaySnoozeReminder)
     }
 
 
@@ -172,6 +173,18 @@ class ConversationMapperTest {
         assertEquals(LabelId(customLabel.id.value.toString()), label.labelId)
         assertEquals(color.value, label.color)
         assertEquals(name, label.name)
+    }
+
+    @Test
+    fun `conversation with displaySnoozeReminder  should convert correctly`() {
+        // Given
+        val expected = true
+
+        // When
+        val conversation = createLocalConversation(displaySnoozeReminder = expected).toConversation()
+
+        // Then
+        assertEquals(expected, conversation.displaySnoozeReminder)
     }
 
     private fun createLocalConversation(

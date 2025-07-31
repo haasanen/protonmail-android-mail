@@ -52,7 +52,8 @@ class ConversationMailboxItemMapper @Inject constructor() : Mapper<Conversation,
             exclusiveLocation = exclusiveLocation,
             attachments = attachments.filter { it.isCalendarAttachment().not() },
             isDraft = false,
-            isScheduled = false
+            isScheduled = false,
+            displaySnoozeReminder = displaySnoozeReminder
         )
     }
 }

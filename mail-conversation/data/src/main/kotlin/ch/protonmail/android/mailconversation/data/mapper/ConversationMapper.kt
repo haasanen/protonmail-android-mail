@@ -52,7 +52,8 @@ fun LocalConversation.toConversation() = Conversation(
     size = size.toLong(),
     customLabels = this.customLabels.map { it.toLabel() },
     avatarInformation = this.avatar.toAvatarInformation(),
-    exclusiveLocation = this.exclusiveLocation.toExclusiveLocation()
+    exclusiveLocation = this.exclusiveLocation.toExclusiveLocation(),
+    displaySnoozeReminder = this.displaySnoozeReminder
 )
 
 private fun LocalConversationId.toConversationId(): ConversationId = ConversationId(this.value.toString())
