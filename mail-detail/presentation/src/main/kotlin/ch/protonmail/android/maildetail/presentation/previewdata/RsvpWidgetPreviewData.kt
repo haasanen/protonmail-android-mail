@@ -32,8 +32,7 @@ object RsvpWidgetPreviewData {
 
     val UnansweredWithMultipleParticipants = RsvpWidgetUiModel(
         title = TextUiModel.Text("Whispers of Tomorrow: An Evening of Unexpected Wonders"),
-        date = TextUiModel.Text("Thu, 15 Jul"),
-        time = TextUiModel.Text("14:30 - 15:30 "),
+        dateTime = TextUiModel.Text("15 Jul • 14:30 - 15:30"),
         isAttendanceOptional = true,
         buttons = RsvpButtonsUiModel.Shown(RsvpAnswer.Unanswered),
         calendar = RsvpCalendarUiModel(
@@ -73,8 +72,7 @@ object RsvpWidgetPreviewData {
 
     val AnsweredWithOneParticipantAndStatus = RsvpWidgetUiModel(
         title = TextUiModel.Text("Inbox OKR Weekly"),
-        date = TextUiModel.Text("Thu, 15 Jul"),
-        time = TextUiModel.Text("14:30 - 15:30 "),
+        dateTime = TextUiModel.Text("15 Jul • 14:30 - 15:30"),
         isAttendanceOptional = true,
         buttons = RsvpButtonsUiModel.Shown(RsvpAnswer.Yes),
         calendar = RsvpCalendarUiModel(
@@ -94,10 +92,6 @@ object RsvpWidgetPreviewData {
                 email = TextUiModel.Text("you@protonmail.com")
             )
         ),
-        status = RsvpStatusUiModel(
-            message = TextUiModel.Text("Happening now"),
-            textColor = Color(0xFF1E574B),
-            backgroundColor = Color(0xFFB1E1D4)
-        )
+        status = RsvpStatusUiModel.HappeningNow
     )
 }

@@ -93,8 +93,7 @@ fun RsvpWidget(uiModel: RsvpWidgetUiModel, modifier: Modifier = Modifier) {
         ) {
             RsvpOverview(
                 title = uiModel.title,
-                date = uiModel.date,
-                time = uiModel.time,
+                dateTime = uiModel.dateTime,
                 isAttendanceOptional = uiModel.isAttendanceOptional
             )
 
@@ -114,10 +113,12 @@ fun RsvpWidget(uiModel: RsvpWidgetUiModel, modifier: Modifier = Modifier) {
                 )
             }
 
-            RsvpDetailsRow(
-                icon = R.drawable.ic_proton_map_pin,
-                text = uiModel.location.string()
-            )
+            uiModel.location?.let {
+                RsvpDetailsRow(
+                    icon = R.drawable.ic_proton_map_pin,
+                    text = uiModel.location.string()
+                )
+            }
 
             val organizerName = (uiModel.organizer.name ?: uiModel.organizer.email).string()
             RsvpDetailsRow(
@@ -135,15 +136,15 @@ private fun RSVPStatus(uiModel: RsvpStatusUiModel, modifier: Modifier = Modifier
     Text(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = uiModel.backgroundColor)
+            .background(color = uiModel.getBackgroundColor())
             .padding(
                 horizontal = ProtonDimens.Spacing.ExtraLarge,
                 vertical = ProtonDimens.Spacing.Large
             ),
-        text = uiModel.message.string(),
+        text = stringResource(id = uiModel.getMessage()),
         textAlign = TextAlign.Start,
         style = ProtonTheme.typography.bodyMedium.copy(
-            color = uiModel.textColor
+            color = uiModel.getTextColor()
         )
     )
 }
@@ -151,8 +152,7 @@ private fun RSVPStatus(uiModel: RsvpStatusUiModel, modifier: Modifier = Modifier
 @Composable
 private fun RsvpOverview(
     title: TextUiModel,
-    date: TextUiModel,
-    time: TextUiModel,
+    dateTime: TextUiModel,
     isAttendanceOptional: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -168,20 +168,10 @@ private fun RsvpOverview(
             )
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Compact))
 
-            Row {
-                Text(
-                    text = date.string(),
-                    style = ProtonTheme.typography.bodyLargeNorm
-                )
-                Text(
-                    modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Small),
-                    text = "•"
-                )
-                Text(
-                    text = time.string(),
-                    style = ProtonTheme.typography.bodyLargeNorm
-                )
-            }
+            Text(
+                text = dateTime.string(),
+                style = ProtonTheme.typography.bodyLargeNorm
+            )
 
             if (isAttendanceOptional) {
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Compact))
@@ -264,15 +254,15 @@ private fun RsvpSingleButton(@StringRes label: Int, modifier: Modifier = Modifie
             onDismissRequest = { expanded.value = false }
         ) {
             DropdownMenuItem(
-                text = { Text(text = stringResource(id = R.string.rsvp_widget_yes)) },
+                text = { Text(text = stringResource(id = R.string.rsvp_widget_yes_long)) },
                 onClick = { expanded.value = false }
             )
             DropdownMenuItem(
-                text = { Text(text = stringResource(id = R.string.rsvp_widget_maybe)) },
+                text = { Text(text = stringResource(id = R.string.rsvp_widget_maybe_long)) },
                 onClick = { expanded.value = false }
             )
             DropdownMenuItem(
-                text = { Text(text = stringResource(id = R.string.rsvp_widget_no)) },
+                text = { Text(text = stringResource(id = R.string.rsvp_widget_no_long)) },
                 onClick = { expanded.value = false }
             )
         }
@@ -434,6 +424,35 @@ private fun RsvpAnswer.getIconTint(isOnlyAttendee: Boolean) = when (this) {
     } else {
         ProtonTheme.colors.iconDisabled
     }
+}
+
+private fun RsvpStatusUiModel.getMessage() = when (this) {
+    RsvpStatusUiModel.EventCancelled -> R.string.rsvp_widget_event_cancelled
+    RsvpStatusUiModel.EventCancelledInviteOutdated -> R.string.rsvp_widget_event_cancelled_invite_outdated
+    RsvpStatusUiModel.EventEnded -> R.string.rsvp_widget_event_ended
+    RsvpStatusUiModel.HappeningNow -> R.string.rsvp_widget_happening_now
+    RsvpStatusUiModel.InviteOutdated -> R.string.rsvp_widget_invite_outdated
+    RsvpStatusUiModel.OfflineInviteOutdated -> R.string.rsvp_widget_offline_invite_outdated
+}
+
+@Composable
+private fun RsvpStatusUiModel.getTextColor() = when (this) {
+    RsvpStatusUiModel.EventCancelled -> ProtonTheme.colors.notificationError900
+    RsvpStatusUiModel.EventCancelledInviteOutdated -> ProtonTheme.colors.notificationError900
+    RsvpStatusUiModel.EventEnded -> ProtonTheme.colors.notificationWarning900
+    RsvpStatusUiModel.HappeningNow -> ProtonTheme.colors.notificationSuccess900
+    RsvpStatusUiModel.InviteOutdated -> ProtonTheme.colors.textNorm
+    RsvpStatusUiModel.OfflineInviteOutdated -> ProtonTheme.colors.textNorm
+}
+
+@Composable
+private fun RsvpStatusUiModel.getBackgroundColor() = when (this) {
+    RsvpStatusUiModel.EventCancelled -> ProtonTheme.colors.notificationError100
+    RsvpStatusUiModel.EventCancelledInviteOutdated -> ProtonTheme.colors.notificationError100
+    RsvpStatusUiModel.EventEnded -> ProtonTheme.colors.notificationWarning100
+    RsvpStatusUiModel.HappeningNow -> ProtonTheme.colors.notificationSuccess100
+    RsvpStatusUiModel.InviteOutdated -> ProtonTheme.colors.backgroundDeep
+    RsvpStatusUiModel.OfflineInviteOutdated -> ProtonTheme.colors.backgroundDeep
 }
 
 @Preview
