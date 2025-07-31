@@ -666,9 +666,7 @@ fun Home(
                                 )
                             },
                             onOpenContact = {
-                                // Enable after bumping Rust to 0.109.0
-                                // navController.navigate(Screen.ContactDetails(it))
-                                showFeatureMissingSnackbar()
+                                navController.navigate(Screen.ContactDetails(it))
                             },
                             showFeatureMissingSnackbar = {
                                 showFeatureMissingSnackbar()
