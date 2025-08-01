@@ -156,7 +156,6 @@ private fun List<BottomBarActions>.bottombarActionsToActions() = this.map { bott
         BottomBarActions.PermanentDelete -> Action.Delete
         BottomBarActions.Star -> Action.Star
         BottomBarActions.Unstar -> Action.Unstar
-        // ET-3899 map snooze  BottomBarActions.Snooze -> Action.Snooze.v1.toAction()
         is BottomBarActions.NotSpam -> Action.Inbox
         BottomBarActions.Snooze -> Action.Snooze
     }
