@@ -59,6 +59,7 @@ import me.proton.core.compose.component.appbar.ProtonTopAppBar
 import me.proton.core.compose.theme.LocalColors
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.defaultStrongNorm
+import me.proton.core.compose.util.LaunchOnScreenView
 import me.proton.core.presentation.ui.webview.ProtonWebView
 import me.proton.core.util.kotlin.CoreLogger
 import kotlin.time.Duration.Companion.milliseconds
@@ -82,6 +83,9 @@ fun HumanVerificationScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val connectivityErrorMessage = stringResource(R.string.presentation_connectivity_issues)
+
+    LaunchOnScreenView(viewModel::onScreenView)
+
     HumanVerificationScreen(
         modifier = modifier,
         onCloseClicked = {

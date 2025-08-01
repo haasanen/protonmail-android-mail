@@ -39,8 +39,10 @@ import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_mail_uniffi.ApiConfig
 import uniffi.proton_mail_uniffi.AppDetails
 import uniffi.proton_mail_uniffi.ChallengeLoader
+import uniffi.proton_mail_uniffi.HumanVerificationScreenId
 import uniffi.proton_mail_uniffi.NewChallengeLoaderResult
 import uniffi.proton_mail_uniffi.newChallengeLoader
+import uniffi.proton_mail_uniffi.recordHumanVerificationScreenView
 import javax.inject.Inject
 
 @HiltViewModel
@@ -59,6 +61,7 @@ class HumanVerificationViewModel @Inject constructor(
             is HumanVerificationAction.Load -> with(action) {
                 onLoad(url, defaultCountry, recoveryPhone, locale, headers)
             }
+
             is HumanVerificationAction.Verify -> onVerify(action.result)
             is HumanVerificationAction.Cancel -> onCancel()
             is HumanVerificationAction.Failure.ResourceLoadingError -> onFailure(action.message)
@@ -68,6 +71,12 @@ class HumanVerificationViewModel @Inject constructor(
 
     fun submit(action: HumanVerificationAction) = viewModelScope.launch {
         mutableAction.emit(action)
+    }
+
+    fun onScreenView() {
+        viewModelScope.launch {
+            recordHumanVerificationScreenView(screenId = HumanVerificationScreenId.V3)
+        }
     }
 
     private fun onLoad(
