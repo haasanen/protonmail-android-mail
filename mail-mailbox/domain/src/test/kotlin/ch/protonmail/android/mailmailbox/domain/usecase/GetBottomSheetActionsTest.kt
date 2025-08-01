@@ -91,8 +91,35 @@ class GetBottomSheetActionsTest {
         )
 
         val input = AllBottomBarActions(
+            listOf(Action.Star, Action.Label, Action.Snooze),
+            listOf(Action.Spam, Action.Archive)
+        )
+        coEvery { getAllConversationBottomBarActions(userId, labelId, convoIds) } returns input.right()
+
+        // When
+        val actual = getBottomSheetActions(userId, labelId, items, viewMode)
+
+        // Then
+        assertEquals(expected.right(), actual)
+    }
+
+    @Test
+    fun `gets available actions for conversations when snooze disabled`() = runTest {
+        // Given
+        snoozeEnabled = false
+        val userId = UserIdSample.Primary
+        val labelId = LabelIdSample.Trash
+        val items = listOf(MailboxItemId("1"))
+        val convoIds = items.map { ConversationId(it.value) }
+        val viewMode = ViewMode.ConversationGrouping
+        val expected = AllBottomBarActions(
             listOf(Action.Star, Action.Label),
             listOf(Action.Spam, Action.Archive)
+        )
+
+        val input = AllBottomBarActions(
+            listOf(Action.Star, Action.Label, Action.Snooze),
+            listOf(Action.Spam, Action.Archive, Action.Snooze)
         )
         coEvery { getAllConversationBottomBarActions(userId, labelId, convoIds) } returns input.right()
 

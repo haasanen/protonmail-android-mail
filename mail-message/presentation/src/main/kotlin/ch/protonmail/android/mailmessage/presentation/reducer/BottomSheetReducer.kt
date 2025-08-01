@@ -34,7 +34,7 @@ import javax.inject.Inject
 class BottomSheetReducer @Inject constructor(
     private val mailboxMoreActionsBottomSheetReducer: MailboxMoreActionsBottomSheetReducer,
     private val detailMoreActionsBottomSheetReducer: DetailMoreActionsBottomSheetReducer,
-    private val contactActionsBottomSheetReducer: ContactActionsBottomSheetReducer,
+    private val contactActionsBottomSheetReducer: ContactActionsBottomSheetReducer
 ) {
 
     fun newStateFrom(currentState: BottomSheetState?, operation: BottomSheetOperation): BottomSheetState? {

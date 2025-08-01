@@ -50,23 +50,30 @@ class GetBottomSheetActions @Inject constructor(
         ViewMode.ConversationGrouping -> {
             val conversationIds = mailboxItemIds.map { ConversationId(it.value) }
             getAllConversationBottomBarActions(userId, labelId, conversationIds).removeMoreAction()
-                .let { if (isSnoozeEnabled.first()) it.addSnooze() else it }
+                // keep behind feature flag until ready
+                .removeSnoozeIfNecessary(isSnoozeEnabled.first())
         }
 
         ViewMode.NoConversationGrouping -> {
             val messageIds = mailboxItemIds.map { MessageId(it.value) }
             getAllMessageBottomBarActions(userId, labelId, messageIds).removeMoreAction()
-                .let { if (isSnoozeEnabled.first()) it.addSnooze() else it }
+                // keep behind feature flag until ready
+                .removeSnoozeIfNecessary(isSnoozeEnabled.first())
         }
     }
 }
 
-private fun Either<DataError, AllBottomBarActions>.addSnooze() = this.map {
-    it.copy(
-        hiddenActions = it.hiddenActions.toMutableList().apply { this.add(Action.Snooze) },
-        visibleActions = it.visibleActions
-    )
+private fun Either<DataError, AllBottomBarActions>.removeSnoozeIfNecessary(snoozeEnabled: Boolean) = this.map {
+    if (!snoozeEnabled) {
+        it.copy(
+            hiddenActions = it.hiddenActions.removeSnooze(),
+            visibleActions = it.visibleActions.removeSnooze()
+        )
+    } else {
+        it
+    }
 }
+
 
 private fun Either<DataError, AllBottomBarActions>.removeMoreAction() = this.map {
     it.copy(
@@ -78,5 +85,12 @@ private fun Either<DataError, AllBottomBarActions>.removeMoreAction() = this.map
 private fun List<Action>.removeMoreAction(): List<Action> {
     val mutableActions = this.toMutableList()
     mutableActions.remove(Action.More)
+    return mutableActions
+}
+
+
+private fun List<Action>.removeSnooze(): List<Action> {
+    val mutableActions = this.toMutableList()
+    mutableActions.remove(Action.Snooze)
     return mutableActions
 }
