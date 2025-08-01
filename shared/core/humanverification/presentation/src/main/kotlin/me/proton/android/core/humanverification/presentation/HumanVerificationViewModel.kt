@@ -40,8 +40,10 @@ import uniffi.proton_mail_uniffi.ApiConfig
 import uniffi.proton_mail_uniffi.AppDetails
 import uniffi.proton_mail_uniffi.ChallengeLoader
 import uniffi.proton_mail_uniffi.HumanVerificationScreenId
+import uniffi.proton_mail_uniffi.HumanVerificationStatus
 import uniffi.proton_mail_uniffi.NewChallengeLoaderResult
 import uniffi.proton_mail_uniffi.newChallengeLoader
+import uniffi.proton_mail_uniffi.recordHumanVerificationResult
 import uniffi.proton_mail_uniffi.recordHumanVerificationScreenView
 import javax.inject.Inject
 
@@ -108,11 +110,13 @@ class HumanVerificationViewModel @Inject constructor(
 
     private fun onCancel(): Flow<HumanVerificationViewState> = flow {
         challengeNotifierCallback.onHumanVerificationCancel()
+        recordHumanVerificationResult(HumanVerificationStatus.CANCELLED)
         emit(HumanVerificationViewState.Cancel)
     }
 
     private fun onFailure(message: String?): Flow<HumanVerificationViewState> = flow {
         challengeNotifierCallback.onHumanVerificationFailed()
+        recordHumanVerificationResult(HumanVerificationStatus.FAILED)
         emit(HumanVerificationViewState.Error.General(message))
     }
 
@@ -122,6 +126,7 @@ class HumanVerificationViewModel @Inject constructor(
                 val token = requireNotNull(result.payload?.token)
                 val tokenType = requireNotNull(result.payload?.type)
                 challengeNotifierCallback.onHumanVerificationSuccess(tokenType, token)
+                recordHumanVerificationResult(HumanVerificationStatus.SUCCEEDED)
                 emit(HumanVerificationViewState.Success(token, tokenType))
             }
 
