@@ -149,8 +149,11 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             viewModel.submit(ComposerAction.AddAttachmentsRequested)
         },
         onSetMessagePasswordClick = {
-            showFeatureMissingSnackbar()
-            // actions.onSetMessagePasswordClick()
+            if (viewModel.isExternalEncryptionEnabled.value) {
+                actions.onSetMessagePasswordClick()
+            } else {
+                showFeatureMissingSnackbar()
+            }
         },
         onSetExpirationTimeClick = {
             // bottomSheetType.value = BottomSheetType.SetExpirationTime

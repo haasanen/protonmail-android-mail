@@ -123,7 +123,7 @@ internal fun NavGraphBuilder.addComposer(
     val actions = ComposerScreen.Actions(
         onCloseComposerClick = navController::navigateBack,
         onSetMessagePasswordClick = {
-            navController.navigate(Destination.Screen.SetMessagePassword)
+            navController.navigate(Destination.Screen.SetMessagePassword.route)
         },
         showDraftSavedSnackbar = showDraftSavedSnackbar,
         showMessageSendingSnackbar = showMessageSendingSnackbar,
