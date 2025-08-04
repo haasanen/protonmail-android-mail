@@ -302,6 +302,11 @@ class RustDraftDataSourceImpl @Inject constructor(
             }
         }
 
+    override fun clearDraftFromMemory() {
+        Timber.d("rust-draft: free the rust Draft instance held in memory")
+        draftWrapperMutableStateFlow.value = null
+    }
+
     private fun updateRecipients(
         recipientsWrapper: ComposerRecipientListWrapper,
         updatedRecipients: List<Recipient>

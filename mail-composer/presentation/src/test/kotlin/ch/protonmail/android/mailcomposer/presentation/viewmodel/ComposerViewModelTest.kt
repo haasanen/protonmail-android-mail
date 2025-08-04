@@ -45,6 +45,7 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.usecase.ChangeSenderAddress
+import ch.protonmail.android.mailcomposer.domain.usecase.ClearRustDraftFromMemory
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
@@ -106,6 +107,7 @@ import io.mockk.unmockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -153,6 +155,7 @@ class ComposerViewModelTest {
     private val scheduleSendMessage = mockk<ScheduleSendMessage>()
     private val getSenderAddresses = mockk<GetSenderAddresses>()
     private val changeSenderAddress = mockk<ChangeSenderAddress>()
+    private val clearRustDraftFromMemory = mockk<ClearRustDraftFromMemory>()
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<MessageBodyWithType>()
@@ -161,6 +164,7 @@ class ComposerViewModelTest {
         }
     }
     private val reducer = ComposerStateReducer()
+    private val isExternalEncryptionEnabled = MutableStateFlow(true)
 
     private val viewModel by lazy {
         ComposerViewModel(
@@ -190,6 +194,8 @@ class ComposerViewModelTest {
             scheduleSendMessage,
             getSenderAddresses,
             changeSenderAddress,
+            isExternalEncryptionEnabled,
+            clearRustDraftFromMemory,
             observePrimaryUserIdMock
         )
     }

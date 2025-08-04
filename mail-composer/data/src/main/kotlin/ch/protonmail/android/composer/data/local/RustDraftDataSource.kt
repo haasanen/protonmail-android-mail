@@ -67,4 +67,6 @@ interface RustDraftDataSource {
 
     fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo>
     fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions>
+
+    fun clearDraftFromMemory()
 }
