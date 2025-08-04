@@ -152,7 +152,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSh
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMoreActionBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
-import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.snooze.SnoozeOptionsBottomSheetScreen
+import ch.protonmail.android.mailsnooze.presentation.SnoozeOptionsBottomSheetScreen
 import ch.protonmail.android.uicomponents.fab.LazyFab
 import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
 import kotlinx.coroutines.launch

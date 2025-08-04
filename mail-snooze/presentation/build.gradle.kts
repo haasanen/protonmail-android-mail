@@ -56,11 +56,8 @@ android {
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
-    implementation(libs.proton.core.user.domain)
     implementation(project(":mail-snooze:domain"))
     implementation(project(":mail-common:presentation"))
-    implementation(project(":mail-common:domain"))
-    implementation(project(":mail-session:domain"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
     implementation(project(":uicomponents"))

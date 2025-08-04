@@ -20,7 +20,6 @@ package ch.protonmail.android.mailsnooze.presentation.model
 
 import androidx.compose.runtime.Immutable
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailmessage.presentation.model.snooze.SnoozeOptionUiModel
 
 @Immutable
 sealed class SnoozeOptionsState {

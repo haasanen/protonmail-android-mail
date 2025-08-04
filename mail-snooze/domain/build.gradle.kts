@@ -48,15 +48,6 @@ android {
 
 dependencies {
     implementation(libs.bundles.module.domain)
-
-    implementation(project(":mail-common:domain"))
-    implementation(project(":mail-common:presentation"))
-    implementation(project(":uicomponents"))
-    implementation(project(":mail-session:domain"))
-
-
-    debugImplementation(libs.bundles.compose.debug)
-
     implementation(libs.bundles.compose)
     implementation(libs.timber)
     implementation(libs.proton.core.user.domain)

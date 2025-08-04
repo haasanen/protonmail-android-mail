@@ -49,21 +49,6 @@ android {
 dependencies {
     compileOnly(libs.proton.rust.core)
     implementation(libs.bundles.module.data)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.hilt.work)
-    implementation(libs.proton.core.user.data)
-    implementation(libs.proton.core.user.domain)
-    implementation(libs.proton.core.mailSettings.domain)
-
-    implementation(project(":mail-common:data"))
-    implementation(project(":mail-common:domain"))
-    implementation(project(":mail-conversation:data"))
-    implementation(project(":mail-snooze:domain"))
-    implementation(project(":mail-message:domain"))
-    implementation(project(":mail-session:domain"))
-    implementation(project(":mail-session:data"))
-    implementation(project(":mail-message:data"))
-
     testImplementation(libs.proton.rust.core)
     testImplementation(project(":test:utils"))
     testImplementation(project(":test:test-data"))

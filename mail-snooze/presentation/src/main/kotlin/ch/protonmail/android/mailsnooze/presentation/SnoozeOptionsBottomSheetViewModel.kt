@@ -16,12 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.presentation.viewmodel
+package ch.protonmail.android.mailsnooze.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
-import ch.protonmail.android.mailmessage.presentation.model.snooze.toSnoozeOptionUiModel
+import ch.protonmail.android.mailsnooze.presentation.model.toSnoozeOptionUiModel
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionsState
 import dagger.hilt.android.lifecycle.HiltViewModel

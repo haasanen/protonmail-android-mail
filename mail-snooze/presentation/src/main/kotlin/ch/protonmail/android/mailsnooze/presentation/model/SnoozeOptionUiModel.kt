@@ -16,14 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.presentation.model.snooze
+package ch.protonmail.android.mailsnooze.presentation.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
 import ch.protonmail.android.mailsnooze.presentation.R
-import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOperationViewAction
 
 sealed interface SnoozeOptionUiModel
 data class SnoozeUntilUiModel(

@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.snooze
+package ch.protonmail.android.mailsnooze.presentation
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
@@ -48,12 +48,10 @@ import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
-import ch.protonmail.android.mailmessage.presentation.model.snooze.CustomSnoozeUiModel
-import ch.protonmail.android.mailmessage.presentation.model.snooze.SnoozeOptionUiModel
-import ch.protonmail.android.mailmessage.presentation.model.snooze.SnoozeUntilUiModel
-import ch.protonmail.android.mailmessage.presentation.model.snooze.UpgradeToSnoozeUiModel
-import ch.protonmail.android.mailmessage.presentation.viewmodel.SnoozeOptionsBottomSheetViewModel
-import ch.protonmail.android.mailsnooze.presentation.R
+import ch.protonmail.android.mailsnooze.presentation.model.CustomSnoozeUiModel
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionUiModel
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeUntilUiModel
+import ch.protonmail.android.mailsnooze.presentation.model.UpgradeToSnoozeUiModel
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOperationViewAction
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionsState
 
