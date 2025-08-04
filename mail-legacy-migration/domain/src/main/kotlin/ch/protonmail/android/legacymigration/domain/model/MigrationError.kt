@@ -50,6 +50,10 @@ sealed interface MigrationError {
         data object FailedToSetAutoLockInterval : MigrationError
     }
 
+    sealed interface SignatureFailure {
+        data object FailedToReadMobileSignaturePreference : MigrationError
+    }
+
     // Error during migration with specific known reason
     sealed interface MigrateFailed : MigrationError {
         data object ApiFailure : MigrateFailed
