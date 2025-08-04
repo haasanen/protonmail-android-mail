@@ -50,8 +50,8 @@ class FormatRsvpWidgetTime @Inject constructor(
 
             RsvpOccurrence.Date -> {
 
-                val startDate = Instant.ofEpochMilli(startsAt).atZone(ZoneId.of("UTC")).toLocalDate()
-                val endDate = Instant.ofEpochMilli(endsAt).atZone(ZoneId.of("UTC")).toLocalDate()
+                val startDate = Instant.ofEpochSecond(startsAt).atZone(ZoneId.of("UTC")).toLocalDate()
+                val endDate = Instant.ofEpochSecond(endsAt).atZone(ZoneId.of("UTC")).toLocalDate()
 
                 return if (startDate == endDate) {
 
@@ -70,8 +70,8 @@ class FormatRsvpWidgetTime @Inject constructor(
 
             RsvpOccurrence.DateTime -> {
 
-                val startDateTime = Instant.ofEpochMilli(startsAt).atZone(ZoneId.systemDefault())
-                val endDateTime = Instant.ofEpochMilli(endsAt).atZone(ZoneId.systemDefault())
+                val startDateTime = Instant.ofEpochSecond(startsAt).atZone(ZoneId.systemDefault())
+                val endDateTime = Instant.ofEpochSecond(endsAt).atZone(ZoneId.systemDefault())
                 val startDate = startDateTime.toLocalDate()
                 val endDate = endDateTime.toLocalDate()
 

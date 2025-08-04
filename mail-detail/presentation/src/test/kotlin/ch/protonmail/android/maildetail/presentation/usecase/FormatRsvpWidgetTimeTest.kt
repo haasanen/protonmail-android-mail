@@ -26,8 +26,8 @@ class FormatRsvpWidgetTimeTest {
     fun `when single day event occurrence is today, returns today text resource`() {
         // Given
         val today = LocalDate.now(ZoneId.systemDefault())
-        val startsAt = today.atStartOfDay(ZoneId.of("UTC")).toInstant().toEpochMilli()
-        val endsAt = today.atTime(23, 59).atZone(ZoneId.of("UTC")).toInstant().toEpochMilli()
+        val startsAt = today.atStartOfDay(ZoneId.of("UTC")).toInstant().epochSecond
+        val endsAt = today.atTime(23, 59).atZone(ZoneId.of("UTC")).toInstant().epochSecond
 
         // When
         val result = formatRsvpWidgetTime(RsvpOccurrence.Date, startsAt, endsAt)
@@ -40,8 +40,8 @@ class FormatRsvpWidgetTimeTest {
     fun `when single day event occurrence is tomorrow, returns tomorrow text resource`() {
         // Given
         val tomorrow = LocalDate.now(ZoneId.systemDefault()).plusDays(1)
-        val startsAt = tomorrow.atStartOfDay(ZoneId.of("UTC")).toInstant().toEpochMilli()
-        val endsAt = tomorrow.atTime(23, 59).atZone(ZoneId.of("UTC")).toInstant().toEpochMilli()
+        val startsAt = tomorrow.atStartOfDay(ZoneId.of("UTC")).toInstant().epochSecond
+        val endsAt = tomorrow.atTime(23, 59).atZone(ZoneId.of("UTC")).toInstant().epochSecond
 
         // When
         val result = formatRsvpWidgetTime(RsvpOccurrence.Date, startsAt, endsAt)
@@ -54,8 +54,8 @@ class FormatRsvpWidgetTimeTest {
     fun `when single day event occurrence is more than 2 days in the future, returns formatted date`() {
         // Given
         val futureDate = LocalDate.now(ZoneId.systemDefault()).plusDays(10)
-        val startsAt = futureDate.atStartOfDay(ZoneId.of("UTC")).toInstant().toEpochMilli()
-        val endsAt = futureDate.atTime(23, 59).atZone(ZoneId.of("UTC")).toInstant().toEpochMilli()
+        val startsAt = futureDate.atStartOfDay(ZoneId.of("UTC")).toInstant().epochSecond
+        val endsAt = futureDate.atTime(23, 59).atZone(ZoneId.of("UTC")).toInstant().epochSecond
 
         // When
         val result = formatRsvpWidgetTime(RsvpOccurrence.Date, startsAt, endsAt)
@@ -70,8 +70,8 @@ class FormatRsvpWidgetTimeTest {
         // Given
         val startDate = LocalDate.of(2024, 6, 15)
         val endDate = startDate.plusDays(5)
-        val startsAt = startDate.atStartOfDay(ZoneId.of("UTC")).toInstant().toEpochMilli()
-        val endsAt = endDate.atTime(23, 59).atZone(ZoneId.of("UTC")).toInstant().toEpochMilli()
+        val startsAt = startDate.atStartOfDay(ZoneId.of("UTC")).toInstant().epochSecond
+        val endsAt = endDate.atTime(23, 59).atZone(ZoneId.of("UTC")).toInstant().epochSecond
 
         // When
         val result = formatRsvpWidgetTime(RsvpOccurrence.Date, startsAt, endsAt)
@@ -84,8 +84,8 @@ class FormatRsvpWidgetTimeTest {
     fun `when event occurrence is at a specific time in a single day, returns date with time range`() {
         // Given
         val baseDate = LocalDate.of(2024, 6, 15)
-        val startsAt = baseDate.atTime(14, 30).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-        val endsAt = baseDate.atTime(16, 45).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val startsAt = baseDate.atTime(14, 30).atZone(ZoneId.systemDefault()).toInstant().epochSecond
+        val endsAt = baseDate.atTime(16, 45).atZone(ZoneId.systemDefault()).toInstant().epochSecond
 
         // When
         val result = formatRsvpWidgetTime(RsvpOccurrence.DateTime, startsAt, endsAt)
@@ -99,8 +99,8 @@ class FormatRsvpWidgetTimeTest {
         // Given
         val startDate = LocalDate.of(2024, 6, 15)
         val endDate = startDate.plusDays(2)
-        val startsAt = startDate.atTime(9, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-        val endsAt = endDate.atTime(17, 30).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val startsAt = startDate.atTime(9, 0).atZone(ZoneId.systemDefault()).toInstant().epochSecond
+        val endsAt = endDate.atTime(17, 30).atZone(ZoneId.systemDefault()).toInstant().epochSecond
 
         // When
         val result = formatRsvpWidgetTime(RsvpOccurrence.DateTime, startsAt, endsAt)
