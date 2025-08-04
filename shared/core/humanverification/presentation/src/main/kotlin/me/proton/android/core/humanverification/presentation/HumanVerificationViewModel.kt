@@ -67,7 +67,6 @@ class HumanVerificationViewModel @Inject constructor(
             is HumanVerificationAction.Verify -> onVerify(action.result)
             is HumanVerificationAction.Cancel -> onCancel()
             is HumanVerificationAction.Failure.ResourceLoadingError -> onFailure(action.message)
-            is HumanVerificationAction.Failure.Error -> onFailure(action.message)
         }
     }.stateIn(viewModelScope, WhileSubscribed(stopTimeoutMillis), HumanVerificationViewState.Idle)
 
