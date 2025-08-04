@@ -38,7 +38,7 @@ interface ConversationRepository {
      */
     suspend fun getLocalConversations(
         userId: UserId,
-        pageKey: PageKey = PageKey.DefaultPageKey()
+        pageKey: PageKey.DefaultPageKey = PageKey.DefaultPageKey()
     ): Either<PaginationError, List<Conversation>>
 
     /**

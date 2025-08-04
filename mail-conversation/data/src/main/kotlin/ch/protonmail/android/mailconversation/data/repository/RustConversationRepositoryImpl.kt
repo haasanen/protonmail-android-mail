@@ -48,7 +48,7 @@ class RustConversationRepositoryImpl @Inject constructor(
 
     override suspend fun getLocalConversations(
         userId: UserId,
-        pageKey: PageKey
+        pageKey: PageKey.DefaultPageKey
     ): Either<PaginationError, List<Conversation>> {
         Timber.v("rust-conversation-repo: getConversations, pageKey: $pageKey")
         return rustConversationDataSource.getConversations(userId, pageKey)

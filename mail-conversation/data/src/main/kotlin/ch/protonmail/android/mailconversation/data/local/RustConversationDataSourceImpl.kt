@@ -20,7 +20,6 @@ package ch.protonmail.android.mailconversation.data.local
 
 import arrow.core.Either
 import arrow.core.left
-import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
@@ -32,8 +31,8 @@ import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConve
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
-import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
+import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
@@ -76,14 +75,9 @@ class RustConversationDataSourceImpl @Inject constructor(
      */
     override suspend fun getConversations(
         userId: UserId,
-        pageKey: PageKey
+        pageKey: PageKey.DefaultPageKey
     ): Either<PaginationError, List<LocalConversation>> = withContext(ioDispatcher) {
-        return@withContext if (pageKey is PageKey.DefaultPageKey) {
-            rustConversationsQuery.getConversations(userId, pageKey)
-        } else {
-            Timber.e("Error: PageKey must be of type DefaultPageKey, received: ${pageKey::class.simpleName}")
-            emptyList<LocalConversation>().right()
-        }
+        return@withContext rustConversationsQuery.getConversations(userId, pageKey)
     }
 
     override fun observeConversation(

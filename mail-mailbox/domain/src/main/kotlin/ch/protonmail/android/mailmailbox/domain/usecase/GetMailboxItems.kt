@@ -49,8 +49,11 @@ class GetMailboxItems @Inject constructor(
             list.map { messageMailboxItemMapper.toMailboxItem(it) }
         }
 
-        MailboxItemType.Conversation -> conversationRepository.getLocalConversations(userId, pageKey).map { list ->
-            list.map { conversationMailboxItemMapper.toMailboxItem(it) }
+        MailboxItemType.Conversation -> when (pageKey) {
+            is PageKey.DefaultPageKey -> conversationRepository.getLocalConversations(userId, pageKey).map { list ->
+                list.map { conversationMailboxItemMapper.toMailboxItem(it) }
+            }
+            is PageKey.PageKeyForSearch -> throw IllegalArgumentException("Invalid page key $pageKey for View Mode")
         }
     }
 }
