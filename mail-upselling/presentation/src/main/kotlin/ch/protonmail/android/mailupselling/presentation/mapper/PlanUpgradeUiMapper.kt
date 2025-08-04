@@ -113,8 +113,7 @@ internal class PlanUpgradeUiMapper @Inject constructor(
     }
 
     private fun UpsellingEntryPoint.supportsHeaderVariants() = when (this) {
-        UpsellingEntryPoint.Feature.Mailbox,
-        UpsellingEntryPoint.Feature.MailboxPromo,
+        UpsellingEntryPoint.Feature.Sidebar,
         UpsellingEntryPoint.Feature.Navbar -> false // Keep social proof off for the time being
 
         UpsellingEntryPoint.Feature.AutoDelete,

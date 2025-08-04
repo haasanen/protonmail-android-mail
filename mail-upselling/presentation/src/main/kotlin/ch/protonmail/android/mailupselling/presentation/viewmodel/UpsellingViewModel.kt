@@ -59,7 +59,7 @@ internal class UpsellingViewModel @Inject constructor(
         val entryPoint = savedStateHandle
             .get<String>(UpsellingEntryPointKey)
             ?.deserialize<UpsellingEntryPoint.Feature>()
-            ?: UpsellingEntryPoint.Feature.Mailbox
+            ?: UpsellingEntryPoint.Feature.Navbar
 
         viewModelScope.launch {
             val plans = observeMailPlusPlanUpgrades().first().takeIf { it.isNotEmpty() }

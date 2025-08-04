@@ -26,7 +26,6 @@ import javax.inject.Inject
 
 internal class PlanUpgradeIconUiMapper @Inject constructor() {
 
-    @Suppress("MaxLineLength")
     fun toUiModel(
         upsellingEntryPoint: UpsellingEntryPoint.Feature,
         variant: PlanUpgradeVariant
@@ -44,8 +43,7 @@ internal class PlanUpgradeIconUiMapper @Inject constructor() {
             UpsellingEntryPoint.Feature.ScheduleSend -> R.drawable.illustration_upselling_schedule_send
             UpsellingEntryPoint.Feature.Snooze -> R.drawable.illustration_upselling_snooze
 
-            UpsellingEntryPoint.Feature.Mailbox,
-            UpsellingEntryPoint.Feature.MailboxPromo,
+            UpsellingEntryPoint.Feature.Sidebar,
             UpsellingEntryPoint.Feature.Navbar -> R.drawable.illustration_upselling_mailbox
         }
 

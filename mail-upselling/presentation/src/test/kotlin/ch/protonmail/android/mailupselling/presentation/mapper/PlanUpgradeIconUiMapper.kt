@@ -25,7 +25,7 @@ import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanU
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-internal class DynamicPlanIconUiMapperTest {
+internal class PlanUpgradeIconUiMapperTest {
 
     private val mapper = PlanUpgradeIconUiMapper()
 
@@ -45,16 +45,16 @@ internal class DynamicPlanIconUiMapperTest {
             UpsellingEntryPoint.Feature.MobileSignature to PlanUpgradeIconUiModel(
                 iconResId = R.drawable.illustration_upselling_mobile_signature
             ),
-            UpsellingEntryPoint.Feature.Mailbox to PlanUpgradeIconUiModel(
+            UpsellingEntryPoint.Feature.Navbar to PlanUpgradeIconUiModel(
                 iconResId = R.drawable.illustration_upselling_mailbox
             ),
-            UpsellingEntryPoint.Feature.MailboxPromo to PlanUpgradeIconUiModel(
+            UpsellingEntryPoint.Feature.Sidebar to PlanUpgradeIconUiModel(
                 iconResId = R.drawable.illustration_upselling_mailbox
             ),
             UpsellingEntryPoint.Feature.AutoDelete to PlanUpgradeIconUiModel(
                 iconResId = R.drawable.illustration_upselling_auto_delete
             ),
-            UpsellingEntryPoint.Feature.Mailbox to PlanUpgradeIconUiModel(
+            UpsellingEntryPoint.Feature.Navbar to PlanUpgradeIconUiModel(
                 iconResId = R.drawable.ic_mail_social_proof
             )
         )
@@ -77,19 +77,19 @@ internal class DynamicPlanIconUiMapperTest {
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.MobileSignature,
                 variant = PlanUpgradeVariant.Normal
             ),
-            UpsellingEntryPoint.Feature.Mailbox to mapper.toUiModel(
-                upsellingEntryPoint = UpsellingEntryPoint.Feature.Mailbox,
+            UpsellingEntryPoint.Feature.Navbar to mapper.toUiModel(
+                upsellingEntryPoint = UpsellingEntryPoint.Feature.Navbar,
                 variant = PlanUpgradeVariant.Normal
             ),
-            UpsellingEntryPoint.Feature.MailboxPromo to mapper.toUiModel(
-                upsellingEntryPoint = UpsellingEntryPoint.Feature.MailboxPromo,
-                variant = PlanUpgradeVariant.Normal
+            UpsellingEntryPoint.Feature.Sidebar to mapper.toUiModel(
+                upsellingEntryPoint = UpsellingEntryPoint.Feature.Sidebar,
+                variant = PlanUpgradeVariant.IntroductoryPrice
             ),
             UpsellingEntryPoint.Feature.AutoDelete to mapper.toUiModel(
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.AutoDelete,
                 variant = PlanUpgradeVariant.Normal
             ),
-            UpsellingEntryPoint.Feature.Mailbox to mapper.toUiModel(
+            UpsellingEntryPoint.Feature.Navbar to mapper.toUiModel(
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.AutoDelete,
                 variant = PlanUpgradeVariant.SocialProof
             )

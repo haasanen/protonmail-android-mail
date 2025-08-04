@@ -132,7 +132,7 @@ fun Sidebar(
     ) {
         item {
             UpsellingRowButton(onClick = { type ->
-                actions.onUpselling(UpsellingEntryPoint.Feature.Mailbox, type)
+                actions.onUpselling(UpsellingEntryPoint.Feature.Sidebar, type)
             })
         }
 

@@ -27,13 +27,10 @@ sealed interface UpsellingEntryPoint {
     sealed interface Feature : UpsellingEntryPoint {
 
         @Serializable
-        data object Mailbox : Feature
-
-        @Serializable
-        data object MailboxPromo : Feature
-
-        @Serializable
         data object Navbar : Feature
+
+        @Serializable
+        data object Sidebar : Feature
 
         @Serializable
         data object ContactGroups : Feature

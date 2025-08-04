@@ -40,7 +40,7 @@ internal class PlanUpgradeDescriptionUiMapper @Inject constructor() {
 
         val description = when (productDetail.planName) {
             PlanUpgradeIds.UnlimitedPlanId -> getUnlimitedDescription()
-            PlanUpgradeIds.PlusPlanId -> getPlusDescription(upsellingEntryPoint)
+            PlanUpgradeIds.PlusPlanId -> getPlusDescription(variant, upsellingEntryPoint)
             else -> getDefaultDescription(productDetail)
         }
 
@@ -49,20 +49,26 @@ internal class PlanUpgradeDescriptionUiMapper @Inject constructor() {
 
     private fun getDefaultDescription(productDetail: ProductDetail) = TextUiModel.Text(productDetail.header.description)
     private fun getUnlimitedDescription() = TextUiModel.TextRes(R.string.upselling_unlimited_description_override)
-    private fun getPlusDescription(upsellingEntryPoint: UpsellingEntryPoint.Feature): TextUiModel.TextRes {
+    private fun getPlusDescription(
+        variant: PlanUpgradeVariant,
+        upsellingEntryPoint: UpsellingEntryPoint.Feature
+    ): TextUiModel.TextRes {
 
         val stringRes = when (upsellingEntryPoint) {
             UpsellingEntryPoint.Feature.AutoDelete -> R.string.upselling_auto_delete_plus_description_override
             UpsellingEntryPoint.Feature.ContactGroups -> R.string.upselling_contact_groups_plus_description_override
             UpsellingEntryPoint.Feature.Folders -> R.string.upselling_folders_plus_description_override
             UpsellingEntryPoint.Feature.Labels -> R.string.upselling_labels_plus_description_override
-            UpsellingEntryPoint.Feature.MailboxPromo -> R.string.upselling_mailbox_plus_promo_description_override
             UpsellingEntryPoint.Feature.MobileSignature -> R.string.upselling_mobile_signature_plus_description_override
             UpsellingEntryPoint.Feature.ScheduleSend -> R.string.upselling_schedule_send_plus_description_override
             UpsellingEntryPoint.Feature.Snooze -> R.string.upselling_snooze_plus_description_override
 
-            UpsellingEntryPoint.Feature.Mailbox,
-            UpsellingEntryPoint.Feature.Navbar -> R.string.upselling_mailbox_plus_description_override
+            UpsellingEntryPoint.Feature.Sidebar,
+            UpsellingEntryPoint.Feature.Navbar -> if (variant == PlanUpgradeVariant.IntroductoryPrice) {
+                R.string.upselling_mailbox_plus_promo_description_override
+            } else {
+                R.string.upselling_mailbox_plus_description_override
+            }
         }
 
         return TextUiModel.TextRes(stringRes)

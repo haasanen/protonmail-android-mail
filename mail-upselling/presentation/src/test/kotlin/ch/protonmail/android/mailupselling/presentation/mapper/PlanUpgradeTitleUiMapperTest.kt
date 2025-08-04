@@ -48,13 +48,13 @@ internal class PlanUpgradeTitleUiMapperTest {
             UpsellingEntryPoint.Feature.MobileSignature to PlanUpgradeTitleUiModel(
                 TextUiModel(R.string.upselling_mobile_signature_plus_title)
             ),
-            UpsellingEntryPoint.Feature.Mailbox to PlanUpgradeTitleUiModel(
+            UpsellingEntryPoint.Feature.Navbar to PlanUpgradeTitleUiModel(
                 TextUiModel(R.string.upselling_mailbox_plus_title)
             ),
             UpsellingEntryPoint.Feature.AutoDelete to PlanUpgradeTitleUiModel(
                 TextUiModel(R.string.upselling_auto_delete_plus_title)
             ),
-            UpsellingEntryPoint.Feature.MailboxPromo to PlanUpgradeTitleUiModel(
+            UpsellingEntryPoint.Feature.Navbar to PlanUpgradeTitleUiModel(
                 TextUiModel(
                     R.string.upselling_mailbox_plus_promo_title,
                     initialPrice.highlightedPrice.getShorthandFormat()
@@ -90,9 +90,9 @@ internal class PlanUpgradeTitleUiMapperTest {
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.MobileSignature,
                 variant = PlanUpgradeVariant.Normal
             ),
-            UpsellingEntryPoint.Feature.Mailbox to mapper.toUiModel(
+            UpsellingEntryPoint.Feature.Navbar to mapper.toUiModel(
                 initialPrice = initialPrice,
-                upsellingEntryPoint = UpsellingEntryPoint.Feature.Mailbox,
+                upsellingEntryPoint = UpsellingEntryPoint.Feature.Navbar,
                 variant = PlanUpgradeVariant.Normal
             ),
             UpsellingEntryPoint.Feature.AutoDelete to mapper.toUiModel(
@@ -100,9 +100,9 @@ internal class PlanUpgradeTitleUiMapperTest {
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.AutoDelete,
                 variant = PlanUpgradeVariant.Normal
             ),
-            UpsellingEntryPoint.Feature.MailboxPromo to mapper.toUiModel(
+            UpsellingEntryPoint.Feature.Navbar to mapper.toUiModel(
                 initialPrice = initialPrice,
-                upsellingEntryPoint = UpsellingEntryPoint.Feature.MailboxPromo,
+                upsellingEntryPoint = UpsellingEntryPoint.Feature.Navbar,
                 variant = PlanUpgradeVariant.IntroductoryPrice
             ),
             UpsellingEntryPoint.Feature.ScheduleSend to mapper.toUiModel(

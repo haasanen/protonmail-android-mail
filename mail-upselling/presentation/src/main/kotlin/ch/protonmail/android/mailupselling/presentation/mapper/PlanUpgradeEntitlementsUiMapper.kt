@@ -63,9 +63,8 @@ class PlanUpgradeEntitlementsUiMapper @Inject constructor() {
         UpsellingEntryPoint.Feature.ContactGroups -> ContactGroupsPlusOverriddenEntitlements
         UpsellingEntryPoint.Feature.Folders -> FoldersPlusOverriddenEntitlements
         UpsellingEntryPoint.Feature.Labels -> LabelsPlusOverriddenEntitlements
-        UpsellingEntryPoint.Feature.Mailbox,
-        UpsellingEntryPoint.Feature.MailboxPromo,
-        UpsellingEntryPoint.Feature.Navbar -> MailboxPlusOverriddenEntitlements
+        UpsellingEntryPoint.Feature.Navbar,
+        UpsellingEntryPoint.Feature.Sidebar -> MailboxPlusOverriddenEntitlements
 
         UpsellingEntryPoint.Feature.MobileSignature -> MobileSignaturePlusOverriddenEntitlements
         UpsellingEntryPoint.Feature.AutoDelete -> AutoDeletePlusOverriddenEntitlements

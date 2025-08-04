@@ -94,7 +94,7 @@ internal fun NavGraphBuilder.addMailbox(
                 },
                 onNavigateToUpselling = { type ->
                     navController.navigate(
-                        Destination.Screen.FeatureUpselling(UpsellingEntryPoint.Feature.Mailbox, type)
+                        Destination.Screen.FeatureUpselling(UpsellingEntryPoint.Feature.Navbar, type)
                     )
                 },
                 showMissingFeature = showFeatureMissingSnackbar,

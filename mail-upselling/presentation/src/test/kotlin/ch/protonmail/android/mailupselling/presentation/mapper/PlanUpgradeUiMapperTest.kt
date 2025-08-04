@@ -86,7 +86,7 @@ internal class PlanUpgradeUiMapperTest {
         val products = ProductInstances(emptyList())
 
         // When
-        val actual = planUpgradeUiMapper.toUiModel(products, UpsellingEntryPoint.Feature.Mailbox)
+        val actual = planUpgradeUiMapper.toUiModel(products, UpsellingEntryPoint.Feature.Navbar)
 
         // Then
         assertEquals(PlanMappingError.EmptyList.left(), actual)
@@ -103,7 +103,7 @@ internal class PlanUpgradeUiMapperTest {
         )
 
         // When
-        val actual = planUpgradeUiMapper.toUiModel(products, UpsellingEntryPoint.Feature.Mailbox)
+        val actual = planUpgradeUiMapper.toUiModel(products, UpsellingEntryPoint.Feature.Navbar)
 
         // Then
         assertEquals(PlanMappingError.InvalidList.left(), actual)
@@ -156,7 +156,7 @@ internal class PlanUpgradeUiMapperTest {
         // When
         val actual = planUpgradeUiMapper.toUiModel(
             ProductInstances(listOf(shorterInstance, longerInstance)),
-            UpsellingEntryPoint.Feature.Mailbox
+            UpsellingEntryPoint.Feature.Navbar
         )
 
         // Then
@@ -211,7 +211,7 @@ internal class PlanUpgradeUiMapperTest {
         // When
         val actual = planUpgradeUiMapper.toUiModel(
             ProductInstances(listOf(shorterInstance, longerInstance)),
-            UpsellingEntryPoint.Feature.MailboxPromo
+            UpsellingEntryPoint.Feature.Navbar
         )
 
         // Then
@@ -230,7 +230,7 @@ internal class PlanUpgradeUiMapperTest {
         every {
             titleUiMapper.toUiModel(
                 initialPrice = any(),
-                upsellingEntryPoint = UpsellingEntryPoint.Feature.MailboxPromo,
+                upsellingEntryPoint = UpsellingEntryPoint.Feature.Navbar,
                 variant = any()
             )
         } returns
