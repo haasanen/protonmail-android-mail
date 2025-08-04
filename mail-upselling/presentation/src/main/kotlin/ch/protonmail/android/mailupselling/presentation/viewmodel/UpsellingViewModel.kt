@@ -21,7 +21,7 @@ package ch.protonmail.android.mailupselling.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
-import ch.protonmail.android.mailupselling.domain.usecase.GetMailPlusUpgradePlans
+import ch.protonmail.android.mailupselling.domain.usecase.ObserveMailPlusPlanUpgrades
 import ch.protonmail.android.mailupselling.presentation.UpsellingContentReducer
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentOperation
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentOperation.UpsellingScreenContentEvent
@@ -34,13 +34,14 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = UpsellingViewModel.Factory::class)
 internal class UpsellingViewModel @AssistedInject constructor(
     @Assisted val upsellingEntryPoint: UpsellingEntryPoint.Feature,
-    private val getMailPlusUpgradePlans: GetMailPlusUpgradePlans,
+    private val observeMailPlusPlanUpgrades: ObserveMailPlusPlanUpgrades,
     private val upsellingVisibilityOverrideSignal: UpsellingVisibilityOverrideSignal,
     private val upsellingContentReducer: UpsellingContentReducer
 ) : ViewModel() {
@@ -56,7 +57,7 @@ internal class UpsellingViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            val plans = getMailPlusUpgradePlans().takeIf { it.isNotEmpty() }
+            val plans = observeMailPlusPlanUpgrades().first().takeIf { it.isNotEmpty() }
                 ?: return@launch emitNewStateFrom(UpsellingScreenContentEvent.LoadingError.NoSubscriptions)
 
             emitNewStateFrom(UpsellingScreenContentEvent.DataLoaded(plans, upsellingEntryPoint))

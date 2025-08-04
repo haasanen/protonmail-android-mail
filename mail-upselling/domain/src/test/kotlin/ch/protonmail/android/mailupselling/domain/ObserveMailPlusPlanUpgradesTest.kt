@@ -18,26 +18,35 @@
 
 package ch.protonmail.android.mailupselling.domain
 
-import ch.protonmail.android.mailupselling.domain.usecase.GetMailPlusUpgradePlans
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailupselling.domain.cache.AvailableUpgradesCache
+import ch.protonmail.android.mailupselling.domain.usecase.ObserveMailPlusPlanUpgrades
 import ch.protonmail.android.testdata.upselling.UpsellingTestData
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import me.proton.android.core.payment.domain.usecase.GetAvailableUpgrades
+import me.proton.core.domain.entity.UserId
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-internal class GetMailPlusPlanUpgrades {
+internal class ObserveMailPlusPlanUpgradesTest {
 
-    private val getAvailableUpgrades = mockk<GetAvailableUpgrades>()
-    private lateinit var getMailPlusUpgradePlans: GetMailPlusUpgradePlans
+    private val availableUpgradesCache = mockk<AvailableUpgradesCache>()
+    private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
+
+    private val userId = UserId("user-id")
+    private lateinit var observeMailPlusPlanUpgrades: ObserveMailPlusPlanUpgrades
 
     @BeforeTest
     fun setup() {
-        getMailPlusUpgradePlans = GetMailPlusUpgradePlans(getAvailableUpgrades)
+        every { observePrimaryUserId() } returns flowOf(userId)
+        observeMailPlusPlanUpgrades = ObserveMailPlusPlanUpgrades(availableUpgradesCache, observePrimaryUserId)
     }
 
     @AfterTest
@@ -53,14 +62,16 @@ internal class GetMailPlusPlanUpgrades {
             UpsellingTestData.MailPlusProducts.YearlyProductDetail
         )
 
-        coEvery { getAvailableUpgrades() } returns buildList {
-            addAll(expectedPlans)
-            add(UpsellingTestData.UnlimitedMailProduct.MonthlyProductDetail)
-            add(UpsellingTestData.UnlimitedMailProduct.YearlyProductDetail)
-        }
+        coEvery { availableUpgradesCache.observe(userId) } returns flowOf(
+            buildList {
+                addAll(expectedPlans)
+                add(UpsellingTestData.UnlimitedMailProduct.MonthlyProductDetail)
+                add(UpsellingTestData.UnlimitedMailProduct.YearlyProductDetail)
+            }
+        )
 
         // When
-        val actualPlans = getMailPlusUpgradePlans()
+        val actualPlans = observeMailPlusPlanUpgrades().first()
 
         // Then
         assertEquals(expectedPlans, actualPlans)

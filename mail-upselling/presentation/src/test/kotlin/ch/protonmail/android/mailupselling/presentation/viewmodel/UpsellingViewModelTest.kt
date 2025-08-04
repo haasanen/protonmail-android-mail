@@ -20,7 +20,7 @@ package ch.protonmail.android.mailupselling.presentation.viewmodel
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
-import ch.protonmail.android.mailupselling.domain.usecase.GetMailPlusUpgradePlans
+import ch.protonmail.android.mailupselling.domain.usecase.ObserveMailPlusPlanUpgrades
 import ch.protonmail.android.mailupselling.presentation.UpsellingContentReducer
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentOperation.UpsellingScreenContentEvent
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState
@@ -32,6 +32,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import io.mockk.verify
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.android.core.payment.domain.model.ProductDetail
 import org.junit.Rule
@@ -44,7 +45,7 @@ internal class UpsellingViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val getMailPlusUpgradePlans = mockk<GetMailPlusUpgradePlans>()
+    private val getMailPlusUpgradePlans = mockk<ObserveMailPlusPlanUpgrades>()
     private val upsellingVisibilityOverrideSignal = mockk<UpsellingVisibilityOverrideSignal>()
     private val upsellingContentReducer = mockk<UpsellingContentReducer>()
 
@@ -56,7 +57,7 @@ internal class UpsellingViewModelTest {
     @Test
     fun `should return loading error when plans fetching returns an empty list`() = runTest {
         // Given
-        coEvery { getMailPlusUpgradePlans() } returns emptyList()
+        coEvery { getMailPlusUpgradePlans() } returns flowOf(emptyList())
         val expectedFailure = mockk<UpsellingScreenContentState.Error>()
         every {
             upsellingContentReducer.newStateFrom(UpsellingScreenContentEvent.LoadingError.NoSubscriptions)
@@ -78,7 +79,7 @@ internal class UpsellingViewModelTest {
     fun `should return data state when plans fetching returns a valid list`() = runTest {
         // Given
         val expectedList = listOf<ProductDetail>(mockk(), mockk())
-        coEvery { getMailPlusUpgradePlans() } returns expectedList
+        coEvery { getMailPlusUpgradePlans() } returns flowOf(expectedList)
 
         val expectedModel = mockk<UpsellingScreenContentState.Data>()
         every {

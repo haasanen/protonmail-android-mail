@@ -18,15 +18,12 @@
 
 package ch.protonmail.android.mailupselling.domain.usecase
 
-import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeIds
-import me.proton.android.core.payment.domain.usecase.GetAvailableUpgrades
+import ch.protonmail.android.mailupselling.domain.cache.AvailableUpgradesCache
 import javax.inject.Inject
 
-class GetMailPlusUpgradePlans @Inject constructor(
-    private val getAvailableUpgrades: GetAvailableUpgrades
+class ResetPlanUpgradesCache @Inject constructor(
+    private val availableUpgradesCache: AvailableUpgradesCache
 ) {
 
-    suspend operator fun invoke() = runCatching {
-        getAvailableUpgrades().filter { it.planName == PlanUpgradeIds.PlusPlanId }
-    }.getOrNull() ?: emptyList()
+    operator fun invoke() = availableUpgradesCache.invalidateAll()
 }

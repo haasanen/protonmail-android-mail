@@ -18,12 +18,13 @@
 
 package ch.protonmail.android.mailupselling.presentation.usecase
 
-import ch.protonmail.android.mailupselling.domain.usecase.GetMailPlusUpgradePlans
 import ch.protonmail.android.mailupselling.domain.usecase.GetPromotionStatus
+import ch.protonmail.android.mailupselling.domain.usecase.ObserveMailPlusPlanUpgrades
 import ch.protonmail.android.mailupselling.domain.usecase.PromoStatus
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibilityOverrideSignal
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -33,7 +34,7 @@ import javax.inject.Inject
 class ObserveMailboxOneClickUpsellingVisibility @Inject constructor(
     private val getPromotionStatus: GetPromotionStatus,
     private val upsellingVisibilityOverrideSignal: UpsellingVisibilityOverrideSignal,
-    private val getMailPlusUpgradePlans: GetMailPlusUpgradePlans
+    private val observeMailPlusPlanUpgrades: ObserveMailPlusPlanUpgrades
 ) {
 
     operator fun invoke(): Flow<UpsellingVisibility> = upsellingVisibilityOverrideSignal.shouldHideUpselling()
@@ -42,7 +43,7 @@ class ObserveMailboxOneClickUpsellingVisibility @Inject constructor(
                 flowOf(UpsellingVisibility.HIDDEN)
             } else {
                 flow {
-                    val plusPlans = getMailPlusUpgradePlans()
+                    val plusPlans = observeMailPlusPlanUpgrades().first()
                     emit(resolvePromoVisibility(plusPlans))
                 }
             }
