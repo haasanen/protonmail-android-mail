@@ -21,9 +21,9 @@ package ch.protonmail.android.mailmessage.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
-import ch.protonmail.android.mailcommon.domain.model.SnoozeOption
-import ch.protonmail.android.mailmessage.presentation.model.snooze.SnoozeOptionsState
 import ch.protonmail.android.mailmessage.presentation.model.snooze.toSnoozeOptionUiModel
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionsState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted

@@ -139,6 +139,11 @@ include(":mail-upselling:dagger")
 include(":mail-upselling:domain")
 include(":mail-upselling:presentation")
 
+include(":mail-snooze:dagger")
+include(":mail-snooze:data")
+include(":mail-snooze:domain")
+include(":mail-snooze:presentation")
+
 include(":mail-legacy-migration:dagger")
 include(":mail-legacy-migration:data")
 include(":mail-legacy-migration:domain")

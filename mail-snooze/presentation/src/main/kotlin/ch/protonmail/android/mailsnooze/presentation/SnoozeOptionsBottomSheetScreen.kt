@@ -48,14 +48,14 @@ import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
-import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.model.snooze.CustomSnoozeUiModel
-import ch.protonmail.android.mailmessage.presentation.model.snooze.SnoozeOperationViewAction
 import ch.protonmail.android.mailmessage.presentation.model.snooze.SnoozeOptionUiModel
-import ch.protonmail.android.mailmessage.presentation.model.snooze.SnoozeOptionsState
 import ch.protonmail.android.mailmessage.presentation.model.snooze.SnoozeUntilUiModel
 import ch.protonmail.android.mailmessage.presentation.model.snooze.UpgradeToSnoozeUiModel
 import ch.protonmail.android.mailmessage.presentation.viewmodel.SnoozeOptionsBottomSheetViewModel
+import ch.protonmail.android.mailsnooze.presentation.R
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOperationViewAction
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionsState
 
 @Composable
 fun SnoozeOptionsBottomSheetScreen(
@@ -288,5 +288,3 @@ fun PreviewSnoozeGrid() {
         )
     }
 }
-
-

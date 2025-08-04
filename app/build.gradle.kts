@@ -251,6 +251,7 @@ dependencies {
     implementation(project(":mail-session"))
     implementation(project(":mail-legacy-migration"))
     implementation(project(":mail-upselling"))
+    implementation(project(":mail-snooze"))
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))

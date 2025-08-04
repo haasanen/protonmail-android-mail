@@ -20,18 +20,18 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
+    id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.compose")
     id("app-config-plugin")
 }
 
 android {
-    namespace = "ch.protonmail.android.mailmessage.presentation"
+    namespace = "ch.protonmail.android.mailsnooze.presentation"
     compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
         minSdk = AppConfiguration.minSdk.get()
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArguments["clearPackageData"] = "true"
+        lint.targetSdk = AppConfiguration.targetSdk.get()
     }
 
     compileOptions {
@@ -43,42 +43,37 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
-    buildFeatures {
-        compose = true
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
     }
 
-    packaging {
-        resources.excludes.add("META-INF/licenses/**")
-        resources.excludes.add("META-INF/LICENSE*")
-        resources.excludes.add("META-INF/AL2.0")
-        resources.excludes.add("META-INF/LGPL2.1")
+    buildFeatures {
+        compose = true
+        buildConfig = true
     }
 }
 
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
-    debugImplementation(libs.bundles.compose.debug)
-
-    implementation(libs.bundles.module.presentation)
-    implementation(libs.androidx.webkit)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.coil.compose)
-
-    implementation(project(":mail-attachments:domain"))
-    implementation(project(":mail-attachments:presentation"))
-    implementation(project(":mail-common:domain"))
+    implementation(libs.dagger.hilt.android)
+    implementation(libs.proton.core.user.domain)
+    implementation(project(":mail-snooze:domain"))
     implementation(project(":mail-common:presentation"))
-    implementation(project(":mail-contact:domain"))
-    implementation(project(":mail-featureflags:domain"))
-    implementation(project(":mail-label:domain"))
-    implementation(project(":mail-label:presentation"))
-    implementation(project(":mail-snooze:presentation"))
-    implementation(project(":mail-message:domain"))
-    implementation(project(":uicomponents"))
+    implementation(project(":mail-common:domain"))
+    implementation(project(":mail-session:domain"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
+    implementation(project(":uicomponents"))
 
-    testImplementation(libs.bundles.test)
+    debugImplementation(libs.bundles.compose.debug)
+
+    implementation(libs.bundles.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.arrow.core)
+    implementation(libs.timber)
+    implementation(libs.proton.core.presentationCompose)
+
     testImplementation(project(":test:test-data"))
-    androidTestImplementation(libs.bundles.test.androidTest)
+    testImplementation(project(":test:utils"))
+    testImplementation(libs.bundles.test)
 }

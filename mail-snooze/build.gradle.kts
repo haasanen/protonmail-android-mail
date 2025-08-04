@@ -16,14 +16,25 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcommon.domain.model
+plugins {
+    id("com.android.library")
+    kotlin("android")
+    id("app-config-plugin")
+}
 
-sealed class SnoozeOption {
-    data class Tomorrow(val description: String) : SnoozeOption()
-    data class LaterThisWeek(val description: String) : SnoozeOption()
-    data class ThisWeekend(val description: String) : SnoozeOption()
-    data class NextWeek(val description: String) : SnoozeOption()
+android {
+    namespace = "ch.protonmail.android.mailsnooze"
+    compileSdk = AppConfiguration.compileSdk.get()
 
-    object Allowed : SnoozeOption()
-    object UpgradeRequired : SnoozeOption()
+    defaultConfig {
+        minSdk = AppConfiguration.minSdk.get()
+        lint.targetSdk = AppConfiguration.targetSdk.get()
+    }
+}
+
+dependencies {
+    api(project(":mail-snooze:dagger"))
+    api(project(":mail-snooze:domain"))
+    api(project(":mail-snooze:data"))
+    api(project(":mail-snooze:presentation"))
 }

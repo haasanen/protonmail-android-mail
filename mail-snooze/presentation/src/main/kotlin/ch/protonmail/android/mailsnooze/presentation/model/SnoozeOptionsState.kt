@@ -16,10 +16,11 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.presentation.model.snooze
+package ch.protonmail.android.mailsnooze.presentation.model
 
 import androidx.compose.runtime.Immutable
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailmessage.presentation.model.snooze.SnoozeOptionUiModel
 
 @Immutable
 sealed class SnoozeOptionsState {
