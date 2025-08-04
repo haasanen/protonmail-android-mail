@@ -51,7 +51,7 @@ class GetMailboxItemsTest {
         ).right()
     }
     private val conversationRepository = mockk<ConversationRepository> {
-        coEvery { getLocalConversations(any(), any()) } returns listOf(
+        coEvery { getConversations(any(), any()) } returns listOf(
             // userId1
             ConversationWithContextTestData.conversation1Labeled,
             ConversationWithContextTestData.conversation2Labeled,
@@ -106,7 +106,7 @@ class GetMailboxItemsTest {
             .getOrHandle(::error)
 
         // Then
-        coVerify { conversationRepository.getLocalConversations(userId, pageKey) }
+        coVerify { conversationRepository.getConversations(userId, pageKey) }
         assertEquals(3, mailboxItems.size)
         assertEquals(1, mailboxItems[0].labels.size)
         assertEquals(1, mailboxItems[1].labels.size)

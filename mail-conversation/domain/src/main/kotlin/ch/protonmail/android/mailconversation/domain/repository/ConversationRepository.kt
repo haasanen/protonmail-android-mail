@@ -36,7 +36,7 @@ interface ConversationRepository {
     /**
      * Load all [Conversation] from local cache for [userId].
      */
-    suspend fun getLocalConversations(
+    suspend fun getConversations(
         userId: UserId,
         pageKey: PageKey.DefaultPageKey = PageKey.DefaultPageKey()
     ): Either<PaginationError, List<Conversation>>

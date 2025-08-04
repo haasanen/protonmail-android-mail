@@ -46,7 +46,7 @@ class RustConversationRepositoryImpl @Inject constructor(
     private val rustConversationDataSource: RustConversationDataSource
 ) : ConversationRepository {
 
-    override suspend fun getLocalConversations(
+    override suspend fun getConversations(
         userId: UserId,
         pageKey: PageKey.DefaultPageKey
     ): Either<PaginationError, List<Conversation>> {
