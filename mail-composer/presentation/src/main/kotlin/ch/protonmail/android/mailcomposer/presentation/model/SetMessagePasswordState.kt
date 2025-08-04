@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.model
 
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
 sealed class SetMessagePasswordState {
 
@@ -30,6 +31,7 @@ sealed class SetMessagePasswordState {
         val hasMessagePasswordError: Boolean,
         val hasRepeatedMessagePasswordError: Boolean,
         val isInEditMode: Boolean,
-        val exitScreen: Effect<Unit>
+        val exitScreen: Effect<Unit>,
+        val error: Effect<TextUiModel>
     ) : SetMessagePasswordState()
 }

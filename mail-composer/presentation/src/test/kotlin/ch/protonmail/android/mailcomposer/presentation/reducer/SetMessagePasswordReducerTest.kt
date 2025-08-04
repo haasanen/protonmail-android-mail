@@ -18,7 +18,10 @@
 
 package ch.protonmail.android.mailcomposer.presentation.reducer
 
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcomposer.R
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
 import ch.protonmail.android.mailcomposer.presentation.model.MessagePasswordOperation
 import ch.protonmail.android.mailcomposer.presentation.model.SetMessagePasswordState
@@ -59,7 +62,8 @@ class SetMessagePasswordReducerTest(
                     hasMessagePasswordError = false,
                     hasRepeatedMessagePasswordError = false,
                     isInEditMode = true,
-                    exitScreen = Effect.empty()
+                    exitScreen = Effect.empty(),
+                    error = Effect.empty()
                 )
             ),
             TestInput(
@@ -71,7 +75,8 @@ class SetMessagePasswordReducerTest(
                     hasMessagePasswordError = false,
                     hasRepeatedMessagePasswordError = false,
                     isInEditMode = false,
-                    exitScreen = Effect.empty()
+                    exitScreen = Effect.empty(),
+                    error = Effect.empty()
                 )
             ),
             TestInput(
@@ -81,7 +86,8 @@ class SetMessagePasswordReducerTest(
                     hasMessagePasswordError = false,
                     hasRepeatedMessagePasswordError = false,
                     isInEditMode = true,
-                    exitScreen = Effect.empty()
+                    exitScreen = Effect.empty(),
+                    error = Effect.empty()
                 ),
                 operation = MessagePasswordOperation.Event.ExitScreen,
                 expectedState = SetMessagePasswordState.Data(
@@ -90,7 +96,8 @@ class SetMessagePasswordReducerTest(
                     hasMessagePasswordError = false,
                     hasRepeatedMessagePasswordError = false,
                     isInEditMode = true,
-                    exitScreen = Effect.of(Unit)
+                    exitScreen = Effect.of(Unit),
+                    error = Effect.empty()
                 )
             ),
             TestInput(
@@ -100,7 +107,8 @@ class SetMessagePasswordReducerTest(
                     hasMessagePasswordError = false,
                     hasRepeatedMessagePasswordError = false,
                     isInEditMode = false,
-                    exitScreen = Effect.empty()
+                    exitScreen = Effect.empty(),
+                    error = Effect.empty()
                 ),
                 operation = MessagePasswordOperation.Event.PasswordValidated(hasMessagePasswordError = true),
                 expectedState = SetMessagePasswordState.Data(
@@ -109,7 +117,8 @@ class SetMessagePasswordReducerTest(
                     hasMessagePasswordError = true,
                     hasRepeatedMessagePasswordError = false,
                     isInEditMode = false,
-                    exitScreen = Effect.empty()
+                    exitScreen = Effect.empty(),
+                    error = Effect.empty()
                 )
             ),
             TestInput(
@@ -119,7 +128,8 @@ class SetMessagePasswordReducerTest(
                     hasMessagePasswordError = false,
                     hasRepeatedMessagePasswordError = false,
                     isInEditMode = false,
-                    exitScreen = Effect.empty()
+                    exitScreen = Effect.empty(),
+                    error = Effect.empty()
                 ),
                 operation = MessagePasswordOperation.Event.RepeatedPasswordValidated(
                     hasRepeatedMessagePasswordError = true
@@ -130,7 +140,36 @@ class SetMessagePasswordReducerTest(
                     hasMessagePasswordError = false,
                     hasRepeatedMessagePasswordError = true,
                     isInEditMode = false,
-                    exitScreen = Effect.empty()
+                    exitScreen = Effect.empty(),
+                    error = Effect.empty()
+                )
+            ),
+            TestInput(
+                currentState = SetMessagePasswordState.Data(
+                    initialMessagePasswordValue = EMPTY_STRING,
+                    initialMessagePasswordHintValue = EMPTY_STRING,
+                    hasMessagePasswordError = false,
+                    hasRepeatedMessagePasswordError = false,
+                    isInEditMode = false,
+                    exitScreen = Effect.empty(),
+                    error = Effect.empty()
+                ),
+                operation = MessagePasswordOperation.Event.SetPasswordDataError(
+                    error = DataError.Local.EncryptionError
+                ),
+                expectedState = SetMessagePasswordState.Data(
+                    initialMessagePasswordValue = EMPTY_STRING,
+                    initialMessagePasswordHintValue = EMPTY_STRING,
+                    hasMessagePasswordError = false,
+                    hasRepeatedMessagePasswordError = false,
+                    isInEditMode = false,
+                    exitScreen = Effect.empty(),
+                    error = Effect.of(
+                        TextUiModel.TextResWithArgs(
+                            R.string.composer_external_encryption_unexpected_error,
+                            listOf(DataError.Local.EncryptionError.javaClass.simpleName)
+                        )
+                    )
                 )
             )
         )

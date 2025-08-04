@@ -19,6 +19,8 @@
 package ch.protonmail.android.mailcomposer.presentation.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.MessagePasswordOperation
 import ch.protonmail.android.mailcomposer.presentation.model.SetMessagePasswordState
 import me.proton.core.util.kotlin.EMPTY_STRING
@@ -35,6 +37,23 @@ class SetMessagePasswordReducer @Inject constructor() {
         is MessagePasswordOperation.Event.PasswordValidated -> newStateForPasswordValidated(currentState, event)
         is MessagePasswordOperation.Event.RepeatedPasswordValidated ->
             newStateForRepeatedPasswordValidated(currentState, event)
+        is MessagePasswordOperation.Event.SetPasswordDataError -> newStateForDataError(currentState, event)
+    }
+
+    private fun newStateForDataError(
+        currentState: SetMessagePasswordState,
+        event: MessagePasswordOperation.Event.SetPasswordDataError
+    ): SetMessagePasswordState = if (currentState is SetMessagePasswordState.Data) {
+        currentState.copy(
+            error = Effect.of(
+                TextUiModel.TextResWithArgs(
+                    R.string.composer_external_encryption_unexpected_error,
+                    listOf(event.error.javaClass.simpleName)
+                )
+            )
+        )
+    } else {
+        currentState
     }
 
     private fun newStateForExitScreen(currentState: SetMessagePasswordState): SetMessagePasswordState =
@@ -52,7 +71,8 @@ class SetMessagePasswordReducer @Inject constructor() {
         hasMessagePasswordError = false,
         hasRepeatedMessagePasswordError = false,
         isInEditMode = event.messagePassword != null,
-        exitScreen = Effect.empty()
+        exitScreen = Effect.empty(),
+        error = Effect.empty()
     )
 
     private fun newStateForPasswordValidated(

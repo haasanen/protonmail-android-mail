@@ -92,8 +92,8 @@
     <string name="set_message_password_label">Message password</string>
     <string name="set_message_password_label_repeat">Repeat password</string>
     <string name="set_message_password_label_hint">Password hint (optional)</string>
-    <string name="set_message_password_supporting_text">4 to 21 characters long</string>
-    <string name="set_message_password_supporting_error_text">The password must be between 4 and 21 characters</string>
+    <string name="set_message_password_supporting_text">8 to 21 characters long</string>
+    <string name="set_message_password_supporting_error_text">The password must be between 8 and 21 characters</string>
     <string name="set_message_password_supporting_text_repeat">Passwords must match</string>
     <string name="set_message_password_supporting_error_text_repeat">Passwords do not match</string>
     <string name="set_message_password_button_show">Show password</string>
@@ -139,4 +139,5 @@
     <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
     <string name="composer_loading_attachments_error">Failed loading attachments</string>
     <string name="composer_attachment_upload_error_retry">Some attachments failed uploading. Please, retry.</string>
+    <string name="composer_external_encryption_unexpected_error">Unexpected error %s. Try again.</string>
 </resources>

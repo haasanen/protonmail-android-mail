@@ -70,7 +70,8 @@ class SetMessagePasswordViewModelTest {
                 hasMessagePasswordError = false,
                 hasRepeatedMessagePasswordError = false,
                 isInEditMode = false,
-                exitScreen = Effect.empty()
+                exitScreen = Effect.empty(),
+                error = Effect.empty()
             )
             assertEquals(expected, awaitItem())
         }
@@ -93,7 +94,8 @@ class SetMessagePasswordViewModelTest {
                 hasMessagePasswordError = false,
                 hasRepeatedMessagePasswordError = false,
                 isInEditMode = true,
-                exitScreen = Effect.empty()
+                exitScreen = Effect.empty(),
+                error = Effect.empty()
             )
             assertEquals(expected, awaitItem())
         }
@@ -116,7 +118,8 @@ class SetMessagePasswordViewModelTest {
                 hasMessagePasswordError = true,
                 hasRepeatedMessagePasswordError = false,
                 isInEditMode = false,
-                exitScreen = Effect.empty()
+                exitScreen = Effect.empty(),
+                error = Effect.empty()
             )
             assertEquals(expected, awaitItem())
         }
@@ -139,7 +142,8 @@ class SetMessagePasswordViewModelTest {
                 hasMessagePasswordError = true,
                 hasRepeatedMessagePasswordError = false,
                 isInEditMode = false,
-                exitScreen = Effect.empty()
+                exitScreen = Effect.empty(),
+                error = Effect.empty()
             )
             assertEquals(expected, awaitItem())
         }
@@ -162,7 +166,8 @@ class SetMessagePasswordViewModelTest {
                 hasMessagePasswordError = false,
                 hasRepeatedMessagePasswordError = false,
                 isInEditMode = false,
-                exitScreen = Effect.empty()
+                exitScreen = Effect.empty(),
+                error = Effect.empty()
             )
             assertEquals(expected, awaitItem())
         }
@@ -190,7 +195,8 @@ class SetMessagePasswordViewModelTest {
                 hasMessagePasswordError = false,
                 hasRepeatedMessagePasswordError = false,
                 isInEditMode = false,
-                exitScreen = Effect.empty()
+                exitScreen = Effect.empty(),
+                error = Effect.empty()
             )
             assertEquals(expected, awaitItem())
         }
@@ -218,7 +224,8 @@ class SetMessagePasswordViewModelTest {
                 hasMessagePasswordError = false,
                 hasRepeatedMessagePasswordError = true,
                 isInEditMode = false,
-                exitScreen = Effect.empty()
+                exitScreen = Effect.empty(),
+                error = Effect.empty()
             )
             assertEquals(expected, awaitItem())
         }

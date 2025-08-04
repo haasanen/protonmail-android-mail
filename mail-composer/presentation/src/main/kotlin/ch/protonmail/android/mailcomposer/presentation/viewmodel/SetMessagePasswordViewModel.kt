@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.GetMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessagePassword
@@ -75,7 +76,18 @@ class SetMessagePasswordViewModel @Inject constructor(
     private fun onApplyPassword(password: String, passwordHint: String?) {
         viewModelScope.launch {
             saveMessagePassword(password, passwordHint)
-                .onLeft { Timber.e("external encryption: Failed to set message password $it") }
+                .onLeft { error ->
+                    when (error) {
+                        is ExternalEncryptionPasswordError.Other -> {
+                            Timber.w("Unexpected error storing the external encryption password $error")
+                            emitNewStateFrom(MessagePasswordOperation.Event.SetPasswordDataError(error.error))
+                        }
+                        ExternalEncryptionPasswordError.PasswordTooShort -> {
+                            Timber.w("Validation error setting password. Unexpected as client validated it. $error")
+                            emitNewStateFrom(MessagePasswordOperation.Event.PasswordValidated(true))
+                        }
+                    }
+                }
                 .onRight { emitNewStateFrom(MessagePasswordOperation.Event.ExitScreen) }
         }
     }

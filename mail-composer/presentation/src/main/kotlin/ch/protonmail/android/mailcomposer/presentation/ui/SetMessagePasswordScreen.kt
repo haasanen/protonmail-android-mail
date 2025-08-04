@@ -36,9 +36,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -46,6 +48,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonOutlinedButton
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.component.ProtonSolidButton
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -56,12 +60,15 @@ import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
+import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.HyperlinkText
+import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.MessagePasswordOperation
 import ch.protonmail.android.mailcomposer.presentation.model.SetMessagePasswordState
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.SetMessagePasswordViewModel
+import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 
 @Composable
 fun SetMessagePasswordScreen(
@@ -70,6 +77,8 @@ fun SetMessagePasswordScreen(
     viewModel: SetMessagePasswordViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    val snackBarHostState = remember { ProtonSnackbarHostState() }
 
     Scaffold(
         modifier = modifier,
@@ -92,9 +101,15 @@ fun SetMessagePasswordScreen(
                     }
                 }
             )
+        },
+        snackbarHost = {
+            DismissableSnackbarHost(
+                modifier = Modifier.testTag(CommonTestTags.SnackbarHost),
+                protonSnackbarHostState = snackBarHostState
+            )
         }
     ) { paddingValues ->
-        when (state) {
+        when (val currentState = state) {
             is SetMessagePasswordState.Loading -> ProtonCenteredProgress()
             is SetMessagePasswordState.Data -> {
                 SetMessagePasswordContent(
@@ -122,6 +137,10 @@ fun SetMessagePasswordScreen(
                         onBackClick = onBackClick
                     )
                 )
+
+                ConsumableTextEffect(currentState.error) { string ->
+                    snackBarHostState.showSnackbar(ProtonSnackbarType.ERROR, message = string)
+                }
             }
         }
     }
