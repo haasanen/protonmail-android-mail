@@ -63,7 +63,7 @@ internal class PlanUpgradeDescriptionUiMapperTest(
             arrayOf(
                 "mailbox entry point - normal variant",
                 UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
-                UpsellingEntryPoint.Feature.Mailbox,
+                UpsellingEntryPoint.Feature.Navbar,
                 PlanUpgradeVariant.Normal,
                 PlanUpgradeDescriptionUiModel.Simple(
                     TextUiModel.TextRes(R.string.upselling_mailbox_plus_description_override)
@@ -72,16 +72,16 @@ internal class PlanUpgradeDescriptionUiMapperTest(
             arrayOf(
                 "mailbox entry point - promo variant",
                 UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
-                UpsellingEntryPoint.Feature.Mailbox,
+                UpsellingEntryPoint.Feature.Navbar,
                 PlanUpgradeVariant.IntroductoryPrice,
                 PlanUpgradeDescriptionUiModel.Simple(
-                    TextUiModel.TextRes(R.string.upselling_mailbox_plus_description_override)
+                    TextUiModel.TextRes(R.string.upselling_mailbox_plus_promo_description_override)
                 )
             ),
             arrayOf(
                 "mailbox entry point - social proof variant",
                 UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
-                UpsellingEntryPoint.Feature.Mailbox,
+                UpsellingEntryPoint.Feature.Navbar,
                 PlanUpgradeVariant.SocialProof,
                 PlanUpgradeDescriptionUiModel.SocialProof
             ),
@@ -154,25 +154,25 @@ internal class PlanUpgradeDescriptionUiMapperTest(
                 UpsellingEntryPoint.Feature.Navbar,
                 PlanUpgradeVariant.IntroductoryPrice,
                 PlanUpgradeDescriptionUiModel.Simple(
-                    TextUiModel.TextRes(R.string.upselling_mailbox_plus_description_override)
+                    TextUiModel.TextRes(R.string.upselling_mailbox_plus_promo_description_override)
                 )
             ),
             arrayOf(
                 "mobile signature entry point - normal variant",
                 UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
-                UpsellingEntryPoint.Feature.Navbar,
+                UpsellingEntryPoint.Feature.MobileSignature,
                 PlanUpgradeVariant.Normal,
                 PlanUpgradeDescriptionUiModel.Simple(
-                    TextUiModel.TextRes(R.string.upselling_mailbox_plus_description_override)
+                    TextUiModel.TextRes(R.string.upselling_mobile_signature_plus_description_override)
                 )
             ),
             arrayOf(
                 "mobile signature entry point - promo variant",
                 UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
-                UpsellingEntryPoint.Feature.Navbar,
+                UpsellingEntryPoint.Feature.MobileSignature,
                 PlanUpgradeVariant.IntroductoryPrice,
                 PlanUpgradeDescriptionUiModel.Simple(
-                    TextUiModel.TextRes(R.string.upselling_mailbox_plus_description_override)
+                    TextUiModel.TextRes(R.string.upselling_mobile_signature_plus_description_override)
                 )
             ),
             arrayOf(

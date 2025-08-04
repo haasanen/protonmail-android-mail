@@ -18,12 +18,10 @@
 
 package ch.protonmail.android.mailupselling.presentation.mapper
 
-import androidx.annotation.StringRes
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceDisplayUiModel
-import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeTitleUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
 import javax.inject.Inject
@@ -39,15 +37,7 @@ internal class PlanUpgradeTitleUiMapper @Inject constructor() {
         if (variant == PlanUpgradeVariant.SocialProof)
             return PlanUpgradeTitleUiModel(TextUiModel(R.string.upselling_mailbox_plus_title_social_proof))
 
-        val stringResource = getStringResource(upsellingEntryPoint, variant)
-        val textUiModel = getTextUiModel(variant, stringResource, initialPrice.highlightedPrice)
-
-        return PlanUpgradeTitleUiModel(textUiModel)
-    }
-
-    @StringRes
-    private fun getStringResource(upsellingEntryPoint: UpsellingEntryPoint, variant: PlanUpgradeVariant): Int {
-        return when (upsellingEntryPoint) {
+        val stringResource = when (upsellingEntryPoint) {
             UpsellingEntryPoint.Feature.AutoDelete -> R.string.upselling_auto_delete_plus_title
             UpsellingEntryPoint.Feature.ContactGroups -> R.string.upselling_contact_groups_plus_title
             UpsellingEntryPoint.Feature.Folders -> R.string.upselling_folders_plus_title
@@ -55,7 +45,6 @@ internal class PlanUpgradeTitleUiMapper @Inject constructor() {
             UpsellingEntryPoint.Feature.MobileSignature -> R.string.upselling_mobile_signature_plus_title
             UpsellingEntryPoint.Feature.ScheduleSend -> R.string.upselling_schedule_send_plus_title
             UpsellingEntryPoint.Feature.Snooze -> R.string.upselling_snooze_plus_title
-
             UpsellingEntryPoint.Feature.Sidebar,
             UpsellingEntryPoint.Feature.Navbar -> if (variant == PlanUpgradeVariant.IntroductoryPrice) {
                 R.string.upselling_mailbox_plus_promo_title
@@ -63,18 +52,18 @@ internal class PlanUpgradeTitleUiMapper @Inject constructor() {
                 R.string.upselling_mailbox_plus_title
             }
         }
-    }
 
-    private fun getTextUiModel(
-        variant: PlanUpgradeVariant,
-        stringResource: Int,
-        initialPrice: PlanUpgradePriceUiModel
-    ): TextUiModel {
-        return when (variant) {
-            PlanUpgradeVariant.IntroductoryPrice ->
-                TextUiModel.TextResWithArgs(stringResource, listOf(initialPrice.getShorthandFormat()))
+        val isNavbarOrSidebar = upsellingEntryPoint in listOf(
+            UpsellingEntryPoint.Feature.Navbar,
+            UpsellingEntryPoint.Feature.Sidebar
+        )
 
-            else -> TextUiModel(stringResource)
+        val textUiModel = if (isNavbarOrSidebar && variant == PlanUpgradeVariant.IntroductoryPrice) {
+            TextUiModel.TextResWithArgs(stringResource, listOf(initialPrice.highlightedPrice.getShorthandFormat()))
+        } else {
+            TextUiModel(stringResource)
         }
+
+        return PlanUpgradeTitleUiModel(textUiModel)
     }
 }

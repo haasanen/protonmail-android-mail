@@ -78,7 +78,7 @@ internal class PlanUpgradeEntitlementsUiMapperTest {
         // When
         val actual = mapper.toUiModel(
             plan = UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
-            upsellingEntryPoint = UpsellingEntryPoint.Feature.Mailbox
+            upsellingEntryPoint = UpsellingEntryPoint.Feature.Navbar
         )
 
         // Then

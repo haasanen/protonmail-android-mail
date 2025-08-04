@@ -67,7 +67,7 @@ internal class UpsellingViewModelTest {
     fun setup() {
         every {
             savedStateHandle.get<String>(UpsellingEntryPointKey)
-        } returns Json.encodeToString<UpsellingEntryPoint>(UpsellingEntryPoint.Feature.Mailbox)
+        } returns Json.encodeToString<UpsellingEntryPoint>(UpsellingEntryPoint.Feature.Navbar)
     }
 
     @Test

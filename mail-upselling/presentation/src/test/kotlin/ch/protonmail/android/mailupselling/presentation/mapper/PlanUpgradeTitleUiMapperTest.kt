@@ -108,12 +108,12 @@ internal class PlanUpgradeTitleUiMapperTest {
             UpsellingEntryPoint.Feature.ScheduleSend to mapper.toUiModel(
                 initialPrice = initialPrice,
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.ScheduleSend,
-                variant = PlanUpgradeVariant.IntroductoryPrice
+                variant = PlanUpgradeVariant.Normal
             ),
             UpsellingEntryPoint.Feature.Snooze to mapper.toUiModel(
                 initialPrice = initialPrice,
                 upsellingEntryPoint = UpsellingEntryPoint.Feature.Snooze,
-                variant = PlanUpgradeVariant.IntroductoryPrice
+                variant = PlanUpgradeVariant.Normal
             )
         )
 
