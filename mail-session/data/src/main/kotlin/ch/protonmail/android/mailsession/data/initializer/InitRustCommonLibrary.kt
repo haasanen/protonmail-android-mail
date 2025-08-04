@@ -29,9 +29,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import me.proton.android.core.humanverification.domain.ChallengeNotifierCallback
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ApiConfig
+import uniffi.proton_mail_uniffi.AppDetails
 import uniffi.proton_mail_uniffi.CreateMailSessionResult
 import uniffi.proton_mail_uniffi.DeviceInfoProvider
 import uniffi.proton_mail_uniffi.MailSessionParams
+import uniffi.proton_mail_uniffi.Origin
 import uniffi.proton_mail_uniffi.OsKeyChain
 import uniffi.proton_mail_uniffi.createMailSession
 import javax.inject.Inject
@@ -62,11 +64,16 @@ class InitRustCommonLibrary @Inject constructor(
             logDir = rustLogsFileHandler.getParentPath().absolutePath,
             logDebug = false,
             apiEnvConfig = ApiConfig(
-                appVersion = rustApiConfig.appVersion,
                 userAgent = rustApiConfig.userAgent,
                 envId = rustApiConfig.envId,
                 proxy = rustApiConfig.proxy
-            )
+            ),
+            appDetails = AppDetails(
+                platform = rustApiConfig.platform,
+                product = rustApiConfig.product,
+                version = rustApiConfig.appVersion
+            ),
+            origin = Origin.APP
         )
         Timber.d("rust-session: Initializing the Rust Lib with $sessionParams")
 

@@ -22,7 +22,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import uniffi.proton_mail_uniffi.ActionError
 import uniffi.proton_mail_uniffi.ActionErrorReason
-import uniffi.proton_mail_uniffi.ContextReason
 import uniffi.proton_mail_uniffi.DraftCancelScheduleSendError
 import uniffi.proton_mail_uniffi.DraftCancelScheduleSendErrorReason
 import uniffi.proton_mail_uniffi.DraftDiscardError
@@ -32,14 +31,16 @@ import uniffi.proton_mail_uniffi.DraftUndoSendErrorReason
 import uniffi.proton_mail_uniffi.EventError
 import uniffi.proton_mail_uniffi.EventErrorReason
 import uniffi.proton_mail_uniffi.ProtonError
-import uniffi.proton_mail_uniffi.UserContextError
+import uniffi.proton_mail_uniffi.SessionReason
+import uniffi.proton_mail_uniffi.UserSessionError
 
-fun UserContextError.toDataError(): DataError = when (this) {
-    is UserContextError.Other -> this.v1.toDataError()
-    is UserContextError.Reason -> when (this.v1) {
-        ContextReason.UNKNOWN_LABEL,
-        ContextReason.DUPLICATE_CONTEXT,
-        ContextReason.USER_CONTEXT_NOT_INITIALIZED -> DataError.Local.Unknown
+fun UserSessionError.toDataError(): DataError = when (this) {
+    is UserSessionError.Other -> this.v1.toDataError()
+    is UserSessionError.Reason -> when (this.v1) {
+        is SessionReason.DuplicateSession,
+        is SessionReason.MethodCalledInWrongOrigin,
+        is SessionReason.UnknownLabel,
+        is SessionReason.UserSessionNotInitialized -> DataError.Local.Unknown
     }
 }
 

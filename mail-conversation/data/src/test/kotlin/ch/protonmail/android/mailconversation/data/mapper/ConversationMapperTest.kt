@@ -224,7 +224,8 @@ class ConversationMapperTest {
             exclusiveLocation = exclusiveLocation,
             avatar = avatar,
             totalMessages = totalMessages,
-            totalUnread = totalUnread
+            totalUnread = totalUnread,
+            snoozedUntil = 0uL
         )
     }
 

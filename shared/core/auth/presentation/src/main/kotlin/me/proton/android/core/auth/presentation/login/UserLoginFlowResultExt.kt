@@ -22,7 +22,6 @@ import me.proton.android.core.auth.presentation.LogTag
 import me.proton.android.core.auth.presentation.R
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_account_uniffi.LoginError
-import uniffi.proton_mail_uniffi.ContextReason
 import uniffi.proton_mail_uniffi.OtherErrorReason
 import uniffi.proton_mail_uniffi.OtherErrorReason.InvalidParameter
 import uniffi.proton_mail_uniffi.OtherErrorReason.Other
@@ -31,8 +30,9 @@ import uniffi.proton_mail_uniffi.ProtonError.Network
 import uniffi.proton_mail_uniffi.ProtonError.OtherReason
 import uniffi.proton_mail_uniffi.ProtonError.ServerError
 import uniffi.proton_mail_uniffi.ProtonError.Unexpected
+import uniffi.proton_mail_uniffi.SessionReason
 import uniffi.proton_mail_uniffi.UnexpectedError
-import uniffi.proton_mail_uniffi.UserContextError
+import uniffi.proton_mail_uniffi.UserSessionError
 import uniffi.uniffi_common.UserApiServiceError
 import uniffi.uniffi_common.UserApiServiceError.BadGateway
 import uniffi.uniffi_common.UserApiServiceError.BadRequest
@@ -123,11 +123,12 @@ fun ProtonError.getErrorMessage(context: Context) = when (this) {
     is Network -> context.getString(R.string.presentation_general_connection_error)
 }
 
-fun UserContextError.getErrorMessage(context: Context) = when (this) {
-    is UserContextError.Other -> this.v1.getErrorMessage(context)
-    is UserContextError.Reason -> when (this.v1) {
-        ContextReason.UNKNOWN_LABEL -> "UNKNOWN_LABEL"
-        ContextReason.DUPLICATE_CONTEXT -> "DUPLICATE_CONTEXT "
-        ContextReason.USER_CONTEXT_NOT_INITIALIZED -> "USER_CONTEXT_NOT_INITIALIZED "
+fun UserSessionError.getErrorMessage(context: Context) = when (this) {
+    is UserSessionError.Other -> this.v1.getErrorMessage(context)
+    is UserSessionError.Reason -> when (this.v1) {
+        is SessionReason.DuplicateSession -> "DUPLICATE_SESSION"
+        is SessionReason.MethodCalledInWrongOrigin -> "METHOD_CALLED_IN_WRONG_ORIGIN"
+        is SessionReason.UnknownLabel -> "UNKNOWN_LABEL"
+        is SessionReason.UserSessionNotInitialized -> "USER_SESSION_NOT_INITIALIZED "
     }
 }

@@ -66,6 +66,9 @@ fun AccountMigrationInfo.toMigrationData(): MigrationData {
         passwordMode = if (passwordMode == AccountPasswordMode.ONE)
             PasswordMode.ONE
         else
-            PasswordMode.TWO
+            PasswordMode.TWO,
+        addressSignatureEnabled = false,
+        mobileSignature = null,
+        mobileSignatureEnabled = false
     )
 }

@@ -41,7 +41,7 @@ import uniffi.proton_mail_uniffi.NewSubscription
 import uniffi.proton_mail_uniffi.NewSubscriptionValues
 import uniffi.proton_mail_uniffi.PaymentReceipt
 import uniffi.proton_mail_uniffi.PaymentToken
-import uniffi.proton_mail_uniffi.UserContextError
+import uniffi.proton_mail_uniffi.UserSessionError
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -52,7 +52,7 @@ class SubscriptionManagerRust @Inject constructor(
     private val sessionRepository: UserSessionRepository
 ) : SubscriptionManager {
 
-    private fun UserContextError.throwException(): Nothing {
+    private fun UserSessionError.throwException(): Nothing {
         throw PaymentException(DEVELOPER_ERROR, getErrorMessage(context))
     }
 

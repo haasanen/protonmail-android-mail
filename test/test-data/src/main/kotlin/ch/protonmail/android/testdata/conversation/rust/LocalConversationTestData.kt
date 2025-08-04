@@ -202,6 +202,7 @@ object LocalConversationTestData {
         avatar = avatarInformation,
         attachmentsMetadata = attachments,
         totalMessages = numMessages,
-        totalUnread = numUnread
+        totalUnread = numUnread,
+        snoozedUntil = 0uL
     )
 }

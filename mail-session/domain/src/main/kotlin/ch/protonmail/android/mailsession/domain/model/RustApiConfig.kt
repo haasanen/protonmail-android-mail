@@ -24,6 +24,10 @@ interface RustApiConfig {
 
     val isDebug: Boolean
 
+    val platform: String
+
+    val product: String
+
     val appVersion: String
 
     val userAgent: String

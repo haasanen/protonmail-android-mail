@@ -25,10 +25,10 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import uniffi.proton_mail_uniffi.ContextReason
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionShouldAutoLockResult
-import uniffi.proton_mail_uniffi.UserContextError
+import uniffi.proton_mail_uniffi.SessionReason
+import uniffi.proton_mail_uniffi.UserSessionError
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -60,8 +60,8 @@ class RustAppLockDataSourceTest {
         val mailSession = mockk<MailSession> {
             coEvery { this@mockk.shouldAutoLock() } returns
                 MailSessionShouldAutoLockResult.Error(
-                    UserContextError.Reason(
-                        ContextReason.UNKNOWN_LABEL
+                    UserSessionError.Reason(
+                        SessionReason.UnknownLabel
                     )
                 )
         }

@@ -48,7 +48,7 @@ import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
-import uniffi.proton_mail_uniffi.MailSessionToUserContextResult
+import uniffi.proton_mail_uniffi.MailSessionToUserSessionResult
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
@@ -121,9 +121,9 @@ class TwoPassInputViewModel @Inject constructor(
     }
 
     private fun onSuccess(loginFlow: LoginFlow): Flow<TwoPassInputState> = flow {
-        when (val result = sessionInterface.toUserContext(loginFlow)) {
-            is MailSessionToUserContextResult.Error -> emit(Error.LoginFlow(result.v1.getErrorMessage(context)))
-            is MailSessionToUserContextResult.Ok -> emit(TwoPassInputState.Success)
+        when (val result = sessionInterface.toUserSession(loginFlow)) {
+            is MailSessionToUserSessionResult.Error -> emit(Error.LoginFlow(result.v1.getErrorMessage(context)))
+            is MailSessionToUserSessionResult.Ok -> emit(TwoPassInputState.Success)
         }
     }
 

@@ -33,8 +33,12 @@ class MailRustApiConfig @Inject constructor(
 
     override val isDebug: Boolean
         get() = BuildConfig.DEBUG
+    override val platform: String
+        get() = "android"
+    override val product: String
+        get() = "mail"
     override val appVersion: String
-        get() = "android-mail@${BuildConfig.VERSION_NAME}"
+        get() = BuildConfig.VERSION_NAME
     override val userAgent: String
         get() = buildUserAgent()
     override val proxy: String?

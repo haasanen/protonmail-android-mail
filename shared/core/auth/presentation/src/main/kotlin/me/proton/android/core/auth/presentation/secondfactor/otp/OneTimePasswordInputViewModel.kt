@@ -47,7 +47,7 @@ import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
-import uniffi.proton_mail_uniffi.MailSessionToUserContextResult
+import uniffi.proton_mail_uniffi.MailSessionToUserSessionResult
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
@@ -128,9 +128,9 @@ class OneTimePasswordInputViewModel @Inject constructor(
     private fun onSuccess(loginFlow: LoginFlow): Flow<OneTimePasswordInputState> = flow {
         when (loginFlow.isAwaitingMailboxPassword()) {
             true -> emit(Awaiting2Pass)
-            false -> when (val result = sessionInterface.toUserContext(loginFlow)) {
-                is MailSessionToUserContextResult.Error -> emit(Error.LoginFlow(result.v1.getErrorMessage(context)))
-                is MailSessionToUserContextResult.Ok -> emit(LoggedIn)
+            false -> when (val result = sessionInterface.toUserSession(loginFlow)) {
+                is MailSessionToUserSessionResult.Error -> emit(Error.LoginFlow(result.v1.getErrorMessage(context)))
+                is MailSessionToUserSessionResult.Ok -> emit(LoggedIn)
             }
         }
     }

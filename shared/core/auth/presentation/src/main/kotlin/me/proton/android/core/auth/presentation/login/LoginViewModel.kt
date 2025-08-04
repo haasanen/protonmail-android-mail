@@ -39,7 +39,7 @@ import uniffi.proton_mail_uniffi.LoginScreenId
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetSessionResult
 import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
-import uniffi.proton_mail_uniffi.MailSessionToUserContextResult
+import uniffi.proton_mail_uniffi.MailSessionToUserSessionResult
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.StoredSession
 import uniffi.proton_mail_uniffi.recordLoginScreenView
@@ -146,9 +146,9 @@ class LoginViewModel @Inject internal constructor(
 
     private suspend fun onLoggedIn(userId: String): LoginViewState {
         val loginFlow = getLoginFlow()
-        return when (val result = sessionInterface.toUserContext(loginFlow)) {
-            is MailSessionToUserContextResult.Error -> LoginViewState.Error.LoginFlow("${result.v1}")
-            is MailSessionToUserContextResult.Ok -> LoginViewState.LoggedIn(userId)
+        return when (val result = sessionInterface.toUserSession(loginFlow)) {
+            is MailSessionToUserSessionResult.Error -> LoginViewState.Error.LoginFlow("${result.v1}")
+            is MailSessionToUserSessionResult.Ok -> LoginViewState.LoggedIn(userId)
         }
     }
 

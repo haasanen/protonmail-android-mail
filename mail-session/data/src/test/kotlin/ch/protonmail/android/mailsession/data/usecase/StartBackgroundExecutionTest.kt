@@ -33,7 +33,7 @@ import uniffi.proton_mail_uniffi.BackgroundExecutionResult
 import uniffi.proton_mail_uniffi.BackgroundExecutionStatus
 import uniffi.proton_mail_uniffi.MailSessionStartBackgroundExecutionResult
 import uniffi.proton_mail_uniffi.ProtonError
-import uniffi.proton_mail_uniffi.UserContextError
+import uniffi.proton_mail_uniffi.UserSessionError
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -76,7 +76,7 @@ internal class StartBackgroundExecutionTest {
         val mailSessionWrapper = mockk<MailSessionWrapper>()
         val callback = slot<BackgroundExecutionCallback>()
         val executionResult = mockk<MailSessionStartBackgroundExecutionResult.Error> {
-            every { this@mockk.v1 } returns UserContextError.Other(ProtonError.Network)
+            every { this@mockk.v1 } returns UserSessionError.Other(ProtonError.Network)
         }
         every { mailSessionRepository.getMailSession() } returns mailSessionWrapper
         every {

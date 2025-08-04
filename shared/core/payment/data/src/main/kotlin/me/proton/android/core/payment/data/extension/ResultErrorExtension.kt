@@ -19,7 +19,6 @@ package me.proton.android.core.payment.data.extension
 
 import android.content.Context
 import me.proton.android.core.payment.presentation.R
-import uniffi.proton_mail_uniffi.ContextReason
 import uniffi.proton_mail_uniffi.OtherErrorReason
 import uniffi.proton_mail_uniffi.OtherErrorReason.InvalidParameter
 import uniffi.proton_mail_uniffi.OtherErrorReason.Other
@@ -28,8 +27,9 @@ import uniffi.proton_mail_uniffi.ProtonError.Network
 import uniffi.proton_mail_uniffi.ProtonError.OtherReason
 import uniffi.proton_mail_uniffi.ProtonError.ServerError
 import uniffi.proton_mail_uniffi.ProtonError.Unexpected
+import uniffi.proton_mail_uniffi.SessionReason
 import uniffi.proton_mail_uniffi.UnexpectedError
-import uniffi.proton_mail_uniffi.UserContextError
+import uniffi.proton_mail_uniffi.UserSessionError
 import uniffi.uniffi_common.UserApiServiceError
 import uniffi.uniffi_common.UserApiServiceError.BadGateway
 import uniffi.uniffi_common.UserApiServiceError.Internal
@@ -43,15 +43,16 @@ import uniffi.uniffi_common.UserApiServiceError.TooManyRequests
 import uniffi.uniffi_common.UserApiServiceError.Unauthorized
 import uniffi.uniffi_common.UserApiServiceError.UnprocessableEntity
 
-fun UserContextError.getErrorMessage(context: Context) = when (this) {
-    is UserContextError.Other -> this.v1.getErrorMessage(context)
-    is UserContextError.Reason -> this.v1.getErrorMessage()
+fun UserSessionError.getErrorMessage(context: Context) = when (this) {
+    is UserSessionError.Other -> this.v1.getErrorMessage(context)
+    is UserSessionError.Reason -> this.v1.getErrorMessage()
 }
 
-fun ContextReason.getErrorMessage() = when (this) {
-    ContextReason.UNKNOWN_LABEL -> "UNKNOWN_LABEL"
-    ContextReason.DUPLICATE_CONTEXT -> "DUPLICATE_CONTEXT"
-    ContextReason.USER_CONTEXT_NOT_INITIALIZED -> "USER_CONTEXT_NOT_INITIALIZED"
+fun SessionReason.getErrorMessage() = when (this) {
+    is SessionReason.DuplicateSession -> "DUPLICATE_SESSION"
+    is SessionReason.MethodCalledInWrongOrigin -> "METHOD_CALLED_IN_WRONG_ORIGIN"
+    is SessionReason.UnknownLabel -> "UNKNOWN_LABEL"
+    is SessionReason.UserSessionNotInitialized -> "USER_SESSION_NOT_INITIALIZED "
 }
 
 fun ProtonError.getErrorMessage(context: Context) = when (this) {

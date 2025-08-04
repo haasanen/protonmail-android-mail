@@ -33,14 +33,15 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.proton.android.core.humanverification.domain.ChallengeNotifierCallback
+import me.proton.android.core.humanverification.presentation.HV3ResponseMessage.MessageType
 import me.proton.core.compose.viewmodel.stopTimeoutMillis
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_mail_uniffi.ApiConfig
+import uniffi.proton_mail_uniffi.AppDetails
 import uniffi.proton_mail_uniffi.ChallengeLoader
 import uniffi.proton_mail_uniffi.NewChallengeLoaderResult
 import uniffi.proton_mail_uniffi.newChallengeLoader
 import javax.inject.Inject
-import me.proton.android.core.humanverification.presentation.HV3ResponseMessage.MessageType
 
 @HiltViewModel
 class HumanVerificationViewModel @Inject constructor(
@@ -78,7 +79,8 @@ class HumanVerificationViewModel @Inject constructor(
     ): Flow<HumanVerificationViewState> = flow {
         val loader = when (
             val result = newChallengeLoader(
-                ApiConfig(rustApiConfig.appVersion, rustApiConfig.userAgent, rustApiConfig.envId, rustApiConfig.proxy)
+                ApiConfig(rustApiConfig.userAgent, rustApiConfig.envId, rustApiConfig.proxy),
+                AppDetails(rustApiConfig.platform, rustApiConfig.product, rustApiConfig.appVersion)
             )
         ) {
             is NewChallengeLoaderResult.Error -> {

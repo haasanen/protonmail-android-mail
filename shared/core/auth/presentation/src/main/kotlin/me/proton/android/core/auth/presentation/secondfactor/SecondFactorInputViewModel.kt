@@ -28,16 +28,16 @@ import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.get
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputAction.Close
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputAction.Load
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputAction.SelectTab
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Closed
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Error
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Idle
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Loading
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Error
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Closed
 import me.proton.core.compose.viewmodel.BaseViewModel
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
-import uniffi.proton_mail_uniffi.MailSessionUserContextFromSessionResult
+import uniffi.proton_mail_uniffi.MailSessionUserSessionFromStoredSessionResult
 import uniffi.proton_mail_uniffi.MailUserSessionUserSettingsResult
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
@@ -70,10 +70,10 @@ class SecondFactorInputViewModel @Inject constructor(
 
     private fun onLoad(): Flow<SecondFactorInputState> = flow {
         val session = getSession(getAccount(userId))?.firstOrNull()
-        val userSettings = when (val result = session?.let { sessionInterface.userContextFromSession(session) }) {
+        val userSettings = when (val result = session?.let { sessionInterface.userSessionFromStoredSession(session) }) {
             null -> null
-            is MailSessionUserContextFromSessionResult.Error -> null
-            is MailSessionUserContextFromSessionResult.Ok -> result.v1.userSettings()
+            is MailSessionUserSessionFromStoredSessionResult.Error -> null
+            is MailSessionUserSessionFromStoredSessionResult.Ok -> result.v1.userSettings()
         }
 
         val registeredKeys = when (userSettings) {
