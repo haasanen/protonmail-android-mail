@@ -151,8 +151,8 @@
         <item quantity="other">%1$d Participants</item>
     </plurals>
     <string name="rsvp_widget_happening_now">Happening <b>now</b></string>
-    <string name="rsvp_widget_event_ended">Event <b>ended</b>b></string>
-    <string name="rsvp_widget_event_cancelled">Event <b>cancelled</b>></string>
+    <string name="rsvp_widget_event_ended">Event <b>ended</b></string>
+    <string name="rsvp_widget_event_cancelled">Event <b>cancelled</b></string>
     <string name="rsvp_widget_invite_outdated">This invite is out of date</string>
     <string name="rsvp_widget_event_cancelled_invite_outdated">Event cancelled. This invitation is out of date.</string>
     <string name="rsvp_widget_offline_invite_outdated">You\'re offline. The displayed information may be out of date.</string>

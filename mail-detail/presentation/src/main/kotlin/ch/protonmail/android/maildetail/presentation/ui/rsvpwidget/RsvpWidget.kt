@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.ui.rsvpwidget
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -73,6 +74,7 @@ import ch.protonmail.android.maildetail.presentation.previewdata.RsvpWidgetPrevi
 fun RsvpWidget(uiModel: RsvpEventUiModel, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
+            .padding(horizontal = ProtonDimens.Spacing.Large)
             .background(
                 color = ProtonTheme.colors.backgroundNorm,
                 shape = ProtonTheme.shapes.extraLarge
@@ -185,11 +187,21 @@ private fun RsvpOverview(
         }
 
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Medium))
-        Icon(
-            modifier = Modifier.size(MailDimens.RsvpCalendarLogoSize),
-            painter = painterResource(id = R.drawable.ic_logo_calendar),
-            contentDescription = NO_CONTENT_DESCRIPTION
-        )
+        Box(
+            modifier = Modifier
+                .size(MailDimens.RsvpCalendarLogoSize)
+                .border(
+                    width = ProtonDimens.OutlinedBorderSize,
+                    color = ProtonTheme.colors.borderNorm,
+                    shape = ProtonTheme.shapes.large
+                )
+        ) {
+            Image(
+                modifier = Modifier.align(Alignment.Center),
+                painter = painterResource(id = R.drawable.ic_logo_calendar),
+                contentDescription = NO_CONTENT_DESCRIPTION
+            )
+        }
     }
 }
 
