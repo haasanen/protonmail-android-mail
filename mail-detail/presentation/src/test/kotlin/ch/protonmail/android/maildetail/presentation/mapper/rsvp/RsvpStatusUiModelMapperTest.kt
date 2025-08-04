@@ -1,9 +1,9 @@
 package ch.protonmail.android.maildetail.presentation.mapper.rsvp
 
-import ch.protonmail.android.maildetail.domain.model.RsvpAttendance
-import ch.protonmail.android.maildetail.domain.model.RsvpProgress
-import ch.protonmail.android.maildetail.domain.model.RsvpState
-import ch.protonmail.android.maildetail.domain.model.RsvpUnanswerableReason
+import ch.protonmail.android.mailmessage.domain.model.RsvpAttendance
+import ch.protonmail.android.mailmessage.domain.model.RsvpProgress
+import ch.protonmail.android.mailmessage.domain.model.RsvpState
+import ch.protonmail.android.mailmessage.domain.model.RsvpUnanswerableReason
 import ch.protonmail.android.maildetail.presentation.model.RsvpStatusUiModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -143,5 +143,29 @@ class RsvpStatusUiModelMapperTest {
 
         // Then
         assertEquals(RsvpStatusUiModel.OfflineInviteOutdated, result)
+    }
+
+    @Test
+    fun `when UnanswerableInvite with AddressIsIncorrect reason, returns AddressIsIncorrect`() {
+        // Given
+        val state = RsvpState.UnanswerableInvite(reason = RsvpUnanswerableReason.AddressIsIncorrect)
+
+        // When
+        val result = mapper.toUiModel(state)
+
+        // Then
+        assertEquals(RsvpStatusUiModel.AddressIsIncorrect, result)
+    }
+
+    @Test
+    fun `when UnanswerableInvite with UserIsOrganizer reason, returns UserIsOrganizer`() {
+        // Given
+        val state = RsvpState.UnanswerableInvite(reason = RsvpUnanswerableReason.UserIsOrganizer)
+
+        // When
+        val result = mapper.toUiModel(state)
+
+        // Then
+        assertEquals(RsvpStatusUiModel.UserIsOrganizer, result)
     }
 }

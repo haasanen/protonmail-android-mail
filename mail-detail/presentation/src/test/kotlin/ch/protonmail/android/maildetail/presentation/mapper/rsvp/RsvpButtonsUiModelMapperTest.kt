@@ -1,9 +1,9 @@
 package ch.protonmail.android.maildetail.presentation.mapper.rsvp
 
-import ch.protonmail.android.maildetail.domain.model.RsvpAttendance
-import ch.protonmail.android.maildetail.domain.model.RsvpProgress
-import ch.protonmail.android.maildetail.domain.model.RsvpState
-import ch.protonmail.android.maildetail.domain.model.RsvpUnanswerableReason
+import ch.protonmail.android.mailmessage.domain.model.RsvpAttendance
+import ch.protonmail.android.mailmessage.domain.model.RsvpProgress
+import ch.protonmail.android.mailmessage.domain.model.RsvpState
+import ch.protonmail.android.mailmessage.domain.model.RsvpUnanswerableReason
 import ch.protonmail.android.maildetail.presentation.model.RsvpAnswer
 import ch.protonmail.android.maildetail.presentation.model.RsvpButtonsUiModel
 import kotlin.test.Test
@@ -213,6 +213,19 @@ class RsvpButtonsUiModelMapperTest {
         // Given
         val state = RsvpState.UnanswerableInvite(reason = RsvpUnanswerableReason.InviteIsOutdated)
         val attendeeAnswer = RsvpAnswer.Unanswered
+
+        // When
+        val result = mapper.toUiModel(state, attendeeAnswer)
+
+        // Then
+        assertEquals(RsvpButtonsUiModel.Hidden, result)
+    }
+
+    @Test
+    fun `when answer is null, returns Hidden`() {
+        // Given
+        val state = RsvpState.UnanswerableInvite(reason = RsvpUnanswerableReason.UserIsOrganizer)
+        val attendeeAnswer = null
 
         // When
         val result = mapper.toUiModel(state, attendeeAnswer)

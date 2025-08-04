@@ -18,20 +18,25 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper.rsvp
 
-import ch.protonmail.android.maildetail.domain.model.RsvpProgress
-import ch.protonmail.android.maildetail.domain.model.RsvpState
+import ch.protonmail.android.mailmessage.domain.model.RsvpProgress
+import ch.protonmail.android.mailmessage.domain.model.RsvpState
 import ch.protonmail.android.maildetail.presentation.model.RsvpAnswer
 import ch.protonmail.android.maildetail.presentation.model.RsvpButtonsUiModel
 import javax.inject.Inject
 
 class RsvpButtonsUiModelMapper @Inject constructor() {
 
-    fun toUiModel(state: RsvpState, attendeeAnswer: RsvpAnswer) = when (state) {
-        is RsvpState.AnswerableInvite -> when (state.progress) {
-            RsvpProgress.Pending,
-            RsvpProgress.Ongoing -> RsvpButtonsUiModel.Shown(attendeeAnswer)
-            RsvpProgress.Ended -> RsvpButtonsUiModel.Hidden
+    fun toUiModel(state: RsvpState, attendeeAnswer: RsvpAnswer?): RsvpButtonsUiModel {
+        // When attendeeAnswer is null, the user is the organizer of the event
+        if (attendeeAnswer == null) return RsvpButtonsUiModel.Hidden
+
+        return when (state) {
+            is RsvpState.AnswerableInvite -> when (state.progress) {
+                RsvpProgress.Pending,
+                RsvpProgress.Ongoing -> RsvpButtonsUiModel.Shown(attendeeAnswer)
+                RsvpProgress.Ended -> RsvpButtonsUiModel.Hidden
+            }
+            else -> RsvpButtonsUiModel.Hidden
         }
-        else -> RsvpButtonsUiModel.Hidden
     }
 }

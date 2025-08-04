@@ -24,13 +24,13 @@ import ch.protonmail.android.maildetail.presentation.model.RsvpAnswer
 import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpButtonsUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpCalendarUiModel
+import ch.protonmail.android.maildetail.presentation.model.RsvpEventUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpOrganizerUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpStatusUiModel
-import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
 
 object RsvpWidgetPreviewData {
 
-    val UnansweredWithMultipleParticipants = RsvpWidgetUiModel(
+    val UnansweredWithMultipleParticipants = RsvpEventUiModel(
         title = TextUiModel.Text("Whispers of Tomorrow: An Evening of Unexpected Wonders"),
         dateTime = TextUiModel.Text("15 Jul • 14:30 - 15:30"),
         isAttendanceOptional = true,
@@ -70,7 +70,7 @@ object RsvpWidgetPreviewData {
         status = null
     )
 
-    val AnsweredWithOneParticipantAndStatus = RsvpWidgetUiModel(
+    val AnsweredWithOneParticipantAndStatus = RsvpEventUiModel(
         title = TextUiModel.Text("Inbox OKR Weekly"),
         dateTime = TextUiModel.Text("15 Jul • 14:30 - 15:30"),
         isAttendanceOptional = true,

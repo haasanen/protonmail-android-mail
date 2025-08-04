@@ -18,9 +18,9 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper.rsvp
 
-import ch.protonmail.android.maildetail.domain.model.RsvpProgress
-import ch.protonmail.android.maildetail.domain.model.RsvpState
-import ch.protonmail.android.maildetail.domain.model.RsvpUnanswerableReason
+import ch.protonmail.android.mailmessage.domain.model.RsvpProgress
+import ch.protonmail.android.mailmessage.domain.model.RsvpState
+import ch.protonmail.android.mailmessage.domain.model.RsvpUnanswerableReason
 import ch.protonmail.android.maildetail.presentation.model.RsvpStatusUiModel
 import javax.inject.Inject
 
@@ -51,6 +51,8 @@ class RsvpStatusUiModelMapper @Inject constructor() {
         is RsvpState.UnanswerableInvite -> when (state.reason) {
             RsvpUnanswerableReason.InviteIsOutdated -> RsvpStatusUiModel.InviteOutdated
             RsvpUnanswerableReason.InviteHasUnknownRecency -> RsvpStatusUiModel.OfflineInviteOutdated
+            RsvpUnanswerableReason.AddressIsIncorrect -> RsvpStatusUiModel.AddressIsIncorrect
+            RsvpUnanswerableReason.UserIsOrganizer -> RsvpStatusUiModel.UserIsOrganizer
         }
     }
 }

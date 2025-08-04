@@ -16,11 +16,11 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maildetail.domain.model
+package ch.protonmail.android.mailmessage.domain.model
 
-data class RsvpEventDetails(
-    val eventId: EventId,
-    val summary: String,
+data class RsvpEvent(
+    val eventId: EventId?,
+    val summary: String?,
     val location: String?,
     val description: String?,
     val recurrence: String?,
@@ -29,8 +29,8 @@ data class RsvpEventDetails(
     val occurrence: RsvpOccurrence,
     val organizer: RsvpOrganizer,
     val attendees: List<RsvpAttendee>,
-    val userAttendeeIdx: Int,
-    val calendar: RsvpCalendar,
+    val userAttendeeIdx: Int?,
+    val calendar: RsvpCalendar?,
     val state: RsvpState
 )
 
@@ -71,7 +71,7 @@ enum class RsvpProgress { Pending, Ongoing, Ended }
 
 enum class RsvpAttendance { Optional, Required }
 
-enum class RsvpUnanswerableReason { InviteIsOutdated, InviteHasUnknownRecency }
+enum class RsvpUnanswerableReason { InviteIsOutdated, InviteHasUnknownRecency, AddressIsIncorrect, UserIsOrganizer }
 
 enum class RsvpOccurrence { Date, DateTime }
 

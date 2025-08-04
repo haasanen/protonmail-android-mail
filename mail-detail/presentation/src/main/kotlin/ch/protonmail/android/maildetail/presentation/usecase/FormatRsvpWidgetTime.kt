@@ -25,8 +25,8 @@ import java.time.format.DateTimeFormatter
 import android.content.Context
 import ch.protonmail.android.mailcommon.domain.usecase.GetAppLocale
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maildetail.domain.model.RsvpOccurrence
 import ch.protonmail.android.maildetail.presentation.R
+import ch.protonmail.android.mailmessage.domain.model.RsvpOccurrence
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 

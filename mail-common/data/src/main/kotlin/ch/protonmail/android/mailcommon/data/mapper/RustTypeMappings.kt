@@ -66,7 +66,16 @@ import uniffi.proton_mail_uniffi.PgpScheme
 import uniffi.proton_mail_uniffi.PmSignature
 import uniffi.proton_mail_uniffi.RemoteId
 import uniffi.proton_mail_uniffi.RsvpAnswer
+import uniffi.proton_mail_uniffi.RsvpAttendance
+import uniffi.proton_mail_uniffi.RsvpAttendee
+import uniffi.proton_mail_uniffi.RsvpAttendeeStatus
+import uniffi.proton_mail_uniffi.RsvpCalendar
 import uniffi.proton_mail_uniffi.RsvpEvent
+import uniffi.proton_mail_uniffi.RsvpOccurrence
+import uniffi.proton_mail_uniffi.RsvpOrganizer
+import uniffi.proton_mail_uniffi.RsvpProgress
+import uniffi.proton_mail_uniffi.RsvpState
+import uniffi.proton_mail_uniffi.RsvpUnanswerableReason
 import uniffi.proton_mail_uniffi.ShowImages
 import uniffi.proton_mail_uniffi.ShowMoved
 import uniffi.proton_mail_uniffi.SpamOrTrash
@@ -193,4 +202,18 @@ typealias LocalVCardPropTypeString = VcardPropType.String
 typealias LocalMailScrollerError = MailScrollerError
 typealias LocalUserSettings = UserSettings
 typealias LocalRsvpEvent = RsvpEvent
+typealias LocalRsvpOccurrence = RsvpOccurrence
+typealias LocalRsvpOrganizer = RsvpOrganizer
+typealias LocalRsvpAttendee = RsvpAttendee
+typealias LocalRsvpAttendeeStatus = RsvpAttendeeStatus
+typealias LocalRsvpCalendar = RsvpCalendar
+typealias LocalRsvpState = RsvpState
+typealias LocalRsvpStateAnswerableInvite = RsvpState.AnswerableInvite
+typealias LocalRsvpStateCancelledInvite = RsvpState.CancelledInvite
+typealias LocalRsvpStateCancelledReminder = RsvpState.CancelledReminder
+typealias LocalRsvpStateReminder = RsvpState.Reminder
+typealias LocalRsvpStateUnanswerableInvite = RsvpState.UnanswerableInvite
+typealias LocalRsvpProgress = RsvpProgress
+typealias LocalRsvpAttendance = RsvpAttendance
+typealias LocalRsvpUnanswerableReason = RsvpUnanswerableReason
 typealias LocalRsvpAnswer = RsvpAnswer

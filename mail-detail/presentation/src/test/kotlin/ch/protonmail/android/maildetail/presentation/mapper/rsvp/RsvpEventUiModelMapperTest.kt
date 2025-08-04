@@ -4,29 +4,29 @@ import androidx.compose.ui.graphics.Color
 import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maildetail.domain.model.CalendarId
-import ch.protonmail.android.maildetail.domain.model.EventId
-import ch.protonmail.android.maildetail.domain.model.RsvpAttendee
-import ch.protonmail.android.maildetail.domain.model.RsvpAttendeeStatus
-import ch.protonmail.android.maildetail.domain.model.RsvpCalendar
-import ch.protonmail.android.maildetail.domain.model.RsvpEventDetails
-import ch.protonmail.android.maildetail.domain.model.RsvpOccurrence
-import ch.protonmail.android.maildetail.domain.model.RsvpOrganizer
-import ch.protonmail.android.maildetail.domain.model.RsvpState
+import ch.protonmail.android.mailmessage.domain.model.CalendarId
+import ch.protonmail.android.mailmessage.domain.model.EventId
+import ch.protonmail.android.mailmessage.domain.model.RsvpAttendee
+import ch.protonmail.android.mailmessage.domain.model.RsvpAttendeeStatus
+import ch.protonmail.android.mailmessage.domain.model.RsvpCalendar
+import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
+import ch.protonmail.android.mailmessage.domain.model.RsvpOccurrence
+import ch.protonmail.android.mailmessage.domain.model.RsvpOrganizer
+import ch.protonmail.android.mailmessage.domain.model.RsvpState
 import ch.protonmail.android.maildetail.presentation.model.RsvpAnswer
 import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpButtonsUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpCalendarUiModel
+import ch.protonmail.android.maildetail.presentation.model.RsvpEventUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpOrganizerUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpStatusUiModel
-import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
 import ch.protonmail.android.maildetail.presentation.usecase.FormatRsvpWidgetTime
 import io.mockk.every
 import io.mockk.mockk
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class RsvpWidgetUiModelMapperTest {
+class RsvpEventUiModelMapperTest {
 
     private val colorMapper = mockk<ColorMapper> {
         every { this@mockk.toColor(any()) } returns Color.Magenta.right()
@@ -41,7 +41,7 @@ class RsvpWidgetUiModelMapperTest {
         every { this@mockk.toUiModel(any(), any()) } returns RsvpButtonsUiModel.Hidden
     }
 
-    private val mapper = RsvpWidgetUiModelMapper(
+    private val mapper = RsvpEventUiModelMapper(
         colorMapper = colorMapper,
         formatRsvpWidgetTime = formatRsvpWidgetTime,
         rsvpStatusUiModelMapper = rsvpStatusUiModelMapper,
@@ -51,7 +51,7 @@ class RsvpWidgetUiModelMapperTest {
     @Test
     fun `correctly map the RSVP event to a ui model`() {
         // Given
-        val eventDetails = RsvpEventDetails(
+        val eventDetails = RsvpEvent(
             eventId = EventId("id"),
             summary = "Inbox OKR Weekly",
             location = "Room 234",
@@ -99,7 +99,7 @@ class RsvpWidgetUiModelMapperTest {
         val actual = mapper.toUiModel(eventDetails)
 
         // Then
-        val expected = RsvpWidgetUiModel(
+        val expected = RsvpEventUiModel(
             title = TextUiModel.Text("Inbox OKR Weekly"),
             dateTime = TextUiModel.Text("15 Jul • 14:30 - 15:30"),
             isAttendanceOptional = false,

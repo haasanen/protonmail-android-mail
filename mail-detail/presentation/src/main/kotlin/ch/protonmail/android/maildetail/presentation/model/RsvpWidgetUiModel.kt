@@ -21,12 +21,20 @@ package ch.protonmail.android.maildetail.presentation.model
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
-data class RsvpWidgetUiModel(
+interface RsvpWidgetUiModel {
+
+    data class Shown(val event: RsvpEventUiModel) : RsvpWidgetUiModel
+    data object Hidden : RsvpWidgetUiModel
+    data object Loading : RsvpWidgetUiModel
+    data object Error : RsvpWidgetUiModel
+}
+
+data class RsvpEventUiModel(
     val title: TextUiModel,
     val dateTime: TextUiModel,
     val isAttendanceOptional: Boolean,
     val buttons: RsvpButtonsUiModel,
-    val calendar: RsvpCalendarUiModel,
+    val calendar: RsvpCalendarUiModel?,
     val recurrence: TextUiModel?,
     val location: TextUiModel?,
     val organizer: RsvpOrganizerUiModel,
@@ -41,6 +49,8 @@ sealed interface RsvpStatusUiModel {
     data object InviteOutdated : RsvpStatusUiModel
     data object EventCancelledInviteOutdated : RsvpStatusUiModel
     data object OfflineInviteOutdated : RsvpStatusUiModel
+    data object AddressIsIncorrect : RsvpStatusUiModel
+    data object UserIsOrganizer : RsvpStatusUiModel
 }
 
 data class RsvpAttendeeUiModel(

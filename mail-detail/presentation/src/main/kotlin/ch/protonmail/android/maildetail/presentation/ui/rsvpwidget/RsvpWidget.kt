@@ -65,12 +65,12 @@ import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.RsvpAnswer
 import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpButtonsUiModel
+import ch.protonmail.android.maildetail.presentation.model.RsvpEventUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpStatusUiModel
-import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
 import ch.protonmail.android.maildetail.presentation.previewdata.RsvpWidgetPreviewData
 
 @Composable
-fun RsvpWidget(uiModel: RsvpWidgetUiModel, modifier: Modifier = Modifier) {
+fun RsvpWidget(uiModel: RsvpEventUiModel, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .background(
@@ -100,11 +100,13 @@ fun RsvpWidget(uiModel: RsvpWidgetUiModel, modifier: Modifier = Modifier) {
             RsvpResponse(uiModel.buttons)
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
-            RsvpDetailsRow(
-                icon = R.drawable.ic_proton_circle_filled,
-                text = uiModel.calendar.name.string(),
-                iconTint = uiModel.calendar.color
-            )
+            uiModel.calendar?.let {
+                RsvpDetailsRow(
+                    icon = R.drawable.ic_proton_circle_filled,
+                    text = uiModel.calendar.name.string(),
+                    iconTint = uiModel.calendar.color
+                )
+            }
 
             uiModel.recurrence?.let {
                 RsvpDetailsRow(
@@ -433,6 +435,8 @@ private fun RsvpStatusUiModel.getMessage() = when (this) {
     RsvpStatusUiModel.HappeningNow -> R.string.rsvp_widget_happening_now
     RsvpStatusUiModel.InviteOutdated -> R.string.rsvp_widget_invite_outdated
     RsvpStatusUiModel.OfflineInviteOutdated -> R.string.rsvp_widget_offline_invite_outdated
+    RsvpStatusUiModel.AddressIsIncorrect -> R.string.rsvp_widget_address_is_incorrect
+    RsvpStatusUiModel.UserIsOrganizer -> R.string.rsvp_widget_user_is_organizer
 }
 
 @Composable
@@ -443,6 +447,8 @@ private fun RsvpStatusUiModel.getTextColor() = when (this) {
     RsvpStatusUiModel.HappeningNow -> ProtonTheme.colors.notificationSuccess900
     RsvpStatusUiModel.InviteOutdated -> ProtonTheme.colors.textNorm
     RsvpStatusUiModel.OfflineInviteOutdated -> ProtonTheme.colors.textNorm
+    RsvpStatusUiModel.AddressIsIncorrect -> ProtonTheme.colors.textNorm
+    RsvpStatusUiModel.UserIsOrganizer -> ProtonTheme.colors.textNorm
 }
 
 @Composable
@@ -453,6 +459,8 @@ private fun RsvpStatusUiModel.getBackgroundColor() = when (this) {
     RsvpStatusUiModel.HappeningNow -> ProtonTheme.colors.notificationSuccess100
     RsvpStatusUiModel.InviteOutdated -> ProtonTheme.colors.backgroundDeep
     RsvpStatusUiModel.OfflineInviteOutdated -> ProtonTheme.colors.backgroundDeep
+    RsvpStatusUiModel.AddressIsIncorrect -> ProtonTheme.colors.backgroundDeep
+    RsvpStatusUiModel.UserIsOrganizer -> ProtonTheme.colors.backgroundDeep
 }
 
 @Preview

@@ -22,37 +22,41 @@ import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maildetail.domain.model.RsvpAttendance
-import ch.protonmail.android.maildetail.domain.model.RsvpAttendee
-import ch.protonmail.android.maildetail.domain.model.RsvpAttendeeStatus
-import ch.protonmail.android.maildetail.domain.model.RsvpCalendar
-import ch.protonmail.android.maildetail.domain.model.RsvpEventDetails
-import ch.protonmail.android.maildetail.domain.model.RsvpOrganizer
-import ch.protonmail.android.maildetail.domain.model.RsvpState
+import ch.protonmail.android.maildetail.presentation.R
+import ch.protonmail.android.mailmessage.domain.model.RsvpAttendance
+import ch.protonmail.android.mailmessage.domain.model.RsvpAttendee
+import ch.protonmail.android.mailmessage.domain.model.RsvpAttendeeStatus
+import ch.protonmail.android.mailmessage.domain.model.RsvpCalendar
+import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
+import ch.protonmail.android.mailmessage.domain.model.RsvpOrganizer
+import ch.protonmail.android.mailmessage.domain.model.RsvpState
 import ch.protonmail.android.maildetail.presentation.model.RsvpAnswer
 import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpCalendarUiModel
+import ch.protonmail.android.maildetail.presentation.model.RsvpEventUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpOrganizerUiModel
-import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
 import ch.protonmail.android.maildetail.presentation.usecase.FormatRsvpWidgetTime
 import javax.inject.Inject
 
-class RsvpWidgetUiModelMapper @Inject constructor(
+class RsvpEventUiModelMapper @Inject constructor(
     private val colorMapper: ColorMapper,
     private val formatRsvpWidgetTime: FormatRsvpWidgetTime,
     private val rsvpStatusUiModelMapper: RsvpStatusUiModelMapper,
     private val rsvpButtonsUiModelMapper: RsvpButtonsUiModelMapper
 ) {
 
-    fun toUiModel(eventDetails: RsvpEventDetails): RsvpWidgetUiModel {
-        val currentAttendee = eventDetails.attendees[eventDetails.userAttendeeIdx]
+    fun toUiModel(eventDetails: RsvpEvent): RsvpEventUiModel {
+        // When currentAttendee is null, the user is the organizer of the event
+        val currentAttendee = eventDetails.userAttendeeIdx?.let {
+            eventDetails.attendees[it]
+        }
 
-        return RsvpWidgetUiModel(
-            title = TextUiModel.Text(eventDetails.summary),
+        return RsvpEventUiModel(
+            title = eventDetails.getEventTitle(),
             dateTime = formatRsvpWidgetTime(eventDetails.occurrence, eventDetails.startsAt, eventDetails.endsAt),
             isAttendanceOptional = isAttendanceOptional(eventDetails.state),
-            buttons = rsvpButtonsUiModelMapper.toUiModel(eventDetails.state, currentAttendee.status.toRsvpAnswer()),
-            calendar = eventDetails.calendar.toUiModel(),
+            buttons = rsvpButtonsUiModelMapper.toUiModel(eventDetails.state, currentAttendee?.status?.toRsvpAnswer()),
+            calendar = eventDetails.calendar?.toUiModel(),
             recurrence = eventDetails.recurrence?.let { TextUiModel.Text(it) },
             location = eventDetails.location?.let { TextUiModel.Text(it) },
             organizer = eventDetails.organizer.toUiModel(),
@@ -60,6 +64,9 @@ class RsvpWidgetUiModelMapper @Inject constructor(
             status = rsvpStatusUiModelMapper.toUiModel(eventDetails.state)
         )
     }
+
+    private fun RsvpEvent.getEventTitle() =
+        summary?.let { TextUiModel.Text(it) } ?: TextUiModel.TextRes(R.string.rsvp_widget_no_title)
 
     private fun isAttendanceOptional(state: RsvpState) = when (state) {
         is RsvpState.AnswerableInvite -> when (state.attendance) {
