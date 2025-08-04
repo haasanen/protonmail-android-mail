@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -74,7 +75,8 @@ class SetMessagePasswordViewModel @Inject constructor(
     private fun onApplyPassword(password: String, passwordHint: String?) {
         viewModelScope.launch {
             saveMessagePassword(password, passwordHint)
-            emitNewStateFrom(MessagePasswordOperation.Event.ExitScreen)
+                .onLeft { Timber.e("external encryption: Failed to set message password $it") }
+                .onRight { emitNewStateFrom(MessagePasswordOperation.Event.ExitScreen) }
         }
     }
 
@@ -104,7 +106,7 @@ class SetMessagePasswordViewModel @Inject constructor(
     }
 
     companion object {
-        const val MIN_PASSWORD_LENGTH = 4
+        const val MIN_PASSWORD_LENGTH = 8
         const val MAX_PASSWORD_LENGTH = 21
     }
 }
