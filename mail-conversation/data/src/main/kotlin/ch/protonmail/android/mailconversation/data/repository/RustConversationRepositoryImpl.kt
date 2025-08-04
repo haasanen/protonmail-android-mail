@@ -20,7 +20,6 @@ package ch.protonmail.android.mailconversation.data.repository
 
 import arrow.core.Either
 import arrow.core.flatMap
-import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -36,7 +35,6 @@ import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -77,48 +75,6 @@ class RustConversationRepositoryImpl @Inject constructor(
     ).map { eitherConversationMessages ->
         eitherConversationMessages.flatMap { it.toConversationMessagesWithMessageToOpen() }
     }
-
-    // It will be implemented later on
-    override suspend fun addLabel(
-        userId: UserId,
-        conversationId: ConversationId,
-        labelId: LabelId
-    ): Either<DataError, Conversation> = DataError.Local.Unknown.left()
-
-    // It will be implemented later on
-    override suspend fun addLabel(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        labelId: LabelId
-    ): Either<DataError, List<Conversation>> = DataError.Local.Unknown.left()
-
-    // It will be implemented later on
-    override suspend fun addLabels(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        labelIds: List<LabelId>
-    ): Either<DataError, List<Conversation>> = DataError.Local.Unknown.left()
-
-    // It will be implemented later on
-    override suspend fun removeLabel(
-        userId: UserId,
-        conversationId: ConversationId,
-        labelId: LabelId
-    ): Either<DataError, Conversation> = DataError.Local.Unknown.left()
-
-    // It will be implemented later on
-    override suspend fun removeLabel(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        labelId: LabelId
-    ): Either<DataError, List<Conversation>> = DataError.Local.Unknown.left()
-
-    // It will be implemented later on
-    override suspend fun removeLabels(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        labelIds: List<LabelId>
-    ): Either<DataError, List<Conversation>> = DataError.Local.Unknown.left()
 
     override suspend fun move(
         userId: UserId,
@@ -205,11 +161,4 @@ class RustConversationRepositoryImpl @Inject constructor(
         userId,
         conversationIds.map { it.toLocalConversationId() }
     )
-
-    // It will be implemented later on
-    override suspend fun deleteConversations(userId: UserId, labelId: LabelId) {
-    }
-
-    // It will be implemented later on
-    override fun observeClearLabelOperation(userId: UserId, labelId: LabelId): Flow<Boolean> = flowOf(false)
 }

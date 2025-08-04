@@ -22,7 +22,6 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -32,9 +31,5 @@ class DeleteConversations @Inject constructor(
 
     suspend operator fun invoke(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, Unit> =
         conversationRepository.deleteConversations(userId, conversationIds)
-
-    suspend operator fun invoke(userId: UserId, labelId: LabelId) {
-        conversationRepository.deleteConversations(userId, labelId)
-    }
 
 }

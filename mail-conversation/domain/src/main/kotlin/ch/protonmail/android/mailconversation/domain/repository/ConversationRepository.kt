@@ -61,45 +61,6 @@ interface ConversationRepository {
         labelId: LabelId
     ): Flow<Either<DataError, ConversationMessages>>
 
-    /**
-     * Adds the given [labelId] to the message with the given [conversationId]
-     */
-    suspend fun addLabel(
-        userId: UserId,
-        conversationId: ConversationId,
-        labelId: LabelId
-    ): Either<DataError, Conversation>
-
-    suspend fun addLabel(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        labelId: LabelId
-    ): Either<DataError, List<Conversation>>
-
-    suspend fun addLabels(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        labelIds: List<LabelId>
-    ): Either<DataError, List<Conversation>>
-
-    suspend fun removeLabel(
-        userId: UserId,
-        conversationId: ConversationId,
-        labelId: LabelId
-    ): Either<DataError, Conversation>
-
-    suspend fun removeLabel(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        labelId: LabelId
-    ): Either<DataError, List<Conversation>>
-
-    suspend fun removeLabels(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        labelIds: List<LabelId>
-    ): Either<DataError, List<Conversation>>
-
     suspend fun move(
         userId: UserId,
         conversationIds: List<ConversationId>,
@@ -131,8 +92,4 @@ interface ConversationRepository {
     ): Either<DataError, Unit>
 
     suspend fun deleteConversations(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, Unit>
-
-    suspend fun deleteConversations(userId: UserId, labelId: LabelId)
-
-    fun observeClearLabelOperation(userId: UserId, labelId: LabelId): Flow<Boolean>
 }
