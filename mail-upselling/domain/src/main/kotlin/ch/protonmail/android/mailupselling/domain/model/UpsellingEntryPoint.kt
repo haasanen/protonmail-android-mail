@@ -18,18 +18,42 @@
 
 package ch.protonmail.android.mailupselling.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 sealed interface UpsellingEntryPoint {
 
+    @Serializable
     sealed interface Feature : UpsellingEntryPoint {
+
+        @Serializable
         data object Mailbox : Feature
+
+        @Serializable
         data object MailboxPromo : Feature
+
+        @Serializable
         data object Navbar : Feature
+
+        @Serializable
         data object ContactGroups : Feature
+
+        @Serializable
         data object Labels : Feature
+
+        @Serializable
         data object Folders : Feature
+
+        @Serializable
         data object MobileSignature : Feature
+
+        @Serializable
         data object AutoDelete : Feature
+
+        @Serializable
         data object Snooze : Feature
+
+        @Serializable
         data object ScheduleSend : Feature
     }
 }

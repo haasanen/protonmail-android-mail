@@ -26,21 +26,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
-import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingActions
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState
 import ch.protonmail.android.mailupselling.presentation.viewmodel.UpsellingViewModel
 
 @Composable
-fun UpsellingScreen(
-    modifier: Modifier = Modifier,
-    upsellingActions: UpsellingScreen.Actions,
-    entryPoint: UpsellingEntryPoint.Feature
-) {
-
-    val viewModel = hiltViewModel<UpsellingViewModel, UpsellingViewModel.Factory> { factory ->
-        factory.create(entryPoint)
-    }
+fun UpsellingScreen(upsellingActions: UpsellingScreen.Actions, modifier: Modifier = Modifier) {
+    val viewModel = hiltViewModel<UpsellingViewModel>()
 
     val actions = upsellingActions.copy(
         onSuccess = {
@@ -84,6 +76,9 @@ object UpsellingScreen {
             )
         }
     }
+
+    const val UpsellingEntryPointKey = "UpsellingEntryPointKey"
+    const val UpsellingTypeKey = "UpsellingTypeKey"
 }
 
 @AdaptivePreviews

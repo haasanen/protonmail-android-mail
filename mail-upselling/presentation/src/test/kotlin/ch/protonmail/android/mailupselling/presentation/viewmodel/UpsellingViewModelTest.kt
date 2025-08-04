@@ -18,13 +18,17 @@
 
 package ch.protonmail.android.mailupselling.presentation.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
+import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.usecase.ObserveMailPlusPlanUpgrades
+import ch.protonmail.android.mailupselling.domain.usecase.ResetPlanUpgradesCache
 import ch.protonmail.android.mailupselling.presentation.UpsellingContentReducer
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentOperation.UpsellingScreenContentEvent
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState
-import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibilityOverrideSignal
+import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen.UpsellingEntryPointKey
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.confirmVerified
@@ -34,9 +38,11 @@ import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
 import me.proton.android.core.payment.domain.model.ProductDetail
 import org.junit.Rule
 import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -45,19 +51,29 @@ internal class UpsellingViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val getMailPlusUpgradePlans = mockk<ObserveMailPlusPlanUpgrades>()
-    private val upsellingVisibilityOverrideSignal = mockk<UpsellingVisibilityOverrideSignal>()
+    private val savedStateHandle = mockk<SavedStateHandle>()
+    private val observeMailPlusPlanUpgrades = mockk<ObserveMailPlusPlanUpgrades>()
     private val upsellingContentReducer = mockk<UpsellingContentReducer>()
+    private val eventLoopRepository = mockk<EventLoopRepository>(relaxed = true)
+    private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
+    private val resetUpgradeCache = mockk<ResetPlanUpgradesCache>()
 
     @AfterTest
     fun teardown() {
         unmockkAll()
     }
 
+    @BeforeTest
+    fun setup() {
+        every {
+            savedStateHandle.get<String>(UpsellingEntryPointKey)
+        } returns Json.encodeToString<UpsellingEntryPoint>(UpsellingEntryPoint.Feature.Mailbox)
+    }
+
     @Test
     fun `should return loading error when plans fetching returns an empty list`() = runTest {
         // Given
-        coEvery { getMailPlusUpgradePlans() } returns flowOf(emptyList())
+        coEvery { observeMailPlusPlanUpgrades() } returns flowOf(emptyList())
         val expectedFailure = mockk<UpsellingScreenContentState.Error>()
         every {
             upsellingContentReducer.newStateFrom(UpsellingScreenContentEvent.LoadingError.NoSubscriptions)
@@ -79,7 +95,7 @@ internal class UpsellingViewModelTest {
     fun `should return data state when plans fetching returns a valid list`() = runTest {
         // Given
         val expectedList = listOf<ProductDetail>(mockk(), mockk())
-        coEvery { getMailPlusUpgradePlans() } returns flowOf(expectedList)
+        coEvery { observeMailPlusPlanUpgrades() } returns flowOf(expectedList)
 
         val expectedModel = mockk<UpsellingScreenContentState.Data>()
         every {
@@ -109,9 +125,11 @@ internal class UpsellingViewModelTest {
     }
 
     private fun viewModel() = UpsellingViewModel(
-        UpsellingEntryPoint.Feature.Navbar,
-        getMailPlusUpgradePlans,
-        upsellingVisibilityOverrideSignal,
-        upsellingContentReducer
+        savedStateHandle,
+        observeMailPlusPlanUpgrades,
+        upsellingContentReducer,
+        eventLoopRepository,
+        observePrimaryUserId,
+        resetUpgradeCache
     )
 }

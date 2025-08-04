@@ -18,36 +18,47 @@
 
 package ch.protonmail.android.mailupselling.presentation.usecase
 
+import ch.protonmail.android.mailsession.domain.model.hasSubscription
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObserveUser
 import ch.protonmail.android.mailupselling.domain.usecase.GetPromotionStatus
 import ch.protonmail.android.mailupselling.domain.usecase.ObserveMailPlusPlanUpgrades
 import ch.protonmail.android.mailupselling.domain.usecase.PromoStatus
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
-import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibilityOverrideSignal
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import me.proton.android.core.payment.domain.model.ProductDetail
+import timber.log.Timber
 import javax.inject.Inject
 
 class ObserveMailboxOneClickUpsellingVisibility @Inject constructor(
     private val getPromotionStatus: GetPromotionStatus,
-    private val upsellingVisibilityOverrideSignal: UpsellingVisibilityOverrideSignal,
-    private val observeMailPlusPlanUpgrades: ObserveMailPlusPlanUpgrades
+    private val observeMailPlusPlanUpgrades: ObserveMailPlusPlanUpgrades,
+    private val observeUser: ObserveUser,
+    private val observePrimaryUserId: ObservePrimaryUserId
 ) {
 
-    operator fun invoke(): Flow<UpsellingVisibility> = upsellingVisibilityOverrideSignal.shouldHideUpselling()
-        .flatMapLatest { shouldHide ->
-            if (shouldHide) {
-                flowOf(UpsellingVisibility.HIDDEN)
+    operator fun invoke(): Flow<UpsellingVisibility> = observePrimaryUserId().flatMapLatest { userId ->
+        userId ?: return@flatMapLatest flowOf(UpsellingVisibility.HIDDEN)
+
+        combine(
+            observeUser(userId).filterNotNull(),
+            observeMailPlusPlanUpgrades()
+        ) { userEither, plusPlans ->
+            val user = userEither.getOrNull() ?: return@combine UpsellingVisibility.HIDDEN
+
+            if (user.hasSubscription()) {
+                Timber.d("user-subscription: hiding entry point")
+                UpsellingVisibility.HIDDEN
             } else {
-                flow {
-                    val plusPlans = observeMailPlusPlanUpgrades().first()
-                    emit(resolvePromoVisibility(plusPlans))
-                }
+                Timber.d("user-subscription: resolving entry point")
+                resolvePromoVisibility(plusPlans)
             }
         }
+    }
 
     private fun resolvePromoVisibility(plans: List<ProductDetail>) = when (getPromotionStatus(plans)) {
         PromoStatus.NO_PLANS -> UpsellingVisibility.HIDDEN

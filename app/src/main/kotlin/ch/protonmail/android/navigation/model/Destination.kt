@@ -40,6 +40,10 @@ import ch.protonmail.android.mailpinlock.presentation.pin.ui.AutoLockPinScreen.A
 import ch.protonmail.android.mailpinlock.presentation.pin.ui.dialog.AutoLockPinScreenDialogKeys.AutoLockPinDialogModeKey
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen.SWIPE_DIRECTION_KEY
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen.UpsellingEntryPointKey
+import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingScreen.UpsellingTypeKey
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.serialize
 
@@ -96,6 +100,7 @@ sealed class Destination(val route: String) {
         object AutoLockSettings : Destination("settings/autolock")
         object AutoLockInterval : Destination("settings/autolock/interval")
         object AutoLockPinScreen : Destination("settings/autolock/pin/${AutoLockPinModeKey.wrap()}") {
+
             operator fun invoke(mode: AutoLockInsertionMode) =
                 route.replace(AutoLockPinModeKey.wrap(), mode.serialize())
         }
@@ -135,6 +140,7 @@ sealed class Destination(val route: String) {
 
             operator fun invoke(contactId: ContactId) = route.replace(CONTACT_DETAILS_ID_KEY.wrap(), contactId.id)
         }
+
         object ContactGroupDetails : Destination("contacts/group/${CONTACT_GROUP_DETAILS_ID_KEY.wrap()}") {
 
             operator fun invoke(contactGroupId: ContactGroupId) =
@@ -154,10 +160,12 @@ sealed class Destination(val route: String) {
 
         object BugReporting : Destination("support/bugreporting")
 
-        object Upselling {
-            data object StandaloneMailbox : Destination("upselling/standalone/mailbox")
-            data object StandaloneMailboxPromo : Destination("upselling/standalone/mailboxPromo")
-            data object StandaloneNavbar : Destination("upselling/standalone/navbar")
+        object FeatureUpselling :
+            Destination("upselling/entrypoint/feature/${UpsellingEntryPointKey.wrap()}/${UpsellingTypeKey.wrap()}") {
+
+            operator fun invoke(entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) = route
+                .replace(UpsellingEntryPointKey.wrap(), entryPoint.serialize())
+                .replace(UpsellingTypeKey.wrap(), type.serialize())
         }
     }
 

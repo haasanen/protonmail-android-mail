@@ -716,7 +716,8 @@ private fun buildSidebarActions(navController: NavHostController, launcherAction
         onSubscription = launcherActions.onSubscription,
         onContacts = { navController.navigate(Screen.Contacts.route) },
         onReportBug = { navController.navigate(Screen.BugReporting.route) },
-        onExportLogs = { navController.navigate(Screen.ApplicationLogs.route) }
+        onExportLogs = { navController.navigate(Screen.ApplicationLogs.route) },
+        onUpselling = { entryPoint, type -> navController.navigate(Screen.FeatureUpselling(entryPoint, type)) }
     )
 
 sealed interface BottomSheetType {

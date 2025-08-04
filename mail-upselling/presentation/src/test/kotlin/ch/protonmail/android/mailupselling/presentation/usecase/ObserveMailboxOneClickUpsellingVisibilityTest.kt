@@ -19,11 +19,15 @@
 package ch.protonmail.android.mailupselling.presentation.usecase
 
 import app.cash.turbine.test
+import arrow.core.right
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObserveUser
 import ch.protonmail.android.mailupselling.domain.usecase.GetPromotionStatus
 import ch.protonmail.android.mailupselling.domain.usecase.ObserveMailPlusPlanUpgrades
 import ch.protonmail.android.mailupselling.domain.usecase.PromoStatus
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
-import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibilityOverrideSignal
+import ch.protonmail.android.testdata.user.UserIdTestData
+import ch.protonmail.android.testdata.user.UserTestData
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -39,17 +43,20 @@ import kotlin.test.assertEquals
 internal class ObserveMailboxOneClickUpsellingVisibilityTest {
 
     private val getPromotionStatus = mockk<GetPromotionStatus>()
-    private val upsellingVisibilityOverrideSignal = mockk<UpsellingVisibilityOverrideSignal>()
     private val observeMailPlusPlanUpgrades = mockk<ObserveMailPlusPlanUpgrades>()
-
+    private val observeUser = mockk<ObserveUser>()
+    private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
     private lateinit var observeUpselling: ObserveMailboxOneClickUpsellingVisibility
 
     @BeforeTest
     fun setup() {
+        every { observePrimaryUserId() } returns flowOf(UserIdTestData.userId)
+
         observeUpselling = ObserveMailboxOneClickUpsellingVisibility(
             getPromotionStatus,
-            upsellingVisibilityOverrideSignal,
-            observeMailPlusPlanUpgrades
+            observeMailPlusPlanUpgrades,
+            observeUser,
+            observePrimaryUserId
         )
     }
 
@@ -59,22 +66,9 @@ internal class ObserveMailboxOneClickUpsellingVisibilityTest {
     }
 
     @Test
-    fun `should hide when override signal is forced`() = runTest {
+    fun `should proxy getPromotionStatus result - hidden due to no plans`() = runTest {
         // Given
-        every { upsellingVisibilityOverrideSignal.shouldHideUpselling() } returns flowOf(true)
-
-        // When
-        observeUpselling().test {
-            // Then
-            assertEquals(UpsellingVisibility.HIDDEN, awaitItem())
-            awaitComplete()
-        }
-    }
-
-    @Test
-    fun `should proxy getPromotionStatus result when hide signal returns false - hidden`() = runTest {
-        // Given
-        every { upsellingVisibilityOverrideSignal.shouldHideUpselling() } returns flowOf(false)
+        every { observeUser(userId = UserIdTestData.userId) } returns flowOf(UserTestData.freeUser.right())
         coEvery { observeMailPlusPlanUpgrades() } returns flowOf(listOf())
         coEvery { getPromotionStatus(any()) } returns PromoStatus.NO_PLANS
 
@@ -89,7 +83,7 @@ internal class ObserveMailboxOneClickUpsellingVisibilityTest {
     @Test
     fun `should proxy getPromotionStatus result when hide signal returns false - normal`() = runTest {
         // Given
-        every { upsellingVisibilityOverrideSignal.shouldHideUpselling() } returns flowOf(false)
+        every { observeUser(userId = UserIdTestData.userId) } returns flowOf(UserTestData.freeUser.right())
         val expectedPlans = listOf(mockk<ProductDetail>())
         coEvery { observeMailPlusPlanUpgrades() } returns flowOf(expectedPlans)
         every { getPromotionStatus(expectedPlans) } returns PromoStatus.NORMAL
@@ -105,7 +99,7 @@ internal class ObserveMailboxOneClickUpsellingVisibilityTest {
     @Test
     fun `should proxy getPromotionStatus result when hide signal returns false - promo`() = runTest {
         // Given
-        every { upsellingVisibilityOverrideSignal.shouldHideUpselling() } returns flowOf(false)
+        every { observeUser(userId = UserIdTestData.userId) } returns flowOf(UserTestData.freeUser.right())
         val expectedPlans = listOf(mockk<ProductDetail>())
         coEvery { observeMailPlusPlanUpgrades() } returns flowOf(expectedPlans)
         every { getPromotionStatus(expectedPlans) } returns PromoStatus.PROMO
