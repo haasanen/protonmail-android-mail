@@ -21,7 +21,7 @@ package ch.protonmail.android.mailupselling.presentation.viewmodel
 import app.cash.turbine.test
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingButtonState
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
-import ch.protonmail.android.mailupselling.presentation.usecase.ObserveMailboxOneClickUpsellingVisibility
+import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.every
 import io.mockk.mockk
@@ -38,7 +38,7 @@ internal class UpsellingButtonViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val observeVisibilityUseCase = mockk<ObserveMailboxOneClickUpsellingVisibility>()
+    private val observeVisibilityUseCase = mockk<ObserveUpsellingVisibility>()
 
     @AfterTest
     fun teardown() {

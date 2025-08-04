@@ -34,7 +34,7 @@ import me.proton.android.core.payment.domain.model.ProductDetail
 import timber.log.Timber
 import javax.inject.Inject
 
-class ObserveMailboxOneClickUpsellingVisibility @Inject constructor(
+class ObserveUpsellingVisibility @Inject constructor(
     private val getPromotionStatus: GetPromotionStatus,
     private val observeMailPlusPlanUpgrades: ObserveMailPlusPlanUpgrades,
     private val observeUser: ObserveUser,

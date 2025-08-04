@@ -46,13 +46,14 @@ internal class ObserveMailboxOneClickUpsellingVisibilityTest {
     private val observeMailPlusPlanUpgrades = mockk<ObserveMailPlusPlanUpgrades>()
     private val observeUser = mockk<ObserveUser>()
     private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
-    private lateinit var observeUpselling: ObserveMailboxOneClickUpsellingVisibility
+
+    private lateinit var observeUpselling: ObserveUpsellingVisibility
 
     @BeforeTest
     fun setup() {
         every { observePrimaryUserId() } returns flowOf(UserIdTestData.userId)
 
-        observeUpselling = ObserveMailboxOneClickUpsellingVisibility(
+        observeUpselling = ObserveUpsellingVisibility(
             getPromotionStatus,
             observeMailPlusPlanUpgrades,
             observeUser,
