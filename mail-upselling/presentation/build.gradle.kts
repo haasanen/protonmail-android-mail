@@ -57,6 +57,8 @@ dependencies {
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
 
+    implementation(project(":mail-common:domain"))
+    implementation(project(":mail-session:domain"))
     implementation(project(":mail-upselling:domain"))
     implementation(project(":mail-common:presentation"))
     implementation(project(":design-system"))
@@ -68,6 +70,7 @@ dependencies {
 
     debugImplementation(libs.bundles.compose.debug)
 
+    implementation(libs.proton.core.user.domain)
     implementation(libs.bundles.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.arrow.core)

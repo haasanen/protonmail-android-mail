@@ -19,6 +19,7 @@
 plugins {
     id("com.android.library")
     kotlin("android")
+    kotlin("plugin.serialization")
     id("app-config-plugin")
 }
 
@@ -40,7 +41,6 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
-
     buildFeatures {
         buildConfig = true
     }
@@ -51,6 +51,7 @@ dependencies {
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
+    implementation(project(":mail-session:domain"))
     implementation(project(":uicomponents"))
     implementation(project(":shared:core:payment:domain"))
 
@@ -61,5 +62,6 @@ dependencies {
     implementation(libs.proton.core.user.domain)
 
     testImplementation(project(":test:test-data"))
+    testImplementation(project(":test:utils"))
     testImplementation(libs.bundles.test)
 }

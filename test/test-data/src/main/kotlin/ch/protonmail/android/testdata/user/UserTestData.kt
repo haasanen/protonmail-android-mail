@@ -18,36 +18,25 @@
 
 package ch.protonmail.android.testdata.user
 
+import ch.protonmail.android.mailcommon.data.mapper.LocalUser
+import ch.protonmail.android.mailsession.domain.model.User
+import ch.protonmail.android.testdata.user.UserTestData.USER_DISPLAY_NAME_RAW
+import ch.protonmail.android.testdata.user.UserTestData.USER_EMAIL_RAW
+import ch.protonmail.android.testdata.user.UserTestData.USER_NAME_RAW
 import me.proton.core.domain.entity.UserId
-import me.proton.core.user.domain.entity.Delinquent
-import me.proton.core.user.domain.entity.Role
-import me.proton.core.user.domain.entity.Type
-import me.proton.core.user.domain.entity.User
+import uniffi.proton_mail_uniffi.Flags
+import uniffi.proton_mail_uniffi.ProductUsedSpace
+import uniffi.proton_mail_uniffi.UnixTimestamp
+import uniffi.proton_mail_uniffi.UserMnemonicStatus
+import uniffi.proton_mail_uniffi.UserType
 
 object UserTestData {
 
-    const val MAX_SPACE_RAW = 20_000L
-    const val USED_SPACE_RAW = 5000L
     const val USER_EMAIL_RAW = "userEmail"
     const val USER_DISPLAY_NAME_RAW = "userDisplayName"
     const val USER_NAME_RAW = "username"
 
     val Primary = build()
-
-    val emptyDisplayNameUser = build(
-        displayName = "",
-        userId = UserIdTestData.userId
-    )
-
-    val adminUser = build(
-        role = Role.OrganizationAdmin,
-        userId = UserIdTestData.adminUserId
-    )
-
-    val orgMemberUser = build(
-        role = Role.OrganizationMember,
-        userId = UserIdTestData.adminUserId
-    )
 
     val freeUser = build(userId = UserIdTestData.freeUserId, subscribed = 0)
 
@@ -58,28 +47,55 @@ object UserTestData {
     fun build(
         displayName: String = USER_DISPLAY_NAME_RAW,
         name: String = USER_NAME_RAW,
-        role: Role = Role.NoOrganization,
         userId: UserId = UserIdTestData.Primary,
         subscribed: Int = 1
     ) = User(
-        createdAtUtc = 0,
-        type = Type.Proton,
-        credit = 1,
-        currency = "CHF",
-        delinquent = Delinquent.None,
+        userId = userId,
         displayName = displayName,
         email = USER_EMAIL_RAW,
-        keys = emptyList(),
-        flags = emptyMap(),
-        maxSpace = MAX_SPACE_RAW,
-        maxUpload = 1,
         name = name,
-        private = true,
-        role = role,
         services = 1,
-        subscribed = subscribed,
-        usedSpace = USED_SPACE_RAW,
-        userId = userId,
-        recovery = null
+        subscribed = subscribed
+    )
+}
+
+object LocalUserTestData {
+
+    fun build(
+        displayName: String = USER_DISPLAY_NAME_RAW,
+        name: String = USER_NAME_RAW,
+        services: Int = 0,
+        subscribed: Int = 0
+    ) = LocalUser(
+        createTime = UnixTimestamp.MIN_VALUE,
+        credit = 0L,
+        currency = "USD",
+        delinquent = 0U,
+        displayName = displayName,
+        email = USER_EMAIL_RAW,
+        maxSpace = 0L,
+        maxUpload = 0L,
+        mnemonicStatus = UserMnemonicStatus.ENABLED_AND_SET,
+        private = false,
+        productUsedSpace = ProductUsedSpace(0L, 0L, 0L, 0L, 0L),
+        role = 0U,
+        name = name,
+        services = services.toUInt(),
+        toMigrate = false,
+        subscribed = subscribed.toUInt(),
+        usedSpace = 0L,
+        userType = UserType.Proton,
+        flags = getDefaultFlags()
+    )
+
+    private fun getDefaultFlags() = Flags(
+        hasTemporaryPassword = false,
+        noLogin = false,
+        noProtonAddress = false,
+        onboardChecklistStorageGranted = false,
+        protected = false,
+        recoveryAttempt = false,
+        sso = false,
+        testAccount = false
     )
 }

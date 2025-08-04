@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,11 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcommon.domain.usecase
+package ch.protonmail.android.mailupselling.presentation.usecase
 
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailsession.domain.usecase.ObserveUser
+import ch.protonmail.android.mailupselling.domain.usecase.IsPaidUser
 import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.testdata.user.UserTestData
 import io.mockk.every
@@ -41,7 +43,7 @@ internal class IsPaidUserTest {
     @Test
     fun `returns true when the user is valid and has any paid plan`() = runTest {
         // Given
-        every { observeUser.invoke(userId) } returns flowOf(UserTestData.paidUser)
+        every { observeUser.invoke(userId) } returns flowOf(UserTestData.paidUser.right())
 
         // When
         val actual = isPaidUser(userId)
@@ -53,7 +55,7 @@ internal class IsPaidUserTest {
     @Test
     fun `returns false when user is valid and is not paid`() = runTest {
         // Given
-        every { observeUser.invoke(userId) } returns flowOf(UserTestData.freeUser)
+        every { observeUser.invoke(userId) } returns flowOf(UserTestData.freeUser.right())
 
         // When
         val actual = isPaidUser(userId)
@@ -65,7 +67,7 @@ internal class IsPaidUserTest {
     @Test
     fun `returns error when user is not valid`() = runTest {
         // Given
-        every { observeUser.invoke(userId) } returns flowOf(null)
+        every { observeUser.invoke(userId) } returns flowOf(DataError.Local.Unknown.left())
 
         // When
         val actual = isPaidUser(userId)

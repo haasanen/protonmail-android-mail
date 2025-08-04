@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,23 +16,21 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcommon.domain.usecase
+package ch.protonmail.android.mailupselling.domain.usecase
 
-import arrow.core.Either
-import arrow.core.left
+import arrow.core.flatMap
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailsession.domain.model.hasSubscriptionForMail
+import ch.protonmail.android.mailsession.domain.usecase.ObserveUser
 import kotlinx.coroutines.flow.first
 import me.proton.core.domain.entity.UserId
-import me.proton.core.user.domain.extension.hasSubscription
 import javax.inject.Inject
 
-class IsPaidUser @Inject constructor(
+class IsPaidMailUser @Inject constructor(
     private val observeUser: ObserveUser
 ) {
 
-    suspend operator fun invoke(userId: UserId): Either<DataError, Boolean> {
-        val user = observeUser(userId).first() ?: return DataError.Local.Unknown.left()
-        return user.hasSubscription().right()
+    suspend operator fun invoke(userId: UserId) = observeUser(userId).first().flatMap { it ->
+        it.hasSubscriptionForMail().right()
     }
 }
