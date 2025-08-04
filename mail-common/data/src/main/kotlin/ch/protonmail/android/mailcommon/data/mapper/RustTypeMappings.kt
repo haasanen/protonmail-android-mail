@@ -65,6 +65,8 @@ import uniffi.proton_mail_uniffi.PartialDate
 import uniffi.proton_mail_uniffi.PgpScheme
 import uniffi.proton_mail_uniffi.PmSignature
 import uniffi.proton_mail_uniffi.RemoteId
+import uniffi.proton_mail_uniffi.RsvpAnswer
+import uniffi.proton_mail_uniffi.RsvpEvent
 import uniffi.proton_mail_uniffi.ShowImages
 import uniffi.proton_mail_uniffi.ShowMoved
 import uniffi.proton_mail_uniffi.SpamOrTrash
@@ -190,3 +192,5 @@ typealias LocalVCardPropTypeTextPhone = VcardPropType.TextPhone
 typealias LocalVCardPropTypeString = VcardPropType.String
 typealias LocalMailScrollerError = MailScrollerError
 typealias LocalUserSettings = UserSettings
+typealias LocalRsvpEvent = RsvpEvent
+typealias LocalRsvpAnswer = RsvpAnswer
