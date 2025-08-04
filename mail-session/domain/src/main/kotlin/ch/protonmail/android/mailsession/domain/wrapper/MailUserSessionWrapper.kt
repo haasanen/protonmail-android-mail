@@ -24,8 +24,11 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import uniffi.proton_mail_uniffi.AsyncLiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.MailUserSessionForkResult
+import uniffi.proton_mail_uniffi.MailUserSessionUserResult
+import uniffi.proton_mail_uniffi.User
 import uniffi.proton_mail_uniffi.VoidEventResult
 
 class MailUserSessionWrapper(private val userSession: MailUserSession) {
@@ -52,4 +55,11 @@ class MailUserSessionWrapper(private val userSession: MailUserSession) {
     )
 
     suspend fun getAttachment(attachmentId: LocalAttachmentId) = userSession.getAttachment(attachmentId)
+
+    fun watchUser(callback: AsyncLiveQueryCallback) = userSession.watchUser(callback)
+
+    suspend fun getUser(): Either<DataError, User> = when (val result = userSession.user()) {
+        is MailUserSessionUserResult.Error -> result.v1.toDataError().left()
+        is MailUserSessionUserResult.Ok -> result.v1.right()
+    }
 }

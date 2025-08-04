@@ -30,6 +30,8 @@ import ch.protonmail.android.mailsession.data.repository.InMemoryMailSessionRepo
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.data.repository.RustEventLoopRepository
 import ch.protonmail.android.mailsession.data.repository.UserSessionRepositoryImpl
+import ch.protonmail.android.mailsession.data.user.RustUserDataSource
+import ch.protonmail.android.mailsession.data.user.RustUserDataSourceImpl
 import ch.protonmail.android.mailsession.domain.annotations.DatabasesBaseDirectory
 import ch.protonmail.android.mailsession.domain.coroutines.EventLoopScope
 import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
@@ -90,6 +92,10 @@ object MailSessionModule {
         @Binds
         @Singleton
         fun bindUserSessionRepository(impl: UserSessionRepositoryImpl): UserSessionRepository
+
+        @Binds
+        @Singleton
+        fun bindUserDataSource(impl: RustUserDataSourceImpl): RustUserDataSource
 
         @Binds
         @Singleton

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,23 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcommon.domain.usecase
+package ch.protonmail.android.mailsession.domain.usecase
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import me.proton.core.user.domain.entity.User
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-@Deprecated(
-    """
-        Not valid anymore with Rust library's logic, will never emit!
-        This should either be dropped (many usages could be changed to 
-        using observePrimaryUserId instead) or updated in the same way 
-        as observePrimaryUserId to apply different logic depending on 
-        rust / core data layer.
-    """
-)
-class ObservePrimaryUser @Inject constructor() {
+class ObserveUser @Inject constructor(
+    private val userSessionRepository: UserSessionRepository
+) {
 
-    operator fun invoke(): Flow<User?> = flowOf(null)
+    operator fun invoke(userId: UserId) = userSessionRepository.observeUser(userId)
 }

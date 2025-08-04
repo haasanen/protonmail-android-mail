@@ -26,6 +26,7 @@ import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
+import ch.protonmail.android.mailsession.domain.model.User
 import ch.protonmail.android.mailsession.domain.model.UserSettings
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.flow.Flow
@@ -45,6 +46,8 @@ interface UserSessionRepository {
     fun observeAccounts(): Flow<List<Account>>
 
     fun observePrimaryUserId(): Flow<UserId?>
+
+    fun observeUser(userId: UserId): Flow<Either<DataError, User>>
 
     suspend fun getAccount(userId: UserId): Account?
 

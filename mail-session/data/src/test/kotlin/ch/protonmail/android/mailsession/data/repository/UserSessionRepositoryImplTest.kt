@@ -1,17 +1,25 @@
 package ch.protonmail.android.mailsession.data.repository
 
+import app.cash.turbine.test
+import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalUser
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailsession.data.user.RustUserDataSource
 import ch.protonmail.android.mailsession.data.wrapper.MailSessionWrapper
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
+import ch.protonmail.android.mailsession.domain.model.User
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
+import ch.protonmail.android.testdata.user.LocalUserTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.runTest
 import me.proton.android.core.account.domain.usecase.ObserveStoredAccounts
 import org.junit.Rule
@@ -27,9 +35,11 @@ class UserSessionRepositoryImplTest {
 
     private val mailSessionRepository = mockk<MailSessionRepository>()
     private val observeStoredAccounts = mockk<ObserveStoredAccounts>()
+    private val rustUserDataSource = mockk<RustUserDataSource>()
 
     private val userSessionRepository = UserSessionRepositoryImpl(
         mailSessionRepository,
+        rustUserDataSource,
         observeStoredAccounts
     )
 
@@ -129,6 +139,54 @@ class UserSessionRepositoryImplTest {
         // Then
         assertEquals(SessionError.Local.Unknown.left(), result)
         coVerify { expectedMailUserSession.fork() }
+    }
+
+    @Test
+    fun `observe user returns the user entity and subsequent updates`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val expectedUser = User(
+            userId = userId,
+            displayName = "userDisplayName",
+            name = "username",
+            email = "userEmail",
+            services = 0,
+            subscribed = 0
+        )
+        val expectedMailUserSession = mockk<MailUserSessionWrapper>()
+        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
+        val localUser = LocalUserTestData.build(subscribed = 0, services = 0)
+        val updatedLocalUser = LocalUserTestData.build(subscribed = 1, services = 1)
+        val flow = MutableSharedFlow<Either<DataError, LocalUser>>()
+        coEvery { mailSessionRepository.getMailSession() } returns mailSession
+        every { rustUserDataSource.observeUser(expectedMailUserSession) } returns flow
+
+        // When + Then
+        userSessionRepository.observeUser(userId).test {
+            flow.emit(localUser.right())
+            assertEquals(expectedUser.right(), awaitItem())
+
+            flow.emit(updatedLocalUser.right())
+            assertEquals(expectedUser.copy(subscribed = 1, services = 1).right(), awaitItem())
+        }
+    }
+
+    @Test
+    fun `observe user returns error when data can't be fetched`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val expectedMailUserSession = mockk<MailUserSessionWrapper>()
+        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
+        val expectedError = DataError.Local.Unknown.left()
+        val flow = MutableSharedFlow<Either<DataError, LocalUser>>()
+        coEvery { mailSessionRepository.getMailSession() } returns mailSession
+        every { rustUserDataSource.observeUser(expectedMailUserSession) } returns flow
+
+        // When + Then
+        userSessionRepository.observeUser(userId).test {
+            flow.emit(expectedError)
+            assertEquals(expectedError, awaitItem())
+        }
     }
 
     @Test

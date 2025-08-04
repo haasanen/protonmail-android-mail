@@ -81,12 +81,14 @@ import uniffi.proton_mail_uniffi.ShowMoved
 import uniffi.proton_mail_uniffi.SpamOrTrash
 import uniffi.proton_mail_uniffi.SwipeAction
 import uniffi.proton_mail_uniffi.SystemLabel
+import uniffi.proton_mail_uniffi.User
 import uniffi.proton_mail_uniffi.UserSettings
 import uniffi.proton_mail_uniffi.VCardUrl
 import uniffi.proton_mail_uniffi.VcardPropType
 import uniffi.proton_mail_uniffi.ViewLayout
 import uniffi.proton_mail_uniffi.ViewMode
 
+typealias LocalUser = User
 typealias LocalUserId = String
 typealias LocalConversation = Conversation
 typealias LocalConversationId = Id

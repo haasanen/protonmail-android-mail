@@ -21,22 +21,28 @@ package ch.protonmail.android.mailsession.data.repository
 import arrow.core.Either
 import arrow.core.flatMap
 import arrow.core.left
-import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
+import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.autolock.AutoLockPin
 import ch.protonmail.android.mailcommon.domain.model.autolock.SetAutoLockPinError
 import ch.protonmail.android.mailsession.data.mapper.toAccount
 import ch.protonmail.android.mailsession.data.mapper.toLocalAutoLockPin
 import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
+import ch.protonmail.android.mailsession.data.mapper.toUser
 import ch.protonmail.android.mailsession.data.mapper.toUserSettings
+import ch.protonmail.android.mailsession.data.user.RustUserDataSource
 import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
+import ch.protonmail.android.mailsession.domain.model.User
 import ch.protonmail.android.mailsession.domain.model.UserSettings
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import me.proton.android.core.account.domain.usecase.ObserveStoredAccounts
@@ -50,6 +56,7 @@ import javax.inject.Singleton
 @Singleton
 class UserSessionRepositoryImpl @Inject constructor(
     mailSessionRepository: MailSessionRepository,
+    private val rustUserDataSource: RustUserDataSource,
     private val observeStoredAccounts: ObserveStoredAccounts
 ) : UserSessionRepository {
 
@@ -70,6 +77,22 @@ class UserSessionRepositoryImpl @Inject constructor(
         }
         .map { account -> account?.userId }
         .distinctUntilChanged()
+
+    override fun observeUser(userId: UserId): Flow<Either<DataError, User>> {
+        return flow {
+            val userSession = getUserSession(userId) ?: run {
+                emit(DataError.Local.NoUserSession.left())
+                return@flow
+            }
+            emitAll(
+                rustUserDataSource.observeUser(userSession).map { either ->
+                    either.flatMap { rustUser ->
+                        rustUser.toUser(userId).right()
+                    }
+                }
+            )
+        }.distinctUntilChanged()
+    }
 
     override fun observePrimaryAccount(): Flow<Account?> = observeAccounts()
         .map { list ->
