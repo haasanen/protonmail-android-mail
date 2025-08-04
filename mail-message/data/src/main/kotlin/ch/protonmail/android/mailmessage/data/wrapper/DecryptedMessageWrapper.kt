@@ -50,4 +50,6 @@ class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
         }
 
     fun mimeType(): LocalMimeType = decryptedMessage.mimeType()
+
+    suspend fun identifyRsvp() = decryptedMessage.identifyRsvp()
 }
