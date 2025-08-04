@@ -53,6 +53,9 @@ import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction
 import ch.protonmail.android.mailsidebar.presentation.label.sidebarFolderItems
 import ch.protonmail.android.mailsidebar.presentation.label.sidebarLabelItems
 import ch.protonmail.android.mailsidebar.presentation.label.sidebarSystemLabelItems
+import ch.protonmail.android.mailsidebar.presentation.upselling.UpsellingRowButton
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import kotlinx.coroutines.launch
 
 @Composable
@@ -127,10 +130,18 @@ fun Sidebar(
         modifier = modifier.testTag(SidebarMenuTestTags.Root),
         drawerState = viewState.drawerState
     ) {
+        item {
+            UpsellingRowButton(onClick = { type ->
+                actions.onUpselling(UpsellingEntryPoint.Feature.Mailbox, type)
+            })
+        }
+
         sidebarSystemLabelItems(viewState.mailLabels.systemLabels, actions.onLabelAction)
         item { SidebarDivider() }
+
         sidebarFolderItems(viewState.mailLabels.folders, actions.onLabelAction)
         item { SidebarDivider() }
+
         sidebarLabelItems(viewState.mailLabels.labels, actions.onLabelAction)
         item { SidebarDivider() }
         item { VerticalSpacer(height = ProtonDimens.Spacing.Standard) }
@@ -200,7 +211,8 @@ object Sidebar {
         val onSubscription: () -> Unit,
         val onContacts: () -> Unit,
         val onReportBug: () -> Unit,
-        val onExportlogs: () -> Unit
+        val onExportlogs: () -> Unit,
+        val onUpselling: (entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) -> Unit
     ) {
 
         companion object {
@@ -211,7 +223,8 @@ object Sidebar {
                 onSubscription = {},
                 onContacts = {},
                 onReportBug = {},
-                onExportlogs = {}
+                onExportlogs = {},
+                onUpselling = { _, _ -> }
             )
         }
     }
@@ -223,7 +236,8 @@ object Sidebar {
         val onSubscription: () -> Unit,
         val onContacts: () -> Unit,
         val onReportBug: () -> Unit,
-        val onExportLogs: () -> Unit
+        val onExportLogs: () -> Unit,
+        val onUpselling: (entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) -> Unit
     ) {
 
         fun toSidebarActions(close: () -> Unit, onLabelAction: (SidebarLabelAction) -> Unit) = Actions(
@@ -250,6 +264,10 @@ object Sidebar {
             onExportlogs = {
                 onExportLogs()
                 close()
+            },
+            onUpselling = { entryPoint, type ->
+                onUpselling(entryPoint, type)
+                close()
             }
         )
 
@@ -262,7 +280,8 @@ object Sidebar {
                 onSubscription = {},
                 onContacts = {},
                 onReportBug = {},
-                onExportLogs = {}
+                onExportLogs = {},
+                onUpselling = { _, _ -> }
             )
         }
     }

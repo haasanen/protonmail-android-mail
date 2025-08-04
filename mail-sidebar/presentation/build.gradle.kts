@@ -70,6 +70,8 @@ dependencies {
     implementation(project(":mail-mailbox:domain"))
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-session:domain"))
+    implementation(project(":mail-upselling:domain"))
+    implementation(project(":mail-upselling:presentation"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
 
