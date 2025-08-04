@@ -16,26 +16,22 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsnooze.dagger
+package ch.protonmail.android.mailsnooze.presentation.model.mapper
 
-import ch.protonmail.android.mailsnooze.data.RustSnoozeRepositoryImpl
-import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
-import dagger.Binds
-import dagger.Module
-import dagger.Reusable
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import java.time.DayOfWeek
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeWeekStart
 
-@Module
-@InstallIn(SingletonComponent::class)
-object SnoozeModule {
+object DayOfWeekMapper {
 
-    @Module
-    @InstallIn(SingletonComponent::class)
-    interface BindsModule {
+    private val daysMap: HashMap<DayOfWeek, SnoozeWeekStart> = hashMapOf(
+        DayOfWeek.MONDAY to SnoozeWeekStart.MONDAY,
+        DayOfWeek.TUESDAY to SnoozeWeekStart.TUESDAY,
+        DayOfWeek.WEDNESDAY to SnoozeWeekStart.WEDNESDAY,
+        DayOfWeek.THURSDAY to SnoozeWeekStart.THURSDAY,
+        DayOfWeek.FRIDAY to SnoozeWeekStart.FRIDAY,
+        DayOfWeek.SATURDAY to SnoozeWeekStart.SATURDAY,
+        DayOfWeek.SUNDAY to SnoozeWeekStart.SUNDAY
+    )
 
-        @Binds
-        @Reusable
-        fun bindSnoozeRepository(impl: RustSnoozeRepositoryImpl): SnoozeRepository
-    }
+    fun DayOfWeek.toSnoozeWeekStart(): SnoozeWeekStart = daysMap[this] ?: SnoozeWeekStart.MONDAY
 }

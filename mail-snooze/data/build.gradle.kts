@@ -49,6 +49,15 @@ android {
 dependencies {
     compileOnly(libs.proton.rust.core)
     implementation(libs.bundles.module.data)
+    implementation(libs.proton.core.user.domain)
+
+    implementation(project(":mail-common:data"))
+    implementation(project(":mail-common:domain"))
+    implementation(project(":mail-snooze:domain"))
+    implementation(project(":mail-session:domain"))
+    implementation(project(":mail-session:data"))
+    implementation(project(":mail-message:data"))
+
     testImplementation(libs.proton.rust.core)
     testImplementation(project(":test:utils"))
     testImplementation(project(":test:test-data"))

@@ -16,26 +16,14 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsnooze.dagger
+package ch.protonmail.android.mailsnooze.presentation.usecase
 
-import ch.protonmail.android.mailsnooze.data.RustSnoozeRepositoryImpl
-import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
-import dagger.Binds
-import dagger.Module
-import dagger.Reusable
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import java.time.temporal.WeekFields
+import ch.protonmail.android.mailcommon.domain.usecase.GetAppLocale
+import ch.protonmail.android.mailsnooze.presentation.model.mapper.DayOfWeekMapper.toSnoozeWeekStart
+import javax.inject.Inject
 
-@Module
-@InstallIn(SingletonComponent::class)
-object SnoozeModule {
+class GetFirstDayOfWeekStart @Inject constructor(val getAppLocale: GetAppLocale) {
 
-    @Module
-    @InstallIn(SingletonComponent::class)
-    interface BindsModule {
-
-        @Binds
-        @Reusable
-        fun bindSnoozeRepository(impl: RustSnoozeRepositoryImpl): SnoozeRepository
-    }
+    operator fun invoke() = WeekFields.of(getAppLocale()).firstDayOfWeek.toSnoozeWeekStart()
 }

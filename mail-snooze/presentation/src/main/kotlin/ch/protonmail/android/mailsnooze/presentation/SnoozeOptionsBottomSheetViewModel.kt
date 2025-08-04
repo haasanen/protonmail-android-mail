@@ -21,46 +21,57 @@ package ch.protonmail.android.mailsnooze.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
-import ch.protonmail.android.mailsnooze.presentation.model.toSnoozeOptionUiModel
-import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
+import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionsState
+import ch.protonmail.android.mailsnooze.presentation.model.mapper.DayTimeMapper
+import ch.protonmail.android.mailsnooze.presentation.model.mapper.SnoozeOptionUiModelMapper.toSnoozeOptionUiModel
+import ch.protonmail.android.mailsnooze.presentation.usecase.GetFirstDayOfWeekStart
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
-@HiltViewModel
-class SnoozeOptionsBottomSheetViewModel @Inject constructor() : ViewModel() {
+@HiltViewModel(assistedFactory = SnoozeOptionsBottomSheetViewModel.Factory::class)
+class SnoozeOptionsBottomSheetViewModel @AssistedInject constructor(
+    @Assisted val initialData: SnoozeBottomSheet.InitialData,
+    snoozeRepository: SnoozeRepository,
+    val dayTimeMapper: DayTimeMapper,
+    val getFirstDayOfWeekStart: GetFirstDayOfWeekStart
+) : ViewModel() {
 
-    // whilst there is no rust backend
-    val snoozeRepository = flowOf(
-        Pair(
-            listOf(
-                SnoozeOption.Tomorrow("09:00"),
-                SnoozeOption.LaterThisWeek("Sun, 09:00"),
-                SnoozeOption.ThisWeekend("Sat, 09:00"),
-                SnoozeOption.NextWeek("Mon, 09:00")
-            ),
-            SnoozeOption.UpgradeRequired
-        )
-    )
-
-    val state: Flow<SnoozeOptionsState> = snoozeRepository // .getSnoozeOptions()
-        .mapLatest { snoozeOptions ->
-            SnoozeOptionsState.Data(
-                snoozeOptions =
-                snoozeOptions.first.map { it.toSnoozeOptionUiModel() },
-                customSnoozeOption = snoozeOptions.second.toSnoozeOptionUiModel(),
-                showUnSnooze = true
-
+    val state: Flow<SnoozeOptionsState> =
+        flow {
+            emit(
+                snoozeRepository.getAvailableSnoozeActions(
+                    userId = initialData.userId,
+                    weekStart = getFirstDayOfWeekStart(),
+                    conversationIds = initialData.items.map { ConversationId(it.value) }
+                )
             )
-        }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(stopTimeoutMillis),
-            SnoozeOptionsState.Loading
-        )
+        }.map { it.getOrNull() } // error case should not exist
+            .filterNotNull()
+            .map { options ->
+                SnoozeOptionsState.Data(
+                    snoozeOptions =
+                    options.map { it.toSnoozeOptionUiModel(dayTimeMapper) }
+                )
+            }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(stopTimeoutMillis),
+                SnoozeOptionsState.Loading
+            )
+
+    @AssistedFactory
+    interface Factory {
+
+        fun create(payload: SnoozeBottomSheet.InitialData): SnoozeOptionsBottomSheetViewModel
+    }
 }

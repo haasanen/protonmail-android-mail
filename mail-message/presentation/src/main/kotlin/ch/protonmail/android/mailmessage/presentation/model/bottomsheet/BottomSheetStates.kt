@@ -34,6 +34,7 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBot
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.ContactActionUiModel
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
 import kotlinx.collections.immutable.ImmutableList
 import me.proton.core.domain.entity.UserId
 
@@ -166,10 +167,16 @@ sealed interface ContactActionsBottomSheetState : BottomSheetContentState {
 }
 
 sealed interface SnoozeSheetState : BottomSheetContentState {
-    data object Requested : BottomSheetContentState
+    data class Requested(
+        val userId: UserId,
+        val itemIds: List<SnoozeConversationId>
+    ) : BottomSheetContentState
 
     sealed interface SnoozeOptionsBottomSheetOperation : BottomSheetOperation
     sealed interface SnoozeOptionsBottomSheetEvent : SnoozeOptionsBottomSheetOperation {
-        data object Ready : SnoozeOptionsBottomSheetEvent
+        data class Ready(
+            val userId: UserId,
+            val itemIds: List<SnoozeConversationId>
+        ) : SnoozeOptionsBottomSheetEvent
     }
 }

@@ -48,7 +48,9 @@ android {
 
 dependencies {
     implementation(libs.bundles.module.domain)
-    implementation(libs.bundles.compose)
+
+    implementation(project(":mail-common:domain"))
+
     implementation(libs.timber)
     implementation(libs.proton.core.user.domain)
 

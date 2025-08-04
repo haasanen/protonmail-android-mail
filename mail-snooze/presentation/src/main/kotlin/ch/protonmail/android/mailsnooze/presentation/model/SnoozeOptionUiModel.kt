@@ -19,10 +19,7 @@
 package ch.protonmail.android.mailsnooze.presentation.model
 
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
-import ch.protonmail.android.mailsnooze.presentation.R
 
 sealed interface SnoozeOptionUiModel
 data class SnoozeUntilUiModel(
@@ -34,44 +31,4 @@ data class SnoozeUntilUiModel(
 
 data class CustomSnoozeUiModel(val action: SnoozeOperationViewAction) : SnoozeOptionUiModel
 data class UpgradeToSnoozeUiModel(val action: SnoozeOperationViewAction) : SnoozeOptionUiModel
-
-
-private fun snoozeUntil(
-    @DrawableRes icon: Int,
-    @StringRes title: Int,
-    detail: String
-) = SnoozeUntilUiModel(
-    action = SnoozeOperationViewAction.SnoozeUntil,
-    icon = icon,
-    title = TextUiModel(title),
-    detail = TextUiModel(detail)
-)
-
-internal fun SnoozeOption.toSnoozeOptionUiModel() = when (this) {
-    is SnoozeOption.NextWeek -> snoozeUntil(
-        R.drawable.ic_proton_briefcase,
-        R.string.snooze_sheet_option_next_week,
-        this.description
-    )
-
-    is SnoozeOption.Tomorrow -> snoozeUntil(
-        R.drawable.ic_proton_sun,
-        R.string.snooze_sheet_option_tomorrow,
-        this.description
-    )
-
-    is SnoozeOption.ThisWeekend -> snoozeUntil(
-        R.drawable.ic_proton_chair,
-        R.string.snooze_sheet_option_this_weekend,
-        this.description
-    )
-
-    is SnoozeOption.LaterThisWeek -> snoozeUntil(
-        R.drawable.ic_proton_sun_half,
-        R.string.snooze_sheet_option_later_this_week,
-        this.description
-    )
-
-    SnoozeOption.Allowed -> CustomSnoozeUiModel(SnoozeOperationViewAction.PickSnooze)
-    SnoozeOption.UpgradeRequired -> UpgradeToSnoozeUiModel(SnoozeOperationViewAction.Upgrade)
-}
+object UnSnooze : SnoozeOptionUiModel

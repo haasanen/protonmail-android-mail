@@ -151,6 +151,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBo
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMoreActionBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
+import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheet
 import ch.protonmail.android.mailsnooze.presentation.SnoozeOptionsBottomSheetScreen
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
@@ -358,7 +359,14 @@ fun MailboxScreen(
                     viewModel.submit(MailboxViewAction.DismissBottomSheet)
                 })
 
-                is SnoozeSheetState.Requested -> SnoozeOptionsBottomSheetScreen()
+                is SnoozeSheetState.Requested -> {
+                    val initialData = SnoozeBottomSheet.InitialData(
+                        contentState.userId,
+                        items = contentState.itemIds
+                    )
+                    SnoozeOptionsBottomSheetScreen(initialData = initialData)
+                }
+
                 else -> Unit
             }
         }

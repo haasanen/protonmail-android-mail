@@ -33,6 +33,8 @@ import uniffi.proton_mail_uniffi.EventErrorReason
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.SessionReason
 import uniffi.proton_mail_uniffi.UserSessionError
+import uniffi.proton_mail_uniffi.SnoozeError
+import uniffi.proton_mail_uniffi.SnoozeErrorReason
 
 fun UserSessionError.toDataError(): DataError = when (this) {
     is UserSessionError.Other -> this.v1.toDataError()
@@ -50,6 +52,14 @@ fun ActionError.toDataError(): DataError = when (this) {
         ActionErrorReason.UNKNOWN_LABEL,
         ActionErrorReason.UNKNOWN_MESSAGE,
         ActionErrorReason.UNKNOWN_CONTENT_ID -> DataError.Local.NoDataCached
+    }
+}
+
+fun SnoozeError.toDataError(): DataError = when (this) {
+    is SnoozeError.Other -> this.v1.toDataError()
+    is SnoozeError.Reason -> when (v1) {
+        SnoozeErrorReason.INVALID_SNOOZE_LOCATION,
+        SnoozeErrorReason.SNOOZE_TIME_IN_THE_PAST -> DataError.Local.Unknown // impl with set snooze
     }
 }
 

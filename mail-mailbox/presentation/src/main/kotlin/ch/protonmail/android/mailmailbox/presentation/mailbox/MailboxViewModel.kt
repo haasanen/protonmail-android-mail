@@ -110,6 +110,7 @@ import ch.protonmail.android.mailpagination.domain.usecase.ObservePageInvalidati
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.Flow
@@ -339,7 +340,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.ClearAll -> handleClearAll()
                 is MailboxViewAction.ClearAllConfirmed -> handleClearAllConfirmed(viewAction)
                 is MailboxViewAction.ClearAllDismissed -> emitNewStateFrom(viewAction)
-                is MailboxViewAction.RequestSnoozeBottomSheet -> showSnoozeOptionsBottomSheet(viewAction)
+                is MailboxViewAction.RequestSnoozeBottomSheet -> requestSnoozeBottomSheet(viewAction)
             }
         }
     }
@@ -803,14 +804,33 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
+    private fun requestSnoozeBottomSheet(operation: MailboxViewAction) {
+        viewModelScope.launch {
+            val userId = primaryUserId.filterNotNull().first()
+            val selectedItemIds = when (operation) {
+                is MailboxViewAction.RequestSnoozeBottomSheet -> {
+                    val selectionMode = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
+                    if (selectionMode == null) {
+                        Timber.d("MailboxListState is not in SelectionMode")
+                        return@launch
+                    }
+                    selectionMode.selectedMailboxItems.map { it.id }
+                }
 
-    private fun showSnoozeOptionsBottomSheet(operation: MailboxViewAction) {
-        emitNewStateFrom(operation)
-        emitNewStateFrom(
-            MailboxEvent.MailboxBottomSheetEvent(
-                SnoozeSheetState.SnoozeOptionsBottomSheetEvent.Ready
+                // coming up is MailboxViewAction.SwipeSnoozeAction -> listOf(operation.itemId)
+
+                else -> {
+                    Timber.d("Unsupported operation: $operation")
+                    return@launch
+                }
+            }
+            val event = SnoozeSheetState.SnoozeOptionsBottomSheetEvent.Ready(
+                userId = userId,
+                itemIds = selectedItemIds.map { SnoozeConversationId(it) }
             )
-        )
+
+            emitNewStateFrom(MailboxEvent.MailboxBottomSheetEvent(event))
+        }
     }
 
     private fun showAccountManagerBottomSheet(operation: MailboxViewAction) {

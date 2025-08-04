@@ -61,6 +61,7 @@ import uniffi.proton_mail_uniffi.MessageButtons
 import uniffi.proton_mail_uniffi.MimeType
 import uniffi.proton_mail_uniffi.MimeTypeCategory
 import uniffi.proton_mail_uniffi.MobileSettings
+import uniffi.proton_mail_uniffi.NonDefaultWeekStart
 import uniffi.proton_mail_uniffi.PartialDate
 import uniffi.proton_mail_uniffi.PgpScheme
 import uniffi.proton_mail_uniffi.PmSignature
@@ -203,6 +204,7 @@ typealias LocalVCardPropTypeTextPhone = VcardPropType.TextPhone
 typealias LocalVCardPropTypeString = VcardPropType.String
 typealias LocalMailScrollerError = MailScrollerError
 typealias LocalUserSettings = UserSettings
+typealias LocalNonDefaultWeekStart = NonDefaultWeekStart
 typealias LocalRsvpEvent = RsvpEvent
 typealias LocalRsvpOccurrence = RsvpOccurrence
 typealias LocalRsvpOrganizer = RsvpOrganizer

@@ -16,26 +16,8 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsnooze.dagger
+package ch.protonmail.android.mailsnooze.domain.model
 
-import ch.protonmail.android.mailsnooze.data.RustSnoozeRepositoryImpl
-import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
-import dagger.Binds
-import dagger.Module
-import dagger.Reusable
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-
-@Module
-@InstallIn(SingletonComponent::class)
-object SnoozeModule {
-
-    @Module
-    @InstallIn(SingletonComponent::class)
-    interface BindsModule {
-
-        @Binds
-        @Reusable
-        fun bindSnoozeRepository(impl: RustSnoozeRepositoryImpl): SnoozeRepository
-    }
+enum class SnoozeWeekStart {
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
 }

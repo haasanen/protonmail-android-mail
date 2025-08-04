@@ -55,21 +55,21 @@ android {
 
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
+    implementation(libs.bundles.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.arrow.core)
+    implementation(libs.timber)
     implementation(libs.dagger.hilt.android)
+    implementation(libs.proton.core.user.domain)
+
     implementation(project(":mail-snooze:domain"))
     implementation(project(":mail-common:presentation"))
+    implementation(project(":mail-common:domain"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
     implementation(project(":uicomponents"))
 
     debugImplementation(libs.bundles.compose.debug)
-
-    implementation(libs.bundles.compose)
-    implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.arrow.core)
-    implementation(libs.timber)
-    implementation(libs.proton.core.presentationCompose)
-
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))
     testImplementation(libs.bundles.test)

@@ -25,9 +25,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 sealed class SnoozeOptionsState {
 
     data class Data(
-        val snoozeOptions: List<SnoozeOptionUiModel>,
-        val customSnoozeOption: SnoozeOptionUiModel,
-        val showUnSnooze: Boolean
+        val snoozeOptions: List<SnoozeOptionUiModel>
     ) : SnoozeOptionsState()
 
     data object Loading : SnoozeOptionsState()

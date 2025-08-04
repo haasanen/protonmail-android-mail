@@ -113,6 +113,7 @@ import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
 import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.avatar.AvatarImagesUiModelTestData
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.buildMailboxUiModelItem
@@ -3131,14 +3132,45 @@ class MailboxViewModelTest {
     @Test
     fun `when RequestSnooze then Snooze bottomsheet is shown`() = runTest {
         // Given
-        mailboxViewModel.submit(MailboxViewAction.RequestSnoozeBottomSheet)
-        verify {
-            mailboxReducer.newStateFrom(
-                any(),
-                MailboxEvent.MailboxBottomSheetEvent(
-                    SnoozeSheetState.SnoozeOptionsBottomSheetEvent.Ready
-                )
+        val item = readMailboxItemUiModel
+        val intermediateState = createMailboxDataState()
+        val expectedSelectionState = MailboxStateSampleData.createSelectionMode(listOf(item))
+        val expectedBottomBarState = expectedSelectionState.copy(
+            bottomAppBarState = BottomBarState.Data.Shown(
+                listOf(ActionUiModelSample.Archive, ActionUiModelSample.Trash).toImmutableList()
             )
+        )
+        val expectedBottomSheetState = BottomSheetState(
+            SnoozeSheetState.Requested(
+                userId,
+                listOf(SnoozeConversationId(item.id))
+            ),
+            expectedBottomBarState.bottomSheetState?.bottomSheetVisibilityEffect ?: Effect.empty()
+        )
+
+        expectedSnoozeBottomSheetRequestedStateChange(
+            listOf(SnoozeConversationId(item.id)),
+            expectedSelectionState.copy(
+                bottomSheetState = expectedBottomSheetState
+            )
+        )
+
+        expectedSelectedLabelCountStateChange(intermediateState)
+        returnExpectedStateWhenEnterSelectionMode(intermediateState, item, expectedSelectionState)
+        returnExpectedStateForBottomBarEvent(expectedSelectionState, expectedBottomBarState)
+        expectPagerMock()
+
+        mailboxViewModel.state.test {
+            // Given
+            awaitItem() // First emission for selected user
+
+            // When
+            mailboxViewModel.submit(MailboxViewAction.OnItemLongClicked(item))
+            mailboxViewModel.submit(MailboxViewAction.RequestSnoozeBottomSheet)
+            // Then
+            assertEquals(expectedSelectionState, awaitItem())
+            assertEquals(expectedBottomBarState, awaitItem())
+            assertEquals(expectedBottomSheetState, awaitItem().bottomSheetState)
         }
     }
 
@@ -3195,6 +3227,20 @@ class MailboxViewModelTest {
                         ActionUiModelSample.CustomizeToolbar,
                         selectedCount
                     )
+                )
+            )
+        } returns bottomSheetState
+    }
+
+    private fun expectedSnoozeBottomSheetRequestedStateChange(
+        items: List<SnoozeConversationId>,
+        bottomSheetState: MailboxState
+    ) {
+        every {
+            mailboxReducer.newStateFrom(
+                currentState = any(),
+                operation = MailboxEvent.MailboxBottomSheetEvent(
+                    SnoozeSheetState.SnoozeOptionsBottomSheetEvent.Ready(userId, items)
                 )
             )
         } returns bottomSheetState

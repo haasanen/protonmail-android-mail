@@ -37,6 +37,7 @@ sealed interface MailboxListState {
         val shouldShowFab: Boolean
         val avatarImagesUiModel: AvatarImagesUiModel
         val paginatorInvalidationEffect: Effect<Unit>
+
         data class ViewMode(
             override val currentMailLabel: MailLabel,
             override val swipeActions: SwipeActionsUiModel?,

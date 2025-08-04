@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailsnooze.presentation
 
+import java.util.UUID
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,17 +51,24 @@ import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailsnooze.presentation.model.CustomSnoozeUiModel
-import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionUiModel
-import ch.protonmail.android.mailsnooze.presentation.model.SnoozeUntilUiModel
-import ch.protonmail.android.mailsnooze.presentation.model.UpgradeToSnoozeUiModel
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOperationViewAction
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionUiModel
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionsState
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeUntilUiModel
+import ch.protonmail.android.mailsnooze.presentation.model.UnSnooze
+import ch.protonmail.android.mailsnooze.presentation.model.UpgradeToSnoozeUiModel
+import me.proton.core.domain.entity.UserId
 
 @Composable
-fun SnoozeOptionsBottomSheetScreen(
-    modifier: Modifier = Modifier,
-    viewModel: SnoozeOptionsBottomSheetViewModel = hiltViewModel()
-) {
+fun SnoozeOptionsBottomSheetScreen(initialData: SnoozeBottomSheet.InitialData, modifier: Modifier = Modifier) {
+
+    val viewModel = hiltViewModel<SnoozeOptionsBottomSheetViewModel, SnoozeOptionsBottomSheetViewModel.Factory>(
+        key = initialData.identifier()
+    ) { factory ->
+        factory.create(initialData)
+    }
+
     val state by viewModel.state.collectAsStateWithLifecycle(SnoozeOptionsState.Loading)
 
     SnoozeOptionsBottomSheetScreen(modifier = modifier, state = state, onEvent = {
@@ -92,14 +101,9 @@ fun SnoozeOptionsBottomSheetScreen(
                 OptionsGrid(
                     items = state.snoozeOptions
                         .chunked(size = 2)
-                        .toMutableList()
-                        .apply { add(listOf(state.customSnoozeOption)) },
+                        .toMutableList(),
                     onEvent = onEvent
                 )
-
-                if (state.showUnSnooze) {
-                    UnsnoozeButton()
-                }
             }
         }
     }
@@ -129,6 +133,7 @@ fun OptionsGrid(
 
                     is CustomSnoozeUiModel -> CustomSnoozeButton(modifier) { onEvent(item.action) }
                     is UpgradeToSnoozeUiModel -> UpsellSnoozeButton(modifier) { onEvent(item.action) }
+                    is UnSnooze -> UnsnoozeButton(modifier) { }
                 }
             }
         }
@@ -188,6 +193,7 @@ fun CustomSnoozeButton(modifier: Modifier = Modifier, onEvent: () -> Unit = {}) 
 @Composable
 fun UpsellSnoozeButton(modifier: Modifier = Modifier, onEvent: () -> Unit = {}) {
     // coming from another feature MR
+    //  UpsellingMailButton(onClick = {})
 }
 
 @Composable
@@ -286,3 +292,17 @@ fun PreviewSnoozeGrid() {
         )
     }
 }
+
+object SnoozeBottomSheet {
+
+    @Stable
+    data class InitialData(
+        val userId: UserId,
+        val items: List<SnoozeConversationId>
+    ) {
+
+        private val identifier by lazy { UUID.randomUUID().toString() }
+        fun identifier() = identifier
+    }
+}
+
