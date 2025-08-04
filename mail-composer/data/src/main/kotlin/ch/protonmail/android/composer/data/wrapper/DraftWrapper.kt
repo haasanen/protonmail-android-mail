@@ -65,4 +65,6 @@ class DraftWrapper(private val rustDraft: Draft) {
     suspend fun setPassword(password: String, hint: String) = rustDraft.setPassword(password, hint)
 
     suspend fun removePassword() = rustDraft.removePassword()
+
+    suspend fun getPassword() = rustDraft.getPassword()
 }

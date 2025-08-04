@@ -18,20 +18,19 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
 import timber.log.Timber
 import javax.inject.Inject
 
-@MissingRustApi
-// To be bound to rust or dropped when implementing send
-class ObserveMessagePassword @Inject constructor(
+class GetMessagePassword @Inject constructor(
     private val messagePasswordRepository: MessagePasswordRepository
 ) {
 
-    suspend operator fun invoke(): ExternalEncryptionPassword? {
-        Timber.w("ObserveMessagePassword Not implemented")
-        return null
-    }
+    suspend operator fun invoke(): ExternalEncryptionPassword? = messagePasswordRepository.getPassword()
+        .mapLeft {
+            Timber.w("external encryption: Failed to get message password $it")
+            null
+        }
+        .getOrNull()
 }

@@ -33,6 +33,7 @@ import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
@@ -58,6 +59,7 @@ import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.DraftOpenError
 import uniffi.proton_mail_uniffi.DraftOpenErrorReason
+import uniffi.proton_mail_uniffi.DraftPassword
 import uniffi.proton_mail_uniffi.DraftPasswordError
 import uniffi.proton_mail_uniffi.DraftPasswordErrorReason
 import uniffi.proton_mail_uniffi.DraftSaveError
@@ -346,6 +348,10 @@ fun DraftPasswordError.toExternalEncryptionPasswordError() = when (this) {
     is DraftPasswordError.Reason -> when (this.v1) {
         DraftPasswordErrorReason.PASSWORD_TOO_SHORT -> ExternalEncryptionPasswordError.PasswordTooShort
     }
+}
+
+fun DraftPassword?.toExternalEncryptionPassword() = this?.let {
+    ExternalEncryptionPassword(this.password, this.hint ?: "")
 }
 
 private fun DraftAttachmentUploadError.toDataError() = when (this) {

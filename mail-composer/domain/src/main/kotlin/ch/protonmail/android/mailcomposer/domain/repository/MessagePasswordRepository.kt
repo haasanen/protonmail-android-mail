@@ -28,4 +28,5 @@ interface MessagePasswordRepository {
     suspend fun isPasswordProtected(): Either<DataError, Boolean>
     suspend fun savePassword(password: ExternalEncryptionPassword): Either<ExternalEncryptionPasswordError, Unit>
     suspend fun removePassword(): Either<ExternalEncryptionPasswordError, Unit>
+    suspend fun getPassword(): Either<DataError, ExternalEncryptionPassword?>
 }

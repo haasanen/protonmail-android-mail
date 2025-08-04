@@ -39,4 +39,7 @@ class MessagePasswordRepositoryImpl @Inject constructor(
     override suspend fun removePassword(): Either<ExternalEncryptionPasswordError, Unit> =
         draftDataSource.removeExternalEncryptionPassword()
 
+    override suspend fun getPassword(): Either<DataError, ExternalEncryptionPassword?> =
+        draftDataSource.getExternalEncryptionPassword()
+
 }

@@ -21,7 +21,7 @@ package ch.protonmail.android.mailcomposer.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteMessagePassword
-import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePassword
+import ch.protonmail.android.mailcomposer.domain.usecase.GetMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessagePassword
 import ch.protonmail.android.mailcomposer.presentation.model.MessagePasswordOperation
 import ch.protonmail.android.mailcomposer.presentation.model.SetMessagePasswordState
@@ -37,7 +37,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SetMessagePasswordViewModel @Inject constructor(
     private val deleteMessagePassword: DeleteMessagePassword,
-    private val observeMessagePassword: ObserveMessagePassword,
+    private val getMessagePassword: GetMessagePassword,
     private val reducer: SetMessagePasswordReducer,
     private val saveMessagePassword: SaveMessagePassword
 ) : ViewModel() {
@@ -96,7 +96,7 @@ class SetMessagePasswordViewModel @Inject constructor(
 
     private fun initializeScreen() {
         viewModelScope.launch {
-            val password = observeMessagePassword()
+            val password = getMessagePassword()
             emitNewStateFrom(MessagePasswordOperation.Event.InitializeScreen(password))
         }
     }

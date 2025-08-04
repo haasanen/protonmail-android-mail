@@ -63,6 +63,7 @@ interface RustDraftDataSource {
         password: ExternalEncryptionPassword
     ): Either<ExternalEncryptionPasswordError, Unit>
     suspend fun removeExternalEncryptionPassword(): Either<ExternalEncryptionPasswordError, Unit>
+    suspend fun getExternalEncryptionPassword(): Either<DataError, ExternalEncryptionPassword?>
 
     fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo>
     fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions>

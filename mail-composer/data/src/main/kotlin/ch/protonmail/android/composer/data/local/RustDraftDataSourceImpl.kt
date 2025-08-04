@@ -27,6 +27,7 @@ import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toChangeSenderError
 import ch.protonmail.android.composer.data.mapper.toDraftCreateMode
 import ch.protonmail.android.composer.data.mapper.toDraftSendError
+import ch.protonmail.android.composer.data.mapper.toExternalEncryptionPassword
 import ch.protonmail.android.composer.data.mapper.toExternalEncryptionPasswordError
 import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.mapper.toLocalDraftWithSyncStatus
@@ -73,6 +74,7 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
 import uniffi.proton_mail_uniffi.DraftChangeSenderAddressResult
+import uniffi.proton_mail_uniffi.DraftGetPasswordResult
 import uniffi.proton_mail_uniffi.DraftIsPasswordProtectedResult
 import uniffi.proton_mail_uniffi.DraftListSenderAddressesResult
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
@@ -84,6 +86,7 @@ import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 class RustDraftDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val createRustDraft: CreateRustDraft,
@@ -288,6 +291,14 @@ class RustDraftDataSourceImpl @Inject constructor(
             when (val result = it.removePassword()) {
                 is VoidDraftPasswordResult.Error -> result.v1.toExternalEncryptionPasswordError().left()
                 VoidDraftPasswordResult.Ok -> Unit.right()
+            }
+        }
+
+    override suspend fun getExternalEncryptionPassword(): Either<DataError, ExternalEncryptionPassword?> =
+        withValidRustDraftWrapper {
+            when (val result = it.getPassword()) {
+                is DraftGetPasswordResult.Error -> result.v1.toDataError().left()
+                is DraftGetPasswordResult.Ok -> result.v1.toExternalEncryptionPassword().right()
             }
         }
 
