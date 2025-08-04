@@ -26,9 +26,12 @@ import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSourceImpl
 import ch.protonmail.android.mailmessage.data.local.RustMessageQuery
 import ch.protonmail.android.mailmessage.data.local.RustMessageQueryImpl
+import ch.protonmail.android.mailmessage.data.local.RustRsvpEventDataSource
+import ch.protonmail.android.mailmessage.data.local.RustRsvpEventDataSourceImpl
 import ch.protonmail.android.mailmessage.data.repository.InMemoryAvatarImageStateRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.RustMessageBodyRepository
 import ch.protonmail.android.mailmessage.data.repository.PreviousScheduleSendTimeInMemoryRepository
+import ch.protonmail.android.mailmessage.data.repository.RsvpEventRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.RustMessageActionRepository
 import ch.protonmail.android.mailmessage.data.repository.RustMessageRepositoryImpl
 import ch.protonmail.android.mailmessage.domain.repository.InMemoryAvatarImageStateRepository
@@ -36,6 +39,7 @@ import ch.protonmail.android.mailmessage.domain.repository.MessageActionReposito
 import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.repository.PreviousScheduleSendTimeRepository
+import ch.protonmail.android.mailmessage.domain.repository.RsvpEventRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -95,6 +99,14 @@ object MailMessageModule {
         fun bindsPreviousScheduleSendTimeRepository(
             impl: PreviousScheduleSendTimeInMemoryRepository
         ): PreviousScheduleSendTimeRepository
+
+        @Binds
+        @Singleton
+        fun bindsRsvpEventDataSource(impl: RustRsvpEventDataSourceImpl): RustRsvpEventDataSource
+
+        @Binds
+        @Singleton
+        fun bindsRsvpEventRepository(impl: RsvpEventRepositoryImpl): RsvpEventRepository
     }
 }
 
