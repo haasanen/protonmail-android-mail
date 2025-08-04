@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">다른 로그인 문제</string>
   <string name="login_help_contact_needed">여전히 도움이 필요한가요? 저희에게 바로 연락해보세요.</string>
   <string name="login_help_customer_support">고객 지원</string>
+  <string name="login_help_sign_in_with_qr_code">QR 코드로 로그인</string>
   <string name="welcome_subtitle_mail">개인 정보. 보안. 편의. 개인 데이터를 완벽하게 보호할 수 있는 암호화된 이메일입니다.</string>
   <string name="welcome_sign_in">로그인</string>
   <string name="welcome_sign_up">계정 만들기</string>
@@ -101,11 +102,11 @@
   <string name="auth_signup_validation_email">이메일은 비워 둘 수 없습니다.</string>
   <string name="auth_signup_validation_username_input_invalid">사용자 이름 입력이 유효하지 않습니다.</string>
   <string name="auth_signup_validation_email_input_invalid">사용자 이름 입력이 유효하지 않습니다.</string>
-  <string name="auth_signup_username_unavailable_error">Username already taken. Choose a different username.</string>
-  <string name="auth_signup_recovery_email_validation_error">Email validation failed</string>
-  <string name="auth_signup_recovery_phone_validation_error">Phone number validation failed</string>
-  <string name="auth_signup_createpassword_error_password_not_equal">Passwords do not match. Please try again.</string>
-  <string name="auth_signup_generic_error">Something went wrong. Please try again.</string>
+  <string name="auth_signup_username_unavailable_error">사용자 이름이 이미 사용 중입니다. 다른 사용자 이름을 선택해 주세요.</string>
+  <string name="auth_signup_recovery_email_validation_error">이메일 검증 실패</string>
+  <string name="auth_signup_recovery_phone_validation_error">전화번호 검증 실패</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">비밀번호가 일치하지 않습니다. 다시 시도해주세요.</string>
+  <string name="auth_signup_generic_error">문제가 발생했습니다. 다시 시도해 주세요.</string>
   <string name="auth_signup_countries_search">국가 검색</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">사용자를 설정할 수 없습니다.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">주소를 설정할 수 없습니다.</string>

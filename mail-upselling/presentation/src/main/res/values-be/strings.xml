@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Upselling -->
+  <string name="upselling_button_item_content_description">Кнопка паляпшэння</string>
+  <string name="upselling_close_button_content_description">Кнопка Закрыць</string>
+  <!-- Upselling: Mailbox -->
+  <string name="upselling_mailbox_plus_description_override">Для разблакіроўкі большага памеру сховішча і прэміяльных функцый.</string>
+  <string name="upselling_mailbox_plus_title">Палепшыць да Mail Plus</string>
+  <!-- Upselling: Social Proof -->
+  <string name="upselling_mailbox_plus_title_social_proof">Пачаць Mail Plus</string>
+  <!-- Upselling: Mailbox Promo -->
+  <string name="upselling_mailbox_plus_promo_description_override">Абмежаваная па часе прапанова. Скасаваць можна ў любы час.</string>
+  <string name="upselling_mailbox_plus_promo_title">Паспрабуйце Mail Plus для %s</string>
+  <!-- Upselling: Contact Groups -->
+  <string name="upselling_contact_groups_plus_description_override">Адпраўляйце групавыя лісты з лёгкасцю. Атрымлівайце асалоду ад гэтага і не толькі з Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_title">Групаванне кантактаў</string>
+  <!-- Upselling: Labels -->
+  <string name="upselling_labels_plus_description_override">Стварайце ўсё, што вам трэба, каб заставацца арганізаванымі. Атрымайце гэта і больш з Mail Plus. </string>
+  <string name="upselling_labels_plus_title">Неабходна больш метак або папак?</string>
+  <!-- Upselling: Folders -->
+  <string name="upselling_folders_plus_description_override">Стварайце ўсё, што вам трэба, каб заставацца арганізаванымі. Атрымайце гэта і больш з Mail Plus. </string>
+  <string name="upselling_folders_plus_title">Неабходна больш метак або папак?</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_mobile_signature_plus_description_override">Зрабіце свой мабільны подпіс унікальным. Атрымлівайце асалоду ад гэтага і не толькі з Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_title">Персаналізуйце свой подпіс</string>
+  <!-- Upselling: Auto Delete -->
+  <string name="upselling_auto_delete_plus_description_override">Выдаляе спам і сметніцу праз 30 дзён. Атрымайце гэта і больш з Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_title">Аўтаматычнае выдаленне сметніцы</string>
+  <!-- Upselling: Schedule Send -->
+  <string name="upselling_schedule_send_plus_description_override">Наладзьце, калі будзе адпраўлены ліст. Атрымлівайце асалоду ад гэтага і не толькі з Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_title">Заплануйце цяпер, а адпраўце пазней</string>
+  <!-- Upselling: Snooze -->
+  <string name="upselling_snooze_plus_description_override">Адкладзіце ліст — і ён будзе дастаўлены пазней. Атрымлівайце асалоду ад гэтай функцыі і ад многіх іншых з Mail Plus.</string>
+  <string name="upselling_snooze_plus_title">Не падыходзячы час для гэтага ліста?</string>
+  <!-- Mail Plus -->
+  <string name="upselling_plus_feature_storage">15 ГБ сховішча</string>
+  <string name="upselling_plus_feature_storage_plus_mails">15 ГБ сховішча, 10 адрасоў электроннай пошты</string>
+  <string name="upselling_plus_feature_email_addresses">10 адрасоў электроннай пошты</string>
+  <string name="upselling_plus_feature_custom_domain">Падтрымка карыстальніцкіх даменаў электроннай пошты</string>
+  <string name="upselling_plus_feature_desktop_app">Новая настольная праграма Proton Mail</string>
+  <string name="upselling_plus_feature_calendar">Функцыі прэміяльнага календара</string>
+  <string name="upselling_plus_feature_folders_labels">Неабмежаваная колькасць папак, метак і фільтраў</string>
+  <string name="upselling_plus_feature_plus_7_features">І яшчэ больш за 7 прэміяльных функцый</string>
+  <!-- Unlimited -->
+  <string name="upselling_unlimited_description_override">Ваша ўніверсальная прэміяльная падпіска</string>
+  <string name="upselling_unlimited_feature_storage">500 ГБ сховішча з рэзерваваннем фатаграфій</string>
+  <string name="upselling_unlimited_feature_mail_calendar">Усе платныя функцыі Mail і Calendar</string>
+  <string name="upselling_unlimited_feature_vpn">VPN (больш за 90 краін)</string>
+  <string name="upselling_unlimited_feature_drive">Бяспечнае воблачнае сховішча</string>
+  <string name="upselling_unlimited_feature_pass">Зашыфраваны менеджар пароляў</string>
+  <!-- Onboarding Upselling -->
+  <string name="upselling_onboarding_premium_value_included">Уключаны прэміяльны функцыянал</string>
+  <string name="upselling_onboarding_feature_e2e">Скразное шыфраванне</string>
+  <string name="upselling_onboarding_feature_folders_labels">Неабмежаваная колькасць папак і метак</string>
+  <string name="upselling_onboarding_free_feature_storage">1 ГБ сховішча і 1 адрас электроннай пошты</string>
+  <string name="upselling_onboarding_plus_feature_storage">15 ГБ сховішча</string>
+  <string name="upselling_onboarding_plus_feature_email_addresses">10 дадатковых адрасоў электроннай пошты для вас</string>
+  <string name="upselling_onboarding_plus_feature_email_domains">Падтрымка для 1 карыстальніцкага дамена электроннай пошты</string>
+  <string name="upselling_onboarding_plus_feature_aliases">10 псеўданімаў hide-my-email</string>
+  <string name="upselling_onboarding_plus_feature_customer_support">Прыярытэтная падтрымка кліентаў</string>
+  <string name="upselling_onboarding_unlimited_feature_storage">500 ГБ сховішча</string>
+  <string name="upselling_onboarding_unlimited_feature_email_addresses">15 дадатковых адрасоў электроннай пошты для вас</string>
+  <string name="upselling_onboarding_unlimited_feature_email_domains">Падтрымка для 3 карыстальніцкіх даменаў электроннай пошты</string>
+  <string name="upselling_onboarding_unlimited_feature_aliases">Неабмежаваная колькасць псеўданімаў hide-my-email</string>
+  <string name="upselling_onboarding_unlimited_feature_customer_support">Профільная падтрымка кліентаў</string>
+  <string name="upselling_onboarding_unlimited_feature_vpn">Звышхуткі і прыватны VPN</string>
+  <string name="upselling_onboarding_unlimited_feature_pass">Зашыфраваны менеджар пароляў</string>
+  <string name="upselling_onboarding_unlimited_feature_drive">Зашыфраванае воблачнае сховішча для фатаграфій і дакументаў</string>
+  <string name="upselling_onboarding_unlimited_feature_sentinel">Пашыраная абарона ўліковага запісу</string>
+  <!-- Comparison Table -->
+  <string name="upselling_comparison_table_storage">Сховішча</string>
+  <string name="upselling_comparison_table_email_addresses">Адрасы электроннай пошты</string>
+  <string name="upselling_comparison_table_custom_email_domain">Карыстальніцкі дамен электроннай пошты</string>
+  <string name="upselling_comparison_table_desktop_app">Доступ да настольнай праграмы</string>
+  <string name="upselling_comparison_table_unlimited_folders_labels">Неабмежаваная колькасць папак і метак</string>
+  <string name="upselling_comparison_table_priority_support">Прыярытэтная падтрымка кліентаў</string>
+  <!-- Rectangular plan buttons -->
+  <string name="upselling_select_plan">Выберыце свой тарыфны план</string>
+  <string name="upselling_select_plan_year">12 месяцаў</string>
+  <string name="upselling_select_plan_month">1 месяц</string>
+  <!-- Other UI Items -->
+  <string name="upselling_auto_renew_text">Аўтаматычнае падаўжэнне па тым жа самым кошце і на тых жа ўмовах пакуль не будзе скасавана</string>
+  <string name="upselling_auto_renew_text_promo">Вітальная прапанова. Аўтаматычнае падаўжэнне %s %s%s, пакуль не будзе скасавана</string>
+  <string name="upselling_auto_renew_text_promo_short">Вітальная прапанова. Аўтаматычнае падаўжэнне за %s %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Аўтаматычнае падаўжэнне %s %s%s, пакуль не будзе скасавана</string>
+  <string name="upselling_social_proof_reviews">БОЛЬШ ЗА 2К ВОДГУКАЎ</string>
+  <string name="upselling_description_social_proof">Палепшыце, каб атрымаць вопыт, якім захапляюцца мільёны падпісчыкаў.</string>
+  <string name="upselling_discount_tag">ЭКАНОМІЯ %s%%</string>
+  <string name="upselling_month">/месяц</string>
+  <string name="upselling_year">/год</string>
+  <string name="upselling_get_button">Атрымаць %s</string>
+  <string name="upselling_get_button_promotional">Атрымайце 1 месяц за %s %s</string>
+  <plurals name="upselling_month">
+    <item quantity="one">%d месяц</item>
+    <item quantity="few">%d месяцы</item>
+    <item quantity="many">%d месяцаў</item>
+    <item quantity="other">%d месяцаў</item>
+  </plurals>
+  <!-- Errors -->
+  <string name="upselling_unable_retrieve_options">Немагчыма атрымаць параметры паляпшэння.</string>
+  <string name="upselling_snackbar_error_no_user_id">Адбылася памылка.</string>
+  <string name="upselling_snackbar_error_no_subscriptions">Немагчыма атрымаць падпіскі.</string>
+  <!-- Snackbar texts -->
+  <string name="upselling_snackbar_upgrade_in_progress">Адбываецца паляпшэнне падпіскі...</string>
+  <string name="upselling_snackbar_upgrade_error_generic">Адбылася памылка падчас паляпшэння вашай падпіскі.</string>
+  <string name="upselling_snackbar_upgrade_error_recoverable">Адбылася памылка. Паспрабуйце яшчэ раз.</string>
+</resources>

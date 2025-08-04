@@ -64,7 +64,6 @@
   <string name="action_forward_content_description">Doorsturen</string>
   <string name="action_mark_read_content_description">Markeer als gelezen</string>
   <string name="action_mark_unread_content_description">Markeer als ongelezen</string>
-  <string name="action_snooze_description">Snoozen</string>
   <string name="action_star_content_description">Ster</string>
   <string name="action_unstar_content_description">Ster verwijderen</string>
   <string name="action_label_content_description">Label als</string>
@@ -88,6 +87,7 @@
   <string name="action_save_attachments_content_description">Bijlagen opslaan</string>
   <string name="action_more_content_description">Meer</string>
   <string name="action_snooze_content_description">Snoozen</string>
+  <string name="action_snooze_description">Snoozen</string>
   <string name="common_error_loading_actions">Acties laden mislukt</string>
   <string name="yesterday">Gisteren</string>
   <!-- notification channels -->

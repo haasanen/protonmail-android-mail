@@ -26,7 +26,7 @@
   <string name="intro_origin_sign_in_title">Başka bir aygıtta oturum açın</string>
   <string name="intro_origin_sign_in_subtitle">Kare kod ile nasıl oturum açılır</string>
   <string name="intro_origin_sign_in_hint_1">1. Oturum açmak istediğiniz aygıtta herhangi bir Proton uygulamasını açın.</string>
-  <string name="intro_origin_sign_in_hint_2">2. Oturum açma ekranında, <b>Şifremi unuttum</b> veya <b>Oturum açarken sorun mu yaşıyorsunuz?</b> üzerine basın.</string>
+  <string name="intro_origin_sign_in_hint_2">2. Oturum açma ekranında, <b>Parolamı unuttum</b> veya <b>Oturum açarken sorun mu yaşıyorsunuz?</b> seçeneklerinden biri (mobil uygulamalarda <b>Yardım</b>) üzerine basın.</string>
   <string name="intro_origin_sign_in_hint_3">3. <b>Kare kod ile oturum aç</b> üzerine basın. Bir kare kod görüntülenir.</string>
   <string name="intro_origin_sign_in_hint_4">4. Bu aygıtta, <b>Kare kodu tara</b> üzerine basın ve kodu tarayın.</string>
   <string name="intro_origin_sign_in_tips">Güvenlik ipuçları</string>
@@ -46,13 +46,13 @@
   <string name="qr_code_scan_enter_manually">Kodu el ile yazın</string>
   <string name="target_sign_in_title">Kare kod ile oturum aç</string>
   <string name="target_sign_in_scan_code">Başka bir aygıt kullanarak oturum nasıl açılır</string>
-  <string name="target_sign_in_instruction_1">1. Proton hesap oturumunuz açık olan başka bir aygıtı alın</string>
+  <string name="target_sign_in_instruction_1">1. Proton hesabınızla oturumunuz açık olan başka bir aygıtı alın</string>
   <string name="target_sign_in_instruction_2">2. Bu aygıtta herhangi bir Proton uygulamasını açın ve <b>Ayarlar</b> bölümüne gidin</string>
   <string name="target_sign_in_instruction_3">3. <b>Başka bir aygıtta oturum aç → Kare kodu tara</b> üzerine basın</string>
   <string name="target_sign_in_instruction_4">4. Oturum açmak için kodu tarayın</string>
   <string name="target_sign_in_error_title">Oturumunuz açılamadı</string>
   <string name="target_sign_in_retryable_error">Yeni bir kare kod oluşturmayı deneyin.</string>
-    <string name="target_sign_in_error_new_qr">Kare kod oluştur</string>
+  <string name="target_sign_in_error_new_qr">Kare kod oluştur</string>
   <string name="target_sign_in_error_back_to_signin">Oturum açmaya dön</string>
-    <string name="target_sign_in_learn_more">Ayrıntılı bilgi alın</string>
+  <string name="target_sign_in_learn_more">Ayrıntılı bilgi alın</string>
 </resources>

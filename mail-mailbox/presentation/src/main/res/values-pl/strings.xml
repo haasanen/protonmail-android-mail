@@ -96,8 +96,8 @@
   <string name="mailbox_action_failed_retrieving_colors">Nie udało się pobrać ustawień kolorów</string>
   <string name="mailbox_action_move_messages_failed">Przeniesienie nie powiodło się</string>
   <string name="mailbox_action_move_messages_failed_retrieving_folders">Nie udało się pobrać folderów</string>
-  <string name="mailbox_action_trash_message">Wiadomość przeniesiona do kosza</string>
-  <string name="mailbox_action_archive_message">Wiadomość przeniesiona do archiwum</string>
+  <string name="mailbox_action_trash_message">Wiadomość została przeniesiona do kosza</string>
+  <string name="mailbox_action_archive_message">Wiadomość została przeniesiona do archiwum</string>
   <string name="mailbox_action_spam_message">Wiadomość została przeniesiona do spamu</string>
   <string name="mailbox_search_placeholder_text">Szukaj wiadomości</string>
   <string name="mailbox_search_no_results_title">Brak wyników</string>

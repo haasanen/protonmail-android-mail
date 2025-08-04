@@ -73,4 +73,14 @@
   <string name="contact_actions_block_contact_description">Blocca questo contatto</string>
   <string name="contact_actions_view_contact_details">Visualizza i dettagli</string>
   <string name="contact_actions_view_contact_details_description">Visualizza i dettagli di questo contatto</string>
+  <!-- Snooze Bottom Sheet -->
+  <string name="snooze_sheet_option_next_week">Settimana prossima</string>
+  <string name="snooze_sheet_option_later_this_week">Più tardi questa settimana</string>
+  <string name="snooze_sheet_option_tomorrow">Domani</string>
+  <string name="snooze_sheet_option_this_weekend">Questo fine settimana</string>
+  <string name="snooze_sheet_option_custom">Personalizzata</string>
+  <string name="snooze_sheet_option_custom_detail">Seleziona la data e l\'ora</string>
+  <string name="snooze_sheet_option_upsell_detail">Funzione a pagamento</string>
+  <string name="snooze_sheet_snooze_title">Posticipa a</string>
+  <string name="snooze_sheet_option_unsnooze">Non posticipare</string>
 </resources>

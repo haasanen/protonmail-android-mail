@@ -73,4 +73,14 @@
   <string name="contact_actions_block_contact_description">Blokkeer dit contact</string>
   <string name="contact_actions_view_contact_details">Contactdetails bekijken</string>
   <string name="contact_actions_view_contact_details_description">Bekijk de details van de contactpersoon</string>
+  <!-- Snooze Bottom Sheet -->
+  <string name="snooze_sheet_option_next_week">Volgende week</string>
+  <string name="snooze_sheet_option_later_this_week">Later deze week</string>
+  <string name="snooze_sheet_option_tomorrow">Morgen</string>
+  <string name="snooze_sheet_option_this_weekend">Dit weekend</string>
+  <string name="snooze_sheet_option_custom">Aangepast</string>
+  <string name="snooze_sheet_option_custom_detail">Selecteer datum en tijd</string>
+  <string name="snooze_sheet_option_upsell_detail">Functie tegen betaling</string>
+  <string name="snooze_sheet_snooze_title">Snooze tot</string>
+  <string name="snooze_sheet_option_unsnooze">Ontsnoozen</string>
 </resources>

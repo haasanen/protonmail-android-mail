@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Другие проблемы со входом</string>
   <string name="login_help_contact_needed">Все еще нужна помощь? Свяжитесь с нами напрямую.</string>
   <string name="login_help_customer_support">Служба поддержки</string>
+  <string name="login_help_sign_in_with_qr_code">Sign in with QR code</string>
   <string name="welcome_subtitle_mail">Конфиденциальность. Безопасность. Удобство. Зашифрованная электронная почта, которая даёт вам полный контроль над вашими личными данными.</string>
   <string name="welcome_sign_in">Войти</string>
   <string name="welcome_sign_up">Создать аккаунт</string>

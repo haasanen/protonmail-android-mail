@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Іншыя праблемы з уваходам</string>
   <string name="login_help_contact_needed">Усё яшчэ неабходна дапамога? Вы можаце звязацца наўпрост з намі.</string>
   <string name="login_help_customer_support">Падтрымка кліентаў</string>
+  <string name="login_help_sign_in_with_qr_code">Увайсці з дапамогай QR-кода</string>
   <string name="welcome_subtitle_mail">Прыватнасць. Бяспека. Зручнасць. Зашыфраваная пошта, якая дае вам поўны кантроль над вашымі асабістымі данымі.</string>
   <string name="welcome_sign_in">Увайсці</string>
   <string name="welcome_sign_up">Стварыць уліковы запіс</string>

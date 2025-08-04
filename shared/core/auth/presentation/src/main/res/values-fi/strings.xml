@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Muut kirjautumisongelmat</string>
   <string name="login_help_contact_needed">Tarvitsetko edelleen apua? Ota meihin yhteyttä.</string>
   <string name="login_help_customer_support">Asiakastuki</string>
+  <string name="login_help_sign_in_with_qr_code">Sign in with QR code</string>
   <string name="welcome_subtitle_mail">Yksityisyys. Turvallisuus. Käytännöllisyys. Salattu sähköposti, joka antaa henkilökohtaisten tietojesi täyden hallinnan sinulle.</string>
   <string name="welcome_sign_in">Kirjaudu sisään</string>
   <string name="welcome_sign_up">Luo tili</string>

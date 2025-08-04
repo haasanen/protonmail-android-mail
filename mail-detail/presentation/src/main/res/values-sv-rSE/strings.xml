@@ -134,4 +134,19 @@
   <string name="message_cancel_schedule_send_dialog_cancel_button">Avbryt</string>
   <string name="message_cancel_schedule_send_dialog_title">Redigera och schemalägg igen</string>
   <string name="message_cancel_schedule_send_dialog_message">Detta meddelande kommer att flyttas till utkast så att du kan redigera det. Du måste schemalägga om när det ska skickas.</string>
+  <!-- RSVP widget -->
+  <string name="rsvp_widget_attendance_optional">(Frivilligt deltagande)</string>
+  <string name="rsvp_widget_attending">Delta?</string>
+  <string name="rsvp_widget_yes">Ja</string>
+  <string name="rsvp_widget_maybe">Kanske</string>
+  <string name="rsvp_widget_no">Nej</string>
+  <string name="rsvp_widget_yes_long">Ja, jag ska delta</string>
+  <string name="rsvp_widget_maybe_long">Jag kanske deltar</string>
+  <string name="rsvp_widget_no_long">Nej, jag kommer inte delta</string>
+  <string name="rsvp_widget_organizer">(Organisatör)</string>
+  <string name="rsvp_widget_you">Du</string>
+  <plurals name="rsvp_widget_participants">
+    <item quantity="one">%1$d deltagare</item>
+    <item quantity="other">%1$d deltagare</item>
+  </plurals>
 </resources>

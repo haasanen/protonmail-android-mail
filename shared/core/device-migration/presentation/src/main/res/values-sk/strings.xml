@@ -23,10 +23,10 @@
   <string name="edm_missing_camera_permission_body">Ak sa chcete prihlásiť pomocou QR kódu, budete musieť aplikácii %1$s umožniť prístup k fotoaparátu. Môžete to urobiť v nastaveniach zariadenia.</string>
   <string name="edm_missing_camera_permission_footer">Vždy máte všetko pod kontrolou: V nastaveniach zariadenia to môžete kedykoľvek zmeniť.</string>
   <string name="edm_missing_camera_permission_settings">Nastavenia</string>
-  <string name="intro_origin_sign_in_title">Prihlásiť sa do iného zariadenia</string>
+  <string name="intro_origin_sign_in_title">Prihlásiť sa na inom zariadení</string>
   <string name="intro_origin_sign_in_subtitle">Ako prihlásiť sa pomocou QR kódu</string>
-  <string name="intro_origin_sign_in_hint_1">1. Otvorte ľubovoľnú aplikáciu Proton na zariadení, na ktoré sa chcete prihlásiť</string>
-  <string name="intro_origin_sign_in_hint_2">2. Na prihlasovacej obrazovke, vyberte <b>Zabudli ste heslo</b> alebo <b>Problémy s prihlásením?</b></string>
+  <string name="intro_origin_sign_in_hint_1">1. Otvorte ľubovoľnú Proton aplikáciu na zariadení, na ktoré sa chcete prihlásiť.</string>
+  <string name="intro_origin_sign_in_hint_2">2. Na prihlasovacej obrazovke, vyberte <b>Zabudli ste heslo</b> alebo <b>Problémy s prihlásením?</b> (na mobilných aplikáciách, vyberte <b>Nápoveda</b>).</string>
   <string name="intro_origin_sign_in_hint_3">3. Vyberte <b>Prihlásiť sa pomocou QR kódu</b>. Zobrazí sa QR kód.</string>
   <string name="intro_origin_sign_in_hint_4">4. Na tomto zariadení stlačte <b>Naskenovať QR kód</b> a naskenujte kód.</string>
   <string name="intro_origin_sign_in_tips">Bezpečnostné tipy</string>
@@ -35,7 +35,7 @@
   <string name="intro_origin_sign_in_tip_3">Proton vás nikdy nepožiada o naskenovanie QR kódu, ktorý nepochádza z <b>https://proton.me</b> alebo oficiálnej aplikácie Proton.</string>
   <string name="intro_origin_sign_in_begin">Skenovať QR kód</string>
   <string name="intro_origin_biometrics_title">Pre pokračovanie odomknite zariadenie</string>
-  <string name="manual_code_input_title">Zadajte kód ručne</string>
+  <string name="manual_code_input_title">Zadať kód ručne</string>
   <string name="manual_code_input_description">Ak chcete získať prístup ku kódu zariadenia, do ktorého sa chcete prihlásiť, ťuknite na tlačidlo <b>Prihlásiť sa pomocou QR kódu</b> v ponuke pomocníka na prihlasovacej obrazovke a potom ťuknite na položku <b>Zadať kód ručne</b>.</string>
   <string name="manual_code_input_code_label">Kód</string>
   <string name="manual_code_input_clear_code">Vymazať</string>
@@ -43,7 +43,7 @@
   <string name="origin_success_signed_in">Prístup zdieľaný</string>
   <string name="origin_success_ack">Späť do nastavení</string>
   <string name="qr_code_scan_hint">Umiestnite QR kód do štvorca</string>
-  <string name="qr_code_scan_enter_manually">Zadajte kód ručne</string>
+  <string name="qr_code_scan_enter_manually">Zadať kód ručne</string>
   <string name="target_sign_in_title">Prihlásiť sa pomocou QR kódu</string>
   <string name="target_sign_in_scan_code">Ako sa prihlásiť pomocou iného zariadenia</string>
   <string name="target_sign_in_instruction_1">1. Použite iné zariadenie prihlásené do vášho účtu Proton</string>
@@ -52,7 +52,7 @@
   <string name="target_sign_in_instruction_4">4. Naskenujte kód na prihlásenie</string>
   <string name="target_sign_in_error_title">Nepodarilo sa nám prihlásiť vás</string>
   <string name="target_sign_in_retryable_error">Skúste vygenerovať nový QR kód.</string>
-    <string name="target_sign_in_error_new_qr">Generovať QR kód</string>
+  <string name="target_sign_in_error_new_qr">Generovať QR kód</string>
   <string name="target_sign_in_error_back_to_signin">Späť na prihlásenie</string>
-    <string name="target_sign_in_learn_more">Zistiť viac</string>
+  <string name="target_sign_in_learn_more">Zistiť viac</string>
 </resources>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Upselling -->
+  <string name="upselling_button_item_content_description">升级按钮</string>
+  <string name="upselling_close_button_content_description">关闭按钮</string>
+  <!-- Upselling: Mailbox -->
+  <string name="upselling_mailbox_plus_description_override">To unlock more storage and premium features.</string>
+  <string name="upselling_mailbox_plus_title">升级至 Mail Plus</string>
+  <!-- Upselling: Social Proof -->
+  <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
+  <!-- Upselling: Mailbox Promo -->
+  <string name="upselling_mailbox_plus_promo_description_override">限时优惠，随时可取消。</string>
+  <string name="upselling_mailbox_plus_promo_title">立即体验为 %s 打造的Mail Plus高级服务</string>
+  <!-- Upselling: Contact Groups -->
+  <string name="upselling_contact_groups_plus_description_override">Send group emails with ease. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_title">分组您的联系人</string>
+  <!-- Upselling: Labels -->
+  <string name="upselling_labels_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_labels_plus_title">需要更多的标签或文件夹吗？</string>
+  <!-- Upselling: Folders -->
+  <string name="upselling_folders_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_folders_plus_title">需要更多的标签或文件夹吗？</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_mobile_signature_plus_description_override">Make your mobile signature your own. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_title">Personalize your signature</string>
+  <!-- Upselling: Auto Delete -->
+  <string name="upselling_auto_delete_plus_description_override">Deletes spam and trash after 30 days. Get this and more with Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_title">Automated trash removal</string>
+  <!-- Upselling: Schedule Send -->
+  <string name="upselling_schedule_send_plus_description_override">Customize when an email will be sent. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_title">Schedule now, send later</string>
+  <!-- Upselling: Snooze -->
+  <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_snooze_plus_title">Bad time for this email?</string>
+  <!-- Mail Plus -->
+  <string name="upselling_plus_feature_storage">15 GB 存储空间</string>
+  <string name="upselling_plus_feature_storage_plus_mails">15 GB 存储空间，10 个邮箱地址</string>
+  <string name="upselling_plus_feature_email_addresses">10 个邮箱地址</string>
+  <string name="upselling_plus_feature_custom_domain">自有域名支持</string>
+  <string name="upselling_plus_feature_desktop_app">新 Proton Mail 桌面应用</string>
+  <string name="upselling_plus_feature_calendar">高级日历功能</string>
+  <string name="upselling_plus_feature_folders_labels">不限量文件夹、标签和筛选规则</string>
+  <string name="upselling_plus_feature_plus_7_features">+7 高级功能</string>
+  <!-- Unlimited -->
+  <string name="upselling_unlimited_description_override">您的多合一高级订阅</string>
+  <string name="upselling_unlimited_feature_storage">500 GB 存储，附带照片备份</string>
+  <string name="upselling_unlimited_feature_mail_calendar">享受 Mail 与 Calendar 的所有付费功能</string>
+  <string name="upselling_unlimited_feature_vpn">VPN （超过 90 个国家/地区）</string>
+  <string name="upselling_unlimited_feature_drive">安全的云存储</string>
+  <string name="upselling_unlimited_feature_pass">加密的密码管理器</string>
+  <!-- Onboarding Upselling -->
+  <string name="upselling_onboarding_premium_value_included">包括高级功能</string>
+  <string name="upselling_onboarding_feature_e2e">端到端加密</string>
+  <string name="upselling_onboarding_feature_folders_labels">无限文件夹和标签</string>
+  <string name="upselling_onboarding_free_feature_storage">1 GB 储存和 1 个邮箱地址</string>
+  <string name="upselling_onboarding_plus_feature_storage">15 GB 存储空间</string>
+  <string name="upselling_onboarding_plus_feature_email_addresses">为您提供额外 10 个邮箱地址</string>
+  <string name="upselling_onboarding_plus_feature_email_domains">支持 1 个自定义邮箱域名</string>
+  <string name="upselling_onboarding_plus_feature_aliases">10 个 Hide-my-email 别名</string>
+  <string name="upselling_onboarding_plus_feature_customer_support">优先客户支持</string>
+  <string name="upselling_onboarding_unlimited_feature_storage">500 GB 存储空间</string>
+  <string name="upselling_onboarding_unlimited_feature_email_addresses">为您提供额外 15 个邮箱地址</string>
+  <string name="upselling_onboarding_unlimited_feature_email_domains">支持 3 个自定义邮箱域名</string>
+  <string name="upselling_onboarding_unlimited_feature_aliases">无限 Hide-my-email 别名</string>
+  <string name="upselling_onboarding_unlimited_feature_customer_support">专属客户支持</string>
+  <string name="upselling_onboarding_unlimited_feature_vpn">超快且私有的 VPN</string>
+  <string name="upselling_onboarding_unlimited_feature_pass">加密的密码管理器</string>
+  <string name="upselling_onboarding_unlimited_feature_drive">用于照片和文档的加密云存储</string>
+  <string name="upselling_onboarding_unlimited_feature_sentinel">高级账户保护</string>
+  <!-- Comparison Table -->
+  <string name="upselling_comparison_table_storage">存储空间</string>
+  <string name="upselling_comparison_table_email_addresses">邮箱地址</string>
+  <string name="upselling_comparison_table_custom_email_domain">自定义邮箱域名</string>
+  <string name="upselling_comparison_table_desktop_app">访问桌面应用</string>
+  <string name="upselling_comparison_table_unlimited_folders_labels">无限文件夹和标签</string>
+  <string name="upselling_comparison_table_priority_support">优先客户支持</string>
+  <!-- Rectangular plan buttons -->
+  <string name="upselling_select_plan">Choose your plan</string>
+  <string name="upselling_select_plan_year">12 months</string>
+  <string name="upselling_select_plan_month">1 个月</string>
+  <!-- Other UI Items -->
+  <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
+  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text_promo_short">欢迎优惠。订阅将以 %s %s %s 自动续订。</string>
+  <string name="upselling_auto_renew_text_standard">Auto-renews at %s %s%s unless canceled</string>
+  <string name="upselling_social_proof_reviews">2k+ REVIEWS</string>
+  <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
+  <string name="upselling_discount_tag">立省 %s%%</string>
+  <string name="upselling_month">/月</string>
+  <string name="upselling_year">/年</string>
+  <string name="upselling_get_button">开通 %s</string>
+  <string name="upselling_get_button_promotional">获得1个月的 %s %s</string>
+  <plurals name="upselling_month">
+    <item quantity="other">%d 月</item>
+  </plurals>
+  <!-- Errors -->
+  <string name="upselling_unable_retrieve_options">无法获取升级选项。</string>
+  <string name="upselling_snackbar_error_no_user_id">出错了。</string>
+  <string name="upselling_snackbar_error_no_subscriptions">无法获取订阅。</string>
+  <!-- Snackbar texts -->
+  <string name="upselling_snackbar_upgrade_in_progress">订阅升级进行中…</string>
+  <string name="upselling_snackbar_upgrade_error_generic">升级您的订阅时发生错误。</string>
+  <string name="upselling_snackbar_upgrade_error_recoverable">发生错误，请重试。</string>
+</resources>

@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">その他のサインインに関する問題</string>
   <string name="login_help_contact_needed">問題が解決しませんか？私たちに直接ご連絡ください.</string>
   <string name="login_help_customer_support">カスタマーサポート</string>
+  <string name="login_help_sign_in_with_qr_code">Sign in with QR code</string>
   <string name="welcome_subtitle_mail">プライバシー、セキュリティ、かつ便利。暗号メールで個人データを完全にコントロールします。</string>
   <string name="welcome_sign_in">サインイン</string>
   <string name="welcome_sign_up">アカウントを作成</string>

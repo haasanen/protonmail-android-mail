@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Andere inlogproblemen</string>
   <string name="login_help_contact_needed">Meer hulp nodig? Neem dan rechtstreeks contact me ons op.</string>
   <string name="login_help_customer_support">Klantenservice</string>
+  <string name="login_help_sign_in_with_qr_code">Meld u aan met een QR-code</string>
   <string name="welcome_subtitle_mail">Privacy. Veiligheid. Gebruiksgemak. Versleutelde e-mail die u volledige controle biedt over uw persoonlijke gegevens.</string>
   <string name="welcome_sign_in">Inloggen</string>
   <string name="welcome_sign_up">Een account aanmaken</string>

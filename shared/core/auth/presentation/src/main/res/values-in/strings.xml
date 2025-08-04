@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Masalah masuk lainnya</string>
   <string name="login_help_contact_needed">Masih butuh bantuan? Hubungi kami secara langsung.</string>
   <string name="login_help_customer_support">Layanan dukungan</string>
+  <string name="login_help_sign_in_with_qr_code">Sign in with QR code</string>
   <string name="welcome_subtitle_mail">Privasi. Keamanan. Kenyamanan. Email terenkripsi yang memberi Anda kendali penuh terhadap data pribadi Anda.</string>
   <string name="welcome_sign_in">Masuk</string>
   <string name="welcome_sign_up">Buat akun</string>

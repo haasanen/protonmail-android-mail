@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Upselling -->
+  <string name="upselling_button_item_content_description">Tombol tingkatkan</string>
+  <string name="upselling_close_button_content_description">Tombol tutup</string>
+  <!-- Upselling: Mailbox -->
+  <string name="upselling_mailbox_plus_description_override">To unlock more storage and premium features.</string>
+  <string name="upselling_mailbox_plus_title">Tingkatkan ke Mail Plus</string>
+  <!-- Upselling: Social Proof -->
+  <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
+  <!-- Upselling: Mailbox Promo -->
+  <string name="upselling_mailbox_plus_promo_description_override">Penawaran terbatas, batalkan kapan saja.</string>
+  <string name="upselling_mailbox_plus_promo_title">Coba Mail Plus untuk %s</string>
+  <!-- Upselling: Contact Groups -->
+  <string name="upselling_contact_groups_plus_description_override">Send group emails with ease. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_title">Kelompokkan kontak Anda</string>
+  <!-- Upselling: Labels -->
+  <string name="upselling_labels_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_labels_plus_title">Butuh lebih banyak label atau folder?</string>
+  <!-- Upselling: Folders -->
+  <string name="upselling_folders_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_folders_plus_title">Butuh lebih banyak label atau folder?</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_mobile_signature_plus_description_override">Make your mobile signature your own. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_title">Personalize your signature</string>
+  <!-- Upselling: Auto Delete -->
+  <string name="upselling_auto_delete_plus_description_override">Deletes spam and trash after 30 days. Get this and more with Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_title">Automated trash removal</string>
+  <!-- Upselling: Schedule Send -->
+  <string name="upselling_schedule_send_plus_description_override">Customize when an email will be sent. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_title">Schedule now, send later</string>
+  <!-- Upselling: Snooze -->
+  <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_snooze_plus_title">Bad time for this email?</string>
+  <!-- Mail Plus -->
+  <string name="upselling_plus_feature_storage">Ruang penyimpanan 15 GB</string>
+  <string name="upselling_plus_feature_storage_plus_mails">Ruang penyimpanan 15 GB, 10 alamat email</string>
+  <string name="upselling_plus_feature_email_addresses">10 alamat email</string>
+  <string name="upselling_plus_feature_custom_domain">Dukungan domain email khusus</string>
+  <string name="upselling_plus_feature_desktop_app">Aplikasi desktop Proton Mail baru</string>
+  <string name="upselling_plus_feature_calendar">Fitur kalender premium</string>
+  <string name="upselling_plus_feature_folders_labels">Tanpa batasan jumlah folder, label, dan filter</string>
+  <string name="upselling_plus_feature_plus_7_features">+7 fitur premium</string>
+  <!-- Unlimited -->
+  <string name="upselling_unlimited_description_override">Langganan premium menyeluruh Anda</string>
+  <string name="upselling_unlimited_feature_storage">Ruang penyimpanan 500 GB dengan pencadangan foto</string>
+  <string name="upselling_unlimited_feature_mail_calendar">Seluruh fitur Mail dan Calendar berbayar</string>
+  <string name="upselling_unlimited_feature_vpn">VPN (90+ negara)</string>
+  <string name="upselling_unlimited_feature_drive">Penyimpanan cloud yang aman</string>
+  <string name="upselling_unlimited_feature_pass">Pengelola kata sandi terenkripsi</string>
+  <!-- Onboarding Upselling -->
+  <string name="upselling_onboarding_premium_value_included">Meliputi nilai premium</string>
+  <string name="upselling_onboarding_feature_e2e">Enkripsi end-to-end</string>
+  <string name="upselling_onboarding_feature_folders_labels">Folder dan label tidak terbatas</string>
+  <string name="upselling_onboarding_free_feature_storage">Ruang penyimpanan 1 GB dan 1 alamat email</string>
+  <string name="upselling_onboarding_plus_feature_storage">Penyimpanan 15 GB</string>
+  <string name="upselling_onboarding_plus_feature_email_addresses">10 alamat email tambahan untuk Anda</string>
+  <string name="upselling_onboarding_plus_feature_email_domains">Dukungan untuk 1 domain email khusus</string>
+  <string name="upselling_onboarding_plus_feature_aliases">10 alias hide-my-email</string>
+  <string name="upselling_onboarding_plus_feature_customer_support">Dukungan pelanggan prioritas</string>
+  <string name="upselling_onboarding_unlimited_feature_storage">Ruang penyimpanan 500 GB</string>
+  <string name="upselling_onboarding_unlimited_feature_email_addresses">15 alamat email tambahan untuk Anda</string>
+  <string name="upselling_onboarding_unlimited_feature_email_domains">Dukungan untuk 3 domain email khusus</string>
+  <string name="upselling_onboarding_unlimited_feature_aliases">Tanpa batasan jumlah alias hide-my-email</string>
+  <string name="upselling_onboarding_unlimited_feature_customer_support">Dukungan pelanggan khusus</string>
+  <string name="upselling_onboarding_unlimited_feature_vpn">VPN yang ultra cepat dan privat</string>
+  <string name="upselling_onboarding_unlimited_feature_pass">Pengelola kata sandi terenkripsi</string>
+  <string name="upselling_onboarding_unlimited_feature_drive">Ruang penyimpanan cloud terenkripsi untuk foto dan dokumen</string>
+  <string name="upselling_onboarding_unlimited_feature_sentinel">Perlindungan akun tingkat lanjut</string>
+  <!-- Comparison Table -->
+  <string name="upselling_comparison_table_storage">Penyimpanan</string>
+  <string name="upselling_comparison_table_email_addresses">Alamat email</string>
+  <string name="upselling_comparison_table_custom_email_domain">Domain email khusus</string>
+  <string name="upselling_comparison_table_desktop_app">Akses ke aplikasi desktop</string>
+  <string name="upselling_comparison_table_unlimited_folders_labels">Tanpa batasan jumlah folder dan label</string>
+  <string name="upselling_comparison_table_priority_support">Dukungan pelanggan prioritas</string>
+  <!-- Rectangular plan buttons -->
+  <string name="upselling_select_plan">Choose your plan</string>
+  <string name="upselling_select_plan_year">12 months</string>
+  <string name="upselling_select_plan_month">1 bulan</string>
+  <!-- Other UI Items -->
+  <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
+  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text_promo_short">Penawaran selamat datang. Diperbarui secara otomatis pada harga %s %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Auto-renews at %s %s%s unless canceled</string>
+  <string name="upselling_social_proof_reviews">2k+ REVIEWS</string>
+  <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
+  <string name="upselling_discount_tag">HEMAT %s%%</string>
+  <string name="upselling_month">/bulan</string>
+  <string name="upselling_year">/tahun</string>
+  <string name="upselling_get_button">Dapatkan %s</string>
+  <string name="upselling_get_button_promotional">Dapatkan 1 bulan seharga %s %s</string>
+  <plurals name="upselling_month">
+    <item quantity="other">%d bulan</item>
+  </plurals>
+  <!-- Errors -->
+  <string name="upselling_unable_retrieve_options">Daftar opsi peningkatan tidak dapat diperoleh.</string>
+  <string name="upselling_snackbar_error_no_user_id">Terjadi kesalahan.</string>
+  <string name="upselling_snackbar_error_no_subscriptions">Daftar paket langganan tidak dapat diperoleh.</string>
+  <!-- Snackbar texts -->
+  <string name="upselling_snackbar_upgrade_in_progress">Peningkatan paket langganan sedang berlangsung…</string>
+  <string name="upselling_snackbar_upgrade_error_generic">Terdapat kesalahan pada saat meningkatkan paket langganan Anda.</string>
+  <string name="upselling_snackbar_upgrade_error_recoverable">Terdapat suatu kesalahan. Silakan coba lagi.</string>
+</resources>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Upselling -->
+  <string name="upselling_button_item_content_description">升級按鈕</string>
+  <string name="upselling_close_button_content_description">關閉按鈕</string>
+  <!-- Upselling: Mailbox -->
+  <string name="upselling_mailbox_plus_description_override">To unlock more storage and premium features.</string>
+  <string name="upselling_mailbox_plus_title">升級至 Mail Plus</string>
+  <!-- Upselling: Social Proof -->
+  <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
+  <!-- Upselling: Mailbox Promo -->
+  <string name="upselling_mailbox_plus_promo_description_override">限時優惠，隨時可取消。</string>
+  <string name="upselling_mailbox_plus_promo_title">試用 Mail Plus，為期 %s</string>
+  <!-- Upselling: Contact Groups -->
+  <string name="upselling_contact_groups_plus_description_override">Send group emails with ease. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_title">將您的聯絡人分組</string>
+  <!-- Upselling: Labels -->
+  <string name="upselling_labels_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_labels_plus_title">需要更多的標籤或資料夾？</string>
+  <!-- Upselling: Folders -->
+  <string name="upselling_folders_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_folders_plus_title">需要更多的標籤或資料夾？</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_mobile_signature_plus_description_override">Make your mobile signature your own. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_title">Personalize your signature</string>
+  <!-- Upselling: Auto Delete -->
+  <string name="upselling_auto_delete_plus_description_override">Deletes spam and trash after 30 days. Get this and more with Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_title">Automated trash removal</string>
+  <!-- Upselling: Schedule Send -->
+  <string name="upselling_schedule_send_plus_description_override">Customize when an email will be sent. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_title">Schedule now, send later</string>
+  <!-- Upselling: Snooze -->
+  <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_snooze_plus_title">Bad time for this email?</string>
+  <!-- Mail Plus -->
+  <string name="upselling_plus_feature_storage">15 GB 儲存空間</string>
+  <string name="upselling_plus_feature_storage_plus_mails">15 GB 儲存空間，10 個電郵位址</string>
+  <string name="upselling_plus_feature_email_addresses">10 個電子信箱</string>
+  <string name="upselling_plus_feature_custom_domain">支援自訂電子郵件網域</string>
+  <string name="upselling_plus_feature_desktop_app">新的 Proton Mail 桌面應用程式</string>
+  <string name="upselling_plus_feature_calendar">頂級質子版行事曆功能</string>
+  <string name="upselling_plus_feature_folders_labels">資料夾、標籤與篩選器無上限</string>
+  <string name="upselling_plus_feature_plus_7_features">與 7 項進階功能</string>
+  <!-- Unlimited -->
+  <string name="upselling_unlimited_description_override">您的多合一進階訂閱</string>
+  <string name="upselling_unlimited_feature_storage">500 GB 儲存空間，可備份照片</string>
+  <string name="upselling_unlimited_feature_mail_calendar">所有付費郵件與行事曆功能</string>
+  <string name="upselling_unlimited_feature_vpn">VPN（超過 90 個國家）</string>
+  <string name="upselling_unlimited_feature_drive">安全的雲端儲存空間</string>
+  <string name="upselling_unlimited_feature_pass">加密密碼管理</string>
+  <!-- Onboarding Upselling -->
+  <string name="upselling_onboarding_premium_value_included">包含進階值</string>
+  <string name="upselling_onboarding_feature_e2e">端對端加密</string>
+  <string name="upselling_onboarding_feature_folders_labels">無限的資料夾 / 標籤</string>
+  <string name="upselling_onboarding_free_feature_storage">1 GB 儲存空間與 1 個電子郵件地址</string>
+  <string name="upselling_onboarding_plus_feature_storage">15 GB 儲存空間</string>
+  <string name="upselling_onboarding_plus_feature_email_addresses">為您提供 10 個額外的電子郵件地址</string>
+  <string name="upselling_onboarding_plus_feature_email_domains">支援 1 個自訂電子郵件網域</string>
+  <string name="upselling_onboarding_plus_feature_aliases">10 個 hide-my-email 別名</string>
+  <string name="upselling_onboarding_plus_feature_customer_support">優先客戶專屬支援</string>
+  <string name="upselling_onboarding_unlimited_feature_storage">500 GB 儲存空間</string>
+  <string name="upselling_onboarding_unlimited_feature_email_addresses">為您提供 15 個額外的電子郵件地址</string>
+  <string name="upselling_onboarding_unlimited_feature_email_domains">支援 3 組自訂電子郵件網域</string>
+  <string name="upselling_onboarding_unlimited_feature_aliases">無限制的 hide-my-email別名</string>
+  <string name="upselling_onboarding_unlimited_feature_customer_support">專屬的客服</string>
+  <string name="upselling_onboarding_unlimited_feature_vpn">超快與私有的VPN</string>
+  <string name="upselling_onboarding_unlimited_feature_pass">加密密碼管理</string>
+  <string name="upselling_onboarding_unlimited_feature_drive">加密雲端儲存給予照片和文件</string>
+  <string name="upselling_onboarding_unlimited_feature_sentinel">進階的帳號保護</string>
+  <!-- Comparison Table -->
+  <string name="upselling_comparison_table_storage">儲存空間</string>
+  <string name="upselling_comparison_table_email_addresses">電郵位址</string>
+  <string name="upselling_comparison_table_custom_email_domain">自訂電子郵件網域名稱電郵網域名稱</string>
+  <string name="upselling_comparison_table_desktop_app">存取桌面應用程式</string>
+  <string name="upselling_comparison_table_unlimited_folders_labels">無限的資料夾 / 標籤</string>
+  <string name="upselling_comparison_table_priority_support">優先客戶專屬支援</string>
+  <!-- Rectangular plan buttons -->
+  <string name="upselling_select_plan">Choose your plan</string>
+  <string name="upselling_select_plan_year">12 months</string>
+  <string name="upselling_select_plan_month">1 個月</string>
+  <!-- Other UI Items -->
+  <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
+  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text_promo_short">歡迎優惠。會在 %s %s%s 時自動續約。</string>
+  <string name="upselling_auto_renew_text_standard">Auto-renews at %s %s%s unless canceled</string>
+  <string name="upselling_social_proof_reviews">2k+ REVIEWS</string>
+  <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
+  <string name="upselling_discount_tag">儲存 %s%%</string>
+  <string name="upselling_month">/月</string>
+  <string name="upselling_year">/年</string>
+  <string name="upselling_get_button">選用 %s</string>
+  <string name="upselling_get_button_promotional">取得 1 個月的 %s %s</string>
+  <plurals name="upselling_month">
+    <item quantity="other">%d個月</item>
+  </plurals>
+  <!-- Errors -->
+  <string name="upselling_unable_retrieve_options">無法擷取升級選項。</string>
+  <string name="upselling_snackbar_error_no_user_id">出現錯誤</string>
+  <string name="upselling_snackbar_error_no_subscriptions">無法擷取訂閱。</string>
+  <!-- Snackbar texts -->
+  <string name="upselling_snackbar_upgrade_in_progress">訂閱升級進行中……</string>
+  <string name="upselling_snackbar_upgrade_error_generic">升級您的訂閱時發生錯誤。</string>
+  <string name="upselling_snackbar_upgrade_error_recoverable">發生錯誤。請再試一次。</string>
+</resources>

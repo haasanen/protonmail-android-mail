@@ -134,4 +134,19 @@
   <string name="message_cancel_schedule_send_dialog_cancel_button">Ακύρωση</string>
   <string name="message_cancel_schedule_send_dialog_title">Επεξεργασία και αναπρογραμματισμός</string>
   <string name="message_cancel_schedule_send_dialog_message">Αυτό το μήνυμα θα μετακινηθεί στα Πρόχειρα ώστε να το επεξεργαστείτε. Θα χρειαστεί να προγραμματίσετε ξανά πότε θα σταλεί.</string>
+  <!-- RSVP widget -->
+  <string name="rsvp_widget_attendance_optional">(Συμμετοχή προαιρετική)</string>
+  <string name="rsvp_widget_attending">Συμμετέχετε;</string>
+  <string name="rsvp_widget_yes">Ναι</string>
+  <string name="rsvp_widget_maybe">Ίσως</string>
+  <string name="rsvp_widget_no">Όχι</string>
+  <string name="rsvp_widget_yes_long">Ναι, θα παρευρεθώ</string>
+  <string name="rsvp_widget_maybe_long">Ίσως, θα παρευρεθώ</string>
+  <string name="rsvp_widget_no_long">Οχί, δεν θα παρευρεθώ</string>
+  <string name="rsvp_widget_organizer">(Διοργανωτής)</string>
+  <string name="rsvp_widget_you">Εσείς</string>
+  <plurals name="rsvp_widget_participants">
+    <item quantity="one">%1$d Συμμετέχων</item>
+    <item quantity="other">%1$d Συμμετέχοντες</item>
+  </plurals>
 </resources>

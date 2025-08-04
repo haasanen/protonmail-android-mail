@@ -73,4 +73,14 @@
   <string name="contact_actions_block_contact_description">Bu kişiyi engelle</string>
   <string name="contact_actions_view_contact_details">Kişi bilgilerini görüntüle</string>
   <string name="contact_actions_view_contact_details_description">İletişim bilgilerini görüntüle</string>
+  <!-- Snooze Bottom Sheet -->
+  <string name="snooze_sheet_option_next_week">Sonraki hafta</string>
+  <string name="snooze_sheet_option_later_this_week">Bu hafta daha sonra</string>
+  <string name="snooze_sheet_option_tomorrow">Yarın</string>
+  <string name="snooze_sheet_option_this_weekend">Bu hafta sonu</string>
+  <string name="snooze_sheet_option_custom">Özel</string>
+  <string name="snooze_sheet_option_custom_detail">Tarih ve saat seçin</string>
+  <string name="snooze_sheet_option_upsell_detail">Ücretli özellik</string>
+  <string name="snooze_sheet_snooze_title">Şu zamana ertele</string>
+  <string name="snooze_sheet_option_unsnooze">Ertelemeyi kaldır</string>
 </resources>

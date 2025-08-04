@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Další problémy s přihlášením</string>
   <string name="login_help_contact_needed">Stále potřebujete pomoci? Kontaktujte nás přímo.</string>
   <string name="login_help_customer_support">Zákaznická podpora</string>
+  <string name="login_help_sign_in_with_qr_code">Přihlásit se pomocí QR kódu</string>
   <string name="welcome_subtitle_mail">Soukromí. Bezpečnost. Pohodlí. Šifrovaný e-mail, který vám dává plnou kontrolu nad vašimi osobními údaji.</string>
   <string name="welcome_sign_in">Přihlásit se</string>
   <string name="welcome_sign_up">Vytvořit účet</string>

@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Diğer oturum açma sorunları</string>
   <string name="login_help_contact_needed">Hala yardım gerekiyor mu? Doğrudan bizimle görüşün.</string>
   <string name="login_help_customer_support">Müşteri desteği</string>
+  <string name="login_help_sign_in_with_qr_code">Kare kod ile oturum aç</string>
   <string name="welcome_subtitle_mail">Gizlilik. Güvenlik. Kolaylık. Kişisel verileriniz üzerinde tam kontrol sağlayan şifrelenmiş e-posta.</string>
   <string name="welcome_sign_in">Oturum aç</string>
   <string name="welcome_sign_up">Hesap açın</string>
@@ -101,11 +102,11 @@
   <string name="auth_signup_validation_email">E-posta adresi boş olamaz.</string>
   <string name="auth_signup_validation_username_input_invalid">Yazılan kullanıcı adı geçersiz.</string>
   <string name="auth_signup_validation_email_input_invalid">Yazılan kullanıcı adı geçersiz.</string>
-  <string name="auth_signup_username_unavailable_error">Username already taken. Choose a different username.</string>
-  <string name="auth_signup_recovery_email_validation_error">Email validation failed</string>
-  <string name="auth_signup_recovery_phone_validation_error">Phone number validation failed</string>
-  <string name="auth_signup_createpassword_error_password_not_equal">Passwords do not match. Please try again.</string>
-  <string name="auth_signup_generic_error">Something went wrong. Please try again.</string>
+  <string name="auth_signup_username_unavailable_error">Kullanıcı adı zaten alınmış. Lütfen başka bir kullanıcı adı seçin.</string>
+  <string name="auth_signup_recovery_email_validation_error">E-posta doğrulanamadı</string>
+  <string name="auth_signup_recovery_phone_validation_error">Telefon numarası doğrulanamadı</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">Parola ile onayı aynı değil. Lütfen yeniden deneyin.</string>
+  <string name="auth_signup_generic_error">Bir sorun çıktı. Lütfen yeniden deneyin.</string>
   <string name="auth_signup_countries_search">Ülke ara</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Kullanıcı kurulamadı.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Adres kurulamadı.</string>

@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Andra inloggningsproblem</string>
   <string name="login_help_contact_needed">Behöver du fortfarande hjälp? Kontakta oss direkt.</string>
   <string name="login_help_customer_support">Kundsupport</string>
+  <string name="login_help_sign_in_with_qr_code">Logga in med QR-kod</string>
   <string name="welcome_subtitle_mail">Integritet. Säkerhet. Bekvämlighet. Krypterad e-post som ger dig full kontroll över dina personuppgifter.</string>
   <string name="welcome_sign_in">Logga in</string>
   <string name="welcome_sign_up">Skapa ett konto</string>

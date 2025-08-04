@@ -58,7 +58,7 @@
   <string name="conversation_moved_to_selected_destination">Yazışma %1$s klasörüne taşındı</string>
   <string name="conversation_moved_to_spam">Yazışma İstenmeyen kutusuna taşındı</string>
   <string name="conversation_moved_to_archive">Yazışma arşivlendi</string>
-  <string name="error_print_message">Unable to print message. Please retry.</string>
+  <string name="error_print_message">İleti yazdırılamadı. Lütfen yeniden deneyin.</string>
   <string name="error_move_conversation_failed">Yazışma taşınamadı. Lütfen yeniden deneyin.</string>
   <string name="error_offline_loading_message">Çevrim dışısınız. Bu iletinin içeriğini görüntüleyebilmek için internet bağlantınız olmalı.</string>
   <string name="error_get_attachment_failed">Ek dosya alınamadı.</string>
@@ -134,4 +134,19 @@
   <string name="message_cancel_schedule_send_dialog_cancel_button">İptal</string>
   <string name="message_cancel_schedule_send_dialog_title">Düzenle ve yeniden zamanla</string>
   <string name="message_cancel_schedule_send_dialog_message">Bu ileti, düzenleyebilmeniz için Taslaklar altına taşınacak. Gönderimini yeniden zamanlamanız gerekecek.</string>
+  <!-- RSVP widget -->
+  <string name="rsvp_widget_attendance_optional">(Katılım isteğe bağlı)</string>
+  <string name="rsvp_widget_attending">Katılıyor musunuz?</string>
+  <string name="rsvp_widget_yes">Evet</string>
+  <string name="rsvp_widget_maybe">Belki</string>
+  <string name="rsvp_widget_no">Hayır</string>
+  <string name="rsvp_widget_yes_long">Evet, katılacağım</string>
+  <string name="rsvp_widget_maybe_long">Belki katılacağım</string>
+  <string name="rsvp_widget_no_long">Hayır, katılmayacağım</string>
+  <string name="rsvp_widget_organizer">(Düzenleyici)</string>
+  <string name="rsvp_widget_you">Siz</string>
+  <plurals name="rsvp_widget_participants">
+    <item quantity="one">%1$d katılımcı</item>
+    <item quantity="other">%1$d katılımcı</item>
+  </plurals>
 </resources>

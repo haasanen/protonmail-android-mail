@@ -134,4 +134,19 @@
   <string name="message_cancel_schedule_send_dialog_cancel_button">Avbryt</string>
   <string name="message_cancel_schedule_send_dialog_title">Rediger og endre tidsplan</string>
   <string name="message_cancel_schedule_send_dialog_message">Denne meldingen flyttes til Utkast slik at du kan redigere den. Du må omplanlegge når den skal sendes.</string>
+  <!-- RSVP widget -->
+  <string name="rsvp_widget_attendance_optional">(Valgfritt oppmøte)</string>
+  <string name="rsvp_widget_attending">Deltar?</string>
+  <string name="rsvp_widget_yes">Ja</string>
+  <string name="rsvp_widget_maybe">Kanskje</string>
+  <string name="rsvp_widget_no">Nei</string>
+  <string name="rsvp_widget_yes_long">Ja, jeg deltar</string>
+  <string name="rsvp_widget_maybe_long">Jeg deltar kanskje</string>
+  <string name="rsvp_widget_no_long">Nei, jeg deltar ikke</string>
+  <string name="rsvp_widget_organizer">(Arrangør)</string>
+  <string name="rsvp_widget_you">Deg</string>
+  <plurals name="rsvp_widget_participants">
+    <item quantity="one">%1$d deltaker</item>
+    <item quantity="other">%1$d deltakere</item>
+  </plurals>
 </resources>

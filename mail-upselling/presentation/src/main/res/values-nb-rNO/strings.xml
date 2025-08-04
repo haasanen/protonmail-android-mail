@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Upselling -->
+  <string name="upselling_button_item_content_description">Oppgrader knapp</string>
+  <string name="upselling_close_button_content_description">Lukk-knapp</string>
+  <!-- Upselling: Mailbox -->
+  <string name="upselling_mailbox_plus_description_override">For å låse opp mer lagringsplass og premiumfunksjoner.</string>
+  <string name="upselling_mailbox_plus_title">Oppgrader til Mail Plus</string>
+  <!-- Upselling: Social Proof -->
+  <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
+  <!-- Upselling: Mailbox Promo -->
+  <string name="upselling_mailbox_plus_promo_description_override">Tidsbegrenset tilbud, avbryt når som helst.</string>
+  <string name="upselling_mailbox_plus_promo_title">Prøv Mail Plus for %s</string>
+  <!-- Upselling: Contact Groups -->
+  <string name="upselling_contact_groups_plus_description_override">Send gruppe-e-poster enkelt. Nyt dette og mer med Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_title">Grupper kontaktene dine</string>
+  <!-- Upselling: Labels -->
+  <string name="upselling_labels_plus_description_override">Lag alt du trenger for å holde deg organisert. Nyt alt dette og mer med Mail Plus. </string>
+  <string name="upselling_labels_plus_title">Behov for flere etiketter eller mapper?</string>
+  <!-- Upselling: Folders -->
+  <string name="upselling_folders_plus_description_override">Lag alt du trenger for å holde deg organisert. Få dette og mer med Mail Plus. </string>
+  <string name="upselling_folders_plus_title">Behov for flere etiketter eller mapper?</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_mobile_signature_plus_description_override">Tilpass mobilsignaturen din. Nyt alt dette og mer med Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_title">Tilpass signaturen din</string>
+  <!-- Upselling: Auto Delete -->
+  <string name="upselling_auto_delete_plus_description_override">Sletter søppelpost og innhold i papirkurven etter 30 dager. Få dette og mer med Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_title">Automatisert fjerning av papirkurvinnhold</string>
+  <!-- Upselling: Schedule Send -->
+  <string name="upselling_schedule_send_plus_description_override">Tilpass når en e-post skal sendes. Nyt dette og mer med Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_title">Planlegg nå, send senere</string>
+  <!-- Upselling: Snooze -->
+  <string name="upselling_snooze_plus_description_override">Slumre den — og få den levert senere. Nyt dette og mer med Mail Plus.</string>
+  <string name="upselling_snooze_plus_title">Dårlig tidspunkt for denne e-posten?</string>
+  <!-- Mail Plus -->
+  <string name="upselling_plus_feature_storage">15 GB lagringsplass</string>
+  <string name="upselling_plus_feature_storage_plus_mails">15 GB lagringsplass, 10 e-postadresser</string>
+  <string name="upselling_plus_feature_email_addresses">10 e-postadresser</string>
+  <string name="upselling_plus_feature_custom_domain">Støtte for tilpasset e-postdomene</string>
+  <string name="upselling_plus_feature_desktop_app">Ny Proton Mail-skrivebordsapp</string>
+  <string name="upselling_plus_feature_calendar">Premium kalenderfunksjoner</string>
+  <string name="upselling_plus_feature_folders_labels">Ubegrenset antall mapper, etiketter og filtre</string>
+  <string name="upselling_plus_feature_plus_7_features">+ 7 premiumfunksjoner</string>
+  <!-- Unlimited -->
+  <string name="upselling_unlimited_description_override">Ditt alt-i-ett Premium-abonnement</string>
+  <string name="upselling_unlimited_feature_storage">500 GB lagringsplass med sikkerhetskopiering av bilder</string>
+  <string name="upselling_unlimited_feature_mail_calendar">Alle betalte Mail- og Calendar-funksjoner</string>
+  <string name="upselling_unlimited_feature_vpn">VPN (90+ land)</string>
+  <string name="upselling_unlimited_feature_drive">Sikker skylagring</string>
+  <string name="upselling_unlimited_feature_pass">Kryptert passordbehandler</string>
+  <!-- Onboarding Upselling -->
+  <string name="upselling_onboarding_premium_value_included">Premiumverdi inkludert</string>
+  <string name="upselling_onboarding_feature_e2e">Ende-til-ende-kryptering</string>
+  <string name="upselling_onboarding_feature_folders_labels">Ubegrenset antall mapper og etiketter</string>
+  <string name="upselling_onboarding_free_feature_storage">1 GB lagring og 1 e-postadresse</string>
+  <string name="upselling_onboarding_plus_feature_storage">15 GB lagring</string>
+  <string name="upselling_onboarding_plus_feature_email_addresses">10 ekstra e-postadresser for deg</string>
+  <string name="upselling_onboarding_plus_feature_email_domains">Støtte for 1 egendefinert e-postdomene</string>
+  <string name="upselling_onboarding_plus_feature_aliases">10 hide-my-email-aliaser</string>
+  <string name="upselling_onboarding_plus_feature_customer_support">Prioritert kundestøtte</string>
+  <string name="upselling_onboarding_unlimited_feature_storage">500 GB lagring</string>
+  <string name="upselling_onboarding_unlimited_feature_email_addresses">15 ekstra e-postadresser for deg</string>
+  <string name="upselling_onboarding_unlimited_feature_email_domains">Støtte for 3 egendefinerte e-postdomener</string>
+  <string name="upselling_onboarding_unlimited_feature_aliases">Ubegrenset antall hide-my-email-aliaser</string>
+  <string name="upselling_onboarding_unlimited_feature_customer_support">Dedikert kundestøtte</string>
+  <string name="upselling_onboarding_unlimited_feature_vpn">Superrask og privat VPN</string>
+  <string name="upselling_onboarding_unlimited_feature_pass">Kryptert passordbehandler</string>
+  <string name="upselling_onboarding_unlimited_feature_drive">Kryptert skylagring for bilder og dokumenter</string>
+  <string name="upselling_onboarding_unlimited_feature_sentinel">Avansert kontobeskyttelse</string>
+  <!-- Comparison Table -->
+  <string name="upselling_comparison_table_storage">Lagring</string>
+  <string name="upselling_comparison_table_email_addresses">E-postadresser</string>
+  <string name="upselling_comparison_table_custom_email_domain">Egendefinert e-postdomene</string>
+  <string name="upselling_comparison_table_desktop_app">Tilgang til skrivebordsappen</string>
+  <string name="upselling_comparison_table_unlimited_folders_labels">Ubegrenset antall mapper og etiketter</string>
+  <string name="upselling_comparison_table_priority_support">Prioritert kundestøtte</string>
+  <!-- Rectangular plan buttons -->
+  <string name="upselling_select_plan">Velg planen din</string>
+  <string name="upselling_select_plan_year">12 måneder</string>
+  <string name="upselling_select_plan_month">1 måned</string>
+  <!-- Other UI Items -->
+  <string name="upselling_auto_renew_text">Automatisk fornyelse til samme pris og vilkår med mindre oppsigelse</string>
+  <string name="upselling_auto_renew_text_promo">Velkomsttilbud. Fornyes automatisk %s%s%s med mindre oppsigelse</string>
+  <string name="upselling_auto_renew_text_promo_short">Velkomsttilbud. Fornyes automatisk til %s %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Fornyes automatisk %s%s%s med mindre oppsigelse</string>
+  <string name="upselling_social_proof_reviews">2k+ ANMELDELSER</string>
+  <string name="upselling_description_social_proof">Oppgrader til opplevelsen som millioner av abonnenter elsker.</string>
+  <string name="upselling_discount_tag">Spar %s%%</string>
+  <string name="upselling_month">/måned</string>
+  <string name="upselling_year">/år</string>
+  <string name="upselling_get_button">Skaff deg %s</string>
+  <string name="upselling_get_button_promotional">Få én måned for %s %s</string>
+  <plurals name="upselling_month">
+    <item quantity="one">%d måned</item>
+    <item quantity="other">%d måneder</item>
+  </plurals>
+  <!-- Errors -->
+  <string name="upselling_unable_retrieve_options">Kan ikke hente oppgraderingsalternativer.</string>
+  <string name="upselling_snackbar_error_no_user_id">En feil oppstod.</string>
+  <string name="upselling_snackbar_error_no_subscriptions">Kan ikke hente abonnementer.</string>
+  <!-- Snackbar texts -->
+  <string name="upselling_snackbar_upgrade_in_progress">Abonnementsoppgradering pågår…</string>
+  <string name="upselling_snackbar_upgrade_error_generic">Det oppstod en feil under oppgradering av abonnementet ditt.</string>
+  <string name="upselling_snackbar_upgrade_error_recoverable">En feil oppstod. Prøv igjen.</string>
+</resources>

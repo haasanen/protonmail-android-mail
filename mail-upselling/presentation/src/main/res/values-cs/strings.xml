@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Upselling -->
+  <string name="upselling_button_item_content_description">Tlačítko navýšení</string>
+  <string name="upselling_close_button_content_description">Tlačítko Zavřít</string>
+  <!-- Upselling: Mailbox -->
+  <string name="upselling_mailbox_plus_description_override">Pro odemknutí většího úložného prostoru a prémiových funkcí.</string>
+  <string name="upselling_mailbox_plus_title">Navýšit na Mail Plus</string>
+  <!-- Upselling: Social Proof -->
+  <string name="upselling_mailbox_plus_title_social_proof">Přejít na Mail Plus</string>
+  <!-- Upselling: Mailbox Promo -->
+  <string name="upselling_mailbox_plus_promo_description_override">Časově omezená nabídka, zrušit lze kdykoli.</string>
+  <string name="upselling_mailbox_plus_promo_title">Vyzkoušejte Mail Plus za %s</string>
+  <!-- Upselling: Contact Groups -->
+  <string name="upselling_contact_groups_plus_description_override">Snadné odesílání skupinových e-mailů. To a mnohem více si můžete užít s aplikací Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_title">Seskupujte své kontakty</string>
+  <!-- Upselling: Labels -->
+  <string name="upselling_labels_plus_description_override">Vytvořte si vše, co potřebujete k udržení pořádku. To a mnohem víc získáte s aplikací Mail Plus. </string>
+  <string name="upselling_labels_plus_title">Potřebujete více štítků nebo složek?</string>
+  <!-- Upselling: Folders -->
+  <string name="upselling_folders_plus_description_override">Vytvořte si vše, co potřebujete k udržení pořádku. To a mnohem víc získáte s aplikací Mail Plus. </string>
+  <string name="upselling_folders_plus_title">Potřebujete více štítků nebo složek?</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_mobile_signature_plus_description_override">Vytvořte si vlastní mobilní podpis. To a mnohem více si můžete užít s aplikací Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_title">Přizpůsobte si podpis</string>
+  <!-- Upselling: Auto Delete -->
+  <string name="upselling_auto_delete_plus_description_override">Po 30 dnech maže spam a koš. To a ještě více získáte s aplikací Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_title">Automatické vyprázdnění koše</string>
+  <!-- Upselling: Schedule Send -->
+  <string name="upselling_schedule_send_plus_description_override">Přizpůsobte si, kdy bude e-mail odeslán. To a mnohem více si můžete užít s aplikací Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_title">Naplánujte teď, odešlete později</string>
+  <!-- Upselling: Snooze -->
+  <string name="upselling_snooze_plus_description_override">Odložte e-mail — a ponechte doručení na později. To a mnohem více si můžete užít s aplikací Mail Plus.</string>
+  <string name="upselling_snooze_plus_title">Nevhodný čas pro odeslání e-mailu?</string>
+  <!-- Mail Plus -->
+  <string name="upselling_plus_feature_storage">15 GB prostoru</string>
+  <string name="upselling_plus_feature_storage_plus_mails">15 GB úložiště, 10 e-mailových adres</string>
+  <string name="upselling_plus_feature_email_addresses">10 e-mailových adres</string>
+  <string name="upselling_plus_feature_custom_domain">Podpora vlastní e-mailové domény</string>
+  <string name="upselling_plus_feature_desktop_app">Nová aplikace Proton Mail pro desktop</string>
+  <string name="upselling_plus_feature_calendar">Prémiové funkce kalendáře</string>
+  <string name="upselling_plus_feature_folders_labels">Neomezený počet složek, štítků a filtrů</string>
+  <string name="upselling_plus_feature_plus_7_features">+7 prémiových funkcí</string>
+  <!-- Unlimited -->
+  <string name="upselling_unlimited_description_override">Vaše prémiové předplatné obsahující vše v jednom</string>
+  <string name="upselling_unlimited_feature_storage">500 GB prostoru se zálohováním fotografií</string>
+  <string name="upselling_unlimited_feature_mail_calendar">Všechny placené funkce Mail a Calendar</string>
+  <string name="upselling_unlimited_feature_vpn">VPN (90+ zemí)</string>
+  <string name="upselling_unlimited_feature_drive">Bezpečné cloudové úložiště</string>
+  <string name="upselling_unlimited_feature_pass">Šifrovaný správce hesel</string>
+  <!-- Onboarding Upselling -->
+  <string name="upselling_onboarding_premium_value_included">Včetně prémiové hodnoty</string>
+  <string name="upselling_onboarding_feature_e2e">Koncové šifrování</string>
+  <string name="upselling_onboarding_feature_folders_labels">Neomezený počet složek a štítků</string>
+  <string name="upselling_onboarding_free_feature_storage">1 GB úložiště a 1 e-mailová adresa</string>
+  <string name="upselling_onboarding_plus_feature_storage">15 GB úložiště</string>
+  <string name="upselling_onboarding_plus_feature_email_addresses">10 dalších e-mailových adres pro vás</string>
+  <string name="upselling_onboarding_plus_feature_email_domains">Podpora 1 vlastní e-mailové domény</string>
+  <string name="upselling_onboarding_plus_feature_aliases">10 aliasů hide-my-email</string>
+  <string name="upselling_onboarding_plus_feature_customer_support">Prioritní zákaznická podpora</string>
+  <string name="upselling_onboarding_unlimited_feature_storage">500 GB úložiště</string>
+  <string name="upselling_onboarding_unlimited_feature_email_addresses">15 dalších e-mailových adres pro vás</string>
+  <string name="upselling_onboarding_unlimited_feature_email_domains">Podpora 3 vlastních e-mailových domén</string>
+  <string name="upselling_onboarding_unlimited_feature_aliases">Neomezený počet aliasů hide-my-email</string>
+  <string name="upselling_onboarding_unlimited_feature_customer_support">Vyhrazená podpora</string>
+  <string name="upselling_onboarding_unlimited_feature_vpn">Ultra rychlá a soukromá VPN</string>
+  <string name="upselling_onboarding_unlimited_feature_pass">Šifrovaný správce hesel</string>
+  <string name="upselling_onboarding_unlimited_feature_drive">Šifrované cloudové úložiště pro fotografie a dokumenty</string>
+  <string name="upselling_onboarding_unlimited_feature_sentinel">Pokročilá ochrana účtu</string>
+  <!-- Comparison Table -->
+  <string name="upselling_comparison_table_storage">Úložiště</string>
+  <string name="upselling_comparison_table_email_addresses">E-mailové adresy</string>
+  <string name="upselling_comparison_table_custom_email_domain">Vlastní e-mailová doména</string>
+  <string name="upselling_comparison_table_desktop_app">Přístup k desktopové aplikaci</string>
+  <string name="upselling_comparison_table_unlimited_folders_labels">Neomezený počet složek a štítků</string>
+  <string name="upselling_comparison_table_priority_support">Prioritní zákaznická podpora</string>
+  <!-- Rectangular plan buttons -->
+  <string name="upselling_select_plan">Vyberte svůj tarif</string>
+  <string name="upselling_select_plan_year">12 měsíců</string>
+  <string name="upselling_select_plan_month">1 měsíc</string>
+  <!-- Other UI Items -->
+  <string name="upselling_auto_renew_text">Automatické obnovení za stejnou cenu a za stejných podmínek, pokud není zrušeno</string>
+  <string name="upselling_auto_renew_text_promo">Uvítací nabídka. Automaticky se obnoví %s %s%s, pokud nebude zrušena</string>
+  <string name="upselling_auto_renew_text_promo_short">Uvítací nabídka. Obnovuje se automaticky %s %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Automaticky se obnoví %s %s%s, pokud nebude zrušena</string>
+  <string name="upselling_social_proof_reviews">2k+ RECENZÍ</string>
+  <string name="upselling_description_social_proof">Navýšením získáte zážitek, o kterém básní miliony předplatitelů.</string>
+  <string name="upselling_discount_tag">UŠETŘETE %s%%</string>
+  <string name="upselling_month">/měsíčně</string>
+  <string name="upselling_year">/ročně</string>
+  <string name="upselling_get_button">Získejte %s</string>
+  <string name="upselling_get_button_promotional">Získejte 1 měsíc za %s %s</string>
+  <plurals name="upselling_month">
+    <item quantity="one">%d měsíc</item>
+    <item quantity="few">%d měsíce</item>
+    <item quantity="many">%d měsíců</item>
+    <item quantity="other">%d měsíců</item>
+  </plurals>
+  <!-- Errors -->
+  <string name="upselling_unable_retrieve_options">Nepodařilo se načíst možnosti navýšení.</string>
+  <string name="upselling_snackbar_error_no_user_id">Došlo k chybě.</string>
+  <string name="upselling_snackbar_error_no_subscriptions">Nepodařilo se stáhnout předplatné.</string>
+  <!-- Snackbar texts -->
+  <string name="upselling_snackbar_upgrade_in_progress">Probíhá navýšení předplatného…</string>
+  <string name="upselling_snackbar_upgrade_error_generic">Při navýšení vašeho předplatného došlo k chybě.</string>
+  <string name="upselling_snackbar_upgrade_error_recoverable">Došlo k chybě. Prosím zkuste to znovu.</string>
+</resources>

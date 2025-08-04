@@ -18,10 +18,10 @@
   -->
 <resources>
   <plurals name="selected_count_title">
-    <item quantity="one">Wybrano %d</item>
-    <item quantity="few">%d wybrane</item>
-    <item quantity="many">%d wybranych</item>
-    <item quantity="other">Wybrano %d</item>
+    <item quantity="one">Zaznaczono %d</item>
+    <item quantity="few">Zaznaczono %d</item>
+    <item quantity="many">Zaznaczono %d</item>
+    <item quantity="other">Zaznaczono %d</item>
   </plurals>
   <plurals name="attachment_count_label">
     <item quantity="one">%d załącznik</item>
@@ -77,4 +77,14 @@
   <string name="contact_actions_block_contact_description">Zablokuj kontakt</string>
   <string name="contact_actions_view_contact_details">Pokaż szczegóły kontaktu</string>
   <string name="contact_actions_view_contact_details_description">Pokaż szczegóły kontaktu</string>
+  <!-- Snooze Bottom Sheet -->
+  <string name="snooze_sheet_option_next_week">Następny tydzień</string>
+  <string name="snooze_sheet_option_later_this_week">W tym tygodniu</string>
+  <string name="snooze_sheet_option_tomorrow">Jutro</string>
+  <string name="snooze_sheet_option_this_weekend">Ten weekend</string>
+  <string name="snooze_sheet_option_custom">Niestandardowa</string>
+  <string name="snooze_sheet_option_custom_detail">Wybierz datę i godzinę</string>
+  <string name="snooze_sheet_option_upsell_detail">Płatna funkcja</string>
+  <string name="snooze_sheet_snooze_title">Odłóż</string>
+  <string name="snooze_sheet_option_unsnooze">Anuluj odłożenie</string>
 </resources>

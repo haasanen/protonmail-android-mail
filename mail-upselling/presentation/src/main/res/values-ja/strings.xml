@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Upselling -->
+  <string name="upselling_button_item_content_description">アップグレードボタン</string>
+  <string name="upselling_close_button_content_description">閉じるボタン</string>
+  <!-- Upselling: Mailbox -->
+  <string name="upselling_mailbox_plus_description_override">To unlock more storage and premium features.</string>
+  <string name="upselling_mailbox_plus_title">Mail Plus にアップグレード</string>
+  <!-- Upselling: Social Proof -->
+  <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
+  <!-- Upselling: Mailbox Promo -->
+  <string name="upselling_mailbox_plus_promo_description_override">期間限定オファー、いつでもキャンセル可能。</string>
+  <string name="upselling_mailbox_plus_promo_title">%sでMail Plusを試す</string>
+  <!-- Upselling: Contact Groups -->
+  <string name="upselling_contact_groups_plus_description_override">Send group emails with ease. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_title">連絡先をグループ化する</string>
+  <!-- Upselling: Labels -->
+  <string name="upselling_labels_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_labels_plus_title">さらに多くのラベルやフォルダーが必要ですか？</string>
+  <!-- Upselling: Folders -->
+  <string name="upselling_folders_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_folders_plus_title">さらに多くのラベルやフォルダーが必要ですか？</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_mobile_signature_plus_description_override">Make your mobile signature your own. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_title">Personalize your signature</string>
+  <!-- Upselling: Auto Delete -->
+  <string name="upselling_auto_delete_plus_description_override">Deletes spam and trash after 30 days. Get this and more with Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_title">Automated trash removal</string>
+  <!-- Upselling: Schedule Send -->
+  <string name="upselling_schedule_send_plus_description_override">Customize when an email will be sent. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_title">Schedule now, send later</string>
+  <!-- Upselling: Snooze -->
+  <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_snooze_plus_title">Bad time for this email?</string>
+  <!-- Mail Plus -->
+  <string name="upselling_plus_feature_storage">15 GB のストレージ</string>
+  <string name="upselling_plus_feature_storage_plus_mails">ストレージ容量15 GB、メールアドレス 10 個</string>
+  <string name="upselling_plus_feature_email_addresses">10個のメールアドレス</string>
+  <string name="upselling_plus_feature_custom_domain">カスタムメールドメインのサポート</string>
+  <string name="upselling_plus_feature_desktop_app">新しい Proton Mail デスクトップアプリ</string>
+  <string name="upselling_plus_feature_calendar">カレンダーのプレミアム機能</string>
+  <string name="upselling_plus_feature_folders_labels">無制限のフォルダー、ラベル、フィルター</string>
+  <string name="upselling_plus_feature_plus_7_features">+7個のプレミアム機能</string>
+  <!-- Unlimited -->
+  <string name="upselling_unlimited_description_override">オールインワンプレミアムサブスクリプション</string>
+  <string name="upselling_unlimited_feature_storage">500 GB のストレージと写真バックアップ</string>
+  <string name="upselling_unlimited_feature_mail_calendar">有料の Mail と Calendar の全機能</string>
+  <string name="upselling_unlimited_feature_vpn">VPN (90ヶ国以上)</string>
+  <string name="upselling_unlimited_feature_drive">安全なクラウドストレージ</string>
+  <string name="upselling_unlimited_feature_pass">暗号化されたパスワードマネージャー</string>
+  <!-- Onboarding Upselling -->
+  <string name="upselling_onboarding_premium_value_included">プレミアムな価値が含まれています</string>
+  <string name="upselling_onboarding_feature_e2e">エンドツーエンド暗号化</string>
+  <string name="upselling_onboarding_feature_folders_labels">無制限のフォルダーとラベル</string>
+  <string name="upselling_onboarding_free_feature_storage">1 GB のストレージと 1 つのメールアドレス</string>
+  <string name="upselling_onboarding_plus_feature_storage">15 GB のストレージ</string>
+  <string name="upselling_onboarding_plus_feature_email_addresses">10 個の追加のメールアドレス</string>
+  <string name="upselling_onboarding_plus_feature_email_domains">1 つのカスタムメールドメインをサポート</string>
+  <string name="upselling_onboarding_plus_feature_aliases">10 個の 非ide-my-email表示メールエイリアス</string>
+  <string name="upselling_onboarding_plus_feature_customer_support">優先カスタマーサポート</string>
+  <string name="upselling_onboarding_unlimited_feature_storage">500 GB のストレージ</string>
+  <string name="upselling_onboarding_unlimited_feature_email_addresses">15 個の追加のメールアドレス</string>
+  <string name="upselling_onboarding_unlimited_feature_email_domains">3 つのカスタムメールドメインをサポート</string>
+  <string name="upselling_onboarding_unlimited_feature_aliases">無制限のメール非表示ide-my-emailエイリアス</string>
+  <string name="upselling_onboarding_unlimited_feature_customer_support">専用カスタマーサポート</string>
+  <string name="upselling_onboarding_unlimited_feature_vpn">超高速でプライベートな VPN</string>
+  <string name="upselling_onboarding_unlimited_feature_pass">暗号化されたパスワードマネージャー</string>
+  <string name="upselling_onboarding_unlimited_feature_drive">写真や文書のための暗号化クラウドストレージ</string>
+  <string name="upselling_onboarding_unlimited_feature_sentinel">高度なアカウント保護</string>
+  <!-- Comparison Table -->
+  <string name="upselling_comparison_table_storage">容量</string>
+  <string name="upselling_comparison_table_email_addresses">メールアドレス</string>
+  <string name="upselling_comparison_table_custom_email_domain">カスタムメールドメイン</string>
+  <string name="upselling_comparison_table_desktop_app">デスクトップアプリへアクセス</string>
+  <string name="upselling_comparison_table_unlimited_folders_labels">無制限のフォルダとラベル</string>
+  <string name="upselling_comparison_table_priority_support">優先的なカスタマーサポート</string>
+  <!-- Rectangular plan buttons -->
+  <string name="upselling_select_plan">Choose your plan</string>
+  <string name="upselling_select_plan_year">12 months</string>
+  <string name="upselling_select_plan_month">1 ヶ月</string>
+  <!-- Other UI Items -->
+  <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
+  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text_promo_short">歓迎オファー。 %s %s%s で自動更新。</string>
+  <string name="upselling_auto_renew_text_standard">Auto-renews at %s %s%s unless canceled</string>
+  <string name="upselling_social_proof_reviews">2k+ REVIEWS</string>
+  <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
+  <string name="upselling_discount_tag">%s%%節約</string>
+  <string name="upselling_month">/月</string>
+  <string name="upselling_year">/ 年間</string>
+  <string name="upselling_get_button">%sを入手</string>
+  <string name="upselling_get_button_promotional">%s %s で 1 ヶ月分獲得</string>
+  <plurals name="upselling_month">
+    <item quantity="other">%d ヶ月</item>
+  </plurals>
+  <!-- Errors -->
+  <string name="upselling_unable_retrieve_options">アップグレードオプションを取得できませんでした。</string>
+  <string name="upselling_snackbar_error_no_user_id">エラーが発生しました。</string>
+  <string name="upselling_snackbar_error_no_subscriptions">サブスクリプションを取得できませんでした。</string>
+  <!-- Snackbar texts -->
+  <string name="upselling_snackbar_upgrade_in_progress">サブスクリプションのアップグレードを進めています…</string>
+  <string name="upselling_snackbar_upgrade_error_generic">サブスクリプションのアップグレード中にエラーが発生しました。</string>
+  <string name="upselling_snackbar_upgrade_error_recoverable">エラーが発生しました。もう一度お試しください。</string>
+</resources>

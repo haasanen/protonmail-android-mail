@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Altres problemes d\'inici de sessió</string>
   <string name="login_help_contact_needed">Encara necessiteu ajuda? Contacteu amb nosaltres directament.</string>
   <string name="login_help_customer_support">Servei d\'atenció al client</string>
+  <string name="login_help_sign_in_with_qr_code">Inicieu la sessió amb un codi QR</string>
   <string name="welcome_subtitle_mail">Privacitat. Seguretat. Comoditat. Correu electrònic xifrat que us dona control total sobre les vostres dades personals.</string>
   <string name="welcome_sign_in">Inicia la sessió</string>
   <string name="welcome_sign_up">Crea un compte</string>

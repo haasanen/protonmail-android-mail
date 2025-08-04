@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Upselling -->
+  <string name="upselling_button_item_content_description">업그레이드 버튼</string>
+  <string name="upselling_close_button_content_description">닫기 버튼</string>
+  <!-- Upselling: Mailbox -->
+  <string name="upselling_mailbox_plus_description_override">더 많은 저장 공간과 프리미엄 기능을 잠금 해제하기.</string>
+  <string name="upselling_mailbox_plus_title">Mail Plus로 업그레이드</string>
+  <!-- Upselling: Social Proof -->
+  <string name="upselling_mailbox_plus_title_social_proof">Mail Plus 시작하기</string>
+  <!-- Upselling: Mailbox Promo -->
+  <string name="upselling_mailbox_plus_promo_description_override">기간 한정 혜택, 언제든지 취소할 수 있습니다.</string>
+  <string name="upselling_mailbox_plus_promo_title">Mail Plus를 %s에 사용해 보세요</string>
+  <!-- Upselling: Contact Groups -->
+  <string name="upselling_contact_groups_plus_description_override">그룹 이메일을 간편하게 보내세요. Mail Plus와 함께 이 모든 것과 그 이상을 즐기세요.</string>
+  <string name="upselling_contact_groups_plus_title">연락처를 그룹화하기</string>
+  <!-- Upselling: Labels -->
+  <string name="upselling_labels_plus_description_override">정돈되게 유지하는 데 필요한 모든 것을 만드세요. Mail Plus로 이 모든 것을 더 많이 얻으세요. </string>
+  <string name="upselling_labels_plus_title">라벨 또는 폴더가 더 필요하신가요?</string>
+  <!-- Upselling: Folders -->
+  <string name="upselling_folders_plus_description_override">조직을 유지하는 데 필요한 모든 것을 만드세요. Mail Plus로 이 모든 것을 더 많이 얻으세요. </string>
+  <string name="upselling_folders_plus_title">라벨 또는 폴더가 더 필요하신가요?</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_mobile_signature_plus_description_override">나만의 모바일 서명을 만들어보세요. Mail Plus로 더 많은 기능을 만나보세요.</string>
+  <string name="upselling_mobile_signature_plus_title">사용자 지정 서명</string>
+  <!-- Upselling: Auto Delete -->
+  <string name="upselling_auto_delete_plus_description_override">30일 후 스팸함과 휴지통을 비웁니다. Mail Plus로 이 기능을 비롯한 다양한 혜택을 누리세요.</string>
+  <string name="upselling_auto_delete_plus_title">자동 휴지통 삭제</string>
+  <!-- Upselling: Schedule Send -->
+  <string name="upselling_schedule_send_plus_description_override">이메일이 전송되는 시점을 지정하세요. Mail Plus로 이 기능을 비롯한 다양한 혜택을 누리세요.</string>
+  <string name="upselling_schedule_send_plus_title">지금 발송 예약하여 나중에 발송하기</string>
+  <!-- Upselling: Snooze -->
+  <string name="upselling_snooze_plus_description_override">나중에 다시 알림을 설정하세요 - 그리고 나중에 전달되도록 하세요. Mail Plus로 이 기능을 비롯한 다양한 혜택을 즐겨보세요.</string>
+  <string name="upselling_snooze_plus_title">이 이메일에 부적절한 시간인가요?</string>
+  <!-- Mail Plus -->
+  <string name="upselling_plus_feature_storage">저장공간 15GB</string>
+  <string name="upselling_plus_feature_storage_plus_mails">저장공간 15 GB 및 이메일 주소 10개</string>
+  <string name="upselling_plus_feature_email_addresses">이메일 주소 10개</string>
+  <string name="upselling_plus_feature_custom_domain">사용자 지정 이메일 도메인 지원</string>
+  <string name="upselling_plus_feature_desktop_app">새로운 Proton Mail 데스크톱 앱</string>
+  <string name="upselling_plus_feature_calendar">프리미엄 캘린더 기능</string>
+  <string name="upselling_plus_feature_folders_labels">무제한 폴더, 라벨, 필터</string>
+  <string name="upselling_plus_feature_plus_7_features">+7개 프리미엄 기능</string>
+  <!-- Unlimited -->
+  <string name="upselling_unlimited_description_override">올인원 프리미엄 구독</string>
+  <string name="upselling_unlimited_feature_storage">사진 백업 기능과 저장공간 500GB</string>
+  <string name="upselling_unlimited_feature_mail_calendar">모든 유료 메일 및 캘린더 기능</string>
+  <string name="upselling_unlimited_feature_vpn">VPN (90개 이상 국가)</string>
+  <string name="upselling_unlimited_feature_drive">안전한 클라우드 저장 공간</string>
+  <string name="upselling_unlimited_feature_pass">암호화된 비밀번호 관리자</string>
+  <!-- Onboarding Upselling -->
+  <string name="upselling_onboarding_premium_value_included">프리미엄 가치 포함됨</string>
+  <string name="upselling_onboarding_feature_e2e">종단간 암호화</string>
+  <string name="upselling_onboarding_feature_folders_labels">무제한 폴더 및 라벨</string>
+  <string name="upselling_onboarding_free_feature_storage">1 GB 스토리지 및 1개 이메일 주소</string>
+  <string name="upselling_onboarding_plus_feature_storage">15GB 저장공간</string>
+  <string name="upselling_onboarding_plus_feature_email_addresses">회원님을 위한 10개의 추가 이메일 주소</string>
+  <string name="upselling_onboarding_plus_feature_email_domains">1개의 커스텀 이메일 도메인 지원</string>
+  <string name="upselling_onboarding_plus_feature_aliases">10개의 hide-my-email 별칭</string>
+  <string name="upselling_onboarding_plus_feature_customer_support">우선 고객 지원</string>
+  <string name="upselling_onboarding_unlimited_feature_storage">500GB 저장공간</string>
+  <string name="upselling_onboarding_unlimited_feature_email_addresses">회원님을 위한 15개의 추가 이메일 주소</string>
+  <string name="upselling_onboarding_unlimited_feature_email_domains">3개의 커스텀 이메일 도메인 지원</string>
+  <string name="upselling_onboarding_unlimited_feature_aliases">무제한 hide-my-email 별칭</string>
+  <string name="upselling_onboarding_unlimited_feature_customer_support">전담 고객 지원</string>
+  <string name="upselling_onboarding_unlimited_feature_vpn">매우 빠른 비공개 VPN</string>
+  <string name="upselling_onboarding_unlimited_feature_pass">암호화된 비밀번호 관리자</string>
+  <string name="upselling_onboarding_unlimited_feature_drive">사진 및 문서에 대한 암호화된 클라우드 스토리지</string>
+  <string name="upselling_onboarding_unlimited_feature_sentinel">향상된 계정 보호</string>
+  <!-- Comparison Table -->
+  <string name="upselling_comparison_table_storage">저장 공간</string>
+  <string name="upselling_comparison_table_email_addresses">이메일 주소</string>
+  <string name="upselling_comparison_table_custom_email_domain">사용자 지정 이메일 도메인</string>
+  <string name="upselling_comparison_table_desktop_app">데스크톱 앱으로의 접근 가능</string>
+  <string name="upselling_comparison_table_unlimited_folders_labels">무제한 폴더 및 라벨</string>
+  <string name="upselling_comparison_table_priority_support">우선 고객 지원</string>
+  <!-- Rectangular plan buttons -->
+  <string name="upselling_select_plan">플랜을 선택하세요</string>
+  <string name="upselling_select_plan_year">12개월</string>
+  <string name="upselling_select_plan_month">1개월</string>
+  <!-- Other UI Items -->
+  <string name="upselling_auto_renew_text">취소되기 전까지 같은 가격과 규정으로 갱신됩니다</string>
+  <string name="upselling_auto_renew_text_promo">환영 할인. 취소 전까지 %s %s%s(으)로 갱신됩니다</string>
+  <string name="upselling_auto_renew_text_promo_short">환영 할인. 매년 %s %s%s에 갱신됩니다.</string>
+  <string name="upselling_auto_renew_text_standard">취소 전까지 %s %s%s(으)로 갱신됩니다</string>
+  <string name="upselling_social_proof_reviews">2천개 이상의 리뷰</string>
+  <string name="upselling_description_social_proof">수백만 명의 구독자가 극찬하는 경험을 위해 업그레이드하세요.</string>
+  <string name="upselling_discount_tag">%s%% 절약</string>
+  <string name="upselling_month">/월</string>
+  <string name="upselling_year">/연간</string>
+  <string name="upselling_get_button">%s 받기</string>
+  <string name="upselling_get_button_promotional">%s %s(으)로 1개월 플랜 구매</string>
+  <plurals name="upselling_month">
+    <item quantity="other">%d개월</item>
+  </plurals>
+  <!-- Errors -->
+  <string name="upselling_unable_retrieve_options">업그레이드 옵션을 불러올 수 없습니다.</string>
+  <string name="upselling_snackbar_error_no_user_id">오류가 발생했습니다.</string>
+  <string name="upselling_snackbar_error_no_subscriptions">구독을 가져올 수 없습니다.</string>
+  <!-- Snackbar texts -->
+  <string name="upselling_snackbar_upgrade_in_progress">구독을 업그레이드 중입니다…</string>
+  <string name="upselling_snackbar_upgrade_error_generic">구독을 업그레이드하던 중 오류가 발생했습니다.</string>
+  <string name="upselling_snackbar_upgrade_error_recoverable">오류가 발생했습니다. 다시 시도해 주십시오.</string>
+</resources>

@@ -26,13 +26,13 @@
   <string name="intro_origin_sign_in_title">Se connecter sur un autre appareil</string>
   <string name="intro_origin_sign_in_subtitle">Comment se connecter avec un QR code</string>
   <string name="intro_origin_sign_in_hint_1">1. Ouvrez n\'importe quelle application Proton sur l\'appareil sur lequel vous voulez vous connecter.</string>
-  <string name="intro_origin_sign_in_hint_2">2. Sur l\'écran de connexion, sélectionnez <b>Mot de passe oublié</b> ou <b>Problème de connexion ?</b></string>
+  <string name="intro_origin_sign_in_hint_2">2. Sur l\'écran de connexion, sélectionnez <b>Mot de passe oublié</b> ou <b>Problèmes de connexion ?</b> (sur les applications mobiles, sélectionnez <b>Aide</b>).</string>
   <string name="intro_origin_sign_in_hint_3">3. Sélectionnez <b>Se connecter avec un QR code</b>. Un QR code apparaîtra.</string>
   <string name="intro_origin_sign_in_hint_4">4. Sur cet appareil, appuyez sur <b>Scanner le QR code</b> et scannez le code.</string>
   <string name="intro_origin_sign_in_tips">Conseils de sécurité</string>
   <string name="intro_origin_sign_in_tip_1">Soyez prudent avec les messages contenant des QR codes. Ne scannez un code que si vous faites confiance à la source.</string>
   <string name="intro_origin_sign_in_tip_2">Proton ne vous contactera jamais de manière inattendue pour vous demander de vous connecter à l\'aide d\'un QR code.</string>
-  <string name="intro_origin_sign_in_tip_3">Proton ne vous demandera jamais de scanner un QR code qui ne provient pas de <b>https://proton.me</b> ou d’une application officielle Proton.</string>
+  <string name="intro_origin_sign_in_tip_3">Proton ne vous demandera jamais de scanner un QR code qui ne provient pas de <b>https://proton.me</b> ou d\'une application Proton officielle.</string>
   <string name="intro_origin_sign_in_begin">Scanner le QR code</string>
   <string name="intro_origin_biometrics_title">Déverrouillez votre appareil pour continuer.</string>
   <string name="manual_code_input_title">Saisir le code manuellement</string>
@@ -49,10 +49,10 @@
   <string name="target_sign_in_instruction_1">1. Utilisez un autre appareil qui est connecté à votre compte Proton.</string>
   <string name="target_sign_in_instruction_2">2. En utilisant cet appareil, ouvrez n\'importe quelle application Proton et sélectionnez <b>Paramètres</b></string>
   <string name="target_sign_in_instruction_3">3. Sélectionnez <b>Se connecter sur un autre appareil → Scanner le QR code</b></string>
-  <string name="target_sign_in_instruction_4">4. Scannez le code pour vous connecter</string>
+  <string name="target_sign_in_instruction_4">4. Scannez le code pour vous connecter.</string>
   <string name="target_sign_in_error_title">Nous n\'avons pas pu vous connecter.</string>
   <string name="target_sign_in_retryable_error">Essayez de générer un nouveau QR code.</string>
-    <string name="target_sign_in_error_new_qr">Générer un QR code</string>
-  <string name="target_sign_in_error_back_to_signin">Retour à la connexion</string>
-    <string name="target_sign_in_learn_more">En savoir plus</string>
+  <string name="target_sign_in_error_new_qr">Générer un QR code</string>
+  <string name="target_sign_in_error_back_to_signin">Retourner à la connexion</string>
+  <string name="target_sign_in_learn_more">En savoir plus</string>
 </resources>

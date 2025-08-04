@@ -138,4 +138,21 @@
   <string name="message_cancel_schedule_send_dialog_cancel_button">Скасаваць</string>
   <string name="message_cancel_schedule_send_dialog_title">Рэдагаваць і перапланаваць</string>
   <string name="message_cancel_schedule_send_dialog_message">Гэта паведамленне будзе перамешчана ў папку з чарнавікамі, так што вы зможаце адрэдагаваць яго. Вам неабходна будзе перапланаваць яго пасля адпраўкі.</string>
+  <!-- RSVP widget -->
+  <string name="rsvp_widget_attendance_optional">(Удзельнічаць неабавязкова)</string>
+  <string name="rsvp_widget_attending">Пойдзеце?</string>
+  <string name="rsvp_widget_yes">Так</string>
+  <string name="rsvp_widget_maybe">Магчыма</string>
+  <string name="rsvp_widget_no">Не</string>
+  <string name="rsvp_widget_yes_long">Так, я пайду</string>
+  <string name="rsvp_widget_maybe_long">Магчыма я далучуся</string>
+  <string name="rsvp_widget_no_long">Не, я не хачу ісці</string>
+  <string name="rsvp_widget_organizer">(Арганізатар)</string>
+  <string name="rsvp_widget_you">Вы</string>
+  <plurals name="rsvp_widget_participants">
+    <item quantity="one">%1$d Удзельнік</item>
+    <item quantity="few">%1$d Удзельнікі</item>
+    <item quantity="many">%1$d Удзельнікаў</item>
+    <item quantity="other">%1$d Удзельнікаў</item>
+  </plurals>
 </resources>

@@ -73,4 +73,14 @@
   <string name="contact_actions_block_contact_description">Estä tämä yhteystieto</string>
   <string name="contact_actions_view_contact_details">Näytä yhteystieto</string>
   <string name="contact_actions_view_contact_details_description">Näytä yhteystiedon tiedot</string>
+  <!-- Snooze Bottom Sheet -->
+  <string name="snooze_sheet_option_next_week">Next week</string>
+  <string name="snooze_sheet_option_later_this_week">Later this week</string>
+  <string name="snooze_sheet_option_tomorrow">Tomorrow</string>
+  <string name="snooze_sheet_option_this_weekend">This weekend</string>
+  <string name="snooze_sheet_option_custom">Custom</string>
+  <string name="snooze_sheet_option_custom_detail">Pick date and time</string>
+  <string name="snooze_sheet_option_upsell_detail">Paid feature</string>
+  <string name="snooze_sheet_snooze_title">Snooze until</string>
+  <string name="snooze_sheet_option_unsnooze">Unsnooze</string>
 </resources>

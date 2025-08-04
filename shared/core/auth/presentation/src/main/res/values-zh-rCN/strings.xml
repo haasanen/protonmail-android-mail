@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">其他登录问题</string>
   <string name="login_help_contact_needed">如果仍需帮助，请直接与我们联系。</string>
   <string name="login_help_customer_support">客户支持</string>
+  <string name="login_help_sign_in_with_qr_code">Sign in with QR code</string>
   <string name="welcome_subtitle_mail">隐私、安全、便捷。加密电子邮件，让您完全掌控个人数据。</string>
   <string name="welcome_sign_in">登录</string>
   <string name="welcome_sign_up">创建账户</string>

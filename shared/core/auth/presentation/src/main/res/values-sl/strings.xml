@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Druge težave z vpisom</string>
   <string name="login_help_contact_needed">Še vedno potrebujete pomoč? Kontaktirajte nas neposredno.</string>
   <string name="login_help_customer_support">Podpora strankam</string>
+  <string name="login_help_sign_in_with_qr_code">Sign in with QR code</string>
   <string name="welcome_subtitle_mail">Zasebnost. Varnost. Priročnost. Šifrirana e-pošta, ki vam omogoča popoln nadzor nad osebnimi podatki.</string>
   <string name="welcome_sign_in">Prijava</string>
   <string name="welcome_sign_up">Ustvarite račun</string>

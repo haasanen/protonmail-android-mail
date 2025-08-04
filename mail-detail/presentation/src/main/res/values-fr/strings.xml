@@ -134,4 +134,19 @@
   <string name="message_cancel_schedule_send_dialog_cancel_button">Annuler</string>
   <string name="message_cancel_schedule_send_dialog_title">Modifier et replanifier</string>
   <string name="message_cancel_schedule_send_dialog_message">Ce message sera déplacé vers Brouillons afin que vous puissiez le modifier. Vous devrez reprogrammer quand il sera envoyé.</string>
+  <!-- RSVP widget -->
+  <string name="rsvp_widget_attendance_optional">(présence facultative)</string>
+  <string name="rsvp_widget_attending">Participez-vous ?</string>
+  <string name="rsvp_widget_yes">Oui</string>
+  <string name="rsvp_widget_maybe">Peut-être</string>
+  <string name="rsvp_widget_no">Non</string>
+  <string name="rsvp_widget_yes_long">Oui, je participerai.</string>
+  <string name="rsvp_widget_maybe_long">Peut-être que je participerai</string>
+  <string name="rsvp_widget_no_long">Non, je ne participerai pas.</string>
+  <string name="rsvp_widget_organizer">(Organisateur)</string>
+  <string name="rsvp_widget_you">Vous</string>
+  <plurals name="rsvp_widget_participants">
+    <item quantity="one">%1$d Participant</item>
+    <item quantity="other">%1$d Participants</item>
+  </plurals>
 </resources>

@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Otros problemas de inicio de sesión</string>
   <string name="login_help_contact_needed">¿Aún necesita ayuda? Contáctenos directamente.</string>
   <string name="login_help_customer_support">Soporte al cliente</string>
+  <string name="login_help_sign_in_with_qr_code">Iniciar sesión con código QR</string>
   <string name="welcome_subtitle_mail">Privacidad. Seguridad. Conveniencia. Correo electrónico cifrado que le ofrece control total de los datos personales.</string>
   <string name="welcome_sign_in">Iniciar sesión</string>
   <string name="welcome_sign_up">Crear una cuenta</string>
@@ -101,9 +102,9 @@
   <string name="auth_signup_validation_email">El correo electrónico no puede estar vacío.</string>
   <string name="auth_signup_validation_username_input_invalid">El nombre de usuario ingresado no es válido.</string>
   <string name="auth_signup_validation_email_input_invalid">El nombre de usuario ingresado no es válido.</string>
-  <string name="auth_signup_username_unavailable_error">El nombre de usuario ya está en uso. Elija un nombre de usuario distinto.</string>
-  <string name="auth_signup_recovery_email_validation_error">Error de validación del correo electrónico.</string>
-  <string name="auth_signup_recovery_phone_validation_error">Error de validación del número de teléfono</string>
+  <string name="auth_signup_username_unavailable_error">El nombre de usuario ya está en uso. Elija un nombre de usuario diferente.</string>
+  <string name="auth_signup_recovery_email_validation_error">Falló la validación del correo electrónico.</string>
+  <string name="auth_signup_recovery_phone_validation_error">Falló la validación del número de teléfono</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Las contraseñas no coinciden. Intente de nuevo.</string>
   <string name="auth_signup_generic_error">Algo salió mal. Intente de nuevo.</string>
   <string name="auth_signup_countries_search">Buscar un país</string>

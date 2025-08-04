@@ -71,4 +71,14 @@
   <string name="contact_actions_block_contact_description">이 연락처 차단</string>
   <string name="contact_actions_view_contact_details">연락처 세부 정보 보기</string>
   <string name="contact_actions_view_contact_details_description">연락처의 세부 정보를 봅니다</string>
+  <!-- Snooze Bottom Sheet -->
+  <string name="snooze_sheet_option_next_week">다음 주</string>
+  <string name="snooze_sheet_option_later_this_week">이번 주 이내</string>
+  <string name="snooze_sheet_option_tomorrow">내일</string>
+  <string name="snooze_sheet_option_this_weekend">이번 주말</string>
+  <string name="snooze_sheet_option_custom">사용자 지정</string>
+  <string name="snooze_sheet_option_custom_detail">날짜 및 시간 선택</string>
+  <string name="snooze_sheet_option_upsell_detail">유료 기능</string>
+  <string name="snooze_sheet_snooze_title">다음 기간까지 방해 금지</string>
+  <string name="snooze_sheet_option_unsnooze">방해 금지 해제</string>
 </resources>

@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Egyéb bejelentkezési problémák</string>
   <string name="login_help_contact_needed">További segítségre van szüksége? Vegye fel velünk a kapcsolatot.</string>
   <string name="login_help_customer_support">Ügyfélszolgálat</string>
+  <string name="login_help_sign_in_with_qr_code">Sign in with QR code</string>
   <string name="welcome_subtitle_mail">Adatvédelem. Biztonság. Kényelem. A titkosított e-mail-el vegye át az irányítást a személyes adatai felett.</string>
   <string name="welcome_sign_in">Bejelentkezés</string>
   <string name="welcome_sign_up">Fiók létrehozása</string>

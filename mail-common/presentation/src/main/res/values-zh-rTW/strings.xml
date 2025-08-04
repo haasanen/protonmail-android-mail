@@ -64,7 +64,6 @@
   <string name="action_forward_content_description">轉寄</string>
   <string name="action_mark_read_content_description">標記為已讀</string>
   <string name="action_mark_unread_content_description">標記為未讀</string>
-  <string name="action_snooze_description">延後</string>
   <string name="action_star_content_description">加上星號</string>
   <string name="action_unstar_content_description">移除星號</string>
   <string name="action_label_content_description">加上標籤</string>
@@ -88,6 +87,7 @@
   <string name="action_save_attachments_content_description">儲存附件</string>
   <string name="action_more_content_description">更多詳情</string>
   <string name="action_snooze_content_description">延後</string>
+  <string name="action_snooze_description">延後</string>
   <string name="common_error_loading_actions">無法載入動作</string>
   <string name="yesterday">昨天</string>
   <!-- notification channels -->

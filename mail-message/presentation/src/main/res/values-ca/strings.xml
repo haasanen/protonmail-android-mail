@@ -73,4 +73,14 @@
   <string name="contact_actions_block_contact_description">Bloca aquest contacte</string>
   <string name="contact_actions_view_contact_details">Mostra el detalls del contacte</string>
   <string name="contact_actions_view_contact_details_description">Visualitza els detalls del contacte</string>
+  <!-- Snooze Bottom Sheet -->
+  <string name="snooze_sheet_option_next_week">La setmana entrant</string>
+  <string name="snooze_sheet_option_later_this_week">Més endavant aquesta setmana</string>
+  <string name="snooze_sheet_option_tomorrow">Demà</string>
+  <string name="snooze_sheet_option_this_weekend">Aquest cap de setmana</string>
+  <string name="snooze_sheet_option_custom">Personalitzeu-ho</string>
+  <string name="snooze_sheet_option_custom_detail">Escolliu dia i hora</string>
+  <string name="snooze_sheet_option_upsell_detail">Característica de pagament</string>
+  <string name="snooze_sheet_snooze_title">Ajorna fins a</string>
+  <string name="snooze_sheet_option_unsnooze">Deixa d\'ajornar</string>
 </resources>

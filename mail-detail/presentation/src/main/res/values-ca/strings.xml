@@ -134,4 +134,19 @@
   <string name="message_cancel_schedule_send_dialog_cancel_button">Cancel·la</string>
   <string name="message_cancel_schedule_send_dialog_title">Editeu-ho i ho torneu a planificar</string>
   <string name="message_cancel_schedule_send_dialog_message">Aquest missatge es mourà als esborranys perquè pugueu editar-lo. Haureu de tornar a planificar quan s\'enviarà.</string>
+  <!-- RSVP widget -->
+  <string name="rsvp_widget_attendance_optional">(L\'assistència és opcional)</string>
+  <string name="rsvp_widget_attending">Hi assistireu?</string>
+  <string name="rsvp_widget_yes">Sí</string>
+  <string name="rsvp_widget_maybe">Potser</string>
+  <string name="rsvp_widget_no">No</string>
+  <string name="rsvp_widget_yes_long">Sí, hi assistiré</string>
+  <string name="rsvp_widget_maybe_long">Potser hi assistiré</string>
+  <string name="rsvp_widget_no_long">No, no hi assistiré</string>
+  <string name="rsvp_widget_organizer">(Organitzador)</string>
+  <string name="rsvp_widget_you">Vós</string>
+  <plurals name="rsvp_widget_participants">
+    <item quantity="one">%1$d Assistent</item>
+    <item quantity="other">%1$d Assistents</item>
+  </plurals>
 </resources>

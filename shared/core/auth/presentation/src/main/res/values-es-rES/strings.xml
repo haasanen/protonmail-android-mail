@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Otros problemas de inicio de sesión</string>
   <string name="login_help_contact_needed">¿Aún necesitas ayuda? Contáctanos directamente.</string>
   <string name="login_help_customer_support">Atención al cliente</string>
+  <string name="login_help_sign_in_with_qr_code">Sign in with QR code</string>
   <string name="welcome_subtitle_mail">Privacidad. Seguridad. Comodidad. Correo electrónico cifrado que te da control total de tus datos personales.</string>
   <string name="welcome_sign_in">Iniciar sesión</string>
   <string name="welcome_sign_up">Crear una cuenta</string>

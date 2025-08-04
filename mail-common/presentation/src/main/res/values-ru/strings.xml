@@ -64,7 +64,6 @@
   <string name="action_forward_content_description">Переслать</string>
   <string name="action_mark_read_content_description">Отметить как прочитанное</string>
   <string name="action_mark_unread_content_description">Отметить как непрочитанное</string>
-  <string name="action_snooze_description">Snooze</string>
   <string name="action_star_content_description">Важное</string>
   <string name="action_unstar_content_description">Снять звёздочку</string>
   <string name="action_label_content_description">Пометить как</string>
@@ -88,6 +87,7 @@
   <string name="action_save_attachments_content_description">Сохранить вложения</string>
   <string name="action_more_content_description">Ещё</string>
   <string name="action_snooze_content_description">Snooze</string>
+  <string name="action_snooze_description">Snooze</string>
   <string name="common_error_loading_actions">Неудачные действия при скачивании</string>
   <string name="yesterday">Вчера</string>
   <!-- notification channels -->

@@ -25,8 +25,8 @@
   <string name="edm_missing_camera_permission_settings">Inställningar</string>
   <string name="intro_origin_sign_in_title">Logga in på annan enhet</string>
   <string name="intro_origin_sign_in_subtitle">Hur man loggar in med QR-kod</string>
-  <string name="intro_origin_sign_in_hint_1">1. Öppna valfri Proton-app på enheten du vill logga in på</string>
-  <string name="intro_origin_sign_in_hint_2">2. På inloggningsskärmen, välj <b>Glömt lösenord</b> eller <b>Problem att logga in?</b></string>
+  <string name="intro_origin_sign_in_hint_1">1. Öppna valfri Proton-app på enheten du vill logga in på.</string>
+  <string name="intro_origin_sign_in_hint_2">2. På inloggningsskärmen, välj <b>Glömt lösenord</b> eller <b>Problem att logga in?</b> (på mobilappar, välj <b>Hjälp</b>).</string>
   <string name="intro_origin_sign_in_hint_3">3. Välj <b>Logga in med QR-kod</b>. En QR-kod kommer visas.</string>
   <string name="intro_origin_sign_in_hint_4">4. På denna enhet, tryck <b>Skanna QR-kod</b> och skanna koden.</string>
   <string name="intro_origin_sign_in_tips">Säkerhetstips</string>
@@ -46,13 +46,13 @@
   <string name="qr_code_scan_enter_manually">Ange kod manuellt</string>
   <string name="target_sign_in_title">Logga in med QR-kod</string>
   <string name="target_sign_in_scan_code">Hur man loggar in med annan enhet</string>
-  <string name="target_sign_in_instruction_1">1. Get another device that’s signed in to your Proton Account</string>
+  <string name="target_sign_in_instruction_1">1. Skaffa en annan enhet som är inloggad på ditt Proton-konto</string>
   <string name="target_sign_in_instruction_2">2. På den enheten, öppna valfri Proton-app och välj <b>Inställningar</b></string>
   <string name="target_sign_in_instruction_3">3. Välj <b>Logga in på annan enhet → Skanna QR-kod</b></string>
   <string name="target_sign_in_instruction_4">4. Skanna koden för att logga in</string>
   <string name="target_sign_in_error_title">Vi kunde inte logga in dig</string>
   <string name="target_sign_in_retryable_error">Prova generera en ny QR-kod.</string>
-    <string name="target_sign_in_error_new_qr">Generera QR-kod</string>
+  <string name="target_sign_in_error_new_qr">Generera QR-kod</string>
   <string name="target_sign_in_error_back_to_signin">Tillbaka till inloggning</string>
-    <string name="target_sign_in_learn_more">Lär dig mer</string>
+  <string name="target_sign_in_learn_more">Lär dig mer</string>
 </resources>

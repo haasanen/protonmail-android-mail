@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Upselling -->
+  <string name="upselling_button_item_content_description">Przycisk ulepszenia</string>
+  <string name="upselling_close_button_content_description">Zamknij</string>
+  <!-- Upselling: Mailbox -->
+  <string name="upselling_mailbox_plus_description_override">Odblokuj więcej przestrzeni dyskowej i funkcje premium.</string>
+  <string name="upselling_mailbox_plus_title">Ulepsz do planu Mail Plus</string>
+  <!-- Upselling: Social Proof -->
+  <string name="upselling_mailbox_plus_title_social_proof">Rozpocznij plan Mail Plus</string>
+  <!-- Upselling: Mailbox Promo -->
+  <string name="upselling_mailbox_plus_promo_description_override">Oferta ograniczona czasowo, możliwość anulowania w dowolnym momencie.</string>
+  <string name="upselling_mailbox_plus_promo_title">Wypróbuj plan Mail Plus za %s</string>
+  <!-- Upselling: Contact Groups -->
+  <string name="upselling_contact_groups_plus_description_override">Wysyłaj wiadomości grupowe. Korzystaj z tego i nie tylko w planie Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_title">Grupuj kontakty</string>
+  <!-- Upselling: Labels -->
+  <string name="upselling_labels_plus_description_override">Utwórz wszystko, czego potrzebujesz, aby pozostać zorganizowanym. Uzyskaj to i więcej w planie Mail Plus.</string>
+  <string name="upselling_labels_plus_title">Potrzebujesz więcej etykiet lub folderów?</string>
+  <!-- Upselling: Folders -->
+  <string name="upselling_folders_plus_description_override">Utwórz wszystko, czego potrzebujesz, aby pozostać zorganizowanym. Uzyskaj to i więcej w planie Mail Plus.</string>
+  <string name="upselling_folders_plus_title">Potrzebujesz więcej etykiet lub folderów?</string>
+  <!-- Upselling: Mobile Signature -->
+  <string name="upselling_mobile_signature_plus_description_override">Stwórz własny mobilny podpis. Korzystaj z tego i nie tylko w planie Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_title">Dostosuj podpis</string>
+  <!-- Upselling: Auto Delete -->
+  <string name="upselling_auto_delete_plus_description_override">Usuwa spam i kosz po 30 dniach. Uzyskaj to i więcej w planie Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_title">Automatyczne usuwanie kosza</string>
+  <!-- Upselling: Schedule Send -->
+  <string name="upselling_schedule_send_plus_description_override">Dostosuj, kiedy wiadomość zostanie wysłana. Korzystaj z tego i nie tylko w planie Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_title">Zaplanuj teraz, wyślij później</string>
+  <!-- Upselling: Snooze -->
+  <string name="upselling_snooze_plus_description_override">Odłóż wiadomość na później. Korzystaj z tego i nie tylko w planie Mail Plus.</string>
+  <string name="upselling_snooze_plus_title">To nie jest dobry czas na wiadomość?</string>
+  <!-- Mail Plus -->
+  <string name="upselling_plus_feature_storage">15 GB przestrzeni dyskowej</string>
+  <string name="upselling_plus_feature_storage_plus_mails">15 GB przestrzeni dyskowej i 10 adresów e-mail</string>
+  <string name="upselling_plus_feature_email_addresses">10 adresów e-mail</string>
+  <string name="upselling_plus_feature_custom_domain">Wsparcie dla niestandardowej domeny</string>
+  <string name="upselling_plus_feature_desktop_app">Nowa aplikacja desktopowa Proton Mail</string>
+  <string name="upselling_plus_feature_calendar">Funkcje premium kalendarza</string>
+  <string name="upselling_plus_feature_folders_labels">Nieograniczona liczba folderów, etykiet i filtrów</string>
+  <string name="upselling_plus_feature_plus_7_features">+7 funkcji premium</string>
+  <!-- Unlimited -->
+  <string name="upselling_unlimited_description_override">Kompleksowa subskrypcja premium</string>
+  <string name="upselling_unlimited_feature_storage">500 GB przestrzeni dyskowej z kopią zapasową zdjęć</string>
+  <string name="upselling_unlimited_feature_mail_calendar">Wszystkie płatne funkcje usług Mail i Calendar</string>
+  <string name="upselling_unlimited_feature_vpn">Usługa VPN (ponad 90 krajów)</string>
+  <string name="upselling_unlimited_feature_drive">Bezpieczna przestrzeń dyskowa w chmurze</string>
+  <string name="upselling_unlimited_feature_pass">Szyfrowany menedżer haseł</string>
+  <!-- Onboarding Upselling -->
+  <string name="upselling_onboarding_premium_value_included">Zawiera funkcje premium</string>
+  <string name="upselling_onboarding_feature_e2e">Szyfrowanie end-to-end</string>
+  <string name="upselling_onboarding_feature_folders_labels">Nieograniczona liczba folderów i etykiet</string>
+  <string name="upselling_onboarding_free_feature_storage">1 GB przestrzeni dyskowej i 1 adres e-mail</string>
+  <string name="upselling_onboarding_plus_feature_storage">15 GB przestrzeni dyskowej</string>
+  <string name="upselling_onboarding_plus_feature_email_addresses">10 dodatkowych adresów e-mail dla Ciebie</string>
+  <string name="upselling_onboarding_plus_feature_email_domains">Wsparcie dla 1 niestandardowej domeny</string>
+  <string name="upselling_onboarding_plus_feature_aliases">10 aliasów hide-my-email</string>
+  <string name="upselling_onboarding_plus_feature_customer_support">Priorytetowe wsparcie klienta</string>
+  <string name="upselling_onboarding_unlimited_feature_storage">500 GB przestrzeni dyskowej</string>
+  <string name="upselling_onboarding_unlimited_feature_email_addresses">15 dodatkowych adresów e-mail dla Ciebie</string>
+  <string name="upselling_onboarding_unlimited_feature_email_domains">Wsparcie dla 3 niestandardowych domen</string>
+  <string name="upselling_onboarding_unlimited_feature_aliases">Nieograniczona liczba aliasów hide-my-email</string>
+  <string name="upselling_onboarding_unlimited_feature_customer_support">Dedykowane wsparcie klienta</string>
+  <string name="upselling_onboarding_unlimited_feature_vpn">Bardzo szybka i prywatna usługa VPN</string>
+  <string name="upselling_onboarding_unlimited_feature_pass">Szyfrowany menedżer haseł</string>
+  <string name="upselling_onboarding_unlimited_feature_drive">Szyfrowana przestrzeń dyskowa w chmurze na zdjęcia i dokumenty</string>
+  <string name="upselling_onboarding_unlimited_feature_sentinel">Zaawansowana ochrona konta</string>
+  <!-- Comparison Table -->
+  <string name="upselling_comparison_table_storage">Przestrzeń dyskowa</string>
+  <string name="upselling_comparison_table_email_addresses">Adresy e-mail</string>
+  <string name="upselling_comparison_table_custom_email_domain">Niestandardowa domena</string>
+  <string name="upselling_comparison_table_desktop_app">Dostęp do aplikacji desktopowej</string>
+  <string name="upselling_comparison_table_unlimited_folders_labels">Nieograniczona liczba folderów i etykiet</string>
+  <string name="upselling_comparison_table_priority_support">Priorytetowe wsparcie klienta</string>
+  <!-- Rectangular plan buttons -->
+  <string name="upselling_select_plan">Wybierz plan</string>
+  <string name="upselling_select_plan_year">12 miesięcy</string>
+  <string name="upselling_select_plan_month">1 miesiąc</string>
+  <!-- Other UI Items -->
+  <string name="upselling_auto_renew_text">Automatyczne odnowienie w tej samej cenie i na tych samych warunkach, chyba że zostanie anulowane</string>
+  <string name="upselling_auto_renew_text_promo">Oferta powitalna. Automatyczne odnowienie za %s %s%s, chyba że anulujesz</string>
+  <string name="upselling_auto_renew_text_promo_short">Oferta powitalna. Automatyczne odnowienie za %s %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Automatyczne odnowienie za %s %s%s, chyba że anulujesz</string>
+  <string name="upselling_social_proof_reviews">PONAD 2000 OPINII</string>
+  <string name="upselling_description_social_proof">Ulepsz konto do planu, który zachwyca milionów subskrybentów.</string>
+  <string name="upselling_discount_tag">ZAOSZCZĘDŹ %s%%</string>
+  <string name="upselling_month">/ miesiąc</string>
+  <string name="upselling_year"> / rok</string>
+  <string name="upselling_get_button">Wybierz plan %s</string>
+  <string name="upselling_get_button_promotional">Uzyskaj 1 miesiąc za %s %s</string>
+  <plurals name="upselling_month">
+    <item quantity="one">%d miesiąc</item>
+    <item quantity="few">%d miesiące</item>
+    <item quantity="many">%d miesięcy</item>
+    <item quantity="other">%d miesięcy</item>
+  </plurals>
+  <!-- Errors -->
+  <string name="upselling_unable_retrieve_options">Nie można pobrać opcji ulepszenia.</string>
+  <string name="upselling_snackbar_error_no_user_id">Wystąpił błąd.</string>
+  <string name="upselling_snackbar_error_no_subscriptions">Nie można pobrać subskrypcji.</string>
+  <!-- Snackbar texts -->
+  <string name="upselling_snackbar_upgrade_in_progress">Ulepszanie subskrypcji w toku…</string>
+  <string name="upselling_snackbar_upgrade_error_generic">Wystąpił błąd podczas ulepszania subskrypcji.</string>
+  <string name="upselling_snackbar_upgrade_error_recoverable">Wystąpił błąd. Spróbuj ponownie.</string>
+</resources>

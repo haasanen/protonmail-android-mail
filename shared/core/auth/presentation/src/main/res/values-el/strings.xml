@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Άλλα προβλήματα εισόδου</string>
   <string name="login_help_contact_needed">Χρειάζεστε ακόμα βοήθεια; Επικοινωνήστε απευθείας με εμάς.</string>
   <string name="login_help_customer_support">Εξυπηρέτηση πελατών</string>
+  <string name="login_help_sign_in_with_qr_code">Σύνδεση με κωδικό QR</string>
   <string name="welcome_subtitle_mail">Ιδιωτικότητα. Διασφάλιση. Ευκολία. Κρυπτογραφημένο ταχυδρομείο που σας δίνει πλήρη έλεγχο των προσωπικών σας δεδομένων.</string>
   <string name="welcome_sign_in">Σύνδεση</string>
   <string name="welcome_sign_up">Δημιουργία λογαριασμού</string>

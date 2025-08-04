@@ -64,7 +64,6 @@
   <string name="action_forward_content_description">Posreduj</string>
   <string name="action_mark_read_content_description">Označi kot prebrano</string>
   <string name="action_mark_unread_content_description">Označi kot neprebrano</string>
-  <string name="action_snooze_description">Snooze</string>
   <string name="action_star_content_description">Označi z zvezdico</string>
   <string name="action_unstar_content_description">Odstrani zvezdico</string>
   <string name="action_label_content_description">Označi kot</string>
@@ -88,6 +87,7 @@
   <string name="action_save_attachments_content_description">Shrani priponke</string>
   <string name="action_more_content_description">Več</string>
   <string name="action_snooze_content_description">Snooze</string>
+  <string name="action_snooze_description">Snooze</string>
   <string name="common_error_loading_actions">Neuspešno nalaganje dejanj</string>
   <string name="yesterday">Včeraj</string>
   <!-- notification channels -->

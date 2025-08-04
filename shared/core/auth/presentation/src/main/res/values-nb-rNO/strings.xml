@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Andre påloggingsproblemer</string>
   <string name="login_help_contact_needed">Trenger du fortsatt hjelp? Kontakt oss direkte.</string>
   <string name="login_help_customer_support">Kundestøtte</string>
+  <string name="login_help_sign_in_with_qr_code">Logg på med QR-kode</string>
   <string name="welcome_subtitle_mail">Personvern. Sikkerhet. Brukervennlighet. Kryptert e-post som gir deg full kontroll over dine personlige data.</string>
   <string name="welcome_sign_in">Logg på</string>
   <string name="welcome_sign_up">Opprett en konto</string>

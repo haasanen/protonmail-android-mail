@@ -64,7 +64,6 @@
   <string name="action_forward_content_description">転送</string>
   <string name="action_mark_read_content_description">既読にする</string>
   <string name="action_mark_unread_content_description">未読に戻す</string>
-  <string name="action_snooze_description">Snooze</string>
   <string name="action_star_content_description">スターを付ける</string>
   <string name="action_unstar_content_description">スターを外す</string>
   <string name="action_label_content_description">ラベル付け</string>
@@ -88,6 +87,7 @@
   <string name="action_save_attachments_content_description">添付ファイルを保存</string>
   <string name="action_more_content_description">もっと見る</string>
   <string name="action_snooze_content_description">Snooze</string>
+  <string name="action_snooze_description">Snooze</string>
   <string name="common_error_loading_actions">動作の読み込みに失敗</string>
   <string name="yesterday">昨日</string>
   <!-- notification channels -->

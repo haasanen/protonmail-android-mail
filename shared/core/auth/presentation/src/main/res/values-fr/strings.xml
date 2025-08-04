@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Autres problèmes de connexion</string>
   <string name="login_help_contact_needed">Vous avez toujours besoin d\'aide ? Contactez-nous directement.</string>
   <string name="login_help_customer_support">Service client</string>
+  <string name="login_help_sign_in_with_qr_code">Se connecter avec un QR code</string>
   <string name="welcome_subtitle_mail">Confidentialité. Sécurité. Facilité d\'utilisation. Une messagerie chiffrée qui vous donne le contrôle total de vos données personnelles.</string>
   <string name="welcome_sign_in">Se connecter</string>
   <string name="welcome_sign_up">Créer un compte</string>
@@ -101,10 +102,10 @@
   <string name="auth_signup_validation_email">L\'adresse e-mail ne doit pas être vide.</string>
   <string name="auth_signup_validation_username_input_invalid">La saisie du nom d’utilisateur n\'est pas valide.</string>
   <string name="auth_signup_validation_email_input_invalid">La saisie du nom d’utilisateur n\'est pas valide.</string>
-  <string name="auth_signup_username_unavailable_error">Nom d\'utilisateur déjà utilisé. Choisissez-en un autre.</string>
+  <string name="auth_signup_username_unavailable_error">Le nom d\'utilisateur est déjà utilisé. Choisissez-en un autre.</string>
   <string name="auth_signup_recovery_email_validation_error">La validation de l\'e-mail n\'a pas abouti.</string>
   <string name="auth_signup_recovery_phone_validation_error">La validation du numéro téléphonique n\'a pas abouti.</string>
-  <string name="auth_signup_createpassword_error_password_not_equal">Les mots de passe ne correspondent pas. Veuillez réessayer.</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">Les mots de passe ne correspondent pas. Nous vous invitons à réessayer.</string>
   <string name="auth_signup_generic_error">Une erreur s\'est produite. Nous vous invitons à réessayer.</string>
   <string name="auth_signup_countries_search">Rechercher un pays</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">L\'utilisateur n\'a pas pu être configuré.</string>

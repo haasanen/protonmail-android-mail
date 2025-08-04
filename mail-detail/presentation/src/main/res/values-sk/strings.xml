@@ -138,4 +138,21 @@
   <string name="message_cancel_schedule_send_dialog_cancel_button">Zrušiť</string>
   <string name="message_cancel_schedule_send_dialog_title">Upraviť a preplánovať</string>
   <string name="message_cancel_schedule_send_dialog_message">Táto správa sa presunie do Konceptov, aby ste ju mohli upraviť. Budete musieť preplánovať, kedy bude odoslaná.</string>
+  <!-- RSVP widget -->
+  <string name="rsvp_widget_attendance_optional">(Účasť je voliteľná)</string>
+  <string name="rsvp_widget_attending">Zúčastníte sa?</string>
+  <string name="rsvp_widget_yes">Áno</string>
+  <string name="rsvp_widget_maybe">Možno</string>
+  <string name="rsvp_widget_no">Nie</string>
+  <string name="rsvp_widget_yes_long">Áno, zúčastním sa</string>
+  <string name="rsvp_widget_maybe_long">Možno sa zúčastním</string>
+  <string name="rsvp_widget_no_long">Nie, nezúčastním sa</string>
+  <string name="rsvp_widget_organizer">(Organizátor)</string>
+  <string name="rsvp_widget_you">Vy</string>
+  <plurals name="rsvp_widget_participants">
+    <item quantity="one">%1$d účastník</item>
+    <item quantity="few">%1$d účastníci</item>
+    <item quantity="many">%1$d účastníkov</item>
+    <item quantity="other">%1$d účastníkov</item>
+  </plurals>
 </resources>

@@ -24,6 +24,7 @@
   <string name="login_help_other_issues">Altri problemi di accesso</string>
   <string name="login_help_contact_needed">Ancora bisogno di aiuto? Contattaci direttamente.</string>
   <string name="login_help_customer_support">Assistenza clienti</string>
+  <string name="login_help_sign_in_with_qr_code">Accedi con un codice QR</string>
   <string name="welcome_subtitle_mail">Privacy. Sicurezza. Convenienza. Email crittografata che ti dà il pieno controllo dei tuoi dati personali.</string>
   <string name="welcome_sign_in">Accedi</string>
   <string name="welcome_sign_up">Crea un account</string>

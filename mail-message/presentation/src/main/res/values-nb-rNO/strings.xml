@@ -73,4 +73,14 @@
   <string name="contact_actions_block_contact_description">Blokker denne kontakten</string>
   <string name="contact_actions_view_contact_details">Se kontaktinformasjon</string>
   <string name="contact_actions_view_contact_details_description">Vis detaljer om kontakten</string>
+  <!-- Snooze Bottom Sheet -->
+  <string name="snooze_sheet_option_next_week">Neste uke</string>
+  <string name="snooze_sheet_option_later_this_week">Senere denne uken</string>
+  <string name="snooze_sheet_option_tomorrow">I morgen</string>
+  <string name="snooze_sheet_option_this_weekend">Denne helgen</string>
+  <string name="snooze_sheet_option_custom">Tilpasset</string>
+  <string name="snooze_sheet_option_custom_detail">Velg dato og klokkeslett</string>
+  <string name="snooze_sheet_option_upsell_detail">Betalt funksjon</string>
+  <string name="snooze_sheet_snooze_title">Slumre til</string>
+  <string name="snooze_sheet_option_unsnooze">Slumring av</string>
 </resources>

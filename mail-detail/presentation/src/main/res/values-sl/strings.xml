@@ -138,4 +138,21 @@
   <string name="message_cancel_schedule_send_dialog_cancel_button">Prekliči</string>
   <string name="message_cancel_schedule_send_dialog_title">Uredi in prestavi</string>
   <string name="message_cancel_schedule_send_dialog_message">Sporočilo se bo premaknilo med osnutke, kjer ga lahko urejate. Čas pošiljanja morate ponovno nastaviti.</string>
+  <!-- RSVP widget -->
+  <string name="rsvp_widget_attendance_optional">(Attendance optional)</string>
+  <string name="rsvp_widget_attending">Attending?</string>
+  <string name="rsvp_widget_yes">Yes</string>
+  <string name="rsvp_widget_maybe">Maybe</string>
+  <string name="rsvp_widget_no">No</string>
+  <string name="rsvp_widget_yes_long">Yes, I\'ll attend</string>
+  <string name="rsvp_widget_maybe_long">Maybe, I\'ll attend</string>
+  <string name="rsvp_widget_no_long">No, I won\'t attend</string>
+  <string name="rsvp_widget_organizer">(Organizer)</string>
+  <string name="rsvp_widget_you">You</string>
+  <plurals name="rsvp_widget_participants">
+    <item quantity="one">%1$d Participant</item>
+    <item quantity="two">%1$d Participants</item>
+    <item quantity="few">%1$d Participants</item>
+    <item quantity="other">%1$d Participants</item>
+  </plurals>
 </resources>
