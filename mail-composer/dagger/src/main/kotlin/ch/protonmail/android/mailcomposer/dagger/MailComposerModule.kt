@@ -32,7 +32,6 @@ import ch.protonmail.android.composer.data.repository.ContactsPermissionReposito
 import ch.protonmail.android.composer.data.repository.DraftRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessageExpirationTimeRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessagePasswordRepositoryImpl
-import ch.protonmail.android.composer.data.repository.MessageRepositoryImpl
 import ch.protonmail.android.composer.data.repository.SendingStatusRepositoryImpl
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailcomposer.domain.repository.CameraTempImageRepository
@@ -40,7 +39,6 @@ import ch.protonmail.android.mailcomposer.domain.repository.ContactsPermissionRe
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
-import ch.protonmail.android.mailcomposer.domain.repository.MessageRepository
 import ch.protonmail.android.mailcomposer.domain.repository.SendingStatusRepository
 import dagger.Binds
 import dagger.Module
@@ -58,10 +56,6 @@ abstract class MailComposerModule {
     @Binds
     @ViewModelScoped
     abstract fun bindsDraftRepository(impl: DraftRepositoryImpl): DraftRepository
-
-    @Binds
-    @Reusable
-    abstract fun provideMessageRepository(impl: MessageRepositoryImpl): MessageRepository
 
     @Binds
     @Reusable
