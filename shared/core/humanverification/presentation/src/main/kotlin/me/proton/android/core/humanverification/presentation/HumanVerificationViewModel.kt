@@ -64,7 +64,7 @@ class HumanVerificationViewModel @Inject constructor(
                 onLoad(url, defaultCountry, recoveryPhone, locale, headers)
             }
 
-            is HumanVerificationAction.Verify -> onVerify(action.result)
+            is HumanVerificationAction.Verify -> onWebviewEvent(action.result)
             is HumanVerificationAction.Cancel -> onCancel()
             is HumanVerificationAction.Failure.ResourceLoadingError -> onFailure(action.message)
         }
@@ -119,7 +119,7 @@ class HumanVerificationViewModel @Inject constructor(
         emit(HumanVerificationViewState.Error.General(message))
     }
 
-    private fun onVerify(result: HV3ResponseMessage): Flow<HumanVerificationViewState> = flow {
+    private fun onWebviewEvent(result: HV3ResponseMessage): Flow<HumanVerificationViewState> = flow {
         when (result.type) {
             HV3ResponseMessage.Type.Success -> {
                 val token = requireNotNull(result.payload?.token)
