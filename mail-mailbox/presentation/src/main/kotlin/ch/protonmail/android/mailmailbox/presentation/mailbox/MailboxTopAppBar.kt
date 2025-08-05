@@ -31,7 +31,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -48,6 +47,7 @@ import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxTopAppBarTestTags.NavigationButton
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingMailButton
 import ch.protonmail.android.uicomponents.SearchView
@@ -135,7 +135,9 @@ fun MailboxTopAppBar(
                 },
                 actions = {
                     if (uiModel.shouldShowActions) {
-                        UpsellingMailButton(onClick = actions.onNavigateToUpselling)
+                        UpsellingMailButton(onClick = { type ->
+                            actions.onNavigateToUpselling(UpsellingEntryPoint.Feature.Navbar, type)
+                        })
                         IconButton(
                             modifier = Modifier
                                 .size(ProtonDimens.DefaultButtonMinHeight)
@@ -170,7 +172,6 @@ private fun TopAppBarInSearchMode(
 ) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
-    val focusManager = LocalFocusManager.current
 
     ProtonTopAppBar(
         modifier = modifier.testTag(MailboxTopAppBarTestTags.RootItem),
@@ -244,7 +245,7 @@ object MailboxTopAppBar {
         val onOpenUpsellingPage: () -> Unit,
         val onCloseUpsellingPage: () -> Unit,
         val onAccountAvatarClicked: () -> Unit,
-        val onNavigateToUpselling: (type: UpsellingVisibility) -> Unit
+        val onNavigateToUpselling: (entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) -> Unit
     )
 }
 
@@ -287,7 +288,7 @@ fun LoadingMailboxTopAppBarPreview() {
             onOpenUpsellingPage = {},
             onCloseUpsellingPage = {},
             onAccountAvatarClicked = {},
-            onNavigateToUpselling = {}
+            onNavigateToUpselling = { _, _ -> }
         )
     )
 }
@@ -314,7 +315,7 @@ fun MailboxTopAppBarPreview() {
             onOpenUpsellingPage = {},
             onCloseUpsellingPage = {},
             onAccountAvatarClicked = {},
-            onNavigateToUpselling = {}
+            onNavigateToUpselling = { _, _ -> }
         )
     )
 }

@@ -26,20 +26,26 @@ import ch.protonmail.android.mailmailbox.domain.usecase.GetAutoDeleteBanner
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.ClearAllStateUiModelMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllStateUiModel
+import ch.protonmail.android.mailsession.domain.model.hasSubscription
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObserveUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 internal class ClearAllOperationViewModel @Inject constructor(
     private val observePrimaryUserId: ObservePrimaryUserId,
+    private val observeUser: ObserveUser,
     private val observeLoadedMailLabelId: ObserveLoadedMailLabelId,
     private val getAutoDeleteBanner: GetAutoDeleteBanner
 ) : ViewModel() {
@@ -53,7 +59,12 @@ internal class ClearAllOperationViewModel @Inject constructor(
     private fun observeClearAllState(): Flow<ClearAllStateUiModel> = observePrimaryUserId()
         .filterNotNull()
         .flatMapLatest { userId ->
-            observeLoadedMailLabelId().map { mailLabelId ->
+            combine(
+                observeLoadedMailLabelId(),
+                observeUser(userId)
+                    .mapNotNull { it.getOrNull() }
+                    .distinctUntilChangedBy { it.hasSubscription() } // Needed to allow correct Upselling state change
+            ) { mailLabelId, user ->
                 Pair(userId, mailLabelId.labelId)
             }
         }
@@ -67,6 +78,7 @@ internal class ClearAllOperationViewModel @Inject constructor(
                             isAutoDeleteEnabled = false,
                             spamOrTrash = it.folder
                         )
+
                         AutoDeleteState.AutoDeleteEnabled -> ClearAllState.ClearAllActionBanner(
                             isAutoDeleteEnabled = true,
                             spamOrTrash = it.folder

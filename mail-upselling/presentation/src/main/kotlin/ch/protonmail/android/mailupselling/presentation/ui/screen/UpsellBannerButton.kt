@@ -19,6 +19,9 @@
 package ch.protonmail.android.mailupselling.presentation.ui.screen
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -50,17 +53,19 @@ fun UpsellBannerButton(
     val state = viewModel.state.collectAsStateWithLifecycle()
     val type = state.value.visibility
 
-    val onNavigateToUpsell: () -> Unit = {
-        when (state.value.visibility) {
+    AnimatedVisibility(
+        visible = state.value.isShown,
+        enter = scaleIn(),
+        exit = scaleOut()
+    ) {
+        when (type) {
             UpsellingVisibility.HIDDEN -> Unit
-
             UpsellingVisibility.PROMO,
-            UpsellingVisibility.NORMAL -> onClick(type)
+            UpsellingVisibility.NORMAL ->
+                UpsellBannerButtonContent(modifier = modifier, onClick = { onClick(type) }) {
+                    Text(text = ctaText, style = ProtonTheme.typography.bodyMediumNorm)
+                }
         }
-    }
-
-    UpsellBannerButtonContent(modifier = modifier, onClick = onNavigateToUpsell) {
-        Text(text = ctaText, style = ProtonTheme.typography.bodyMediumNorm)
     }
 }
 

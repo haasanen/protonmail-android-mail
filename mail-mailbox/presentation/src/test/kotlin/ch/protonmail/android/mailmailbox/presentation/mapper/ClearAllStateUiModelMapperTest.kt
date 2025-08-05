@@ -44,9 +44,9 @@ internal class ClearAllStateUiModelMapperTest(
 
     companion object {
 
-        private val upsellWithLinkModel = ClearAllStateUiModel.Visible.UpsellBannerWithLink(
+        private val upsellWithLinkModel = ClearAllStateUiModel.Visible.UpsellBanner(
             bannerText = TextUiModel(R.string.mailbox_action_clear_trash_spam_upsell_banner_text),
-            linkText = TextUiModel(R.string.mailbox_action_clear_trash_spam_upsell_banner_link_title),
+            upgradeButtonText = TextUiModel(R.string.mailbox_action_clear_trash_spam_upsell_cta),
             icon = R.drawable.ic_upsell_mail_plus
         )
 

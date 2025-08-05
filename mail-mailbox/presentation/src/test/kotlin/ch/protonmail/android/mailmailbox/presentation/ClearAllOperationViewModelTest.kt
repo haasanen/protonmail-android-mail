@@ -33,7 +33,9 @@ import ch.protonmail.android.mailmailbox.domain.usecase.GetAutoDeleteBanner
 import ch.protonmail.android.mailmailbox.presentation.mailbox.ClearAllOperationViewModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllStateUiModel
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObserveUser
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import ch.protonmail.android.testdata.user.UserTestData
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -55,6 +57,10 @@ internal class ClearAllOperationViewModelTest {
 
     private val observePrimaryUserId = mockk<ObservePrimaryUserId> {
         every { this@mockk.invoke() } returns flowOf(userId)
+    }
+
+    private val observeUser = mockk<ObserveUser> {
+        every { this@mockk.invoke(userId) } returns flowOf(UserTestData.freeUser.right())
     }
 
     private val flowOfLabels = MutableSharedFlow<MailLabels>()
@@ -84,7 +90,7 @@ internal class ClearAllOperationViewModelTest {
 
         // When + Then
         viewModel().state.test {
-            assertTrue(awaitItem() is ClearAllStateUiModel.Visible.UpsellBannerWithLink)
+            assertTrue(awaitItem() is ClearAllStateUiModel.Visible.UpsellBanner)
         }
     }
 
@@ -106,6 +112,7 @@ internal class ClearAllOperationViewModelTest {
 
     private fun viewModel() = ClearAllOperationViewModel(
         observePrimaryUserId,
+        observeUser,
         observeLoadedMailLabelId,
         getAutoDeleteBanner
     )

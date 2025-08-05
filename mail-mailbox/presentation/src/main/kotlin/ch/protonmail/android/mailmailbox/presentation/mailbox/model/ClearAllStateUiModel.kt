@@ -23,10 +23,12 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
 sealed interface ClearAllStateUiModel {
     data object Hidden : ClearAllStateUiModel
+
     sealed interface Visible : ClearAllStateUiModel {
-        data class UpsellBannerWithLink(
+
+        data class UpsellBanner(
             val bannerText: TextUiModel,
-            val linkText: TextUiModel,
+            val upgradeButtonText: TextUiModel,
             @DrawableRes val icon: Int
         ) : Visible
 

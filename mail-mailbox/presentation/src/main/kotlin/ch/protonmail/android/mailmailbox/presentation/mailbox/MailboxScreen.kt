@@ -151,8 +151,9 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBo
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMoreActionBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
-import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailsnooze.presentation.SnoozeOptionsBottomSheetScreen
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.uicomponents.fab.LazyFab
 import ch.protonmail.android.uicomponents.fab.ProtonFabHostState
 import kotlinx.coroutines.launch
@@ -823,7 +824,9 @@ private fun MailboxItemsList(
             if (state.hasClearableOperations()) {
                 ClearAllOperationBanner(
                     actions = ClearAllOperationBanner.Actions(
-                        onUpselling = actions.showMissingFeature,
+                        onUpselling = { type ->
+                            actions.onNavigateToUpselling(UpsellingEntryPoint.Feature.AutoDelete, type)
+                        },
                         onClearAll = actions.onClearAll
                     )
                 )
@@ -1133,7 +1136,7 @@ object MailboxScreen {
         val onOpenUpsellingPage: () -> Unit,
         val onCloseUpsellingPage: () -> Unit,
         val onAccountAvatarClicked: () -> Unit,
-        val onNavigateToUpselling: (type: UpsellingVisibility) -> Unit,
+        val onNavigateToUpselling: (entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) -> Unit,
         val onClearAll: () -> Unit,
         val onClearAllConfirmed: () -> Unit,
         val onClearAllDismissed: () -> Unit,
@@ -1195,7 +1198,7 @@ object MailboxScreen {
                 onClearAll = {},
                 onClearAllConfirmed = {},
                 onClearAllDismissed = {},
-                onNavigateToUpselling = {},
+                onNavigateToUpselling = { _, _ -> },
                 onSnooze = {}
             )
         }

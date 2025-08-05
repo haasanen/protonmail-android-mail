@@ -19,19 +19,23 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.component.ProtonBanner
 import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
-import ch.protonmail.android.design.compose.component.ProtonBannerWithLink
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllStateUiModel
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellBannerButton
 
 @Composable
 internal fun ClearAllOperationBanner(
@@ -50,14 +54,14 @@ internal fun ClearAllOperationBanner(
 internal object ClearAllOperationBanner {
 
     data class Actions(
-        val onUpselling: () -> Unit,
+        val onUpselling: (type: UpsellingVisibility) -> Unit,
         val onClearAll: () -> Unit
     ) {
 
         companion object {
 
             val Empty = Actions(
-                onUpselling = {},
+                onUpselling = { _ -> },
                 onClearAll = {}
             )
         }
@@ -68,7 +72,7 @@ internal object ClearAllOperationBanner {
 private fun ClearAllOperationBannerContent(state: ClearAllStateUiModel, actions: ClearAllOperationBanner.Actions) {
     when (state) {
         is ClearAllStateUiModel.Visible.ClearAllBannerWithButton -> ClearBannerWithButton(state, actions.onClearAll)
-        is ClearAllStateUiModel.Visible.UpsellBannerWithLink -> ClearUpsellBannerWithLink(state, actions.onUpselling)
+        is ClearAllStateUiModel.Visible.UpsellBanner -> ClearUpsellBanner(state, actions.onUpselling)
         is ClearAllStateUiModel.Hidden -> Unit
     }
 }
@@ -87,22 +91,27 @@ private fun ClearBannerWithButton(
 }
 
 @Composable
-private fun ClearUpsellBannerWithLink(
-    upsellBannerState: ClearAllStateUiModel.Visible.UpsellBannerWithLink,
-    onLinkClicked: () -> Unit
+private fun ClearUpsellBanner(
+    upsellBannerState: ClearAllStateUiModel.Visible.UpsellBanner,
+    onButtonClicked: (type: UpsellingVisibility) -> Unit
 ) {
-    ProtonBannerWithLink(
-        bannerText = upsellBannerState.bannerText.string(),
-        linkText = upsellBannerState.linkText.string(),
+    val contentPadding = PaddingValues(ProtonDimens.Spacing.ModeratelyLarge)
+
+    ProtonBanner(
+        modifier = Modifier,
         icon = upsellBannerState.icon,
-        contentPadding = PaddingValues(
-            start = ProtonDimens.Spacing.ModeratelyLarge,
-            end = ProtonDimens.Spacing.ModeratelyLarge,
-            top = ProtonDimens.Spacing.ModeratelyLarge,
-            bottom = 0.dp
-        ),
-        onLinkClicked = onLinkClicked
-    )
+        iconTint = ProtonTheme.colors.iconWeak,
+        iconSize = ProtonDimens.IconSize.Medium,
+        text = upsellBannerState.bannerText.string(),
+        textStyle = ProtonTheme.typography.bodyMediumWeak,
+        backgroundColor = ProtonTheme.colors.backgroundNorm,
+        contentPadding = contentPadding
+    ) {
+        UpsellBannerButton(
+            modifier = Modifier.padding(top = contentPadding.calculateTopPadding()),
+            ctaText = upsellBannerState.upgradeButtonText.string(), onClick = onButtonClicked
+        )
+    }
 }
 
 @AdaptivePreviews
