@@ -46,6 +46,7 @@ class MessageViewStateCacheTest {
             mimeType = MimeType.Html,
             hasQuotedText = false,
             isUnread = true,
+            hasCalendarInvite = false,
             banners = emptyList(),
             attachments = emptyList(),
             transformations = MessageBodyTransformations(false, false, false, null)

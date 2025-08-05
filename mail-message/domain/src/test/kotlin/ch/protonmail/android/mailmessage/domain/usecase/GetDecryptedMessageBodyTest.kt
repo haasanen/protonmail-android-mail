@@ -30,6 +30,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.repository.RsvpEventRepository
 import ch.protonmail.android.testdata.message.MessageBodyTestData
 import ch.protonmail.android.testdata.message.MessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -52,11 +53,13 @@ class GetDecryptedMessageBodyTest(
     private val messageRepository = mockk<MessageRepository>()
     private val messageBodyRepository = mockk<MessageBodyRepository>()
     private val injectViewPortMetaTagIntoMessageBody = mockk<InjectViewPortMetaTagIntoMessageBody>()
+    private val rsvpEventRepository = mockk<RsvpEventRepository>()
 
     private val getDecryptedMessageBody = GetDecryptedMessageBody(
         injectViewPortMetaTagIntoMessageBody,
         messageRepository,
-        messageBodyRepository
+        messageBodyRepository,
+        rsvpEventRepository
     )
 
     @Test
@@ -73,6 +76,7 @@ class GetDecryptedMessageBodyTest(
             value = testInput.messageBody.body,
             mimeType = testInput.messageBody.mimeType,
             hasQuotedText = false,
+            hasCalendarInvite = true,
             isUnread = false,
             banners = emptyList(),
             attachments = testInput.message.attachments,
@@ -94,6 +98,7 @@ class GetDecryptedMessageBodyTest(
         every {
             injectViewPortMetaTagIntoMessageBody(testInput.messageBody.body)
         } returns testInput.messageBody.body
+        coEvery { rsvpEventRepository.identifyRsvp(UserIdTestData.userId, messageId) } returns true.right()
 
         // When
         val actual = getDecryptedMessageBody(UserIdTestData.userId, messageId)

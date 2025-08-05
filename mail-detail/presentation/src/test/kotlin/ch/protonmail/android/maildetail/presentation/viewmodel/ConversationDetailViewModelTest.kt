@@ -260,7 +260,13 @@ class ConversationDetailViewModelTest {
     }
     private val getDecryptedMessageBody: GetMessageBodyWithClickableLinks = mockk {
         coEvery { this@mockk.invoke(any(), any(), any()) } returns DecryptedMessageBody(
-            MessageIdSample.build(), "", isUnread = false, MimeType.Html, hasQuotedText = false, banners = emptyList()
+            MessageIdSample.build(),
+            "",
+            isUnread = false,
+            MimeType.Html,
+            hasQuotedText = false,
+            hasCalendarInvite = false,
+            banners = emptyList()
         ).right()
     }
     private val markMessageAsRead: MarkMessageAsRead =
@@ -1027,7 +1033,13 @@ class ConversationDetailViewModelTest {
         val (messageIds, expectedExpanded) = setupCollapsedToExpandMessagesState(withUnreadMessage = true)
 
         coEvery { getDecryptedMessageBody(userId, MessageId(messageIds.first().id)) } returns DecryptedMessageBody(
-            MessageIdSample.build(), "", isUnread = true, MimeType.Html, hasQuotedText = false, banners = emptyList()
+            MessageIdSample.build(),
+            "",
+            isUnread = true,
+            MimeType.Html,
+            hasQuotedText = false,
+            hasCalendarInvite = false,
+            banners = emptyList()
         ).right()
 
         viewModel.state.test {

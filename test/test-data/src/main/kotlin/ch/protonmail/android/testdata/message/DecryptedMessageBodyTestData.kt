@@ -98,6 +98,7 @@ object DecryptedMessageBodyTestData {
         value: String = DECRYPTED_MESSAGE_BODY,
         mimeType: MimeType = MimeType.Html,
         hasQuotedText: Boolean = false,
+        hasCalendarInvite: Boolean = false,
         isUnread: Boolean = false,
         banners: List<MessageBanner> = emptyList(),
         attachments: List<AttachmentMetadata> = emptyList()
@@ -106,6 +107,7 @@ object DecryptedMessageBodyTestData {
         value = value,
         isUnread = isUnread,
         hasQuotedText = hasQuotedText,
+        hasCalendarInvite = hasCalendarInvite,
         mimeType = mimeType,
         banners = banners,
         attachments = attachments,

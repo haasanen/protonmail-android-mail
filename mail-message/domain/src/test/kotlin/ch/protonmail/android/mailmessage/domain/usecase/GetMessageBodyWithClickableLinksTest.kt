@@ -46,6 +46,7 @@ class GetMessageBodyWithClickableLinksTest(
                 isUnread = false,
                 mimeType = MimeType.Html,
                 hasQuotedText = false,
+                hasCalendarInvite = false,
                 banners = emptyList()
             ).right()
 

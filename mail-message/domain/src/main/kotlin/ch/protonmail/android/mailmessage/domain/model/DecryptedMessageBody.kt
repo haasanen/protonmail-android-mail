@@ -26,6 +26,7 @@ data class DecryptedMessageBody(
     val isUnread: Boolean,
     val mimeType: MimeType,
     val hasQuotedText: Boolean,
+    val hasCalendarInvite: Boolean,
     val banners: List<MessageBanner>,
     val attachments: List<AttachmentMetadata> = emptyList(),
     val transformations: MessageBodyTransformations = MessageBodyTransformations.MessageDetailsDefaults

@@ -184,6 +184,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
             isUnread = true,
             MimeType.Html,
             hasQuotedText = false,
+            hasCalendarInvite = false,
             banners = emptyList(),
             transformations = MessageBodyTransformations.MessageDetailsDefaults
         )

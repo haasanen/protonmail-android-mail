@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmessage.domain.usecase
 
 import arrow.core.Either
 import arrow.core.flatMap
+import arrow.core.getOrElse
 import arrow.core.right
 import ch.protonmail.android.mailattachments.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
@@ -30,6 +31,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.repository.RsvpEventRepository
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
@@ -37,7 +39,8 @@ import javax.inject.Inject
 class GetDecryptedMessageBody @Inject constructor(
     private val injectViewPortMetaTagIntoMessageBody: InjectViewPortMetaTagIntoMessageBody,
     private val messageRepository: MessageRepository,
-    private val messageBodyRepository: MessageBodyRepository
+    private val messageBodyRepository: MessageBodyRepository,
+    private val rsvpEventRepository: RsvpEventRepository
 ) {
 
     suspend operator fun invoke(
@@ -60,12 +63,15 @@ class GetDecryptedMessageBody @Inject constructor(
                     // Handle zoomed in newsletters
                     val transformedMessageBody = injectViewPortMetaTagIntoMessageBody(messageBody.body)
 
+                    val hasCalendarInvite = rsvpEventRepository.identifyRsvp(userId, messageId).getOrElse { false }
+
                     DecryptedMessageBody(
                         messageId = messageId,
                         value = transformedMessageBody,
                         isUnread = messageMetadata.isUnread,
                         mimeType = messageBody.mimeType,
                         hasQuotedText = messageBody.hasQuotedText,
+                        hasCalendarInvite = hasCalendarInvite,
                         banners = messageBody.banners,
                         attachments = attachments,
                         transformations = messageBody.transformations

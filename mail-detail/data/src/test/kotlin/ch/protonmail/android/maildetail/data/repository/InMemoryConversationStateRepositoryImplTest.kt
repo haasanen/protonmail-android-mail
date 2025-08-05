@@ -103,6 +103,7 @@ class InMemoryConversationStateRepositoryImplTest {
             value = UUID.randomUUID().toString(),
             mimeType = MimeType.Html,
             hasQuotedText = false,
+            hasCalendarInvite = false,
             isUnread = false,
             banners = emptyList(),
             transformations = MessageBodyTransformations(false, false, false, null)
@@ -130,6 +131,7 @@ class InMemoryConversationStateRepositoryImplTest {
             value = UUID.randomUUID().toString(),
             mimeType = MimeType.Html,
             hasQuotedText = false,
+            hasCalendarInvite = false,
             isUnread = false,
             banners = emptyList(),
             transformations = MessageBodyTransformations(false, false, false, null)

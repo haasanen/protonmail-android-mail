@@ -101,6 +101,7 @@ class MessageBodyUiModelMapperTest {
             mimeType = MimeType.PlainText,
             isUnread = false,
             hasQuotedText = false,
+            hasCalendarInvite = false,
             banners = emptyList()
         )
         val expected = MessageBodyUiModel(
@@ -136,6 +137,7 @@ class MessageBodyUiModelMapperTest {
             value = decryptedMessageBody,
             mimeType = MimeType.PlainText,
             hasQuotedText = false,
+            hasCalendarInvite = false,
             isUnread = false,
             banners = emptyList(),
             attachments = attachments
@@ -179,6 +181,7 @@ class MessageBodyUiModelMapperTest {
             value = decryptedMessageBody,
             mimeType = MimeType.PlainText,
             hasQuotedText = false,
+            hasCalendarInvite = false,
             isUnread = false,
             banners = emptyList(),
             attachments = attachments
@@ -220,6 +223,7 @@ class MessageBodyUiModelMapperTest {
                 value = decryptedMessageBody,
                 mimeType = MimeType.PlainText,
                 hasQuotedText = false,
+                hasCalendarInvite = false,
                 isUnread = false,
                 banners = emptyList(),
                 attachments = attachments
@@ -268,6 +272,7 @@ class MessageBodyUiModelMapperTest {
             mimeType = MimeType.Html,
             isUnread = false,
             hasQuotedText = false,
+            hasCalendarInvite = false,
             banners = emptyList()
         )
         val expected = MessageBodyUiModel(
@@ -300,6 +305,7 @@ class MessageBodyUiModelMapperTest {
                 mimeType = MimeType.Html,
                 isUnread = false,
                 hasQuotedText = false,
+                hasCalendarInvite = false,
                 banners = emptyList()
             )
             val expected = MessageBodyUiModel(
@@ -332,6 +338,7 @@ class MessageBodyUiModelMapperTest {
                 mimeType = MimeType.Html,
                 isUnread = false,
                 hasQuotedText = false,
+                hasCalendarInvite = false,
                 banners = listOf(MessageBanner.RemoteContent)
             )
             val expected = MessageBodyUiModel(
@@ -364,6 +371,7 @@ class MessageBodyUiModelMapperTest {
                 mimeType = MimeType.Html,
                 isUnread = false,
                 hasQuotedText = false,
+                hasCalendarInvite = false,
                 banners = emptyList()
             )
             val expected = MessageBodyUiModel(
@@ -396,6 +404,7 @@ class MessageBodyUiModelMapperTest {
                 mimeType = MimeType.Html,
                 isUnread = false,
                 hasQuotedText = false,
+                hasCalendarInvite = false,
                 banners = listOf(MessageBanner.EmbeddedImages)
             )
             val expected = MessageBodyUiModel(
@@ -451,6 +460,7 @@ class MessageBodyUiModelMapperTest {
             mimeType = MimeType.Html,
             isUnread = false,
             hasQuotedText = false,
+            hasCalendarInvite = false,
             banners = listOf(MessageBanner.EmbeddedImages)
         )
         val existingState = MessageBodyUiModel(

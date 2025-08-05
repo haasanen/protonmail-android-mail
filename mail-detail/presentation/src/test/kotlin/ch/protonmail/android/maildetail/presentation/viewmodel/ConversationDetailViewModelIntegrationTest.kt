@@ -301,7 +301,13 @@ class ConversationDetailViewModelIntegrationTest {
     private val unStarConversations: UnStarConversations = mockk()
     private val getDecryptedMessageBody: GetMessageBodyWithClickableLinks = mockk {
         coEvery { this@mockk.invoke(any(), any()) } returns DecryptedMessageBody(
-            MessageId("default"), "", isUnread = false, MimeType.Html, hasQuotedText = false, emptyList()
+            MessageId("default"),
+            "",
+            isUnread = false,
+            MimeType.Html,
+            hasQuotedText = false,
+            hasCalendarInvite = false,
+            emptyList()
         ).right()
     }
 
@@ -517,6 +523,7 @@ class ConversationDetailViewModelIntegrationTest {
             mimeType = MimeType.Html,
             isUnread = false,
             hasQuotedText = false,
+            hasCalendarInvite = false,
             banners = emptyList(),
             attachments = listOf(
                 AttachmentMetadataSamples.Document,
@@ -575,6 +582,7 @@ class ConversationDetailViewModelIntegrationTest {
             mimeType = MimeType.Html,
             isUnread = false,
             hasQuotedText = true,
+            hasCalendarInvite = false,
             banners = emptyList(),
             attachments = listOf(
                 AttachmentMetadataSamples.Document,
@@ -776,6 +784,7 @@ class ConversationDetailViewModelIntegrationTest {
                 mimeType = MimeType.Html,
                 isUnread = false,
                 hasQuotedText = false,
+                hasCalendarInvite = false,
                 banners = emptyList()
             ).right()
         }
@@ -888,6 +897,7 @@ class ConversationDetailViewModelIntegrationTest {
                 mimeType = MimeType.Html,
                 isUnread = false,
                 hasQuotedText = false,
+                hasCalendarInvite = false,
                 banners = emptyList(),
                 attachments = (0 until expectedAttachmentCount).map {
                     aMessageAttachment(id = it.toString())
@@ -943,6 +953,7 @@ class ConversationDetailViewModelIntegrationTest {
                 mimeType = MimeType.Html,
                 isUnread = false,
                 hasQuotedText = false,
+                hasCalendarInvite = false,
                 banners = emptyList(),
                 attachments = (0 until expectedAttachmentCount).map {
                     aMessageAttachment(id = it.toString())
@@ -1002,6 +1013,7 @@ class ConversationDetailViewModelIntegrationTest {
                     mimeType = MimeType.Html,
                     isUnread = false,
                     hasQuotedText = false,
+                    hasCalendarInvite = false,
                     banners = emptyList(),
                     attachments = (0 until expectedAttachmentCount).map {
                         aMessageAttachment(id = it.toString())
@@ -1225,6 +1237,7 @@ class ConversationDetailViewModelIntegrationTest {
                 mimeType = MimeType.Html,
                 isUnread = false,
                 hasQuotedText = false,
+                hasCalendarInvite = false,
                 banners = emptyList(),
                 attachments = (0 until expectedAttachmentCount).map {
                     aMessageAttachment(id = it.toString())
@@ -1438,6 +1451,7 @@ class ConversationDetailViewModelIntegrationTest {
                 mimeType = MimeType.Html,
                 isUnread = false,
                 hasQuotedText = false,
+                hasCalendarInvite = false,
                 banners = emptyList(),
                 attachments = listOf(AttachmentMetadataSamples.Calendar)
             ).right()
@@ -1483,6 +1497,7 @@ class ConversationDetailViewModelIntegrationTest {
                 mimeType = MimeType.Html,
                 isUnread = false,
                 hasQuotedText = false,
+                hasCalendarInvite = false,
                 banners = emptyList(),
                 attachments = listOf(AttachmentMetadataSamples.Calendar)
             ).right()
@@ -1527,6 +1542,7 @@ class ConversationDetailViewModelIntegrationTest {
             mimeType = MimeType.Html,
             isUnread = false,
             hasQuotedText = false,
+            hasCalendarInvite = false,
             banners = emptyList(),
             transformations = transformations
 
@@ -1897,6 +1913,7 @@ class ConversationDetailViewModelIntegrationTest {
             mimeType = MimeType.Html,
             isUnread = false,
             hasQuotedText = false,
+            hasCalendarInvite = false,
             banners = emptyList(),
             attachments = listOf(
                 AttachmentMetadataSamples.Document,
@@ -1957,6 +1974,7 @@ class ConversationDetailViewModelIntegrationTest {
             mimeType = MimeType.Html,
             isUnread = false,
             hasQuotedText = false,
+            hasCalendarInvite = false,
             banners = emptyList(),
             attachments = listOf(
                 AttachmentMetadataSamples.Document,
@@ -2192,6 +2210,7 @@ class ConversationDetailViewModelIntegrationTest {
             mimeType = MimeType.Html,
             isUnread = false,
             hasQuotedText = false,
+            hasCalendarInvite = false,
             banners = emptyList(),
             attachments = listOf(
                 AttachmentMetadataSamples.Document,
