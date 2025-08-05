@@ -160,4 +160,7 @@
     <string name="rsvp_widget_user_is_organizer">You are the organizer.</string>
     <string name="rsvp_widget_today">Today</string>
     <string name="rsvp_widget_tomorrow">Tomorrow</string>
+    <string name="rsvp_widget_invite_details_unavailable">Invite details unavailable</string>
+    <string name="rsvp_widget_could_not_load">We couldn\'t load the information.\nPlease try again.</string>
+    <string name="rsvp_widget_button_retry">Retry</string>
 </resources>
