@@ -62,10 +62,14 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMes
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Hidden
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
+import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailItem.previewActions
 import ch.protonmail.android.maildetail.presentation.ui.footer.MessageDetailFooter
 import ch.protonmail.android.maildetail.presentation.ui.header.MessageDetailHeader
+import ch.protonmail.android.maildetail.presentation.ui.rsvpwidget.RsvpWidget
+import ch.protonmail.android.maildetail.presentation.ui.rsvpwidget.RsvpWidgetError
+import ch.protonmail.android.maildetail.presentation.ui.rsvpwidget.RsvpWidgetLoading
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
@@ -260,6 +264,15 @@ private fun ColumnScope.ConversationDetailExpandedItem(
                     columnHeight.intValue = it.height
                 }
         ) {
+            when (uiModel.messageRsvpWidgetUiModel) {
+                is RsvpWidgetUiModel.Hidden -> Unit
+                is RsvpWidgetUiModel.Loading -> RsvpWidgetLoading()
+                is RsvpWidgetUiModel.Error -> RsvpWidgetError(
+                    onRetry = { actions.onRetryRsvpEventLoading(uiModel.messageId) }
+                )
+                is RsvpWidgetUiModel.Shown -> RsvpWidget(uiModel.messageRsvpWidgetUiModel.event)
+            }
+
             MessageBanners(
                 messageBannersUiModel = uiModel.messageBannersUiModel,
                 onMarkMessageAsLegitimate = { isPhishing ->
@@ -371,7 +384,8 @@ object ConversationDetailItem {
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit,
         val onMarkMessageAsLegitimate: (MessageIdUiModel, Boolean) -> Unit,
         val onUnblockSender: (MessageIdUiModel, String) -> Unit,
-        val onEditScheduleSendMessage: (MessageIdUiModel) -> Unit
+        val onEditScheduleSendMessage: (MessageIdUiModel) -> Unit,
+        val onRetryRsvpEventLoading: (MessageIdUiModel) -> Unit
     )
 
     val previewActions = Actions(
@@ -401,7 +415,8 @@ object ConversationDetailItem {
         { model: ParticipantUiModel, model1: AvatarUiModel? -> },
         { model: MessageIdUiModel, bool: Boolean -> },
         { model: MessageIdUiModel, string: String -> },
-        { model: MessageIdUiModel -> }
+        { model: MessageIdUiModel -> },
+        {}
     )
 }
 

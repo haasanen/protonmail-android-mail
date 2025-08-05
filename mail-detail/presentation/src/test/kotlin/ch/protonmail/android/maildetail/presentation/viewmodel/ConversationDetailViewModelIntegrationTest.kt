@@ -75,6 +75,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenIcsInProtonCalendar
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenProtonCalendarOnPlayStore
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
+import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
@@ -145,12 +146,19 @@ import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.EventId
 import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MimeType
+import ch.protonmail.android.mailmessage.domain.model.RsvpAttendee
+import ch.protonmail.android.mailmessage.domain.model.RsvpAttendeeStatus
+import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
+import ch.protonmail.android.mailmessage.domain.model.RsvpOccurrence
+import ch.protonmail.android.mailmessage.domain.model.RsvpOrganizer
+import ch.protonmail.android.mailmessage.domain.model.RsvpState
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
@@ -374,6 +382,8 @@ class ConversationDetailViewModelIntegrationTest {
     )
 
     private val printMessage = mockk<PrintMessage>()
+
+    private val getRsvpEvent = mockk<GetRsvpEvent>()
 
     private val mailLabelTextMapper = mockk<MailLabelTextMapper> {
         every { this@mockk.mapToString(MailLabelText.TextString("Spam")) } returns "Spam"
@@ -2279,6 +2289,97 @@ class ConversationDetailViewModelIntegrationTest {
         }
     }
 
+    @Test
+    fun `should get rsvp event when the message contains a calendar invite`() = runTest {
+        // Given
+        val message = MessageSample.AugWeatherForecast
+        val messages = ConversationMessages(
+            nonEmptyListOf(
+                message
+            ),
+            message.messageId
+        )
+        val rsvpEvent = RsvpEvent(
+            eventId = EventId("id"),
+            summary = "summary",
+            location = "location",
+            description = "description",
+            recurrence = "recurrence",
+            startsAt = 123L,
+            endsAt = 124L,
+            occurrence = RsvpOccurrence.Date,
+            organizer = RsvpOrganizer("organizerName", "organizerEmail"),
+            attendees = listOf(RsvpAttendee("attendeeName", "attendeeEmail", RsvpAttendeeStatus.Yes)),
+            userAttendeeIdx = 0,
+            calendar = null,
+            state = RsvpState.CancelledReminder
+        )
+        coEvery { observeConversationMessages(userId, any(), any()) } returns flowOf(messages.right())
+        coEvery { getDecryptedMessageBody.invoke(any(), any()) } returns DecryptedMessageBody(
+            messageId = message.messageId,
+            value = "",
+            mimeType = MimeType.Html,
+            isUnread = false,
+            hasQuotedText = false,
+            hasCalendarInvite = true,
+            banners = emptyList()
+        ).right()
+        coEvery { getRsvpEvent(userId, message.messageId) } returns rsvpEvent.right()
+
+        val viewModel = buildConversationDetailViewModel()
+
+        // When
+        viewModel.state.test {
+
+            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(message.messageId)))
+            advanceUntilIdle()
+
+            // Then
+            coVerify { getRsvpEvent(userId, message.messageId) }
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `should get rsvp event when retry button is clicked`() = runTest {
+        // Given
+        val message = MessageSample.AugWeatherForecast
+        val messages = ConversationMessages(
+            nonEmptyListOf(
+                message
+            ),
+            message.messageId
+        )
+        coEvery { observeConversationMessages(userId, any(), any()) } returns flowOf(messages.right())
+        coEvery { getDecryptedMessageBody.invoke(any(), any()) } returns DecryptedMessageBody(
+            messageId = message.messageId,
+            value = "",
+            mimeType = MimeType.Html,
+            isUnread = false,
+            hasQuotedText = false,
+            hasCalendarInvite = true,
+            banners = emptyList()
+        ).right()
+        coEvery { getRsvpEvent(userId, message.messageId) } returns DataError.Local.NoDataCached.left()
+
+        val viewModel = buildConversationDetailViewModel()
+
+        // When
+        viewModel.state.test {
+            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(message.messageId)))
+            advanceUntilIdle()
+
+            viewModel.submit(ConversationDetailViewAction.RetryRsvpEventLoading(message.messageId))
+            advanceUntilIdle()
+
+            // Then
+            coVerify(exactly = 2) { getRsvpEvent(userId, message.messageId) }
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
     @Suppress("LongParameterList")
     private fun buildConversationDetailViewModel(
         observePrimaryUser: ObservePrimaryUserId = observePrimaryUserId,
@@ -2351,7 +2452,8 @@ class ConversationDetailViewModelIntegrationTest {
         markMessageAsLegitimate = markMessageAsLegitimate,
         unblockSender = unblockSender,
         cancelScheduleSendMessage = cancelScheduleSendMessage,
-        printMessage = printMessage
+        printMessage = printMessage,
+        getRsvpEvent = getRsvpEvent
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(

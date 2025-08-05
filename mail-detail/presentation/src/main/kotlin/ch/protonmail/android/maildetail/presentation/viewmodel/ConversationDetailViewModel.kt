@@ -45,6 +45,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
+import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
@@ -199,7 +200,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val markMessageAsLegitimate: MarkMessageAsLegitimate,
     private val unblockSender: UnblockSender,
     private val cancelScheduleSendMessage: CancelScheduleSendMessage,
-    private val printMessage: PrintMessage
+    private val printMessage: PrintMessage,
+    private val getRsvpEvent: GetRsvpEvent
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -359,6 +361,8 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.UnblockSender -> handleUnblockSender(action.messageId, action.email)
             is ConversationDetailViewAction.EditScheduleSendMessageConfirmed -> handleEditScheduleSendMessage(action)
             is ConversationDetailViewAction.PrintMessage -> handlePrintMessage(action.context, action.messageId)
+            is ConversationDetailViewAction.RetryRsvpEventLoading ->
+                handleGetRsvpEvent(action.messageId, refresh = true)
         }
     }
 
@@ -968,6 +972,10 @@ class ConversationDetailViewModel @Inject constructor(
                 if (message.isUnread) {
                     markMessageAsRead(userId, domainMsgId)
                 }
+
+                if (message.hasCalendarInvite) {
+                    handleGetRsvpEvent(domainMsgId, refresh = false)
+                }
             }
             .onLeft { error ->
                 emitMessageBodyDecryptError(error, uiMessageId)
@@ -1281,6 +1289,18 @@ class ConversationDetailViewModel @Inject constructor(
             ).fold(
                 ifLeft = { Timber.e("Failed to unblock sender in message ${messageId.id}") },
                 ifRight = { setOrRefreshMessageBody(messageId) }
+            )
+        }
+    }
+
+    private fun handleGetRsvpEvent(messageId: MessageId, refresh: Boolean) {
+        viewModelScope.launch {
+            messageViewStateCache.updateRsvpEventLoading(messageId, refresh)
+            getRsvpEvent(primaryUserId.first(), messageId).fold(
+                ifLeft = { messageViewStateCache.updateRsvpEventError(messageId) },
+                ifRight = { rsvpEvent ->
+                    messageViewStateCache.updateRsvpEventShown(messageId, rsvpEvent)
+                }
             )
         }
     }

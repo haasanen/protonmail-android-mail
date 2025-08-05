@@ -332,4 +332,6 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
 
     data class PrintMessage(val context: Context, val messageId: MessageId) :
         ConversationDetailViewAction, AffectingBottomSheet
+
+    data class RetryRsvpEventLoading(val messageId: MessageId) : ConversationDetailViewAction
 }

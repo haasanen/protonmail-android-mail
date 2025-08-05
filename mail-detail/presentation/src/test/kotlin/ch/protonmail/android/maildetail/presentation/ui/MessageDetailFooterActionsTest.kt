@@ -63,7 +63,8 @@ internal class MessageDetailFooterActionsTest {
             onToggleAttachmentsExpandCollapseMode = {},
             onMarkMessageAsLegitimate = { _, _ -> },
             onUnblockSender = { _, _ -> },
-            onEditScheduleSendMessage = {}
+            onEditScheduleSendMessage = {},
+            onRetryRsvpEventLoading = {}
         )
 
         // When

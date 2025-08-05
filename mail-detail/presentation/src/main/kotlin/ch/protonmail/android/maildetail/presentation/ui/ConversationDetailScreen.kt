@@ -516,6 +516,9 @@ fun ConversationDetailScreen(
                 },
                 onExitWithOpenInComposer = {
                     actions.onExitWithOpenInComposer(MessageId(it.id))
+                },
+                onRetryRsvpEventLoading = {
+                    viewModel.submit(ConversationDetailViewAction.RetryRsvpEventLoading(MessageId(it.id)))
                 }
             ),
             scrollToMessageId = state.scrollToMessage?.id
@@ -716,7 +719,8 @@ fun ConversationDetailScreen(
                     onParticipantClicked = actions.onParticipantClicked,
                     onMarkMessageAsLegitimate = actions.onMarkMessageAsLegitimate,
                     onUnblockSender = actions.onUnblockSender,
-                    onEditScheduleSendMessage = actions.onEditScheduleSendMessage
+                    onEditScheduleSendMessage = actions.onEditScheduleSendMessage,
+                    onRetryRsvpEventLoading = actions.onRetryRsvpEventLoading
                 )
                 MessagesContentWithHiddenEdges(
                     uiModels = state.messagesState.messages,
@@ -1081,7 +1085,8 @@ object ConversationDetailScreen {
         val onMarkMessageAsLegitimate: (MessageIdUiModel, Boolean) -> Unit,
         val onUnblockSender: (MessageIdUiModel, String) -> Unit,
         val onEditScheduleSendMessage: (MessageIdUiModel) -> Unit,
-        val onExitWithOpenInComposer: (MessageIdUiModel) -> Unit
+        val onExitWithOpenInComposer: (MessageIdUiModel) -> Unit,
+        val onRetryRsvpEventLoading: (MessageIdUiModel) -> Unit
     ) {
 
         companion object {
@@ -1132,7 +1137,8 @@ object ConversationDetailScreen {
                 onMarkMessageAsLegitimate = { _, _ -> },
                 onUnblockSender = { _, _ -> },
                 onEditScheduleSendMessage = {},
-                onExitWithOpenInComposer = {}
+                onExitWithOpenInComposer = {},
+                onRetryRsvpEventLoading = {}
             )
         }
     }
