@@ -52,6 +52,8 @@ sealed interface MigrationError {
 
     sealed interface SignatureFailure {
         data object FailedToReadMobileSignaturePreference : MigrationError
+        data object FailedToReadSignaturePreference : MigrationError
+
     }
 
     // Error during migration with specific known reason
