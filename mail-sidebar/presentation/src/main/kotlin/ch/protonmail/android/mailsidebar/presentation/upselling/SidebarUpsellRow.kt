@@ -41,7 +41,7 @@ import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibilit
 import ch.protonmail.android.mailupselling.presentation.viewmodel.UpsellingButtonViewModel
 
 @Composable
-fun UpsellingRowButton(
+fun SidebarUpsellRow(
     modifier: Modifier = Modifier,
     onClick: (type: UpsellingVisibility) -> Unit,
     viewModel: UpsellingButtonViewModel = hiltViewModel()
@@ -59,7 +59,7 @@ fun UpsellingRowButton(
             when (state.value.visibility) {
                 UpsellingVisibility.HIDDEN -> Unit
                 UpsellingVisibility.PROMO,
-                UpsellingVisibility.NORMAL -> UpsellingRowButton(onButtonClick = { onClick(type) })
+                UpsellingVisibility.NORMAL -> SidebarUpsellRow(onButtonClick = { onClick(type) })
             }
         }
     }
@@ -67,7 +67,7 @@ fun UpsellingRowButton(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun UpsellingRowButton(onButtonClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun SidebarUpsellRow(onButtonClick: () -> Unit, modifier: Modifier = Modifier) {
     ProtonSidebarItem(
         modifier = modifier,
         icon = painterResource(R.drawable.ic_diamond),
@@ -81,8 +81,8 @@ private fun UpsellingRowButton(onButtonClick: () -> Unit, modifier: Modifier = M
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, backgroundColor = 0xFF000000)
 @Composable
-fun UpsellingRowButtonPreview() {
+fun SidebarUpsellRowPreview() {
     ProtonTheme {
-        UpsellingRowButton(onButtonClick = {})
+        SidebarUpsellRow(onButtonClick = {})
     }
 }

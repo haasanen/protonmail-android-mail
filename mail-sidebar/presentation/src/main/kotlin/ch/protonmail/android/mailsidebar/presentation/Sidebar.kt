@@ -53,7 +53,7 @@ import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction
 import ch.protonmail.android.mailsidebar.presentation.label.sidebarFolderItems
 import ch.protonmail.android.mailsidebar.presentation.label.sidebarLabelItems
 import ch.protonmail.android.mailsidebar.presentation.label.sidebarSystemLabelItems
-import ch.protonmail.android.mailsidebar.presentation.upselling.UpsellingRowButton
+import ch.protonmail.android.mailsidebar.presentation.upselling.SidebarUpsellRow
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import kotlinx.coroutines.launch
@@ -131,7 +131,7 @@ fun Sidebar(
         drawerState = viewState.drawerState
     ) {
         item {
-            UpsellingRowButton(onClick = { type ->
+            SidebarUpsellRow(onClick = { type ->
                 actions.onUpselling(UpsellingEntryPoint.Feature.Sidebar, type)
             })
         }
