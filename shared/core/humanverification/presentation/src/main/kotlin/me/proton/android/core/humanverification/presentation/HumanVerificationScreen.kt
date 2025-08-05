@@ -104,7 +104,12 @@ fun HumanVerificationScreen(
             viewModel.submit(HumanVerificationAction.Verify(it))
         },
         onResourceLoadingError = {
-            viewModel.submit(HumanVerificationAction.Failure.ResourceLoadingError(connectivityErrorMessage))
+            viewModel.submit(
+                HumanVerificationAction.Failure.ResourceLoadingError(
+                    message = connectivityErrorMessage,
+                    error = it
+                )
+            )
         },
         headers = headers,
         state = state

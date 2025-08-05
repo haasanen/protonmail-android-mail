@@ -41,10 +41,12 @@ import uniffi.proton_mail_uniffi.AppDetails
 import uniffi.proton_mail_uniffi.ChallengeLoader
 import uniffi.proton_mail_uniffi.HumanVerificationScreenId
 import uniffi.proton_mail_uniffi.HumanVerificationStatus
+import uniffi.proton_mail_uniffi.HumanVerificationViewLoadingStatus
 import uniffi.proton_mail_uniffi.NewChallengeLoaderResult
 import uniffi.proton_mail_uniffi.newChallengeLoader
 import uniffi.proton_mail_uniffi.recordHumanVerificationResult
 import uniffi.proton_mail_uniffi.recordHumanVerificationScreenView
+import uniffi.proton_mail_uniffi.recordHumanVerificationViewLoadingResult
 import javax.inject.Inject
 
 @HiltViewModel
@@ -66,7 +68,12 @@ class HumanVerificationViewModel @Inject constructor(
 
             is HumanVerificationAction.Verify -> onWebviewEvent(action.result)
             is HumanVerificationAction.Cancel -> onCancel()
-            is HumanVerificationAction.Failure.ResourceLoadingError -> onFailure(action.message)
+            is HumanVerificationAction.Failure.ResourceLoadingError -> {
+                onResourceLoadingError(
+                    message = action.message,
+                    error = action.error
+                )
+            }
         }
     }.stateIn(viewModelScope, WhileSubscribed(stopTimeoutMillis), HumanVerificationViewState.Idle)
 
@@ -113,6 +120,14 @@ class HumanVerificationViewModel @Inject constructor(
         emit(HumanVerificationViewState.Cancel)
     }
 
+    private fun onResourceLoadingError(
+        message: String?,
+        error: WebResponseError?
+    ): Flow<HumanVerificationViewState> = flow {
+        recordHumanVerificationViewLoadingResult(status = error.toHumanVerificationViewLoadingStatus())
+        emit(HumanVerificationViewState.Error.General(message))
+    }
+
     private fun onFailure(message: String?): Flow<HumanVerificationViewState> = flow {
         challengeNotifierCallback.onHumanVerificationFailed()
         recordHumanVerificationResult(HumanVerificationStatus.FAILED)
@@ -144,7 +159,7 @@ class HumanVerificationViewModel @Inject constructor(
             }
 
             HV3ResponseMessage.Type.Loaded -> {
-                // add observability once ready, no other action needed.
+                recordHumanVerificationViewLoadingResult(status = HumanVerificationViewLoadingStatus.HTTP2XX)
             }
 
             HV3ResponseMessage.Type.Resize -> {
