@@ -55,6 +55,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.labelMediumNorm
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
@@ -265,18 +266,34 @@ private fun RsvpSingleButton(@StringRes label: Int, modifier: Modifier = Modifie
 
         DropdownMenu(
             expanded = expanded.value,
-            onDismissRequest = { expanded.value = false }
+            onDismissRequest = { expanded.value = false },
+            containerColor = ProtonTheme.colors.backgroundNorm
         ) {
             DropdownMenuItem(
-                text = { Text(text = stringResource(id = R.string.rsvp_widget_yes_long)) },
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.rsvp_widget_yes_long),
+                        style = ProtonTheme.typography.bodyMediumNorm
+                    )
+                },
                 onClick = { expanded.value = false }
             )
             DropdownMenuItem(
-                text = { Text(text = stringResource(id = R.string.rsvp_widget_maybe_long)) },
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.rsvp_widget_maybe_long),
+                        style = ProtonTheme.typography.bodyMediumNorm
+                    )
+                },
                 onClick = { expanded.value = false }
             )
             DropdownMenuItem(
-                text = { Text(text = stringResource(id = R.string.rsvp_widget_no_long)) },
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.rsvp_widget_no_long),
+                        style = ProtonTheme.typography.bodyMediumNorm
+                    )
+                },
                 onClick = { expanded.value = false }
             )
         }
