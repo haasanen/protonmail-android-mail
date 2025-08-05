@@ -28,9 +28,13 @@ import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSource
 import ch.protonmail.android.legacymigration.data.mapper.MigrationInfoMapper
 import ch.protonmail.android.legacymigration.data.mapper.toMigrationData
 import ch.protonmail.android.legacymigration.domain.model.AccountMigrationInfo
+import ch.protonmail.android.legacymigration.domain.model.LegacyMobileSignaturePreference
 import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
+import ch.protonmail.android.legacymigration.domain.model.LegacySignaturePreference
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAccountRepository
+import ch.protonmail.android.legacymigration.domain.repository.LegacyMobileSignatureRepository
+import ch.protonmail.android.legacymigration.domain.repository.LegacySignatureRepository
 import javax.inject.Inject
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.model.LoginError
@@ -39,6 +43,8 @@ class LegacyAccountRepositoryImpl @Inject constructor(
     private val accountDataSource: LegacyAccountDataSource,
     private val userDataSource: LegacyUserDataSource,
     private val userAddressDataSource: LegacyUserAddressDataSource,
+    private val signatureRepository: LegacySignatureRepository,
+    private val mobileSignatureRepository: LegacyMobileSignatureRepository,
     private val migrationInfoMapper: MigrationInfoMapper,
     private val mailSessionRepository: MailSessionRepository
 ) : LegacyAccountRepository {
@@ -57,11 +63,18 @@ class LegacyAccountRepositoryImpl @Inject constructor(
         val primaryUserId = accountDataSource.getPrimaryUserId()
         val isPrimaryUser = primaryUserId == session.userId
 
+        val signaturePreference = signatureRepository.getSignaturePreference(userAddress.addressId)
+            .getOrElse { LegacySignaturePreference.Default }
+        val mobileSignaturePreference = mobileSignatureRepository.getMobileSignaturePreference(session.userId)
+            .getOrElse { LegacyMobileSignaturePreference.Default }
+
         return migrationInfoMapper.mapToAccountMigrationInfo(
             sessionInfo = session,
             user = user,
             userAddress = userAddress,
-            isPrimaryUser = isPrimaryUser
+            isPrimaryUser = isPrimaryUser,
+            signaturePreference = signaturePreference,
+            mobileSignaturePreference = mobileSignaturePreference
         ).right()
     }
 

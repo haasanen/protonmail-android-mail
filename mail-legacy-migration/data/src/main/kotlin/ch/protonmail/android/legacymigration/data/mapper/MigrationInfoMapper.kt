@@ -20,19 +20,24 @@ package ch.protonmail.android.legacymigration.data.mapper
 
 import ch.protonmail.android.legacymigration.domain.model.AccountMigrationInfo
 import ch.protonmail.android.legacymigration.domain.model.AccountPasswordMode
+import ch.protonmail.android.legacymigration.domain.model.LegacyMobileSignaturePreference
 import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
+import ch.protonmail.android.legacymigration.domain.model.LegacySignaturePreference
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserAddressInfo
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserInfo
 import uniffi.proton_account_uniffi.MigrationData
 import uniffi.proton_account_uniffi.PasswordMode
 import javax.inject.Inject
 
+@Suppress("LongParameterList")
 class MigrationInfoMapper @Inject constructor() {
     fun mapToAccountMigrationInfo(
         sessionInfo: LegacySessionInfo,
         user: LegacyUserInfo,
         userAddress: LegacyUserAddressInfo,
-        isPrimaryUser: Boolean
+        isPrimaryUser: Boolean,
+        signaturePreference: LegacySignaturePreference,
+        mobileSignaturePreference: LegacyMobileSignaturePreference
     ): AccountMigrationInfo {
         val userName = user.name ?: userAddress.email
         val displayName = user.displayName ?: user.name ?: userAddress.email
@@ -49,7 +54,10 @@ class MigrationInfoMapper @Inject constructor() {
                 AccountPasswordMode.TWO
             else
                 AccountPasswordMode.ONE,
-            isPrimaryUser = isPrimaryUser
+            isPrimaryUser = isPrimaryUser,
+            addressSignatureEnabled = signaturePreference.isEnabled,
+            mobileSignatureEnabled = mobileSignaturePreference.enabled,
+            mobileSignature = mobileSignaturePreference.value
         )
     }
 }
@@ -67,8 +75,8 @@ fun AccountMigrationInfo.toMigrationData(): MigrationData {
             PasswordMode.ONE
         else
             PasswordMode.TWO,
-        addressSignatureEnabled = false,
-        mobileSignature = null,
-        mobileSignatureEnabled = false
+        addressSignatureEnabled = addressSignatureEnabled,
+        mobileSignature = mobileSignature,
+        mobileSignatureEnabled = mobileSignatureEnabled
     )
 }

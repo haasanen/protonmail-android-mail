@@ -64,5 +64,16 @@ data class AccountMigrationInfo(
      */
     val passwordMode: AccountPasswordMode,
 
-    val isPrimaryUser: Boolean = false
+    val isPrimaryUser: Boolean = false,
+
+    /**
+     * If address signature preference
+     */
+    val addressSignatureEnabled: Boolean,
+
+    /**
+     * The mobile signature preference.
+     */
+    val mobileSignatureEnabled: Boolean,
+    val mobileSignature: String?
 )

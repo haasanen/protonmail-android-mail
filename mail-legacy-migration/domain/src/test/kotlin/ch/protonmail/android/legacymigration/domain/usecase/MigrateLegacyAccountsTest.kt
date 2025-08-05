@@ -68,7 +68,11 @@ class MigrateLegacyAccountsTest {
         sessionId = sessionId1,
         refreshToken = "token1",
         keySecret = "keySecret1",
-        passwordMode = AccountPasswordMode.TWO
+        passwordMode = AccountPasswordMode.TWO,
+        isPrimaryUser = true,
+        addressSignatureEnabled = true,
+        mobileSignatureEnabled = true,
+        mobileSignature = "Sent from Proton"
     )
 
     private val migrationInfo2 = AccountMigrationInfo(
@@ -79,7 +83,11 @@ class MigrateLegacyAccountsTest {
         sessionId = sessionId2,
         refreshToken = "token2",
         keySecret = "keySecret2",
-        passwordMode = AccountPasswordMode.ONE
+        passwordMode = AccountPasswordMode.ONE,
+        isPrimaryUser = false,
+        addressSignatureEnabled = false,
+        mobileSignatureEnabled = false,
+        mobileSignature = null
     )
 
     private val legacyDbError: MigrationError = MigrationError.LegacyDbFailure.MissingUser
@@ -137,4 +145,3 @@ class MigrateLegacyAccountsTest {
         assertEquals(Unit.right(), result)
     }
 }
-

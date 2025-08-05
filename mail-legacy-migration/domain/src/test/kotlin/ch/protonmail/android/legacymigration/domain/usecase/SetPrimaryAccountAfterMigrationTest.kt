@@ -48,7 +48,10 @@ class SetPrimaryAccountAfterMigrationTest {
         refreshToken = "refresh1",
         keySecret = "secret1",
         passwordMode = AccountPasswordMode.ONE,
-        isPrimaryUser = true
+        isPrimaryUser = true,
+        addressSignatureEnabled = true,
+        mobileSignatureEnabled = true,
+        mobileSignature = "Sent from Proton"
     )
 
     private val secondaryAccount = AccountMigrationInfo(
@@ -60,7 +63,10 @@ class SetPrimaryAccountAfterMigrationTest {
         refreshToken = "refresh2",
         keySecret = "secret2",
         passwordMode = AccountPasswordMode.ONE,
-        isPrimaryUser = false
+        isPrimaryUser = false,
+        addressSignatureEnabled = false,
+        mobileSignatureEnabled = false,
+        mobileSignature = null
     )
 
     @Test

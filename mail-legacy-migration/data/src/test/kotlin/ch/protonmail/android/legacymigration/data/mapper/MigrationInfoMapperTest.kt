@@ -19,7 +19,9 @@
 package ch.protonmail.android.legacymigration.data.mapper
 
 import ch.protonmail.android.legacymigration.domain.model.AccountPasswordMode
+import ch.protonmail.android.legacymigration.domain.model.LegacyMobileSignaturePreference
 import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
+import ch.protonmail.android.legacymigration.domain.model.LegacySignaturePreference
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserAddressInfo
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserInfo
 import me.proton.core.domain.entity.UserId
@@ -59,15 +61,23 @@ class MigrationInfoMapperTest {
             displayName = "John A."
         )
 
+        val signaturePreference = LegacySignaturePreference(isEnabled = true)
+        val mobileSignaturePreference = LegacyMobileSignaturePreference(
+            value = "Sent from Proton",
+            enabled = true
+        )
+
         // When
         val result = mapper.mapToAccountMigrationInfo(
             sessionInfo = sessionInfo,
             user = user,
             userAddress = userAddress,
-            isPrimaryUser = true
+            isPrimaryUser = true,
+            signaturePreference = signaturePreference,
+            mobileSignaturePreference = mobileSignaturePreference
         )
 
-        // Then
+        // Then (existing assertions)
         assertEquals(userId, result.userId)
         assertEquals("John Doe", result.username)
         assertEquals("John Doe", result.displayName)
@@ -77,6 +87,9 @@ class MigrationInfoMapperTest {
         assertEquals(sessionId, result.sessionId)
         assertEquals(true, result.isPrimaryUser)
         assertEquals(AccountPasswordMode.TWO, result.passwordMode)
+        assertEquals(true, result.addressSignatureEnabled)
+        assertEquals(true, result.mobileSignatureEnabled)
+        assertEquals("Sent from Proton", result.mobileSignature)
     }
 }
 

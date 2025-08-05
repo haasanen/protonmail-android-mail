@@ -26,10 +26,14 @@ import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSource
 import ch.protonmail.android.legacymigration.data.mapper.MigrationInfoMapper
 import ch.protonmail.android.legacymigration.domain.model.AccountMigrationInfo
 import ch.protonmail.android.legacymigration.domain.model.AccountPasswordMode
+import ch.protonmail.android.legacymigration.domain.model.LegacyMobileSignaturePreference
 import ch.protonmail.android.legacymigration.domain.model.LegacySessionInfo
+import ch.protonmail.android.legacymigration.domain.model.LegacySignaturePreference
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserAddressInfo
 import ch.protonmail.android.legacymigration.domain.model.LegacyUserInfo
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
+import ch.protonmail.android.legacymigration.domain.repository.LegacyMobileSignatureRepository
+import ch.protonmail.android.legacymigration.domain.repository.LegacySignatureRepository
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
@@ -57,6 +61,8 @@ class LegacyAccountRepositoryImplTest {
     private val accountDataSource: LegacyAccountDataSource = mockk()
     private val userDataSource: LegacyUserDataSource = mockk()
     private val userAddressDataSource: LegacyUserAddressDataSource = mockk()
+    private val signatureRepository: LegacySignatureRepository = mockk()
+    private val mobileSignatureRepository: LegacyMobileSignatureRepository = mockk()
     private val migrationInfoMapper: MigrationInfoMapper = mockk()
     private val mailSessionRepository: MailSessionRepository = mockk()
 
@@ -87,6 +93,12 @@ class LegacyAccountRepositoryImplTest {
         displayName = "Johnny"
     )
 
+    private val addressSignaturePref = LegacySignaturePreference(isEnabled = true)
+    private val mobileSignaturePref = LegacyMobileSignaturePreference(
+        value = "Sent from Proton",
+        enabled = true
+    )
+
     private val accountInfo = AccountMigrationInfo(
         userId = userId,
         username = username,
@@ -96,13 +108,18 @@ class LegacyAccountRepositoryImplTest {
         refreshToken = "refresh-token",
         keySecret = "secret",
         passwordMode = AccountPasswordMode.ONE,
-        isPrimaryUser = true
+        isPrimaryUser = true,
+        addressSignatureEnabled = addressSignaturePref.isEnabled,
+        mobileSignatureEnabled = mobileSignaturePref.enabled,
+        mobileSignature = mobileSignaturePref.value
     )
 
     private val repository = LegacyAccountRepositoryImpl(
         accountDataSource,
         userDataSource,
         userAddressDataSource,
+        signatureRepository,
+        mobileSignatureRepository,
         migrationInfoMapper,
         mailSessionRepository
     )
@@ -132,17 +149,24 @@ class LegacyAccountRepositoryImplTest {
     }
 
     @Test
-    fun `getLegacyAccountMigrationInfoFor returns Right when all data present`() = runTest {
+    fun `getLegacyAccountMigrationInfoFor returns migration info when all data present`() = runTest {
         // Given
         coEvery { userDataSource.getUser(userId) } returns user
         coEvery { userAddressDataSource.getPrimaryUserAddress(userId) } returns userAddress
         coEvery { accountDataSource.getPrimaryUserId() } returns userId
+        coEvery {
+            signatureRepository.getSignaturePreference(userAddress.addressId)
+        } returns addressSignaturePref.right()
+        coEvery { mobileSignatureRepository.getMobileSignaturePreference(userId) } returns mobileSignaturePref.right()
+
         every {
             migrationInfoMapper.mapToAccountMigrationInfo(
                 sessionInfo = session,
                 user = user,
                 userAddress = userAddress,
-                isPrimaryUser = true
+                isPrimaryUser = true,
+                signaturePreference = addressSignaturePref,
+                mobileSignaturePreference = mobileSignaturePref
             )
         } returns accountInfo
 
@@ -176,6 +200,77 @@ class LegacyAccountRepositoryImplTest {
 
         // Then
         assertEquals(MigrationError.LegacyDbFailure.MissingUserAddress.left(), result)
+    }
+
+    @Test
+    fun `getLegacyAccountMigrationInfoFor uses default address signature on datasource failure`() = runTest {
+        // Given
+        coEvery { userDataSource.getUser(userId) } returns user
+        coEvery { userAddressDataSource.getPrimaryUserAddress(userId) } returns userAddress
+        coEvery { accountDataSource.getPrimaryUserId() } returns userId
+        coEvery { signatureRepository.getSignaturePreference(userAddress.addressId) } returns
+            MigrationError.SignatureFailure.FailedToReadSignaturePreference.left()
+        coEvery { mobileSignatureRepository.getMobileSignaturePreference(userId) } returns mobileSignaturePref.right()
+
+        val expectedAccountInfo = accountInfo.copy(
+            addressSignatureEnabled = LegacySignaturePreference.Default.isEnabled
+        )
+        every {
+            migrationInfoMapper.mapToAccountMigrationInfo(
+                sessionInfo = session,
+                user = user,
+                userAddress = userAddress,
+                isPrimaryUser = true,
+                signaturePreference = LegacySignaturePreference.Default,
+                mobileSignaturePreference = mobileSignaturePref
+            )
+        } returns expectedAccountInfo
+
+        // When
+        val result = repository.getLegacyAccountMigrationInfoFor(session)
+
+        // Then
+        assertTrue(result.isRight())
+        assertEquals(LegacySignaturePreference.Default.isEnabled, expectedAccountInfo.addressSignatureEnabled)
+        assertEquals(mobileSignaturePref.enabled, expectedAccountInfo.mobileSignatureEnabled)
+        assertEquals(mobileSignaturePref.value, expectedAccountInfo.mobileSignature)
+    }
+
+    @Test
+    fun `getLegacyAccountMigrationInfoFor uses default mobile signature on datasource failure`() = runTest {
+        // Given
+        coEvery { userDataSource.getUser(userId) } returns user
+        coEvery { userAddressDataSource.getPrimaryUserAddress(userId) } returns userAddress
+        coEvery { accountDataSource.getPrimaryUserId() } returns userId
+        coEvery {
+            signatureRepository.getSignaturePreference(userAddress.addressId)
+        } returns addressSignaturePref.right()
+        coEvery { mobileSignatureRepository.getMobileSignaturePreference(userId) } returns
+            MigrationError.SignatureFailure.FailedToReadMobileSignaturePreference.left()
+
+        val expectedAccountInfo = accountInfo.copy(
+            mobileSignatureEnabled = LegacyMobileSignaturePreference.Default.enabled,
+            mobileSignature = LegacyMobileSignaturePreference.Default.value
+        )
+        every {
+            migrationInfoMapper.mapToAccountMigrationInfo(
+                sessionInfo = session,
+                user = user,
+                userAddress = userAddress,
+                isPrimaryUser = true,
+                signaturePreference = addressSignaturePref,
+                mobileSignaturePreference = LegacyMobileSignaturePreference.Default
+            )
+        } returns expectedAccountInfo
+
+        // When
+        val result = repository.getLegacyAccountMigrationInfoFor(session)
+
+        // Then
+        assertTrue(result.isRight())
+        assertEquals(addressSignaturePref.isEnabled, expectedAccountInfo.addressSignatureEnabled)
+        assertEquals(LegacyMobileSignaturePreference.Default.enabled, expectedAccountInfo.mobileSignatureEnabled)
+        assertEquals(LegacyMobileSignaturePreference.Default.value, expectedAccountInfo.mobileSignature)
     }
 
     @Test

@@ -22,6 +22,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LegacyMobileSignaturePreference(
-    val value: String,
+    val value: String?,
     val enabled: Boolean
-)
+) {
+    companion object {
+        val Default = LegacyMobileSignaturePreference(value = null, enabled = false)
+    }
+}
+

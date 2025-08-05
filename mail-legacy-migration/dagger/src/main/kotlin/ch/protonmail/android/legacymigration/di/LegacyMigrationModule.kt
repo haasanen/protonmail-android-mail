@@ -32,14 +32,22 @@ import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSource
 import ch.protonmail.android.legacymigration.data.local.LegacyUserDataSourceImpl
 import ch.protonmail.android.legacymigration.data.local.autolock.LegacyAutoLockLocalDataSource
 import ch.protonmail.android.legacymigration.data.local.autolock.LegacyAutoLockLocalDataSourceImpl
+import ch.protonmail.android.legacymigration.data.local.signature.LegacySignatureLocalDataSource
+import ch.protonmail.android.legacymigration.data.local.signature.LegacySignatureLocalDataSourceImpl
+import ch.protonmail.android.legacymigration.data.local.signature.mobile.LegacyMobileSignatureLocalDataSource
+import ch.protonmail.android.legacymigration.data.local.signature.mobile.LegacyMobileSignatureLocalDataSourceImpl
 import ch.protonmail.android.legacymigration.data.repository.LegacyAccountRepositoryImpl
 import ch.protonmail.android.legacymigration.data.repository.LegacyAutoLockRepositoryImpl
 import ch.protonmail.android.legacymigration.data.repository.LegacyMigrationStatusRepositoryImpl
+import ch.protonmail.android.legacymigration.data.repository.LegacyMobileSignatureRepositoryImpl
+import ch.protonmail.android.legacymigration.data.repository.LegacySignatureRepositoryImpl
 import ch.protonmail.android.legacymigration.domain.LegacyDBCoroutineScope
 import ch.protonmail.android.legacymigration.domain.model.LegacyDatabase
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAccountRepository
 import ch.protonmail.android.legacymigration.domain.repository.LegacyAutoLockRepository
 import ch.protonmail.android.legacymigration.domain.repository.LegacyMigrationStatusRepository
+import ch.protonmail.android.legacymigration.domain.repository.LegacyMobileSignatureRepository
+import ch.protonmail.android.legacymigration.domain.repository.LegacySignatureRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -118,5 +126,26 @@ object LegacyMigrationModule {
         @Binds
         @Singleton
         fun bindLegacyAutoLockLocalDataSource(impl: LegacyAutoLockLocalDataSourceImpl): LegacyAutoLockLocalDataSource
+
+        @Binds
+        @Singleton
+        fun bindLegacySignatureLocalDataSource(impl: LegacySignatureLocalDataSourceImpl): LegacySignatureLocalDataSource
+
+        @Binds
+        @Singleton
+        fun bindLegacySignatureRepository(impl: LegacySignatureRepositoryImpl): LegacySignatureRepository
+
+        @Binds
+        @Singleton
+        fun bindLegacyMobileSignatureLocalDataSource(
+            impl: LegacyMobileSignatureLocalDataSourceImpl
+        ): LegacyMobileSignatureLocalDataSource
+
+        @Binds
+        @Singleton
+        fun bindLegacyMobileSignatureRepository(
+            impl: LegacyMobileSignatureRepositoryImpl
+        ): LegacyMobileSignatureRepository
+
     }
 }
