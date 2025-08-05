@@ -26,6 +26,7 @@ import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.composer.data.local.RustDraftDataSourceImpl
 import ch.protonmail.android.composer.data.local.RustSendingStatusDataSource
 import ch.protonmail.android.composer.data.local.RustSendingStatusDataSourceImpl
+import ch.protonmail.android.composer.data.repository.ActiveComposerInMemoryRepository
 import ch.protonmail.android.composer.data.repository.AttachmentRepositoryImpl
 import ch.protonmail.android.composer.data.repository.CameraTempImageFileRepository
 import ch.protonmail.android.composer.data.repository.ContactsPermissionRepositoryImpl
@@ -33,6 +34,7 @@ import ch.protonmail.android.composer.data.repository.DraftRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessageExpirationTimeRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessagePasswordRepositoryImpl
 import ch.protonmail.android.composer.data.repository.SendingStatusRepositoryImpl
+import ch.protonmail.android.mailcomposer.domain.repository.ActiveComposerRepository
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailcomposer.domain.repository.CameraTempImageRepository
 import ch.protonmail.android.mailcomposer.domain.repository.ContactsPermissionRepository
@@ -106,5 +108,9 @@ abstract class SendingStatusModule {
     @Binds
     @Singleton
     abstract fun bindsRustDraftDataSource(impl: RustDraftDataSourceImpl): RustDraftDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsActiveComposerRepository(impl: ActiveComposerInMemoryRepository): ActiveComposerRepository
 
 }

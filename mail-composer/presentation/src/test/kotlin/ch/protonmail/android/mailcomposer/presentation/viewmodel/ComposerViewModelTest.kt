@@ -74,6 +74,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerStateReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
+import ch.protonmail.android.mailcomposer.presentation.usecase.ActiveComposerRegistry
 import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
@@ -94,10 +95,12 @@ import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.composer.DraftFieldsTestData
 import ch.protonmail.android.testdata.contact.ContactSample
 import io.mockk.Called
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.coVerifyOrder
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.slot
@@ -156,6 +159,9 @@ class ComposerViewModelTest {
     private val getSenderAddresses = mockk<GetSenderAddresses>()
     private val changeSenderAddress = mockk<ChangeSenderAddress>()
     private val clearRustDraftFromMemory = mockk<ClearRustDraftFromMemory>()
+    private val composerRegistry = mockk<ActiveComposerRegistry> {
+        every { this@mockk.register(any()) } just Runs
+    }
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<MessageBodyWithType>()
@@ -196,6 +202,7 @@ class ComposerViewModelTest {
             changeSenderAddress,
             isExternalEncryptionEnabled,
             clearRustDraftFromMemory,
+            composerRegistry,
             observePrimaryUserIdMock
         )
     }
