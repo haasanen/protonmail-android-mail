@@ -116,7 +116,6 @@
     <string name="auth_signup_recovery_email_validation_error">Email validation failed</string>
     <string name="auth_signup_recovery_phone_validation_error">Phone number validation failed</string>
     <string name="auth_signup_createpassword_error_password_not_equal">Passwords do not match. Please try again.</string>
-    <string name="auth_signup_generic_error">Something went wrong. Please try again.</string>
 
     <string name="auth_signup_countries_search">Search country</string>
     <string name="auth_login_error_invalid_action_cannot_setup_user">Could not setup the user.</string>
@@ -129,6 +128,13 @@
     <string name="auth_fido_manage_security_keys">Manage security keys</string>
     <string name="auth_fido_add_security_key">Add security key</string>
     <string name="auth_fido_security_keys_learn_more">Learn more</string>
+    <string name="auth_user_check_delinquent_error">Your account is currently on hold due to an overdue invoice.</string>
+    <plurals name="auth_user_check_max_free_error">
+        <item quantity="one">Only one free Proton account is allowed.</item>
+        <item quantity="other">Only %d free Proton accounts are allowed.</item>
+    </plurals>
+    <string name="common_error_something_went_wrong">Something went wrong. Please try again.</string>
+
 
     <plurals name="password_validator_min_length_error">
         <item quantity="one">Password must contain at least 1 character</item>

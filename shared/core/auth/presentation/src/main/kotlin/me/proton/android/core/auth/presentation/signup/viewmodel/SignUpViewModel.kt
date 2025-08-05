@@ -226,7 +226,7 @@ fun SignupException.getErrorMessage(getString: (resId: Int) -> String): String =
     is SignupException.Internal,
     is SignupException.KeySetupFailed,
     is SignupException.PasswordNotValidated,
-    is SignupException.SignupBlockedByServer -> R.string.auth_signup_generic_error
+    is SignupException.SignupBlockedByServer -> R.string.common_error_something_went_wrong
 }.let {
     getString(it)
 }

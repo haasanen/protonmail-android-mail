@@ -73,8 +73,13 @@ fun LoginError.getErrorMessage(context: Context): String = when (this) {
     is LoginError.SettingsFetch -> "LoginError.SettingsFetch"
     is LoginError.DuplicateSession -> v1
     is LoginError.MissingSession -> context.getString(R.string.auth_login_error_invalid_action_cannot_unlock_keys)
-    is LoginError.DelinquentUser -> "LoginError.DeliquentUser"
-    is LoginError.FreeAccountLimitExceeded -> "LoginError.FreeAccountLimitExceeded"
+    is LoginError.DelinquentUser -> context.getString(R.string.auth_user_check_delinquent_error)
+    is LoginError.FreeAccountLimitExceeded -> context.resources.getQuantityString(
+        R.plurals.auth_user_check_max_free_error,
+        v1.toInt(),
+        v1.toInt()
+    )
+
 }
 
 fun UserApiServiceError.getErrorMessage() = when (this) {
