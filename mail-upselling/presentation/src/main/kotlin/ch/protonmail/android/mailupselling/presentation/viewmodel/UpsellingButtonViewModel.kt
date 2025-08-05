@@ -21,7 +21,7 @@ package ch.protonmail.android.mailupselling.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
-import ch.protonmail.android.mailupselling.presentation.model.UpsellingButtonState
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingState
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,8 +36,8 @@ class UpsellingButtonViewModel @Inject constructor(
     observeUpsellingVisibility: ObserveUpsellingVisibility
 ) : ViewModel() {
 
-    val state: StateFlow<UpsellingButtonState> = observeUpsellingVisibility()
-        .map { visibility -> UpsellingButtonState(visibility) }
+    val state: StateFlow<UpsellingState> = observeUpsellingVisibility()
+        .map { visibility -> UpsellingState(visibility) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
@@ -46,6 +46,6 @@ class UpsellingButtonViewModel @Inject constructor(
 
     companion object {
 
-        val initialState = UpsellingButtonState(visibility = UpsellingVisibility.HIDDEN)
+        val initialState = UpsellingState(visibility = UpsellingVisibility.HIDDEN)
     }
 }

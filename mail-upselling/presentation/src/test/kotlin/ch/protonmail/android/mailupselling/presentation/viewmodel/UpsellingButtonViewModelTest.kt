@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailupselling.presentation.viewmodel
 
 import app.cash.turbine.test
-import ch.protonmail.android.mailupselling.presentation.model.UpsellingButtonState
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingState
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -54,7 +54,7 @@ internal class UpsellingButtonViewModelTest {
         // When
         viewModel.state.test {
             // Then
-            assertEquals(UpsellingButtonState(UpsellingVisibility.NORMAL), awaitItem())
+            assertEquals(UpsellingState(UpsellingVisibility.NORMAL), awaitItem())
         }
     }
 
@@ -67,7 +67,7 @@ internal class UpsellingButtonViewModelTest {
         // When
         viewModel.state.test {
             // Then
-            assertEquals(UpsellingButtonState(UpsellingVisibility.PROMO), awaitItem())
+            assertEquals(UpsellingState(UpsellingVisibility.PROMO), awaitItem())
         }
     }
 
@@ -80,7 +80,7 @@ internal class UpsellingButtonViewModelTest {
         // When
         viewModel.state.test {
             // Then
-            assertEquals(UpsellingButtonState(UpsellingVisibility.HIDDEN), awaitItem())
+            assertEquals(UpsellingState(UpsellingVisibility.HIDDEN), awaitItem())
         }
     }
 }
