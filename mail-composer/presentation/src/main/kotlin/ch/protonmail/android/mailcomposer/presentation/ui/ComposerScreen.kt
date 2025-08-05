@@ -82,6 +82,8 @@ import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.delay
@@ -129,6 +131,16 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             message = featureMissingSnackbarMessage,
             type = ProtonSnackbarType.NORM
         )
+    }
+
+    fun dismissBottomSheet(continuation: () -> Unit = {}) {
+        scope.launch { bottomSheetState.hide() }
+            .invokeOnCompletion {
+                if (!bottomSheetState.isVisible) {
+                    showBottomSheet = false
+                }
+                continuation()
+            }
     }
 
     val bottomBarActions = ComposerBottomBar.Actions(
@@ -214,24 +226,29 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     onPhotos = { viewModel.submit(ComposerAction.OpenPhotosPicker) }
                 )
 
-                is BottomSheetType.ScheduleSendOptions -> ScheduleSendBottomSheetContent(
-                    optionsUiModel = composerStates.accessories.scheduleSendOptions,
-                    onScheduleSendConfirmed = {
-                        Timber.d("Schedule send confirmed, to happen at $it")
-                        viewModel.submit(ComposerAction.OnScheduleSend(it))
-                    },
-                    onPickCustomTimeRequested = {
-                        bottomSheetType.value = BottomSheetType.ScheduleSendCustomTimePicker
-                    }
-                )
+                is BottomSheetType.ScheduleSendOptions -> {
+                    val actions = ScheduleSendBottomSheetContent.Actions(
+                        onScheduleSendConfirmed = {
+                            Timber.d("Schedule send confirmed, to happen at $it")
+                            viewModel.submit(ComposerAction.OnScheduleSend(it))
+                        },
+                        onPickCustomTimeRequested = {
+                            bottomSheetType.value = BottomSheetType.ScheduleSendCustomTimePicker
+                        },
+                        onNavigateToUpsell = { type ->
+                            dismissBottomSheet {
+                                actions.onNavigateToUpsell(type, UpsellingEntryPoint.Feature.ScheduleSend)
+                            }
+                        }
+                    )
+                    return@ProtonModalBottomSheetLayout ScheduleSendBottomSheetContent(
+                        optionsUiModel = composerStates.accessories.scheduleSendOptions,
+                        actions = actions
+                    )
+                }
 
                 is BottomSheetType.ScheduleSendCustomTimePicker -> ScheduleSendTimePickerBottomSheetContent(
-                    onClose = {
-                        scope.launch {
-                            bottomSheetState.hide()
-                            showBottomSheet = false
-                        }
-                    },
+                    onClose = { dismissBottomSheet() },
                     onScheduleSendConfirmed = {
                         viewModel.submit(ComposerAction.OnScheduleSend(it))
                     }
@@ -505,8 +522,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             delay(ComposerScreen.DELAY_SHOWING_BOTTOMSHEET)
             bottomSheetState.show()
         } else {
-            bottomSheetState.hide()
-            showBottomSheet = false
+            dismissBottomSheet()
         }
     }
 
@@ -603,7 +619,8 @@ object ComposerScreen {
         val showMessageSendingOfflineSnackbar: () -> Unit,
         val showMessageSchedulingSnackbar: () -> Unit,
         val showMessageSchedulingOfflineSnackbar: () -> Unit,
-        val showDraftDiscardedSnackbar: () -> Unit
+        val showDraftDiscardedSnackbar: () -> Unit,
+        val onNavigateToUpsell: (type: UpsellingVisibility, entryPoint: UpsellingEntryPoint.Feature) -> Unit
     ) {
 
         companion object {
@@ -617,7 +634,8 @@ object ComposerScreen {
                 showMessageSendingOfflineSnackbar = {},
                 showMessageSchedulingSnackbar = {},
                 showMessageSchedulingOfflineSnackbar = {},
-                showDraftDiscardedSnackbar = {}
+                showDraftDiscardedSnackbar = {},
+                onNavigateToUpsell = { _, _ -> }
             )
         }
     }

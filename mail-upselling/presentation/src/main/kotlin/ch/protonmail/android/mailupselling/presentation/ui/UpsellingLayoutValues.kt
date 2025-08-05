@@ -105,6 +105,11 @@ internal object UpsellingLayoutValues {
         val outlinedCardSelectedBorderStroke = BorderStroke(2.dp, coloredBorderBrush)
     }
 
+    object UpsellCards {
+
+        val outlineBorderStoke = BorderStroke(1.dp, coloredBorderBrush)
+    }
+
     val coloredBorderBrush = Brush.linearGradient(
         colors = listOf(
             Color(0xFF00FF88),

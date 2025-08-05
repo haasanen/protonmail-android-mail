@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,7 +38,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -55,13 +53,14 @@ import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.InstantWithFormattedTime
 import ch.protonmail.android.mailcomposer.presentation.model.ScheduleSendOptionsUiModel
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+import ch.protonmail.android.mailupselling.presentation.ui.UpsellingBottomSheetButton
 import kotlin.time.Instant
 
 @Composable
 fun ScheduleSendBottomSheetContent(
     optionsUiModel: ScheduleSendOptionsUiModel,
-    onScheduleSendConfirmed: (Instant) -> Unit,
-    onPickCustomTimeRequested: () -> Unit,
+    actions: ScheduleSendBottomSheetContent.Actions,
     modifier: Modifier = Modifier
 ) {
 
@@ -97,29 +96,42 @@ fun ScheduleSendBottomSheetContent(
 
                 PreviousTimeOption(
                     previousTime = previousTime,
-                    onClicked = onScheduleSendConfirmed
+                    onClicked = actions.onScheduleSendConfirmed
                 )
             }
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.ExtraLarge))
 
-            DefaultOptions(optionsUiModel = optionsUiModel, onOptionClicked = onScheduleSendConfirmed)
+            DefaultOptions(optionsUiModel = optionsUiModel, onOptionClicked = actions.onScheduleSendConfirmed)
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
-            val context = LocalContext.current
-            fun showFeatureMissingToast() {
-                Toast.makeText(context, "Feature coming soon...", Toast.LENGTH_SHORT).show()
+            if (optionsUiModel.isCustomTimeOptionAvailable) {
+                CustomTimeOption(onPickCustomTime = actions.onPickCustomTimeRequested)
+            } else {
+                UpsellingBottomSheetButton(
+                    text = stringResource(R.string.composer_schedule_send_custom_upsell_title),
+                    onUpsellNavigation = { type -> actions.onNavigateToUpsell(type) }
+                )
             }
-            CustomTimeOption(
-                onPickCustomTime = {
-                    when {
-                        optionsUiModel.isCustomTimeOptionAvailable -> onPickCustomTimeRequested()
-                        else -> showFeatureMissingToast()
-                    }
-                }
-            )
+        }
+    }
+}
 
+object ScheduleSendBottomSheetContent {
+    data class Actions(
+        val onScheduleSendConfirmed: (Instant) -> Unit,
+        val onPickCustomTimeRequested: () -> Unit,
+        val onNavigateToUpsell: (type: UpsellingVisibility) -> Unit
+    ) {
+
+        companion object {
+
+            val Empty = Actions(
+                onScheduleSendConfirmed = { _ -> },
+                onPickCustomTimeRequested = { },
+                onNavigateToUpsell = { _ -> }
+            )
         }
     }
 }
@@ -305,8 +317,7 @@ private fun PreviewScheduleSendBottomSheet() {
                 isCustomTimeOptionAvailable = true,
                 previousScheduleSendTime = null
             ),
-            onScheduleSendConfirmed = {},
-            onPickCustomTimeRequested = {}
+            ScheduleSendBottomSheetContent.Actions.Empty
         )
     }
 }
@@ -325,8 +336,7 @@ private fun PreviewScheduleSendSheetWithPreviousTime() {
                 isCustomTimeOptionAvailable = true,
                 previousScheduleSendTime = InstantWithFormattedTime(Instant.parse("12 Jun at 09:45"), "12 Jun at 09:45")
             ),
-            onScheduleSendConfirmed = {},
-            onPickCustomTimeRequested = {}
+            ScheduleSendBottomSheetContent.Actions.Empty
         )
     }
 }

@@ -63,6 +63,10 @@
     <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
     <string name="upselling_snooze_plus_title">Bad time for this email?</string>
 
+    <!-- Upselling - Misc buttons -->
+    <string name="upselling_button_hint">Upgrade for full flexibility</string>
+    <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature.</string>
+
     <!-- Mail Plus -->
     <string name="upselling_plus_feature_storage">15 GB storage</string>
     <string name="upselling_plus_feature_storage_plus_mails">15 GB storage, 10 email addresses</string>

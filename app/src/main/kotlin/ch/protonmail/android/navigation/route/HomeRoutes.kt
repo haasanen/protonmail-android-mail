@@ -133,7 +133,10 @@ internal fun NavGraphBuilder.addComposer(
         showMessageSendingOfflineSnackbar = showMessageSendingOfflineSnackbar,
         showMessageSchedulingSnackbar = { showMessageSchedulingSnackbar() },
         showMessageSchedulingOfflineSnackbar = { showMessageSchedulingOfflineSnackbar() },
-        showDraftDiscardedSnackbar = showDraftDiscardedSnackbar
+        showDraftDiscardedSnackbar = showDraftDiscardedSnackbar,
+        onNavigateToUpsell = { type, entryPoint ->
+            navController.navigate(Destination.Screen.FeatureUpselling(entryPoint, type))
+        }
     )
     composable(route = Destination.Screen.Composer.route) { ComposerScreen(actions) }
     composable(route = Destination.Screen.EditDraftComposer.route) { ComposerScreen(actions) }
