@@ -32,6 +32,7 @@ import me.proton.core.util.kotlin.takeIfNotBlank
 import uniffi.proton_mail_uniffi.ChallengeLoader
 import uniffi.proton_mail_uniffi.ChallengeLoaderGetResult
 import uniffi.proton_mail_uniffi.Header
+import uniffi.proton_mail_uniffi.HumanVerificationViewLoadingStatus
 import uniffi.proton_mail_uniffi.Query
 import kotlin.text.Charsets.UTF_8
 
@@ -121,3 +122,21 @@ sealed class WebResponseError {
     data class Ssl(val error: SslError) : WebResponseError()
     data class Resource(val error: WebResourceError) : WebResponseError()
 }
+
+@Suppress("MagicNumber")
+internal fun WebResponseError?.toHumanVerificationViewLoadingStatus(): HumanVerificationViewLoadingStatus =
+    when (this) {
+        is WebResponseError.Http -> when (response.statusCode) {
+            in 200..299 -> HumanVerificationViewLoadingStatus.HTTP2XX
+            400 -> HumanVerificationViewLoadingStatus.HTTP400
+            404 -> HumanVerificationViewLoadingStatus.HTTP404
+            422 -> HumanVerificationViewLoadingStatus.HTTP422
+            in 400..499 -> HumanVerificationViewLoadingStatus.HTTP4XX
+            in 500..599 -> HumanVerificationViewLoadingStatus.HTTP5XX
+            else -> HumanVerificationViewLoadingStatus.CONNECTION_ERROR
+        }
+
+        is WebResponseError.Ssl -> HumanVerificationViewLoadingStatus.SSL_ERROR
+        is WebResponseError.Resource -> HumanVerificationViewLoadingStatus.CONNECTION_ERROR
+        else -> HumanVerificationViewLoadingStatus.CONNECTION_ERROR
+    }
