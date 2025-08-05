@@ -43,8 +43,8 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import io.mockk.verifyOrder
-import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.DraftChangeSenderAddressResult
@@ -81,6 +81,7 @@ class RustDraftDataSourceImplTest {
     private val mockUserSession = mockk<MailUserSessionWrapper>()
     private val enqueuer = mockk<Enqueuer>()
     private val rustDraftUndoSend = mockk<RustDraftUndoSend>()
+    private val draftCache = mockk<DraftCache>()
 
     private val dataSource = RustDraftDataSourceImpl(
         userSessionRepository,
@@ -88,7 +89,8 @@ class RustDraftDataSourceImplTest {
         openRustDraft,
         discardRustDraft,
         rustDraftUndoSend,
-        enqueuer
+        enqueuer,
+        draftCache
     )
 
     @Test
@@ -134,6 +136,7 @@ class RustDraftDataSourceImplTest {
         )
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { openRustDraft(mockUserSession, localMessageId) } returns expectedWrapperWithSyncStatus.right()
+        every { draftCache.add(expectedDraftWrapper) } just Runs
 
         // When
         val actual = dataSource.open(userId, messageId)
@@ -143,7 +146,7 @@ class RustDraftDataSourceImplTest {
     }
 
     @Test
-    fun `data source holds instance of the draft when opened successfully`() = runTest {
+    fun `draft instance is cached to draft cache when opened successfully`() = runTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.RustJobApplication
@@ -162,13 +165,13 @@ class RustDraftDataSourceImplTest {
         coEvery { recipientsWrapperMock.recipients() } returns emptyList()
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { openRustDraft(mockUserSession, localMessageId) } returns expectedWrapperWithSyncStatus.right()
-        assertNull(dataSource.draftWrapperMutableStateFlow.value)
+        every { draftCache.add(expectedDraftWrapper) } just Runs
 
         // When
         dataSource.open(userId, messageId)
 
         // Then
-        assertEquals(dataSource.draftWrapperMutableStateFlow.value, expectedDraftWrapper)
+        verify { draftCache.add(expectedDraftWrapper) }
     }
 
     @Test
@@ -226,6 +229,7 @@ class RustDraftDataSourceImplTest {
         coEvery { recipientsWrapperMock.recipients() } returns emptyList()
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { createRustDraft(mockUserSession, localDraftCreateMode) } returns expectedDraftWrapper.right()
+        every { draftCache.add(expectedDraftWrapper) } just Runs
 
         // When
         val actual = dataSource.create(userId, action)
@@ -235,7 +239,7 @@ class RustDraftDataSourceImplTest {
     }
 
     @Test
-    fun `data source holds instance of the draft when created successfully`() = runTest {
+    fun `draft instance is cached to draft cache when created successfully`() = runTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.RustJobApplication
@@ -254,13 +258,13 @@ class RustDraftDataSourceImplTest {
         coEvery { recipientsWrapperMock.recipients() } returns emptyList()
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { createRustDraft(mockUserSession, localDraftCreateMode) } returns expectedDraftWrapper.right()
-        assertNull(dataSource.draftWrapperMutableStateFlow.value)
+        every { draftCache.add(expectedDraftWrapper) } just Runs
 
         // When
         dataSource.create(userId, action)
 
         // Then
-        assertEquals(dataSource.draftWrapperMutableStateFlow.value, expectedDraftWrapper)
+        verify { draftCache.add(expectedDraftWrapper) }
     }
 
     @Test
@@ -322,7 +326,7 @@ class RustDraftDataSourceImplTest {
             draft.body,
             messageId = messageId.toLocalMessageId()
         )
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveResult.Ok
         coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveResult.Ok
 
@@ -339,7 +343,8 @@ class RustDraftDataSourceImplTest {
         val draft = LocalDraftTestData.JobApplicationDraft
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
         val subject = Subject("saving a draft...")
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveResult.Error(
             DraftSaveError.Reason(DraftSaveErrorReason.MessageIsNotADraft)
         )
@@ -364,7 +369,7 @@ class RustDraftDataSourceImplTest {
             draft.body,
             messageId = messageId.toLocalMessageId()
         )
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveResult.Ok
         coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveResult.Ok
 
@@ -381,7 +386,7 @@ class RustDraftDataSourceImplTest {
         val draft = LocalDraftTestData.JobApplicationDraft
         val body = DraftBody("saving a draft's body...")
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.body, draft.sender, draft.body)
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveResult.Error(
             DraftSaveError.Reason(DraftSaveErrorReason.MessageIsNotADraft)
         )
@@ -402,7 +407,7 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             messageId = messageId
         )
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { userSessionRepository.observePrimaryUserId() } returns flowOf(userId)
         coEvery {
             enqueuer.enqueueUniqueWork<SendingStatusWorker>(
@@ -443,7 +448,7 @@ class RustDraftDataSourceImplTest {
                 DraftSendError.Reason(DraftSendErrorReason.RecipientEmailInvalid("test!"))
             )
         )
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
 
         coEvery { userSessionRepository.observePrimaryUserId() } returns flowOf(userId)
 
@@ -525,7 +530,7 @@ class RustDraftDataSourceImplTest {
         coEvery { toRecipientsWrapperMock.recipients() } returns currentRecipients
         coEvery { toRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
         coEvery { toRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
 
         // When
         dataSource.updateToRecipients(updatedRecipients)
@@ -555,7 +560,7 @@ class RustDraftDataSourceImplTest {
         coEvery { ccRecipientsWrapperMock.recipients() } returns currentRecipients
         coEvery { ccRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
         coEvery { ccRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
 
         // When
         dataSource.updateCcRecipients(updatedRecipients)
@@ -585,7 +590,7 @@ class RustDraftDataSourceImplTest {
         coEvery { bccRecipientsWrapperMock.recipients() } returns currentRecipients
         coEvery { bccRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
         coEvery { bccRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
 
         // When
         dataSource.updateBccRecipients(updatedRecipients)
@@ -616,7 +621,7 @@ class RustDraftDataSourceImplTest {
         coEvery { bccRecipientsWrapperMock.recipients() } returns currentRecipients
         coEvery { bccRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
         coEvery { bccRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
 
         // When
         dataSource.updateBccRecipients(updatedRecipients)
@@ -638,7 +643,7 @@ class RustDraftDataSourceImplTest {
         )
         val cid = "image-content-id"
         val expectedDraftWrapper = expectDraftWrapperReturns()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.embeddedImage(cid) } returns EmbeddedAttachmentInfoResult.Ok(
             localEmbeddedImage
         )
@@ -656,7 +661,7 @@ class RustDraftDataSourceImplTest {
         val expected = DataError.Remote.Http(NetworkError.NoNetwork)
         val cid = "image-content-id"
         val expectedDraftWrapper = expectDraftWrapperReturns()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.embeddedImage(cid) } returns EmbeddedAttachmentInfoResult.Error(
             ProtonError.Network
         )
@@ -677,7 +682,7 @@ class RustDraftDataSourceImplTest {
             isCustomOptionAvailable = false
         )
         val expectedDraftWrapper = expectDraftWrapperReturns()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.scheduleSendOptions() } returns DraftScheduleSendOptionsResult.Ok(
             scheduleSendOptions
         )
@@ -694,7 +699,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val expected = DataError.Remote.Http(NetworkError.NoNetwork)
         val expectedDraftWrapper = expectDraftWrapperReturns()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.scheduleSendOptions() } returns DraftScheduleSendOptionsResult.Error(
             ProtonError.Network
         )
@@ -711,7 +716,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val timestamp = 1234L
         val expectedDraftWrapper = expectDraftWrapperReturns()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.scheduleSend(timestamp.toULong()) } returns VoidDraftSendResult.Ok
 
         // When
@@ -727,7 +732,7 @@ class RustDraftDataSourceImplTest {
         val timestamp = 1234L
         val expected = SendDraftError.InvalidRecipient
         val expectedDraftWrapper = expectDraftWrapperReturns()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.scheduleSend(timestamp.toULong()) } returns VoidDraftSendResult.Error(
             DraftSendError.Reason(DraftSendErrorReason.NoRecipients)
         )
@@ -745,7 +750,7 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns()
         val addresses = listOf("test1@pm.me", "test2@pm.me")
         val expected = LocalSenderAddresses(addresses, addresses[0])
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.listSenderAddresses() } returns DraftListSenderAddressesResult.Ok(
             DraftSenderAddressList(addresses, addresses[0])
         )
@@ -762,7 +767,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val expected = DataError.Local.Unknown
         val expectedDraftWrapper = expectDraftWrapperReturns()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.listSenderAddresses() } returns DraftListSenderAddressesResult.Error(
             ProtonError.Unexpected(UnexpectedError.DRAFT)
         )
@@ -779,7 +784,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val expectedDraftWrapper = expectDraftWrapperReturns()
         val address = "test1@pm.me"
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.changeSender(address) } returns DraftChangeSenderAddressResult.Ok
 
         // When
@@ -794,7 +799,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val expected = DataError.Local.Unknown
         val expectedDraftWrapper = expectDraftWrapperReturns()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.listSenderAddresses() } returns DraftListSenderAddressesResult.Error(
             ProtonError.Unexpected(UnexpectedError.DRAFT)
         )
@@ -810,7 +815,7 @@ class RustDraftDataSourceImplTest {
     fun `is password protected returns value when successful`() = runTest {
         // Given
         val expectedDraftWrapper = expectDraftWrapperReturns()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.isPasswordProtected() } returns DraftIsPasswordProtectedResult.Ok(true)
 
         // When
@@ -825,7 +830,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val expected = DataError.Local.Unknown
         val expectedDraftWrapper = expectDraftWrapperReturns()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.isPasswordProtected() } returns DraftIsPasswordProtectedResult.Error(
             ProtonError.Unexpected(UnexpectedError.DRAFT)
         )
@@ -843,7 +848,7 @@ class RustDraftDataSourceImplTest {
         val password = "password"
         val hint = "hint"
         val expectedDraftWrapper = expectDraftWrapperReturns()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.setPassword(password, hint) } returns VoidDraftPasswordResult.Ok
 
         // When
@@ -860,7 +865,7 @@ class RustDraftDataSourceImplTest {
         val password = "password"
         val hint = "hint"
         val expectedDraftWrapper = expectDraftWrapperReturns()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.setPassword(password, hint) } returns VoidDraftPasswordResult.Error(
             DraftPasswordError.Reason(DraftPasswordErrorReason.PASSWORD_TOO_SHORT)
         )
@@ -876,7 +881,7 @@ class RustDraftDataSourceImplTest {
     fun `remove external encryption password returns Unit when successful`() = runTest {
         // Given
         val expectedDraftWrapper = expectDraftWrapperReturns()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.removePassword() } returns VoidDraftPasswordResult.Ok
 
         // When
@@ -891,7 +896,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val expected = ExternalEncryptionPasswordError.Other(DataError.Local.Unknown)
         val expectedDraftWrapper = expectDraftWrapperReturns()
-        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
+        every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.removePassword() } returns VoidDraftPasswordResult.Error(
             DraftPasswordError.Other(ProtonError.Unexpected(UnexpectedError.DRAFT))
         )

@@ -19,7 +19,6 @@
 package ch.protonmail.android.composer.data.local
 
 import java.time.Duration
-import androidx.annotation.VisibleForTesting
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.raise.either
@@ -42,7 +41,6 @@ import ch.protonmail.android.composer.data.usecase.RustDraftUndoSend
 import ch.protonmail.android.composer.data.worker.SendingStatusWorker
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.composer.data.wrapper.ComposerRecipientListWrapper
-import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
@@ -63,11 +61,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
@@ -93,13 +86,9 @@ class RustDraftDataSourceImpl @Inject constructor(
     private val openRustDraft: OpenRustDraft,
     private val discardRustDraft: DiscardRustDraft,
     private val rustDraftUndoSend: RustDraftUndoSend,
-    private val enqueuer: Enqueuer
+    private val enqueuer: Enqueuer,
+    private val draftCache: DraftCache
 ) : RustDraftDataSource {
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    val draftWrapperMutableStateFlow = MutableStateFlow<DraftWrapper?>(null)
-
-    private val draftWrapperStateFlow: StateFlow<DraftWrapper?> = draftWrapperMutableStateFlow.asStateFlow()
 
     private val recipientsUpdatedCallback = object : ComposerRecipientValidationCallback {
         override fun onUpdate() {
@@ -107,12 +96,11 @@ class RustDraftDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMessageId(): Either<DataError, MessageId> = withValidRustDraftWrapper {
-        return@withValidRustDraftWrapper when (val result = it.messageId()) {
+    override suspend fun getMessageId(): Either<DataError, MessageId> =
+        when (val result = draftCache.get().messageId()) {
             is DraftMessageIdResult.Error -> result.v1.toDataError().left()
             is DraftMessageIdResult.Ok -> result.v1?.toMessageId()?.right() ?: DataError.Local.NoDraftId.left()
         }
-    }
 
     override suspend fun open(userId: UserId, messageId: MessageId): Either<OpenDraftError, LocalDraftWithSyncStatus> {
         val session = userSessionRepository.getUserSession(userId)
@@ -125,7 +113,7 @@ class RustDraftDataSourceImpl @Inject constructor(
         return openRustDraft(session, messageId.toLocalMessageId())
             .onRight {
                 Timber.d("rust-draft: Draft opened successfully.")
-                draftWrapperMutableStateFlow.value = it.draftWrapper
+                draftCache.add(it.draftWrapper)
             }
             .map { it.toLocalDraftWithSyncStatus() }
     }
@@ -144,7 +132,7 @@ class RustDraftDataSourceImpl @Inject constructor(
         }
 
         return createRustDraft(session, draftCreateMode)
-            .onRight { draftWrapperMutableStateFlow.value = it }
+            .onRight { draftCache.add(it) }
             .map { it.toLocalDraft() }
     }
 
@@ -158,51 +146,43 @@ class RustDraftDataSourceImpl @Inject constructor(
         return discardRustDraft(session, messageId.toLocalMessageId())
     }
 
-    override suspend fun saveSubject(subject: Subject): Either<SaveDraftError, Unit> = withValidRustDraftWrapper {
-        return@withValidRustDraftWrapper when (val result = it.setSubject(subject.value)) {
+    override suspend fun saveSubject(subject: Subject): Either<SaveDraftError, Unit> =
+        when (val result = draftCache.get().setSubject(subject.value)) {
             is VoidDraftSaveResult.Error -> result.v1.toSaveDraftError().left()
             is VoidDraftSaveResult.Ok -> Unit.right()
         }
-    }
 
-    override suspend fun saveBody(body: DraftBody): Either<SaveDraftError, Unit> = withValidRustDraftWrapper {
-        return@withValidRustDraftWrapper when (val result = it.setBody(body.value)) {
+    override suspend fun saveBody(body: DraftBody): Either<SaveDraftError, Unit> =
+        when (val result = draftCache.get().setBody(body.value)) {
             is VoidDraftSaveResult.Error -> result.v1.toSaveDraftError().left()
             is VoidDraftSaveResult.Ok -> Unit.right()
         }
+
+    override suspend fun updateToRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit> {
+        val recipientsToWrapper = draftCache.get().recipientsTo()
+        return updateRecipients(recipientsToWrapper, recipients)
     }
 
-    override suspend fun updateToRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit> =
-        withValidRustDraftWrapper { draftWrapper ->
-            val recipientsToWrapper = draftWrapper.recipientsTo()
-            return@withValidRustDraftWrapper updateRecipients(recipientsToWrapper, recipients)
-        }
+    override suspend fun updateCcRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit> {
+        val recipientsCcWrapper = draftCache.get().recipientsCc()
+        return updateRecipients(recipientsCcWrapper, recipients)
+    }
 
-    override suspend fun updateCcRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit> =
-        withValidRustDraftWrapper { draftWrapper ->
-            val recipientsCcWrapper = draftWrapper.recipientsCc()
-            return@withValidRustDraftWrapper updateRecipients(recipientsCcWrapper, recipients)
-        }
+    override suspend fun updateBccRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit> {
+        val recipientsBccWrapper = draftCache.get().recipientsBcc()
+        return updateRecipients(recipientsBccWrapper, recipients)
+    }
 
-    override suspend fun updateBccRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit> =
-        withValidRustDraftWrapper { draftWrapper ->
-            val recipientsBccWrapper = draftWrapper.recipientsBcc()
-            return@withValidRustDraftWrapper updateRecipients(recipientsBccWrapper, recipients)
-        }
-
-    override suspend fun listSenderAddresses(): Either<DataError, LocalSenderAddresses> = withValidRustDraftWrapper {
-        return@withValidRustDraftWrapper when (val result = it.listSenderAddresses()) {
+    override suspend fun listSenderAddresses(): Either<DataError, LocalSenderAddresses> =
+        when (val result = draftCache.get().listSenderAddresses()) {
             is DraftListSenderAddressesResult.Error -> result.v1.toDataError().left()
             is DraftListSenderAddressesResult.Ok -> result.v1.toLocalSenderAddresses().right()
         }
-    }
 
     override suspend fun changeSender(sender: SenderEmail): Either<ChangeSenderError, Unit> =
-        withValidRustDraftWrapper {
-            when (val result = it.changeSender(sender.value)) {
-                is DraftChangeSenderAddressResult.Error -> result.v1.toChangeSenderError().left()
-                DraftChangeSenderAddressResult.Ok -> Unit.right()
-            }
+        when (val result = draftCache.get().changeSender(sender.value)) {
+            is DraftChangeSenderAddressResult.Error -> result.v1.toChangeSenderError().left()
+            DraftChangeSenderAddressResult.Ok -> Unit.right()
         }
 
 
@@ -212,23 +192,19 @@ class RustDraftDataSourceImpl @Inject constructor(
     override suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>> = flowOf(emptyList())
 
 
-    override suspend fun send(): Either<SendDraftError, Unit> = withValidRustDraftWrapper {
-        Timber.d("rust-draft: Sending draft...")
-        return@withValidRustDraftWrapper when (val result = it.send()) {
-            is VoidDraftSendResult.Error -> result.v1.toDraftSendError().left()
-            is VoidDraftSendResult.Ok -> {
-                startSendingStatusWorker()
-                Unit.right()
-            }
+    override suspend fun send(): Either<SendDraftError, Unit> = when (val result = draftCache.get().send()) {
+        is VoidDraftSendResult.Error -> result.v1.toDraftSendError().left()
+        is VoidDraftSendResult.Ok -> {
+            startSendingStatusWorker()
+            Unit.right()
         }
     }
 
-    override suspend fun scheduleSend(timestamp: Long): Either<SendDraftError, Unit> = withValidRustDraftWrapper {
-        when (val result = it.scheduleSend(timestamp.toULong())) {
+    override suspend fun scheduleSend(timestamp: Long): Either<SendDraftError, Unit> =
+        when (val result = draftCache.get().scheduleSend(timestamp.toULong())) {
             is VoidDraftSendResult.Error -> result.v1.toDraftSendError().left()
             VoidDraftSendResult.Ok -> Unit.right()
         }
-    }
 
     override suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit> {
         Timber.d("rust-draft: Undo sending draft...")
@@ -244,67 +220,53 @@ class RustDraftDataSourceImpl @Inject constructor(
     }
 
     override suspend fun attachmentList(): Either<DataError, AttachmentsWrapper> {
-        val wrapper = draftWrapperStateFlow.filterNotNull().first()
+        val wrapper = draftCache.get()
         return wrapper.attachmentList().right()
     }
 
-    override fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo> {
-        val rustDraftWrapper: DraftWrapper = draftWrapperStateFlow.value
-            ?: return DataError.Local.NoDataCached.left()
-
-        return when (val result = rustDraftWrapper.embeddedImage(contentId)) {
+    override fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo> =
+        when (val result = draftCache.get().embeddedImage(contentId)) {
             is EmbeddedAttachmentInfoResult.Error -> result.v1.toDataError().left()
             is EmbeddedAttachmentInfoResult.Ok -> result.v1.right()
         }
-    }
 
-    override fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions> {
-        val rustDraftWrapper: DraftWrapper = draftWrapperStateFlow.value
-            ?: return DataError.Local.NoDataCached.left()
-
-        return when (val result = rustDraftWrapper.scheduleSendOptions()) {
+    override fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions> =
+        when (val result = draftCache.get().scheduleSendOptions()) {
             is DraftScheduleSendOptionsResult.Error -> result.v1.toDataError().left()
             is DraftScheduleSendOptionsResult.Ok -> result.v1.right()
         }
-    }
 
-    override suspend fun body(): Either<DataError, String> = withValidRustDraftWrapper { it.body().right() }
+    override suspend fun body(): Either<DataError, String> = draftCache.get().body().right()
 
-    override suspend fun isPasswordProtected(): Either<DataError, Boolean> = withValidRustDraftWrapper {
-        when (val result = it.isPasswordProtected()) {
+    override suspend fun isPasswordProtected(): Either<DataError, Boolean> =
+        when (val result = draftCache.get().isPasswordProtected()) {
             is DraftIsPasswordProtectedResult.Error -> result.v1.toDataError().left()
             is DraftIsPasswordProtectedResult.Ok -> result.v1.right()
         }
-    }
 
     override suspend fun setExternalEncryptionPassword(
         password: ExternalEncryptionPassword
-    ): Either<ExternalEncryptionPasswordError, Unit> = withValidRustDraftWrapper {
-        when (val result = it.setPassword(password.password, password.hint)) {
+    ): Either<ExternalEncryptionPasswordError, Unit> =
+        when (val result = draftCache.get().setPassword(password.password, password.hint)) {
             is VoidDraftPasswordResult.Error -> result.v1.toExternalEncryptionPasswordError().left()
             VoidDraftPasswordResult.Ok -> Unit.right()
         }
-    }
 
     override suspend fun removeExternalEncryptionPassword(): Either<ExternalEncryptionPasswordError, Unit> =
-        withValidRustDraftWrapper {
-            when (val result = it.removePassword()) {
-                is VoidDraftPasswordResult.Error -> result.v1.toExternalEncryptionPasswordError().left()
-                VoidDraftPasswordResult.Ok -> Unit.right()
-            }
+        when (val result = draftCache.get().removePassword()) {
+            is VoidDraftPasswordResult.Error -> result.v1.toExternalEncryptionPasswordError().left()
+            VoidDraftPasswordResult.Ok -> Unit.right()
         }
 
     override suspend fun getExternalEncryptionPassword(): Either<DataError, ExternalEncryptionPassword?> =
-        withValidRustDraftWrapper {
-            when (val result = it.getPassword()) {
-                is DraftGetPasswordResult.Error -> result.v1.toDataError().left()
-                is DraftGetPasswordResult.Ok -> result.v1.toExternalEncryptionPassword().right()
-            }
+        when (val result = draftCache.get().getPassword()) {
+            is DraftGetPasswordResult.Error -> result.v1.toDataError().left()
+            is DraftGetPasswordResult.Ok -> result.v1.toExternalEncryptionPassword().right()
         }
 
+    @Deprecated("To be removed, replaced by DraftCache + ActiveComposerRepo")
     override fun clearDraftFromMemory() {
         Timber.d("rust-draft: free the rust Draft instance held in memory")
-        draftWrapperMutableStateFlow.value = null
     }
 
     private fun updateRecipients(
@@ -355,15 +317,6 @@ class RustDraftDataSourceImpl @Inject constructor(
             backoffCriteria = Enqueuer.BackoffCriteria.DefaultLinear,
             initialDelay = InitialDelayForSendingStatusWorker
         )
-    }
-
-    private suspend fun <E, T> withValidRustDraftWrapper(
-        closure: suspend (DraftWrapper) -> Either<E, T>
-    ): Either<E, T> {
-        val rustDraftWrapper: DraftWrapper = draftWrapperStateFlow.value
-            ?: throw IllegalStateException("Attempting to access draft operations while no draft object exists")
-
-        return closure(rustDraftWrapper)
     }
 
     companion object {
