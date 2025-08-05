@@ -29,6 +29,8 @@ class ActiveComposerInMemoryRepository @Inject constructor() : ActiveComposerRep
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val instances: MutableList<String> = Collections.synchronizedList(mutableListOf<String>())
 
+    private var unregisterObserver: ((String) -> Unit)? = null
+
     override fun registerInstance(hash: String) {
         Timber.tag("ActiveComposerRepo").d("registering instance $hash to: $instances")
         instances.add(hash)
@@ -37,8 +39,14 @@ class ActiveComposerInMemoryRepository @Inject constructor() : ActiveComposerRep
     override fun unregisterInstance(hash: String) {
         Timber.tag("ActiveComposerRepo").d("unregistering instance $hash from: $instances")
         instances.remove(hash)
+        unregisterObserver?.invoke(hash)
     }
 
     override fun getLatestActiveInstance(): String? = instances.getOrNull(instances.lastIndex)
+
+    override fun setUnregisterCallback(callback: (String) -> Unit) {
+        Timber.tag("ActiveComposerRepo").d("Registering 'unregister observer'")
+        unregisterObserver = callback
+    }
 
 }

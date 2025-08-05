@@ -46,4 +46,21 @@ class ActiveComposerInMemoryRepositoryTest {
         // Then
         assertEquals(secondInstance, actual)
     }
+
+    @Test
+    fun `unregister callback called when instance is unregistered`() {
+        // Given
+        var actualUnregistered: String? = null
+        val instance = "12238838"
+        activeComposerRepository.instances.add(instance)
+
+        // When
+        activeComposerRepository.setUnregisterCallback {
+            actualUnregistered = it
+        }
+        activeComposerRepository.unregisterInstance(instance)
+
+        // Then
+        assertEquals(instance, actualUnregistered)
+    }
 }

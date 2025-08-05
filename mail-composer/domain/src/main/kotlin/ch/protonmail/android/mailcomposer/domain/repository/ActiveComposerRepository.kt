@@ -25,4 +25,6 @@ interface ActiveComposerRepository {
     fun unregisterInstance(hash: String)
 
     fun getLatestActiveInstance(): String?
+
+    fun setUnregisterCallback(callback: (String) -> Unit)
 }
