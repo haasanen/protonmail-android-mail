@@ -24,8 +24,8 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
+import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
@@ -67,6 +67,4 @@ interface RustDraftDataSource {
 
     fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo>
     fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions>
-
-    fun clearDraftFromMemory()
 }

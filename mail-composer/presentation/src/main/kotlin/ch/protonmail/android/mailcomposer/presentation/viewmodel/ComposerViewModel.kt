@@ -49,7 +49,6 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.model.hasAnyRecipient
 import ch.protonmail.android.mailcomposer.domain.usecase.ChangeSenderAddress
-import ch.protonmail.android.mailcomposer.domain.usecase.ClearRustDraftFromMemory
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
@@ -153,7 +152,6 @@ class ComposerViewModel @AssistedInject constructor(
     private val getSenderAddresses: GetSenderAddresses,
     private val changeSenderAddress: ChangeSenderAddress,
     @IsExternalEncryptionEnabled private val externalEncryptionEnabled: Flow<Boolean>,
-    private val clearRustDraftFromMemory: ClearRustDraftFromMemory,
     private val composerRegistry: ActiveComposerRegistry,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
@@ -195,8 +193,7 @@ class ComposerViewModel @AssistedInject constructor(
     }
 
     override fun onCleared() {
-        Timber.tag("ComposerViewModel").d("Composer VM being cleared from memory, clearing rust draft too")
-        clearRustDraftFromMemory()
+        Timber.tag("ComposerViewModel").d("Composer VM cleared from memory, unregistering as active instance")
         composerRegistry.unregister(this.hashCode())
         super.onCleared()
     }

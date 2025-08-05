@@ -57,5 +57,4 @@ interface DraftRepository {
     suspend fun listSenderAddresses(): Either<DataError, SenderAddresses>
     suspend fun changeSender(sender: SenderEmail): Either<ChangeSenderError, Unit>
     suspend fun getBody(): Either<DataError, DraftBody>
-    fun clearDraftFromMemory()
 }

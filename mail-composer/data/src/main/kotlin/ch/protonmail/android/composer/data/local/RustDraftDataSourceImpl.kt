@@ -264,11 +264,6 @@ class RustDraftDataSourceImpl @Inject constructor(
             is DraftGetPasswordResult.Ok -> result.v1.toExternalEncryptionPassword().right()
         }
 
-    @Deprecated("To be removed, replaced by DraftCache + ActiveComposerRepo")
-    override fun clearDraftFromMemory() {
-        Timber.d("rust-draft: free the rust Draft instance held in memory")
-    }
-
     private fun updateRecipients(
         recipientsWrapper: ComposerRecipientListWrapper,
         updatedRecipients: List<Recipient>

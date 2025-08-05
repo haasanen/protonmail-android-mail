@@ -104,6 +104,4 @@ class DraftRepositoryImpl @Inject constructor(
 
     override suspend fun getBody(): Either<DataError, DraftBody> = draftDataSource.body().map { DraftBody(it) }
 
-    override fun clearDraftFromMemory() = draftDataSource.clearDraftFromMemory()
-
 }

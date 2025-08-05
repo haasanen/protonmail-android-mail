@@ -45,7 +45,6 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.usecase.ChangeSenderAddress
-import ch.protonmail.android.mailcomposer.domain.usecase.ClearRustDraftFromMemory
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
@@ -158,7 +157,6 @@ class ComposerViewModelTest {
     private val scheduleSendMessage = mockk<ScheduleSendMessage>()
     private val getSenderAddresses = mockk<GetSenderAddresses>()
     private val changeSenderAddress = mockk<ChangeSenderAddress>()
-    private val clearRustDraftFromMemory = mockk<ClearRustDraftFromMemory>()
     private val composerRegistry = mockk<ActiveComposerRegistry> {
         every { this@mockk.register(any()) } just Runs
     }
@@ -201,7 +199,6 @@ class ComposerViewModelTest {
             getSenderAddresses,
             changeSenderAddress,
             isExternalEncryptionEnabled,
-            clearRustDraftFromMemory,
             composerRegistry,
             observePrimaryUserIdMock
         )
