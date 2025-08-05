@@ -107,6 +107,7 @@ class HumanVerificationViewModel @Inject constructor(
 
             is NewChallengeLoaderResult.Ok -> result.v1
         }
+
         if (loader == null) {
             emit(HumanVerificationViewState.Error.Loader)
         } else {
@@ -120,13 +121,11 @@ class HumanVerificationViewModel @Inject constructor(
         emit(HumanVerificationViewState.Cancel)
     }
 
-    private fun onResourceLoadingError(
-        message: String?,
-        error: WebResponseError?
-    ): Flow<HumanVerificationViewState> = flow {
-        recordHumanVerificationViewLoadingResult(status = error.toHumanVerificationViewLoadingStatus())
-        emit(HumanVerificationViewState.Error.General(message))
-    }
+    private fun onResourceLoadingError(message: String?, error: WebResponseError?): Flow<HumanVerificationViewState> =
+        flow {
+            recordHumanVerificationViewLoadingResult(status = error.toHumanVerificationViewLoadingStatus())
+            emit(HumanVerificationViewState.Error.General(message))
+        }
 
     private fun onFailure(message: String?): Flow<HumanVerificationViewState> = flow {
         challengeNotifierCallback.onHumanVerificationFailed()
@@ -176,11 +175,16 @@ class HumanVerificationViewModel @Inject constructor(
         recoveryPhone: String?,
         locale: String?,
         headers: List<Pair<String, String>>?
-    ) = flow {
+    ): Flow<HumanVerificationViewState> = flow {
         emit(
             HumanVerificationViewState.Load(
                 extraHeaders = headers,
-                fullUrl = updateHumanVerificationURL(url, defaultCountry, recoveryPhone, locale),
+                fullUrl = updateHumanVerificationURL(
+                    url = url,
+                    defaultCountry = defaultCountry,
+                    recoveryPhone = recoveryPhone,
+                    locale = locale
+                ),
                 isWebViewDebuggingEnabled = isWebViewDebuggingEnabled(),
                 loader = loader
             )
