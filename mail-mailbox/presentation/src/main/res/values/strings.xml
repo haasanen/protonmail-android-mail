@@ -90,6 +90,7 @@
     <string name="mailbox_action_button_clear_spam">Empty spam</string>
     <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Upgrade to automatically delete messages that have been in trash or spam for more than 30 days</string>
     <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Learn more</string>
+    <string name="mailbox_action_clear_trash_spam_upsell_cta">Upgrade to Auto-delete</string>
 
     <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Messages in trash and spam for over 30 days will be automatically deleted.</string>
     <string name="mailbox_action_auto_delete_off_clear_trash_spam_banner_text">Auto-delete is turned off. Messages in trash and spam will remain until you delete them manually.</string>
