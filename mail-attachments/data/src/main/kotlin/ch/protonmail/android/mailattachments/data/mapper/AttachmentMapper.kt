@@ -104,6 +104,7 @@ fun DraftAttachmentUploadError.toAttachmentError(): AddAttachmentError = when (t
         DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE -> AddAttachmentError.AttachmentTooLarge
         DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS -> AddAttachmentError.TooManyAttachments
         DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE -> AddAttachmentError.InvalidState
+        DraftAttachmentUploadErrorReason.TOTAL_ATTACHMENT_SIZE_TOO_LARGE -> AddAttachmentError.AttachmentTooLarge
     }
 }
 

@@ -243,6 +243,9 @@ fun DraftAttachmentUploadErrorReason.toSendErrorReason(): SendErrorReason = when
     DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS -> SendErrorReason.ErrorNoMessage.TooManyAttachments
     DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE ->
         SendErrorReason.ErrorNoMessage.AttachmentUploadFailureRetriable
+
+    DraftAttachmentUploadErrorReason.TOTAL_ATTACHMENT_SIZE_TOO_LARGE ->
+        SendErrorReason.ErrorNoMessage.AttachmentTooLarge
 }
 
 fun DraftSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
@@ -353,6 +356,7 @@ private fun DraftAttachmentUploadError.toDataError() = when (this) {
         DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE,
         DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS,
         DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE,
+        DraftAttachmentUploadErrorReason.TOTAL_ATTACHMENT_SIZE_TOO_LARGE,
         DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT -> DataError.Local.Unknown
 
         DraftAttachmentUploadErrorReason.CRYPTO -> DataError.Local.DecryptionError
