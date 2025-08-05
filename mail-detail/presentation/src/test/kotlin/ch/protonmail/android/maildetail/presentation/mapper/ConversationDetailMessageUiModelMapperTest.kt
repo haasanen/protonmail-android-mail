@@ -27,8 +27,12 @@ import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatExtendedTime
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
+import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
+import ch.protonmail.android.maildetail.presentation.mapper.rsvp.RsvpEventUiModelMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
+import ch.protonmail.android.maildetail.presentation.model.RsvpEventUiModel
+import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maildetail.presentation.sample.MessageDetailBodyUiModelSample
 import ch.protonmail.android.maildetail.presentation.sample.MessageLocationUiModelSample
@@ -38,6 +42,7 @@ import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MimeType
+import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
@@ -54,6 +59,7 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.spyk
 import io.mockk.unmockkStatic
+import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -131,6 +137,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
             senderToUiModel(RecipientSample.PreciWeather)
         } returns ConversationDetailMessageUiModelSample.AugWeatherForecast.sender
     }
+    private val rsvpEventUiModelMapper = mockk<RsvpEventUiModelMapper>()
     private val mapper = ConversationDetailMessageUiModelMapper(
         avatarUiModelMapper = avatarUiModelMapper,
         expirationTimeMapper = expirationTimeMapper,
@@ -143,7 +150,8 @@ internal class ConversationDetailMessageUiModelMapperTest {
         messageBodyUiModelMapper = messageBodyUiModelMapper,
         participantUiModelMapper = participantUiModelMapper,
         messageIdUiModelMapper = messageIdUiModelMapper,
-        avatarImageUiModelMapper = avatarImageUiModelMapper
+        avatarImageUiModelMapper = avatarImageUiModelMapper,
+        rsvpEventUiModelMapper = rsvpEventUiModelMapper
     )
 
     @BeforeTest
@@ -196,7 +204,8 @@ internal class ConversationDetailMessageUiModelMapperTest {
             avatarImageState = avatarImageState,
             primaryUserAddress = primaryUserAddress,
             decryptedMessageBody = decryptedMessageBody,
-            attachmentListExpandCollapseMode = AttachmentListExpandCollapseMode.Collapsed
+            attachmentListExpandCollapseMode = AttachmentListExpandCollapseMode.Collapsed,
+            rsvpEventState = null
         )
 
         // then
@@ -416,7 +425,8 @@ internal class ConversationDetailMessageUiModelMapperTest {
             avatarImageState = avatarImageState,
             primaryUserAddress = primaryUserAddress,
             decryptedMessageBody = decryptedMessageBody,
-            attachmentListExpandCollapseMode = attachmentMode
+            attachmentListExpandCollapseMode = attachmentMode,
+            rsvpEventState = null
         )
 
         // Then
@@ -425,5 +435,96 @@ internal class ConversationDetailMessageUiModelMapperTest {
         assertEquals(attachmentMode, resultAttachments.expandCollapseMode)
         val actualIds = resultAttachments.attachments.map { it.id }
         assertEquals(expectedIds, actualIds)
+    }
+
+    @Test
+    fun `map to ui model sets rsvp widget ui model loading`() = runTest {
+        // Given
+        val message = MessageSample.AugWeatherForecast
+        val decryptedMessageBody = DecryptedMessageBody(
+            message.messageId,
+            UUID.randomUUID().toString(),
+            isUnread = true,
+            MimeType.Html,
+            hasQuotedText = false,
+            hasCalendarInvite = true,
+            banners = emptyList(),
+            transformations = MessageBodyTransformations.MessageDetailsDefaults
+        )
+
+        // When
+        val result = mapper.toUiModel(
+            message = message,
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            primaryUserAddress = primaryUserAddress,
+            decryptedMessageBody = decryptedMessageBody,
+            attachmentListExpandCollapseMode = AttachmentListExpandCollapseMode.Collapsed,
+            rsvpEventState = InMemoryConversationStateRepository.RsvpEventState.Loading
+        )
+
+        // then
+        assertEquals(result.messageRsvpWidgetUiModel, RsvpWidgetUiModel.Loading)
+    }
+
+    @Test
+    fun `map to ui model sets rsvp widget ui model error`() = runTest {
+        // Given
+        val message = MessageSample.AugWeatherForecast
+        val decryptedMessageBody = DecryptedMessageBody(
+            message.messageId,
+            UUID.randomUUID().toString(),
+            isUnread = true,
+            MimeType.Html,
+            hasQuotedText = false,
+            hasCalendarInvite = true,
+            banners = emptyList(),
+            transformations = MessageBodyTransformations.MessageDetailsDefaults
+        )
+
+        // When
+        val result = mapper.toUiModel(
+            message = message,
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            primaryUserAddress = primaryUserAddress,
+            decryptedMessageBody = decryptedMessageBody,
+            attachmentListExpandCollapseMode = AttachmentListExpandCollapseMode.Collapsed,
+            rsvpEventState = InMemoryConversationStateRepository.RsvpEventState.Error
+        )
+
+        // then
+        assertEquals(result.messageRsvpWidgetUiModel, RsvpWidgetUiModel.Error)
+    }
+
+    @Test
+    fun `map to ui model sets rsvp widget ui model shown`() = runTest {
+        // Given
+        val message = MessageSample.AugWeatherForecast
+        val decryptedMessageBody = DecryptedMessageBody(
+            message.messageId,
+            UUID.randomUUID().toString(),
+            isUnread = true,
+            MimeType.Html,
+            hasQuotedText = false,
+            hasCalendarInvite = true,
+            banners = emptyList(),
+            transformations = MessageBodyTransformations.MessageDetailsDefaults
+        )
+        val rsvpEvent = mockk<RsvpEvent>()
+        val rsvpEventUiModel = mockk<RsvpEventUiModel>()
+        every { rsvpEventUiModelMapper.toUiModel(rsvpEvent) } returns rsvpEventUiModel
+
+        // When
+        val result = mapper.toUiModel(
+            message = message,
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            primaryUserAddress = primaryUserAddress,
+            decryptedMessageBody = decryptedMessageBody,
+            attachmentListExpandCollapseMode = AttachmentListExpandCollapseMode.Collapsed,
+            rsvpEventState = InMemoryConversationStateRepository.RsvpEventState.Shown(rsvpEvent)
+        )
+
+        // then
+        assertEquals(result.messageRsvpWidgetUiModel, RsvpWidgetUiModel.Shown(rsvpEventUiModel))
+        verify { rsvpEventUiModelMapper.toUiModel(rsvpEvent) }
     }
 }

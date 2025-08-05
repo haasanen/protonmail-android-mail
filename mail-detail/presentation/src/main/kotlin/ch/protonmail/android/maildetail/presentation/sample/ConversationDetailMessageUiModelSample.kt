@@ -32,6 +32,7 @@ import ch.protonmail.android.maildetail.presentation.model.MessageDetailFooterUi
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
+import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
@@ -260,7 +261,8 @@ object ConversationDetailMessageUiModelSample {
         isStarred: Boolean = false,
         messageBodyUiModel: MessageBodyUiModel = MessageDetailBodyUiModelSample.build(UUID.randomUUID().toString()),
         locationUiModel: MessageLocationUiModel = MessageLocationUiModelSample.AllMail,
-        bannersUiModel: MessageBannersUiModel = messageBannersUiModel()
+        bannersUiModel: MessageBannersUiModel = messageBannersUiModel(),
+        rsvpWidgetUiModel: RsvpWidgetUiModel = RsvpWidgetUiModel.Hidden
     ): ConversationDetailMessageUiModel.Expanded = ConversationDetailMessageUiModel.Expanded(
         messageId = MessageIdUiModel(message.messageId.id),
         isUnread = message.isUnread,
@@ -287,6 +289,7 @@ object ConversationDetailMessageUiModelSample {
             shouldShowReplyAll = false,
             shouldShowActions = true
         ),
+        messageRsvpWidgetUiModel = rsvpWidgetUiModel,
         messageBannersUiModel = bannersUiModel,
         messageBodyUiModel = messageBodyUiModel,
         requestPhishingLinkConfirmation = false

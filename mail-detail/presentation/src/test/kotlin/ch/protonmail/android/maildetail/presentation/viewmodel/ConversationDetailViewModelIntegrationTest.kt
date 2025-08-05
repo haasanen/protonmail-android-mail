@@ -101,6 +101,9 @@ import ch.protonmail.android.maildetail.presentation.mapper.MessageDetailHeaderU
 import ch.protonmail.android.maildetail.presentation.mapper.MessageIdUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.MessageLocationUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ParticipantUiModelMapper
+import ch.protonmail.android.maildetail.presentation.mapper.rsvp.RsvpButtonsUiModelMapper
+import ch.protonmail.android.maildetail.presentation.mapper.rsvp.RsvpEventUiModelMapper
+import ch.protonmail.android.maildetail.presentation.mapper.rsvp.RsvpStatusUiModelMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Collapsed
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanded
@@ -126,6 +129,7 @@ import ch.protonmail.android.maildetail.presentation.reducer.MarkAsLegitimateDia
 import ch.protonmail.android.maildetail.presentation.reducer.TrashedMessagesBannerReducer
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
+import ch.protonmail.android.maildetail.presentation.usecase.FormatRsvpWidgetTime
 import ch.protonmail.android.maildetail.presentation.usecase.FormatScheduleSendTime
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
@@ -362,6 +366,12 @@ class ConversationDetailViewModelIntegrationTest {
         every { this@mockk.invoke() } returns Locale.ITALIAN
     }
     private val formatScheduleSendTime = FormatScheduleSendTime(GetLocalisedCalendar(getAppLocale), getAppLocale)
+    private val rsvpEventUiModelMapper = RsvpEventUiModelMapper(
+        colorMapper = colorMapper,
+        formatRsvpWidgetTime = FormatRsvpWidgetTime(context, getAppLocale),
+        rsvpStatusUiModelMapper = RsvpStatusUiModelMapper(),
+        rsvpButtonsUiModelMapper = RsvpButtonsUiModelMapper()
+    )
 
     private val printMessage = mockk<PrintMessage>()
 
@@ -396,7 +406,8 @@ class ConversationDetailViewModelIntegrationTest {
         ),
         participantUiModelMapper = ParticipantUiModelMapper(resolveParticipantName),
         messageIdUiModelMapper = messageIdUiModelMapper,
-        avatarImageUiModelMapper = avatarImageUiModelMapper
+        avatarImageUiModelMapper = avatarImageUiModelMapper,
+        rsvpEventUiModelMapper = rsvpEventUiModelMapper
     )
 
     private val conversationMetadataMapper = ConversationDetailMetadataUiModelMapper()

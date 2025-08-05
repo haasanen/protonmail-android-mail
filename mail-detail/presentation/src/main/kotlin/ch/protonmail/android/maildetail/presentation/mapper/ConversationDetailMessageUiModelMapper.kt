@@ -23,7 +23,10 @@ import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ExpirationTimeMapper
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
+import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
+import ch.protonmail.android.maildetail.presentation.mapper.rsvp.RsvpEventUiModelMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
+import ch.protonmail.android.maildetail.presentation.model.RsvpWidgetUiModel
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
@@ -53,7 +56,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     private val messageBannersUiModelMapper: MessageBannersUiModelMapper,
     private val messageBodyUiModelMapper: MessageBodyUiModelMapper,
     private val participantUiModelMapper: ParticipantUiModelMapper,
-    private val avatarImageUiModelMapper: AvatarImageUiModelMapper
+    private val avatarImageUiModelMapper: AvatarImageUiModelMapper,
+    private val rsvpEventUiModelMapper: RsvpEventUiModelMapper
 ) {
 
     fun toUiModel(
@@ -88,7 +92,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         avatarImageState: AvatarImageState,
         primaryUserAddress: String?,
         decryptedMessageBody: DecryptedMessageBody,
-        attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode?
+        attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode?,
+        rsvpEventState: InMemoryConversationStateRepository.RsvpEventState?
     ): ConversationDetailMessageUiModel.Expanded {
 
         return ConversationDetailMessageUiModel.Expanded(
@@ -101,6 +106,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
                 decryptedMessageBody.transformations.messageThemeOptions?.themeOverride.toViewModePreference()
             ),
             messageDetailFooterUiModel = messageDetailFooterUiModelMapper.toUiModel(message),
+            messageRsvpWidgetUiModel = toRsvpWidgetUiModel(rsvpEventState, decryptedMessageBody.hasCalendarInvite),
             messageBannersUiModel = messageBannersUiModelMapper.toUiModel(decryptedMessageBody.banners),
             requestPhishingLinkConfirmation = decryptedMessageBody.banners.contains(MessageBanner.PhishingAttempt),
             messageBodyUiModel = messageBodyUiModelMapper
@@ -136,6 +142,23 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             messageId = messageIdUiModelMapper.toUiModel(message.messageId),
             isUnread = message.isUnread
         )
+    }
+
+    private fun toRsvpWidgetUiModel(
+        rsvpEventState: InMemoryConversationStateRepository.RsvpEventState?,
+        hasCalendarInvite: Boolean
+    ): RsvpWidgetUiModel {
+        return if (hasCalendarInvite && rsvpEventState != null) {
+            when (rsvpEventState) {
+                is InMemoryConversationStateRepository.RsvpEventState.Error -> RsvpWidgetUiModel.Error
+                is InMemoryConversationStateRepository.RsvpEventState.Loading -> RsvpWidgetUiModel.Loading
+                is InMemoryConversationStateRepository.RsvpEventState.Shown -> RsvpWidgetUiModel.Shown(
+                    rsvpEventUiModelMapper.toUiModel(rsvpEventState.rsvpEvent)
+                )
+            }
+        } else {
+            RsvpWidgetUiModel.Hidden
+        }
     }
 
     private fun getForwardedIcon(isForwarded: Boolean): ConversationDetailMessageUiModel.ForwardedIcon = when {

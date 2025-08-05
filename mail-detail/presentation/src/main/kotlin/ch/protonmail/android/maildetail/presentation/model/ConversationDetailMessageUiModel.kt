@@ -65,6 +65,7 @@ sealed interface ConversationDetailMessageUiModel {
         override val isUnread: Boolean,
         val messageDetailHeaderUiModel: MessageDetailHeaderUiModel,
         val messageDetailFooterUiModel: MessageDetailFooterUiModel,
+        val messageRsvpWidgetUiModel: RsvpWidgetUiModel,
         val messageBannersUiModel: MessageBannersUiModel,
         val messageBodyUiModel: MessageBodyUiModel,
         val requestPhishingLinkConfirmation: Boolean
