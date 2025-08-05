@@ -44,6 +44,7 @@ import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_account_uniffi.LoginError
 import uniffi.proton_account_uniffi.LoginFlow
 import uniffi.proton_account_uniffi.LoginFlowSubmitMailboxPasswordResult
+import uniffi.proton_mail_uniffi.LoginScreenId
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
@@ -52,6 +53,7 @@ import uniffi.proton_mail_uniffi.MailSessionToUserSessionResult
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
+import uniffi.proton_mail_uniffi.recordLoginScreenView
 import javax.inject.Inject
 
 @HiltViewModel
@@ -73,6 +75,10 @@ class TwoPassInputViewModel @Inject constructor(
             is TwoPassInputAction.Unlock -> onValidateAndUnlock(action)
         }
     }.stateIn(viewModelScope, WhileSubscribed(stopTimeoutMillis), TwoPassInputState.Idle)
+
+    fun onScreenView() = viewModelScope.launch {
+        recordLoginScreenView(LoginScreenId.MAILBOX_PASSWORD)
+    }
 
     fun submit(action: TwoPassInputAction) = viewModelScope.launch {
         mutableAction.emit(action)

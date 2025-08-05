@@ -157,7 +157,7 @@ class LoginViewModel @Inject internal constructor(
     }
 
     fun onScreenView() = viewModelScope.launch {
-        recordLoginScreenView(LoginScreenId.CHOOSE_INTERNAL_ADDRESS)
+        recordLoginScreenView(LoginScreenId.SIGN_IN_WITH_USERNAME_PASSWORD)
     }
 
     private inline fun MailSessionGetSessionResult.getOrNull(): StoredSession? {

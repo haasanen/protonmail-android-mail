@@ -59,6 +59,7 @@ import me.proton.core.compose.theme.LocalColors
 import me.proton.core.compose.theme.LocalTypography
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
+import me.proton.core.compose.util.LaunchOnScreenView
 
 @Composable
 fun TwoPassInputScreen(
@@ -83,7 +84,8 @@ fun TwoPassInputScreen(
         onForgotPassword = onForgotPassword,
         onSuccess = onSuccess,
         onUnlock = { viewModel.submit(it) },
-        onBackClicked = { viewModel.submit(it) }
+        onBackClicked = { viewModel.submit(it) },
+        onScreenView = viewModel::onScreenView
     )
 }
 
@@ -96,7 +98,8 @@ fun TwoPassInputScreen(
     onForgotPassword: () -> Unit = {},
     onSuccess: () -> Unit = {},
     onUnlock: (TwoPassInputAction.Unlock) -> Unit = {},
-    onBackClicked: (TwoPassInputAction.Close) -> Unit = {}
+    onBackClicked: (TwoPassInputAction.Close) -> Unit = {},
+    onScreenView: () -> Unit = {}
 ) {
     val isLoading = state.isLoading
     var mailboxPassword by remember { mutableStateOf("") }
@@ -114,6 +117,8 @@ fun TwoPassInputScreen(
     LaunchedEffect(Unit) {
         passwordFocusRequester.requestFocus()
     }
+
+    LaunchOnScreenView(onScreenView)
 
     Scaffold(
         modifier = modifier,

@@ -50,7 +50,6 @@ import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -63,7 +62,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -89,7 +87,7 @@ import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.ProtonTypography
 import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.compose.theme.defaultStrongNorm
-import me.proton.core.presentation.utils.launchOnScreenView
+import me.proton.core.compose.util.LaunchOnScreenView
 import me.proton.core.presentation.R as CoreR
 
 internal const val PASSWORD_FIELD_TAG = "PASSWORD_FIELD_TAG" // gitleaks:allow
@@ -105,15 +103,8 @@ public fun LoginScreen(
     onSuccess: (String) -> Unit = {},
     viewModel: LoginViewModel = hiltViewModel()
 ) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val savedStateRegistryOwner = LocalSavedStateRegistryOwner.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        lifecycleOwner.launchOnScreenView(savedStateRegistryOwner.savedStateRegistry) {
-            viewModel.onScreenView()
-        }
-    }
     LoginScreen(
         modifier = modifier,
         initialUsername = initialUsername,
@@ -122,6 +113,7 @@ public fun LoginScreen(
         onLoginClicked = { viewModel.submit(it) },
         onErrorMessage = onErrorMessage,
         onSuccess = onSuccess,
+        onScreenView = viewModel::onScreenView,
         state = state
     )
 }
@@ -135,6 +127,7 @@ public fun LoginScreen(
     onLoginClicked: (LoginAction.Login) -> Unit = {},
     onErrorMessage: (String?) -> Unit = {},
     onSuccess: (String) -> Unit = {},
+    onScreenView: () -> Unit = {},
     state: LoginViewState = LoginViewState.Idle
 ) {
     LaunchedEffect(state) {
@@ -147,6 +140,9 @@ public fun LoginScreen(
             else -> Unit
         }
     }
+
+    LaunchOnScreenView(onScreenView)
+
     LoginScaffold(
         modifier = modifier,
         initialUsername = initialUsername,

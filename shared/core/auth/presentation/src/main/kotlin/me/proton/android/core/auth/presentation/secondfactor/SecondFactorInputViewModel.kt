@@ -20,12 +20,14 @@ package me.proton.android.core.auth.presentation.secondfactor
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputAction.Close
@@ -36,9 +38,11 @@ import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputSt
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Idle
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState.Loading
 import me.proton.core.compose.viewmodel.BaseViewModel
+import uniffi.proton_mail_uniffi.LoginScreenId
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
 import uniffi.proton_mail_uniffi.ProtonError
+import uniffi.proton_mail_uniffi.recordLoginScreenView
 import javax.inject.Inject
 
 @HiltViewModel
@@ -66,6 +70,10 @@ class SecondFactorInputViewModel @Inject constructor(
             is Load -> onLoad()
             is SelectTab -> onSelectTab(action.index)
         }
+    }
+
+    fun onScreenView() = viewModelScope.launch {
+        recordLoginScreenView(LoginScreenId.SECOND_FACTOR)
     }
 
     private fun onLoad(): Flow<SecondFactorInputState> = flow {

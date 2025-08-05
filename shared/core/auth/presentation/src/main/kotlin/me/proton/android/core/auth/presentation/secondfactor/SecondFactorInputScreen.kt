@@ -54,6 +54,7 @@ import me.proton.core.compose.theme.ProtonDimens.DefaultSpacing
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.ProtonTypography
 import me.proton.core.compose.theme.defaultSmallWeak
+import me.proton.core.compose.util.LaunchOnScreenView
 
 @Composable
 fun SecondFactorInputScreen(
@@ -80,7 +81,8 @@ fun SecondFactorInputScreen(
         onBackClicked = { viewModel.perform(SecondFactorInputAction.Close) },
         onTabSelected = { viewModel.perform(SecondFactorInputAction.SelectTab(it)) },
         onEmitAction = onEmitAction,
-        externalAction = externalAction
+        externalAction = externalAction,
+        onScreenView = viewModel::onScreenView
     )
 }
 
@@ -94,7 +96,8 @@ fun SecondFactorInputScreen(
     onBackClicked: () -> Unit = {},
     onTabSelected: (Int) -> Unit = {},
     externalAction: StateFlow<Fido2InputAction?>,
-    onEmitAction: (Fido2InputAction?) -> Unit
+    onEmitAction: (Fido2InputAction?) -> Unit,
+    onScreenView: () -> Unit = {}
 ) {
     LaunchedEffect(state) {
         when (state) {
@@ -102,6 +105,8 @@ fun SecondFactorInputScreen(
             else -> Unit
         }
     }
+
+    LaunchOnScreenView(onScreenView)
 
     when (state) {
         is SecondFactorInputState.Loading -> {
