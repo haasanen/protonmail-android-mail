@@ -22,6 +22,7 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollap
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import kotlinx.coroutines.flow.Flow
 
 interface InMemoryConversationStateRepository {
@@ -39,6 +40,10 @@ interface InMemoryConversationStateRepository {
         attachmentListExpandCollapseMode: AttachmentListExpandCollapseMode
     )
 
+    suspend fun updateRsvpEventShown(messageId: MessageId, rsvpEvent: RsvpEvent)
+    suspend fun updateRsvpEventLoading(messageId: MessageId, refresh: Boolean)
+    suspend fun updateRsvpEventError(messageId: MessageId)
+
     suspend fun switchTrashedMessagesFilter()
 
     fun getTransformationsForMessage(messageId: MessageId): MessageBodyTransformations?
@@ -48,12 +53,19 @@ interface InMemoryConversationStateRepository {
         val messagesTransformations: Map<MessageId, MessageBodyTransformations>,
         val attachmentsListExpandCollapseMode: Map<MessageId, AttachmentListExpandCollapseMode>,
         val messagesState: Map<MessageId, MessageState>,
-        val shouldHideMessagesBasedOnTrashFilter: Boolean
+        val shouldHideMessagesBasedOnTrashFilter: Boolean,
+        val rsvpEvents: Map<MessageId, RsvpEventState>
     )
 
     sealed class MessageState {
         data object Collapsed : MessageState()
         data object Expanding : MessageState()
         data class Expanded(val decryptedBody: DecryptedMessageBody) : MessageState()
+    }
+
+    sealed class RsvpEventState {
+        data object Loading : RsvpEventState()
+        data object Error : RsvpEventState()
+        data class Shown(val rsvpEvent: RsvpEvent) : RsvpEventState()
     }
 }

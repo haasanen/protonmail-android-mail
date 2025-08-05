@@ -24,6 +24,8 @@ import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
+import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
+import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -92,6 +94,46 @@ class MessageViewStateCacheTest {
 
         // Then
         coVerify { repo.switchTrashedMessagesFilter() }
+    }
+
+    @Test
+    fun `should update rsvp event shown`() = runTest {
+        // Given
+        val messageId = MessageIdSample.CalendarInvite
+        val event = mockk<RsvpEvent>()
+        val useCase = buildUseCase()
+
+        // When
+        useCase.updateRsvpEventShown(messageId, event)
+
+        // Then
+        coVerify { repo.updateRsvpEventShown(messageId, event) }
+    }
+
+    @Test
+    fun `should update rsvp event loading`() = runTest {
+        // Given
+        val messageId = MessageIdSample.CalendarInvite
+        val useCase = buildUseCase()
+
+        // When
+        useCase.updateRsvpEventLoading(messageId, refresh = true)
+
+        // Then
+        coVerify { repo.updateRsvpEventLoading(messageId, refresh = true) }
+    }
+
+    @Test
+    fun `should update rsvp event error`() = runTest {
+        // Given
+        val messageId = MessageIdSample.CalendarInvite
+        val useCase = buildUseCase()
+
+        // When
+        useCase.updateRsvpEventError(messageId)
+
+        // Then
+        coVerify { repo.updateRsvpEventError(messageId) }
     }
 
     private fun buildUseCase() = MessageViewStateCache(repo)

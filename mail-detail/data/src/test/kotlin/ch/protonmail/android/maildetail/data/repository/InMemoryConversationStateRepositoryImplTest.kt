@@ -21,6 +21,7 @@ package ch.protonmail.android.maildetail.data.repository
 import java.util.Random
 import java.util.UUID
 import app.cash.turbine.test
+import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessageState.Collapsed
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessageState.Expanded
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessageState.Expanding
@@ -29,7 +30,9 @@ import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
+import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertFalse
 import kotlin.test.Test
@@ -199,6 +202,61 @@ class InMemoryConversationStateRepositoryImplTest {
             // Then
             assertEquals(mode, conversationState.attachmentsListExpandCollapseMode[messageId])
             assertEquals(1, conversationState.attachmentsListExpandCollapseMode.size)
+        }
+    }
+
+    @Test
+    fun `should emit rsvp event shown when putting an rsvp event shown state`() = runTest {
+        // Given
+        val repo = buildRepository()
+        val messageId = MessageIdSample.CalendarInvite
+        val event = mockk<RsvpEvent>()
+
+        // When
+        repo.updateRsvpEventShown(messageId, event)
+
+        repo.conversationState.test {
+            val conversationState = awaitItem()
+
+            // Then
+            val expected = InMemoryConversationStateRepository.RsvpEventState.Shown(event)
+            assertEquals(expected, conversationState.rsvpEvents[messageId])
+        }
+    }
+
+    @Test
+    fun `should emit rsvp event loading when putting an rsvp event loading state`() = runTest {
+        // Given
+        val repo = buildRepository()
+        val messageId = MessageIdSample.CalendarInvite
+
+        // When
+        repo.updateRsvpEventLoading(messageId, refresh = true)
+
+        repo.conversationState.test {
+            val conversationState = awaitItem()
+
+            // Then
+            val expected = InMemoryConversationStateRepository.RsvpEventState.Loading
+            assertEquals(expected, conversationState.rsvpEvents[messageId])
+        }
+    }
+
+    @Test
+    fun `should emit rsvp event error when putting an rsvp event error state`() = runTest {
+        // Given
+        val repo = buildRepository()
+        val messageId = MessageIdSample.CalendarInvite
+
+        // When
+        repo.updateRsvpEventError(messageId)
+
+        repo.conversationState.test {
+            val conversationState = awaitItem()
+
+            // Then
+            val expected = InMemoryConversationStateRepository.RsvpEventState.Error
+            assertEquals(expected, conversationState.rsvpEvents[messageId])
         }
     }
 

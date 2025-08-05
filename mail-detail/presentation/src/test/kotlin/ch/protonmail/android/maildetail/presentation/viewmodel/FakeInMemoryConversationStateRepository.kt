@@ -26,6 +26,7 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollap
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
@@ -36,6 +37,7 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
     private var shouldHideMessagesBasedOnTrashFilter = true
     private val conversationStateFlow = MutableSharedFlow<MessagesState>(1)
     private val attachmentsListExpandCollapseMode = ConcurrentHashMap<MessageId, AttachmentListExpandCollapseMode>()
+    private val rsvpEventCache = ConcurrentHashMap<MessageId, InMemoryConversationStateRepository.RsvpEventState>()
 
     init {
         conversationStateFlow.tryEmit(
@@ -43,7 +45,8 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter
+                shouldHideMessagesBasedOnTrashFilter,
+                rsvpEventCache
             )
         )
     }
@@ -58,7 +61,8 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter
+                shouldHideMessagesBasedOnTrashFilter,
+                rsvpEventCache
             )
         )
     }
@@ -70,7 +74,8 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter
+                shouldHideMessagesBasedOnTrashFilter,
+                rsvpEventCache
             )
         )
     }
@@ -82,7 +87,8 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter
+                shouldHideMessagesBasedOnTrashFilter,
+                rsvpEventCache
             )
         )
     }
@@ -97,7 +103,49 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter
+                shouldHideMessagesBasedOnTrashFilter,
+                rsvpEventCache
+            )
+        )
+    }
+
+    override suspend fun updateRsvpEventShown(messageId: MessageId, rsvpEvent: RsvpEvent) {
+        rsvpEventCache[messageId] = InMemoryConversationStateRepository.RsvpEventState.Shown(rsvpEvent)
+        conversationStateFlow.emit(
+            MessagesState(
+                transformationCache,
+                attachmentsListExpandCollapseMode,
+                conversationCache,
+                shouldHideMessagesBasedOnTrashFilter,
+                rsvpEventCache
+            )
+        )
+    }
+
+    override suspend fun updateRsvpEventLoading(messageId: MessageId, refresh: Boolean) {
+        if (rsvpEventCache[messageId] == null || refresh) {
+            rsvpEventCache[messageId] = InMemoryConversationStateRepository.RsvpEventState.Loading
+            conversationStateFlow.emit(
+                MessagesState(
+                    transformationCache,
+                    attachmentsListExpandCollapseMode,
+                    conversationCache,
+                    shouldHideMessagesBasedOnTrashFilter,
+                    rsvpEventCache
+                )
+            )
+        }
+    }
+
+    override suspend fun updateRsvpEventError(messageId: MessageId) {
+        rsvpEventCache[messageId] = InMemoryConversationStateRepository.RsvpEventState.Error
+        conversationStateFlow.emit(
+            MessagesState(
+                transformationCache,
+                attachmentsListExpandCollapseMode,
+                conversationCache,
+                shouldHideMessagesBasedOnTrashFilter,
+                rsvpEventCache
             )
         )
     }
@@ -109,7 +157,8 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
                 transformationCache,
                 attachmentsListExpandCollapseMode,
                 conversationCache,
-                shouldHideMessagesBasedOnTrashFilter
+                shouldHideMessagesBasedOnTrashFilter,
+                rsvpEventCache
             )
         )
     }

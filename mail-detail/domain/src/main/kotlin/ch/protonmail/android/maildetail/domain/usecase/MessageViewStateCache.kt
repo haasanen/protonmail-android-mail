@@ -23,6 +23,7 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollap
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import javax.inject.Inject
 
 class MessageViewStateCache @Inject constructor(
@@ -59,4 +60,13 @@ class MessageViewStateCache @Inject constructor(
             messageId, attachmentListExpandCollapseMode
         )
     }
+
+    suspend fun updateRsvpEventShown(messageId: MessageId, rsvpEvent: RsvpEvent) =
+        inMemoryConversationStateRepository.updateRsvpEventShown(messageId, rsvpEvent)
+
+    suspend fun updateRsvpEventLoading(messageId: MessageId, refresh: Boolean) =
+        inMemoryConversationStateRepository.updateRsvpEventLoading(messageId, refresh)
+
+    suspend fun updateRsvpEventError(messageId: MessageId) =
+        inMemoryConversationStateRepository.updateRsvpEventError(messageId)
 }

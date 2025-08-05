@@ -44,7 +44,8 @@ class ObserveConversationViewStateTest {
                 Pair(MessageId(it.toString()), Collapsed)
             },
             shouldHideMessagesBasedOnTrashFilter = true,
-            attachmentsListExpandCollapseMode = emptyMap()
+            attachmentsListExpandCollapseMode = emptyMap(),
+            rsvpEvents = emptyMap()
         )
         every { repo.conversationState } returns flowOf(conversationState)
 
