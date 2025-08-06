@@ -18,14 +18,14 @@
 
 package ch.protonmail.android.legacymigration.domain.usecase
 
-import ch.protonmail.android.legacymigration.domain.repository.LegacyAutoLockRepository
+import ch.protonmail.android.legacymigration.domain.repository.LegacyMobileSignatureRepository
 import jakarta.inject.Inject
 
-class ClearLegacyAutoLockPreferences @Inject constructor(
-    private val legacyAutoLockRepository: LegacyAutoLockRepository
+class ClearMobileSignaturePreferences @Inject constructor(
+    private val legacyMobileSignatureRepository: LegacyMobileSignatureRepository
 ) {
 
     operator fun invoke() {
-        legacyAutoLockRepository.clearPreferences()
+        legacyMobileSignatureRepository.clearPreferences()
     }
 }

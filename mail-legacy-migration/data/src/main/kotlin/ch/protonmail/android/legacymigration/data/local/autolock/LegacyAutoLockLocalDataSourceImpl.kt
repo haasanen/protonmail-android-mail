@@ -24,22 +24,26 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.legacymigration.data.local.model.AutoLockInterval
 import ch.protonmail.android.legacymigration.data.usecase.DecryptLegacySerializableValue
+import ch.protonmail.android.legacymigration.domain.LegacyDBCoroutineScope
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockBiometricsPreference
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockIntervalPreference
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPin
 import ch.protonmail.android.legacymigration.domain.model.LegacyAutoLockPreference
 import ch.protonmail.android.legacymigration.domain.model.MigrationError
 import ch.protonmail.android.mailcommon.data.mapper.safeEdit
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
     dataStoreProvider: LegacyAutoLockDataStoreProvider,
-    private val decryptLegacySerializableValue: DecryptLegacySerializableValue
+    private val decryptLegacySerializableValue: DecryptLegacySerializableValue,
+    @LegacyDBCoroutineScope private val coroutineScope: CoroutineScope
 ) : LegacyAutoLockLocalDataSource {
 
     private val dataStore = dataStoreProvider.legacyAutoLockDataStore
@@ -86,9 +90,11 @@ class LegacyAutoLockLocalDataSourceImpl @Inject constructor(
             }
     }
 
-    override suspend fun clearPreferences() {
-        dataStore.safeEdit { prefs ->
-            prefs.clear()
+    override fun clearPreferences() {
+        coroutineScope.launch {
+            dataStore.safeEdit { prefs ->
+                prefs.clear()
+            }
         }
     }
 

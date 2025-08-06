@@ -42,7 +42,7 @@ class LegacyAutoLockRepositoryImpl @Inject constructor(
     override suspend fun getAutoLockBiometricsPreference() =
         legacyAutoLockLocalDataSource.getAutoLockBiometricsPreference()
 
-    override suspend fun clearPreferences() = legacyAutoLockLocalDataSource.clearPreferences()
+    override fun clearPreferences() = legacyAutoLockLocalDataSource.clearPreferences()
 
     override suspend fun getAutoLockInterval() = legacyAutoLockLocalDataSource.getAutoLockInterval()
 }

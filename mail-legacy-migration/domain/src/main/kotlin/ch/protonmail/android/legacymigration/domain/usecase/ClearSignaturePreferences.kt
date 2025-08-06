@@ -18,14 +18,17 @@
 
 package ch.protonmail.android.legacymigration.domain.usecase
 
-import ch.protonmail.android.legacymigration.domain.repository.LegacyAutoLockRepository
+import ch.protonmail.android.legacymigration.domain.LegacyDBCoroutineScope
+import ch.protonmail.android.legacymigration.domain.repository.LegacySignatureRepository
 import jakarta.inject.Inject
+import kotlinx.coroutines.CoroutineScope
 
-class ClearLegacyAutoLockPreferences @Inject constructor(
-    private val legacyAutoLockRepository: LegacyAutoLockRepository
+class ClearSignaturePreferences @Inject constructor(
+    private val legacySignatureRepository: LegacySignatureRepository,
+    @LegacyDBCoroutineScope private val coroutineScope: CoroutineScope
 ) {
 
     operator fun invoke() {
-        legacyAutoLockRepository.clearPreferences()
+        legacySignatureRepository.clearPreferences()
     }
 }

@@ -38,8 +38,9 @@ class MigrateLegacyApplicationTest {
     private val isLegacyAutoLockEnabled = mockk<IsLegacyAutoLockEnabled>()
     private val migrateAutoLockLegacyPreference = mockk<MigrateAutoLockLegacyPreference>()
     private val clearLegacyAutoLockPreferences = mockk<ClearLegacyAutoLockPreferences>()
-
     private val cleanupLegacyNotificationChannels = mockk<CleanupLegacyNotificationChannels>()
+    private val clearSignaturePreferences = mockk<ClearSignaturePreferences>(relaxUnitFun = true)
+    private val clearMobileSignaturePreferences = mockk<ClearMobileSignaturePreferences>(relaxUnitFun = true)
 
     private val migrateLegacyApplication = MigrateLegacyApplication(
         migrateLegacyAccounts,
@@ -48,7 +49,9 @@ class MigrateLegacyApplicationTest {
         isLegacyAutoLockEnabled,
         migrateAutoLockLegacyPreference,
         clearLegacyAutoLockPreferences,
-        cleanupLegacyNotificationChannels
+        cleanupLegacyNotificationChannels,
+        clearSignaturePreferences,
+        clearMobileSignaturePreferences
     )
 
     @Test
@@ -69,6 +72,8 @@ class MigrateLegacyApplicationTest {
             shouldMigrateLegacyAccount()
             migrateLegacyAccounts()
             destroyLegacyDatabases()
+            clearSignaturePreferences()
+            clearMobileSignaturePreferences()
             isLegacyAutoLockEnabled()
             migrateAutoLockLegacyPreference()
             clearLegacyAutoLockPreferences()
@@ -92,6 +97,8 @@ class MigrateLegacyApplicationTest {
         coVerifySequence {
             shouldMigrateLegacyAccount()
             destroyLegacyDatabases()
+            clearSignaturePreferences()
+            clearMobileSignaturePreferences()
             isLegacyAutoLockEnabled()
             migrateAutoLockLegacyPreference()
             clearLegacyAutoLockPreferences()
@@ -118,6 +125,8 @@ class MigrateLegacyApplicationTest {
             shouldMigrateLegacyAccount()
             migrateLegacyAccounts()
             destroyLegacyDatabases()
+            clearSignaturePreferences()
+            clearMobileSignaturePreferences()
             isLegacyAutoLockEnabled()
             clearLegacyAutoLockPreferences()
             cleanupLegacyNotificationChannels()
@@ -150,6 +159,8 @@ class MigrateLegacyApplicationTest {
         }
 
         coVerify(exactly = 0) { destroyLegacyDatabases() }
+        coVerify(exactly = 0) { clearSignaturePreferences() }
+        coVerify(exactly = 0) { clearMobileSignaturePreferences() }
         coVerify(exactly = 0) { clearLegacyAutoLockPreferences() }
     }
 }

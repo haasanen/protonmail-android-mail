@@ -34,6 +34,6 @@ interface LegacyAutoLockLocalDataSource {
 
     suspend fun getAutoLockBiometricsPreference(): Either<MigrationError, LegacyAutoLockBiometricsPreference>
 
-    suspend fun clearPreferences()
+    fun clearPreferences()
     suspend fun getAutoLockInterval(): Either<MigrationError, LegacyAutoLockIntervalPreference>
 }

@@ -30,7 +30,9 @@ class MigrateLegacyApplication @Inject constructor(
     private val isLegacyAutoLockEnabled: IsLegacyAutoLockEnabled,
     private val migrateAutoLockLegacyPreference: MigrateAutoLockLegacyPreference,
     private val clearLegacyAutoLockPreferences: ClearLegacyAutoLockPreferences,
-    private val cleanupLegacyNotificationChannels: CleanupLegacyNotificationChannels
+    private val cleanupLegacyNotificationChannels: CleanupLegacyNotificationChannels,
+    private val clearSignaturePreferences: ClearSignaturePreferences,
+    private val clearMobileSignaturePreferences: ClearMobileSignaturePreferences
 ) {
 
     suspend operator fun invoke() {
@@ -39,6 +41,8 @@ class MigrateLegacyApplication @Inject constructor(
         } else {
             Timber.d("Legacy migration: No legacy account to migrate")
             destroyLegacyDatabases()
+            clearSignaturePreferences()
+            clearMobileSignaturePreferences()
         }
 
         if (isLegacyAutoLockEnabled()) {
@@ -51,11 +55,14 @@ class MigrateLegacyApplication @Inject constructor(
         cleanupLegacyNotificationChannels()
     }
 
-    private fun Either<List<MigrationError>, Unit>.handleAccountMigration() {
+    private suspend fun Either<List<MigrationError>, Unit>.handleAccountMigration() {
         onLeft { Timber.e("Legacy migration: Failed to migrate legacy accounts") }
         onRight {
             Timber.d("Legacy migration: Successfully migrated legacy accounts")
             destroyLegacyDatabases()
+            clearSignaturePreferences()
+            clearMobileSignaturePreferences()
+
         }
     }
 

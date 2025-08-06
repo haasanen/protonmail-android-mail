@@ -37,6 +37,7 @@ import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.crypto.common.keystore.KeyStoreCrypto
@@ -66,7 +67,8 @@ class LegacyAutoLockLocalDataSourceImplTest {
 
     private val dataSource = LegacyAutoLockLocalDataSourceImpl(
         dataStoreProvider = dataStoreProvider,
-        decryptLegacySerializableValue = decryptLegacySerializableValue
+        decryptLegacySerializableValue = decryptLegacySerializableValue,
+        coroutineScope = CoroutineScope(coroutineRule.testDispatcher)
     )
 
     private val pinKey = stringPreferencesKey("pinCodePrefKey")
