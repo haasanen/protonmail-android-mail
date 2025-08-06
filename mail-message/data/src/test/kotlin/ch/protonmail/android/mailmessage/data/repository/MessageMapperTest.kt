@@ -218,7 +218,8 @@ class MessageMapperTest {
             avatar = avatarInformation,
             isDraft = false,
             isScheduled = false,
-            canReply = false
+            canReply = false,
+            displaySnoozeReminder = false
         )
 
         // When
@@ -301,7 +302,8 @@ class MessageMapperTest {
             avatar = LocalAvatarInformation("S", "blue"),
             isDraft = false,
             isScheduled = false,
-            canReply = false
+            canReply = false,
+            displaySnoozeReminder = false
         )
 
         // When

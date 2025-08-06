@@ -247,6 +247,7 @@ object LocalMessageTestData {
         avatar = avatarInformation,
         isDraft = false,
         isScheduled = false,
-        canReply = false
+        canReply = false,
+        displaySnoozeReminder = false
     )
 }

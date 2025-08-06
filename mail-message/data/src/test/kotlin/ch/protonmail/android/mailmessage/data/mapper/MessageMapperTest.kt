@@ -81,7 +81,8 @@ class MessageMapperTest {
             snoozeTime = 12345u,
             isDraft = false,
             isScheduled = false,
-            canReply = false
+            canReply = false,
+            displaySnoozeReminder = false
         )
 
         // When
