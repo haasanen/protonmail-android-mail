@@ -121,7 +121,7 @@ class SnoozeOptionUiModelMapperTest {
     fun `when map snoozeOption upgrade`() {
         val mapped = UpgradeRequired.toSnoozeOptionUiModel(dayTimeMapper)
         Assert.assertEquals(
-            UpgradeToSnoozeUiModel(SnoozeOperationViewAction.Upgrade),
+            UpgradeToSnoozeUiModel,
             mapped
         )
     }

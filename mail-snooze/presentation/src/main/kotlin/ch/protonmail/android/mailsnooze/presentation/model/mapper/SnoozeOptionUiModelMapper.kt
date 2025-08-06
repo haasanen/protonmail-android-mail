@@ -83,7 +83,7 @@ object SnoozeOptionUiModelMapper {
 
         CustomUnset -> CustomSnoozeUiModel(SnoozeOperationViewAction.PickSnooze)
         is CustomSet -> CustomSnoozeUiModel(SnoozeOperationViewAction.PickSnooze)
-        UpgradeRequired -> UpgradeToSnoozeUiModel(SnoozeOperationViewAction.Upgrade)
+        UpgradeRequired -> UpgradeToSnoozeUiModel
         UnSnoozeModel -> UnSnooze(SnoozeOperationViewAction.UnSnooze)
     }
 }

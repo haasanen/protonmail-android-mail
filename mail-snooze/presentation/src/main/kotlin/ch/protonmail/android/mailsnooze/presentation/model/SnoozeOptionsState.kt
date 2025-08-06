@@ -22,6 +22,7 @@ import androidx.compose.runtime.Immutable
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeTime
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 
 @Immutable
 sealed class SnoozeOptionsState {
@@ -40,11 +41,14 @@ object PredefinedChoice : SelectionType
 
 data class SnoozeOptionsEffects(
     val success: Effect<TextUiModel> = Effect.empty(),
-    val error: Effect<TextUiModel> = Effect.empty()
+    val error: Effect<TextUiModel> = Effect.empty(),
+    val navigateToUpsell: Effect<UpsellingVisibility> = Effect.empty()
 )
 
 internal fun SnoozeOptionsEffects.onSuccessEffect(snoozeTime: TextUiModel) = this.copy(success = Effect.of(snoozeTime))
 internal fun SnoozeOptionsEffects.onErrorEffect(uiModel: TextUiModel) = this.copy(error = Effect.of(uiModel))
+internal fun SnoozeOptionsEffects.onNavigateToUpsell(type: UpsellingVisibility) =
+    this.copy(navigateToUpsell = Effect.of(type))
 
 sealed interface SnoozeOperation
 
@@ -53,6 +57,6 @@ sealed interface SnoozeOperationViewAction : SnoozeOperation {
     data class SnoozeUntil(val snoozeTime: SnoozeTime) : SnoozeOperationViewAction
     data object PickSnooze : SnoozeOperationViewAction
     data object UnSnooze : SnoozeOperationViewAction
-    data object Upgrade : SnoozeOperationViewAction
+    data class Upgrade(val type: UpsellingVisibility) : SnoozeOperationViewAction
     object CancelPicker : SnoozeOperationViewAction
 }

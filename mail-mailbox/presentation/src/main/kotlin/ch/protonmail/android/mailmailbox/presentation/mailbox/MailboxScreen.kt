@@ -387,6 +387,10 @@ fun MailboxScreen(
                             onShowError = {
                                 actions.showSnackbar(SnackbarError(it))
                                 viewModel.submit(MailboxViewAction.SnoozeDismissed)
+                            },
+                            onNavigateToUpsell = { type ->
+                                actions.onNavigateToUpselling(UpsellingEntryPoint.Feature.Snooze, type)
+                                viewModel.submit(MailboxViewAction.SnoozeDismissed)
                             }
                         )
                     )

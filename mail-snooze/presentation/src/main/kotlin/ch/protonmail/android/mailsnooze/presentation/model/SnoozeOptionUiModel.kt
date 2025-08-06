@@ -30,5 +30,5 @@ data class SnoozeUntilUiModel(
 ) : SnoozeOptionUiModel
 
 data class CustomSnoozeUiModel(val action: SnoozeOperationViewAction) : SnoozeOptionUiModel
-data class UpgradeToSnoozeUiModel(val action: SnoozeOperationViewAction) : SnoozeOptionUiModel
+object UpgradeToSnoozeUiModel : SnoozeOptionUiModel
 data class UnSnooze(val action: SnoozeOperationViewAction) : SnoozeOptionUiModel

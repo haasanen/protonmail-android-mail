@@ -42,6 +42,7 @@ import ch.protonmail.android.mailsnooze.presentation.model.SnoozeUntilUiModel
 import ch.protonmail.android.mailsnooze.presentation.model.UpgradeToSnoozeUiModel
 import ch.protonmail.android.mailsnooze.presentation.model.mapper.DayTimeMapper
 import ch.protonmail.android.mailsnooze.presentation.usecase.GetFirstDayOfWeekStart
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.every
@@ -128,7 +129,7 @@ class SnoozeBottomSheetViewModelTest {
                 TextUiModel(R.string.snooze_sheet_option_tomorrow),
                 TextUiModel(mappedTime)
             ),
-            UpgradeToSnoozeUiModel(SnoozeOperationViewAction.Upgrade)
+            UpgradeToSnoozeUiModel
         )
 
         sut.state.test {
@@ -229,7 +230,7 @@ class SnoozeBottomSheetViewModelTest {
                 TextUiModel(R.string.snooze_sheet_option_tomorrow),
                 TextUiModel(mappedTime)
             ),
-            UpgradeToSnoozeUiModel(SnoozeOperationViewAction.Upgrade)
+            UpgradeToSnoozeUiModel
         )
 
         // when
@@ -239,6 +240,18 @@ class SnoozeBottomSheetViewModelTest {
         sut.state.test {
             assertEquals(SnoozeOptionsState.Loading, awaitItem())
             assertEquals(SnoozeOptionsState.Loaded(uiOptions, Custom), awaitItem())
+        }
+    }
+
+    @Test
+    fun `when Operation SnoozeOperationViewAction Upsell THEN emit NavigateToUpsell effect`() = runTest {
+        // when
+        sut.onAction(inputUpgradeOperation)
+
+        // then
+        sut.effects.test {
+            assertEquals(SnoozeOptionsEffects(), awaitItem())
+            assertEquals(UpsellingVisibility.HIDDEN, awaitItem().navigateToUpsell.consume())
         }
     }
 
@@ -261,6 +274,9 @@ class SnoozeBottomSheetViewModelTest {
 
         val inputUnSnoozeOperation =
             SnoozeOperationViewAction.UnSnooze
+
+        val inputUpgradeOperation =
+            SnoozeOperationViewAction.Upgrade(UpsellingVisibility.HIDDEN)
         val outputSnoozeOptions = listOf(
             Tomorrow(outputInstant),
             UpgradeRequired

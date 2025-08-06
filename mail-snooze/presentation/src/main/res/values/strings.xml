@@ -34,6 +34,7 @@
     <string name="unsnooze_sheet_success">Conversation is no longer snoozed</string>
     <string name="snooze_picker_content_description">Snooze message</string>
     <string name="snooze_picker_button_title">Save</string>
+    <string name="snooze_custom_upsell_title">Custom date and time</string>
     <plurals name="snoozed_in_days">
         <item quantity="one">Snoozed until tomorrow</item>
         <item quantity="other">Snoozed for %d days</item>

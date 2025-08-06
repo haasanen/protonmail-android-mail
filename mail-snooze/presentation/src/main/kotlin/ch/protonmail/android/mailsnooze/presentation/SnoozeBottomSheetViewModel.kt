@@ -35,6 +35,7 @@ import ch.protonmail.android.mailsnooze.presentation.model.mapper.SnoozeOptionUi
 import ch.protonmail.android.mailsnooze.presentation.model.mapper.SnoozeSuccessMapper.snoozeSuccessMessage
 import ch.protonmail.android.mailsnooze.presentation.model.mapper.SnoozeSuccessMapper.toSuccessMessage
 import ch.protonmail.android.mailsnooze.presentation.model.onErrorEffect
+import ch.protonmail.android.mailsnooze.presentation.model.onNavigateToUpsell
 import ch.protonmail.android.mailsnooze.presentation.model.onSuccessEffect
 import ch.protonmail.android.mailsnooze.presentation.model.toConversationId
 import ch.protonmail.android.mailsnooze.presentation.usecase.GetFirstDayOfWeekStart
@@ -133,7 +134,9 @@ class SnoozeBottomSheetViewModel @AssistedInject constructor(
                     onUnsnooze()
                 }
 
-                is SnoozeOperationViewAction.Upgrade -> {}
+                is SnoozeOperationViewAction.Upgrade -> {
+                    _effects.update { it.onNavigateToUpsell(action.type) }
+                }
                 SnoozeOperationViewAction.CancelPicker -> bottomSheetState.emit(PredefinedChoice)
             }
         }

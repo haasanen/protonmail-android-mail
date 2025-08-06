@@ -48,6 +48,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
+import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
@@ -65,6 +66,8 @@ import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionsState
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeUntilUiModel
 import ch.protonmail.android.mailsnooze.presentation.model.UnSnooze
 import ch.protonmail.android.mailsnooze.presentation.model.UpgradeToSnoozeUiModel
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+import ch.protonmail.android.mailupselling.presentation.ui.UpsellingBottomSheetButton
 import me.proton.core.domain.entity.UserId
 import kotlin.time.Instant
 
@@ -90,6 +93,10 @@ fun SnoozeBottomSheetScreen(
 
     ConsumableTextEffect(effects.error) {
         actions.onShowError(it)
+    }
+
+    ConsumableLaunchedEffect(effects.navigateToUpsell) {
+        actions.onNavigateToUpsell(it)
     }
 
     SnoozeBottomSheetScreen(modifier = modifier, state = state, onEvent = {
@@ -188,7 +195,7 @@ fun OptionsGrid(
                     }
 
                     is CustomSnoozeUiModel -> CustomSnoozeButton(modifier) { onEvent(item.action) }
-                    is UpgradeToSnoozeUiModel -> UpsellSnoozeButton(modifier) { onEvent(item.action) }
+                    is UpgradeToSnoozeUiModel -> UpsellSnoozeButton(modifier, onEvent)
                     is UnSnooze -> UnsnoozeButton(modifier) { onEvent(item.action) }
                 }
             }
@@ -247,9 +254,12 @@ fun CustomSnoozeButton(modifier: Modifier = Modifier, onEvent: () -> Unit = {}) 
 }
 
 @Composable
-fun UpsellSnoozeButton(modifier: Modifier = Modifier, onEvent: () -> Unit = {}) {
-    // coming from another feature MR
-    //  UpsellingMailButton(onClick = {})
+fun UpsellSnoozeButton(modifier: Modifier = Modifier, onEvent: (SnoozeOperationViewAction) -> Unit = {}) {
+    UpsellingBottomSheetButton(
+        modifier = modifier,
+        text = stringResource(R.string.snooze_custom_upsell_title),
+        onUpsellNavigation = { type -> onEvent(SnoozeOperationViewAction.Upgrade(type)) }
+    )
 }
 
 @Composable
@@ -353,7 +363,8 @@ object SnoozeBottomSheet {
 
     data class Actions(
         val onShowSuccess: (String) -> Unit = {},
-        val onShowError: (String) -> Unit = {}
+        val onShowError: (String) -> Unit = {},
+        val onNavigateToUpsell: (UpsellingVisibility) -> Unit = {}
     )
 
     @Stable
