@@ -139,7 +139,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         }
 
         return@withContext getRustSenderImage(session, address, bimi)
-            .onLeft { Timber.e("rust-message: Failed to get sender image $it") }
+            .onLeft { Timber.d("rust-message: Failed to get sender image $it") }
             .getOrNull()
     }
 
