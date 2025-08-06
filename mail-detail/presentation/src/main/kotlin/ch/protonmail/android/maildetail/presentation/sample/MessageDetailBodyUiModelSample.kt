@@ -64,7 +64,6 @@ object MessageDetailBodyUiModelSample {
         mimeType: MimeTypeUiModel = MimeTypeUiModel.Html,
         shouldShowEmbeddedImagesBanner: Boolean = false,
         shouldShowRemoteContentBanner: Boolean = false,
-        shouldShowOpenInProtonCalendar: Boolean = false,
         attachments: AttachmentGroupUiModel? = null
     ) = MessageBodyUiModel(
         messageId = messageId,
@@ -73,7 +72,6 @@ object MessageDetailBodyUiModelSample {
         shouldShowEmbeddedImagesBanner = shouldShowEmbeddedImagesBanner,
         shouldShowRemoteContentBanner = shouldShowRemoteContentBanner,
         shouldShowExpandCollapseButton = false,
-        shouldShowOpenInProtonCalendar = shouldShowOpenInProtonCalendar,
         attachments = attachments,
         viewModePreference = ViewModePreference.ThemeDefault
     )

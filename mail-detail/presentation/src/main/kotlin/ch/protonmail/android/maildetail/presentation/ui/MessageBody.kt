@@ -84,13 +84,6 @@ fun MessageBody(
         }
     }
 
-    if (messageBodyUiModel.shouldShowOpenInProtonCalendar) {
-        OpenInProtonCalendarBanner(
-            modifier = Modifier.testTag(MessageBodyTestTags.MessageBodyBannerProtonCalendar),
-            onOpenInProtonCalendarClick = { actions.onOpenInProtonCalendar(messageBodyUiModel.messageId) }
-        )
-    }
-
     MailDivider(modifier = Modifier.padding(top = ProtonDimens.Spacing.Standard))
 
     if (hasWebView) {
@@ -185,7 +178,6 @@ object MessageBody {
         val onLoadRemoteContent: (MessageId) -> Unit,
         val onLoadEmbeddedImages: (MessageId) -> Unit,
         val onLoadRemoteAndEmbeddedContent: (MessageId) -> Unit,
-        val onOpenInProtonCalendar: (MessageId) -> Unit,
         val onPrint: (MessageId) -> Unit
     )
 }

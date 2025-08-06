@@ -306,7 +306,6 @@ private fun ColumnScope.ConversationDetailExpandedItem(
                     onLoadRemoteContent = { actions.onLoadRemoteContent(it) },
                     onLoadEmbeddedImages = { actions.onLoadEmbeddedImages(it) },
                     onLoadRemoteAndEmbeddedContent = { actions.onLoadRemoteAndEmbeddedContent(it) },
-                    onOpenInProtonCalendar = { actions.onOpenInProtonCalendar(it) },
                     onPrint = { actions.onPrint(it) }
                 ),
                 onMessageBodyLoaded = { id: MessageId, i: Int ->

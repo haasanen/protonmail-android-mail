@@ -108,7 +108,6 @@ object MessageBodyUiModelTestData {
         mimeType: MimeTypeUiModel = MimeTypeUiModel.PlainText,
         shouldShowEmbeddedImagesBanner: Boolean = false,
         shouldShowRemoteContentBanner: Boolean = false,
-        shouldShowOpenInProtonCalendar: Boolean = false,
         attachments: AttachmentGroupUiModel? = null,
         viewModePreference: ViewModePreference = ViewModePreference.ThemeDefault
     ): MessageBodyUiModel {
@@ -119,7 +118,6 @@ object MessageBodyUiModelTestData {
             shouldShowEmbeddedImagesBanner = shouldShowEmbeddedImagesBanner,
             shouldShowRemoteContentBanner = shouldShowRemoteContentBanner,
             shouldShowExpandCollapseButton = false,
-            shouldShowOpenInProtonCalendar = shouldShowOpenInProtonCalendar,
             attachments = attachments,
             viewModePreference = viewModePreference
         )

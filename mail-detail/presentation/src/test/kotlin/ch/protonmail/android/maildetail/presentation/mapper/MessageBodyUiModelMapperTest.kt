@@ -40,7 +40,6 @@ import kotlin.test.assertEquals
 class MessageBodyUiModelMapperTest {
 
     private val decryptedMessageBody = "Decrypted message body."
-    private val decryptedMessageBodyWithCss = "Decrypted message body with CSS."
 
     private val attachmentGroupUiModelMapper = mockk<AttachmentGroupUiModelMapper> {
         every { this@mockk.toUiModel(listOf(AttachmentMetadataSamples.Invoice), any()) } returns AttachmentGroupUiModel(
@@ -111,7 +110,6 @@ class MessageBodyUiModelMapperTest {
             shouldShowEmbeddedImagesBanner = false,
             shouldShowRemoteContentBanner = false,
             shouldShowExpandCollapseButton = false,
-            shouldShowOpenInProtonCalendar = false,
             attachments = null,
             viewModePreference = ViewModePreference.ThemeDefault
         )
@@ -151,7 +149,6 @@ class MessageBodyUiModelMapperTest {
             shouldShowEmbeddedImagesBanner = false,
             shouldShowRemoteContentBanner = false,
             shouldShowExpandCollapseButton = false,
-            shouldShowOpenInProtonCalendar = false,
             attachments = AttachmentGroupUiModel(
                 attachments = listOf(
                     AttachmentMetadataUiModelSamples.Invoice,
@@ -194,7 +191,6 @@ class MessageBodyUiModelMapperTest {
             shouldShowEmbeddedImagesBanner = false,
             shouldShowRemoteContentBanner = false,
             shouldShowExpandCollapseButton = false,
-            shouldShowOpenInProtonCalendar = true,
             attachments = AttachmentGroupUiModel(
                 attachments = listOf(
                     AttachmentMetadataUiModelSamples.Calendar
@@ -235,7 +231,6 @@ class MessageBodyUiModelMapperTest {
                 shouldShowEmbeddedImagesBanner = false,
                 shouldShowRemoteContentBanner = false,
                 shouldShowExpandCollapseButton = false,
-                shouldShowOpenInProtonCalendar = false,
                 attachments = AttachmentGroupUiModel(
                     attachments = listOf(
                         AttachmentMetadataUiModelSamples.InvoiceWithBinaryContentType
@@ -282,7 +277,6 @@ class MessageBodyUiModelMapperTest {
             shouldShowEmbeddedImagesBanner = false,
             shouldShowRemoteContentBanner = false,
             shouldShowExpandCollapseButton = false,
-            shouldShowOpenInProtonCalendar = false,
             attachments = null,
             viewModePreference = ViewModePreference.ThemeDefault
         )
@@ -315,7 +309,6 @@ class MessageBodyUiModelMapperTest {
                 shouldShowEmbeddedImagesBanner = false,
                 shouldShowRemoteContentBanner = false,
                 shouldShowExpandCollapseButton = false,
-                shouldShowOpenInProtonCalendar = false,
                 attachments = null,
                 viewModePreference = ViewModePreference.ThemeDefault
             )
@@ -348,7 +341,6 @@ class MessageBodyUiModelMapperTest {
                 shouldShowEmbeddedImagesBanner = false,
                 shouldShowRemoteContentBanner = true,
                 shouldShowExpandCollapseButton = false,
-                shouldShowOpenInProtonCalendar = false,
                 attachments = null,
                 viewModePreference = ViewModePreference.ThemeDefault
             )
@@ -381,7 +373,6 @@ class MessageBodyUiModelMapperTest {
                 shouldShowEmbeddedImagesBanner = false,
                 shouldShowRemoteContentBanner = false,
                 shouldShowExpandCollapseButton = false,
-                shouldShowOpenInProtonCalendar = false,
                 attachments = null,
                 viewModePreference = ViewModePreference.ThemeDefault
             )
@@ -414,7 +405,6 @@ class MessageBodyUiModelMapperTest {
                 shouldShowEmbeddedImagesBanner = true,
                 shouldShowRemoteContentBanner = false,
                 shouldShowExpandCollapseButton = false,
-                shouldShowOpenInProtonCalendar = false,
                 attachments = null,
                 viewModePreference = ViewModePreference.ThemeDefault
             )
@@ -438,7 +428,6 @@ class MessageBodyUiModelMapperTest {
             shouldShowEmbeddedImagesBanner = false,
             shouldShowRemoteContentBanner = false,
             shouldShowExpandCollapseButton = false,
-            shouldShowOpenInProtonCalendar = false,
             attachments = null,
             viewModePreference = ViewModePreference.ThemeDefault
         )
@@ -470,7 +459,6 @@ class MessageBodyUiModelMapperTest {
             shouldShowEmbeddedImagesBanner = false,
             shouldShowRemoteContentBanner = true,
             shouldShowExpandCollapseButton = false,
-            shouldShowOpenInProtonCalendar = false,
             attachments = null,
             viewModePreference = ViewModePreference.ThemeDefault
         )
