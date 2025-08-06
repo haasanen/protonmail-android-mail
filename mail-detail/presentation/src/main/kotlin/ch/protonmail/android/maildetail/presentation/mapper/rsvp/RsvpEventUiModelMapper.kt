@@ -30,7 +30,7 @@ import ch.protonmail.android.mailmessage.domain.model.RsvpCalendar
 import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import ch.protonmail.android.mailmessage.domain.model.RsvpOrganizer
 import ch.protonmail.android.mailmessage.domain.model.RsvpState
-import ch.protonmail.android.maildetail.presentation.model.RsvpAnswer
+import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeAnswer
 import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpCalendarUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpEventUiModel
@@ -93,9 +93,9 @@ class RsvpEventUiModelMapper @Inject constructor(
     )
 
     private fun RsvpAttendeeStatus.toRsvpAnswer() = when (this) {
-        RsvpAttendeeStatus.Unanswered -> RsvpAnswer.Unanswered
-        RsvpAttendeeStatus.Maybe -> RsvpAnswer.Maybe
-        RsvpAttendeeStatus.No -> RsvpAnswer.No
-        RsvpAttendeeStatus.Yes -> RsvpAnswer.Yes
+        RsvpAttendeeStatus.Unanswered -> RsvpAttendeeAnswer.Unanswered
+        RsvpAttendeeStatus.Maybe -> RsvpAttendeeAnswer.Maybe
+        RsvpAttendeeStatus.No -> RsvpAttendeeAnswer.No
+        RsvpAttendeeStatus.Yes -> RsvpAttendeeAnswer.Yes
     }
 }

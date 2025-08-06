@@ -54,7 +54,7 @@ sealed interface RsvpStatusUiModel {
 }
 
 data class RsvpAttendeeUiModel(
-    val answer: RsvpAnswer,
+    val answer: RsvpAttendeeAnswer,
     val name: TextUiModel?,
     val email: TextUiModel
 )
@@ -71,7 +71,7 @@ data class RsvpCalendarUiModel(
 
 sealed interface RsvpButtonsUiModel {
     data object Hidden : RsvpButtonsUiModel
-    data class Shown(val answer: RsvpAnswer) : RsvpButtonsUiModel
+    data class Shown(val answer: RsvpAttendeeAnswer) : RsvpButtonsUiModel
 }
 
-enum class RsvpAnswer { Yes, No, Maybe, Unanswered }
+enum class RsvpAttendeeAnswer { Yes, No, Maybe, Unanswered }

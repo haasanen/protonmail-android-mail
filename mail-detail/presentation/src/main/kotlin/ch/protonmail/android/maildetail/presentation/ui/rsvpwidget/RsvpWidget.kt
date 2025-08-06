@@ -64,7 +64,7 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.maildetail.presentation.R
-import ch.protonmail.android.maildetail.presentation.model.RsvpAnswer
+import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeAnswer
 import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpButtonsUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpEventUiModel
@@ -219,10 +219,10 @@ private fun RsvpResponse(uiModel: RsvpButtonsUiModel) {
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.MediumLight))
 
             when (uiModel.answer) {
-                RsvpAnswer.Yes -> RsvpSingleButton(label = R.string.rsvp_widget_yes_long)
-                RsvpAnswer.No -> RsvpSingleButton(label = R.string.rsvp_widget_no_long)
-                RsvpAnswer.Maybe -> RsvpSingleButton(label = R.string.rsvp_widget_maybe_long)
-                RsvpAnswer.Unanswered -> RsvpAllButtons()
+                RsvpAttendeeAnswer.Yes -> RsvpSingleButton(label = R.string.rsvp_widget_yes_long)
+                RsvpAttendeeAnswer.No -> RsvpSingleButton(label = R.string.rsvp_widget_no_long)
+                RsvpAttendeeAnswer.Maybe -> RsvpSingleButton(label = R.string.rsvp_widget_maybe_long)
+                RsvpAttendeeAnswer.Unanswered -> RsvpAllButtons()
             }
         }
     }
@@ -434,11 +434,11 @@ private fun RsvpAttendees(attendees: List<RsvpAttendeeUiModel>) {
 }
 
 @Composable
-private fun RsvpAnswer.getIcon(isOnlyAttendee: Boolean) = when (this) {
-    RsvpAnswer.Yes -> R.drawable.ic_proton_checkmark_circle
-    RsvpAnswer.No -> R.drawable.ic_proton_cross_circle
-    RsvpAnswer.Maybe -> R.drawable.ic_proton_question_circle
-    RsvpAnswer.Unanswered -> if (isOnlyAttendee) {
+private fun RsvpAttendeeAnswer.getIcon(isOnlyAttendee: Boolean) = when (this) {
+    RsvpAttendeeAnswer.Yes -> R.drawable.ic_proton_checkmark_circle
+    RsvpAttendeeAnswer.No -> R.drawable.ic_proton_cross_circle
+    RsvpAttendeeAnswer.Maybe -> R.drawable.ic_proton_question_circle
+    RsvpAttendeeAnswer.Unanswered -> if (isOnlyAttendee) {
         R.drawable.ic_proton_users
     } else {
         R.drawable.ic_proton_circle
@@ -446,11 +446,11 @@ private fun RsvpAnswer.getIcon(isOnlyAttendee: Boolean) = when (this) {
 }
 
 @Composable
-private fun RsvpAnswer.getIconTint(isOnlyAttendee: Boolean) = when (this) {
-    RsvpAnswer.Yes -> ProtonTheme.colors.notificationSuccess
-    RsvpAnswer.No -> ProtonTheme.colors.notificationError
-    RsvpAnswer.Maybe -> ProtonTheme.colors.notificationWarning
-    RsvpAnswer.Unanswered -> if (isOnlyAttendee) {
+private fun RsvpAttendeeAnswer.getIconTint(isOnlyAttendee: Boolean) = when (this) {
+    RsvpAttendeeAnswer.Yes -> ProtonTheme.colors.notificationSuccess
+    RsvpAttendeeAnswer.No -> ProtonTheme.colors.notificationError
+    RsvpAttendeeAnswer.Maybe -> ProtonTheme.colors.notificationWarning
+    RsvpAttendeeAnswer.Unanswered -> if (isOnlyAttendee) {
         ProtonTheme.colors.iconWeak
     } else {
         ProtonTheme.colors.iconDisabled

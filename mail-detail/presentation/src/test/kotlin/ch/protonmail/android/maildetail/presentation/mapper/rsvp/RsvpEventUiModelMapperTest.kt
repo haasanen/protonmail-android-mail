@@ -13,7 +13,7 @@ import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import ch.protonmail.android.mailmessage.domain.model.RsvpOccurrence
 import ch.protonmail.android.mailmessage.domain.model.RsvpOrganizer
 import ch.protonmail.android.mailmessage.domain.model.RsvpState
-import ch.protonmail.android.maildetail.presentation.model.RsvpAnswer
+import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeAnswer
 import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpButtonsUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpCalendarUiModel
@@ -116,22 +116,22 @@ class RsvpEventUiModelMapperTest {
             ),
             attendees = listOf(
                 RsvpAttendeeUiModel(
-                    answer = RsvpAnswer.Unanswered,
+                    answer = RsvpAttendeeAnswer.Unanswered,
                     name = TextUiModel.Text("You"),
                     email = TextUiModel.Text("you@protonmail.com")
                 ),
                 RsvpAttendeeUiModel(
-                    answer = RsvpAnswer.Yes,
+                    answer = RsvpAttendeeAnswer.Yes,
                     name = TextUiModel.Text("Madison Long"),
                     email = TextUiModel.Text("madison@protonmail.com")
                 ),
                 RsvpAttendeeUiModel(
-                    answer = RsvpAnswer.Maybe,
+                    answer = RsvpAttendeeAnswer.Maybe,
                     name = null,
                     email = TextUiModel.Text("email@protonmail.com")
                 ),
                 RsvpAttendeeUiModel(
-                    answer = RsvpAnswer.No,
+                    answer = RsvpAttendeeAnswer.No,
                     name = TextUiModel.Text("Olivia Reed"),
                     email = TextUiModel.Text("olivia@protonmail.com")
                 )

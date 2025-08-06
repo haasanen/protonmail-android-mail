@@ -20,13 +20,13 @@ package ch.protonmail.android.maildetail.presentation.mapper.rsvp
 
 import ch.protonmail.android.mailmessage.domain.model.RsvpProgress
 import ch.protonmail.android.mailmessage.domain.model.RsvpState
-import ch.protonmail.android.maildetail.presentation.model.RsvpAnswer
+import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeAnswer
 import ch.protonmail.android.maildetail.presentation.model.RsvpButtonsUiModel
 import javax.inject.Inject
 
 class RsvpButtonsUiModelMapper @Inject constructor() {
 
-    fun toUiModel(state: RsvpState, attendeeAnswer: RsvpAnswer?): RsvpButtonsUiModel {
+    fun toUiModel(state: RsvpState, attendeeAnswer: RsvpAttendeeAnswer?): RsvpButtonsUiModel {
         // When attendeeAnswer is null, the user is the organizer of the event
         if (attendeeAnswer == null) return RsvpButtonsUiModel.Hidden
 

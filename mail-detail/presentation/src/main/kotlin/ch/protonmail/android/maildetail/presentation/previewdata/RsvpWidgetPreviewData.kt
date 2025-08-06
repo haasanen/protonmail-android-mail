@@ -20,7 +20,7 @@ package ch.protonmail.android.maildetail.presentation.previewdata
 
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maildetail.presentation.model.RsvpAnswer
+import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeAnswer
 import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpButtonsUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpCalendarUiModel
@@ -34,7 +34,7 @@ object RsvpWidgetPreviewData {
         title = TextUiModel.Text("Whispers of Tomorrow: An Evening of Unexpected Wonders"),
         dateTime = TextUiModel.Text("15 Jul • 14:30 - 15:30"),
         isAttendanceOptional = true,
-        buttons = RsvpButtonsUiModel.Shown(RsvpAnswer.Unanswered),
+        buttons = RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Unanswered),
         calendar = RsvpCalendarUiModel(
             color = Color.Magenta,
             name = TextUiModel.Text("Work")
@@ -47,22 +47,22 @@ object RsvpWidgetPreviewData {
         ),
         attendees = listOf(
             RsvpAttendeeUiModel(
-                answer = RsvpAnswer.Unanswered,
+                answer = RsvpAttendeeAnswer.Unanswered,
                 name = TextUiModel.Text("You"),
                 email = TextUiModel.Text("you@protonmail.com")
             ),
             RsvpAttendeeUiModel(
-                answer = RsvpAnswer.Yes,
+                answer = RsvpAttendeeAnswer.Yes,
                 name = TextUiModel.Text("Madison Long"),
                 email = TextUiModel.Text("madison@protonmail.com")
             ),
             RsvpAttendeeUiModel(
-                answer = RsvpAnswer.Maybe,
+                answer = RsvpAttendeeAnswer.Maybe,
                 name = null,
                 email = TextUiModel.Text("email@protonmail.com")
             ),
             RsvpAttendeeUiModel(
-                answer = RsvpAnswer.No,
+                answer = RsvpAttendeeAnswer.No,
                 name = TextUiModel.Text("Olivia Reed"),
                 email = TextUiModel.Text("olivia@protonmail.com")
             )
@@ -74,7 +74,7 @@ object RsvpWidgetPreviewData {
         title = TextUiModel.Text("Inbox OKR Weekly"),
         dateTime = TextUiModel.Text("15 Jul • 14:30 - 15:30"),
         isAttendanceOptional = true,
-        buttons = RsvpButtonsUiModel.Shown(RsvpAnswer.Yes),
+        buttons = RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Yes),
         calendar = RsvpCalendarUiModel(
             color = Color.Magenta,
             name = TextUiModel.Text("Work")
@@ -87,7 +87,7 @@ object RsvpWidgetPreviewData {
         ),
         attendees = listOf(
             RsvpAttendeeUiModel(
-                answer = RsvpAnswer.Yes,
+                answer = RsvpAttendeeAnswer.Yes,
                 name = TextUiModel.Text("You"),
                 email = TextUiModel.Text("you@protonmail.com")
             )
