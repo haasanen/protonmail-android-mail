@@ -106,7 +106,7 @@ internal fun UpsellingScreenContent(
                         .onSizeChanged { size ->
                             footerHeight = with(density) { size.height.toDp() }
                         }
-                        .background(Color.Transparent)
+                        .background(ProtonTheme.colors.brandPlus20)
                         .hazeEffect(state = hazeState)
                 ) {
                     UpsellingPlanButtonsFooter(
