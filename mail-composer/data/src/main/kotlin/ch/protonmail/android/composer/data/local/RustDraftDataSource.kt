@@ -26,6 +26,8 @@ import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
+import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
+import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
@@ -36,6 +38,8 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.DraftExpirationTime
+import uniffi.proton_mail_uniffi.DraftRecipientExpirationFeatureReport
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 
 @Suppress("ComplexInterface", "TooManyFunctions")
@@ -62,8 +66,13 @@ interface RustDraftDataSource {
     suspend fun setExternalEncryptionPassword(
         password: ExternalEncryptionPassword
     ): Either<ExternalEncryptionPasswordError, Unit>
+
     suspend fun removeExternalEncryptionPassword(): Either<ExternalEncryptionPasswordError, Unit>
     suspend fun getExternalEncryptionPassword(): Either<DataError, ExternalEncryptionPassword?>
+    suspend fun getMessageExpiration(): Either<DataError, DraftExpirationTime>
+    suspend fun setMessageExpiration(expirationTime: MessageExpirationTime): Either<MessageExpirationError, Unit>
+    suspend fun validateSendWithExpiration(): Either<DataError, DraftRecipientExpirationFeatureReport>
+
 
     fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo>
     fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions>

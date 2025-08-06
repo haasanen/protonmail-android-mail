@@ -30,7 +30,9 @@ import ch.protonmail.android.composer.data.mapper.toExternalEncryptionPassword
 import ch.protonmail.android.composer.data.mapper.toExternalEncryptionPasswordError
 import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.mapper.toLocalDraftWithSyncStatus
+import ch.protonmail.android.composer.data.mapper.toLocalExpirationTime
 import ch.protonmail.android.composer.data.mapper.toLocalSenderAddresses
+import ch.protonmail.android.composer.data.mapper.toMessageExpirationError
 import ch.protonmail.android.composer.data.mapper.toSaveDraftError
 import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.mapper.toSingleRecipients
@@ -49,6 +51,8 @@ import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
+import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
+import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
@@ -67,13 +71,18 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
 import uniffi.proton_mail_uniffi.DraftChangeSenderAddressResult
+import uniffi.proton_mail_uniffi.DraftExpirationTime
+import uniffi.proton_mail_uniffi.DraftExpirationTimeResult
 import uniffi.proton_mail_uniffi.DraftGetPasswordResult
 import uniffi.proton_mail_uniffi.DraftIsPasswordProtectedResult
 import uniffi.proton_mail_uniffi.DraftListSenderAddressesResult
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
+import uniffi.proton_mail_uniffi.DraftRecipientExpirationFeatureReport
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptionsResult
+import uniffi.proton_mail_uniffi.DraftValidateRecipientsExpirationFeatureResult
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
+import uniffi.proton_mail_uniffi.VoidDraftExpirationResult
 import uniffi.proton_mail_uniffi.VoidDraftPasswordResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
@@ -262,6 +271,26 @@ class RustDraftDataSourceImpl @Inject constructor(
         when (val result = draftCache.get().getPassword()) {
             is DraftGetPasswordResult.Error -> result.v1.toDataError().left()
             is DraftGetPasswordResult.Ok -> result.v1.toExternalEncryptionPassword().right()
+        }
+
+    override suspend fun getMessageExpiration(): Either<DataError, DraftExpirationTime> =
+        when (val result = draftCache.get().getMessageExpiration()) {
+            is DraftExpirationTimeResult.Error -> result.v1.toDataError().left()
+            is DraftExpirationTimeResult.Ok -> result.v1.right()
+        }
+
+    override suspend fun setMessageExpiration(
+        expirationTime: MessageExpirationTime
+    ): Either<MessageExpirationError, Unit> =
+        when (val result = draftCache.get().setMessageExpiration(expirationTime.toLocalExpirationTime())) {
+            is VoidDraftExpirationResult.Error -> result.v1.toMessageExpirationError().left()
+            VoidDraftExpirationResult.Ok -> Unit.right()
+        }
+
+    override suspend fun validateSendWithExpiration(): Either<DataError, DraftRecipientExpirationFeatureReport> =
+        when (val result = draftCache.get().validateRecipientsExpirationFeature()) {
+            is DraftValidateRecipientsExpirationFeatureResult.Error -> result.v1.toDataError().left()
+            is DraftValidateRecipientsExpirationFeatureResult.Ok -> result.v1.right()
         }
 
     private fun updateRecipients(

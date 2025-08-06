@@ -35,6 +35,8 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
+import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
+import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
@@ -57,6 +59,9 @@ import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadError
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 import uniffi.proton_mail_uniffi.DraftCreateMode
+import uniffi.proton_mail_uniffi.DraftExpirationError
+import uniffi.proton_mail_uniffi.DraftExpirationErrorReason
+import uniffi.proton_mail_uniffi.DraftExpirationTime
 import uniffi.proton_mail_uniffi.DraftOpenError
 import uniffi.proton_mail_uniffi.DraftOpenErrorReason
 import uniffi.proton_mail_uniffi.DraftPassword
@@ -352,6 +357,19 @@ fun DraftPasswordError.toExternalEncryptionPasswordError() = when (this) {
 
 fun DraftPassword?.toExternalEncryptionPassword() = this?.let {
     ExternalEncryptionPassword(this.password, this.hint ?: "")
+}
+
+@Suppress("NotImplementedDeclaration")
+fun MessageExpirationTime.toLocalExpirationTime(): DraftExpirationTime {
+    TODO("Map once the Message Expiration time was extended")
+}
+
+fun DraftExpirationError.toMessageExpirationError() = when (this) {
+    is DraftExpirationError.Other -> MessageExpirationError.Other(this.v1.toDataError())
+    is DraftExpirationError.Reason -> when (this.v1) {
+        DraftExpirationErrorReason.EXPIRATION_TIME_IN_THE_PAST -> MessageExpirationError.ExpirationTimeInThePast
+        DraftExpirationErrorReason.EXPIRATION_TIME_EXCEEDS30_DAYS -> MessageExpirationError.ExpirationTimeTooFarAhead
+    }
 }
 
 private fun DraftAttachmentUploadError.toDataError() = when (this) {

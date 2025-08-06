@@ -19,6 +19,7 @@
 package ch.protonmail.android.composer.data.wrapper
 
 import uniffi.proton_mail_uniffi.Draft
+import uniffi.proton_mail_uniffi.DraftExpirationTime
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptionsResult
 import uniffi.proton_mail_uniffi.UnixTimestamp
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
@@ -67,4 +68,11 @@ class DraftWrapper(private val rustDraft: Draft) {
     suspend fun removePassword() = rustDraft.removePassword()
 
     suspend fun getPassword() = rustDraft.getPassword()
+
+    suspend fun getMessageExpiration() = rustDraft.expirationTime()
+
+    suspend fun setMessageExpiration(expirationTime: DraftExpirationTime) = rustDraft.setExpirationTime(expirationTime)
+
+    suspend fun validateRecipientsExpirationFeature() = rustDraft.validateRecipientsExpirationFeature()
+
 }

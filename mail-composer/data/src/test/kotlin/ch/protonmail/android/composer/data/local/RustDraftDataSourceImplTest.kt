@@ -21,6 +21,8 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
+import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
+import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
@@ -49,6 +51,10 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.DraftChangeSenderAddressResult
 import uniffi.proton_mail_uniffi.DraftCreateMode
+import uniffi.proton_mail_uniffi.DraftExpirationError
+import uniffi.proton_mail_uniffi.DraftExpirationErrorReason
+import uniffi.proton_mail_uniffi.DraftExpirationTime
+import uniffi.proton_mail_uniffi.DraftExpirationTimeResult
 import uniffi.proton_mail_uniffi.DraftIsPasswordProtectedResult
 import uniffi.proton_mail_uniffi.DraftListSenderAddressesResult
 import uniffi.proton_mail_uniffi.DraftMessageIdResult
@@ -65,11 +71,15 @@ import uniffi.proton_mail_uniffi.DraftSyncStatus
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.UnexpectedError
+import uniffi.proton_mail_uniffi.VoidDraftExpirationResult
 import uniffi.proton_mail_uniffi.VoidDraftPasswordResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.minutes
 
 class RustDraftDataSourceImplTest {
 
@@ -903,6 +913,74 @@ class RustDraftDataSourceImplTest {
 
         // When
         val actual = dataSource.removeExternalEncryptionPassword()
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `get message expiration returns value when successful`() = runTest {
+        // Given
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        every { draftCache.get() } returns expectedDraftWrapper
+        val expected = DraftExpirationTime.OneDay
+        coEvery { expectedDraftWrapper.getMessageExpiration() } returns DraftExpirationTimeResult.Ok(expected)
+
+        // When
+        val actual = dataSource.getMessageExpiration()
+
+        // Then
+        assertEquals(expected.right(), actual)
+    }
+
+    @Test
+    fun `get message expiration returns error when unsuccessful`() = runTest {
+        // Given
+        val expected = DataError.Local.Unknown
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        every { draftCache.get() } returns expectedDraftWrapper
+        coEvery { expectedDraftWrapper.getMessageExpiration() } returns DraftExpirationTimeResult.Error(
+            ProtonError.Unexpected(UnexpectedError.DRAFT)
+        )
+
+        // When
+        val actual = dataSource.getMessageExpiration()
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    @Ignore("enable when implementing mapping from message expiration to local")
+    fun `set message expiration returns unit when successful`() = runTest {
+        // Given
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        every { draftCache.get() } returns expectedDraftWrapper
+        val time = MessageExpirationTime(UserIdSample.Primary, MessageIdSample.PlainTextMessage, 60.minutes)
+        val localExpiration = DraftExpirationTime.OneHour
+        coEvery { expectedDraftWrapper.setMessageExpiration(localExpiration) } returns VoidDraftExpirationResult.Ok
+
+        // When
+        val actual = dataSource.setMessageExpiration(time)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    @Ignore("enable when implementing mapping from message expiration to local")
+    fun `set message expiration returns error when unsuccessful`() = runTest {
+        // Given
+        val expected = MessageExpirationError.ExpirationTimeTooFarAhead
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        every { draftCache.get() } returns expectedDraftWrapper
+        val time = MessageExpirationTime(UserIdSample.Primary, MessageIdSample.PlainTextMessage, 60.days)
+        coEvery { expectedDraftWrapper.setMessageExpiration(any()) } returns VoidDraftExpirationResult.Error(
+            DraftExpirationError.Reason(DraftExpirationErrorReason.EXPIRATION_TIME_EXCEEDS30_DAYS)
+        )
+
+        // When
+        val actual = dataSource.setMessageExpiration(time)
 
         // Then
         assertEquals(expected.left(), actual)
