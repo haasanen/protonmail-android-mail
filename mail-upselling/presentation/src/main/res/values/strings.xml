@@ -65,7 +65,7 @@
 
     <!-- Upselling - Misc buttons -->
     <string name="upselling_button_hint">Upgrade for full flexibility</string>
-    <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature.</string>
+    <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature</string>
 
     <!-- Mail Plus -->
     <string name="upselling_plus_feature_storage">15 GB storage</string>

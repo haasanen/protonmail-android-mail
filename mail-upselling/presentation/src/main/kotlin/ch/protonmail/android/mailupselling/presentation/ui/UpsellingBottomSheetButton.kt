@@ -72,7 +72,9 @@ fun UpsellingBottomSheetButton(
 
     val onNavigateToUpsell: () -> Unit = {
         when (state.value.visibility) {
-            UpsellingVisibility.HIDDEN -> onUnavailableUpsell ?: {
+            UpsellingVisibility.HIDDEN -> if (onUnavailableUpsell != null) {
+                onUnavailableUpsell()
+            } else {
                 Toast.makeText(context, fallbackText, Toast.LENGTH_SHORT).show()
             }
 
