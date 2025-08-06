@@ -24,7 +24,7 @@ import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 data object DebugInspectDbEnabled : FeatureFlagDefinition(
     key = "debug_observe_db_enabled",
     name = "Attach to DB for debug inspection",
-    category = FeatureFlagCategory.System,
+    category = FeatureFlagCategory.Global,
     description = "(Only on debuggable builds) Enables attaching AS DB inspector (read only) to rust DB",
     defaultValue = false
 )
@@ -58,6 +58,14 @@ data object SnoozeEnabled : FeatureFlagDefinition(
     name = "Snooze accessible from mail",
     category = FeatureFlagCategory.Details,
     description = "Makes the Snooze action available from mail screen",
+    defaultValue = false
+)
+
+data object UpsellingEnabled : FeatureFlagDefinition(
+    key = "upsell_enabled",
+    name = "Enable Feature Upsell",
+    category = FeatureFlagCategory.Global,
+    description = "Makes the upsell flow available for all supported entry points",
     defaultValue = false
 )
 

@@ -27,11 +27,13 @@ import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.LinkifyUrlEnabled
 import ch.protonmail.android.mailfeatureflags.domain.ShareViaEnabled
 import ch.protonmail.android.mailfeatureflags.domain.SnoozeEnabled
+import ch.protonmail.android.mailfeatureflags.domain.UpsellingEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShareViaEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsExternalEncryptionEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShareViaEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsSnoozeEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import dagger.Module
 import dagger.Provides
@@ -71,6 +73,11 @@ object FeatureFlagsModule {
     fun provideSnoozeEnabled(resolver: FeatureFlagResolver) = resolver.observeFeatureFlag(SnoozeEnabled.key)
 
     @Provides
+    @Singleton
+    @IsUpsellEnabled
+    fun provideUpsellEnabled(resolver: FeatureFlagResolver) = resolver.observeFeatureFlag(UpsellingEnabled.key)
+
+    @Provides
     @IntoSet
     @Singleton
     fun provideShareViaDefinition(): FeatureFlagDefinition = ShareViaEnabled
@@ -105,4 +112,9 @@ object FeatureFlagsModule {
     @IntoSet
     @Singleton
     fun provideSnoozeEnabledDefinitions(): FeatureFlagDefinition = SnoozeEnabled
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideUpsellEnabledDefinitions(): FeatureFlagDefinition = UpsellingEnabled
 }

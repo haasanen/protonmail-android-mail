@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailfeatureflags.domain.model
 
 sealed class FeatureFlagCategory(val name: String) {
-    data object System : FeatureFlagCategory("System")
+    data object Global : FeatureFlagCategory("Global")
     data object Composer : FeatureFlagCategory("Composer")
     data object Details : FeatureFlagCategory("Details")
     data object Settings : FeatureFlagCategory("Settings")

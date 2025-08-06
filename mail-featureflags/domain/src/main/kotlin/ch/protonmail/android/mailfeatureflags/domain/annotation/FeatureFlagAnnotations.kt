@@ -38,4 +38,8 @@ annotation class IsSnoozeEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class IsUpsellEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class IsDebugInspectDbEnabled

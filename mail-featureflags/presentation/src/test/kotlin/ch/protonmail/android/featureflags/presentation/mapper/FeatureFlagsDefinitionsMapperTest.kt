@@ -58,7 +58,7 @@ internal class FeatureFlagsDefinitionsMapperTest {
         )
 
         val groupedDefinitions = mapOf(
-            FeatureFlagCategory.System to listOf(systemFlagDefinition, systemFlagDefinition2),
+            FeatureFlagCategory.Global to listOf(systemFlagDefinition, systemFlagDefinition2),
             FeatureFlagCategory.Test to listOf(testFlagDefinition, testFlagDefinition2)
         )
 
@@ -68,7 +68,7 @@ internal class FeatureFlagsDefinitionsMapperTest {
         )
 
         val expectedListItems = listOf(
-            FeatureFlagListItem.Header("System"),
+            FeatureFlagListItem.Header("Global"),
             FeatureFlagListItem.FeatureFlag(
                 systemFlagDefinition.toExpectedUiModel(enabled = true, overridden = true)
             ),

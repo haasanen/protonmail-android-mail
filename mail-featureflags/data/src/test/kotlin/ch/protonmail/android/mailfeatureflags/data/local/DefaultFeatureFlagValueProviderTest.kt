@@ -56,7 +56,7 @@ internal class DefaultFeatureFlagValueProviderTest {
     private object TestFeatureFlagDefinition : FeatureFlagDefinition(
         key = "key",
         name = "name",
-        category = FeatureFlagCategory.System,
+        category = FeatureFlagCategory.Global,
         description = "description",
         defaultValue = true
     )

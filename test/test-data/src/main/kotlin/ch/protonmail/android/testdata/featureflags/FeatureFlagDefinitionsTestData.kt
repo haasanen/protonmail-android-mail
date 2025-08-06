@@ -31,7 +31,7 @@ object FeatureFlagDefinitionsTestData {
     ) = FeatureFlagDefinition(
         key = key,
         name = name,
-        category = FeatureFlagCategory.System,
+        category = FeatureFlagCategory.Global,
         description = description,
         defaultValue = defaultValue
     )
