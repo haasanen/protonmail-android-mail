@@ -40,7 +40,7 @@ data object LinkifyUrlEnabled : FeatureFlagDefinition(
 data object ExternalEncryptionEnabled : FeatureFlagDefinition(
     key = "external_encryption_enabled",
     name = "External Encryption",
-    category = FeatureFlagCategory.Details,
+    category = FeatureFlagCategory.Composer,
     description = "Allow to set password to encrypt message to external recipients",
     defaultValue = true
 )
@@ -68,4 +68,13 @@ data object UpsellingEnabled : FeatureFlagDefinition(
     description = "Makes the upsell flow available for all supported entry points",
     defaultValue = false
 )
+
+data object MessageExpirationEnabled : FeatureFlagDefinition(
+    key = "message_expiration_enabled",
+    name = "Message Expiration",
+    category = FeatureFlagCategory.Composer,
+    description = "Allow to set message expiration in composer",
+    defaultValue = true
+)
+
 

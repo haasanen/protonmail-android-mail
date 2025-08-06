@@ -43,3 +43,7 @@ annotation class IsUpsellEnabled
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class IsDebugInspectDbEnabled
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IsMessageExpirationEnabled

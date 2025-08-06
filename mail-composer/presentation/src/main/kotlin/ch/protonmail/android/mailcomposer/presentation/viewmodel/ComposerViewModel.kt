@@ -88,6 +88,7 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplay
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsExternalEncryptionEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Compose
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.ComposeToAddresses
@@ -154,6 +155,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val changeSenderAddress: ChangeSenderAddress,
     @IsExternalEncryptionEnabled private val externalEncryptionEnabled: Flow<Boolean>,
     private val composerRegistry: ActiveComposerRegistry,
+    @IsMessageExpirationEnabled private val messageExpirationEnabled: Flow<Boolean>,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -174,6 +176,11 @@ class ComposerViewModel @AssistedInject constructor(
 
     internal val composerStates = mutableComposerStates.asStateFlow()
 
+    val isMessageExpirationEnabled = messageExpirationEnabled.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
+        initialValue = false
+    )
 
     val isExternalEncryptionEnabled = externalEncryptionEnabled.stateIn(
         scope = viewModelScope,

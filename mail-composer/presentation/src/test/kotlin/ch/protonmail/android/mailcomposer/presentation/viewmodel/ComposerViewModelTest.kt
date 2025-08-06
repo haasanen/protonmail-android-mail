@@ -160,6 +160,7 @@ class ComposerViewModelTest {
     private val composerRegistry = mockk<ActiveComposerRegistry> {
         every { this@mockk.register(any()) } just Runs
     }
+    private val isMessageExpirationEnabled = flowOf(true)
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<MessageBodyWithType>()
@@ -200,6 +201,7 @@ class ComposerViewModelTest {
             changeSenderAddress,
             isExternalEncryptionEnabled,
             composerRegistry,
+            isMessageExpirationEnabled,
             observePrimaryUserIdMock
         )
     }
