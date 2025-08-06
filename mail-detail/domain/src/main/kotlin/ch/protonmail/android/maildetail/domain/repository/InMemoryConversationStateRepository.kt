@@ -22,6 +22,7 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollap
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import kotlinx.coroutines.flow.Flow
 
@@ -41,6 +42,7 @@ interface InMemoryConversationStateRepository {
     )
 
     suspend fun updateRsvpEventShown(messageId: MessageId, rsvpEvent: RsvpEvent)
+    suspend fun updateRsvpEventAnswering(messageId: MessageId, answer: RsvpAnswer)
     suspend fun updateRsvpEventLoading(messageId: MessageId, refresh: Boolean)
     suspend fun updateRsvpEventError(messageId: MessageId)
 
@@ -67,5 +69,6 @@ interface InMemoryConversationStateRepository {
         data object Loading : RsvpEventState()
         data object Error : RsvpEventState()
         data class Shown(val rsvpEvent: RsvpEvent) : RsvpEventState()
+        data class Answering(val rsvpEvent: RsvpEvent, val answer: RsvpAnswer) : RsvpEventState()
     }
 }

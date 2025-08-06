@@ -30,6 +30,7 @@ import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
+import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import io.mockk.mockk
@@ -222,6 +223,27 @@ class InMemoryConversationStateRepositoryImplTest {
 
             // Then
             val expected = InMemoryConversationStateRepository.RsvpEventState.Shown(event)
+            assertEquals(expected, conversationState.rsvpEvents[messageId])
+        }
+    }
+
+    @Test
+    fun `should emit rsvp event answering when putting an rsvp event answering state`() = runTest {
+        // Given
+        val repo = buildRepository()
+        val messageId = MessageIdSample.CalendarInvite
+        val event = mockk<RsvpEvent>()
+        val answer = RsvpAnswer.Yes
+
+        // When
+        repo.updateRsvpEventShown(messageId, event)
+        repo.updateRsvpEventAnswering(messageId, answer)
+
+        repo.conversationState.test {
+            val conversationState = awaitItem()
+
+            // Then
+            val expected = InMemoryConversationStateRepository.RsvpEventState.Answering(event, answer)
             assertEquals(expected, conversationState.rsvpEvents[messageId])
         }
     }

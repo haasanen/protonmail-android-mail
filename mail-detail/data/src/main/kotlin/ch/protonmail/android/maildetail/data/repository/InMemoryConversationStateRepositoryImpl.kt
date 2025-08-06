@@ -26,6 +26,7 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollap
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
@@ -116,6 +117,23 @@ class InMemoryConversationStateRepositoryImpl @Inject constructor() :
 
     override suspend fun updateRsvpEventShown(messageId: MessageId, rsvpEvent: RsvpEvent) {
         rsvpCache[messageId] = InMemoryConversationStateRepository.RsvpEventState.Shown(rsvpEvent)
+        conversationStateFlow.emit(
+            MessagesState(
+                transformationCache,
+                attachmentsListExpandCollapseMode,
+                conversationCache,
+                shouldHideMessagesBasedOnTrashFilter,
+                rsvpCache
+            )
+        )
+    }
+
+    override suspend fun updateRsvpEventAnswering(messageId: MessageId, answer: RsvpAnswer) {
+        rsvpCache[messageId] = when (val cache = rsvpCache[messageId]) {
+            is InMemoryConversationStateRepository.RsvpEventState.Shown ->
+                InMemoryConversationStateRepository.RsvpEventState.Answering(cache.rsvpEvent, answer)
+            else -> InMemoryConversationStateRepository.RsvpEventState.Error
+        }
         conversationStateFlow.emit(
             MessagesState(
                 transformationCache,

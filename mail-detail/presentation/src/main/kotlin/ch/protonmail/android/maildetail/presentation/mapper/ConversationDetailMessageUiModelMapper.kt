@@ -155,6 +155,9 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
                 is InMemoryConversationStateRepository.RsvpEventState.Shown -> RsvpWidgetUiModel.Shown(
                     rsvpEventUiModelMapper.toUiModel(rsvpEventState.rsvpEvent)
                 )
+                is InMemoryConversationStateRepository.RsvpEventState.Answering -> RsvpWidgetUiModel.Shown(
+                    rsvpEventUiModelMapper.toUiModel(rsvpEventState.rsvpEvent, rsvpEventState.answer)
+                )
             }
         } else {
             RsvpWidgetUiModel.Hidden

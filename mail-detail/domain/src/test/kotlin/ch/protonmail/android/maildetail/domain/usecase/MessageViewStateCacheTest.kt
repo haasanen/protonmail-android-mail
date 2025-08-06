@@ -24,6 +24,7 @@ import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
+import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import io.mockk.coVerify
@@ -109,6 +110,20 @@ class MessageViewStateCacheTest {
 
         // Then
         coVerify { repo.updateRsvpEventShown(messageId, event) }
+    }
+
+    @Test
+    fun `should update rsvp event answering`() = runTest {
+        // Given
+        val messageId = MessageIdSample.CalendarInvite
+        val answer = RsvpAnswer.Yes
+        val useCase = buildUseCase()
+
+        // When
+        useCase.updateRsvpEventAnswering(messageId, answer)
+
+        // Then
+        coVerify { repo.updateRsvpEventAnswering(messageId, answer) }
     }
 
     @Test

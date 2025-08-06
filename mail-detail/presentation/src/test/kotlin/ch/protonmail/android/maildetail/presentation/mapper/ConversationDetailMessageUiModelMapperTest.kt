@@ -42,6 +42,7 @@ import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MimeType
+import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
@@ -526,5 +527,39 @@ internal class ConversationDetailMessageUiModelMapperTest {
         // then
         assertEquals(result.messageRsvpWidgetUiModel, RsvpWidgetUiModel.Shown(rsvpEventUiModel))
         verify { rsvpEventUiModelMapper.toUiModel(rsvpEvent) }
+    }
+
+    @Test
+    fun `map to ui model sets rsvp widget ui model shown with answer`() = runTest {
+        // Given
+        val message = MessageSample.AugWeatherForecast
+        val decryptedMessageBody = DecryptedMessageBody(
+            message.messageId,
+            UUID.randomUUID().toString(),
+            isUnread = true,
+            MimeType.Html,
+            hasQuotedText = false,
+            hasCalendarInvite = true,
+            banners = emptyList(),
+            transformations = MessageBodyTransformations.MessageDetailsDefaults
+        )
+        val rsvpAnswer = RsvpAnswer.Yes
+        val rsvpEvent = mockk<RsvpEvent>()
+        val rsvpEventUiModel = mockk<RsvpEventUiModel>()
+        every { rsvpEventUiModelMapper.toUiModel(rsvpEvent, rsvpAnswer) } returns rsvpEventUiModel
+
+        // When
+        val result = mapper.toUiModel(
+            message = message,
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            primaryUserAddress = primaryUserAddress,
+            decryptedMessageBody = decryptedMessageBody,
+            attachmentListExpandCollapseMode = AttachmentListExpandCollapseMode.Collapsed,
+            rsvpEventState = InMemoryConversationStateRepository.RsvpEventState.Answering(rsvpEvent, rsvpAnswer)
+        )
+
+        // then
+        assertEquals(result.messageRsvpWidgetUiModel, RsvpWidgetUiModel.Shown(rsvpEventUiModel))
+        verify { rsvpEventUiModelMapper.toUiModel(rsvpEvent, rsvpAnswer) }
     }
 }

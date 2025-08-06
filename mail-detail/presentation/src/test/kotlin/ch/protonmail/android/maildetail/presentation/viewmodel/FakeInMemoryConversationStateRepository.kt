@@ -26,6 +26,7 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentListExpandCollap
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -111,6 +112,23 @@ class FakeInMemoryConversationStateRepository : InMemoryConversationStateReposit
 
     override suspend fun updateRsvpEventShown(messageId: MessageId, rsvpEvent: RsvpEvent) {
         rsvpEventCache[messageId] = InMemoryConversationStateRepository.RsvpEventState.Shown(rsvpEvent)
+        conversationStateFlow.emit(
+            MessagesState(
+                transformationCache,
+                attachmentsListExpandCollapseMode,
+                conversationCache,
+                shouldHideMessagesBasedOnTrashFilter,
+                rsvpEventCache
+            )
+        )
+    }
+
+    override suspend fun updateRsvpEventAnswering(messageId: MessageId, answer: RsvpAnswer) {
+        rsvpEventCache[messageId] = when (val cache = rsvpEventCache[messageId]) {
+            is InMemoryConversationStateRepository.RsvpEventState.Shown ->
+                InMemoryConversationStateRepository.RsvpEventState.Answering(cache.rsvpEvent, answer)
+            else -> InMemoryConversationStateRepository.RsvpEventState.Error
+        }
         conversationStateFlow.emit(
             MessagesState(
                 transformationCache,
