@@ -98,6 +98,7 @@ class MailboxReducer @Inject constructor(
                 is MailboxViewAction.MoveToArchive,
                 is MailboxViewAction.MoveToSpam,
                 is MailboxViewAction.MoveToInbox,
+                MailboxViewAction.SnoozeCompleted,
                 is MailboxViewAction.ExitSelectionMode -> BottomBarEvent.HideBottomSheet
             }
             bottomAppBarReducer.newStateFrom(bottomAppBarState, bottomBarOperation)
@@ -156,6 +157,7 @@ class MailboxReducer @Inject constructor(
                 is MailboxViewAction.MoveToInbox,
                 is MailboxViewAction.MarkAsRead,
                 is MailboxViewAction.MarkAsUnread,
+                is MailboxViewAction.SnoozeCompleted,
                 is MailboxViewAction.DismissBottomSheet -> BottomSheetOperation.Dismiss
             }
             bottomSheetReducer.newStateFrom(bottomSheetState, bottomSheetOperation)

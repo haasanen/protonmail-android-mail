@@ -21,30 +21,44 @@ package ch.protonmail.android.mailsnooze.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
-import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeTime
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOperationViewAction
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionsEffects
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionsState
 import ch.protonmail.android.mailsnooze.presentation.model.mapper.DayTimeMapper
+import ch.protonmail.android.mailsnooze.presentation.model.mapper.SnoozeErrorMapper.toUIModel
 import ch.protonmail.android.mailsnooze.presentation.model.mapper.SnoozeOptionUiModelMapper.toSnoozeOptionUiModel
+import ch.protonmail.android.mailsnooze.presentation.model.mapper.SnoozeSuccessMapper.toSuccessMessage
+import ch.protonmail.android.mailsnooze.presentation.model.onErrorEffect
+import ch.protonmail.android.mailsnooze.presentation.model.onSuccessEffect
+import ch.protonmail.android.mailsnooze.presentation.model.toConversationId
 import ch.protonmail.android.mailsnooze.presentation.usecase.GetFirstDayOfWeekStart
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = SnoozeOptionsBottomSheetViewModel.Factory::class)
 class SnoozeOptionsBottomSheetViewModel @AssistedInject constructor(
     @Assisted val initialData: SnoozeBottomSheet.InitialData,
-    snoozeRepository: SnoozeRepository,
+    val snoozeRepository: SnoozeRepository,
     val dayTimeMapper: DayTimeMapper,
     val getFirstDayOfWeekStart: GetFirstDayOfWeekStart
 ) : ViewModel() {
+
+    private val _effects = MutableStateFlow(SnoozeOptionsEffects())
+    val effects = _effects.asStateFlow()
 
     val state: Flow<SnoozeOptionsState> =
         flow {
@@ -52,7 +66,7 @@ class SnoozeOptionsBottomSheetViewModel @AssistedInject constructor(
                 snoozeRepository.getAvailableSnoozeActions(
                     userId = initialData.userId,
                     weekStart = getFirstDayOfWeekStart(),
-                    conversationIds = initialData.items.map { ConversationId(it.value) }
+                    conversationIds = initialData.items.map { it.toConversationId() }
                 )
             )
         }.map { it.getOrNull() } // error case should not exist
@@ -68,6 +82,33 @@ class SnoozeOptionsBottomSheetViewModel @AssistedInject constructor(
                 SharingStarted.WhileSubscribed(stopTimeoutMillis),
                 SnoozeOptionsState.Loading
             )
+
+
+    fun onSelectSnoozeTime(snoozeTime: SnoozeTime) {
+        viewModelScope.launch {
+            snoozeRepository.snoozeConversation(
+                userId = initialData.userId,
+                labelId = initialData.labelId,
+                conversationIds = initialData.items.map { it.toConversationId() },
+                snoozeTime = snoozeTime
+            ).onLeft { error ->
+                _effects.update { it.onErrorEffect(error.toUIModel()) }
+            }.onRight {
+                _effects.update { it.onSuccessEffect(snoozeTime.toSuccessMessage(dayTimeMapper)) }
+            }
+        }
+    }
+
+    fun onAction(action: SnoozeOperationViewAction) {
+        viewModelScope.launch {
+            when (action) {
+                is SnoozeOperationViewAction.SnoozeUntil -> onSelectSnoozeTime(action.snoozeTime)
+                is SnoozeOperationViewAction.PickSnooze -> {}
+                is SnoozeOperationViewAction.UnSnooze -> {}
+                is SnoozeOperationViewAction.Upgrade -> {}
+            }
+        }
+    }
 
     @AssistedFactory
     interface Factory {

@@ -114,6 +114,7 @@ import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.SnackbarError
+import ch.protonmail.android.mailcommon.presentation.SnackbarNormal
 import ch.protonmail.android.mailcommon.presentation.SnackbarType
 import ch.protonmail.android.mailcommon.presentation.SnackbarUndo
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -373,9 +374,22 @@ fun MailboxScreen(
                 is SnoozeSheetState.Requested -> {
                     val initialData = SnoozeBottomSheet.InitialData(
                         contentState.userId,
+                        contentState.labelId,
                         items = contentState.itemIds
                     )
-                    SnoozeOptionsBottomSheetScreen(initialData = initialData)
+                    SnoozeOptionsBottomSheetScreen(
+                        initialData = initialData,
+                        actions = SnoozeBottomSheet.Actions(
+                            onShowSuccess = {
+                                actions.showSnackbar(SnackbarNormal(it))
+                                viewModel.submit(MailboxViewAction.SnoozeCompleted)
+                            },
+                            onShowError = {
+                                actions.showSnackbar(SnackbarError(it))
+                                viewModel.submit(MailboxViewAction.SnoozeCompleted)
+                            }
+                        )
+                    )
                 }
 
                 else -> Unit

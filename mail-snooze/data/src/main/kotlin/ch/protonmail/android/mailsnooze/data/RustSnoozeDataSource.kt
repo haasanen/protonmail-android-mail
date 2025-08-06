@@ -22,17 +22,22 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalNonDefaultWeekStart
-import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
+import ch.protonmail.android.mailsnooze.data.mapper.toSnoozeError
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import uniffi.proton_mail_uniffi.AvailableSnoozeActionsForConversationResult
+import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.SnoozeActions
+import uniffi.proton_mail_uniffi.SnoozeConversationsResult
 import uniffi.proton_mail_uniffi.availableSnoozeActionsForConversation
+import uniffi.proton_mail_uniffi.snoozeConversations
 import javax.inject.Inject
+import kotlin.time.Instant
 
 class RustSnoozeDataSource @Inject constructor(
     private val executeWithUserSession: ExecuteWithUserSession,
@@ -43,7 +48,7 @@ class RustSnoozeDataSource @Inject constructor(
         userId: UserId,
         weekStart: LocalNonDefaultWeekStart,
         conversationIds: List<LocalConversationId>
-    ): Either<DataError, SnoozeActions> = withContext(ioDispatcher) {
+    ): Either<SnoozeError, SnoozeActions> = withContext(ioDispatcher) {
         executeWithUserSession(userId) { sessionWrapper ->
             when (
                 val result = availableSnoozeActionsForConversation(
@@ -51,11 +56,47 @@ class RustSnoozeDataSource @Inject constructor(
                     weekStart, conversationIds
                 )
             ) {
-                is AvailableSnoozeActionsForConversationResult.Error -> result.v1.toDataError().left()
+                is AvailableSnoozeActionsForConversationResult.Error -> result.v1.toSnoozeError().left()
                 is AvailableSnoozeActionsForConversationResult.Ok -> result.v1.right()
             }
         }.map { right ->
             return@withContext right
+        }.mapLeft { left ->
+            return@withContext SnoozeError.Unknown(left).left()
+        }
+    }
+
+    suspend fun snoozeConversation(
+        userId: UserId,
+        labelId: Id,
+        ids: List<LocalConversationId>,
+        snoozeTime: Instant
+    ) = withContext(ioDispatcher) {
+        executeWithUserSession(userId) { sessionWrapper ->
+            when (
+                val result = snoozeConversations(
+                    sessionWrapper.getRustUserSession(),
+                    labelId = labelId,
+                    ids = ids,
+                    snoozeTime = snoozeTime.epochSeconds.toULong()
+                )
+            ) {
+                is SnoozeConversationsResult.Error -> result.v1.toSnoozeError().left().apply {
+                    Timber.d("rust-snooze: snoozeConversation ERROR: $ids  $this")
+                }
+
+                is SnoozeConversationsResult.Ok -> Unit.right().apply {
+                    Timber.d(
+                        "rust-snooze: snoozeConversation SUCCESS: labelid $labelId converstionIDs $ids time ${
+                            snoozeTime.epochSeconds.toULong()
+                        } $this"
+                    )
+                }
+            }
+        }.map { right ->
+            return@withContext right
+        }.mapLeft { left ->
+            return@withContext SnoozeError.Unknown(left).left()
         }
     }
 }

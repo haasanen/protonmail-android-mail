@@ -341,6 +341,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.ClearAll -> handleClearAll()
                 is MailboxViewAction.ClearAllConfirmed -> handleClearAllConfirmed(viewAction)
                 is MailboxViewAction.ClearAllDismissed -> emitNewStateFrom(viewAction)
+                is MailboxViewAction.SnoozeCompleted -> handleSnoozeCompletedAction(viewAction)
                 is MailboxViewAction.RequestSnoozeBottomSheet -> requestSnoozeBottomSheet(viewAction)
                 is MailboxViewAction.SignalMoveToCompleted -> handleMoveToCompleted(viewAction)
                 is MailboxViewAction.SignalLabelAsCompleted -> handleLabelAsCompleted(viewAction)
@@ -820,7 +821,6 @@ class MailboxViewModel @Inject constructor(
                     }
                     selectionMode.selectedMailboxItems.map { it.id }
                 }
-
                 // coming up is MailboxViewAction.SwipeSnoozeAction -> listOf(operation.itemId)
 
                 else -> {
@@ -828,8 +828,10 @@ class MailboxViewModel @Inject constructor(
                     return@launch
                 }
             }
+            val selectedLabelId = getSelectedMailLabelId().labelId
             val event = SnoozeSheetState.SnoozeOptionsBottomSheetEvent.Ready(
                 userId = userId,
+                labelId = selectedLabelId,
                 itemIds = selectedItemIds.map { SnoozeConversationId(it) }
             )
 
@@ -1017,6 +1019,10 @@ class MailboxViewModel @Inject constructor(
 
     private fun handleClearAllConfirmed(action: MailboxViewAction.ClearAllConfirmed) = viewModelScope.launch {
         deleteAllMessagesInLocation(primaryUserId.first(), getSelectedMailLabelId().labelId)
+        emitNewStateFrom(action)
+    }
+
+    private fun handleSnoozeCompletedAction(action: MailboxViewAction.SnoozeCompleted) = viewModelScope.launch {
         emitNewStateFrom(action)
     }
 

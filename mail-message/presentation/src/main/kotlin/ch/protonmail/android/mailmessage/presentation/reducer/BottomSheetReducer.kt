@@ -80,6 +80,7 @@ class BottomSheetReducer @Inject constructor(
                 BottomSheetState(
                     contentState = SnoozeSheetState.Requested(
                         operation.userId,
+                        operation.labelId,
                         operation.itemIds
                     ),
                     bottomSheetVisibilityEffect = currentState?.bottomSheetVisibilityEffect ?: Effect.empty()

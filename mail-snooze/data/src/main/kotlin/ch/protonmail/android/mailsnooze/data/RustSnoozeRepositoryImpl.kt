@@ -20,15 +20,18 @@ package ch.protonmail.android.mailsnooze.data
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailsnooze.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailsnooze.data.mapper.toLocalWeekStart
 import ch.protonmail.android.mailsnooze.data.mapper.toSnoozeActions
 import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeTime
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeWeekStart
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
 class RustSnoozeRepositoryImpl @Inject constructor(
@@ -39,14 +42,24 @@ class RustSnoozeRepositoryImpl @Inject constructor(
         userId: UserId,
         weekStart: SnoozeWeekStart,
         conversationIds: List<ConversationId>
-    ): Either<DataError, List<SnoozeOption>> {
+    ): Either<SnoozeError, List<SnoozeOption>> {
         val availableActions = rustSnoozeDataSource.getAvailableSnoozeActionsForConversation(
             userId = userId,
             weekStart = weekStart.toLocalWeekStart(),
             conversationIds = conversationIds.map { it.toLocalConversationId() }
         )
-        Timber.d("rust-snooze: Snooze available actions: $availableActions \n for convos $conversationIds")
 
         return availableActions.map { it.toSnoozeActions() }
     }
+
+    override suspend fun snoozeConversation(
+        userId: UserId,
+        labelId: LabelId,
+        conversationIds: List<ConversationId>,
+        snoozeTime: SnoozeTime
+    ): Either<SnoozeError, Unit> = rustSnoozeDataSource.snoozeConversation(
+        userId, labelId.toLocalLabelId(),
+        conversationIds.map { it.toLocalConversationId() },
+        snoozeTime.snoozeTime
+    )
 }

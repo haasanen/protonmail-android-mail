@@ -20,6 +20,8 @@ package ch.protonmail.android.mailsnooze.presentation.model
 
 import androidx.compose.runtime.Immutable
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeTime
 
 @Immutable
 sealed class SnoozeOptionsState {
@@ -32,16 +34,18 @@ sealed class SnoozeOptionsState {
 }
 
 data class SnoozeOptionsEffects(
-    val close: Effect<Unit> = Effect.empty()
+    val success: Effect<TextUiModel> = Effect.empty(),
+    val error: Effect<TextUiModel> = Effect.empty()
 )
 
-internal fun SnoozeOptionsEffects.onCloseEffect() = this.copy(close = Effect.of(Unit))
+internal fun SnoozeOptionsEffects.onSuccessEffect(snoozeTime: TextUiModel) = this.copy(success = Effect.of(snoozeTime))
+internal fun SnoozeOptionsEffects.onErrorEffect(uiModel: TextUiModel) = this.copy(error = Effect.of(uiModel))
 
 sealed interface SnoozeOperation
 
 sealed interface SnoozeOperationViewAction : SnoozeOperation {
 
-    data object SnoozeUntil : SnoozeOperationViewAction
+    data class SnoozeUntil(val snoozeTime: SnoozeTime) : SnoozeOperationViewAction
     data object PickSnooze : SnoozeOperationViewAction
     data object UnSnooze : SnoozeOperationViewAction
     data object Upgrade : SnoozeOperationViewAction

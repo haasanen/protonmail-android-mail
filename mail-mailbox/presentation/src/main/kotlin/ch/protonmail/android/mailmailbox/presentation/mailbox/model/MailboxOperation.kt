@@ -165,6 +165,7 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     data object ClearAllDismissed : MailboxViewAction, AffectingClearAllDialog
 
     object RequestSnoozeBottomSheet : MailboxViewAction, AffectingBottomSheet
+    object SnoozeCompleted : MailboxViewAction, AffectingMailboxList, AffectingBottomSheet
 }
 
 internal sealed interface MailboxEvent : MailboxOperation {
@@ -332,6 +333,7 @@ internal sealed interface MailboxEvent : MailboxOperation {
     ) : MailboxEvent, AffectingMailboxList
 
     data class ClearAll(val spamOrTrash: SpamOrTrash) : MailboxEvent, AffectingClearAllDialog
+
 }
 
 

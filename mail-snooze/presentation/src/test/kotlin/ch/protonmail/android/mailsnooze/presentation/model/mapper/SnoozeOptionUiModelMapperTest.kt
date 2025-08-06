@@ -21,7 +21,12 @@ package ch.protonmail.android.mailsnooze.presentation.model.mapper
 import java.util.Locale
 import ch.protonmail.android.mailcommon.domain.usecase.GetAppLocale
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
+import ch.protonmail.android.mailsnooze.domain.model.CustomUnset
+import ch.protonmail.android.mailsnooze.domain.model.LaterThisWeek
+import ch.protonmail.android.mailsnooze.domain.model.NextWeek
+import ch.protonmail.android.mailsnooze.domain.model.ThisWeekend
+import ch.protonmail.android.mailsnooze.domain.model.Tomorrow
+import ch.protonmail.android.mailsnooze.domain.model.UpgradeRequired
 import ch.protonmail.android.mailsnooze.presentation.R
 import ch.protonmail.android.mailsnooze.presentation.model.CustomSnoozeUiModel
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOperationViewAction
@@ -48,10 +53,10 @@ class SnoozeOptionUiModelMapperTest {
 
     @Test
     fun `when map snoozeOption NextWeek`() {
-        val mapped = SnoozeOption.NextWeek(time).toSnoozeOptionUiModel(dayTimeMapper)
+        val mapped = NextWeek(time).toSnoozeOptionUiModel(dayTimeMapper)
         Assert.assertEquals(
             SnoozeUntilUiModel(
-                SnoozeOperationViewAction.SnoozeUntil,
+                SnoozeOperationViewAction.SnoozeUntil(NextWeek(time)),
                 R.drawable.ic_proton_briefcase,
                 TextUiModel(R.string.snooze_sheet_option_next_week),
                 TextUiModel(mappedDayTime)
@@ -62,10 +67,10 @@ class SnoozeOptionUiModelMapperTest {
 
     @Test
     fun `when map snoozeOption This Weekend`() {
-        val mapped = SnoozeOption.ThisWeekend(time).toSnoozeOptionUiModel(dayTimeMapper)
+        val mapped = ThisWeekend(time).toSnoozeOptionUiModel(dayTimeMapper)
         Assert.assertEquals(
             SnoozeUntilUiModel(
-                SnoozeOperationViewAction.SnoozeUntil,
+                SnoozeOperationViewAction.SnoozeUntil(ThisWeekend(time)),
                 R.drawable.ic_proton_chair,
                 TextUiModel(R.string.snooze_sheet_option_this_weekend),
                 TextUiModel(mappedDayTime)
@@ -76,10 +81,10 @@ class SnoozeOptionUiModelMapperTest {
 
     @Test
     fun `when map snoozeOption Later`() {
-        val mapped = SnoozeOption.LaterThisWeek(time).toSnoozeOptionUiModel(dayTimeMapper)
+        val mapped = LaterThisWeek(time).toSnoozeOptionUiModel(dayTimeMapper)
         Assert.assertEquals(
             SnoozeUntilUiModel(
-                SnoozeOperationViewAction.SnoozeUntil,
+                SnoozeOperationViewAction.SnoozeUntil(LaterThisWeek(time)),
                 R.drawable.ic_proton_sun_half,
                 TextUiModel(R.string.snooze_sheet_option_later_this_week),
                 TextUiModel(mappedDayTime)
@@ -91,10 +96,10 @@ class SnoozeOptionUiModelMapperTest {
 
     @Test
     fun `when map snoozeOption Tomorrow`() {
-        val mapped = SnoozeOption.Tomorrow(time).toSnoozeOptionUiModel(dayTimeMapper)
+        val mapped = Tomorrow(time).toSnoozeOptionUiModel(dayTimeMapper)
         Assert.assertEquals(
             SnoozeUntilUiModel(
-                SnoozeOperationViewAction.SnoozeUntil,
+                SnoozeOperationViewAction.SnoozeUntil(Tomorrow(time)),
                 R.drawable.ic_proton_sun,
                 TextUiModel(R.string.snooze_sheet_option_tomorrow),
                 TextUiModel(mappedTime)
@@ -105,7 +110,7 @@ class SnoozeOptionUiModelMapperTest {
 
     @Test
     fun `when map snoozeOption pick custom time`() {
-        val mapped = SnoozeOption.Allowed.toSnoozeOptionUiModel(dayTimeMapper)
+        val mapped = CustomUnset.toSnoozeOptionUiModel(dayTimeMapper)
         Assert.assertEquals(
             CustomSnoozeUiModel(SnoozeOperationViewAction.PickSnooze),
             mapped
@@ -114,7 +119,7 @@ class SnoozeOptionUiModelMapperTest {
 
     @Test
     fun `when map snoozeOption upgrade`() {
-        val mapped = SnoozeOption.UpgradeRequired.toSnoozeOptionUiModel(dayTimeMapper)
+        val mapped = UpgradeRequired.toSnoozeOptionUiModel(dayTimeMapper)
         Assert.assertEquals(
             UpgradeToSnoozeUiModel(SnoozeOperationViewAction.Upgrade),
             mapped
@@ -123,7 +128,7 @@ class SnoozeOptionUiModelMapperTest {
 
     @Test
     fun `when map snoozeOption unsnooze`() {
-        val mapped = SnoozeOption.UnSnooze.toSnoozeOptionUiModel(dayTimeMapper)
+        val mapped = ch.protonmail.android.mailsnooze.domain.model.UnSnooze.toSnoozeOptionUiModel(dayTimeMapper)
         Assert.assertEquals(
             UnSnooze,
             mapped

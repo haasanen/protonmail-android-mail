@@ -21,12 +21,31 @@ package ch.protonmail.android.mailsnooze.data.mapper
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalNonDefaultWeekStart
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.data.mapper.toDataError
+import ch.protonmail.android.mailsnooze.domain.model.CustomUnset
+import ch.protonmail.android.mailsnooze.domain.model.LaterThisWeek
+import ch.protonmail.android.mailsnooze.domain.model.NextWeek
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeWeekStart
+import ch.protonmail.android.mailsnooze.domain.model.ThisWeekend
+import ch.protonmail.android.mailsnooze.domain.model.Tomorrow
+import ch.protonmail.android.mailsnooze.domain.model.UnSnooze
+import ch.protonmail.android.mailsnooze.domain.model.UpgradeRequired
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.SnoozeActions
+import uniffi.proton_mail_uniffi.SnoozeErrorReason
 import uniffi.proton_mail_uniffi.SnoozeTime
 import kotlin.time.Instant
+import uniffi.proton_mail_uniffi.SnoozeError as SnoozeErrorRemote
+
+fun SnoozeErrorRemote.toSnoozeError(): SnoozeError = when (this) {
+    is SnoozeErrorRemote.Other -> SnoozeError.Unknown(this.v1.toDataError())
+    is SnoozeErrorRemote.Reason -> when (v1) {
+        SnoozeErrorReason.SNOOZE_TIME_IN_THE_PAST -> SnoozeError.SnoozeIsInThePast
+        SnoozeErrorReason.INVALID_SNOOZE_LOCATION -> SnoozeError.InvalidSnoozeLocation
+    }
+}
 
 fun ConversationId.toLocalConversationId(): LocalConversationId = LocalConversationId(this.id.toULong())
 
@@ -44,18 +63,18 @@ fun SnoozeActions.toSnoozeActions(): List<SnoozeOption> {
     fun ULong.toInstant() = Instant.fromEpochSeconds(this.toLong())
     return this.options.map {
         when (it) {
-            is SnoozeTime.Tomorrow -> SnoozeOption.Tomorrow(it.v1.toInstant())
-            is SnoozeTime.ThisWeekend -> SnoozeOption.ThisWeekend(it.v1.toInstant())
-            is SnoozeTime.LaterThisWeek -> SnoozeOption.LaterThisWeek(it.v1.toInstant())
-            is SnoozeTime.NextWeek -> SnoozeOption.NextWeek(it.v1.toInstant())
-            is SnoozeTime.Custom -> SnoozeOption.Allowed
+            is SnoozeTime.Tomorrow -> Tomorrow(it.v1.toInstant())
+            is SnoozeTime.ThisWeekend -> ThisWeekend(it.v1.toInstant())
+            is SnoozeTime.LaterThisWeek -> LaterThisWeek(it.v1.toInstant())
+            is SnoozeTime.NextWeek -> NextWeek(it.v1.toInstant())
+            is SnoozeTime.Custom -> CustomUnset
         }
     }.toMutableList().apply {
         if (!options.contains(SnoozeTime.Custom)) {
-            add(SnoozeOption.UpgradeRequired)
+            add(UpgradeRequired)
         }
         if (showUnsnooze) {
-            add(SnoozeOption.UnSnooze)
+            add(UnSnooze)
         }
     }
 }

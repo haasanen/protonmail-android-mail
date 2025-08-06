@@ -48,8 +48,10 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
+import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailsnooze.presentation.model.CustomSnoozeUiModel
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOperationViewAction
@@ -61,7 +63,11 @@ import ch.protonmail.android.mailsnooze.presentation.model.UpgradeToSnoozeUiMode
 import me.proton.core.domain.entity.UserId
 
 @Composable
-fun SnoozeOptionsBottomSheetScreen(initialData: SnoozeBottomSheet.InitialData, modifier: Modifier = Modifier) {
+fun SnoozeOptionsBottomSheetScreen(
+    initialData: SnoozeBottomSheet.InitialData,
+    actions: SnoozeBottomSheet.Actions,
+    modifier: Modifier = Modifier
+) {
 
     val viewModel = hiltViewModel<SnoozeOptionsBottomSheetViewModel, SnoozeOptionsBottomSheetViewModel.Factory>(
         key = initialData.identifier()
@@ -71,8 +77,17 @@ fun SnoozeOptionsBottomSheetScreen(initialData: SnoozeBottomSheet.InitialData, m
 
     val state by viewModel.state.collectAsStateWithLifecycle(SnoozeOptionsState.Loading)
 
+    val effects = viewModel.effects.collectAsStateWithLifecycle().value
+    ConsumableTextEffect(effects.success) {
+        actions.onShowSuccess(it)
+    }
+
+    ConsumableTextEffect(effects.error) {
+        actions.onShowError(it)
+    }
+
     SnoozeOptionsBottomSheetScreen(modifier = modifier, state = state, onEvent = {
-        // coming up
+        viewModel.onAction(it)
     })
 }
 
@@ -262,13 +277,13 @@ fun PreviewSnoozeGrid() {
             items = listOf(
                 listOf(
                     SnoozeUntilUiModel(
-                        action = SnoozeOperationViewAction.SnoozeUntil,
+                        action = SnoozeOperationViewAction.UnSnooze,
                         R.drawable.ic_pin_angled,
                         TextUiModel("Next Week"),
                         TextUiModel("9 am")
                     ),
                     SnoozeUntilUiModel(
-                        action = SnoozeOperationViewAction.SnoozeUntil,
+                        action = SnoozeOperationViewAction.UnSnooze,
                         R.drawable.ic_pin_angled,
                         TextUiModel("Next Week"),
                         TextUiModel("9 am")
@@ -276,13 +291,13 @@ fun PreviewSnoozeGrid() {
                 ),
                 listOf(
                     SnoozeUntilUiModel(
-                        action = SnoozeOperationViewAction.SnoozeUntil,
+                        action = SnoozeOperationViewAction.UnSnooze,
                         R.drawable.ic_pin_angled,
                         TextUiModel("Next Week"),
                         TextUiModel("9 am")
                     ),
                     SnoozeUntilUiModel(
-                        action = SnoozeOperationViewAction.SnoozeUntil,
+                        action = SnoozeOperationViewAction.UnSnooze,
                         R.drawable.ic_pin_angled,
                         TextUiModel("Next Week"),
                         TextUiModel("9 am")
@@ -295,9 +310,15 @@ fun PreviewSnoozeGrid() {
 
 object SnoozeBottomSheet {
 
+    data class Actions(
+        val onShowSuccess: (String) -> Unit = {},
+        val onShowError: (String) -> Unit = {}
+    )
+
     @Stable
     data class InitialData(
         val userId: UserId,
+        val labelId: LabelId,
         val items: List<SnoozeConversationId>
     ) {
 

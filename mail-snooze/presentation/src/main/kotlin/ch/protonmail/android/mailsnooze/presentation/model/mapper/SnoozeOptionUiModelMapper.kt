@@ -21,7 +21,15 @@ package ch.protonmail.android.mailsnooze.presentation.model.mapper
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailsnooze.domain.model.CustomSet
+import ch.protonmail.android.mailsnooze.domain.model.CustomUnset
+import ch.protonmail.android.mailsnooze.domain.model.LaterThisWeek
+import ch.protonmail.android.mailsnooze.domain.model.NextWeek
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeTime
+import ch.protonmail.android.mailsnooze.domain.model.ThisWeekend
+import ch.protonmail.android.mailsnooze.domain.model.Tomorrow
+import ch.protonmail.android.mailsnooze.domain.model.UpgradeRequired
 import ch.protonmail.android.mailsnooze.presentation.R
 import ch.protonmail.android.mailsnooze.presentation.model.CustomSnoozeUiModel
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOperationViewAction
@@ -34,41 +42,47 @@ object SnoozeOptionUiModelMapper {
     private fun snoozeUntil(
         @DrawableRes icon: Int,
         @StringRes title: Int,
-        detail: String
+        detail: String,
+        snoozeOption: SnoozeTime
     ) = SnoozeUntilUiModel(
-        action = SnoozeOperationViewAction.SnoozeUntil,
+        action = SnoozeOperationViewAction.SnoozeUntil(snoozeOption),
         icon = icon,
         title = TextUiModel(title),
         detail = TextUiModel(detail)
     )
 
     internal fun SnoozeOption.toSnoozeOptionUiModel(mapper: DayTimeMapper) = when (this) {
-        is SnoozeOption.NextWeek -> snoozeUntil(
+        is NextWeek -> snoozeUntil(
             R.drawable.ic_proton_briefcase,
             R.string.snooze_sheet_option_next_week,
-            mapper.toDayTime(snoozeTime)
+            mapper.toDayTime(snoozeTime),
+            snoozeOption = this
         )
 
-        is SnoozeOption.Tomorrow -> snoozeUntil(
+        is Tomorrow -> snoozeUntil(
             R.drawable.ic_proton_sun,
             R.string.snooze_sheet_option_tomorrow,
-            mapper.toTime(snoozeTime)
+            mapper.toTime(snoozeTime),
+            snoozeOption = this
         )
 
-        is SnoozeOption.ThisWeekend -> snoozeUntil(
+        is ThisWeekend -> snoozeUntil(
             R.drawable.ic_proton_chair,
             R.string.snooze_sheet_option_this_weekend,
-            mapper.toDayTime(snoozeTime)
+            mapper.toDayTime(snoozeTime),
+            snoozeOption = this
         )
 
-        is SnoozeOption.LaterThisWeek -> snoozeUntil(
+        is LaterThisWeek -> snoozeUntil(
             R.drawable.ic_proton_sun_half,
             R.string.snooze_sheet_option_later_this_week,
-            mapper.toDayTime(snoozeTime)
+            mapper.toDayTime(snoozeTime),
+            snoozeOption = this
         )
 
-        SnoozeOption.Allowed -> CustomSnoozeUiModel(SnoozeOperationViewAction.PickSnooze)
-        SnoozeOption.UpgradeRequired -> UpgradeToSnoozeUiModel(SnoozeOperationViewAction.Upgrade)
-        SnoozeOption.UnSnooze -> UnSnooze
+        CustomUnset -> CustomSnoozeUiModel(SnoozeOperationViewAction.PickSnooze)
+        is CustomSet -> CustomSnoozeUiModel(SnoozeOperationViewAction.PickSnooze)
+        UpgradeRequired -> UpgradeToSnoozeUiModel(SnoozeOperationViewAction.Upgrade)
+        ch.protonmail.android.mailsnooze.domain.model.UnSnooze -> UnSnooze
     }
 }

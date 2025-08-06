@@ -16,11 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsnooze.presentation.model
+package ch.protonmail.android.mailsnooze.domain.model
 
-import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.model.DataError
 
-@JvmInline
-value class SnoozeConversationId(val value: String)
-
-fun SnoozeConversationId.toConversationId() = ConversationId(value)
+sealed interface SnoozeError {
+    data object SnoozeIsInThePast : SnoozeError
+    data object InvalidSnoozeLocation : SnoozeError
+    data class Unknown(val error: DataError?) : SnoozeError
+}

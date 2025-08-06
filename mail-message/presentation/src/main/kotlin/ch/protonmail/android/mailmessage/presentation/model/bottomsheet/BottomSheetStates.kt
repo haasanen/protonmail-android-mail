@@ -169,6 +169,7 @@ sealed interface ContactActionsBottomSheetState : BottomSheetContentState {
 sealed interface SnoozeSheetState : BottomSheetContentState {
     data class Requested(
         val userId: UserId,
+        val labelId: LabelId,
         val itemIds: List<SnoozeConversationId>
     ) : BottomSheetContentState
 
@@ -176,6 +177,7 @@ sealed interface SnoozeSheetState : BottomSheetContentState {
     sealed interface SnoozeOptionsBottomSheetEvent : SnoozeOptionsBottomSheetOperation {
         data class Ready(
             val userId: UserId,
+            val labelId: LabelId,
             val itemIds: List<SnoozeConversationId>
         ) : SnoozeOptionsBottomSheetEvent
     }

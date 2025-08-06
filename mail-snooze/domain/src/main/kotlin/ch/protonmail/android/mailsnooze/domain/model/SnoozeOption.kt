@@ -20,14 +20,20 @@ package ch.protonmail.android.mailsnooze.domain.model
 
 import kotlin.time.Instant
 
-sealed class SnoozeOption {
-    data class Tomorrow(val snoozeTime: Instant) : SnoozeOption()
-    data class LaterThisWeek(val snoozeTime: Instant) : SnoozeOption()
-    data class ThisWeekend(val snoozeTime: Instant) : SnoozeOption()
-    data class NextWeek(val snoozeTime: Instant) : SnoozeOption()
+sealed interface SnoozeTime : SnoozeOption {
 
-    object Allowed : SnoozeOption()
-    object UpgradeRequired : SnoozeOption()
-
-    object UnSnooze : SnoozeOption()
+    val snoozeTime: Instant
 }
+
+sealed interface SnoozeOption
+data class Tomorrow(override val snoozeTime: Instant) : SnoozeTime
+data class LaterThisWeek(override val snoozeTime: Instant) : SnoozeTime
+data class ThisWeekend(override val snoozeTime: Instant) : SnoozeTime
+data class NextWeek(override val snoozeTime: Instant) : SnoozeTime
+
+object CustomUnset : SnoozeOption
+data class CustomSet(override val snoozeTime: Instant) : SnoozeTime
+
+object UpgradeRequired : SnoozeOption
+
+object UnSnooze : SnoozeOption

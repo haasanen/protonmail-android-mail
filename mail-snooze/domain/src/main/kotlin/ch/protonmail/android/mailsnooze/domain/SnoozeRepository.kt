@@ -20,8 +20,10 @@ package ch.protonmail.android.mailsnooze.domain
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeTime
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeWeekStart
 import me.proton.core.domain.entity.UserId
 
@@ -31,9 +33,15 @@ interface SnoozeRepository {
         userId: UserId,
         weekStart: SnoozeWeekStart = SnoozeWeekStart.MONDAY,
         conversationIds: List<ConversationId>
-    ): Either<DataError, List<SnoozeOption>>
+    ): Either<SnoozeError, List<SnoozeOption>>
+
+    suspend fun snoozeConversation(
+        userId: UserId,
+        labelId: LabelId,
+        conversationIds: List<ConversationId>,
+        snoozeTime: SnoozeTime
+    ): Either<SnoozeError, Unit>
 
     // coming up
     // unsnoozeConversations(`session`: MailUserSession, `ids`: List<Id>): UnsnoozeConversationsResult
-    // snoozeConversations(`session`: MailUserSession, `ids`: List<Id>, `snoozeTime`: UnixTimestamp)
 }

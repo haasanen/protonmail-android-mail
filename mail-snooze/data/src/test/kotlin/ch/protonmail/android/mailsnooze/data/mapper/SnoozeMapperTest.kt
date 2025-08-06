@@ -18,7 +18,14 @@
 
 package ch.protonmail.android.mailsnooze.data.mapper
 
+import ch.protonmail.android.mailsnooze.domain.model.CustomUnset
+import ch.protonmail.android.mailsnooze.domain.model.LaterThisWeek
+import ch.protonmail.android.mailsnooze.domain.model.NextWeek
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
+import ch.protonmail.android.mailsnooze.domain.model.ThisWeekend
+import ch.protonmail.android.mailsnooze.domain.model.Tomorrow
+import ch.protonmail.android.mailsnooze.domain.model.UnSnooze
+import ch.protonmail.android.mailsnooze.domain.model.UpgradeRequired
 import org.junit.Assert
 import uniffi.proton_mail_uniffi.SnoozeActions
 import uniffi.proton_mail_uniffi.SnoozeTime
@@ -35,8 +42,8 @@ class SnoozeMapperTest {
         )
         Assert.assertEquals(
             expectedSnoozeActions.toMutableList().apply {
-                add(SnoozeOption.Allowed)
-                add(SnoozeOption.UnSnooze)
+                add(CustomUnset)
+                add(UnSnooze)
             },
             snoozeActions.toSnoozeActions().toMutableList()
         )
@@ -50,7 +57,7 @@ class SnoozeMapperTest {
         )
         Assert.assertEquals(
             expectedSnoozeActions.toMutableList().apply {
-                add(SnoozeOption.Allowed)
+                add(CustomUnset)
             },
             snoozeActions.toSnoozeActions().toMutableList()
         )
@@ -64,7 +71,7 @@ class SnoozeMapperTest {
         )
         Assert.assertEquals(
             expectedSnoozeActions.toMutableList().apply {
-                add(SnoozeOption.UpgradeRequired)
+                add(UpgradeRequired)
             },
             snoozeActions.toSnoozeActions().toMutableList()
         )
@@ -82,11 +89,11 @@ class SnoozeMapperTest {
             SnoozeTime.ThisWeekend(inputMs.toULong())
         )
 
-        val expectedSnoozeActions = listOf(
-            SnoozeOption.Tomorrow(expectedInstant),
-            SnoozeOption.NextWeek(expectedInstant),
-            SnoozeOption.LaterThisWeek(expectedInstant),
-            SnoozeOption.ThisWeekend(expectedInstant)
+        val expectedSnoozeActions = listOf<SnoozeOption>(
+            Tomorrow(expectedInstant),
+            NextWeek(expectedInstant),
+            LaterThisWeek(expectedInstant),
+            ThisWeekend(expectedInstant)
         )
     }
 }
