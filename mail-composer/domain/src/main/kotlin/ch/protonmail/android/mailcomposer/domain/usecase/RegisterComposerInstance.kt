@@ -25,5 +25,5 @@ class RegisterComposerInstance @Inject constructor(
     private val activeComposerRepository: ActiveComposerRepository
 ) {
 
-    operator fun invoke(hash: String) = activeComposerRepository.registerInstance(hash)
+    operator fun invoke(id: String) = activeComposerRepository.registerInstance(id)
 }

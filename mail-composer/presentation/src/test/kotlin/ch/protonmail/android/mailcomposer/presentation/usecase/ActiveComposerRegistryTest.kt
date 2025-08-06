@@ -1,5 +1,6 @@
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
+import java.util.UUID
 import ch.protonmail.android.mailcomposer.domain.usecase.RegisterComposerInstance
 import ch.protonmail.android.mailcomposer.domain.usecase.UnregisterComposerInstance
 import io.mockk.Runs
@@ -22,26 +23,26 @@ class ActiveComposerRegistryTest {
     @Test
     fun `forwards register call to register instance use case`() {
         // Given
-        val hash = 12_238_838
-        every { registerComposerRegistry.invoke(hash.toString()) } just Runs
+        val id = UUID.randomUUID()
+        every { registerComposerRegistry.invoke(id.toString()) } just Runs
 
         // When
-        activeComposerRegistry.register(hash)
+        activeComposerRegistry.register(id)
 
         // Then
-        verify { registerComposerRegistry(hash.toString()) }
+        verify { registerComposerRegistry(id.toString()) }
     }
 
     @Test
     fun `forwards unregister call to unregister instance use case`() {
         // Given
-        val hash = 12_238_838
-        every { unregisterComposerRegistry.invoke(hash.toString()) } just Runs
+        val id = UUID.randomUUID()
+        every { unregisterComposerRegistry.invoke(id.toString()) } just Runs
 
         // When
-        activeComposerRegistry.unregister(hash)
+        activeComposerRegistry.unregister(id)
 
         // Then
-        verify { unregisterComposerRegistry(hash.toString()) }
+        verify { unregisterComposerRegistry(id.toString()) }
     }
 }

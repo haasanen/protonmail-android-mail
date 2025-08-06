@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
+import java.util.UUID
 import ch.protonmail.android.mailcomposer.domain.usecase.RegisterComposerInstance
 import ch.protonmail.android.mailcomposer.domain.usecase.UnregisterComposerInstance
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class ActiveComposerRegistry @Inject constructor(
     private val unregisterComposerInstance: UnregisterComposerInstance
 ) {
 
-    fun register(hash: Int) = registerComposerInstance(hash.toString())
+    fun register(id: UUID) = registerComposerInstance(id.toString())
 
-    fun unregister(hash: Int) = unregisterComposerInstance(hash.toString())
+    fun unregister(id: UUID) = unregisterComposerInstance(id.toString())
 }

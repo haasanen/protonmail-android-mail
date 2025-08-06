@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
+import java.util.UUID
 import android.net.Uri
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
@@ -160,6 +161,7 @@ class ComposerViewModel @AssistedInject constructor(
 
     private val primaryUserId = observePrimaryUserId().filterNotNull()
     private val composerActionsChannel = Channel<ComposerAction>(Channel.BUFFERED)
+    private val composerInstanceUuid = UUID.randomUUID()
 
     private val mutableComposerStates = MutableStateFlow(
         ComposerStates(
@@ -180,7 +182,7 @@ class ComposerViewModel @AssistedInject constructor(
     )
 
     init {
-        composerRegistry.register(this.hashCode())
+        composerRegistry.register(composerInstanceUuid)
 
         viewModelScope.launch {
             if (!setupInitialState(savedStateHandle)) return@launch
@@ -194,7 +196,7 @@ class ComposerViewModel @AssistedInject constructor(
 
     override fun onCleared() {
         Timber.tag("ComposerViewModel").d("Composer VM cleared from memory, unregistering as active instance")
-        composerRegistry.unregister(this.hashCode())
+        composerRegistry.unregister(composerInstanceUuid)
         super.onCleared()
     }
 

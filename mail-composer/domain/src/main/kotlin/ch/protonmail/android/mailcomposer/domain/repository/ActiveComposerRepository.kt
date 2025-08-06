@@ -20,9 +20,9 @@ package ch.protonmail.android.mailcomposer.domain.repository
 
 interface ActiveComposerRepository {
 
-    fun registerInstance(hash: String)
+    fun registerInstance(id: String)
 
-    fun unregisterInstance(hash: String)
+    fun unregisterInstance(id: String)
 
     fun getLatestActiveInstance(): String?
 

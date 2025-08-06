@@ -31,15 +31,15 @@ class ActiveComposerInMemoryRepository @Inject constructor() : ActiveComposerRep
 
     private var unregisterObserver: ((String) -> Unit)? = null
 
-    override fun registerInstance(hash: String) {
-        Timber.tag("ActiveComposerRepo").d("registering instance $hash to: $instances")
-        instances.add(hash)
+    override fun registerInstance(id: String) {
+        Timber.tag("ActiveComposerRepo").d("registering instance $id to: $instances")
+        instances.add(id)
     }
 
-    override fun unregisterInstance(hash: String) {
-        Timber.tag("ActiveComposerRepo").d("unregistering instance $hash from: $instances")
-        instances.remove(hash)
-        unregisterObserver?.invoke(hash)
+    override fun unregisterInstance(id: String) {
+        Timber.tag("ActiveComposerRepo").d("unregistering instance $id from: $instances")
+        instances.remove(id)
+        unregisterObserver?.invoke(id)
     }
 
     override fun getLatestActiveInstance(): String? = instances.getOrNull(instances.lastIndex)
