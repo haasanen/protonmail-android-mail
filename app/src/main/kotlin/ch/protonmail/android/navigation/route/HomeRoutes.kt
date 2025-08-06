@@ -20,8 +20,10 @@ package ch.protonmail.android.navigation.route
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
+import androidx.navigation.navArgument
 import ch.protonmail.android.MainActivity
 import ch.protonmail.android.design.compose.navigation.get
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
@@ -138,10 +140,26 @@ internal fun NavGraphBuilder.addComposer(
     composable(route = Destination.Screen.Composer.route) { ComposerScreen(actions) }
     composable(route = Destination.Screen.EditDraftComposer.route) { ComposerScreen(actions) }
     composable(route = Destination.Screen.MessageActionComposer.route) { ComposerScreen(actions) }
-    composable(route = Destination.Screen.ShareFileComposer.route) {
+    composable(
+        route = Destination.Screen.ShareFileComposer.route,
+        arguments = listOf(
+            navArgument("isExternal") {
+                type = NavType.BoolType
+                defaultValue = true
+            }
+        )
+    ) { backStackEntry ->
+        val isExternal = backStackEntry.arguments?.getBoolean("isExternal") ?: true
+
         ComposerScreen(
             actions.copy(
-                onCloseComposerClick = { activityActions.finishActivity() }
+                onCloseComposerClick = {
+                    if (isExternal) {
+                        activityActions.finishActivity()
+                    } else {
+                        navController.popBackStack()
+                    }
+                }
             )
         )
     }

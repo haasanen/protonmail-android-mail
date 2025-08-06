@@ -74,12 +74,15 @@ sealed class Destination(val route: String) {
             operator fun invoke(messageId: MessageId) = route.replace(DraftMessageIdKey.wrap(), messageId.id)
         }
 
-        object ShareFileComposer : Destination("composer/share/${SerializedDraftActionKey.wrap()}") {
+        object ShareFileComposer :
+            Destination("composer/share/${SerializedDraftActionKey.wrap()}?isExternal={isExternal}") {
 
-            operator fun invoke(draftAction: DraftAction) = route.replace(
-                SerializedDraftActionKey.wrap(),
-                draftAction.serialize()
-            )
+            operator fun invoke(draftAction: DraftAction, isExternal: Boolean) = route
+                .replace(
+                    SerializedDraftActionKey.wrap(),
+                    draftAction.serialize()
+                )
+                .replace("{isExternal}", isExternal.toString())
         }
 
         object MessageActionComposer : Destination("composer/action/${SerializedDraftActionKey.wrap()}") {

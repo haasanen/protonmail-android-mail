@@ -42,6 +42,8 @@ fun Intent.getShareInfo(): IntentShareInfo {
 }
 
 fun Intent.isStartedFromLauncher(): Boolean = action == Intent.ACTION_MAIN
+fun Intent.isExternal(): Boolean = getBooleanExtra("external_share", false) &&
+    action != Intent.ACTION_MAIN
 
 private fun Intent.getShareInfoForSingleSendAction(): IntentShareInfo {
     val fileUriList = getFileUriForActionSend()?.let {
@@ -54,7 +56,8 @@ private fun Intent.getShareInfoForSingleSendAction(): IntentShareInfo {
         emailRecipientTo = getRecipientTo(),
         emailRecipientCc = getRecipientCc(),
         emailRecipientBcc = getRecipientBcc(),
-        emailBody = getEmailBody()
+        emailBody = getEmailBody(),
+        isExternal = isExternal()
     )
 }
 
@@ -65,7 +68,8 @@ private fun Intent.getShareInfoForMultipleSendAction(): IntentShareInfo {
         emailRecipientTo = getRecipientTo(),
         emailRecipientCc = getRecipientCc(),
         emailRecipientBcc = getRecipientBcc(),
-        emailBody = getEmailBody()
+        emailBody = getEmailBody(),
+        isExternal = isExternal()
     )
 }
 
@@ -97,7 +101,8 @@ private fun Intent.getShareInfoForViewAction(): IntentShareInfo {
             emailRecipientTo = toRecipients,
             emailRecipientCc = ccRecipients,
             emailRecipientBcc = bccRecipients,
-            emailBody = body
+            emailBody = body,
+            isExternal = isExternal()
         )
     } else {
         getShareInfoForSendToAction()
@@ -111,7 +116,8 @@ private fun Intent.getShareInfoForSendToAction(): IntentShareInfo {
         emailRecipientTo = getRecipientTo(),
         emailRecipientCc = getRecipientCc(),
         emailRecipientBcc = getRecipientBcc(),
-        emailBody = getEmailBody()
+        emailBody = getEmailBody(),
+        isExternal = isExternal()
     )
 }
 

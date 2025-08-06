@@ -107,8 +107,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleIncomingIntent(intent: Intent) {
+        val callingPackage = referrer?.host
+        val isExternalShare = callingPackage != packageName
+
         lifecycleScope.launch {
             Timber.d("Handling intent with action: ${intent.action}")
+            intent.putExtra("external_share", isExternalShare)
             newIntentObserver.onNewIntent(intent)
         }
     }

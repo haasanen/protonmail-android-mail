@@ -31,7 +31,8 @@ data class IntentShareInfo(
     val emailRecipientCc: List<String>,
     val emailRecipientBcc: List<String>,
     val emailBody: String?,
-    val encoded: Boolean = false
+    val encoded: Boolean = false,
+    val isExternal: Boolean
 ) {
 
     companion object {
@@ -43,7 +44,8 @@ data class IntentShareInfo(
             emailRecipientCc = emptyList(),
             emailRecipientBcc = emptyList(),
             emailBody = null,
-            encoded = false
+            encoded = false,
+            isExternal = false
         )
     }
 }
@@ -69,7 +71,8 @@ fun IntentShareInfo.encode(): IntentShareInfo {
         emailRecipientCc = emailRecipientCc.map { it.toUrlSafeBase64String() },
         emailRecipientBcc = emailRecipientBcc.map { it.toUrlSafeBase64String() },
         emailBody = emailBody?.toUrlSafeBase64String(),
-        encoded = true
+        encoded = true,
+        isExternal = isExternal
     )
 }
 
@@ -86,6 +89,7 @@ fun IntentShareInfo.decode(): IntentShareInfo {
         emailRecipientCc = emailRecipientCc.map { it.fromUrlSafeBase64String() },
         emailRecipientBcc = emailRecipientBcc.map { it.fromUrlSafeBase64String() },
         emailBody = emailBody?.fromUrlSafeBase64String(),
-        encoded = false
+        encoded = false,
+        isExternal = isExternal
     )
 }

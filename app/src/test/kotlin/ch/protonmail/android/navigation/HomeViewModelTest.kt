@@ -150,7 +150,8 @@ class HomeViewModelTest {
         // Given
         val mainIntent = mockIntent(
             action = Intent.ACTION_MAIN,
-            data = null
+            data = null,
+            externalBoolean = false
         )
         every { newIntentObserver() } returns flowOf(mainIntent)
 
@@ -283,7 +284,8 @@ class HomeViewModelTest {
         )
         val shareIntent = mockIntent(
             action = Intent.ACTION_SEND,
-            data = fileUri
+            data = fileUri,
+            externalBoolean = true
         )
         // Mock the extension function
         mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
@@ -307,7 +309,8 @@ class HomeViewModelTest {
         }
         val shareIntent = mockIntent(
             action = Intent.ACTION_VIEW,
-            data = fileUri
+            data = fileUri,
+            externalBoolean = true
         )
         // Mock the extension function
         mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
@@ -324,7 +327,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `should not emit a new navigation state when activity was started from launcher`() = runTest {
+    fun `should not emit a new navigation state when app was started from launcher and external intent`() = runTest {
         // Given
         val fileUriStr = "content://media/1234"
         val fileUri = mockk<Uri> {
@@ -335,11 +338,13 @@ class HomeViewModelTest {
         )
         val shareIntent = mockIntent(
             action = Intent.ACTION_SEND,
-            data = fileUri
+            data = fileUri,
+            externalBoolean = true
         )
         val mainIntent = mockIntent(
             action = Intent.ACTION_MAIN,
-            data = null
+            data = null,
+            externalBoolean = false
         )
         // Mock the extension function
         mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
@@ -356,6 +361,40 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun `should emit a new navigation state when app was started from launcher and internal intent`() = runTest {
+        // Given
+        val fileUriStr = "content://media/1234"
+        val fileUri = mockk<Uri> {
+            every { this@mockk.host } returns null
+        }
+        val intentShareInfo = IntentShareInfo.Empty.copy(
+            attachmentUris = listOf(fileUriStr)
+        )
+        val shareIntent = mockIntent(
+            action = Intent.ACTION_SEND,
+            data = fileUri,
+            externalBoolean = false
+        )
+        val mainIntent = mockIntent(
+            action = Intent.ACTION_MAIN,
+            data = null,
+            externalBoolean = false
+        )
+        // Mock the extension function
+        mockkStatic("ch.protonmail.android.mailcommon.data.file.IntentShareExtensionsKt")
+        every { any<Intent>().getShareInfo() } returns intentShareInfo
+
+        every { shouldPresentPinInsertionScreen() } returns flowOf()
+        every { newIntentObserver() } returns flowOf(mainIntent, shareIntent)
+
+        // When + Then
+        homeViewModel.state.test {
+            val effect = awaitItem().navigateToEffect.consume()
+            assertTrue { effect is NavigationEffect.NavigateTo }
+        }
+    }
+
+    @Test
     fun `should emit a new state with navigation effect when a notification intent is received`() = runTest {
         // Given
         val uri = mockk<Uri> {
@@ -364,7 +403,8 @@ class HomeViewModelTest {
 
         val shareIntent = mockIntent(
             action = Intent.ACTION_VIEW,
-            data = uri
+            data = uri,
+            externalBoolean = true
         )
 
         every { newIntentObserver() } returns flowOf(shareIntent)
@@ -399,10 +439,15 @@ class HomeViewModelTest {
         verify { recordMailboxScreenView() }
     }
 
-    private fun mockIntent(action: String, data: Uri?): Intent {
+    private fun mockIntent(
+        action: String,
+        data: Uri?,
+        externalBoolean: Boolean
+    ): Intent {
         return mockk {
             every { this@mockk.action } returns action
             every { this@mockk.data } returns data
+            every { this@mockk.getBooleanExtra("external_share", false) } returns externalBoolean
         }
     }
 

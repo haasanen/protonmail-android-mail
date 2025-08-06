@@ -24,6 +24,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import ch.protonmail.android.mailcommon.data.file.getShareInfo
+import ch.protonmail.android.mailcommon.data.file.isExternal
 import ch.protonmail.android.mailcommon.data.file.isStartedFromLauncher
 import ch.protonmail.android.mailcommon.domain.model.encode
 import ch.protonmail.android.mailcommon.domain.model.isNotEmpty
@@ -191,7 +192,8 @@ class HomeViewModel @Inject constructor(
             }
 
             // Process share intent only if app wasn't previously started from launcher
-            !currentState.startedFromLauncher -> {
+            // Or process if it's triggered by the app itself (e.g. via mailto: links in message bodies)
+            !currentState.startedFromLauncher || !intent.isExternal() -> {
                 Timber.tag("intent-navigation").d("Processing share intent")
                 emitNavigationForIntent(intent)
             }
@@ -220,7 +222,8 @@ class HomeViewModel @Inject constructor(
                     ?: return Timber.tag("intent-navigation").e("Unable to determine uri from share intent.")
 
                 val draftAction = DraftAction.PrefillForShare(intentShareInfo.encode())
-                NavigationEffect.NavigateTo(Destination.Screen.ShareFileComposer(draftAction))
+                val isExternal = intentShareInfo.isExternal
+                NavigationEffect.NavigateTo(Destination.Screen.ShareFileComposer(draftAction, isExternal))
             }
         }
 

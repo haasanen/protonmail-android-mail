@@ -41,13 +41,4 @@ sealed interface DraftAction {
 
     @Serializable
     data class PrefillForShare(val intentShareInfo: IntentShareInfo) : DraftAction
-
-    fun getParentMessageId(): MessageId? = when (this) {
-        is Compose,
-        is ComposeToAddresses -> null
-        is PrefillForShare -> null
-        is Forward -> this.parentId
-        is Reply -> this.parentId
-        is ReplyAll -> this.parentId
-    }
 }
