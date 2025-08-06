@@ -57,7 +57,7 @@ android {
 
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
-
+    implementation(libs.kotlinx.datetime)
     implementation(libs.bundles.compose)
     implementation(libs.bundles.module.presentation)
 

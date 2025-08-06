@@ -32,6 +32,8 @@
     <string name="snooze_sheet_error_in_the_past">Snooze time is in the past</string>
     <string name="snooze_sheet_success">Snoozed until %s</string>
     <string name="unsnooze_sheet_success">Conversation is no longer snoozed</string>
+    <string name="snooze_picker_content_description">Snooze message</string>
+    <string name="snooze_picker_button_title">Save</string>
     <plurals name="snoozed_in_days">
         <item quantity="one">Snoozed until tomorrow</item>
         <item quantity="other">Snoozed for %d days</item>

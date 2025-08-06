@@ -155,7 +155,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSh
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMoreActionBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
 import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheet
-import ch.protonmail.android.mailsnooze.presentation.SnoozeOptionsBottomSheetScreen
+import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheetScreen
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.uicomponents.fab.LazyFab
@@ -377,7 +377,7 @@ fun MailboxScreen(
                         contentState.labelId,
                         items = contentState.itemIds
                     )
-                    SnoozeOptionsBottomSheetScreen(
+                    SnoozeBottomSheetScreen(
                         initialData = initialData,
                         actions = SnoozeBottomSheet.Actions(
                             onShowSuccess = {

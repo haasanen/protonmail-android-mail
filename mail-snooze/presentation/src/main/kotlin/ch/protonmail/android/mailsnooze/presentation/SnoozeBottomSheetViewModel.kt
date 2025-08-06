@@ -23,6 +23,9 @@ import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeTime
+import ch.protonmail.android.mailsnooze.presentation.model.Custom
+import ch.protonmail.android.mailsnooze.presentation.model.PredefinedChoice
+import ch.protonmail.android.mailsnooze.presentation.model.SelectionType
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOperationViewAction
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionsEffects
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionsState
@@ -43,6 +46,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -50,8 +54,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@HiltViewModel(assistedFactory = SnoozeOptionsBottomSheetViewModel.Factory::class)
-class SnoozeOptionsBottomSheetViewModel @AssistedInject constructor(
+@HiltViewModel(assistedFactory = SnoozeBottomSheetViewModel.Factory::class)
+class SnoozeBottomSheetViewModel @AssistedInject constructor(
     @Assisted val initialData: SnoozeBottomSheet.InitialData,
     val snoozeRepository: SnoozeRepository,
     val dayTimeMapper: DayTimeMapper,
@@ -61,28 +65,31 @@ class SnoozeOptionsBottomSheetViewModel @AssistedInject constructor(
     private val _effects = MutableStateFlow(SnoozeOptionsEffects())
     val effects = _effects.asStateFlow()
 
+    private val bottomSheetState = MutableStateFlow<SelectionType>(PredefinedChoice)
     val state: Flow<SnoozeOptionsState> =
-        flow {
-            emit(
-                snoozeRepository.getAvailableSnoozeActions(
-                    userId = initialData.userId,
-                    weekStart = getFirstDayOfWeekStart(),
-                    conversationIds = initialData.items.map { it.toConversationId() }
+        combine(
+            flow {
+                emit(
+                    snoozeRepository.getAvailableSnoozeActions(
+                        userId = initialData.userId,
+                        weekStart = getFirstDayOfWeekStart(),
+                        conversationIds = initialData.items.map { it.toConversationId() }
+                    )
                 )
+            }.map { it.getOrNull() } // error case should not exist
+                .filterNotNull(),
+            bottomSheetState
+        ) { options, state ->
+            SnoozeOptionsState.Loaded(
+                snoozeOptions =
+                options.map { it.toSnoozeOptionUiModel(dayTimeMapper) },
+                snoozeBottomSheet = state
             )
-        }.map { it.getOrNull() } // error case should not exist
-            .filterNotNull()
-            .map { options ->
-                SnoozeOptionsState.Data(
-                    snoozeOptions =
-                    options.map { it.toSnoozeOptionUiModel(dayTimeMapper) }
-                )
-            }
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(stopTimeoutMillis),
-                SnoozeOptionsState.Loading
-            )
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(stopTimeoutMillis),
+            SnoozeOptionsState.Loading
+        )
 
 
     private fun onSelectSnoozeTime(snoozeTime: SnoozeTime) {
@@ -118,12 +125,16 @@ class SnoozeOptionsBottomSheetViewModel @AssistedInject constructor(
         viewModelScope.launch {
             when (action) {
                 is SnoozeOperationViewAction.SnoozeUntil -> onSelectSnoozeTime(action.snoozeTime)
-                is SnoozeOperationViewAction.PickSnooze -> {}
+                is SnoozeOperationViewAction.PickSnooze -> {
+                    bottomSheetState.emit(Custom)
+                }
+
                 is SnoozeOperationViewAction.UnSnooze -> {
                     onUnsnooze()
                 }
 
                 is SnoozeOperationViewAction.Upgrade -> {}
+                SnoozeOperationViewAction.CancelPicker -> bottomSheetState.emit(PredefinedChoice)
             }
         }
     }
@@ -131,6 +142,6 @@ class SnoozeOptionsBottomSheetViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
 
-        fun create(payload: SnoozeBottomSheet.InitialData): SnoozeOptionsBottomSheetViewModel
+        fun create(payload: SnoozeBottomSheet.InitialData): SnoozeBottomSheetViewModel
     }
 }

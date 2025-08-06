@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,13 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.presentation.ui
+package ch.protonmail.android.mailcommon.presentation.ui
 
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Calendar
 import android.content.res.Configuration
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
@@ -79,7 +81,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
-import ch.protonmail.android.mailcomposer.presentation.R
+import ch.protonmail.android.mailcommon.presentation.R
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
@@ -92,9 +94,10 @@ import kotlinx.datetime.Instant as DateTimeInstant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ScheduleSendTimePickerBottomSheetContent(
+fun TimePickerBottomSheetContent(
+    uiModel: TimePickerUiModel,
     onClose: () -> Unit,
-    onScheduleSendConfirmed: (Instant) -> Unit,
+    onTimeConfirmed: (Instant) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -102,7 +105,7 @@ internal fun ScheduleSendTimePickerBottomSheetContent(
 
     val timePickerState = rememberTimePickerState(initialHour = INITIAL_TIME_HOUR, initialMinute = INITIAL_TIME_MINUTE)
     val datePickerState = rememberDatePickerState(
-        initialSelectedDate = java.time.LocalDate.now(),
+        initialSelectedDate = LocalDate.now(),
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 val timeZone = TimeZone.currentSystemDefault()
@@ -130,6 +133,7 @@ internal fun ScheduleSendTimePickerBottomSheetContent(
             )
     ) {
         TopBar(
+            uiModel = uiModel,
             onClose = onClose,
             onSendClicked = {
                 datePickerState.getSelectedDate()?.let { date ->
@@ -142,7 +146,7 @@ internal fun ScheduleSendTimePickerBottomSheetContent(
                     )
                     val timeZone = TimeZone.currentSystemDefault()
                     val timestamp = Instant.fromEpochSeconds(dateTime.toInstant(timeZone).epochSeconds)
-                    onScheduleSendConfirmed(timestamp)
+                    onTimeConfirmed(timestamp)
                 }
             },
             modifier = Modifier.padding(
@@ -207,7 +211,7 @@ private fun ScheduleSendTime(
         }
         Text(
             modifier = Modifier,
-            text = stringResource(R.string.composer_schedule_send_custom_time_label),
+            text = stringResource(R.string.time_picker_custom_time_label),
             style = ProtonTheme.typography.bodyMediumNorm,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -244,12 +248,12 @@ private fun ScheduleSendTime(
             onDismissRequest = { showTimePicker.value = false },
             confirmButton = {
                 TextButton(onClick = { showTimePicker.value = false }) {
-                    Text(stringResource(R.string.composer_schedule_send_dialog_ok))
+                    Text(stringResource(R.string.time_picker_send_dialog_ok))
                 }
             },
             title = {
                 Text(
-                    stringResource(R.string.composer_schedule_send_dialog_enter_time),
+                    stringResource(R.string.time_picker_enter_time),
                     style = ProtonTheme.typography.bodyMediumNorm
                 )
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
@@ -281,6 +285,7 @@ private fun ScheduleSendDatePicker(
     LaunchedEffect(datePickerState.getSelectedDate()) {
         pickedDate.value = datePickerState.getSelectedDate()?.format(formatter) ?: ""
     }
+
     Column {
         DatePicker(
             modifier = modifier
@@ -319,7 +324,7 @@ fun RowScope.DateHeadline(pickedDate: MutableState<String>) {
 
     Text(
         modifier = Modifier,
-        text = stringResource(R.string.composer_schedule_send_custom_date_label),
+        text = stringResource(R.string.time_picker_custom_date_label),
         style = ProtonTheme.typography.bodyMediumNorm,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
@@ -346,6 +351,7 @@ fun isLandscape() = LocalConfiguration.current.orientation == Configuration.ORIE
 
 @Composable
 private fun TopBar(
+    uiModel: TimePickerUiModel,
     onClose: () -> Unit,
     onSendClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -370,7 +376,7 @@ private fun TopBar(
         Text(
             modifier = Modifier
                 .background(ProtonTheme.colors.backgroundInvertedNorm),
-            text = stringResource(R.string.composer_schedule_send_content_description),
+            text = stringResource(uiModel.pickerTitle),
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -394,12 +400,17 @@ private fun TopBar(
             )
         ) {
             Text(
-                text = stringResource(R.string.send_button_title),
+                text = stringResource(uiModel.sendButton),
                 style = ProtonTheme.typography.titleSmall
             )
         }
     }
 }
+
+data class TimePickerUiModel(
+    @StringRes val pickerTitle: Int = R.string.time_picker_enter_time,
+    @StringRes val sendButton: Int = R.string.time_picker_send_dialog_ok
+)
 
 private const val INITIAL_TIME_HOUR = 8
 private const val INITIAL_TIME_MINUTE = 0
@@ -408,9 +419,13 @@ private const val INITIAL_TIME_MINUTE = 0
 @Composable
 private fun PreviewScheduleSendTimePickerBottomSheet() {
     ProtonTheme {
-        ScheduleSendTimePickerBottomSheetContent(
+        TimePickerBottomSheetContent(
+            uiModel = TimePickerUiModel(
+                pickerTitle = R.string.time_picker_enter_time,
+                sendButton = R.string.time_picker_send_dialog_ok
+            ),
             onClose = {},
-            onScheduleSendConfirmed = {}
+            onTimeConfirmed = {}
         )
     }
 }
@@ -425,9 +440,13 @@ private fun PreviewScheduleSendTimePickerBottomSheet() {
 @Composable
 private fun PreviewScheduleSendTimePickerLandscape() {
     ProtonTheme {
-        ScheduleSendTimePickerBottomSheetContent(
+        TimePickerBottomSheetContent(
+            uiModel = TimePickerUiModel(
+                pickerTitle = R.string.time_picker_enter_time,
+                sendButton = R.string.time_picker_send_dialog_ok
+            ),
             onClose = {},
-            onScheduleSendConfirmed = {}
+            onTimeConfirmed = {}
         )
     }
 }

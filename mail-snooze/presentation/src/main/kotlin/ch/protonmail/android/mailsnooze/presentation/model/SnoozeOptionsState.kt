@@ -26,12 +26,17 @@ import ch.protonmail.android.mailsnooze.domain.model.SnoozeTime
 @Immutable
 sealed class SnoozeOptionsState {
 
-    data class Data(
-        val snoozeOptions: List<SnoozeOptionUiModel>
+    data class Loaded(
+        val snoozeOptions: List<SnoozeOptionUiModel>,
+        val snoozeBottomSheet: SelectionType = PredefinedChoice
     ) : SnoozeOptionsState()
 
     data object Loading : SnoozeOptionsState()
 }
+
+sealed interface SelectionType
+object Custom : SelectionType
+object PredefinedChoice : SelectionType
 
 data class SnoozeOptionsEffects(
     val success: Effect<TextUiModel> = Effect.empty(),
@@ -49,4 +54,5 @@ sealed interface SnoozeOperationViewAction : SnoozeOperation {
     data object PickSnooze : SnoozeOperationViewAction
     data object UnSnooze : SnoozeOperationViewAction
     data object Upgrade : SnoozeOperationViewAction
+    object CancelPicker : SnoozeOperationViewAction
 }

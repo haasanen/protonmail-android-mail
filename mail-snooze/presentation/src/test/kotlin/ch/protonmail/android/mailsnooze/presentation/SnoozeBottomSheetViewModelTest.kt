@@ -33,6 +33,7 @@ import ch.protonmail.android.mailsnooze.domain.model.SnoozeWeekStart
 import ch.protonmail.android.mailsnooze.domain.model.Tomorrow
 import ch.protonmail.android.mailsnooze.domain.model.UnsnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.UpgradeRequired
+import ch.protonmail.android.mailsnooze.presentation.model.Custom
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOperationViewAction
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionsEffects
@@ -56,11 +57,11 @@ import org.junit.Rule
 import org.junit.Test
 import kotlin.time.Instant
 
-class SnoozeOptionsBottomSheetViewModelTest {
+class SnoozeBottomSheetViewModelTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule(TestDispatcherProvider().Main)
-    private lateinit var sut: SnoozeOptionsBottomSheetViewModel
+    private lateinit var sut: SnoozeBottomSheetViewModel
     val mockAppLocale = mockk<GetAppLocale> {
         every { this@mockk.invoke() } returns Locale.UK
     }
@@ -104,7 +105,7 @@ class SnoozeOptionsBottomSheetViewModelTest {
         mockkStatic(TimeZone::class)
         every { TimeZone.getDefault() } returns TimeZone.getTimeZone("Europe/Zurich")
 
-        sut = SnoozeOptionsBottomSheetViewModel(
+        sut = SnoozeBottomSheetViewModel(
             initialData = initialData,
             dayTimeMapper = dayTimeMapper,
             getFirstDayOfWeekStart = getFirstDayOFWeek,
@@ -132,7 +133,7 @@ class SnoozeOptionsBottomSheetViewModelTest {
 
         sut.state.test {
             assertEquals(SnoozeOptionsState.Loading, awaitItem())
-            assertEquals(SnoozeOptionsState.Data(uiOptions), awaitItem())
+            assertEquals(SnoozeOptionsState.Loaded(uiOptions), awaitItem())
         }
     }
 
@@ -218,6 +219,29 @@ class SnoozeOptionsBottomSheetViewModelTest {
         }
     }
 
+    @Test
+    fun `when Operation PickSnooze then set BottomSheetState to Custom `() = runTest {
+        val mappedTime = "11:19"
+        val uiOptions = listOf(
+            SnoozeUntilUiModel(
+                SnoozeOperationViewAction.SnoozeUntil(Tomorrow(outputInstant)),
+                R.drawable.ic_proton_sun,
+                TextUiModel(R.string.snooze_sheet_option_tomorrow),
+                TextUiModel(mappedTime)
+            ),
+            UpgradeToSnoozeUiModel(SnoozeOperationViewAction.Upgrade)
+        )
+
+        // when
+        sut.onAction(inputPickOperation)
+
+        // then
+        sut.state.test {
+            assertEquals(SnoozeOptionsState.Loading, awaitItem())
+            assertEquals(SnoozeOptionsState.Loaded(uiOptions, Custom), awaitItem())
+        }
+    }
+
 
     companion object {
 
@@ -231,6 +255,9 @@ class SnoozeOptionsBottomSheetViewModelTest {
         val inputSnoozeTime = Tomorrow(outputInstant)
         val inputSnoozeOperation =
             SnoozeOperationViewAction.SnoozeUntil(inputSnoozeTime)
+
+        val inputPickOperation =
+            SnoozeOperationViewAction.PickSnooze
 
         val inputUnSnoozeOperation =
             SnoozeOperationViewAction.UnSnooze

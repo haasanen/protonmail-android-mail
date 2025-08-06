@@ -72,6 +72,8 @@ import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcommon.presentation.compose.toPx
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
+import ch.protonmail.android.mailcommon.presentation.ui.TimePickerBottomSheetContent
+import ch.protonmail.android.mailcommon.presentation.ui.TimePickerUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenMeasures
@@ -249,9 +251,13 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     )
                 }
 
-                is BottomSheetType.ScheduleSendCustomTimePicker -> ScheduleSendTimePickerBottomSheetContent(
+                is BottomSheetType.ScheduleSendCustomTimePicker -> TimePickerBottomSheetContent(
+                    uiModel = TimePickerUiModel(
+                        pickerTitle = R.string.composer_schedule_send_content_description,
+                        sendButton = R.string.send_button_title
+                    ),
                     onClose = { dismissBottomSheet() },
-                    onScheduleSendConfirmed = {
+                    onTimeConfirmed = {
                         viewModel.submit(ComposerAction.OnScheduleSend(it))
                     }
                 )

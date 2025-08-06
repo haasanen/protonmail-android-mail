@@ -51,8 +51,13 @@ import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
+import ch.protonmail.android.mailcommon.presentation.ui.TimePickerBottomSheetContent
+import ch.protonmail.android.mailcommon.presentation.ui.TimePickerUiModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailsnooze.domain.model.CustomSet
+import ch.protonmail.android.mailsnooze.presentation.model.Custom
 import ch.protonmail.android.mailsnooze.presentation.model.CustomSnoozeUiModel
+import ch.protonmail.android.mailsnooze.presentation.model.PredefinedChoice
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOperationViewAction
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionUiModel
@@ -61,15 +66,15 @@ import ch.protonmail.android.mailsnooze.presentation.model.SnoozeUntilUiModel
 import ch.protonmail.android.mailsnooze.presentation.model.UnSnooze
 import ch.protonmail.android.mailsnooze.presentation.model.UpgradeToSnoozeUiModel
 import me.proton.core.domain.entity.UserId
+import kotlin.time.Instant
 
 @Composable
-fun SnoozeOptionsBottomSheetScreen(
+fun SnoozeBottomSheetScreen(
     initialData: SnoozeBottomSheet.InitialData,
     actions: SnoozeBottomSheet.Actions,
     modifier: Modifier = Modifier
 ) {
-
-    val viewModel = hiltViewModel<SnoozeOptionsBottomSheetViewModel, SnoozeOptionsBottomSheetViewModel.Factory>(
+    val viewModel = hiltViewModel<SnoozeBottomSheetViewModel, SnoozeBottomSheetViewModel.Factory>(
         key = initialData.identifier()
     ) { factory ->
         factory.create(initialData)
@@ -78,6 +83,7 @@ fun SnoozeOptionsBottomSheetScreen(
     val state by viewModel.state.collectAsStateWithLifecycle(SnoozeOptionsState.Loading)
 
     val effects = viewModel.effects.collectAsStateWithLifecycle().value
+
     ConsumableTextEffect(effects.success) {
         actions.onShowSuccess(it)
     }
@@ -86,41 +92,76 @@ fun SnoozeOptionsBottomSheetScreen(
         actions.onShowError(it)
     }
 
-    SnoozeOptionsBottomSheetScreen(modifier = modifier, state = state, onEvent = {
+    SnoozeBottomSheetScreen(modifier = modifier, state = state, onEvent = {
         viewModel.onAction(it)
     })
 }
 
 @Composable
-fun SnoozeOptionsBottomSheetScreen(
+fun SnoozeBottomSheetScreen(
     modifier: Modifier = Modifier,
     state: SnoozeOptionsState,
     onEvent: (SnoozeOperationViewAction) -> Unit = {}
 ) {
     when (state) {
         is SnoozeOptionsState.Loading -> ProtonHorizontallyCenteredProgress()
-        is SnoozeOptionsState.Data -> {
-            Column(
-                modifier = modifier
-                    .padding(all = ProtonDimens.Spacing.Large),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Large)
-            ) {
-                Text(
-                    modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Large),
-                    text = stringResource(id = R.string.snooze_sheet_snooze_title),
-                    style = ProtonTheme.typography.titleMediumNorm,
-                    textAlign = TextAlign.Center
+        is SnoozeOptionsState.Loaded -> {
+            when (state.snoozeBottomSheet) {
+                Custom -> DatePickerSheet(
+                    modifier = modifier,
+                    onDatePicked = { instant ->
+                        onEvent(SnoozeOperationViewAction.SnoozeUntil(CustomSet(instant)))
+                    }, onClose = { onEvent(SnoozeOperationViewAction.CancelPicker) }
                 )
 
-                OptionsGrid(
-                    items = state.snoozeOptions
-                        .chunked(size = 2)
-                        .toMutableList(),
-                    onEvent = onEvent
-                )
+                PredefinedChoice -> SnoozeOptionsSheet(modifier, state.snoozeOptions, onEvent)
             }
         }
+    }
+}
+
+@Composable
+fun DatePickerSheet(
+    modifier: Modifier = Modifier,
+    onDatePicked: (Instant) -> Unit = {},
+    onClose: () -> Unit
+) {
+    TimePickerBottomSheetContent(
+        modifier = modifier,
+        uiModel = TimePickerUiModel(
+            pickerTitle = R.string.snooze_picker_content_description,
+            sendButton = R.string.snooze_picker_button_title
+        ),
+        onClose = onClose,
+        onTimeConfirmed = onDatePicked
+    )
+}
+
+@Composable
+fun SnoozeOptionsSheet(
+    modifier: Modifier = Modifier,
+    snoozeOptions: List<SnoozeOptionUiModel>,
+    onEvent: (SnoozeOperationViewAction) -> Unit = {}
+) {
+    Column(
+        modifier = modifier
+            .padding(all = ProtonDimens.Spacing.Large),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Large)
+    ) {
+        Text(
+            modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Large),
+            text = stringResource(id = R.string.snooze_sheet_snooze_title),
+            style = ProtonTheme.typography.titleMediumNorm,
+            textAlign = TextAlign.Center
+        )
+
+        OptionsGrid(
+            items = snoozeOptions
+                .chunked(size = 2)
+                .toMutableList(),
+            onEvent = onEvent
+        )
     }
 }
 

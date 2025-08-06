@@ -821,7 +821,6 @@ class MailboxViewModel @Inject constructor(
                     }
                     selectionMode.selectedMailboxItems.map { it.id }
                 }
-                // coming up is MailboxViewAction.SwipeSnoozeAction -> listOf(operation.itemId)
 
                 else -> {
                     Timber.d("Unsupported operation: $operation")
