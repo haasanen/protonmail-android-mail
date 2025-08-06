@@ -83,6 +83,8 @@ scripts/uitests/AssetsFile.lock.bak
 
 # Generated files
 .idea/**/contentModel.xml
+.idea/deviceManager.xml
+.idea/migrations.xml
 
 # Sensitive or high-churn files
 .idea/**/dataSources/
