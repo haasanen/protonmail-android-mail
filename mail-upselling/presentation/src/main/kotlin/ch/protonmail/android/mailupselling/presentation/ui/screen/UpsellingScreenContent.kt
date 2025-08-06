@@ -24,6 +24,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -48,6 +49,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -97,6 +100,25 @@ internal fun UpsellingScreenContent(
         derivedStateOf { scrollState.value == 0 }
     }
 
+    val scrollProgress = remember {
+        derivedStateOf {
+            val maxScroll = 100f
+            (scrollState.value.toFloat() / maxScroll).coerceIn(0f, 1f)
+        }
+    }
+
+    val imageScale = remember {
+        derivedStateOf {
+            1f - scrollProgress.value * 0.2f
+        }
+    }
+
+    val imageAlpha = remember {
+        derivedStateOf {
+            1f - scrollProgress.value * 0.5f
+        }
+    }
+
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = {
@@ -128,7 +150,7 @@ internal fun UpsellingScreenContent(
                     .fillMaxSize()
                     .verticalScroll(scrollState)
                     .background(backgroundGradient)
-                    .padding(bottom = footerHeight),
+                    .padding(bottom = footerHeight + ProtonDimens.Spacing.Large),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Huge))
@@ -136,13 +158,15 @@ internal fun UpsellingScreenContent(
 
                 Image(
                     modifier = Modifier
+                        .height(UpsellingLayoutValues.imageHeight)
+                        .aspectRatio(1f)
                         .padding(horizontal = ProtonDimens.Spacing.Large)
-                        .padding(top = ProtonDimens.Spacing.Large),
+                        .padding(top = ProtonDimens.Spacing.Large)
+                        .scale(imageScale.value)
+                        .alpha(imageAlpha.value),
                     painter = painterResource(id = plans.icon.iconResId),
                     contentDescription = NO_CONTENT_DESCRIPTION
                 )
-
-                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
 
                 Text(
                     modifier = Modifier

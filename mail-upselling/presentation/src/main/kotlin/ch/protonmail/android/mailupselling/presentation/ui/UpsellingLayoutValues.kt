@@ -33,6 +33,8 @@ internal object UpsellingLayoutValues {
     val closeButtonColor = Color.White
     val closeButtonBackgroundColor = Color.White.copy(alpha = 0.08f)
 
+    val imageHeight = 140.dp
+
     val BlueInteractionNorm = Color(0xFF6D4AFF)
 
     val backgroundGradient = Brush.verticalGradient(
