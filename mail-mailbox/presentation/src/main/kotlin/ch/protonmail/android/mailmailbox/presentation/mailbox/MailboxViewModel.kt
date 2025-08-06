@@ -93,7 +93,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteAllMessagesInLocation
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
-import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
 import ch.protonmail.android.mailmessage.domain.usecase.HandleAvatarImageLoadingFailure
 import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
@@ -169,7 +168,6 @@ class MailboxViewModel @Inject constructor(
     private val unStarConversations: UnStarConversations,
     private val mailboxReducer: MailboxReducer,
     private val dispatchersProvider: DispatcherProvider,
-    private val deleteSearchResults: DeleteSearchResults,
     private val findLocalSystemLabelId: FindLocalSystemLabelId,
     private val loadAvatarImage: LoadAvatarImage,
     private val handleAvatarImageLoadingFailure: HandleAvatarImageLoadingFailure,
@@ -330,7 +328,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.MoveToArchive -> handleMoveToArchiveAction(viewAction)
                 is MailboxViewAction.MoveToSpam -> handleMoveToSpamAction(viewAction)
                 is MailboxViewAction.EnterSearchMode -> emitNewStateFrom(viewAction)
-                is MailboxViewAction.ExitSearchMode -> handleExitSearchMode(viewAction)
+                is MailboxViewAction.ExitSearchMode -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.SearchQuery -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.SearchResult -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.NavigateToInboxLabel -> handleNavigateToInbox()
@@ -375,14 +373,6 @@ class MailboxViewModel @Inject constructor(
 
     private fun handleDeselectAllAction() {
         emitNewStateFrom(MailboxEvent.AllItemsDeselected)
-    }
-
-    private suspend fun handleExitSearchMode(viewAction: MailboxViewAction) {
-        val user = primaryUserId.filterNotNull().first()
-
-        deleteSearchResults(user, state.value.getSearchQuery())
-
-        emitNewStateFrom(viewAction)
     }
 
     private suspend fun handleMailboxItemChanged(updatedItemIds: List<String>) {
@@ -1093,11 +1083,6 @@ class MailboxViewModel @Inject constructor(
 
     private fun MailboxState.isInSearchMode() =
         this.mailboxListState is MailboxListState.Data && this.mailboxListState.searchState.isInSearch()
-
-    private fun MailboxState.getSearchQuery() = (this.mailboxListState as? MailboxListState.Data)
-        ?.searchState
-        ?.searchQuery
-        ?: ""
 
     private fun Flow<MailboxState>.observeSelectedMailboxItems() =
         this.map { it.mailboxListState as? MailboxListState.Data.SelectionMode }

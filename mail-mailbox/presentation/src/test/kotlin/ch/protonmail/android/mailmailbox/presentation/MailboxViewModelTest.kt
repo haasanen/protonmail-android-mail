@@ -96,7 +96,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteAllMessagesInLocation
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
-import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
 import ch.protonmail.android.mailmessage.domain.usecase.HandleAvatarImageLoadingFailure
 import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
@@ -240,7 +239,6 @@ class MailboxViewModelTest {
     private val starConversations = mockk<StarConversations>()
     private val unStarMessages = mockk<UnStarMessages>()
     private val unStarConversations = mockk<UnStarConversations>()
-    private val deleteSearchResults = mockk<DeleteSearchResults>()
     private val getBottomSheetActions = mockk<GetBottomSheetActions>()
     private val observePrimaryAccountAvatarItem = mockk<ObservePrimaryAccountAvatarItem> {
         every { this@mockk() } returns flowOf()
@@ -315,7 +313,6 @@ class MailboxViewModelTest {
             unStarConversations = unStarConversations,
             mailboxReducer = mailboxReducer,
             dispatchersProvider = TestDispatcherProvider(),
-            deleteSearchResults = deleteSearchResults,
             findLocalSystemLabelId = findLocalSystemLabelId,
             loadAvatarImage = loadAvatarImage,
             handleAvatarImageLoadingFailure = handleAvatarImageLoadingFailure,
@@ -2790,7 +2787,6 @@ class MailboxViewModelTest {
                 MailboxViewAction.ExitSearchMode
             )
         } returns expectedState
-        coEvery { deleteSearchResults.invoke(any(), any()) } just runs
         expectPagerMock()
 
         // When
@@ -2799,7 +2795,6 @@ class MailboxViewModelTest {
 
             // Then
             assertEquals(expectedState, awaitItem())
-            coVerify { deleteSearchResults.invoke(any(), any()) }
         }
     }
 
