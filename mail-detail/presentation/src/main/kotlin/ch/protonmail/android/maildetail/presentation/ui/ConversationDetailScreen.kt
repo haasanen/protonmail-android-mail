@@ -121,6 +121,7 @@ import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
+import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
@@ -519,7 +520,8 @@ fun ConversationDetailScreen(
                 },
                 onRetryRsvpEventLoading = {
                     viewModel.submit(ConversationDetailViewAction.RetryRsvpEventLoading(MessageId(it.id)))
-                }
+                },
+                onAnswerRsvpEvent = { _, _ -> }
             ),
             scrollToMessageId = state.scrollToMessage?.id
         )
@@ -720,7 +722,8 @@ fun ConversationDetailScreen(
                     onMarkMessageAsLegitimate = actions.onMarkMessageAsLegitimate,
                     onUnblockSender = actions.onUnblockSender,
                     onEditScheduleSendMessage = actions.onEditScheduleSendMessage,
-                    onRetryRsvpEventLoading = actions.onRetryRsvpEventLoading
+                    onRetryRsvpEventLoading = actions.onRetryRsvpEventLoading,
+                    onAnswerRsvpEvent = actions.onAnswerRsvpEvent
                 )
                 MessagesContentWithHiddenEdges(
                     uiModels = state.messagesState.messages,
@@ -1086,7 +1089,8 @@ object ConversationDetailScreen {
         val onUnblockSender: (MessageIdUiModel, String) -> Unit,
         val onEditScheduleSendMessage: (MessageIdUiModel) -> Unit,
         val onExitWithOpenInComposer: (MessageIdUiModel) -> Unit,
-        val onRetryRsvpEventLoading: (MessageIdUiModel) -> Unit
+        val onRetryRsvpEventLoading: (MessageIdUiModel) -> Unit,
+        val onAnswerRsvpEvent: (MessageIdUiModel, RsvpAnswer) -> Unit
     ) {
 
         companion object {
@@ -1138,7 +1142,8 @@ object ConversationDetailScreen {
                 onUnblockSender = { _, _ -> },
                 onEditScheduleSendMessage = {},
                 onExitWithOpenInComposer = {},
-                onRetryRsvpEventLoading = {}
+                onRetryRsvpEventLoading = {},
+                onAnswerRsvpEvent = { _, _ -> }
             )
         }
     }

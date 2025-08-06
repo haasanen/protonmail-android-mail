@@ -73,6 +73,7 @@ import ch.protonmail.android.maildetail.presentation.ui.rsvpwidget.RsvpWidgetLoa
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
+import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 
 @Composable
@@ -270,7 +271,10 @@ private fun ColumnScope.ConversationDetailExpandedItem(
                 is RsvpWidgetUiModel.Error -> RsvpWidgetError(
                     onRetry = { actions.onRetryRsvpEventLoading(uiModel.messageId) }
                 )
-                is RsvpWidgetUiModel.Shown -> RsvpWidget(uiModel.messageRsvpWidgetUiModel.event)
+                is RsvpWidgetUiModel.Shown -> RsvpWidget(
+                    uiModel.messageRsvpWidgetUiModel.event,
+                    { actions.onAnswerRsvpEvent(uiModel.messageId, it) }
+                )
             }
 
             MessageBanners(
@@ -384,7 +388,8 @@ object ConversationDetailItem {
         val onMarkMessageAsLegitimate: (MessageIdUiModel, Boolean) -> Unit,
         val onUnblockSender: (MessageIdUiModel, String) -> Unit,
         val onEditScheduleSendMessage: (MessageIdUiModel) -> Unit,
-        val onRetryRsvpEventLoading: (MessageIdUiModel) -> Unit
+        val onRetryRsvpEventLoading: (MessageIdUiModel) -> Unit,
+        val onAnswerRsvpEvent: (MessageIdUiModel, RsvpAnswer) -> Unit
     )
 
     val previewActions = Actions(
@@ -415,7 +420,8 @@ object ConversationDetailItem {
         { model: MessageIdUiModel, bool: Boolean -> },
         { model: MessageIdUiModel, string: String -> },
         { model: MessageIdUiModel -> },
-        {}
+        {},
+        { _, _ -> }
     )
 }
 

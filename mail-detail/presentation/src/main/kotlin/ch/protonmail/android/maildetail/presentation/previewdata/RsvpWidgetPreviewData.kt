@@ -34,7 +34,7 @@ object RsvpWidgetPreviewData {
         title = TextUiModel.Text("Whispers of Tomorrow: An Evening of Unexpected Wonders"),
         dateTime = TextUiModel.Text("15 Jul • 14:30 - 15:30"),
         isAttendanceOptional = true,
-        buttons = RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Unanswered),
+        buttons = RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Unanswered, isAnsweringInProgress = false),
         calendar = RsvpCalendarUiModel(
             color = Color.Magenta,
             name = TextUiModel.Text("Work")
@@ -74,7 +74,7 @@ object RsvpWidgetPreviewData {
         title = TextUiModel.Text("Inbox OKR Weekly"),
         dateTime = TextUiModel.Text("15 Jul • 14:30 - 15:30"),
         isAttendanceOptional = true,
-        buttons = RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Yes),
+        buttons = RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Yes, isAnsweringInProgress = false),
         calendar = RsvpCalendarUiModel(
             color = Color.Magenta,
             name = TextUiModel.Text("Work")

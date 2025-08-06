@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -52,10 +53,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
-import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.labelMediumNorm
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
@@ -70,9 +71,14 @@ import ch.protonmail.android.maildetail.presentation.model.RsvpButtonsUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpEventUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpStatusUiModel
 import ch.protonmail.android.maildetail.presentation.previewdata.RsvpWidgetPreviewData
+import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 
 @Composable
-fun RsvpWidget(uiModel: RsvpEventUiModel, modifier: Modifier = Modifier) {
+fun RsvpWidget(
+    uiModel: RsvpEventUiModel,
+    onAnswerRsvpEvent: (RsvpAnswer) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .padding(horizontal = ProtonDimens.Spacing.Large)
@@ -100,7 +106,7 @@ fun RsvpWidget(uiModel: RsvpEventUiModel, modifier: Modifier = Modifier) {
                 isAttendanceOptional = uiModel.isAttendanceOptional
             )
 
-            RsvpResponse(uiModel.buttons)
+            RsvpResponse(uiModel.buttons, onAnswerRsvpEvent)
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
             uiModel.calendar?.let {
@@ -207,7 +213,7 @@ private fun RsvpOverview(
 }
 
 @Composable
-private fun RsvpResponse(uiModel: RsvpButtonsUiModel) {
+private fun RsvpResponse(uiModel: RsvpButtonsUiModel, onAnswerRsvpEvent: (RsvpAnswer) -> Unit) {
     when (uiModel) {
         is RsvpButtonsUiModel.Hidden -> Unit
         is RsvpButtonsUiModel.Shown -> {
@@ -219,17 +225,36 @@ private fun RsvpResponse(uiModel: RsvpButtonsUiModel) {
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.MediumLight))
 
             when (uiModel.answer) {
-                RsvpAttendeeAnswer.Yes -> RsvpSingleButton(label = R.string.rsvp_widget_yes_long)
-                RsvpAttendeeAnswer.No -> RsvpSingleButton(label = R.string.rsvp_widget_no_long)
-                RsvpAttendeeAnswer.Maybe -> RsvpSingleButton(label = R.string.rsvp_widget_maybe_long)
-                RsvpAttendeeAnswer.Unanswered -> RsvpAllButtons()
+                RsvpAttendeeAnswer.Yes -> RsvpSingleButton(
+                    label = R.string.rsvp_widget_yes_long,
+                    isAnsweringInProgress = uiModel.isAnsweringInProgress,
+                    onAnswerRsvpEvent = onAnswerRsvpEvent
+                )
+                RsvpAttendeeAnswer.No -> RsvpSingleButton(
+                    label = R.string.rsvp_widget_no_long,
+                    isAnsweringInProgress = uiModel.isAnsweringInProgress,
+                    onAnswerRsvpEvent = onAnswerRsvpEvent
+                )
+                RsvpAttendeeAnswer.Maybe -> RsvpSingleButton(
+                    label = R.string.rsvp_widget_maybe_long,
+                    isAnsweringInProgress = uiModel.isAnsweringInProgress,
+                    onAnswerRsvpEvent = onAnswerRsvpEvent
+                )
+                RsvpAttendeeAnswer.Unanswered -> RsvpAllButtons(
+                    onAnswerRsvpEvent = onAnswerRsvpEvent
+                )
             }
         }
     }
 }
 
 @Composable
-private fun RsvpSingleButton(@StringRes label: Int, modifier: Modifier = Modifier) {
+private fun RsvpSingleButton(
+    @StringRes label: Int,
+    isAnsweringInProgress: Boolean,
+    onAnswerRsvpEvent: (RsvpAnswer) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val expanded = remember { mutableStateOf(false) }
 
     Row(
@@ -242,6 +267,7 @@ private fun RsvpSingleButton(@StringRes label: Int, modifier: Modifier = Modifie
             )
             .clip(ProtonTheme.shapes.massive)
             .clickable(
+                enabled = !isAnsweringInProgress,
                 interactionSource = remember { MutableInteractionSource() },
                 indication = ripple(color = ProtonTheme.colors.interactionBrandWeakPressed),
                 role = Role.Button,
@@ -257,12 +283,20 @@ private fun RsvpSingleButton(@StringRes label: Int, modifier: Modifier = Modifie
             )
         )
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
-        Icon(
-            modifier = Modifier.size(ProtonDimens.IconSize.Small),
-            painter = painterResource(id = R.drawable.ic_proton_chevron_down_filled),
-            contentDescription = NO_CONTENT_DESCRIPTION,
-            tint = ProtonTheme.colors.brandPlus30
-        )
+        if (isAnsweringInProgress) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(ProtonDimens.IconSize.Small),
+                color = ProtonTheme.colors.brandPlus30,
+                strokeWidth = 2.dp
+            )
+        } else {
+            Icon(
+                modifier = Modifier.size(ProtonDimens.IconSize.Small),
+                painter = painterResource(id = R.drawable.ic_proton_chevron_down_filled),
+                contentDescription = NO_CONTENT_DESCRIPTION,
+                tint = ProtonTheme.colors.brandPlus30
+            )
+        }
 
         DropdownMenu(
             expanded = expanded.value,
@@ -273,43 +307,64 @@ private fun RsvpSingleButton(@StringRes label: Int, modifier: Modifier = Modifie
                 text = {
                     Text(
                         text = stringResource(id = R.string.rsvp_widget_yes_long),
-                        style = ProtonTheme.typography.bodyMediumNorm
+                        style = ProtonTheme.typography.bodyLargeNorm
                     )
                 },
-                onClick = { expanded.value = false }
+                onClick = {
+                    expanded.value = false
+                    onAnswerRsvpEvent(RsvpAnswer.Yes)
+                }
             )
             DropdownMenuItem(
                 text = {
                     Text(
                         text = stringResource(id = R.string.rsvp_widget_maybe_long),
-                        style = ProtonTheme.typography.bodyMediumNorm
+                        style = ProtonTheme.typography.bodyLargeNorm
                     )
                 },
-                onClick = { expanded.value = false }
+                onClick = {
+                    expanded.value = false
+                    onAnswerRsvpEvent(RsvpAnswer.Maybe)
+                }
             )
             DropdownMenuItem(
                 text = {
                     Text(
                         text = stringResource(id = R.string.rsvp_widget_no_long),
-                        style = ProtonTheme.typography.bodyMediumNorm
+                        style = ProtonTheme.typography.bodyLargeNorm
                     )
                 },
-                onClick = { expanded.value = false }
+                onClick = {
+                    expanded.value = false
+                    onAnswerRsvpEvent(RsvpAnswer.No)
+                }
             )
         }
     }
 }
 
 @Composable
-private fun RsvpAllButtons(modifier: Modifier = Modifier) {
+private fun RsvpAllButtons(onAnswerRsvpEvent: (RsvpAnswer) -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.fillMaxWidth()
     ) {
-        RsvpButton(label = R.string.rsvp_widget_yes, onClick = {}, modifier = Modifier.weight(1f))
+        RsvpButton(
+            label = R.string.rsvp_widget_yes,
+            onClick = { onAnswerRsvpEvent(RsvpAnswer.Yes) },
+            modifier = Modifier.weight(1f)
+        )
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Compact))
-        RsvpButton(label = R.string.rsvp_widget_maybe, onClick = {}, modifier = Modifier.weight(1f))
+        RsvpButton(
+            label = R.string.rsvp_widget_maybe,
+            onClick = { onAnswerRsvpEvent(RsvpAnswer.Maybe) },
+            modifier = Modifier.weight(1f)
+        )
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Compact))
-        RsvpButton(label = R.string.rsvp_widget_no, onClick = {}, modifier = Modifier.weight(1f))
+        RsvpButton(
+            label = R.string.rsvp_widget_no,
+            onClick = { onAnswerRsvpEvent(RsvpAnswer.No) },
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
@@ -496,7 +551,8 @@ private fun RsvpStatusUiModel.getBackgroundColor() = when (this) {
 @Composable
 fun RsvpWidgetUnansweredPreview() {
     RsvpWidget(
-        uiModel = RsvpWidgetPreviewData.UnansweredWithMultipleParticipants
+        uiModel = RsvpWidgetPreviewData.UnansweredWithMultipleParticipants,
+        onAnswerRsvpEvent = {}
     )
 }
 
@@ -504,6 +560,7 @@ fun RsvpWidgetUnansweredPreview() {
 @Composable
 fun RsvpWidgetAnsweredPreview() {
     RsvpWidget(
-        uiModel = RsvpWidgetPreviewData.AnsweredWithOneParticipantAndStatus
+        uiModel = RsvpWidgetPreviewData.AnsweredWithOneParticipantAndStatus,
+        onAnswerRsvpEvent = {}
     )
 }

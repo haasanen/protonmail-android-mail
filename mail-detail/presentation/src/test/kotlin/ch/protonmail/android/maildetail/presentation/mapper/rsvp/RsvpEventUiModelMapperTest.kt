@@ -38,7 +38,7 @@ class RsvpEventUiModelMapperTest {
         every { this@mockk.toUiModel(any()) } returns RsvpStatusUiModel.EventCancelled
     }
     private val rsvpButtonsUiModelMapper = mockk<RsvpButtonsUiModelMapper> {
-        every { this@mockk.toUiModel(any(), any()) } returns RsvpButtonsUiModel.Hidden
+        every { this@mockk.toUiModel(any(), any(), any()) } returns RsvpButtonsUiModel.Hidden
     }
 
     private val mapper = RsvpEventUiModelMapper(

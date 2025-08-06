@@ -71,7 +71,10 @@ data class RsvpCalendarUiModel(
 
 sealed interface RsvpButtonsUiModel {
     data object Hidden : RsvpButtonsUiModel
-    data class Shown(val answer: RsvpAttendeeAnswer) : RsvpButtonsUiModel
+    data class Shown(
+        val answer: RsvpAttendeeAnswer,
+        val isAnsweringInProgress: Boolean
+    ) : RsvpButtonsUiModel
 }
 
 enum class RsvpAttendeeAnswer { Yes, No, Maybe, Unanswered }

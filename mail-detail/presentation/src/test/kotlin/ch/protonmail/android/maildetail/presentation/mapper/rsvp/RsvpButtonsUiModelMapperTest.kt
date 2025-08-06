@@ -20,10 +20,10 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.Yes
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = false)
 
         // Then
-        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Yes), result)
+        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Yes, isAnsweringInProgress = false), result)
     }
 
     @Test
@@ -33,10 +33,10 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.No
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = false)
 
         // Then
-        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.No), result)
+        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.No, isAnsweringInProgress = false), result)
     }
 
     @Test
@@ -46,10 +46,10 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.Maybe
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = false)
 
         // Then
-        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Maybe), result)
+        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Maybe, isAnsweringInProgress = false), result)
     }
 
     @Test
@@ -59,10 +59,10 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.Unanswered
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = false)
 
         // Then
-        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Unanswered), result)
+        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Unanswered, isAnsweringInProgress = false), result)
     }
 
     @Test
@@ -72,10 +72,10 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.Yes
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = true)
 
         // Then
-        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Yes), result)
+        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Yes, isAnsweringInProgress = true), result)
     }
 
     @Test
@@ -85,10 +85,10 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.No
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = true)
 
         // Then
-        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.No), result)
+        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.No, isAnsweringInProgress = true), result)
     }
 
     @Test
@@ -98,10 +98,10 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.Maybe
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = true)
 
         // Then
-        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Maybe), result)
+        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Maybe, isAnsweringInProgress = true), result)
     }
 
     @Test
@@ -111,10 +111,10 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.Unanswered
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = true)
 
         // Then
-        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Unanswered), result)
+        assertEquals(RsvpButtonsUiModel.Shown(RsvpAttendeeAnswer.Unanswered, isAnsweringInProgress = true), result)
     }
 
     @Test
@@ -124,7 +124,7 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.Yes
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = false)
 
         // Then
         assertEquals(RsvpButtonsUiModel.Hidden, result)
@@ -137,7 +137,7 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.No
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = false)
 
         // Then
         assertEquals(RsvpButtonsUiModel.Hidden, result)
@@ -150,7 +150,7 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.Maybe
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = false)
 
         // Then
         assertEquals(RsvpButtonsUiModel.Hidden, result)
@@ -163,7 +163,7 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.Unanswered
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = false)
 
         // Then
         assertEquals(RsvpButtonsUiModel.Hidden, result)
@@ -176,7 +176,7 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.Yes
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = false)
 
         // Then
         assertEquals(RsvpButtonsUiModel.Hidden, result)
@@ -189,7 +189,7 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.Maybe
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = false)
 
         // Then
         assertEquals(RsvpButtonsUiModel.Hidden, result)
@@ -202,7 +202,7 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.Yes
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = false)
 
         // Then
         assertEquals(RsvpButtonsUiModel.Hidden, result)
@@ -215,7 +215,7 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = RsvpAttendeeAnswer.Unanswered
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = false)
 
         // Then
         assertEquals(RsvpButtonsUiModel.Hidden, result)
@@ -228,7 +228,7 @@ class RsvpButtonsUiModelMapperTest {
         val attendeeAnswer = null
 
         // When
-        val result = mapper.toUiModel(state, attendeeAnswer)
+        val result = mapper.toUiModel(state, attendeeAnswer, isAnsweringInProgress = false)
 
         // Then
         assertEquals(RsvpButtonsUiModel.Hidden, result)

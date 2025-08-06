@@ -26,14 +26,18 @@ import javax.inject.Inject
 
 class RsvpButtonsUiModelMapper @Inject constructor() {
 
-    fun toUiModel(state: RsvpState, attendeeAnswer: RsvpAttendeeAnswer?): RsvpButtonsUiModel {
+    fun toUiModel(
+        state: RsvpState,
+        attendeeAnswer: RsvpAttendeeAnswer?,
+        isAnsweringInProgress: Boolean
+    ): RsvpButtonsUiModel {
         // When attendeeAnswer is null, the user is the organizer of the event
         if (attendeeAnswer == null) return RsvpButtonsUiModel.Hidden
 
         return when (state) {
             is RsvpState.AnswerableInvite -> when (state.progress) {
                 RsvpProgress.Pending,
-                RsvpProgress.Ongoing -> RsvpButtonsUiModel.Shown(attendeeAnswer)
+                RsvpProgress.Ongoing -> RsvpButtonsUiModel.Shown(attendeeAnswer, isAnsweringInProgress)
                 RsvpProgress.Ended -> RsvpButtonsUiModel.Hidden
             }
             else -> RsvpButtonsUiModel.Hidden

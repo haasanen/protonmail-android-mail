@@ -36,6 +36,7 @@ import ch.protonmail.android.maildetail.presentation.model.RsvpCalendarUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpEventUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpOrganizerUiModel
 import ch.protonmail.android.maildetail.presentation.usecase.FormatRsvpWidgetTime
+import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import javax.inject.Inject
 
 class RsvpEventUiModelMapper @Inject constructor(
@@ -45,7 +46,7 @@ class RsvpEventUiModelMapper @Inject constructor(
     private val rsvpButtonsUiModelMapper: RsvpButtonsUiModelMapper
 ) {
 
-    fun toUiModel(eventDetails: RsvpEvent): RsvpEventUiModel {
+    fun toUiModel(eventDetails: RsvpEvent, answer: RsvpAnswer? = null): RsvpEventUiModel {
         // When currentAttendee is null, the user is the organizer of the event
         val currentAttendee = eventDetails.userAttendeeIdx?.let {
             eventDetails.attendees[it]
@@ -55,7 +56,11 @@ class RsvpEventUiModelMapper @Inject constructor(
             title = eventDetails.getEventTitle(),
             dateTime = formatRsvpWidgetTime(eventDetails.occurrence, eventDetails.startsAt, eventDetails.endsAt),
             isAttendanceOptional = isAttendanceOptional(eventDetails.state),
-            buttons = rsvpButtonsUiModelMapper.toUiModel(eventDetails.state, currentAttendee?.status?.toRsvpAnswer()),
+            buttons = rsvpButtonsUiModelMapper.toUiModel(
+                eventDetails.state,
+                getRsvpAnswer(answer, currentAttendee?.status),
+                isAnsweringInProgress = answer != null
+            ),
             calendar = eventDetails.calendar?.toUiModel(),
             recurrence = eventDetails.recurrence?.let { TextUiModel.Text(it) },
             location = eventDetails.location?.let { TextUiModel.Text(it) },
@@ -76,6 +81,9 @@ class RsvpEventUiModelMapper @Inject constructor(
         else -> false
     }
 
+    private fun getRsvpAnswer(answerInProgress: RsvpAnswer?, status: RsvpAttendeeStatus?) =
+        answerInProgress?.toRsvpAttendeeAnswer() ?: status?.toRsvpAttendeeAnswer()
+
     private fun RsvpCalendar.toUiModel() = RsvpCalendarUiModel(
         color = colorMapper.toColor(this.color).getOrElse { Color.Unspecified },
         name = TextUiModel.Text(this.name)
@@ -87,15 +95,21 @@ class RsvpEventUiModelMapper @Inject constructor(
     )
 
     private fun RsvpAttendee.toUiModel() = RsvpAttendeeUiModel(
-        answer = this.status.toRsvpAnswer(),
+        answer = this.status.toRsvpAttendeeAnswer(),
         name = this.name?.let { TextUiModel.Text(it) },
         email = TextUiModel.Text(this.email)
     )
 
-    private fun RsvpAttendeeStatus.toRsvpAnswer() = when (this) {
+    private fun RsvpAttendeeStatus.toRsvpAttendeeAnswer() = when (this) {
         RsvpAttendeeStatus.Unanswered -> RsvpAttendeeAnswer.Unanswered
         RsvpAttendeeStatus.Maybe -> RsvpAttendeeAnswer.Maybe
         RsvpAttendeeStatus.No -> RsvpAttendeeAnswer.No
         RsvpAttendeeStatus.Yes -> RsvpAttendeeAnswer.Yes
+    }
+
+    private fun RsvpAnswer.toRsvpAttendeeAnswer() = when (this) {
+        RsvpAnswer.Maybe -> RsvpAttendeeAnswer.Maybe
+        RsvpAnswer.No -> RsvpAttendeeAnswer.No
+        RsvpAnswer.Yes -> RsvpAttendeeAnswer.Yes
     }
 }
