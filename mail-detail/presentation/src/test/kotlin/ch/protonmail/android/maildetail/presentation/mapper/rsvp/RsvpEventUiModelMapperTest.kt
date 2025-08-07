@@ -13,6 +13,7 @@ import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
 import ch.protonmail.android.mailmessage.domain.model.RsvpOccurrence
 import ch.protonmail.android.mailmessage.domain.model.RsvpOrganizer
 import ch.protonmail.android.mailmessage.domain.model.RsvpState
+import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeAnswer
 import ch.protonmail.android.maildetail.presentation.model.RsvpAttendeeUiModel
 import ch.protonmail.android.maildetail.presentation.model.RsvpButtonsUiModel
@@ -117,7 +118,7 @@ class RsvpEventUiModelMapperTest {
             attendees = listOf(
                 RsvpAttendeeUiModel(
                     answer = RsvpAttendeeAnswer.Unanswered,
-                    name = TextUiModel.Text("You"),
+                    name = TextUiModel.TextRes(R.string.rsvp_widget_you),
                     email = TextUiModel.Text("you@protonmail.com")
                 ),
                 RsvpAttendeeUiModel(

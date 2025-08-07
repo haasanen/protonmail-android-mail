@@ -442,7 +442,11 @@ private fun RsvpAttendees(attendees: List<RsvpAttendeeUiModel>) {
 
     if (attendees.size == 1) {
         val attendee = attendees.first()
-        val text = "${stringResource(id = R.string.rsvp_widget_you)} • ${attendee.email.string()}"
+        val text = if (attendee.name == null) {
+            attendee.email.string()
+        } else {
+            "${attendee.name.string()} • ${attendee.email.string()}"
+        }
 
         RsvpDetailsRow(
             icon = attendee.answer.getIcon(isOnlyAttendee = true),

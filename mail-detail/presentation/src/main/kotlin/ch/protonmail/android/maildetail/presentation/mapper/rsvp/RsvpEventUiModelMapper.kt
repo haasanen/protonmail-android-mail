@@ -65,7 +65,9 @@ class RsvpEventUiModelMapper @Inject constructor(
             recurrence = eventDetails.recurrence?.let { TextUiModel.Text(it) },
             location = eventDetails.location?.let { TextUiModel.Text(it) },
             organizer = eventDetails.organizer.toUiModel(),
-            attendees = eventDetails.attendees.map { it.toUiModel() },
+            attendees = eventDetails.attendees.mapIndexed { index, rsvpAttendee ->
+                rsvpAttendee.toUiModel(isUserAttendee = index == eventDetails.userAttendeeIdx)
+            },
             status = rsvpStatusUiModelMapper.toUiModel(eventDetails.state)
         )
     }
@@ -94,9 +96,13 @@ class RsvpEventUiModelMapper @Inject constructor(
         email = TextUiModel.Text(this.email)
     )
 
-    private fun RsvpAttendee.toUiModel() = RsvpAttendeeUiModel(
+    private fun RsvpAttendee.toUiModel(isUserAttendee: Boolean) = RsvpAttendeeUiModel(
         answer = this.status.toRsvpAttendeeAnswer(),
-        name = this.name?.let { TextUiModel.Text(it) },
+        name = if (isUserAttendee) {
+            TextUiModel.TextRes(R.string.rsvp_widget_you)
+        } else {
+            this.name?.let { TextUiModel.Text(it) }
+        },
         email = TextUiModel.Text(this.email)
     )
 
