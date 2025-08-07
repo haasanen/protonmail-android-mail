@@ -25,3 +25,8 @@ sealed interface SnoozeError {
     data object InvalidSnoozeLocation : SnoozeError
     data class Unknown(val error: DataError? = null) : SnoozeError
 }
+
+sealed interface UnsnoozeError {
+    data object InvalidSnoozeLocation : UnsnoozeError
+    data class Unknown(val error: DataError? = null) : UnsnoozeError
+}

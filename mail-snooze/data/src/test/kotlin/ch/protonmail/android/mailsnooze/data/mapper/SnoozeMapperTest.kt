@@ -30,6 +30,7 @@ import ch.protonmail.android.mailsnooze.domain.model.SnoozeWeekStart
 import ch.protonmail.android.mailsnooze.domain.model.ThisWeekend
 import ch.protonmail.android.mailsnooze.domain.model.Tomorrow
 import ch.protonmail.android.mailsnooze.domain.model.UnSnooze
+import ch.protonmail.android.mailsnooze.domain.model.UnsnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.UpgradeRequired
 import org.junit.Assert
 import uniffi.proton_mail_uniffi.ProtonError
@@ -101,6 +102,24 @@ class SnoozeMapperTest {
         assertEquals(
             SnoozeError.SnoozeIsInThePast,
             error.toSnoozeError()
+        )
+    }
+
+    @Test
+    fun `map proton error to unsnooze error`() {
+        val error = SnoozeErrorRemote.Other(ProtonError.Network)
+        assertEquals(
+            UnsnoozeError.Unknown(DataError.Remote.Http(NetworkError.NoNetwork)),
+            error.toUnsnoozeError()
+        )
+    }
+
+    @Test
+    fun `map remote unsnooze error to snooze error`() {
+        val error = SnoozeErrorRemote.Reason(SnoozeErrorReason.SNOOZE_TIME_IN_THE_PAST)
+        assertEquals(
+            UnsnoozeError.Unknown(),
+            error.toUnsnoozeError()
         )
     }
 

@@ -29,6 +29,7 @@ import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOptionsState
 import ch.protonmail.android.mailsnooze.presentation.model.mapper.DayTimeMapper
 import ch.protonmail.android.mailsnooze.presentation.model.mapper.SnoozeErrorMapper.toUIModel
 import ch.protonmail.android.mailsnooze.presentation.model.mapper.SnoozeOptionUiModelMapper.toSnoozeOptionUiModel
+import ch.protonmail.android.mailsnooze.presentation.model.mapper.SnoozeSuccessMapper.snoozeSuccessMessage
 import ch.protonmail.android.mailsnooze.presentation.model.mapper.SnoozeSuccessMapper.toSuccessMessage
 import ch.protonmail.android.mailsnooze.presentation.model.onErrorEffect
 import ch.protonmail.android.mailsnooze.presentation.model.onSuccessEffect
@@ -99,12 +100,29 @@ class SnoozeOptionsBottomSheetViewModel @AssistedInject constructor(
         }
     }
 
+    private fun onUnsnooze() {
+        viewModelScope.launch {
+            snoozeRepository.unSnoozeConversation(
+                userId = initialData.userId,
+                labelId = initialData.labelId,
+                conversationIds = initialData.items.map { it.toConversationId() }
+            ).onLeft { error ->
+                _effects.update { it.onErrorEffect(error.toUIModel()) }
+            }.onRight {
+                _effects.update { it.onSuccessEffect(snoozeSuccessMessage()) }
+            }
+        }
+    }
+
     fun onAction(action: SnoozeOperationViewAction) {
         viewModelScope.launch {
             when (action) {
                 is SnoozeOperationViewAction.SnoozeUntil -> onSelectSnoozeTime(action.snoozeTime)
                 is SnoozeOperationViewAction.PickSnooze -> {}
-                is SnoozeOperationViewAction.UnSnooze -> {}
+                is SnoozeOperationViewAction.UnSnooze -> {
+                    onUnsnooze()
+                }
+
                 is SnoozeOperationViewAction.Upgrade -> {}
             }
         }

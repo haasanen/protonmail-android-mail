@@ -148,7 +148,7 @@ fun OptionsGrid(
 
                     is CustomSnoozeUiModel -> CustomSnoozeButton(modifier) { onEvent(item.action) }
                     is UpgradeToSnoozeUiModel -> UpsellSnoozeButton(modifier) { onEvent(item.action) }
-                    is UnSnooze -> UnsnoozeButton(modifier) { }
+                    is UnSnooze -> UnsnoozeButton(modifier) { onEvent(item.action) }
                 }
             }
         }

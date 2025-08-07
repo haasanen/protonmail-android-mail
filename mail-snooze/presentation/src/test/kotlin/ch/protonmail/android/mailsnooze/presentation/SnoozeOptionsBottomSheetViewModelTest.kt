@@ -31,6 +31,7 @@ import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeWeekStart
 import ch.protonmail.android.mailsnooze.domain.model.Tomorrow
+import ch.protonmail.android.mailsnooze.domain.model.UnsnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.UpgradeRequired
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOperationViewAction
@@ -80,6 +81,14 @@ class SnoozeOptionsBottomSheetViewModelTest {
                 labelId,
                 inputItems,
                 inputSnoozeTime
+            )
+        } returns Unit.right()
+
+        coEvery {
+            this@mockk.unSnoozeConversation(
+                userId,
+                labelId,
+                inputItems
             )
         } returns Unit.right()
     }
@@ -170,6 +179,46 @@ class SnoozeOptionsBottomSheetViewModelTest {
         }
     }
 
+    @Test
+    fun `when Operation SnoozeOperationViewAction Unsnooze AND success THEN emit Success effect`() = runTest {
+        // when
+        sut.onAction(inputUnSnoozeOperation)
+
+        sut.effects.test {
+            val expected =
+                TextUiModel(
+                    R.string.unsnooze_sheet_success
+                )
+            assertEquals(SnoozeOptionsEffects(), awaitItem())
+            assertEquals(expected, awaitItem().success.consume())
+        }
+    }
+
+    @Test
+    fun `when Operation SnoozeOperationViewAction UnSnooze AND error THEN emit Error effect`() = runTest {
+        coEvery {
+            mockSnoozeRepository.unSnoozeConversation(
+                userId,
+                labelId,
+                inputItems
+            )
+        } returns UnsnoozeError.Unknown().left()
+
+        // when
+        sut.onAction(inputUnSnoozeOperation)
+
+        // then
+        sut.effects.test {
+            val expected =
+                TextUiModel(
+                    R.string.snooze_sheet_error_unable_to_unsnooze
+                )
+            assertEquals(SnoozeOptionsEffects(), awaitItem())
+            assertEquals(expected, awaitItem().error.consume())
+        }
+    }
+
+
     companion object {
 
         val userId = UserId("UserId")
@@ -182,6 +231,9 @@ class SnoozeOptionsBottomSheetViewModelTest {
         val inputSnoozeTime = Tomorrow(outputInstant)
         val inputSnoozeOperation =
             SnoozeOperationViewAction.SnoozeUntil(inputSnoozeTime)
+
+        val inputUnSnoozeOperation =
+            SnoozeOperationViewAction.UnSnooze
         val outputSnoozeOptions = listOf(
             Tomorrow(outputInstant),
             UpgradeRequired

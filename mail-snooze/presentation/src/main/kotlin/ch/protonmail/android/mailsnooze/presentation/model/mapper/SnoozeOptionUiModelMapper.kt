@@ -36,6 +36,7 @@ import ch.protonmail.android.mailsnooze.presentation.model.SnoozeOperationViewAc
 import ch.protonmail.android.mailsnooze.presentation.model.SnoozeUntilUiModel
 import ch.protonmail.android.mailsnooze.presentation.model.UnSnooze
 import ch.protonmail.android.mailsnooze.presentation.model.UpgradeToSnoozeUiModel
+import ch.protonmail.android.mailsnooze.domain.model.UnSnooze as UnSnoozeModel
 
 object SnoozeOptionUiModelMapper {
 
@@ -83,6 +84,6 @@ object SnoozeOptionUiModelMapper {
         CustomUnset -> CustomSnoozeUiModel(SnoozeOperationViewAction.PickSnooze)
         is CustomSet -> CustomSnoozeUiModel(SnoozeOperationViewAction.PickSnooze)
         UpgradeRequired -> UpgradeToSnoozeUiModel(SnoozeOperationViewAction.Upgrade)
-        ch.protonmail.android.mailsnooze.domain.model.UnSnooze -> UnSnooze
+        UnSnoozeModel -> UnSnooze(SnoozeOperationViewAction.UnSnooze)
     }
 }

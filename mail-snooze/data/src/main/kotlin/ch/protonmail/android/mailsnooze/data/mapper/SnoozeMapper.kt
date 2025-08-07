@@ -31,6 +31,7 @@ import ch.protonmail.android.mailsnooze.domain.model.SnoozeWeekStart
 import ch.protonmail.android.mailsnooze.domain.model.ThisWeekend
 import ch.protonmail.android.mailsnooze.domain.model.Tomorrow
 import ch.protonmail.android.mailsnooze.domain.model.UnSnooze
+import ch.protonmail.android.mailsnooze.domain.model.UnsnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.UpgradeRequired
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.SnoozeActions
@@ -48,6 +49,14 @@ fun SnoozeErrorRemote.toSnoozeError(): SnoozeError = when (this) {
 }
 
 fun ConversationId.toLocalConversationId(): LocalConversationId = LocalConversationId(this.id.toULong())
+
+fun SnoozeErrorRemote.toUnsnoozeError(): UnsnoozeError = when (this) {
+    is SnoozeErrorRemote.Other -> UnsnoozeError.Unknown(this.v1.toDataError())
+    is SnoozeErrorRemote.Reason -> when (v1) {
+        SnoozeErrorReason.INVALID_SNOOZE_LOCATION -> UnsnoozeError.InvalidSnoozeLocation
+        else -> UnsnoozeError.Unknown(null)
+    }
+}
 
 fun SnoozeWeekStart.toLocalWeekStart() = when (this) {
     SnoozeWeekStart.MONDAY -> LocalNonDefaultWeekStart.MONDAY

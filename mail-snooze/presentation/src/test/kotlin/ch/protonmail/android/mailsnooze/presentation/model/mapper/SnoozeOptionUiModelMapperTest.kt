@@ -130,7 +130,7 @@ class SnoozeOptionUiModelMapperTest {
     fun `when map snoozeOption unsnooze`() {
         val mapped = ch.protonmail.android.mailsnooze.domain.model.UnSnooze.toSnoozeOptionUiModel(dayTimeMapper)
         Assert.assertEquals(
-            UnSnooze,
+            UnSnooze(SnoozeOperationViewAction.UnSnooze),
             mapped
         )
     }

@@ -21,6 +21,7 @@ package ch.protonmail.android.mailsnooze.presentation.model.mapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeTime
+import ch.protonmail.android.mailsnooze.domain.model.UnsnoozeError
 import ch.protonmail.android.mailsnooze.presentation.R
 
 object SnoozeErrorMapper {
@@ -31,6 +32,8 @@ object SnoozeErrorMapper {
             TextUiModel(R.string.snooze_sheet_error_unable_to_snooze)
         }
     }
+
+    fun UnsnoozeError.toUIModel() = TextUiModel(R.string.snooze_sheet_error_unable_to_unsnooze)
 }
 
 object SnoozeSuccessMapper {
@@ -39,4 +42,6 @@ object SnoozeSuccessMapper {
         R.string.snooze_sheet_success,
         dayTimeMapper.toDayTime(this.snoozeTime)
     )
+
+    fun snoozeSuccessMessage() = TextUiModel(R.string.unsnooze_sheet_success)
 }

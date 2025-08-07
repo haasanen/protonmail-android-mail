@@ -29,6 +29,7 @@ import ch.protonmail.android.mailsnooze.domain.model.SnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeWeekStart
 import ch.protonmail.android.mailsnooze.domain.model.ThisWeekend
 import ch.protonmail.android.mailsnooze.domain.model.Tomorrow
+import ch.protonmail.android.mailsnooze.domain.model.UnsnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.UpgradeRequired
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
@@ -62,6 +63,12 @@ class RustSnoozeRepositoryTest {
             this@mockk.snoozeConversation(
                 SampleData.userId, SampleData.inputLabelId, SampleData.conversationIds,
                 SampleData.snoozeTime
+            )
+        } returns Unit.right()
+
+        coEvery {
+            this@mockk.unSnoozeConversation(
+                SampleData.userId, SampleData.inputLabelId, SampleData.conversationIds
             )
         } returns Unit.right()
     }
@@ -135,6 +142,38 @@ class RustSnoozeRepositoryTest {
         val result = sut.snoozeConversation(
             SampleData.userId, SampleData.labelId, SampleData.inputConversationIds,
             Tomorrow(snoozeTime = SampleData.snoozeTime)
+        )
+
+        assertEquals(
+            error,
+            result
+        )
+    }
+
+    @Test
+    fun `when unsnoozeConversations then returns Result right`() = runTest {
+
+        val result = sut.unSnoozeConversation(
+            SampleData.userId, SampleData.labelId, SampleData.inputConversationIds
+        )
+
+        assertEquals(
+            Unit.right(),
+            result
+        )
+    }
+
+    @Test
+    fun `when unsnoozeConversations then returns Result error - left`() = runTest {
+        val error = UnsnoozeError.Unknown().left()
+        coEvery {
+            dataSource.unSnoozeConversation(
+                SampleData.userId, SampleData.inputLabelId, SampleData.conversationIds
+            )
+        } returns error
+
+        val result = sut.unSnoozeConversation(
+            SampleData.userId, SampleData.labelId, SampleData.inputConversationIds
         )
 
         assertEquals(

@@ -25,7 +25,9 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalNonDefaultWeekStart
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import ch.protonmail.android.mailsnooze.data.mapper.toSnoozeError
+import ch.protonmail.android.mailsnooze.data.mapper.toUnsnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeError
+import ch.protonmail.android.mailsnooze.domain.model.UnsnoozeError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
@@ -34,8 +36,10 @@ import uniffi.proton_mail_uniffi.AvailableSnoozeActionsForConversationResult
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.SnoozeActions
 import uniffi.proton_mail_uniffi.SnoozeConversationsResult
+import uniffi.proton_mail_uniffi.UnsnoozeConversationsResult
 import uniffi.proton_mail_uniffi.availableSnoozeActionsForConversation
 import uniffi.proton_mail_uniffi.snoozeConversations
+import uniffi.proton_mail_uniffi.unsnoozeConversations
 import javax.inject.Inject
 import kotlin.time.Instant
 
@@ -97,6 +101,36 @@ class RustSnoozeDataSource @Inject constructor(
             return@withContext right
         }.mapLeft { left ->
             return@withContext SnoozeError.Unknown(left).left()
+        }
+    }
+
+    suspend fun unSnoozeConversation(
+        userId: UserId,
+        labelId: Id,
+        ids: List<LocalConversationId>
+    ): Either<UnsnoozeError, Unit> = withContext(ioDispatcher) {
+        executeWithUserSession(userId) { sessionWrapper ->
+            when (
+                val result = unsnoozeConversations(
+                    sessionWrapper.getRustUserSession(),
+                    labelId = labelId,
+                    ids = ids
+                )
+            ) {
+                is UnsnoozeConversationsResult.Error -> result.v1.toUnsnoozeError().left().apply {
+                    Timber.d("rust-snooze: unsnoozeConversation ERROR: $ids  $this")
+                }
+
+                is UnsnoozeConversationsResult.Ok -> Unit.right().apply {
+                    Timber.d(
+                        "rust-snooze: unsnoozeConversation SUCCESS: labelid $labelId converstionIDs $ids"
+                    )
+                }
+            }
+        }.map { right ->
+            return@withContext right
+        }.mapLeft { left ->
+            return@withContext UnsnoozeError.Unknown(left).left()
         }
     }
 }

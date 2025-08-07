@@ -25,6 +25,7 @@ import ch.protonmail.android.mailsnooze.domain.model.SnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeTime
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeWeekStart
+import ch.protonmail.android.mailsnooze.domain.model.UnsnoozeError
 import me.proton.core.domain.entity.UserId
 
 interface SnoozeRepository {
@@ -42,6 +43,9 @@ interface SnoozeRepository {
         snoozeTime: SnoozeTime
     ): Either<SnoozeError, Unit>
 
-    // coming up
-    // unsnoozeConversations(`session`: MailUserSession, `ids`: List<Id>): UnsnoozeConversationsResult
+    suspend fun unSnoozeConversation(
+        userId: UserId,
+        labelId: LabelId,
+        conversationIds: List<ConversationId>
+    ): Either<UnsnoozeError, Unit>
 }

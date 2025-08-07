@@ -30,6 +30,7 @@ import ch.protonmail.android.mailsnooze.domain.model.SnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeTime
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeWeekStart
+import ch.protonmail.android.mailsnooze.domain.model.UnsnoozeError
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -60,5 +61,14 @@ class RustSnoozeRepositoryImpl @Inject constructor(
         userId, labelId.toLocalLabelId(),
         conversationIds.map { it.toLocalConversationId() },
         snoozeTime.snoozeTime
+    )
+
+    override suspend fun unSnoozeConversation(
+        userId: UserId,
+        labelId: LabelId,
+        conversationIds: List<ConversationId>
+    ): Either<UnsnoozeError, Unit> = rustSnoozeDataSource.unSnoozeConversation(
+        userId, labelId.toLocalLabelId(),
+        conversationIds.map { it.toLocalConversationId() }
     )
 }
