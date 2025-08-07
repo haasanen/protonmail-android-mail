@@ -116,7 +116,7 @@ class RustConversationsQueryImpl @Inject constructor(
 
         val labelId = pageKey.labelId
         val unread = pageKey.readStatus == ReadStatus.Unread
-        Timber.v("rust-conversation-query: observe conversations for labelId $labelId unread: $unread")
+        Timber.d("rust-conversation-query: observe conversations for labelId $labelId unread: $unread")
 
         val pageDescriptor = pageKey.toPageDescriptor(userId)
 
@@ -126,7 +126,7 @@ class RustConversationsQueryImpl @Inject constructor(
             }
         }
 
-        Timber.v("rust-conversation-query: Paging: querying ${pageKey.pageToLoad.name} page for conversation")
+        Timber.d("rust-conversation-query: Paging: querying ${pageKey.pageToLoad.name} page for conversation")
 
         return when (pageKey.pageToLoad) {
             PageToLoad.First,
@@ -149,7 +149,7 @@ class RustConversationsQueryImpl @Inject constructor(
 
     private suspend fun initPaginator(pageDescriptor: PageDescriptor, session: MailUserSessionWrapper) {
 
-        Timber.v("rust-conversation-query: [destroy and] initialize paginator instance...")
+        Timber.d("rust-conversation-query: [destroy and] initialize paginator instance...")
         destroy()
 
         createRustConversationPaginator(
@@ -172,7 +172,7 @@ class RustConversationsQueryImpl @Inject constructor(
             pageKey.pageToLoad == PageToLoad.First
 
     private fun destroy() {
-        Timber.v("rust-conversation-query: disconnecting and destroying watcher")
+        Timber.d("rust-conversation-query: disconnecting and destroying watcher")
         paginatorState?.paginatorWrapper?.disconnect()
         paginatorState = null
     }

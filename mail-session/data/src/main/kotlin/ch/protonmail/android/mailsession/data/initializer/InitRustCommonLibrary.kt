@@ -51,7 +51,7 @@ class InitRustCommonLibrary @Inject constructor(
 ) {
 
     fun init() {
-        Timber.v("rust-session: Let the rust begin...")
+        Timber.d("rust-session: Let the rust begin...")
 
         initializeRustTlsModule()
 
@@ -90,8 +90,8 @@ class InitRustCommonLibrary @Inject constructor(
             }
 
             is CreateMailSessionResult.Ok -> {
-                Timber.v("rust-session: Mail session created! (hash: ${result.v1.hashCode()})")
-                Timber.v("rust-session: Storing mail session to In Memory Session Repository...")
+                Timber.d("rust-session: Mail session created! (hash: ${result.v1.hashCode()})")
+                Timber.d("rust-session: Storing mail session to In Memory Session Repository...")
 
                 mailSessionRepository.setMailSession(result.v1)
             }

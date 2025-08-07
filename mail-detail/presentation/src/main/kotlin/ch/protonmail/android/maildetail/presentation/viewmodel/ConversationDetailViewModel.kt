@@ -784,7 +784,7 @@ class ConversationDetailViewModel @Inject constructor(
         initialEvent: ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet
     ) {
         viewModelScope.launch {
-            Timber.v("more-actions: requesting bottomsheet for convo")
+            Timber.d("more-actions: requesting bottomsheet for convo")
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
@@ -792,7 +792,6 @@ class ConversationDetailViewModel @Inject constructor(
             val moreActions = getMoreActionsBottomSheetData.forConversation(userId, labelId, conversationId)
                 ?: return@launch
 
-            Timber.v("more-actions: emitting convo bottom sheet event $moreActions")
             emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
         }
     }

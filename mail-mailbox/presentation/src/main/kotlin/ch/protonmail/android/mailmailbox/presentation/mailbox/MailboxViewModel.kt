@@ -381,7 +381,6 @@ class MailboxViewModel @Inject constructor(
             val removedItems = itemIds.filterNot { updatedItemIds.contains(it) }
             itemIds.clear()
             itemIds.addAll(updatedItemIds)
-            Timber.d("Removed items: $removedItems")
             if (removedItems.isNotEmpty()) {
                 when (val currentState = state.value.mailboxListState) {
                     is MailboxListState.Data.SelectionMode -> {

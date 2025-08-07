@@ -135,21 +135,21 @@ fun EditableMessageBodyWebView(
             wv.ignoreLongTapOnImages()
         }
         ConsumableLaunchedEffect(injectInlineAttachment) { contentId ->
-            Timber.v("editor-webview: requested injecting inline image into composer... $contentId")
+            Timber.d("editor-webview: requested injecting inline image into composer... $contentId")
             wv.evaluateJavascript("injectInlineImage('$contentId');") {
-                Timber.v("editor-webview: injected inline image with cid $contentId into webview")
+                Timber.d("editor-webview: injected inline image with cid $contentId into webview")
             }
         }
 
         ConsumableLaunchedEffect(stripInlineAttachment) { contentId ->
-            Timber.v("editor-webview: requested to strip inline image from composer... $contentId")
+            Timber.d("editor-webview: requested to strip inline image from composer... $contentId")
             wv.evaluateJavascript("stripInlineImage('$contentId');") {
-                Timber.v("editor-webview: stripped inline image with cid $contentId from webview")
+                Timber.d("editor-webview: stripped inline image with cid $contentId from webview")
             }
         }
 
         ConsumableLaunchedEffect(refreshBody) { refreshedBody ->
-            Timber.v("editor-webview: requested to refresh the draft body...")
+            Timber.d("editor-webview: requested to refresh the draft body...")
             wv.loadDataWithBaseURL(null, refreshedBody.value, MimeType.Html.value, "utf-8", null)
         }
 
@@ -193,9 +193,9 @@ fun EditableMessageBodyWebView(
                 .focusRequester(focusRequester)
                 .onFocusEvent { event ->
                     if (event.hasFocus) {
-                        Timber.v("editor-webview: composable webview has focus; focusing html element...")
+                        Timber.d("editor-webview: composable webview has focus; focusing html element...")
                         webView?.evaluateJavascript("focusEditor();") {
-                            Timber.v("editor-webview: editor webview got focused; show keyboard...")
+                            Timber.d("editor-webview: editor webview got focused; show keyboard...")
                             keyboardController?.show()
                         }
                     }

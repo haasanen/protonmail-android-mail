@@ -37,7 +37,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.repository.MessageActionRepository
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
 class RustMessageActionRepository @Inject constructor(
@@ -56,8 +55,6 @@ class RustMessageActionRepository @Inject constructor(
             messageId.toLocalMessageId(),
             messageThemeOptions.toLocalThemeOptions()
         )
-        Timber.v("rust-message: Available actions: $availableActions \n for messages $messageId")
-
         return availableActions.map { it.toAvailableActions() }
     }
 
@@ -99,8 +96,6 @@ class RustMessageActionRepository @Inject constructor(
             labelId.toLocalLabelId(),
             messageIds.map { it.toLocalMessageId() }
         )
-        Timber.v("rust-message: All bottombar actions: $allActions \n for messages $messageIds")
-
         return allActions.map { it.toAllBottomBarActions() }
     }
 }

@@ -57,7 +57,7 @@ class MessagePaginatorManager @Inject constructor(
         onNewPaginator: suspend () -> Unit
     ): Either<DataError, MessagePaginatorWrapper> = paginatorMutex.withLock {
         if (!shouldInitPaginator(userId, pageKey)) {
-            Timber.v("rust-paginator: reusing existing paginator instance...")
+            Timber.d("rust-paginator: reusing existing paginator instance...")
             return paginator.getOrError()
         }
 

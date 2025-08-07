@@ -188,7 +188,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     CameraPicturePicker(
         effectsState.openCamera,
         onCaptured = { uri ->
-            Timber.v("camera: image from take picture composable, uri: $uri")
             viewModel.submit(ComposerAction.AddAttachments(listOf(uri)))
         },
         onError = { localisedError ->

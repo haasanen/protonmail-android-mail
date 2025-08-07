@@ -35,6 +35,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LabelType
@@ -44,9 +47,6 @@ import uniffi.proton_mail_uniffi.SidebarCustomLabel
 import uniffi.proton_mail_uniffi.SidebarSystemLabel
 import uniffi.proton_mail_uniffi.WatchHandle
 import javax.inject.Inject
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 
 class RustLabelDataSource @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
@@ -70,7 +70,7 @@ class RustLabelDataSource @Inject constructor(
         labelType: LabelType,
         fetchLabels: suspend (SidebarWrapper) -> List<T>?
     ): Flow<List<T>> = callbackFlow {
-        Timber.v("rust-label: initializing ${labelType.name} labels live query")
+        Timber.d("rust-label: initializing ${labelType.name} labels live query")
 
         var sidebar = getRustSidebarInstance(userId)
         if (sidebar == null) {
@@ -93,7 +93,6 @@ class RustLabelDataSource @Inject constructor(
                     withSidebar { safeSidebar ->
                         fetchLabels(safeSidebar)?.let {
                             send(it)
-                            Timber.v("rust-label: ${labelType.name} type labels updated: $it")
                         }
                     }
                 }
@@ -111,8 +110,7 @@ class RustLabelDataSource @Inject constructor(
                     withSidebar { safeSidebar ->
                         fetchLabels(safeSidebar)?.let {
                             send(it)
-                            Timber.v("rust-label: Setting initial value for ${labelType.name} type labels")
-
+                            Timber.d("rust-label: Setting initial value for ${labelType.name} type labels")
                         }
                     }
                 }

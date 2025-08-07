@@ -41,7 +41,7 @@ class RustMailSettingsDataSource @Inject constructor(
         restartTrigger.tryEmit(Unit)
         return restartTrigger.flatMapLatest {
             callbackFlow {
-                Timber.v("rust-settings: initializing mail settings live query")
+                Timber.d("rust-settings: initializing mail settings live query")
                 val session = userSessionRepository.getUserSession(userId)
                 if (session == null) {
                     Timber.e("rust-settings: trying to load settings with a null session")
@@ -53,7 +53,7 @@ class RustMailSettingsDataSource @Inject constructor(
                     override fun onUpdate() {
                         // value is updated; we must re-create createRustMailSettings for the latest value
                         restartTrigger.tryEmit(Unit)
-                        Timber.v("rust-settings: mail settings updated: $it")
+                        Timber.d("rust-settings: mail settings updated")
                     }
                 }
 
@@ -63,15 +63,13 @@ class RustMailSettingsDataSource @Inject constructor(
                         Timber.e("rust-settings: failed creating settings watcher $it")
                     }
                     .onRight { settingsWatcher ->
-                        Timber.v(
-                            "rust-settings: Setting initial value for mail settings" +
-                                " ${settingsWatcher.settings} and watching for updates"
+                        Timber.d(
+                            "rust-settings: Setting initial value for mail settings and watching for updates"
                         )
                         send(settingsWatcher.settings)
                     }
 
                 awaitClose {
-                    Timber.v("rust-settings: mail settings watcher disconnected: ${watcherResult.getOrNull()}")
                     watcherResult.getOrNull()?.watchHandle?.disconnect()
                     watcherResult.getOrNull()?.destroy()
                 }

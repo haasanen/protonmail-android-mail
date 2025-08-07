@@ -90,7 +90,7 @@ fun CameraPicturePicker(fileUri: Uri, onCaptured: (Uri) -> Unit) {
     val cameraIntent = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
-            Timber.v("image from camera, success: $success")
+            Timber.d("image from camera, success: $success")
             if (success) {
                 onCaptured(fileUri)
             }

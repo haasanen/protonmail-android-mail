@@ -38,7 +38,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
 class RustConversationActionRepository @Inject constructor(
@@ -55,7 +54,6 @@ class RustConversationActionRepository @Inject constructor(
             labelId.toLocalLabelId(),
             conversationIds.map { it.toLocalConversationId() }
         )
-        Timber.v("rust-conversation: Available actions: $availableActions \n for convos $conversationIds")
 
         return availableActions.map { it.toAvailableActions() }
     }
@@ -98,7 +96,6 @@ class RustConversationActionRepository @Inject constructor(
             labelId.toLocalLabelId(),
             conversationIds.map { it.toLocalConversationId() }
         )
-        Timber.v("rust-conversation: All bottombar actions: $allActions \n for convo $conversationIds")
 
         return allActions.map { it.toAllBottomBarActions() }
     }

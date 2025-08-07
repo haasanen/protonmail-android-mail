@@ -192,7 +192,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
     ): Either<DataError, Unit> = withContext(ioDispatcher) {
-        Timber.v("rust-conversation: executing label conversations for $conversationIds")
+        Timber.d("rust-conversation: executing label conversations for $conversationIds")
         val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to label conversations with null Mailbox! failing")
@@ -231,7 +231,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         conversationIds: List<LocalConversationId>,
         toLabelId: LocalLabelId
     ): Either<DataError.Local, Unit> = withContext(ioDispatcher) {
-        Timber.v("rust-conversation: move conversations to $toLabelId executing for: $conversationIds")
+        Timber.d("rust-conversation: move conversations to $toLabelId executing for: $conversationIds")
         return@withContext executeMailboxAction(
             userId = userId,
             action = { rustMoveConversations(it, toLabelId, conversationIds) },
@@ -267,7 +267,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         action: suspend (MailboxWrapper) -> Unit,
         actionName: String
     ): Either<DataError.Local, Unit> {
-        Timber.v("rust-conversation: executing action $actionName")
+        Timber.d("rust-conversation: executing action $actionName")
         val mailbox = if (labelId != null) {
             rustMailboxFactory.create(userId, labelId)
         } else {

@@ -131,7 +131,6 @@ class RustMessageDataSourceImpl @Inject constructor(
         address: String,
         bimi: String?
     ): String? = withContext(ioDispatcher) {
-        Timber.d("rust-message: getSenderImage for address: $address")
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-message: trying to get sender image with a null session")
@@ -154,7 +153,7 @@ class RustMessageDataSourceImpl @Inject constructor(
                 return@withContext DataError.Local.Unknown.left()
             }
 
-            Timber.v("rust-message: marking message as read...")
+            Timber.d("rust-message: marking message as read...")
             return@withContext rustMarkMessagesRead(mailbox, messages)
                 .onLeft { Timber.e("rust-message: Failed to mark message read $it") }
         }
@@ -262,7 +261,7 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     override suspend fun deleteMessages(userId: UserId, messageIds: List<LocalMessageId>): Either<DataError, Unit> =
         withContext(ioDispatcher) {
-            Timber.v("rust-message: executing delete message for $messageIds")
+            Timber.d("rust-message: executing delete message for $messageIds")
             // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
             // the current labelId is not needed to delete messages and is planned to be dropped on this API
             val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
@@ -282,7 +281,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
     ): Either<DataError, Unit> = withContext(ioDispatcher) {
-        Timber.v("rust-message: executing labels messages for $messageIds")
+        Timber.d("rust-message: executing labels messages for $messageIds")
         val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to label messages with null Mailbox! failing")

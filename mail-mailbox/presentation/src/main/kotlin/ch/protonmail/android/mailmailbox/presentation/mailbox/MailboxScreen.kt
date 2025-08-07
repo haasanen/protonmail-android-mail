@@ -192,11 +192,8 @@ fun MailboxScreen(
     }
 
     LaunchedEffect(key1 = mailboxListItems.itemSnapshotList) {
-        Timber.d("Paging items: ${mailboxListItems.itemSnapshotList.size}")
         viewModel.submit(MailboxViewAction.MailboxItemsChanged(mailboxListItems.itemSnapshotList.items.map { it.id }))
     }
-
-    Timber.d("BottomState: ${mailboxState.bottomAppBarState}")
 
     val completeActions = actions.copy(
         navigateToComposer = { actions.navigateToComposer() },
