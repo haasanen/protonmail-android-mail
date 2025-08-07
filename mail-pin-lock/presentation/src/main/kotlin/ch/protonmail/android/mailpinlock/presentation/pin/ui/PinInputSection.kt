@@ -70,6 +70,7 @@ import ch.protonmail.android.mailpinlock.presentation.autolock.standalone.LocalL
 internal fun PinInputSection(
     modifier: Modifier = Modifier,
     pinTextFieldState: TextFieldState,
+    onNext: () -> Unit,
     maxLength: Int? = null,
     error: TextUiModel?,
     triggerError: Effect<Unit>
@@ -109,7 +110,8 @@ internal fun PinInputSection(
             pinTextFieldState = pinTextFieldState,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
             maxLength = maxLength,
-            isError = error != null
+            isError = error != null,
+            onNext = onNext
         ) {
             if (error != null) SupportingErrorText(error)
         }
@@ -123,6 +125,7 @@ internal fun PinSecureInputField(
     keyboardOptions: KeyboardOptions,
     maxLength: Int? = null,
     isError: Boolean,
+    onNext: () -> Unit,
     supportingText: @Composable () -> Unit
 ) {
     val isStandalone = LocalLockScreenEntryPointIsStandalone.current
@@ -132,6 +135,7 @@ internal fun PinSecureInputField(
             modifier = modifier,
             state = pinTextFieldState,
             keyboardOptions = keyboardOptions,
+            onNext = onNext,
             maxLength = maxLength,
             isError = isError,
             supportingText = { supportingText() }
@@ -141,8 +145,9 @@ internal fun PinSecureInputField(
             StandalonePinInsertionSecureField(
                 modifier = modifier,
                 state = pinTextFieldState,
-                maxLength = maxLength,
-                keyboardOptions = keyboardOptions
+                keyboardOptions = keyboardOptions,
+                onNext = onNext,
+                maxLength = maxLength
             )
 
             if (isError) {
@@ -167,6 +172,7 @@ private fun PinInsertionSecureField(
     maxLength: Int?,
     state: TextFieldState,
     keyboardOptions: KeyboardOptions,
+    onNext: () -> Unit,
     isError: Boolean,
     supportingText: @Composable () -> Unit
 ) {
@@ -199,6 +205,7 @@ private fun PinInsertionSecureField(
         textObfuscationMode = textObfuscationMode,
         state = state,
         keyboardOptions = keyboardOptions,
+        onKeyboardAction = { onNext() },
         shape = RoundedCornerShape(ProtonDimens.CornerRadius.Large),
         colors = createPinTextFieldColors(),
         textStyle = createPinTextStyle(),
@@ -212,7 +219,8 @@ private fun StandalonePinInsertionSecureField(
     modifier: Modifier,
     maxLength: Int?,
     state: TextFieldState,
-    keyboardOptions: KeyboardOptions
+    keyboardOptions: KeyboardOptions,
+    onNext: () -> Unit
 ) {
     OutlinedSecureTextField(
         modifier = modifier.fillMaxWidth(),
@@ -220,6 +228,7 @@ private fun StandalonePinInsertionSecureField(
         textObfuscationMode = TextObfuscationMode.Hidden,
         state = state,
         keyboardOptions = keyboardOptions,
+        onKeyboardAction = { onNext() },
         shape = RoundedCornerShape(ProtonDimens.CornerRadius.Large),
         colors = createPinTextFieldColorsStandalone(),
         textStyle = createPinTextStyleStandalone()

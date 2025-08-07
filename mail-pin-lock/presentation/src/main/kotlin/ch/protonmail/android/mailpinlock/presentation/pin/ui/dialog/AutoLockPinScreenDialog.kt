@@ -112,6 +112,7 @@ private fun AutoLockPinScreenDialogContent(
                         .focusRequester(focusRequester),
                     pinTextFieldState = pinFieldState,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                    onNext = onProcessPin,
                     maxLength = MAX_PIN_LENGTH,
                     isError = state.error != null,
                     supportingText = {

@@ -243,6 +243,7 @@ private fun PinScreenContent(
                 pinTextFieldState = pinTextFieldState,
                 maxLength = MAX_PIN_LENGTH,
                 error = state.pinInsertionState.error,
+                onNext = actions.onNext,
                 triggerError = state.pinInsertionState.triggerError
             )
 
