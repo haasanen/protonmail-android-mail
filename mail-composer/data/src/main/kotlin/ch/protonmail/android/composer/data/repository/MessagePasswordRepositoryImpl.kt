@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class MessagePasswordRepositoryImpl @Inject constructor(
@@ -42,4 +43,6 @@ class MessagePasswordRepositoryImpl @Inject constructor(
     override suspend fun getPassword(): Either<DataError, ExternalEncryptionPassword?> =
         draftDataSource.getExternalEncryptionPassword()
 
+
+    override fun observePasswordUpdatedSignal(): Flow<Unit> = draftDataSource.observePasswordUpdatedSignal()
 }

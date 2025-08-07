@@ -58,8 +58,10 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.GetEmbeddedImage
 import ch.protonmail.android.mailcomposer.domain.usecase.GetSenderAddresses
+import ch.protonmail.android.mailcomposer.domain.usecase.IsMessagePasswordSet
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
+import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePasswordChanged
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.ScheduleSendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
@@ -75,6 +77,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsState
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.operations.AccessoriesEvent
 import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerStateEvent
 import ch.protonmail.android.mailcomposer.presentation.model.operations.CompositeEvent
@@ -115,6 +118,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -156,6 +160,8 @@ class ComposerViewModel @AssistedInject constructor(
     @IsExternalEncryptionEnabled private val externalEncryptionEnabled: Flow<Boolean>,
     private val composerRegistry: ActiveComposerRegistry,
     @IsMessageExpirationEnabled private val messageExpirationEnabled: Flow<Boolean>,
+    private val observeMessagePasswordChanged: ObserveMessagePasswordChanged,
+    private val isMessagePasswordSet: IsMessagePasswordSet,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -197,6 +203,7 @@ class ComposerViewModel @AssistedInject constructor(
             observeAttachments()
             observeComposerSubject()
             observeComposerRecipients()
+            observeMessagePassword()
             processActions()
         }
     }
@@ -228,6 +235,13 @@ class ComposerViewModel @AssistedInject constructor(
             else -> prefillForNewDraft()
         }
         return true
+    }
+
+    private fun observeMessagePassword() {
+        observeMessagePasswordChanged()
+            .mapLatest { isMessagePasswordSet() }
+            .onEach { emitNewStateFor(AccessoriesEvent.OnPasswordChanged(it)) }
+            .launchIn(viewModelScope)
     }
 
     private fun observeComposerRecipients() {

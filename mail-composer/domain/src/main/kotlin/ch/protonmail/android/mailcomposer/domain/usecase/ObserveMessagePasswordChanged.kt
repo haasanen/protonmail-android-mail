@@ -16,19 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.repository
+package ch.protonmail.android.mailcomposer.domain.usecase
 
-import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
+import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-interface MessagePasswordRepository {
+class ObserveMessagePasswordChanged @Inject constructor(
+    private val messagePasswordRepository: MessagePasswordRepository
+) {
 
-    suspend fun isPasswordProtected(): Either<DataError, Boolean>
-    suspend fun savePassword(password: ExternalEncryptionPassword): Either<ExternalEncryptionPasswordError, Unit>
-    suspend fun removePassword(): Either<ExternalEncryptionPasswordError, Unit>
-    suspend fun getPassword(): Either<DataError, ExternalEncryptionPassword?>
-    fun observePasswordUpdatedSignal(): Flow<Unit>
+    operator fun invoke(): Flow<Unit> = messagePasswordRepository.observePasswordUpdatedSignal()
 }

@@ -53,8 +53,10 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.GetEmbeddedImage
 import ch.protonmail.android.mailcomposer.domain.usecase.GetSenderAddresses
+import ch.protonmail.android.mailcomposer.domain.usecase.IsMessagePasswordSet
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
+import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePasswordChanged
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.ScheduleSendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
@@ -161,6 +163,10 @@ class ComposerViewModelTest {
         every { this@mockk.register(any()) } just Runs
     }
     private val isMessageExpirationEnabled = flowOf(true)
+    private val observeMessagePasswordChanged = mockk<ObserveMessagePasswordChanged> {
+        every { this@mockk.invoke() } returns flowOf()
+    }
+    private val isMessagePasswordSet = mockk<IsMessagePasswordSet>()
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<MessageBodyWithType>()
@@ -202,6 +208,8 @@ class ComposerViewModelTest {
             isExternalEncryptionEnabled,
             composerRegistry,
             isMessageExpirationEnabled,
+            observeMessagePasswordChanged,
+            isMessagePasswordSet,
             observePrimaryUserIdMock
         )
     }
