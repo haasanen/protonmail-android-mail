@@ -262,14 +262,14 @@ private fun RsvpSingleButton(
             .fillMaxWidth()
             .height(MailDimens.RsvpButtonHeight)
             .background(
-                color = ProtonTheme.colors.interactionBrandWeakNorm,
+                color = ProtonTheme.colors.interactionBrandDefaultNorm,
                 shape = ProtonTheme.shapes.massive
             )
             .clip(ProtonTheme.shapes.massive)
             .clickable(
                 enabled = !isAnsweringInProgress,
                 interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(color = ProtonTheme.colors.interactionBrandWeakPressed),
+                indication = ripple(color = ProtonTheme.colors.interactionBrandDefaultPressed),
                 role = Role.Button,
                 onClick = { expanded.value = true }
             ),
@@ -279,14 +279,14 @@ private fun RsvpSingleButton(
         Text(
             text = stringResource(id = label),
             style = ProtonTheme.typography.bodyLarge.copy(
-                color = ProtonTheme.colors.brandPlus30
+                color = ProtonTheme.colors.textInverted
             )
         )
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
         if (isAnsweringInProgress) {
             CircularProgressIndicator(
                 modifier = Modifier.size(ProtonDimens.IconSize.Small),
-                color = ProtonTheme.colors.brandPlus30,
+                color = ProtonTheme.colors.iconInverted,
                 strokeWidth = 2.dp
             )
         } else {
@@ -294,7 +294,7 @@ private fun RsvpSingleButton(
                 modifier = Modifier.size(ProtonDimens.IconSize.Small),
                 painter = painterResource(id = R.drawable.ic_proton_chevron_down_filled),
                 contentDescription = NO_CONTENT_DESCRIPTION,
-                tint = ProtonTheme.colors.brandPlus30
+                tint = ProtonTheme.colors.iconInverted
             )
         }
 
@@ -378,13 +378,13 @@ private fun RsvpButton(
         modifier = modifier
             .height(MailDimens.RsvpButtonHeight)
             .background(
-                color = ProtonTheme.colors.interactionBrandWeakNorm,
+                color = ProtonTheme.colors.interactionBrandDefaultNorm,
                 shape = ProtonTheme.shapes.massive
             )
             .clip(ProtonTheme.shapes.massive)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(color = ProtonTheme.colors.interactionBrandWeakPressed),
+                indication = ripple(color = ProtonTheme.colors.interactionBrandDefaultPressed),
                 role = Role.Button,
                 onClick = onClick
             ),
@@ -393,7 +393,7 @@ private fun RsvpButton(
         Text(
             text = stringResource(id = label),
             style = ProtonTheme.typography.bodyLarge.copy(
-                color = ProtonTheme.colors.brandPlus30
+                color = ProtonTheme.colors.textInverted
             )
         )
     }
@@ -438,6 +438,8 @@ private fun RsvpDetailsRow(
 
 @Composable
 private fun RsvpAttendees(attendees: List<RsvpAttendeeUiModel>) {
+    if (attendees.isEmpty()) return
+
     if (attendees.size == 1) {
         val attendee = attendees.first()
         val text = "${stringResource(id = R.string.rsvp_widget_you)} • ${attendee.email.string()}"
