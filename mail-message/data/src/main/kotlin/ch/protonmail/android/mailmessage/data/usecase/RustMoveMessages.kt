@@ -26,7 +26,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
-import uniffi.proton_mail_uniffi.VoidActionResult
+import uniffi.proton_mail_uniffi.MoveMessagesResult
 import uniffi.proton_mail_uniffi.moveMessages
 import javax.inject.Inject
 
@@ -37,7 +37,7 @@ class RustMoveMessages @Inject constructor() {
         toLabel: LocalLabelId,
         messageIds: List<LocalMessageId>
     ): Either<DataError, Unit> = when (val result = moveMessages(mailbox.getRustMailbox(), toLabel, messageIds)) {
-        is VoidActionResult.Error -> result.v1.toDataError().left()
-        VoidActionResult.Ok -> Unit.right()
+        is MoveMessagesResult.Error -> result.v1.toDataError().left()
+        is MoveMessagesResult.Ok -> Unit.right()
     }
 }

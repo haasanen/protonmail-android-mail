@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmessage.data.local
 import arrow.core.Either
 import arrow.core.flatMap
 import arrow.core.left
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -35,7 +36,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
 import uniffi.proton_mail_uniffi.TransformOpts
 import javax.inject.Inject
 
@@ -75,7 +75,7 @@ class RustMessageBodyDataSource @Inject constructor(
         userId: UserId,
         messageId: LocalMessageId,
         contentId: String
-    ): Either<DataError, EmbeddedAttachmentInfo> = withContext(ioDispatcher) {
+    ): Either<DataError, LocalAttachmentData> = withContext(ioDispatcher) {
         // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
         // the current labelId is not needed to get the body and is planned to be dropped on this API
         val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()

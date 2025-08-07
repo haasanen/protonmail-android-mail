@@ -43,7 +43,7 @@ import ch.protonmail.android.composer.data.usecase.RustDraftUndoSend
 import ch.protonmail.android.composer.data.worker.SendingStatusWorker
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
 import ch.protonmail.android.composer.data.wrapper.ComposerRecipientListWrapper
-import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -69,6 +69,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.AttachmentDataResult
 import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
 import uniffi.proton_mail_uniffi.DraftChangeSenderAddressResult
 import uniffi.proton_mail_uniffi.DraftExpirationTime
@@ -81,7 +82,6 @@ import uniffi.proton_mail_uniffi.DraftRecipientExpirationFeatureReport
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptionsResult
 import uniffi.proton_mail_uniffi.DraftValidateRecipientsExpirationFeatureResult
-import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
 import uniffi.proton_mail_uniffi.VoidDraftExpirationResult
 import uniffi.proton_mail_uniffi.VoidDraftPasswordResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
@@ -233,10 +233,10 @@ class RustDraftDataSourceImpl @Inject constructor(
         return wrapper.attachmentList().right()
     }
 
-    override fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo> =
+    override fun getEmbeddedImage(contentId: String): Either<DataError, LocalAttachmentData> =
         when (val result = draftCache.get().embeddedImage(contentId)) {
-            is EmbeddedAttachmentInfoResult.Error -> result.v1.toDataError().left()
-            is EmbeddedAttachmentInfoResult.Ok -> result.v1.right()
+            is AttachmentDataResult.Error -> result.v1.toDataError().left()
+            is AttachmentDataResult.Ok -> result.v1.right()
         }
 
     override fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions> =

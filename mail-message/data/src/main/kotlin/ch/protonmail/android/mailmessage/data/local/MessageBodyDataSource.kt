@@ -19,12 +19,12 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
 
 interface MessageBodyDataSource {
 
@@ -38,5 +38,5 @@ interface MessageBodyDataSource {
         userId: UserId,
         messageId: LocalMessageId,
         contentId: String
-    ): Either<DataError, EmbeddedAttachmentInfo>
+    ): Either<DataError, LocalAttachmentData>
 }

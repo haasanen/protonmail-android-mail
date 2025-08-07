@@ -21,16 +21,16 @@ package ch.protonmail.android.mailmessage.data.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.AttachmentDataResult
 import uniffi.proton_mail_uniffi.BodyOutput
-import uniffi.proton_mail_uniffi.TransformOpts
 import uniffi.proton_mail_uniffi.BodyOutputResult
 import uniffi.proton_mail_uniffi.DecryptedMessage
-import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
-import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
+import uniffi.proton_mail_uniffi.TransformOpts
 
 class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
 
@@ -40,13 +40,13 @@ class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
             is BodyOutputResult.Ok -> result.v1.right()
         }
 
-    suspend fun getEmbeddedAttachment(contentId: String): Either<DataError, EmbeddedAttachmentInfo> =
+    suspend fun getEmbeddedAttachment(contentId: String): Either<DataError, LocalAttachmentData> =
         when (val result = decryptedMessage.getEmbeddedAttachment(contentId)) {
-            is EmbeddedAttachmentInfoResult.Error -> {
+            is AttachmentDataResult.Error -> {
                 Timber.d("DecryptedMessageWrapper: Failed to load image: $contentId: ${result.v1}")
                 result.v1.toDataError().left()
             }
-            is EmbeddedAttachmentInfoResult.Ok -> result.v1.right()
+            is AttachmentDataResult.Ok -> result.v1.right()
         }
 
     fun mimeType(): LocalMimeType = decryptedMessage.mimeType()

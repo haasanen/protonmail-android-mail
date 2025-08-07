@@ -20,7 +20,7 @@ package ch.protonmail.android.composer.data.local
 
 import arrow.core.Either
 import ch.protonmail.android.composer.data.wrapper.AttachmentsWrapper
-import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
@@ -74,6 +74,6 @@ interface RustDraftDataSource {
     suspend fun validateSendWithExpiration(): Either<DataError, DraftRecipientExpirationFeatureReport>
 
 
-    fun getEmbeddedImage(contentId: String): Either<DataError, LocalEmbeddedImageInfo>
+    fun getEmbeddedImage(contentId: String): Either<DataError, LocalAttachmentData>
     fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions>
 }

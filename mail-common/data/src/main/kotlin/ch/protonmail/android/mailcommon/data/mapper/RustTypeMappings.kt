@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcommon.data.mapper
 import uniffi.proton_mail_uniffi.AlmostAllMail
 import uniffi.proton_mail_uniffi.AppProtection
 import uniffi.proton_mail_uniffi.AppSettings
+import uniffi.proton_mail_uniffi.AttachmentData
 import uniffi.proton_mail_uniffi.AttachmentMetadata
 import uniffi.proton_mail_uniffi.AttachmentMimeType
 import uniffi.proton_mail_uniffi.AutoDeleteBanner
@@ -45,7 +46,6 @@ import uniffi.proton_mail_uniffi.DecryptedAttachment
 import uniffi.proton_mail_uniffi.DeviceContact
 import uniffi.proton_mail_uniffi.Disposition
 import uniffi.proton_mail_uniffi.DraftSendResult
-import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
 import uniffi.proton_mail_uniffi.ExclusiveLocation
 import uniffi.proton_mail_uniffi.ExtendedName
 import uniffi.proton_mail_uniffi.GenderKind
@@ -147,7 +147,7 @@ typealias LocalContactSuggestion = ContactSuggestion
 typealias LocalContactItem = ContactItem
 typealias LocalIssueReport = IssueReport
 typealias RemoteMessageId = RemoteId
-typealias LocalEmbeddedImageInfo = EmbeddedAttachmentInfo
+typealias LocalAttachmentData = AttachmentData
 typealias LocalAppSettings = AppSettings
 typealias LocalAutoLock = AutoLock
 typealias LocalProtection = AppProtection

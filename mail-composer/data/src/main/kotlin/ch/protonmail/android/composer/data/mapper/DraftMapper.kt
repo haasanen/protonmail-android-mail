@@ -23,9 +23,9 @@ import ch.protonmail.android.composer.data.local.LocalDraftWithSyncStatus
 import ch.protonmail.android.composer.data.local.LocalSenderAddresses
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalComposerRecipient
 import ch.protonmail.android.mailcommon.data.mapper.LocalDraftSendResult
-import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -297,7 +297,7 @@ fun DraftSaveError.toSaveDraftError(): SaveDraftError = when (this) {
     }
 }
 
-fun LocalEmbeddedImageInfo.toEmbeddedImage() = EmbeddedImage(this.data, this.mime)
+fun LocalAttachmentData.toEmbeddedImage() = EmbeddedImage(this.data, this.mime)
 
 fun DraftSenderAddressChangeError.toChangeSenderError() = when (this) {
     is DraftSenderAddressChangeError.Other -> ChangeSenderError.Other(this.v1.toDataError())

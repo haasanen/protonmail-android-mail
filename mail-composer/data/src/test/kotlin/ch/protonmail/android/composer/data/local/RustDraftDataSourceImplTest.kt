@@ -12,7 +12,7 @@ import ch.protonmail.android.composer.data.worker.SendingStatusWorker
 import ch.protonmail.android.composer.data.wrapper.ComposerRecipientListWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
-import ch.protonmail.android.mailcommon.data.mapper.LocalEmbeddedImageInfo
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -49,6 +49,7 @@ import io.mockk.verify
 import io.mockk.verifyOrder
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import uniffi.proton_mail_uniffi.AttachmentDataResult
 import uniffi.proton_mail_uniffi.DraftChangeSenderAddressResult
 import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.DraftExpirationError
@@ -68,7 +69,6 @@ import uniffi.proton_mail_uniffi.DraftSendError
 import uniffi.proton_mail_uniffi.DraftSendErrorReason
 import uniffi.proton_mail_uniffi.DraftSenderAddressList
 import uniffi.proton_mail_uniffi.DraftSyncStatus
-import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.UnexpectedError
 import uniffi.proton_mail_uniffi.VoidDraftExpirationResult
@@ -643,16 +643,14 @@ class RustDraftDataSourceImplTest {
     @Test
     fun `get embedded image returns the image info when successful`() = runTest {
         // Given
-        val localEmbeddedImage = LocalEmbeddedImageInfo(
+        val localEmbeddedImage = LocalAttachmentData(
             "data".toByteArray(),
-            "image/jpg",
-            null,
-            null
+            "image/jpg"
         )
         val cid = "image-content-id"
         val expectedDraftWrapper = expectDraftWrapperReturns()
         every { draftCache.get() } returns expectedDraftWrapper
-        coEvery { expectedDraftWrapper.embeddedImage(cid) } returns EmbeddedAttachmentInfoResult.Ok(
+        coEvery { expectedDraftWrapper.embeddedImage(cid) } returns AttachmentDataResult.Ok(
             localEmbeddedImage
         )
 
@@ -670,7 +668,7 @@ class RustDraftDataSourceImplTest {
         val cid = "image-content-id"
         val expectedDraftWrapper = expectDraftWrapperReturns()
         every { draftCache.get() } returns expectedDraftWrapper
-        coEvery { expectedDraftWrapper.embeddedImage(cid) } returns EmbeddedAttachmentInfoResult.Error(
+        coEvery { expectedDraftWrapper.embeddedImage(cid) } returns AttachmentDataResult.Error(
             ProtonError.Network
         )
 
