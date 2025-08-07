@@ -256,7 +256,7 @@ private fun SubjectHeader(
                     .fillMaxWidth(),
                 text = subject,
                 overflow = TextOverflow.Ellipsis,
-                style = ProtonTheme.typography.titleLargeMedium,
+                style = ProtonTheme.typography.headlineSmall,
                 textAlign = TextAlign.Center
             )
         }

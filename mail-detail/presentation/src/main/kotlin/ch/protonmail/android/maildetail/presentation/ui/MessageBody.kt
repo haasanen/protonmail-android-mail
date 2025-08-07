@@ -36,7 +36,6 @@ import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilitiesProvider
-import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -83,8 +82,6 @@ fun MessageBody(
             )
         }
     }
-
-    MailDivider(modifier = Modifier.padding(top = ProtonDimens.Spacing.Standard))
 
     if (hasWebView) {
         val webViewCache = remember { mutableStateOf<ZoomableWebView?>(null) }

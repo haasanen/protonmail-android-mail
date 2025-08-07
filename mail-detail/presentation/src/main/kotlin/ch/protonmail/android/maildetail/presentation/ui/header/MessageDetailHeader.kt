@@ -61,7 +61,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.bodySmallWeak
-import ch.protonmail.android.design.compose.theme.titleMediumNorm
+import ch.protonmail.android.design.compose.theme.titleSmallNorm
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
@@ -170,7 +170,7 @@ private fun MessageDetailHeaderLayout(
                         Time(time = uiModel.time)
                     }
                 )
-                Spacer(modifier = modifier.height(ProtonDimens.Spacing.Standard))
+                Spacer(modifier = modifier.height(ProtonDimens.Spacing.Tiny))
                 Row {
                     Column(
                         modifier = Modifier.weight(1f)
@@ -180,7 +180,7 @@ private fun MessageDetailHeaderLayout(
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
                         )
-                        Spacer(modifier.height(ProtonDimens.Spacing.Standard))
+                        Spacer(modifier.height(ProtonDimens.Spacing.Tiny))
                         AllRecipients(
                             allRecipients = uiModel.allRecipients,
                             hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients,
@@ -192,6 +192,7 @@ private fun MessageDetailHeaderLayout(
                             Labels(modifier = Modifier, uiModels = uiModel.labels)
                         }
                     }
+                    Spacer(modifier = modifier.size(ProtonDimens.Spacing.Large))
                     MessageDetailHeaderActions(
                         modifier = modifier
                             .testTag(MessageDetailHeaderTestTags.ActionsRootItem),
@@ -216,7 +217,7 @@ private fun MessageDetailHeaderLayout(
 private fun SenderNameRow(
     modifier: Modifier = Modifier,
     participantUiModel: ParticipantUiModel,
-    style: TextStyle = ProtonTheme.typography.titleMediumNorm,
+    style: TextStyle = ProtonTheme.typography.titleSmallNorm,
     icons: @Composable () -> Unit
 ) {
     Row(
