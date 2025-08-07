@@ -26,6 +26,10 @@ import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import me.proton.core.util.kotlin.takeIfNotEmpty
 import timber.log.Timber
 
+object IntentExtraKeys {
+    const val EXTRA_EXTERNAL_SHARE = "external_share"
+}
+
 fun Intent.getShareInfo(): IntentShareInfo {
 
     return when (action) {
@@ -42,7 +46,7 @@ fun Intent.getShareInfo(): IntentShareInfo {
 }
 
 fun Intent.isStartedFromLauncher(): Boolean = action == Intent.ACTION_MAIN
-fun Intent.isExternal(): Boolean = getBooleanExtra("external_share", false) &&
+fun Intent.isExternal(): Boolean = getBooleanExtra(IntentExtraKeys.EXTRA_EXTERNAL_SHARE, false) &&
     action != Intent.ACTION_MAIN
 
 private fun Intent.getShareInfoForSingleSendAction(): IntentShareInfo {

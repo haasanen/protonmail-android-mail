@@ -33,6 +33,7 @@ import androidx.lifecycle.lifecycleScope
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.feature.lockscreen.LockScreenActivity
 import ch.protonmail.android.mailattachments.domain.model.OpenAttachmentIntentValues
+import ch.protonmail.android.mailcommon.data.file.IntentExtraKeys
 import ch.protonmail.android.mailcommon.domain.system.DeviceCapabilities
 import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilitiesProvider
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
@@ -112,7 +113,7 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             Timber.d("Handling intent with action: ${intent.action}")
-            intent.putExtra("external_share", isExternalShare)
+            intent.putExtra(IntentExtraKeys.EXTRA_EXTERNAL_SHARE, isExternalShare)
             newIntentObserver.onNewIntent(intent)
         }
     }

@@ -22,6 +22,7 @@ import android.content.Intent
 import android.net.Uri
 import app.cash.turbine.test
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.file.IntentExtraKeys
 import ch.protonmail.android.mailcommon.data.file.getShareInfo
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
@@ -447,7 +448,7 @@ class HomeViewModelTest {
         return mockk {
             every { this@mockk.action } returns action
             every { this@mockk.data } returns data
-            every { this@mockk.getBooleanExtra("external_share", false) } returns externalBoolean
+            every { this@mockk.getBooleanExtra(IntentExtraKeys.EXTRA_EXTERNAL_SHARE, false) } returns externalBoolean
         }
     }
 

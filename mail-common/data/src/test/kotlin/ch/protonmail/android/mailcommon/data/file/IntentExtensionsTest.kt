@@ -330,7 +330,8 @@ class IntentExtensionsTest {
         extraRecipientTo: Array<String>? = null,
         extraRecipientCc: Array<String>? = null,
         extraRecipientBcc: Array<String>? = null,
-        extraText: String? = null
+        extraText: String? = null,
+        booleanExtra: Boolean = false
     ): Intent {
         return mockk {
             every { this@mockk.action } returns action
@@ -343,6 +344,7 @@ class IntentExtensionsTest {
             every { this@mockk.getStringArrayExtra(Intent.EXTRA_CC) } returns extraRecipientCc
             every { this@mockk.getStringArrayExtra(Intent.EXTRA_BCC) } returns extraRecipientBcc
             every { this@mockk.getStringExtra(Intent.EXTRA_TEXT) } returns extraText
+            every { this@mockk.getBooleanExtra(IntentExtraKeys.EXTRA_EXTERNAL_SHARE, false) } returns booleanExtra
         }
     }
 }
