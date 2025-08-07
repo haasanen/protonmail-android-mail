@@ -521,7 +521,9 @@ fun ConversationDetailScreen(
                 onRetryRsvpEventLoading = {
                     viewModel.submit(ConversationDetailViewAction.RetryRsvpEventLoading(MessageId(it.id)))
                 },
-                onAnswerRsvpEvent = { _, _ -> }
+                onAnswerRsvpEvent = { messageId, answer ->
+                    viewModel.submit(ConversationDetailViewAction.AnswerRsvpEvent(MessageId(messageId.id), answer))
+                }
             ),
             scrollToMessageId = state.scrollToMessage?.id
         )

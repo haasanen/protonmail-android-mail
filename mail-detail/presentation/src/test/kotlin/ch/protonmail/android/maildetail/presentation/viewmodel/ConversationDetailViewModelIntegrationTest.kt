@@ -74,6 +74,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenIcsInProtonCalendar
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenProtonCalendarOnPlayStore
+import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
@@ -153,6 +154,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MimeType
+import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.domain.model.RsvpAttendee
 import ch.protonmail.android.mailmessage.domain.model.RsvpAttendeeStatus
 import ch.protonmail.android.mailmessage.domain.model.RsvpEvent
@@ -384,6 +386,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val printMessage = mockk<PrintMessage>()
 
     private val getRsvpEvent = mockk<GetRsvpEvent>()
+    private val answerRsvpEvent = mockk<AnswerRsvpEvent>()
 
     private val mailLabelTextMapper = mockk<MailLabelTextMapper> {
         every { this@mockk.mapToString(MailLabelText.TextString("Spam")) } returns "Spam"
@@ -2380,6 +2383,63 @@ class ConversationDetailViewModelIntegrationTest {
         }
     }
 
+    @Test
+    fun `should answer rsvp event when answer rsvp event action is submitted`() = runTest {
+        // Given
+        val message = MessageSample.AugWeatherForecast
+        val messages = ConversationMessages(
+            nonEmptyListOf(
+                message
+            ),
+            message.messageId
+        )
+        val rsvpEvent = RsvpEvent(
+            eventId = EventId("id"),
+            summary = "summary",
+            location = "location",
+            description = "description",
+            recurrence = "recurrence",
+            startsAt = 123L,
+            endsAt = 124L,
+            occurrence = RsvpOccurrence.Date,
+            organizer = RsvpOrganizer("organizerName", "organizerEmail"),
+            attendees = listOf(RsvpAttendee("attendeeName", "attendeeEmail", RsvpAttendeeStatus.Yes)),
+            userAttendeeIdx = 0,
+            calendar = null,
+            state = RsvpState.CancelledReminder
+        )
+        coEvery { observeConversationMessages(userId, any(), any()) } returns flowOf(messages.right())
+        coEvery { getDecryptedMessageBody.invoke(any(), any()) } returns DecryptedMessageBody(
+            messageId = message.messageId,
+            value = "",
+            mimeType = MimeType.Html,
+            isUnread = false,
+            hasQuotedText = false,
+            hasCalendarInvite = true,
+            banners = emptyList()
+        ).right()
+        coEvery { getRsvpEvent(userId, message.messageId) } returns rsvpEvent.right()
+        coEvery { answerRsvpEvent(userId, message.messageId, RsvpAnswer.Yes) } returns Unit.right()
+
+        val viewModel = buildConversationDetailViewModel()
+
+        // When
+        viewModel.state.test {
+
+            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(message.messageId)))
+            advanceUntilIdle()
+
+            viewModel.submit(ConversationDetailViewAction.AnswerRsvpEvent(message.messageId, RsvpAnswer.Yes))
+            advanceUntilIdle()
+
+            // Then
+            coVerify { answerRsvpEvent(userId, message.messageId, RsvpAnswer.Yes) }
+            coVerify(exactly = 2) { getRsvpEvent(userId, message.messageId) }
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
     @Suppress("LongParameterList")
     private fun buildConversationDetailViewModel(
         observePrimaryUser: ObservePrimaryUserId = observePrimaryUserId,
@@ -2453,7 +2513,8 @@ class ConversationDetailViewModelIntegrationTest {
         unblockSender = unblockSender,
         cancelScheduleSendMessage = cancelScheduleSendMessage,
         printMessage = printMessage,
-        getRsvpEvent = getRsvpEvent
+        getRsvpEvent = getRsvpEvent,
+        answerRsvpEvent = answerRsvpEvent
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(

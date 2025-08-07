@@ -46,6 +46,7 @@ import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
+import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import kotlinx.collections.immutable.ImmutableList
 
 sealed interface ConversationDetailOperation {
@@ -165,6 +166,8 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
 
     data class ErrorCancellingScheduleSend(val messageId: MessageIdUiModel) :
         ConversationDetailEvent, AffectingErrorBar, AffectingMessages
+
+    object ErrorAnsweringRsvpEvent : ConversationDetailEvent, AffectingErrorBar
 }
 
 sealed interface ConversationDetailViewAction : ConversationDetailOperation {
@@ -334,4 +337,5 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
         ConversationDetailViewAction, AffectingBottomSheet
 
     data class RetryRsvpEventLoading(val messageId: MessageId) : ConversationDetailViewAction
+    data class AnswerRsvpEvent(val messageId: MessageId, val answer: RsvpAnswer) : ConversationDetailViewAction
 }

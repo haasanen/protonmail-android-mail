@@ -44,6 +44,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
+import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
@@ -112,6 +113,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.Participant
+import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 import ch.protonmail.android.mailmessage.domain.usecase.CancelScheduleSendMessage
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageBodyWithClickableLinks
@@ -201,7 +203,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val unblockSender: UnblockSender,
     private val cancelScheduleSendMessage: CancelScheduleSendMessage,
     private val printMessage: PrintMessage,
-    private val getRsvpEvent: GetRsvpEvent
+    private val getRsvpEvent: GetRsvpEvent,
+    private val answerRsvpEvent: AnswerRsvpEvent
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -363,6 +366,7 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.PrintMessage -> handlePrintMessage(action.context, action.messageId)
             is ConversationDetailViewAction.RetryRsvpEventLoading ->
                 handleGetRsvpEvent(action.messageId, refresh = true)
+            is ConversationDetailViewAction.AnswerRsvpEvent -> handleAnswerRsvpEvent(action.messageId, action.answer)
         }
     }
 
@@ -1302,6 +1306,16 @@ class ConversationDetailViewModel @Inject constructor(
                     messageViewStateCache.updateRsvpEventShown(messageId, rsvpEvent)
                 }
             )
+        }
+    }
+
+    private fun handleAnswerRsvpEvent(messageId: MessageId, answer: RsvpAnswer) {
+        viewModelScope.launch {
+            messageViewStateCache.updateRsvpEventAnswering(messageId, answer)
+            answerRsvpEvent(primaryUserId.first(), messageId, answer).onLeft {
+                emitNewStateFrom(ConversationDetailEvent.ErrorAnsweringRsvpEvent)
+            }
+            handleGetRsvpEvent(messageId, refresh = false)
         }
     }
 

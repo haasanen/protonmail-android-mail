@@ -215,6 +215,7 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailEvent.ErrorCancellingScheduleSend -> R.string.error_cancel_schedule_send_failed
                 is ConversationDetailEvent.OfflineErrorCancellingScheduleSend ->
                     R.string.offline_error_cancel_schedule_send_failed
+                is ConversationDetailEvent.ErrorAnsweringRsvpEvent -> R.string.rsvp_widget_error_answering
             }
             Effect.of(TextUiModel(textResource))
         } else {

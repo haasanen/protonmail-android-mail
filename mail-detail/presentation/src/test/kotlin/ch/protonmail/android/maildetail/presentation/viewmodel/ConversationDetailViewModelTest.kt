@@ -51,6 +51,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
+import ch.protonmail.android.maildetail.domain.usecase.AnswerRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.GetRsvpEvent
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
@@ -320,6 +321,7 @@ class ConversationDetailViewModelTest {
     private val printMessage = mockk<PrintMessage>()
 
     private val getRsvpEvent = mockk<GetRsvpEvent>()
+    private val answerRsvpEvent = mockk<AnswerRsvpEvent>()
 
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
@@ -370,7 +372,8 @@ class ConversationDetailViewModelTest {
             unblockSender = unblockSender,
             cancelScheduleSendMessage = cancelScheduleSendMessage,
             printMessage = printMessage,
-            getRsvpEvent = getRsvpEvent
+            getRsvpEvent = getRsvpEvent,
+            answerRsvpEvent = answerRsvpEvent
         )
     }
 
