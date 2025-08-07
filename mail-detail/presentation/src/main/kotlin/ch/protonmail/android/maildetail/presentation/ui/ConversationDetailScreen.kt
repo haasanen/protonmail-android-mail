@@ -1080,7 +1080,7 @@ object ConversationDetailScreen {
         val onLoadRemoteContent: (MessageId) -> Unit,
         val onLoadEmbeddedImages: (MessageId) -> Unit,
         val onLoadRemoteAndEmbeddedContent: (MessageId) -> Unit,
-        val onOpenInProtonCalendar: (MessageId) -> Unit,
+        val onOpenInProtonCalendar: (MessageIdUiModel) -> Unit,
         val onOpenComposer: (MessageIdUiModel) -> Unit,
         val onPrint: (MessageId) -> Unit,
         val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,

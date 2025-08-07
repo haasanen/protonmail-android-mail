@@ -76,6 +76,7 @@ import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 @Composable
 fun RsvpWidget(
     uiModel: RsvpEventUiModel,
+    onOpenInProtonCalendar: () -> Unit,
     onAnswerRsvpEvent: (RsvpAnswer) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -103,7 +104,8 @@ fun RsvpWidget(
             RsvpOverview(
                 title = uiModel.title,
                 dateTime = uiModel.dateTime,
-                isAttendanceOptional = uiModel.isAttendanceOptional
+                isAttendanceOptional = uiModel.isAttendanceOptional,
+                onOpenInProtonCalendar = onOpenInProtonCalendar
             )
 
             RsvpResponse(uiModel.buttons, onAnswerRsvpEvent)
@@ -165,6 +167,7 @@ private fun RsvpOverview(
     title: TextUiModel,
     dateTime: TextUiModel,
     isAttendanceOptional: Boolean,
+    onOpenInProtonCalendar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -201,6 +204,12 @@ private fun RsvpOverview(
                     width = ProtonDimens.OutlinedBorderSize,
                     color = ProtonTheme.colors.borderNorm,
                     shape = ProtonTheme.shapes.large
+                )
+                .clip(ProtonTheme.shapes.large)
+                .clickable(
+                    onClickLabel = stringResource(id = R.string.rsvp_widget_open_in_proton_calendar),
+                    role = Role.Button,
+                    onClick = onOpenInProtonCalendar
                 )
         ) {
             Image(
@@ -558,6 +567,7 @@ private fun RsvpStatusUiModel.getBackgroundColor() = when (this) {
 fun RsvpWidgetUnansweredPreview() {
     RsvpWidget(
         uiModel = RsvpWidgetPreviewData.UnansweredWithMultipleParticipants,
+        onOpenInProtonCalendar = {},
         onAnswerRsvpEvent = {}
     )
 }
@@ -567,6 +577,7 @@ fun RsvpWidgetUnansweredPreview() {
 fun RsvpWidgetAnsweredPreview() {
     RsvpWidget(
         uiModel = RsvpWidgetPreviewData.AnsweredWithOneParticipantAndStatus,
+        onOpenInProtonCalendar = {},
         onAnswerRsvpEvent = {}
     )
 }

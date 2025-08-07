@@ -273,6 +273,7 @@ private fun ColumnScope.ConversationDetailExpandedItem(
                 )
                 is RsvpWidgetUiModel.Shown -> RsvpWidget(
                     uiModel.messageRsvpWidgetUiModel.event,
+                    { actions.onOpenInProtonCalendar(uiModel.messageId) },
                     { actions.onAnswerRsvpEvent(uiModel.messageId, it) }
                 )
             }
@@ -380,7 +381,7 @@ object ConversationDetailItem {
         val onLoadRemoteContent: (MessageId) -> Unit,
         val onLoadEmbeddedImages: (MessageId) -> Unit,
         val onLoadRemoteAndEmbeddedContent: (MessageId) -> Unit,
-        val onOpenInProtonCalendar: (MessageId) -> Unit,
+        val onOpenInProtonCalendar: (MessageIdUiModel) -> Unit,
         val onPrint: (MessageId) -> Unit,
         val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
