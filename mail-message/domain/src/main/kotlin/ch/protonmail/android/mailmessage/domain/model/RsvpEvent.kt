@@ -71,7 +71,13 @@ enum class RsvpProgress { Pending, Ongoing, Ended }
 
 enum class RsvpAttendance { Optional, Required }
 
-enum class RsvpUnanswerableReason { InviteIsOutdated, InviteHasUnknownRecency, AddressIsIncorrect, UserIsOrganizer }
+enum class RsvpUnanswerableReason {
+    InviteIsOutdated,
+    AddressIsIncorrect,
+    UserIsOrganizer,
+    EventDoesNotExist,
+    NetworkFailure
+}
 
 enum class RsvpOccurrence { Date, DateTime }
 

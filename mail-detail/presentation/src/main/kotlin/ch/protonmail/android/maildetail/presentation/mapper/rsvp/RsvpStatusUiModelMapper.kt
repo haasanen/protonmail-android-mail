@@ -50,9 +50,10 @@ class RsvpStatusUiModelMapper @Inject constructor() {
 
         is RsvpState.UnanswerableInvite -> when (state.reason) {
             RsvpUnanswerableReason.InviteIsOutdated -> RsvpStatusUiModel.InviteOutdated
-            RsvpUnanswerableReason.InviteHasUnknownRecency -> RsvpStatusUiModel.OfflineInviteOutdated
             RsvpUnanswerableReason.AddressIsIncorrect -> RsvpStatusUiModel.AddressIsIncorrect
             RsvpUnanswerableReason.UserIsOrganizer -> RsvpStatusUiModel.UserIsOrganizer
+            RsvpUnanswerableReason.EventDoesNotExist -> RsvpStatusUiModel.EventDoesNotExist
+            RsvpUnanswerableReason.NetworkFailure -> RsvpStatusUiModel.NetworkFailure
         }
     }
 }

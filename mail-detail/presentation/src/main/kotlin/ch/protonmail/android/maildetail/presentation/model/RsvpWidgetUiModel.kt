@@ -48,9 +48,10 @@ sealed interface RsvpStatusUiModel {
     data object EventCancelled : RsvpStatusUiModel
     data object InviteOutdated : RsvpStatusUiModel
     data object EventCancelledInviteOutdated : RsvpStatusUiModel
-    data object OfflineInviteOutdated : RsvpStatusUiModel
+    data object NetworkFailure : RsvpStatusUiModel
     data object AddressIsIncorrect : RsvpStatusUiModel
     data object UserIsOrganizer : RsvpStatusUiModel
+    data object EventDoesNotExist : RsvpStatusUiModel
 }
 
 data class RsvpAttendeeUiModel(

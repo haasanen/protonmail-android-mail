@@ -231,7 +231,7 @@ object LocalMessageTestData {
         time = time,
         size = size,
         expirationTime = expirationTime,
-        snoozeTime = snoozeTime,
+        snoozedUntil = snoozeTime,
         isReplied = isReplied,
         isRepliedAll = isRepliedAll,
         isForwarded = isForwarded,

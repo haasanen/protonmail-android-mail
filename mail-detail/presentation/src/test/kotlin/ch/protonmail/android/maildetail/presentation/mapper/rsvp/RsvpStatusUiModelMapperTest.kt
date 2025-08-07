@@ -134,18 +134,6 @@ class RsvpStatusUiModelMapperTest {
     }
 
     @Test
-    fun `when UnanswerableInvite with InviteHasUnknownRecency reason, returns OfflineInviteOutdated`() {
-        // Given
-        val state = RsvpState.UnanswerableInvite(reason = RsvpUnanswerableReason.InviteHasUnknownRecency)
-
-        // When
-        val result = mapper.toUiModel(state)
-
-        // Then
-        assertEquals(RsvpStatusUiModel.OfflineInviteOutdated, result)
-    }
-
-    @Test
     fun `when UnanswerableInvite with AddressIsIncorrect reason, returns AddressIsIncorrect`() {
         // Given
         val state = RsvpState.UnanswerableInvite(reason = RsvpUnanswerableReason.AddressIsIncorrect)
@@ -167,5 +155,29 @@ class RsvpStatusUiModelMapperTest {
 
         // Then
         assertEquals(RsvpStatusUiModel.UserIsOrganizer, result)
+    }
+
+    @Test
+    fun `when UnanswerableInvite with EventDoesNotExist reason, returns EventDoesNotExist`() {
+        // Given
+        val state = RsvpState.UnanswerableInvite(reason = RsvpUnanswerableReason.EventDoesNotExist)
+
+        // When
+        val result = mapper.toUiModel(state)
+
+        // Then
+        assertEquals(RsvpStatusUiModel.EventDoesNotExist, result)
+    }
+
+    @Test
+    fun `when UnanswerableInvite with NetworkFailure reason, returns NetworkFailure`() {
+        // Given
+        val state = RsvpState.UnanswerableInvite(reason = RsvpUnanswerableReason.NetworkFailure)
+
+        // When
+        val result = mapper.toUiModel(state)
+
+        // Then
+        assertEquals(RsvpStatusUiModel.NetworkFailure, result)
     }
 }

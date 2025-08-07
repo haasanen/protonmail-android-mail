@@ -123,9 +123,10 @@ private fun LocalRsvpAttendance.toRsvpAttendance() = when (this) {
 
 private fun LocalRsvpUnanswerableReason.toRsvpUnanswerableReason() = when (this) {
     LocalRsvpUnanswerableReason.INVITE_IS_OUTDATED -> RsvpUnanswerableReason.InviteIsOutdated
-    LocalRsvpUnanswerableReason.INVITE_HAS_UNKNOWN_RECENCY -> RsvpUnanswerableReason.InviteHasUnknownRecency
     LocalRsvpUnanswerableReason.ADDRESS_IS_INCORRECT -> RsvpUnanswerableReason.AddressIsIncorrect
     LocalRsvpUnanswerableReason.USER_IS_ORGANIZER -> RsvpUnanswerableReason.UserIsOrganizer
+    LocalRsvpUnanswerableReason.EVENT_DOES_NOT_EXIST -> RsvpUnanswerableReason.EventDoesNotExist
+    LocalRsvpUnanswerableReason.NETWORK_FAILURE -> RsvpUnanswerableReason.NetworkFailure
 }
 
 fun RsvpAnswer.toLocalRsvpAnswer() = when (this) {

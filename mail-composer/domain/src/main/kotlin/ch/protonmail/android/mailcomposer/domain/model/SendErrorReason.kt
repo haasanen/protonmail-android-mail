@@ -36,6 +36,7 @@ sealed interface SendErrorReason {
         data object ScheduledSendExpired : SendErrorReason
         data object ExternalPasswordDecryptFailed : SendErrorReason
         data object ScheduledSendMessagesLimit : SendErrorReason
+        data object ExpirationTimeTooSoon : SendErrorReason
     }
 
     sealed interface ErrorWithMessage : SendErrorReason {

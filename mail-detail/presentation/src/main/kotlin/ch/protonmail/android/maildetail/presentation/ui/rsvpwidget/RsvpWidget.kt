@@ -533,9 +533,10 @@ private fun RsvpStatusUiModel.getMessage() = when (this) {
     RsvpStatusUiModel.EventEnded -> R.string.rsvp_widget_event_ended
     RsvpStatusUiModel.HappeningNow -> R.string.rsvp_widget_happening_now
     RsvpStatusUiModel.InviteOutdated -> R.string.rsvp_widget_invite_outdated
-    RsvpStatusUiModel.OfflineInviteOutdated -> R.string.rsvp_widget_offline_invite_outdated
     RsvpStatusUiModel.AddressIsIncorrect -> R.string.rsvp_widget_address_is_incorrect
     RsvpStatusUiModel.UserIsOrganizer -> R.string.rsvp_widget_user_is_organizer
+    RsvpStatusUiModel.EventDoesNotExist -> R.string.rsvp_widget_event_does_not_exist
+    RsvpStatusUiModel.NetworkFailure -> R.string.rsvp_widget_offline_invite_outdated
 }
 
 @Composable
@@ -545,9 +546,10 @@ private fun RsvpStatusUiModel.getTextColor() = when (this) {
     RsvpStatusUiModel.EventEnded -> ProtonTheme.colors.notificationWarning900
     RsvpStatusUiModel.HappeningNow -> ProtonTheme.colors.notificationSuccess900
     RsvpStatusUiModel.InviteOutdated -> ProtonTheme.colors.textNorm
-    RsvpStatusUiModel.OfflineInviteOutdated -> ProtonTheme.colors.textNorm
     RsvpStatusUiModel.AddressIsIncorrect -> ProtonTheme.colors.textNorm
     RsvpStatusUiModel.UserIsOrganizer -> ProtonTheme.colors.textNorm
+    RsvpStatusUiModel.EventDoesNotExist -> ProtonTheme.colors.textNorm
+    RsvpStatusUiModel.NetworkFailure -> ProtonTheme.colors.textNorm
 }
 
 @Composable
@@ -557,9 +559,10 @@ private fun RsvpStatusUiModel.getBackgroundColor() = when (this) {
     RsvpStatusUiModel.EventEnded -> ProtonTheme.colors.notificationWarning100
     RsvpStatusUiModel.HappeningNow -> ProtonTheme.colors.notificationSuccess100
     RsvpStatusUiModel.InviteOutdated -> ProtonTheme.colors.backgroundDeep
-    RsvpStatusUiModel.OfflineInviteOutdated -> ProtonTheme.colors.backgroundDeep
     RsvpStatusUiModel.AddressIsIncorrect -> ProtonTheme.colors.backgroundDeep
     RsvpStatusUiModel.UserIsOrganizer -> ProtonTheme.colors.backgroundDeep
+    RsvpStatusUiModel.EventDoesNotExist -> ProtonTheme.colors.backgroundDeep
+    RsvpStatusUiModel.NetworkFailure -> ProtonTheme.colors.backgroundDeep
 }
 
 @Preview

@@ -264,6 +264,7 @@ fun DraftSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
     DraftSendErrorReason.MissingAttachmentUploads -> SendErrorReason.ErrorNoMessage.MissingAttachmentUploads
     DraftSendErrorReason.ScheduleSendMessageLimitExceeded -> SendErrorReason.ErrorNoMessage.ScheduledSendMessagesLimit
     DraftSendErrorReason.ScheduleSendExpired -> SendErrorReason.ErrorNoMessage.ScheduledSendExpired
+    DraftSendErrorReason.ExpirationTimeTooSoon -> SendErrorReason.ErrorNoMessage.ExpirationTimeTooSoon
 
     is DraftSendErrorReason.AddressDoesNotHavePrimaryKey ->
         SendErrorReason.ErrorWithMessage.AddressDoesNotHavePrimaryKey(v1)
@@ -341,6 +342,7 @@ fun DraftSendError.toDraftSendError(): SendDraftError = when (this) {
         is DraftSendErrorReason.PackageError -> SendDraftError.CorruptedData
 
         DraftSendErrorReason.EoPasswordDecrypt -> SendDraftError.ExternalPasswordDecryptError
+        DraftSendErrorReason.ExpirationTimeTooSoon -> SendDraftError.ExpirationTimeTooSoon
     }
 }
 
@@ -372,6 +374,7 @@ fun DraftExpirationError.toMessageExpirationError() = when (this) {
     is DraftExpirationError.Reason -> when (this.v1) {
         DraftExpirationErrorReason.EXPIRATION_TIME_IN_THE_PAST -> MessageExpirationError.ExpirationTimeInThePast
         DraftExpirationErrorReason.EXPIRATION_TIME_EXCEEDS30_DAYS -> MessageExpirationError.ExpirationTimeTooFarAhead
+        DraftExpirationErrorReason.EXPIRATION_TIME_LESS_THAN15_MIN -> MessageExpirationError.ExpirationTimeLessThan15Min
     }
 }
 

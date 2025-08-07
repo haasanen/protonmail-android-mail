@@ -23,5 +23,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 sealed interface MessageExpirationError {
     data object ExpirationTimeInThePast : MessageExpirationError
     data object ExpirationTimeTooFarAhead : MessageExpirationError
+    data object ExpirationTimeLessThan15Min : MessageExpirationError
     data class Other(val error: DataError) : MessageExpirationError
 }
