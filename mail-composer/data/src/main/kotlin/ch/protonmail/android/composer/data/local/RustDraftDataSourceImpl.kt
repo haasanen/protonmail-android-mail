@@ -19,6 +19,7 @@
 package ch.protonmail.android.composer.data.local
 
 import java.time.Duration
+import androidx.annotation.VisibleForTesting
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.raise.either
@@ -65,6 +66,8 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
@@ -98,6 +101,9 @@ class RustDraftDataSourceImpl @Inject constructor(
     private val enqueuer: Enqueuer,
     private val draftCache: DraftCache
 ) : RustDraftDataSource {
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val mutablePasswordChangedSignal = MutableSharedFlow<Unit>()
 
     private val recipientsUpdatedCallback = object : ComposerRecipientValidationCallback {
         override fun onUpdate() {
@@ -245,6 +251,8 @@ class RustDraftDataSourceImpl @Inject constructor(
             is DraftScheduleSendOptionsResult.Ok -> result.v1.right()
         }
 
+    override fun observePasswordUpdatedSignal(): Flow<Unit> = mutablePasswordChangedSignal.filterNotNull()
+
     override suspend fun body(): Either<DataError, String> = draftCache.get().body().right()
 
     override suspend fun isPasswordProtected(): Either<DataError, Boolean> =
@@ -259,12 +267,16 @@ class RustDraftDataSourceImpl @Inject constructor(
         when (val result = draftCache.get().setPassword(password.password, password.hint)) {
             is VoidDraftPasswordResult.Error -> result.v1.toExternalEncryptionPasswordError().left()
             VoidDraftPasswordResult.Ok -> Unit.right()
+        }.also {
+            mutablePasswordChangedSignal.emit(Unit)
         }
 
     override suspend fun removeExternalEncryptionPassword(): Either<ExternalEncryptionPasswordError, Unit> =
         when (val result = draftCache.get().removePassword()) {
             is VoidDraftPasswordResult.Error -> result.v1.toExternalEncryptionPasswordError().left()
             VoidDraftPasswordResult.Ok -> Unit.right()
+        }.also {
+            mutablePasswordChangedSignal.emit(Unit)
         }
 
     override suspend fun getExternalEncryptionPassword(): Either<DataError, ExternalEncryptionPassword?> =

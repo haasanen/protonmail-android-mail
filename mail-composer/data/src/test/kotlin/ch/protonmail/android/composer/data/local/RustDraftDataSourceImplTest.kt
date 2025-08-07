@@ -1,5 +1,6 @@
 package ch.protonmail.android.composer.data.local
 
+import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.composer.data.local.RustDraftDataSourceImpl.Companion.InitialDelayForSendingStatusWorker
@@ -865,6 +866,24 @@ class RustDraftDataSourceImplTest {
     }
 
     @Test
+    fun `emits password updated signal when set external encryption password`() = runTest {
+        // Given
+        val password = "password"
+        val hint = "hint"
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        every { draftCache.get() } returns expectedDraftWrapper
+        coEvery { expectedDraftWrapper.setPassword(password, hint) } returns VoidDraftPasswordResult.Ok
+
+        dataSource.mutablePasswordChangedSignal.test {
+            // When
+            dataSource.setExternalEncryptionPassword(ExternalEncryptionPassword(password, hint))
+
+            // Then
+            awaitItem()
+        }
+    }
+
+    @Test
     fun `set external encryption password returns error when unsuccessful`() = runTest {
         // Given
         val expected = ExternalEncryptionPasswordError.PasswordTooShort
@@ -895,6 +914,22 @@ class RustDraftDataSourceImplTest {
 
         // Then
         assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `emits password updated signal when removed external encryption password`() = runTest {
+        // Given
+        val expectedDraftWrapper = expectDraftWrapperReturns()
+        every { draftCache.get() } returns expectedDraftWrapper
+        coEvery { expectedDraftWrapper.removePassword() } returns VoidDraftPasswordResult.Ok
+
+        dataSource.mutablePasswordChangedSignal.test {
+            // When
+            dataSource.removeExternalEncryptionPassword()
+
+            // Then
+            awaitItem()
+        }
     }
 
     @Test

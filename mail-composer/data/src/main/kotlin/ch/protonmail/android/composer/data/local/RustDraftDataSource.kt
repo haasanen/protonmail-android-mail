@@ -76,4 +76,16 @@ interface RustDraftDataSource {
 
     fun getEmbeddedImage(contentId: String): Either<DataError, LocalAttachmentData>
     fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions>
+
+    /**
+     * Signal is emit instead of data as this data source is a Singleton. Under the specific scenario where we have
+     * two instances of composer at the same time (ie. composing a message in the app and then performing a "share via"
+     * from another app), this signal would be received by both instances while only one cares about it.
+     *
+     * Delegating the call to verify the change (eg. `isPasswordProtected` / `getExternalEncryptionPassword`) to the
+     * view model is a workaround that ensures only the impacted VM reacts to the event (as the VM call is
+     * dispatched to their own instance of rust "Draft" object by DraftCache class).
+     *
+     */
+    fun observePasswordUpdatedSignal(): Flow<Unit>
 }
