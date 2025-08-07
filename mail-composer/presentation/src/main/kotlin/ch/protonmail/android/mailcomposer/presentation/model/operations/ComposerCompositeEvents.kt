@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcomposer.presentation.mapper.AttachmentListErro
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ScheduleSendOptionsUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AccessoriesStateModification
@@ -35,7 +36,6 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
-import kotlin.time.Duration
 
 internal sealed interface CompositeEvent : ComposerStateEvent {
 
@@ -101,7 +101,7 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
         val refreshedBody: DraftDisplayBodyUiModel
     ) : CompositeEvent
 
-    data class SetExpirationDismissed(val expiration: Duration) : CompositeEvent
+    data class SetExpirationDismissed(val expiration: ExpirationTimeUiModel) : CompositeEvent
 
     data class ScheduleSendOptionsReady(val options: ScheduleSendOptionsUiModel) : CompositeEvent
 

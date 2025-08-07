@@ -18,12 +18,17 @@
 
 package ch.protonmail.android.mailcomposer.domain.model
 
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import me.proton.core.domain.entity.UserId
-import kotlin.time.Duration
+import kotlin.time.Instant
 
-data class MessageExpirationTime(
-    val userId: UserId,
-    val messageId: MessageId,
-    val expiresIn: Duration
-)
+sealed interface MessageExpirationTime {
+
+    data object Never : MessageExpirationTime
+
+    data object OneHour : MessageExpirationTime
+
+    data object OneDay : MessageExpirationTime
+
+    data object ThreeDays : MessageExpirationTime
+
+    data class Custom(val expiresAt: Instant) : MessageExpirationTime
+}

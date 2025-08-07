@@ -22,22 +22,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
-
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,41 +36,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcomposer.presentation.R
-import ch.protonmail.android.mailcomposer.presentation.ui.SetExpirationTimeBottomSheetContent.MaxDays
-import ch.protonmail.android.mailcomposer.presentation.ui.SetExpirationTimeBottomSheetContent.MaxHours
-import ch.protonmail.android.design.compose.component.ProtonOutlinedTextField
 import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.titleSmallNorm
-import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
+import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
+import ch.protonmail.android.mailcomposer.presentation.R
+import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeOption
+import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
 
 @Composable
-fun SetExpirationTimeBottomSheetContent(expirationTime: Duration, onDoneClick: (Duration) -> Unit) {
+fun SetExpirationTimeBottomSheetContent(
+    expirationTime: ExpirationTimeUiModel,
+    onDoneClick: (ExpirationTimeUiModel) -> Unit
+) {
 
-    val selectedItem = remember { mutableStateOf(ExpirationTime.from(expirationTime)) }
-    val selectedCustomDays = remember {
-        mutableStateOf(
-            if (selectedItem.value == ExpirationTime.Custom) {
-                expirationTime.inWholeDays
-            } else 0
-        )
-    }
-    val selectedCustomHours = remember {
-        mutableStateOf(
-            if (selectedItem.value == ExpirationTime.Custom) {
-                expirationTime.inWholeHours - expirationTime.inWholeDays.days.inWholeHours
-            } else 0
-        )
-    }
+    val selectedItem = remember { mutableStateOf(expirationTime) }
 
     Column {
         Row(
@@ -94,10 +68,7 @@ fun SetExpirationTimeBottomSheetContent(expirationTime: Duration, onDoneClick: (
             )
             Text(
                 modifier = Modifier.clickable(role = Role.Button) {
-                    val valueToBeSaved = if (selectedItem.value == ExpirationTime.Custom) {
-                        (selectedCustomDays.value * 24 + selectedCustomHours.value).hours
-                    } else selectedItem.value.duration
-                    onDoneClick(valueToBeSaved)
+                    onDoneClick(selectedItem.value)
                 },
                 text = stringResource(id = R.string.composer_expiration_time_bottom_sheet_done),
                 style = ProtonTheme.typography.bodyLargeNorm,
@@ -107,130 +78,44 @@ fun SetExpirationTimeBottomSheetContent(expirationTime: Duration, onDoneClick: (
 
         HorizontalDivider()
 
-        LazyColumn {
-            items(items = ExpirationTime.values()) { item ->
-                ProtonRawListItem(
-                    modifier = Modifier
-                        .selectable(selected = item == selectedItem.value) { selectedItem.value = item }
-                        .height(ProtonDimens.ListItemHeight)
-                        .padding(horizontal = ProtonDimens.Spacing.Large)
-                ) {
-                    val textRes = when (item) {
-                        ExpirationTime.None -> R.string.composer_bottom_bar_expiration_time_none
-                        ExpirationTime.OneHour -> R.string.composer_bottom_bar_expiration_time_one_hour
-                        ExpirationTime.OneDay -> R.string.composer_bottom_bar_expiration_time_one_day
-                        ExpirationTime.ThreeDays -> R.string.composer_bottom_bar_expiration_time_three_days
-                        ExpirationTime.OneWeek -> R.string.composer_bottom_bar_expiration_time_one_week
-                        ExpirationTime.Custom -> R.string.composer_bottom_bar_expiration_time_custom
-                    }
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        text = stringResource(id = textRes),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    if (item == selectedItem.value) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_proton_checkmark),
-                            contentDescription = NO_CONTENT_DESCRIPTION,
-                            tint = ProtonTheme.colors.interactionBrandDefaultNorm
-                        )
-                    }
-                }
-            }
-            if (selectedItem.value == ExpirationTime.Custom) {
-                item {
-                    Row(
-                        modifier = Modifier.padding(
-                            horizontal = ProtonDimens.Spacing.Large,
-                            vertical = ProtonDimens.Spacing.Standard
-                        )
-                    ) {
-                        ExpirationTimeDropdownMenu(
-                            modifier = Modifier.weight(1f),
-                            initialValue = TextFieldValue(selectedCustomDays.value.toString()),
-                            type = ExpirationTimeDropdownMenuType.Days,
-                            onSelectionChanged = { selectedCustomDays.value = it.toLong() }
-                        )
-                        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
-                        ExpirationTimeDropdownMenu(
-                            modifier = Modifier.weight(1f),
-                            initialValue = TextFieldValue(selectedCustomHours.value.toString()),
-                            type = ExpirationTimeDropdownMenuType.Hours,
-                            onSelectionChanged = { selectedCustomHours.value = it.toLong() }
-                        )
-                    }
-                }
+        Column {
+
+            ExpirationTimeOption.entries.forEach { item ->
+                SelectableExpirationTimeItem(
+                    item = item,
+                    isSelected = selectedItem.value.selectedOption == item,
+                    onSelected = { selectedItem.value = it }
+                )
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ExpirationTimeDropdownMenu(
-    initialValue: TextFieldValue,
-    type: ExpirationTimeDropdownMenuType,
-    modifier: Modifier = Modifier,
-    onSelectionChanged: (Int) -> Unit
+private fun SelectableExpirationTimeItem(
+    item: ExpirationTimeOption,
+    isSelected: Boolean,
+    onSelected: (ExpirationTimeUiModel) -> Unit
 ) {
-    val expanded = remember { mutableStateOf(false) }
 
-    val label = type.name
-    val maxValue = if (type == ExpirationTimeDropdownMenuType.Days) MaxDays else MaxHours
-
-    Column(modifier = modifier) {
+    ProtonRawListItem(
+        modifier = Modifier
+            .selectable(selected = isSelected) { onSelected(ExpirationTimeUiModel(item)) }
+            .height(ProtonDimens.ListItemHeight)
+            .padding(horizontal = ProtonDimens.Spacing.Large)
+    ) {
         Text(
-            text = label,
-            style = ProtonTheme.typography.titleSmallNorm
+            modifier = Modifier.weight(1f),
+            text = stringResource(id = item.textResId),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
-        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
-        ExposedDropdownMenuBox(
-            expanded = expanded.value,
-            onExpandedChange = { expanded.value = !expanded.value }
-        ) {
-            ProtonOutlinedTextField(
-                value = initialValue,
-                onValueChange = {},
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value) }
+        if (isSelected) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_proton_checkmark),
+                contentDescription = NO_CONTENT_DESCRIPTION,
+                tint = ProtonTheme.colors.interactionBrandDefaultNorm
             )
-            ExposedDropdownMenu(
-                expanded = expanded.value,
-                onDismissRequest = { expanded.value = false }
-            ) {
-                for (value in 0..maxValue) {
-                    DropdownMenuItem(
-                        text = { Text(text = value.toString()) },
-                        onClick = {
-                            onSelectionChanged(value)
-                            expanded.value = false
-                        }
-                    )
-                }
-            }
         }
-    }
-}
-
-object SetExpirationTimeBottomSheetContent {
-
-    const val MaxDays = 28
-    const val MaxHours = 23
-}
-
-enum class ExpirationTimeDropdownMenuType { Days, Hours }
-
-enum class ExpirationTime(val duration: Duration) {
-    None(Duration.ZERO),
-    OneHour(1.hours),
-    OneDay(1.days),
-    ThreeDays(3.days),
-    OneWeek(7.days),
-    Custom(Duration.INFINITE);
-
-    companion object {
-
-        fun from(duration: Duration) = values().find { it.duration == duration } ?: Custom
     }
 }

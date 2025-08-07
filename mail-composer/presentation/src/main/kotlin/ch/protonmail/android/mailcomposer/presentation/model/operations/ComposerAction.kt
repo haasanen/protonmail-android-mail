@@ -21,8 +21,8 @@ package ch.protonmail.android.mailcomposer.presentation.model.operations
 import android.net.Uri
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
-import kotlin.time.Duration
 import kotlin.time.Instant
 
 internal sealed interface ComposerAction : ComposerStateOperation {
@@ -30,7 +30,7 @@ internal sealed interface ComposerAction : ComposerStateOperation {
     data class SetSenderAddress(val sender: SenderUiModel) : ComposerAction
 
     data object OpenExpirationSettings : ComposerAction
-    data class SetMessageExpiration(val duration: Duration) : ComposerAction
+    data class SetMessageExpiration(val duration: ExpirationTimeUiModel) : ComposerAction
 
     data object CloseComposer : ComposerAction
     data object SendMessage : ComposerAction

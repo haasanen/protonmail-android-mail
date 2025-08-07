@@ -75,11 +75,9 @@ import uniffi.proton_mail_uniffi.VoidDraftExpirationResult
 import uniffi.proton_mail_uniffi.VoidDraftPasswordResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Instant
 
 class RustDraftDataSourceImplTest {
 
@@ -951,12 +949,11 @@ class RustDraftDataSourceImplTest {
     }
 
     @Test
-    @Ignore("enable when implementing mapping from message expiration to local")
     fun `set message expiration returns unit when successful`() = runTest {
         // Given
         val expectedDraftWrapper = expectDraftWrapperReturns()
         every { draftCache.get() } returns expectedDraftWrapper
-        val time = MessageExpirationTime(UserIdSample.Primary, MessageIdSample.PlainTextMessage, 60.minutes)
+        val time = MessageExpirationTime.OneHour
         val localExpiration = DraftExpirationTime.OneHour
         coEvery { expectedDraftWrapper.setMessageExpiration(localExpiration) } returns VoidDraftExpirationResult.Ok
 
@@ -968,13 +965,12 @@ class RustDraftDataSourceImplTest {
     }
 
     @Test
-    @Ignore("enable when implementing mapping from message expiration to local")
     fun `set message expiration returns error when unsuccessful`() = runTest {
         // Given
         val expected = MessageExpirationError.ExpirationTimeTooFarAhead
         val expectedDraftWrapper = expectDraftWrapperReturns()
         every { draftCache.get() } returns expectedDraftWrapper
-        val time = MessageExpirationTime(UserIdSample.Primary, MessageIdSample.PlainTextMessage, 60.days)
+        val time = MessageExpirationTime.Custom(Instant.DISTANT_FUTURE)
         coEvery { expectedDraftWrapper.setMessageExpiration(any()) } returns VoidDraftExpirationResult.Error(
             DraftExpirationError.Reason(DraftExpirationErrorReason.EXPIRATION_TIME_EXCEEDS30_DAYS)
         )

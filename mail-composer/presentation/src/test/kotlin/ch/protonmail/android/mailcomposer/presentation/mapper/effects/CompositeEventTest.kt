@@ -33,6 +33,8 @@ import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeOption
+import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.operations.CompositeEvent
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AccessoriesStateModification
@@ -50,7 +52,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import kotlin.test.assertEquals
-import kotlin.time.Duration.Companion.hours
 
 @RunWith(Parameterized::class)
 internal class CompositeEventTest(
@@ -86,7 +87,7 @@ internal class CompositeEventTest(
         )
 
         private val senderAddresses: List<SenderUiModel> = listOf(mockk())
-        private val expiration = 2.hours
+        private val expiration = ExpirationTimeUiModel(ExpirationTimeOption.OneHour)
 
         private val noErrorAttachment = mockk<AttachmentMetadataWithState>().apply {
             every { attachmentState } returns AttachmentState.Uploaded

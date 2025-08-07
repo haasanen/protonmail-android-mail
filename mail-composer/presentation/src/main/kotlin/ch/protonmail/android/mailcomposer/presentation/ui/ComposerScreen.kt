@@ -77,6 +77,7 @@ import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
+import ch.protonmail.android.mailcomposer.presentation.model.isExpirationTimeSet
 import ch.protonmail.android.mailcomposer.presentation.model.operations.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
@@ -89,7 +90,6 @@ import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("UseComposableActions")
@@ -211,7 +211,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                 )
 
                 BottomSheetType.SetExpirationTime -> SetExpirationTimeBottomSheetContent(
-                    expirationTime = accessoriesState.messageExpiresIn,
+                    expirationTime = accessoriesState.expirationTime,
                     onDoneClick = { viewModel.submit(ComposerAction.SetMessageExpiration(it)) }
                 )
 
@@ -281,7 +281,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             bottomBar = {
                 ComposerBottomBar(
                     isMessagePasswordSet = accessoriesState.isMessagePasswordSet,
-                    isMessageExpirationTimeSet = accessoriesState.messageExpiresIn != Duration.ZERO,
+                    isMessageExpirationTimeSet = accessoriesState.expirationTime.isExpirationTimeSet(),
                     actions = bottomBarActions
                 )
             },

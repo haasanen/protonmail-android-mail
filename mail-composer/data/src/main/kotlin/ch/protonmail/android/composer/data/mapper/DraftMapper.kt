@@ -359,9 +359,12 @@ fun DraftPassword?.toExternalEncryptionPassword() = this?.let {
     ExternalEncryptionPassword(this.password, this.hint ?: "")
 }
 
-@Suppress("NotImplementedDeclaration")
-fun MessageExpirationTime.toLocalExpirationTime(): DraftExpirationTime {
-    TODO("Map once the Message Expiration time was extended")
+fun MessageExpirationTime.toLocalExpirationTime() = when (this) {
+    is MessageExpirationTime.Custom -> DraftExpirationTime.Custom(this.expiresAt.epochSeconds.toULong())
+    is MessageExpirationTime.Never -> DraftExpirationTime.Never
+    is MessageExpirationTime.OneDay -> DraftExpirationTime.OneDay
+    is MessageExpirationTime.OneHour -> DraftExpirationTime.OneHour
+    is MessageExpirationTime.ThreeDays -> DraftExpirationTime.ThreeDays
 }
 
 fun DraftExpirationError.toMessageExpirationError() = when (this) {

@@ -19,28 +19,15 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
-import arrow.core.raise.either
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
-import kotlin.time.Duration
 
-@MissingRustApi
-// Rust not exposing API to save message expiration yet
 class SaveMessageExpirationTime @Inject constructor(
     private val messageExpirationTimeRepository: MessageExpirationTimeRepository
 ) {
 
-    suspend operator fun invoke(
-        userId: UserId,
-        messageId: MessageId,
-        expiresIn: Duration
-    ): Either<DataError.Local, Unit> = either {
-        val messageExpirationTime = MessageExpirationTime(userId, messageId, expiresIn)
-        messageExpirationTimeRepository.saveMessageExpirationTime(messageExpirationTime).bind()
-    }
+    suspend operator fun invoke(messageExpirationTime: MessageExpirationTime): Either<DataError.Local, Unit> =
+        messageExpirationTimeRepository.saveMessageExpirationTime(messageExpirationTime)
 }

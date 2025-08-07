@@ -26,7 +26,6 @@ import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlin.time.Duration
 
 data class ComposerStates(
     val main: ComposerState.Main,
@@ -75,7 +74,7 @@ sealed interface ComposerState {
 
     data class Accessories(
         val isMessagePasswordSet: Boolean,
-        val messageExpiresIn: Duration,
+        val expirationTime: ExpirationTimeUiModel,
         val scheduleSendOptions: ScheduleSendOptionsUiModel
     ) {
 
@@ -83,7 +82,7 @@ sealed interface ComposerState {
 
             fun initial() = Accessories(
                 isMessagePasswordSet = false,
-                messageExpiresIn = Duration.ZERO,
+                expirationTime = ExpirationTimeUiModel(ExpirationTimeOption.None),
                 scheduleSendOptions = ScheduleSendOptionsUiModel.EmptyOptions
             )
         }

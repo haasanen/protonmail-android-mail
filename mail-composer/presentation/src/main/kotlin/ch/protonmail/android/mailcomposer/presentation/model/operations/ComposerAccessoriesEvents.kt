@@ -19,10 +19,9 @@
 package ch.protonmail.android.mailcomposer.presentation.model.operations
 
 import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
-import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
+import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AccessoriesStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
-import kotlin.time.Duration
 
 internal sealed interface AccessoriesEvent : ComposerStateEvent {
 
@@ -30,10 +29,10 @@ internal sealed interface AccessoriesEvent : ComposerStateEvent {
         accessoriesModification = when (this) {
             is OnPasswordChanged -> AccessoriesStateModification.MessagePasswordUpdated(password)
             is OnExpirationChanged ->
-                AccessoriesStateModification.MessageExpirationUpdated(expiration?.expiresIn ?: Duration.ZERO)
+                AccessoriesStateModification.MessageExpirationUpdated(expiration)
         }
     )
 
     data class OnPasswordChanged(val password: ExternalEncryptionPassword?) : AccessoriesEvent
-    data class OnExpirationChanged(val expiration: MessageExpirationTime?) : AccessoriesEvent
+    data class OnExpirationChanged(val expiration: ExpirationTimeUiModel) : AccessoriesEvent
 }
