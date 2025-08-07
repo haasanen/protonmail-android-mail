@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
+import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
 import timber.log.Timber
 import javax.inject.Inject
@@ -27,7 +27,7 @@ class GetMessagePassword @Inject constructor(
     private val messagePasswordRepository: MessagePasswordRepository
 ) {
 
-    suspend operator fun invoke(): ExternalEncryptionPassword? = messagePasswordRepository.getPassword()
+    suspend operator fun invoke(): MessagePassword? = messagePasswordRepository.getPassword()
         .mapLeft {
             Timber.w("external encryption: Failed to get message password $it")
             null

@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.domain.model
 
-data class ExternalEncryptionPassword(
+data class MessagePassword(
     val password: String,
     val hint: String
 )

@@ -90,7 +90,7 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsExternalEncryptionEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessagePasswordEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Compose
@@ -157,7 +157,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val scheduleSend: ScheduleSendMessage,
     private val getSenderAddresses: GetSenderAddresses,
     private val changeSenderAddress: ChangeSenderAddress,
-    @IsExternalEncryptionEnabled private val externalEncryptionEnabled: Flow<Boolean>,
+    @IsMessagePasswordEnabled private val messagePasswordEnabled: Flow<Boolean>,
     private val composerRegistry: ActiveComposerRegistry,
     @IsMessageExpirationEnabled private val messageExpirationEnabled: Flow<Boolean>,
     private val observeMessagePasswordChanged: ObserveMessagePasswordChanged,
@@ -188,7 +188,7 @@ class ComposerViewModel @AssistedInject constructor(
         initialValue = false
     )
 
-    val isExternalEncryptionEnabled = externalEncryptionEnabled.stateIn(
+    val isMessagePasswordEnabled = messagePasswordEnabled.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
         initialValue = true

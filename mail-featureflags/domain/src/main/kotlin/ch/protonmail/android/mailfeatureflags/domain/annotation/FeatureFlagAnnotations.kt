@@ -22,7 +22,7 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class IsExternalEncryptionEnabled
+annotation class IsMessagePasswordEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)

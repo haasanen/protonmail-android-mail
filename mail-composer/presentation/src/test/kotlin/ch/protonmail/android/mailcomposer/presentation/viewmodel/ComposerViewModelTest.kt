@@ -175,7 +175,7 @@ class ComposerViewModelTest {
         }
     }
     private val reducer = ComposerStateReducer()
-    private val isExternalEncryptionEnabled = MutableStateFlow(true)
+    private val isMessagePasswordEnabled = MutableStateFlow(true)
 
     private val viewModel by lazy {
         ComposerViewModel(
@@ -205,7 +205,7 @@ class ComposerViewModelTest {
             scheduleSendMessage,
             getSenderAddresses,
             changeSenderAddress,
-            isExternalEncryptionEnabled,
+            isMessagePasswordEnabled,
             composerRegistry,
             isMessageExpirationEnabled,
             observeMessagePasswordChanged,

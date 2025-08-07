@@ -27,8 +27,8 @@ import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toChangeSenderError
 import ch.protonmail.android.composer.data.mapper.toDraftCreateMode
 import ch.protonmail.android.composer.data.mapper.toDraftSendError
-import ch.protonmail.android.composer.data.mapper.toExternalEncryptionPassword
-import ch.protonmail.android.composer.data.mapper.toExternalEncryptionPasswordError
+import ch.protonmail.android.composer.data.mapper.toMessagePassword
+import ch.protonmail.android.composer.data.mapper.toMessagePasswordError
 import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.mapper.toLocalDraftWithSyncStatus
 import ch.protonmail.android.composer.data.mapper.toLocalExpirationTime
@@ -50,8 +50,8 @@ import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
+import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.MessagePasswordError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
@@ -261,28 +261,26 @@ class RustDraftDataSourceImpl @Inject constructor(
             is DraftIsPasswordProtectedResult.Ok -> result.v1.right()
         }
 
-    override suspend fun setExternalEncryptionPassword(
-        password: ExternalEncryptionPassword
-    ): Either<ExternalEncryptionPasswordError, Unit> =
+    override suspend fun setMessagePassword(password: MessagePassword): Either<MessagePasswordError, Unit> =
         when (val result = draftCache.get().setPassword(password.password, password.hint)) {
-            is VoidDraftPasswordResult.Error -> result.v1.toExternalEncryptionPasswordError().left()
+            is VoidDraftPasswordResult.Error -> result.v1.toMessagePasswordError().left()
             VoidDraftPasswordResult.Ok -> Unit.right()
         }.also {
             mutablePasswordChangedSignal.emit(Unit)
         }
 
-    override suspend fun removeExternalEncryptionPassword(): Either<ExternalEncryptionPasswordError, Unit> =
+    override suspend fun removeMessagePassword(): Either<MessagePasswordError, Unit> =
         when (val result = draftCache.get().removePassword()) {
-            is VoidDraftPasswordResult.Error -> result.v1.toExternalEncryptionPasswordError().left()
+            is VoidDraftPasswordResult.Error -> result.v1.toMessagePasswordError().left()
             VoidDraftPasswordResult.Ok -> Unit.right()
         }.also {
             mutablePasswordChangedSignal.emit(Unit)
         }
 
-    override suspend fun getExternalEncryptionPassword(): Either<DataError, ExternalEncryptionPassword?> =
+    override suspend fun getMessagePassword(): Either<DataError, MessagePassword?> =
         when (val result = draftCache.get().getPassword()) {
             is DraftGetPasswordResult.Error -> result.v1.toDataError().left()
-            is DraftGetPasswordResult.Ok -> result.v1.toExternalEncryptionPassword().right()
+            is DraftGetPasswordResult.Ok -> result.v1.toMessagePassword().right()
         }
 
     override suspend fun getMessageExpiration(): Either<DataError, DraftExpirationTime> =

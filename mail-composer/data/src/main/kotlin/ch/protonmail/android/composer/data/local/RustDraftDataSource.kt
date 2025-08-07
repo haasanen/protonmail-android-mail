@@ -24,8 +24,8 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
+import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.MessagePasswordError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
@@ -63,12 +63,10 @@ interface RustDraftDataSource {
     suspend fun changeSender(sender: SenderEmail): Either<ChangeSenderError, Unit>
     suspend fun body(): Either<DataError, String>
     suspend fun isPasswordProtected(): Either<DataError, Boolean>
-    suspend fun setExternalEncryptionPassword(
-        password: ExternalEncryptionPassword
-    ): Either<ExternalEncryptionPasswordError, Unit>
+    suspend fun setMessagePassword(password: MessagePassword): Either<MessagePasswordError, Unit>
 
-    suspend fun removeExternalEncryptionPassword(): Either<ExternalEncryptionPasswordError, Unit>
-    suspend fun getExternalEncryptionPassword(): Either<DataError, ExternalEncryptionPassword?>
+    suspend fun removeMessagePassword(): Either<MessagePasswordError, Unit>
+    suspend fun getMessagePassword(): Either<DataError, MessagePassword?>
     suspend fun getMessageExpiration(): Either<DataError, DraftExpirationTime>
     suspend fun setMessageExpiration(expirationTime: MessageExpirationTime): Either<MessageExpirationError, Unit>
     suspend fun validateSendWithExpiration(): Either<DataError, DraftRecipientExpirationFeatureReport>
@@ -82,7 +80,7 @@ interface RustDraftDataSource {
      * two instances of composer at the same time (ie. composing a message in the app and then performing a "share via"
      * from another app), this signal would be received by both instances while only one cares about it.
      *
-     * Delegating the call to verify the change (eg. `isPasswordProtected` / `getExternalEncryptionPassword`) to the
+     * Delegating the call to verify the change (eg. `isPasswordProtected` / `getMessagePassword`) to the
      * view model is a workaround that ensures only the impacted VM reacts to the event (as the VM call is
      * dispatched to their own instance of rust "Draft" object by DraftCache class).
      *

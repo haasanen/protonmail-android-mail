@@ -21,7 +21,7 @@ package ch.protonmail.android.mailcomposer.presentation.viewmodel
 import app.cash.turbine.test
 import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
+import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.GetMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessagePassword
@@ -82,7 +82,7 @@ class SetMessagePasswordViewModelTest {
         // Given
         val password = "password"
         val passwordHint = "password hint"
-        val messagePassword = ExternalEncryptionPassword(password, passwordHint)
+        val messagePassword = MessagePassword(password, passwordHint)
         coEvery { getMessagePassword() } returns messagePassword
 
         // When

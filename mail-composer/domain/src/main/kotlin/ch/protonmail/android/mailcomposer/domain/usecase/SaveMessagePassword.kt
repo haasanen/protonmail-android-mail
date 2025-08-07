@@ -19,8 +19,8 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
+import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.MessagePasswordError
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
 import javax.inject.Inject
 
@@ -28,9 +28,6 @@ class SaveMessagePassword @Inject constructor(
     private val messagePasswordRepository: MessagePasswordRepository
 ) {
 
-    suspend operator fun invoke(
-        password: String,
-        passwordHint: String?
-    ): Either<ExternalEncryptionPasswordError, Unit> =
-        messagePasswordRepository.savePassword(ExternalEncryptionPassword(password, passwordHint!!))
+    suspend operator fun invoke(password: String, passwordHint: String?): Either<MessagePasswordError, Unit> =
+        messagePasswordRepository.savePassword(MessagePassword(password, passwordHint!!))
 }

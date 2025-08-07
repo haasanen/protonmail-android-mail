@@ -21,8 +21,8 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
+import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.MessagePasswordError
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -45,7 +45,7 @@ class SaveMessagePasswordTest {
         val passwordHint = "password hint"
         coEvery {
             messagePasswordRepository.savePassword(
-                ExternalEncryptionPassword(
+                MessagePassword(
                     password,
                     passwordHint
                 )
@@ -64,9 +64,9 @@ class SaveMessagePasswordTest {
         // Given
         val password = "password"
         val passwordHint = "password hint"
-        val expected = ExternalEncryptionPasswordError.Other(DataError.Local.Unknown)
+        val expected = MessagePasswordError.Other(DataError.Local.Unknown)
         coEvery {
-            messagePasswordRepository.savePassword(ExternalEncryptionPassword(password, passwordHint))
+            messagePasswordRepository.savePassword(MessagePassword(password, passwordHint))
         } returns expected.left()
 
         // When

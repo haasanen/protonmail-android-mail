@@ -21,8 +21,8 @@ package ch.protonmail.android.composer.data.repository
 import arrow.core.Either
 import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
+import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.MessagePasswordError
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -33,15 +33,12 @@ class MessagePasswordRepositoryImpl @Inject constructor(
 
     override suspend fun isPasswordProtected(): Either<DataError, Boolean> = draftDataSource.isPasswordProtected()
 
-    override suspend fun savePassword(
-        password: ExternalEncryptionPassword
-    ): Either<ExternalEncryptionPasswordError, Unit> = draftDataSource.setExternalEncryptionPassword(password)
+    override suspend fun savePassword(password: MessagePassword): Either<MessagePasswordError, Unit> =
+        draftDataSource.setMessagePassword(password)
 
-    override suspend fun removePassword(): Either<ExternalEncryptionPasswordError, Unit> =
-        draftDataSource.removeExternalEncryptionPassword()
+    override suspend fun removePassword(): Either<MessagePasswordError, Unit> = draftDataSource.removeMessagePassword()
 
-    override suspend fun getPassword(): Either<DataError, ExternalEncryptionPassword?> =
-        draftDataSource.getExternalEncryptionPassword()
+    override suspend fun getPassword(): Either<DataError, MessagePassword?> = draftDataSource.getMessagePassword()
 
 
     override fun observePasswordUpdatedSignal(): Flow<Unit> = draftDataSource.observePasswordUpdatedSignal()

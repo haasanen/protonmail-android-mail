@@ -22,7 +22,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.R
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
+import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 import ch.protonmail.android.mailcomposer.presentation.model.MessagePasswordOperation
 import ch.protonmail.android.mailcomposer.presentation.model.SetMessagePasswordState
 import me.proton.core.util.kotlin.EMPTY_STRING
@@ -50,7 +50,7 @@ class SetMessagePasswordReducerTest(
 
         private const val Password = "password"
         private const val Hint = "hint"
-        private val messagePassword = ExternalEncryptionPassword(Password, Hint)
+        private val messagePassword = MessagePassword(Password, Hint)
 
         private val testInputList = listOf(
             TestInput(

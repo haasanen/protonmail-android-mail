@@ -20,8 +20,8 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPassword
-import ch.protonmail.android.mailcomposer.domain.model.ExternalEncryptionPasswordError
+import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.MessagePasswordError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
@@ -859,7 +859,7 @@ class RustDraftDataSourceImplTest {
         coEvery { expectedDraftWrapper.setPassword(password, hint) } returns VoidDraftPasswordResult.Ok
 
         // When
-        val actual = dataSource.setExternalEncryptionPassword(ExternalEncryptionPassword(password, hint))
+        val actual = dataSource.setMessagePassword(MessagePassword(password, hint))
 
         // Then
         assertEquals(Unit.right(), actual)
@@ -876,7 +876,7 @@ class RustDraftDataSourceImplTest {
 
         dataSource.mutablePasswordChangedSignal.test {
             // When
-            dataSource.setExternalEncryptionPassword(ExternalEncryptionPassword(password, hint))
+            dataSource.setMessagePassword(MessagePassword(password, hint))
 
             // Then
             awaitItem()
@@ -886,7 +886,7 @@ class RustDraftDataSourceImplTest {
     @Test
     fun `set external encryption password returns error when unsuccessful`() = runTest {
         // Given
-        val expected = ExternalEncryptionPasswordError.PasswordTooShort
+        val expected = MessagePasswordError.PasswordTooShort
         val password = "password"
         val hint = "hint"
         val expectedDraftWrapper = expectDraftWrapperReturns()
@@ -896,7 +896,7 @@ class RustDraftDataSourceImplTest {
         )
 
         // When
-        val actual = dataSource.setExternalEncryptionPassword(ExternalEncryptionPassword(password, hint))
+        val actual = dataSource.setMessagePassword(MessagePassword(password, hint))
 
         // Then
         assertEquals(expected.left(), actual)
@@ -910,7 +910,7 @@ class RustDraftDataSourceImplTest {
         coEvery { expectedDraftWrapper.removePassword() } returns VoidDraftPasswordResult.Ok
 
         // When
-        val actual = dataSource.removeExternalEncryptionPassword()
+        val actual = dataSource.removeMessagePassword()
 
         // Then
         assertEquals(Unit.right(), actual)
@@ -925,7 +925,7 @@ class RustDraftDataSourceImplTest {
 
         dataSource.mutablePasswordChangedSignal.test {
             // When
-            dataSource.removeExternalEncryptionPassword()
+            dataSource.removeMessagePassword()
 
             // Then
             awaitItem()
@@ -935,7 +935,7 @@ class RustDraftDataSourceImplTest {
     @Test
     fun `remove external encryption password returns error when unsuccessful`() = runTest {
         // Given
-        val expected = ExternalEncryptionPasswordError.Other(DataError.Local.Unknown)
+        val expected = MessagePasswordError.Other(DataError.Local.Unknown)
         val expectedDraftWrapper = expectDraftWrapperReturns()
         every { draftCache.get() } returns expectedDraftWrapper
         coEvery { expectedDraftWrapper.removePassword() } returns VoidDraftPasswordResult.Error(
@@ -943,7 +943,7 @@ class RustDraftDataSourceImplTest {
         )
 
         // When
-        val actual = dataSource.removeExternalEncryptionPassword()
+        val actual = dataSource.removeMessagePassword()
 
         // Then
         assertEquals(expected.left(), actual)

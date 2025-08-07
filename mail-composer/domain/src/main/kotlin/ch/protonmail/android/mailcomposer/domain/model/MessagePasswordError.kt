@@ -20,7 +20,7 @@ package ch.protonmail.android.mailcomposer.domain.model
 
 import ch.protonmail.android.mailcommon.domain.model.DataError
 
-sealed interface ExternalEncryptionPasswordError {
-    data object PasswordTooShort : ExternalEncryptionPasswordError
-    data class Other(val error: DataError) : ExternalEncryptionPasswordError
+sealed interface MessagePasswordError {
+    data object PasswordTooShort : MessagePasswordError
+    data class Other(val error: DataError) : MessagePasswordError
 }
