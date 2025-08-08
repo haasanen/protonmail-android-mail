@@ -2,7 +2,7 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
 import io.mockk.coEvery
@@ -52,12 +52,12 @@ class SaveMessageExpirationTimeTest {
         // Given
         coEvery {
             messageExpirationTimeRepository.saveMessageExpirationTime(expirationTime)
-        } returns DataError.Local.Unknown.left()
+        } returns MessageExpirationError.ExpirationTimeInThePast.left()
 
         // When
         val actual = saveMessageExpirationTime(expirationTime)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), actual)
+        assertEquals(MessageExpirationError.ExpirationTimeInThePast.left(), actual)
     }
 }

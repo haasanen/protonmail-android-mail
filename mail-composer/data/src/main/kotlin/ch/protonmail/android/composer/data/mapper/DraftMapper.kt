@@ -16,7 +16,6 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("TooManyFunctions")
 package ch.protonmail.android.composer.data.mapper
 
 import ch.protonmail.android.composer.data.local.LocalDraft
@@ -28,14 +27,11 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
-import ch.protonmail.android.mailcomposer.domain.mod.RecipientsNotSupportingExpiration
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
-import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
-import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 import ch.protonmail.android.mailcomposer.domain.model.MessagePasswordError
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
@@ -53,15 +49,11 @@ import timber.log.Timber
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadError
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 import uniffi.proton_mail_uniffi.DraftCreateMode
-import uniffi.proton_mail_uniffi.DraftExpirationError
-import uniffi.proton_mail_uniffi.DraftExpirationErrorReason
-import uniffi.proton_mail_uniffi.DraftExpirationTime
 import uniffi.proton_mail_uniffi.DraftOpenError
 import uniffi.proton_mail_uniffi.DraftOpenErrorReason
 import uniffi.proton_mail_uniffi.DraftPassword
 import uniffi.proton_mail_uniffi.DraftPasswordError
 import uniffi.proton_mail_uniffi.DraftPasswordErrorReason
-import uniffi.proton_mail_uniffi.DraftRecipientExpirationFeatureReport
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 import uniffi.proton_mail_uniffi.DraftSendError
 import uniffi.proton_mail_uniffi.DraftSendErrorReason
@@ -181,37 +173,6 @@ fun DraftPasswordError.toMessagePasswordError() = when (this) {
 fun DraftPassword?.toMessagePassword() = this?.let {
     MessagePassword(this.password, this.hint ?: "")
 }
-
-fun MessageExpirationTime.toLocalExpirationTime() = when (this) {
-    is MessageExpirationTime.Custom -> DraftExpirationTime.Custom(this.expiresAt.epochSeconds.toULong())
-    is MessageExpirationTime.Never -> DraftExpirationTime.Never
-    is MessageExpirationTime.OneDay -> DraftExpirationTime.OneDay
-    is MessageExpirationTime.OneHour -> DraftExpirationTime.OneHour
-    is MessageExpirationTime.ThreeDays -> DraftExpirationTime.ThreeDays
-}
-
-fun DraftExpirationError.toMessageExpirationError() = when (this) {
-    is DraftExpirationError.Other -> MessageExpirationError.Other(this.v1.toDataError())
-    is DraftExpirationError.Reason -> when (this.v1) {
-        DraftExpirationErrorReason.EXPIRATION_TIME_IN_THE_PAST -> MessageExpirationError.ExpirationTimeInThePast
-        DraftExpirationErrorReason.EXPIRATION_TIME_EXCEEDS30_DAYS -> MessageExpirationError.ExpirationTimeTooFarAhead
-        DraftExpirationErrorReason.EXPIRATION_TIME_LESS_THAN15_MIN -> MessageExpirationError.ExpirationTimeLessThan15Min
-    }
-}
-
-fun DraftExpirationTime.toMessageExpiration() = when (this) {
-    is DraftExpirationTime.Custom -> MessageExpirationTime.Custom(Instant.fromEpochSeconds(this.v1.toLong()))
-    is DraftExpirationTime.Never -> MessageExpirationTime.Never
-    is DraftExpirationTime.OneDay -> MessageExpirationTime.OneDay
-    is DraftExpirationTime.OneHour -> MessageExpirationTime.OneHour
-    is DraftExpirationTime.ThreeDays -> MessageExpirationTime.ThreeDays
-}
-
-fun DraftRecipientExpirationFeatureReport.toRecipientsNotSupportingExpiration() = RecipientsNotSupportingExpiration(
-    unsupported = this.unsupported.toRecipients(),
-    unknown = this.unknown.toRecipients()
-)
-
 
 private fun DraftAttachmentUploadError.toDataError() = when (this) {
     is DraftAttachmentUploadError.Other -> this.v1.toDataError()
