@@ -23,6 +23,8 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
+import ch.protonmail.android.mailcommon.domain.repository.UndoRepository
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
@@ -45,8 +47,10 @@ import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
@@ -55,14 +59,16 @@ import kotlin.test.assertEquals
 
 class RustConversationRepositoryImplTest {
 
-    private val rustConversationDataSource: RustConversationDataSource = mockk()
+    private val rustConversationDataSource = mockk<RustConversationDataSource>()
+    private val undoRepository = mockk<UndoRepository>()
 
     private val userId = UserId("test_user")
     private val labelWithSystemLabelId = LabelWithSystemLabelId(
         LabelTestData.systemLabel, systemLabelId = SystemLabelId.Archive
     )
     private val rustConversationRepository = RustConversationRepositoryImpl(
-        rustConversationDataSource
+        rustConversationDataSource,
+        undoRepository
     )
 
     @Test
@@ -302,6 +308,7 @@ class RustConversationRepositoryImplTest {
         // Given
         val conversationIds = listOf(ConversationId("1"), ConversationId("2"))
         val toLabelId = LabelIdSample.Trash
+        val expectedUndoableOperation = mockk<UndoableOperation>()
 
         coEvery {
             rustConversationDataSource.moveConversations(
@@ -309,7 +316,9 @@ class RustConversationRepositoryImplTest {
                 conversationIds.map { it.toLocalConversationId() },
                 toLabelId.toLocalLabelId()
             )
-        } returns Unit.right()
+        } returns expectedUndoableOperation.right()
+
+        every { undoRepository.setLastOperation(expectedUndoableOperation) } just runs
 
         // When
         val result = rustConversationRepository.move(userId, conversationIds, toLabelId)
@@ -321,6 +330,7 @@ class RustConversationRepositoryImplTest {
                 conversationIds.map { it.toLocalConversationId() },
                 toLabelId.toLocalLabelId()
             )
+            undoRepository.setLastOperation(expectedUndoableOperation)
         }
         assertEquals(emptyList<Conversation>().right(), result)
     }
@@ -333,6 +343,7 @@ class RustConversationRepositoryImplTest {
             val selectedLabelIds = listOf(LabelIdSample.RustLabel1, LabelIdSample.RustLabel2)
             val partiallySelectedLabelIds = listOf(LabelIdSample.RustLabel3)
             val shouldArchive = false
+            val expectedUndoableOperation = mockk<UndoableOperation>()
 
             coEvery {
                 rustConversationDataSource.labelConversations(
@@ -342,7 +353,9 @@ class RustConversationRepositoryImplTest {
                     partiallySelectedLabelIds.map { it.toLocalLabelId() },
                     shouldArchive
                 )
-            } returns Unit.right()
+            } returns expectedUndoableOperation.right()
+
+            every { undoRepository.setLastOperation(expectedUndoableOperation) } just runs
 
             // When
             val result = rustConversationRepository.labelAs(
@@ -362,6 +375,7 @@ class RustConversationRepositoryImplTest {
                     partiallySelectedLabelIds.map { it.toLocalLabelId() },
                     shouldArchive
                 )
+                undoRepository.setLastOperation(expectedUndoableOperation)
             }
             assertEquals(Unit.right(), result)
         }

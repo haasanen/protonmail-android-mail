@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toPreviousScheduleSendTime
@@ -52,6 +53,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
+import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -87,6 +89,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustReportPhishing: RustReportPhishing,
     private val rustDeleteAllMessagesInLabel: RustDeleteAllMessagesInLabel,
     private val cancelScheduleSendMessage: RustCancelScheduleSendMessage,
+    private val executeWithUserSession: ExecuteWithUserSession,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RustMessageDataSource {
 
@@ -194,7 +197,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         userId: UserId,
         messageIds: List<LocalMessageId>,
         toLabelId: LocalLabelId
-    ): Either<DataError, Unit> = withContext(ioDispatcher) {
+    ): Either<DataError, UndoableOperation> = withContext(ioDispatcher) {
         val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to move messages with null Mailbox! failing")
@@ -202,6 +205,15 @@ class RustMessageDataSourceImpl @Inject constructor(
         }
         return@withContext rustMoveMessages(mailbox, toLabelId, messageIds)
             .onLeft { Timber.e("rust-message: Failed to move messages $it") }
+            .map { undo ->
+                UndoableOperation {
+                    executeWithUserSession(userId) {
+                        withContext(ioDispatcher) {
+                            undo?.undo(it.getRustUserSession())
+                        }
+                    }
+                }
+            }
     }
 
     override suspend fun getAvailableActions(
@@ -280,7 +292,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         selectedLabelIds: List<LocalLabelId>,
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
-    ): Either<DataError, Unit> = withContext(ioDispatcher) {
+    ): Either<DataError, UndoableOperation> = withContext(ioDispatcher) {
         Timber.d("rust-message: executing labels messages for $messageIds")
         val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
@@ -294,7 +306,15 @@ class RustMessageDataSourceImpl @Inject constructor(
             selectedLabelIds = selectedLabelIds,
             partiallySelectedLabelIds = partiallySelectedLabelIds,
             shouldArchive = shouldArchive
-        )
+        ).map { labelAsOutput ->
+            UndoableOperation {
+                executeWithUserSession(userId) {
+                    withContext(ioDispatcher) {
+                        labelAsOutput.undo.undo(it.getRustUserSession())
+                    }
+                }
+            }
+        }
     }
 
     override suspend fun markMessageAsLegitimate(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit> =

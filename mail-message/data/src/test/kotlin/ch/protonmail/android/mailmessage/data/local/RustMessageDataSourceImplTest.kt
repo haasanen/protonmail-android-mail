@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
@@ -49,6 +50,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
@@ -68,6 +70,7 @@ import uniffi.proton_mail_uniffi.DraftCancelScheduledSendInfo
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.LabelAsAction
+import uniffi.proton_mail_uniffi.LabelAsOutput
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MailTheme
 import uniffi.proton_mail_uniffi.MessageAvailableActions
@@ -80,7 +83,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.time.Instant
 
-class RustMessageDataSourceImplTest {
+internal class RustMessageDataSourceImplTest {
 
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val rustMailboxFactory: RustMailboxFactory = mockk()
@@ -103,6 +106,7 @@ class RustMessageDataSourceImplTest {
     private val rustReportPhishing = mockk<RustReportPhishing>()
     private val rustDeleteAllMessagesInLabel = mockk<RustDeleteAllMessagesInLabel>()
     private val rustCancelScheduleSend = mockk<RustCancelScheduleSendMessage>()
+    private val executeWithUserSession = mockk<ExecuteWithUserSession>()
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -128,6 +132,7 @@ class RustMessageDataSourceImplTest {
         rustReportPhishing,
         rustDeleteAllMessagesInLabel,
         rustCancelScheduleSend,
+        executeWithUserSession,
         testDispatcher
     )
 
@@ -614,7 +619,7 @@ class RustMessageDataSourceImplTest {
 
         coEvery {
             rustLabelMessages(mailbox, messageIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
-        } returns Unit.right()
+        } returns mockk<LabelAsOutput>().right()
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
 
         // When
@@ -627,7 +632,7 @@ class RustMessageDataSourceImplTest {
         )
 
         // Then
-        assertTrue(result.isRight())
+        assertTrue { result is Either.Right }
         coVerify { rustLabelMessages(mailbox, messageIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive) }
     }
 

@@ -23,6 +23,7 @@ import arrow.core.flatMap
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.repository.UndoRepository
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
@@ -41,7 +42,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class RustConversationRepositoryImpl @Inject constructor(
-    private val rustConversationDataSource: RustConversationDataSource
+    private val rustConversationDataSource: RustConversationDataSource,
+    private val undoRepository: UndoRepository
 ) : ConversationRepository {
 
     override suspend fun getConversations(
@@ -87,7 +89,9 @@ class RustConversationRepositoryImpl @Inject constructor(
                 it.toLocalConversationId()
             },
             toLabelId.toLocalLabelId()
-        )
+        ).map {
+            undoRepository.setLastOperation(it)
+        }
 
         return emptyList<Conversation>().right()
     }
@@ -152,7 +156,9 @@ class RustConversationRepositoryImpl @Inject constructor(
         selectedLabels.map { it.toLocalLabelId() },
         partiallySelectedLabels.map { it.toLocalLabelId() },
         shouldArchive
-    )
+    ).map {
+        undoRepository.setLastOperation(it)
+    }
 
     override suspend fun deleteConversations(
         userId: UserId,

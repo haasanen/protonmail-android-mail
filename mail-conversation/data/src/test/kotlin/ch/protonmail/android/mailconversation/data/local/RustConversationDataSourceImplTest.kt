@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import app.cash.turbine.test
+import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
@@ -61,7 +62,9 @@ import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
+import uniffi.proton_mail_uniffi.Undo
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class RustConversationDataSourceImplTest {
 
@@ -81,7 +84,6 @@ class RustConversationDataSourceImplTest {
     private val rustMarkConversationsAsRead = mockk<RustMarkConversationsAsRead>()
     private val rustMarkConversationsAsUnread = mockk<RustMarkConversationsAsUnread>()
     private val executeWithUserSession = mockk<ExecuteWithUserSession>()
-
 
     private val dataSource = RustConversationDataSourceImpl(
         rustMailboxFactory,
@@ -287,6 +289,7 @@ class RustConversationDataSourceImplTest {
         val conversationIds = listOf(LocalConversationIdSample.AugConversation)
 
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+        coEvery { rustMoveConversations(mailbox, labelId, conversationIds) } returns mockk<Undo>().right()
 
         // When
         dataSource.moveConversations(userId, conversationIds, labelId)
@@ -321,7 +324,7 @@ class RustConversationDataSourceImplTest {
         )
 
         // Then
-        assertEquals(Unit.right(), result)
+        assertTrue { result is Either.Right }
         coVerify {
             rustLabelConversations(
                 mailbox,

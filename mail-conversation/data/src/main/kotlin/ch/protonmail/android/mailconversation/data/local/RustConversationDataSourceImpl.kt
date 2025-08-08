@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAllConversationBottomBarActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
@@ -191,7 +192,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         selectedLabelIds: List<LocalLabelId>,
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
-    ): Either<DataError, Unit> = withContext(ioDispatcher) {
+    ): Either<DataError, UndoableOperation> = withContext(ioDispatcher) {
         Timber.d("rust-conversation: executing label conversations for $conversationIds")
         val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
@@ -207,7 +208,15 @@ class RustConversationDataSourceImpl @Inject constructor(
             shouldArchive = shouldArchive
         ).onLeft {
             Timber.e("rust-conversation: Failure deleting conversation on rust lib $it")
-        }.map { }
+        }.map { labelAsOutput ->
+            UndoableOperation {
+                executeWithUserSession(userId) {
+                    withContext(ioDispatcher) {
+                        labelAsOutput.undo.undo(it.getRustUserSession())
+                    }
+                }
+            }
+        }
     }
 
 
@@ -230,13 +239,28 @@ class RustConversationDataSourceImpl @Inject constructor(
         userId: UserId,
         conversationIds: List<LocalConversationId>,
         toLabelId: LocalLabelId
-    ): Either<DataError.Local, Unit> = withContext(ioDispatcher) {
+    ): Either<DataError, UndoableOperation> = withContext(ioDispatcher) {
         Timber.d("rust-conversation: move conversations to $toLabelId executing for: $conversationIds")
-        return@withContext executeMailboxAction(
-            userId = userId,
-            action = { rustMoveConversations(it, toLabelId, conversationIds) },
-            actionName = "move conversations"
-        )
+
+        val mailbox = rustMailboxFactory.create(userId).getOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-conversation: trying to label conversations with null Mailbox! failing")
+            return@withContext DataError.Local.NoDataCached.left()
+        }
+
+        return@withContext rustMoveConversations(mailbox, toLabelId, conversationIds)
+            .onLeft {
+                return@withContext it.left()
+            }
+            .map { undo ->
+                UndoableOperation {
+                    executeWithUserSession(userId) {
+                        withContext(ioDispatcher) {
+                            undo?.undo(it.getRustUserSession())
+                        }
+                    }
+                }
+            }
     }
 
     override suspend fun getAvailableLabelAsActions(

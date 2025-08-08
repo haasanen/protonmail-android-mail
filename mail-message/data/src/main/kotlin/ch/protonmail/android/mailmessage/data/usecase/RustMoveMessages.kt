@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.MoveMessagesResult
+import uniffi.proton_mail_uniffi.Undo
 import uniffi.proton_mail_uniffi.moveMessages
 import javax.inject.Inject
 
@@ -36,8 +37,8 @@ class RustMoveMessages @Inject constructor() {
         mailbox: MailboxWrapper,
         toLabel: LocalLabelId,
         messageIds: List<LocalMessageId>
-    ): Either<DataError, Unit> = when (val result = moveMessages(mailbox.getRustMailbox(), toLabel, messageIds)) {
+    ): Either<DataError, Undo?> = when (val result = moveMessages(mailbox.getRustMailbox(), toLabel, messageIds)) {
         is MoveMessagesResult.Error -> result.v1.toDataError().left()
-        is MoveMessagesResult.Ok -> Unit.right()
+        is MoveMessagesResult.Ok -> result.v1.right()
     }
 }

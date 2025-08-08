@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
@@ -76,7 +77,7 @@ interface RustConversationDataSource {
         userId: UserId,
         conversationIds: List<LocalConversationId>,
         toLabelId: LocalLabelId
-    ): Either<DataError.Local, Unit>
+    ): Either<DataError, UndoableOperation>
 
     fun getSenderImage(address: String, bimi: String?): ByteArray?
 
@@ -110,5 +111,5 @@ interface RustConversationDataSource {
         selectedLabelIds: List<LocalLabelId>,
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
-    ): Either<DataError, Unit>
+    ): Either<DataError, UndoableOperation>
 }

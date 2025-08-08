@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.data.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -60,7 +61,7 @@ interface RustMessageDataSource {
         userId: UserId,
         messageIds: List<LocalMessageId>,
         toLabelId: LocalLabelId
-    ): Either<DataError, Unit>
+    ): Either<DataError, UndoableOperation>
 
     suspend fun getAvailableActions(
         userId: UserId,
@@ -95,7 +96,7 @@ interface RustMessageDataSource {
         selectedLabelIds: List<LocalLabelId>,
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
-    ): Either<DataError, Unit>
+    ): Either<DataError, UndoableOperation>
 
     suspend fun markMessageAsLegitimate(userId: UserId, messageId: LocalMessageId): Either<DataError, Unit>
 

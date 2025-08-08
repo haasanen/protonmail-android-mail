@@ -18,9 +18,16 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.data.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
+import uniffi.proton_mail_uniffi.MoveConversationsResult
+import uniffi.proton_mail_uniffi.Undo
 import uniffi.proton_mail_uniffi.moveConversations
 import javax.inject.Inject
 
@@ -30,5 +37,12 @@ class RustMoveConversations @Inject constructor() {
         mailbox: MailboxWrapper,
         toLabel: LocalLabelId,
         conversationIds: List<LocalConversationId>
-    ) = moveConversations(mailbox.getRustMailbox(), toLabel, conversationIds)
+    ): Either<DataError, Undo?> = when (
+        val result = moveConversations(
+            mailbox.getRustMailbox(), toLabel, conversationIds
+        )
+    ) {
+        is MoveConversationsResult.Error -> result.v1.toDataError().left()
+        is MoveConversationsResult.Ok -> result.v1.right()
+    }
 }

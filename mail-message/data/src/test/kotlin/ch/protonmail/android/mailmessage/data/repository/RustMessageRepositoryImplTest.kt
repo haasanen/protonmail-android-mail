@@ -24,6 +24,8 @@ import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
+import ch.protonmail.android.mailcommon.domain.repository.UndoRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
@@ -40,19 +42,23 @@ import ch.protonmail.android.testdata.message.rust.RemoteMessageIdSample
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class RustMessageRepositoryImplTest {
+internal class RustMessageRepositoryImplTest {
 
-    private val rustMessageDataSource: RustMessageDataSource = mockk()
+    private val rustMessageDataSource = mockk<RustMessageDataSource>()
+    private val undoRepository = mockk<UndoRepository>()
 
     private val userId = UserId("userId")
-    private val repository = RustMessageRepositoryImpl(rustMessageDataSource)
+    private val repository = RustMessageRepositoryImpl(rustMessageDataSource, undoRepository)
 
     @Test
     fun `getLocalMessages should return list of messages`() = runTest {
@@ -306,6 +312,7 @@ class RustMessageRepositoryImplTest {
             val selectedLabelIds = listOf(LabelIdSample.RustLabel1, LabelIdSample.RustLabel2)
             val partiallySelectedLabelIds = listOf(LabelIdSample.RustLabel3)
             val shouldArchive = false
+            val expectedUndoableOperation = mockk<UndoableOperation>()
 
             coEvery {
                 rustMessageDataSource.labelMessages(
@@ -315,7 +322,9 @@ class RustMessageRepositoryImplTest {
                     partiallySelectedLabelIds.map { it.toLocalLabelId() },
                     shouldArchive
                 )
-            } returns Unit.right()
+            } returns expectedUndoableOperation.right()
+
+            every { undoRepository.setLastOperation(expectedUndoableOperation) } just runs
 
             // When
             val result = repository.labelAs(

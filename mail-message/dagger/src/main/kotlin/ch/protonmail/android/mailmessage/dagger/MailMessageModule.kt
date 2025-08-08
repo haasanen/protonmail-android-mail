@@ -29,10 +29,10 @@ import ch.protonmail.android.mailmessage.data.local.RustMessageQueryImpl
 import ch.protonmail.android.mailmessage.data.local.RustRsvpEventDataSource
 import ch.protonmail.android.mailmessage.data.local.RustRsvpEventDataSourceImpl
 import ch.protonmail.android.mailmessage.data.repository.InMemoryAvatarImageStateRepositoryImpl
-import ch.protonmail.android.mailmessage.data.repository.RustMessageBodyRepository
 import ch.protonmail.android.mailmessage.data.repository.PreviousScheduleSendTimeInMemoryRepository
 import ch.protonmail.android.mailmessage.data.repository.RsvpEventRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.RustMessageActionRepository
+import ch.protonmail.android.mailmessage.data.repository.RustMessageBodyRepository
 import ch.protonmail.android.mailmessage.data.repository.RustMessageRepositoryImpl
 import ch.protonmail.android.mailmessage.domain.repository.InMemoryAvatarImageStateRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageActionRepository
@@ -68,11 +68,6 @@ object MailMessageModule {
 
     @Provides
     @Singleton
-    fun providesMessageRepository(rustMessageDataSource: RustMessageDataSource): MessageRepository =
-        RustMessageRepositoryImpl(rustMessageDataSource)
-
-    @Provides
-    @Singleton
     fun providesMessageActionRepository(rustMessageDataSource: RustMessageDataSource): MessageActionRepository =
         RustMessageActionRepository(rustMessageDataSource)
 
@@ -87,6 +82,10 @@ object MailMessageModule {
         @Binds
         @Singleton
         fun bindRustMessageDataSource(impl: RustMessageDataSourceImpl): RustMessageDataSource
+
+        @Binds
+        @Singleton
+        fun bindMessageRepository(impl: RustMessageRepositoryImpl): MessageRepository
 
         @Binds
         @Singleton

@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmessage.data.repository
 import java.io.File
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.repository.UndoRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
@@ -42,7 +43,8 @@ import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class RustMessageRepositoryImpl @Inject constructor(
-    private val rustMessageDataSource: RustMessageDataSource
+    private val rustMessageDataSource: RustMessageDataSource,
+    private val undoRepository: UndoRepository
 ) : MessageRepository {
 
     override suspend fun getSenderImage(
@@ -95,7 +97,9 @@ class RustMessageRepositoryImpl @Inject constructor(
         userId,
         messageIds.map { it.toLocalMessageId() },
         toLabel.toLocalLabelId()
-    )
+    ).map {
+        undoRepository.setLastOperation(it)
+    }
 
     override suspend fun markUnread(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit> =
         rustMessageDataSource.markUnread(userId, messageIds.map { it.toLocalMessageId() })
@@ -121,7 +125,9 @@ class RustMessageRepositoryImpl @Inject constructor(
         selectedLabels.map { it.toLocalLabelId() },
         partiallySelectedLabels.map { it.toLocalLabelId() },
         shouldArchive
-    )
+    ).map {
+        undoRepository.setLastOperation(it)
+    }
 
     override suspend fun cancelScheduleSend(
         userId: UserId,
