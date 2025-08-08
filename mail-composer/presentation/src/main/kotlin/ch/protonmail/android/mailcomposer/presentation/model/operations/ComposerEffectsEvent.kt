@@ -179,7 +179,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
     data object SetExpirationReady : EffectsEvent {
 
         override fun toStateModifications(): ComposerStateModifications = ComposerStateModifications(
-            effectsModification = BottomSheetEffectsStateModification.ShowBottomSheet
+            effectsModification = ContentEffectsStateModifications.OnPickMessageExpirationTimeRequested
         )
     }
 }

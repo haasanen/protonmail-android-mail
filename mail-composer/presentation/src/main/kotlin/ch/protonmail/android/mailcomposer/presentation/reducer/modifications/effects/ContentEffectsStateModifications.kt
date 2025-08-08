@@ -113,4 +113,12 @@ internal sealed interface ContentEffectsStateModifications : EffectsStateModific
             }
         )
     }
+
+    data object OnPickMessageExpirationTimeRequested : EffectsStateModification {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
+            pickMessageExpiration = Effect.of(Unit)
+        )
+    }
+
 }

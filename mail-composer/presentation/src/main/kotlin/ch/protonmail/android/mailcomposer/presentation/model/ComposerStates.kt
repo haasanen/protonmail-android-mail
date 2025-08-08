@@ -125,7 +125,8 @@ sealed interface ComposerState {
         val confirmDiscardDraft: Effect<Unit>,
         val injectInlineAttachments: Effect<List<String>>,
         val stripInlineAttachment: Effect<String>,
-        val refreshBody: Effect<DraftDisplayBodyUiModel>
+        val refreshBody: Effect<DraftDisplayBodyUiModel>,
+        val pickMessageExpiration: Effect<Unit>
     ) {
 
         companion object {
@@ -157,7 +158,8 @@ sealed interface ComposerState {
                 confirmDiscardDraft = Effect.empty(),
                 injectInlineAttachments = Effect.empty(),
                 stripInlineAttachment = Effect.empty(),
-                refreshBody = Effect.empty()
+                refreshBody = Effect.empty(),
+                pickMessageExpiration = Effect.empty()
             )
         }
     }

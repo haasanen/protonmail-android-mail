@@ -18,75 +18,76 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import ch.protonmail.android.design.compose.component.ProtonAlertDialog
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
+import ch.protonmail.android.design.compose.component.ProtonDialogTitle
 import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyLargeNorm
-import ch.protonmail.android.design.compose.theme.titleMediumNorm
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeOption
 import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
 
 @Composable
-fun SetExpirationTimeBottomSheetContent(
+fun SetExpirationTimeDialog(
     expirationTime: ExpirationTimeUiModel,
-    onDoneClick: (ExpirationTimeUiModel) -> Unit
+    onTimePicked: (ExpirationTimeUiModel) -> Unit,
+    onDismiss: () -> Unit
 ) {
 
     val selectedItem = remember { mutableStateOf(expirationTime) }
 
+    ProtonAlertDialog(
+        onDismissRequest = { onDismiss() },
+        confirmButton = {},
+        title = { ExpirationTimeTitle() },
+        text = { ExpirationTimeOptions(onTimePicked, selectedItem) }
+    )
+}
+
+@Composable
+private fun ExpirationTimeTitle() {
     Column {
-        Row(
-            modifier = Modifier
-                .padding(ProtonDimens.Spacing.Large)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = stringResource(id = R.string.composer_expiration_time_bottom_sheet_title),
-                style = ProtonTheme.typography.titleMediumNorm
+        ProtonDialogTitle(titleResId = R.string.composer_expiration_time_bottom_sheet_title)
+
+        Spacer(Modifier.size(ProtonDimens.Spacing.Large))
+
+        ProtonAlertDialogText(textResId = R.string.composer_expiration_time_bottom_sheet_description)
+    }
+}
+
+@Composable
+private fun ExpirationTimeOptions(
+    onTimePicked: (ExpirationTimeUiModel) -> Unit,
+    selectedItem: MutableState<ExpirationTimeUiModel>
+) {
+    Column(modifier = Modifier.selectableGroup()) {
+        ExpirationTimeOption.entries.forEach { item ->
+            SelectableExpirationTimeItem(
+                item = item,
+                isSelected = selectedItem.value.selectedOption == item,
+                onSelected = {
+                    selectedItem.value = it
+                    onTimePicked(it)
+                }
             )
-            Text(
-                modifier = Modifier.clickable(role = Role.Button) {
-                    onDoneClick(selectedItem.value)
-                },
-                text = stringResource(id = R.string.composer_expiration_time_bottom_sheet_done),
-                style = ProtonTheme.typography.bodyLargeNorm,
-                color = ProtonTheme.colors.interactionBrandDefaultNorm
-            )
-        }
-
-        HorizontalDivider()
-
-        Column {
-
-            ExpirationTimeOption.entries.forEach { item ->
-                SelectableExpirationTimeItem(
-                    item = item,
-                    isSelected = selectedItem.value.selectedOption == item,
-                    onSelected = { selectedItem.value = it }
-                )
-            }
         }
     }
 }
@@ -102,20 +103,29 @@ private fun SelectableExpirationTimeItem(
         modifier = Modifier
             .selectable(selected = isSelected) { onSelected(ExpirationTimeUiModel(item)) }
             .height(ProtonDimens.ListItemHeight)
-            .padding(horizontal = ProtonDimens.Spacing.Large)
+            .fillMaxWidth()
     ) {
+        RadioButton(
+            selected = isSelected,
+            onClick = null
+        )
         Text(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .padding(start = ProtonDimens.Spacing.Large)
+                .weight(1f),
             text = stringResource(id = item.textResId),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-        if (isSelected) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_proton_checkmark),
-                contentDescription = NO_CONTENT_DESCRIPTION,
-                tint = ProtonTheme.colors.interactionBrandDefaultNorm
-            )
-        }
     }
+}
+
+@Preview
+@Composable
+fun PreviewSetExpirationTimeDialog() {
+    SetExpirationTimeDialog(
+        expirationTime = ExpirationTimeUiModel(ExpirationTimeOption.OneHour),
+        onTimePicked = {},
+        onDismiss = {}
+    )
 }
