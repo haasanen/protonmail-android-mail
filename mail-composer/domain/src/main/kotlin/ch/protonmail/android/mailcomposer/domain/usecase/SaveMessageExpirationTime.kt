@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
 import javax.inject.Inject
@@ -28,6 +28,6 @@ class SaveMessageExpirationTime @Inject constructor(
     private val messageExpirationTimeRepository: MessageExpirationTimeRepository
 ) {
 
-    suspend operator fun invoke(messageExpirationTime: MessageExpirationTime): Either<DataError.Local, Unit> =
+    suspend operator fun invoke(messageExpirationTime: MessageExpirationTime): Either<MessageExpirationError, Unit> =
         messageExpirationTimeRepository.saveMessageExpirationTime(messageExpirationTime)
 }

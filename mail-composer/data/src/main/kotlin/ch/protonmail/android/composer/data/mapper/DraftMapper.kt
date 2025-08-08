@@ -16,6 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("TooManyFunctions")
 package ch.protonmail.android.composer.data.mapper
 
 import ch.protonmail.android.composer.data.local.LocalDraft
@@ -27,6 +28,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
+import ch.protonmail.android.mailcomposer.domain.mod.RecipientsNotSupportingExpiration
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
@@ -59,6 +61,7 @@ import uniffi.proton_mail_uniffi.DraftOpenErrorReason
 import uniffi.proton_mail_uniffi.DraftPassword
 import uniffi.proton_mail_uniffi.DraftPasswordError
 import uniffi.proton_mail_uniffi.DraftPasswordErrorReason
+import uniffi.proton_mail_uniffi.DraftRecipientExpirationFeatureReport
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 import uniffi.proton_mail_uniffi.DraftSendError
 import uniffi.proton_mail_uniffi.DraftSendErrorReason
@@ -195,6 +198,20 @@ fun DraftExpirationError.toMessageExpirationError() = when (this) {
         DraftExpirationErrorReason.EXPIRATION_TIME_LESS_THAN15_MIN -> MessageExpirationError.ExpirationTimeLessThan15Min
     }
 }
+
+fun DraftExpirationTime.toMessageExpiration() = when (this) {
+    is DraftExpirationTime.Custom -> MessageExpirationTime.Custom(Instant.fromEpochSeconds(this.v1.toLong()))
+    is DraftExpirationTime.Never -> MessageExpirationTime.Never
+    is DraftExpirationTime.OneDay -> MessageExpirationTime.OneDay
+    is DraftExpirationTime.OneHour -> MessageExpirationTime.OneHour
+    is DraftExpirationTime.ThreeDays -> MessageExpirationTime.ThreeDays
+}
+
+fun DraftRecipientExpirationFeatureReport.toRecipientsNotSupportingExpiration() = RecipientsNotSupportingExpiration(
+    unsupported = this.unsupported.toRecipients(),
+    unknown = this.unknown.toRecipients()
+)
+
 
 private fun DraftAttachmentUploadError.toDataError() = when (this) {
     is DraftAttachmentUploadError.Other -> this.v1.toDataError()

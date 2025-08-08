@@ -18,24 +18,16 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
-@MissingRustApi
-// To be bound to rust or dropped when implementing send
-class ObserveMessageExpirationTime @Inject constructor(
+class GetMessageExpirationTime @Inject constructor(
     private val messageExpirationTimeRepository: MessageExpirationTimeRepository
 ) {
 
-    suspend operator fun invoke(userId: UserId, messageId: MessageId): Flow<MessageExpirationTime?> {
-        Timber.w("ObserveMessageExpirationTime Not implemented")
-        return flowOf()
-    }
+    suspend operator fun invoke(): Either<DataError, MessageExpirationTime> =
+        messageExpirationTimeRepository.getMessageExpirationTime()
 }
