@@ -72,7 +72,7 @@ class ActionResultMapper @Inject constructor(
                 else -> null
             }
 
-            textRes?.let { DefinitiveActionResult(TextUiModel(it)) }
+            textRes?.let { UndoableActionResult(TextUiModel(it)) }
         } else null
 
         is ConversationDetailViewAction.DeleteConfirmed ->

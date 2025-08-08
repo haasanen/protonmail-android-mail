@@ -113,7 +113,7 @@ internal class ActionResultMapperTest {
             true,
             entryPoint = LabelAsBottomSheetEntryPoint.Conversation
         )
-        val expectedResult = DefinitiveActionResult(TextUiModel(R.string.conversation_moved_to_archive))
+        val expectedResult = UndoableActionResult(TextUiModel(R.string.conversation_moved_to_archive))
 
         // When
         val result = actionResultMapper.toActionResult(operation)

@@ -87,6 +87,7 @@ import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSnackbar
 import ch.protonmail.android.mailcommon.presentation.compose.dpToPx
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
@@ -544,7 +545,6 @@ fun ConversationDetailScreen(
     val snackbarHostState = remember { ProtonSnackbarHostState() }
     val linkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
     val phishingLinkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
-    val scope = rememberCoroutineScope()
 
     ConsumableLaunchedEffect(state.exitScreenEffect) { actions.onExit(null) }
     state.exitScreenActionResult.consume()?.let { actionResult ->
@@ -554,10 +554,7 @@ fun ConversationDetailScreen(
         snackbarHostState.showSnackbar(ProtonSnackbarType.ERROR, message = string)
     }
 
-    state.actionResult.consume()?.let { actionResult ->
-        val message = actionResult.message.string()
-        scope.launch { snackbarHostState.showSnackbar(ProtonSnackbarType.NORM, message = message) }
-    }
+    UndoableOperationSnackbar(snackbarHostState = snackbarHostState, actionEffect = state.actionResult)
 
     ConsumableLaunchedEffect(effect = state.openMessageBodyLinkEffect) { messageBodyLink ->
         val message = when (state.messagesState) {
