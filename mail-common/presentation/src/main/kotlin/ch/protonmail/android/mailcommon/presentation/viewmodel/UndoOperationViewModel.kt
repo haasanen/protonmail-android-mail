@@ -36,11 +36,13 @@ class UndoOperationViewModel @Inject constructor(
     private val mutableState = MutableStateFlow(Initial)
     val state = mutableState.asStateFlow()
 
-    fun submitUndo() = viewModelScope.launch {
-        undoLastOperation().fold(
-            ifLeft = { mutableState.emit(state.value.copy(undoFailed = Effect.of(Unit))) },
-            ifRight = { mutableState.emit(state.value.copy(undoSucceeded = Effect.of(Unit))) }
-        )
+    fun submitUndo() {
+        viewModelScope.launch {
+            undoLastOperation().fold(
+                ifLeft = { mutableState.emit(state.value.copy(undoFailed = Effect.of(Unit))) },
+                ifRight = { mutableState.emit(state.value.copy(undoSucceeded = Effect.of(Unit))) }
+            )
+        }
     }
 
     data class State(
@@ -49,6 +51,7 @@ class UndoOperationViewModel @Inject constructor(
     )
 
     companion object {
+
         private val Initial = State(Effect.empty(), Effect.empty())
     }
 }

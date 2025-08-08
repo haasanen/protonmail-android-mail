@@ -20,16 +20,6 @@ package ch.protonmail.android.mailcommon.domain.model
 
 import arrow.core.Either
 
-sealed class UndoableOperation(
-    open val undo: suspend () -> Either<DataError, Unit>
-) {
-
-    data class UndoMoveMessages(
-        override val undo: suspend () -> Either<DataError, Unit>
-    ) : UndoableOperation(undo)
-
-    data class UndoMoveConversations(
-        override val undo: suspend () -> Either<DataError, Unit>
-    ) : UndoableOperation(undo)
-
-}
+data class UndoableOperation(
+    val undo: suspend () -> Either<DataError, Unit>
+)

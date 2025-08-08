@@ -20,11 +20,11 @@ package ch.protonmail.android.mailcommon.presentation.compose
 
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
@@ -45,7 +45,7 @@ fun UndoableOperationSnackbar(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val undoActionLabel = stringResource(id = R.string.undo_button_label)
-    val state = viewModel.state.collectAsState()
+    val state = viewModel.state.collectAsStateWithLifecycle()
 
     val undoSuccessMessage = stringResource(id = R.string.undo_success_message)
     suspend fun showUndoSuccess() {
@@ -62,19 +62,16 @@ fun UndoableOperationSnackbar(
 
     actionEffect.consume()?.let {
         val message = it.message.string()
-
-        val featureComingSoon = stringResource(id = R.string.feature_coming_soon)
         coroutineScope.launch {
             if (it is ActionResult.UndoableActionResult) {
                 val result = snackbarHostState.showSnackbar(ProtonSnackbarType.NORM, message, undoActionLabel)
                 if (result == SnackbarResult.ActionPerformed) {
-                    Timber.d("Undo action performed")
-                    snackbarHostState.showSnackbar(message = featureComingSoon, type = ProtonSnackbarType.NORM)
+                    Timber.d("Undo action performed - $it")
+                    viewModel.submitUndo()
                 }
             } else {
                 snackbarHostState.showSnackbar(message = message, type = ProtonSnackbarType.NORM)
             }
         }
     }
-
 }
