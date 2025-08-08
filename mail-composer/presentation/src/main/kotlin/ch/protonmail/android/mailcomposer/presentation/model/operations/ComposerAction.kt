@@ -29,7 +29,7 @@ internal sealed interface ComposerAction : ComposerStateOperation {
     data class SetSenderAddress(val sender: SenderUiModel) : ComposerAction
 
     data object OpenExpirationSettings : ComposerAction
-    data class SetMessageExpiration(val duration: ExpirationTimeUiModel) : ComposerAction
+    data class SetMessageExpiration(val expirationTime: ExpirationTimeUiModel) : ComposerAction
 
     data object CloseComposer : ComposerAction
     data object SendMessage : ComposerAction

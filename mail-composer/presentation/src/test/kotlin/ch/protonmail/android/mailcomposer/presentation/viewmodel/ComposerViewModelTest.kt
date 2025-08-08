@@ -65,6 +65,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachmen
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePasswordChanged
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveRecipientsValidation
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
+import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.ScheduleSendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
@@ -177,6 +178,7 @@ internal class ComposerViewModelTest {
     private val preloadContactSuggestions = mockk<PreloadContactSuggestions> {
         coEvery { this@mockk.invoke(UserIdSample.Primary) } returns Unit.right()
     }
+    private val saveMessageExpirationTime = mockk<SaveMessageExpirationTime>()
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<DraftBody>()
@@ -234,8 +236,9 @@ internal class ComposerViewModelTest {
         isMessagePasswordSet,
         observeRecipientsValidation,
         getDraftSenderValidationError,
-        observePrimaryUserIdMock,
-        preloadContactSuggestions
+        preloadContactSuggestions,
+        saveMessageExpirationTime,
+        observePrimaryUserIdMock
     )
 
     @Test

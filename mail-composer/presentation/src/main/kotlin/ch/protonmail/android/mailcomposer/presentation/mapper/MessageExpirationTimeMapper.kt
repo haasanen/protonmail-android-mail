@@ -29,3 +29,11 @@ fun MessageExpirationTime.toUiModel() = when (this) {
     is MessageExpirationTime.OneHour -> ExpirationTimeUiModel(ExpirationTimeOption.OneHour)
     is MessageExpirationTime.ThreeDays -> ExpirationTimeUiModel(ExpirationTimeOption.ThreeDays)
 }
+
+fun ExpirationTimeUiModel.toDomainModel() = when (this.selectedOption) {
+    ExpirationTimeOption.None -> MessageExpirationTime.Never
+    ExpirationTimeOption.OneHour -> MessageExpirationTime.OneHour
+    ExpirationTimeOption.OneDay -> MessageExpirationTime.OneDay
+    ExpirationTimeOption.ThreeDays -> MessageExpirationTime.ThreeDays
+    ExpirationTimeOption.Custom -> MessageExpirationTime.Custom(this.customTime!!)
+}

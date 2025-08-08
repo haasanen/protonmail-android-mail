@@ -25,7 +25,6 @@ import ch.protonmail.android.mailcomposer.presentation.mapper.AttachmentListErro
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ScheduleSendOptionsUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AccessoriesStateModification
@@ -64,11 +63,6 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
         is OnSendWithEmptySubject -> ComposerStateModifications(
             mainModification = MainStateModification.UpdateLoading(ComposerState.LoadingType.None),
             effectsModification = ConfirmationsEffectsStateModification.SendNoSubjectConfirmationRequested
-        )
-
-        is SetExpirationDismissed -> ComposerStateModifications(
-            effectsModification = BottomSheetEffectsStateModification.HideBottomSheet,
-            accessoriesModification = AccessoriesStateModification.MessageExpirationUpdated(expiration)
         )
 
         is UserChangedSender -> ComposerStateModifications(
@@ -112,8 +106,6 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
         val newSender: SenderEmail,
         val refreshedBody: DraftDisplayBodyUiModel
     ) : CompositeEvent
-
-    data class SetExpirationDismissed(val expiration: ExpirationTimeUiModel) : CompositeEvent
 
     data class ScheduleSendOptionsReady(val options: ScheduleSendOptionsUiModel) : CompositeEvent
 

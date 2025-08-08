@@ -483,11 +483,13 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     }
 
     if (showExpirationTimeDialog.value) {
-        val context = LocalContext.current
         SetExpirationTimeDialog(
             expirationTime = accessoriesState.expirationTime,
             onDismiss = { showExpirationTimeDialog.value = false },
-            onTimePicked = { Toast.makeText(context, "Time picked $it", Toast.LENGTH_SHORT).show() }
+            onTimePicked = {
+                showExpirationTimeDialog.value = false
+                viewModel.submit(ComposerAction.SetMessageExpiration(it))
+            }
         )
     }
 
