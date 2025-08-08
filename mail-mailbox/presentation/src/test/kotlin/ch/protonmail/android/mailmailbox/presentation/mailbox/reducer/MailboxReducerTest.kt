@@ -309,7 +309,7 @@ internal class MailboxReducerTest(
                 shouldReduceBottomSheetState = true
             ),
             TestInput(
-                MailboxEvent.MoveToConfirmed,
+                MailboxEvent.MoveToConfirmed.Trash(ViewMode.ConversationGrouping, 1),
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
@@ -529,17 +529,6 @@ internal class MailboxReducerTest(
                 shouldReduceDeleteDialog = false,
                 shouldReduceClearAllDialog = false,
                 shouldReduceBottomSheetState = false
-            ),
-            TestInput(
-                MailboxEvent.Trash(5),
-                shouldReduceMailboxListState = true,
-                shouldReduceTopAppBarState = true,
-                shouldReduceUnreadFilterState = false,
-                shouldReduceBottomAppBarState = true,
-                shouldReduceActionMessage = true,
-                shouldReduceDeleteDialog = false,
-                shouldReduceClearAllDialog = false,
-                shouldReduceBottomSheetState = true
             ),
             TestInput(
                 MailboxEvent.Delete(ViewMode.ConversationGrouping, 5),

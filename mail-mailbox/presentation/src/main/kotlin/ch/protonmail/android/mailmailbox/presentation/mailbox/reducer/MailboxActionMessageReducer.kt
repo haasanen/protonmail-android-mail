@@ -23,22 +23,58 @@ import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult.DefinitiveActionResult
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult.UndoableActionResult
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.maillabel.domain.model.ViewMode
+import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
-import ch.protonmail.android.maillabel.domain.model.ViewMode
+import ch.protonmail.android.mailmessage.presentation.mapper.MailLabelTextMapper
 import javax.inject.Inject
 
-class MailboxActionMessageReducer @Inject constructor() {
+class MailboxActionMessageReducer @Inject constructor(
+    private val mailLabelTextMapper: MailLabelTextMapper
+) {
 
     internal fun newStateFrom(operation: MailboxOperation.AffectingActionMessage): Effect<ActionResult> {
         val actionResult = when (operation) {
-            is MailboxEvent.Trash ->
-                UndoableActionResult(
-                    TextUiModel(R.plurals.mailbox_action_trash, operation.numAffectedMessages)
-                )
+            is MailboxEvent.MoveToConfirmed -> {
+                val pluralsRes = when (operation.viewMode) {
+                    ViewMode.ConversationGrouping -> R.plurals.mailbox_action_move_conversation
+                    ViewMode.NoConversationGrouping -> R.plurals.mailbox_action_move_message
+                }
 
+                val destinationFolder = mailLabelTextMapper.mapToString(operation.label)
+
+                UndoableActionResult(
+                    TextUiModel.PluralisedText(
+                        pluralsRes,
+                        operation.itemCount,
+                        listOf(destinationFolder)
+                    )
+                )
+            }
+
+            is MailboxEvent.LabelAsConfirmed -> {
+                // Do not show a snackbar on labeling with no archive
+                if (!operation.alsoArchived) return Effect.empty()
+
+                val pluralsRes = when (operation.viewMode) {
+                    ViewMode.ConversationGrouping -> R.plurals.mailbox_action_move_conversation
+                    ViewMode.NoConversationGrouping -> R.plurals.mailbox_action_move_message
+                }
+
+                val labelText = MailLabelText(R.string.label_title_archive)
+                val destinationFolder = mailLabelTextMapper.mapToString(labelText)
+
+                UndoableActionResult(
+                    TextUiModel.PluralisedText(
+                        pluralsRes,
+                        operation.itemCount,
+                        listOf(destinationFolder)
+                    )
+                )
+            }
 
             is MailboxEvent.DeleteConfirmed -> {
                 val resource = when (operation.viewMode) {
@@ -51,9 +87,11 @@ class MailboxActionMessageReducer @Inject constructor() {
             is MailboxViewAction.SwipeArchiveAction -> UndoableActionResult(
                 TextUiModel(R.string.mailbox_action_archive_message)
             )
+
             is MailboxViewAction.SwipeSpamAction -> UndoableActionResult(
                 TextUiModel(R.string.mailbox_action_spam_message)
             )
+
             is MailboxViewAction.SwipeTrashAction -> UndoableActionResult(
                 TextUiModel(R.string.mailbox_action_trash_message)
             )

@@ -123,9 +123,11 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomSheetVisibility
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheet
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetScreen
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheet
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetScreen
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
@@ -303,7 +305,13 @@ fun MailboxScreen(
                     val moveSheetActions = MoveToBottomSheet.Actions(
                         onCreateNewFolderClick = actions.onAddFolder,
                         onError = { actions.showSnackbar(SnackbarError(it)) },
-                        onMoveToComplete = { _, _ -> viewModel.submit(MailboxViewAction.DismissBottomSheet) },
+                        onMoveToComplete = { label, entryPoint ->
+                            val action = (entryPoint as? MoveToBottomSheetEntryPoint.Mailbox)?.let {
+                                MailboxViewAction.SignalMoveToCompleted(label, it)
+                            } ?: return@Actions Timber.e("Invalid entry point for MoveTo - $entryPoint")
+
+                            viewModel.submit(action)
+                        },
                         onDismiss = { viewModel.submit(MailboxViewAction.DismissBottomSheet) }
                     )
 
@@ -321,7 +329,13 @@ fun MailboxScreen(
                     val labelSheetActions = LabelAsBottomSheet.Actions(
                         onCreateNewLabelClick = actions.onAddLabel,
                         onError = { actions.showSnackbar(SnackbarError(it)) },
-                        onLabelAsComplete = { _, _ -> viewModel.submit(MailboxViewAction.DismissBottomSheet) },
+                        onLabelAsComplete = { alsoArchive, entryPoint ->
+                            val action = (entryPoint as? LabelAsBottomSheetEntryPoint.Mailbox)?.let {
+                                MailboxViewAction.SignalLabelAsCompleted(alsoArchive, it)
+                            } ?: return@Actions Timber.e("Invalid entry point for LabelAs - $entryPoint")
+
+                            viewModel.submit(action)
+                        },
                         onDismiss = { viewModel.submit(MailboxViewAction.DismissBottomSheet) }
                     )
 

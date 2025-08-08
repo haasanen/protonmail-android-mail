@@ -18,15 +18,15 @@
 
 package ch.protonmail.android.maillabel.presentation.bottomsheet
 
-import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.maillabel.domain.model.ViewMode
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 
 sealed interface LabelAsBottomSheetEntryPoint {
     data object Conversation : LabelAsBottomSheetEntryPoint
     data class Message(val messageId: MessageId) : LabelAsBottomSheetEntryPoint
 
-    sealed class Mailbox(val viewMode: ViewMode) : LabelAsBottomSheetEntryPoint {
-        class LabelAsSwipeAction(viewMode: ViewMode, val itemId: LabelAsItemId) : Mailbox(viewMode)
-        class SelectionMode(viewMode: ViewMode) : Mailbox(viewMode)
+    sealed class Mailbox(val itemCount: Int, val viewMode: ViewMode) : LabelAsBottomSheetEntryPoint {
+        class LabelAsSwipeAction(viewMode: ViewMode, val itemId: LabelAsItemId) : Mailbox(itemCount = 1, viewMode)
+        class SelectionMode(itemCount: Int, viewMode: ViewMode) : Mailbox(itemCount, viewMode)
     }
 }

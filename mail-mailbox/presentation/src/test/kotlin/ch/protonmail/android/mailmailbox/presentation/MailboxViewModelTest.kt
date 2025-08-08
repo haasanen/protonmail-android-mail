@@ -1727,11 +1727,15 @@ class MailboxViewModelTest {
         val secondItem = unreadMailboxItemUiModel
         val initialState = createMailboxDataState()
         val intermediateState = MailboxStateSampleData.createSelectionMode(listOf(item, secondItem))
+        val expectedOperation = MailboxEvent.MoveToConfirmed.Trash(
+            viewMode = ConversationGrouping,
+            itemCount = 2
+        )
         expectViewModeForCurrentLocation(ConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
-        returnExpectedStateForTrash(intermediateState, initialState, 2)
+        returnExpectedStateForTrash(intermediateState, initialState, expectedOperation)
         expectMoveConversationsSucceeds(userId, listOf(item, secondItem), SystemLabelId.Trash)
         expectPagerMock()
 
@@ -1770,11 +1774,15 @@ class MailboxViewModelTest {
         val secondItem = unreadMailboxItemUiModel
         val initialState = createMailboxDataState()
         val intermediateState = MailboxStateSampleData.createSelectionMode(listOf(item, secondItem))
+        val expectedOperation = MailboxEvent.MoveToConfirmed.Trash(
+            viewMode = NoConversationGrouping,
+            itemCount = 2
+        )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
-        returnExpectedStateForTrash(intermediateState, initialState, 2)
+        returnExpectedStateForTrash(intermediateState, initialState, expectedOperation)
         expectMoveMessagesSucceeds(userId, listOf(item, secondItem), SystemLabelId.Trash)
         expectPagerMock()
 
@@ -2054,7 +2062,13 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Archive)
-        expectedReducerResult(MailboxEvent.MoveToConfirmed, initialState)
+        expectedReducerResult(
+            operation = MailboxEvent.MoveToConfirmed.Archive(
+                viewMode = NoConversationGrouping,
+                itemCount = selectedItemsList.size
+            ),
+            expectedState = initialState
+        )
         expectPagerMock()
 
         mailboxViewModel.state.test {
@@ -2094,7 +2108,13 @@ class MailboxViewModelTest {
             ConversationGrouping
         )
         expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Archive)
-        expectedReducerResult(MailboxEvent.MoveToConfirmed, initialState)
+        expectedReducerResult(
+            operation = MailboxEvent.MoveToConfirmed.Archive(
+                viewMode = ConversationGrouping,
+                itemCount = selectedItemsList.size
+            ),
+            expectedState = initialState
+        )
         expectPagerMock()
 
         mailboxViewModel.state.test {
@@ -2136,7 +2156,13 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Spam)
-        expectedReducerResult(MailboxEvent.MoveToConfirmed, initialState)
+        expectedReducerResult(
+            operation = MailboxEvent.MoveToConfirmed.Spam(
+                viewMode = ConversationGrouping,
+                itemCount = selectedItemsList.size
+            ),
+            expectedState = initialState
+        )
         expectPagerMock()
 
         mailboxViewModel.state.test {
@@ -2177,7 +2203,13 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Spam)
-        expectedReducerResult(MailboxEvent.MoveToConfirmed, initialState)
+        expectedReducerResult(
+            MailboxEvent.MoveToConfirmed.Spam(
+                viewMode = ConversationGrouping,
+                itemCount = selectedItemsList.size
+            ),
+            expectedState = initialState
+        )
         expectPagerMock()
 
         mailboxViewModel.state.test {
@@ -3284,10 +3316,13 @@ class MailboxViewModelTest {
     private fun returnExpectedStateForTrash(
         intermediateState: MailboxState,
         expectedState: MailboxState,
-        expectedItemCount: Int
+        operation: MailboxOperation
     ) {
         every {
-            mailboxReducer.newStateFrom(intermediateState, MailboxEvent.Trash(expectedItemCount))
+            mailboxReducer.newStateFrom(
+                currentState = intermediateState,
+                operation = operation
+            )
         } returns expectedState
     }
 

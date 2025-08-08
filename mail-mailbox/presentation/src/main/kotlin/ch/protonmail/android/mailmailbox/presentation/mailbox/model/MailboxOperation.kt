@@ -25,9 +25,13 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomSheetOperation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.ViewMode
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
+import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmailbox.domain.model.SpamOrTrash
+import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingActionMessage
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingBottomAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingBottomSheet
@@ -81,7 +85,6 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     object ExitSearchMode : MailboxViewAction, AffectingTopAppBar, AffectingMailboxList, AffectingBottomAppBar
 
     object ExitSelectionMode : MailboxViewAction, AffectingTopAppBar, AffectingMailboxList, AffectingBottomAppBar
-
     data class ItemClicked(val item: MailboxItemUiModel) : MailboxViewAction
 
     object Refresh : MailboxViewAction, AffectingMailboxList
@@ -103,6 +106,16 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     data class StarAction(val itemId: String, val isStarred: Boolean) : MailboxViewAction
     data class SwipeLabelAsAction(val itemId: LabelAsItemId) : MailboxViewAction, AffectingBottomSheet
     data class SwipeMoveToAction(val itemId: MoveToItemId) : MailboxViewAction, AffectingBottomSheet
+
+    data class SignalMoveToCompleted(
+        val label: MailLabelText,
+        val entryPoint: MoveToBottomSheetEntryPoint.Mailbox
+    ) : MailboxViewAction
+
+    data class SignalLabelAsCompleted(
+        val alsoArchive: Boolean,
+        val entryPoint: LabelAsBottomSheetEntryPoint.Mailbox
+    ) : MailboxViewAction
 
     object RequestMoveToBottomSheet : MailboxViewAction, AffectingBottomSheet
 
@@ -156,12 +169,74 @@ internal sealed interface MailboxViewAction : MailboxOperation {
 
 internal sealed interface MailboxEvent : MailboxOperation {
 
-    object MoveToConfirmed :
-        MailboxEvent,
+    data class LabelAsConfirmed(
+        val viewMode: ViewMode,
+        val itemCount: Int,
+        val alsoArchived: Boolean
+    ) : MailboxEvent,
         AffectingTopAppBar,
         AffectingBottomAppBar,
         AffectingMailboxList,
-        AffectingBottomSheet
+        AffectingBottomSheet,
+        AffectingActionMessage
+
+    sealed class MoveToConfirmed(
+        open val viewMode: ViewMode,
+        open val itemCount: Int,
+        open val label: MailLabelText
+    ) : MailboxEvent,
+        AffectingTopAppBar,
+        AffectingBottomAppBar,
+        AffectingMailboxList,
+        AffectingBottomSheet,
+        AffectingActionMessage {
+
+        data class Inbox(
+            override val viewMode: ViewMode,
+            override val itemCount: Int
+        ) : MoveToConfirmed(
+            viewMode = viewMode,
+            itemCount = itemCount,
+            label = MailLabelText(R.string.label_title_inbox)
+        )
+
+        data class Archive(
+            override val viewMode: ViewMode,
+            override val itemCount: Int
+        ) : MoveToConfirmed(
+            viewMode = viewMode,
+            itemCount = itemCount,
+            label = MailLabelText(R.string.label_title_archive)
+        )
+
+        data class Spam(
+            override val viewMode: ViewMode,
+            override val itemCount: Int
+        ) : MoveToConfirmed(
+            viewMode = viewMode,
+            itemCount = itemCount,
+            label = MailLabelText(R.string.label_title_spam)
+        )
+
+        data class Trash(
+            override val viewMode: ViewMode,
+            override val itemCount: Int
+        ) : MoveToConfirmed(
+            viewMode = viewMode,
+            itemCount = itemCount,
+            label = MailLabelText(R.string.label_title_trash)
+        )
+
+        data class Custom(
+            override val viewMode: ViewMode,
+            override val itemCount: Int,
+            override val label: MailLabelText
+        ) : MoveToConfirmed(
+            viewMode = viewMode,
+            itemCount = itemCount,
+            label = label
+        )
+    }
 
     data class AvatarImageStatesUpdated(
         val avatarImageStates: AvatarImageStates
@@ -187,14 +262,6 @@ internal sealed interface MailboxEvent : MailboxOperation {
     data class SwipeActionsChanged(
         val swipeActionsPreference: SwipeActionsUiModel
     ) : MailboxEvent, AffectingMailboxList
-
-    data class Trash(val numAffectedMessages: Int) :
-        MailboxEvent,
-        AffectingMailboxList,
-        AffectingTopAppBar,
-        AffectingBottomAppBar,
-        AffectingActionMessage,
-        AffectingBottomSheet
 
     data class Delete(val viewMode: ViewMode, val numAffectedMessages: Int) : MailboxEvent, AffectingDeleteDialog
     data class DeleteConfirmed(val viewMode: ViewMode, val numAffectedMessages: Int) :

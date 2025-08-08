@@ -85,6 +85,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MoveResult
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ObserveViewModeChanged
@@ -315,7 +316,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.SwipeMoveToAction -> requestMoveToBottomSheet(viewAction)
                 is MailboxViewAction.Trash -> handleTrashAction()
                 is MailboxViewAction.Delete -> handleDeleteAction()
-                is MailboxViewAction.MoveToInbox -> handleMoveToInboxAction(viewAction)
+                is MailboxViewAction.MoveToInbox -> handleMoveToInboxAction()
                 is MailboxViewAction.DeleteConfirmed -> handleDeleteConfirmedAction()
                 is MailboxViewAction.DeleteDialogDismissed -> handleDeleteDialogDismissed()
                 is MailboxViewAction.RequestLabelAsBottomSheet -> requestLabelAsBottomSheet(viewAction)
@@ -326,8 +327,8 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.DismissBottomSheet -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.Star -> handleStarAction(viewAction)
                 is MailboxViewAction.UnStar -> handleUnStarAction(viewAction)
-                is MailboxViewAction.MoveToArchive -> handleMoveToArchiveAction(viewAction)
-                is MailboxViewAction.MoveToSpam -> handleMoveToSpamAction(viewAction)
+                is MailboxViewAction.MoveToArchive -> handleMoveToArchiveAction()
+                is MailboxViewAction.MoveToSpam -> handleMoveToSpamAction()
                 is MailboxViewAction.EnterSearchMode -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.ExitSearchMode -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.SearchQuery -> emitNewStateFrom(viewAction)
@@ -341,6 +342,8 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.ClearAllConfirmed -> handleClearAllConfirmed(viewAction)
                 is MailboxViewAction.ClearAllDismissed -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.RequestSnoozeBottomSheet -> requestSnoozeBottomSheet(viewAction)
+                is MailboxViewAction.SignalMoveToCompleted -> handleMoveToCompleted(viewAction)
+                is MailboxViewAction.SignalLabelAsCompleted -> handleLabelAsCompleted(viewAction)
             }
         }
     }
@@ -741,7 +744,7 @@ class MailboxViewModel @Inject constructor(
             val viewMode = getViewModeForCurrentLocation(getSelectedMailLabelId())
             val entryPoint = when (operation) {
                 is MailboxViewAction.RequestLabelAsBottomSheet ->
-                    LabelAsBottomSheetEntryPoint.Mailbox.SelectionMode(viewMode)
+                    LabelAsBottomSheetEntryPoint.Mailbox.SelectionMode(items.count(), viewMode)
 
                 is MailboxViewAction.SwipeLabelAsAction ->
                     LabelAsBottomSheetEntryPoint.Mailbox.LabelAsSwipeAction(viewMode, operation.itemId)
@@ -775,8 +778,10 @@ class MailboxViewModel @Inject constructor(
                         Timber.d("MailboxListState is not in SelectionMode")
                         return@launch
                     }
+
+                    val itemCount = selectionMode.selectedMailboxItems.size
                     Pair(
-                        MoveToBottomSheetEntryPoint.Mailbox.SelectionMode(viewMode),
+                        MoveToBottomSheetEntryPoint.Mailbox.SelectionMode(itemCount, viewMode),
                         selectionMode.selectedMailboxItems.map { MoveToItemId(it.id) }
                     )
                 }
@@ -878,37 +883,37 @@ class MailboxViewModel @Inject constructor(
 
     private suspend fun handleTrashAction() {
         moveSelectedMailboxItemsTo(SystemLabelId.Trash).onRight {
-            emitNewStateFrom(MailboxEvent.Trash(it))
+            emitNewStateFrom(MailboxEvent.MoveToConfirmed.Trash(it.viewMode, it.itemsMoved))
         }.onLeft {
             emitNewStateFrom(MailboxEvent.ErrorMoving)
         }
     }
 
-    private suspend fun handleMoveToInboxAction(action: MailboxViewAction.MoveToInbox) {
+    private suspend fun handleMoveToInboxAction() {
         moveSelectedMailboxItemsTo(SystemLabelId.Inbox).onRight {
-            emitNewStateFrom(action)
+            emitNewStateFrom(MailboxEvent.MoveToConfirmed.Inbox(it.viewMode, it.itemsMoved))
         }.onLeft {
             emitNewStateFrom(MailboxEvent.ErrorMoving)
         }
     }
 
-    private suspend fun handleMoveToArchiveAction(action: MailboxViewAction.MoveToArchive) {
+    private suspend fun handleMoveToArchiveAction() {
         moveSelectedMailboxItemsTo(SystemLabelId.Archive).onRight {
-            emitNewStateFrom(action)
+            emitNewStateFrom(MailboxEvent.MoveToConfirmed.Archive(it.viewMode, it.itemsMoved))
         }.onLeft {
             emitNewStateFrom(MailboxEvent.ErrorMoving)
         }
     }
 
-    private suspend fun handleMoveToSpamAction(action: MailboxViewAction.MoveToSpam) {
+    private suspend fun handleMoveToSpamAction() {
         moveSelectedMailboxItemsTo(SystemLabelId.Spam).onRight {
-            emitNewStateFrom(action)
+            emitNewStateFrom(MailboxEvent.MoveToConfirmed.Spam(it.viewMode, it.itemsMoved))
         }.onLeft {
             emitNewStateFrom(MailboxEvent.ErrorMoving)
         }
     }
 
-    private suspend fun moveSelectedMailboxItemsTo(systemLabelId: SystemLabelId): Either<DataError, Int> {
+    private suspend fun moveSelectedMailboxItemsTo(systemLabelId: SystemLabelId): Either<DataError, MoveResult> {
         val selectionModeDataState = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
         if (selectionModeDataState == null) {
             Timber.d("MailboxListState is not in SelectionMode")
@@ -929,8 +934,28 @@ class MailboxViewModel @Inject constructor(
                 systemLabelId = systemLabelId
             )
         }.flatMap {
-            selectionModeDataState.selectedMailboxItems.size.right()
+            MoveResult(viewMode, selectionModeDataState.selectedMailboxItems.size).right()
         }
+    }
+
+    private fun handleMoveToCompleted(action: MailboxViewAction.SignalMoveToCompleted) {
+        emitNewStateFrom(
+            MailboxEvent.MoveToConfirmed.Custom(
+                viewMode = action.entryPoint.viewMode,
+                itemCount = action.entryPoint.itemCount,
+                label = action.label
+            )
+        )
+    }
+
+    private fun handleLabelAsCompleted(action: MailboxViewAction.SignalLabelAsCompleted) {
+        emitNewStateFrom(
+            MailboxEvent.LabelAsConfirmed(
+                alsoArchived = action.alsoArchive,
+                viewMode = action.entryPoint.viewMode,
+                itemCount = action.entryPoint.itemCount
+            )
+        )
     }
 
     private suspend fun handleDeleteAction() {

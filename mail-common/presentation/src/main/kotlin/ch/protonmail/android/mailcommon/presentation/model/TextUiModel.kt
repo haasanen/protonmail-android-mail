@@ -47,7 +47,8 @@ sealed interface TextUiModel {
 
     data class PluralisedText(
         @PluralsRes val value: Int,
-        val count: Int
+        val count: Int,
+        val formatArgs: List<Any> = emptyList()
     ) : TextUiModel
 }
 
@@ -66,5 +67,11 @@ fun TextUiModel.string() = when (this) {
     is TextUiModel.Text -> value
     is TextUiModel.TextRes -> stringResource(value)
     is TextUiModel.TextResWithArgs -> stringResource(value, *formatArgs.toTypedArray())
-    is TextUiModel.PluralisedText -> pluralStringResource(value, count, count)
+    is TextUiModel.PluralisedText -> {
+        if (formatArgs.isEmpty()) {
+            pluralStringResource(value, count, count)
+        } else {
+            pluralStringResource(value, count, *formatArgs.toTypedArray())
+        }
+    }
 }

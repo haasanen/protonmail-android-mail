@@ -29,6 +29,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.LabelConversations
 import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.model.LabelAsBottomSheetUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
@@ -51,7 +52,6 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.ViewMode
 import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -95,7 +95,12 @@ internal class LabelAsViewModelTest {
         // Given
         val viewMode = ViewMode.NoConversationGrouping
         val initialData =
-            defaultInitialData.copy(entryPoint = LabelAsBottomSheetEntryPoint.Mailbox.SelectionMode(viewMode))
+            defaultInitialData.copy(
+                entryPoint = LabelAsBottomSheetEntryPoint.Mailbox.SelectionMode(
+                    itemCount = 1,
+                    viewMode = viewMode
+                )
+            )
 
         coEvery {
             getLabelAsBottomSheetContent.forMailbox(userId, labelId, items, viewMode)
@@ -137,7 +142,8 @@ internal class LabelAsViewModelTest {
     fun `should emit data loaded for selection mode`() = runTest {
         // Given
         val messageId = MessageId("item1")
-        val entryPoint = LabelAsBottomSheetEntryPoint.Mailbox.SelectionMode(ViewMode.NoConversationGrouping)
+        val entryPoint =
+            LabelAsBottomSheetEntryPoint.Mailbox.SelectionMode(itemCount = 1, ViewMode.NoConversationGrouping)
         val initialData = defaultInitialData.copy(entryPoint = entryPoint)
         val labelAsItemId = LabelAsItemId(messageId.id)
         expectLoadedDataForMailbox(entryPoint, listOf(labelAsItemId))

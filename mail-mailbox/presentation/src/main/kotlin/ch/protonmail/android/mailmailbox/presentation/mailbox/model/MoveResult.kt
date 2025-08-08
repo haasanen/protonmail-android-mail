@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,17 +16,8 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maillabel.presentation.bottomsheet.moveto
+package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
 import ch.protonmail.android.maillabel.domain.model.ViewMode
-import ch.protonmail.android.mailmessage.domain.model.MessageId
 
-sealed interface MoveToBottomSheetEntryPoint {
-    data object Conversation : MoveToBottomSheetEntryPoint
-    data class Message(val messageId: MessageId, val isLastInCurrentLocation: Boolean) : MoveToBottomSheetEntryPoint
-
-    sealed class Mailbox(val itemCount: Int, val viewMode: ViewMode) : MoveToBottomSheetEntryPoint {
-        class MoveToSwipeAction(viewMode: ViewMode, val itemId: MoveToItemId) : Mailbox(itemCount = 1, viewMode)
-        class SelectionMode(itemCount: Int, viewMode: ViewMode) : Mailbox(itemCount, viewMode)
-    }
-}
+data class MoveResult(val viewMode: ViewMode, val itemsMoved: Int)

@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation
@@ -26,7 +27,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewA
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.readMailboxItemUiModel
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
-import ch.protonmail.android.maillabel.domain.model.ViewMode
 import me.proton.core.util.kotlin.EMPTY_STRING
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -219,7 +219,7 @@ internal class MailboxTopAppBarReducerTest(
                     avatarItem,
                     selectedCount = 42
                 ),
-                operation = MailboxEvent.Trash(42),
+                operation = MailboxEvent.MoveToConfirmed.Trash(ViewMode.ConversationGrouping, 42),
                 expectedState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), avatarItem)
             ),
             TestInput(
@@ -259,7 +259,7 @@ internal class MailboxTopAppBarReducerTest(
                     avatarItem,
                     selectedCount = 42
                 ),
-                operation = MailboxEvent.MoveToConfirmed,
+                operation = MailboxEvent.MoveToConfirmed.Trash(ViewMode.NoConversationGrouping, 42),
                 expectedState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), avatarItem)
             ),
             TestInput(

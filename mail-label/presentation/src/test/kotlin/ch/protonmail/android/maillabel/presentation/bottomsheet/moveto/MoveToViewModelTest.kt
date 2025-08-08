@@ -30,6 +30,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
@@ -49,7 +50,6 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.ViewMode
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.AfterTest
@@ -93,7 +93,12 @@ internal class MoveToViewModelTest {
         // Given
         val viewMode = ViewMode.NoConversationGrouping
         val initialData =
-            defaultInitialData.copy(entryPoint = MoveToBottomSheetEntryPoint.Mailbox.SelectionMode(viewMode))
+            defaultInitialData.copy(
+                entryPoint = MoveToBottomSheetEntryPoint.Mailbox.SelectionMode(
+                    itemCount = 1,
+                    viewMode = viewMode
+                )
+            )
 
         coEvery {
             getMoveToLocations.forMailbox(userId, labelId, items, viewMode)
@@ -137,7 +142,10 @@ internal class MoveToViewModelTest {
     fun `should emit move to data loaded for selection mode`() = runTest {
         // Given
         val messageId = MessageId("item1")
-        val entryPoint = MoveToBottomSheetEntryPoint.Mailbox.SelectionMode(ViewMode.NoConversationGrouping)
+        val entryPoint = MoveToBottomSheetEntryPoint.Mailbox.SelectionMode(
+            itemCount = 1,
+            viewMode = ViewMode.NoConversationGrouping
+        )
         val initialData = defaultInitialData.copy(entryPoint = entryPoint)
         val labelAsItemId = MoveToItemId(messageId.id)
         expectLoadedDataForMailbox(entryPoint, listOf(labelAsItemId))
