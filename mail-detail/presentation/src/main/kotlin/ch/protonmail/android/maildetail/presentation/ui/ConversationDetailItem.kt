@@ -272,9 +272,12 @@ private fun ColumnScope.ConversationDetailExpandedItem(
                     onRetry = { actions.onRetryRsvpEventLoading(uiModel.messageId) }
                 )
                 is RsvpWidgetUiModel.Shown -> RsvpWidget(
-                    uiModel.messageRsvpWidgetUiModel.event,
-                    { actions.onOpenInProtonCalendar(uiModel.messageId) },
-                    { actions.onAnswerRsvpEvent(uiModel.messageId, it) }
+                    uiModel = uiModel.messageRsvpWidgetUiModel.event,
+                    actions = RsvpWidget.Actions(
+                        onOpenInProtonCalendar = { actions.onOpenInProtonCalendar(uiModel.messageId) },
+                        onAnswerRsvpEvent = { actions.onAnswerRsvpEvent(uiModel.messageId, it) },
+                        onMessage = actions.onMessage
+                    )
                 )
             }
 
@@ -390,7 +393,8 @@ object ConversationDetailItem {
         val onUnblockSender: (MessageIdUiModel, String) -> Unit,
         val onEditScheduleSendMessage: (MessageIdUiModel) -> Unit,
         val onRetryRsvpEventLoading: (MessageIdUiModel) -> Unit,
-        val onAnswerRsvpEvent: (MessageIdUiModel, RsvpAnswer) -> Unit
+        val onAnswerRsvpEvent: (MessageIdUiModel, RsvpAnswer) -> Unit,
+        val onMessage: (String) -> Unit
     )
 
     val previewActions = Actions(
@@ -422,7 +426,8 @@ object ConversationDetailItem {
         { model: MessageIdUiModel, string: String -> },
         { model: MessageIdUiModel -> },
         {},
-        { _, _ -> }
+        { _, _ -> },
+        {}
     )
 }
 

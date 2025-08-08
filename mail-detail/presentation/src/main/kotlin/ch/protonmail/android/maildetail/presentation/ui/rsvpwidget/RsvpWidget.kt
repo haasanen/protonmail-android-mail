@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -62,6 +63,7 @@ import ch.protonmail.android.design.compose.theme.labelMediumNorm
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.maildetail.presentation.R
@@ -76,10 +78,11 @@ import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
 @Composable
 fun RsvpWidget(
     uiModel: RsvpEventUiModel,
-    onOpenInProtonCalendar: () -> Unit,
-    onAnswerRsvpEvent: (RsvpAnswer) -> Unit,
+    actions: RsvpWidget.Actions,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = modifier
             .padding(horizontal = ProtonDimens.Spacing.Large)
@@ -105,10 +108,10 @@ fun RsvpWidget(
                 title = uiModel.title,
                 dateTime = uiModel.dateTime,
                 isAttendanceOptional = uiModel.isAttendanceOptional,
-                onOpenInProtonCalendar = onOpenInProtonCalendar
+                onOpenInProtonCalendar = actions.onOpenInProtonCalendar
             )
 
-            RsvpResponse(uiModel.buttons, onAnswerRsvpEvent)
+            RsvpResponse(uiModel.buttons, actions.onAnswerRsvpEvent)
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
             uiModel.calendar?.let {
@@ -134,12 +137,15 @@ fun RsvpWidget(
             }
 
             val organizerName = (uiModel.organizer.name ?: uiModel.organizer.email).string()
-            RsvpDetailsRow(
+            val organizerEmail = uiModel.organizer.email.string()
+            RsvpParticipantRow(
                 icon = R.drawable.ic_proton_user,
-                text = "$organizerName ${stringResource(id = R.string.rsvp_widget_organizer)}"
+                text = "$organizerName ${stringResource(id = R.string.rsvp_widget_organizer)}",
+                onCopyAddress = { context.copyTextToClipboard("Email", organizerEmail) },
+                onMessage = { actions.onMessage(organizerEmail) }
             )
 
-            RsvpAttendees(uiModel.attendees)
+            RsvpAttendees(uiModel.attendees, actions.onMessage)
         }
     }
 }
@@ -446,8 +452,80 @@ private fun RsvpDetailsRow(
 }
 
 @Composable
-private fun RsvpAttendees(attendees: List<RsvpAttendeeUiModel>) {
+private fun RsvpParticipantRow(
+    @DrawableRes icon: Int,
+    text: String,
+    onCopyAddress: () -> Unit,
+    onMessage: () -> Unit,
+    modifier: Modifier = Modifier,
+    iconTint: Color = ProtonTheme.colors.iconWeak
+) {
+    Row {
+        val expanded = remember { mutableStateOf(false) }
+
+        RsvpDetailsRow(
+            modifier = modifier
+                .clip(ProtonTheme.shapes.mediumLarge)
+                .clickable(
+                    onClick = { expanded.value = !expanded.value }
+                ),
+            icon = icon,
+            text = text,
+            iconTint = iconTint
+        )
+
+        DropdownMenu(
+            expanded = expanded.value,
+            onDismissRequest = { expanded.value = false },
+            containerColor = ProtonTheme.colors.backgroundNorm
+        ) {
+            DropdownMenuItem(
+                text = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_proton_squares),
+                            contentDescription = NO_CONTENT_DESCRIPTION
+                        )
+                        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
+                        Text(
+                            text = stringResource(id = R.string.rsvp_widget_copy_address),
+                            style = ProtonTheme.typography.bodyLargeNorm
+                        )
+                    }
+                },
+                onClick = {
+                    expanded.value = false
+                    onCopyAddress()
+                }
+            )
+            DropdownMenuItem(
+                text = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_proton_pen_square),
+                            contentDescription = NO_CONTENT_DESCRIPTION
+                        )
+                        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
+                        Text(
+                            text = stringResource(id = R.string.rsvp_widget_message),
+                            style = ProtonTheme.typography.bodyLargeNorm
+                        )
+                    }
+                },
+                onClick = {
+                    expanded.value = false
+                    onMessage()
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun RsvpAttendees(attendees: List<RsvpAttendeeUiModel>, onMessage: (String) -> Unit) {
     if (attendees.isEmpty()) return
+
+    val context = LocalContext.current
 
     if (attendees.size == 1) {
         val attendee = attendees.first()
@@ -457,10 +535,13 @@ private fun RsvpAttendees(attendees: List<RsvpAttendeeUiModel>) {
             "${attendee.name.string()} • ${attendee.email.string()}"
         }
 
-        RsvpDetailsRow(
+        val attendeeEmail = attendee.email.string()
+        RsvpParticipantRow(
             icon = attendee.answer.getIcon(isOnlyAttendee = true),
             text = text,
-            iconTint = attendee.answer.getIconTint(isOnlyAttendee = true)
+            iconTint = attendee.answer.getIconTint(isOnlyAttendee = true),
+            onCopyAddress = { context.copyTextToClipboard("Email", attendeeEmail) },
+            onMessage = { onMessage(attendeeEmail) }
         )
     } else {
         val isExpanded = remember { mutableStateOf(false) }
@@ -493,10 +574,13 @@ private fun RsvpAttendees(attendees: List<RsvpAttendeeUiModel>) {
                     "${attendee.name.string()} • ${attendee.email.string()}"
                 }
 
-                RsvpDetailsRow(
+                val attendeeEmail = attendee.email.string()
+                RsvpParticipantRow(
                     icon = attendee.answer.getIcon(isOnlyAttendee = false),
                     text = text,
-                    iconTint = attendee.answer.getIconTint(isOnlyAttendee = false)
+                    iconTint = attendee.answer.getIconTint(isOnlyAttendee = false),
+                    onCopyAddress = { context.copyTextToClipboard("Email", attendeeEmail) },
+                    onMessage = { onMessage(attendeeEmail) }
                 )
             }
         }
@@ -570,8 +654,11 @@ private fun RsvpStatusUiModel.getBackgroundColor() = when (this) {
 fun RsvpWidgetUnansweredPreview() {
     RsvpWidget(
         uiModel = RsvpWidgetPreviewData.UnansweredWithMultipleParticipants,
-        onOpenInProtonCalendar = {},
-        onAnswerRsvpEvent = {}
+        actions = RsvpWidget.Actions(
+            onOpenInProtonCalendar = {},
+            onAnswerRsvpEvent = {},
+            onMessage = {}
+        )
     )
 }
 
@@ -580,7 +667,19 @@ fun RsvpWidgetUnansweredPreview() {
 fun RsvpWidgetAnsweredPreview() {
     RsvpWidget(
         uiModel = RsvpWidgetPreviewData.AnsweredWithOneParticipantAndStatus,
-        onOpenInProtonCalendar = {},
-        onAnswerRsvpEvent = {}
+        actions = RsvpWidget.Actions(
+            onOpenInProtonCalendar = {},
+            onAnswerRsvpEvent = {},
+            onMessage = {}
+        )
+    )
+}
+
+object RsvpWidget {
+
+    data class Actions(
+        val onOpenInProtonCalendar: () -> Unit,
+        val onAnswerRsvpEvent: (RsvpAnswer) -> Unit,
+        val onMessage: (String) -> Unit
     )
 }

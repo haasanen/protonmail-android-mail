@@ -65,7 +65,8 @@ internal class MessageDetailFooterActionsTest {
             onUnblockSender = { _, _ -> },
             onEditScheduleSendMessage = {},
             onRetryRsvpEventLoading = {},
-            onAnswerRsvpEvent = { _, _ -> }
+            onAnswerRsvpEvent = { _, _ -> },
+            onMessage = {}
         )
 
         // When
