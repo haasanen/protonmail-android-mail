@@ -222,7 +222,7 @@ class ComposerViewModel @AssistedInject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
-        initialValue = false
+        initialValue = true
     )
 
     init {
@@ -535,7 +535,7 @@ class ComposerViewModel @AssistedInject constructor(
                 is ComposerAction.ChangeSender -> onChangeSenderRequested()
                 is ComposerAction.SetSenderAddress -> onChangeSender(action.sender)
 
-                is ComposerAction.OpenExpirationSettings -> TODO()
+                is ComposerAction.OpenExpirationSettings -> emitNewStateFor(EffectsEvent.SetExpirationReady)
 
                 is ComposerAction.SetMessageExpiration -> TODO()
 

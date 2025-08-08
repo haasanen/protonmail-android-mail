@@ -157,9 +157,12 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             actions.onSetMessagePasswordClick()
         },
         onSetExpirationTimeClick = {
-            // bottomSheetType.value = BottomSheetType.SetExpirationTime
-            // viewModel.submit(ComposerAction2.OnSetExpirationTimeRequested)
-            showFeatureMissingSnackbar()
+            if (viewModel.isMessageExpirationEnabled.value) {
+                bottomSheetType.value = BottomSheetType.SetExpirationTime
+                viewModel.submit(ComposerAction.OpenExpirationSettings)
+            } else {
+                showFeatureMissingSnackbar()
+            }
         },
         onDiscardDraftClicked = { viewModel.submit(ComposerAction.DiscardDraftRequested) }
     )
