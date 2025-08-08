@@ -21,7 +21,6 @@ package ch.protonmail.android.mailcomposer.presentation.mapper.effects
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.presentation.model.operations.EffectsEvent
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
-import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.BottomSheetEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.CompletionEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
@@ -190,7 +189,7 @@ internal class EffectsEventTest(
                 "SetExpirationReady to modification",
                 EffectsEvent.SetExpirationReady,
                 ComposerStateModifications(
-                    effectsModification = BottomSheetEffectsStateModification.ShowBottomSheet
+                    effectsModification = ContentEffectsStateModifications.OnPickMessageExpirationTimeRequested
                 )
             ),
             arrayOf(

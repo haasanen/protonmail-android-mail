@@ -69,18 +69,21 @@ import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachmen
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePasswordChanged
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveRecipientsValidation
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
+import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.ScheduleSendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients
 import ch.protonmail.android.mailcomposer.presentation.mapper.toDraftRecipient
+import ch.protonmail.android.mailcomposer.presentation.mapper.toDomainModel
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerStates
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ObservedComposerDataChanges
+import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
@@ -177,8 +180,9 @@ class ComposerViewModel @AssistedInject constructor(
     private val isMessagePasswordSet: IsMessagePasswordSet,
     private val observeRecipientsValidation: ObserveRecipientsValidation,
     private val getDraftSenderValidationError: GetDraftSenderValidationError,
-    observePrimaryUserId: ObservePrimaryUserId,
-    private val preloadContactSuggestions: PreloadContactSuggestions
+    private val preloadContactSuggestions: PreloadContactSuggestions,
+    private val saveMessageExpirationTime: SaveMessageExpirationTime,
+    observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
     internal val subjectTextField = TextFieldState()
@@ -537,7 +541,7 @@ class ComposerViewModel @AssistedInject constructor(
 
                 is ComposerAction.OpenExpirationSettings -> emitNewStateFor(EffectsEvent.SetExpirationReady)
 
-                is ComposerAction.SetMessageExpiration -> TODO()
+                is ComposerAction.SetMessageExpiration -> onSetMessageExpiration(action.expirationTime)
 
                 is ComposerAction.AddAttachmentsRequested ->
                     emitNewStateFor(EffectsEvent.AttachmentEvent.OnAttachFromOptionsRequest)
@@ -579,6 +583,12 @@ class ComposerViewModel @AssistedInject constructor(
             }
             logViewModelAction(action, "Completed.")
         }
+    }
+
+    private suspend fun onSetMessageExpiration(expirationTime: ExpirationTimeUiModel) {
+        saveMessageExpirationTime(expirationTime.toDomainModel())
+            .onLeft { emitNewStateFor(EffectsEvent.ErrorEvent.OnSetExpirationError) }
+            .onRight { emitNewStateFor(AccessoriesEvent.OnExpirationChanged(expirationTime)) }
     }
 
     private suspend fun onChangeSender(sender: SenderUiModel) {

@@ -35,11 +35,8 @@ import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeOption
-import ch.protonmail.android.mailcomposer.presentation.model.ExpirationTimeUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.operations.CompositeEvent
-import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AccessoriesStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.AttachmentsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification
@@ -89,7 +86,6 @@ internal class CompositeEventTest(
         )
 
         private val senderAddresses: List<SenderUiModel> = listOf(mockk())
-        private val expiration = ExpirationTimeUiModel(ExpirationTimeOption.OneHour)
 
         private val noErrorAttachment = mockk<AttachmentMetadataWithState>().apply {
             every { attachmentState } returns AttachmentState.Uploaded
@@ -134,14 +130,6 @@ internal class CompositeEventTest(
                 ComposerStateModifications(
                     mainModification = MainStateModification.UpdateLoading(ComposerState.LoadingType.None),
                     effectsModification = ConfirmationsEffectsStateModification.SendNoSubjectConfirmationRequested
-                )
-            ),
-            arrayOf(
-                "SetExpirationDismissed to modification",
-                CompositeEvent.SetExpirationDismissed(expiration),
-                ComposerStateModifications(
-                    effectsModification = BottomSheetEffectsStateModification.HideBottomSheet,
-                    accessoriesModification = AccessoriesStateModification.MessageExpirationUpdated(expiration)
                 )
             ),
             arrayOf(
