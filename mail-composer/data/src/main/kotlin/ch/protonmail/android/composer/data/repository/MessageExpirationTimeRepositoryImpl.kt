@@ -19,31 +19,27 @@
 package ch.protonmail.android.composer.data.repository
 
 import arrow.core.Either
-import arrow.core.left
+import ch.protonmail.android.composer.data.local.RustDraftDataSource
+import ch.protonmail.android.composer.data.mapper.toMessageExpiration
+import ch.protonmail.android.composer.data.mapper.toRecipientsNotSupportingExpiration
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.mod.RecipientsNotSupportingExpiration
+import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
-class MessageExpirationTimeRepositoryImpl @Inject constructor() : MessageExpirationTimeRepository {
+class MessageExpirationTimeRepositoryImpl @Inject constructor(
+    private val draftDataSource: RustDraftDataSource
+) : MessageExpirationTimeRepository {
 
-    override suspend fun saveMessageExpirationTime(
-        messageExpirationTime: MessageExpirationTime
-    ): Either<DataError.Local, Unit> {
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
-    }
+    override suspend fun getMessageExpirationTime(): Either<DataError, MessageExpirationTime> =
+        draftDataSource.getMessageExpiration().map { it.toMessageExpiration() }
 
-    override suspend fun observeMessageExpirationTime(
-        userId: UserId,
-        messageId: MessageId
-    ): Flow<MessageExpirationTime?> {
-        Timber.w("Not implemented")
-        return flowOf(null)
-    }
+    override suspend fun saveMessageExpirationTime(time: MessageExpirationTime): Either<MessageExpirationError, Unit> =
+        draftDataSource.setMessageExpiration(time)
+
+    override suspend fun validateSendWithExpirationTime(): Either<DataError, RecipientsNotSupportingExpiration> =
+        draftDataSource.validateSendWithExpiration().map { it.toRecipientsNotSupportingExpiration() }
+
 }

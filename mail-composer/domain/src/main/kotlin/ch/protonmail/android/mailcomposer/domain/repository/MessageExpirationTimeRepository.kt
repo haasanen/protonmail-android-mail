@@ -20,14 +20,13 @@ package ch.protonmail.android.mailcomposer.domain.repository
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.mod.RecipientsNotSupportingExpiration
+import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import kotlinx.coroutines.flow.Flow
-import me.proton.core.domain.entity.UserId
 
 interface MessageExpirationTimeRepository {
 
-    suspend fun saveMessageExpirationTime(messageExpirationTime: MessageExpirationTime): Either<DataError.Local, Unit>
-
-    suspend fun observeMessageExpirationTime(userId: UserId, messageId: MessageId): Flow<MessageExpirationTime?>
+    suspend fun getMessageExpirationTime(): Either<DataError, MessageExpirationTime>
+    suspend fun saveMessageExpirationTime(time: MessageExpirationTime): Either<MessageExpirationError, Unit>
+    suspend fun validateSendWithExpirationTime(): Either<DataError, RecipientsNotSupportingExpiration>
 }
