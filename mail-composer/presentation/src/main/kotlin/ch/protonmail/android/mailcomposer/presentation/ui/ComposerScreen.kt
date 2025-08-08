@@ -125,6 +125,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         mutableStateOf(SendExpiringMessageDialogState(false, emptyList()))
     }
     val discardDraftDialogState = remember { mutableStateOf(false) }
+    val showExpirationTimeDialog = remember { mutableStateOf(false) }
 
     val featureMissingSnackbarMessage = stringResource(id = R.string.feature_coming_soon)
     val scope = rememberCoroutineScope()
@@ -158,7 +159,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         },
         onSetExpirationTimeClick = {
             if (viewModel.isMessageExpirationEnabled.value) {
-                bottomSheetType.value = BottomSheetType.SetExpirationTime
                 viewModel.submit(ComposerAction.OpenExpirationSettings)
             } else {
                 showFeatureMissingSnackbar()
@@ -211,11 +211,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                     mainState.senderAddresses,
                     mainState.sender,
                     { sender -> viewModel.submit(ComposerAction.SetSenderAddress(sender)) }
-                )
-
-                BottomSheetType.SetExpirationTime -> SetExpirationTimeBottomSheetContent(
-                    expirationTime = accessoriesState.expirationTime,
-                    onDoneClick = { viewModel.submit(ComposerAction.SetMessageExpiration(it)) }
                 )
 
                 is BottomSheetType.InlineImageActions -> InlineImageActionsBottomSheetContent(
@@ -482,6 +477,15 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         )
     }
 
+    if (showExpirationTimeDialog.value) {
+        val context = LocalContext.current
+        SetExpirationTimeDialog(
+            expirationTime = accessoriesState.expirationTime,
+            onDismiss = { showExpirationTimeDialog.value = false },
+            onTimePicked = { Toast.makeText(context, "Time picked $it", Toast.LENGTH_SHORT).show() }
+        )
+    }
+
     senderChangedNoticeDialogState.value?.run {
         ProtonAlertDialog(
             onDismissRequest = { senderChangedNoticeDialogState.value = null },
@@ -610,6 +614,10 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
         actions.showDraftDiscardedSnackbar()
     }
 
+    ConsumableLaunchedEffect(effect = effectsState.pickMessageExpiration) {
+        showExpirationTimeDialog.value = true
+    }
+
     BackHandler(true) {
         viewModel.submit(ComposerAction.CloseComposer)
     }
@@ -657,7 +665,6 @@ object ComposerScreen {
 
 private sealed interface BottomSheetType {
     data object ChangeSender : BottomSheetType
-    data object SetExpirationTime : BottomSheetType
     data object AttachmentSources : BottomSheetType
     data object ScheduleSendOptions : BottomSheetType
     data object ScheduleSendCustomTimePicker : BottomSheetType
@@ -679,7 +686,6 @@ private sealed interface BottomSheetType {
                         )
                     }
 
-                    is SetExpirationTime -> mapOf(TYPE_KEY to SetExpirationTime::class.simpleName)
                     is AttachmentSources -> mapOf(TYPE_KEY to AttachmentSources::class.simpleName)
                     is ScheduleSendOptions -> mapOf(TYPE_KEY to ScheduleSendOptions::class.simpleName)
                     is ScheduleSendCustomTimePicker -> mapOf(TYPE_KEY to ScheduleSendCustomTimePicker::class.simpleName)
@@ -689,7 +695,6 @@ private sealed interface BottomSheetType {
                 when (map[TYPE_KEY]) {
                     ChangeSender::class.simpleName -> ChangeSender
                     InlineImageActions::class.simpleName -> InlineImageActions(map[CONTENT_ID_KEY].toString())
-                    SetExpirationTime::class.simpleName -> SetExpirationTime
                     AttachmentSources::class.simpleName -> AttachmentSources
                     ScheduleSendOptions::class.simpleName -> ScheduleSendOptions
                     ScheduleSendCustomTimePicker::class.simpleName -> ScheduleSendCustomTimePicker
