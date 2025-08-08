@@ -22,7 +22,6 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailsnooze.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailsnooze.data.mapper.toLocalWeekStart
 import ch.protonmail.android.mailsnooze.data.mapper.toSnoozeActions

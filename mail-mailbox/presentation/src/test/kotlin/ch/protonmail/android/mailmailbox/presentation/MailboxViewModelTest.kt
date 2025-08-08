@@ -3165,6 +3165,7 @@ class MailboxViewModelTest {
     fun `when RequestSnooze then Snooze bottomsheet is shown`() = runTest {
         // Given
         val item = readMailboxItemUiModel
+        val labelId = initialLocationMailLabelId.labelId
         val intermediateState = createMailboxDataState()
         val expectedSelectionState = MailboxStateSampleData.createSelectionMode(listOf(item))
         val expectedBottomBarState = expectedSelectionState.copy(
@@ -3175,6 +3176,7 @@ class MailboxViewModelTest {
         val expectedBottomSheetState = BottomSheetState(
             SnoozeSheetState.Requested(
                 userId,
+                labelId,
                 listOf(SnoozeConversationId(item.id))
             ),
             expectedBottomBarState.bottomSheetState?.bottomSheetVisibilityEffect ?: Effect.empty()
@@ -3268,11 +3270,12 @@ class MailboxViewModelTest {
         items: List<SnoozeConversationId>,
         bottomSheetState: MailboxState
     ) {
+        val labelId = initialLocationMailLabelId.labelId
         every {
             mailboxReducer.newStateFrom(
                 currentState = any(),
                 operation = MailboxEvent.MailboxBottomSheetEvent(
-                    SnoozeSheetState.SnoozeOptionsBottomSheetEvent.Ready(userId, items)
+                    SnoozeSheetState.SnoozeOptionsBottomSheetEvent.Ready(userId, labelId, items)
                 )
             )
         } returns bottomSheetState

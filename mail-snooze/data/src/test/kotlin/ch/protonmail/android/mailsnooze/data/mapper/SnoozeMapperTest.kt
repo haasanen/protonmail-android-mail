@@ -18,19 +18,28 @@
 
 package ch.protonmail.android.mailsnooze.data.mapper
 
+import ch.protonmail.android.mailcommon.data.mapper.LocalNonDefaultWeekStart
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailsnooze.domain.model.CustomUnset
 import ch.protonmail.android.mailsnooze.domain.model.LaterThisWeek
 import ch.protonmail.android.mailsnooze.domain.model.NextWeek
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeWeekStart
 import ch.protonmail.android.mailsnooze.domain.model.ThisWeekend
 import ch.protonmail.android.mailsnooze.domain.model.Tomorrow
 import ch.protonmail.android.mailsnooze.domain.model.UnSnooze
 import ch.protonmail.android.mailsnooze.domain.model.UpgradeRequired
 import org.junit.Assert
+import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.SnoozeActions
+import uniffi.proton_mail_uniffi.SnoozeErrorReason
 import uniffi.proton_mail_uniffi.SnoozeTime
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.time.Instant
+import uniffi.proton_mail_uniffi.SnoozeError as SnoozeErrorRemote
 
 class SnoozeMapperTest {
 
@@ -77,10 +86,69 @@ class SnoozeMapperTest {
         )
     }
 
+    @Test
+    fun `map proton error to snooze error`() {
+        val error = SnoozeErrorRemote.Other(ProtonError.Network)
+        assertEquals(
+            SnoozeError.Unknown(DataError.Remote.Http(NetworkError.NoNetwork)),
+            error.toSnoozeError()
+        )
+    }
+
+    @Test
+    fun `map remote snooze error to snooze error`() {
+        val error = SnoozeErrorRemote.Reason(SnoozeErrorReason.SNOOZE_TIME_IN_THE_PAST)
+        assertEquals(
+            SnoozeError.SnoozeIsInThePast,
+            error.toSnoozeError()
+        )
+    }
+
+
+    @Test
+    fun `map SnoozeWeekStart to remote week start `() {
+        val expectedWeekStart =
+            listOf(
+                LocalNonDefaultWeekStart.MONDAY,
+                LocalNonDefaultWeekStart.SATURDAY,
+                LocalNonDefaultWeekStart.SUNDAY
+            )
+        assertEquals(
+            expectedWeekStart,
+            listOf(
+                SnoozeWeekStart.MONDAY,
+                SnoozeWeekStart.SATURDAY,
+                SnoozeWeekStart.SUNDAY
+            ).map { it.toLocalWeekStart() }
+        )
+
+    }
+
+    @Test
+    fun `map NON_SUPPORTED SnoozeWeekStart to default `() {
+        val expectedWeekStart =
+            listOf(
+                LocalNonDefaultWeekStart.MONDAY,
+                LocalNonDefaultWeekStart.MONDAY,
+                LocalNonDefaultWeekStart.MONDAY,
+                LocalNonDefaultWeekStart.MONDAY
+            )
+        assertEquals(
+            expectedWeekStart,
+            listOf(
+                SnoozeWeekStart.TUESDAY,
+                SnoozeWeekStart.WEDNESDAY,
+                SnoozeWeekStart.THURSDAY,
+                SnoozeWeekStart.FRIDAY
+            ).map { it.toLocalWeekStart() }
+        )
+
+    }
+
     companion object {
 
-        val expectedInstant = Instant.fromEpochSeconds(1_754_394_159_278L)
-        const val inputMs = 1_754_394_159_278L
+        val expectedInstant = Instant.fromEpochSeconds(1_754_643_858_578L)
+        const val inputMs = 1_754_643_858_578L
 
         val sampleSnoozeOptions = listOf(
             SnoozeTime.Tomorrow(inputMs.toULong()),

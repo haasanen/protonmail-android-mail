@@ -20,11 +20,16 @@ package ch.protonmail.android.mailsnooze.data
 
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailsnooze.data.mapper.SnoozeMapperTest.Companion.expectedInstant
-import ch.protonmail.android.mailsnooze.domain.model.SnoozeOption
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailsnooze.domain.model.LaterThisWeek
+import ch.protonmail.android.mailsnooze.domain.model.NextWeek
+import ch.protonmail.android.mailsnooze.domain.model.SnoozeError
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeWeekStart
+import ch.protonmail.android.mailsnooze.domain.model.ThisWeekend
+import ch.protonmail.android.mailsnooze.domain.model.Tomorrow
+import ch.protonmail.android.mailsnooze.domain.model.UpgradeRequired
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -37,6 +42,7 @@ import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.NonDefaultWeekStart
 import uniffi.proton_mail_uniffi.SnoozeActions
 import uniffi.proton_mail_uniffi.SnoozeTime
+import kotlin.time.Instant
 
 class RustSnoozeRepositoryTest {
 
@@ -51,24 +57,33 @@ class RustSnoozeRepositoryTest {
                 SampleData.conversationIds
             )
         } returns SampleData.mockSnoozeActions.right()
+
+        coEvery {
+            this@mockk.snoozeConversation(
+                SampleData.userId, SampleData.inputLabelId, SampleData.conversationIds,
+                SampleData.snoozeTime
+            )
+        } returns Unit.right()
     }
     private val sut = RustSnoozeRepositoryImpl(dataSource)
 
     @Test
     fun `when getAvailableSnoozeActionsForConversation then returns Result right`() = runTest {
 
+        // when
         val result = sut.getAvailableSnoozeActions(
             SampleData.userId, SampleData.inputWeekStart,
             SampleData.inputConversationIds
         )
 
+        // then
         assertEquals(
             listOf(
-                SnoozeOption.Tomorrow(expectedInstant),
-                SnoozeOption.NextWeek(expectedInstant),
-                SnoozeOption.LaterThisWeek(expectedInstant),
-                SnoozeOption.ThisWeekend(expectedInstant),
-                SnoozeOption.UpgradeRequired
+                Tomorrow(SampleData.expectedInstant),
+                NextWeek(SampleData.expectedInstant),
+                LaterThisWeek(SampleData.expectedInstant),
+                ThisWeekend(SampleData.expectedInstant),
+                UpgradeRequired
             ).right(),
             result
         )
@@ -76,7 +91,7 @@ class RustSnoozeRepositoryTest {
 
     @Test
     fun `when getAvailableSnoozeActionsForConversation then returns Result left`() = runTest {
-        val error = DataError.Local.Unknown.left()
+        val error = SnoozeError.Unknown().left()
         coEvery {
             dataSource.getAvailableSnoozeActionsForConversation(
                 SampleData.userId,
@@ -93,8 +108,46 @@ class RustSnoozeRepositoryTest {
         assertEquals(error, result)
     }
 
+    @Test
+    fun `when snoozeConversations then returns Result right`() = runTest {
+
+        val result = sut.snoozeConversation(
+            SampleData.userId, SampleData.labelId, SampleData.inputConversationIds,
+            Tomorrow(snoozeTime = SampleData.snoozeTime)
+        )
+
+        assertEquals(
+            Unit.right(),
+            result
+        )
+    }
+
+    @Test
+    fun `when snoozeConversations then returns Result error - left`() = runTest {
+        val error = SnoozeError.SnoozeIsInThePast.left()
+        coEvery {
+            dataSource.snoozeConversation(
+                SampleData.userId, SampleData.inputLabelId, SampleData.conversationIds,
+                SampleData.snoozeTime
+            )
+        } returns error
+
+        val result = sut.snoozeConversation(
+            SampleData.userId, SampleData.labelId, SampleData.inputConversationIds,
+            Tomorrow(snoozeTime = SampleData.snoozeTime)
+        )
+
+        assertEquals(
+            error,
+            result
+        )
+    }
+
     object SampleData {
 
+        val snoozeTime = Instant.fromEpochMilliseconds(1_754_638_586_075L)
+        val inputLabelId = LocalLabelId(2L.toULong())
+        val labelId = LabelId("2")
         val userId = UserId("UserId")
         val inputWeekStart = SnoozeWeekStart.MONDAY
         val weekStart = NonDefaultWeekStart.MONDAY
@@ -103,14 +156,15 @@ class RustSnoozeRepositoryTest {
         val inputConversationIds =
             listOf(ConversationId(conversationIdFirst.toString()), ConversationId(conversationIdSecond.toString()))
         val conversationIds = listOf(Id(conversationIdFirst.toULong()), Id(conversationIdSecond.toULong()))
-        const val inputMs = 1_754_394_159_278L
+        const val inputSeconds = 1_754_394_159L
+        val expectedInstant = Instant.fromEpochSeconds(inputSeconds)
         val mockSnoozeActions =
             SnoozeActions(
                 options = listOf(
-                    SnoozeTime.Tomorrow(inputMs.toULong()),
-                    SnoozeTime.NextWeek(inputMs.toULong()),
-                    SnoozeTime.LaterThisWeek(inputMs.toULong()),
-                    SnoozeTime.ThisWeekend(inputMs.toULong())
+                    SnoozeTime.Tomorrow(inputSeconds.toULong()),
+                    SnoozeTime.NextWeek(inputSeconds.toULong()),
+                    SnoozeTime.LaterThisWeek(inputSeconds.toULong()),
+                    SnoozeTime.ThisWeekend(inputSeconds.toULong())
                 ),
                 showUnsnooze = false
             )

@@ -84,7 +84,7 @@ class SnoozeOptionsBottomSheetViewModel @AssistedInject constructor(
             )
 
 
-    fun onSelectSnoozeTime(snoozeTime: SnoozeTime) {
+    private fun onSelectSnoozeTime(snoozeTime: SnoozeTime) {
         viewModelScope.launch {
             snoozeRepository.snoozeConversation(
                 userId = initialData.userId,
