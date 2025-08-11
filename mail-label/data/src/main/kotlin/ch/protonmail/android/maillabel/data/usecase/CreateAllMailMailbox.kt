@@ -31,7 +31,7 @@ import javax.inject.Inject
 
 class CreateAllMailMailbox @Inject constructor() {
 
-    suspend operator fun invoke(mailUserSession: MailUserSessionWrapper): Either<DataError, MailboxWrapper> =
+    operator fun invoke(mailUserSession: MailUserSessionWrapper): Either<DataError, MailboxWrapper> =
         when (val result = newAllMailMailbox(mailUserSession.getRustUserSession())) {
             is NewAllMailMailboxResult.Error -> result.v1.toDataError().left()
             is NewAllMailMailboxResult.Ok -> MailboxWrapper(result.v1).right()

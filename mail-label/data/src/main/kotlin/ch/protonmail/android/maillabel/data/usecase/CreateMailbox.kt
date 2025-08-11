@@ -30,7 +30,7 @@ import javax.inject.Inject
 
 class CreateMailbox @Inject constructor() {
 
-    suspend operator fun invoke(mailUserSession: MailUserSessionWrapper, labelId: LocalLabelId) =
+    operator fun invoke(mailUserSession: MailUserSessionWrapper, labelId: LocalLabelId) =
         when (val result = newMailbox(mailUserSession.getRustUserSession(), labelId)) {
             is NewMailboxResult.Error -> result.v1.toDataError().left()
             is NewMailboxResult.Ok -> MailboxWrapper(result.v1).right()
