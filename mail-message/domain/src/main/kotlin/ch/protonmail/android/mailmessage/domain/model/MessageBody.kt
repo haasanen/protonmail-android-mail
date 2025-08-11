@@ -55,4 +55,6 @@ sealed interface MessageBanner {
 
     data object EmbeddedImages : MessageBanner
     data object RemoteContent : MessageBanner
+
+    data object DecryptionFailed : MessageBanner
 }

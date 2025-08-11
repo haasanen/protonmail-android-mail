@@ -108,6 +108,7 @@ typealias LocalMessageBannerScheduledSend = MessageBanner.ScheduledSend
 typealias LocalMessageBannerSnoozed = MessageBanner.Snoozed
 typealias LocalMessageBannerSpam = MessageBanner.Spam
 typealias LocalMessageBannerUnsubscribeNewsletter = MessageBanner.UnsubscribeNewsletter
+typealias LocalMessageBannerUnableToDecrypt = MessageBanner.UnableToDecrypt
 typealias LocalAlmostAllMail = AlmostAllMail
 typealias LocalAttachmentMetadata = AttachmentMetadata
 typealias LocalAttachmentId = Id

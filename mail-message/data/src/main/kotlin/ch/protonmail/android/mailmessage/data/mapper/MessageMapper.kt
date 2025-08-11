@@ -39,6 +39,7 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerRemoteCont
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerScheduledSend
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerSnoozed
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerSpam
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerUnableToDecrypt
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageBannerUnsubscribeNewsletter
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageMetadata
@@ -238,6 +239,7 @@ private fun LocalMessageBanner.toMessageBanner(): MessageBanner {
         is LocalMessageBannerSnoozed -> MessageBanner.Snoozed(timestamp.toInstant())
         is LocalMessageBannerSpam -> MessageBanner.Spam
         is LocalMessageBannerUnsubscribeNewsletter -> MessageBanner.UnsubscribeNewsletter
+        is LocalMessageBannerUnableToDecrypt -> MessageBanner.DecryptionFailed
     }
 }
 

@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import me.proton.android.core.auth.data.passvalidator.PasswordValidatorServiceHolder
 import me.proton.core.domain.entity.UserId
 import me.proton.core.passvalidator.domain.usecase.ValidatePassword
+import uniffi.proton_account_uniffi.PasswordType
 import javax.inject.Inject
 
 @ActivityRetainedScoped
@@ -38,7 +39,8 @@ class ValidatePasswordImpl @Inject constructor(
         val callback = PasswordValidatorServiceCallbackImpl(producerScope = this)
         val handle = passwordValidatorServiceHolder.get().validate(
             plainPassword = password,
-            callback = callback
+            callback = callback,
+            passwordType = PasswordType.MAIN
         )
         awaitClose { handle.cancel() }
     }.buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)

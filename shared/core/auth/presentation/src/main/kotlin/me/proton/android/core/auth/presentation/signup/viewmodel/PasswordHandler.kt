@@ -39,7 +39,7 @@ import me.proton.core.passvalidator.domain.entity.PasswordValidatorToken
 import uniffi.proton_account_uniffi.PasswordValidatorServiceToken
 import uniffi.proton_account_uniffi.SignupException
 import uniffi.proton_account_uniffi.SignupFlow
-import uniffi.proton_account_uniffi.SignupFlowSubmitValidatedPasswordResult
+import uniffi.proton_account_uniffi.SignupFlowSubmitPasswordResult
 
 /**
  * Handler responsible for password-related actions during signup process.
@@ -67,8 +67,8 @@ class PasswordHandler private constructor(
     ) = flow {
         emit(Creating)
 
-        when (val result = getFlow().submitValidatedPassword(password, confirmPassword, token?.toRust())) {
-            is SignupFlowSubmitValidatedPasswordResult.Error -> {
+        when (val result = getFlow().submitPassword(password, confirmPassword, token?.toRust())) {
+            is SignupFlowSubmitPasswordResult.Error -> {
                 val state = when (result.v1) {
                     is SignupException.PasswordEmpty -> PasswordEmpty
                     is SignupException.PasswordsNotMatching -> ConfirmPasswordMissMatch
@@ -79,7 +79,7 @@ class PasswordHandler private constructor(
                 emit(state)
             }
 
-            is SignupFlowSubmitValidatedPasswordResult.Ok -> {
+            is SignupFlowSubmitPasswordResult.Ok -> {
                 val route = result.v1.mapToNavigationRoute()
                 emit(Success(route))
             }
