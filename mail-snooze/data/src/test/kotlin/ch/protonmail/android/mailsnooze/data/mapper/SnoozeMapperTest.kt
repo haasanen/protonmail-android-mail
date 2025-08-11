@@ -91,7 +91,7 @@ class SnoozeMapperTest {
     fun `map proton error to snooze error`() {
         val error = SnoozeErrorRemote.Other(ProtonError.Network)
         assertEquals(
-            SnoozeError.Unknown(DataError.Remote.Http(NetworkError.NoNetwork)),
+            SnoozeError.Other(DataError.Remote.Http(NetworkError.NoNetwork)),
             error.toSnoozeError()
         )
     }
@@ -109,7 +109,7 @@ class SnoozeMapperTest {
     fun `map proton error to unsnooze error`() {
         val error = SnoozeErrorRemote.Other(ProtonError.Network)
         assertEquals(
-            UnsnoozeError.Unknown(DataError.Remote.Http(NetworkError.NoNetwork)),
+            UnsnoozeError.Other(DataError.Remote.Http(NetworkError.NoNetwork)),
             error.toUnsnoozeError()
         )
     }
@@ -118,7 +118,7 @@ class SnoozeMapperTest {
     fun `map remote unsnooze error to snooze error`() {
         val error = SnoozeErrorRemote.Reason(SnoozeErrorReason.SNOOZE_TIME_IN_THE_PAST)
         assertEquals(
-            UnsnoozeError.Unknown(),
+            UnsnoozeError.Other(),
             error.toUnsnoozeError()
         )
     }

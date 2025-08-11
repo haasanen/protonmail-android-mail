@@ -37,7 +37,7 @@ class SnoozeErrorMapperTest {
     @Test
     fun `when map general SnoozeError to UIError`() {
         assertEquals(
-            TextUiModel(R.string.snooze_sheet_error_unable_to_snooze), SnoozeError.Unknown().toUIModel()
+            TextUiModel(R.string.snooze_sheet_error_unable_to_snooze), SnoozeError.Other().toUIModel()
         )
         assertEquals(
             TextUiModel(R.string.snooze_sheet_error_unable_to_snooze), SnoozeError.InvalidSnoozeLocation.toUIModel()

@@ -382,11 +382,11 @@ fun MailboxScreen(
                         actions = SnoozeBottomSheet.Actions(
                             onShowSuccess = {
                                 actions.showSnackbar(SnackbarNormal(it))
-                                viewModel.submit(MailboxViewAction.SnoozeCompleted)
+                                viewModel.submit(MailboxViewAction.SnoozeDismissed)
                             },
                             onShowError = {
                                 actions.showSnackbar(SnackbarError(it))
-                                viewModel.submit(MailboxViewAction.SnoozeCompleted)
+                                viewModel.submit(MailboxViewAction.SnoozeDismissed)
                             }
                         )
                     )

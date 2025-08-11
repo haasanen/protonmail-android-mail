@@ -47,7 +47,7 @@ class MailboxTopAppBarReducer @Inject constructor() {
             is MailboxViewAction.MoveToArchive,
             is MailboxViewAction.MoveToInbox,
             is MailboxViewAction.MoveToSpam,
-            MailboxViewAction.SnoozeCompleted -> currentState.toNewStateForExitSelectionMode()
+            MailboxViewAction.SnoozeDismissed -> currentState.toNewStateForExitSelectionMode()
 
             is MailboxViewAction.ExitSearchMode -> currentState.toNewStateForExitSearchMode()
             is MailboxViewAction.EnterSearchMode -> currentState.toNewStateForEnterSearchMode()

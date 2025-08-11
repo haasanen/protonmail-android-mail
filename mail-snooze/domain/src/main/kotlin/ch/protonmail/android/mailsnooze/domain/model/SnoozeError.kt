@@ -23,10 +23,10 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 sealed interface SnoozeError {
     data object SnoozeIsInThePast : SnoozeError
     data object InvalidSnoozeLocation : SnoozeError
-    data class Unknown(val error: DataError? = null) : SnoozeError
+    data class Other(val error: DataError? = null) : SnoozeError
 }
 
 sealed interface UnsnoozeError {
     data object InvalidSnoozeLocation : UnsnoozeError
-    data class Unknown(val error: DataError? = null) : UnsnoozeError
+    data class Other(val error: DataError? = null) : UnsnoozeError
 }

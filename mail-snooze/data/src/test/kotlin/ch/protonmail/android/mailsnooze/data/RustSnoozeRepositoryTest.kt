@@ -98,7 +98,7 @@ class RustSnoozeRepositoryTest {
 
     @Test
     fun `when getAvailableSnoozeActionsForConversation then returns Result left`() = runTest {
-        val error = SnoozeError.Unknown().left()
+        val error = SnoozeError.Other().left()
         coEvery {
             dataSource.getAvailableSnoozeActionsForConversation(
                 SampleData.userId,
@@ -165,7 +165,7 @@ class RustSnoozeRepositoryTest {
 
     @Test
     fun `when unsnoozeConversations then returns Result error - left`() = runTest {
-        val error = UnsnoozeError.Unknown().left()
+        val error = UnsnoozeError.Other().left()
         coEvery {
             dataSource.unSnoozeConversation(
                 SampleData.userId, SampleData.inputLabelId, SampleData.conversationIds

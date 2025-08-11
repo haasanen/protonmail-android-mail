@@ -162,7 +162,7 @@ class SnoozeOptionsBottomSheetViewModelTest {
                 inputItems,
                 inputSnoozeTime
             )
-        } returns SnoozeError.Unknown().left()
+        } returns SnoozeError.Other().left()
 
         // when
         sut.onAction(inputSnoozeOperation)
@@ -202,7 +202,7 @@ class SnoozeOptionsBottomSheetViewModelTest {
                 labelId,
                 inputItems
             )
-        } returns UnsnoozeError.Unknown().left()
+        } returns UnsnoozeError.Other().left()
 
         // when
         sut.onAction(inputUnSnoozeOperation)

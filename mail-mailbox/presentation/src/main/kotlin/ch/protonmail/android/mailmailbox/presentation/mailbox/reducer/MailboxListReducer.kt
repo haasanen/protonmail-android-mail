@@ -69,7 +69,7 @@ class MailboxListReducer @Inject constructor(
             is MailboxViewAction.MoveToArchive,
             is MailboxViewAction.MoveToSpam,
             is MailboxViewAction.MoveToInbox,
-            is MailboxViewAction.SnoozeCompleted -> reduceExitSelectionMode(currentState)
+            is MailboxViewAction.SnoozeDismissed -> reduceExitSelectionMode(currentState)
 
             is MailboxViewAction.OnOfflineWithData -> reduceOfflineWithData(currentState)
             is MailboxViewAction.OnErrorWithData -> reduceErrorWithData(currentState)

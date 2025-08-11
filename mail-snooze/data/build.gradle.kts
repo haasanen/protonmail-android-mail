@@ -56,7 +56,6 @@ dependencies {
     implementation(project(":mail-snooze:domain"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-session:data"))
-    implementation(project(":mail-message:data"))
     implementation(project(":mail-label:domain"))
     implementation(project(":mail-label:data"))
 

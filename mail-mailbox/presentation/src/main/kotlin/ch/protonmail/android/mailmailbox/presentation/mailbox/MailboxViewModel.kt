@@ -341,7 +341,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.ClearAll -> handleClearAll()
                 is MailboxViewAction.ClearAllConfirmed -> handleClearAllConfirmed(viewAction)
                 is MailboxViewAction.ClearAllDismissed -> emitNewStateFrom(viewAction)
-                is MailboxViewAction.SnoozeCompleted -> handleSnoozeCompletedAction(viewAction)
+                is MailboxViewAction.SnoozeDismissed -> handleSnoozeCompletedAction(viewAction)
                 is MailboxViewAction.RequestSnoozeBottomSheet -> requestSnoozeBottomSheet(viewAction)
                 is MailboxViewAction.SignalMoveToCompleted -> handleMoveToCompleted(viewAction)
                 is MailboxViewAction.SignalLabelAsCompleted -> handleLabelAsCompleted(viewAction)
@@ -1022,7 +1022,7 @@ class MailboxViewModel @Inject constructor(
         emitNewStateFrom(action)
     }
 
-    private fun handleSnoozeCompletedAction(action: MailboxViewAction.SnoozeCompleted) = viewModelScope.launch {
+    private fun handleSnoozeCompletedAction(action: MailboxViewAction.SnoozeDismissed) = viewModelScope.launch {
         emitNewStateFrom(action)
     }
 

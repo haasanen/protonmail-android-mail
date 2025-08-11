@@ -18,6 +18,7 @@
 package ch.protonmail.android.mailsnooze.data
 
 import arrow.core.Either
+import arrow.core.flatten
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
@@ -63,11 +64,9 @@ class RustSnoozeDataSource @Inject constructor(
                 is AvailableSnoozeActionsForConversationResult.Error -> result.v1.toSnoozeError().left()
                 is AvailableSnoozeActionsForConversationResult.Ok -> result.v1.right()
             }
-        }.map { right ->
-            return@withContext right
         }.mapLeft { left ->
-            return@withContext SnoozeError.Unknown(left).left()
-        }
+            return@withContext SnoozeError.Other().left()
+        }.flatten()
     }
 
     suspend fun snoozeConversation(
@@ -91,17 +90,15 @@ class RustSnoozeDataSource @Inject constructor(
 
                 is SnoozeConversationsResult.Ok -> Unit.right().apply {
                     Timber.d(
-                        "rust-snooze: snoozeConversation SUCCESS: labelid $labelId converstionIDs $ids time ${
-                            snoozeTime.epochSeconds.toULong()
-                        } $this"
+                        "rust-snooze: snoozeConversation SUCCESS: labelid $labelId conversationIDs $ids time ${
+                            snoozeTime.epochSeconds
+                        }"
                     )
                 }
             }
-        }.map { right ->
-            return@withContext right
         }.mapLeft { left ->
-            return@withContext SnoozeError.Unknown(left).left()
-        }
+            return@withContext SnoozeError.Other().left()
+        }.flatten()
     }
 
     suspend fun unSnoozeConversation(
@@ -123,14 +120,12 @@ class RustSnoozeDataSource @Inject constructor(
 
                 is UnsnoozeConversationsResult.Ok -> Unit.right().apply {
                     Timber.d(
-                        "rust-snooze: unsnoozeConversation SUCCESS: labelid $labelId converstionIDs $ids"
+                        "rust-snooze: unsnoozeConversation SUCCESS: labelid $labelId conversationIDs $ids"
                     )
                 }
             }
-        }.map { right ->
-            return@withContext right
         }.mapLeft { left ->
-            return@withContext UnsnoozeError.Unknown(left).left()
-        }
+            return@withContext UnsnoozeError.Other().left()
+        }.flatten()
     }
 }

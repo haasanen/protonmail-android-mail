@@ -41,7 +41,7 @@ import kotlin.time.Instant
 import uniffi.proton_mail_uniffi.SnoozeError as SnoozeErrorRemote
 
 fun SnoozeErrorRemote.toSnoozeError(): SnoozeError = when (this) {
-    is SnoozeErrorRemote.Other -> SnoozeError.Unknown(this.v1.toDataError())
+    is SnoozeErrorRemote.Other -> SnoozeError.Other(this.v1.toDataError())
     is SnoozeErrorRemote.Reason -> when (v1) {
         SnoozeErrorReason.SNOOZE_TIME_IN_THE_PAST -> SnoozeError.SnoozeIsInThePast
         SnoozeErrorReason.INVALID_SNOOZE_LOCATION -> SnoozeError.InvalidSnoozeLocation
@@ -51,10 +51,10 @@ fun SnoozeErrorRemote.toSnoozeError(): SnoozeError = when (this) {
 fun ConversationId.toLocalConversationId(): LocalConversationId = LocalConversationId(this.id.toULong())
 
 fun SnoozeErrorRemote.toUnsnoozeError(): UnsnoozeError = when (this) {
-    is SnoozeErrorRemote.Other -> UnsnoozeError.Unknown(this.v1.toDataError())
+    is SnoozeErrorRemote.Other -> UnsnoozeError.Other(this.v1.toDataError())
     is SnoozeErrorRemote.Reason -> when (v1) {
         SnoozeErrorReason.INVALID_SNOOZE_LOCATION -> UnsnoozeError.InvalidSnoozeLocation
-        else -> UnsnoozeError.Unknown(null)
+        else -> UnsnoozeError.Other()
     }
 }
 
