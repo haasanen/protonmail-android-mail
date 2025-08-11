@@ -33,6 +33,7 @@
   <string name="mail_settings_spam_and_custom_filters">Mesaje nedorite și filtre</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Acțiuni automate și sortare</string>
   <string name="mail_settings_privacy_and_security">Intimitate și securitate</string>
+  <string name="mail_settings_fido_keys">Chei de securitate</string>
   <string name="mail_settings_privacy_and_security_hint">Protejare e-mail împotriva urmăririi</string>
   <string name="mail_settings_app_hint">Personalizare aplicație mobilă</string>
   <string name="mail_settings_theme">Tema</string>
@@ -92,9 +93,9 @@
   <string name="mail_settings_swipe_action_archive_title">Arhivă</string>
   <string name="mail_settings_swipe_action_read_title">Necitite</string>
   <string name="mail_settings_swipe_action_spam_title">Nedorite</string>
-  <string name="mail_settings_swipe_action_star_title">Cu stea</string>
+  <string name="mail_settings_swipe_action_star_title">Favorite</string>
   <string name="mail_settings_swipe_action_trash_title">Gunoi</string>
-  <string name="mail_settings_swipe_action_label_as_title">Etichetare ca…</string>
+  <string name="mail_settings_swipe_action_label_as_title">Etichetare cu…</string>
   <string name="mail_settings_swipe_action_move_to_title">Mutare în…</string>
   <string name="mail_settings_swipe_action_none_description">Niciuna</string>
   <string name="mail_settings_swipe_action_archive_description">Mutare în «Arhivă»</string>
@@ -102,7 +103,7 @@
   <string name="mail_settings_swipe_action_spam_description">Mutare în «Nedorite»</string>
   <string name="mail_settings_swipe_action_star_description">Cu stea/Fără stea</string>
   <string name="mail_settings_swipe_action_trash_description">Mutare în «Gunoi»</string>
-  <string name="mail_settings_swipe_action_label_as_description">Etichetare ca…</string>
+  <string name="mail_settings_swipe_action_label_as_description">Etichetare cu…</string>
   <string name="mail_settings_swipe_action_move_to_description">Mutare în…</string>
   <!-- Notification settings -->
   <string name="mail_settings_notifications_title">Notificări instante</string>

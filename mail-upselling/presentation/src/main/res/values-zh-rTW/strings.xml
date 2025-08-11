@@ -21,13 +21,16 @@
   <string name="upselling_button_item_content_description">升級按鈕</string>
   <string name="upselling_close_button_content_description">關閉按鈕</string>
   <!-- Upselling: Mailbox -->
-  <string name="upselling_mailbox_plus_description_override">To unlock more storage and premium features.</string>
+  <string name="upselling_mailbox_plus_description_override">要解鎖更多儲存空間與進階功能.</string>
   <string name="upselling_mailbox_plus_title">升級至 Mail Plus</string>
   <!-- Upselling: Social Proof -->
-  <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
+  <string name="upselling_mailbox_plus_title_social_proof">啟用 Mail Plus</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">限時優惠，隨時可取消。</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Get the best of Mail with this limited time offer</string>
   <string name="upselling_mailbox_plus_promo_title">試用 Mail Plus，為期 %s</string>
+  <string name="upselling_mailbox_plus_promo_cta">Get 1 month for %s</string>
+  <string name="upselling_mailbox_plus_promo_skip">Skip offer</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s for the 1st month, then %s per month</string>
   <!-- Upselling: Contact Groups -->
   <string name="upselling_contact_groups_plus_description_override">Send group emails with ease. Enjoy this and more with Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">將您的聯絡人分組</string>
@@ -49,6 +52,9 @@
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
   <string name="upselling_snooze_plus_title">Bad time for this email?</string>
+  <!-- Upselling - Misc buttons -->
+  <string name="upselling_button_hint">Upgrade for full flexibility</string>
+  <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB 儲存空間</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 GB 儲存空間，10 個電郵位址</string>
@@ -97,16 +103,15 @@
   <string name="upselling_select_plan_month">1 個月</string>
   <!-- Other UI Items -->
   <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
-  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s %s%s unless canceled</string>
-  <string name="upselling_auto_renew_text_promo_short">歡迎優惠。會在 %s %s%s 時自動續約。</string>
-  <string name="upselling_auto_renew_text_standard">Auto-renews at %s %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text_promo_short">Welcome offer. Auto-renews at %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Auto-renews at %s%s unless canceled</string>
   <string name="upselling_social_proof_reviews">2k+ REVIEWS</string>
   <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
   <string name="upselling_discount_tag">儲存 %s%%</string>
   <string name="upselling_month">/月</string>
   <string name="upselling_year">/年</string>
   <string name="upselling_get_button">選用 %s</string>
-  <string name="upselling_get_button_promotional">取得 1 個月的 %s %s</string>
   <plurals name="upselling_month">
     <item quantity="other">%d個月</item>
   </plurals>

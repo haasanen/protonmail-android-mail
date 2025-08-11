@@ -33,6 +33,7 @@
   <string name="mail_settings_spam_and_custom_filters">Roskaposti ja suodattimet</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Automaattiset toiminnot ja lajittelu</string>
   <string name="mail_settings_privacy_and_security">Yksityisyys ja suojaus</string>
+  <string name="mail_settings_fido_keys">Security keys</string>
   <string name="mail_settings_privacy_and_security_hint">Sähköpostin seurantasuojaus</string>
   <string name="mail_settings_app_hint">Mobiilisovelluksen mukautukset</string>
   <string name="mail_settings_theme">Teema</string>

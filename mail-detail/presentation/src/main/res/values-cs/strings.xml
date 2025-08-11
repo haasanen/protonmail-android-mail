@@ -139,6 +139,7 @@
   <string name="message_cancel_schedule_send_dialog_title">Upravit a znovu naplánovat</string>
   <string name="message_cancel_schedule_send_dialog_message">Tato zpráva bude přesunuta do konceptů, abyste ji mohli upravit. Budete muset znovu naplánovat, kdy bude odeslána.</string>
   <!-- RSVP widget -->
+  <string name="rsvp_widget_no_title">(bez názvu)</string>
   <string name="rsvp_widget_attendance_optional">(Účast není povinná)</string>
   <string name="rsvp_widget_attending">Zúčastníte se?</string>
   <string name="rsvp_widget_yes">Ano</string>
@@ -155,4 +156,22 @@
     <item quantity="many">%1$d účastníků</item>
     <item quantity="other">%1$d účastníků</item>
   </plurals>
+  <string name="rsvp_widget_happening_now">Probíhá <b>právě teď</b></string>
+  <string name="rsvp_widget_event_ended">Událost <b>skončila</b></string>
+  <string name="rsvp_widget_event_cancelled">Událost <b>zrušena</b></string>
+  <string name="rsvp_widget_invite_outdated">Tato pozvánka je zastaralá</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">Událost zrušena. Tato pozvánka je zastaralá.</string>
+  <string name="rsvp_widget_offline_invite_outdated">Jste offline. Zobrazené informace mohou být zastaralé.</string>
+  <string name="rsvp_widget_address_is_incorrect">Vaše adresa nemůže být použita k odpovědi. Aktualizujte prosím informace o svém účtu.</string>
+  <string name="rsvp_widget_user_is_organizer">Jste organizátor.</string>
+  <string name="rsvp_widget_event_does_not_exist">Tato událost není ve vašem kalendáři, takže na ni nemůžete odpovědět.</string>
+  <string name="rsvp_widget_today">Dnes</string>
+  <string name="rsvp_widget_tomorrow">Zítra</string>
+  <string name="rsvp_widget_invite_details_unavailable">Detaily pozvánky nejsou dostupné</string>
+  <string name="rsvp_widget_could_not_load">Nemohli jsme načíst informace.\nZkuste to prosím znovu.</string>
+  <string name="rsvp_widget_button_retry">Zkusit znovu</string>
+  <string name="rsvp_widget_error_answering">Při odpovědi na tuto událost došlo k chybě</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Otevřít v Proton Calendar</string>
+  <string name="rsvp_widget_copy_address">Kopírovat adresu</string>
+  <string name="rsvp_widget_message">Zpráva</string>
 </resources>

@@ -26,8 +26,11 @@
   <!-- Upselling: Social Proof -->
   <string name="upselling_mailbox_plus_title_social_proof">Mail Plus starten</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">Befristetes Angebot, jederzeit kündbar.</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Hole dir das Beste aus Mail mit diesem zeitlich begrenzten Angebot</string>
   <string name="upselling_mailbox_plus_promo_title">Mail Plus für %s ausprobieren</string>
+  <string name="upselling_mailbox_plus_promo_cta">Hole dir 1 Monat für %s</string>
+  <string name="upselling_mailbox_plus_promo_skip">Angebot überspringen</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s im ersten Monat, danach %s pro Monat</string>
   <!-- Upselling: Contact Groups -->
   <string name="upselling_contact_groups_plus_description_override">Gruppen-E-Mails ganz einfach versenden. Genieße diese und weitere Vorteile mit Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Gruppiere deine Kontakte</string>
@@ -49,6 +52,9 @@
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">Zurückstellen – und lasse sie dir verzögert zustellen. Genießen Sie dies und mehr mit Mail Plus.</string>
   <string name="upselling_snooze_plus_title">Ungünstiger Zeitpunkt für diese E-Mail?</string>
+  <!-- Upselling - Misc buttons -->
+  <string name="upselling_button_hint">Umsteigen für volle Flexibilität</string>
+  <string name="upselling_upgrade_plan_generic">Es wird ein kostenpflichtiges Proton Mail-Abonnement benötigt, um auf diese Funktion zugreifen zu können.</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB Speicher</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 GB Speicherplatz, 10 E-Mail-Adressen</string>
@@ -97,16 +103,15 @@
   <string name="upselling_select_plan_month">1 Monat</string>
   <!-- Other UI Items -->
   <string name="upselling_auto_renew_text">Verlängert sich automatisch zum gleichen Preis und zu den gleichen Bedingungen, wenn es nicht gekündigt wird.</string>
-  <string name="upselling_auto_renew_text_promo">Willkommensangebot. Automatische Verlängerung um %s %s%s, wenn es nicht gekündigt wird.</string>
-  <string name="upselling_auto_renew_text_promo_short">Willkommensangebot. Verlängert sich automatisch für %s %s %s.</string>
-  <string name="upselling_auto_renew_text_standard">Wird automatisch am %s %s%s verlängert, sofern es nicht gekündigt wird.</string>
+  <string name="upselling_auto_renew_text_promo">Willkommensangebot. Verlängert sich automatisch für %s%s, sofern nicht gekündigt</string>
+  <string name="upselling_auto_renew_text_promo_short">Willkommensangebot. Verlängert sich automatisch für %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Verlängert sich automatisch für %s%s, sofern nicht gekündigt</string>
   <string name="upselling_social_proof_reviews">Über 2.000 Bewertungen</string>
   <string name="upselling_description_social_proof">Umsteigen auf die Erfahrung, von der Millionen Abonnenten schwärmen.</string>
   <string name="upselling_discount_tag">SPARE %s%%</string>
   <string name="upselling_month">/Monat</string>
   <string name="upselling_year">/Jahr</string>
   <string name="upselling_get_button">%s holen</string>
-  <string name="upselling_get_button_promotional">Hole dir 1 Monat für %s %s</string>
   <plurals name="upselling_month">
     <item quantity="one">%d Monat</item>
     <item quantity="other">%d Monate</item>

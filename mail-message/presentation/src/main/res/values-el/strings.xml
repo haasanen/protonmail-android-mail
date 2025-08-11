@@ -73,14 +73,4 @@
   <string name="contact_actions_block_contact_description">Αποκλεισμός αυτής της επαφής</string>
   <string name="contact_actions_view_contact_details">Προβολή στοιχείων επαφής</string>
   <string name="contact_actions_view_contact_details_description">Προβολή λεπτομερειών της επαφής</string>
-  <!-- Snooze Bottom Sheet -->
-  <string name="snooze_sheet_option_next_week">Επόμενη εβδομάδα</string>
-  <string name="snooze_sheet_option_later_this_week">Αργότερα αυτή την εβδομάδα</string>
-  <string name="snooze_sheet_option_tomorrow">Αύριο</string>
-  <string name="snooze_sheet_option_this_weekend">Αυτό το σαββατοκύριακο</string>
-  <string name="snooze_sheet_option_custom">Προσαρμοσμένο</string>
-  <string name="snooze_sheet_option_custom_detail">Επιλέξτε ημερομηνία και ώρα</string>
-  <string name="snooze_sheet_option_upsell_detail">Λειτουργία επί πληρωμής</string>
-  <string name="snooze_sheet_snooze_title">Αναβολή μέχρι</string>
-  <string name="snooze_sheet_option_unsnooze">Αφαίρεση αναβολής</string>
 </resources>

@@ -42,7 +42,9 @@
   <string name="auth_account_details">Wpisz szczegóły konta Proton.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Wystąpił problem z logowaniem. Spróbuj ponownie.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Wymagana jest weryfikacja antyspamowa.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Nazwa użytkownika lub hasło jest nieprawidłowe. Spróbuj ponownie.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Dane logowania są nieprawidłowe. Spróbuj ponownie.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Uwierzytelnianie dwustopniowe jest nieobsługiwane.</string>
+  <string name="auth_login_general_error">Wystąpił błąd.</string>
   <string name="auth_second_factor_title">Uwierzytelnianie dwustopniowe</string>
   <string name="auth_second_factor_subtitle">Na koncie masz skonfigurowane wiele metod uwierzytelniania dwustopniowego. Wybierz metodę potwierdzenia tożsamości.</string>
   <string name="auth_second_factor_tab_security_key">Klucz bezpieczeństwa</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Użyj kodu uwierzytelniającego</string>
   <string name="auth_second_factor_insert_security_key">Użyj klucza bezpieczeństwa powiązanego z kontem Proton.</string>
   <string name="auth_second_factor_insert_security_key_link">Dowiedz się więcej</string>
+  <string name="auth_second_factor_incorrect_code">Kod jest nieprawidłowy. Spróbuj ponownie.</string>
   <string name="auth_two_pass_title">Odblokuj swoją skrzynkę pocztową</string>
   <string name="auth_two_pass_input_label">Hasło skrzynki pocztowej</string>
   <string name="auth_two_pass_unlock">Odblokuj</string>
@@ -106,7 +109,6 @@
   <string name="auth_signup_recovery_email_validation_error">Weryfikacja adresu e-mail nie powiodła się</string>
   <string name="auth_signup_recovery_phone_validation_error">Weryfikacja numeru telefonu nie powiodła się</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Hasła nie pasują do siebie. Spróbuj ponownie.</string>
-  <string name="auth_signup_generic_error">Coś poszło nie tak. Spróbuj ponownie.</string>
   <string name="auth_signup_countries_search">Szukaj kraju</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Nie można skonfigurować użytkownika.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Nie można skonfigurować adresu.</string>
@@ -118,6 +120,20 @@
   <string name="auth_fido_manage_security_keys">Zarządzaj kluczami bezpieczeństwa</string>
   <string name="auth_fido_add_security_key">Dodaj klucz bezpieczeństwa</string>
   <string name="auth_fido_security_keys_learn_more">Dowiedz się więcej</string>
+  <string name="auth_user_check_delinquent_error">Twoje konto jest obecnie zawieszone z powodu zaległych faktur.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="one">Możesz dodać tylko 1 darmowe konto Proton.</item>
+    <item quantity="few">Możesz dodać tylko %d darmowe konta Proton.</item>
+    <item quantity="many">Możesz dodać tylko %d darmowych kont Proton.</item>
+    <item quantity="other">Możesz dodać tylko %d darmowych kont Proton.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Coś poszło nie tak. Spróbuj ponownie.</string>
+  <string name="auth_fido_config_error">Wystąpił błąd podczas pobierania przechowywanych kluczy.</string>
+  <string name="auth_fido_reading_key_error">Wystąpił błąd podczas odczytywania klucza bezpieczeństwa.</string>
+  <string name="auth_fido_submit_key_error">Wystąpił błąd podczas przesyłania danych klucza.</string>
+  <string name="auth_fido_reading_key_progress">Odczytywanie klucza bezpieczeństwa.</string>
+  <string name="auth_fido_authenticating_in_progress">Uwierzytelnianie kluczem bezpieczeństwa.</string>
+  <string name="auth_fido_security_key">Klucz bezpieczeństwa</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="one">Hasło musi zawierać co najmniej 1 znak</item>
     <item quantity="few">Hasło musi zawierać co najmniej %1$s znaki</item>

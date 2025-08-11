@@ -26,8 +26,11 @@
   <!-- Upselling: Social Proof -->
   <string name="upselling_mailbox_plus_title_social_proof">Přejít na Mail Plus</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">Časově omezená nabídka, zrušit lze kdykoli.</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Získejte nejlepší funkce Mail s touto časově omezenou nabídkou</string>
   <string name="upselling_mailbox_plus_promo_title">Vyzkoušejte Mail Plus za %s</string>
+  <string name="upselling_mailbox_plus_promo_cta">Získejte 1 měsíc za %s</string>
+  <string name="upselling_mailbox_plus_promo_skip">Přeskočit nabídku</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s za 1. měsíc, poté %s měsíčně</string>
   <!-- Upselling: Contact Groups -->
   <string name="upselling_contact_groups_plus_description_override">Snadné odesílání skupinových e-mailů. To a mnohem více si můžete užít s aplikací Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Seskupujte své kontakty</string>
@@ -49,6 +52,9 @@
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">Odložte e-mail — a ponechte doručení na později. To a mnohem více si můžete užít s aplikací Mail Plus.</string>
   <string name="upselling_snooze_plus_title">Nevhodný čas pro odeslání e-mailu?</string>
+  <!-- Upselling - Misc buttons -->
+  <string name="upselling_button_hint">Navyšte tarif pro plnou flexibilitu</string>
+  <string name="upselling_upgrade_plan_generic">Pro přístup k této funkci potřebujete předplatné Proton Mail</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB prostoru</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 GB úložiště, 10 e-mailových adres</string>
@@ -97,16 +103,15 @@
   <string name="upselling_select_plan_month">1 měsíc</string>
   <!-- Other UI Items -->
   <string name="upselling_auto_renew_text">Automatické obnovení za stejnou cenu a za stejných podmínek, pokud není zrušeno</string>
-  <string name="upselling_auto_renew_text_promo">Uvítací nabídka. Automaticky se obnoví %s %s%s, pokud nebude zrušena</string>
-  <string name="upselling_auto_renew_text_promo_short">Uvítací nabídka. Obnovuje se automaticky %s %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Automaticky se obnoví %s %s%s, pokud nebude zrušena</string>
-  <string name="upselling_social_proof_reviews">2k+ RECENZÍ</string>
+  <string name="upselling_auto_renew_text_promo">Uvítací nabídka. Automaticky se obnoví %s%s, pokud nebude zrušena</string>
+  <string name="upselling_auto_renew_text_promo_short">Uvítací nabídka. Automaticky se obnoví %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Automaticky se obnoví %s%s, pokud nebude zrušena</string>
+  <string name="upselling_social_proof_reviews">2000+ RECENZÍ</string>
   <string name="upselling_description_social_proof">Navýšením získáte zážitek, o kterém básní miliony předplatitelů.</string>
   <string name="upselling_discount_tag">UŠETŘETE %s%%</string>
   <string name="upselling_month">/měsíčně</string>
   <string name="upselling_year">/ročně</string>
   <string name="upselling_get_button">Získejte %s</string>
-  <string name="upselling_get_button_promotional">Získejte 1 měsíc za %s %s</string>
   <plurals name="upselling_month">
     <item quantity="one">%d měsíc</item>
     <item quantity="few">%d měsíce</item>

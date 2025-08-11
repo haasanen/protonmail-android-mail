@@ -21,34 +21,40 @@
   <string name="upselling_button_item_content_description">Кнопка покращення</string>
   <string name="upselling_close_button_content_description">Кнопка закриття</string>
   <!-- Upselling: Mailbox -->
-  <string name="upselling_mailbox_plus_description_override">To unlock more storage and premium features.</string>
+  <string name="upselling_mailbox_plus_description_override">Щоб отримати більше сховище та преміальні функції.</string>
   <string name="upselling_mailbox_plus_title">Передплатити Mail Plus</string>
   <!-- Upselling: Social Proof -->
-  <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
+  <string name="upselling_mailbox_plus_title_social_proof">Спробувати Mail Plus</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">Обмежена пропозиція, скасувати можна будь-коли.</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Отримайте найкраще від Mail з цією обмеженою пропозицією</string>
   <string name="upselling_mailbox_plus_promo_title">Спробуйте Mail Plus для %s</string>
+  <string name="upselling_mailbox_plus_promo_cta">Отримайте 1 місяць за %s</string>
+  <string name="upselling_mailbox_plus_promo_skip">Пропустити пропозицію</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s за 1-й місяць, потім %s щомісяця</string>
   <!-- Upselling: Contact Groups -->
-  <string name="upselling_contact_groups_plus_description_override">Send group emails with ease. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_description_override">Надсилайте групові листи з легкістю. Насолоджуйтесь цим та багатьом іншим із Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Створюйте групи контактів</string>
   <!-- Upselling: Labels -->
-  <string name="upselling_labels_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_labels_plus_description_override">Створіть усе необхідне, щоб залишатися організованими. Отримайте це та багато іншого з Mail Plus. </string>
   <string name="upselling_labels_plus_title">Потрібно більше міток чи тек?</string>
   <!-- Upselling: Folders -->
-  <string name="upselling_folders_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_folders_plus_description_override">Створіть усе необхідне, щоб залишатися організованими. Отримайте це та багато іншого з Mail Plus. </string>
   <string name="upselling_folders_plus_title">Потрібно більше міток чи тек?</string>
   <!-- Upselling: Mobile Signature -->
-  <string name="upselling_mobile_signature_plus_description_override">Make your mobile signature your own. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_mobile_signature_plus_title">Personalize your signature</string>
+  <string name="upselling_mobile_signature_plus_description_override">Зробіть власний мобільний підпис. Насолоджуйтесь цим та багато іншим із Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_title">Персоналізуйте свій підпис</string>
   <!-- Upselling: Auto Delete -->
-  <string name="upselling_auto_delete_plus_description_override">Deletes spam and trash after 30 days. Get this and more with Mail Plus.</string>
-  <string name="upselling_auto_delete_plus_title">Automated trash removal</string>
+  <string name="upselling_auto_delete_plus_description_override">Видаляє спам і смітник через 30 днів. Отримайте це та більше з Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_title">Автовидалення зі смітника</string>
   <!-- Upselling: Schedule Send -->
-  <string name="upselling_schedule_send_plus_description_override">Customize when an email will be sent. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_schedule_send_plus_title">Schedule now, send later</string>
+  <string name="upselling_schedule_send_plus_description_override">Налаштуйте, коли лист буде надіслано. Насолоджуйтесь цим та багато іншим із Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_title">Заплануйте зараз, надішліть пізніше</string>
   <!-- Upselling: Snooze -->
-  <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_snooze_plus_title">Bad time for this email?</string>
+  <string name="upselling_snooze_plus_description_override">Відкладіть лист — і отримайте його пізніше. Насолоджуйтесь цим та багато іншим із Mail Plus.</string>
+  <string name="upselling_snooze_plus_title">Невдалий час для цього листа?</string>
+  <!-- Upselling - Misc buttons -->
+  <string name="upselling_button_hint">Покращте для повної гнучкості</string>
+  <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 ГБ сховища</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 ГБ сховища, 10 поштових адрес</string>
@@ -92,21 +98,20 @@
   <string name="upselling_comparison_table_unlimited_folders_labels">Необмежена кількість тек і міток</string>
   <string name="upselling_comparison_table_priority_support">Пріоритетна підтримка клієнтів</string>
   <!-- Rectangular plan buttons -->
-  <string name="upselling_select_plan">Choose your plan</string>
-  <string name="upselling_select_plan_year">12 months</string>
+  <string name="upselling_select_plan">Виберіть тарифний план</string>
+  <string name="upselling_select_plan_year">12 місяців</string>
   <string name="upselling_select_plan_month">1 місяць</string>
   <!-- Other UI Items -->
-  <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
-  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s %s%s unless canceled</string>
-  <string name="upselling_auto_renew_text_promo_short">Вітальна пропозиція. Автоматично поновлюється за %s %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Auto-renews at %s %s%s unless canceled</string>
-  <string name="upselling_social_proof_reviews">2k+ REVIEWS</string>
-  <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
+  <string name="upselling_auto_renew_text">Автопоновлення за тією ж ціною та умовами доки не буде скасовано</string>
+  <string name="upselling_auto_renew_text_promo">Вітальна пропозиція. Автопоновлення через %s%s, якщо не скасовано</string>
+  <string name="upselling_auto_renew_text_promo_short">Вітальна пропозиція. Автопоновлення за %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Автопоновлення через %s%s, якщо не скасовано</string>
+  <string name="upselling_social_proof_reviews">ПОНАД 2 ТИС. ВІДГУКІВ</string>
+  <string name="upselling_description_social_proof">Отримайте покращений досвід, яким захоплюються мільйони підписників.</string>
   <string name="upselling_discount_tag">ЗАОЩАДЬТЕ %s%%</string>
   <string name="upselling_month">/місяць</string>
   <string name="upselling_year">/рік</string>
   <string name="upselling_get_button">Отримати %s</string>
-  <string name="upselling_get_button_promotional">Отримайте 1 місяць за %s %s</string>
   <plurals name="upselling_month">
     <item quantity="one">%d місяць</item>
     <item quantity="few">%d місяці</item>

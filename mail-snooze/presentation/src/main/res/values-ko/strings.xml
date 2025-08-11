@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Snooze Bottom Sheet -->
+  <string name="snooze_sheet_option_next_week">다음 주</string>
+  <string name="snooze_sheet_option_later_this_week">이번 주 이내</string>
+  <string name="snooze_sheet_option_tomorrow">내일</string>
+  <string name="snooze_sheet_option_this_weekend">이번 주말</string>
+  <string name="snooze_sheet_option_custom">사용자 지정</string>
+  <string name="snooze_sheet_option_custom_detail">날짜 및 시간 선택</string>
+  <string name="snooze_sheet_option_upsell_detail">유료 기능</string>
+  <string name="snooze_sheet_snooze_title">다음 기간까지 방해 금지</string>
+  <string name="snooze_sheet_option_unsnooze">방해 금지 해제</string>
+</resources>

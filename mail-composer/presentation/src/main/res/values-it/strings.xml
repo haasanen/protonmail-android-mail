@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Password del messaggio</string>
   <string name="set_message_password_label_repeat">Conferma della password</string>
   <string name="set_message_password_label_hint">Suggerimento per la password (opzionale)</string>
-  <string name="set_message_password_supporting_text">Password compresa tra 4 e 21 caratteri</string>
-  <string name="set_message_password_supporting_error_text">Inserisci una password compresa tra 4 e 21 caratteri</string>
+  <string name="set_message_password_supporting_text">8 - 21 caratteri</string>
+  <string name="set_message_password_supporting_error_text">Inserisci una password compresa tra 8 e 21 caratteri</string>
   <string name="set_message_password_supporting_text_repeat">Password confermata</string>
   <string name="set_message_password_supporting_error_text_repeat">Conferma correttamente la password</string>
   <string name="set_message_password_button_show">Mostra la password</string>
@@ -124,6 +124,7 @@
   <string name="composer_schedule_send_tomorrow_title">Domani</string>
   <string name="composer_schedule_send_monday_title">Lunedì</string>
   <string name="composer_schedule_send_custom_title">Personalizzato</string>
+  <string name="composer_schedule_send_custom_upsell_title">Data e orario personalizzato</string>
   <string name="composer_schedule_send_custom_description">Scegli la data e l\'orario</string>
   <string name="composer_error_send_message">Invio del messaggio non riuscito</string>
   <string name="composer_schedule_send_previously_set">Impostato precedentemente</string>
@@ -133,9 +134,10 @@
   <string name="composer_schedule_send_dialog_enter_time">Inserisci l\'orario</string>
   <string name="composer_change_sender_title">Da</string>
   <string name="composer_error_change_sender_failed_getting_addresses">Caricamento degli indirizzi email non riuscito. Cambio dell\'indirizzo mittente non riuscito.</string>
-  <string name="composer_change_sender_invalid_address">Indirizzo email non valido per l\'invio</string>
+  <string name="composer_change_sender_invalid_address">Invio con l\'indirizzo email attuale non valido</string>
   <string name="composer_change_sender_unexpected_failure">Cambio dell\'indirizzo mittente non riuscito</string>
   <string name="composer_change_sender_error_refreshing_body">Aggiornamento del corpo del messaggio non riuscito. Verifica la validità della firma.</string>
   <string name="composer_loading_attachments_error">Caricamento degli allegati non riuscito</string>
   <string name="composer_attachment_upload_error_retry">Caricamento di alcuni allegati non riuscito</string>
+  <string name="composer_external_encryption_unexpected_error">Errore imprevisto %s</string>
 </resources>

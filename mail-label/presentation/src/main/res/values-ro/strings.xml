@@ -20,7 +20,7 @@
   <string name="label_title_inbox">Primite</string>
   <string name="label_title_drafts">Ciorne</string>
   <string name="label_title_sent">Trimise</string>
-  <string name="label_title_starred">Cu stea</string>
+  <string name="label_title_starred">Favorite</string>
   <string name="label_title_archive">Arhivă</string>
   <string name="label_title_spam">Nedorite</string>
   <string name="label_title_trash">Gunoi</string>

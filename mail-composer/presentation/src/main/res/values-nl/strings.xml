@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Wachtwoord van bericht</string>
   <string name="set_message_password_label_repeat">Wachtwoord herhalen</string>
   <string name="set_message_password_label_hint">Wachtwoordhint (Optioneel)</string>
-  <string name="set_message_password_supporting_text">4 tot 21 tekens lang</string>
-  <string name="set_message_password_supporting_error_text">Het wachtwoord moet tussen de 4 en 21 tekens lang zijn</string>
+  <string name="set_message_password_supporting_text">8 tot 21 tekens lang</string>
+  <string name="set_message_password_supporting_error_text">Het wachtwoord moet tussen de 8 en 21 tekens lang zijn</string>
   <string name="set_message_password_supporting_text_repeat">Wachtwoorden moeten overeenkomen</string>
   <string name="set_message_password_supporting_error_text_repeat">De wachtwoorden komen niet overeen.</string>
   <string name="set_message_password_button_show">Toon wachtwoord</string>
@@ -124,6 +124,7 @@
   <string name="composer_schedule_send_tomorrow_title">Morgen</string>
   <string name="composer_schedule_send_monday_title">Maandag</string>
   <string name="composer_schedule_send_custom_title">Aangepast</string>
+  <string name="composer_schedule_send_custom_upsell_title">Custom date and time</string>
   <string name="composer_schedule_send_custom_description">Kies tijd en datum</string>
   <string name="composer_error_send_message">Fout bij verzenden bericht</string>
   <string name="composer_schedule_send_previously_set">Eerder ingesteld</string>
@@ -138,4 +139,5 @@
   <string name="composer_change_sender_error_refreshing_body">Het vernieuwen van de inhoud na het wijzigen van de afzender is mislukt. De handtekening is mogelijk verouderd.</string>
   <string name="composer_loading_attachments_error">Bijlagen ophalen mislukt</string>
   <string name="composer_attachment_upload_error_retry">Sommige bijlagen konden niet worden geüpload. Probeer het opnieuw.</string>
+  <string name="composer_external_encryption_unexpected_error">Onverwachte fout %s. Probeer opnieuw.</string>
 </resources>

@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="payment_error_title">Algo deu errado</string>
-  <string name="payment_error_description">Não conseguimos carregar esta página. Atualize a página ou verifique sua conexão com a ‘internet’.</string>
+  <string name="payment_error_description">Não conseguimos carregar esta página. Atualize a página ou verifique sua conexão com a internet.</string>
   <string name="payment_purchase_button_get">Obter %1$s</string>
   <string name="payment_purchase_button_subscribed">Inscreveu-se em %1$s</string>
   <string name="payment_purchase_button_product_not_found">Produto não encontrado na Loja</string>

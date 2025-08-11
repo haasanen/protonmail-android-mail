@@ -135,6 +135,7 @@
   <string name="message_cancel_schedule_send_dialog_title">Düzenle ve yeniden zamanla</string>
   <string name="message_cancel_schedule_send_dialog_message">Bu ileti, düzenleyebilmeniz için Taslaklar altına taşınacak. Gönderimini yeniden zamanlamanız gerekecek.</string>
   <!-- RSVP widget -->
+  <string name="rsvp_widget_no_title">(başlıksız)</string>
   <string name="rsvp_widget_attendance_optional">(Katılım isteğe bağlı)</string>
   <string name="rsvp_widget_attending">Katılıyor musunuz?</string>
   <string name="rsvp_widget_yes">Evet</string>
@@ -149,4 +150,22 @@
     <item quantity="one">%1$d katılımcı</item>
     <item quantity="other">%1$d katılımcı</item>
   </plurals>
+  <string name="rsvp_widget_happening_now"><b>Şimdi</b> gerçekleşiyor</string>
+  <string name="rsvp_widget_event_ended">Etkinlik <b>sona erdi</b></string>
+  <string name="rsvp_widget_event_cancelled">Etkinlik <b>iptal edildi</b></string>
+  <string name="rsvp_widget_invite_outdated">Davetin süresi geçmiş</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">Etkinlik iptal edildi. Bu davetin süresi geçmiş.</string>
+  <string name="rsvp_widget_offline_invite_outdated">Çevrim dışısınız. Görüntülenen bilgiler güncel olmayabilir.</string>
+  <string name="rsvp_widget_address_is_incorrect">Adresiniz yanıtlamak için kullanılamaz. Lütfen hesap bilgilerinizi güncelleyin.</string>
+  <string name="rsvp_widget_user_is_organizer">Düzenleyici sizsiniz.</string>
+  <string name="rsvp_widget_event_does_not_exist">Bu etkinlik takviminizde olmadığından yanıtlayamazsınız.</string>
+  <string name="rsvp_widget_today">Bugün</string>
+  <string name="rsvp_widget_tomorrow">Yarın</string>
+  <string name="rsvp_widget_invite_details_unavailable">Davet ayrıntıları kullanılamıyor</string>
+  <string name="rsvp_widget_could_not_load">Bilgiler yüklenemedi.\nLütfen yeniden deneyin.</string>
+  <string name="rsvp_widget_button_retry">Yeniden dene</string>
+  <string name="rsvp_widget_error_answering">Bu etkinlik yanıtlanırken bir sorun çıktı.</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Proton Calendar ile aç</string>
+  <string name="rsvp_widget_copy_address">Adresi kopyala</string>
+  <string name="rsvp_widget_message">İleti</string>
 </resources>

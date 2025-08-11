@@ -26,8 +26,11 @@
   <!-- Upselling: Social Proof -->
   <string name="upselling_mailbox_plus_title_social_proof">Mail Plus tarifesini başlatın</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">Sınırlı süreli teklif, istediğiniz zaman iptal edebilirsiniz.</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Bu sınırlı süreli teklifle en iyi Mail özelliklerinden yararlanın</string>
   <string name="upselling_mailbox_plus_promo_title">Mail Plus tarifesini %s ile deneyin</string>
+  <string name="upselling_mailbox_plus_promo_cta">1 ay için %s ödeyin</string>
+  <string name="upselling_mailbox_plus_promo_skip">Teklifi atla</string>
+  <string name="upselling_mailbox_plus_promo_renewal">İlk ay için %s, sonraki aylar için %s</string>
   <!-- Upselling: Contact Groups -->
   <string name="upselling_contact_groups_plus_description_override">Grup e-postalarını kolayca gönderin. Mail Plus ile bunun gibi diğer özelliklerin tadını çıkarın.</string>
   <string name="upselling_contact_groups_plus_title">Kişilerinizi gruplayın</string>
@@ -49,6 +52,9 @@
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">Erteleyin. Zamanı geldiğinde teslim edilsin. Mail Plus ile benzer özelliklerin tadını çıkarın.</string>
   <string name="upselling_snooze_plus_title">Bu e-postayı göndermek için uygun bir zaman değil mi?</string>
+  <!-- Upselling - Misc buttons -->
+  <string name="upselling_button_hint">Tam esneklik için tarifenizi yükseltin</string>
+  <string name="upselling_upgrade_plan_generic">Bu özelliğe erişmek için ücretli bir Proton Mail aboneliğiniz olmalıdır</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB depolama alanı</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 GB depolama alanı, 10 e-posta adresi</string>
@@ -97,16 +103,15 @@
   <string name="upselling_select_plan_month">1 ay</string>
   <!-- Other UI Items -->
   <string name="upselling_auto_renew_text">İptal edilmediği sürece aynı fiyat ve koşullarla otomatik olarak yenilenir</string>
-  <string name="upselling_auto_renew_text_promo">Karşılama teklifi. İptal edilmedikçe %s %s%s zamanında otomatik olarak yenilenir</string>
-  <string name="upselling_auto_renew_text_promo_short">Karşılama teklifi. Otomatik polarak %s %s%s zamanında yenilenir.</string>
-  <string name="upselling_auto_renew_text_standard">İptal edilmedikçe %s %s%s zamanında otomatik olarak yenilenir</string>
+  <string name="upselling_auto_renew_text_promo">Karşılama teklifi. İptal edilmedikçe %s%s zamanında otomatik olarak yenilenir</string>
+  <string name="upselling_auto_renew_text_promo_short">Karşılama teklifi. Otomatik olarak %s%s zamanında yenilenir.</string>
+  <string name="upselling_auto_renew_text_standard">İptal edilmedikçe %s%s zamanında otomatik olarak yenilenir</string>
   <string name="upselling_social_proof_reviews">2 bin üzerinde YORUM</string>
   <string name="upselling_description_social_proof">Milyonlarca abonenin severek kullandığı deneyime yükseltin.</string>
   <string name="upselling_discount_tag">%s%% indirim</string>
   <string name="upselling_month">/ay</string>
   <string name="upselling_year">/yıl</string>
   <string name="upselling_get_button">%s alın</string>
-  <string name="upselling_get_button_promotional">%s %s ile 1 aylık alın</string>
   <plurals name="upselling_month">
     <item quantity="one">%d ay</item>
     <item quantity="other">%d ay</item>

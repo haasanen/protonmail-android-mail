@@ -42,7 +42,9 @@
   <string name="auth_account_details">Ange dina kontodetaljer för Proton.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problem att logga in dig. Försök igen.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Mänsklig verifiering krävs.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Felaktigt användarnamn eller lösenord. Försök igen.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Felaktiga inloggningsuppgifter. Försök igen.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Tvåfaktorsautentisering stöds inte.</string>
+  <string name="auth_login_general_error">Ett fel uppstod.</string>
   <string name="auth_second_factor_title">Tvåfaktorsautentisering</string>
   <string name="auth_second_factor_subtitle">Ditt konto har flera 2FA-mekanismer konfigurerade. Välj hur du vill bekräfta din identitet.</string>
   <string name="auth_second_factor_tab_security_key">Säkerhetsnyckel</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Använd tvåfaktorskod</string>
   <string name="auth_second_factor_insert_security_key">Visa en säkerhetsnyckel länkat till ditt Proton-konto. </string>
   <string name="auth_second_factor_insert_security_key_link">Lär dig mer</string>
+  <string name="auth_second_factor_incorrect_code">Felaktig kod. Försök igen.</string>
   <string name="auth_two_pass_title">Lås upp din brevlåda</string>
   <string name="auth_two_pass_input_label">Lösenord för brevlåda</string>
   <string name="auth_two_pass_unlock">Lås upp</string>
@@ -106,7 +109,6 @@
   <string name="auth_signup_recovery_email_validation_error">E-postvalidering misslyckades</string>
   <string name="auth_signup_recovery_phone_validation_error">Telefonnummervalidering misslyckades</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Lösenorden matchar inte. Försök igen.</string>
-  <string name="auth_signup_generic_error">Något gick fel. Försök igen.</string>
   <string name="auth_signup_countries_search">Sök land</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Kunde inte ställa in användaren.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Kunde inte ställa in adressen.</string>
@@ -118,6 +120,18 @@
   <string name="auth_fido_manage_security_keys">Hantera säkerhetsnycklar</string>
   <string name="auth_fido_add_security_key">Lägg till säkerhetsnyckel</string>
   <string name="auth_fido_security_keys_learn_more">Lär dig mer</string>
+  <string name="auth_user_check_delinquent_error">Ditt konto är för närvarande pausat på grund av en förfallen faktura.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="one">Endast ett gratis Proton-konto är tillåtet.</item>
+    <item quantity="other">Endast %d gratis Proton-konton är tillåtna.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Något gick fel. Försök igen.</string>
+  <string name="auth_fido_config_error">Fel vid hämtning av lagrade nycklar.</string>
+  <string name="auth_fido_reading_key_error">Fel vid läsning av säkerhetsnyckel.</string>
+  <string name="auth_fido_submit_key_error">Error submitting key data.</string>
+  <string name="auth_fido_reading_key_progress">Läser säkerhetsnyckel.</string>
+  <string name="auth_fido_authenticating_in_progress">Autentiserar med säkerhetsnyckel.</string>
+  <string name="auth_fido_security_key">Säkerhetsnyckel</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="one">Lösenord måste innehålla minst 1 tecken</item>
     <item quantity="other">Lösenord måste innehålla minst %1$s tecken</item>

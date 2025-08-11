@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Palavra-passe da mensagem</string>
   <string name="set_message_password_label_repeat">Repita a palavra-passe</string>
   <string name="set_message_password_label_hint">Dica da palavra-passe (opcional)</string>
-  <string name="set_message_password_supporting_text">4 a 21 carateres</string>
-  <string name="set_message_password_supporting_error_text">A palavra-passe deve ter entre 4 e 21 caracteres.</string>
+  <string name="set_message_password_supporting_text">8 to 21 characters long</string>
+  <string name="set_message_password_supporting_error_text">The password must be between 8 and 21 characters</string>
   <string name="set_message_password_supporting_text_repeat">As palavras-passe têm de coincidir.</string>
   <string name="set_message_password_supporting_error_text_repeat">As palavras-passe não correspondem.</string>
   <string name="set_message_password_button_show">Mostrar a palavra-passe</string>
@@ -124,6 +124,7 @@
   <string name="composer_schedule_send_tomorrow_title">Amanhã</string>
   <string name="composer_schedule_send_monday_title">Segunda-feira</string>
   <string name="composer_schedule_send_custom_title">Personalizar</string>
+  <string name="composer_schedule_send_custom_upsell_title">Custom date and time</string>
   <string name="composer_schedule_send_custom_description">Escolher data e hora</string>
   <string name="composer_error_send_message">Erro no envio da mensagem</string>
   <string name="composer_schedule_send_previously_set">Definido anteriormente</string>
@@ -138,4 +139,5 @@
   <string name="composer_change_sender_error_refreshing_body">Erro ao atualizar o corpo após a alteração do remetente. A assinatura pode estar desatualizada.</string>
   <string name="composer_loading_attachments_error">Erro ao carregar os anexos</string>
   <string name="composer_attachment_upload_error_retry">Erro ao carregar alguns anexos. Tente novamente.</string>
+  <string name="composer_external_encryption_unexpected_error">Unexpected error %s. Try again.</string>
 </resources>

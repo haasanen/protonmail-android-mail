@@ -26,29 +26,35 @@
   <!-- Upselling: Social Proof -->
   <string name="upselling_mailbox_plus_title_social_proof">Пачаць Mail Plus</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">Абмежаваная па часе прапанова. Скасаваць можна ў любы час.</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Атрымайце лепшае ад Mail з гэтай абмежаванай па часе прапановай</string>
   <string name="upselling_mailbox_plus_promo_title">Паспрабуйце Mail Plus для %s</string>
+  <string name="upselling_mailbox_plus_promo_cta">Атрымайце 1 месяц за %s</string>
+  <string name="upselling_mailbox_plus_promo_skip">Прапусціць прапанову</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s за першы месяц, а потым %s штомесяц</string>
   <!-- Upselling: Contact Groups -->
-  <string name="upselling_contact_groups_plus_description_override">Адпраўляйце групавыя лісты з лёгкасцю. Атрымлівайце асалоду ад гэтага і не толькі з Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_description_override">Адпраўляйце групавыя лісты з лёгкасцю. Атрымлівайце асалоду ад гэтай функцыі і ад многіх іншых з Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Групаванне кантактаў</string>
   <!-- Upselling: Labels -->
-  <string name="upselling_labels_plus_description_override">Стварайце ўсё, што вам трэба, каб заставацца арганізаванымі. Атрымайце гэта і больш з Mail Plus. </string>
+  <string name="upselling_labels_plus_description_override">Стварайце ўсё неабходнае, каб і далей заставацца арганізаванымі. Атрымайце гэту функцыі і многія іншыя з Mail Plus. </string>
   <string name="upselling_labels_plus_title">Неабходна больш метак або папак?</string>
   <!-- Upselling: Folders -->
-  <string name="upselling_folders_plus_description_override">Стварайце ўсё, што вам трэба, каб заставацца арганізаванымі. Атрымайце гэта і больш з Mail Plus. </string>
+  <string name="upselling_folders_plus_description_override">Стварайце ўсё неабходнае, каб і далей заставацца арганізаванымі. Атрымайце гэту функцыі і многія іншыя з Mail Plus. </string>
   <string name="upselling_folders_plus_title">Неабходна больш метак або папак?</string>
   <!-- Upselling: Mobile Signature -->
-  <string name="upselling_mobile_signature_plus_description_override">Зрабіце свой мабільны подпіс унікальным. Атрымлівайце асалоду ад гэтага і не толькі з Mail Plus.</string>
+  <string name="upselling_mobile_signature_plus_description_override">Зрабіце свой мабільны подпіс. Атрымлівайце асалоду ад гэтай функцыі і ад многіх іншых з Mail Plus.</string>
   <string name="upselling_mobile_signature_plus_title">Персаналізуйце свой подпіс</string>
   <!-- Upselling: Auto Delete -->
-  <string name="upselling_auto_delete_plus_description_override">Выдаляе спам і сметніцу праз 30 дзён. Атрымайце гэта і больш з Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_description_override">Выдаляе спам і сметніцу праз 30 дзён. Атрымайце гэту функцыі і многія іншыя з Mail Plus.</string>
   <string name="upselling_auto_delete_plus_title">Аўтаматычнае выдаленне сметніцы</string>
   <!-- Upselling: Schedule Send -->
-  <string name="upselling_schedule_send_plus_description_override">Наладзьце, калі будзе адпраўлены ліст. Атрымлівайце асалоду ад гэтага і не толькі з Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_description_override">Наладжвайце, калі будзе адпраўлены ліст. Атрымлівайце асалоду ад гэтай функцыі і ад многіх іншых з Mail Plus.</string>
   <string name="upselling_schedule_send_plus_title">Заплануйце цяпер, а адпраўце пазней</string>
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">Адкладзіце ліст — і ён будзе дастаўлены пазней. Атрымлівайце асалоду ад гэтай функцыі і ад многіх іншых з Mail Plus.</string>
   <string name="upselling_snooze_plus_title">Не падыходзячы час для гэтага ліста?</string>
+  <!-- Upselling - Misc buttons -->
+  <string name="upselling_button_hint">Палепшыць для поўнай гнуткасці</string>
+  <string name="upselling_upgrade_plan_generic">Неабходна платная падпіска Proton Mail, каб атрымаць доступ да гэтай функцыі</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 ГБ сховішча</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 ГБ сховішча, 10 адрасоў электроннай пошты</string>
@@ -97,16 +103,15 @@
   <string name="upselling_select_plan_month">1 месяц</string>
   <!-- Other UI Items -->
   <string name="upselling_auto_renew_text">Аўтаматычнае падаўжэнне па тым жа самым кошце і на тых жа ўмовах пакуль не будзе скасавана</string>
-  <string name="upselling_auto_renew_text_promo">Вітальная прапанова. Аўтаматычнае падаўжэнне %s %s%s, пакуль не будзе скасавана</string>
-  <string name="upselling_auto_renew_text_promo_short">Вітальная прапанова. Аўтаматычнае падаўжэнне за %s %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Аўтаматычнае падаўжэнне %s %s%s, пакуль не будзе скасавана</string>
-  <string name="upselling_social_proof_reviews">БОЛЬШ ЗА 2К ВОДГУКАЎ</string>
-  <string name="upselling_description_social_proof">Палепшыце, каб атрымаць вопыт, якім захапляюцца мільёны падпісчыкаў.</string>
+  <string name="upselling_auto_renew_text_promo">Вітальная прапанова. Аўтаматычнае падаўжэнне %s%s пакуль не будзе скасавана</string>
+  <string name="upselling_auto_renew_text_promo_short">Вітальная прапанова. Аўтаматычнае падаўжэнне за %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Аўтаматычнае падаўжэнне за %s%s пакуль не будзе скасавана</string>
+  <string name="upselling_social_proof_reviews">БОЛЬШ ЗА 2000 ВОДГУКАЎ</string>
+  <string name="upselling_description_social_proof">Перайдзіце на тарыфны план, які радуе мільёны падпісчыкаў.</string>
   <string name="upselling_discount_tag">ЭКАНОМІЯ %s%%</string>
   <string name="upselling_month">/месяц</string>
   <string name="upselling_year">/год</string>
   <string name="upselling_get_button">Атрымаць %s</string>
-  <string name="upselling_get_button_promotional">Атрымайце 1 месяц за %s %s</string>
   <plurals name="upselling_month">
     <item quantity="one">%d месяц</item>
     <item quantity="few">%d месяцы</item>

@@ -135,6 +135,7 @@
   <string name="message_cancel_schedule_send_dialog_title">Επεξεργασία και αναπρογραμματισμός</string>
   <string name="message_cancel_schedule_send_dialog_message">Αυτό το μήνυμα θα μετακινηθεί στα Πρόχειρα ώστε να το επεξεργαστείτε. Θα χρειαστεί να προγραμματίσετε ξανά πότε θα σταλεί.</string>
   <!-- RSVP widget -->
+  <string name="rsvp_widget_no_title">(χωρίς τίτλο)</string>
   <string name="rsvp_widget_attendance_optional">(Συμμετοχή προαιρετική)</string>
   <string name="rsvp_widget_attending">Συμμετέχετε;</string>
   <string name="rsvp_widget_yes">Ναι</string>
@@ -149,4 +150,22 @@
     <item quantity="one">%1$d Συμμετέχων</item>
     <item quantity="other">%1$d Συμμετέχοντες</item>
   </plurals>
+  <string name="rsvp_widget_happening_now">Συμβαίνει <b>τώρα</b></string>
+  <string name="rsvp_widget_event_ended">Η εκδήλωση <b>έληξε</b></string>
+  <string name="rsvp_widget_event_cancelled">Η εκδήλωση <b>ακυρώθηκε</b></string>
+  <string name="rsvp_widget_invite_outdated">Αυτή η πρόσκληση έχει λήξει</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">Η εκδήλωση ακυρώθηκε. Αυτή η πρόσκληση είναι εκπρόθεσμη.</string>
+  <string name="rsvp_widget_offline_invite_outdated">Είστε εκτός σύνδεσης. Οι εμφανιζόμενες πληροφορίες ενδέχεται να μην είναι ενημερωμένες.</string>
+  <string name="rsvp_widget_address_is_incorrect">Η διεύθυνσή σας δεν μπορεί να χρησιμοποιηθεί για απάντηση. Παρακαλούμε ενημερώστε τα στοιχεία του λογαριασμού σας.</string>
+  <string name="rsvp_widget_user_is_organizer">Είστε ο/η διοργανωτής.</string>
+  <string name="rsvp_widget_event_does_not_exist">Αυτή η εκδήλωση δεν βρίσκεται στο ημερολόγιό σας, οπότε δεν μπορείτε να απαντήσετε σε αυτήν.</string>
+  <string name="rsvp_widget_today">Σήμερα</string>
+  <string name="rsvp_widget_tomorrow">Αύριο</string>
+  <string name="rsvp_widget_invite_details_unavailable">Λεπτομέρειες πρόσκλησης μη διαθέσιμες</string>
+  <string name="rsvp_widget_could_not_load">Δεν ήταν δυνατή η φόρτωση των πληροφοριών.\nΠαρακαλούμε δοκιμάστε ξανά.</string>
+  <string name="rsvp_widget_button_retry">Δοκιμάστε ξανά</string>
+  <string name="rsvp_widget_error_answering">Παρουσιάστηκε σφάλμα κατά την απάντηση σε αυτή την εκδήλωση</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Άνοιγμα στο Proton Calendar</string>
+  <string name="rsvp_widget_copy_address">Αντιγραφή διεύθυνσης</string>
+  <string name="rsvp_widget_message">Μήνυμα</string>
 </resources>

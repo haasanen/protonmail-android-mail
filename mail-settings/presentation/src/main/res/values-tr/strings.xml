@@ -33,6 +33,7 @@
   <string name="mail_settings_spam_and_custom_filters">İstenmeyen e-postalar ve süzgeçler</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Otomatik işlemler ve sıralama</string>
   <string name="mail_settings_privacy_and_security">Gizlilik ve güvenlik</string>
+  <string name="mail_settings_fido_keys">Güvenlik anahtarları</string>
   <string name="mail_settings_privacy_and_security_hint">E-posta izleme koruması</string>
   <string name="mail_settings_app_hint">Mobil uygulama özelleştirmeleri</string>
   <string name="mail_settings_theme">Tema</string>

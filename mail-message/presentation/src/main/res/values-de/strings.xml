@@ -73,14 +73,4 @@
   <string name="contact_actions_block_contact_description">Diesen Kontakt blockieren</string>
   <string name="contact_actions_view_contact_details">Kontaktinformationen anzeigen</string>
   <string name="contact_actions_view_contact_details_description">Details zum Kontakt anzeigen</string>
-  <!-- Snooze Bottom Sheet -->
-  <string name="snooze_sheet_option_next_week">Nächste Woche</string>
-  <string name="snooze_sheet_option_later_this_week">Später in dieser Woche</string>
-  <string name="snooze_sheet_option_tomorrow">Morgen</string>
-  <string name="snooze_sheet_option_this_weekend">Dieses Wochenende</string>
-  <string name="snooze_sheet_option_custom">Benutzerdefiniert</string>
-  <string name="snooze_sheet_option_custom_detail">Datum und Uhrzeit auswählen</string>
-  <string name="snooze_sheet_option_upsell_detail">Kostenpflichtige Funktion</string>
-  <string name="snooze_sheet_snooze_title">Zurückstellen bis</string>
-  <string name="snooze_sheet_option_unsnooze">„Zurückstellen“ aufheben</string>
 </resources>

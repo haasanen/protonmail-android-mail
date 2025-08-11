@@ -42,7 +42,9 @@
   <string name="auth_account_details">Skriv inn Proton-kontoopplysningene dine.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problem med å logge deg på. Prøv igjen.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">En menneskelig verifisering er nødvendig.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Feil brukernavn eller passord. Prøv igjen.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Feil påloggingslegitimasjon. Prøv på nytt.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Tofaktorautentisering støttes ikke.</string>
+  <string name="auth_login_general_error">En feil oppstod.</string>
   <string name="auth_second_factor_title">Tofaktorautentisering</string>
   <string name="auth_second_factor_subtitle">Kontoen din har flere 2FA-mekanismer konfigurert. Velg hvordan du vil bekrefte identiteten din.</string>
   <string name="auth_second_factor_tab_security_key">Sikkerhetsnøkkel</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Bruk tofaktorkode</string>
   <string name="auth_second_factor_insert_security_key">Vise en sikkerhetsnøkkel knyttet til Proton-kontoen din. </string>
   <string name="auth_second_factor_insert_security_key_link">Lær mer</string>
+  <string name="auth_second_factor_incorrect_code">Feil kode. Prøv igjen.</string>
   <string name="auth_two_pass_title">Lås opp postboksen din</string>
   <string name="auth_two_pass_input_label">Postbokspassord</string>
   <string name="auth_two_pass_unlock">Lås opp</string>
@@ -106,7 +109,6 @@
   <string name="auth_signup_recovery_email_validation_error">E-postvalidering mislyktes</string>
   <string name="auth_signup_recovery_phone_validation_error">Telefonnummervalidering mislyktes</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Passordene samsvarer ikke. Forsøk igjen.</string>
-  <string name="auth_signup_generic_error">Noe gikk galt. Forsøk igjen.</string>
   <string name="auth_signup_countries_search">Søk etter land</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Kunne ikke sette opp brukeren.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Kunne ikke sette opp adressen.</string>
@@ -118,6 +120,18 @@
   <string name="auth_fido_manage_security_keys">Behandle sikkerhetsnøkler</string>
   <string name="auth_fido_add_security_key">Legg til sikkerhetsnøkkel</string>
   <string name="auth_fido_security_keys_learn_more">Lær mer</string>
+  <string name="auth_user_check_delinquent_error">Kontoen din er for øyeblikket satt på pause på grunn av en forfalt faktura.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="one">Kun en gratis Proton-konto er tillatt.</item>
+    <item quantity="other">Kun %d gratis Proton-kontoer er tillatt.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Noe gikk galt. Forsøk igjen.</string>
+  <string name="auth_fido_config_error">Feil ved henting av lagrede nøkler.</string>
+  <string name="auth_fido_reading_key_error">Feil under lesing av sikkerhetsnøkkel.</string>
+  <string name="auth_fido_submit_key_error">Feil ved innsending av nøkkeldata.</string>
+  <string name="auth_fido_reading_key_progress">Leser sikkerhetsnøkkel.</string>
+  <string name="auth_fido_authenticating_in_progress">Autentiserer med sikkerhetsnøkkel.</string>
+  <string name="auth_fido_security_key">Sikkerhetsnøkkel</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="one">Passordet må inneholde minst 1 tegn</item>
     <item quantity="other">Passordet må inneholde minst %1$s tegn</item>

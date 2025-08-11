@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2025 Proton Technologies AG
+  ~ This file is part of Proton Technologies AG and Proton Mail.
+  ~
+  ~ Proton Mail is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Proton Mail is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+  -->
+<resources>
+  <!-- Snooze Bottom Sheet -->
+  <string name="snooze_sheet_option_next_week">Volgende week</string>
+  <string name="snooze_sheet_option_later_this_week">Later deze week</string>
+  <string name="snooze_sheet_option_tomorrow">Morgen</string>
+  <string name="snooze_sheet_option_this_weekend">Dit weekend</string>
+  <string name="snooze_sheet_option_custom">Aangepast</string>
+  <string name="snooze_sheet_option_custom_detail">Selecteer datum en tijd</string>
+  <string name="snooze_sheet_option_upsell_detail">Functie tegen betaling</string>
+  <string name="snooze_sheet_snooze_title">Snooze tot</string>
+  <string name="snooze_sheet_option_unsnooze">Ontsnoozen</string>
+</resources>

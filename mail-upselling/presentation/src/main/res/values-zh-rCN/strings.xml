@@ -21,34 +21,40 @@
   <string name="upselling_button_item_content_description">升级按钮</string>
   <string name="upselling_close_button_content_description">关闭按钮</string>
   <!-- Upselling: Mailbox -->
-  <string name="upselling_mailbox_plus_description_override">To unlock more storage and premium features.</string>
+  <string name="upselling_mailbox_plus_description_override">解锁更多存储和高级功能。</string>
   <string name="upselling_mailbox_plus_title">升级至 Mail Plus</string>
   <!-- Upselling: Social Proof -->
-  <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
+  <string name="upselling_mailbox_plus_title_social_proof">开始 Mail Plus</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">限时优惠，随时可取消。</string>
+  <string name="upselling_mailbox_plus_promo_description_override">限时优惠，尽享 Mail 最佳体验</string>
   <string name="upselling_mailbox_plus_promo_title">立即体验为 %s 打造的Mail Plus高级服务</string>
+  <string name="upselling_mailbox_plus_promo_cta">获得1个月的 %s</string>
+  <string name="upselling_mailbox_plus_promo_skip">跳过优惠</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s 首月，之后每月 %s</string>
   <!-- Upselling: Contact Groups -->
-  <string name="upselling_contact_groups_plus_description_override">Send group emails with ease. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_description_override">轻松发送群组电子邮件。使用 Mail Plus，轻松享受此功能及更多便利。</string>
   <string name="upselling_contact_groups_plus_title">分组您的联系人</string>
   <!-- Upselling: Labels -->
-  <string name="upselling_labels_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_labels_plus_description_override">创建您保持井井有条所需的一切。通过 Mail Plus 获得此功能及更多。</string>
   <string name="upselling_labels_plus_title">需要更多的标签或文件夹吗？</string>
   <!-- Upselling: Folders -->
-  <string name="upselling_folders_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_folders_plus_description_override">创建所需的一切，保持井井有条。通过 Mail Plus 获得此功能及更多。 </string>
   <string name="upselling_folders_plus_title">需要更多的标签或文件夹吗？</string>
   <!-- Upselling: Mobile Signature -->
-  <string name="upselling_mobile_signature_plus_description_override">Make your mobile signature your own. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_mobile_signature_plus_title">Personalize your signature</string>
+  <string name="upselling_mobile_signature_plus_description_override">让您的移动签名独具个性。使用 Mail Plus，轻松享受此功能及更多便利。</string>
+  <string name="upselling_mobile_signature_plus_title">自定义您的签名</string>
   <!-- Upselling: Auto Delete -->
-  <string name="upselling_auto_delete_plus_description_override">Deletes spam and trash after 30 days. Get this and more with Mail Plus.</string>
-  <string name="upselling_auto_delete_plus_title">Automated trash removal</string>
+  <string name="upselling_auto_delete_plus_description_override">30 天后删除垃圾邮件和垃圾。Mail Plus 提供此功能及更多功能。</string>
+  <string name="upselling_auto_delete_plus_title">自动清除垃圾</string>
   <!-- Upselling: Schedule Send -->
-  <string name="upselling_schedule_send_plus_description_override">Customize when an email will be sent. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_schedule_send_plus_title">Schedule now, send later</string>
+  <string name="upselling_schedule_send_plus_description_override">自定义电子邮件的发送时间。使用 Mail Plus，轻松享受此功能及更多便利。</string>
+  <string name="upselling_schedule_send_plus_title">即刻安排，稍后发送</string>
   <!-- Upselling: Snooze -->
-  <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_snooze_plus_title">Bad time for this email?</string>
+  <string name="upselling_snooze_plus_description_override">延后寄送，稍后再送达。Mail Plus 让您尽享更多便利。</string>
+  <string name="upselling_snooze_plus_title">这封邮件不适合发在什么时间？</string>
+  <!-- Upselling - Misc buttons -->
+  <string name="upselling_button_hint">升级以获取更多选项</string>
+  <string name="upselling_upgrade_plan_generic">您需要付费订阅 Proton Mail 才能使用此功能</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB 存储空间</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 GB 存储空间，10 个邮箱地址</string>
@@ -92,21 +98,20 @@
   <string name="upselling_comparison_table_unlimited_folders_labels">无限文件夹和标签</string>
   <string name="upselling_comparison_table_priority_support">优先客户支持</string>
   <!-- Rectangular plan buttons -->
-  <string name="upselling_select_plan">Choose your plan</string>
-  <string name="upselling_select_plan_year">12 months</string>
+  <string name="upselling_select_plan">选择您的套餐</string>
+  <string name="upselling_select_plan_year">12 个月</string>
   <string name="upselling_select_plan_month">1 个月</string>
   <!-- Other UI Items -->
-  <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
-  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s %s%s unless canceled</string>
-  <string name="upselling_auto_renew_text_promo_short">欢迎优惠。订阅将以 %s %s %s 自动续订。</string>
-  <string name="upselling_auto_renew_text_standard">Auto-renews at %s %s%s unless canceled</string>
-  <string name="upselling_social_proof_reviews">2k+ REVIEWS</string>
-  <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
+  <string name="upselling_auto_renew_text">除非取消，否则将以相同的价格和条款自动续订</string>
+  <string name="upselling_auto_renew_text_promo">迎新优惠。除非手动取消，否则将在 %s%s 时自动续订。</string>
+  <string name="upselling_auto_renew_text_promo_short">欢迎优惠。订阅将以 %s %s 自动续订。</string>
+  <string name="upselling_auto_renew_text_standard">除非手动取消，否则将在 %s%s 时自动续订</string>
+  <string name="upselling_social_proof_reviews">2k+ 评论</string>
+  <string name="upselling_description_social_proof">升級到数百万订阅者赞不绝口的体验。</string>
   <string name="upselling_discount_tag">立省 %s%%</string>
   <string name="upselling_month">/月</string>
   <string name="upselling_year">/年</string>
   <string name="upselling_get_button">开通 %s</string>
-  <string name="upselling_get_button_promotional">获得1个月的 %s %s</string>
   <plurals name="upselling_month">
     <item quantity="other">%d 月</item>
   </plurals>

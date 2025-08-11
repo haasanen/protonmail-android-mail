@@ -25,7 +25,7 @@
   <string name="login_help_contact_needed">Stále potřebujete pomoci? Kontaktujte nás přímo.</string>
   <string name="login_help_customer_support">Zákaznická podpora</string>
   <string name="login_help_sign_in_with_qr_code">Přihlásit se pomocí QR kódu</string>
-  <string name="welcome_subtitle_mail">Soukromí. Bezpečnost. Pohodlí. Šifrovaný e-mail, který vám dává plnou kontrolu nad vašimi osobními údaji.</string>
+  <string name="welcome_subtitle_mail">Soukromí. Zabezpečení. Pohodlí. Šifrovaný e-mail, který vám dává plnou kontrolu nad vašimi osobními údaji.</string>
   <string name="welcome_sign_in">Přihlásit se</string>
   <string name="welcome_sign_up">Vytvořit účet</string>
   <string name="welcome_proton_privacy_by_default">Proton - Privacy by default</string>
@@ -42,7 +42,9 @@
   <string name="auth_account_details">Zadejte detaily vašeho účtu Proton.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problém s přihlášením. Zkuste to prosím znovu.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Je zapotřebí ověření CAPTCHA.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Neplatné uživatelské jméno nebo heslo. Zkuste se přihlásit znovu.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Nesprávné přihlašovací údaje. Zkuste to znovu.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Nepodporované dvoufázové ověření.</string>
+  <string name="auth_login_general_error">Došlo k chybě.</string>
   <string name="auth_second_factor_title">Dvoufázové ověření</string>
   <string name="auth_second_factor_subtitle">Váš účet má nastaven několik mechanismů 2FA. Vyberte, jakým způsobem chcete potvrdit svou identitu.</string>
   <string name="auth_second_factor_tab_security_key">Bezpečnostní klíč</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Použít kód dvoufázového ověření</string>
   <string name="auth_second_factor_insert_security_key">Předložte bezpečnostní klíč spojený s vaším účtem Proton. </string>
   <string name="auth_second_factor_insert_security_key_link">Více informací</string>
+  <string name="auth_second_factor_incorrect_code">Nesprávný kód. Zkuste to znovu.</string>
   <string name="auth_two_pass_title">Odemkněte svou e-mailovou schránku</string>
   <string name="auth_two_pass_input_label">Heslo k e-mailové schránce</string>
   <string name="auth_two_pass_unlock">Odemknout</string>
@@ -106,7 +109,6 @@
   <string name="auth_signup_recovery_email_validation_error">Ověření e-mailu selhalo</string>
   <string name="auth_signup_recovery_phone_validation_error">Ověření telefonního čísla selhalo</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Hesla se neshodují. Prosím, zkuste to znovu.</string>
-  <string name="auth_signup_generic_error">Něco se pokazilo. Prosím, zkuste to znovu.</string>
   <string name="auth_signup_countries_search">Vyhledat zemi</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Nepodařilo se nastavit uživatele.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Nepodařilo se nastavit adresu.</string>
@@ -118,6 +120,20 @@
   <string name="auth_fido_manage_security_keys">Spravovat bezpečnostní klíče</string>
   <string name="auth_fido_add_security_key">Přidat bezpečnostní klíč</string>
   <string name="auth_fido_security_keys_learn_more">Více informací</string>
+  <string name="auth_user_check_delinquent_error">Váš účet je aktuálně pozastaven kvůli faktuře po splatnosti.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="one">Je povolen pouze jeden bezplatný účet Proton.</item>
+    <item quantity="few">Jsou povoleny pouze %d bezplatné účty Proton.</item>
+    <item quantity="many">Je povoleno pouze %d bezplatných účtů Proton.</item>
+    <item quantity="other">Je povoleno pouze %d bezplatných účtů Proton.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Něco se pokazilo. Prosím, zkuste to znovu.</string>
+  <string name="auth_fido_config_error">Chyba při získávání uložených klíčů.</string>
+  <string name="auth_fido_reading_key_error">Chyba při čtení bezpečnostního klíče.</string>
+  <string name="auth_fido_submit_key_error">Chyba při odesílání údajů klíče.</string>
+  <string name="auth_fido_reading_key_progress">Načítání bezpečnostního klíče.</string>
+  <string name="auth_fido_authenticating_in_progress">Ověřování pomocí bezpečnostního klíče.</string>
+  <string name="auth_fido_security_key">Bezpečnostní klíč</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="one">Heslo musí obsahovat alespoň 1 znak</item>
     <item quantity="few">Heslo musí obsahovat alespoň %1$s znaky</item>

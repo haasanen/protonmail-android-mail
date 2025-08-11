@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Пароль сообщения</string>
   <string name="set_message_password_label_repeat">Повторите пароль</string>
   <string name="set_message_password_label_hint">Подсказка к паролю (необязательно)</string>
-  <string name="set_message_password_supporting_text">от 4 до 21 символа</string>
-  <string name="set_message_password_supporting_error_text">Пароль должен быть от 4 до 21 символа</string>
+  <string name="set_message_password_supporting_text">8 to 21 characters long</string>
+  <string name="set_message_password_supporting_error_text">The password must be between 8 and 21 characters</string>
   <string name="set_message_password_supporting_text_repeat">Пароли должны совпадать</string>
   <string name="set_message_password_supporting_error_text_repeat">Пароли не совпадают</string>
   <string name="set_message_password_button_show">Показать пароль</string>
@@ -126,6 +126,7 @@
   <string name="composer_schedule_send_tomorrow_title">Завтра</string>
   <string name="composer_schedule_send_monday_title">Понедельник</string>
   <string name="composer_schedule_send_custom_title">Другое время</string>
+  <string name="composer_schedule_send_custom_upsell_title">Custom date and time</string>
   <string name="composer_schedule_send_custom_description">Выбрать дату и время</string>
   <string name="composer_error_send_message">Ошибка отправки сообщения</string>
   <string name="composer_schedule_send_previously_set">Установлено ранее</string>
@@ -140,4 +141,5 @@
   <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
   <string name="composer_loading_attachments_error">Failed loading attachments</string>
   <string name="composer_attachment_upload_error_retry">Some attachments failed uploading. Please, retry.</string>
+  <string name="composer_external_encryption_unexpected_error">Unexpected error %s. Try again.</string>
 </resources>

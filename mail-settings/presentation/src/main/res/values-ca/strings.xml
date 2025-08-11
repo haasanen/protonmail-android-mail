@@ -33,6 +33,7 @@
   <string name="mail_settings_spam_and_custom_filters">Correu brossa i filtres</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Accions automàtiques i ordenació</string>
   <string name="mail_settings_privacy_and_security">Privacitat i seguretat</string>
+  <string name="mail_settings_fido_keys">Claus de seguretat</string>
   <string name="mail_settings_privacy_and_security_hint">Protecció contra el seguiment per correu electrònic</string>
   <string name="mail_settings_app_hint">Personalitzacions de l\'aplicació mòbil</string>
   <string name="mail_settings_theme">Tema</string>

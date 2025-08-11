@@ -18,7 +18,7 @@
   -->
 <resources>
   <string name="edm_code_not_recognized">No se reconoce el código. Inténtelo de nuevo.</string>
-  <string name="edm_code_verifying">Verificando...</string>
+  <string name="edm_code_verifying">Verificando…</string>
   <string name="edm_missing_camera_permission_headline">Permitir el acceso a la cámara</string>
   <string name="edm_missing_camera_permission_body">Para iniciar sesión con código QR, deberá permitir que %1$s acceda a su cámara. Puede hacerlo en los ajustes de su dispositivo.</string>
   <string name="edm_missing_camera_permission_footer">Siempre tendrá el control: podrá cambiar esta decisión en cualquier momento accediendo a la configuración de su dispositivo.</string>
@@ -50,7 +50,7 @@
   <string name="target_sign_in_instruction_2">2. Usando ese dispositivo, abra cualquier aplicación de Proton y seleccione <b>Ajustes</b></string>
   <string name="target_sign_in_instruction_3">3. Seleccione <b>Iniciar sesión en otro dispositivo → Escanear código QR</b></string>
   <string name="target_sign_in_instruction_4">4. Escanee el código para iniciar sesión</string>
-  <string name="target_sign_in_error_title">No pudimos iniciar su sesión</string>
+  <string name="target_sign_in_error_title">No pudimos iniciar la sesión</string>
   <string name="target_sign_in_retryable_error">Intente generar un código QR nuevo.</string>
   <string name="target_sign_in_error_new_qr">Generar código QR</string>
   <string name="target_sign_in_error_back_to_signin">Volver a inicio de sesión</string>

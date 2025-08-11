@@ -24,7 +24,7 @@
   <string name="login_help_other_issues">其他登录问题</string>
   <string name="login_help_contact_needed">如果仍需帮助，请直接与我们联系。</string>
   <string name="login_help_customer_support">客户支持</string>
-  <string name="login_help_sign_in_with_qr_code">Sign in with QR code</string>
+  <string name="login_help_sign_in_with_qr_code">扫描二维码登录</string>
   <string name="welcome_subtitle_mail">隐私、安全、便捷。加密电子邮件，让您完全掌控个人数据。</string>
   <string name="welcome_sign_in">登录</string>
   <string name="welcome_sign_up">创建账户</string>
@@ -42,7 +42,9 @@
   <string name="auth_account_details">请输入您的 Proton 账户信息。</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">登录失败，请重试。</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">需要您进行人工验证。</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">用户名或密码不正确，请重试。</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">登录信息错误，请重新尝试。</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">不支持双因素身份验证。</string>
+  <string name="auth_login_general_error">出错了。</string>
   <string name="auth_second_factor_title">双因素身份验证</string>
   <string name="auth_second_factor_subtitle">您的账户配置了多种 2FA 机制。请选择确认身份的方式。</string>
   <string name="auth_second_factor_tab_security_key">安全密钥</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">使用 2FA 验证码</string>
   <string name="auth_second_factor_insert_security_key">请出示与您的 Proton 账户关联的安全密钥。</string>
   <string name="auth_second_factor_insert_security_key_link">了解详情</string>
+  <string name="auth_second_factor_incorrect_code">验证码错误，请重试。</string>
   <string name="auth_two_pass_title">解锁您的邮箱</string>
   <string name="auth_two_pass_input_label">邮箱密码</string>
   <string name="auth_two_pass_unlock">解锁</string>
@@ -106,7 +109,6 @@
   <string name="auth_signup_recovery_email_validation_error">邮箱验证失败</string>
   <string name="auth_signup_recovery_phone_validation_error">电话号码验证失败</string>
   <string name="auth_signup_createpassword_error_password_not_equal">密码不匹配，请重新输入。</string>
-  <string name="auth_signup_generic_error">出错了，请再试一次。</string>
   <string name="auth_signup_countries_search">搜索国家/地区</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">无法设置用户。</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">无法设置地址。</string>
@@ -118,6 +120,17 @@
   <string name="auth_fido_manage_security_keys">管理安全密钥</string>
   <string name="auth_fido_add_security_key">添加安全密钥</string>
   <string name="auth_fido_security_keys_learn_more">了解详情</string>
+  <string name="auth_user_check_delinquent_error">您的账户因欠费已被停用。</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="other">只允许%d个免费的 Proton 账户</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">出错了，请再试一次。</string>
+  <string name="auth_fido_config_error">检索存储的密钥时出错。</string>
+  <string name="auth_fido_reading_key_error">读取安全密钥时出错。</string>
+  <string name="auth_fido_submit_key_error">提交密钥数据错误。</string>
+  <string name="auth_fido_reading_key_progress">正在读取安全密钥。</string>
+  <string name="auth_fido_authenticating_in_progress">正在使用安全密钥进行身份验证。</string>
+  <string name="auth_fido_security_key">安全密钥</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="other">密码必须至少包含%1$s个字符</item>
   </plurals>

@@ -26,8 +26,11 @@
   <!-- Upselling: Social Proof -->
   <string name="upselling_mailbox_plus_title_social_proof">Έναρξη Mail Plus</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">Προσφορά περιορισμένου χρόνου, ακύρωση ανά πάσα στιγμή.</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Αποκτήστε τα καλύτερα του Mail με αυτήν την προσφορά περιορισμένου χρόνου</string>
   <string name="upselling_mailbox_plus_promo_title">Δοκιμάστε το Mail Plus για %s</string>
+  <string name="upselling_mailbox_plus_promo_cta">Λάβετε 1 μήνα για %s</string>
+  <string name="upselling_mailbox_plus_promo_skip">Παράλειψη προσφοράς</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s για τον 1ο μήνα, μετά %s ανά μήνα</string>
   <!-- Upselling: Contact Groups -->
   <string name="upselling_contact_groups_plus_description_override">Στείλτε ομαδικά ηλεκτρονικά μηνύματα με ευκολία. Απολαύστε αυτό και πολλά άλλα με το Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Ομαδοποίηση των επαφών σας</string>
@@ -49,6 +52,9 @@
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">Αναβάλετέ το — για να παραδοθεί αργότερα. Απολαύστε αυτό και πολλά άλλα με το Mail Plus.</string>
   <string name="upselling_snooze_plus_title">Κακή στιγμή για αυτό το μήνυμα;</string>
+  <!-- Upselling - Misc buttons -->
+  <string name="upselling_button_hint">Αναβάθμιση για πλήρη ευελιξία</string>
+  <string name="upselling_upgrade_plan_generic">Χρειάζεστε μια συνδρομή Proton Mail επί πληρωμή για να αποκτήσετε πρόσβαση σε αυτήν τη δυνατότητα</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB αποθηκευτικού χώρου</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 GB αποθηκευτικού χώρου, 10 ηλεκτρονικές διευθύνσεις</string>
@@ -97,16 +103,15 @@
   <string name="upselling_select_plan_month">1 μήνας</string>
   <!-- Other UI Items -->
   <string name="upselling_auto_renew_text">Ανανεώνεται αυτόματα στην ίδια τιμή και με τους ίδιους όρους, εκτός εάν ακυρωθεί</string>
-  <string name="upselling_auto_renew_text_promo">Προσφορά καλωσορίσματος. Ανανεώνεται αυτόματα σε %s %s%s εκτός εάν ακυρωθεί</string>
-  <string name="upselling_auto_renew_text_promo_short">Προσφορά καλωσορίσματος. Αυτόματη ανανέωση στα %s %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Ανανεώνεται αυτόματα σε %s %s%s εκτός εάν ακυρωθεί</string>
+  <string name="upselling_auto_renew_text_promo">Προσφορά καλωσορίσματος. Ανανεώνεται αυτόματα σε %s%s εκτός εάν ακυρωθεί</string>
+  <string name="upselling_auto_renew_text_promo_short">Προσφορά καλωσορίσματος. Αυτόματη ανανέωση στα %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Ανανεώνεται αυτόματα σε %s%s εκτός εάν ακυρωθεί</string>
   <string name="upselling_social_proof_reviews">2k+ ΚΡΙΤΙΚΕΣ</string>
   <string name="upselling_description_social_proof">Αναβαθμίστε στην εμπειρία που εκατομμύρια συνδρομητές αποθεώνουν.</string>
   <string name="upselling_discount_tag">ΕΞΟΙΚΟΝΟΜΗΣΤΕ %s%%</string>
   <string name="upselling_month">/μήνα</string>
   <string name="upselling_year">/έτος</string>
   <string name="upselling_get_button">Αποκτήστε %s</string>
-  <string name="upselling_get_button_promotional">Λάβετε 1 μήνα για %s %s</string>
   <plurals name="upselling_month">
     <item quantity="one">%d μήνα</item>
     <item quantity="other">%d μήνες</item>

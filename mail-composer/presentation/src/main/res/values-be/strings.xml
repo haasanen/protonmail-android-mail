@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Пароль паведамлення</string>
   <string name="set_message_password_label_repeat">Паўтарыце пароль</string>
   <string name="set_message_password_label_hint">Падказка да пароля (неабавязкова)</string>
-  <string name="set_message_password_supporting_text">Ад 4 да 21 сімвала</string>
-  <string name="set_message_password_supporting_error_text">Ваш пароль павінен мець даўжыню ад 4 да 21 сімвала</string>
+  <string name="set_message_password_supporting_text">Ад 8 да 21 сімвала</string>
+  <string name="set_message_password_supporting_error_text">Ваш пароль павінен мець даўжыню ад 8 да 21 сімвала</string>
   <string name="set_message_password_supporting_text_repeat">Паролі павінны супадаць</string>
   <string name="set_message_password_supporting_error_text_repeat">Паролі не супадаюць</string>
   <string name="set_message_password_button_show">Паказаць пароль</string>
@@ -126,6 +126,7 @@
   <string name="composer_schedule_send_tomorrow_title">Заўтра</string>
   <string name="composer_schedule_send_monday_title">Панядзелак</string>
   <string name="composer_schedule_send_custom_title">Карыстальніцкае</string>
+  <string name="composer_schedule_send_custom_upsell_title">Карыстальніцкія дата і час</string>
   <string name="composer_schedule_send_custom_description">Выберыце час і дату</string>
   <string name="composer_error_send_message">Памылка адпраўкі паведамлення</string>
   <string name="composer_schedule_send_previously_set">Раней зададзеныя</string>
@@ -140,4 +141,5 @@
   <string name="composer_change_sender_error_refreshing_body">Збой абнаўлення змесціва пасля змены адпраўніка. Подпіс можа быць састарэлым.</string>
   <string name="composer_loading_attachments_error">Не ўдалося загрузіць далучэнні</string>
   <string name="composer_attachment_upload_error_retry">Не ўдалося запампаваць некаторыя далучэнні. Паспрабуйце яшчэ раз.</string>
+  <string name="composer_external_encryption_unexpected_error">Нечаканая памылка %s. Паспрабуйце яшчэ раз.</string>
 </resources>

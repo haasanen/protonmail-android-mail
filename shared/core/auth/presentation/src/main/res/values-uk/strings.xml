@@ -24,7 +24,7 @@
   <string name="login_help_other_issues">Інші проблеми з входом</string>
   <string name="login_help_contact_needed">Досі потребуєте допомоги? Зв\'яжіться з нами безпосередньо.</string>
   <string name="login_help_customer_support">Клієнтська підтримка</string>
-  <string name="login_help_sign_in_with_qr_code">Sign in with QR code</string>
+  <string name="login_help_sign_in_with_qr_code">Увійти за допомогою QR-коду</string>
   <string name="welcome_subtitle_mail">Приватність. Безпека. Зручність. Зашифрована пошта, що дає вам повний контроль над вашими особистими даними.</string>
   <string name="welcome_sign_in">Увійти</string>
   <string name="welcome_sign_up">Створити обліковий запис</string>
@@ -42,7 +42,9 @@
   <string name="auth_account_details">Введіть дані свого облікового запису Proton.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Проблема із входом у систему. Спробуйте знову.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Необхідна перевірка «Я не робот».</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Неправильне ім\'я користувача або пароль. Спробуйте ще раз.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Неправильні облікові дані. Спробуйте ще раз.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Двоетапна перевірка не підтримується.</string>
+  <string name="auth_login_general_error">Сталася помилка.</string>
   <string name="auth_second_factor_title">Двоетапна перевірка</string>
   <string name="auth_second_factor_subtitle">У вашому обліковому записі налаштовано декілька способів 2ЕП. Виберіть, як ви хочете підтвердити свою особу.</string>
   <string name="auth_second_factor_tab_security_key">Ключ безпеки</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Використати код двоетапної перевірки</string>
   <string name="auth_second_factor_insert_security_key">Надайте ключ безпеки, пов\'язаний із вашим обліковим записом Proton. </string>
   <string name="auth_second_factor_insert_security_key_link">Докладніше</string>
+  <string name="auth_second_factor_incorrect_code">Неправильний код. Повторіть спробу.</string>
   <string name="auth_two_pass_title">Розблокуйте поштову скриньку</string>
   <string name="auth_two_pass_input_label">Пароль поштової скриньки</string>
   <string name="auth_two_pass_unlock">Розблокувати</string>
@@ -102,11 +105,10 @@
   <string name="auth_signup_validation_email">Поштова адреса не може бути порожньою.</string>
   <string name="auth_signup_validation_username_input_invalid">Недійсний ввід імені користувача.</string>
   <string name="auth_signup_validation_email_input_invalid">Недійсний ввід імені користувача.</string>
-  <string name="auth_signup_username_unavailable_error">Username already taken. Choose a different username.</string>
-  <string name="auth_signup_recovery_email_validation_error">Email validation failed</string>
-  <string name="auth_signup_recovery_phone_validation_error">Phone number validation failed</string>
-  <string name="auth_signup_createpassword_error_password_not_equal">Passwords do not match. Please try again.</string>
-  <string name="auth_signup_generic_error">Something went wrong. Please try again.</string>
+  <string name="auth_signup_username_unavailable_error">Це ім’я користувача вже зайнято. Оберіть інше.</string>
+  <string name="auth_signup_recovery_email_validation_error">Не вдалося перевірити поштову адресу</string>
+  <string name="auth_signup_recovery_phone_validation_error">Не вдалося перевірити номер телефону</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">Паролі відрізняються. Повторіть спробу.</string>
   <string name="auth_signup_countries_search">Пошук країни</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Не вдалося налаштувати користувача.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Не вдалося налаштувати адресу.</string>
@@ -118,16 +120,30 @@
   <string name="auth_fido_manage_security_keys">Керувати ключами безпеки</string>
   <string name="auth_fido_add_security_key">Додати ключ безпеки</string>
   <string name="auth_fido_security_keys_learn_more">Докладніше</string>
+  <string name="auth_user_check_delinquent_error">Ваш обліковий запис наразі призупинено через несплату рахунку.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="one">Дозволено лише один безплатний обліковий запис Proton.</item>
+    <item quantity="few">Дозволено лише %d безплатні облікові записи Proton.</item>
+    <item quantity="many">Дозволено лише %d безплатних облікових записів Proton.</item>
+    <item quantity="other">Дозволено лише %d безплатних облікових записів Proton.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Щось пішло не так. Повторіть спробу.</string>
+  <string name="auth_fido_config_error">Помилка отримання збережених ключів.</string>
+  <string name="auth_fido_reading_key_error">Помилка читання ключа безпеки.</string>
+  <string name="auth_fido_submit_key_error">Помилка надсилання даних ключа.</string>
+  <string name="auth_fido_reading_key_progress">Зчитування ключа безпеки.</string>
+  <string name="auth_fido_authenticating_in_progress">Автентифікація з ключем безпеки.</string>
+  <string name="auth_fido_security_key">Ключ безпеки</string>
   <plurals name="password_validator_min_length_error">
-    <item quantity="one">Password must contain at least 1 character</item>
-    <item quantity="few">Password must contain at least %1$s characters</item>
-    <item quantity="many">Password must contain at least %1$s characters</item>
-    <item quantity="other">Password must contain at least %1$s characters</item>
+    <item quantity="one">Пароль повинен містити принаймні 1 символ</item>
+    <item quantity="few">Пароль повинен містити принаймні %1$s символи</item>
+    <item quantity="many">Пароль повинен містити принаймні %1$s символів</item>
+    <item quantity="other">Пароль повинен містити принаймні %1$s символів</item>
   </plurals>
   <plurals name="password_validator_min_length_requirement">
-    <item quantity="one">At least 1 character</item>
-    <item quantity="few">At least %1$s characters</item>
-    <item quantity="many">At least %1$s characters</item>
-    <item quantity="other">At least %1$s characters</item>
+    <item quantity="one">Щонайменше 1 символ</item>
+    <item quantity="few">Щонайменше %1$s символи</item>
+    <item quantity="many">Щонайменше %1$s символів</item>
+    <item quantity="other">Щонайменше %1$s символів</item>
   </plurals>
 </resources>

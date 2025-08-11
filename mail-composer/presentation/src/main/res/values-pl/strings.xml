@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Hasło wiadomości</string>
   <string name="set_message_password_label_repeat">Potwierdź hasło</string>
   <string name="set_message_password_label_hint">Podpowiedź do hasła (opcjonalnie)</string>
-  <string name="set_message_password_supporting_text">od 4 do 21 znaków</string>
-  <string name="set_message_password_supporting_error_text">Hasło musi zawierać od 4 do 21 znaków</string>
+  <string name="set_message_password_supporting_text">Od 8 do 21 znaków</string>
+  <string name="set_message_password_supporting_error_text">Hasło musi zawierać od 8 do 21 znaków</string>
   <string name="set_message_password_supporting_text_repeat">Hasła muszą pasować do siebie</string>
   <string name="set_message_password_supporting_error_text_repeat">Hasła nie pasują do siebie</string>
   <string name="set_message_password_button_show">Pokaż hasło</string>
@@ -126,6 +126,7 @@
   <string name="composer_schedule_send_tomorrow_title">Jutro</string>
   <string name="composer_schedule_send_monday_title">Poniedziałek</string>
   <string name="composer_schedule_send_custom_title">Niestandardowa</string>
+  <string name="composer_schedule_send_custom_upsell_title">Niestandardowa data i godzina</string>
   <string name="composer_schedule_send_custom_description">Wybierz datę i godzinę</string>
   <string name="composer_error_send_message">Wystąpił błąd podczas wysyłania wiadomości</string>
   <string name="composer_schedule_send_previously_set">Ustawiono wcześniej</string>
@@ -140,4 +141,5 @@
   <string name="composer_change_sender_error_refreshing_body">Odświeżenie treści po zmianie nadawcy nie powiodło się. Podpis może być nieaktualny.</string>
   <string name="composer_loading_attachments_error">Ładowanie załączników nie powiodło się</string>
   <string name="composer_attachment_upload_error_retry">Przesyłanie niektórych załączników nie powiodło się. Spróbuj ponownie.</string>
+  <string name="composer_external_encryption_unexpected_error">Wystąpił nieoczekiwany błąd %s. Spróbuj ponownie.</string>
 </resources>

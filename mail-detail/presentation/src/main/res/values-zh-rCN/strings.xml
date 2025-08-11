@@ -133,17 +133,36 @@
   <string name="message_cancel_schedule_send_dialog_title">编辑并重新安排</string>
   <string name="message_cancel_schedule_send_dialog_message">该邮件将移至草稿箱，以便您编辑。您需要重新安排发送时间。</string>
   <!-- RSVP widget -->
-  <string name="rsvp_widget_attendance_optional">(Attendance optional)</string>
-  <string name="rsvp_widget_attending">Attending?</string>
-  <string name="rsvp_widget_yes">Yes</string>
-  <string name="rsvp_widget_maybe">Maybe</string>
-  <string name="rsvp_widget_no">No</string>
-  <string name="rsvp_widget_yes_long">Yes, I\'ll attend</string>
-  <string name="rsvp_widget_maybe_long">Maybe, I\'ll attend</string>
-  <string name="rsvp_widget_no_long">No, I won\'t attend</string>
-  <string name="rsvp_widget_organizer">(Organizer)</string>
-  <string name="rsvp_widget_you">You</string>
+  <string name="rsvp_widget_no_title">（无标题）</string>
+  <string name="rsvp_widget_attendance_optional">（非必须出席）</string>
+  <string name="rsvp_widget_attending">是否参加？</string>
+  <string name="rsvp_widget_yes">是</string>
+  <string name="rsvp_widget_maybe">可能</string>
+  <string name="rsvp_widget_no">取消</string>
+  <string name="rsvp_widget_yes_long">是，我将参加</string>
+  <string name="rsvp_widget_maybe_long">可能参加</string>
+  <string name="rsvp_widget_no_long">不，我不会参加</string>
+  <string name="rsvp_widget_organizer">(组织者)</string>
+  <string name="rsvp_widget_you">您</string>
   <plurals name="rsvp_widget_participants">
-    <item quantity="other">%1$d Participants</item>
+    <item quantity="other">%1$d 名参与者</item>
   </plurals>
+  <string name="rsvp_widget_happening_now">正在进行<b>中</b></string>
+  <string name="rsvp_widget_event_ended">事件 <b>已结束</b></string>
+  <string name="rsvp_widget_event_cancelled">事件<b>取消</b></string>
+  <string name="rsvp_widget_invite_outdated">此邀请函已过期</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">事件已取消。此邀请已过期。</string>
+  <string name="rsvp_widget_offline_invite_outdated">您处于离线状态。显示的信息可能已过时。</string>
+  <string name="rsvp_widget_address_is_incorrect">您的地址无法用于回复。请更新您的账户信息。</string>
+  <string name="rsvp_widget_user_is_organizer">您是组织者。</string>
+  <string name="rsvp_widget_event_does_not_exist">此事件不在您的日历中，因此您无法回复它。</string>
+  <string name="rsvp_widget_today">今天</string>
+  <string name="rsvp_widget_tomorrow">明天</string>
+  <string name="rsvp_widget_invite_details_unavailable">邀请详情无法获取</string>
+  <string name="rsvp_widget_could_not_load">无法加载信息。\n请重试。</string>
+  <string name="rsvp_widget_button_retry">重试</string>
+  <string name="rsvp_widget_error_answering">回答此事件时发生错误</string>
+  <string name="rsvp_widget_open_in_proton_calendar">在 Proton Calendar 中打开</string>
+  <string name="rsvp_widget_copy_address">复制地址</string>
+  <string name="rsvp_widget_message">消息</string>
 </resources>

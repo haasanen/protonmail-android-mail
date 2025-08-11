@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Contraseña del mensaje</string>
   <string name="set_message_password_label_repeat">Repetir contraseña</string>
   <string name="set_message_password_label_hint">Pista de la contraseña (opcional)</string>
-  <string name="set_message_password_supporting_text">Longitud de 4 a 21 caracteres</string>
-  <string name="set_message_password_supporting_error_text">La contraseña debe tener entre 4 y 21 caracteres</string>
+  <string name="set_message_password_supporting_text">Longitud de 8 a 21 caracteres</string>
+  <string name="set_message_password_supporting_error_text">La contraseña debe tener entre 8 y 21 caracteres</string>
   <string name="set_message_password_supporting_text_repeat">Las contraseñas deben coincidir</string>
   <string name="set_message_password_supporting_error_text_repeat">Las contraseñas no coinciden.</string>
   <string name="set_message_password_button_show">Mostrar contraseña</string>
@@ -124,6 +124,7 @@
   <string name="composer_schedule_send_tomorrow_title">Mañana</string>
   <string name="composer_schedule_send_monday_title">Lunes</string>
   <string name="composer_schedule_send_custom_title">Personalizar</string>
+  <string name="composer_schedule_send_custom_upsell_title">Fecha y hora personalizadas</string>
   <string name="composer_schedule_send_custom_description">Seleccionar hora y fecha</string>
   <string name="composer_error_send_message">Error al enviar el mensaje</string>
   <string name="composer_schedule_send_previously_set">Configurado previamente</string>
@@ -138,4 +139,5 @@
   <string name="composer_change_sender_error_refreshing_body">Se actualizó el cuerpo tras un error al cambiar el remitente. La firma podría no estar actualizada.</string>
   <string name="composer_loading_attachments_error">Error al cargar archivos adjuntos</string>
   <string name="composer_attachment_upload_error_retry">No se pudieron cargar algunos archivos adjuntos. Inténtelo de nuevo.</string>
+  <string name="composer_external_encryption_unexpected_error">Error inesperado %s. Intente de nuevo.</string>
 </resources>

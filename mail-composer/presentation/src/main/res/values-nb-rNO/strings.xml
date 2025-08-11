@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Meldingspassord</string>
   <string name="set_message_password_label_repeat">Gjenta passord</string>
   <string name="set_message_password_label_hint">Passordhint (valgfritt)</string>
-  <string name="set_message_password_supporting_text">4 til 21 tegn lang</string>
-  <string name="set_message_password_supporting_error_text">Passordet må bestå av mellom 4 og 21 tegn</string>
+  <string name="set_message_password_supporting_text">8 til 21 tegn lang</string>
+  <string name="set_message_password_supporting_error_text">Passordet må bestå av mellom 8 og 21 tegn</string>
   <string name="set_message_password_supporting_text_repeat">Passordene må samsvare</string>
   <string name="set_message_password_supporting_error_text_repeat">Passordene samsvarer ikke</string>
   <string name="set_message_password_button_show">Vis passord</string>
@@ -124,6 +124,7 @@
   <string name="composer_schedule_send_tomorrow_title">I morgen</string>
   <string name="composer_schedule_send_monday_title">Mandag</string>
   <string name="composer_schedule_send_custom_title">Tilpasset</string>
+  <string name="composer_schedule_send_custom_upsell_title">Tilpasset dato og klokkeslett</string>
   <string name="composer_schedule_send_custom_description">Velg klokkeslett og dato</string>
   <string name="composer_error_send_message">Feil ved sending av melding</string>
   <string name="composer_schedule_send_previously_set">Tidligere angitt</string>
@@ -138,4 +139,5 @@
   <string name="composer_change_sender_error_refreshing_body">Oppdatering av brødteksten etter endring av avsender mislyktes. Signaturen kan være utdatert.</string>
   <string name="composer_loading_attachments_error">Feil ved henting av vedlegg</string>
   <string name="composer_attachment_upload_error_retry">Enkelte vedlegg kunne ikke lastes opp. Prøv igjen.</string>
+  <string name="composer_external_encryption_unexpected_error">Uventet feil %s. Forsøk igjen.</string>
 </resources>

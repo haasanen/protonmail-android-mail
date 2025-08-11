@@ -52,7 +52,7 @@
     <item quantity="other">%s jäljellä olevaa yritystä ennen uloskirjautumista.</item>
   </plurals>
   <string name="mail_settings_pin_insertion_error_unknown">Virhe vahvistettaessa PIN-koodiasi.</string>
-  <string name="mail_settings_pin_insertion_error_too_short">PIN must be at least 4 digits</string>
+  <string name="mail_settings_pin_insertion_error_too_short">PIN-koodin on oltava vähintään 4-numeroa</string>
   <string name="mail_settings_pin_verification_error_too_many">Liian monta yritystä. Yritä myöhemmin uudelleen.</string>
   <string name="mail_settings_pin_verification_error_no_match">Virheellinen PIN-koodi</string>
   <string name="mail_settings_pin_verification_error_too_many_frequent">Liian monta toistuvaa yritystä. Yritä myöhemmin uudelleen.</string>
@@ -73,7 +73,7 @@
   <string name="mail_settings_biometrics_unknown_lock">An error occurred while fetching the current lock policy.</string>
   <!-- Auto lock dialog -->
   <string name="mail_settings_pin_lock_dialog_title">Vahvista PIN-koodi</string>
-  <string name="mail_settings_pin_lock_dialog_subtitle">For security, enter your current PIN to continue.</string>
+  <string name="mail_settings_pin_lock_dialog_subtitle">Turvallisuussyistä, syötä nykyinen PIN-koodisi jatkaaksesi.</string>
   <string name="mail_settings_pin_lock_dialog_button_next">Seuraava</string>
   <string name="mail_settings_pin_lock_dialog_button_cancel">Peruuta</string>
   <!-- Biometrics unlock -->

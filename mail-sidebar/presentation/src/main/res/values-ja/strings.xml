@@ -23,4 +23,5 @@
   <string name="drawer_title_bug_report">問題を報告</string>
   <string name="drawer_item_create_label">ラベルを作成</string>
   <string name="drawer_item_create_folder">フォルダを作成</string>
+  <string name="drawer_upgrade_plus">Mail Plus にアップグレード</string>
 </resources>

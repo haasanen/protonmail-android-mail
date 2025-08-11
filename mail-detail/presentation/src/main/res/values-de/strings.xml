@@ -135,6 +135,7 @@
   <string name="message_cancel_schedule_send_dialog_title">Bearbeiten und neu planen</string>
   <string name="message_cancel_schedule_send_dialog_message">Diese Nachricht wird in die Entwürfe verschoben, damit sie bearbeitet werden kann. Der Versand muss neu geplant werden.</string>
   <!-- RSVP widget -->
+  <string name="rsvp_widget_no_title">(ohne Titel)</string>
   <string name="rsvp_widget_attendance_optional">(Teilnahme freiwillig)</string>
   <string name="rsvp_widget_attending">Teilnehmen?</string>
   <string name="rsvp_widget_yes">Ja</string>
@@ -149,4 +150,22 @@
     <item quantity="one">%1$d Teilnehmer</item>
     <item quantity="other">%1$d Teilnehmer</item>
   </plurals>
+  <string name="rsvp_widget_happening_now"><b>Soeben</b></string>
+  <string name="rsvp_widget_event_ended">Ereignis <b>beendet</b></string>
+  <string name="rsvp_widget_event_cancelled">Ereignis <b>abgesagt</b></string>
+  <string name="rsvp_widget_invite_outdated">Diese Einladung ist nicht mehr gültig</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">Ereignis abgesagt. Diese Einladung ist nicht mehr gültig.</string>
+  <string name="rsvp_widget_offline_invite_outdated">Es besteht keine Internetverbindung. Die angezeigten Informationen sind möglicherweise veraltet.</string>
+  <string name="rsvp_widget_address_is_incorrect">Deine Adresse kann nicht zum Antworten verwendet werden. Bitte aktualisiere deine Kontoinformationen.</string>
+  <string name="rsvp_widget_user_is_organizer">Du bist der Organisator.</string>
+  <string name="rsvp_widget_event_does_not_exist">Dieses Ereignis steht nicht in deinem Kalender, daher kannst du nicht darauf antworten.</string>
+  <string name="rsvp_widget_today">Heute</string>
+  <string name="rsvp_widget_tomorrow">Morgen</string>
+  <string name="rsvp_widget_invite_details_unavailable">Einladungsdetails nicht verfügbar</string>
+  <string name="rsvp_widget_could_not_load">Die Informationen konnten nicht geladen werden.\nBitte erneut versuchen.</string>
+  <string name="rsvp_widget_button_retry">Wiederholen</string>
+  <string name="rsvp_widget_error_answering">Bei Antworten auf dieses Ereignisses ist ein Fehler aufgetreten.</string>
+  <string name="rsvp_widget_open_in_proton_calendar">In Proton Calendar öffnen</string>
+  <string name="rsvp_widget_copy_address">Adresse kopieren</string>
+  <string name="rsvp_widget_message">Nachricht</string>
 </resources>

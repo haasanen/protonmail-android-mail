@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Kata sandi pesan</string>
   <string name="set_message_password_label_repeat">Ulangi kata sandi</string>
   <string name="set_message_password_label_hint">Petunjuk kata sandi (opsional)</string>
-  <string name="set_message_password_supporting_text">Panjangnya 4 hingga 21 karakter</string>
-  <string name="set_message_password_supporting_error_text">Kata sandi harus terdiri dari 4 hingga 21 karakter</string>
+  <string name="set_message_password_supporting_text">panjang antara 8 hingga 21 karakter</string>
+  <string name="set_message_password_supporting_error_text">Kata sandi harus mengandung antara 8 dan 21 karakter</string>
   <string name="set_message_password_supporting_text_repeat">Kata sandi harus seragam</string>
   <string name="set_message_password_supporting_error_text_repeat">Kata sandi tidak sesuai</string>
   <string name="set_message_password_button_show">Tampilkan kata sandi</string>
@@ -123,6 +123,7 @@
   <string name="composer_schedule_send_tomorrow_title">Besok</string>
   <string name="composer_schedule_send_monday_title">Senin</string>
   <string name="composer_schedule_send_custom_title">Sesuaikan</string>
+  <string name="composer_schedule_send_custom_upsell_title">Custom date and time</string>
   <string name="composer_schedule_send_custom_description">Pilih waktu dan tanggal</string>
   <string name="composer_error_send_message">Kesalahan mengirim pesan</string>
   <string name="composer_schedule_send_previously_set">Sebelumnya diatur</string>
@@ -136,5 +137,6 @@
   <string name="composer_change_sender_unexpected_failure">Terjadi kesalahan pada saat mengubah pengirim. Silakan coba lagi.</string>
   <string name="composer_change_sender_error_refreshing_body">Badan pesan gagal dimuat ulang setelah pengirim diubah. Tanda tangan yang tertera mungkin telah kedaluwarsa.</string>
   <string name="composer_loading_attachments_error">Lampiran gagal dimuat</string>
-  <string name="composer_attachment_upload_error_retry">Some attachments failed uploading. Please, retry.</string>
+  <string name="composer_attachment_upload_error_retry">Sebagian lampiran gagal diunggah. Silakan coba lagi.</string>
+  <string name="composer_external_encryption_unexpected_error">Terjadi kesalahan yang tidak terduga %s. Silakan coba lagi.</string>
 </resources>

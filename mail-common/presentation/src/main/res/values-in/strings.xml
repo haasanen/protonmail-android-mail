@@ -86,8 +86,8 @@
   <string name="action_sender_emails_content_description">Tentukan tindakan untuk email dari pengirim ini ke depannya</string>
   <string name="action_save_attachments_content_description">Simpan lampiran</string>
   <string name="action_more_content_description">Lainnya</string>
-  <string name="action_snooze_content_description">Snooze</string>
-  <string name="action_snooze_description">Snooze</string>
+  <string name="action_snooze_content_description">Tunda</string>
+  <string name="action_snooze_description">Tunda</string>
   <string name="common_error_loading_actions">Tindakan gagal dimuat</string>
   <string name="yesterday">Kemarin</string>
   <!-- notification channels -->

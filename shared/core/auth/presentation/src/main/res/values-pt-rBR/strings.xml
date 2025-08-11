@@ -42,7 +42,9 @@
   <string name="auth_account_details">Insira os detalhes da sua conta da Proton.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problema ao fazer login. Tente novamente.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Uma verificação humana é necessária.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Nome de usuário ou senha incorreta. Tente novamente.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Credenciais de acesso inválidas. Tente novamente.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Dois fatores não são compatíveis.</string>
+  <string name="auth_login_general_error">Ocorreu um erro.</string>
   <string name="auth_second_factor_title">Autenticação de dois fatores</string>
   <string name="auth_second_factor_subtitle">A sua conta tem vários mecanismos de A2F configurados. Escolha como confirmar a sua identidade.</string>
   <string name="auth_second_factor_tab_security_key">Chave de segurança</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Usar código de autenticação de dois fatores</string>
   <string name="auth_second_factor_insert_security_key">Apresente uma chave de segurança vinculada à sua conta da Proton. </string>
   <string name="auth_second_factor_insert_security_key_link">Saiba mais</string>
+  <string name="auth_second_factor_incorrect_code">Código incorreto. Tente novamente.</string>
   <string name="auth_two_pass_title">Desbloquear sua caixa de correio</string>
   <string name="auth_two_pass_input_label">Senha da caixa de correio</string>
   <string name="auth_two_pass_unlock">Desbloquear</string>
@@ -106,7 +109,6 @@
   <string name="auth_signup_recovery_email_validation_error">Erro na validação do e-mail</string>
   <string name="auth_signup_recovery_phone_validation_error">Erro ao validar o número de telefone</string>
   <string name="auth_signup_createpassword_error_password_not_equal">As senhas não correspondem. Tente novamente.</string>
-  <string name="auth_signup_generic_error">Ocorreu um erro. Tente novamente mais tarde.</string>
   <string name="auth_signup_countries_search">Procurar país</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Não foi possível configurar o usuário.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Não foi possível configurar o endereço.</string>
@@ -118,6 +120,18 @@
   <string name="auth_fido_manage_security_keys">Gerenciar chaves de segurança</string>
   <string name="auth_fido_add_security_key">Adicionar chave de segurança</string>
   <string name="auth_fido_security_keys_learn_more">Saiba mais</string>
+  <string name="auth_user_check_delinquent_error">Sua conta está suspensa no momento devido a uma fatura vencida.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="one">Apenas uma conta da Proton gratuita é permitida.</item>
+    <item quantity="other">Apenas %d contas da Proton gratuitas são permitidas.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Ocorreu um erro. Tente novamente mais tarde.</string>
+  <string name="auth_fido_config_error">Erro ao recuperar chaves armazenadas.</string>
+  <string name="auth_fido_reading_key_error">Erro ao ler chave de segurança.</string>
+  <string name="auth_fido_submit_key_error">Erro ao enviar dados da chave.</string>
+  <string name="auth_fido_reading_key_progress">Lendo chave de segurança.</string>
+  <string name="auth_fido_authenticating_in_progress">Autenticando com chave de segurança.</string>
+  <string name="auth_fido_security_key">Chave de segurança</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="one">A senha deve conter pelo menos 1 caractere</item>
     <item quantity="other">A senha deve conter pelo menos %1$s caracteres</item>

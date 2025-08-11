@@ -86,8 +86,8 @@
   <string name="action_sender_emails_content_description">Aseta tämän lähettäjän viesteille jatkossa suoritettava toiminto</string>
   <string name="action_save_attachments_content_description">Tallenna liitteet</string>
   <string name="action_more_content_description">Lisää</string>
-  <string name="action_snooze_content_description">Snooze</string>
-  <string name="action_snooze_description">Snooze</string>
+  <string name="action_snooze_content_description">Torkuta</string>
+  <string name="action_snooze_description">Torkuta</string>
   <string name="common_error_loading_actions">Toimintojen lataus epäonnistui</string>
   <string name="yesterday">Eilen</string>
   <!-- notification channels -->

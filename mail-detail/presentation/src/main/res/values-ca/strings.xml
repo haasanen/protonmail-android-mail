@@ -135,6 +135,7 @@
   <string name="message_cancel_schedule_send_dialog_title">Editeu-ho i ho torneu a planificar</string>
   <string name="message_cancel_schedule_send_dialog_message">Aquest missatge es mourà als esborranys perquè pugueu editar-lo. Haureu de tornar a planificar quan s\'enviarà.</string>
   <!-- RSVP widget -->
+  <string name="rsvp_widget_no_title">(sense títol)</string>
   <string name="rsvp_widget_attendance_optional">(L\'assistència és opcional)</string>
   <string name="rsvp_widget_attending">Hi assistireu?</string>
   <string name="rsvp_widget_yes">Sí</string>
@@ -149,4 +150,22 @@
     <item quantity="one">%1$d Assistent</item>
     <item quantity="other">%1$d Assistents</item>
   </plurals>
+  <string name="rsvp_widget_happening_now">Està passant <b>ara</b></string>
+  <string name="rsvp_widget_event_ended">L\'esdeveniment ha <b>finalitzat</b></string>
+  <string name="rsvp_widget_event_cancelled">L\'esdeveniment s\'ha <b>cancel·lat</b></string>
+  <string name="rsvp_widget_invite_outdated">Aquesta invitació ha caducat</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">Aquest esdeveniment s\'ha cancelat. La invitatció ha caducat.</string>
+  <string name="rsvp_widget_offline_invite_outdated">Esteu desconnectats. La informació que es mostra podria no estar actualitzada.</string>
+  <string name="rsvp_widget_address_is_incorrect">No es pot fer servir aquesta adreça per respondre. Si us plau, actualitzeu la informació del vostre compte.</string>
+  <string name="rsvp_widget_user_is_organizer">Sou l\'organitzador.</string>
+  <string name="rsvp_widget_event_does_not_exist">Aquest esdeveniment no és al vostre calendari, per tant, no hi podeu respondre.</string>
+  <string name="rsvp_widget_today">Avui</string>
+  <string name="rsvp_widget_tomorrow">Demà</string>
+  <string name="rsvp_widget_invite_details_unavailable">Els detalls de la invitació no estan disponibles</string>
+  <string name="rsvp_widget_could_not_load">No s\'ha pogut carregar la informació.\nTorneu-ho a provar.</string>
+  <string name="rsvp_widget_button_retry">Reintenteu</string>
+  <string name="rsvp_widget_error_answering">S\'ha produït un error en respondre a aquest esdeveniment</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Obriu-lo a Proton Calendar</string>
+  <string name="rsvp_widget_copy_address">Copy address</string>
+  <string name="rsvp_widget_message">Message</string>
 </resources>

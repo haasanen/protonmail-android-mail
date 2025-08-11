@@ -26,10 +26,13 @@
   <!-- Upselling: Social Proof -->
   <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">Tijdelijke aanbieding, annuleer op elk moment.</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Haal het beste uit Mail met deze tijdelijke aanbieding</string>
   <string name="upselling_mailbox_plus_promo_title">Probeer Mail Plus voor %s</string>
+  <string name="upselling_mailbox_plus_promo_cta">Krijg 1 maand voor %s</string>
+  <string name="upselling_mailbox_plus_promo_skip">Sla aanbod over</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s voor de eerste maand, daarna %s per maand</string>
   <!-- Upselling: Contact Groups -->
-  <string name="upselling_contact_groups_plus_description_override">Verzend gemakkelijk groepse-mails. Profiteer hiervan en van meer met Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_description_override">Verzend gemakkelijk groeps-e-mails. Profiteer hiervan en van meer met Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Groepeer uw contacten</string>
   <!-- Upselling: Labels -->
   <string name="upselling_labels_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
@@ -49,6 +52,9 @@
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">Snooze het — en laat het later bezorgen. Profiteer hiervan en van meer met Mail Plus.</string>
   <string name="upselling_snooze_plus_title">Slechte tijd voor deze e-mail?</string>
+  <!-- Upselling - Misc buttons -->
+  <string name="upselling_button_hint">Upgrade for full flexibility</string>
+  <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB opslagruimte</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 GB opslagruimte, 10 e-mailadressen</string>
@@ -97,16 +103,15 @@
   <string name="upselling_select_plan_month">1 maand</string>
   <!-- Other UI Items -->
   <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
-  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s %s%s unless canceled</string>
-  <string name="upselling_auto_renew_text_promo_short">Welkomstaanbieding, verlengt automatisch op %s %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Auto-renews at %s %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text_promo">Welkomstaanbieding. Automatisch verlengen op %s%s tenzij u annuleert</string>
+  <string name="upselling_auto_renew_text_promo_short">Welkomstaanbieding, verlengt automatisch op %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Automatisch verlengen op %s%s tenzij u annuleert</string>
   <string name="upselling_social_proof_reviews">2k+ REVIEWS</string>
   <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
   <string name="upselling_discount_tag">BESPAAR %s%%</string>
   <string name="upselling_month">/maand</string>
   <string name="upselling_year">/jaar</string>
   <string name="upselling_get_button">Kies %s</string>
-  <string name="upselling_get_button_promotional">Krijg 1 maand voor %s %s</string>
   <plurals name="upselling_month">
     <item quantity="one">%d maand</item>
     <item quantity="other">%d maanden</item>

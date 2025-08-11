@@ -33,6 +33,7 @@
   <string name="mail_settings_spam_and_custom_filters">迷惑メールフィルター</string>
   <string name="mail_settings_spam_and_custom_filters_hint">自動操作と並び替え</string>
   <string name="mail_settings_privacy_and_security">プライバシーとセキュリティ</string>
+  <string name="mail_settings_fido_keys">セキュリティキー</string>
   <string name="mail_settings_privacy_and_security_hint">メールトラッキング防止</string>
   <string name="mail_settings_app_hint">モバイルアプリのカスタマイズ</string>
   <string name="mail_settings_theme">テーマ</string>

@@ -33,6 +33,7 @@
   <string name="mail_settings_spam_and_custom_filters">Ενοχλητικά και φίλτρα</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Αυτόματες ενέργειες και ταξινόμηση</string>
   <string name="mail_settings_privacy_and_security">Απόρρητο και ασφάλεια</string>
+  <string name="mail_settings_fido_keys">Κλειδιά ασφαλείας</string>
   <string name="mail_settings_privacy_and_security_hint">Προστασία ιχνηλασίας μηνυμάτων</string>
   <string name="mail_settings_app_hint">Προσαρμογές εφαρμογής για κινητά</string>
   <string name="mail_settings_theme">Θέμα</string>

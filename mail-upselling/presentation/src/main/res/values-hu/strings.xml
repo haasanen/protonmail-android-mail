@@ -26,8 +26,11 @@
   <!-- Upselling: Social Proof -->
   <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">Korlátozott ideig érvényes ajánlat, bármikor lemondható.</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Get the best of Mail with this limited time offer</string>
   <string name="upselling_mailbox_plus_promo_title">Próbálja ki a Mail Plus szolgáltatást %s áron</string>
+  <string name="upselling_mailbox_plus_promo_cta">Get 1 month for %s</string>
+  <string name="upselling_mailbox_plus_promo_skip">Skip offer</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s for the 1st month, then %s per month</string>
   <!-- Upselling: Contact Groups -->
   <string name="upselling_contact_groups_plus_description_override">Send group emails with ease. Enjoy this and more with Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Csoportosítsa a kapcsolatait</string>
@@ -49,6 +52,9 @@
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
   <string name="upselling_snooze_plus_title">Bad time for this email?</string>
+  <!-- Upselling - Misc buttons -->
+  <string name="upselling_button_hint">Upgrade for full flexibility</string>
+  <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB tárhely</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 GB tárhely, 10 e-mail cím</string>
@@ -97,16 +103,15 @@
   <string name="upselling_select_plan_month">1 hónap</string>
   <!-- Other UI Items -->
   <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
-  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s %s%s unless canceled</string>
-  <string name="upselling_auto_renew_text_promo_short">Üdvözlő ajánlat. Automatikusan megújul %s %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Auto-renews at %s %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text_promo_short">Welcome offer. Auto-renews at %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Auto-renews at %s%s unless canceled</string>
   <string name="upselling_social_proof_reviews">2k+ REVIEWS</string>
   <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
   <string name="upselling_discount_tag">%s%% kedvezmény</string>
   <string name="upselling_month">/hó</string>
   <string name="upselling_year">/év</string>
   <string name="upselling_get_button">%s beszerzése</string>
-  <string name="upselling_get_button_promotional">Szerezzen 1 hónapot %s %s áron</string>
   <plurals name="upselling_month">
     <item quantity="one">%d hónap</item>
     <item quantity="other">%d hónap</item>

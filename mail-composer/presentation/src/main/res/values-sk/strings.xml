@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Heslo správy</string>
   <string name="set_message_password_label_repeat">Zopakovať heslo</string>
   <string name="set_message_password_label_hint">Nápoveda k heslu (voliteľné)</string>
-  <string name="set_message_password_supporting_text">4 až 21 znakov</string>
-  <string name="set_message_password_supporting_error_text">Heslo musí mať dĺžku 4 až 21 znakov</string>
+  <string name="set_message_password_supporting_text">8 to 21 characters long</string>
+  <string name="set_message_password_supporting_error_text">The password must be between 8 and 21 characters</string>
   <string name="set_message_password_supporting_text_repeat">Heslá sa musia zhodovať</string>
   <string name="set_message_password_supporting_error_text_repeat">Heslá sa nezhodujú</string>
   <string name="set_message_password_button_show">Zobraziť heslo</string>
@@ -126,6 +126,7 @@
   <string name="composer_schedule_send_tomorrow_title">Zajtra</string>
   <string name="composer_schedule_send_monday_title">Pondelok</string>
   <string name="composer_schedule_send_custom_title">Vlastné</string>
+  <string name="composer_schedule_send_custom_upsell_title">Custom date and time</string>
   <string name="composer_schedule_send_custom_description">Vyberte čas a dátum</string>
   <string name="composer_error_send_message">Chyba pri odosielaní správy</string>
   <string name="composer_schedule_send_previously_set">Predtým nastavené</string>
@@ -140,4 +141,5 @@
   <string name="composer_change_sender_error_refreshing_body">Obnovenie tela po zmene odosielateľa zlyhalo. Podpis môže byť neaktuálny.</string>
   <string name="composer_loading_attachments_error">Načítanie príloh zlyhalo</string>
   <string name="composer_attachment_upload_error_retry">Niektoré prílohy sa nepodarilo nahrať. Skúste to prosím znova, prosím.</string>
+  <string name="composer_external_encryption_unexpected_error">Unexpected error %s. Try again.</string>
 </resources>

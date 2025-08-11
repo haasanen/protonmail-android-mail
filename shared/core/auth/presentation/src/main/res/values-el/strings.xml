@@ -42,7 +42,9 @@
   <string name="auth_account_details">Εισαγάγετε τα στοιχεία του λογαριασμού σας Proton.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Πρόβλημα σύνδεσης. Παρακαλούμε προσπαθήστε ξανά.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Απαιτείται ανθρώπινη επαλήθευση.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Λανθασμένο όνομα χρήστη ή κωδικός πρόσβασης. Παρακαλούμε προσπαθήστε ξανά.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Εσφαλμένα διαπιστευτήρια σύνδεσης. Παρακαλούμε προσπαθήστε ξανά.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Μη υποστηριζόμενοι δύο παράγοντες. (2FA)</string>
+  <string name="auth_login_general_error">Παρουσιάστηκε σφάλμα.</string>
   <string name="auth_second_factor_title">Ταυτοποίηση δύο παραγόντων</string>
   <string name="auth_second_factor_subtitle">Ο λογαριασμός σας έχει διαμορφώσει αρκετούς μηχανισμούς 2FA. Επιλέξτε πώς θέλετε να επιβεβαιώσετε την ταυτότητά σας.</string>
   <string name="auth_second_factor_tab_security_key">Κλειδί Ασφαλείας</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Χρησιμοποιήστε κωδικό Δύο Παραγόντων (2FA)</string>
   <string name="auth_second_factor_insert_security_key">Παρουσιάστε ένα κλειδί ασφαλείας συνδεδεμένο με τον Proton λογαριασμό σας. </string>
   <string name="auth_second_factor_insert_security_key_link">Μάθετε περισσότερα</string>
+  <string name="auth_second_factor_incorrect_code">Λανθασμένος κωδικός. Παρακαλούμε δοκιμάστε ξανά.</string>
   <string name="auth_two_pass_title">Ξεκλειδώστε τη θυρίδα σας</string>
   <string name="auth_two_pass_input_label">Κωδικός Θυρίδας</string>
   <string name="auth_two_pass_unlock">Ξεκλείδωμα</string>
@@ -106,7 +109,6 @@
   <string name="auth_signup_recovery_email_validation_error">Η επικύρωση ηλεκτρονικής διεύθυνσης απέτυχε</string>
   <string name="auth_signup_recovery_phone_validation_error">Η επικύρωση του αριθμού τηλεφώνου απέτυχε</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Οι κωδικοί πρόσβασης δεν ταιριάζουν. Παρακαλούμε προσπαθήστε ξανά.</string>
-  <string name="auth_signup_generic_error">Κάτι πήγε στραβά. Παρακαλούμε δοκιμάστε ξανά.</string>
   <string name="auth_signup_countries_search">Αναζήτηση χώρας</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Δεν ήταν δυνατή η ρύθμιση του χρήστη.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Δεν ήταν δυνατή η ρύθμιση της διεύθυνσης.</string>
@@ -118,6 +120,18 @@
   <string name="auth_fido_manage_security_keys">Διαχείριση κλειδιών ασφαλείας</string>
   <string name="auth_fido_add_security_key">Προσθήκη κλειδιού ασφαλείας</string>
   <string name="auth_fido_security_keys_learn_more">Μάθετε περισσότερα</string>
+  <string name="auth_user_check_delinquent_error">Ο λογαριασμός σας είναι σε αναστολή λόγω ενός ληξιπρόθεσμου τιμολογίου.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="one">Επιτρέπεται μόνο ένας δωρεάν λογαριασμός Proton.</item>
+    <item quantity="other">Επιτρέπονται μόνο %d δωρεάν λογαριασμοί Proton.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Κάτι πήγε στραβά. Παρακαλούμε δοκιμάστε ξανά.</string>
+  <string name="auth_fido_config_error">Σφάλμα ανάκτησης αποθηκευμένων κλειδιών.</string>
+  <string name="auth_fido_reading_key_error">Σφάλμα κατά την ανάγνωση του κλειδιού ασφαλείας.</string>
+  <string name="auth_fido_submit_key_error">Σφάλμα υποβολής δεδομένων κλειδιού.</string>
+  <string name="auth_fido_reading_key_progress">Ανάγνωση κλειδιού ασφαλείας.</string>
+  <string name="auth_fido_authenticating_in_progress">Πραγματοποιείται ταυτοποίηση με κλειδί ασφαλείας.</string>
+  <string name="auth_fido_security_key">Κλειδί Ασφαλείας</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="one">Ο κωδικός πρέπει να περιέχει τουλάχιστον 1 χαρακτήρα</item>
     <item quantity="other">Ο κωδικός πρέπει να περιέχει τουλάχιστον %1$s χαρακτήρες</item>

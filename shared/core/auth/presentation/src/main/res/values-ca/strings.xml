@@ -42,7 +42,9 @@
   <string name="auth_account_details">Introduïu els detalls del compte de Proton.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problema en iniciar la sessió. Torneu-ho a provar.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Es necessita una verificació humana.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Nom d\'usuari o contrasenya incorrectes. Torneu-ho a provar.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Les credencials d\'inici de sessió no són correctes. Torneu-ho a provar.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">No s\'admet l\'autenticació de doble factor.</string>
+  <string name="auth_login_general_error">S\'ha produït un error.</string>
   <string name="auth_second_factor_title">Autenticació de doble factor</string>
   <string name="auth_second_factor_subtitle">El compte té diversos mecanismes 2FA configurats. Trieu com voleu confirmar la identitat.</string>
   <string name="auth_second_factor_tab_security_key">Clau de seguretat</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Utilitza un codi de doble factor</string>
   <string name="auth_second_factor_insert_security_key">Presenteu una clau de seguretat vinculada al compte del Proton. </string>
   <string name="auth_second_factor_insert_security_key_link">Més informació</string>
+  <string name="auth_second_factor_incorrect_code">Aquest codi no és correcte. Torneu-ho a provar.</string>
   <string name="auth_two_pass_title">Desbloquegeu la bústia de correu</string>
   <string name="auth_two_pass_input_label">Contrasenya de la bústia de correu</string>
   <string name="auth_two_pass_unlock">Desbloqueja</string>
@@ -106,7 +109,6 @@
   <string name="auth_signup_recovery_email_validation_error">No s\'ha pogut validar el correu electrònic.</string>
   <string name="auth_signup_recovery_phone_validation_error">No s\'ha pogut validar el número de telèfon.</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Les contrasenyes no coincideixen. Torneu-ho a provar.</string>
-  <string name="auth_signup_generic_error">Alguna cosa ha anat malament. Torneu-ho a provar.</string>
   <string name="auth_signup_countries_search">Cerca un país</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">No s\'ha pogut configurar l\'usuari.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">No s\'ha pogut configurar l\'adreça.</string>
@@ -118,6 +120,18 @@
   <string name="auth_fido_manage_security_keys">Gestiona les claus de seguretat</string>
   <string name="auth_fido_add_security_key">Afegeix una clau de seguretat</string>
   <string name="auth_fido_security_keys_learn_more">Més informació</string>
+  <string name="auth_user_check_delinquent_error">El vostre compte està suspès a causa d\'una factura vençuda.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="one">Només es permet un compte de Proton gratuït.</item>
+    <item quantity="other">Només es permeten %d comptes de Proton gratuïts.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Alguna cosa ha anat malament. Torneu-ho a provar.</string>
+  <string name="auth_fido_config_error">S\'ha produït un error en recuperar les claus emmagatzemades.</string>
+  <string name="auth_fido_reading_key_error">S\'ha produït un error en llegir la clau de seguretat.</string>
+  <string name="auth_fido_submit_key_error">S\'ha produït un error en l\'enviament de dades de la clau.</string>
+  <string name="auth_fido_reading_key_progress">S\'està llegint la clau de seguretat.</string>
+  <string name="auth_fido_authenticating_in_progress">S\'està autenticant amb la clau de seguretat.</string>
+  <string name="auth_fido_security_key">Clau de seguretat</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="one">La contrasenya ha de contenir com a mínim 1 caràcter</item>
     <item quantity="other">La contrasenya ha de contenir com a mínim %1$s caràcters</item>

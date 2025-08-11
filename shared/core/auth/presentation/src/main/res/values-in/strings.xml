@@ -24,7 +24,7 @@
   <string name="login_help_other_issues">Masalah masuk lainnya</string>
   <string name="login_help_contact_needed">Masih butuh bantuan? Hubungi kami secara langsung.</string>
   <string name="login_help_customer_support">Layanan dukungan</string>
-  <string name="login_help_sign_in_with_qr_code">Sign in with QR code</string>
+  <string name="login_help_sign_in_with_qr_code">Masuk dengan kode QR</string>
   <string name="welcome_subtitle_mail">Privasi. Keamanan. Kenyamanan. Email terenkripsi yang memberi Anda kendali penuh terhadap data pribadi Anda.</string>
   <string name="welcome_sign_in">Masuk</string>
   <string name="welcome_sign_up">Buat akun</string>
@@ -42,7 +42,9 @@
   <string name="auth_account_details">Masukkan rincian Akun Proton Anda.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Terdapat masalah saat Anda masuk. Silakan coba lagi.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Verifikasi manusia dibutuhkan.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Nama pengguna atau kata sandi salah. Silakan coba lagi.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Incorrect login credentials. Please try again.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Unsupported two factor.</string>
+  <string name="auth_login_general_error">An error occurred.</string>
   <string name="auth_second_factor_title">Autentikasi dua-faktor</string>
   <string name="auth_second_factor_subtitle">Akun Anda memiliki beberapa mekanisme 2FA yang terpasang. Silakan tentukan bagaimana Anda ingin mengonfirmasi identitas Anda.</string>
   <string name="auth_second_factor_tab_security_key">Kunci Keamanan</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Gunakan kode dua faktor</string>
   <string name="auth_second_factor_insert_security_key">Perlihatkan kunci keamanan yang terhubung dengan Akun Proton Anda. </string>
   <string name="auth_second_factor_insert_security_key_link">Pelajari lebih lanjut</string>
+  <string name="auth_second_factor_incorrect_code">Incorrect code. Please try again.</string>
   <string name="auth_two_pass_title">Buka kunci kotak surat Anda</string>
   <string name="auth_two_pass_input_label">Kata sandi kotak surat</string>
   <string name="auth_two_pass_unlock">Buka kunci</string>
@@ -102,11 +105,10 @@
   <string name="auth_signup_validation_email">Email tidak boleh kosong.</string>
   <string name="auth_signup_validation_username_input_invalid">Masukan nama pengguna tidak valid.</string>
   <string name="auth_signup_validation_email_input_invalid">Masukan nama pengguna tidak valid.</string>
-  <string name="auth_signup_username_unavailable_error">Username already taken. Choose a different username.</string>
-  <string name="auth_signup_recovery_email_validation_error">Email validation failed</string>
-  <string name="auth_signup_recovery_phone_validation_error">Phone number validation failed</string>
-  <string name="auth_signup_createpassword_error_password_not_equal">Passwords do not match. Please try again.</string>
-  <string name="auth_signup_generic_error">Something went wrong. Please try again.</string>
+  <string name="auth_signup_username_unavailable_error">Nama pengguna telah digunakan. Silakan pilih nama pengguna yang berbeda.</string>
+  <string name="auth_signup_recovery_email_validation_error">Validasi email gagal</string>
+  <string name="auth_signup_recovery_phone_validation_error">Validasi nomor telepon gagal</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">Kata sandi tidak cocok. Silakan coba lagi.</string>
   <string name="auth_signup_countries_search">Cari negara</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Tidak dapat menyiapkan pengguna.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Tidak dapat menyiapkan alamat.</string>
@@ -118,10 +120,21 @@
   <string name="auth_fido_manage_security_keys">Kelola kunci keamanan</string>
   <string name="auth_fido_add_security_key">Tambahkan kunci keamanan</string>
   <string name="auth_fido_security_keys_learn_more">Pelajari lebih lanjut</string>
+  <string name="auth_user_check_delinquent_error">Your account is currently on hold due to an overdue invoice.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="other">Only %d free Proton accounts are allowed.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Something went wrong. Please try again.</string>
+  <string name="auth_fido_config_error">Error retrieving stored keys.</string>
+  <string name="auth_fido_reading_key_error">Error reading security key.</string>
+  <string name="auth_fido_submit_key_error">Error submitting key data.</string>
+  <string name="auth_fido_reading_key_progress">Reading security key.</string>
+  <string name="auth_fido_authenticating_in_progress">Authenticating with security key.</string>
+  <string name="auth_fido_security_key">Security Key</string>
   <plurals name="password_validator_min_length_error">
-    <item quantity="other">Password must contain at least %1$s characters</item>
+    <item quantity="other">Kata sandi harus mengandung minimal %1$s karakter</item>
   </plurals>
   <plurals name="password_validator_min_length_requirement">
-    <item quantity="other">At least %1$s characters</item>
+    <item quantity="other">Minimal %1$s karakter</item>
   </plurals>
 </resources>

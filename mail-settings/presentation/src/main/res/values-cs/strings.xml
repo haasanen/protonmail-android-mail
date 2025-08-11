@@ -32,7 +32,8 @@
   <string name="mail_settings_folders_labels_hint">E-mailová schránka organizace</string>
   <string name="mail_settings_spam_and_custom_filters">Spam a filtry</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Automatické akce a řazení</string>
-  <string name="mail_settings_privacy_and_security">Soukromí a bezpečnost</string>
+  <string name="mail_settings_privacy_and_security">Soukromí a zabezpečení</string>
+  <string name="mail_settings_fido_keys">Bezpečnostní klíče</string>
   <string name="mail_settings_privacy_and_security_hint">Ochrana před sledovacími prvky v e-mailech</string>
   <string name="mail_settings_app_hint">Přizpůsobení mobilní aplikace</string>
   <string name="mail_settings_theme">Motiv</string>

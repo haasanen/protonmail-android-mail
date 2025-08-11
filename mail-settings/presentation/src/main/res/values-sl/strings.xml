@@ -33,6 +33,7 @@
   <string name="mail_settings_spam_and_custom_filters">Neželena pošta in filtri</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Samodejna dejanja in razvrščanje</string>
   <string name="mail_settings_privacy_and_security">Zasebnost in varnost</string>
+  <string name="mail_settings_fido_keys">Security keys</string>
   <string name="mail_settings_privacy_and_security_hint">Zaščita pred sledenjem v sporočilih</string>
   <string name="mail_settings_app_hint">Prilagoditve mobilne aplikacije</string>
   <string name="mail_settings_theme">Tema</string>

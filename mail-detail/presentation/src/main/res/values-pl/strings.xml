@@ -139,6 +139,7 @@
   <string name="message_cancel_schedule_send_dialog_title">Edytuj i ponownie zaplanuj</string>
   <string name="message_cancel_schedule_send_dialog_message">Wiadomość zostanie przeniesiona do szkiców. Musisz ją ponownie zaplanować do wysłania.</string>
   <!-- RSVP widget -->
+  <string name="rsvp_widget_no_title">(brak tytułu)</string>
   <string name="rsvp_widget_attendance_optional">(uczestnictwo jest opcjonalne)</string>
   <string name="rsvp_widget_attending">Będziesz uczestniczyć?</string>
   <string name="rsvp_widget_yes">Tak</string>
@@ -155,4 +156,22 @@
     <item quantity="many">%1$d uczestników</item>
     <item quantity="other">%1$d uczestników</item>
   </plurals>
+  <string name="rsvp_widget_happening_now">Trwa <b>teraz</b></string>
+  <string name="rsvp_widget_event_ended">Wydarzenie <b>zakończyło się</b></string>
+  <string name="rsvp_widget_event_cancelled">Wydarzenie zostało <b>anulowane</b></string>
+  <string name="rsvp_widget_invite_outdated">Zaproszenie jest nieaktualne</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">Wydarzenie zostało anulowane. Zaproszenie jest nieaktualne.</string>
+  <string name="rsvp_widget_offline_invite_outdated">Jesteś w trybie offline. Informacje mogą być nieaktualne.</string>
+  <string name="rsvp_widget_address_is_incorrect">Twój adres nie może zostać użyty do odpowiedzi. Zaktualizuj informacje konta.</string>
+  <string name="rsvp_widget_user_is_organizer">Jesteś organizatorem.</string>
+  <string name="rsvp_widget_event_does_not_exist">Tego wydarzenia nie ma w Twoim kalendarzu, więc nie możesz na nie odpowiedzieć.</string>
+  <string name="rsvp_widget_today">Dzisiaj</string>
+  <string name="rsvp_widget_tomorrow">Jutro</string>
+  <string name="rsvp_widget_invite_details_unavailable">Brak szczegółów zaproszenia</string>
+  <string name="rsvp_widget_could_not_load">Nie udało się załadować informacji.\nSpróbuj ponownie.</string>
+  <string name="rsvp_widget_button_retry">Spróbuj ponownie</string>
+  <string name="rsvp_widget_error_answering">Wystąpił błąd podczas odpowiadania na wydarzenie</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Otwórz w Proton Calendar</string>
+  <string name="rsvp_widget_copy_address">Copy address</string>
+  <string name="rsvp_widget_message">Message</string>
 </resources>

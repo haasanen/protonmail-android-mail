@@ -105,7 +105,7 @@
   <string name="mailbox_action_button_clear_trash">Opróżnij kosz</string>
   <string name="mailbox_action_button_clear_spam">Opróżnij spam</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Ulepsz konto, aby automatycznie usuwać wiadomości, które znajdują się w koszu lub spamie dłużej niż 30 dni</string>
-  <string name="mailbox_action_clear_trash_spam_upsell_banner_link_title">Dowiedz się więcej</string>
+  <string name="mailbox_action_clear_trash_spam_upsell_cta">Ulepsz konto, aby włączyć automatyczne usuwanie</string>
   <string name="mailbox_action_auto_delete_on_clear_trash_spam_banner_text">Wiadomości, które znajdują się w koszu lub spamie dłużej niż 30 dni, zostaną automatycznie usunięte.</string>
   <string name="mailbox_action_auto_delete_off_clear_trash_spam_banner_text">Automatyczne usuwanie jest wyłączone. Wiadomości w koszu i spamie pozostaną tam do momentu ich ręcznego usunięcia.</string>
   <string name="mailbox_action_clear_trash_dialog_title">Opróżnij kosz</string>

@@ -24,7 +24,7 @@
   <string name="login_help_other_issues">Alte probleme la conectare</string>
   <string name="login_help_contact_needed">Încă aveți nevoie de ajutor? Contactați-ne direct.</string>
   <string name="login_help_customer_support">Asistență clienți</string>
-  <string name="login_help_sign_in_with_qr_code">Sign in with QR code</string>
+  <string name="login_help_sign_in_with_qr_code">Conectare cu cod QR</string>
   <string name="welcome_subtitle_mail">Confidențialitate. Securitate. Comoditate. E-mail criptat care vă oferă controlul asupra datelor personale.</string>
   <string name="welcome_sign_in">Conectare</string>
   <string name="welcome_sign_up">Creare cont</string>
@@ -42,7 +42,9 @@
   <string name="auth_account_details">Introduceți detaliile contului Proton.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problema la autentificare. Mai încercați.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Este necesară verificarea ca persoană.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Nume de utilizator sau parolă incorectă. Reîncercați.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Date de conectare incorecte. Reîncercați.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Autentificare cu doi factori nesuportată.</string>
+  <string name="auth_login_general_error">A apărut o eroare.</string>
   <string name="auth_second_factor_title">Autentificare cu doi factori</string>
   <string name="auth_second_factor_subtitle">Contul are mai multe mecanisme de A2F. Alegeți cum doriți să vă confirmați identitatea.</string>
   <string name="auth_second_factor_tab_security_key">Cheie de securitate</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Folosire cod A2F</string>
   <string name="auth_second_factor_insert_security_key">Prezentați o cheie de securitate conectată la contul Proton. </string>
   <string name="auth_second_factor_insert_security_key_link">Detalii</string>
+  <string name="auth_second_factor_incorrect_code">Cod incorect. Reîncercați.</string>
   <string name="auth_two_pass_title">Deblocare mesaje</string>
   <string name="auth_two_pass_input_label">Parolă mesaje</string>
   <string name="auth_two_pass_unlock">Deblocare</string>
@@ -106,7 +109,6 @@
   <string name="auth_signup_recovery_email_validation_error">Validarea adresei de e-mail a eșuat.</string>
   <string name="auth_signup_recovery_phone_validation_error">Validarea numărului de telefon a eșuat.</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Parolele nu coincid. Reîncercați.</string>
-  <string name="auth_signup_generic_error">Ceva nu a funcționat bine. Reîncercați.</string>
   <string name="auth_signup_countries_search">Căutare țară</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Nu s-a putut configura utilizatorul.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Nu s-a putut configura adresa.</string>
@@ -118,6 +120,19 @@
   <string name="auth_fido_manage_security_keys">Gestionare chei de securitate</string>
   <string name="auth_fido_add_security_key">Adăugare cheie de securitate</string>
   <string name="auth_fido_security_keys_learn_more">Detalii</string>
+  <string name="auth_user_check_delinquent_error">Contul vă este suspendat datorită unei facturi neachitate.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="one">Este permis doar un cont Proton gratuit.</item>
+    <item quantity="few">Sunt permise doar %d conturi Proton gratuite.</item>
+    <item quantity="other">Sunt permise doar %d de conturi Proton gratuite.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Ceva nu a funcționat bine. Reîncercați.</string>
+  <string name="auth_fido_config_error">Eroare la preluarea cheilor stocate.</string>
+  <string name="auth_fido_reading_key_error">Eroare la citirea cheii de securitate.</string>
+  <string name="auth_fido_submit_key_error">Eroare la trimiterea datelor cheii.</string>
+  <string name="auth_fido_reading_key_progress">Se citește cheia de securitate.</string>
+  <string name="auth_fido_authenticating_in_progress">Se autentifică cu cheia de securitate.</string>
+  <string name="auth_fido_security_key">Cheie de securitate</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="one">Parola trebuie să conțină cel puțin un caracter.</item>
     <item quantity="few">Parola trebuie să conțină cel puțin %1$s caractere.</item>

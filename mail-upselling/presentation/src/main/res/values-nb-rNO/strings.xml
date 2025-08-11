@@ -26,8 +26,11 @@
   <!-- Upselling: Social Proof -->
   <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">Tidsbegrenset tilbud, avbryt når som helst.</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Få det beste av Mail med dette tidsbegrensede tilbudet</string>
   <string name="upselling_mailbox_plus_promo_title">Prøv Mail Plus for %s</string>
+  <string name="upselling_mailbox_plus_promo_cta">Få én måned for %s</string>
+  <string name="upselling_mailbox_plus_promo_skip">Hopp over tilbud</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s for den første måneden, deretter %s per måned</string>
   <!-- Upselling: Contact Groups -->
   <string name="upselling_contact_groups_plus_description_override">Send gruppe-e-poster enkelt. Nyt dette og mer med Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Grupper kontaktene dine</string>
@@ -49,6 +52,9 @@
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">Slumre den — og få den levert senere. Nyt dette og mer med Mail Plus.</string>
   <string name="upselling_snooze_plus_title">Dårlig tidspunkt for denne e-posten?</string>
+  <!-- Upselling - Misc buttons -->
+  <string name="upselling_button_hint">Oppgrader for full fleksibilitet</string>
+  <string name="upselling_upgrade_plan_generic">Du trenger et betalt Proton Mail-abonnement for å bruke denne funksjonen</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB lagringsplass</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 GB lagringsplass, 10 e-postadresser</string>
@@ -97,16 +103,15 @@
   <string name="upselling_select_plan_month">1 måned</string>
   <!-- Other UI Items -->
   <string name="upselling_auto_renew_text">Automatisk fornyelse til samme pris og vilkår med mindre oppsigelse</string>
-  <string name="upselling_auto_renew_text_promo">Velkomsttilbud. Fornyes automatisk %s%s%s med mindre oppsigelse</string>
-  <string name="upselling_auto_renew_text_promo_short">Velkomsttilbud. Fornyes automatisk til %s %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Fornyes automatisk %s%s%s med mindre oppsigelse</string>
+  <string name="upselling_auto_renew_text_promo">Velkomsttilbud. Fornyes automatisk til %s%s med mindre oppsigelse</string>
+  <string name="upselling_auto_renew_text_promo_short">Velkomsttilbud. Fornyes automatisk til %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Fornyes automatisk til %s%s med mindre oppsigelse</string>
   <string name="upselling_social_proof_reviews">2k+ ANMELDELSER</string>
   <string name="upselling_description_social_proof">Oppgrader til opplevelsen som millioner av abonnenter elsker.</string>
   <string name="upselling_discount_tag">Spar %s%%</string>
   <string name="upselling_month">/måned</string>
   <string name="upselling_year">/år</string>
   <string name="upselling_get_button">Skaff deg %s</string>
-  <string name="upselling_get_button_promotional">Få én måned for %s %s</string>
   <plurals name="upselling_month">
     <item quantity="one">%d måned</item>
     <item quantity="other">%d måneder</item>

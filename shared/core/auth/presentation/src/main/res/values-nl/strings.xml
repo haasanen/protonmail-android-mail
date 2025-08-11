@@ -42,7 +42,9 @@
   <string name="auth_account_details">Vul uw Proton-accountgegevens in.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Probleem bij uw aanmelding. Probeer het opnieuw.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Er is menselijke verificatie nodig.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Onjuiste gebruikersnaam of wachtwoord. Probeer het opnieuw.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Onjuiste inloggegevens. Probeer het opnieuw.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Niet-ondersteunde tweestapsverificatie.</string>
+  <string name="auth_login_general_error">Er is iets fout gegaan.</string>
   <string name="auth_second_factor_title">Tweestapsverificatie</string>
   <string name="auth_second_factor_subtitle">Uw account heeft meerdere 2FA mechanismen geconfigureerd. Selecteer hoe u uw identiteit wilt bevestigen.</string>
   <string name="auth_second_factor_tab_security_key">Beveiligingssleutel</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Tweestapsverificatiecode gebruiken</string>
   <string name="auth_second_factor_insert_security_key">Vul een beveiligingssleutel in die gekoppeld is aan uw Proton Account. </string>
   <string name="auth_second_factor_insert_security_key_link">Meer informatie</string>
+  <string name="auth_second_factor_incorrect_code">Onjuiste code. Probeer het opnieuw.</string>
   <string name="auth_two_pass_title">Ontgrendel uw mailbox</string>
   <string name="auth_two_pass_input_label">Wachtwoord mailbox</string>
   <string name="auth_two_pass_unlock">Ontgrendelen</string>
@@ -106,7 +109,6 @@
   <string name="auth_signup_recovery_email_validation_error">E-mailadres validatie mislukt</string>
   <string name="auth_signup_recovery_phone_validation_error">Telefoonnummer validatie mislukt</string>
   <string name="auth_signup_createpassword_error_password_not_equal">De wachtwoorden komen niet overeen. Probeer opnieuw.</string>
-  <string name="auth_signup_generic_error">Er is iets fout gegaan. Probeer het later nog eens.</string>
   <string name="auth_signup_countries_search">Zoek land</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">De gebruiker kon niet worden ingesteld.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Kon het adres niet instellen.</string>
@@ -118,6 +120,18 @@
   <string name="auth_fido_manage_security_keys">Beveiligingssleutels beheren</string>
   <string name="auth_fido_add_security_key">Beveiligingssleutel toevoegen</string>
   <string name="auth_fido_security_keys_learn_more">Meer info</string>
+  <string name="auth_user_check_delinquent_error">Uw account staat momenteel in de wacht wegens een achterstallige factuur.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="one">Slechts één gratis Proton account is toegestaan.</item>
+    <item quantity="other">Slechts %d gratis Proton accounts zijn toegestaan.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Er is iets fout gegaan. Probeer het later nog eens.</string>
+  <string name="auth_fido_config_error">Fout bij het ophalen van opgeslagen sleutels.</string>
+  <string name="auth_fido_reading_key_error">Error reading security key.</string>
+  <string name="auth_fido_submit_key_error">Error submitting key data.</string>
+  <string name="auth_fido_reading_key_progress">Reading security key.</string>
+  <string name="auth_fido_authenticating_in_progress">Authenticating with security key.</string>
+  <string name="auth_fido_security_key">Security Key</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="one">Wachtwoord moet tenminste 1 teken bevatten</item>
     <item quantity="other">Wachtwoord moet tenminste %1$s tekens bevatten</item>

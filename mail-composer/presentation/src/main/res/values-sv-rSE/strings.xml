@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Meddelandelösenord</string>
   <string name="set_message_password_label_repeat">Upprepa lösenord</string>
   <string name="set_message_password_label_hint">Lösenordsledtråd (valfritt)</string>
-  <string name="set_message_password_supporting_text">4 till 21 tecken långt</string>
-  <string name="set_message_password_supporting_error_text">Lösenordet måste vara mellan 4 och 21 tecken</string>
+  <string name="set_message_password_supporting_text">8 till 21 tecken långt</string>
+  <string name="set_message_password_supporting_error_text">Lösenordet måste vara mellan 8 och 21 tecken</string>
   <string name="set_message_password_supporting_text_repeat">Lösenorden måste matcha</string>
   <string name="set_message_password_supporting_error_text_repeat">Lösenorden matchar inte</string>
   <string name="set_message_password_button_show">Visa lösenord</string>
@@ -124,6 +124,7 @@
   <string name="composer_schedule_send_tomorrow_title">Imorgon</string>
   <string name="composer_schedule_send_monday_title">Måndag</string>
   <string name="composer_schedule_send_custom_title">Anpassad</string>
+  <string name="composer_schedule_send_custom_upsell_title">Anpassat datum och tid</string>
   <string name="composer_schedule_send_custom_description">Välj tid och datum</string>
   <string name="composer_error_send_message">Det gick inte att skicka meddelandet</string>
   <string name="composer_schedule_send_previously_set">Tidigare inställt</string>
@@ -138,4 +139,5 @@
   <string name="composer_change_sender_error_refreshing_body">Refreshing the body after the sender change failed. Signature might be out of date.</string>
   <string name="composer_loading_attachments_error">Misslyckades ladda bilagor</string>
   <string name="composer_attachment_upload_error_retry">Några bilagor misslyckades att laddas upp. Försök igen.</string>
+  <string name="composer_external_encryption_unexpected_error">Oväntat fel %s. Försök igen.</string>
 </resources>

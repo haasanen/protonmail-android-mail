@@ -129,12 +129,13 @@
   <string name="schedule_message_edit_message_button">Redigera meddelande</string>
   <string name="schedule_send_tomorrow">imorgon kl. %1$s</string>
   <string name="error_cancel_schedule_send_failed">Failed to cancel this message scheduled send time</string>
-  <string name="offline_error_cancel_schedule_send_failed">Cannot cancel a scheduled message while offline</string>
+  <string name="offline_error_cancel_schedule_send_failed">Kan inte avbryta ett schemalagt meddelande när man är offline</string>
   <string name="message_cancel_schedule_send_dialog_confim_button">Redigera utkast</string>
   <string name="message_cancel_schedule_send_dialog_cancel_button">Avbryt</string>
   <string name="message_cancel_schedule_send_dialog_title">Redigera och schemalägg igen</string>
   <string name="message_cancel_schedule_send_dialog_message">Detta meddelande kommer att flyttas till utkast så att du kan redigera det. Du måste schemalägga om när det ska skickas.</string>
   <!-- RSVP widget -->
+  <string name="rsvp_widget_no_title">(ingen rubrik)</string>
   <string name="rsvp_widget_attendance_optional">(Frivilligt deltagande)</string>
   <string name="rsvp_widget_attending">Delta?</string>
   <string name="rsvp_widget_yes">Ja</string>
@@ -149,4 +150,22 @@
     <item quantity="one">%1$d deltagare</item>
     <item quantity="other">%1$d deltagare</item>
   </plurals>
+  <string name="rsvp_widget_happening_now">Pågår <b>nu</b></string>
+  <string name="rsvp_widget_event_ended">Händelse <b>avslutad</b></string>
+  <string name="rsvp_widget_event_cancelled">Händelse <b>avbruten</b></string>
+  <string name="rsvp_widget_invite_outdated">Denna inbjudan är föråldrad</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">Händelse avbröts. Denna inbjudan är föråldrad.</string>
+  <string name="rsvp_widget_offline_invite_outdated">Du är offline. Den visade informationen kan vara föråldrad.</string>
+  <string name="rsvp_widget_address_is_incorrect">Din adress kan inte användas för att svara. Uppdatera din kontoinformation.</string>
+  <string name="rsvp_widget_user_is_organizer">Du är organisatören.</string>
+  <string name="rsvp_widget_event_does_not_exist">Denna händelse finns inte i din kalender så du kan inte svara på den.</string>
+  <string name="rsvp_widget_today">Idag</string>
+  <string name="rsvp_widget_tomorrow">Imorgon</string>
+  <string name="rsvp_widget_invite_details_unavailable">Inbjudningsdetaljer otillgängliga</string>
+  <string name="rsvp_widget_could_not_load">Vi kunde inte ladda informationen.\nFörsök igen.</string>
+  <string name="rsvp_widget_button_retry">Försök igen</string>
+  <string name="rsvp_widget_error_answering">Ett fel uppstod vid besvarande av denna händelse</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Öppna i Proton Calendar</string>
+  <string name="rsvp_widget_copy_address">Kopiera adress</string>
+  <string name="rsvp_widget_message">Meddelande</string>
 </resources>

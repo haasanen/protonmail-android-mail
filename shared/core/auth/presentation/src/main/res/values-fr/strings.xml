@@ -42,7 +42,9 @@
   <string name="auth_account_details">Saisissez les informations de votre compte Proton.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Un problème est survenu lors de votre connexion. Nous vous invitons à réessayer.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Une vérification humaine est nécessaire.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Le nom d\'utilisateur ou le mot de passe n\'est pas correct. Veuillez réessayer.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Les identifiants de connexion ne sont pas corrects. Nous vous invitons à réessayer.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Authentification à deux facteurs non prise en charge.</string>
+  <string name="auth_login_general_error">Une erreur s’est produite.</string>
   <string name="auth_second_factor_title">Authentification à deux facteurs</string>
   <string name="auth_second_factor_subtitle">Plusieurs mécanismes A2F sont configurés sur votre compte. Choisissez la manière dont vous voulez confirmer votre identité.</string>
   <string name="auth_second_factor_tab_security_key">Clé de sécurité</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Utiliser un code à deux facteurs</string>
   <string name="auth_second_factor_insert_security_key">Présentez une clé de sécurité liée à votre compte Proton. </string>
   <string name="auth_second_factor_insert_security_key_link">En savoir plus</string>
+  <string name="auth_second_factor_incorrect_code">Le code n\'est pas correct. Nous vous invitons à réessayer.</string>
   <string name="auth_two_pass_title">Déverrouillez votre messagerie</string>
   <string name="auth_two_pass_input_label">Mot de passe de la messagerie</string>
   <string name="auth_two_pass_unlock">Déverrouiller</string>
@@ -106,7 +109,6 @@
   <string name="auth_signup_recovery_email_validation_error">La validation de l\'e-mail n\'a pas abouti.</string>
   <string name="auth_signup_recovery_phone_validation_error">La validation du numéro téléphonique n\'a pas abouti.</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Les mots de passe ne correspondent pas. Nous vous invitons à réessayer.</string>
-  <string name="auth_signup_generic_error">Une erreur s\'est produite. Nous vous invitons à réessayer.</string>
   <string name="auth_signup_countries_search">Rechercher un pays</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">L\'utilisateur n\'a pas pu être configuré.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">L\'adresse n\'a pas pu être configurée.</string>
@@ -118,6 +120,18 @@
   <string name="auth_fido_manage_security_keys">Gérer les clés de sécurité</string>
   <string name="auth_fido_add_security_key">Ajouter une clé de sécurité</string>
   <string name="auth_fido_security_keys_learn_more">En savoir plus</string>
+  <string name="auth_user_check_delinquent_error">Votre compte est actuellement suspendu en raison d\'une facture impayée.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="one">Un seul compte Proton gratuit est autorisé.</item>
+    <item quantity="other">Seuls %d comptes Proton gratuits sont autorisés.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Une erreur s\'est produite. Nous vous invitons à réessayer.</string>
+  <string name="auth_fido_config_error">Erreur lors de la récupération des clés enregistrées.</string>
+  <string name="auth_fido_reading_key_error">Erreur de lecture de la clé de sécurité.</string>
+  <string name="auth_fido_submit_key_error">Erreur lors de la soumission des données de clé.</string>
+  <string name="auth_fido_reading_key_progress">Lecture de la clé de sécurité.</string>
+  <string name="auth_fido_authenticating_in_progress">Authentification avec la clé de sécurité.</string>
+  <string name="auth_fido_security_key">Clé de sécurité</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="one">Le mot de passe doit contenir au moins 1 caractère.</item>
     <item quantity="other">Le mot de passe doit contenir au moins %1$s caractères.</item>

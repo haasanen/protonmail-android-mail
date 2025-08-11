@@ -42,7 +42,9 @@
   <string name="auth_account_details">Увядзіце падрабязнасці вашага ўліковага запісу Proton.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Праблема з уваходам. Паспрабуйце яшчэ раз.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Патрэбна антыспамавая праверка.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Няправільнае імя карыстальніка або пароль. Паспрабуйце яшчэ раз.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Няправільныя ўліковыя даныя для ўваходу. Паспрабуйце яшчэ раз.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Два фактары не падтрымліваюцца.</string>
+  <string name="auth_login_general_error">Адбылася памылка.</string>
   <string name="auth_second_factor_title">Двухфактарная аўтэнтыфікацыя</string>
   <string name="auth_second_factor_subtitle">Ваш уліковы запіс мае некалькі механізмаў канфігурацыі 2ФА. Выберыце спосаб пацвярджэння вашай ідэнтычнасці.</string>
   <string name="auth_second_factor_tab_security_key">Ключ бяспекі</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Выкарыстоўваць двухфактарны код</string>
   <string name="auth_second_factor_insert_security_key">Дадзены ключ бяспекі звязаны з вашым уліковым запісам Proton. </string>
   <string name="auth_second_factor_insert_security_key_link">Даведацца больш</string>
+  <string name="auth_second_factor_incorrect_code">Няправільны код. Паспрабуйце яшчэ раз.</string>
   <string name="auth_two_pass_title">Разблакіруйце сваю паштовую скрыню</string>
   <string name="auth_two_pass_input_label">Пароль паштовай скрыні</string>
   <string name="auth_two_pass_unlock">Разблакіраваць</string>
@@ -106,7 +109,6 @@
   <string name="auth_signup_recovery_email_validation_error">Збой праверкі адраса электроннай пошты</string>
   <string name="auth_signup_recovery_phone_validation_error">Збой праверкі нумара тэлефона</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Паролі не супадаюць. Паспрабуйце яшчэ раз.</string>
-  <string name="auth_signup_generic_error">Нешта пайшло не так. Паспрабуйце яшчэ раз.</string>
   <string name="auth_signup_countries_search">Пошук краіны</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Немагчыма наладзіць карыстальніка.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Не атрымалася наладзіць адрас.</string>
@@ -118,6 +120,20 @@
   <string name="auth_fido_manage_security_keys">Кіраваць ключамі бяспекі</string>
   <string name="auth_fido_add_security_key">Дадаць ключ бяспекі</string>
   <string name="auth_fido_security_keys_learn_more">Даведацца больш</string>
+  <string name="auth_user_check_delinquent_error">Ваш уліковы запіс прыпынены з прычыны неаплачанага рахунка.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="one">Дазволены толькі адзін бясплатны ўліковы запіс Proton.</item>
+    <item quantity="few">Дазволены толькі %d бясплатныя ўліковыя запісы Proton.</item>
+    <item quantity="many">Дазволены толькі %d бясплатных уліковых запісаў Proton.</item>
+    <item quantity="other">Дазволены толькі %d бясплатных уліковых запісаў Proton.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Нешта пайшло не так. Паспрабуйце яшчэ раз.</string>
+  <string name="auth_fido_config_error">Памылка атрымання захаваных ключоў.</string>
+  <string name="auth_fido_reading_key_error">Памылка пры чытанні ключа бяспекі.</string>
+  <string name="auth_fido_submit_key_error">Памылка адпраўкі даных ключа.</string>
+  <string name="auth_fido_reading_key_progress">Чытанне ключа бяспекі.</string>
+  <string name="auth_fido_authenticating_in_progress">Аўтэнтыфікацыя з ключом бяспекі.</string>
+  <string name="auth_fido_security_key">Ключ бяспекі</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="one">Пароль павінен змяшчаць прынамсі 1 сімвал</item>
     <item quantity="few">Пароль павінен змяшчаць прынамсі %1$s сімвалы</item>

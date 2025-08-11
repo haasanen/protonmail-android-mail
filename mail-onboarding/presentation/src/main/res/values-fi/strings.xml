@@ -31,7 +31,7 @@
   <string name="onboarding_welcome_headline">Täysin uudistettu</string>
   <string name="onboarding_welcome_description">Thank you for joining this limited group of early beta testers. Your feedback is critical for helping us build an even better Proton Mail ready for public release.</string>
   <!--  New Onboarding 2  -->
-  <string name="onboarding_rebuilt_title">Rebuilt to be better and faster</string>
+  <string name="onboarding_rebuilt_title">Uudelleenrakennettu entistä paremmaksi ja nopeammaksi</string>
   <string name="onboarding_rebuilt_headline">Uusi saapuneet-kansio avattu.</string>
   <string name="onboarding_rebuilt_description">The new Proton Mail is faster with a vibrant design and highly-requested features, like offline mode.</string>
   <!--  New Onboarding 3  -->

@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Mot de passe du message</string>
   <string name="set_message_password_label_repeat">Confirmer le mot de passe</string>
   <string name="set_message_password_label_hint">Indice de mot de passe (facultatif)</string>
-  <string name="set_message_password_supporting_text">4 à 21 caractères</string>
-  <string name="set_message_password_supporting_error_text">Le mot de passe doit contenir entre 4 et 21 caractères.</string>
+  <string name="set_message_password_supporting_text">8 à 21 caractères</string>
+  <string name="set_message_password_supporting_error_text">Le mot de passe doit contenir entre 8 et 21 caractères.</string>
   <string name="set_message_password_supporting_text_repeat">Les mots de passe doivent être identiques.</string>
   <string name="set_message_password_supporting_error_text_repeat">Les mots de passe ne correspondent pas.</string>
   <string name="set_message_password_button_show">Afficher le mot de passe</string>
@@ -124,6 +124,7 @@
   <string name="composer_schedule_send_tomorrow_title">Demain</string>
   <string name="composer_schedule_send_monday_title">Lundi</string>
   <string name="composer_schedule_send_custom_title">Personnaliser</string>
+  <string name="composer_schedule_send_custom_upsell_title">Date et heure personnalisées</string>
   <string name="composer_schedule_send_custom_description">Choisir l\'heure et la date</string>
   <string name="composer_error_send_message">Une erreur s\'est produite lors de l\'envoi du message.</string>
   <string name="composer_schedule_send_previously_set">Précédemment défini</string>
@@ -138,4 +139,5 @@
   <string name="composer_change_sender_error_refreshing_body">L\'actualisation du corps après l\'échec du changement d\'expéditeur n\'a pas abouti. La signature pourrait être obsolète.</string>
   <string name="composer_loading_attachments_error">Les pièces jointes n\'ont pas pu être chargées.</string>
   <string name="composer_attachment_upload_error_retry">Certaines pièces jointes n\'ont pas pu être chargées. Veuillez réessayer.</string>
+  <string name="composer_external_encryption_unexpected_error">Une erreur inattendue s\'est produite %s. Veuillez réessayer.</string>
 </resources>

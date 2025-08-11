@@ -92,8 +92,8 @@
   <string name="set_message_password_label">メッセージのパスワード</string>
   <string name="set_message_password_label_repeat">パスワードを再度入力</string>
   <string name="set_message_password_label_hint">パスワードのヒント(任意)</string>
-  <string name="set_message_password_supporting_text">4〜21 文字</string>
-  <string name="set_message_password_supporting_error_text">パスワードは4文字以上21文字以下で入力してください</string>
+  <string name="set_message_password_supporting_text">8 ~ 21 文字</string>
+  <string name="set_message_password_supporting_error_text">パスワードは8文字以上21文字以下で入力してください</string>
   <string name="set_message_password_supporting_text_repeat">パスワードが一致する必要があります</string>
   <string name="set_message_password_supporting_error_text_repeat">パスワードが一致しません</string>
   <string name="set_message_password_button_show">パスワードを表示</string>
@@ -123,6 +123,7 @@
   <string name="composer_schedule_send_tomorrow_title">明日</string>
   <string name="composer_schedule_send_monday_title">月曜日</string>
   <string name="composer_schedule_send_custom_title">カスタム</string>
+  <string name="composer_schedule_send_custom_upsell_title">カスタム日時</string>
   <string name="composer_schedule_send_custom_description">時間と日付を選択</string>
   <string name="composer_error_send_message">メッセージ送信エラー</string>
   <string name="composer_schedule_send_previously_set">以前の設定</string>
@@ -136,5 +137,6 @@
   <string name="composer_change_sender_unexpected_failure">差出人の変更中に問題が発生しました。もう一度お試しください。</string>
   <string name="composer_change_sender_error_refreshing_body">差出人を変更した後の本文の再読み込みに失敗しました。署名が古い可能性があります。</string>
   <string name="composer_loading_attachments_error">添付ファイルの読み込みに失敗しました</string>
-  <string name="composer_attachment_upload_error_retry">Some attachments failed uploading. Please, retry.</string>
+  <string name="composer_attachment_upload_error_retry">いくつかの添付ファイルのアップロードに失敗しました。再度お試しください。</string>
+  <string name="composer_external_encryption_unexpected_error">予期しないエラーが発生しました%s。再度お試しください。</string>
 </resources>

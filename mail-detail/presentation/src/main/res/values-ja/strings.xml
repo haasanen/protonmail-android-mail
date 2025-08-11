@@ -56,7 +56,7 @@
   <string name="conversation_moved_to_selected_destination">会話を %1$s に移動しました</string>
   <string name="conversation_moved_to_spam">会話をスパムに移動しました</string>
   <string name="conversation_moved_to_archive">会話をアーカイブに移動しました</string>
-  <string name="error_print_message">Unable to print message. Please retry.</string>
+  <string name="error_print_message">メッセージを印刷できません。再度お試しください。</string>
   <string name="error_move_conversation_failed">会話の移動に失敗しました。再度お試しください。</string>
   <string name="error_offline_loading_message">現在、オフラインです。このメッセージの内容を表示するには、インターネット接続が必要です。</string>
   <string name="error_get_attachment_failed">添付ファイルの取得に失敗しました</string>
@@ -133,17 +133,36 @@
   <string name="message_cancel_schedule_send_dialog_title">編集してもう一度送信予約</string>
   <string name="message_cancel_schedule_send_dialog_message">メッセージは、編集できるように下書きに移動されます。送信される時間の再スケジュールが必要になります。</string>
   <!-- RSVP widget -->
-  <string name="rsvp_widget_attendance_optional">(Attendance optional)</string>
-  <string name="rsvp_widget_attending">Attending?</string>
-  <string name="rsvp_widget_yes">Yes</string>
-  <string name="rsvp_widget_maybe">Maybe</string>
-  <string name="rsvp_widget_no">No</string>
-  <string name="rsvp_widget_yes_long">Yes, I\'ll attend</string>
-  <string name="rsvp_widget_maybe_long">Maybe, I\'ll attend</string>
-  <string name="rsvp_widget_no_long">No, I won\'t attend</string>
-  <string name="rsvp_widget_organizer">(Organizer)</string>
-  <string name="rsvp_widget_you">You</string>
+  <string name="rsvp_widget_no_title">(タイトルなし)</string>
+  <string name="rsvp_widget_attendance_optional">(参加は任意です)</string>
+  <string name="rsvp_widget_attending">参加しますか？</string>
+  <string name="rsvp_widget_yes">はい</string>
+  <string name="rsvp_widget_maybe">おそらく</string>
+  <string name="rsvp_widget_no">いいえ</string>
+  <string name="rsvp_widget_yes_long">はい、参加します</string>
+  <string name="rsvp_widget_maybe_long">おそらく、参加します</string>
+  <string name="rsvp_widget_no_long">いいえ、参加しません</string>
+  <string name="rsvp_widget_organizer">(主催者)</string>
+  <string name="rsvp_widget_you">あなた</string>
   <plurals name="rsvp_widget_participants">
-    <item quantity="other">%1$d Participants</item>
+    <item quantity="other">%1$d人の参加者</item>
   </plurals>
+  <string name="rsvp_widget_happening_now">現在<b>開催中</b></string>
+  <string name="rsvp_widget_event_ended">予定<b>終了しました</b></string>
+  <string name="rsvp_widget_event_cancelled">予定が<b>キャンセル</b>されました</string>
+  <string name="rsvp_widget_invite_outdated">この招待は古くなっています</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">予定がキャンセルされました。この招待は古くなっています。</string>
+  <string name="rsvp_widget_offline_invite_outdated">お客様はオフラインです。表示されている情報は古い可能性があります。</string>
+  <string name="rsvp_widget_address_is_incorrect">お客様のアドレスは返信に使用できません。お客様のアカウント情報を更新してください。</string>
+  <string name="rsvp_widget_user_is_organizer">お客様は主催者です。</string>
+  <string name="rsvp_widget_event_does_not_exist">この予定はあなたのカレンダーにないため、返信することはできません。</string>
+  <string name="rsvp_widget_today">今日</string>
+  <string name="rsvp_widget_tomorrow">明日</string>
+  <string name="rsvp_widget_invite_details_unavailable">招待詳細が利用できません</string>
+  <string name="rsvp_widget_could_not_load">情報を読み込めませんでした。\nもう一度お試しください。</string>
+  <string name="rsvp_widget_button_retry">再試行</string>
+  <string name="rsvp_widget_error_answering">この予定への返信中にエラーが発生しました</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Proton Calendar で開く</string>
+  <string name="rsvp_widget_copy_address">アドレスをコピー</string>
+  <string name="rsvp_widget_message">メッセージ</string>
 </resources>

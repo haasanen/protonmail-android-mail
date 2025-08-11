@@ -88,8 +88,8 @@
   <string name="contact_details_action_copy_label">Salin</string>
   <string name="contact_details_action_message_label">Pesan</string>
   <string name="contact_details_action_call_label">Panggil</string>
-  <string name="contact_group_details_send_message_action">Send group message</string>
+  <string name="contact_group_details_send_message_action">Kirim pesan grup</string>
   <plurals name="contact_group_details_number_of_contacts">
-    <item quantity="other">%1$d contacts</item>
+    <item quantity="other">%1$d kontak</item>
   </plurals>
 </resources>

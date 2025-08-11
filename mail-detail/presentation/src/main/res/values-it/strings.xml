@@ -135,6 +135,7 @@
   <string name="message_cancel_schedule_send_dialog_title">Modifica e programma</string>
   <string name="message_cancel_schedule_send_dialog_message">Questo messaggio verrà spostato nelle bozze e la programmazione verrà rimossa</string>
   <!-- RSVP widget -->
+  <string name="rsvp_widget_no_title">(nessun titolo)</string>
   <string name="rsvp_widget_attendance_optional">(Partecipazione facoltativa)</string>
   <string name="rsvp_widget_attending">Vuoi partecipare?</string>
   <string name="rsvp_widget_yes">Sì</string>
@@ -149,4 +150,22 @@
     <item quantity="one">%1$d partecipante</item>
     <item quantity="other">%1$d partecipanti</item>
   </plurals>
+  <string name="rsvp_widget_happening_now">In corso <b>ora</b></string>
+  <string name="rsvp_widget_event_ended">Evento <b>terminato</b></string>
+  <string name="rsvp_widget_event_cancelled">Evento <b>annullato</b></string>
+  <string name="rsvp_widget_invite_outdated">Questo invito non è aggiornato</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">Evento annullato. Questo invito non è aggiornato.</string>
+  <string name="rsvp_widget_offline_invite_outdated">Sei offline. Le informazioni visualizzate potrebbero non essere aggiornate.</string>
+  <string name="rsvp_widget_address_is_incorrect">Risposta con l\'indirizzo email attuale non valida. Aggiorna le informazioni dell\'account.</string>
+  <string name="rsvp_widget_user_is_organizer">Tu sei l\'organizzatore</string>
+  <string name="rsvp_widget_event_does_not_exist">Aggiungi l\'evento al calendario per rispondere</string>
+  <string name="rsvp_widget_today">Oggi</string>
+  <string name="rsvp_widget_tomorrow">Domani</string>
+  <string name="rsvp_widget_invite_details_unavailable">Informazioni di invito non disponibili</string>
+  <string name="rsvp_widget_could_not_load">Caricamento delle informazioni non riuscito.\nRiprova.</string>
+  <string name="rsvp_widget_button_retry">Riprova</string>
+  <string name="rsvp_widget_error_answering">Risposta all\'evento non riuscita</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Apri in Proton Calendar</string>
+  <string name="rsvp_widget_copy_address">Copia l’indirizzo email</string>
+  <string name="rsvp_widget_message">Scrivi</string>
 </resources>

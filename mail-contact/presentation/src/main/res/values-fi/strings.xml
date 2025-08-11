@@ -79,20 +79,20 @@
   <string name="contact_property_time_zone">Aikavyöhyke</string>
   <string name="contact_gender_female">Nainen</string>
   <string name="contact_gender_male">Mies</string>
-  <string name="contact_gender_none">None</string>
+  <string name="contact_gender_none">Ei mitään</string>
   <string name="contact_gender_not_applicable">Not applicable</string>
   <string name="contact_gender_other">Muu</string>
   <string name="contact_gender_unknown">Tuntematon</string>
-  <string name="contact_details_missing_date">Missing date</string>
+  <string name="contact_details_missing_date">Puuttuva päivämäärä</string>
   <string name="contact_details_quick_action_message">Viesti</string>
   <string name="contact_details_quick_action_call">Puhelu</string>
   <string name="contact_details_quick_action_share">Jaa</string>
   <string name="contact_details_action_copy_label">Kopioi</string>
   <string name="contact_details_action_message_label">Viesti</string>
   <string name="contact_details_action_call_label">Puhelu</string>
-  <string name="contact_group_details_send_message_action">Send group message</string>
+  <string name="contact_group_details_send_message_action">Lähetä ryhmäviesti</string>
   <plurals name="contact_group_details_number_of_contacts">
-    <item quantity="one">%1$d contact</item>
-    <item quantity="other">%1$d contacts</item>
+    <item quantity="one">%1$d yhteystieto</item>
+    <item quantity="other">%1$d yhteystietoa</item>
   </plurals>
 </resources>

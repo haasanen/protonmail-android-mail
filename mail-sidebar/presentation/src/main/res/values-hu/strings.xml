@@ -23,4 +23,5 @@
   <string name="drawer_title_bug_report">Probléma jelentése</string>
   <string name="drawer_item_create_label">Címke létrehozása</string>
   <string name="drawer_item_create_folder">Mappa létrehozása</string>
+  <string name="drawer_upgrade_plus">Upgrade to Mail Plus</string>
 </resources>

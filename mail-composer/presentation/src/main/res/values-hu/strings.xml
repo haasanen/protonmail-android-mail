@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Üzenet jelszó</string>
   <string name="set_message_password_label_repeat">Jelszó ismét</string>
   <string name="set_message_password_label_hint">Jelszó emlékeztető (nem kötelező)</string>
-  <string name="set_message_password_supporting_text">4-től 21 karakter hosszúságig</string>
-  <string name="set_message_password_supporting_error_text">A jelszónak legalább 4, és legfeljebb 21 karakter hosszúnak kell lennie</string>
+  <string name="set_message_password_supporting_text">8 to 21 characters long</string>
+  <string name="set_message_password_supporting_error_text">The password must be between 8 and 21 characters</string>
   <string name="set_message_password_supporting_text_repeat">A jelszavaknak egyezniük kell</string>
   <string name="set_message_password_supporting_error_text_repeat">A jelszavak nem egyeznek</string>
   <string name="set_message_password_button_show">Jelszó megjelenítése</string>
@@ -124,6 +124,7 @@
   <string name="composer_schedule_send_tomorrow_title">Holnap</string>
   <string name="composer_schedule_send_monday_title">Hétfő</string>
   <string name="composer_schedule_send_custom_title">Egyéni</string>
+  <string name="composer_schedule_send_custom_upsell_title">Custom date and time</string>
   <string name="composer_schedule_send_custom_description">Válasszon időt és dátumot</string>
   <string name="composer_error_send_message">Hiba az üzenet küldése közben</string>
   <string name="composer_schedule_send_previously_set">Korábban beállítva</string>
@@ -138,4 +139,5 @@
   <string name="composer_change_sender_error_refreshing_body">A szövegtörzs frissítése a feladóváltás után sikertelen volt. Az aláírás elavult lehet.</string>
   <string name="composer_loading_attachments_error">Failed loading attachments</string>
   <string name="composer_attachment_upload_error_retry">Some attachments failed uploading. Please, retry.</string>
+  <string name="composer_external_encryption_unexpected_error">Unexpected error %s. Try again.</string>
 </resources>

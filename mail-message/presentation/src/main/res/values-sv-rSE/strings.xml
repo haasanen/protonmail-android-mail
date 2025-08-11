@@ -73,14 +73,4 @@
   <string name="contact_actions_block_contact_description">Blockera denna kontakt</string>
   <string name="contact_actions_view_contact_details">Visa kontaktdetaljer</string>
   <string name="contact_actions_view_contact_details_description">Visa detaljer om kontakten</string>
-  <!-- Snooze Bottom Sheet -->
-  <string name="snooze_sheet_option_next_week">Nästa vecka</string>
-  <string name="snooze_sheet_option_later_this_week">Senare denna vecka</string>
-  <string name="snooze_sheet_option_tomorrow">Imorgon</string>
-  <string name="snooze_sheet_option_this_weekend">Denna helg</string>
-  <string name="snooze_sheet_option_custom">Anpassad</string>
-  <string name="snooze_sheet_option_custom_detail">Välj datum och tid</string>
-  <string name="snooze_sheet_option_upsell_detail">Betald funktion</string>
-  <string name="snooze_sheet_snooze_title">Snooza till</string>
-  <string name="snooze_sheet_option_unsnooze">Stäng av snooze</string>
 </resources>

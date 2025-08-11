@@ -33,6 +33,7 @@
   <string name="mail_settings_spam_and_custom_filters">Spam y filtros</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Acciones automáticas y clasificación</string>
   <string name="mail_settings_privacy_and_security">Privacidad y seguridad</string>
+  <string name="mail_settings_fido_keys">Claves de seguridad</string>
   <string name="mail_settings_privacy_and_security_hint">Protección contra rastreos de correos electrónicos</string>
   <string name="mail_settings_app_hint">Personalización de la aplicación móvil</string>
   <string name="mail_settings_theme">Tema</string>

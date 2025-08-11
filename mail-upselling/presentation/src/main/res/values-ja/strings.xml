@@ -21,34 +21,40 @@
   <string name="upselling_button_item_content_description">アップグレードボタン</string>
   <string name="upselling_close_button_content_description">閉じるボタン</string>
   <!-- Upselling: Mailbox -->
-  <string name="upselling_mailbox_plus_description_override">To unlock more storage and premium features.</string>
+  <string name="upselling_mailbox_plus_description_override">より多くの容量とプレミアム機能をアンロックするために</string>
   <string name="upselling_mailbox_plus_title">Mail Plus にアップグレード</string>
   <!-- Upselling: Social Proof -->
-  <string name="upselling_mailbox_plus_title_social_proof">Start Mail Plus</string>
+  <string name="upselling_mailbox_plus_title_social_proof">Mail Plus を開始</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">期間限定オファー、いつでもキャンセル可能。</string>
+  <string name="upselling_mailbox_plus_promo_description_override">この期間限定のオファーで、Mail の最高の機能をご利用ください。</string>
   <string name="upselling_mailbox_plus_promo_title">%sでMail Plusを試す</string>
+  <string name="upselling_mailbox_plus_promo_cta">%s で 1 ヶ月分獲得</string>
+  <string name="upselling_mailbox_plus_promo_skip">オファーをスキップ</string>
+  <string name="upselling_mailbox_plus_promo_renewal">最初の1ヶ月間%s、その後は月額%s</string>
   <!-- Upselling: Contact Groups -->
-  <string name="upselling_contact_groups_plus_description_override">Send group emails with ease. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_description_override">グループメールを簡単に送信できます。Mail Plusで、これらやその他の機能をお楽しみください。</string>
   <string name="upselling_contact_groups_plus_title">連絡先をグループ化する</string>
   <!-- Upselling: Labels -->
-  <string name="upselling_labels_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_labels_plus_description_override">すべての整理に必要なものを作成してください。これを含め、Mail Plusでさらに多くの機能を手に入れましょう。 </string>
   <string name="upselling_labels_plus_title">さらに多くのラベルやフォルダーが必要ですか？</string>
   <!-- Upselling: Folders -->
-  <string name="upselling_folders_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_folders_plus_description_override">すべての整理に必要なものを作成してください。これを含め、Mail Plusでさらに多くの機能を手に入れましょう。 </string>
   <string name="upselling_folders_plus_title">さらに多くのラベルやフォルダーが必要ですか？</string>
   <!-- Upselling: Mobile Signature -->
-  <string name="upselling_mobile_signature_plus_description_override">Make your mobile signature your own. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_mobile_signature_plus_title">Personalize your signature</string>
+  <string name="upselling_mobile_signature_plus_description_override">モバイル署名を独自のものにしましょう。Mail Plusで、これらやその他の機能をお楽しみください。</string>
+  <string name="upselling_mobile_signature_plus_title">署名をカスタマイズする</string>
   <!-- Upselling: Auto Delete -->
-  <string name="upselling_auto_delete_plus_description_override">Deletes spam and trash after 30 days. Get this and more with Mail Plus.</string>
-  <string name="upselling_auto_delete_plus_title">Automated trash removal</string>
+  <string name="upselling_auto_delete_plus_description_override">迷惑メールとごみ箱のアイテムは30日後に削除されます。Mail Plusをご利用いただくと、これらに加えてさらに多くの機能をご利用いただけます。</string>
+  <string name="upselling_auto_delete_plus_title">自動ごみ箱削除</string>
   <!-- Upselling: Schedule Send -->
-  <string name="upselling_schedule_send_plus_description_override">Customize when an email will be sent. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_schedule_send_plus_title">Schedule now, send later</string>
+  <string name="upselling_schedule_send_plus_description_override">メールの送信タイミングをカスタマイズできます。Mail Plusで、この機能やその他多くの機能をお楽しみください。</string>
+  <string name="upselling_schedule_send_plus_title">今すぐ予約、後で送信</string>
   <!-- Upselling: Snooze -->
-  <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_snooze_plus_title">Bad time for this email?</string>
+  <string name="upselling_snooze_plus_description_override">スヌーズすれば、メールを後で配信できます。Mail Plusで、これらやその他の機能をお楽しみください。</string>
+  <string name="upselling_snooze_plus_title">このメールを送信するタイミングが悪いですか？</string>
+  <!-- Upselling - Misc buttons -->
+  <string name="upselling_button_hint">最大限の柔軟性を得るためのアップグレード</string>
+  <string name="upselling_upgrade_plan_generic">この機能にアクセスするには、有料のProton Mailサブスクリプションが必要です</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 GB のストレージ</string>
   <string name="upselling_plus_feature_storage_plus_mails">ストレージ容量15 GB、メールアドレス 10 個</string>
@@ -92,21 +98,20 @@
   <string name="upselling_comparison_table_unlimited_folders_labels">無制限のフォルダとラベル</string>
   <string name="upselling_comparison_table_priority_support">優先的なカスタマーサポート</string>
   <!-- Rectangular plan buttons -->
-  <string name="upselling_select_plan">Choose your plan</string>
-  <string name="upselling_select_plan_year">12 months</string>
+  <string name="upselling_select_plan">プランを選択</string>
+  <string name="upselling_select_plan_year">12ヶ月</string>
   <string name="upselling_select_plan_month">1 ヶ月</string>
   <!-- Other UI Items -->
-  <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
-  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s %s%s unless canceled</string>
-  <string name="upselling_auto_renew_text_promo_short">歓迎オファー。 %s %s%s で自動更新。</string>
-  <string name="upselling_auto_renew_text_standard">Auto-renews at %s %s%s unless canceled</string>
-  <string name="upselling_social_proof_reviews">2k+ REVIEWS</string>
-  <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
+  <string name="upselling_auto_renew_text">キャンセルするまで同じ金額、同じ期間で自動更新</string>
+  <string name="upselling_auto_renew_text_promo">ウェルカムオファー。キャンセルしない限り、%s%s で自動更新します。</string>
+  <string name="upselling_auto_renew_text_promo_short">歓迎オファー。%s%sで自動更新。</string>
+  <string name="upselling_auto_renew_text_standard">キャンセルしない限り、%s%s で自動更新します。</string>
+  <string name="upselling_social_proof_reviews">2000以上のレビュー</string>
+  <string name="upselling_description_social_proof">数百万人の加入者が絶賛する体験にアップグレードしてください。</string>
   <string name="upselling_discount_tag">%s%%節約</string>
   <string name="upselling_month">/月</string>
   <string name="upselling_year">/ 年間</string>
   <string name="upselling_get_button">%sを入手</string>
-  <string name="upselling_get_button_promotional">%s %s で 1 ヶ月分獲得</string>
   <plurals name="upselling_month">
     <item quantity="other">%d ヶ月</item>
   </plurals>

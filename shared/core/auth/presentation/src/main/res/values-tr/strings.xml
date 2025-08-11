@@ -42,7 +42,9 @@
   <string name="auth_account_details">Proton hesabınızın bilgilerini yazın.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Oturum açılırken sorun çıktı. Lütfen yeniden deneyin.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">İnsan doğrulaması gerekli.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Kullanıcı adı veya parola yanlış. Lütfen yeniden deneyin.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Oturum açma bilgileri yanlış. Lütfen yeniden deneyin.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">İkinci adım desteklenmiyor.</string>
+  <string name="auth_login_general_error">Bir sorun çıktı.</string>
   <string name="auth_second_factor_title">İki adımlı doğrulama</string>
   <string name="auth_second_factor_subtitle">Hesabınızda yapılandırılmış birkaç iki adımlı doğrulama yöntemi var. Lütfen kimliğinizi nasıl doğrulamak istediğinizi seçin.</string>
   <string name="auth_second_factor_tab_security_key">Güvenlik anahtarı</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">İki adımlı doğrulama kodu kullanılsın</string>
   <string name="auth_second_factor_insert_security_key">Proton hesabınızla ilişkilendirilmiş güvenlik anahtarını takın. </string>
   <string name="auth_second_factor_insert_security_key_link">Ayrıntılı bilgi alın</string>
+  <string name="auth_second_factor_incorrect_code">Kod yanlış. Lütfen yeniden deneyin.</string>
   <string name="auth_two_pass_title">E-posta kutunuzun kilidini açın</string>
   <string name="auth_two_pass_input_label">E-posta kutusu parolası</string>
   <string name="auth_two_pass_unlock">Kilidi aç</string>
@@ -106,7 +109,6 @@
   <string name="auth_signup_recovery_email_validation_error">E-posta doğrulanamadı</string>
   <string name="auth_signup_recovery_phone_validation_error">Telefon numarası doğrulanamadı</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Parola ile onayı aynı değil. Lütfen yeniden deneyin.</string>
-  <string name="auth_signup_generic_error">Bir sorun çıktı. Lütfen yeniden deneyin.</string>
   <string name="auth_signup_countries_search">Ülke ara</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Kullanıcı kurulamadı.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Adres kurulamadı.</string>
@@ -118,6 +120,18 @@
   <string name="auth_fido_manage_security_keys">Güvenlik anahtarları yönetimi</string>
   <string name="auth_fido_add_security_key">Güvenlik anahtarı ekle</string>
   <string name="auth_fido_security_keys_learn_more">Ayrıntılı bilgi alın</string>
+  <string name="auth_user_check_delinquent_error">Süresi geçmiş bir fatura nedeniyle hesabınız askıya alındı.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="one">Yalnızca bir ücretsiz Proton hesabına izin verilir.</item>
+    <item quantity="other">Yalnızca %d ücretsiz Proton hesabına izin verilir.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Bir sorun çıktı. Lütfen yeniden deneyin.</string>
+  <string name="auth_fido_config_error">Kaydedilmiş anahtarlar alınırken sorun çıktı.</string>
+  <string name="auth_fido_reading_key_error">Güvenlik anahtarı okunurken sorun çıktı.</string>
+  <string name="auth_fido_submit_key_error">Anahtar verileri gönderilirken sorun çıktı.</string>
+  <string name="auth_fido_reading_key_progress">Güvenlik anahtarı okunuyor.</string>
+  <string name="auth_fido_authenticating_in_progress">Güvenlik anahtarıyla kimlik doğrulanıyor.</string>
+  <string name="auth_fido_security_key">Güvenlik anahtarı</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="one">Parola en az 1 karakter uzunluğunda olmalıdır</item>
     <item quantity="other">Parola en az %1$s karakter uzunluğunda olmalıdır</item>

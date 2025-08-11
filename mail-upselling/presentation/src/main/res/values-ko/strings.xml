@@ -26,8 +26,11 @@
   <!-- Upselling: Social Proof -->
   <string name="upselling_mailbox_plus_title_social_proof">Mail Plus 시작하기</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">기간 한정 혜택, 언제든지 취소할 수 있습니다.</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Get the best of Mail with this limited time offer</string>
   <string name="upselling_mailbox_plus_promo_title">Mail Plus를 %s에 사용해 보세요</string>
+  <string name="upselling_mailbox_plus_promo_cta">Get 1 month for %s</string>
+  <string name="upselling_mailbox_plus_promo_skip">Skip offer</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s for the 1st month, then %s per month</string>
   <!-- Upselling: Contact Groups -->
   <string name="upselling_contact_groups_plus_description_override">그룹 이메일을 간편하게 보내세요. Mail Plus와 함께 이 모든 것과 그 이상을 즐기세요.</string>
   <string name="upselling_contact_groups_plus_title">연락처를 그룹화하기</string>
@@ -49,6 +52,9 @@
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">나중에 다시 알림을 설정하세요 - 그리고 나중에 전달되도록 하세요. Mail Plus로 이 기능을 비롯한 다양한 혜택을 즐겨보세요.</string>
   <string name="upselling_snooze_plus_title">이 이메일에 부적절한 시간인가요?</string>
+  <!-- Upselling - Misc buttons -->
+  <string name="upselling_button_hint">Upgrade for full flexibility</string>
+  <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">저장공간 15GB</string>
   <string name="upselling_plus_feature_storage_plus_mails">저장공간 15 GB 및 이메일 주소 10개</string>
@@ -97,16 +103,15 @@
   <string name="upselling_select_plan_month">1개월</string>
   <!-- Other UI Items -->
   <string name="upselling_auto_renew_text">취소되기 전까지 같은 가격과 규정으로 갱신됩니다</string>
-  <string name="upselling_auto_renew_text_promo">환영 할인. 취소 전까지 %s %s%s(으)로 갱신됩니다</string>
-  <string name="upselling_auto_renew_text_promo_short">환영 할인. 매년 %s %s%s에 갱신됩니다.</string>
-  <string name="upselling_auto_renew_text_standard">취소 전까지 %s %s%s(으)로 갱신됩니다</string>
+  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text_promo_short">Welcome offer. Auto-renews at %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Auto-renews at %s%s unless canceled</string>
   <string name="upselling_social_proof_reviews">2천개 이상의 리뷰</string>
   <string name="upselling_description_social_proof">수백만 명의 구독자가 극찬하는 경험을 위해 업그레이드하세요.</string>
   <string name="upselling_discount_tag">%s%% 절약</string>
   <string name="upselling_month">/월</string>
   <string name="upselling_year">/연간</string>
   <string name="upselling_get_button">%s 받기</string>
-  <string name="upselling_get_button_promotional">%s %s(으)로 1개월 플랜 구매</string>
   <plurals name="upselling_month">
     <item quantity="other">%d개월</item>
   </plurals>

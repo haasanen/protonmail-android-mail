@@ -22,7 +22,7 @@
   <string name="edm_missing_camera_permission_headline">Permeteu l\'accés a la càmera</string>
   <string name="edm_missing_camera_permission_body">Per iniciar sessió amb el codi QR necessitareu permetre que %1$s accedeixi a la vostra càmera. Ho podeu fer a les preferències del dispositiu.</string>
   <string name="edm_missing_camera_permission_footer">Sempre tindreu el control: podeu canviar-ho en qualsevol moment a preferències del dispositiu.</string>
-  <string name="edm_missing_camera_permission_settings">Configuració</string>
+  <string name="edm_missing_camera_permission_settings">Preferències</string>
   <string name="intro_origin_sign_in_title">Inicieu sessió en un altre dispositiu</string>
   <string name="intro_origin_sign_in_subtitle">Com iniciar sessió amb un codi QR</string>
   <string name="intro_origin_sign_in_hint_1">1. Obriu qualsevol aplicació de Proton al dispositiu en què vulgueu iniciar la sessió.</string>
@@ -38,8 +38,8 @@
   <string name="manual_code_input_title">Introduïu el codi manualment</string>
   <string name="manual_code_input_description">Per accedir al codi del dispositiu amb què voleu iniciar la sessió, premeu <b>Inicieu la sessió amb el codi QR</b> al menú d’ajuda de la pantalla d’inici de sessió i, després, premeu <b>Introduïu la clau manualment</b>.</string>
   <string name="manual_code_input_code_label">Codi</string>
-  <string name="manual_code_input_clear_code">Clear</string>
-  <string name="manual_code_input_submit">Continue</string>
+  <string name="manual_code_input_clear_code">Neteja</string>
+  <string name="manual_code_input_submit">Continua</string>
   <string name="origin_success_signed_in">S\'ha compartit aquest accés</string>
   <string name="origin_success_ack">Torneu a la configuració</string>
   <string name="qr_code_scan_hint">Col·loqueu el codi QR dins del quadrat</string>
@@ -54,5 +54,5 @@
   <string name="target_sign_in_retryable_error">Proveu de generar un altre codi QR.</string>
   <string name="target_sign_in_error_new_qr">Genereu un codi QR</string>
   <string name="target_sign_in_error_back_to_signin">Torneu a l\'inici de sessió</string>
-  <string name="target_sign_in_learn_more">Per saber-ne més</string>
+  <string name="target_sign_in_learn_more">Més informació</string>
 </resources>

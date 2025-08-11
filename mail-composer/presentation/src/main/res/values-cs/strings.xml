@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Heslo zprávy</string>
   <string name="set_message_password_label_repeat">Zopakujte heslo</string>
   <string name="set_message_password_label_hint">Nápověda k heslu (nepovinné)</string>
-  <string name="set_message_password_supporting_text">4 až 21 znaků</string>
-  <string name="set_message_password_supporting_error_text">Heslo musí mít délku 4 až 21 znaků</string>
+  <string name="set_message_password_supporting_text">8 až 21 znaků dlouhé</string>
+  <string name="set_message_password_supporting_error_text">Heslo musí mít délku 8 až 21 znaků</string>
   <string name="set_message_password_supporting_text_repeat">Hesla se musí shodovat</string>
   <string name="set_message_password_supporting_error_text_repeat">Hesla se neshodují</string>
   <string name="set_message_password_button_show">Zobrazit heslo</string>
@@ -126,6 +126,7 @@
   <string name="composer_schedule_send_tomorrow_title">Zítra</string>
   <string name="composer_schedule_send_monday_title">Pondělí</string>
   <string name="composer_schedule_send_custom_title">Vlastní</string>
+  <string name="composer_schedule_send_custom_upsell_title">Vlastní datum a čas</string>
   <string name="composer_schedule_send_custom_description">Vyberte čas a datum</string>
   <string name="composer_error_send_message">Chyba při odesílání zprávy</string>
   <string name="composer_schedule_send_previously_set">Dříve nastavené</string>
@@ -140,4 +141,5 @@
   <string name="composer_change_sender_error_refreshing_body">Obnovení obsahu po změně odesílatele selhalo. Podpis může být zastaralý.</string>
   <string name="composer_loading_attachments_error">Načtení příloh selhalo</string>
   <string name="composer_attachment_upload_error_retry">Některé přílohy se nepodařilo nahrát. Zkuste to prosím znovu.</string>
+  <string name="composer_external_encryption_unexpected_error">Neočekávaná chyba %s. Zkuste to znovu.</string>
 </resources>

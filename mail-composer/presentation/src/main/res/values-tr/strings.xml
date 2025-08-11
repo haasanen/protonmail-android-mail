@@ -92,8 +92,8 @@
   <string name="set_message_password_label">İleti parolası</string>
   <string name="set_message_password_label_repeat">Parola onayı</string>
   <string name="set_message_password_label_hint">Parola ipucu (isteğe bağlı)</string>
-  <string name="set_message_password_supporting_text">4 ile 21 karakter uzunluğunda</string>
-  <string name="set_message_password_supporting_error_text">Parola uzunluğu 4 ile 21 karakter arasında olmalıdır</string>
+  <string name="set_message_password_supporting_text">uzunluğu 8 ile 21 karakter arasında olmalıdır</string>
+  <string name="set_message_password_supporting_error_text">Parola uzunluğu 8 ile 21 karakter arasında olmalıdır</string>
   <string name="set_message_password_supporting_text_repeat">Parola ile onayı aynı değil</string>
   <string name="set_message_password_supporting_error_text_repeat">Parola ile onayı aynı değil</string>
   <string name="set_message_password_button_show">Parolayı görüntüle</string>
@@ -124,6 +124,7 @@
   <string name="composer_schedule_send_tomorrow_title">Yarın</string>
   <string name="composer_schedule_send_monday_title">Pazartesi</string>
   <string name="composer_schedule_send_custom_title">Özel</string>
+  <string name="composer_schedule_send_custom_upsell_title">Özel tarih ve saat</string>
   <string name="composer_schedule_send_custom_description">Tarihi ve saati seçin</string>
   <string name="composer_error_send_message">İleti gönderilirken sorun çıktı</string>
   <string name="composer_schedule_send_previously_set">Önceden ayarlanmış</string>
@@ -138,4 +139,5 @@
   <string name="composer_change_sender_error_refreshing_body">Gönderici değiştirildikten sonra içerik yenilenemedi. İmza güncel olmayabilir.</string>
   <string name="composer_loading_attachments_error">Ek dosyalar yüklenemedi</string>
   <string name="composer_attachment_upload_error_retry">Bazı ek dosyalar yüklenemedi. Lütfen yeniden deneyin.</string>
+  <string name="composer_external_encryption_unexpected_error">Beklenmeyen bir sorun çıktı %s. Lütfen yeniden deneyin.</string>
 </resources>

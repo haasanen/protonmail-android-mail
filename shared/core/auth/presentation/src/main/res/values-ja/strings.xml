@@ -24,7 +24,7 @@
   <string name="login_help_other_issues">その他のサインインに関する問題</string>
   <string name="login_help_contact_needed">問題が解決しませんか？私たちに直接ご連絡ください.</string>
   <string name="login_help_customer_support">カスタマーサポート</string>
-  <string name="login_help_sign_in_with_qr_code">Sign in with QR code</string>
+  <string name="login_help_sign_in_with_qr_code">QRコードでサインイン</string>
   <string name="welcome_subtitle_mail">プライバシー、セキュリティ、かつ便利。暗号メールで個人データを完全にコントロールします。</string>
   <string name="welcome_sign_in">サインイン</string>
   <string name="welcome_sign_up">アカウントを作成</string>
@@ -42,7 +42,9 @@
   <string name="auth_account_details">Proton アカウントの詳細を入力してください。</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">サインインに問題があります。もう一度やり直してください。</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">人間であることの検証が必要です。</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">ユーザー名かパスワードが正しくありません。再度お試しください。</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">ログイン情報が正しくありません。もう一度やり直してください。</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">サポートされていない2要素認証。</string>
+  <string name="auth_login_general_error">エラーが発生しました。</string>
   <string name="auth_second_factor_title">2要素認証</string>
   <string name="auth_second_factor_subtitle">お客様のアカウントには複数の2要素認証メカニズムが設定されています。本人確認の方法を選択してください。</string>
   <string name="auth_second_factor_tab_security_key">セキュリティキー</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">2要素認証コードを使用</string>
   <string name="auth_second_factor_insert_security_key">あなたのProtonアカウントにリンクされたセキュリティキーを提示してください。 </string>
   <string name="auth_second_factor_insert_security_key_link">より詳しく</string>
+  <string name="auth_second_factor_incorrect_code">無効なコードです。再度お試しください。</string>
   <string name="auth_two_pass_title">メールボックスのロック解除</string>
   <string name="auth_two_pass_input_label">メールボックスのパスワード</string>
   <string name="auth_two_pass_unlock">ロック解除</string>
@@ -102,11 +105,10 @@
   <string name="auth_signup_validation_email">メールアドレスは空にできません。</string>
   <string name="auth_signup_validation_username_input_invalid">ユーザー名入力が無効です。</string>
   <string name="auth_signup_validation_email_input_invalid">ユーザー名入力が無効です。</string>
-  <string name="auth_signup_username_unavailable_error">Username already taken. Choose a different username.</string>
-  <string name="auth_signup_recovery_email_validation_error">Email validation failed</string>
-  <string name="auth_signup_recovery_phone_validation_error">Phone number validation failed</string>
-  <string name="auth_signup_createpassword_error_password_not_equal">Passwords do not match. Please try again.</string>
-  <string name="auth_signup_generic_error">Something went wrong. Please try again.</string>
+  <string name="auth_signup_username_unavailable_error">ユーザー名は既に使用されています。別のユーザー名を選択してください。</string>
+  <string name="auth_signup_recovery_email_validation_error">メールアドレスの検証に失敗しました</string>
+  <string name="auth_signup_recovery_phone_validation_error">電話番号の検証に失敗しました</string>
+  <string name="auth_signup_createpassword_error_password_not_equal">パスワードが一致しません。再度お試しください。</string>
   <string name="auth_signup_countries_search">国を検索</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">ユーザーのセットアップができませんでした</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">アドレスをセットアップできませんでした。</string>
@@ -118,10 +120,21 @@
   <string name="auth_fido_manage_security_keys">セキュリティキーを管理</string>
   <string name="auth_fido_add_security_key">セキュリティキーを追加</string>
   <string name="auth_fido_security_keys_learn_more">より詳しく</string>
+  <string name="auth_user_check_delinquent_error">アカウントは支払い期限を過ぎたため現在保留中です。</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="other">無料のProtonアカウントは%d個までしか許可されていません。</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">何か問題が発生しました。もう一度お試しください。</string>
+  <string name="auth_fido_config_error">保管されたキーの取得中にエラーが発生しました。</string>
+  <string name="auth_fido_reading_key_error">セキュリティキーの読み取り中にエラーが発生しました。</string>
+  <string name="auth_fido_submit_key_error">キーデータの送信中にエラーが発生しました。</string>
+  <string name="auth_fido_reading_key_progress">セキュリティキーを読み込み中。</string>
+  <string name="auth_fido_authenticating_in_progress">セキュリティキーで認証中。</string>
+  <string name="auth_fido_security_key">セキュリティキー</string>
   <plurals name="password_validator_min_length_error">
-    <item quantity="other">Password must contain at least %1$s characters</item>
+    <item quantity="other">パスワードは少なくとも %1$s 文字以上必要です</item>
   </plurals>
   <plurals name="password_validator_min_length_requirement">
-    <item quantity="other">At least %1$s characters</item>
+    <item quantity="other">少なくとも%1$s文字</item>
   </plurals>
 </resources>

@@ -135,6 +135,7 @@
   <string name="message_cancel_schedule_send_dialog_title">Bewerken en opnieuw inplannen</string>
   <string name="message_cancel_schedule_send_dialog_message">Dit bericht wordt verplaatst naar Concepten zodat u het kunt bewerken. U moet opnieuw inplannen wanneer het wordt verzonden.</string>
   <!-- RSVP widget -->
+  <string name="rsvp_widget_no_title">(geen titel)</string>
   <string name="rsvp_widget_attendance_optional">(Aanwezigheid optioneel)</string>
   <string name="rsvp_widget_attending">Deelnemen?</string>
   <string name="rsvp_widget_yes">Ja</string>
@@ -149,4 +150,22 @@
     <item quantity="one">%1$d Deelnemer</item>
     <item quantity="other">%1$d Deelnemers</item>
   </plurals>
+  <string name="rsvp_widget_happening_now">Vindt <b>nu</b> plaats</string>
+  <string name="rsvp_widget_event_ended">Afspraak <b>beëindigd</b></string>
+  <string name="rsvp_widget_event_cancelled">Afspraak <b>geannuleerd</b></string>
+  <string name="rsvp_widget_invite_outdated">Deze uitnodiging is achterhaald</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">Afspraak geannuleerd. Deze uitnodiging is verouderd.</string>
+  <string name="rsvp_widget_offline_invite_outdated">U bent offline. De weergegeven informatie kan verouderd zijn.</string>
+  <string name="rsvp_widget_address_is_incorrect">Uw adres kan niet worden gebruikt om te beantwoorden. Update uw accountinformatie.</string>
+  <string name="rsvp_widget_user_is_organizer">U bent de organisator.</string>
+  <string name="rsvp_widget_event_does_not_exist">Deze afspraak staat niet in uw agenda, dus u kunt er niet op antwoorden.</string>
+  <string name="rsvp_widget_today">Vandaag</string>
+  <string name="rsvp_widget_tomorrow">Morgen</string>
+  <string name="rsvp_widget_invite_details_unavailable">Uitnodigingsgegevens niet beschikbaar</string>
+  <string name="rsvp_widget_could_not_load">We konden de informatie niet laden.\nProbeer het opnieuw.</string>
+  <string name="rsvp_widget_button_retry">Opnieuw proberen</string>
+  <string name="rsvp_widget_error_answering">Er is een fout opgetreden bij het beantwoorden van deze afspraak</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Openen in Proton Calendar</string>
+  <string name="rsvp_widget_copy_address">Adres kopiëren</string>
+  <string name="rsvp_widget_message">Bericht</string>
 </resources>

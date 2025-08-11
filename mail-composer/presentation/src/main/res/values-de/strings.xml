@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Passwort der Nachricht</string>
   <string name="set_message_password_label_repeat">Passwort wiederholen</string>
   <string name="set_message_password_label_hint">Passworthinweis (optional)</string>
-  <string name="set_message_password_supporting_text">4-21 Zeichen lang</string>
-  <string name="set_message_password_supporting_error_text">Das Passwort muss zwischen 4 und 21 Zeichen lang sein.</string>
+  <string name="set_message_password_supporting_text">8 bis 21 Zeichen lang</string>
+  <string name="set_message_password_supporting_error_text">Das Passwort muss zwischen 8 und 21 Zeichen enthalten</string>
   <string name="set_message_password_supporting_text_repeat">Die Passwörter müssen übereinstimmen</string>
   <string name="set_message_password_supporting_error_text_repeat">Die Passwörter stimmen nicht überein</string>
   <string name="set_message_password_button_show">Passwort anzeigen</string>
@@ -124,6 +124,7 @@
   <string name="composer_schedule_send_tomorrow_title">Morgen</string>
   <string name="composer_schedule_send_monday_title">Montag</string>
   <string name="composer_schedule_send_custom_title">Benutzerdefiniert</string>
+  <string name="composer_schedule_send_custom_upsell_title">Benutzerdefiniertes Datum und Uhrzeit</string>
   <string name="composer_schedule_send_custom_description">Datum und Uhrzeit auswählen</string>
   <string name="composer_error_send_message">Fehler beim Senden der Nachricht</string>
   <string name="composer_schedule_send_previously_set">Zuletzt festgelegt</string>
@@ -138,4 +139,5 @@
   <string name="composer_change_sender_error_refreshing_body">Das Aktualisieren des Textes nach dem Wechsel des Absenders ist fehlgeschlagen. Die Signatur ist möglicherweise nicht mehr aktuell.</string>
   <string name="composer_loading_attachments_error">Anhang konnten nicht geladen werden</string>
   <string name="composer_attachment_upload_error_retry">Einige Anhänge konnten nicht hochgeladen werden. Bitte versuche es erneut.</string>
+  <string name="composer_external_encryption_unexpected_error">Unerwarteter Fehler %s. Bitte erneut versuchen.</string>
 </resources>

@@ -92,8 +92,8 @@
   <string name="set_message_password_label">郵件密碼</string>
   <string name="set_message_password_label_repeat">重複輸入密碼</string>
   <string name="set_message_password_label_hint">密碼提示 (選用)</string>
-  <string name="set_message_password_supporting_text">長度為 4 至 21 個字元</string>
-  <string name="set_message_password_supporting_error_text">密碼長度必須介乎 4 至 21 個字元</string>
+  <string name="set_message_password_supporting_text">8 to 21 characters long</string>
+  <string name="set_message_password_supporting_error_text">The password must be between 8 and 21 characters</string>
   <string name="set_message_password_supporting_text_repeat">密碼必須相符</string>
   <string name="set_message_password_supporting_error_text_repeat">密碼不一致</string>
   <string name="set_message_password_button_show">顯示密碼</string>
@@ -123,6 +123,7 @@
   <string name="composer_schedule_send_tomorrow_title">明天</string>
   <string name="composer_schedule_send_monday_title">週一</string>
   <string name="composer_schedule_send_custom_title">自訂</string>
+  <string name="composer_schedule_send_custom_upsell_title">Custom date and time</string>
   <string name="composer_schedule_send_custom_description">選擇時間與日期</string>
   <string name="composer_error_send_message">傳送郵件時發生錯誤</string>
   <string name="composer_schedule_send_previously_set">之前已設定</string>
@@ -137,4 +138,5 @@
   <string name="composer_change_sender_error_refreshing_body">變更寄件者後重新整理內文失敗。簽名可能已過時。</string>
   <string name="composer_loading_attachments_error">載入附件失敗</string>
   <string name="composer_attachment_upload_error_retry">部分附件上傳失敗。請重試。</string>
+  <string name="composer_external_encryption_unexpected_error">Unexpected error %s. Try again.</string>
 </resources>

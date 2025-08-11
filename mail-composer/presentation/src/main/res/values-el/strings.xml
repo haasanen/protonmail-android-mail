@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Κωδικός πρόσβασης μηνύματος</string>
   <string name="set_message_password_label_repeat">Επανάληψη κωδικού</string>
   <string name="set_message_password_label_hint">Υπόδειξη κωδικού πρόσβασης (προαιρετικό)</string>
-  <string name="set_message_password_supporting_text">μήκος 4 έως 21 χαρακτήρες</string>
-  <string name="set_message_password_supporting_error_text">Ο κωδικός πρόσβασης πρέπει να αποτελείται από 4 έως 21 χαρακτήρες</string>
+  <string name="set_message_password_supporting_text">μήκος 8 έως 21 χαρακτήρες</string>
+  <string name="set_message_password_supporting_error_text">Ο κωδικός πρόσβασης πρέπει να αποτελείται από 8 έως 21 χαρακτήρες</string>
   <string name="set_message_password_supporting_text_repeat">Οι κωδικοί πρόσβασης πρέπει να ταυτίζονται</string>
   <string name="set_message_password_supporting_error_text_repeat">Οι κωδικοί πρόσβασης δεν ταυτίζονται</string>
   <string name="set_message_password_button_show">Εμφάνιση κωδικού πρόσβασης</string>
@@ -124,6 +124,7 @@
   <string name="composer_schedule_send_tomorrow_title">Αύριο</string>
   <string name="composer_schedule_send_monday_title">Δευτέρα</string>
   <string name="composer_schedule_send_custom_title">Προσαρμοσμένο</string>
+  <string name="composer_schedule_send_custom_upsell_title">Προσαρμοσμένη ημερομηνία και ώρα</string>
   <string name="composer_schedule_send_custom_description">Επιλέξτε ώρα και ημερομηνία</string>
   <string name="composer_error_send_message">Σφάλμα κατά την αποστολή του μηνύματος</string>
   <string name="composer_schedule_send_previously_set">Προηγουμένως ορισμένο</string>
@@ -138,4 +139,5 @@
   <string name="composer_change_sender_error_refreshing_body">Η ανανέωση του σώματος απέτυχε μετά την αλλαγή αποστολέα. Η υπογραφή ενδέχεται να είναι παλιά.</string>
   <string name="composer_loading_attachments_error">Αποτυχία φόρτωσης συνημμένων</string>
   <string name="composer_attachment_upload_error_retry">Μερικά συνημμένα απέτυχαν να ανεβούν. Παρακαλώ, δοκιμάστε ξανά.</string>
+  <string name="composer_external_encryption_unexpected_error">Απροσδόκητο σφάλμα %s. Δοκιμάστε ξανά.</string>
 </resources>

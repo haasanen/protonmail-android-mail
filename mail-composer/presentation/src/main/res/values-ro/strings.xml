@@ -23,7 +23,7 @@
   <string name="bcc_prefix">Ca:</string>
   <string name="subject_prefix">Subiect: </string>
   <string name="compose_message_placeholder">Compunere e-mail</string>
-  <string name="close_composer_content_description">Închidere panou editare</string>
+  <string name="close_composer_content_description">Închidere editor de mesaje</string>
   <string name="send_button_title">Trimitere</string>
   <string name="send_message_content_description">Trimitere mesaj</string>
   <string name="composer_expand_recipients_button">Afișare alți destinatari</string>
@@ -92,8 +92,8 @@
   <string name="set_message_password_label">Parolă mesaj</string>
   <string name="set_message_password_label_repeat">Repetare parolă</string>
   <string name="set_message_password_label_hint">Indiciu parolă (opțional)</string>
-  <string name="set_message_password_supporting_text">Între 4 și 21 de caractere</string>
-  <string name="set_message_password_supporting_error_text">Parola trebuie să aibă între 4 și 21 de caractere.</string>
+  <string name="set_message_password_supporting_text">Între 8 și 21 de caractere</string>
+  <string name="set_message_password_supporting_error_text">Parola trebuie să aibă între 8 și 21 de caractere.</string>
   <string name="set_message_password_supporting_text_repeat">Parolele trebuie să corespundă.</string>
   <string name="set_message_password_supporting_error_text_repeat">Parolele nu coincid.</string>
   <string name="set_message_password_button_show">Afișare parolă</string>
@@ -125,6 +125,7 @@
   <string name="composer_schedule_send_tomorrow_title">Mâine</string>
   <string name="composer_schedule_send_monday_title">Luni</string>
   <string name="composer_schedule_send_custom_title">Personal</string>
+  <string name="composer_schedule_send_custom_upsell_title">Dată și oră personalizată</string>
   <string name="composer_schedule_send_custom_description">Alegeți ora și data</string>
   <string name="composer_error_send_message">Eroare trimitere mesaj.</string>
   <string name="composer_schedule_send_previously_set">Setat anterior</string>
@@ -139,4 +140,5 @@
   <string name="composer_change_sender_error_refreshing_body">Împrospătarea conținutului după schimbarea expeditorului a eșuat. Semnătura ar putea fi învechită.</string>
   <string name="composer_loading_attachments_error">Încărcarea fișierelor a eșuat.</string>
   <string name="composer_attachment_upload_error_retry">Câteva atașamente nu au putut fi încărcate. Mai încercați.</string>
+  <string name="composer_external_encryption_unexpected_error">Eroare neașteptată %s. Reîncercați.</string>
 </resources>

@@ -139,20 +139,39 @@
   <string name="message_cancel_schedule_send_dialog_title">Рэдагаваць і перапланаваць</string>
   <string name="message_cancel_schedule_send_dialog_message">Гэта паведамленне будзе перамешчана ў папку з чарнавікамі, так што вы зможаце адрэдагаваць яго. Вам неабходна будзе перапланаваць яго пасля адпраўкі.</string>
   <!-- RSVP widget -->
+  <string name="rsvp_widget_no_title">(без загалоўка)</string>
   <string name="rsvp_widget_attendance_optional">(Удзельнічаць неабавязкова)</string>
-  <string name="rsvp_widget_attending">Пойдзеце?</string>
+  <string name="rsvp_widget_attending">Удзельнічаеце?</string>
   <string name="rsvp_widget_yes">Так</string>
   <string name="rsvp_widget_maybe">Магчыма</string>
   <string name="rsvp_widget_no">Не</string>
-  <string name="rsvp_widget_yes_long">Так, я пайду</string>
-  <string name="rsvp_widget_maybe_long">Магчыма я далучуся</string>
-  <string name="rsvp_widget_no_long">Не, я не хачу ісці</string>
+  <string name="rsvp_widget_yes_long">Так, я ўдзельнічаю</string>
+  <string name="rsvp_widget_maybe_long">Магчыма я прыму ўдзел</string>
+  <string name="rsvp_widget_no_long">Не, я не хачу ўдзельнічаць</string>
   <string name="rsvp_widget_organizer">(Арганізатар)</string>
   <string name="rsvp_widget_you">Вы</string>
   <plurals name="rsvp_widget_participants">
-    <item quantity="one">%1$d Удзельнік</item>
-    <item quantity="few">%1$d Удзельнікі</item>
-    <item quantity="many">%1$d Удзельнікаў</item>
-    <item quantity="other">%1$d Удзельнікаў</item>
+    <item quantity="one">%1$d удзельнік</item>
+    <item quantity="few">%1$d удзельнікі</item>
+    <item quantity="many">%1$d удзельнікаў</item>
+    <item quantity="other">%1$d удзельнікаў</item>
   </plurals>
+  <string name="rsvp_widget_happening_now">Адбываецца <b>цяпер</b></string>
+  <string name="rsvp_widget_event_ended">Event <b>ended</b></string>
+  <string name="rsvp_widget_event_cancelled">Event <b>cancelled</b></string>
+  <string name="rsvp_widget_invite_outdated">Гэтае запрашэнне састарэла</string>
+  <string name="rsvp_widget_event_cancelled_invite_outdated">Падзея скасавана. Гэтае запрашэнне састарэла.</string>
+  <string name="rsvp_widget_offline_invite_outdated">Вы па-за сеткай. Адлюстраваная інфармацыя можа быць неактуальнай.</string>
+  <string name="rsvp_widget_address_is_incorrect">Ваш адрас не можа быць выкарыстаны для адказу. Абнавіце звесткі вашага ўліковага запісу.</string>
+  <string name="rsvp_widget_user_is_organizer">Вы арганізатар.</string>
+  <string name="rsvp_widget_event_does_not_exist">This event isn\'t in your calendar so you can\'t reply to it.</string>
+  <string name="rsvp_widget_today">Сёння</string>
+  <string name="rsvp_widget_tomorrow">Заўтра</string>
+  <string name="rsvp_widget_invite_details_unavailable">Invite details unavailable</string>
+  <string name="rsvp_widget_could_not_load">We couldn\'t load the information.\nPlease try again.</string>
+  <string name="rsvp_widget_button_retry">Retry</string>
+  <string name="rsvp_widget_error_answering">An error occurred while answering this event</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Open in Proton Calendar</string>
+  <string name="rsvp_widget_copy_address">Copy address</string>
+  <string name="rsvp_widget_message">Message</string>
 </resources>

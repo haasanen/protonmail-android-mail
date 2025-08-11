@@ -42,7 +42,9 @@
   <string name="auth_account_details">Gib deine Proton-Kontodaten ein.</string>
   <string name="auth_login_error_invalid_action_cannot_unlock_keys">Problem beim Anmelden. Bitte versuche es erneut.</string>
   <string name="auth_login_error_invalid_action_human_verification_challenge">Eine menschliche Überprüfung ist erforderlich.</string>
-  <string name="auth_login_error_invalid_action_invalid_credentials">Benutzername oder Passwort ungültig. Bitte versuche es erneut.</string>
+  <string name="auth_login_error_invalid_action_invalid_credentials">Ungültige Anmeldedaten. Bitte erneut versuchen.</string>
+  <string name="auth_login_error_invalid_action_unsupported_tfa">Nicht unterstützter Zwei-Faktor-Code.</string>
+  <string name="auth_login_general_error">Es ist ein Fehler aufgetreten.</string>
   <string name="auth_second_factor_title">Zwei-Faktor-Authentifizierung</string>
   <string name="auth_second_factor_subtitle">In diesem Konto sind mehrere 2FA-Mechanismen konfiguriert. Bitte auswählen, wie du deine Identität bestätigen möchtest.</string>
   <string name="auth_second_factor_tab_security_key">Sicherheitsschlüssel</string>
@@ -56,6 +58,7 @@
   <string name="auth_second_factor_switch_to_totp">Zwei-Faktor-Code verwenden</string>
   <string name="auth_second_factor_insert_security_key">Lege einen Sicherheitsschlüssel vor, der mit diesem Proton-Konto verknüpft ist. </string>
   <string name="auth_second_factor_insert_security_key_link">Mehr erfahren</string>
+  <string name="auth_second_factor_incorrect_code">Ungültiger Code. Bitte erneut versuchen.</string>
   <string name="auth_two_pass_title">Postfach entsperren</string>
   <string name="auth_two_pass_input_label">Postfach‐Passwort</string>
   <string name="auth_two_pass_unlock">Entsperren</string>
@@ -106,7 +109,6 @@
   <string name="auth_signup_recovery_email_validation_error">Überprüfung der E-Mail-Adresse fehlgeschlagen</string>
   <string name="auth_signup_recovery_phone_validation_error">Überprüfung der Rufnummer fehlgeschlagen</string>
   <string name="auth_signup_createpassword_error_password_not_equal">Passwörter stimmen nicht überein. Bitte erneut versuchen.</string>
-  <string name="auth_signup_generic_error">Es ist ein Fehler aufgetreten. Bitte erneut versuchen.</string>
   <string name="auth_signup_countries_search">Land suchen</string>
   <string name="auth_login_error_invalid_action_cannot_setup_user">Nutzer konnte nicht eingerichtet werden.</string>
   <string name="auth_login_error_invalid_action_cannot_setup_address">Adresse konnte nicht eingerichtet werden.</string>
@@ -118,6 +120,18 @@
   <string name="auth_fido_manage_security_keys">Sicherheitsschlüssel verwalten</string>
   <string name="auth_fido_add_security_key">Sicherheitsschlüssel hinzufügen</string>
   <string name="auth_fido_security_keys_learn_more">Mehr erfahren</string>
+  <string name="auth_user_check_delinquent_error">Dein Konto ist derzeit wegen einer überfälligen Rechnung eingefroren.</string>
+  <plurals name="auth_user_check_max_free_error">
+    <item quantity="one">Es ist nur ein kostenloses Proton-Konto zulässig.</item>
+    <item quantity="other">Es sind nur %d kostenlose Proton-Konten zulässig.</item>
+  </plurals>
+  <string name="common_error_something_went_wrong">Es ist ein Fehler aufgetreten. Bitte erneut versuchen.</string>
+  <string name="auth_fido_config_error">Fehler beim Abrufen der gespeicherten Schlüssel.</string>
+  <string name="auth_fido_reading_key_error">Fehler beim Lesen des Sicherheitsschlüssels.</string>
+  <string name="auth_fido_submit_key_error">Fehler beim Übermitteln der Schlüsseldaten.</string>
+  <string name="auth_fido_reading_key_progress">Sicherheitsschlüssel wird gelesen.</string>
+  <string name="auth_fido_authenticating_in_progress">Mit Sicherheitsschlüssel authentifizieren.</string>
+  <string name="auth_fido_security_key">Sicherheitsschlüssel</string>
   <plurals name="password_validator_min_length_error">
     <item quantity="one">Passwort muss mindestens 1 Zeichen enthalten</item>
     <item quantity="other">Passwort muss mindestens %1$s Zeichen enthalten</item>
