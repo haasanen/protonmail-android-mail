@@ -2,6 +2,7 @@ package ch.protonmail.android.maildetail.presentation.usecase
 
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.format.TextStyle
 import java.util.Locale
 import android.content.Context
 import ch.protonmail.android.mailcommon.domain.usecase.GetAppLocale
@@ -61,8 +62,9 @@ class FormatRsvpWidgetTimeTest {
         val result = formatRsvpWidgetTime(RsvpOccurrence.Date, startsAt, endsAt)
 
         // Then
-        val expectedMonth = futureDate.month.name.lowercase().replaceFirstChar { it.uppercase() }.substring(0, 3)
-        assertEquals(TextUiModel.Text("${futureDate.dayOfMonth} $expectedMonth"), result)
+        val expectedMonth = futureDate.month.getDisplayName(TextStyle.SHORT, Locale.US)
+        val expectedDayOfWeek = futureDate.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.US)
+        assertEquals(TextUiModel.Text("$expectedDayOfWeek, ${futureDate.dayOfMonth} $expectedMonth"), result)
     }
 
     @Test
@@ -77,7 +79,7 @@ class FormatRsvpWidgetTimeTest {
         val result = formatRsvpWidgetTime(RsvpOccurrence.Date, startsAt, endsAt)
 
         // Then
-        assertEquals(TextUiModel.Text("15 Jun - 20 Jun"), result)
+        assertEquals(TextUiModel.Text("Sat, 15 Jun - Thu, 20 Jun"), result)
     }
 
     @Test
@@ -91,7 +93,7 @@ class FormatRsvpWidgetTimeTest {
         val result = formatRsvpWidgetTime(RsvpOccurrence.DateTime, startsAt, endsAt)
 
         // Then
-        assertEquals(TextUiModel.Text("15 Jun • 14:30 - 16:45"), result)
+        assertEquals(TextUiModel.Text("Sat, 15 Jun • 14:30 - 16:45"), result)
     }
 
     @Test
@@ -106,6 +108,6 @@ class FormatRsvpWidgetTimeTest {
         val result = formatRsvpWidgetTime(RsvpOccurrence.DateTime, startsAt, endsAt)
 
         // Then
-        assertEquals(TextUiModel.Text("15 Jun, 09:00 - 17 Jun, 17:30"), result)
+        assertEquals(TextUiModel.Text("Sat, 15 Jun, 09:00 - Mon, 17 Jun, 17:30"), result)
     }
 }

@@ -40,7 +40,7 @@ class FormatRsvpWidgetTime @Inject constructor(
         startsAt: Long,
         endsAt: Long
     ): TextUiModel {
-        val dateFormatter = DateTimeFormatter.ofPattern("d MMM").withLocale(getAppLocale())
+        val dateFormatter = DateTimeFormatter.ofPattern("EEE, d MMM").withLocale(getAppLocale())
         val timeFormatter = DateTimeFormatter.ofPattern("HH:mm").withLocale(getAppLocale())
 
         val today = LocalDate.now(ZoneId.systemDefault())
