@@ -22,9 +22,11 @@ import java.util.UUID
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -164,9 +166,7 @@ fun SnoozeOptionsSheet(
         )
 
         OptionsGrid(
-            items = snoozeOptions
-                .chunked(size = 2)
-                .toMutableList(),
+            items = snoozeOptions.chunk(),
             onEvent = onEvent
         )
     }
@@ -180,10 +180,13 @@ fun OptionsGrid(
 ) {
     items.forEach { rowItems ->
         Row(
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Max),
             horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Medium)
         ) {
-            rowItems.forEach { item ->
+            rowItems.forEachIndexed { index, item ->
+                val isVerticalLayout = rowItems.isVerticalAlignedLayout(index)
                 when (item) {
                     is SnoozeUntilUiModel -> SnoozeUntilButton(
                         modifier.weight(1f),
@@ -194,8 +197,17 @@ fun OptionsGrid(
                         onEvent(item.action)
                     }
 
-                    is CustomSnoozeUiModel -> CustomSnoozeButton(modifier) { onEvent(item.action) }
-                    is UpgradeToSnoozeUiModel -> UpsellSnoozeButton(modifier, onEvent)
+                    is CustomSnoozeUiModel -> CustomSnoozeButton(
+                        modifier = modifier.weight(1f),
+                        verticallyAlignedLayout = isVerticalLayout
+                    ) { onEvent(item.action) }
+
+                    is UpgradeToSnoozeUiModel -> UpsellSnoozeButton(
+                        modifier = modifier.weight(1f),
+                        verticallyAlignedLayout = isVerticalLayout,
+                        onEvent
+                    )
+
                     is UnSnooze -> UnsnoozeButton(modifier) { onEvent(item.action) }
                 }
             }
@@ -224,37 +236,54 @@ fun UnsnoozeButton(modifier: Modifier = Modifier, onEvent: () -> Unit = {}) {
 }
 
 @Composable
-fun CustomSnoozeButton(modifier: Modifier = Modifier, onEvent: () -> Unit = {}) {
-    ProtonButton(
-        modifier = modifier,
-        onClick = { onEvent() },
-        colors = ButtonDefaults.protonSecondaryButtonColors(false),
-        elevation = null,
-        shape = ProtonTheme.shapes.extraLarge,
-        border = null
-    ) {
-        Column(
-            modifier = modifier
-                .padding(all = ProtonDimens.Spacing.Large)
-                .fillMaxWidth()
+fun CustomSnoozeButton(
+    modifier: Modifier = Modifier,
+    verticallyAlignedLayout: Boolean,
+    onEvent: () -> Unit = {}
+) {
+    if (verticallyAlignedLayout) {
+        SnoozeUntilButton(
+            modifier = modifier,
+            icon = R.drawable.ic_proton_calendar_today,
+            title = TextUiModel(R.string.snooze_sheet_option_custom),
+            detail = TextUiModel(R.string.snooze_sheet_option_custom_detail)
+        )
+    } else {
+        ProtonButton(
+            modifier = modifier,
+            onClick = { onEvent() },
+            colors = ButtonDefaults.protonSecondaryButtonColors(false),
+            elevation = null,
+            shape = ProtonTheme.shapes.extraLarge,
+            border = null
         ) {
-            Text(
-                modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Tiny),
-                text = stringResource(R.string.snooze_sheet_option_custom),
-                style = ProtonTheme.typography.bodyLargeNorm,
-                maxLines = 1
-            )
-            Text(
-                text = stringResource(R.string.snooze_sheet_option_custom_detail),
-                style = ProtonTheme.typography.bodyMediumWeak,
-                maxLines = 1
-            )
+            Column(
+                modifier = modifier
+                    .padding(all = ProtonDimens.Spacing.Large)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Tiny),
+                    text = stringResource(R.string.snooze_sheet_option_custom),
+                    style = ProtonTheme.typography.bodyLargeNorm,
+                    maxLines = 1
+                )
+                Text(
+                    text = stringResource(R.string.snooze_sheet_option_custom_detail),
+                    style = ProtonTheme.typography.bodyMediumWeak,
+                    maxLines = 1
+                )
+            }
         }
     }
 }
 
 @Composable
-fun UpsellSnoozeButton(modifier: Modifier = Modifier, onEvent: (SnoozeOperationViewAction) -> Unit = {}) {
+fun UpsellSnoozeButton(
+    modifier: Modifier = Modifier,
+    verticallyAlignedLayout: Boolean,
+    onEvent: (SnoozeOperationViewAction) -> Unit = {}
+) {
     UpsellingBottomSheetButton(
         modifier = modifier,
         text = stringResource(R.string.snooze_custom_upsell_title),
@@ -311,7 +340,7 @@ fun SnoozeUntilButton(
 @Preview(name = "Upsell Button")
 @Composable
 fun PreviewUpsellButton() {
-    CustomSnoozeButton()
+    CustomSnoozeButton(verticallyAlignedLayout = false)
 }
 
 @Preview(name = "Unsnooze Button")
@@ -358,6 +387,25 @@ fun PreviewSnoozeGrid() {
         )
     }
 }
+
+private fun List<SnoozeOptionUiModel>.chunk(): List<List<SnoozeOptionUiModel>> = this.chunked(size = 2)
+    // chunk the list, and let custom options be chunked with predefined options,
+    // however, if we have snooze and custom in the same list then split them out to allow full width layouts
+    .let { chunked ->
+        // the last two buttons will not be pre-defined snooze options
+        if (chunked.last().filterIsInstance<SnoozeUntilUiModel>().isEmpty()) {
+            // these buttons will be full width buttons
+            chunked.toMutableList()
+                .apply {
+                    addAll(removeAt(this.size - 1).map { listOf(it) })
+                }
+        } else {
+            chunked
+        }
+    }
+
+private fun List<SnoozeOptionUiModel>.isVerticalAlignedLayout(index: Int): Boolean =
+    index > 0 && isNotEmpty() && get(index - 1) is SnoozeUntilUiModel
 
 object SnoozeBottomSheet {
 
