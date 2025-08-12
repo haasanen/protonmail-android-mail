@@ -21,8 +21,13 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.core.content.IntentCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.AuthOrchestrator
 import me.proton.android.core.auth.presentation.ProtonSecureActivity
 import me.proton.android.core.auth.presentation.R
@@ -37,6 +42,8 @@ class LoginActivity : ProtonSecureActivity() {
 
     @Inject
     lateinit var authOrchestrator: AuthOrchestrator
+
+    private val loginViewModel: LoginViewModel by viewModels()
 
     private val input: LoginInput
         get() = requireNotNull(IntentCompat.getParcelableExtra(intent, ARG_INPUT, LoginInput::class.java))
@@ -56,6 +63,16 @@ class LoginActivity : ProtonSecureActivity() {
             when (result) {
                 is LoginHelpOutput.SignedInWithQrCode -> onSuccess(result.userId)
                 null -> Unit
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                loginViewModel.uiEvent.collect { uiEvent ->
+                    when (uiEvent) {
+                        is LoginEvent.FailedToLogin -> showError(uiEvent.message)
+                    }
+                }
             }
         }
 
