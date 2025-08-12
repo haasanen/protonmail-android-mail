@@ -23,12 +23,15 @@ import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsSnoozeEnabled
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
@@ -37,7 +40,8 @@ class GetMoreActionsBottomSheetData @Inject constructor(
     private val getMessageAvailableActions: GetMessageAvailableActions,
     private val getConversationAvailableActions: GetConversationAvailableActions,
     private val observeMessage: ObserveMessage,
-    private val observeConversation: ObserveConversation
+    private val observeConversation: ObserveConversation,
+    @IsSnoozeEnabled private val isSnoozeEnabled: Flow<Boolean>
 ) {
 
     suspend fun forMessage(
@@ -48,7 +52,13 @@ class GetMoreActionsBottomSheetData @Inject constructor(
     ): DetailMoreActionsBottomSheetEvent.DataLoaded? = getMessageAvailableActions(
         userId, labelId, messageId, messageThemeOptions
     ).map {
-        buildBottomSheetActionData(userId, messageId, it)
+
+        buildBottomSheetActionData(
+            userId, messageId,
+            // keep behind feature flag until ready
+            it.removeSnoozeIfNecessary(isSnoozeEnabled.first())
+        )
+
     }.getOrNull()
 
     suspend fun forConversation(
@@ -64,7 +74,9 @@ class GetMoreActionsBottomSheetData @Inject constructor(
                 messageSender = conversation.senders.first().name,
                 messageSubject = conversation.subject,
                 messageIdInConversation = null,
-                availableActions = availableActions,
+                availableActions = availableActions
+                    // keep behind feature flag until ready
+                    .removeSnoozeIfNecessary(isSnoozeEnabled.first()),
                 customizeToolbarAction = Action.CustomizeToolbar
             )
         }.getOrNull()
@@ -84,4 +96,17 @@ class GetMoreActionsBottomSheetData @Inject constructor(
             customizeToolbarAction = null
         )
     }
+
+    private fun AvailableActions.removeSnoozeIfNecessary(snoozeEnabled: Boolean) = if (!snoozeEnabled) {
+        this.copy(mailboxItemActions = this.mailboxItemActions.removeSnooze())
+    } else {
+        this
+    }
 }
+
+private fun List<Action>.removeSnooze(): List<Action> {
+    val mutableActions = this.toMutableList()
+    mutableActions.remove(Action.Snooze)
+    return mutableActions
+}
+

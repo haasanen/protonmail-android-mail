@@ -33,11 +33,14 @@ class GetMoreActionsBottomSheetDataTest {
     private val getConversationAvailableActions = mockk<GetConversationAvailableActions>()
     private val getMessageAvailableActions = mockk<GetMessageAvailableActions>()
 
+    private val isSnoozeEnabled = flowOf(false)
+
     private val getMoreBottomSheetData = GetMoreActionsBottomSheetData(
         getMessageAvailableActions,
         getConversationAvailableActions,
         observeMessage,
-        observeConversation
+        observeConversation,
+        isSnoozeEnabled
     )
 
     @Test

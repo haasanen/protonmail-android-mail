@@ -83,7 +83,7 @@ dependencies {
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
     implementation(project(":uicomponents"))
-
+    implementation(project(":mail-featureflags:domain"))
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
 }
