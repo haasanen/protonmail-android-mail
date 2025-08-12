@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -32,9 +33,12 @@ import kotlinx.coroutines.flow.flow
 import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.auth.data.passvalidator.PasswordValidatorServiceHolder
 import me.proton.android.core.auth.presentation.AuthOrchestrator
+import me.proton.android.core.auth.presentation.flow.FlowManager
+import me.proton.android.core.auth.presentation.passmanagement.PassManagementArg.getUserId
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.ErrorShown
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.Load
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction
+import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.Close
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.SelectTab
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.UpdateLoginPassword
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.UpdateMailboxPassword
@@ -46,8 +50,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PasswordManagementViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val observePasswordConfig: ObservePasswordConfig,
-    private val createPasswordFlow: CreatePasswordFlow,
+    private val flowManager: FlowManager,
     private val authOrchestrator: AuthOrchestrator,
     private val passwordValidatorServiceHolder: PasswordValidatorServiceHolder
 ) : BaseViewModel<PasswordManagementAction, PasswordManagementState>(
@@ -56,20 +61,20 @@ class PasswordManagementViewModel @Inject constructor(
     sharingStarted = SharingStarted.Lazily
 ) {
 
-    private var userId: CoreUserId? = null
+    private val userId by lazy { CoreUserId(savedStateHandle.getUserId()) }
     private var userInput: UserInput by mutableStateOf(UserInput())
 
     private val passwordManagementFlowDeferred = viewModelScope.async {
-        createPasswordFlow()
+        flowManager.getCurrentActiveFlow(userId, true)
     }
 
     private val loginPasswordHandler = LoginPasswordHandler.create(
-        getFlow = ::getPasswordFlow,
+        getPasswordFlow = ::getCurrentFlow,
         getUserId = { userId }
     )
 
     private val mailboxPasswordHandler = MailboxPasswordHandler.create(
-        getFlow = ::getPasswordFlow,
+        getFlow = ::getCurrentFlow,
         getUserId = { userId }
     )
 
@@ -78,12 +83,12 @@ class PasswordManagementViewModel @Inject constructor(
             is Load -> onLoad()
             is ErrorShown -> handleErrorShown()
             is UserInputAction -> handleUserInputAction(action)
-            is PasswordManagementAction.Reset -> onReset()
+            is Close -> onClose()
         }
     }
 
     private fun handleErrorShown(): Flow<PasswordManagementState> = flow {
-        getPasswordFlow().stepBack()
+        getPasswordFlow()?.stepBack()
         emit(userInput)
     }
 
@@ -139,6 +144,11 @@ class PasswordManagementViewModel @Inject constructor(
                 emit(newState)
             }
 
+            PasswordManagementState.LoginPasswordSaved,
+            PasswordManagementState.MailboxPasswordSaved -> {
+                clearState()
+                emit(newState)
+            }
             else -> emit(newState)
         }
     }
@@ -165,23 +175,36 @@ class PasswordManagementViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getPasswordFlow() = passwordManagementFlowDeferred.await()
+    private suspend fun getCurrentFlow() = passwordManagementFlowDeferred.await()
+    private suspend fun getPasswordFlow() = (getCurrentFlow() as? FlowManager.CurrentFlow.ChangingPassword)?.flow
 
-    private fun onReset(): Flow<PasswordManagementState> = flow {
-        createPasswordFlow.clear()
+    private fun onClose(): Flow<PasswordManagementState> = flow {
+        clearState()
+        emit(PasswordManagementState.Closed)
+    }
+
+    private suspend fun clearState() {
+        flowManager.clearCache(userId)
     }
 
     private fun onLoad() = flow {
         emit(PasswordManagementState.Loading)
-        observePasswordConfig().collect { passwordConfig ->
+        observePasswordConfig(userId).collect { passwordConfig ->
+            val flow = getCurrentFlow()
+            val passwordValidator = when (flow) {
+                is FlowManager.CurrentFlow.ChangingPassword -> flow.flow.passwordValidator()
+                is FlowManager.CurrentFlow.LoggingIn -> flow.flow.passwordValidator()
+            }
             passwordValidatorServiceHolder.bind {
-                requireNotNull(getPasswordFlow().passwordValidator()) {
+                requireNotNull(passwordValidator) {
                     "Could not get password validator service."
                 }
             }
 
-            userId = passwordConfig.userId
             userInput = UserInput(
+                loginPassword = LoginPasswordState(
+                    currentPasswordNeeded = flow !is FlowManager.CurrentFlow.LoggingIn
+                ),
                 mailboxPassword = MailboxPasswordState(
                     isAvailable = passwordConfig.passwordMode == PasswordMode.TWO.value
                 )

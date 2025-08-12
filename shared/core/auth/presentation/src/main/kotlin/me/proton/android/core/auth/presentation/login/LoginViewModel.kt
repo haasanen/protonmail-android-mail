@@ -119,6 +119,7 @@ class LoginViewModel @Inject internal constructor(
         }
 
         return when {
+            getLoginFlow().isAwaitingNewPassword() -> LoginViewState.AwaitingNewPass(userId)
             getLoginFlow().isAwaitingMailboxPassword() -> LoginViewState.Awaiting2Pass(userId)
             getLoginFlow().isAwaiting2fa() -> LoginViewState.Awaiting2fa(userId)
             getLoginFlow().isLoggedIn() -> onLoggedIn(userId)

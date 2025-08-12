@@ -32,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -80,8 +81,8 @@ fun OneTimePasswordInputForm(
     onClose: () -> Unit = {},
     initialMode: OneTimePasswordInputMode = OneTimePasswordInputMode.Totp
 ) {
-    var mode by remember { mutableStateOf(initialMode) }
-    var code by remember { mutableStateOf("") }
+    var mode by rememberSaveable { mutableStateOf(initialMode) }
+    var code by rememberSaveable { mutableStateOf("") }
     val isLoading = state.isLoading
     val twoFactorCodeFocusRequester = remember { FocusRequester() }
 

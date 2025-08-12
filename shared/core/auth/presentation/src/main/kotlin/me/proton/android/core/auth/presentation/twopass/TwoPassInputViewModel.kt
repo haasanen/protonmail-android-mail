@@ -112,7 +112,9 @@ class TwoPassInputViewModel @Inject constructor(
             is MailSessionResumeLoginFlowResult.Ok -> {
                 when (val submit = loginFlow.v1.submitMailboxPassword(action.mailboxPassword)) {
                     is LoginFlowSubmitMailboxPasswordResult.Error -> emitAll(onError(submit.v1))
-                    is LoginFlowSubmitMailboxPasswordResult.Ok -> emitAll(onSuccess(loginFlow.v1))
+                    is LoginFlowSubmitMailboxPasswordResult.Ok -> {
+                        emitAll(onSuccess(loginFlow.v1))
+                    }
                 }
             }
         }
@@ -129,7 +131,9 @@ class TwoPassInputViewModel @Inject constructor(
     private fun onSuccess(loginFlow: LoginFlow): Flow<TwoPassInputState> = flow {
         when (val result = sessionInterface.toUserSession(loginFlow)) {
             is MailSessionToUserSessionResult.Error -> emit(Error.LoginFlow(result.v1.getErrorMessage(context)))
-            is MailSessionToUserSessionResult.Ok -> emit(TwoPassInputState.Success)
+            is MailSessionToUserSessionResult.Ok -> {
+                emit(TwoPassInputState.Success)
+            }
         }
     }
 

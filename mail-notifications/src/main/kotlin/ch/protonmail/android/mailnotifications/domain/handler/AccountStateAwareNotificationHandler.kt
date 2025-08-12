@@ -61,8 +61,8 @@ internal class AccountStateAwareNotificationHandler @Inject constructor(
                             AccountState.NotReady,
                             AccountState.Ready,
                             AccountState.TwoPasswordNeeded,
-                            AccountState.TwoFactorNeeded,
-                            AccountState.NewPassNeeded -> Unit
+                            AccountState.NewPassNeeded,
+                            AccountState.TwoFactorNeeded -> Unit
                         }
                     }
                 }

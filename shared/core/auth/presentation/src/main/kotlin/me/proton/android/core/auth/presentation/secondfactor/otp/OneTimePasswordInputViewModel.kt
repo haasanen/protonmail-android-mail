@@ -26,12 +26,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.auth.presentation.R
+import me.proton.android.core.auth.presentation.flow.FlowManager
+import me.proton.android.core.auth.presentation.flow.FlowManager.CurrentFlow
 import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.passmanagement.getErrorMessage
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorFlowCache.SecondFactorFlow
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorFlowManager
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Authenticate
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Load
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Awaiting2Pass
@@ -55,13 +56,13 @@ class OneTimePasswordInputViewModel @Inject constructor(
     private val context: Context,
     private val savedStateHandle: SavedStateHandle,
     private val sessionInterface: MailSession,
-    private val secondFactorFlowManager: SecondFactorFlowManager
+    private val flowManager: FlowManager
 ) : BaseViewModel<OneTimePasswordInputAction, OneTimePasswordInputState>(
     initialState = Idle,
     initialAction = Load()
 ) {
 
-    private val userId by lazy { savedStateHandle.getUserId() }
+    private val userId by lazy { CoreUserId(savedStateHandle.getUserId()) }
 
     override suspend fun FlowCollector<OneTimePasswordInputState>.onError(throwable: Throwable) {
         emit(Error.LoginFlow(throwable.message))
@@ -79,7 +80,7 @@ class OneTimePasswordInputViewModel @Inject constructor(
     }
 
     private fun onClose(message: String? = null): Flow<OneTimePasswordInputState> = flow {
-        sessionInterface.deleteAccount(userId)
+        sessionInterface.deleteAccount(userId.id)
         emit(Closed(message = message))
     }
 
@@ -93,8 +94,8 @@ class OneTimePasswordInputViewModel @Inject constructor(
 
     private fun onAuthenticate(action: Authenticate): Flow<OneTimePasswordInputState> = flow {
         emit(Loading)
-        when (val twoFaFlow = secondFactorFlowManager.getSecondFactorFlow(userId)) {
-            is SecondFactorFlow.ChangingPassword -> {
+        when (val twoFaFlow = flowManager.getCurrentActiveFlow(userId)) {
+            is CurrentFlow.ChangingPassword -> {
                 when (val submit = twoFaFlow.flow.submitTotp(action.code)) {
                     is PasswordFlowSubmitTotpResult.Error -> {
                         emit(Error.LoginFlow(submit.v1.getErrorMessage(context)))
@@ -104,7 +105,7 @@ class OneTimePasswordInputViewModel @Inject constructor(
                 }
             }
 
-            is SecondFactorFlow.LoggingIn -> {
+            is CurrentFlow.LoggingIn -> {
                 when (val submit = twoFaFlow.flow.submitTotp(action.code)) {
                     is LoginFlowSubmitTotpResult.Error -> emitAll(onSubmitTotpError(submit, twoFaFlow.flow))
                     is LoginFlowSubmitTotpResult.Ok -> emitAll(onSuccess(twoFaFlow.flow))

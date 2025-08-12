@@ -133,11 +133,12 @@ public fun LoginScreen(
             is LoginViewState.LoggedIn -> onSuccess(state.userId)
             is LoginViewState.Awaiting2fa -> onSuccess(state.userId)
             is LoginViewState.Awaiting2Pass -> onSuccess(state.userId)
+            is LoginViewState.AwaitingNewPass -> onSuccess(state.userId)
             else -> Unit
         }
     }
 
-    LaunchOnScreenView(onScreenView)
+    LaunchOnScreenView(enqueue = onScreenView)
 
     LoginScaffold(
         modifier = modifier,

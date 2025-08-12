@@ -19,6 +19,7 @@
 package me.proton.android.core.auth.presentation.passmanagement
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,7 +41,6 @@ import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -95,14 +95,13 @@ fun PasswordManagementScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    DisposableEffect(Unit) {
-        onDispose {
-            viewModel.perform(PasswordManagementAction.Reset)
-        }
+    BackHandler(enabled = true) {
+        viewModel.perform(PasswordManagementAction.Close)
     }
 
     LaunchedEffect(state) {
         when (val currentState = state) {
+            is PasswordManagementState.Closed -> onClose()
             is PasswordManagementState.Error -> {
                 onError(currentState.error)
                 viewModel.perform(PasswordManagementAction.ErrorShown)
@@ -118,7 +117,7 @@ fun PasswordManagementScreen(
         modifier = modifier,
         state = state,
         onAction = viewModel::perform,
-        onBackClicked = onClose
+        onBackClicked = { viewModel.perform(PasswordManagementAction.Close) }
     )
 }
 

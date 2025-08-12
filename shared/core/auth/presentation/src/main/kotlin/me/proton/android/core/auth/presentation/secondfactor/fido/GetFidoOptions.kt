@@ -18,8 +18,9 @@
 
 package me.proton.android.core.auth.presentation.secondfactor.fido
 
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorFlowManager
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorFlowCache.SecondFactorFlow
+import me.proton.android.core.account.domain.model.CoreUserId
+import me.proton.android.core.auth.presentation.flow.FlowManager
+import me.proton.android.core.auth.presentation.flow.FlowManager.CurrentFlow
 import uniffi.proton_account_uniffi.Fido2ResponseFfi
 import uniffi.proton_account_uniffi.PasswordFlowGetFidoDetailsResult
 import javax.inject.Inject
@@ -27,15 +28,13 @@ import javax.inject.Singleton
 
 @Singleton
 class GetFidoOptions @Inject constructor(
-    private val secondFactorFlowManager: SecondFactorFlowManager
+    private val flowManager: FlowManager
 ) {
 
-    suspend operator fun invoke(userId: String): Fido2ResponseFfi? {
-        val fidoFlowResult = secondFactorFlowManager.getSecondFactorFlow(userId) ?: return null
-
-        return when (fidoFlowResult) {
-            is SecondFactorFlow.LoggingIn -> fidoFlowResult.flow.getFidoDetails()
-            is SecondFactorFlow.ChangingPassword -> {
+    suspend operator fun invoke(userId: CoreUserId): Fido2ResponseFfi? {
+        return when (val fidoFlowResult = flowManager.getCurrentActiveFlow(userId)) {
+            is CurrentFlow.LoggingIn -> fidoFlowResult.flow.getFidoDetails()
+            is CurrentFlow.ChangingPassword -> {
                 when (val fidoDetailsResult = fidoFlowResult.flow.getFidoDetails()) {
                     is PasswordFlowGetFidoDetailsResult.Error -> null
                     is PasswordFlowGetFidoDetailsResult.Ok -> fidoDetailsResult.v1

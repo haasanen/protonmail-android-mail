@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.account.domain.usecase.ObservePrimaryCoreAccount
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorFlowManager
+import me.proton.android.core.auth.presentation.flow.FlowManager
 import me.proton.android.core.auth.presentation.secondfactor.getAccountById
 import me.proton.android.core.auth.presentation.secondfactor.getSessionsForAccount
 import me.proton.core.domain.type.IntEnum
@@ -40,24 +40,26 @@ class ObservePasswordConfig @Inject constructor(
     private val observePrimaryCoreAccount: ObservePrimaryCoreAccount
 ) {
 
-    operator fun invoke(): Flow<PasswordConfig> = observePrimaryCoreAccount()
-        .filterNotNull()
-        .flatMapLatest { account ->
-            observePasswordModeForAccount(account.userId)
-        }
-        .distinctUntilChanged()
+    operator fun invoke(userId: CoreUserId?): Flow<PasswordConfig> =
+        userId?.let(::observePasswordModeForAccount)?.distinctUntilChanged()
+            ?: observePrimaryCoreAccount()
+                .filterNotNull()
+                .flatMapLatest { account ->
+                    observePasswordModeForAccount(account.userId)
+                }
+                .distinctUntilChanged()
 
     private fun observePasswordModeForAccount(userId: CoreUserId): Flow<PasswordConfig> = flow {
         val session = getActiveSession(userId.id)
-            ?: throw SecondFactorFlowManager.SessionException("No active session found for user: $userId")
+            ?: throw FlowManager.SessionException("No active session found for user: $userId")
 
         val userSession = when (val result = sessionInterface.userSessionFromStoredSession(session)) {
-            is MailSessionUserSessionFromStoredSessionResult.Error ->
-                throw SecondFactorFlowManager.SessionException("Failed to get user context: ${result.v1}")
+            is MailSessionUserSessionFromStoredSessionResult.Error -> null
             is MailSessionUserSessionFromStoredSessionResult.Ok -> result.v1
         }
 
-        val password = when (val userSettingsResult = userSession.userSettings()) {
+        val password = when (val userSettingsResult = userSession?.userSettings()) {
+            null,
             is MailUserSessionUserSettingsResult.Error -> null // default
 
             is MailUserSessionUserSettingsResult.Ok -> userSettingsResult.v1.password

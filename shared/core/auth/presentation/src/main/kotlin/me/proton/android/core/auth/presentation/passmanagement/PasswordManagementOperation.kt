@@ -24,7 +24,7 @@ sealed interface PasswordManagementOperation
 
 sealed interface PasswordManagementAction : PasswordManagementOperation {
     data object Load : PasswordManagementAction
-    data object Reset : PasswordManagementAction
+    data object Close : PasswordManagementAction
 
     sealed interface UserInputAction : PasswordManagementAction {
         data class SelectTab(val tab: PasswordManagementState.Tab) : UserInputAction

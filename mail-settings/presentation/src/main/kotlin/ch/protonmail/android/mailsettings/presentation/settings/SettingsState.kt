@@ -20,9 +20,11 @@ package ch.protonmail.android.mailsettings.presentation.settings
 
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
+import me.proton.core.domain.entity.UserId
 
 sealed class SettingsState {
     data class Data(
+        val userId: UserId?,
         val accountInfoUiModel: AccountInformationUiModel?,
         val appInformation: AppInformation
     ) : SettingsState()

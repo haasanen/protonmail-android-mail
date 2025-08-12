@@ -24,8 +24,11 @@ import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -117,7 +120,7 @@ fun SecondFactorInputScreen(
         }
     }
 
-    LaunchOnScreenView(onScreenView)
+    LaunchOnScreenView(enqueue = onScreenView)
 
     when (state) {
         is SecondFactorInputState.Loading -> {
@@ -174,7 +177,11 @@ fun SecondFactorInputScaffold(
             )
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
+        Box(modifier = Modifier
+            .padding(paddingValues)
+            .verticalScroll(rememberScrollState())
+            .imePadding()
+        ) {
             Column(modifier = Modifier.padding(DefaultSpacing)) {
                 Text(
                     style = LocalTypography.current.headline,

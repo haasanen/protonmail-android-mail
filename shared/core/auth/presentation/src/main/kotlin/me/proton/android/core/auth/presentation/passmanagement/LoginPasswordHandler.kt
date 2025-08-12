@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.auth.data.entity.PasswordValidatorTokenWrapper
+import me.proton.android.core.auth.presentation.flow.FlowManager
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.UpdateLoginPassword
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.UpdateLoginPassword.SaveLoginPassword
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.UpdateLoginPassword.TwoFaComplete
@@ -31,19 +32,38 @@ import me.proton.android.core.auth.presentation.passmanagement.PasswordManagemen
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementState.LoginPasswordSaved
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementState.UserInput
 import me.proton.core.passvalidator.domain.entity.PasswordValidatorToken
+import uniffi.proton_account_uniffi.LoginFlow
+import uniffi.proton_account_uniffi.LoginFlowSubmitNewPasswordResult
 import uniffi.proton_account_uniffi.PasswordFlow
 import uniffi.proton_account_uniffi.PasswordFlowChangePassResult
 import uniffi.proton_account_uniffi.PasswordFlowSubmitPassResult
 import uniffi.proton_account_uniffi.SimplePasswordState.COMPLETE
 import uniffi.proton_account_uniffi.SimplePasswordState.WANT_CHANGE
+import uniffi.proton_account_uniffi.SimplePasswordState.WANT_PASS
 import uniffi.proton_account_uniffi.SimplePasswordState.WANT_TFA
 
 class LoginPasswordHandler private constructor(
     private val getUserId: () -> CoreUserId?,
-    private val getFlow: suspend () -> PasswordFlow
+    private val getFlow: suspend () -> FlowManager.CurrentFlow
 ) : ErrorHandler {
 
-    fun handleAction(action: UpdateLoginPassword, currentState: UserInput): Flow<PasswordManagementState> =
+    fun handleAction(action: UpdateLoginPassword, currentState: UserInput): Flow<PasswordManagementState> = flow {
+        when (val currentFlow = getFlow()) {
+            is FlowManager.CurrentFlow.ChangingPassword -> {
+                handleChangingPasswordFlow(currentFlow.flow, action, currentState)
+            }
+
+            is FlowManager.CurrentFlow.LoggingIn -> {
+                handleLoggingInFlow(currentFlow.flow, action, currentState)
+            }
+        }
+    }
+
+    private suspend fun FlowCollector<PasswordManagementState>.handleChangingPasswordFlow(
+        passwordFlow: PasswordFlow,
+        action: UpdateLoginPassword,
+        currentState: UserInput
+    ) {
         when (action) {
             is SaveLoginPassword -> {
                 val updatedState = currentState.updateLoginPassword(
@@ -51,57 +71,90 @@ class LoginPasswordHandler private constructor(
                     new = action.newPassword,
                     confirmNew = action.confirmPassword
                 )
-                saveLoginPassword(updatedState, action.token)
+                emitAll(saveLoginPassword(passwordFlow, updatedState, action.token))
             }
 
-            is TwoFaComplete -> handleTwoFaResult(action.result, currentState, action.token)
+            is TwoFaComplete -> {
+                emitAll(handleTwoFaResult(passwordFlow, action.result, currentState, action.token))
+            }
+        }
+    }
+
+    private suspend fun FlowCollector<PasswordManagementState>.handleLoggingInFlow(
+        loginFlow: LoginFlow,
+        action: UpdateLoginPassword,
+        currentState: UserInput
+    ) {
+        if (action !is SaveLoginPassword) return
+
+        // Early validation
+        if (action.token == null) {
+            emit(currentState.setPasswordValidationError(ValidationError.PasswordEmpty))
+            return
         }
 
+        emit(currentState.copyWithLoginPassword { it.copy(loading = true) })
+
+        val result = safeExecute(currentState) {
+            loginFlow.submitNewPassword(action.newPassword)
+        } ?: return
+
+        when (result) {
+            is LoginFlowSubmitNewPasswordResult.Error -> {
+                emit(Error.General(result.v1.toString(), currentState))
+            }
+
+            is LoginFlowSubmitNewPasswordResult.Ok -> {
+                emit(LoginPasswordSaved)
+            }
+        }
+    }
+
     private fun handleTwoFaResult(
+        passwordFlow: PasswordFlow,
         result: Boolean,
         currentState: UserInput,
         token: PasswordValidatorToken?
     ): Flow<PasswordManagementState> = flow {
         if (result) {
-            emitAll(submitPassChange(currentState, token))
+            emitAll(submitPassChange(passwordFlow, currentState, token))
         } else {
             emit(currentState.copyWithLoginPassword { it.copy(loading = false) })
-            getFlow().stepBack()
+            passwordFlow.stepBack()
         }
     }
 
     private fun saveLoginPassword(
+        passwordFlow: PasswordFlow,
         currentState: UserInput,
         token: PasswordValidatorToken?
     ): Flow<PasswordManagementState> = flow {
         emit(currentState.copyWithLoginPassword { it.copy(loading = true) })
-        if (currentState.loginPassword.current.isBlank()) {
-            emit(currentState.setPasswordValidationError(ValidationError.CurrentPasswordEmpty))
-            return@flow
-        }
-        if (token == null) {
-            emit(currentState.setPasswordValidationError(ValidationError.PasswordEmpty))
+
+        // Early validation
+        val validationError = validatePasswordInputs(currentState.loginPassword.current, token)
+        if (validationError != null) {
+            emit(currentState.setPasswordValidationError(validationError))
             return@flow
         }
 
-        val submitResult = submitCurrentPassword(currentState.loginPassword.current, currentState) ?: return@flow
+        val submitResult = safeExecute(currentState) {
+            passwordFlow.submitPass(currentState.loginPassword.current)
+        } ?: return@flow
 
-        handlePasswordSubmitResult(submitResult, currentState, token)
+        handlePasswordSubmitResult(passwordFlow, submitResult, currentState, token)
     }
 
-    private suspend fun FlowCollector<PasswordManagementState>.submitCurrentPassword(
-        currentPassword: String,
-        currentState: UserInput
-    ): PasswordFlowSubmitPassResult? {
-        return runCatching {
-            getFlow().submitPass(currentPassword)
-        }.getOrElse { exception ->
-            emit(Error.General(exception.message ?: "Unknown error", currentState))
-            null
+    private fun validatePasswordInputs(currentPassword: String, token: PasswordValidatorToken?): ValidationError? {
+        return when {
+            currentPassword.isBlank() -> ValidationError.CurrentPasswordEmpty
+            token == null -> ValidationError.PasswordEmpty
+            else -> null
         }
     }
 
     private suspend fun FlowCollector<PasswordManagementState>.handlePasswordSubmitResult(
+        passwordFlow: PasswordFlow,
         submitResult: PasswordFlowSubmitPassResult,
         currentState: UserInput,
         token: PasswordValidatorToken?
@@ -114,7 +167,7 @@ class LoginPasswordHandler private constructor(
             is PasswordFlowSubmitPassResult.Ok -> {
                 when (submitResult.v1) {
                     WANT_TFA -> handleTwoFactorAuthentication(currentState, token)
-                    WANT_CHANGE -> emitAll(submitPassChange(currentState, token))
+                    WANT_CHANGE -> emitAll(submitPassChange(passwordFlow, currentState, token))
                     else -> emit(Error.InvalidState(currentState))
                 }
             }
@@ -134,35 +187,26 @@ class LoginPasswordHandler private constructor(
     }
 
     private fun submitPassChange(
+        passwordFlow: PasswordFlow,
         currentState: UserInput,
         token: PasswordValidatorToken?
     ): Flow<PasswordManagementState> = flow {
         emit(currentState.copyWithLoginPassword { it.copy(loading = true) })
 
         val loginPasswordState = currentState.loginPassword
-        val changeResult = attemptPasswordChange(loginPasswordState, token, currentState) ?: return@flow
-
-        handlePasswordChangeResult(changeResult, currentState)
-    }
-
-    private suspend fun FlowCollector<PasswordManagementState>.attemptPasswordChange(
-        loginPasswordState: LoginPasswordState,
-        token: PasswordValidatorToken?,
-        currentState: UserInput
-    ): PasswordFlowChangePassResult? {
-        return runCatching {
-            getFlow().changePass(
+        val changeResult = safeExecute(currentState) {
+            passwordFlow.changePass(
                 newPass = loginPasswordState.new,
                 confirmPassword = loginPasswordState.confirmNew,
                 token = (token as? PasswordValidatorTokenWrapper)?.toRust()
             )
-        }.getOrElse { exception ->
-            emit(Error.General(exception.message ?: "Password change failed", currentState))
-            null
-        }
+        } ?: return@flow
+
+        handlePasswordChangeResult(passwordFlow, changeResult, currentState)
     }
 
     private suspend fun FlowCollector<PasswordManagementState>.handlePasswordChangeResult(
+        passwordFlow: PasswordFlow,
         changeResult: PasswordFlowChangePassResult,
         currentState: UserInput
     ) {
@@ -174,6 +218,7 @@ class LoginPasswordHandler private constructor(
                 } else {
                     emit(Error.General(changeResult.v1.toString(), currentState))
                 }
+                goToInitState(passwordFlow)
             }
 
             is PasswordFlowChangePassResult.Ok -> {
@@ -185,13 +230,35 @@ class LoginPasswordHandler private constructor(
         }
     }
 
+    private suspend fun goToInitState(passwordFlow: PasswordFlow) {
+        while (passwordFlow.getState() != WANT_PASS) {
+            passwordFlow.stepBack()
+        }
+    }
+
+    private suspend inline fun <T> FlowCollector<PasswordManagementState>.safeExecute(
+        currentState: UserInput,
+        operation: () -> T
+    ): T? {
+        return runCatching { operation() }.getOrElse { exception ->
+            val errorMessage = when (exception.message) {
+                null -> "Operation failed"
+                else -> exception.message!!
+            }
+            emit(Error.General(errorMessage, currentState))
+            null
+        }
+    }
+
     override fun handleError(throwable: Throwable, currentState: UserInput): PasswordManagementState =
         Error.General(error = throwable.message ?: "Unknown error occurred", currentState)
 
     companion object {
 
-        fun create(getFlow: suspend () -> PasswordFlow, getUserId: () -> CoreUserId?): LoginPasswordHandler =
-            LoginPasswordHandler(getUserId, getFlow)
+        fun create(
+            getPasswordFlow: suspend () -> FlowManager.CurrentFlow,
+            getUserId: () -> CoreUserId?
+        ): LoginPasswordHandler = LoginPasswordHandler(getUserId, getPasswordFlow)
     }
 }
 

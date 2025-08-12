@@ -44,6 +44,7 @@ import ch.protonmail.android.navigation.model.LauncherState
 import ch.protonmail.android.navigation.share.NewIntentObserver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -89,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                             },
                             finishActivity = { finishAndRemoveTask() },
                             openPasswordManagement = {
-                                launcherViewModel.submit(LauncherViewModel.Action.OpenPasswordManagement)
+                                launcherViewModel.submit(LauncherViewModel.Action.OpenPasswordManagement(it))
                             },
                             onNavigateToLockScreen = {
                                 val intent = Intent(this, LockScreenActivity::class.java)
@@ -178,7 +179,7 @@ class MainActivity : AppCompatActivity() {
         val openProtonCalendarIntentValues: (values: OpenProtonCalendarIntentValues) -> Unit,
         val onNavigateToLockScreen: () -> Unit,
         val openSecurityKeys: () -> Unit,
-        val openPasswordManagement: () -> Unit,
+        val openPasswordManagement: (userId: UserId?) -> Unit,
         val finishActivity: () -> Unit
     )
 }

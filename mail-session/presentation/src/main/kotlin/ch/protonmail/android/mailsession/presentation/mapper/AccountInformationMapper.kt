@@ -33,6 +33,7 @@ class AccountInformationMapper @Inject constructor(
     fun toUiModel(account: Account): AccountInformationUiModel {
         val address = account.primaryAddress ?: account.name
         return AccountInformationUiModel(
+            userId = account.userId,
             name = account.name,
             email = address,
             avatarUiModel = account.avatarInfo?.let {

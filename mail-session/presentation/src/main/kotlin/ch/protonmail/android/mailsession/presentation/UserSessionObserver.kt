@@ -82,3 +82,11 @@ fun UserSessionObserver.onAccountTwoPasswordNeeded(
     addAccountStateListener(AccountState.TwoPasswordNeeded, initialState, block)
     return this
 }
+
+fun UserSessionObserver.onAccountNewPasswordNeeded(
+    initialState: Boolean = true,
+    block: suspend (Account) -> Unit
+): UserSessionObserver {
+    addAccountStateListener(AccountState.NewPassNeeded, initialState, block)
+    return this
+}

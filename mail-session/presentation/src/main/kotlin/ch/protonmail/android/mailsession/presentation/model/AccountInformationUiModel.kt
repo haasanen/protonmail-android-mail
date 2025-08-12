@@ -19,9 +19,11 @@
 package ch.protonmail.android.mailsession.presentation.model
 
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
+import me.proton.core.domain.entity.UserId
 
 data class AccountInformationUiModel(
     val name: String,
     val email: String,
-    val avatarUiModel: AvatarUiModel?
+    val avatarUiModel: AvatarUiModel?,
+    val userId: UserId?
 )

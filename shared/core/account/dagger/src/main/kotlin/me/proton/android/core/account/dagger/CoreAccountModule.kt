@@ -27,10 +27,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import me.proton.android.core.account.data.qualifier.QueryWatcherCoroutineScope
+import me.proton.android.core.account.data.usecase.ObserveCoreAccountImpl
 import me.proton.android.core.account.data.usecase.ObserveCoreSessionsImpl
 import me.proton.android.core.account.data.usecase.ObservePrimaryCoreAccountImpl
 import me.proton.android.core.account.data.usecase.ObserveCoreAccountsImpl
 import me.proton.android.core.account.data.usecase.ObserveStoredAccountsImpl
+import me.proton.android.core.account.domain.usecase.ObserveCoreAccount
 import me.proton.android.core.account.domain.usecase.ObserveCoreSessions
 import me.proton.android.core.account.domain.usecase.ObservePrimaryCoreAccount
 import me.proton.android.core.account.domain.usecase.ObserveCoreAccounts
@@ -61,6 +63,10 @@ object CoreAccountModule {
         @Binds
         @Singleton
         fun bindObserveCoreAccounts(impl: ObserveCoreAccountsImpl): ObserveCoreAccounts
+
+        @Binds
+        @Singleton
+        fun bindObserveCoreAccount(impl: ObserveCoreAccountImpl): ObserveCoreAccount
 
         @Binds
         @Singleton

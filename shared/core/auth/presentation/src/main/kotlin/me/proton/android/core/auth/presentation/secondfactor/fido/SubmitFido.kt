@@ -20,10 +20,11 @@ package me.proton.android.core.auth.presentation.secondfactor.fido
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import me.proton.android.core.account.domain.model.CoreUserId
+import me.proton.android.core.auth.presentation.flow.FlowManager
 import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.passmanagement.getErrorMessage
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorFlowCache.SecondFactorFlow
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorFlowManager
+import me.proton.android.core.auth.presentation.flow.FlowManager.CurrentFlow
 import me.proton.core.auth.fido.domain.entity.SecondFactorProof
 import uniffi.proton_account_uniffi.LoginFlow
 import uniffi.proton_account_uniffi.LoginFlowSubmitFidoResult
@@ -34,16 +35,13 @@ import javax.inject.Inject
 
 class SubmitFido @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val secondFactorFlowManager: SecondFactorFlowManager
+    private val flowManager: FlowManager
 ) {
 
-    suspend fun execute(userId: String, proof: SecondFactorProof.Fido2): SubmitFidoResult {
-        val submitFidoFlow = secondFactorFlowManager.getSecondFactorFlow(userId)
-            ?: return SubmitFidoResult.SessionClosed
-
-        return when (submitFidoFlow) {
-            is SecondFactorFlow.LoggingIn -> handleLoginFlowSubmission(submitFidoFlow.flow, proof)
-            is SecondFactorFlow.ChangingPassword -> handlePasswordFlowSubmission(submitFidoFlow.flow, proof)
+    suspend fun execute(userId: CoreUserId, proof: SecondFactorProof.Fido2): SubmitFidoResult {
+        return when (val submitFidoFlow = flowManager.getCurrentActiveFlow(userId)) {
+            is CurrentFlow.LoggingIn -> handleLoginFlowSubmission(submitFidoFlow.flow, proof)
+            is CurrentFlow.ChangingPassword -> handlePasswordFlowSubmission(submitFidoFlow.flow, proof)
         }
     }
 
@@ -73,5 +71,5 @@ class SubmitFido @Inject constructor(
     }
 
     suspend fun convertToUserContext(loginFlow: LoginFlow): MailSessionToUserSessionResult =
-        secondFactorFlowManager.convertToUserContext(loginFlow)
+        flowManager.convertToUserContext(loginFlow)
 }

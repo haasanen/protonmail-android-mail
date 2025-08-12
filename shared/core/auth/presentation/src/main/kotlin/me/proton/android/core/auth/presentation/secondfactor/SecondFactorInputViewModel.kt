@@ -27,8 +27,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.launch
-import me.proton.android.core.auth.presentation.login.getErrorMessage
+import me.proton.android.core.account.domain.model.CoreUserId
+import me.proton.android.core.auth.presentation.flow.FlowManager
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputAction.Close
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputAction.Load
@@ -42,12 +42,8 @@ import me.proton.core.auth.fido.domain.usecase.PerformTwoFaWithSecurityKey.Launc
 import me.proton.core.compose.viewmodel.BaseViewModel
 import uniffi.proton_mail_uniffi.FidoLaunchResultStatus
 import uniffi.proton_mail_uniffi.LoginScreenId
-import uniffi.proton_mail_uniffi.LoginScreenId
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.recordFidoLaunchResult
-import uniffi.proton_mail_uniffi.recordLoginScreenView
-import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
-import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.recordLoginScreenView
 import javax.inject.Inject
 
@@ -56,14 +52,14 @@ class SecondFactorInputViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val sessionInterface: MailSession,
     private val getFidoOptions: GetFidoOptions,
-    private val secondFactorFlowManager: SecondFactorFlowManager
+    private val flowManager: FlowManager
 ) : BaseViewModel<SecondFactorInputAction, SecondFactorInputState>(
     initialState = Idle,
     initialAction = Load,
     sharingStarted = SharingStarted.Lazily
 ) {
 
-    private val userId by lazy { savedStateHandle.getUserId() }
+    private val userId by lazy { CoreUserId(savedStateHandle.getUserId()) }
 
     private val allAvailableTabs = listOf(SecondFactorTab.SecurityKey, SecondFactorTab.Otp)
     private var userAvailableTabs: List<SecondFactorTab> = emptyList()
@@ -80,12 +76,8 @@ class SecondFactorInputViewModel @Inject constructor(
         }
     }
 
-    fun onScreenView() = viewModelScope.launch {
-        recordLoginScreenView(LoginScreenId.SECOND_FACTOR)
-    }
-
     private fun onLoad(): Flow<SecondFactorInputState> = flow {
-        val account = sessionInterface.getAccountById(userId)
+        val account = sessionInterface.getAccountById(userId.id)
         if (account == null) {
             emitAll(onClose())
             return@flow
@@ -131,7 +123,7 @@ class SecondFactorInputViewModel @Inject constructor(
     }
 
     private fun onClose(): Flow<SecondFactorInputState> = flow {
-        secondFactorFlowManager.clearCache()
+        flowManager.clearCache(userId)
         emit(Closed)
     }
 

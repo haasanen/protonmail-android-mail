@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
 import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputAction.Authenticate
@@ -63,7 +64,7 @@ class Fido2InputViewModel @Inject constructor(
     sharingStarted = SharingStarted.Lazily
 ) {
 
-    private val userId by lazy { savedStateHandle.getUserId() }
+    private val userId by lazy { CoreUserId(savedStateHandle.getUserId()) }
 
     override fun onAction(action: Fido2InputAction): Flow<Fido2InputState> {
         return when (action) {
@@ -87,7 +88,7 @@ class Fido2InputViewModel @Inject constructor(
     }
 
     private fun onClose(): Flow<Fido2InputState> = flow {
-        sessionInterface.deleteAccount(userId)
+        sessionInterface.deleteAccount(userId.id)
         emit(Closed)
     }
 

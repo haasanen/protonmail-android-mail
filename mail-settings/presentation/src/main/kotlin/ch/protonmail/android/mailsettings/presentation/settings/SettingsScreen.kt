@@ -61,6 +61,7 @@ import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
 import me.proton.android.core.devicemigration.presentation.origin.settings.SignInOnTargetDeviceItem
+import me.proton.core.domain.entity.UserId
 
 @Composable
 fun MainSettingsScreen(
@@ -218,7 +219,7 @@ fun AccountSettingsItem(
     accountInfo: AccountInformationUiModel?,
     onAccountClicked: () -> Unit,
     onSecurityKeysClicked: () -> Unit,
-    onPasswordManagementClicked: () -> Unit
+    onPasswordManagementClicked: (UserId?) -> Unit
 ) {
     val header = accountInfo?.name
         ?: stringResource(id = string.mail_settings_no_information_available)
@@ -277,7 +278,7 @@ fun AccountSettingsItem(
         ProtonMainSettingsItem(
             name = stringResource(id = string.mail_settings_change_password),
             iconRes = R.drawable.ic_proton_lock,
-            onClick = onPasswordManagementClicked
+            onClick = { onPasswordManagementClicked(accountInfo?.userId) }
         )
     }
 }
@@ -292,7 +293,7 @@ object MainSettingsScreen {
         val onSpamFilterSettingsClicked: () -> Unit,
         val onPrivacyAndSecuritySettingsClicked: () -> Unit,
         val onSecurityKeysClicked: () -> Unit,
-        val onPasswordManagementClicked: () -> Unit,
+        val onPasswordManagementClicked: (UserId?) -> Unit,
         val onBackClick: () -> Unit
     )
 }

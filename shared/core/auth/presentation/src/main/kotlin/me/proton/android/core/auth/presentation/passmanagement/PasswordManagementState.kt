@@ -23,6 +23,7 @@ import me.proton.core.passvalidator.domain.entity.PasswordValidatorToken
 
 sealed interface PasswordManagementState {
     data object Loading : PasswordManagementState
+    data object Closed : PasswordManagementState
 
     data class UserInput(
         val selectedTab: Tab = Tab.LOGIN,

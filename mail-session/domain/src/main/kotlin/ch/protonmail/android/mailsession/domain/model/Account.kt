@@ -50,6 +50,11 @@ enum class AccountState {
     TwoFactorNeeded,
 
     /**
+     * The account has authenticated but they should set a new password (it is probably a private sub-account).
+     */
+    NewPassNeeded,
+
+    /**
      * The account has no active sessions.
      */
     Disabled,

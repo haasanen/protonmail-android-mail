@@ -23,6 +23,7 @@ import androidx.activity.result.ActivityResultLauncher
 import me.proton.android.core.auth.presentation.login.LoginHelpOutput
 import me.proton.android.core.auth.presentation.login.LoginInput
 import me.proton.android.core.auth.presentation.login.LoginOutput
+import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementInput
 import me.proton.android.core.auth.presentation.signup.SignupOutput
 import javax.inject.Inject
 
@@ -35,7 +36,7 @@ class AuthOrchestrator @Inject constructor() {
     private var secondFactorWorkflowLauncher: ActivityResultLauncher<String>? = null
     private var twoPassModeWorkflowLauncher: ActivityResultLauncher<String>? = null
     private var signupWorkflowLauncher: ActivityResultLauncher<Unit>? = null
-    private var passManagementWorkflowLauncher: ActivityResultLauncher<Unit>? = null
+    private var passManagementWorkflowLauncher: ActivityResultLauncher<PasswordManagementInput>? = null
     private var securityKeysLauncher: ActivityResultLauncher<Unit>? = null
 
     private var onAddAccountResultListener: ((result: Boolean) -> Unit)? = {}
@@ -77,7 +78,7 @@ class AuthOrchestrator @Inject constructor() {
             onSignUpResultListener?.invoke(it)
         }
 
-    private fun registerPassManagementResult(caller: ActivityResultCaller): ActivityResultLauncher<Unit> =
+    private fun registerPassManagementResult(caller: ActivityResultCaller): ActivityResultLauncher<PasswordManagementInput> =
         caller.registerForActivityResult(StartPasswordManagement) {
             onPassManagementResultListener?.invoke(it)
         }
@@ -215,8 +216,8 @@ class AuthOrchestrator @Inject constructor() {
     /**
      * Starts the Signup workflow.
      */
-    fun startPassManagement() {
-        checkRegistered(passManagementWorkflowLauncher).launch(Unit)
+    fun startPassManagement(userId: String?) {
+        checkRegistered(passManagementWorkflowLauncher).launch(PasswordManagementInput(userId))
     }
 
     /**

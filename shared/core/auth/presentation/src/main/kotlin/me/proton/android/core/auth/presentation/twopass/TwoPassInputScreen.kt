@@ -23,10 +23,13 @@ package me.proton.android.core.auth.presentation.twopass
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -108,7 +111,10 @@ fun TwoPassInputScreen(
     LaunchedEffect(state) {
         when (state) {
             is Error.LoginFlow -> onError(state.error)
-            is TwoPassInputState.Success -> onSuccess()
+            is TwoPassInputState.Success -> {
+                onSuccess()
+            }
+
             is TwoPassInputState.Closed -> onClose()
             else -> Unit
         }
@@ -118,7 +124,7 @@ fun TwoPassInputScreen(
         passwordFocusRequester.requestFocus()
     }
 
-    LaunchOnScreenView(onScreenView)
+    LaunchOnScreenView(enqueue = onScreenView)
 
     Scaffold(
         modifier = modifier,
@@ -138,7 +144,12 @@ fun TwoPassInputScreen(
             )
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
+        Box(
+            modifier = Modifier
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+                .imePadding()
+        ) {
             Column(modifier = Modifier.padding(ProtonDimens.DefaultSpacing)) {
                 Text(
                     style = LocalTypography.current.headline,

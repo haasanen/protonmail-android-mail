@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,22 +16,8 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.account.domain.model
+package me.proton.android.core.auth.presentation.passmanagement
 
-data class CoreAccount(
-    val userId: CoreUserId,
-    val displayName: String?,
-    val nameOrAddress: String,
-    val primaryEmailAddress: String?,
-    val state: CoreAccountState,
-    val username: String?
+data class PasswordManagementInput(
+    val userId: String? = null
 )
-
-enum class CoreAccountState {
-    NotReady,
-    Ready,
-    TwoPasswordNeeded,
-    TwoFactorNeeded,
-    NewPasswordNeeded,
-    Disabled
-}

@@ -60,6 +60,7 @@ import ch.protonmail.android.legacymigration.domain.model.LegacyMigrationStatus
 import ch.protonmail.android.legacymigration.domain.usecase.MigrateLegacyApplication
 import ch.protonmail.android.legacymigration.domain.usecase.SetLegacyMigrationStatus
 import ch.protonmail.android.legacymigration.domain.usecase.ShouldMigrateLegacyAccount
+import ch.protonmail.android.mailsession.presentation.onAccountNewPasswordNeeded
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
@@ -107,7 +108,8 @@ class LauncherViewModel @Inject constructor(
                         AccountNeeded
 
                     accounts.any { it.state == AccountState.TwoPasswordNeeded } ||
-                        accounts.any { it.state == AccountState.TwoFactorNeeded } ->
+                        accounts.any { it.state == AccountState.TwoFactorNeeded } ||
+                        accounts.any { it.state == AccountState.NewPassNeeded } ->
                         StepNeeded
 
                     accounts.any { it.state == AccountState.Ready } ->
@@ -173,7 +175,12 @@ class LauncherViewModel @Inject constructor(
                 .onAccountTwoFactorNeeded {
                     startSecondFactorWorkflow(it.userId.toLocalUserId())
                 }
-                .onAccountTwoPasswordNeeded { startTwoPassModeWorkflow(it.userId.toLocalUserId()) }
+                .onAccountTwoPasswordNeeded {
+                    startTwoPassModeWorkflow(it.userId.toLocalUserId())
+                }
+                .onAccountNewPasswordNeeded {
+                    startPassManagement(it.userId.toLocalUserId())
+                }
         }
     }
 
@@ -181,7 +188,7 @@ class LauncherViewModel @Inject constructor(
         viewModelScope.launch {
             when (action) {
                 is Action.AddAccount -> onAddAccount()
-                is Action.OpenPasswordManagement -> onOpenPasswordManagement()
+                is Action.OpenPasswordManagement -> onOpenPasswordManagement(action.userId)
                 is Action.OpenRecoveryEmail -> onOpenRecoveryEmail()
                 is Action.OpenReport -> onOpenReport()
                 is Action.OpenSecurityKeys -> onOpenSecurityKeys()
@@ -198,8 +205,8 @@ class LauncherViewModel @Inject constructor(
         authOrchestrator.startAddAccountWorkflow()
     }
 
-    private fun onOpenPasswordManagement() {
-        authOrchestrator.startPassManagement()
+    private fun onOpenPasswordManagement(userId: UserId?) {
+        authOrchestrator.startPassManagement(userId = userId?.toLocalUserId())
     }
 
     private fun onOpenRecoveryEmail() {
@@ -240,7 +247,7 @@ class LauncherViewModel @Inject constructor(
     sealed interface Action {
 
         data object AddAccount : Action
-        data object OpenPasswordManagement : Action
+        data class OpenPasswordManagement(val userId: UserId?) : Action
         data object OpenRecoveryEmail : Action
         data object OpenReport : Action
         data object OpenSecurityKeys : Action

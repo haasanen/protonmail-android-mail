@@ -39,7 +39,7 @@ fun Launcher(activityActions: MainActivity.Actions, viewModel: LauncherViewModel
         LauncherState.PrimaryExist -> LauncherRouter(
             activityActions = activityActions,
             launcherActions = Launcher.Actions(
-                onPasswordManagement = { viewModel.submit(LauncherViewModel.Action.OpenPasswordManagement) },
+                onPasswordManagement = { viewModel.submit(LauncherViewModel.Action.OpenPasswordManagement(it)) },
                 onRecoveryEmail = { viewModel.submit(LauncherViewModel.Action.OpenRecoveryEmail) },
                 onReportBug = { viewModel.submit(LauncherViewModel.Action.OpenReport) },
                 onSignIn = { viewModel.submit(LauncherViewModel.Action.SignIn(it)) },
@@ -67,7 +67,7 @@ object Launcher {
         val onSignUp: () -> Unit,
         val onSubscription: () -> Unit,
         val onReportBug: () -> Unit,
-        val onPasswordManagement: () -> Unit,
+        val onPasswordManagement: (UserId?) -> Unit,
         val onRecoveryEmail: () -> Unit,
         val onSwitchToAccount: (UserId) -> Unit,
         val onRequestNotificationPermission: () -> Unit

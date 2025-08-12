@@ -39,5 +39,5 @@ internal fun StoredAccountState.toCoreAccountState() = when (this) {
     is StoredAccountState.NeedMbp -> CoreAccountState.TwoPasswordNeeded
     is StoredAccountState.NeedTfa -> CoreAccountState.TwoFactorNeeded
     is StoredAccountState.NotReady -> CoreAccountState.NotReady
-    is StoredAccountState.NeedNewPass -> CoreAccountState.NewPassNeeded
+    is StoredAccountState.NeedNewPass -> CoreAccountState.NewPasswordNeeded
 }

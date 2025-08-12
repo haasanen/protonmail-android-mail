@@ -25,7 +25,11 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorFlowCache.SecondFactorFlow
+import me.proton.android.core.account.domain.model.CoreUserId
+import me.proton.android.core.account.domain.usecase.ObserveCoreAccount
+import me.proton.android.core.auth.presentation.flow.FlowCache
+import me.proton.android.core.auth.presentation.flow.FlowManager
+import me.proton.android.core.auth.presentation.flow.FlowManager.CurrentFlow
 import uniffi.proton_account_uniffi.LoginFlow
 import uniffi.proton_account_uniffi.PasswordFlow
 import uniffi.proton_mail_uniffi.MailSession
@@ -45,32 +49,34 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class SecondFactorFlowManagerTest {
+class FlowManagerTest {
 
     private lateinit var sessionInterface: MailSession
-    private lateinit var flowCache: SecondFactorFlowCache
-    private lateinit var manager: SecondFactorFlowManager
+    private lateinit var flowCache: FlowCache
+    private lateinit var observeCoreAccount: ObserveCoreAccount
+    private lateinit var manager: FlowManager
 
     @BeforeTest
     fun setup() {
         sessionInterface = mockk(relaxed = true)
         flowCache = mockk(relaxed = true)
-        manager = SecondFactorFlowManager(sessionInterface, flowCache)
+        observeCoreAccount = mockk(relaxed = true)
+        manager = FlowManager(sessionInterface, observeCoreAccount, flowCache)
     }
 
     @Test
-    fun getSecondFactorFlow_returnsCachedFlow() = runTest {
-        val flow = SecondFactorFlow.LoggingIn(mockk())
+    fun getCurrentActiveFlow_returnsCachedFlow() = runTest {
+        val flow = CurrentFlow.LoggingIn(mockk())
         coEvery { flowCache.clearIfUserChanged("user1") } just Runs
         every { flowCache.getActiveFlow() } returns flow
 
-        val result = manager.getSecondFactorFlow("user1")
+        val result = manager.getCurrentActiveFlow(CoreUserId("user1"))
 
         assertEquals(flow, result)
     }
 
     @Test
-    fun getSecondFactorFlow_resumesLoginFlowIfNoCache() = runTest {
+    fun getCurrentActiveFlow_resumesLoginFlowIfNoCache() = runTest {
         val session = mockk<StoredSession> {
             every { sessionId() } returns "session-id"
         }
@@ -83,13 +89,13 @@ class SecondFactorFlowManagerTest {
             MailSessionResumeLoginFlowResult.Ok(resumedFlow)
         every { flowCache.setActiveFlow(any(), true) } just Runs
 
-        val result = manager.getSecondFactorFlow("user1")
+        val result = manager.getCurrentActiveFlow(CoreUserId("user1"))
 
-        assertTrue(result is SecondFactorFlow.LoggingIn)
+        assertTrue(result is CurrentFlow.LoggingIn)
     }
 
     @Test
-    fun getSecondFactorFlow_returnsNullIfResumeFails() = runTest {
+    fun getCurrentActiveFlow_returnsNullIfResumeFails() = runTest {
         val session = mockk<StoredSession> {
             every { sessionId() } returns "session-id"
         }
@@ -100,7 +106,7 @@ class SecondFactorFlowManagerTest {
         coEvery { sessionInterface.resumeLoginFlow("user1", "session-id") } returns
             MailSessionResumeLoginFlowResult.Error(mockk())
 
-        val result = manager.getSecondFactorFlow("user1")
+        val result = manager.getCurrentActiveFlow(CoreUserId("user1"))
 
         assertNull(result)
     }
@@ -108,12 +114,12 @@ class SecondFactorFlowManagerTest {
     @Test
     fun tryCreatePasswordFlow_returnsCachedFlow() = runTest {
         val flow = mockk<PasswordFlow>()
-        every { flowCache.getActiveFlow() } returns SecondFactorFlow.ChangingPassword(flow)
+        every { flowCache.getActiveFlow() } returns CurrentFlow.ChangingPassword(flow)
         every { flowCache.setActiveFlow(any(), false) } just Runs
 
-        val result = manager.tryCreatePasswordFlow("user1")
+        val result = manager.getCurrentActiveFlow(CoreUserId("user1"))
 
-        assertTrue(result is SecondFactorFlow.ChangingPassword)
+        assertTrue(result is CurrentFlow.ChangingPassword)
         assertEquals(flow, result.flow)
     }
 
@@ -126,8 +132,8 @@ class SecondFactorFlowManagerTest {
         coEvery { sessionInterface.userSessionFromStoredSession(session) } returns
             MailSessionUserSessionFromStoredSessionResult.Error(mockk())
 
-        assertFailsWith<SecondFactorFlowManager.SessionException> {
-            manager.tryCreatePasswordFlow("user1")
+        assertFailsWith<FlowManager.SessionException> {
+            manager.getCurrentActiveFlow(CoreUserId("user1"))
         }
     }
 
@@ -143,8 +149,8 @@ class SecondFactorFlowManagerTest {
         coEvery { userSession.newPasswordChangeFlow() } returns
             MailUserSessionNewPasswordChangeFlowResult.Error(mockk())
 
-        assertFailsWith<SecondFactorFlowManager.SessionException> {
-            manager.tryCreatePasswordFlow("user1")
+        assertFailsWith<FlowManager.SessionException> {
+            manager.getCurrentActiveFlow(CoreUserId("user1"))
         }
     }
 
@@ -162,9 +168,9 @@ class SecondFactorFlowManagerTest {
             MailUserSessionNewPasswordChangeFlowResult.Ok(flow)
         every { flowCache.setActiveFlow(any(), false) } just Runs
 
-        val result = manager.tryCreatePasswordFlow("user1")
+        val result = manager.getCurrentActiveFlow(CoreUserId("user1"))
 
-        assertTrue(result is SecondFactorFlow.ChangingPassword)
+        assertTrue(result is CurrentFlow.ChangingPassword)
         assertEquals(flow, result.flow)
     }
 
@@ -192,7 +198,7 @@ class SecondFactorFlowManagerTest {
             sessionInterface.resumeLoginFlow(userId, "sessionId123")
         } returns MailSessionResumeLoginFlowResult.Error(mockk(relaxed = true))
 
-        val result = manager.getSecondFactorFlow(userId)
+        val result = manager.getCurrentActiveFlow(CoreUserId(userId))
 
         coVerify(exactly = 0) { sessionInterface.getAccount(any()) }
         assertNull(result)
@@ -220,7 +226,7 @@ class SecondFactorFlowManagerTest {
             sessionInterface.resumeLoginFlow("user1", "id")
         } returns MailSessionResumeLoginFlowResult.Error(mockk())
 
-        val result = manager.getSecondFactorFlow("user1")
+        val result = manager.getCurrentActiveFlow(CoreUserId("user1"))
 
         assertNull(result)
     }
@@ -239,7 +245,7 @@ class SecondFactorFlowManagerTest {
         coEvery { flowCache.clearIfUserChanged("user1") } just Runs
         every { flowCache.getActiveFlow() } returns null
 
-        val result = manager.getSecondFactorFlow("user1")
+        val result = manager.getCurrentActiveFlow(CoreUserId("user1"))
 
         assertNull(result)
     }

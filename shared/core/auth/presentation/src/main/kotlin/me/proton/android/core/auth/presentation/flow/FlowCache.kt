@@ -16,35 +16,27 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.auth.presentation.secondfactor
+package me.proton.android.core.auth.presentation.flow
 
-import uniffi.proton_account_uniffi.LoginFlow
-import uniffi.proton_account_uniffi.PasswordFlow
+import me.proton.android.core.auth.presentation.flow.FlowManager.CurrentFlow
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.StoredSession
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SecondFactorFlowCache @Inject constructor(
+class FlowCache @Inject constructor(
     private val sessionInterface: MailSession
 ) {
 
-    sealed class SecondFactorFlow {
-        data class LoggingIn(val flow: LoginFlow) : SecondFactorFlow()
-        data class ChangingPassword(val flow: PasswordFlow) : SecondFactorFlow()
-    }
-
-    private var cachedFlow: SecondFactorFlow? = null
+    private var cachedFlow: CurrentFlow? = null
     private var cachedSession: StoredSession? = null
     private var cachedUserId: String? = null
-    private var shouldClearOnNext: Boolean = true
 
-    fun getActiveFlow(): SecondFactorFlow? = cachedFlow
+    fun getActiveFlow(): CurrentFlow? = cachedFlow
 
-    fun setActiveFlow(flow: SecondFactorFlow, shouldClearOnNext: Boolean) {
+    fun setActiveFlow(flow: CurrentFlow) {
         this.cachedFlow = flow
-        this.shouldClearOnNext = shouldClearOnNext
     }
 
     fun setCachedSession(session: StoredSession, userId: String) {
@@ -54,25 +46,22 @@ class SecondFactorFlowCache @Inject constructor(
 
     fun getCachedSession(): StoredSession? = cachedSession
 
-    suspend fun clearIfUserChanged(userId: String) {
+    fun clearIfUserChanged(userId: String) {
         if (cachedUserId != null && cachedUserId != userId) {
-            clear(force = true)
+            clear()
         }
     }
 
-    suspend fun clear(force: Boolean = false): Boolean {
-        if (!shouldClearOnNext && !force) {
-            return false
-        }
-
-        if (cachedFlow is SecondFactorFlow.LoggingIn) {
+    suspend fun deleteAccount() {
+        if (cachedFlow is CurrentFlow.LoggingIn) {
             cachedUserId?.let { sessionInterface.deleteAccount(it) }
         }
+    }
 
+    fun clear(): Boolean {
         cachedFlow = null
         cachedSession = null
         cachedUserId = null
-        shouldClearOnNext = true
 
         return true
     }

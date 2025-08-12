@@ -21,6 +21,8 @@ package me.proton.android.core.auth.presentation.secondfactor
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import me.proton.android.core.auth.presentation.flow.FlowCache
+import me.proton.android.core.auth.presentation.flow.FlowManager
 import uniffi.proton_account_uniffi.LoginFlow
 import uniffi.proton_account_uniffi.PasswordFlow
 import uniffi.proton_mail_uniffi.MailSession
@@ -33,15 +35,15 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class SecondFactorFlowCacheTest {
+class CurrentFlowCacheTest {
 
     private lateinit var mailSession: MailSession
-    private lateinit var cache: SecondFactorFlowCache
+    private lateinit var cache: FlowCache
 
     @BeforeTest
     fun setup() {
         mailSession = mockk(relaxed = true)
-        cache = SecondFactorFlowCache(mailSession)
+        cache = FlowCache(mailSession)
     }
 
     @Test
@@ -60,7 +62,7 @@ class SecondFactorFlowCacheTest {
     fun clear_shouldNotCallDeleteAccount_ifFlowIsChangingPassword() = runTest {
         val flow = mockk<PasswordFlow>()
 
-        cache.setActiveFlow(SecondFactorFlowCache.SecondFactorFlow.ChangingPassword(flow), shouldClearOnNext = true)
+        cache.setActiveFlow(FlowManager.CurrentFlow.ChangingPassword(flow), shouldClearOnNext = true)
         cache.setCachedSession(mockk(), "user123")
 
         val cleared = cache.clear()
@@ -78,7 +80,7 @@ class SecondFactorFlowCacheTest {
 
     @Test
     fun setActiveFlow_shouldStoreFlowAndFlag() {
-        val flow = SecondFactorFlowCache.SecondFactorFlow.LoggingIn(mockk())
+        val flow = FlowManager.CurrentFlow.LoggingIn(mockk())
 
         cache.setActiveFlow(flow, shouldClearOnNext = false)
 
@@ -100,7 +102,7 @@ class SecondFactorFlowCacheTest {
         val flow = mockk<LoginFlow>()
         val session = mockk<StoredSession>()
 
-        cache.setActiveFlow(SecondFactorFlowCache.SecondFactorFlow.LoggingIn(flow), shouldClearOnNext = true)
+        cache.setActiveFlow(FlowManager.CurrentFlow.LoggingIn(flow), shouldClearOnNext = true)
         cache.setCachedSession(session, "user123")
 
         val cleared = cache.clear()
@@ -115,7 +117,7 @@ class SecondFactorFlowCacheTest {
     fun clear_shouldNotClearIfShouldClearOnNextIsFalseAndForceIsFalse() = runTest {
         val flow = mockk<PasswordFlow>()
 
-        cache.setActiveFlow(SecondFactorFlowCache.SecondFactorFlow.ChangingPassword(flow), shouldClearOnNext = false)
+        cache.setActiveFlow(FlowManager.CurrentFlow.ChangingPassword(flow), shouldClearOnNext = false)
 
         val cleared = cache.clear()
 
@@ -128,7 +130,7 @@ class SecondFactorFlowCacheTest {
         val flow = mockk<PasswordFlow>()
         val session = mockk<StoredSession>()
 
-        cache.setActiveFlow(SecondFactorFlowCache.SecondFactorFlow.ChangingPassword(flow), shouldClearOnNext = false)
+        cache.setActiveFlow(FlowManager.CurrentFlow.ChangingPassword(flow), shouldClearOnNext = false)
         cache.setCachedSession(session, "user123")
 
         val cleared = cache.clear(force = true)
@@ -140,7 +142,7 @@ class SecondFactorFlowCacheTest {
     @Test
     fun clearIfUserChanged_shouldClearOnlyIfUserChanged() = runTest {
         cache.setCachedSession(mockk(), "user123")
-        cache.setActiveFlow(SecondFactorFlowCache.SecondFactorFlow.LoggingIn(mockk()), shouldClearOnNext = true)
+        cache.setActiveFlow(FlowManager.CurrentFlow.LoggingIn(mockk()), shouldClearOnNext = true)
 
         cache.clearIfUserChanged("otherUser")
 
@@ -155,12 +157,12 @@ class SecondFactorFlowCacheTest {
         val flow = mockk<PasswordFlow>()
 
         cache.setCachedSession(session, "user123")
-        cache.setActiveFlow(SecondFactorFlowCache.SecondFactorFlow.ChangingPassword(flow), shouldClearOnNext = true)
+        cache.setActiveFlow(FlowManager.CurrentFlow.ChangingPassword(flow), shouldClearOnNext = true)
 
         cache.clearIfUserChanged("user123")
 
         assertEquals(session, cache.getCachedSession())
-        assertEquals(flow, (cache.getActiveFlow() as? SecondFactorFlowCache.SecondFactorFlow.ChangingPassword)?.flow)
+        assertEquals(flow, (cache.getActiveFlow() as? FlowManager.CurrentFlow.ChangingPassword)?.flow)
         coVerify(exactly = 0) { mailSession.deleteAccount(any()) }
     }
 }

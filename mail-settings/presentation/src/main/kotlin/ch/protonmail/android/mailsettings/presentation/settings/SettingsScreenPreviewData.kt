@@ -20,11 +20,13 @@ package ch.protonmail.android.mailsettings.presentation.settings
 
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
+import me.proton.core.domain.entity.UserId
 
 object SettingsScreenPreviewData {
 
     val Data = SettingsState.Data(
-        AccountInformationUiModel("ProtonUser", "user@proton.ch", null),
+        UserId("123"),
+        AccountInformationUiModel("ProtonUser", "user@proton.ch", null, UserId("123")),
         AppInformation(appVersionName = "6.0.0-alpha")
     )
 

@@ -42,6 +42,7 @@ class SettingsViewModel @Inject constructor(
     val state = observePrimaryAccount()
         .map { account ->
             Data(
+                account?.userId,
                 account?.let { accountInformationMapper.toUiModel(it) },
                 appInformation
             )
