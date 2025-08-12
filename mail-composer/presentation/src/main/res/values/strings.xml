@@ -97,8 +97,7 @@
     <string name="set_message_password_supporting_error_text_repeat">Passwords do not match</string>
     <string name="set_message_password_button_show">Show password</string>
     <string name="set_message_password_button_hide">Hide password</string>
-    <string name="set_message_password_button_apply">Apply password</string>
-    <string name="set_message_password_button_save_changes">Save changes</string>
+    <string name="set_message_password_button_save_changes">Save</string>
     <string name="set_message_password_button_remove_password">Remove password</string>
     <string name="respondInline">Respond in-line</string>
     <string name="subject_placeholder">Subject</string>

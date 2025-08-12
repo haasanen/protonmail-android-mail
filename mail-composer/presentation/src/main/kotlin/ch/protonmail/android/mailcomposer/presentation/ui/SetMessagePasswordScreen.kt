@@ -19,7 +19,9 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,21 +29,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.disabled
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,11 +58,9 @@ import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonOutlinedButton
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
-import ch.protonmail.android.design.compose.component.ProtonSolidButton
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyLargeInverted
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
@@ -69,6 +75,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.MessagePasswordOper
 import ch.protonmail.android.mailcomposer.presentation.model.SetMessagePasswordState
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.SetMessagePasswordViewModel
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
+import ch.protonmail.android.uicomponents.thenIf
 
 @Composable
 fun SetMessagePasswordScreen(
@@ -103,6 +110,8 @@ private fun SetMessagePasswordScreen(
     actions: SetMessagePasswordContent.Actions
 ) {
     val snackBarHostState = remember { ProtonSnackbarHostState() }
+    val messagePasswordTextFieldState = rememberTextFieldState()
+    val messagePasswordHintTextFieldState = rememberTextFieldState()
 
     Scaffold(
         modifier = modifier,
@@ -110,9 +119,10 @@ private fun SetMessagePasswordScreen(
             ProtonTopAppBar(
                 modifier = Modifier.fillMaxWidth(),
                 title = {
-                    Text(
-                        text = stringResource(id = R.string.set_message_password_title),
-                        style = ProtonTheme.typography.titleMediumNorm
+                    SetPasswordTopBarTitle(
+                        onApplyButtonClick = { pass, hint -> actions.onApplyButtonClick(pass, hint) },
+                        messagePasswordTextFieldState = messagePasswordTextFieldState,
+                        messagePasswordHintTextFieldState = messagePasswordHintTextFieldState
                     )
                 },
                 navigationIcon = {
@@ -136,14 +146,28 @@ private fun SetMessagePasswordScreen(
         when (state) {
             is SetMessagePasswordState.Loading -> ProtonCenteredProgress()
             is SetMessagePasswordState.Data -> {
+
+                LaunchedEffect(state.initialMessagePasswordValue) {
+                    messagePasswordTextFieldState.edit { append(state.initialMessagePasswordValue) }
+                }
+                LaunchedEffect(state.initialMessagePasswordHintValue) {
+                    messagePasswordHintTextFieldState.edit { append(state.initialMessagePasswordHintValue) }
+                }
+
                 SetMessagePasswordContent(
                     modifier = Modifier.padding(paddingValues),
                     state = state,
+                    messagePasswordTextFieldState = messagePasswordTextFieldState,
+                    messagePasswordHintTextFieldState = messagePasswordHintTextFieldState,
                     actions = actions
                 )
 
                 ConsumableTextEffect(state.error) { string ->
                     snackBarHostState.showSnackbar(ProtonSnackbarType.ERROR, message = string)
+                }
+
+                ConsumableLaunchedEffect(effect = state.exitScreen) {
+                    actions.onBackClick()
                 }
             }
         }
@@ -151,15 +175,66 @@ private fun SetMessagePasswordScreen(
 }
 
 @Composable
+private fun SetPasswordTopBarTitle(
+    onApplyButtonClick: (String, String) -> Unit,
+    messagePasswordTextFieldState: TextFieldState,
+    messagePasswordHintTextFieldState: TextFieldState
+) {
+    val isSaveEnabled = remember {
+        derivedStateOf {
+            messagePasswordTextFieldState.text.length >= SetMessagePasswordViewModel.MIN_PASSWORD_LENGTH
+        }
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(end = ProtonDimens.Spacing.Medium),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(id = R.string.set_message_password_title),
+            style = ProtonTheme.typography.titleMediumNorm
+        )
+        Button(
+            onClick = {
+                onApplyButtonClick(
+                    messagePasswordTextFieldState.text.toString(),
+                    messagePasswordHintTextFieldState.text.toString()
+                )
+            },
+            enabled = isSaveEnabled.value,
+            modifier = Modifier
+                .thenIf(!isSaveEnabled.value) { semantics { disabled() } },
+            shape = ProtonTheme.shapes.huge,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = ProtonTheme.colors.interactionBrandWeakNorm,
+                disabledContainerColor = ProtonTheme.colors.interactionBrandWeakDisabled,
+                contentColor = ProtonTheme.colors.textAccent,
+                disabledContentColor = ProtonTheme.colors.brandMinus20
+            ),
+            contentPadding = PaddingValues(
+                horizontal = ProtonDimens.Spacing.Large,
+                vertical = ProtonDimens.Spacing.Standard
+            )
+        ) {
+            Text(
+                text = stringResource(R.string.set_message_password_button_save_changes),
+                style = ProtonTheme.typography.titleSmall
+            )
+        }
+    }
+}
+
+@Composable
 private fun SetMessagePasswordContent(
     state: SetMessagePasswordState.Data,
+    messagePasswordTextFieldState: TextFieldState,
+    messagePasswordHintTextFieldState: TextFieldState,
     actions: SetMessagePasswordContent.Actions,
     modifier: Modifier = Modifier
 ) {
-    ConsumableLaunchedEffect(effect = state.exitScreen) {
-        actions.onBackClick()
-    }
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -167,14 +242,6 @@ private fun SetMessagePasswordContent(
             .verticalScroll(rememberScrollState(), reverseScrolling = true)
             .padding(ProtonDimens.Spacing.Large)
     ) {
-        var messagePassword by rememberSaveable { mutableStateOf(state.initialMessagePasswordValue) }
-        var messagePasswordHint by rememberSaveable { mutableStateOf(state.initialMessagePasswordHintValue) }
-        var isMessagePasswordFieldActivated by rememberSaveable { mutableStateOf(state.isInEditMode) }
-
-        fun validateMessagePassword() {
-            actions.validatePassword(messagePassword)
-        }
-        fun shouldApplyButtonBeEnabled() = isMessagePasswordFieldActivated && !state.hasMessagePasswordError
 
         MessagePasswordInfo()
         MessagePasswordSpacer()
@@ -185,33 +252,21 @@ private fun SetMessagePasswordContent(
             } else {
                 R.string.set_message_password_supporting_text
             },
-            value = messagePassword,
+            textFieldState = messagePasswordTextFieldState,
             showTrailingIcon = true,
-            isError = state.hasMessagePasswordError,
-            onValueChange = {
-                messagePassword = it
-                validateMessagePassword()
-            },
-            onFocusChanged = { hasFocus ->
-                if (hasFocus) isMessagePasswordFieldActivated = true
-                if (isMessagePasswordFieldActivated) validateMessagePassword()
-            }
+            isError = state.hasMessagePasswordError
         )
         MessagePasswordSpacer()
         PasswordInputField(
             titleRes = R.string.set_message_password_label_hint,
             supportingTextRes = null,
-            value = messagePasswordHint,
+            textFieldState = messagePasswordHintTextFieldState,
             showTrailingIcon = false,
-            isError = false,
-            onValueChange = { messagePasswordHint = it },
-            onFocusChanged = {}
+            isError = false
         )
         MessagePasswordSpacer(height = ProtonDimens.Spacing.Jumbo)
         MessagePasswordButtons(
             shouldShowEditingButtons = state.isInEditMode,
-            isApplyButtonEnabled = shouldApplyButtonBeEnabled(),
-            onApplyButtonClick = { actions.onApplyButtonClick(messagePassword, messagePasswordHint) },
             onRemoveButtonClick = actions.onRemoveButtonClick
         )
     }
@@ -235,28 +290,7 @@ private fun MessagePasswordInfo(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun MessagePasswordButtons(
-    shouldShowEditingButtons: Boolean,
-    isApplyButtonEnabled: Boolean,
-    onApplyButtonClick: () -> Unit,
-    onRemoveButtonClick: () -> Unit
-) {
-    ProtonSolidButton(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(ProtonDimens.DefaultButtonMinHeight),
-        enabled = isApplyButtonEnabled,
-        onClick = onApplyButtonClick
-    ) {
-        Text(
-            text = stringResource(
-                id = if (shouldShowEditingButtons) {
-                    R.string.set_message_password_button_save_changes
-                } else R.string.set_message_password_button_apply
-            ),
-            style = ProtonTheme.typography.bodyLargeInverted
-        )
-    }
+private fun MessagePasswordButtons(shouldShowEditingButtons: Boolean, onRemoveButtonClick: () -> Unit) {
     if (shouldShowEditingButtons) {
         MessagePasswordSpacer(height = ProtonDimens.Spacing.Large)
         ProtonOutlinedButton(

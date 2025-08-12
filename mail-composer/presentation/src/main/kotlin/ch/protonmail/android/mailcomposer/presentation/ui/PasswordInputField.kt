@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -37,7 +38,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -45,22 +45,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.labelMediumNorm
-import ch.protonmail.android.design.compose.theme.bodySmallWeak
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodySmallWeak
+import ch.protonmail.android.design.compose.theme.labelMediumNorm
+import ch.protonmail.android.mailcomposer.presentation.R
 
 @Composable
 fun PasswordInputField(
     @StringRes titleRes: Int,
     @StringRes supportingTextRes: Int?,
-    value: String,
+    textFieldState: TextFieldState,
     showTrailingIcon: Boolean,
     isError: Boolean,
-    onValueChange: (String) -> Unit,
-    onFocusChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -71,10 +69,18 @@ fun PasswordInputField(
 
         OutlinedTextField(
             modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { onFocusChanged(it.hasFocus) },
-            value = value,
-            onValueChange = { onValueChange(it) },
+                .fillMaxWidth(),
+            value = textFieldState.text.toString(),
+            onValueChange = { value ->
+                textFieldState.edit {
+                    replace(
+                        0,
+                        textFieldState.text.length,
+                        value
+                    )
+
+                }
+            },
             shape = RoundedCornerShape(ProtonDimens.LargeCornerRadius),
             colors = getPasswordInputFieldColors(),
             singleLine = true,
