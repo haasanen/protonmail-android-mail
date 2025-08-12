@@ -65,7 +65,6 @@ class LoginActivity : ProtonSecureActivity() {
                     initialUsername = input.username,
                     onCloseClicked = { finish() },
                     onHelpClicked = { authOrchestrator.startLoginHelpWorkflow() },
-                    onErrorMessage = { showError(it) },
                     onSuccess = { onSuccess(it) }
                 )
             }

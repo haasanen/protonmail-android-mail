@@ -99,7 +99,6 @@ public fun LoginScreen(
     onCloseClicked: () -> Unit,
     onHelpClicked: () -> Unit,
     initialUsername: String? = null,
-    onErrorMessage: (String?) -> Unit = {},
     onSuccess: (String) -> Unit = {},
     viewModel: LoginViewModel = hiltViewModel()
 ) {
@@ -111,7 +110,6 @@ public fun LoginScreen(
         onCloseClicked = onCloseClicked,
         onHelpClicked = onHelpClicked,
         onLoginClicked = { viewModel.submit(it) },
-        onErrorMessage = onErrorMessage,
         onSuccess = onSuccess,
         onScreenView = viewModel::onScreenView,
         state = state
@@ -125,7 +123,6 @@ public fun LoginScreen(
     onCloseClicked: () -> Unit = {},
     onHelpClicked: () -> Unit = {},
     onLoginClicked: (LoginAction.Login) -> Unit = {},
-    onErrorMessage: (String?) -> Unit = {},
     onSuccess: (String) -> Unit = {},
     onScreenView: () -> Unit = {},
     state: LoginViewState = LoginViewState.Idle
@@ -133,7 +130,6 @@ public fun LoginScreen(
     LaunchedEffect(state) {
         when (state) {
             is LoginViewState.Error.AlreadyLoggedIn -> onSuccess(state.userId)
-            is LoginViewState.Error.LoginFlow -> onErrorMessage(state.error)
             is LoginViewState.LoggedIn -> onSuccess(state.userId)
             is LoginViewState.Awaiting2fa -> onSuccess(state.userId)
             is LoginViewState.Awaiting2Pass -> onSuccess(state.userId)
