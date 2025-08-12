@@ -31,8 +31,11 @@ import com.android.billingclient.api.queryProductDetails
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import me.proton.android.core.payment.domain.LogTag
+import me.proton.android.core.payment.domain.PaymentMetricsTracker
+import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.IAP_SUBSCRIBE
 import me.proton.android.core.payment.google.data.PurchaseStoreListener
 import me.proton.android.core.payment.google.data.extension.checkOrThrow
+import me.proton.android.core.payment.google.data.extension.metrics
 import me.proton.android.core.payment.google.data.extension.withConnection
 import me.proton.android.core.payment.presentation.PurchaseOrchestrator
 import me.proton.core.util.kotlin.CoreLogger
@@ -43,6 +46,7 @@ import javax.inject.Singleton
 @Singleton
 class PurchaseOrchestratorImpl @Inject constructor(
     @ApplicationContext val context: Context,
+    private val paymentMetricsTracker: PaymentMetricsTracker,
     private val purchaseStoreListener: PurchaseStoreListener,
     private val scopeProvider: CoroutineScopeProvider
 ) : PurchaseOrchestrator {
@@ -99,6 +103,11 @@ class PurchaseOrchestratorImpl @Inject constructor(
         scopeProvider.GlobalIOSupervisedScope.launch {
             val result = launchBillingFlow(caller, productId, accountId)
             CoreLogger.d(LogTag.STORE, "launchBillingFlow result: $result")
+
+            result.metrics(
+                onResponse = { paymentMetricsTracker.track(IAP_SUBSCRIBE, it) },
+                onError = { CoreLogger.e(LogTag.IN_APP_PURCHASE, it) }
+            )
             result.checkOrThrow()
         }
     }

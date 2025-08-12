@@ -105,8 +105,10 @@ class PurchaseButtonProcessorNative @Inject constructor(
         emit(PurchaseButtonState.Pending(detail))
         // Workaround: Override detail.planName by product.planName.
         subscriptionManager.subscribe(detail.copy(planName = product.planName), purchase)
-    }.catch {
-        emit(PurchaseButtonState.Error(it.message ?: "Error on subscribe"))
+    }.catch { exception ->
+        val exceptionMessage = exception.message ?: "Error occurred whilst subscribing."
+        CoreLogger.e(LogTag.SUBSCRIBE, exceptionMessage)
+        emit(PurchaseButtonState.Error(exceptionMessage))
     }
 
     private fun onSuccess(product: Product) = flow {

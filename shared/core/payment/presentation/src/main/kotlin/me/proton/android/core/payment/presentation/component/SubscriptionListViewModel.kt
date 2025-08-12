@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import me.proton.android.core.payment.domain.LogTag
 import me.proton.android.core.payment.domain.model.SubscriptionDetail
 import me.proton.android.core.payment.domain.usecase.GetCurrentSubscriptions
 import me.proton.android.core.payment.presentation.R
@@ -32,6 +33,7 @@ import me.proton.android.core.payment.presentation.model.Subscription
 import me.proton.core.compose.viewmodel.BaseViewModel
 import me.proton.core.util.android.datetime.DateTimeFormat
 import me.proton.core.util.android.datetime.DateTimeFormat.DateTimeForm.MEDIUM_DATE
+import me.proton.core.util.kotlin.CoreLogger
 import javax.inject.Inject
 
 @HiltViewModel
@@ -63,8 +65,10 @@ class SubscriptionListViewModel @Inject constructor(
             )
         }
         emit(SubscriptionListState.Data(list))
-    }.catch {
-        emit(SubscriptionListState.Error(it.message ?: "Error in onLoad"))
+    }.catch { exception ->
+        val exceptionMessage = exception.message ?: "Error occurred whilst fetching current subscriptions."
+        CoreLogger.e(LogTag.GET_SUBSCRIPTIONS, exceptionMessage)
+        emit(SubscriptionListState.Error(exceptionMessage))
     }
 
     override suspend fun FlowCollector<SubscriptionListState>.onError(throwable: Throwable) {

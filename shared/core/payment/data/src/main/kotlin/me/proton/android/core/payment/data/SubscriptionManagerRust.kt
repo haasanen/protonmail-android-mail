@@ -21,12 +21,20 @@ import android.content.Context
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.getPrimarySession
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 import me.proton.android.core.payment.data.extension.getErrorMessage
+import me.proton.android.core.payment.data.extension.toObservabilityValue
 import me.proton.android.core.payment.data.model.toProductDetail
 import me.proton.android.core.payment.data.model.toSubscriptionDetail
 import me.proton.android.core.payment.domain.PaymentException
 import me.proton.android.core.payment.domain.PaymentException.Companion.ErrorCode.DEVELOPER_ERROR
+import me.proton.android.core.payment.domain.PaymentMetricsTracker
 import me.proton.android.core.payment.domain.SubscriptionManager
+import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.CREATE_SUBSCRIPTION
+import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.GET_PLANS
+import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.GET_SUBSCRIPTION
+import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.SEND_PAYMENT_TOKEN
 import me.proton.android.core.payment.domain.model.ProductDetail
 import me.proton.android.core.payment.domain.model.Purchase
 import me.proton.android.core.payment.domain.model.SubscriptionDetail
@@ -42,13 +50,12 @@ import uniffi.proton_mail_uniffi.NewSubscriptionValues
 import uniffi.proton_mail_uniffi.PaymentReceipt
 import uniffi.proton_mail_uniffi.PaymentToken
 import uniffi.proton_mail_uniffi.UserSessionError
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 @Suppress("MagicNumber")
 class SubscriptionManagerRust @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val metricsTracker: PaymentMetricsTracker,
     private val sessionRepository: UserSessionRepository
 ) : SubscriptionManager {
 
@@ -60,7 +67,7 @@ class SubscriptionManagerRust @Inject constructor(
         product: ProductDetail,
         purchase: Purchase,
         session: MailUserSession
-    ): PaymentToken = when (
+    ): PaymentToken {
         val result = session.postPaymentsTokens(
             amount = product.price.amount.toULong(),
             currency = product.price.currency,
@@ -74,16 +81,19 @@ class SubscriptionManagerRust @Inject constructor(
                 )
             )
         )
-    ) {
-        is MailUserSessionPostPaymentsTokensResult.Error -> result.v1.throwException()
-        is MailUserSessionPostPaymentsTokensResult.Ok -> result.v1
+
+        metricsTracker.track(SEND_PAYMENT_TOKEN, result.toObservabilityValue())
+        return when (result) {
+            is MailUserSessionPostPaymentsTokensResult.Error -> result.v1.throwException()
+            is MailUserSessionPostPaymentsTokensResult.Ok -> result.v1
+        }
     }
 
     private suspend fun createOrUpdateSubscription(
         session: MailUserSession,
         product: ProductDetail,
         paymentToken: PaymentToken
-    ) = when (
+    ) {
         val result = session.postPaymentsSubscription(
             subscription = NewSubscription(
                 cycle = product.price.cycle.toUByte(),
@@ -101,21 +111,23 @@ class SubscriptionManagerRust @Inject constructor(
                 paymentToken = paymentToken.token
             )
         )
-    ) {
-        is MailUserSessionPostPaymentsSubscriptionResult.Error -> result.v1.throwException()
-        is MailUserSessionPostPaymentsSubscriptionResult.Ok -> Unit
+
+        metricsTracker.track(CREATE_SUBSCRIPTION, result.toObservabilityValue())
+        when (result) {
+            is MailUserSessionPostPaymentsSubscriptionResult.Error -> result.v1.throwException()
+            is MailUserSessionPostPaymentsSubscriptionResult.Ok -> Unit
+        }
     }
 
     override suspend fun getCurrent(): List<SubscriptionDetail> {
         val session = sessionRepository.getPrimarySession() ?: return emptyList()
-        when (val result = session.getPaymentsSubscription()) {
-            is MailUserSessionGetPaymentsSubscriptionResult.Error -> {
-                result.v1.throwException()
-            }
+        val result = session.getPaymentsSubscription()
 
+        metricsTracker.track(GET_SUBSCRIPTION, result.toObservabilityValue())
+        when (result) {
+            is MailUserSessionGetPaymentsSubscriptionResult.Error -> result.v1.throwException()
             is MailUserSessionGetPaymentsSubscriptionResult.Ok -> {
-                val subscriptions = result.v1.current
-                return subscriptions.map { it.toSubscriptionDetail() }
+                return result.v1.current.map { it.toSubscriptionDetail() }
             }
         }
     }
@@ -129,14 +141,15 @@ class SubscriptionManagerRust @Inject constructor(
             timestamp = null,
             fallback = null
         )
-        when (val result = session.getPaymentsPlans(options)) {
-            is MailUserSessionGetPaymentsPlansResult.Error -> {
-                result.v1.throwException()
-            }
+        val result = session.getPaymentsPlans(options)
 
+        metricsTracker.track(GET_PLANS, result.toObservabilityValue())
+        when (result) {
+            is MailUserSessionGetPaymentsPlansResult.Error -> result.v1.throwException()
             is MailUserSessionGetPaymentsPlansResult.Ok -> {
-                val plans = result.v1.plans
-                return plans.map { plan -> plan.instances.map { instance -> plan.toProductDetail(instance) } }.flatten()
+                return result.v1.plans.map { plan ->
+                    plan.instances.map { instance -> plan.toProductDetail(instance) }
+                }.flatten()
             }
         }
     }

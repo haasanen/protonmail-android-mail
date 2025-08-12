@@ -23,7 +23,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import me.proton.android.core.payment.data.IconResourceManagerRust
 import me.proton.android.core.payment.data.SubscriptionManagerRust
+import me.proton.android.core.payment.data.PaymentMetricsTrackerRust
 import me.proton.android.core.payment.domain.IconResourceManager
+import me.proton.android.core.payment.domain.PaymentMetricsTracker
 import me.proton.android.core.payment.domain.SubscriptionManager
 import me.proton.android.core.payment.presentation.component.PurchaseButtonProcessor
 import me.proton.android.core.payment.presentation.component.PurchaseButtonProcessorNative
@@ -44,6 +46,10 @@ interface CorePaymentRustModule {
     @Binds
     @Singleton
     fun provideIconResourceManager(manager: IconResourceManagerRust): IconResourceManager
+
+    @Binds
+    @Singleton
+    fun providePaymentMetricsTracker(manager: PaymentMetricsTrackerRust): PaymentMetricsTracker
 
     @Binds
     @Singleton

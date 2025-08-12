@@ -20,5 +20,9 @@ package me.proton.android.core.payment.domain
 object LogTag {
 
     const val DEFAULT = "core.payment.default"
+    const val GET_PLANS = "core.payment.presentation.get.plans"
+    const val GET_SUBSCRIPTIONS = "core.payment.presentation.get.subscriptions"
+    const val IN_APP_PURCHASE = "core.payment.google.presentation"
     const val STORE = "core.payment.store.default"
+    const val SUBSCRIBE = "core.payment.presentation.purchase"
 }

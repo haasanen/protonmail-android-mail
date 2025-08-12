@@ -25,12 +25,14 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import me.proton.android.core.payment.domain.LogTag
 import me.proton.android.core.payment.domain.PaymentException
 import me.proton.android.core.payment.domain.model.ProductDetail
 import me.proton.android.core.payment.domain.usecase.GetAvailableUpgrades
 import me.proton.android.core.payment.presentation.R
 import me.proton.android.core.payment.presentation.model.Product
 import me.proton.core.compose.viewmodel.BaseViewModel
+import me.proton.core.util.kotlin.CoreLogger
 import javax.inject.Inject
 
 @HiltViewModel
@@ -65,13 +67,16 @@ class ProductListViewModel @Inject constructor(
             )
         }
         emit(ProductListState.Data(list))
-    }.catch {
-        when ((it as? PaymentException)?.errorCode) {
+    }.catch { exception ->
+        val exceptionMessage = exception.message ?: "Error occurred whilst fetching available plans."
+        CoreLogger.e(LogTag.GET_PLANS, exceptionMessage)
+
+        when ((exception as? PaymentException)?.errorCode) {
             PaymentException.Companion.ErrorCode.BILLING_UNAVAILABLE -> {
                 emit(ProductListState.Data(emptyList()))
             }
             else -> {
-                emit(ProductListState.Error(it.message ?: "Error in onLoad"))
+                emit(ProductListState.Error(exceptionMessage))
             }
         }
     }

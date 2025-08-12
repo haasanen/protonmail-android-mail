@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import me.proton.android.core.payment.domain.LogTag
 import me.proton.android.core.payment.domain.PaymentException
+import me.proton.android.core.payment.domain.model.PaymentObservabilityValue
 import me.proton.android.core.payment.google.data.PurchaseStoreListener
 import me.proton.core.util.kotlin.CoreLogger
 
@@ -115,4 +116,38 @@ fun BillingResult.checkOrThrow() = getExceptionOrNull()?.let { throw it }
 fun BillingResult.getExceptionOrNull() = when {
     responseCode == BillingResponseCode.OK -> null
     else -> PaymentException(responseCode, debugMessage)
+}
+
+/**
+ * Provides a primary callback passing back [BillingResult] as a [PaymentObservabilityValue].
+ *
+ * Optionally provides an error callback, notifying consumers specifically if the result is not successful.
+ */
+fun BillingResult.metrics(onResponse: (PaymentObservabilityValue) -> Unit, onError: ((String) -> Unit)? = null) {
+    val observabilityResponse = this.toObservabilityResponse()
+    onResponse(observabilityResponse)
+
+    if (observabilityResponse != PaymentObservabilityValue.SUCCESS) {
+        onError?.invoke(debugMessage)
+    }
+}
+
+/**
+ * Maps a [BillingResult.responseCode] to a [PaymentObservabilityValue].
+ */
+private fun BillingResult.toObservabilityResponse(): PaymentObservabilityValue {
+    return when (responseCode) {
+        BillingResponseCode.OK -> PaymentObservabilityValue.SUCCESS
+        BillingResponseCode.USER_CANCELED,
+        BillingResponseCode.DEVELOPER_ERROR,
+        BillingResponseCode.BILLING_UNAVAILABLE,
+        BillingResponseCode.ITEM_NOT_OWNED,
+        BillingResponseCode.ITEM_UNAVAILABLE,
+        BillingResponseCode.ITEM_ALREADY_OWNED -> PaymentObservabilityValue.HTTP4XX
+        BillingResponseCode.FEATURE_NOT_SUPPORTED,
+        BillingResponseCode.SERVICE_UNAVAILABLE,
+        BillingResponseCode.SERVICE_DISCONNECTED -> PaymentObservabilityValue.HTTP5XX
+
+        else -> PaymentObservabilityValue.UNKNOWN
+    }
 }
