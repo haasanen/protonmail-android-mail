@@ -22,7 +22,6 @@ import ch.protonmail.android.mailsnooze.domain.model.ConversationSnoozeStatus
 import ch.protonmail.android.mailsnooze.domain.model.NoSnooze
 import ch.protonmail.android.mailsnooze.domain.model.SnoozeReminder
 import ch.protonmail.android.mailsnooze.domain.model.Snoozed
-import timber.log.Timber
 import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.Message
 import kotlin.time.Duration.Companion.seconds
@@ -36,8 +35,6 @@ fun Conversation.toSnoozeInformation(): ConversationSnoozeStatus {
         displaySnoozeReminder -> SnoozeReminder
         snoozedUntil != null -> Snoozed(until = snoozedUntil!!.instantFromEpochSeconds())
         else -> NoSnooze
-    }.apply {
-        Timber.d("SEREN toSnoozeInformation $displaySnoozeReminder snoozeTime $snoozedUntil")
     }
 }
 
@@ -46,7 +43,5 @@ fun Message.toSnoozeInformation(): ConversationSnoozeStatus {
         displaySnoozeReminder -> SnoozeReminder
         snoozedUntil != null -> Snoozed(until = snoozedUntil!!.instantFromEpochSeconds())
         else -> NoSnooze
-    }.apply {
-        Timber.d("SEREN toSnoozeInformation $displaySnoozeReminder snoozeTime $snoozedUntil")
     }
 }
