@@ -103,6 +103,7 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
+import ch.protonmail.android.design.compose.component.ProtonPullToRefreshIndicator
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
@@ -736,12 +737,24 @@ private fun MailboxSwipeRefresh(
         }
     }
 
+    val isRefreshing = if (searchMode.isInSearch()) {
+        refreshing
+    } else {
+        refreshing && (refreshRequested || loadingWithDataCount == 1)
+    }
+
     PullToRefreshBox(
         modifier = modifier,
         state = pullToRefreshState,
-        isRefreshing = if (searchMode.isInSearch()) refreshing
-        else refreshing && (refreshRequested || loadingWithDataCount == 1),
-        onRefresh = onRefresh
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
+        indicator = {
+            ProtonPullToRefreshIndicator(
+                state = pullToRefreshState,
+                isRefreshing = isRefreshing,
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
+        }
     ) {
         when (currentViewState) {
             is MailboxScreenState.Loading ->

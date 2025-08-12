@@ -48,6 +48,7 @@ android {
 dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.bundles.module.presentation)
+    implementation(libs.lottie.compose)
 
     debugImplementation(libs.bundles.app.debug)
     testImplementation(libs.bundles.test)

@@ -38,6 +38,9 @@ object ProtonDimens {
 
     val OutlinedBorderSize = 1.dp
 
+    val PullToRefreshInnerSpinnerSize = 28.dp
+    val PullToRefreshOuterCircleSize = 52.dp
+
     object Spacing {
 
         val ExtraTiny = 1.dp
