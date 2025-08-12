@@ -52,11 +52,11 @@ fun ButtonWithIconAndText(
     ) {
         Icon(
             contentDescription = null,
-            modifier = Modifier.defaultMinSize(minWidth = ProtonDimens.IconSize.MediumLarge),
+            modifier = Modifier.defaultMinSize(minWidth = ProtonDimens.IconSize.Medium),
             painter = painterResource(icon)
         )
         Text(
-            style = LocalTypography.current.bodyMedium,
+            style = LocalTypography.current.bodyLarge,
             text = stringResource(text)
         )
     }

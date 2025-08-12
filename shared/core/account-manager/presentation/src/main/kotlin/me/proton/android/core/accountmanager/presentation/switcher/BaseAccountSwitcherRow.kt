@@ -91,7 +91,7 @@ internal fun BaseAccountSwitcherRow(
                 accountListItem.accountItem.email?.takeIfNotBlank()?.let {
                     Text(
                         text = it,
-                        color = if (isDisabled) ProtonTheme.colors.textWeak else ProtonTheme.colors.textHint,
+                        color = if (isDisabled) ProtonTheme.colors.textHint else ProtonTheme.colors.textWeak,
                         style = LocalTypography.current.bodyMedium,
                         modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
                         overflow = TextOverflow.Ellipsis,
