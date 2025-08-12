@@ -60,7 +60,6 @@ class SetMessagePasswordReducerTest(
                     initialMessagePasswordValue = Password,
                     initialMessagePasswordHintValue = Hint,
                     hasMessagePasswordError = false,
-                    hasRepeatedMessagePasswordError = false,
                     isInEditMode = true,
                     exitScreen = Effect.empty(),
                     error = Effect.empty()
@@ -73,7 +72,6 @@ class SetMessagePasswordReducerTest(
                     initialMessagePasswordValue = EMPTY_STRING,
                     initialMessagePasswordHintValue = EMPTY_STRING,
                     hasMessagePasswordError = false,
-                    hasRepeatedMessagePasswordError = false,
                     isInEditMode = false,
                     exitScreen = Effect.empty(),
                     error = Effect.empty()
@@ -84,7 +82,6 @@ class SetMessagePasswordReducerTest(
                     initialMessagePasswordValue = Password,
                     initialMessagePasswordHintValue = Hint,
                     hasMessagePasswordError = false,
-                    hasRepeatedMessagePasswordError = false,
                     isInEditMode = true,
                     exitScreen = Effect.empty(),
                     error = Effect.empty()
@@ -94,7 +91,6 @@ class SetMessagePasswordReducerTest(
                     initialMessagePasswordValue = Password,
                     initialMessagePasswordHintValue = Hint,
                     hasMessagePasswordError = false,
-                    hasRepeatedMessagePasswordError = false,
                     isInEditMode = true,
                     exitScreen = Effect.of(Unit),
                     error = Effect.empty()
@@ -105,7 +101,6 @@ class SetMessagePasswordReducerTest(
                     initialMessagePasswordValue = EMPTY_STRING,
                     initialMessagePasswordHintValue = EMPTY_STRING,
                     hasMessagePasswordError = false,
-                    hasRepeatedMessagePasswordError = false,
                     isInEditMode = false,
                     exitScreen = Effect.empty(),
                     error = Effect.empty()
@@ -115,7 +110,6 @@ class SetMessagePasswordReducerTest(
                     initialMessagePasswordValue = EMPTY_STRING,
                     initialMessagePasswordHintValue = EMPTY_STRING,
                     hasMessagePasswordError = true,
-                    hasRepeatedMessagePasswordError = false,
                     isInEditMode = false,
                     exitScreen = Effect.empty(),
                     error = Effect.empty()
@@ -126,30 +120,6 @@ class SetMessagePasswordReducerTest(
                     initialMessagePasswordValue = EMPTY_STRING,
                     initialMessagePasswordHintValue = EMPTY_STRING,
                     hasMessagePasswordError = false,
-                    hasRepeatedMessagePasswordError = false,
-                    isInEditMode = false,
-                    exitScreen = Effect.empty(),
-                    error = Effect.empty()
-                ),
-                operation = MessagePasswordOperation.Event.RepeatedPasswordValidated(
-                    hasRepeatedMessagePasswordError = true
-                ),
-                expectedState = SetMessagePasswordState.Data(
-                    initialMessagePasswordValue = EMPTY_STRING,
-                    initialMessagePasswordHintValue = EMPTY_STRING,
-                    hasMessagePasswordError = false,
-                    hasRepeatedMessagePasswordError = true,
-                    isInEditMode = false,
-                    exitScreen = Effect.empty(),
-                    error = Effect.empty()
-                )
-            ),
-            TestInput(
-                currentState = SetMessagePasswordState.Data(
-                    initialMessagePasswordValue = EMPTY_STRING,
-                    initialMessagePasswordHintValue = EMPTY_STRING,
-                    hasMessagePasswordError = false,
-                    hasRepeatedMessagePasswordError = false,
                     isInEditMode = false,
                     exitScreen = Effect.empty(),
                     error = Effect.empty()
@@ -161,7 +131,6 @@ class SetMessagePasswordReducerTest(
                     initialMessagePasswordValue = EMPTY_STRING,
                     initialMessagePasswordHintValue = EMPTY_STRING,
                     hasMessagePasswordError = false,
-                    hasRepeatedMessagePasswordError = false,
                     isInEditMode = false,
                     exitScreen = Effect.empty(),
                     error = Effect.of(

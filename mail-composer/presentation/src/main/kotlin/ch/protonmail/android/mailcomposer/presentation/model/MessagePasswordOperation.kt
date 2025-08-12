@@ -24,7 +24,6 @@ import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 sealed interface MessagePasswordOperation {
     sealed interface Action : MessagePasswordOperation {
         data class ValidatePassword(val password: String) : Action
-        data class ValidateRepeatedPassword(val password: String, val repeatedPassword: String) : Action
         data class ApplyPassword(val password: String, val passwordHint: String?) : Action
         data class UpdatePassword(val password: String, val passwordHint: String?) : Action
         data object RemovePassword : Action
@@ -32,7 +31,6 @@ sealed interface MessagePasswordOperation {
     sealed interface Event : MessagePasswordOperation {
         data class InitializeScreen(val messagePassword: MessagePassword?) : Event
         data class PasswordValidated(val hasMessagePasswordError: Boolean) : Event
-        data class RepeatedPasswordValidated(val hasRepeatedMessagePasswordError: Boolean) : Event
         data class SetPasswordDataError(val error: DataError) : Event
         data object ExitScreen : Event
     }

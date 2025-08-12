@@ -35,8 +35,6 @@ class SetMessagePasswordReducer @Inject constructor() {
         is MessagePasswordOperation.Event.ExitScreen -> newStateForExitScreen(currentState)
         is MessagePasswordOperation.Event.InitializeScreen -> newStateForPrefillInputFields(event)
         is MessagePasswordOperation.Event.PasswordValidated -> newStateForPasswordValidated(currentState, event)
-        is MessagePasswordOperation.Event.RepeatedPasswordValidated ->
-            newStateForRepeatedPasswordValidated(currentState, event)
         is MessagePasswordOperation.Event.SetPasswordDataError -> newStateForDataError(currentState, event)
     }
 
@@ -69,7 +67,6 @@ class SetMessagePasswordReducer @Inject constructor() {
         initialMessagePasswordValue = event.messagePassword?.password ?: EMPTY_STRING,
         initialMessagePasswordHintValue = event.messagePassword?.hint ?: EMPTY_STRING,
         hasMessagePasswordError = false,
-        hasRepeatedMessagePasswordError = false,
         isInEditMode = event.messagePassword != null,
         exitScreen = Effect.empty(),
         error = Effect.empty()
@@ -80,15 +77,6 @@ class SetMessagePasswordReducer @Inject constructor() {
         event: MessagePasswordOperation.Event.PasswordValidated
     ) = if (currentState is SetMessagePasswordState.Data) {
         currentState.copy(hasMessagePasswordError = event.hasMessagePasswordError)
-    } else {
-        currentState
-    }
-
-    private fun newStateForRepeatedPasswordValidated(
-        currentState: SetMessagePasswordState,
-        event: MessagePasswordOperation.Event.RepeatedPasswordValidated
-    ) = if (currentState is SetMessagePasswordState.Data) {
-        currentState.copy(hasRepeatedMessagePasswordError = event.hasRepeatedMessagePasswordError)
     } else {
         currentState
     }

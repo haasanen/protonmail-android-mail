@@ -68,7 +68,6 @@ class SetMessagePasswordViewModelTest {
                 initialMessagePasswordValue = EMPTY_STRING,
                 initialMessagePasswordHintValue = EMPTY_STRING,
                 hasMessagePasswordError = false,
-                hasRepeatedMessagePasswordError = false,
                 isInEditMode = false,
                 exitScreen = Effect.empty(),
                 error = Effect.empty()
@@ -92,7 +91,6 @@ class SetMessagePasswordViewModelTest {
                 initialMessagePasswordValue = password,
                 initialMessagePasswordHintValue = passwordHint,
                 hasMessagePasswordError = false,
-                hasRepeatedMessagePasswordError = false,
                 isInEditMode = true,
                 exitScreen = Effect.empty(),
                 error = Effect.empty()
@@ -116,7 +114,6 @@ class SetMessagePasswordViewModelTest {
                 initialMessagePasswordValue = EMPTY_STRING,
                 initialMessagePasswordHintValue = EMPTY_STRING,
                 hasMessagePasswordError = true,
-                hasRepeatedMessagePasswordError = false,
                 isInEditMode = false,
                 exitScreen = Effect.empty(),
                 error = Effect.empty()
@@ -140,7 +137,6 @@ class SetMessagePasswordViewModelTest {
                 initialMessagePasswordValue = EMPTY_STRING,
                 initialMessagePasswordHintValue = EMPTY_STRING,
                 hasMessagePasswordError = true,
-                hasRepeatedMessagePasswordError = false,
                 isInEditMode = false,
                 exitScreen = Effect.empty(),
                 error = Effect.empty()
@@ -164,65 +160,6 @@ class SetMessagePasswordViewModelTest {
                 initialMessagePasswordValue = EMPTY_STRING,
                 initialMessagePasswordHintValue = EMPTY_STRING,
                 hasMessagePasswordError = false,
-                hasRepeatedMessagePasswordError = false,
-                isInEditMode = false,
-                exitScreen = Effect.empty(),
-                error = Effect.empty()
-            )
-            assertEquals(expected, awaitItem())
-        }
-    }
-
-    @Test
-    fun `should validate repeated password when action is submitted and passwords are matching`() = runTest {
-        // Given
-        val password = "123456789012"
-        val repeatedPassword = "123456789012"
-        coEvery { getMessagePassword() } returns null
-
-        // When
-        setMessagePasswordViewModel.submit(
-            MessagePasswordOperation.Action.ValidateRepeatedPassword(
-                password, repeatedPassword
-            )
-        )
-
-        // Then
-        setMessagePasswordViewModel.state.test {
-            val expected = SetMessagePasswordState.Data(
-                initialMessagePasswordValue = EMPTY_STRING,
-                initialMessagePasswordHintValue = EMPTY_STRING,
-                hasMessagePasswordError = false,
-                hasRepeatedMessagePasswordError = false,
-                isInEditMode = false,
-                exitScreen = Effect.empty(),
-                error = Effect.empty()
-            )
-            assertEquals(expected, awaitItem())
-        }
-    }
-
-    @Test
-    fun `should validate repeated password when action is submitted and passwords are not matching`() = runTest {
-        // Given
-        val password = "123456789012"
-        val repeatedPassword = "123456789"
-        coEvery { getMessagePassword() } returns null
-
-        // When
-        setMessagePasswordViewModel.submit(
-            MessagePasswordOperation.Action.ValidateRepeatedPassword(
-                password, repeatedPassword
-            )
-        )
-
-        // Then
-        setMessagePasswordViewModel.state.test {
-            val expected = SetMessagePasswordState.Data(
-                initialMessagePasswordValue = EMPTY_STRING,
-                initialMessagePasswordHintValue = EMPTY_STRING,
-                hasMessagePasswordError = false,
-                hasRepeatedMessagePasswordError = true,
                 isInEditMode = false,
                 exitScreen = Effect.empty(),
                 error = Effect.empty()

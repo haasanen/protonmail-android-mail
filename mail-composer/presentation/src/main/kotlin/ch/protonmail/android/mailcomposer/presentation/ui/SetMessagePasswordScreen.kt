@@ -85,11 +85,6 @@ fun SetMessagePasswordScreen(
             validatePassword = { password ->
                 viewModel.submit(MessagePasswordOperation.Action.ValidatePassword(password))
             },
-            validateRepeatedPassword = { password, repeatedPassword ->
-                viewModel.submit(
-                    MessagePasswordOperation.Action.ValidateRepeatedPassword(password, repeatedPassword)
-                )
-            },
             onApplyButtonClick = { messagePassword, messagePasswordHint ->
                 viewModel.submit(MessagePasswordOperation.Action.ApplyPassword(messagePassword, messagePasswordHint))
             },
@@ -173,19 +168,13 @@ private fun SetMessagePasswordContent(
             .padding(ProtonDimens.Spacing.Large)
     ) {
         var messagePassword by rememberSaveable { mutableStateOf(state.initialMessagePasswordValue) }
-        var repeatedMessagePassword by rememberSaveable { mutableStateOf(state.initialMessagePasswordValue) }
         var messagePasswordHint by rememberSaveable { mutableStateOf(state.initialMessagePasswordHintValue) }
         var isMessagePasswordFieldActivated by rememberSaveable { mutableStateOf(state.isInEditMode) }
-        var isRepeatedMessagePasswordFieldActivated by rememberSaveable { mutableStateOf(state.isInEditMode) }
 
         fun validateMessagePassword() {
             actions.validatePassword(messagePassword)
         }
-        fun validateRepeatedMessagePassword() {
-            actions.validateRepeatedPassword(messagePassword, repeatedMessagePassword)
-        }
-        fun shouldApplyButtonBeEnabled() = isMessagePasswordFieldActivated && isRepeatedMessagePasswordFieldActivated &&
-            !state.hasMessagePasswordError && !state.hasRepeatedMessagePasswordError
+        fun shouldApplyButtonBeEnabled() = isMessagePasswordFieldActivated && !state.hasMessagePasswordError
 
         MessagePasswordInfo()
         MessagePasswordSpacer()
@@ -202,33 +191,9 @@ private fun SetMessagePasswordContent(
             onValueChange = {
                 messagePassword = it
                 validateMessagePassword()
-                if (isRepeatedMessagePasswordFieldActivated) validateRepeatedMessagePassword()
             },
             onFocusChanged = { hasFocus ->
                 if (hasFocus) isMessagePasswordFieldActivated = true
-                if (isMessagePasswordFieldActivated) validateMessagePassword()
-                if (isRepeatedMessagePasswordFieldActivated) validateRepeatedMessagePassword()
-            }
-        )
-        MessagePasswordSpacer()
-        PasswordInputField(
-            titleRes = R.string.set_message_password_label_repeat,
-            supportingTextRes = if (state.hasRepeatedMessagePasswordError) {
-                R.string.set_message_password_supporting_error_text_repeat
-            } else {
-                R.string.set_message_password_supporting_text_repeat
-            },
-            value = repeatedMessagePassword,
-            showTrailingIcon = true,
-            isError = state.hasRepeatedMessagePasswordError,
-            onValueChange = {
-                repeatedMessagePassword = it
-                validateRepeatedMessagePassword()
-                if (isMessagePasswordFieldActivated) validateMessagePassword()
-            },
-            onFocusChanged = { hasFocus ->
-                if (hasFocus) isRepeatedMessagePasswordFieldActivated = true
-                if (isRepeatedMessagePasswordFieldActivated) validateRepeatedMessagePassword()
                 if (isMessagePasswordFieldActivated) validateMessagePassword()
             }
         )
@@ -317,7 +282,6 @@ private fun MessagePasswordSpacer(modifier: Modifier = Modifier, height: Dp = Pr
 object SetMessagePasswordContent {
     data class Actions(
         val validatePassword: (String) -> Unit,
-        val validateRepeatedPassword: (String, String) -> Unit,
         val onApplyButtonClick: (String, String?) -> Unit,
         val onRemoveButtonClick: () -> Unit,
         val onBackClick: () -> Unit
@@ -333,7 +297,6 @@ fun MessagePasswordPreview() {
             initialMessagePasswordValue = "",
             initialMessagePasswordHintValue = "",
             hasMessagePasswordError = false,
-            hasRepeatedMessagePasswordError = false,
             isInEditMode = false,
             exitScreen = Effect.empty(),
             error = Effect.empty()
@@ -341,7 +304,6 @@ fun MessagePasswordPreview() {
         SetMessagePasswordContent.Actions(
             onBackClick = {},
             validatePassword = {},
-            validateRepeatedPassword = { _, _ -> },
             onApplyButtonClick = { _, _ -> },
             onRemoveButtonClick = {}
         )

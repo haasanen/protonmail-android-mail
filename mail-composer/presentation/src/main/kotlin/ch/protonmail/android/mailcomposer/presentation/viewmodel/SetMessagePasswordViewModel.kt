@@ -52,8 +52,6 @@ class SetMessagePasswordViewModel @Inject constructor(
 
     fun submit(action: MessagePasswordOperation.Action) = when (action) {
         is MessagePasswordOperation.Action.ValidatePassword -> onValidatePassword(action.password)
-        is MessagePasswordOperation.Action.ValidateRepeatedPassword ->
-            onValidateRepeatedPassword(action.password, action.repeatedPassword)
         is MessagePasswordOperation.Action.ApplyPassword -> onApplyPassword(action.password, action.passwordHint)
         is MessagePasswordOperation.Action.UpdatePassword -> onUpdatePassword(action.password, action.passwordHint)
         is MessagePasswordOperation.Action.RemovePassword -> onRemovePassword()
@@ -63,13 +61,6 @@ class SetMessagePasswordViewModel @Inject constructor(
         viewModelScope.launch {
             val hasMessagePasswordError = password.length !in MIN_PASSWORD_LENGTH..MAX_PASSWORD_LENGTH
             emitNewStateFrom(MessagePasswordOperation.Event.PasswordValidated(hasMessagePasswordError))
-        }
-    }
-
-    private fun onValidateRepeatedPassword(password: String, repeatedPassword: String) {
-        viewModelScope.launch {
-            val hasRepeatedMessagePasswordError = password != repeatedPassword
-            emitNewStateFrom(MessagePasswordOperation.Event.RepeatedPasswordValidated(hasRepeatedMessagePasswordError))
         }
     }
 
