@@ -33,6 +33,7 @@ import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -41,8 +42,14 @@ import kotlin.test.assertEquals
 internal class ObserveDetailBottomBarActionsTest {
 
     private val observeAllConversationBottomBarActions = mockk<ObserveAllConversationBottomBarActions>()
+    private val isSnoozeEnabled = MutableStateFlow(true)
 
-    private val observeDetailActions = ObserveDetailBottomBarActions(observeAllConversationBottomBarActions)
+    private val observeDetailActions by lazy {
+        ObserveDetailBottomBarActions(
+            observeAllConversationBottomBarActions,
+            isSnoozeEnabled
+        )
+    }
 
     @Test
     fun `returns visible bottom bar actions when use case succeeds`() = runTest {
@@ -117,6 +124,30 @@ internal class ObserveDetailBottomBarActionsTest {
         observeDetailActions(userId, labelId, conversationId).test {
             // Then
             assertEquals(error, awaitItem())
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `removes Snooze action from visible list when feature flag is off`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val labelId = LabelIdSample.Trash
+        val conversationId = ConversationIdSample.Invoices
+        val allActions = AllBottomBarActions(
+            hiddenActions = listOf(Action.Star, Action.Label),
+            visibleActions = listOf(Action.Spam, Action.Snooze)
+        )
+        isSnoozeEnabled.value = false
+        coEvery {
+            observeAllConversationBottomBarActions(userId, labelId, conversationId)
+        } returns flowOf(allActions.right())
+
+        // When
+        observeDetailActions(userId, labelId, conversationId).test {
+            // Then
+            val expected = listOf(Action.Spam)
+            assertEquals(expected.right(), awaitItem())
             awaitComplete()
         }
     }
