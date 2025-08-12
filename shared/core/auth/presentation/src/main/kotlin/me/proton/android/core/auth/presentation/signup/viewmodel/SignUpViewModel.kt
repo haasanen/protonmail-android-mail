@@ -211,14 +211,15 @@ interface ErrorHandler {
     fun handleError(throwable: Throwable): SignUpState
 }
 
+@Suppress("MaxLineLength")
 fun SignupException.getErrorMessage(getString: (resId: Int) -> String): String = when (this) {
-    is SignupException.PasswordEmpty -> R.string.auth_signup_validation_password
-    is SignupException.PasswordValidationMismatch -> R.string.auth_signup_createpassword_error_password_not_equal
-    is SignupException.PasswordsNotMatching -> R.string.auth_signup_validation_passwords_do_not_match
-    is SignupException.RecoveryEmailInvalid -> R.string.auth_signup_recovery_email_validation_error
-    is SignupException.RecoveryPhoneNumberInvalid -> R.string.auth_signup_recovery_phone_validation_error
-    is SignupException.UsernameEmpty -> R.string.auth_signup_validation_username
-    is SignupException.UsernameUnavailable -> R.string.auth_signup_username_unavailable_error
+    is SignupException.PasswordEmpty -> getString(R.string.auth_signup_validation_password)
+    is SignupException.PasswordValidationMismatch -> getString(R.string.auth_signup_createpassword_error_password_not_equal)
+    is SignupException.PasswordsNotMatching -> getString(R.string.auth_signup_validation_passwords_do_not_match)
+    is SignupException.RecoveryEmailInvalid -> getString(R.string.auth_signup_recovery_email_validation_error)
+    is SignupException.RecoveryPhoneNumberInvalid -> getString(R.string.auth_signup_recovery_phone_validation_error)
+    is SignupException.UsernameEmpty -> getString(R.string.auth_signup_validation_username)
+    is SignupException.UsernameUnavailable -> this.v1 ?: getString(R.string.auth_signup_username_unavailable_error)
     is SignupException.AccountCreationFailed,
     is SignupException.AddressSetupFailed,
     is SignupException.Api,
@@ -226,7 +227,5 @@ fun SignupException.getErrorMessage(getString: (resId: Int) -> String): String =
     is SignupException.Internal,
     is SignupException.KeySetupFailed,
     is SignupException.PasswordNotValidated,
-    is SignupException.SignupBlockedByServer -> R.string.common_error_something_went_wrong
-}.let {
-    getString(it)
+    is SignupException.SignupBlockedByServer -> getString(R.string.common_error_something_went_wrong)
 }
