@@ -69,27 +69,27 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
     private val conversationUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
-            Timber.d("rust-conversation-detail-query: conversation updated")
+            Timber.d("conversation updated")
             coroutineScope.launch {
                 mutex.withLock {
                     val userId = currentUserId ?: run {
-                        Timber.w("rust-conversation-messages: Failed to update convo, no user id!")
+                        Timber.w("Failed to update convo, no user id!")
                         return@withLock
                     }
                     val labelId = currentLabelId ?: run {
-                        Timber.w("rust-conversation-messages: Failed to update convo, no label id!")
+                        Timber.w("Failed to update convo, no label id!")
                         return@withLock
                     }
                     val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
 
                     if (mailbox == null || currentConversationId == null) {
-                        Timber.w("rust-conversation-messages: Failed to update conversation messages!")
+                        Timber.w("Failed to update conversation messages!")
                         return@withLock
                     }
 
                     val conversationEither = getRustConversationMessages(mailbox, currentConversationId!!)
                         .onLeft {
-                            Timber.w("rust-conversation-messages: Failed to update conversation messages!")
+                            Timber.w("Failed to update conversation messages!")
                         }
 
                     conversationMutableStatusFlow.value = conversationEither.map { it.conversation }
@@ -136,7 +136,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
                     val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
                     if (mailbox == null) {
-                        Timber.e("rust-conversation-detail-query: Failed to observe conversation, null mailbox")
+                        Timber.e("Failed to observe conversation, null mailbox")
                         return@withLock
                     }
 
@@ -161,7 +161,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
     }
 
     private fun destroy() {
-        Timber.d("rust-conversation-detail-query: destroy watcher for $currentConversationId")
+        Timber.d("destroy watcher for $currentConversationId")
         conversationWatcher?.handle?.destroy()
         conversationWatcher = null
         currentConversationId = null
