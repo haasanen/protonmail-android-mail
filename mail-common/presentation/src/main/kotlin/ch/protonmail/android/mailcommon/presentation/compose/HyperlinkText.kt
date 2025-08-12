@@ -45,7 +45,6 @@ fun HyperlinkText(
                 setLinkTextColor(linkTextColor.toArgb())
                 setTextColor(textStyle.color.toArgb())
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, textStyle.fontSize.value)
-                letterSpacing = textStyle.letterSpacing.value
                 gravity = android.view.Gravity.CENTER_HORIZONTAL
                 typeface = resolver.resolve(textStyle.fontFamily).value as android.graphics.Typeface
                 movementMethod = LinkMovementMethod.getInstance()

@@ -86,13 +86,13 @@
     <string name="message_sending_error_dialog_text_error">Your email cannot be sent to the address entered due to the following reason:</string>
     <string name="message_sending_error_dialog_text_reason_no_trusted_keys">There are no Trusted Keys: %s</string>
     <string name="message_sending_error_dialog_text_reason_address_disabled">Address does not exist: %s</string>
-    <string name="set_message_password_title">Encrypt message</string>
-    <string name="set_message_password_info_message">Set a password to encrypt this message for non-Proton Mail users.</string>
+    <string name="set_message_password_title">Set Password</string>
+    <string name="set_message_password_info_message">Set a password to encrypt this message for non-Proton Mail recipients.</string>
     <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">Learn more</a></string>
     <string name="set_message_password_label">Message password</string>
     <string name="set_message_password_label_repeat">Repeat password</string>
     <string name="set_message_password_label_hint">Password hint (optional)</string>
-    <string name="set_message_password_supporting_text">8 to 21 characters long</string>
+    <string name="set_message_password_supporting_text">Minimum 8 characters required.</string>
     <string name="set_message_password_supporting_error_text">The password must be between 8 and 21 characters</string>
     <string name="set_message_password_supporting_text_repeat">Passwords must match</string>
     <string name="set_message_password_supporting_error_text_repeat">Passwords do not match</string>

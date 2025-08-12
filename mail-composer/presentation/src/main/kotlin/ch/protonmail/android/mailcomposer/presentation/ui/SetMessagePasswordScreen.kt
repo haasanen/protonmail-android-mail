@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -63,7 +62,6 @@ import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.HyperlinkText
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcomposer.presentation.R
@@ -93,7 +91,7 @@ fun SetMessagePasswordScreen(
                 )
             },
             onApplyButtonClick = { messagePassword, messagePasswordHint ->
-                MessagePasswordOperation.Action.ApplyPassword(messagePassword, messagePasswordHint)
+                viewModel.submit(MessagePasswordOperation.Action.ApplyPassword(messagePassword, messagePasswordHint))
             },
             onRemoveButtonClick = {
                 viewModel.submit(MessagePasswordOperation.Action.RemovePassword)
@@ -125,8 +123,8 @@ private fun SetMessagePasswordScreen(
                 navigationIcon = {
                     IconButton(onClick = actions.onBackClick) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_arrow_back),
-                            contentDescription = stringResource(id = R.string.presentation_back),
+                            painter = painterResource(id = R.drawable.ic_close),
+                            contentDescription = stringResource(id = R.string.presentation_close),
                             tint = ProtonTheme.colors.iconNorm
                         )
                     }
@@ -158,7 +156,6 @@ private fun SetMessagePasswordScreen(
 }
 
 @Composable
-@Suppress("ComplexMethod")
 private fun SetMessagePasswordContent(
     state: SetMessagePasswordState.Data,
     actions: SetMessagePasswordContent.Actions,
@@ -258,12 +255,6 @@ private fun SetMessagePasswordContent(
 @Composable
 private fun MessagePasswordInfo(modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_proton_info_circle),
-            contentDescription = NO_CONTENT_DESCRIPTION,
-            tint = ProtonTheme.colors.iconWeak
-        )
-        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
         Column {
             Text(
                 text = stringResource(id = R.string.set_message_password_info_message),
