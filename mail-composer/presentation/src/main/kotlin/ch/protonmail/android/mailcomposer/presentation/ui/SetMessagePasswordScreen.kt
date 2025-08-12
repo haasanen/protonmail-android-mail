@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -61,6 +62,7 @@ import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.HyperlinkText
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
@@ -78,6 +80,35 @@ fun SetMessagePasswordScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    SetMessagePasswordScreen(
+        modifier,
+        state,
+        SetMessagePasswordContent.Actions(
+            validatePassword = { password ->
+                viewModel.submit(MessagePasswordOperation.Action.ValidatePassword(password))
+            },
+            validateRepeatedPassword = { password, repeatedPassword ->
+                viewModel.submit(
+                    MessagePasswordOperation.Action.ValidateRepeatedPassword(password, repeatedPassword)
+                )
+            },
+            onApplyButtonClick = { messagePassword, messagePasswordHint ->
+                MessagePasswordOperation.Action.ApplyPassword(messagePassword, messagePasswordHint)
+            },
+            onRemoveButtonClick = {
+                viewModel.submit(MessagePasswordOperation.Action.RemovePassword)
+            },
+            onBackClick = { onBackClick() }
+        )
+    )
+}
+
+@Composable
+private fun SetMessagePasswordScreen(
+    modifier: Modifier,
+    state: SetMessagePasswordState,
+    actions: SetMessagePasswordContent.Actions
+) {
     val snackBarHostState = remember { ProtonSnackbarHostState() }
 
     Scaffold(
@@ -92,7 +123,7 @@ fun SetMessagePasswordScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
+                    IconButton(onClick = actions.onBackClick) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_arrow_back),
                             contentDescription = stringResource(id = R.string.presentation_back),
@@ -109,36 +140,16 @@ fun SetMessagePasswordScreen(
             )
         }
     ) { paddingValues ->
-        when (val currentState = state) {
+        when (state) {
             is SetMessagePasswordState.Loading -> ProtonCenteredProgress()
             is SetMessagePasswordState.Data -> {
                 SetMessagePasswordContent(
                     modifier = Modifier.padding(paddingValues),
-                    state = state as SetMessagePasswordState.Data,
-                    actions = SetMessagePasswordContent.Actions(
-                        validatePassword = { password ->
-                            viewModel.submit(MessagePasswordOperation.Action.ValidatePassword(password))
-                        },
-                        validateRepeatedPassword = { password, repeatedPassword ->
-                            viewModel.submit(
-                                MessagePasswordOperation.Action.ValidateRepeatedPassword(password, repeatedPassword)
-                            )
-                        },
-                        onApplyButtonClick = { messagePassword, messagePasswordHint ->
-                            viewModel.submit(
-                                if ((state as SetMessagePasswordState.Data).isInEditMode) {
-                                    MessagePasswordOperation.Action.UpdatePassword(messagePassword, messagePasswordHint)
-                                } else {
-                                    MessagePasswordOperation.Action.ApplyPassword(messagePassword, messagePasswordHint)
-                                }
-                            )
-                        },
-                        onRemoveButtonClick = { viewModel.submit(MessagePasswordOperation.Action.RemovePassword) },
-                        onBackClick = onBackClick
-                    )
+                    state = state,
+                    actions = actions
                 )
 
-                ConsumableTextEffect(currentState.error) { string ->
+                ConsumableTextEffect(state.error) { string ->
                     snackBarHostState.showSnackbar(ProtonSnackbarType.ERROR, message = string)
                 }
             }
@@ -319,5 +330,29 @@ object SetMessagePasswordContent {
         val onApplyButtonClick: (String, String?) -> Unit,
         val onRemoveButtonClick: () -> Unit,
         val onBackClick: () -> Unit
+    )
+}
+
+@Preview
+@Composable
+fun MessagePasswordPreview() {
+    SetMessagePasswordScreen(
+        modifier = Modifier,
+        state = SetMessagePasswordState.Data(
+            initialMessagePasswordValue = "",
+            initialMessagePasswordHintValue = "",
+            hasMessagePasswordError = false,
+            hasRepeatedMessagePasswordError = false,
+            isInEditMode = false,
+            exitScreen = Effect.empty(),
+            error = Effect.empty()
+        ),
+        SetMessagePasswordContent.Actions(
+            onBackClick = {},
+            validatePassword = {},
+            validateRepeatedPassword = { _, _ -> },
+            onApplyButtonClick = { _, _ -> },
+            onRemoveButtonClick = {}
+        )
     )
 }
