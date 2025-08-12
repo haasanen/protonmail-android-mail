@@ -145,7 +145,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
                     val convoWatcherEither = createRustConversationWatcher(
                         mailbox, conversationId, conversationUpdatedCallback
                     ).onLeft {
-                        Timber.w("rust-conversation-messages: Failed to update conversation messages!")
+                        Timber.w("Failed to observe conversation messages: $it")
                     }.onRight {
                         conversationWatcher = it
                     }
