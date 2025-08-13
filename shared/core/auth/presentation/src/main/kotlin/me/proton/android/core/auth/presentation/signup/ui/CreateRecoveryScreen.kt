@@ -97,6 +97,7 @@ import me.proton.android.core.auth.presentation.signup.CreateRecoveryState.WantS
 import me.proton.android.core.auth.presentation.signup.RecoveryMethod
 import me.proton.android.core.auth.presentation.signup.SignUpState
 import me.proton.android.core.auth.presentation.signup.viewmodel.SignUpViewModel
+import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
 import me.proton.core.challenge.presentation.compose.PayloadController
 import me.proton.core.challenge.presentation.compose.payload
 import me.proton.core.compose.component.ProtonOutlinedTextFieldWithError
@@ -145,7 +146,7 @@ fun CreateRecoveryScreen(
     CreateRecoveryScreen(
         modifier = modifier,
         onBackClicked = { viewModel.perform(CreateRecoveryClosed(back = true)) },
-        onWantSkip = { viewModel.perform(WantSkipRecovery) },
+        onWantSkip = { viewModel.perform(WantSkipRecovery(it)) },
         onCountryPickerClicked = onCountryPickerClicked,
         onTabSelected = {
             viewModel.perform(
@@ -167,7 +168,7 @@ fun CreateRecoveryScreen(
 fun CreateRecoveryScreen(
     modifier: Modifier = Modifier,
     onBackClicked: () -> Unit = {},
-    onWantSkip: () -> Unit = {},
+    onWantSkip: (ChallengeFrameDetails) -> Unit = {},
     onCountryPickerClicked: (List<Country>) -> Unit = {},
     onErrorMessage: (String?) -> Unit = {},
     onTabSelected: (RecoveryMethod) -> Unit = {},
@@ -200,7 +201,7 @@ fun CreateRecoveryScreen(
 fun RecoveryMethodScaffold(
     modifier: Modifier = Modifier,
     onBackClicked: () -> Unit = {},
-    onWantSkipClicked: () -> Unit = {},
+    onWantSkipClicked: (ChallengeFrameDetails) -> Unit = {},
     onTabSelected: (RecoveryMethod) -> Unit = {},
     onRecoverySubmitted: (CreateRecoveryAction) -> Unit = {},
     onCountryPicker: () -> Unit = {},
@@ -212,6 +213,8 @@ fun RecoveryMethodScaffold(
     val selectedCountry = (state as? CreateRecoveryState)?.country()
 
     val currentMethod = (state as? CreateRecoveryState)?.currentMethod() ?: RecoveryMethod.Email
+    val payloadController = remember(currentMethod) { PayloadController() }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         modifier = modifier,
@@ -223,7 +226,12 @@ fun RecoveryMethodScaffold(
                 },
                 actions = {
                     ProtonTextButton(
-                        onClick = onWantSkipClicked
+                        onClick = {
+                            scope.launch {
+                                val frame = payloadController.flush()
+                                onWantSkipClicked(frame)
+                            }
+                        }
                     ) {
                         Text(
                             text = stringResource(id = R.string.auth_signup_recovery_skip),
@@ -268,6 +276,7 @@ fun RecoveryMethodScaffold(
                 )
 
                 RecoveryMethodsForms(
+                    payloadController = payloadController,
                     currentMethod = currentMethod,
                     isLoading = isLoading,
                     emailError = emailError,
@@ -283,6 +292,7 @@ fun RecoveryMethodScaffold(
 
 @Composable
 fun RecoveryMethodsForms(
+    payloadController: PayloadController,
     currentMethod: RecoveryMethod,
     isLoading: Boolean,
     emailError: String?,
@@ -293,12 +303,14 @@ fun RecoveryMethodsForms(
 ) {
     when (currentMethod) {
         RecoveryMethod.Email -> RecoveryMethodFormEmail(
+            emailPayloadController = payloadController,
             loading = isLoading,
             emailError = emailError,
             onEmailSubmitted = onRecoverySubmitted
         )
 
         RecoveryMethod.Phone -> RecoveryMethodFormPhone(
+            phonePayloadController = payloadController,
             loading = isLoading,
             selectedCountry = selectedCountry,
             emailError = phoneError,
@@ -310,6 +322,7 @@ fun RecoveryMethodsForms(
 
 @Composable
 fun RecoveryMethodFormEmail(
+    emailPayloadController: PayloadController,
     loading: Boolean = false,
     emailError: String? = null,
     onEmailSubmitted: (SubmitRecoveryEmail) -> Unit = {}
@@ -318,7 +331,6 @@ fun RecoveryMethodFormEmail(
     val scope = rememberCoroutineScope()
     val emailChanges = remember { MutableStateFlow(TextChange()) }
     val emailHasFocus = remember { mutableStateOf(false) }
-    val emailPayloadController = remember { PayloadController() }
     val emailTextCopies = remember { MutableStateFlow("") }
 
     fun onSubmit() = scope.launch {
@@ -366,6 +378,7 @@ fun RecoveryMethodFormEmail(
 
 @Composable
 fun RecoveryMethodFormPhone(
+    phonePayloadController: PayloadController,
     emailError: String? = null,
     loading: Boolean = false,
     selectedCountry: Country?,
@@ -378,7 +391,7 @@ fun RecoveryMethodFormPhone(
     val scope = rememberCoroutineScope()
     val phoneChanges = remember { MutableStateFlow(TextChange()) }
     val phoneHasFocus = remember { mutableStateOf(false) }
-    val phonePayloadController = remember { PayloadController() }
+
     val phoneTextCopies = remember { MutableStateFlow("") }
 
     LaunchedEffect(selectedCountry) {

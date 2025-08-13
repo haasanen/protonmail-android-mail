@@ -75,6 +75,9 @@ class RecoveryHandler private constructor(
     @Volatile
     private var selectedCountry: Country? = null
 
+    @Volatile
+    private var recoveryFrameDetails: ChallengeFrameDetails? = null
+
     fun handleAction(action: CreateRecoveryAction) = when (action) {
         is SelectRecoveryMethod ->
             handleSelectRecoveryMethod(action.recoveryMethod, action.locale)
@@ -94,7 +97,7 @@ class RecoveryHandler private constructor(
         is CountryPicked -> handleCountryPicked(action.country)
         is CountryPickerClosed -> handleCountryDialogClose()
 
-        is WantSkipRecovery -> handleWantSkipRecovery()
+        is WantSkipRecovery -> handleWantSkipRecovery(action.recoveryFrameDetails)
         is RecoverySkipped -> handleRecoverySkipped()
         is WantSkipDialogClosed -> handleSkipDialogClose()
 
@@ -119,8 +122,9 @@ class RecoveryHandler private constructor(
         emit(Idle(selectedRecoveryMethod, cachedCountries, selectedCountry))
     }
 
-    @Suppress("ForbiddenComment")
     private fun handleSubmitRecoveryEmail(email: String, recoveryFrameDetails: ChallengeFrameDetails) = flow {
+        this@RecoveryHandler.recoveryFrameDetails = recoveryFrameDetails
+
         if (email.isBlank()) {
             emit(WantSkip(selectedRecoveryMethod))
             return@flow
@@ -140,12 +144,13 @@ class RecoveryHandler private constructor(
         }
     }
 
-    @Suppress("ForbiddenComment")
     private fun handleSubmitRecoveryPhone(
         callingCode: String,
         phoneNumber: String,
         recoveryFrameDetails: ChallengeFrameDetails
     ) = flow {
+        this@RecoveryHandler.recoveryFrameDetails = recoveryFrameDetails
+
         if (phoneNumber.isBlank()) {
             emit(WantSkip(selectedRecoveryMethod))
             return@flow
@@ -175,12 +180,13 @@ class RecoveryHandler private constructor(
         emit(OnCountryPicked(selectedRecoveryMethod, country))
     }
 
-    private fun handleWantSkipRecovery() = flow {
+    private fun handleWantSkipRecovery(recoveryFrameDetails: ChallengeFrameDetails) = flow {
+        this@RecoveryHandler.recoveryFrameDetails = recoveryFrameDetails
         emit(WantSkip(selectedRecoveryMethod))
     }
 
     private fun handleRecoverySkipped() = flow {
-        when (val result = getFlow().skipRecovery(null)) {
+        when (val result = getFlow().skipRecovery(recoveryFrameDetails?.toUserBehavior())) {
             is SignupFlowSkipRecoveryResult.Error -> {
                 emit(
                     Error(

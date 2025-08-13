@@ -89,7 +89,9 @@ sealed interface CreateRecoveryAction : SignUpAction {
     ) : CreateRecoveryAction
 
     sealed interface DialogAction : CreateRecoveryAction {
-        data object WantSkipRecovery : DialogAction
+        data class WantSkipRecovery(
+            val recoveryFrameDetails: ChallengeFrameDetails
+        ) : DialogAction
 
         data object RecoverySkipped : DialogAction
 
