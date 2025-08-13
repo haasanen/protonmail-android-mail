@@ -344,4 +344,11 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
 
     data class RetryRsvpEventLoading(val messageId: MessageId) : ConversationDetailViewAction
     data class AnswerRsvpEvent(val messageId: MessageId, val answer: RsvpAnswer) : ConversationDetailViewAction
+
+    object RequestSnoozeBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
+    object SnoozeDismissed : ConversationDetailViewAction, AffectingBottomSheet
+    data class SnoozeCompleted(val completeMessage: String) :
+        ConversationDetailViewAction,
+        AffectingBottomSheet,
+        AffectingMessageBar
 }

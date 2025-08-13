@@ -308,7 +308,7 @@ private fun callbackForConversation(
     Action.Print -> actionCallbacks.onPrintConversation
     Action.SavePdf -> actionCallbacks.onSaveConversationAsPdf
     Action.CustomizeToolbar -> actionCallbacks.onCustomizeToolbar
-
+    Action.Snooze -> actionCallbacks.onSnooze
     else -> {
         { Timber.d("Action not handled $action.") }
     }
@@ -377,8 +377,8 @@ object DetailMoreActionsBottomSheetContent {
         val onPrintConversation: () -> Unit,
         val onCloseSheet: () -> Unit,
         val onCustomizeToolbar: () -> Unit,
-        val onSaveConversationAsPdf: () -> Unit
-
+        val onSaveConversationAsPdf: () -> Unit,
+        val onSnooze: () -> Unit
     )
 }
 
@@ -446,7 +446,8 @@ private fun BottomSheetContentPreview() {
                 onPrintConversation = {},
                 onCloseSheet = {},
                 onCustomizeToolbar = {},
-                onSaveConversationAsPdf = {}
+                onSaveConversationAsPdf = {},
+                onSnooze = {}
             )
         )
     }

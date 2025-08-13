@@ -162,6 +162,7 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.RequestConversationLabelAsBottomSheet,
                 is ConversationDetailViewAction.RequestMessageLabelAsBottomSheet,
                 is ConversationDetailViewAction.RequestConversationMoveToBottomSheet,
+                is ConversationDetailViewAction.RequestSnoozeBottomSheet,
                 is ConversationDetailViewAction.RequestMessageMoveToBottomSheet -> BottomSheetOperation.Requested
 
                 is ErrorMovingConversation,
@@ -197,6 +198,8 @@ class ConversationDetailReducer @Inject constructor(
                 is MessageMoved,
                 is LastMessageMoved,
                 is ExitScreen,
+                is ConversationDetailViewAction.SnoozeCompleted,
+                ConversationDetailViewAction.SnoozeDismissed,
                 is ConversationDetailViewAction.OnUnsnoozeConversationRequested,
                 is ExitScreenWithMessage -> BottomSheetOperation.Dismiss
             }

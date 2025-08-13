@@ -80,10 +80,13 @@ dependencies {
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-settings:domain"))
     implementation(project(":mail-snooze:domain"))
+    implementation(project(":mail-snooze:presentation"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
     implementation(project(":uicomponents"))
     implementation(project(":mail-featureflags:domain"))
+    implementation(project(":mail-upselling:presentation"))
+    implementation(project(":mail-upselling:domain"))
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
 }

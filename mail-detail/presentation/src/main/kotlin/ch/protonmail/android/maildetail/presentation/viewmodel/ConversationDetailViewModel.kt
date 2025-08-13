@@ -125,10 +125,12 @@ import ch.protonmail.android.mailmessage.presentation.model.attachment.isExpanda
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineDispatcher
@@ -371,6 +373,9 @@ class ConversationDetailViewModel @Inject constructor(
 
             is ConversationDetailViewAction.AnswerRsvpEvent -> handleAnswerRsvpEvent(action.messageId, action.answer)
             is ConversationDetailViewAction.OnUnsnoozeConversationRequested -> handleUnsnoozeMessage(action.messageId)
+            is ConversationDetailViewAction.SnoozeDismissed -> handleSnoozeDismissedAction(action)
+            is ConversationDetailViewAction.SnoozeCompleted -> handleSnoozeCompletedAction(action)
+            is ConversationDetailViewAction.RequestSnoozeBottomSheet -> requestSnoozeBottomSheet()
         }
     }
 
@@ -402,6 +407,29 @@ class ConversationDetailViewModel @Inject constructor(
                     emitNewStateFrom(ConversationDetailViewAction.DismissBottomSheet)
                 }
             }
+        }
+    }
+
+    private fun handleSnoozeCompletedAction(action: ConversationDetailViewAction.SnoozeCompleted) =
+        viewModelScope.launch {
+            emitNewStateFrom(ConversationDetailEvent.ExitScreenWithMessage(action))
+        }
+
+    private fun handleSnoozeDismissedAction(action: ConversationDetailViewAction.SnoozeDismissed) =
+        viewModelScope.launch {
+            emitNewStateFrom(action)
+        }
+
+    private fun requestSnoozeBottomSheet() {
+        viewModelScope.launch {
+            val userId = primaryUserId.filterNotNull().first()
+            val selectedLabelId = openedFromLocation
+            val event = SnoozeSheetState.SnoozeOptionsBottomSheetEvent.Ready(
+                userId = userId,
+                labelId = selectedLabelId,
+                itemIds = listOf(SnoozeConversationId(conversationId.id))
+            )
+            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
         }
     }
 

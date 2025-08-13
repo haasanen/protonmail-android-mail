@@ -127,8 +127,13 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactA
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ContactActionsBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.DetailMoreActionsBottomSheetContent
+import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheet
+import ch.protonmail.android.mailsnooze.presentation.SnoozeBottomSheetScreen
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.FlowPreview
@@ -279,6 +284,30 @@ fun ConversationDetailScreen(
                     LabelAsBottomSheetScreen(providedData = initialData, actions = actions)
                 }
 
+                is SnoozeSheetState.Requested -> {
+                    val initialData = SnoozeBottomSheet.InitialData(
+                        bottomSheetContentState.userId,
+                        bottomSheetContentState.labelId,
+                        items = bottomSheetContentState.itemIds
+                    )
+                    SnoozeBottomSheetScreen(
+                        initialData = initialData,
+                        actions = SnoozeBottomSheet.Actions(
+                            onShowSuccess = {
+                                viewModel.submit(ConversationDetailViewAction.SnoozeCompleted(it))
+                            },
+                            onShowError = {
+                                actions.showSnackbar(it, ProtonSnackbarType.ERROR)
+                                viewModel.submit(ConversationDetailViewAction.SnoozeDismissed)
+                            },
+                            onNavigateToUpsell = { type ->
+                                actions.onNavigateToUpselling(UpsellingEntryPoint.Feature.Snooze, type)
+                                viewModel.submit(ConversationDetailViewAction.SnoozeDismissed)
+                            }
+                        )
+                    )
+                }
+
                 is DetailMoreActionsBottomSheetState -> DetailMoreActionsBottomSheetContent(
                     state = bottomSheetContentState,
                     actions = DetailMoreActionsBottomSheetContent.Actions(
@@ -361,6 +390,9 @@ fun ConversationDetailScreen(
                         onSaveConversationAsPdf = {
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.showFeatureMissingSnackbar()
+                        },
+                        onSnooze = {
+                            viewModel.submit(ConversationDetailViewAction.RequestSnoozeBottomSheet)
                         }
                     )
                 )
@@ -528,7 +560,8 @@ fun ConversationDetailScreen(
                 onMessage = actions.onComposeNewMessage,
                 onUnsnoozeMessage = { messageId ->
                     viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested(messageId))
-                }
+                },
+                onSnooze = { viewModel.submit(ConversationDetailViewAction.RequestSnoozeBottomSheet) }
             ),
             scrollToMessageId = state.scrollToMessage?.id
         )
@@ -1036,7 +1069,8 @@ object ConversationDetail {
         val openComposerForDraftMessage: (messageId: MessageId) -> Unit,
         val showSnackbar: (message: String, type: ProtonSnackbarType) -> Unit,
         val recordMailboxScreenView: () -> Unit,
-        val onExitWithOpenInComposer: (MessageId) -> Unit
+        val onExitWithOpenInComposer: (MessageId) -> Unit,
+        val onNavigateToUpselling: (entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) -> Unit
     )
 }
 
@@ -1097,7 +1131,8 @@ object ConversationDetailScreen {
         val onRetryRsvpEventLoading: (MessageIdUiModel) -> Unit,
         val onAnswerRsvpEvent: (MessageIdUiModel, RsvpAnswer) -> Unit,
         val onMessage: (String) -> Unit,
-        val onUnsnoozeMessage: (MessageIdUiModel) -> Unit
+        val onUnsnoozeMessage: (MessageIdUiModel) -> Unit,
+        val onSnooze: () -> Unit
     ) {
 
         companion object {
@@ -1152,7 +1187,8 @@ object ConversationDetailScreen {
                 onRetryRsvpEventLoading = {},
                 onAnswerRsvpEvent = { _, _ -> },
                 onMessage = {},
-                onUnsnoozeMessage = {}
+                onUnsnoozeMessage = {},
+                onSnooze = {}
             )
         }
     }

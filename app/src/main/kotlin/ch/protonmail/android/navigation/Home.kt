@@ -576,6 +576,9 @@ fun Home(
                                         route = Screen.EditDraftComposer(it),
                                         navOptions = popToMailboxOption
                                     )
+                                },
+                                onNavigateToUpselling = { entryPoint, type ->
+                                    navController.navigate(Screen.FeatureUpselling(entryPoint, type))
                                 }
                             )
                         )

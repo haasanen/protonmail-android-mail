@@ -96,6 +96,9 @@ class ActionResultMapper @Inject constructor(
             UndoableActionResult(textUiModel)
         }
 
+        is ConversationDetailViewAction.SnoozeCompleted ->
+            DefinitiveActionResult(TextUiModel(operation.completeMessage))
+
         else -> null // No specific ActionResult for other operations
     }
 }
