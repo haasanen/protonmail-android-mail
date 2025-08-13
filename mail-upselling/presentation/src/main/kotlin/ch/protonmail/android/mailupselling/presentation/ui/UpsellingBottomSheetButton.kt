@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,6 +41,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -63,6 +66,7 @@ fun UpsellingBottomSheetButton(
     hint: String = stringResource(R.string.upselling_button_hint),
     onUpsellNavigation: (type: UpsellingVisibility) -> Unit,
     onUnavailableUpsell: (() -> Unit)? = null,
+    layout: UpsellingBottomSheetButtonLayout = Row,
     viewModel: UpsellingButtonViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
@@ -87,6 +91,7 @@ fun UpsellingBottomSheetButton(
         modifier = modifier,
         text = text,
         hint = hint,
+        layout = layout,
         onClick = onNavigateToUpsell
     )
 }
@@ -96,6 +101,7 @@ private fun UpsellingBottomSheetButtonContent(
     modifier: Modifier = Modifier,
     text: String,
     hint: String,
+    layout: UpsellingBottomSheetButtonLayout = Row,
     onClick: () -> Unit
 ) {
     OutlinedCard(
@@ -107,42 +113,77 @@ private fun UpsellingBottomSheetButtonContent(
         ),
         border = UpsellingLayoutValues.UpsellCards.outlineBorderStoke
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(ProtonDimens.Spacing.Large),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = text,
-                    style = ProtonTheme.typography.bodyLargeNorm,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
-
-                Text(
-                    text = hint,
-                    style = ProtonTheme.typography.bodyMediumWeak,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+        when (layout) {
+            is Tile -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    UpsellIcon(
+                        modifier = Modifier
+                            .defaultMinSize(minWidth = ProtonDimens.IconSize.MediumLarge)
+                            .padding(bottom = ProtonDimens.Spacing.Tiny)
+                    )
+                    ButtonTextContent(text, hint, ProtonDimens.Spacing.Tiny)
+                }
             }
 
-            Icon(
-                painter = painterResource(id = R.drawable.ic_proton_mail_upsell),
-                contentDescription = null,
-                tint = Color.Unspecified
-            )
+            is Row -> {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(ProtonDimens.Spacing.Large),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        ButtonTextContent(text, hint, ProtonDimens.Spacing.Small)
+                    }
+                    UpsellIcon()
+                }
+            }
         }
     }
 }
+
+@Composable
+private fun UpsellIcon(modifier: Modifier = Modifier) = Icon(
+    modifier = modifier,
+    painter = painterResource(id = R.drawable.ic_proton_mail_upsell),
+    contentDescription = null,
+    tint = Color.Unspecified
+)
+
+@Composable
+private fun ButtonTextContent(
+    text: String,
+    hint: String,
+    spacerSize: Dp
+) {
+    Text(
+        text = text,
+        style = ProtonTheme.typography.bodyLargeNorm,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+    )
+
+    Spacer(modifier = Modifier.size(spacerSize))
+
+    Text(
+        text = hint,
+        style = ProtonTheme.typography.bodyMediumWeak,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+    )
+}
+
+sealed class UpsellingBottomSheetButtonLayout
+object Row : UpsellingBottomSheetButtonLayout()
+object Tile : UpsellingBottomSheetButtonLayout()
 
 @Preview
 @Composable
@@ -151,6 +192,19 @@ private fun UpsellingBottomSheetButtonPreview() {
         UpsellingBottomSheetButtonContent(
             text = "Custom",
             hint = "Upgrade for full flexibility",
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun UpsellingBottomSheetButtonTilePreview() {
+    ProtonTheme {
+        UpsellingBottomSheetButtonContent(
+            text = "Custom",
+            hint = "Upgrade for full flexibility",
+            layout = Tile,
             onClick = {}
         )
     }

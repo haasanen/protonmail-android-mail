@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -69,6 +70,7 @@ import ch.protonmail.android.mailsnooze.presentation.model.SnoozeUntilUiModel
 import ch.protonmail.android.mailsnooze.presentation.model.UnSnooze
 import ch.protonmail.android.mailsnooze.presentation.model.UpgradeToSnoozeUiModel
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+import ch.protonmail.android.mailupselling.presentation.ui.Tile
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingBottomSheetButton
 import me.proton.core.domain.entity.UserId
 import kotlin.time.Instant
@@ -186,7 +188,7 @@ fun OptionsGrid(
             horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Medium)
         ) {
             rowItems.forEachIndexed { index, item ->
-                val isVerticalLayout = rowItems.isVerticalAlignedLayout(index)
+                val isTileLayout = rowItems.isUseTileLayout(index)
                 when (item) {
                     is SnoozeUntilUiModel -> SnoozeUntilButton(
                         modifier.weight(1f),
@@ -199,12 +201,12 @@ fun OptionsGrid(
 
                     is CustomSnoozeUiModel -> CustomSnoozeButton(
                         modifier = modifier.weight(1f),
-                        verticallyAlignedLayout = isVerticalLayout
+                        isUseTileLayout = isTileLayout
                     ) { onEvent(item.action) }
 
                     is UpgradeToSnoozeUiModel -> UpsellSnoozeButton(
                         modifier = modifier.weight(1f),
-                        verticallyAlignedLayout = isVerticalLayout,
+                        isUseTileLayout = isTileLayout,
                         onEvent
                     )
 
@@ -238,10 +240,10 @@ fun UnsnoozeButton(modifier: Modifier = Modifier, onEvent: () -> Unit = {}) {
 @Composable
 fun CustomSnoozeButton(
     modifier: Modifier = Modifier,
-    verticallyAlignedLayout: Boolean,
+    isUseTileLayout: Boolean,
     onEvent: () -> Unit = {}
 ) {
-    if (verticallyAlignedLayout) {
+    if (isUseTileLayout) {
         SnoozeUntilButton(
             modifier = modifier,
             icon = R.drawable.ic_proton_calendar_today,
@@ -281,14 +283,25 @@ fun CustomSnoozeButton(
 @Composable
 fun UpsellSnoozeButton(
     modifier: Modifier = Modifier,
-    verticallyAlignedLayout: Boolean,
+    isUseTileLayout: Boolean,
     onEvent: (SnoozeOperationViewAction) -> Unit = {}
 ) {
-    UpsellingBottomSheetButton(
-        modifier = modifier,
-        text = stringResource(R.string.snooze_custom_upsell_title),
-        onUpsellNavigation = { type -> onEvent(SnoozeOperationViewAction.Upgrade(type)) }
-    )
+    if (isUseTileLayout) {
+        UpsellingBottomSheetButton(
+            modifier = modifier.fillMaxHeight(),
+            layout = Tile,
+            text = stringResource(R.string.snooze_custom_upsell_title_short),
+            hint = stringResource(R.string.snooze_custom_upsell_hint_short),
+            onUpsellNavigation = { type -> onEvent(SnoozeOperationViewAction.Upgrade(type)) }
+        )
+    } else {
+        UpsellingBottomSheetButton(
+            modifier = modifier,
+            text = stringResource(R.string.snooze_custom_upsell_title),
+            onUpsellNavigation = { type -> onEvent(SnoozeOperationViewAction.Upgrade(type)) }
+        )
+    }
+
 }
 
 @Composable
@@ -340,7 +353,7 @@ fun SnoozeUntilButton(
 @Preview(name = "Upsell Button")
 @Composable
 fun PreviewUpsellButton() {
-    CustomSnoozeButton(verticallyAlignedLayout = false)
+    CustomSnoozeButton(isUseTileLayout = false)
 }
 
 @Preview(name = "Unsnooze Button")
@@ -388,7 +401,7 @@ fun PreviewSnoozeGrid() {
     }
 }
 
-private fun List<SnoozeOptionUiModel>.chunk(): List<List<SnoozeOptionUiModel>> = this.chunked(size = 2)
+private fun List<SnoozeOptionUiModel>.chunk(): List<List<SnoozeOptionUiModel>> = chunked(size = 2)
     // chunk the list, and let custom options be chunked with predefined options,
     // however, if we have snooze and custom in the same list then split them out to allow full width layouts
     .let { chunked ->
@@ -397,14 +410,14 @@ private fun List<SnoozeOptionUiModel>.chunk(): List<List<SnoozeOptionUiModel>> =
             // these buttons will be full width buttons
             chunked.toMutableList()
                 .apply {
-                    addAll(removeAt(this.size - 1).map { listOf(it) })
+                    addAll(removeAt(size - 1).map { listOf(it) })
                 }
         } else {
             chunked
         }
     }
 
-private fun List<SnoozeOptionUiModel>.isVerticalAlignedLayout(index: Int): Boolean =
+private fun List<SnoozeOptionUiModel>.isUseTileLayout(index: Int): Boolean =
     index > 0 && isNotEmpty() && get(index - 1) is SnoozeUntilUiModel
 
 object SnoozeBottomSheet {
