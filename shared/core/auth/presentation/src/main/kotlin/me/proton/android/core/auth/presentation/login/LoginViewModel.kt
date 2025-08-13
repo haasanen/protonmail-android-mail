@@ -23,6 +23,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,17 +48,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject internal constructor(
-    @ApplicationContext
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val sessionInterface: MailSession,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val loginFlowResult = viewModelScope.async { sessionInterface.newLoginFlow() }
+    private val loginFlowDeferred: Deferred<MailSessionNewLoginFlowResult> =
+        viewModelScope.async { sessionInterface.newLoginFlow() }
     private val mutableState: MutableStateFlow<LoginViewState> = MutableStateFlow(LoginViewState.Idle)
 
     val state: StateFlow<LoginViewState> = mutableState.asStateFlow()
-
     val uiEvent: UiEventFlow<LoginEvent> = UiEventFlow()
 
     fun submit(action: LoginAction) {
@@ -69,14 +69,16 @@ class LoginViewModel @Inject internal constructor(
         }
     }
 
-    private suspend fun getLoginFlow() = (loginFlowResult.await() as MailSessionNewLoginFlowResult.Ok).v1
+    fun onScreenView() = viewModelScope.launch {
+        recordLoginScreenView(LoginScreenId.SIGN_IN_WITH_USERNAME_PASSWORD)
+    }
 
     private suspend fun onLogin(action: LoginAction.Login) {
-        val loginFlowResult = loginFlowResult.await()
-        return when {
+        val loginFlowResult = loginFlowDeferred.await()
+        when {
             action.username.isBlank() -> mutableState.emit(LoginViewState.Error.Validation)
             loginFlowResult is MailSessionNewLoginFlowResult.Error -> {
-                uiEvent.emit(LoginEvent.FailedToLogin(loginFlowResult.v1.getErrorMessage(context)))
+                emitLoginError(loginFlowResult.v1.getErrorMessage(context))
             }
 
             else -> performLogin(
@@ -94,78 +96,40 @@ class LoginViewModel @Inject internal constructor(
     ) = withContext(ioDispatcher) {
         mutableState.emit(LoginViewState.LoggingIn)
 
-        val result = getLoginFlow().login(
-            username = username,
-            password = password,
-            userBehavior = usernameFrameDetails.toUserBehavior()
-        )
-        when (result) {
-            is LoginFlowLoginResult.Error -> mutableState.emit(getErrorState(result.v1))
+        when (
+            val result = getLoginFlow().login(
+                username = username,
+                password = password,
+                userBehavior = usernameFrameDetails.toUserBehavior()
+            )
+        ) {
             is LoginFlowLoginResult.Ok -> onSuccess()
+            is LoginFlowLoginResult.Error -> mutableState.emit(getErrorState(result.v1))
         }
     }
 
     private suspend fun onSuccess() {
-        getLoginViewState()
-    }
-
-    private suspend fun getErrorState(error: LoginError): LoginViewState {
-        return when (error) {
-            is LoginError.DuplicateSession -> {
-                sessionInterface.getSession(error.v1).getOrNull()
-                    ?.let { LoginViewState.Error.AlreadyLoggedIn(it.userId()) }
-                    ?: uiEvent.emit(
-                        LoginEvent.FailedToLogin(error.getErrorMessage(context))
-                    ).run { LoginViewState.Idle }
-            }
-
-            else -> {
-                uiEvent.emit(LoginEvent.FailedToLogin(error.getErrorMessage(context)))
-                LoginViewState.Idle
-            }
-        }
+        mutableState.emit(getLoginViewState())
     }
 
     private suspend fun getLoginViewState(): LoginViewState {
-        val userId: String = when (val result = getLoginFlow().userId()) {
-            is LoginFlowUserIdResult.Error -> {
-                return when (val error = result.v1) {
-                    is LoginError.DuplicateSession -> {
-                        val session = sessionInterface.getSession(error.v1).getOrNull()
-                        if (session != null) {
-                            LoginViewState.Error.AlreadyLoggedIn(session.userId())
-                        } else {
-                            uiEvent.emit(LoginEvent.FailedToLogin(error.getErrorMessage(context)))
-                            LoginViewState.Idle
-                        }
-                    }
-
-                    else -> {
-                        uiEvent.emit(LoginEvent.FailedToLogin(error.getErrorMessage(context)))
-                        LoginViewState.Idle
-                    }
-                }
-            }
-
+        val userId = when (val result = getLoginFlow().userId()) {
+            is LoginFlowUserIdResult.Error -> return getErrorState(result.v1)
             is LoginFlowUserIdResult.Ok -> result.v1
         }
+
         return when {
-            getLoginFlow().isAwaitingMailboxPassword() -> onTwoPass(userId)
-            getLoginFlow().isAwaiting2fa() -> onTwoFa(userId)
+            getLoginFlow().isAwaitingMailboxPassword() -> LoginViewState.Awaiting2Pass(userId)
+            getLoginFlow().isAwaiting2fa() -> LoginViewState.Awaiting2fa(userId)
             getLoginFlow().isLoggedIn() -> onLoggedIn(userId)
             else -> LoginViewState.Idle
         }
     }
 
-    private fun onTwoPass(userId: String): LoginViewState.Awaiting2Pass = LoginViewState.Awaiting2Pass(userId)
-
-    private fun onTwoFa(userId: String): LoginViewState.Awaiting2fa = LoginViewState.Awaiting2fa(userId)
-
     private suspend fun onLoggedIn(userId: String): LoginViewState {
-        val loginFlow = getLoginFlow()
-        return when (val result = sessionInterface.toUserSession(loginFlow)) {
+        return when (val result = sessionInterface.toUserSession(getLoginFlow())) {
             is MailSessionToUserSessionResult.Error -> {
-                uiEvent.emit(LoginEvent.FailedToLogin("${result.v1}"))
+                emitLoginError("${result.v1}")
                 LoginViewState.Idle
             }
 
@@ -177,14 +141,30 @@ class LoginViewModel @Inject internal constructor(
         getLoginFlow().destroy()
     }
 
-    fun onScreenView() = viewModelScope.launch {
-        recordLoginScreenView(LoginScreenId.SIGN_IN_WITH_USERNAME_PASSWORD)
-    }
-
-    private inline fun MailSessionGetSessionResult.getOrNull(): StoredSession? {
-        return when (this) {
-            is MailSessionGetSessionResult.Ok -> this.v1
-            is MailSessionGetSessionResult.Error -> null
+    private suspend fun getErrorState(error: LoginError): LoginViewState {
+        return when (error) {
+            is LoginError.DuplicateSession -> handleDuplicateSessionError(error)
+            else -> {
+                emitLoginError(error.getErrorMessage(context))
+                LoginViewState.Idle
+            }
         }
     }
+
+    private suspend fun handleDuplicateSessionError(error: LoginError.DuplicateSession): LoginViewState {
+        return sessionInterface.getSession(error.v1).getOrNull()
+            ?.let { LoginViewState.Error.AlreadyLoggedIn(it.userId()) }
+            ?: run {
+                emitLoginError(error.getErrorMessage(context))
+                LoginViewState.Idle
+            }
+    }
+
+    private suspend fun emitLoginError(message: String) {
+        uiEvent.emit(LoginEvent.FailedToLogin(message))
+    }
+
+    private suspend fun getLoginFlow() = (loginFlowDeferred.await() as MailSessionNewLoginFlowResult.Ok).v1
+
+    private fun MailSessionGetSessionResult.getOrNull(): StoredSession? = (this as? MailSessionGetSessionResult.Ok)?.v1
 }
