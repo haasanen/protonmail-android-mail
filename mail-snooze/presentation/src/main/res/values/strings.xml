@@ -28,7 +28,7 @@
     <string name="snooze_sheet_snooze_title">Snooze until</string>
     <string name="snooze_sheet_option_unsnooze">Unsnooze</string>
     <string name="snooze_sheet_error_unable_to_snooze">Sorry, we encountered an unknown error snoozing this conversation</string>
-    <string name="snooze_sheet_error_unable_to_unsnooze">An unknown error occured when unsnoozing the conversation</string>
+    <string name="snooze_sheet_error_unable_to_unsnooze">An unknown error occurred when unsnoozing the conversation</string>
     <string name="snooze_sheet_error_in_the_past">Snooze time is in the past</string>
     <string name="snooze_sheet_success">Snoozed until %s</string>
     <string name="unsnooze_sheet_success">Conversation is no longer snoozed</string>

@@ -224,6 +224,7 @@ class ConversationDetailReducerTest(
         val avatar = AvatarUiModel.ParticipantAvatar("TU", "test@proton.me", null, Color.Red)
 
         val actions = listOf(
+            ConversationDetailViewAction.SnoozeDismissed affects listOf(BottomSheet),
             ConversationDetailViewAction.MarkRead affects listOf(BottomSheet),
             ConversationDetailViewAction.MarkUnread affects listOf(BottomSheet),
             ConversationDetailViewAction.RequestConversationMoveToBottomSheet affects BottomSheet,
@@ -352,7 +353,8 @@ class ConversationDetailReducerTest(
             ),
             ConversationDetailEvent.MessageMoved(MailLabelText("String")) affects listOf(BottomSheet, MessageBar),
             ConversationDetailEvent.ErrorMovingMessage affects listOf(BottomSheet, ErrorBar),
-            ConversationDetailEvent.ErrorUnsnoozing affects listOf(ErrorBar)
+            ConversationDetailEvent.ErrorUnsnoozing affects listOf(ErrorBar),
+            ConversationDetailViewAction.SnoozeCompleted("String") affects listOf(BottomSheet, MessageBar)
         )
 
         @JvmStatic

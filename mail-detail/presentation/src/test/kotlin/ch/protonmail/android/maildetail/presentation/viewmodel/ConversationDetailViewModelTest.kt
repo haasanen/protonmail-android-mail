@@ -40,6 +40,7 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetState
+import ch.protonmail.android.mailcommon.presentation.model.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
@@ -117,12 +118,14 @@ import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import ch.protonmail.android.mailsnooze.domain.SnoozeRepository
 import ch.protonmail.android.mailsnooze.domain.model.UnsnoozeError
+import ch.protonmail.android.mailsnooze.presentation.model.SnoozeConversationId
 import ch.protonmail.android.testdata.action.ActionUiModelTestData
 import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.contact.ContactActionsGroupsSample
@@ -1789,6 +1792,85 @@ class ConversationDetailViewModelTest {
                 MessageId(messageId.id),
                 expectedExpandCollapseMode
             )
+        }
+    }
+
+    @Test
+    fun `exit state is emitted when snooze successful`() = runTest {
+        // given
+        coEvery {
+            reducer.newStateFrom(
+                currentState = any(),
+                operation = ConversationDetailEvent.ExitScreenWithMessage(
+                    ConversationDetailViewAction.SnoozeCompleted(
+                        "message"
+                    )
+                )
+            )
+        } returns ConversationDetailState.Loading.copy(
+            exitScreenActionResult = Effect.of(
+                ActionResult.DefinitiveActionResult(
+                    TextUiModel(string.conversation_moved_to_selected_destination, "message")
+                )
+            )
+        )
+
+        // when
+        viewModel.state.test {
+            initialStateEmitted()
+            viewModel.submit(ConversationDetailViewAction.SnoozeCompleted("message"))
+
+            // then
+            assertNotNull(awaitItem().exitScreenActionResult.consume())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+
+    @Test
+    fun `verify request snooze bottom sheet correctly sets bottom sheet state`() = runTest {
+        // Given
+        val labelId = LabelIdSample.AllMail
+        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
+
+        val expectedResult = ConversationDetailState.Loading.copy(
+            bottomSheetState = BottomSheetState(
+                contentState = SnoozeSheetState.Requested(
+                    userId,
+                    labelId,
+                    listOf(SnoozeConversationId(conversationId.id))
+                ),
+                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
+            )
+        )
+
+        viewModel.submit(ConversationDetailViewAction.RequestSnoozeBottomSheet)
+        advanceUntilIdle()
+
+        coEvery {
+            reducer.newStateFrom(
+                any(),
+                ConversationDetailEvent.ConversationBottomSheetEvent(
+                    SnoozeSheetState.SnoozeOptionsBottomSheetEvent.Ready(
+                        userId,
+                        labelId,
+                        listOf(SnoozeConversationId(conversationId.id))
+                    )
+                )
+            )
+        } returns expectedResult
+
+        // When
+        viewModel.state.test {
+            viewModel.submit(
+                ConversationDetailViewAction.RequestSnoozeBottomSheet
+            )
+            awaitItem()
+
+            // Then
+            val lastItem = awaitItem()
+            assertEquals(expectedResult, lastItem)
+            cancelAndIgnoreRemainingEvents()
         }
     }
 

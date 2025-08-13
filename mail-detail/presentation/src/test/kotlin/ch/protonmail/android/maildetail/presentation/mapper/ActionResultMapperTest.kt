@@ -146,4 +146,17 @@ internal class ActionResultMapperTest {
         // Then
         assertEquals(null, result)
     }
+
+    @Test
+    fun `returns definitive result when operation is SnoozeCompleted`() {
+        // Given
+        val operation = ConversationDetailViewAction.SnoozeCompleted("snooze completed")
+        val expectedResult = DefinitiveActionResult(TextUiModel("snooze completed"))
+
+        // When
+        val result = actionResultMapper.toActionResult(operation)
+
+        // Then
+        assertEquals(expectedResult, result)
+    }
 }
