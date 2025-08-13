@@ -180,7 +180,7 @@ class RecoveryHandler private constructor(
     }
 
     private fun handleRecoverySkipped() = flow {
-        when (val result = getFlow().skipRecovery()) {
+        when (val result = getFlow().skipRecovery(null)) {
             is SignupFlowSkipRecoveryResult.Error -> {
                 emit(
                     Error(

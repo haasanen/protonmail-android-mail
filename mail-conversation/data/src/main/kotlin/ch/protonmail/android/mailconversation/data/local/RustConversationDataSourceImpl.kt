@@ -212,7 +212,7 @@ class RustConversationDataSourceImpl @Inject constructor(
             UndoableOperation {
                 executeWithUserSession(userId) {
                     withContext(ioDispatcher) {
-                        labelAsOutput.undo.undo(it.getRustUserSession())
+                        labelAsOutput.undo?.undo(it.getRustUserSession())
                     }
                 }
             }

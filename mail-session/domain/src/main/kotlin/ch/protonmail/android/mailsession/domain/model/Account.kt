@@ -52,5 +52,10 @@ enum class AccountState {
     /**
      * The account has no active sessions.
      */
-    Disabled
+    Disabled,
+
+    /**
+     * The account requires a new password.
+     */
+    NewPassNeeded
 }

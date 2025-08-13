@@ -21,6 +21,7 @@ package ch.protonmail.android.composer.data.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import uniffi.proton_mail_uniffi.AddSingleRecipientError
 import uniffi.proton_mail_uniffi.ComposerRecipient
@@ -40,6 +41,7 @@ class ComposerRecipientListWrapper(private val rustRecipients: ComposerRecipient
             AddSingleRecipientError.OK -> Unit.right()
             AddSingleRecipientError.DUPLICATE -> SaveDraftError.DuplicateRecipient.left()
             AddSingleRecipientError.SAVE_FAILED -> SaveDraftError.SaveFailed.left()
+            AddSingleRecipientError.OTHER -> SaveDraftError.Other(DataError.Local.Unknown).left()
         }
 
     fun removeSingleRecipient(recipient: SingleRecipientEntry): Either<SaveDraftError, Unit> =
@@ -47,5 +49,6 @@ class ComposerRecipientListWrapper(private val rustRecipients: ComposerRecipient
             RemoveRecipientError.OK -> Unit.right()
             RemoveRecipientError.EMPTY_GROUP_NAME -> SaveDraftError.EmptyRecipientGroupName.left()
             RemoveRecipientError.SAVE_FAILED -> SaveDraftError.SaveFailed.left()
+            RemoveRecipientError.OTHER -> SaveDraftError.Other(DataError.Local.Unknown).left()
         }
 }

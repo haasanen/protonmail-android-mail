@@ -32,5 +32,6 @@ enum class CoreAccountState {
     Ready,
     TwoPasswordNeeded,
     TwoFactorNeeded,
-    Disabled
+    Disabled,
+    NewPassNeeded
 }

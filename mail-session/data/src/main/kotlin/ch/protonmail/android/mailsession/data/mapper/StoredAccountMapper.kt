@@ -34,6 +34,7 @@ internal fun StoredAccount.toAccount() = Account(
         is StoredAccountState.LoggedOut -> AccountState.Disabled
         is StoredAccountState.NeedMbp -> AccountState.TwoPasswordNeeded
         is StoredAccountState.NeedTfa -> AccountState.TwoFactorNeeded
+        is StoredAccountState.NeedNewPass -> AccountState.NewPassNeeded
     },
     primaryAddress = details().email,
     avatarInfo = details().avatarInformation.let { AccountAvatarInfo(it.text, it.color) }
