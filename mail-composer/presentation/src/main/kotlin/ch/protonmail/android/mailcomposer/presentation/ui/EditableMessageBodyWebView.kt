@@ -129,16 +129,10 @@ fun EditableMessageBodyWebView(
             configureDarkLightMode(wv, isSystemInDarkTheme)
         }
         LaunchedEffect(wv) {
-            Timber.d("editor-webview: setting initial value on webview (should happen only once!)")
+            Timber.d("editor-webview: setting initial value on webview")
             wv.loadDataWithBaseURL(null, messageBodyUiModel.value, MimeType.Html.value, "utf-8", null)
 
             wv.ignoreLongTapOnImages()
-        }
-        ConsumableLaunchedEffect(injectInlineAttachment) { contentId ->
-            Timber.d("editor-webview: requested injecting inline image into composer... $contentId")
-            wv.evaluateJavascript("injectInlineImage('$contentId');") {
-                Timber.d("editor-webview: injected inline image with cid $contentId into webview")
-            }
         }
 
         ConsumableLaunchedEffect(stripInlineAttachment) { contentId ->
@@ -153,8 +147,14 @@ fun EditableMessageBodyWebView(
             wv.loadDataWithBaseURL(null, refreshedBody.value, MimeType.Html.value, "utf-8", null)
         }
 
-
         if (contentLoadingFinished.value) {
+            ConsumableLaunchedEffect(injectInlineAttachment) { contentId ->
+                Timber.d("editor-webview: requested injecting inline image into composer... $contentId")
+                wv.evaluateJavascript("injectInlineImage('$contentId');") {
+                    Timber.d("editor-webview: injected inline image with cid $contentId into webview")
+                }
+            }
+
             ConsumableLaunchedEffect(shouldRequestFocus) {
                 Timber.d("editor-webview: webview is requesting focus...")
                 focusRequester.requestFocus()
