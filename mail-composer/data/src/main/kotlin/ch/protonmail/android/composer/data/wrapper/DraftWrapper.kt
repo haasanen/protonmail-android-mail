@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.composer.data.wrapper
 
+import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import uniffi.proton_mail_uniffi.Draft
 import uniffi.proton_mail_uniffi.DraftExpirationTime
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptionsResult
@@ -49,9 +50,9 @@ class DraftWrapper(private val rustDraft: Draft) {
 
     suspend fun send(): VoidDraftSendResult = rustDraft.send()
 
-    suspend fun setSubject(subject: String): VoidDraftSaveResult = rustDraft.setSubject(subject)
+    fun setSubject(subject: String): VoidDraftSaveResult = rustDraft.setSubject(subject)
 
-    suspend fun setBody(body: String): VoidDraftSaveResult = rustDraft.setBody(body)
+    fun setBody(body: String): VoidDraftSaveResult = rustDraft.setBody(body)
 
     fun scheduleSendOptions(): DraftScheduleSendOptionsResult = rustDraft.scheduleSendOptions()
 
@@ -61,18 +62,19 @@ class DraftWrapper(private val rustDraft: Draft) {
 
     suspend fun changeSender(address: String) = rustDraft.changeSenderAddress(address)
 
-    suspend fun isPasswordProtected() = rustDraft.isPasswordProtected()
+    fun isPasswordProtected() = rustDraft.isPasswordProtected()
 
     suspend fun setPassword(password: String, hint: String) = rustDraft.setPassword(password, hint)
 
     suspend fun removePassword() = rustDraft.removePassword()
 
-    suspend fun getPassword() = rustDraft.getPassword()
+    fun getPassword() = rustDraft.getPassword()
 
-    suspend fun getMessageExpiration() = rustDraft.expirationTime()
+    fun getMessageExpiration() = rustDraft.expirationTime()
 
     suspend fun setMessageExpiration(expirationTime: DraftExpirationTime) = rustDraft.setExpirationTime(expirationTime)
 
-    suspend fun validateRecipientsExpirationFeature() = rustDraft.validateRecipientsExpirationFeature()
+    fun validateRecipientsExpirationFeature() = rustDraft.validateRecipientsExpirationFeature()
 
+    fun mimeType(): LocalMimeType = rustDraft.mimeType()
 }

@@ -15,15 +15,16 @@ import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
-import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
-import ch.protonmail.android.mailcomposer.domain.model.MessagePasswordError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
+import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.MessagePasswordError
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
@@ -129,13 +130,13 @@ class RustDraftDataSourceImplTest {
         val ccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
         val bccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
         val expectedDraftWrapper = expectDraftWrapperReturns(
-            expected.localDraft.subject,
-            expected.localDraft.sender,
-            expected.localDraft.body,
-            toRecipientsWrapperMock,
-            ccRecipientsWrapperMock,
-            bccRecipientsWrapperMock,
-            localMessageId
+            subject = expected.localDraft.subject,
+            sender = expected.localDraft.sender,
+            body = expected.localDraft.body,
+            toRecipientsWrapper = toRecipientsWrapperMock,
+            ccRecipientsWrapper = ccRecipientsWrapperMock,
+            bccRecipientsWrapper = bccRecipientsWrapperMock,
+            messageId = localMessageId
         )
         val expectedWrapperWithSyncStatus = DraftWrapperWithSyncStatus(expectedDraftWrapper, expectedSyncStatus)
         coEvery { toRecipientsWrapperMock.recipients() } returns listOf(LocalComposerRecipientTestData.Alice)
@@ -163,12 +164,12 @@ class RustDraftDataSourceImplTest {
         val expected = LocalDraftTestData.JobApplicationDraft
         val recipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
         val expectedDraftWrapper = expectDraftWrapperReturns(
-            expected.subject,
-            expected.sender,
-            expected.body,
-            recipientsWrapperMock,
-            recipientsWrapperMock,
-            recipientsWrapperMock
+            subject = expected.subject,
+            sender = expected.sender,
+            body = expected.body,
+            toRecipientsWrapper = recipientsWrapperMock,
+            ccRecipientsWrapper = recipientsWrapperMock,
+            bccRecipientsWrapper = recipientsWrapperMock
         )
         val expectedWrapperWithSyncStatus = DraftWrapperWithSyncStatus(expectedDraftWrapper, DraftSyncStatus.SYNCED)
         coEvery { recipientsWrapperMock.recipients() } returns emptyList()
@@ -227,13 +228,13 @@ class RustDraftDataSourceImplTest {
         val body = expected.body
         val recipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
         val expectedDraftWrapper = expectDraftWrapperReturns(
-            subject,
-            sender,
-            body,
-            recipientsWrapperMock,
-            recipientsWrapperMock,
-            recipientsWrapperMock,
-            messageId.toLocalMessageId()
+            subject = subject,
+            sender = sender,
+            body = body,
+            toRecipientsWrapper = recipientsWrapperMock,
+            ccRecipientsWrapper = recipientsWrapperMock,
+            bccRecipientsWrapper = recipientsWrapperMock,
+            messageId = messageId.toLocalMessageId()
         )
         coEvery { recipientsWrapperMock.recipients() } returns emptyList()
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
@@ -257,12 +258,12 @@ class RustDraftDataSourceImplTest {
         val expected = LocalDraftTestData.JobApplicationDraft
         val recipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
         val expectedDraftWrapper = expectDraftWrapperReturns(
-            expected.subject,
-            expected.sender,
-            expected.body,
-            recipientsWrapperMock,
-            recipientsWrapperMock,
-            recipientsWrapperMock
+            subject = expected.subject,
+            sender = expected.sender,
+            body = expected.body,
+            toRecipientsWrapper = recipientsWrapperMock,
+            ccRecipientsWrapper = recipientsWrapperMock,
+            bccRecipientsWrapper = recipientsWrapperMock
         )
         coEvery { recipientsWrapperMock.recipients() } returns emptyList()
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
@@ -1019,6 +1020,7 @@ class RustDraftDataSourceImplTest {
         subject: String = "",
         sender: String = "",
         body: String = "",
+        mimeType: LocalMimeType = LocalMimeType.TEXT_HTML,
         toRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
         ccRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
         bccRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
@@ -1028,6 +1030,7 @@ class RustDraftDataSourceImplTest {
         every { subject() } returns subject
         every { sender() } returns sender
         every { body() } returns body
+        every { mimeType() } returns mimeType
         every { recipientsTo() } returns toRecipientsWrapper
         every { recipientsCc() } returns ccRecipientsWrapper
         every { recipientsBcc() } returns bccRecipientsWrapper

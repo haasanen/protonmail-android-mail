@@ -120,6 +120,7 @@ fun DraftWrapper.toLocalDraft() = LocalDraft(
     subject = this.subject(),
     sender = this.sender(),
     body = this.body(),
+    mimeType = this.mimeType(),
     recipientsTo = this.recipientsTo().recipients().toComposerRecipients(),
     recipientsCc = this.recipientsCc().recipients().toComposerRecipients(),
     recipientsBcc = this.recipientsBcc().recipients().toComposerRecipients()
