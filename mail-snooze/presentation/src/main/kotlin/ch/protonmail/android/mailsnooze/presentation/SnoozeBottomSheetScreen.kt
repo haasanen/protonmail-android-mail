@@ -248,7 +248,8 @@ fun CustomSnoozeButton(
             modifier = modifier,
             icon = R.drawable.ic_proton_calendar_today,
             title = TextUiModel(R.string.snooze_sheet_option_custom),
-            detail = TextUiModel(R.string.snooze_sheet_option_custom_detail)
+            detail = TextUiModel(R.string.snooze_sheet_option_custom_detail),
+            onEvent = onEvent
         )
     } else {
         ProtonButton(
