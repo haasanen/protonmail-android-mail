@@ -25,6 +25,7 @@ import android.view.inputmethod.InputConnection
 import android.webkit.WebView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -44,16 +45,19 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableForm
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
+import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerTestTags
+import ch.protonmail.android.mailcomposer.presentation.ui.EditableMessageBodyPlainText
 import ch.protonmail.android.mailcomposer.presentation.ui.EditableMessageBodyWebView
 import ch.protonmail.android.mailcomposer.presentation.ui.SenderEmailWithSelector
 import ch.protonmail.android.mailcomposer.presentation.ui.SubjectTextField
@@ -68,9 +72,11 @@ import timber.log.Timber
 internal fun ComposerForm(
     changeFocusToField: Effect<FocusedFieldType>,
     senderEmail: String,
+    draftType: DraftMimeType,
     recipientsStateManager: RecipientsStateManager,
     subjectTextField: TextFieldState,
     bodyInitialValue: DraftDisplayBodyUiModel,
+    bodyTextFieldState: TextFieldState,
     attachments: AttachmentGroupUiModel,
     focusTextBody: Effect<Unit>,
     actions: ComposerForm.Actions,
@@ -171,28 +177,40 @@ internal fun ComposerForm(
 
             val webViewCache = remember { mutableStateOf<WebView?>(null) }
             if (showSubjectAndBody) {
-                EditableMessageBodyWebView(
-                    messageBodyUiModel = bodyInitialValue,
-                    shouldRequestFocus = focusTextBody,
-                    injectInlineAttachment = injectInlineAttachment,
-                    stripInlineAttachment = stripInlineAttachment,
-                    refreshBody = refreshBody,
-                    webViewActions = EditableMessageBodyWebView.Actions(
-                        loadEmbeddedImage = actions.loadEmbeddedImage,
-                        onMessageBodyChanged = actions.onBodyChanged,
-                        onWebViewParamsChanged = actions.onWebViewMeasuresChanged,
-                        onBuildWebView = onBuildWebView(webViewCache, actions.onInlineImageAdded),
-                        onInlineImageRemoved = actions.onInlineImageRemoved,
-                        onInlineImageClicked = actions.onInlineImageClicked
-                    ),
-                    modifier = maxWidthModifier
-                        .testTag(ComposerTestTags.MessageBody)
-                        .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
-                        .onGloballyPositioned { coordinates ->
-                            val webViewBounds = coordinates.boundsInWindow()
-                            actions.onWebViewPositioned(webViewBounds)
-                        }
-                )
+
+                when (draftType) {
+                    DraftMimeType.PlainText -> {
+                        EditableMessageBodyPlainText(
+                            modifier.padding(horizontal = ProtonDimens.Spacing.Large),
+                            bodyTextFieldState,
+                            focusTextBody
+                        )
+                    }
+                    DraftMimeType.Html -> {
+                        EditableMessageBodyWebView(
+                            messageBodyUiModel = bodyInitialValue,
+                            shouldRequestFocus = focusTextBody,
+                            injectInlineAttachment = injectInlineAttachment,
+                            stripInlineAttachment = stripInlineAttachment,
+                            refreshBody = refreshBody,
+                            webViewActions = EditableMessageBodyWebView.Actions(
+                                loadEmbeddedImage = actions.loadEmbeddedImage,
+                                onMessageBodyChanged = actions.onBodyChanged,
+                                onWebViewParamsChanged = actions.onWebViewMeasuresChanged,
+                                onBuildWebView = onBuildWebView(webViewCache, actions.onInlineImageAdded),
+                                onInlineImageRemoved = actions.onInlineImageRemoved,
+                                onInlineImageClicked = actions.onInlineImageClicked
+                            ),
+                            modifier = maxWidthModifier
+                                .testTag(ComposerTestTags.MessageBody)
+                                .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
+                                .onGloballyPositioned { coordinates ->
+                                    val webViewBounds = coordinates.boundsInWindow()
+                                    actions.onWebViewPositioned(webViewBounds)
+                                }
+                        )
+                    }
+                }
             }
         }
     }

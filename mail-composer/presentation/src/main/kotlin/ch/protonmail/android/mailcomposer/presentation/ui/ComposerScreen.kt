@@ -136,6 +136,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
     }
 
     val displayBody by viewModel.displayBody.collectAsStateWithLifecycle()
+    val bodyTextFieldState = viewModel.bodyTextField
 
     fun dismissBottomSheet(continuation: () -> Unit = {}) {
         scope.launch { bottomSheetState.hide() }
@@ -384,9 +385,11 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                             onInlineImageAdded = { viewModel.submit(ComposerAction.AddAttachments(listOf(it))) }
                         ),
                         senderEmail = mainState.sender.email,
+                        draftType = mainState.draftType,
                         recipientsStateManager = recipientsStateManager,
                         subjectTextField = viewModel.subjectTextField,
                         bodyInitialValue = displayBody,
+                        bodyTextFieldState = bodyTextFieldState,
                         attachments = attachmentsState.uiModel,
                         focusTextBody = effectsState.focusTextBody,
                         formHeightPx = formHeightPx,
