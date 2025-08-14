@@ -259,7 +259,6 @@ fun MessageBodyWebView(
                 .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
                 .fillMaxWidth()
                 .onSizeChanged {
-                    Timber.d("message-webview: size changed ${it.height}")
                     lastMeasuredWebViewHeight = it.height
                 }
                 .wrapContentSize(),
