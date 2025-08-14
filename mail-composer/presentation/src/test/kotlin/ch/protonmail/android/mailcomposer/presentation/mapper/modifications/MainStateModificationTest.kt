@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.mapper.modifications
 
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
+import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
@@ -56,12 +57,12 @@ internal class MainStateModificationTest(
         private val initialState = ComposerState.Main.initial()
 
         private val senderEmail = SenderEmail("sender-email@proton.me")
-        private val displayBodyUpdated = DraftDisplayBodyUiModel("<html>with sender-email@ signature</html>")
         private val draftDisplayBody = DraftDisplayBodyUiModel("<html>draft display body</html>")
         private val draftFields = DraftFields(
             SenderEmail("author@proton.me"),
             Subject("Here is the matter"),
             DraftBody("Decrypted body of this draft"),
+            DraftMimeType.Html,
             RecipientsTo(listOf(Recipient("you@proton.ch", "Name"))),
             RecipientsCc(emptyList()),
             RecipientsBcc(emptyList())

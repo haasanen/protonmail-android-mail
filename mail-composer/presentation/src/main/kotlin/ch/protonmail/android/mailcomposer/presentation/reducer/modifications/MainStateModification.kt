@@ -29,7 +29,8 @@ internal sealed interface MainStateModification : ComposerStateModification<Comp
     data class OnDraftReady(val draftUiModel: DraftUiModel) : MainStateModification {
 
         override fun apply(state: ComposerState.Main): ComposerState.Main = state.copy(
-            sender = SenderUiModel(draftUiModel.draftFields.sender.value)
+            sender = SenderUiModel(draftUiModel.draftFields.sender.value),
+            draftType = draftUiModel.draftFields.mimeType
         )
     }
 

@@ -16,6 +16,8 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("TooManyFunctions")
+
 package ch.protonmail.android.composer.data.mapper
 
 import ch.protonmail.android.composer.data.local.LocalDraft
@@ -26,6 +28,7 @@ import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalComposerRecipient
 import ch.protonmail.android.mailcommon.data.mapper.LocalDraftSendResult
+import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -33,10 +36,11 @@ import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
-import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
-import ch.protonmail.android.mailcomposer.domain.model.MessagePasswordError
+import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
+import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.MessagePasswordError
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
@@ -79,6 +83,7 @@ import uniffi.proton_mail_uniffi.DraftSenderAddressChangeError
 import uniffi.proton_mail_uniffi.DraftSenderAddressChangeErrorReason
 import uniffi.proton_mail_uniffi.DraftSenderAddressList
 import uniffi.proton_mail_uniffi.DraftSyncStatus
+import uniffi.proton_mail_uniffi.MimeType
 import uniffi.proton_mail_uniffi.SingleRecipientEntry
 import kotlin.time.DurationUnit
 import kotlin.time.Instant
@@ -106,6 +111,7 @@ fun LocalDraft.toDraftFields() = DraftFields(
     sender = SenderEmail(this.sender),
     subject = Subject(this.subject),
     body = DraftBody(this.body),
+    mimeType = this.mimeType.toDraftMimeType(),
     recipientsTo = RecipientsTo(this.recipientsTo.toRecipients()),
     recipientsCc = RecipientsCc(this.recipientsCc.toRecipients()),
     recipientsBcc = RecipientsBcc(this.recipientsBcc.toRecipients())
@@ -392,6 +398,16 @@ private fun DraftAttachmentUploadError.toDataError() = when (this) {
 
         DraftAttachmentUploadErrorReason.CRYPTO -> DataError.Local.DecryptionError
     }
+}
+
+private fun LocalMimeType.toDraftMimeType() = when (this) {
+    MimeType.APPLICATION_JSON,
+    MimeType.APPLICATION_PDF,
+    MimeType.MESSAGE_RFC822,
+    MimeType.MULTIPART_MIXED,
+    MimeType.MULTIPART_RELATED,
+    MimeType.TEXT_HTML -> DraftMimeType.Html
+    MimeType.TEXT_PLAIN -> DraftMimeType.PlainText
 }
 
 

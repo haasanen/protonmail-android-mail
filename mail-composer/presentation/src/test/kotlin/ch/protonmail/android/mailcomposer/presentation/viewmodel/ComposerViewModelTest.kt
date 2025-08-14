@@ -37,6 +37,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
@@ -246,6 +247,7 @@ internal class ComposerViewModelTest {
             expectedSenderEmail,
             expectedSubject,
             expectedDraftBody,
+            DraftMimeType.Html,
             recipientsTo,
             recipientsCc,
             recipientsBcc
@@ -372,6 +374,7 @@ internal class ComposerViewModelTest {
                 sender = expectedSenderEmail,
                 subject = expectedSubject,
                 body = expectedDraftBody,
+                mimeType = DraftMimeType.Html,
                 recipientsTo = recipientsTo,
                 recipientsCc = recipientsCc,
                 recipientsBcc = recipientsBcc
@@ -412,6 +415,7 @@ internal class ComposerViewModelTest {
                 sender = expectedSenderEmail,
                 subject = expectedSubject,
                 body = expectedDraftBody,
+                mimeType = DraftMimeType.Html,
                 recipientsTo = recipientsTo,
                 recipientsCc = recipientsCc,
                 recipientsBcc = recipientsBcc
@@ -456,6 +460,7 @@ internal class ComposerViewModelTest {
                 sender = expectedSenderEmail,
                 subject = expectedSubject,
                 body = expectedDraftBody,
+                mimeType = DraftMimeType.Html,
                 recipientsTo = recipientsTo,
                 recipientsCc = recipientsCc,
                 recipientsBcc = recipientsBcc
@@ -863,6 +868,7 @@ internal class ComposerViewModelTest {
             expectedSenderEmail,
             expectedSubject,
             expectedDraftBody,
+            DraftMimeType.Html,
             recipientsTo,
             recipientsCc,
             recipientsBcc
@@ -908,6 +914,7 @@ internal class ComposerViewModelTest {
             expectedSenderEmail,
             expectedSubject,
             expectedDraftBody,
+            DraftMimeType.Html,
             recipientsTo,
             recipientsCc,
             recipientsBcc
@@ -990,6 +997,7 @@ internal class ComposerViewModelTest {
                 sender = expectedSenderEmail,
                 subject = expectedSubject,
                 body = expectedDraftBody,
+                DraftMimeType.Html,
                 recipientsTo = recipientsTo,
                 recipientsCc = recipientsCc,
                 recipientsBcc = recipientsBcc
@@ -1101,6 +1109,7 @@ internal class ComposerViewModelTest {
                 sender = expectedSenderEmail,
                 subject = expectedSubject,
                 body = expectedDraftBody,
+                mimeType = DraftMimeType.Html,
                 recipientsTo = recipientsTo,
                 recipientsCc = recipientsCc,
                 recipientsBcc = recipientsBcc
@@ -1141,6 +1150,7 @@ internal class ComposerViewModelTest {
                 sender = expectedSenderEmail,
                 subject = expectedSubject,
                 body = expectedDraftBody,
+                mimeType = DraftMimeType.Html,
                 recipientsTo = recipientsTo,
                 recipientsCc = recipientsCc,
                 recipientsBcc = recipientsBcc
@@ -1445,6 +1455,7 @@ internal class ComposerViewModelTest {
             SenderEmail("author@proton.me"),
             Subject("Here is the matter"),
             DraftBody("Decrypted body of this draft"),
+            DraftMimeType.Html,
             RecipientsTo(listOf(Recipient("valid@email.com", "Valid Email"))),
             RecipientsCc(emptyList()),
             RecipientsBcc(emptyList())

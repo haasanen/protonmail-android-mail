@@ -42,6 +42,7 @@ import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
@@ -284,6 +285,7 @@ class ComposerViewModel @AssistedInject constructor(
                     it.sender,
                     it.subject,
                     it.body,
+                    currentMimeType(),
                     RecipientsTo(toParticipants),
                     RecipientsCc(ccParticipants),
                     RecipientsBcc(bccParticipants)
@@ -424,6 +426,7 @@ class ComposerViewModel @AssistedInject constructor(
             currentSenderEmail(),
             subject,
             draftBody,
+            currentMimeType(),
             recipientsTo,
             recipientsCc,
             recipientsBcc
@@ -775,6 +778,7 @@ class ComposerViewModel @AssistedInject constructor(
             currentSenderEmail(),
             Subject(subjectTextField.text.toString().stripNewLines()),
             DraftBody(bodyTextField.text.toString()),
+            currentMimeType(),
             RecipientsTo(toParticipants),
             RecipientsCc(ccParticipants),
             RecipientsBcc(bccParticipants)
@@ -812,6 +816,8 @@ class ComposerViewModel @AssistedInject constructor(
     private suspend fun primaryUserId() = primaryUserId.first()
 
     private fun currentSenderEmail() = SenderEmail(composerStates.value.main.sender.email)
+
+    private fun currentMimeType(): DraftMimeType = composerStates.value.main.draftType
 
     private suspend fun ensureContactsLoaded() {
         if (contactsCache.value == null) {

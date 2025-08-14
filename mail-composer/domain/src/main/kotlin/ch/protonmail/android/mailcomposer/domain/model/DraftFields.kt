@@ -22,6 +22,7 @@ data class DraftFields(
     val sender: SenderEmail,
     val subject: Subject,
     val body: DraftBody,
+    val mimeType: DraftMimeType,
     val recipientsTo: RecipientsTo,
     val recipientsCc: RecipientsCc,
     val recipientsBcc: RecipientsBcc
