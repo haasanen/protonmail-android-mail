@@ -293,7 +293,7 @@ private fun ColumnScope.ConversationDetailExpandedItem(
                     )
                 },
                 onCancelScheduleMessage = { actions.onEditScheduleSendMessage(uiModel.messageId) },
-                onUnsnoozeMessage = { actions.onUnsnoozeMessage(uiModel.messageId) }
+                onUnsnoozeMessage = { actions.onUnsnoozeMessage() }
             )
             MessageBody(
                 messageBodyUiModel = uiModel.messageBodyUiModel,
@@ -396,7 +396,7 @@ object ConversationDetailItem {
         val onRetryRsvpEventLoading: (MessageIdUiModel) -> Unit,
         val onAnswerRsvpEvent: (MessageIdUiModel, RsvpAnswer) -> Unit,
         val onMessage: (String) -> Unit,
-        val onUnsnoozeMessage: (MessageIdUiModel) -> Unit
+        val onUnsnoozeMessage: () -> Unit
     )
 
     val previewActions = Actions(

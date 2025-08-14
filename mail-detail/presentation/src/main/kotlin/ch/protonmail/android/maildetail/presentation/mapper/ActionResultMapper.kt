@@ -99,6 +99,9 @@ class ActionResultMapper @Inject constructor(
         is ConversationDetailViewAction.SnoozeCompleted ->
             DefinitiveActionResult(TextUiModel(operation.completeMessage))
 
+        is ConversationDetailEvent.UnsnoozeCompleted ->
+            DefinitiveActionResult(TextUiModel(value = R.string.unsnooze_sheet_success))
+
         else -> null // No specific ActionResult for other operations
     }
 }

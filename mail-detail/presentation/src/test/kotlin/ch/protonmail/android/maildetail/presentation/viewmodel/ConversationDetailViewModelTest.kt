@@ -1997,24 +1997,33 @@ class ConversationDetailViewModelTest {
     fun `given unsnoozed successfully then message body is refreshed`() = runTest {
         // given
         val labelId = LabelIdSample.AllMail
-        val messageId = MessageIdUiModel("Id")
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
+        coEvery {
+            reducer.newStateFrom(
+                currentState = any(),
+                operation = ConversationDetailEvent.ExitScreenWithMessage(
+                    ConversationDetailEvent.UnsnoozeCompleted
+                )
+            )
+        } returns ConversationDetailState.Loading.copy(
+            exitScreenActionResult = Effect.of(
+                ActionResult.DefinitiveActionResult(
+                    TextUiModel("unsnooze")
+                )
+            )
+        )
 
         // when
         viewModel.state.test {
             initialStateEmitted()
-            viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested(messageId))
+            viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested)
             advanceUntilIdle()
             // then
             coVerify { snoozeRepository.unSnoozeConversation(userId, labelId, listOf(conversationId)) }
 
             advanceUntilIdle()
 
-            val expected = MessageBodyTransformations.MessageDetailsDefaults.copy()
-
-            coVerify(exactly = 1) {
-                getDecryptedMessageBody(userId, MessageId(messageId.id), expected)
-            }
+            assertNotNull(awaitItem().exitScreenActionResult.consume())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -2037,7 +2046,7 @@ class ConversationDetailViewModelTest {
         // when
         viewModel.state.test {
             initialStateEmitted()
-            viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested(MessageIdUiModel("id")))
+            viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested)
 
             // then
             assertEquals(TextUiModel(string.snooze_sheet_error_unable_to_unsnooze), awaitItem().error.consume())

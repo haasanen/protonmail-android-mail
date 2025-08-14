@@ -372,7 +372,7 @@ class ConversationDetailViewModel @Inject constructor(
                 handleGetRsvpEvent(action.messageId, refresh = true)
 
             is ConversationDetailViewAction.AnswerRsvpEvent -> handleAnswerRsvpEvent(action.messageId, action.answer)
-            is ConversationDetailViewAction.OnUnsnoozeConversationRequested -> handleUnsnoozeMessage(action.messageId)
+            ConversationDetailViewAction.OnUnsnoozeConversationRequested -> handleUnsnoozeMessage()
             is ConversationDetailViewAction.SnoozeDismissed -> handleSnoozeDismissedAction(action)
             is ConversationDetailViewAction.SnoozeCompleted -> handleSnoozeCompletedAction(action)
             is ConversationDetailViewAction.RequestSnoozeBottomSheet -> requestSnoozeBottomSheet()
@@ -1350,7 +1350,7 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun handleUnsnoozeMessage(messageId: MessageIdUiModel) {
+    private fun handleUnsnoozeMessage() {
         viewModelScope.launch {
             snoozeRepository.unSnoozeConversation(
                 userId = primaryUserId.first(),
@@ -1359,7 +1359,11 @@ class ConversationDetailViewModel @Inject constructor(
             ).onLeft { error ->
                 emitNewStateFrom(ConversationDetailEvent.ErrorUnsnoozing)
             }.onRight {
-                setOrRefreshMessageBody(messageId)
+                emitNewStateFrom(
+                    ConversationDetailEvent.ExitScreenWithMessage(
+                        ConversationDetailEvent.UnsnoozeCompleted
+                    )
+                )
             }
         }
     }

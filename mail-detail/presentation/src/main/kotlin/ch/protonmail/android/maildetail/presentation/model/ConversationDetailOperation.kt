@@ -171,6 +171,9 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
 
     object ErrorUnsnoozing : ConversationDetailEvent, AffectingErrorBar
 
+    object UnsnoozeCompleted :
+        ConversationDetailEvent,
+        AffectingMessageBar
 }
 
 sealed interface ConversationDetailViewAction : ConversationDetailOperation {
@@ -336,7 +339,7 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     data class EditScheduleSendMessageRequested(val messageId: MessageIdUiModel) :
         ConversationDetailViewAction, AffectingEditScheduleMessageDialog
 
-    data class OnUnsnoozeConversationRequested(val messageId: MessageIdUiModel) :
+    object OnUnsnoozeConversationRequested :
         ConversationDetailViewAction, AffectingBottomSheet
 
     data class PrintMessage(val context: Context, val messageId: MessageId) :

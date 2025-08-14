@@ -200,7 +200,7 @@ class ConversationDetailReducer @Inject constructor(
                 is ExitScreen,
                 is ConversationDetailViewAction.SnoozeCompleted,
                 ConversationDetailViewAction.SnoozeDismissed,
-                is ConversationDetailViewAction.OnUnsnoozeConversationRequested,
+                ConversationDetailViewAction.OnUnsnoozeConversationRequested,
                 is ExitScreenWithMessage -> BottomSheetOperation.Dismiss
             }
             bottomSheetReducer.newStateFrom(bottomSheetState, bottomSheetOperation)

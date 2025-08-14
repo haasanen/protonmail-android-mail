@@ -558,8 +558,8 @@ fun ConversationDetailScreen(
                     viewModel.submit(ConversationDetailViewAction.AnswerRsvpEvent(MessageId(messageId.id), answer))
                 },
                 onMessage = actions.onComposeNewMessage,
-                onUnsnoozeMessage = { messageId ->
-                    viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested(messageId))
+                onUnsnoozeMessage = {
+                    viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested)
                 },
                 onSnooze = { viewModel.submit(ConversationDetailViewAction.RequestSnoozeBottomSheet) }
             ),
@@ -1131,7 +1131,7 @@ object ConversationDetailScreen {
         val onRetryRsvpEventLoading: (MessageIdUiModel) -> Unit,
         val onAnswerRsvpEvent: (MessageIdUiModel, RsvpAnswer) -> Unit,
         val onMessage: (String) -> Unit,
-        val onUnsnoozeMessage: (MessageIdUiModel) -> Unit,
+        val onUnsnoozeMessage: () -> Unit,
         val onSnooze: () -> Unit
     ) {
 
