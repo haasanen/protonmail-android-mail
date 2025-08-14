@@ -28,7 +28,6 @@ import me.proton.android.core.account.domain.usecase.ObservePrimaryCoreAccount
 import me.proton.android.core.auth.presentation.flow.FlowManager
 import me.proton.android.core.auth.presentation.secondfactor.getAccountById
 import me.proton.android.core.auth.presentation.secondfactor.getSessionsForAccount
-import me.proton.core.domain.type.IntEnum
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionUserSessionFromStoredSessionResult
 import uniffi.proton_mail_uniffi.MailUserSessionUserSettingsResult
@@ -87,6 +86,5 @@ enum class PasswordMode(val value: Int) {
     companion object {
 
         val map = entries.associateBy { it.value }
-        fun enumOf(value: Int?) = value?.let { IntEnum(it, map[it]) }
     }
 }

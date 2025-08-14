@@ -89,6 +89,7 @@ class SettingsViewModelTest {
             avatarInfo = AccountAvatarInfo("D", "#FF5733")
         )
         val accountUiModel = AccountInformationUiModel(
+            userId = UserId("123"),
             name = "Display Name",
             email = "primary@example.com",
             avatarUiModel = AvatarUiModel.ParticipantAvatar(

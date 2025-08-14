@@ -18,11 +18,10 @@
 
 package me.proton.android.core.auth.presentation.flow
 
-import kotlinx.coroutines.flow.first
 import me.proton.android.core.account.domain.model.CoreAccount
 import me.proton.android.core.account.domain.model.CoreAccountState
 import me.proton.android.core.account.domain.model.CoreUserId
-import me.proton.android.core.account.domain.usecase.ObserveCoreAccount
+import me.proton.android.core.account.domain.model.toCoreAccount
 import me.proton.android.core.auth.presentation.secondfactor.getAccountById
 import me.proton.android.core.auth.presentation.secondfactor.getSessionsForAccount
 import uniffi.proton_account_uniffi.LoginFlow
@@ -40,7 +39,6 @@ import javax.inject.Singleton
 @Singleton
 class FlowManager @Inject constructor(
     private val sessionInterface: MailSession,
-    private val observeCoreAccount: ObserveCoreAccount,
     private val flowCache: FlowCache
 ) {
 
@@ -50,7 +48,7 @@ class FlowManager @Inject constructor(
     }
 
     suspend fun getCurrentActiveFlow(userId: CoreUserId, clear: Boolean = false): CurrentFlow {
-        val account = observeCoreAccount(userId).first()
+        val account = sessionInterface.getAccountById(userId.id)?.toCoreAccount()
         flowCache.clearIfUserChanged(userId.id)
         val activeFlow = getActiveFlow(account)
         if (activeFlow != null && !clear) {
@@ -115,7 +113,7 @@ class FlowManager @Inject constructor(
 
     suspend fun clearCache(userId: CoreUserId): Boolean {
         val activeFlow = flowCache.getActiveFlow()
-        val account = observeCoreAccount(userId).first()
+        val account = sessionInterface.getAccountById(userId.id)?.toCoreAccount()
 
         deleteAccountIfNeeded(account?.state, activeFlow)
 
@@ -151,11 +149,6 @@ class FlowManager @Inject constructor(
 
             null -> Unit
         }
-//        when (state) {
-//            CoreAccountState.TwoFactorNeeded,
-//            CoreAccountState.NewPasswordNeeded -> flowCache.deleteAccount()
-//            else -> Unit
-//        }
     }
 
     private suspend fun getActiveSession(userId: String): StoredSession? {

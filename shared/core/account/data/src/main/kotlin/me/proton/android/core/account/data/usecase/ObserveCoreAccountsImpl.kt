@@ -20,8 +20,8 @@ package me.proton.android.core.account.data.usecase
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import me.proton.android.core.account.data.model.toCoreAccount
 import me.proton.android.core.account.domain.model.CoreAccount
+import me.proton.android.core.account.domain.model.toCoreAccount
 import me.proton.android.core.account.domain.usecase.ObserveCoreAccounts
 import me.proton.android.core.account.domain.usecase.ObserveStoredAccounts
 import javax.inject.Inject

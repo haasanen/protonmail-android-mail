@@ -78,10 +78,11 @@ class AuthOrchestrator @Inject constructor() {
             onSignUpResultListener?.invoke(it)
         }
 
-    private fun registerPassManagementResult(caller: ActivityResultCaller): ActivityResultLauncher<PasswordManagementInput> =
-        caller.registerForActivityResult(StartPasswordManagement) {
-            onPassManagementResultListener?.invoke(it)
-        }
+    private fun registerPassManagementResult(
+        caller: ActivityResultCaller
+    ): ActivityResultLauncher<PasswordManagementInput> = caller.registerForActivityResult(StartPasswordManagement) {
+        onPassManagementResultListener?.invoke(it)
+    }
 
     private fun registerSecurityKeysResult(caller: ActivityResultCaller): ActivityResultLauncher<Unit> =
         caller.registerForActivityResult(StartSecurityKeys) {

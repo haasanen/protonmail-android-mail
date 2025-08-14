@@ -18,6 +18,9 @@
 
 package me.proton.android.core.account.domain.model
 
+import uniffi.proton_mail_uniffi.StoredAccount
+import uniffi.proton_mail_uniffi.StoredAccountState
+
 data class CoreAccount(
     val userId: CoreUserId,
     val displayName: String?,
@@ -34,4 +37,22 @@ enum class CoreAccountState {
     TwoFactorNeeded,
     NewPasswordNeeded,
     Disabled
+}
+
+fun StoredAccount.toCoreAccount() = CoreAccount(
+    userId = CoreUserId(userId()),
+    displayName = details().name,
+    nameOrAddress = details().name,
+    primaryEmailAddress = details().email,
+    state = state().toCoreAccountState(),
+    username = details().name
+)
+
+internal fun StoredAccountState.toCoreAccountState() = when (this) {
+    is StoredAccountState.LoggedIn -> CoreAccountState.Ready
+    is StoredAccountState.LoggedOut -> CoreAccountState.Disabled
+    is StoredAccountState.NeedMbp -> CoreAccountState.TwoPasswordNeeded
+    is StoredAccountState.NeedTfa -> CoreAccountState.TwoFactorNeeded
+    is StoredAccountState.NotReady -> CoreAccountState.NotReady
+    is StoredAccountState.NeedNewPass -> CoreAccountState.NewPasswordNeeded
 }

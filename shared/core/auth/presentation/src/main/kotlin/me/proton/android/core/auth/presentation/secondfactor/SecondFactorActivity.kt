@@ -30,10 +30,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.secondfactor.fido.Fido2InputAction
-import me.proton.android.core.auth.presentation.signup.viewmodel.SignUpViewModel
 import me.proton.core.auth.fido.domain.entity.Fido2PublicKeyCredentialRequestOptions
 import me.proton.core.auth.fido.domain.entity.SecondFactorProof
 import me.proton.core.auth.fido.domain.usecase.PerformTwoFaWithSecurityKey
+import me.proton.core.auth.fido.domain.usecase.PerformTwoFaWithSecurityKey.LaunchResult
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.presentation.ui.ProtonActivity
 import me.proton.core.presentation.utils.ProtectScreenConfiguration
@@ -42,7 +42,6 @@ import me.proton.core.presentation.utils.addOnBackPressedCallback
 import me.proton.core.presentation.utils.errorToast
 import javax.inject.Inject
 import kotlin.jvm.optionals.getOrNull
-import me.proton.core.auth.fido.domain.usecase.PerformTwoFaWithSecurityKey.LaunchResult
 
 @AndroidEntryPoint
 class SecondFactorActivity : ProtonActivity() {

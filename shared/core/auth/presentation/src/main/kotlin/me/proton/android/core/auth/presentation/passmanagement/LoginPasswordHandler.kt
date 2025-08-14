@@ -28,6 +28,7 @@ import me.proton.android.core.auth.presentation.flow.FlowManager
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.UpdateLoginPassword
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.UpdateLoginPassword.SaveLoginPassword
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.UpdateLoginPassword.TwoFaComplete
+import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementState.Awaiting2faForLogin
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementState.Error
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementState.LoginPasswordSaved
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementState.UserInput
@@ -36,11 +37,8 @@ import uniffi.proton_account_uniffi.LoginFlow
 import uniffi.proton_account_uniffi.LoginFlowSubmitNewPasswordResult
 import uniffi.proton_account_uniffi.PasswordFlow
 import uniffi.proton_account_uniffi.PasswordFlowChangePassResult
-import uniffi.proton_account_uniffi.PasswordFlowSubmitPassResult
 import uniffi.proton_account_uniffi.SimplePasswordState.COMPLETE
-import uniffi.proton_account_uniffi.SimplePasswordState.WANT_CHANGE
 import uniffi.proton_account_uniffi.SimplePasswordState.WANT_PASS
-import uniffi.proton_account_uniffi.SimplePasswordState.WANT_TFA
 
 class LoginPasswordHandler private constructor(
     private val getUserId: () -> CoreUserId?,
@@ -142,7 +140,17 @@ class LoginPasswordHandler private constructor(
             passwordFlow.submitPass(currentState.loginPassword.current)
         } ?: return@flow
 
-        handlePasswordSubmitResult(passwordFlow, submitResult, currentState, token)
+        handlePasswordSubmitResult(
+            userId = getUserId(),
+            passwordFlow = passwordFlow,
+            submitResult = submitResult,
+            currentState = currentState,
+            token = token,
+            createAwaitingState = ::Awaiting2faForLogin,
+            submitChangeFunction = { passwordFlow, currentState, token ->
+                submitPassChange(passwordFlow, currentState, token)
+            }
+        )
     }
 
     private fun validatePasswordInputs(currentPassword: String, token: PasswordValidatorToken?): ValidationError? {
@@ -151,39 +159,6 @@ class LoginPasswordHandler private constructor(
             token == null -> ValidationError.PasswordEmpty
             else -> null
         }
-    }
-
-    private suspend fun FlowCollector<PasswordManagementState>.handlePasswordSubmitResult(
-        passwordFlow: PasswordFlow,
-        submitResult: PasswordFlowSubmitPassResult,
-        currentState: UserInput,
-        token: PasswordValidatorToken?
-    ) {
-        when (submitResult) {
-            is PasswordFlowSubmitPassResult.Error -> {
-                emit(Error.General(submitResult.v1.toString(), currentState))
-            }
-
-            is PasswordFlowSubmitPassResult.Ok -> {
-                when (submitResult.v1) {
-                    WANT_TFA -> handleTwoFactorAuthentication(currentState, token)
-                    WANT_CHANGE -> emitAll(submitPassChange(passwordFlow, currentState, token))
-                    else -> emit(Error.InvalidState(currentState))
-                }
-            }
-        }
-    }
-
-    private suspend fun FlowCollector<PasswordManagementState>.handleTwoFactorAuthentication(
-        currentState: UserInput,
-        token: PasswordValidatorToken?
-    ) {
-        val userId = getUserId()
-        if (userId == null) {
-            emit(Error.General("User ID not available", currentState))
-            return
-        }
-        emit(PasswordManagementState.Awaiting2faForLogin(userId, currentState, token))
     }
 
     private fun submitPassChange(
@@ -241,17 +216,13 @@ class LoginPasswordHandler private constructor(
         operation: () -> T
     ): T? {
         return runCatching { operation() }.getOrElse { exception ->
-            val errorMessage = when (exception.message) {
-                null -> "Operation failed"
-                else -> exception.message!!
-            }
-            emit(Error.General(errorMessage, currentState))
+            emit(Error.General(exception.message, currentState))
             null
         }
     }
 
     override fun handleError(throwable: Throwable, currentState: UserInput): PasswordManagementState =
-        Error.General(error = throwable.message ?: "Unknown error occurred", currentState)
+        Error.General(error = throwable.message, currentState)
 
     companion object {
 

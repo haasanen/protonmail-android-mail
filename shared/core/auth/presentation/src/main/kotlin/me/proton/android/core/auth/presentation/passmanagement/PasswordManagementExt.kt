@@ -22,7 +22,6 @@ import android.content.Context
 import me.proton.android.core.auth.presentation.R
 import uniffi.proton_account_uniffi.PasswordException
 
-// todo: all these errors should come localized from Rust.
 fun PasswordException.getErrorMessage(context: Context): String = when (this) {
     is PasswordException.Api,
     is PasswordException.Crypto,
@@ -34,10 +33,12 @@ fun PasswordException.getErrorMessage(context: Context): String = when (this) {
     is PasswordException.InvalidCredentials ->
         context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
 
-    is PasswordException.PasswordEmpty -> TODO()
-    is PasswordException.PasswordNotValidated -> TODO()
-    is PasswordException.PasswordValidationMismatch -> TODO()
-    is PasswordException.PasswordsNotMatching -> TODO()
+    is PasswordException.PasswordEmpty -> context.getString(R.string.settings_password_error_empty)
+    is PasswordException.PasswordNotValidated,
+    is PasswordException.PasswordValidationMismatch,
+    is PasswordException.PasswordsNotMatching -> context.getString(R.string.settings_password_error_match)
+    is PasswordException.InvalidRecoveryCode -> context.getString(R.string.settings_password_error_invalid_recovery)
+    is PasswordException.Reused2FaCode -> context.getString(R.string.settings_password_general_error)
 }
 
 fun PasswordException.mapToValidationError(): ValidationError? = when (this) {

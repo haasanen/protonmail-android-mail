@@ -18,19 +18,17 @@
 
 package me.proton.android.core.auth.presentation.passmanagement
 
-import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -53,13 +51,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import me.proton.android.core.auth.presentation.AnnotatedLinkText
 import me.proton.android.core.auth.presentation.R
-import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.SelectTab
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.UpdateLoginPassword.SaveLoginPassword
@@ -82,6 +79,16 @@ import me.proton.core.compose.viewmodel.hiltViewModelOrNull
 import me.proton.core.passvalidator.domain.entity.PasswordValidationType
 import me.proton.core.passvalidator.domain.entity.PasswordValidatorToken
 import me.proton.core.passvalidator.presentation.report.PasswordPolicyReport
+
+data class PasswordGroupConfig(
+    val currentPasswordNeeded: Boolean,
+    val currentPasswordLabelRes: Int,
+    val newPasswordLabelRes: Int,
+    val confirmPasswordLabelRes: Int,
+    val buttonTextRes: Int,
+    val passwordValidationType: PasswordValidationType,
+    val createSaveAction: (String, String, String, PasswordValidatorToken?) -> UserInputAction
+)
 
 @Suppress("UseComposableActions")
 @Composable
@@ -128,44 +135,21 @@ fun PasswordManagementScreen(
     onAction: (PasswordManagementAction) -> Unit = {},
     onBackClicked: () -> Unit = {}
 ) {
-    when (state) {
-        is PasswordManagementState.Loading -> {
-            PasswordManagementScaffold(
-                modifier = modifier,
-                onBackClicked = onBackClicked,
-                isLoading = true
+    val isLoading = state is PasswordManagementState.Loading
+    val userInput = state.userInputOrNull()
+
+    PasswordManagementScaffold(
+        modifier = modifier,
+        onBackClicked = onBackClicked,
+        isLoading = isLoading
+    ) { scaffoldModifier ->
+        if (userInput != null) {
+            PasswordManagementContent(
+                state = userInput,
+                onAction = onAction,
+                modifier = scaffoldModifier
             )
         }
-
-        is PasswordManagementState.UserInput,
-        is PasswordManagementState.Awaiting2faForLogin,
-        is PasswordManagementState.Awaiting2faForMailbox,
-        is PasswordManagementState.Error -> {
-            val userInput = when (state) {
-                is PasswordManagementState.UserInput -> state
-                is PasswordManagementState.Error -> state.userInput
-                is PasswordManagementState.Awaiting2faForLogin -> state.userInput
-                is PasswordManagementState.Awaiting2faForMailbox -> state.userInput
-                else -> error("Unexpected state")
-            }
-            PasswordManagementScaffold(
-                modifier = modifier,
-                onBackClicked = onBackClicked,
-                isLoading = false
-            ) {
-                PasswordManagementContent(
-                    state = userInput,
-                    onAction = onAction,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-        }
-
-        else -> PasswordManagementScaffold(
-            modifier = modifier,
-            onBackClicked = onBackClicked,
-            isLoading = false
-        )
     }
 }
 
@@ -174,10 +158,11 @@ fun PasswordManagementScaffold(
     modifier: Modifier = Modifier,
     onBackClicked: () -> Unit = {},
     isLoading: Boolean = false,
-    content: @Composable () -> Unit = {}
+    content: @Composable (Modifier) -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier,
+        backgroundColor = LocalColors.current.backgroundNorm,
         topBar = {
             ProtonTopAppBar(
                 title = {
@@ -189,7 +174,7 @@ fun PasswordManagementScaffold(
                 navigationIcon = {
                     IconButton(onClick = onBackClicked) {
                         Icon(
-                            painterResource(R.drawable.ic_proton_arrow_back),
+                            painter = painterResource(R.drawable.ic_proton_arrow_back),
                             contentDescription = stringResource(id = R.string.presentation_back)
                         )
                     }
@@ -198,20 +183,23 @@ fun PasswordManagementScaffold(
             )
         }
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-                .background(ProtonTheme.colors.backgroundNorm)
-        ) {
-            if (isLoading) {
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
                     color = LocalColors.current.brandNorm
                 )
-            } else {
-                content()
             }
+        } else {
+            content(
+                Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+            )
         }
     }
 }
@@ -222,59 +210,30 @@ private fun PasswordManagementContent(
     onAction: (PasswordManagementAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier,
-        contentPadding = PaddingValues(DefaultSpacing),
+    val showTabs = state.loginPassword.isAvailable && state.mailboxPassword.isAvailable
+
+    Column(
+        modifier = modifier
+            .padding(DefaultSpacing)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(DefaultSpacing)
     ) {
-        if (state.loginPassword.isAvailable && state.mailboxPassword.isAvailable) {
-            item {
-                PasswordManagementTabs(
-                    selectedTab = state.selectedTab,
-                    onTabSelected = { onAction(SelectTab(it)) }
-                )
+        if (showTabs) {
+            PasswordManagementTabs(
+                selectedTab = state.selectedTab,
+                onTabSelected = { onAction(SelectTab(it)) }
+            )
+
+            when (state.selectedTab) {
+                PasswordManagementState.Tab.LOGIN -> LoginPasswordGroup(state, onAction)
+                PasswordManagementState.Tab.MAILBOX -> MailboxPasswordGroup(state, onAction)
             }
-        }
-
-        when {
-            state.loginPassword.isAvailable && state.mailboxPassword.isAvailable -> {
-                when (state.selectedTab) {
-                    PasswordManagementState.Tab.LOGIN -> {
-                        item {
-                            LoginPasswordGroup(
-                                state = state,
-                                onAction = onAction
-                            )
-                        }
-                    }
-
-                    PasswordManagementState.Tab.MAILBOX -> {
-                        item {
-                            MailboxPasswordGroup(
-                                state = state,
-                                onAction = onAction
-                            )
-                        }
-                    }
-                }
+        } else {
+            if (state.loginPassword.isAvailable) {
+                LoginPasswordGroup(state, onAction)
             }
-
-            state.loginPassword.isAvailable && !state.mailboxPassword.isAvailable -> {
-                item {
-                    LoginPasswordGroup(
-                        state = state,
-                        onAction = onAction
-                    )
-                }
-            }
-
-            !state.loginPassword.isAvailable && state.mailboxPassword.isAvailable -> {
-                item {
-                    MailboxPasswordGroup(
-                        state = state,
-                        onAction = onAction
-                    )
-                }
+            if (state.mailboxPassword.isAvailable) {
+                MailboxPasswordGroup(state, onAction)
             }
         }
     }
@@ -286,10 +245,13 @@ private fun PasswordManagementTabs(
     onTabSelected: (PasswordManagementState.Tab) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val tabs = listOf(
-        PasswordManagementState.Tab.LOGIN to R.string.settings_password_management_tab_main_password,
-        PasswordManagementState.Tab.MAILBOX to R.string.settings_password_management_tab_second_password
-    )
+    val tabs = remember {
+        listOf(
+            PasswordManagementState.Tab.LOGIN to R.string.settings_password_management_tab_main_password,
+            PasswordManagementState.Tab.MAILBOX to R.string.settings_password_management_tab_second_password
+        )
+    }
+
 
     val selectedIndex = tabs.indexOfFirst { it.first == selectedTab }.takeIf { it >= 0 } ?: 0
 
@@ -300,12 +262,10 @@ private fun PasswordManagementTabs(
             .padding(top = DefaultSpacing),
         backgroundColor = Color.Transparent,
         indicator = { tabPositions ->
-            if (selectedIndex < tabPositions.size) {
-                TabRowDefaults.Indicator(
-                    modifier = Modifier.tabIndicatorOffset(tabPositions[selectedIndex]),
-                    color = ProtonTheme.colors.textNorm
-                )
-            }
+            TabRowDefaults.Indicator(
+                modifier = Modifier.tabIndicatorOffset(tabPositions[selectedIndex]),
+                color = ProtonTheme.colors.textNorm
+            )
         }
     ) {
         tabs.forEachIndexed { index, (tab, stringRes) ->
@@ -333,42 +293,38 @@ private fun CurrentPasswordField(
     currentPassword: String,
     onCurrentPasswordChanged: (String) -> Unit,
     labelRes: Int,
-    validationError: ValidationError?,
-    showField: Boolean = true
+    validationError: ValidationError?
 ) {
     val currentPasswordError = when (validationError) {
         is ValidationError.CurrentPasswordEmpty -> stringResource(R.string.auth_signup_validation_password)
         else -> null
     }
-    if (showField) {
-        ProtonPasswordOutlinedTextFieldWithError(
-            text = currentPassword,
-            onValueChanged = onCurrentPasswordChanged,
-            label = { Text(text = stringResource(labelRes)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                autoCorrectEnabled = false,
-                imeAction = ImeAction.Next,
-                keyboardType = KeyboardType.Password
-            ),
-            errorText = currentPasswordError,
-            modifier = modifier.fillMaxWidth()
-        )
-    }
+    ProtonPasswordOutlinedTextFieldWithError(
+        text = currentPassword,
+        onValueChanged = onCurrentPasswordChanged,
+        label = { Text(text = stringResource(labelRes)) },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            autoCorrectEnabled = false,
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Password
+        ),
+        errorText = currentPasswordError,
+        modifier = modifier.fillMaxWidth()
+    )
 }
 
 @Composable
-private fun ForgotPasswordLink(showLink: Boolean, modifier: Modifier = Modifier) {
-    if (showLink) {
-        AnnotatedLinkText(
-            fullText = stringResource(R.string.settings_password_management_change_password_note),
-            linkText = stringResource(R.string.settings_password_management_forgot_main_password),
-            url = stringResource(R.string.forgot_password_link),
-            modifier = modifier
-        )
-    }
+private fun ForgotPasswordLink(modifier: Modifier = Modifier) {
+    AnnotatedLinkText(
+        fullText = stringResource(R.string.settings_password_management_change_password_note),
+        linkText = stringResource(R.string.settings_password_management_forgot_main_password),
+        url = stringResource(R.string.forgot_password_link),
+        modifier = modifier
+    )
 }
 
+@Suppress("UseComposableActions")
 @Composable
 private fun PasswordFieldPair(
     newPassword: String,
@@ -382,18 +338,9 @@ private fun PasswordFieldPair(
     confirmPasswordLabelRes: Int,
     modifier: Modifier = Modifier
 ) {
-    val passwordError = when (validationError) {
-        is PasswordEmpty -> stringResource(R.string.auth_signup_validation_password)
-        is PasswordInvalid -> stringResource(R.string.auth_signup_validation_password_input_invalid)
-        is Other -> validationError.message ?: stringResource(R.string.auth_signup_validation_password_input_invalid)
-        else -> null
-    }
+    val passwordError = passwordErrorMessage(validationError)
+    val confirmPasswordError = confirmPasswordErrorMessage(validationError)
 
-    val confirmPasswordError = when (validationError) {
-        is ConfirmPasswordMissMatch -> stringResource(R.string.auth_signup_validation_passwords_do_not_match)
-        is Other -> validationError.message ?: stringResource(R.string.auth_signup_validation_password_input_invalid)
-        else -> null
-    }
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(DefaultSpacing)
@@ -467,8 +414,11 @@ private fun PasswordSaveButton(
 }
 
 @Composable
-private fun LoginPasswordGroup(
-    state: PasswordManagementState.UserInput,
+private fun PasswordGroup(
+    config: PasswordGroupConfig,
+    validationError: ValidationError?,
+    loading: Boolean,
+    showForgotPasswordLink: Boolean,
     onAction: (UserInputAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -481,42 +431,69 @@ private fun LoginPasswordGroup(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(DefaultSpacing)
     ) {
-        CurrentPasswordField(
-            currentPassword = currentPassword,
-            onCurrentPasswordChanged = { currentPassword = it },
-            labelRes = R.string.settings_main_password_hint_current,
-            validationError = state.loginPassword.validationError,
-            showField = state.loginPassword.currentPasswordNeeded
-        )
+        if (config.currentPasswordNeeded) {
+            CurrentPasswordField(
+                currentPassword = currentPassword,
+                onCurrentPasswordChanged = { currentPassword = it },
+                labelRes = config.currentPasswordLabelRes,
+                validationError = validationError
+            )
+        }
 
-        ForgotPasswordLink(
-            showLink = state.loginPassword.isAvailable && state.mailboxPassword.isAvailable
-        )
+        if (showForgotPasswordLink) {
+            ForgotPasswordLink()
+        }
 
         PasswordFieldPair(
             newPassword = newPassword,
             confirmNewPassword = confirmNewPassword,
-            passwordValidationType = PasswordValidationType.Main,
-            validationError = state.loginPassword.validationError,
+            passwordValidationType = config.passwordValidationType,
+            validationError = validationError,
             onNewPasswordChanged = { newPassword = it },
             onConfirmPasswordChanged = { confirmNewPassword = it },
-            onPasswordValidatorToken = {
-                passwordValidatorToken = it
-            },
-            newPasswordLabelRes = R.string.settings_main_password_hint_new,
-            confirmPasswordLabelRes = R.string.settings_main_password_hint_new_confirm
+            onPasswordValidatorToken = { passwordValidatorToken = it },
+            newPasswordLabelRes = config.newPasswordLabelRes,
+            confirmPasswordLabelRes = config.confirmPasswordLabelRes
         )
 
         PasswordSaveButton(
-            loading = state.loginPassword.loading,
+            loading = loading,
             onSaveClick = {
                 onAction(
-                    SaveLoginPassword(currentPassword, newPassword, confirmNewPassword, passwordValidatorToken)
+                    config.createSaveAction(currentPassword, newPassword, confirmNewPassword, passwordValidatorToken)
                 )
             },
-            buttonTextRes = R.string.settings_save_main_password
+            buttonTextRes = config.buttonTextRes
         )
     }
+}
+
+@Composable
+private fun LoginPasswordGroup(
+    state: PasswordManagementState.UserInput,
+    onAction: (UserInputAction) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val config = PasswordGroupConfig(
+        currentPasswordNeeded = state.loginPassword.currentPasswordNeeded,
+        currentPasswordLabelRes = R.string.settings_main_password_hint_current,
+        newPasswordLabelRes = R.string.settings_main_password_hint_new,
+        confirmPasswordLabelRes = R.string.settings_main_password_hint_new_confirm,
+        buttonTextRes = R.string.settings_save_main_password,
+        passwordValidationType = PasswordValidationType.Main,
+        createSaveAction = { current, new, confirm, token ->
+            SaveLoginPassword(current, new, confirm, token)
+        }
+    )
+
+    PasswordGroup(
+        config = config,
+        validationError = state.loginPassword.validationError,
+        loading = state.loginPassword.loading,
+        showForgotPasswordLink = state.loginPassword.isAvailable && state.mailboxPassword.isAvailable,
+        onAction = onAction,
+        modifier = modifier
+    )
 }
 
 @Composable
@@ -525,145 +502,54 @@ private fun MailboxPasswordGroup(
     onAction: (UserInputAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var passwordValidatorToken by remember { mutableStateOf<PasswordValidatorToken?>(null) }
-    var currentLoginPassword by remember { mutableStateOf("") }
-    var newPassword by remember { mutableStateOf("") }
-    var confirmNewPassword by remember { mutableStateOf("") }
+    val config = PasswordGroupConfig(
+        currentPasswordNeeded = true, // it is always needed for mailbox password
+        currentPasswordLabelRes = R.string.settings_second_password_hint_current_main_password,
+        newPasswordLabelRes = R.string.settings_second_password_hint_new,
+        confirmPasswordLabelRes = R.string.settings_second_password_hint_new_confirm,
+        buttonTextRes = R.string.settings_save_second_password,
+        passwordValidationType = PasswordValidationType.Secondary,
+        createSaveAction = { current, new, confirm, token ->
+            SaveMailboxPassword(current, new, confirm, token)
+        }
+    )
 
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(DefaultSpacing)
-    ) {
-        CurrentPasswordField(
-            currentPassword = currentLoginPassword,
-            onCurrentPasswordChanged = { currentLoginPassword = it },
-            labelRes = R.string.settings_second_password_hint_current_main_password,
-            validationError = state.mailboxPassword.validationError,
-            showField = true
-        )
-
-        ForgotPasswordLink(
-            showLink = state.loginPassword.isAvailable && state.mailboxPassword.isAvailable
-        )
-
-        PasswordFieldPair(
-            newPassword = newPassword,
-            confirmNewPassword = confirmNewPassword,
-            passwordValidationType = PasswordValidationType.Secondary,
-            validationError = state.mailboxPassword.validationError,
-            onNewPasswordChanged = { newPassword = it },
-            onConfirmPasswordChanged = { confirmNewPassword = it },
-            onPasswordValidatorToken = { passwordValidatorToken = it },
-            newPasswordLabelRes = R.string.settings_second_password_hint_new,
-            confirmPasswordLabelRes = R.string.settings_second_password_hint_new_confirm
-        )
-
-        PasswordSaveButton(
-            loading = state.mailboxPassword.loading,
-            onSaveClick = {
-                onAction(
-                    SaveMailboxPassword(
-                        currentLoginPassword,
-                        newPassword,
-                        confirmNewPassword,
-                        passwordValidatorToken
-                    )
-                )
-            },
-            buttonTextRes = R.string.settings_save_second_password
-        )
-    }
+    PasswordGroup(
+        config = config,
+        validationError = state.mailboxPassword.validationError,
+        loading = state.mailboxPassword.loading,
+        showForgotPasswordLink = state.loginPassword.isAvailable && state.mailboxPassword.isAvailable,
+        onAction = onAction,
+        modifier = modifier
+    )
 }
 
-@Preview(name = "Light mode")
-@Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
-@Preview(name = "Foldable", device = Devices.FOLDABLE)
-@Preview(name = "Tablet", device = Devices.PIXEL_C)
-@Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable
+private fun passwordErrorMessage(validationError: ValidationError?): String? = when (validationError) {
+    is PasswordEmpty -> stringResource(R.string.auth_signup_validation_password)
+    is PasswordInvalid -> stringResource(R.string.auth_signup_validation_password_input_invalid)
+    is Other -> validationError.message ?: stringResource(R.string.auth_signup_validation_password_input_invalid)
+    else -> null
+}
+
+@Composable
+private fun confirmPasswordErrorMessage(validationError: ValidationError?): String? = when (validationError) {
+    is ConfirmPasswordMissMatch -> stringResource(R.string.auth_signup_validation_passwords_do_not_match)
+    is Other -> validationError.message ?: stringResource(R.string.auth_signup_validation_password_input_invalid)
+    else -> null
+}
+
 @Preview
-fun PassManagementScreenPreview() {
+@Composable
+private fun PassManagementScreenMailboxTabPreview(
+    @PreviewParameter(PasswordManagementScreenPreviewProvider::class)
+    state: PasswordManagementState
+) {
     ProtonTheme {
         PasswordManagementScreen(
-            state = PasswordManagementState.UserInput(
-                selectedTab = PasswordManagementState.Tab.LOGIN,
-                loginPassword = LoginPasswordState(
-                    current = "",
-                    new = "",
-                    confirmNew = "",
-                    validationError = null,
-                    isAvailable = true,
-                    currentPasswordNeeded = true
-                ),
-                mailboxPassword = MailboxPasswordState(
-                    current = "",
-                    new = "",
-                    confirmNew = "",
-                    validationError = null,
-                    isAvailable = true
-                )
-            ),
+            state = state,
             onAction = {}
         )
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun PassManagementScreenLoadingPreview() {
-    ProtonTheme {
-        PasswordManagementScreen(
-            state = PasswordManagementState.Loading,
-            onAction = {},
-            onBackClicked = {}
-        )
-    }
-}
-
-@Preview(name = "Login tab only")
-@Composable
-private fun PassManagementScreenLoginOnlyPreview() {
-    ProtonTheme {
-        PasswordManagementScreen(
-            state = PasswordManagementState.UserInput(
-                selectedTab = PasswordManagementState.Tab.LOGIN,
-                loginPassword = LoginPasswordState(
-                    current = "current123",
-                    new = "newPassword123",
-                    confirmNew = "newPassword123",
-                    validationError = PasswordEmpty,
-                    isAvailable = true,
-                    currentPasswordNeeded = true
-                ),
-                mailboxPassword = MailboxPasswordState(
-                    isAvailable = false
-                )
-            ),
-            onAction = {}
-        )
-    }
-}
-
-@Preview(name = "Mailbox tab")
-@Composable
-private fun PassManagementScreenMailboxTabPreview() {
-    ProtonTheme {
-        PasswordManagementScreen(
-            state = PasswordManagementState.UserInput(
-                selectedTab = PasswordManagementState.Tab.MAILBOX,
-                loginPassword = LoginPasswordState(
-                    isAvailable = true
-                ),
-                mailboxPassword = MailboxPasswordState(
-                    current = "mainPassword123",
-                    new = "mailboxPassword456",
-                    confirmNew = "mailboxPassword456",
-                    validationError = PasswordEmpty,
-                    isAvailable = true
-                )
-            ),
-            onAction = {}
-        )
-    }
-}

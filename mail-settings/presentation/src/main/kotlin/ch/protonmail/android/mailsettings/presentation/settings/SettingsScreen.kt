@@ -213,6 +213,7 @@ fun SettingsItemDivider() {
     )
 }
 
+@Suppress("UseComposableActions")
 @Composable
 fun AccountSettingsItem(
     modifier: Modifier = Modifier,

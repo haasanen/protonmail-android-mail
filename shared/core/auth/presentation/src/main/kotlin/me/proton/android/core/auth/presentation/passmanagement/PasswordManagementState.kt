@@ -52,6 +52,10 @@ sealed interface PasswordManagementState {
         open val userInput: UserInput
     ) : PasswordManagementState {
 
+        data class InvalidUserId(
+            override val userInput: UserInput
+        ) : Error(null, userInput)
+
         data class General(
             override val error: String?,
             override val userInput: UserInput
@@ -62,7 +66,16 @@ sealed interface PasswordManagementState {
         ) : Error(null, userInput)
     }
 
+    fun userInputOrNull(): UserInput? = when (this) {
+        is UserInput -> this
+        is Awaiting2faForLogin -> this.userInput
+        is Awaiting2faForMailbox -> this.userInput
+        is Error -> this.userInput
+        else -> null
+    }
+
     enum class Tab { LOGIN, MAILBOX }
+
 }
 
 sealed interface ValidationError {

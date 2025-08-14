@@ -31,8 +31,7 @@ class ObserveCoreAccountImpl @Inject constructor(
     private val observeCoreAccounts: ObserveCoreAccounts
 ) : ObserveCoreAccount {
 
-    override operator fun invoke(userId: CoreUserId): Flow<CoreAccount?> =
-        observeCoreAccounts().map { list ->
-            list.firstOrNull { it.userId.id == userId.id }
-        }.distinctUntilChanged()
+    override operator fun invoke(userId: CoreUserId): Flow<CoreAccount?> = observeCoreAccounts().map { list ->
+        list.firstOrNull { it.userId.id == userId.id }
+    }.distinctUntilChanged()
 }

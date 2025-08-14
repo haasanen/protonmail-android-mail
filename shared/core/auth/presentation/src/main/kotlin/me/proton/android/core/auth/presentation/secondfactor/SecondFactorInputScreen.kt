@@ -177,10 +177,11 @@ fun SecondFactorInputScaffold(
             )
         }
     ) { paddingValues ->
-        Box(modifier = Modifier
-            .padding(paddingValues)
-            .verticalScroll(rememberScrollState())
-            .imePadding()
+        Box(
+            modifier = Modifier
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+                .imePadding()
         ) {
             Column(modifier = Modifier.padding(DefaultSpacing)) {
                 Text(

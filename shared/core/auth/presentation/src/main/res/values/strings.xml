@@ -158,7 +158,7 @@
     <string name="settings_save_main_password">Save new main password</string>
     <string name="settings_password_management_tab_main_password">Main password</string>
     <string name="settings_password_management_tab_second_password">Second password</string>
-    <string name="settings_password_management_change_password_note">To change either of your passwords, you\'ll need to know your main password.</string>
+    <string name="settings_password_management_change_password_note">To change either of your passwords, you\'ll need to know your main password.\u0020</string>
     <string name="settings_password_management_forgot_main_password">Forgot your main password?</string>
     <string name="settings_password_management_header">Change password</string>
     <string name="settings_password_management_cannot_change_password">You can\'t change your backup password. Please contact your administrator.</string>
@@ -175,5 +175,8 @@
     <string name="settings_password_management_start_recovery">Don\'t know your current password?</string>
     <string name="settings_password_management_2fa">Two FA is needed</string>
     <string name="settings_password_invalid_2fa">Invalid second factor code. Please try again.</string>
+    <string name="settings_password_error_empty">Password cannot be empty.</string>
+    <string name="settings_password_error_match">Passwords do not match.</string>
+    <string name="settings_password_error_invalid_recovery">Invalid recovery code.</string>
     <string name="settings_password_general_error">An error occurred.</string>
 </resources>

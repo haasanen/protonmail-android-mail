@@ -25,6 +25,6 @@ internal object PassManagementArg {
     const val ARG_USER_ID = "ARG_USER_ID"
 
     fun SavedStateHandle.getUserId(): String = checkNotNull(get<String>(ARG_USER_ID)) {
-        "Missing '${ARG_USER_ID}' key in SavedStateHandle"
+        "Missing '$ARG_USER_ID' key in SavedStateHandle"
     }
 }
