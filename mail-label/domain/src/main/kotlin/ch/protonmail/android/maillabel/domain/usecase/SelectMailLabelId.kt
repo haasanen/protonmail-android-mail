@@ -20,6 +20,7 @@ package ch.protonmail.android.maillabel.domain.usecase
 
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.repository.SelectedMailLabelIdRepository
+import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class SelectMailLabelId @Inject constructor(
@@ -28,4 +29,7 @@ class SelectMailLabelId @Inject constructor(
     operator fun invoke(mailLabelId: MailLabelId) = selectedMailLabelIdRepository.selectLocation(mailLabelId)
 
     fun setLocationAsLoaded(mailLabelId: MailLabelId) = selectedMailLabelIdRepository.setLocationAsLoaded(mailLabelId)
+
+    suspend fun selectInitialLocationIfNeeded(userId: UserId, mailLabelIds: Set<MailLabelId>) =
+        selectedMailLabelIdRepository.selectInitialLocationIfNeeded(userId, mailLabelIds)
 }

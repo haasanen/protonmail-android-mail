@@ -48,7 +48,10 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
+@OptIn(ExperimentalAtomicApi::class)
 @Singleton
 class InMemorySelectedMailLabelIdRepositoryImpl @Inject constructor(
     @AppScope private val appScope: CoroutineScope,
@@ -77,6 +80,8 @@ class InMemorySelectedMailLabelIdRepositoryImpl @Inject constructor(
             replay = 1
         )
 
+    private var isInitialLocationSelected = AtomicBoolean(false)
+
     init {
         observePrimaryUserId()
             .filterNotNull()
@@ -98,27 +103,23 @@ class InMemorySelectedMailLabelIdRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSelectedMailLabelId(): MailLabelId {
-        val mailLabelId = baseFlowOfAllLabelChanges.value?.mailLabelId
-        return if (mailLabelId == null) {
-            // The initial label id was not selected. Try again.
-            val userId = observePrimaryUserId().filterNotNull().first()
-            selectInitialLocation(userId)
-            baseFlowOfAllLabelChanges.value?.mailLabelId ?: MailLabelId.System(SystemLabelId.Inbox.labelId).also {
-                Timber.w("Failed to recover from initial label id not being selected")
-            }
-        } else {
-            mailLabelId
-        }
-    }
+    override suspend fun getSelectedMailLabelId(): MailLabelId =
+        baseFlowOfAllLabelChanges.filterNotNull().first().mailLabelId
 
     override fun observeLoadedMailLabelId(): Flow<MailLabelId> = loadedFlow
 
     override fun observeSelectedMailLabelId(): Flow<MailLabelId> = requestedFlow
 
+    override suspend fun selectInitialLocationIfNeeded(userId: UserId, mailLabelIds: Set<MailLabelId>) {
+        if (isInitialLocationSelected.load().not() || getSelectedMailLabelId() !in mailLabelIds) {
+            selectInitialLocation(userId)
+        }
+    }
+
     private suspend fun selectInitialLocation(userId: UserId) {
         getInitialLabelId(userId)?.let {
             selectLocation(it)
+            isInitialLocationSelected.store(true)
         } ?: Timber.d("Initial label id was not selected")
     }
 

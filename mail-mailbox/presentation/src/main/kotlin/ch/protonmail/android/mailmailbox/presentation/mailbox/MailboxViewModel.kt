@@ -199,16 +199,6 @@ class MailboxViewModel @Inject constructor(
             .onEach { currentMailLabel ->
                 currentMailLabel?.let {
                     emitNewStateFrom(MailboxEvent.SelectedLabelChanged(currentMailLabel))
-                } ?: run {
-                    primaryUserId.firstOrNull()?.let { userId ->
-                        findLocalSystemLabelId(userId, SystemLabelId.Inbox)?.let { inboxLabelId ->
-                            emitNewStateFrom(
-                                MailboxEvent.SelectedLabelChanged(
-                                    MailLabel.System(inboxLabelId, SystemLabelId.Inbox, 0)
-                                )
-                            )
-                        }
-                    }
                 }
             }
             .filterNotNull()
@@ -1078,6 +1068,7 @@ class MailboxViewModel @Inject constructor(
 
     private fun observeCurrentMailLabel() = observeMailLabels()
         .map { mailLabels ->
+            selectMailLabelId.selectInitialLocationIfNeeded(primaryUserId.first(), mailLabels.allById.keys)
             mailLabels.allById[getSelectedMailLabelId()]
         }
 

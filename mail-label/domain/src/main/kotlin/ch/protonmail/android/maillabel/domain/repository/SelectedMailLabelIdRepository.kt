@@ -20,6 +20,7 @@ package ch.protonmail.android.maillabel.domain.repository
 
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import kotlinx.coroutines.flow.Flow
+import me.proton.core.domain.entity.UserId
 
 interface SelectedMailLabelIdRepository {
 
@@ -47,4 +48,9 @@ interface SelectedMailLabelIdRepository {
      * Emits new MailLabelId values when a location change is requested.
      */
     fun observeSelectedMailLabelId(): Flow<MailLabelId>
+
+    /**
+     * Updates the selected mail label to Inbox
+     */
+    suspend fun selectInitialLocationIfNeeded(userId: UserId, mailLabelIds: Set<MailLabelId>)
 }

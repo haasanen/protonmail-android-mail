@@ -26,5 +26,4 @@ class GetSelectedMailLabelId @Inject constructor(
 ) {
 
     suspend operator fun invoke() = selectedMailLabelIdRepository.getSelectedMailLabelId()
-
 }
