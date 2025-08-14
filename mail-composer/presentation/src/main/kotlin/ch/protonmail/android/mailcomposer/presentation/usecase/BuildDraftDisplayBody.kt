@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
+import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import javax.inject.Inject
 
 internal const val EDITOR_ID = "EditorId"
@@ -32,8 +32,8 @@ class BuildDraftDisplayBody @Inject constructor(
     private val css: String by lazy { getCustomCss() }
     private val javascript: String by lazy { getCustomJs() }
 
-    operator fun invoke(messageBodyWithType: MessageBodyWithType): DraftDisplayBodyUiModel {
-        val bodyContent = messageBodyWithType.messageBody
+    operator fun invoke(draftBody: DraftBody): DraftDisplayBodyUiModel {
+        val bodyContent = draftBody.value
         return buildHtmlTemplate(bodyContent, css, javascript)
     }
 

@@ -86,7 +86,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
@@ -169,9 +168,9 @@ internal class ComposerViewModelTest {
     private val isMessagePasswordSet = mockk<IsMessagePasswordSet>()
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
-        val bodySlot = slot<MessageBodyWithType>()
+        val bodySlot = slot<DraftBody>()
         every { this@mockk.invoke(capture(bodySlot)) } answers {
-            DraftDisplayBodyUiModel("<html> ${bodySlot.captured.messageBody} </html>")
+            DraftDisplayBodyUiModel("<html> ${bodySlot.captured.value} </html>")
         }
     }
     private val reducer = ComposerStateReducer()

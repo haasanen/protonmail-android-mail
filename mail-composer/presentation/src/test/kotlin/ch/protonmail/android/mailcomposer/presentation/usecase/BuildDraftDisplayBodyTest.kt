@@ -1,8 +1,7 @@
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
+import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
-import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test
@@ -18,7 +17,7 @@ class BuildDraftDisplayBodyTest {
     @Test
     fun `returns html template with injected css and javascript`() {
         // Given
-        val messageBodyWithType = MessageBodyWithType(messageBody, MimeTypeUiModel.Html)
+        val messageBodyWithType = DraftBody(messageBody)
         every { getCustomCss() } returns rawCustomCss
         every { getCustomJs() } returns rawCustomJs
         val expected = buildHtmlTemplate(messageBody, rawCustomCss, rawCustomJs)

@@ -106,8 +106,6 @@ import ch.protonmail.android.mailmessage.domain.model.DraftAction.Reply
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.ReplyAll
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
-import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -189,13 +187,13 @@ class ComposerViewModel @AssistedInject constructor(
     internal val displayBody: StateFlow<DraftDisplayBodyUiModel> =
         snapshotFlow { bodyTextField.text }
             .mapLatest { text ->
-                val messageBodyWithType = MessageBodyWithType(text.toString(), MimeTypeUiModel.Html)
-                buildDraftDisplayBody(messageBodyWithType)
+                val draftBody = DraftBody(text.toString())
+                buildDraftDisplayBody(draftBody)
             }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
-                initialValue = buildDraftDisplayBody(MessageBodyWithType("", MimeTypeUiModel.Html))
+                initialValue = buildDraftDisplayBody(DraftBody(""))
             )
 
     private var pendingStoreDraftJob: Job? = null
@@ -490,8 +488,8 @@ class ComposerViewModel @AssistedInject constructor(
     }
 
     private fun DraftFields.toDraftUiModel(): DraftUiModel {
-        val messageBodyWithType = MessageBodyWithType(this.body.value, MimeTypeUiModel.Html)
-        val draftDisplayBody = buildDraftDisplayBody(messageBodyWithType)
+        val draftBody = DraftBody(this.body.value)
+        val draftDisplayBody = buildDraftDisplayBody(draftBody)
 
         return DraftUiModel(this, draftDisplayBody)
     }
@@ -577,7 +575,7 @@ class ComposerViewModel @AssistedInject constructor(
 
                 // This needs to be created directly as we're emitting a state change.
                 val draftDisplayBody = buildDraftDisplayBody(
-                    MessageBodyWithType(bodyWithNewSignature.value, MimeTypeUiModel.Html)
+                    DraftBody(bodyWithNewSignature.value)
                 )
 
                 emitNewStateFor(CompositeEvent.UserChangedSender(newSender, draftDisplayBody))
