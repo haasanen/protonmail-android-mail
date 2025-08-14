@@ -29,11 +29,11 @@ class BuildDraftDisplayBody @Inject constructor(
     private val getCustomJs: GetCustomJs
 ) {
 
+    private val css: String by lazy { getCustomCss() }
+    private val javascript: String by lazy { getCustomJs() }
+
     operator fun invoke(messageBodyWithType: MessageBodyWithType): DraftDisplayBodyUiModel {
         val bodyContent = messageBodyWithType.messageBody
-        val css: String = getCustomCss()
-        val javascript: String = getCustomJs()
-
         return buildHtmlTemplate(bodyContent, css, javascript)
     }
 
