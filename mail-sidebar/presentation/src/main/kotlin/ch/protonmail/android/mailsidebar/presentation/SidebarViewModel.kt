@@ -38,8 +38,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.proton.core.util.kotlin.exhaustive
@@ -64,23 +64,21 @@ class SidebarViewModel @Inject constructor(
         initialValue = null
     )
 
-    val state: StateFlow<State> = primaryUser.flatMapLatest { userId ->
-        userId?.let {
-            combine(
-                observeLoadedMailLabelId(),
-                observeMailLabels(userId),
-                observeUnreadCounters(userId)
-            ) { loadedMailLabelId, mailLabels, counters ->
-                State.Enabled(
-                    selectedMailLabelId = loadedMailLabelId,
-                    // Pending Account team to migrate "paymentManager" to rust
-                    // (current implementation isn't aware of the rust session and throws
-                    // exception crashing the app if no user is logged into "core"
-                    canChangeSubscription = false,
-                    mailLabels = mailLabels.toUiModels(counters.toMap(), loadedMailLabelId)
-                )
-            }
-        } ?: flowOf(State.Disabled)
+    val state: StateFlow<State> = primaryUser.filterNotNull().flatMapLatest { userId ->
+        combine(
+            observeLoadedMailLabelId(),
+            observeMailLabels(userId),
+            observeUnreadCounters(userId)
+        ) { loadedMailLabelId, mailLabels, counters ->
+            State.Enabled(
+                selectedMailLabelId = loadedMailLabelId,
+                // Pending Account team to migrate "paymentManager" to rust
+                // (current implementation isn't aware of the rust session and throws
+                // exception crashing the app if no user is logged into "core"
+                canChangeSubscription = false,
+                mailLabels = mailLabels.toUiModels(counters.toMap(), loadedMailLabelId)
+            )
+        }
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis),
