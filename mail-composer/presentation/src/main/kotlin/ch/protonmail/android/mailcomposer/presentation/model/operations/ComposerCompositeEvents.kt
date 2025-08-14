@@ -49,6 +49,13 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
             )
         )
 
+        is DraftContentUpdated -> ComposerStateModifications(
+            mainModification = MainStateModification.OnDraftReady(draftUiModel),
+            effectsModification = ContentEffectsStateModifications.DraftBodyChanged(
+                refreshedBody = draftUiModel.draftDisplayBodyUiModel
+            )
+        )
+
         is SenderAddressesListReady -> ComposerStateModifications(
             mainModification = MainStateModification.SendersListReady(sendersList),
             effectsModification = BottomSheetEffectsStateModification.ShowBottomSheet
@@ -65,7 +72,7 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
         )
 
         is UserChangedSender -> ComposerStateModifications(
-            mainModification = MainStateModification.UpdateSender(newSender, refreshedBody),
+            mainModification = MainStateModification.UpdateSender(newSender),
             effectsModification = ContentEffectsStateModifications.DraftSenderChanged(refreshedBody)
         )
 
@@ -93,6 +100,11 @@ internal sealed interface CompositeEvent : ComposerStateEvent {
         val draftUiModel: DraftUiModel,
         val isDataRefreshed: Boolean,
         val bodyShouldTakeFocus: Boolean
+    ) : CompositeEvent
+
+    data class DraftContentUpdated(
+        val draftUiModel: DraftUiModel,
+        val shouldForceReload: Boolean
     ) : CompositeEvent
 
     data class SenderAddressesListReady(val sendersList: List<SenderUiModel>) : CompositeEvent

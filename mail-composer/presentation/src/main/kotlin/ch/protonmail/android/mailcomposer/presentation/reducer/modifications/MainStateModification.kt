@@ -18,10 +18,8 @@
 
 package ch.protonmail.android.mailcomposer.presentation.reducer.modifications
 
-import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
-import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import kotlinx.collections.immutable.toImmutableList
@@ -31,12 +29,7 @@ internal sealed interface MainStateModification : ComposerStateModification<Comp
     data class OnDraftReady(val draftUiModel: DraftUiModel) : MainStateModification {
 
         override fun apply(state: ComposerState.Main): ComposerState.Main = state.copy(
-            fields = state.fields.copy(
-                sender = SenderUiModel(draftUiModel.draftFields.sender.value),
-                body = draftUiModel.draftFields.body.value,
-                displayBody = draftUiModel.draftDisplayBodyUiModel
-            ),
-            loadingType = ComposerState.LoadingType.None
+            sender = SenderUiModel(draftUiModel.draftFields.sender.value)
         )
     }
 
@@ -45,16 +38,10 @@ internal sealed interface MainStateModification : ComposerStateModification<Comp
         override fun apply(state: ComposerState.Main): ComposerState.Main = state.copy(loadingType = value)
     }
 
-    data class UpdateSender(
-        val sender: SenderEmail,
-        val bodyWithNewSenderSignature: DraftDisplayBodyUiModel
-    ) : MainStateModification {
+    data class UpdateSender(val sender: SenderEmail) : MainStateModification {
 
         override fun apply(state: ComposerState.Main): ComposerState.Main = state.copy(
-            fields = state.fields.copy(
-                sender = SenderUiModel(sender.value),
-                displayBody = bodyWithNewSenderSignature
-            )
+            sender = SenderUiModel(sender.value)
         )
     }
 
@@ -67,15 +54,5 @@ internal sealed interface MainStateModification : ComposerStateModification<Comp
     data class UpdateSubmittable(val isSubmittable: Boolean) : MainStateModification {
 
         override fun apply(state: ComposerState.Main): ComposerState.Main = state.copy(isSubmittable = isSubmittable)
-    }
-
-    data class UpdateBody(
-        val draftBody: DraftBody,
-        val draftDisplayBody: DraftDisplayBodyUiModel
-    ) : MainStateModification {
-
-        override fun apply(state: ComposerState.Main): ComposerState.Main = state.copy(
-            fields = state.fields.copy(body = draftBody.value, displayBody = draftDisplayBody)
-        )
     }
 }

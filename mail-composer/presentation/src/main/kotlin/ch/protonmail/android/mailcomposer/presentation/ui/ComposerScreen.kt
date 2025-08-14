@@ -74,7 +74,7 @@ import ch.protonmail.android.mailcommon.presentation.compose.toPx
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcommon.presentation.ui.TimePickerBottomSheetContent
 import ch.protonmail.android.mailcommon.presentation.ui.TimePickerUiModel
-import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcommon.presentation.ui.replaceText
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
@@ -134,6 +134,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             type = ProtonSnackbarType.NORM
         )
     }
+
+    val displayBody by viewModel.displayBody.collectAsStateWithLifecycle()
 
     fun dismissBottomSheet(continuation: () -> Unit = {}) {
         scope.launch { bottomSheetState.hide() }
@@ -207,7 +209,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             when (val sheetType = bottomSheetType.value) {
                 BottomSheetType.ChangeSender -> ChangeSenderBottomSheetContent(
                     mainState.senderAddresses,
-                    mainState.fields.sender,
+                    mainState.sender,
                     { sender -> viewModel.submit(ComposerAction.SetSenderAddress(sender)) }
                 )
 
@@ -350,7 +352,9 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                         modifier = Modifier.testTag(ComposerTestTags.ComposerForm),
                         changeFocusToField = effectsState.changeFocusToField,
                         actions = ComposerForm.Actions(
-                            onBodyChanged = { viewModel.submit(ComposerAction.DraftBodyChanged(DraftBody(it))) },
+                            onBodyChanged = { newBody ->
+                                viewModel.bodyTextField.replaceText(newBody)
+                            },
                             onChangeSender = {
                                 bottomSheetType.value = BottomSheetType.ChangeSender
                                 viewModel.submit(ComposerAction.ChangeSender)
@@ -379,10 +383,10 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                             },
                             onInlineImageAdded = { viewModel.submit(ComposerAction.AddAttachments(listOf(it))) }
                         ),
-                        senderEmail = mainState.fields.sender.email,
+                        senderEmail = mainState.sender.email,
                         recipientsStateManager = recipientsStateManager,
                         subjectTextField = viewModel.subjectTextField,
-                        bodyInitialValue = mainState.fields.displayBody,
+                        bodyInitialValue = displayBody,
                         attachments = attachmentsState.uiModel,
                         focusTextBody = effectsState.focusTextBody,
                         formHeightPx = formHeightPx,

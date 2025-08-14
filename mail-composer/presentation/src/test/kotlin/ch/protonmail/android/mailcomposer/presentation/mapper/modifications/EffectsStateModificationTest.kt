@@ -193,6 +193,14 @@ internal class EffectsStateModificationTest(
                 initialState.copy(focusTextBody = Effect.of(Unit))
             ),
             arrayOf(
+                "handles draft content changed",
+                initialState,
+                ContentEffectsStateModifications.DraftBodyChanged(
+                    refreshedBody = DraftDisplayBodyUiModel("update")
+                ),
+                initialState.copy(refreshBody = Effect.of(DraftDisplayBodyUiModel("update")))
+            ),
+            arrayOf(
                 "closes composer with saved draft",
                 initialState,
                 CompletionEffectsStateModification.CloseComposer.CloseComposerDraftSaved(MessageId("123")),

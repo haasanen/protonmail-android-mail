@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,22 +16,16 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.model
+package ch.protonmail.android.mailcommon.presentation.ui
 
-data class DraftFields(
-    val sender: SenderEmail,
-    val subject: Subject,
-    val body: DraftBody,
-    val recipientsTo: RecipientsTo,
-    val recipientsCc: RecipientsCc,
-    val recipientsBcc: RecipientsBcc
-)
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.ui.text.TextRange
 
-fun DraftFields.hasAnyRecipient() = recipientsTo.value.isNotEmpty() ||
-    recipientsCc.value.isNotEmpty() || recipientsBcc.value.isNotEmpty()
-
-fun DraftFields.haveBlankSubject() = subject.value.isBlank()
-
-fun DraftFields.haveBlankRecipients() = recipientsTo.value.isEmpty() &&
-    recipientsCc.value.isEmpty() &&
-    recipientsBcc.value.isEmpty()
+fun TextFieldState.replaceText(text: String, resetRange: Boolean = false) {
+    clearText()
+    edit {
+        append(text)
+        if (resetRange) selection = TextRange.Zero
+    }
+}

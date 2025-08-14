@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
+import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
@@ -43,7 +44,7 @@ sealed interface ComposerState {
     }
 
     data class Main(
-        val fields: ComposerFields,
+        val sender: SenderUiModel,
         val senderAddresses: ImmutableList<SenderUiModel>,
         val isSubmittable: Boolean,
         val loadingType: LoadingType
@@ -52,7 +53,7 @@ sealed interface ComposerState {
         companion object {
 
             fun initial() = Main(
-                fields = ComposerFields.initial,
+                sender = SenderUiModel(""),
                 senderAddresses = emptyList<SenderUiModel>().toImmutableList(),
                 isSubmittable = false,
                 loadingType = LoadingType.None
@@ -67,7 +68,10 @@ sealed interface ComposerState {
         companion object {
 
             fun initial() = Attachments(
-                uiModel = AttachmentGroupUiModel(attachments = emptyList())
+                uiModel = AttachmentGroupUiModel(
+                    attachments = emptyList(),
+                    limit = NO_ATTACHMENT_LIMIT
+                )
             )
         }
     }

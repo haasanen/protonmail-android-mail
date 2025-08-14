@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
 import android.net.Uri
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import arrow.core.left
@@ -65,7 +66,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
-import ch.protonmail.android.mailcomposer.presentation.model.ComposerFields
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
@@ -91,7 +91,6 @@ import ch.protonmail.android.mailmessage.presentation.model.attachment.Attachmen
 import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.composer.DraftFieldsTestData
 import ch.protonmail.android.testdata.contact.ContactSample
@@ -113,7 +112,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
@@ -123,16 +125,14 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.seconds
 
-class ComposerViewModelTest {
+internal class ComposerViewModelTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule(testDispatcher)
-
-    @get:Rule
-    val loggingTestRule = LoggingTestRule()
 
     private val storeDraftWithBodyMock = mockk<StoreDraftWithBody>()
     private val storeDraftWithSubjectMock = mockk<StoreDraftWithSubject>()
@@ -177,42 +177,46 @@ class ComposerViewModelTest {
     private val reducer = ComposerStateReducer()
     private val isMessagePasswordEnabled = MutableStateFlow(true)
 
-    private val viewModel by lazy {
-        ComposerViewModel(
-            storeDraftWithBodyMock,
-            storeDraftWithSubjectMock,
-            updateRecipients,
-            getContactsMock,
-            participantMapperMock,
-            reducer,
-            isValidEmailAddressMock,
-            observeMessageAttachments,
-            sendMessageMock,
-            networkManagerMock,
-            addAttachment,
-            deleteAttachment,
-            deleteInlineAttachment,
-            openExistingDraft,
-            createEmptyDraft,
-            createDraftForAction,
-            buildDraftDisplayBody,
-            recipientsStateManager,
-            discardDraft,
-            getDraftId,
-            savedStateHandle,
-            getEmbeddedImage,
-            getFormattedScheduleSendOptions,
-            scheduleSendMessage,
-            getSenderAddresses,
-            changeSenderAddress,
-            isMessagePasswordEnabled,
-            composerRegistry,
-            isMessageExpirationEnabled,
-            observeMessagePasswordChanged,
-            isMessagePasswordSet,
-            observePrimaryUserIdMock
-        )
+    @AfterTest
+    fun teardown() {
+        unmockkAll()
     }
+
+    private fun viewModel() = ComposerViewModel(
+        storeDraftWithBodyMock,
+        storeDraftWithSubjectMock,
+        updateRecipients,
+        getContactsMock,
+        participantMapperMock,
+        reducer,
+        isValidEmailAddressMock,
+        observeMessageAttachments,
+        sendMessageMock,
+        networkManagerMock,
+        addAttachment,
+        deleteAttachment,
+        deleteInlineAttachment,
+        openExistingDraft,
+        createEmptyDraft,
+        createDraftForAction,
+        buildDraftDisplayBody,
+        recipientsStateManager,
+        discardDraft,
+        getDraftId,
+        savedStateHandle,
+        getEmbeddedImage,
+        getFormattedScheduleSendOptions,
+        scheduleSendMessage,
+        getSenderAddresses,
+        changeSenderAddress,
+        isMessagePasswordEnabled,
+        composerRegistry,
+        testDispatcher,
+        isMessageExpirationEnabled,
+        observeMessagePasswordChanged,
+        isMessagePasswordSet,
+        observePrimaryUserIdMock
+    )
 
     @Test
     fun `should close composer when restored from saved state handle (process death)`() = runTest {
@@ -222,7 +226,7 @@ class ComposerViewModelTest {
         expectNoInputDraftAction()
         expectInputDraftMessageId { MessageIdSample.EmptyDraft }
 
-        viewModel.composerStates.test {
+        viewModel().composerStates.test {
             assertEquals(Effect.of(Unit), awaitItem().effects.closeComposer)
         }
     }
@@ -258,30 +262,33 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        viewModel.submit(ComposerAction.AddAttachments(listOf(uri)))
+        viewModel().submit(ComposerAction.AddAttachments(listOf(uri)))
 
         // Then
         coVerify { addAttachment(uri) }
     }
 
     @Test
-    fun `should store the draft body when the body changes`() {
+    fun `should store the draft body when the body changes`() = runTest {
         // Given
         val expectedDraftBody = DraftBody(RawDraftBody)
         val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val action = ComposerAction.DraftBodyChanged(expectedDraftBody)
         expectStoreDraftSubjectSucceeds(Subject(""))
         expectStoreDraftBodySucceeds(expectedDraftBody)
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
-        expectObservedMessageAttachments()
+        expectNoObservedMessageAttachments()
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
         ignoreRecipientsUpdates()
 
+        val viewModel = viewModel()
+
         // When
-        viewModel.submit(action)
+        performInput {
+            viewModel.bodyTextField.edit { append(expectedDraftBody.value) }
+        }
 
         // Then
         coVerify {
@@ -295,17 +302,18 @@ class ComposerViewModelTest {
         val expectedSubject = Subject("Subject for the message")
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         expectStoreDraftSubjectSucceeds(expectedSubject)
+        expectStoreDraftBodySucceeds(DraftBody(""))
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
-        expectObservedMessageAttachments()
+        expectNoObservedMessageAttachments()
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
         ignoreRecipientsUpdates()
 
         // When
-        withContext(Dispatchers.Main) { // TextFieldState updates need to happen on Main
-            viewModel.subjectTextField.edit { append(expectedSubject.value) }
+        performInput {
+            viewModel().subjectTextField.edit { append(expectedSubject.value) }
         }
 
         // Then
@@ -320,6 +328,7 @@ class ComposerViewModelTest {
         val expectedBcc = listOf(Recipient("valid-bcc@email.com", "Valid Email Bcc", false))
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         expectStoreDraftSubjectSucceeds(Subject(""))
+        expectStoreDraftBodySucceeds(DraftBody(""))
         expectUpdateRecipientsSucceeds(expectedTo, expectedCc, expectedBcc)
         mockParticipantMapper()
         expectNoInputDraftMessageId()
@@ -333,7 +342,8 @@ class ComposerViewModelTest {
         recipientsStateManager.setFromParticipants(expectedTo, expectedCc, expectedBcc)
 
         // Then
-        viewModel.composerStates.test {
+        viewModel().composerStates.test {
+            advanceDebounce()
             coVerify { updateRecipients(expectedTo, expectedCc, expectedBcc) }
             cancelAndIgnoreRemainingEvents()
         }
@@ -351,6 +361,7 @@ class ComposerViewModelTest {
         val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
         val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
         expectStoreDraftSubjectSucceeds(Subject(""))
+        expectStoreDraftBodySucceeds(expectedDraftBody)
         mockParticipantMapper()
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
@@ -370,6 +381,7 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
+        val viewModel = viewModel()
         viewModel.submit(ComposerAction.CloseComposer)
 
         // Then
@@ -391,6 +403,7 @@ class ComposerViewModelTest {
         expectNetworkManagerIsConnected()
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(expectedSubject)
+        expectStoreDraftBodySucceeds(expectedDraftBody)
         expectSendMessageSucceeds()
         expectObservedMessageAttachments()
         expectNoFileShareVia()
@@ -408,6 +421,7 @@ class ComposerViewModelTest {
         expectUpdateRecipientsSucceeds(recipientsTo.value, recipientsCc.value, recipientsBcc.value)
 
         // When
+        val viewModel = viewModel()
         viewModel.submit(ComposerAction.SendMessage)
 
         // Then
@@ -432,6 +446,7 @@ class ComposerViewModelTest {
         expectNetworkManagerIsDisconnected()
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(expectedSubject)
+        expectStoreDraftBodySucceeds(expectedDraftBody)
         expectUpdateRecipientsSucceeds(recipientsTo.value, recipientsCc.value, recipientsBcc.value)
         expectSendMessageSucceeds()
         expectObservedMessageAttachments()
@@ -449,6 +464,7 @@ class ComposerViewModelTest {
         }
 
         // When
+        val viewModel = viewModel()
         viewModel.submit(ComposerAction.SendMessage)
 
         // Then
@@ -465,7 +481,7 @@ class ComposerViewModelTest {
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(Subject(""))
-        expectObservedMessageAttachments()
+        expectNoObservedMessageAttachments()
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
         expectContacts()
@@ -474,6 +490,7 @@ class ComposerViewModelTest {
         expectedNoDraftSaved()
 
         // When
+        val viewModel = viewModel()
         viewModel.submit(ComposerAction.CloseComposer)
 
         // Then
@@ -487,6 +504,7 @@ class ComposerViewModelTest {
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
         expectStoreDraftSubjectSucceeds(Subject(""))
+        expectStoreDraftBodySucceeds(DraftBody(""))
         expectObservedMessageAttachments()
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
@@ -494,10 +512,10 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        val actual = viewModel.composerStates.value
+        val actual = viewModel().composerStates.value
 
         // Then
-        assertEquals(SenderUiModel(expectedDraftFields.sender.value), actual.main.fields.sender)
+        assertEquals(SenderUiModel(expectedDraftFields.sender.value), actual.main.sender)
     }
 
     @Test
@@ -508,13 +526,14 @@ class ComposerViewModelTest {
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
         expectStoreDraftSubjectSucceeds(Subject(""))
+        expectStoreDraftBodySucceeds(DraftBody(""))
         expectObservedMessageAttachments()
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftFails(expectedUserId) { OpenDraftError.OpenDraftFailed }
 
         // When
-        val actual = viewModel.composerStates.value
+        val actual = viewModel().composerStates.value
 
         // Then
         assertEquals(TextUiModel(R.string.composer_error_invalid_sender), actual.effects.exitError.consume())
@@ -525,7 +544,6 @@ class ComposerViewModelTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftBody = DraftBody("updated-draft")
-        val action = ComposerAction.DraftBodyChanged(expectedDraftBody)
         expectStoreDraftSubjectSucceeds(Subject(""))
         expectStoreDraftBodyFails(expectedDraftBody) {
             SaveDraftError.SaveFailed
@@ -539,7 +557,10 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        viewModel.submit(action)
+        val viewModel = viewModel()
+        performInput {
+            viewModel.bodyTextField.edit { append(expectedDraftBody.value) }
+        }
 
         // Then
         val currentState = viewModel.composerStates.value
@@ -554,6 +575,7 @@ class ComposerViewModelTest {
         expectStoreDraftSubjectFails(expectedSubject) {
             SaveDraftError.SaveFailed
         }
+        expectStoreDraftBodySucceeds(DraftBody(""))
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
         expectObservedMessageAttachments()
@@ -563,7 +585,8 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        withContext(Dispatchers.Main) { // TextFieldState updates need to happen on Main
+        val viewModel = viewModel()
+        performInput {
             viewModel.subjectTextField.edit { append(expectedSubject.value) }
         }
 
@@ -595,10 +618,13 @@ class ComposerViewModelTest {
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        coEvery { storeDraftWithBodyMock(any()) } returns Unit.right()
 
+        val viewModel = viewModel()
         viewModel.composerStates.test {
             // When
             recipientsStateManager.updateRecipients(recipientsUiModels, ContactSuggestionsField.TO)
+            advanceDebounce()
 
             // Then
             val currentState = viewModel.composerStates.value
@@ -619,6 +645,7 @@ class ComposerViewModelTest {
         // Simulate a small delay in getDecryptedDraftFields to ensure the "loading" state was emitted
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedDraftId, 100) { draftFields }
         expectStoreDraftSubjectSucceeds(existingDraftFields.subject)
+        expectStoreDraftBodySucceeds(existingDraftFields.body)
         expectObservedMessageAttachments()
         expectNoInputDraftAction()
         expectNoFileShareVia()
@@ -626,7 +653,7 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        val actual = viewModel.composerStates.value
+        val actual = viewModel().composerStates.value
 
         // Then
         assertEquals(actual.main.loadingType, ComposerState.LoadingType.Initial)
@@ -650,19 +677,22 @@ class ComposerViewModelTest {
         expectObservedMessageAttachments()
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(existingDraftFields.subject)
+        expectStoreDraftBodySucceeds(existingDraftFields.body)
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
 
         // When
-        val actual = viewModel.composerStates.value
+        val viewModel = viewModel()
+        val sender = viewModel.composerStates.value.main.sender
 
         // Then
-        val expectedComposerFields = ComposerFields(
-            SenderUiModel(expectedDraftFields.sender.value),
-            expectedDisplayBody,
-            expectedDraftFields.body.value
-        )
-        assertEquals(expectedComposerFields, actual.main.fields)
+        assertEquals(SenderUiModel(expectedDraftFields.sender.value), sender)
+        assertEquals(existingDraftFields.body.value, viewModel.bodyTextField.text)
+        assertEquals(existingDraftFields.subject.value, viewModel.subjectTextField.text)
+
+        viewModel.displayBody.test {
+            assertEquals(expectedDisplayBody, awaitItem())
+        }
     }
 
     @Test
@@ -680,11 +710,12 @@ class ComposerViewModelTest {
         expectObservedMessageAttachments()
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(existingDraftFields.subject)
+        expectStoreDraftBodySucceeds(existingDraftFields.body)
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
 
         // When
-        val actual = viewModel.composerStates.value
+        val actual = viewModel().composerStates.value
 
         assertEquals(Unit, actual.effects.focusTextBody.consume())
     }
@@ -708,11 +739,12 @@ class ComposerViewModelTest {
         expectObservedMessageAttachments()
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(existingDraftFields.subject)
+        expectStoreDraftBodySucceeds(existingDraftFields.body)
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
 
         // When
-        val actual = viewModel.composerStates.value
+        val actual = viewModel().composerStates.value
 
         assertEquals(null, actual.effects.focusTextBody.consume())
     }
@@ -726,6 +758,7 @@ class ComposerViewModelTest {
         val expectedDisplayBody = DraftDisplayBodyUiModel("<html> ${expectedDraftFields.body.value} </html>")
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedDraftId) { existingDraftFields }
         expectStoreDraftSubjectSucceeds(expectedDraftFields.subject)
+        expectStoreDraftBodySucceeds(expectedDraftFields.body)
         expectObservedMessageAttachments()
         expectInputDraftAction { DraftAction.Compose }
         expectNoFileShareVia()
@@ -733,16 +766,17 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        val actual = viewModel.composerStates.value
+        val viewModel = viewModel()
+        val sender = viewModel.composerStates.value.main.sender
 
         // Then
-        val expectedComposerFields = ComposerFields(
-            SenderUiModel(expectedDraftFields.sender.value),
-            expectedDisplayBody,
-            expectedDraftFields.body.value
-        )
-        assertEquals(expectedComposerFields, actual.main.fields)
-        expectStoreDraftSubjectSucceeds(expectedDraftFields.subject)
+        assertEquals(SenderUiModel(expectedDraftFields.sender.value), sender)
+        assertEquals(existingDraftFields.body.value, viewModel.bodyTextField.text)
+        assertEquals(existingDraftFields.subject.value, viewModel.subjectTextField.text)
+
+        viewModel.displayBody.test {
+            assertEquals(expectedDisplayBody, awaitItem())
+        }
     }
 
     @Test
@@ -755,6 +789,7 @@ class ComposerViewModelTest {
             existingDraftFields
         }
         expectStoreDraftSubjectSucceeds(expectedDraftFields.subject)
+        expectStoreDraftBodySucceeds(expectedDraftFields.body)
         expectObservedMessageAttachments()
         expectInputDraftAction { DraftAction.Compose }
         expectNoFileShareVia()
@@ -762,7 +797,7 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        val actual = viewModel.composerStates.value
+        val actual = viewModel().composerStates.value
 
         // Then
         val expectedWarning = Effect.of(TextUiModel(R.string.composer_warning_local_data_shown))
@@ -783,7 +818,7 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        val actual = viewModel.composerStates.value
+        val actual = viewModel().composerStates.value
 
         // Then
         assertEquals(TextUiModel(R.string.composer_error_loading_draft), actual.effects.exitError.consume())
@@ -802,9 +837,11 @@ class ComposerViewModelTest {
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
         expectStoreDraftSubjectSucceeds(existingDraftFields.subject)
+        expectStoreDraftBodySucceeds(existingDraftFields.body)
         ignoreRecipientsUpdates()
 
-        // When
+        // When'
+        val viewModel = viewModel()
         viewModel.submit(ComposerAction.AddAttachmentsRequested)
 
         // Then
@@ -832,6 +869,8 @@ class ComposerViewModelTest {
             recipientsBcc
         )
         expectNoInputDraftAction()
+        expectStoreDraftBodySucceeds(expectedDraftBody)
+        expectStoreDraftSubjectSucceeds(expectedSubject)
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedDraftId) { expectedFields }
         expectObservedMessageAttachments()
         expectNoFileShareVia()
@@ -840,7 +879,9 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
+        val viewModel = viewModel()
         viewModel.composerStates.test {
+            advanceUntilIdle()
 
             // Then
             val expected = AttachmentGroupUiModel(
@@ -875,6 +916,7 @@ class ComposerViewModelTest {
         expectInputDraftMessageId { messageId }
         expectInitComposerWithExistingDraftSuccess(expectedUserId, messageId) { expectedFields }
         expectStoreDraftSubjectSucceeds(expectedSubject)
+        expectStoreDraftBodySucceeds(expectedDraftBody)
         expectObservedMessageAttachments()
         expectNoInputDraftAction()
         expectAttachmentDeleteSucceeds(expectedAttachmentId)
@@ -884,7 +926,7 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
 
         // When
-        viewModel.submit(ComposerAction.RemoveAttachment(expectedAttachmentId))
+        viewModel().submit(ComposerAction.RemoveAttachment(expectedAttachmentId))
 
         // Then
         coVerify { deleteAttachment(expectedAttachmentId) }
@@ -902,6 +944,7 @@ class ComposerViewModelTest {
         mockParticipantMapper()
         expectInputDraftAction { expectedAction }
         expectStoreDraftSubjectSucceeds(Subject(""))
+        expectStoreDraftBodySucceeds(DraftBody(""))
         expectUpdateRecipientsSucceeds(listOf(expectedRecipient), emptyList(), emptyList())
         expectObservedMessageAttachments()
         expectAddressValidation(expectedRecipient.address, true)
@@ -911,6 +954,7 @@ class ComposerViewModelTest {
         }
 
         // When
+        val viewModel = viewModel()
         viewModel.composerStates.test {
             // Then
             assertEquals(
@@ -932,6 +976,7 @@ class ComposerViewModelTest {
         val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
         val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
         expectStoreDraftSubjectSucceeds(Subject(""))
+        expectStoreDraftBodySucceeds(expectedDraftBody)
         mockParticipantMapper()
         expectNetworkManagerIsDisconnected()
         expectNoInputDraftMessageId()
@@ -953,7 +998,7 @@ class ComposerViewModelTest {
         }
 
         // When
-        viewModel.submit(ComposerAction.ConfirmSendExpirationSetToExternal)
+        viewModel().submit(ComposerAction.ConfirmSendExpirationSetToExternal)
 
         // Then
         coVerifyOrder {
@@ -970,18 +1015,19 @@ class ComposerViewModelTest {
         expectInputDraftAction { DraftAction.Compose }
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
         expectStoreDraftSubjectSucceeds(Subject(""))
+        expectStoreDraftBodySucceeds(DraftBody(""))
         expectObservedMessageAttachments()
         ignoreRecipientsUpdates()
         coEvery { discardDraft(expectedUserId, expectedMessageId) } returns Unit.right()
 
         // When
+        val viewModel = viewModel()
         viewModel.submit(ComposerAction.DiscardDraftRequested)
 
         // Then
         viewModel.composerStates.test {
             assertEquals(Unit, awaitItem().effects.confirmDiscardDraft.consume())
         }
-
     }
 
     @Test
@@ -993,11 +1039,13 @@ class ComposerViewModelTest {
         expectInputDraftAction { DraftAction.Compose }
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
         expectStoreDraftSubjectSucceeds(Subject(""))
+        expectStoreDraftBodySucceeds(DraftBody(""))
         expectObservedMessageAttachments()
         ignoreRecipientsUpdates()
         coEvery { discardDraft(expectedUserId, expectedMessageId) } returns Unit.right()
 
         // When
+        val viewModel = viewModel()
         viewModel.submit(ComposerAction.DiscardDraftConfirmed)
 
         // Then
@@ -1015,12 +1063,12 @@ class ComposerViewModelTest {
             expectNoInputDraftMessageId()
             expectInputDraftAction { DraftAction.Compose }
             expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-            expectStoreDraftSubjectSucceeds(Subject(""))
-            expectObservedMessageAttachments()
+            expectNoObservedMessageAttachments()
             ignoreRecipientsUpdates()
             expectedNoDraftSaved()
 
             // When
+            val viewModel = viewModel()
             viewModel.submit(ComposerAction.DiscardDraftConfirmed)
 
             // Then
@@ -1045,6 +1093,7 @@ class ComposerViewModelTest {
         expectNetworkManagerIsConnected()
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(expectedSubject)
+        expectStoreDraftBodySucceeds(expectedDraftBody)
         expectObservedMessageAttachments()
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
@@ -1061,6 +1110,7 @@ class ComposerViewModelTest {
         expectUpdateRecipientsSucceeds(recipientsTo.value, recipientsCc.value, recipientsBcc.value)
 
         // When
+        val viewModel = viewModel()
         viewModel.submit(ComposerAction.SendMessage)
 
         // Then
@@ -1083,6 +1133,7 @@ class ComposerViewModelTest {
         expectNetworkManagerIsConnected()
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(expectedSubject)
+        expectStoreDraftBodySucceeds(expectedDraftBody)
         expectObservedMessageAttachments()
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
@@ -1106,6 +1157,7 @@ class ComposerViewModelTest {
         val expected = addresses.map { SenderUiModel(it.value) }
 
         // When
+        val viewModel = viewModel()
         viewModel.submit(ComposerAction.ChangeSender)
 
         // Then
@@ -1117,6 +1169,7 @@ class ComposerViewModelTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         expectStoreDraftSubjectSucceeds(Subject(""))
+        expectStoreDraftBodySucceeds(DraftBody(""))
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
         expectObservedMessageAttachments()
@@ -1132,7 +1185,7 @@ class ComposerViewModelTest {
         coEvery { deleteAttachment(id2) } returns Unit.right()
 
         // When
-        viewModel.submit(ComposerAction.AcknowledgeAttachmentErrors(listOf(id1, id2)))
+        viewModel().submit(ComposerAction.AcknowledgeAttachmentErrors(listOf(id1, id2)))
 
         // Then
         coVerify { deleteAttachment(id1) }
@@ -1289,6 +1342,14 @@ class ComposerViewModelTest {
         return expectedContacts
     }
 
+    private fun expectNoObservedMessageAttachments() {
+        coEvery {
+            observeMessageAttachments()
+        } returns flowOf(
+            emptyList<AttachmentMetadataWithState>().right()
+        )
+    }
+
     private fun expectObservedMessageAttachments() {
         coEvery {
             observeMessageAttachments()
@@ -1362,6 +1423,20 @@ class ComposerViewModelTest {
     private fun expectNoRestoredState(savedStateHandle: SavedStateHandle) {
         every { savedStateHandle.get<Boolean>(ComposerScreen.HasSavedDraftKey) } returns null
     }
+
+    private fun TestScope.advanceDebounce() {
+        this.advanceTimeBy(1.5.seconds)
+    }
+
+    private suspend fun TestScope.performInput(skipDebounce: Boolean = true, block: () -> Unit) {
+        withContext(Dispatchers.Main) {
+            block()
+            Snapshot.sendApplyNotifications() // needed as we don't have Compose runtime in tests
+        }
+
+        if (skipDebounce) advanceDebounce()
+    }
+
 
     companion object TestData {
 

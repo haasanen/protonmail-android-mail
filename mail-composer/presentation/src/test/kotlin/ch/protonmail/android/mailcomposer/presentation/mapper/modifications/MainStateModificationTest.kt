@@ -25,7 +25,6 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
-import ch.protonmail.android.mailcomposer.presentation.model.ComposerFields
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
@@ -77,11 +76,7 @@ internal class MainStateModificationTest(
                 initialState,
                 MainStateModification.OnDraftReady(draftUiModel),
                 initialState.copy(
-                    fields = ComposerFields(
-                        sender = SenderUiModel(draftUiModel.draftFields.sender.value),
-                        body = draftUiModel.draftFields.body.value,
-                        displayBody = draftUiModel.draftDisplayBodyUiModel
-                    )
+                    sender = SenderUiModel(draftUiModel.draftFields.sender.value)
                 )
             ),
             arrayOf(
@@ -131,14 +126,11 @@ internal class MainStateModificationTest(
                 initialState.copy(isSubmittable = false)
             ),
             arrayOf(
-                "Update sender and display body when sender changes",
+                "update sender when sender changes",
                 initialState.copy(),
-                MainStateModification.UpdateSender(senderEmail, displayBodyUpdated),
+                MainStateModification.UpdateSender(senderEmail),
                 initialState.copy(
-                    fields = initialState.fields.copy(
-                        sender = SenderUiModel(senderEmail.value),
-                        displayBody = displayBodyUpdated
-                    )
+                    sender = SenderUiModel(senderEmail.value)
                 )
             )
         )

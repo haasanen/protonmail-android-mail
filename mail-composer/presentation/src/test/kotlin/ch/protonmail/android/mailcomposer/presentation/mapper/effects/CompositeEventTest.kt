@@ -146,7 +146,7 @@ internal class CompositeEventTest(
                 "UserChangedSender to modification",
                 CompositeEvent.UserChangedSender(senderEmail, draftDisplayBody),
                 ComposerStateModifications(
-                    mainModification = MainStateModification.UpdateSender(senderEmail, draftDisplayBody),
+                    mainModification = MainStateModification.UpdateSender(senderEmail),
                     effectsModification = ContentEffectsStateModifications.DraftSenderChanged(draftDisplayBody)
                 )
             ),

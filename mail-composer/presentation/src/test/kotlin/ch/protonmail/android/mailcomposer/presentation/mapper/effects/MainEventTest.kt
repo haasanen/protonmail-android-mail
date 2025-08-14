@@ -89,7 +89,7 @@ internal class MainEventTest(
                 "SenderChanged to modification",
                 MainEvent.SenderChanged(newSender = senderEmail, displayBodyUpdated),
                 ComposerStateModifications(
-                    mainModification = MainStateModification.UpdateSender(senderEmail, displayBodyUpdated)
+                    mainModification = MainStateModification.UpdateSender(senderEmail)
                 )
             )
         )

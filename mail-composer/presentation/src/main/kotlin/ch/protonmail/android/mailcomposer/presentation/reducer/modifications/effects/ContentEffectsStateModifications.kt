@@ -73,6 +73,13 @@ internal sealed interface ContentEffectsStateModifications : EffectsStateModific
         )
     }
 
+    data class DraftBodyChanged(val refreshedBody: DraftDisplayBodyUiModel) : EffectsStateModification {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
+            refreshBody = Effect.of(refreshedBody)
+        )
+    }
+
     data class DraftContentReady(
         val fields: DraftUiModel,
         val isDataRefresh: Boolean,

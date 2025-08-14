@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -18,20 +18,13 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model
 
-/**
- * @displayBody is the body wrapped with an HTML template to allow injecting css and javascript; used to display only;
- * @body is used to expose back to the viewModel any changes applied by the user (no template, user-content only);
- */
-data class ComposerFields(
-    val sender: SenderUiModel,
-    val displayBody: DraftDisplayBodyUiModel,
-    val body: String
-) {
-    companion object {
-        val initial = ComposerFields(
-            sender = SenderUiModel(""),
-            displayBody = DraftDisplayBodyUiModel(""),
-            body = ""
-        )
-    }
-}
+import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
+import ch.protonmail.android.mailcomposer.domain.model.Subject
+
+internal data class ObservedComposerDataChanges(
+    val sender: SenderEmail,
+    val recipients: RecipientsState,
+    val subject: Subject,
+    val body: DraftBody
+)
