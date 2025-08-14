@@ -68,8 +68,6 @@ class RustConversationsQueryImpl @Inject constructor(
 
     private val conversationsUpdatedCallback = object : ConversationScrollerLiveQueryCallback {
         override fun onUpdate(update: ConversationScrollerUpdate) {
-            Timber.d("rust-conversation-query: paging: conversations update received: $update")
-
             val event = when (update) {
                 is ConversationScrollerUpdate.Append -> PagingEvent.Append(update.v1)
                 is ConversationScrollerUpdate.Error -> PagingEvent.Error(update.error.toPaginationError())
