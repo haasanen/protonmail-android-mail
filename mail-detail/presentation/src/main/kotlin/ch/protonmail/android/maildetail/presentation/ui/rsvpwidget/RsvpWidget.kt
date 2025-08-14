@@ -86,6 +86,7 @@ fun RsvpWidget(
     Column(
         modifier = modifier
             .padding(horizontal = ProtonDimens.Spacing.Large)
+            .padding(bottom = ProtonDimens.Spacing.Large)
             .background(
                 color = ProtonTheme.colors.backgroundNorm,
                 shape = ProtonTheme.shapes.extraLarge

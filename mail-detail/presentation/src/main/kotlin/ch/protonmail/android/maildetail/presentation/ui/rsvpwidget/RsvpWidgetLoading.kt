@@ -49,6 +49,7 @@ fun RsvpWidgetLoading() {
     Column(
         modifier = Modifier
             .padding(horizontal = ProtonDimens.Spacing.Large)
+            .padding(bottom = ProtonDimens.Spacing.Large)
             .background(
                 color = ProtonTheme.colors.backgroundNorm,
                 shape = ProtonTheme.shapes.extraLarge
