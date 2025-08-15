@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailcomposer.domain.model
 
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -35,7 +34,7 @@ class DraftFieldsTest {
         recipientsBcc = RecipientsBcc(emptyList())
     )
 
-    private val recipient = Recipient("you@proton.ch", "Name")
+    private val recipient = DraftRecipient.SingleRecipient("Name", "you@proton.ch")
 
     @Test
     fun `when has no recipientsTo or recipientsCc or recipientsBcc then hasRecipient is false`() {

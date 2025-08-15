@@ -18,7 +18,5 @@
 
 package ch.protonmail.android.mailcomposer.domain.model
 
-import ch.protonmail.android.mailmessage.domain.model.Recipient
-
 @JvmInline
-value class RecipientsCc(val value: List<Recipient>)
+value class RecipientsCc(val value: List<DraftRecipient>)

@@ -38,6 +38,8 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
@@ -66,7 +68,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients
 import ch.protonmail.android.mailcomposer.presentation.R
-import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
@@ -84,15 +85,14 @@ import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.composer.DraftFieldsTestData
+import ch.protonmail.android.testdata.composer.DraftRecipientTestData
 import ch.protonmail.android.testdata.contact.ContactSample
 import io.mockk.Called
 import io.mockk.Runs
@@ -140,7 +140,6 @@ internal class ComposerViewModelTest {
     private val sendMessageMock = mockk<SendMessage>()
     private val networkManagerMock = mockk<NetworkManager>()
     private val getContactsMock = mockk<GetContacts>()
-    private val participantMapperMock = mockk<ParticipantMapper>()
     private val observePrimaryUserIdMock = mockk<ObservePrimaryUserId>()
     private val isValidEmailAddressMock = mockk<IsValidEmailAddress>()
     private val savedStateHandle = mockk<SavedStateHandle>(relaxed = true)
@@ -187,7 +186,6 @@ internal class ComposerViewModelTest {
         storeDraftWithSubjectMock,
         updateRecipients,
         getContactsMock,
-        participantMapperMock,
         reducer,
         isValidEmailAddressMock,
         observeMessageAttachments,
@@ -240,9 +238,9 @@ internal class ComposerViewModelTest {
         val expectedSubject = Subject("Subject for the message")
         val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedDraftBody = DraftBody("I am plaintext")
-        val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
-        val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
-        val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
+        val recipientsTo = RecipientsTo(listOf(DraftRecipientTestData.John))
+        val recipientsCc = RecipientsCc(listOf(DraftRecipientTestData.John))
+        val recipientsBcc = RecipientsBcc(listOf(DraftRecipientTestData.John))
         val expectedFields = DraftFields(
             expectedSenderEmail,
             expectedSubject,
@@ -324,14 +322,13 @@ internal class ComposerViewModelTest {
     @Test
     fun `should store draft recipients when they change`() = runTest {
         // Given
-        val expectedTo = listOf(Recipient("valid-to@email.com", "Valid Email To", false))
-        val expectedCc = listOf(Recipient("valid-cc@email.com", "Valid Email Cc", false))
-        val expectedBcc = listOf(Recipient("valid-bcc@email.com", "Valid Email Bcc", false))
+        val expectedTo = listOf(buildSingleRecipient("", "valid-to@email.com"))
+        val expectedCc = listOf(buildSingleRecipient("", "valid-cc@email.com"))
+        val expectedBcc = listOf(buildSingleRecipient("", "valid-bcc@email.com"))
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         expectStoreDraftSubjectSucceeds(Subject(""))
         expectStoreDraftBodySucceeds(DraftBody(""))
         expectUpdateRecipientsSucceeds(expectedTo, expectedCc, expectedBcc)
-        mockParticipantMapper()
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
         expectObservedMessageAttachments()
@@ -340,7 +337,7 @@ internal class ComposerViewModelTest {
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
 
         // When
-        recipientsStateManager.setFromParticipants(expectedTo, expectedCc, expectedBcc)
+        recipientsStateManager.setFromDraftRecipients(expectedTo, expectedCc, expectedBcc)
 
         // Then
         viewModel().composerStates.test {
@@ -358,12 +355,11 @@ internal class ComposerViewModelTest {
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftBody = DraftBody("I am plaintext")
-        val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
-        val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
-        val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
+        val recipientsTo = RecipientsTo(listOf(DraftRecipientTestData.John))
+        val recipientsCc = RecipientsCc(listOf(DraftRecipientTestData.John))
+        val recipientsBcc = RecipientsBcc(listOf(DraftRecipientTestData.John))
         expectStoreDraftSubjectSucceeds(Subject(""))
         expectStoreDraftBodySucceeds(expectedDraftBody)
-        mockParticipantMapper()
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectObservedMessageAttachments()
@@ -397,11 +393,10 @@ internal class ComposerViewModelTest {
         val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftBody = DraftBody("I am plaintext")
-        val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
-        val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
-        val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
+        val recipientsTo = RecipientsTo(listOf(DraftRecipientTestData.MailToRecipient))
+        val recipientsCc = RecipientsCc(listOf(DraftRecipientTestData.MailToRecipient))
+        val recipientsBcc = RecipientsBcc(listOf(DraftRecipientTestData.MailToRecipient))
         val expectedMessageId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
-        mockParticipantMapper()
         expectNetworkManagerIsConnected()
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(expectedSubject)
@@ -441,11 +436,10 @@ internal class ComposerViewModelTest {
         val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftBody = DraftBody("I am plaintext")
-        val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
-        val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
-        val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
+        val recipientsTo = RecipientsTo(listOf(DraftRecipientTestData.MailToRecipient))
+        val recipientsCc = RecipientsCc(listOf(DraftRecipientTestData.MailToRecipient))
+        val recipientsBcc = RecipientsBcc(listOf(DraftRecipientTestData.MailToRecipient))
         val expectedMessageId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
-        mockParticipantMapper()
         expectNetworkManagerIsDisconnected()
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(expectedSubject)
@@ -604,18 +598,17 @@ internal class ComposerViewModelTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val toRecipients = listOf(
-            Recipient("valid@email.com", "Valid Email", false)
+            buildSingleRecipient("", "valid@email.com")
         )
         val recipientsUiModels = listOf(
             RecipientUiModel.Valid("valid@email.com"),
             RecipientUiModel.Invalid("invalid email")
         )
         expectStoreDraftSubjectSucceeds(Subject(""))
-        ignoreRecipientsUpdates() // Ignore first emission due to RecipientsStateManager init
+//        ignoreRecipientsUpdates() // Ignore first emission due to RecipientsStateManager init
         expectUpdateRecipientsFails(toRecipients, emptyList(), emptyList()) {
             SaveDraftError.SaveFailed
         }
-        mockParticipantMapper()
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
         expectObservedMessageAttachments()
@@ -671,7 +664,6 @@ internal class ComposerViewModelTest {
         val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
         val expectedDraftFields = existingDraftFields
         val expectedDisplayBody = DraftDisplayBodyUiModel("<html> ${expectedDraftFields.body.value} </html>")
-        mockParticipantMapper()
         expectUpdateRecipientsSucceeds(
             existingDraftFields.recipientsTo.value,
             existingDraftFields.recipientsCc.value,
@@ -704,7 +696,6 @@ internal class ComposerViewModelTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
-        mockParticipantMapper()
         expectUpdateRecipientsSucceeds(
             existingDraftFields.recipientsTo.value,
             existingDraftFields.recipientsCc.value,
@@ -729,7 +720,6 @@ internal class ComposerViewModelTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
-        mockParticipantMapper()
         expectUpdateRecipientsSucceeds(
             emptyList(),
             existingDraftFields.recipientsCc.value,
@@ -861,9 +851,9 @@ internal class ComposerViewModelTest {
         val expectedSubject = Subject("Subject for the message")
         val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedDraftBody = DraftBody("I am plaintext")
-        val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
-        val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
-        val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
+        val recipientsTo = RecipientsTo(listOf(DraftRecipientTestData.John))
+        val recipientsCc = RecipientsCc(listOf(DraftRecipientTestData.John))
+        val recipientsBcc = RecipientsBcc(listOf(DraftRecipientTestData.John))
         val expectedFields = DraftFields(
             expectedSenderEmail,
             expectedSubject,
@@ -907,9 +897,9 @@ internal class ComposerViewModelTest {
         val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedDraftBody = DraftBody("I am plaintext")
         val expectedAttachmentId = AttachmentId("attachment_id")
-        val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
-        val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
-        val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
+        val recipientsTo = RecipientsTo(listOf(DraftRecipientTestData.John))
+        val recipientsCc = RecipientsCc(listOf(DraftRecipientTestData.John))
+        val recipientsBcc = RecipientsBcc(listOf(DraftRecipientTestData.John))
         val expectedFields = DraftFields(
             expectedSenderEmail,
             expectedSubject,
@@ -928,7 +918,6 @@ internal class ComposerViewModelTest {
         expectAttachmentDeleteSucceeds(expectedAttachmentId)
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
-        mockParticipantMapper()
         ignoreRecipientsUpdates()
 
         // When
@@ -942,12 +931,11 @@ internal class ComposerViewModelTest {
     fun `should set recipient to state when recipient was given as an input`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val expectedRecipient = RecipientSample.NamelessRecipient
+        val expectedRecipient = DraftRecipientTestData.MailToRecipient
         val expectedAction = DraftAction.ComposeToAddresses(listOf(expectedRecipient.address))
 
         expectNoInputDraftMessageId()
         expectContacts()
-        mockParticipantMapper()
         expectInputDraftAction { expectedAction }
         expectStoreDraftSubjectSucceeds(Subject(""))
         expectStoreDraftBodySucceeds(DraftBody(""))
@@ -978,12 +966,11 @@ internal class ComposerViewModelTest {
         val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftBody = DraftBody("I am plaintext")
-        val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
-        val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
-        val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
+        val recipientsTo = RecipientsTo(listOf(DraftRecipientTestData.John))
+        val recipientsCc = RecipientsCc(listOf(DraftRecipientTestData.John))
+        val recipientsBcc = RecipientsBcc(listOf(DraftRecipientTestData.John))
         expectStoreDraftSubjectSucceeds(Subject(""))
         expectStoreDraftBodySucceeds(expectedDraftBody)
-        mockParticipantMapper()
         expectNetworkManagerIsDisconnected()
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
@@ -1092,11 +1079,10 @@ internal class ComposerViewModelTest {
         val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftBody = DraftBody("I am plaintext")
-        val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
-        val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
-        val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
+        val recipientsTo = RecipientsTo(listOf(DraftRecipientTestData.MailToRecipient))
+        val recipientsCc = RecipientsCc(listOf(DraftRecipientTestData.MailToRecipient))
+        val recipientsBcc = RecipientsBcc(listOf(DraftRecipientTestData.MailToRecipient))
         val expectedMessageId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
-        mockParticipantMapper()
         expectNetworkManagerIsConnected()
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(expectedSubject)
@@ -1133,11 +1119,10 @@ internal class ComposerViewModelTest {
         val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftBody = DraftBody("I am plaintext")
-        val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
-        val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
-        val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
+        val recipientsTo = RecipientsTo(listOf(DraftRecipientTestData.MailToRecipient))
+        val recipientsCc = RecipientsCc(listOf(DraftRecipientTestData.MailToRecipient))
+        val recipientsBcc = RecipientsBcc(listOf(DraftRecipientTestData.MailToRecipient))
         val expectedMessageId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
-        mockParticipantMapper()
         expectNetworkManagerIsConnected()
         expectNoInputDraftAction()
         expectStoreDraftSubjectSucceeds(expectedSubject)
@@ -1323,23 +1308,20 @@ internal class ComposerViewModelTest {
 
     private fun ignoreRecipientsUpdates() {
         coEvery { updateRecipients(any(), any(), any()) } returns Unit.right()
-        every {
-            participantMapperMock.recipientUiModelToParticipant(any(), any())
-        } returns Recipient("fake-relaxed-mock-value", "fake-relaxed-mock-value", false)
     }
 
     private fun expectUpdateRecipientsSucceeds(
-        toRecipients: List<Recipient>,
-        ccRecipients: List<Recipient>,
-        bccRecipients: List<Recipient>
+        toRecipients: List<DraftRecipient>,
+        ccRecipients: List<DraftRecipient>,
+        bccRecipients: List<DraftRecipient>
     ) {
         coEvery { updateRecipients(toRecipients, ccRecipients, bccRecipients) } returns Unit.right()
     }
 
     private fun expectUpdateRecipientsFails(
-        toRecipients: List<Recipient>,
-        ccRecipients: List<Recipient>,
-        bccRecipients: List<Recipient>,
+        toRecipients: List<DraftRecipient>,
+        ccRecipients: List<DraftRecipient>,
+        bccRecipients: List<DraftRecipient>,
         error: () -> SaveDraftError
     ) = error().also {
         coEvery { updateRecipients(toRecipients, ccRecipients, bccRecipients) } returns it.left()
@@ -1380,46 +1362,6 @@ internal class ComposerViewModelTest {
         every { isValidEmailAddressMock(address) } returns expectedResult
     }
 
-    private fun mockParticipantMapper() {
-        val expectedContacts = expectContacts()
-        every {
-            participantMapperMock.recipientUiModelToParticipant(
-                RecipientUiModel.Valid("valid@email.com"),
-                expectedContacts
-            )
-        } returns Recipient("valid@email.com", "Valid Email", false)
-        every {
-            participantMapperMock.recipientUiModelToParticipant(
-                RecipientUiModel.Valid("valid-to@email.com"),
-                any()
-            )
-        } returns Recipient("valid-to@email.com", "Valid Email To", false)
-        every {
-            participantMapperMock.recipientUiModelToParticipant(
-                RecipientUiModel.Valid("valid-cc@email.com"),
-                expectedContacts
-            )
-        } returns Recipient("valid-cc@email.com", "Valid Email Cc", false)
-        every {
-            participantMapperMock.recipientUiModelToParticipant(
-                RecipientUiModel.Valid("valid-bcc@email.com"),
-                expectedContacts
-            )
-        } returns Recipient("valid-bcc@email.com", "Valid Email Bcc", false)
-        every {
-            participantMapperMock.recipientUiModelToParticipant(
-                RecipientUiModel.Valid(RecipientSample.John.address),
-                any()
-            )
-        } returns Recipient(RecipientSample.John.address, RecipientSample.John.name, false)
-        every {
-            participantMapperMock.recipientUiModelToParticipant(
-                RecipientUiModel.Valid(RecipientSample.NamelessRecipient.address),
-                any()
-            )
-        } returns Recipient(RecipientSample.NamelessRecipient.address, "", false)
-    }
-
     private fun expectAddAttachmentsSucceeds(uri: Uri) {
         coEvery { addAttachment(uri) } returns
             AddAttachment.AddAttachmentResult.StandardAttachmentAdded.right()
@@ -1456,9 +1398,13 @@ internal class ComposerViewModelTest {
             Subject("Here is the matter"),
             DraftBody("Decrypted body of this draft"),
             DraftMimeType.Html,
-            RecipientsTo(listOf(Recipient("valid@email.com", "Valid Email"))),
+            RecipientsTo(listOf(buildSingleRecipient("", "valid@email.com"))),
             RecipientsCc(emptyList()),
             RecipientsBcc(emptyList())
         )
+
+        private fun buildSingleRecipient(name: String, address: String) =
+            DraftRecipient.SingleRecipient(name, address, DraftRecipientValidity.Validating)
+
     }
 }

@@ -18,18 +18,30 @@
 
 package ch.protonmail.android.mailcomposer.presentation.mapper
 
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.ui.form.EmailValidator
-import ch.protonmail.android.mailmessage.domain.model.Participant
 
 internal object RecipientUiModelMapper {
 
     fun mapFromRawValue(values: List<String>) = values.map { it.toModel() }
-    fun mapFromParticipants(values: List<Participant>) = values.map { it.address.toModel() }
+    fun mapFromDraftRecipients(values: List<DraftRecipient>) = values.map { it.toUiModel() }
 
     private fun String.toModel() = if (EmailValidator.isValidEmail(this)) {
         RecipientUiModel.Valid(this)
     } else {
         RecipientUiModel.Invalid(this)
+    }
+
+    private fun DraftRecipient.toUiModel() = when (val recipient = this) {
+        is DraftRecipient.GroupRecipient -> RecipientUiModel.Valid(recipient.name)
+        is DraftRecipient.SingleRecipient -> singleRecipientToUiModel(recipient)
+    }
+
+    private fun singleRecipientToUiModel(recipient: DraftRecipient.SingleRecipient) = when (recipient.validity) {
+        is DraftRecipientValidity.Invalid -> RecipientUiModel.Invalid(recipient.address)
+        DraftRecipientValidity.Valid -> RecipientUiModel.Valid(recipient.address)
+        DraftRecipientValidity.Validating -> recipient.address.toModel()
     }
 }

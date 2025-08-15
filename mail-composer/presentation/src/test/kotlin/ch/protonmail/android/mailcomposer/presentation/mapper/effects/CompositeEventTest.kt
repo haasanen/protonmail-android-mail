@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddErrorWithLis
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
@@ -46,7 +47,6 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.eff
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ConfirmationsEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.ContentEffectsStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.RecoverableError
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test
@@ -76,7 +76,7 @@ internal class CompositeEventTest(
             Subject("Here is the matter"),
             DraftBody("Decrypted body of this draft"),
             DraftMimeType.Html,
-            RecipientsTo(listOf(Recipient("you@proton.ch", "Name"))),
+            RecipientsTo(listOf(DraftRecipient.SingleRecipient("Name", "you@proton.ch"))),
             RecipientsCc(emptyList()),
             RecipientsBcc(emptyList())
         )

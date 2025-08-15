@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcomposer.presentation.mapper.modifications
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
@@ -31,7 +32,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiM
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.MainStateModification
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 import kotlinx.collections.immutable.toImmutableList
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -63,7 +63,7 @@ internal class MainStateModificationTest(
             Subject("Here is the matter"),
             DraftBody("Decrypted body of this draft"),
             DraftMimeType.Html,
-            RecipientsTo(listOf(Recipient("you@proton.ch", "Name"))),
+            RecipientsTo(listOf(DraftRecipient.SingleRecipient("Name", "you@proton.ch"))),
             RecipientsCc(emptyList()),
             RecipientsBcc(emptyList())
         )

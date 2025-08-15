@@ -20,11 +20,16 @@ package ch.protonmail.android.composer.data.mapper
 
 import ch.protonmail.android.composer.data.local.LocalSenderAddresses
 import ch.protonmail.android.mailcommon.data.mapper.LocalComposerRecipient
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
+import ch.protonmail.android.mailcomposer.domain.model.RecipientValidityError
 import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 import uniffi.proton_mail_uniffi.ComposerRecipient
+import uniffi.proton_mail_uniffi.ComposerRecipientSingle
+import uniffi.proton_mail_uniffi.ComposerRecipientValidState
 import uniffi.proton_mail_uniffi.DraftSenderAddressList
+import uniffi.proton_mail_uniffi.RecipientInvalidReason
 import uniffi.proton_mail_uniffi.SingleRecipientEntry
 
 fun DraftSenderAddressList.toLocalSenderAddresses() = LocalSenderAddresses(this.available, this.active)
@@ -33,25 +38,46 @@ fun LocalSenderAddresses.toSenderAddresses() = SenderAddresses(
     SenderEmail(this.selected)
 )
 
-fun List<LocalComposerRecipient>.toSingleRecipients(): List<Recipient> = this
+fun List<LocalComposerRecipient>.toSingleRecipients(): List<DraftRecipient.SingleRecipient> = this
     .filterIsInstance<ComposerRecipient.Single>()
     .map {
         val localRecipient = it.v1
-        Recipient(
+        DraftRecipient.SingleRecipient(
+            name = localRecipient.displayName,
             address = localRecipient.address,
-            name = localRecipient.displayName ?: localRecipient.address,
-            isProton = false
+            validity = localRecipient.validState.toDraftRecipientValidity()
         )
     }
 
-fun List<LocalComposerRecipient>.toComposerRecipients(): List<String> = this.map { localRecipient ->
+fun List<LocalComposerRecipient>.toComposerRecipients(): List<DraftRecipient> = this.map { localRecipient ->
     when (localRecipient) {
-        is ComposerRecipient.Group -> localRecipient.v1.displayName
-        is ComposerRecipient.Single -> localRecipient.v1.address
+        is ComposerRecipient.Group -> DraftRecipient.GroupRecipient(
+            localRecipient.v1.displayName,
+            localRecipient.v1.recipients.map { it.toSingleDraftRecipient() }
+        )
+        is ComposerRecipient.Single -> localRecipient.v1.toSingleDraftRecipient()
     }
 }
 
-fun Recipient.toSingleRecipientEntry() = SingleRecipientEntry(
+private fun ComposerRecipientSingle.toSingleDraftRecipient() = DraftRecipient.SingleRecipient(
+    name = this.displayName,
+    address = this.address,
+    validity = this.validState.toDraftRecipientValidity()
+)
+
+private fun ComposerRecipientValidState.toDraftRecipientValidity() = when (this) {
+    is ComposerRecipientValidState.Invalid -> DraftRecipientValidity.Invalid(this.v1.toRecipientValidityError())
+    is ComposerRecipientValidState.Valid -> DraftRecipientValidity.Valid
+    is ComposerRecipientValidState.Validating -> DraftRecipientValidity.Validating
+}
+
+private fun RecipientInvalidReason.toRecipientValidityError() = when (this) {
+    RecipientInvalidReason.FORMAT -> RecipientValidityError.Format
+    RecipientInvalidReason.DOES_NOT_EXIST -> RecipientValidityError.NonexistentAddress
+    RecipientInvalidReason.UNKNOWN -> RecipientValidityError.Other
+}
+
+fun DraftRecipient.SingleRecipient.toSingleRecipientEntry() = SingleRecipientEntry(
     this.name,
     this.address
 )

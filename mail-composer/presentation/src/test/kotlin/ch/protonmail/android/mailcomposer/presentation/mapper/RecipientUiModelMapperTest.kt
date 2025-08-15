@@ -18,8 +18,10 @@
 
 package ch.protonmail.android.mailcomposer.presentation.mapper
 
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
+import ch.protonmail.android.mailcomposer.domain.model.RecipientValidityError
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
-import ch.protonmail.android.mailmessage.domain.model.Participant
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -90,10 +92,10 @@ internal class RecipientUiModelMapperTest {
         )
 
         // When
-        val actual = RecipientUiModelMapper.mapFromParticipants(
+        val actual = RecipientUiModelMapper.mapFromDraftRecipients(
             listOf(
-                Participant(validAddress1, validAddress1.reversed()),
-                Participant(validAddress2, validAddress2.reversed())
+                DraftRecipient.SingleRecipient(validAddress1.reversed(), validAddress1),
+                DraftRecipient.SingleRecipient(validAddress2.reversed(), validAddress2)
             )
         )
 
@@ -112,10 +114,14 @@ internal class RecipientUiModelMapperTest {
         )
 
         // When
-        val actual = RecipientUiModelMapper.mapFromParticipants(
+        val actual = RecipientUiModelMapper.mapFromDraftRecipients(
             listOf(
-                Participant(invalidAddress, invalidAddress.reversed()),
-                Participant(validAddress2, validAddress2.reversed())
+                DraftRecipient.SingleRecipient(
+                    invalidAddress.reversed(),
+                    invalidAddress,
+                    DraftRecipientValidity.Invalid(RecipientValidityError.Format)
+                ),
+                DraftRecipient.SingleRecipient(validAddress2.reversed(), validAddress2)
             )
         )
 
@@ -133,11 +139,15 @@ internal class RecipientUiModelMapperTest {
         )
 
         // When
-        val actual = RecipientUiModelMapper.mapFromParticipants(
+        val actual = RecipientUiModelMapper.mapFromDraftRecipients(
             listOf(
-                Participant(validAddress1, validAddress1.reversed()),
-                Participant(invalidAddress, invalidAddress.reversed()),
-                Participant(validAddress2, validAddress2.reversed())
+                DraftRecipient.SingleRecipient(validAddress1.reversed(), validAddress1),
+                DraftRecipient.SingleRecipient(
+                    invalidAddress.reversed(),
+                    invalidAddress,
+                    DraftRecipientValidity.Invalid(RecipientValidityError.Format)
+                ),
+                DraftRecipient.SingleRecipient(validAddress2.reversed(), validAddress2)
             )
         )
 

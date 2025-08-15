@@ -21,7 +21,7 @@ package ch.protonmail.android.testdata.composer
 import ch.protonmail.android.composer.data.local.LocalDraft
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
-import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 
 object LocalDraftTestData {
 
@@ -40,9 +40,9 @@ object LocalDraftTestData {
         expectedSubject = "Application for some role",
         expectedSenderEmail = "anyone@proton.me",
         expectedDraftBody = "Hello, hire me",
-        recipientsTo = listOf(RecipientSample.Alice.address),
-        recipientsCc = listOf(RecipientSample.Bob.address),
-        recipientsBcc = listOf(RecipientSample.Billing.address, RecipientSample.Doe.address)
+        recipientsTo = listOf(DraftRecipientTestData.Alice),
+        recipientsCc = listOf(DraftRecipientTestData.Bob),
+        recipientsBcc = listOf()
     )
 
     private fun buildExpectedLocalDraftFields(
@@ -50,9 +50,9 @@ object LocalDraftTestData {
         expectedSenderEmail: String = "drafts@proton.me",
         expectedDraftBody: String = "I am plaintext",
         expectedMimeType: LocalMimeType = LocalMimeType.TEXT_HTML,
-        recipientsTo: List<String> = listOf(RecipientSample.NamelessRecipient.address),
-        recipientsCc: List<String> = listOf(RecipientSample.NamelessRecipient.address),
-        recipientsBcc: List<String> = listOf(RecipientSample.NamelessRecipient.address)
+        recipientsTo: List<DraftRecipient> = listOf(DraftRecipientTestData.NamelessRecipient),
+        recipientsCc: List<DraftRecipient> = listOf(DraftRecipientTestData.NamelessRecipient),
+        recipientsBcc: List<DraftRecipient> = listOf(DraftRecipientTestData.NamelessRecipient)
     ) = LocalDraft(
         expectedSenderEmail,
         expectedSubject,

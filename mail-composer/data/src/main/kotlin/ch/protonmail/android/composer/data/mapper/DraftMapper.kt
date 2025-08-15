@@ -25,7 +25,6 @@ import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
@@ -47,7 +46,6 @@ import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadError
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
@@ -85,9 +83,9 @@ fun LocalDraft.toDraftFields() = DraftFields(
     subject = Subject(this.subject),
     body = DraftBody(this.body),
     mimeType = this.mimeType.toDraftMimeType(),
-    recipientsTo = RecipientsTo(this.recipientsTo.toRecipients()),
-    recipientsCc = RecipientsCc(this.recipientsCc.toRecipients()),
-    recipientsBcc = RecipientsBcc(this.recipientsBcc.toRecipients())
+    recipientsTo = RecipientsTo(this.recipientsTo),
+    recipientsCc = RecipientsCc(this.recipientsCc),
+    recipientsBcc = RecipientsBcc(this.recipientsBcc)
 )
 
 fun DraftWrapperWithSyncStatus.toLocalDraftWithSyncStatus() = when (this.syncStatus) {
@@ -220,15 +218,4 @@ private fun LocalMimeType.toDraftMimeType() = when (this) {
     MimeType.MULTIPART_RELATED,
     MimeType.TEXT_HTML -> DraftMimeType.Html
     MimeType.TEXT_PLAIN -> DraftMimeType.PlainText
-}
-
-
-@MissingRustApi
-// Hardcoded values in the mapping
-private fun List<String>.toRecipients(): List<Recipient> = this.map {
-    Recipient(
-        address = it,
-        name = "",
-        isProton = false
-    )
 }

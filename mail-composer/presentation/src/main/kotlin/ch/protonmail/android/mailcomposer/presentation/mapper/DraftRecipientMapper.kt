@@ -16,17 +16,22 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.composer.data.local
+package ch.protonmail.android.mailcomposer.presentation.mapper
 
-import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
+import ch.protonmail.android.mailcomposer.domain.model.RecipientValidityError
+import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 
-data class LocalDraft(
-    val sender: String,
-    val subject: String,
-    val body: String,
-    val mimeType: LocalMimeType,
-    val recipientsTo: List<DraftRecipient>,
-    val recipientsCc: List<DraftRecipient>,
-    val recipientsBcc: List<DraftRecipient>
-)
+fun RecipientUiModel.toDraftRecipient() = when (this) {
+    is RecipientUiModel.Invalid -> DraftRecipient.SingleRecipient(
+        name = "",
+        address = this.address,
+        validity = DraftRecipientValidity.Invalid(RecipientValidityError.Format)
+    )
+    is RecipientUiModel.Valid -> DraftRecipient.SingleRecipient(
+        name = "",
+        address = this.address,
+        validity = DraftRecipientValidity.Validating
+    )
+}

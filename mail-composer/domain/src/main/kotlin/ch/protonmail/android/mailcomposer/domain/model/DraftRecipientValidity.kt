@@ -20,6 +20,12 @@ package ch.protonmail.android.mailcomposer.domain.model
 
 sealed interface DraftRecipientValidity {
     data object Valid : DraftRecipientValidity
-    data class Invalid(val reason: String) : DraftRecipientValidity
+    data class Invalid(val reason: RecipientValidityError) : DraftRecipientValidity
     data object Validating : DraftRecipientValidity
+}
+
+enum class RecipientValidityError {
+    Format,
+    NonexistentAddress,
+    Other
 }

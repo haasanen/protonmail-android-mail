@@ -20,9 +20,9 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
 import arrow.core.raise.either
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 import javax.inject.Inject
 
 class UpdateRecipients @Inject constructor(
@@ -30,9 +30,9 @@ class UpdateRecipients @Inject constructor(
 ) {
 
     suspend operator fun invoke(
-        toRecipients: List<Recipient>,
-        ccRecipients: List<Recipient>,
-        bccRecipients: List<Recipient>
+        toRecipients: List<DraftRecipient>,
+        ccRecipients: List<DraftRecipient>,
+        bccRecipients: List<DraftRecipient>
     ): Either<SaveDraftError, Unit> = either {
         draftRepository.updateToRecipient(toRecipients)
             .onLeft { raise(it) }

@@ -19,7 +19,9 @@
 package ch.protonmail.android.mailcomposer.presentation.model
 
 import androidx.compose.runtime.Stable
-import ch.protonmail.android.mailmessage.domain.model.Participant
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
+import ch.protonmail.android.mailcomposer.presentation.mapper.toDraftRecipient
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.async
@@ -42,23 +44,22 @@ data class RecipientsState(
     }
 }
 
-internal suspend fun RecipientsState.toParticipantFields(
-    action: suspend (recipient: RecipientUiModel.Valid) -> Participant
-): Triple<List<Participant>, List<Participant>, List<Participant>> {
+internal suspend fun RecipientsState.toDraftRecipients():
+    Triple<List<DraftRecipient>, List<DraftRecipient>, List<DraftRecipient>> {
     return coroutineScope {
         val toParticipants = async {
-            toRecipients.mapNotNull { it as? RecipientUiModel.Valid }
-                .map { action(it) }
+            toRecipients.map { it.toDraftRecipient() }
+                .filter { it.validity !is DraftRecipientValidity.Invalid }
         }
 
         val ccParticipants = async {
-            ccRecipients.mapNotNull { it as? RecipientUiModel.Valid }
-                .map { action(it) }
+            ccRecipients.map { it.toDraftRecipient() }
+                .filter { it.validity !is DraftRecipientValidity.Invalid }
         }
 
         val bccParticipants = async {
-            bccRecipients.mapNotNull { it as? RecipientUiModel.Valid }
-                .map { action(it) }
+            bccRecipients.map { it.toDraftRecipient() }
+                .filter { it.validity !is DraftRecipientValidity.Invalid }
         }
 
         Triple(

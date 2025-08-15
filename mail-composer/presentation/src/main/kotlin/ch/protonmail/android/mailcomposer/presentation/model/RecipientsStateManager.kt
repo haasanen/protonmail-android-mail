@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model
 
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.presentation.mapper.RecipientUiModelMapper
-import ch.protonmail.android.mailmessage.domain.model.Participant
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -54,16 +54,16 @@ class RecipientsStateManager @Inject constructor() {
         }
     }
 
-    fun setFromParticipants(
-        toRecipients: List<Participant>,
-        ccRecipients: List<Participant>,
-        bccRecipients: List<Participant>
+    fun setFromDraftRecipients(
+        toRecipients: List<DraftRecipient>,
+        ccRecipients: List<DraftRecipient>,
+        bccRecipients: List<DraftRecipient>
     ) {
         mutableRecipients.update {
             it.copy(
-                toRecipients = RecipientUiModelMapper.mapFromParticipants(toRecipients).toImmutableList(),
-                ccRecipients = RecipientUiModelMapper.mapFromParticipants(ccRecipients).toImmutableList(),
-                bccRecipients = RecipientUiModelMapper.mapFromParticipants(bccRecipients).toImmutableList()
+                toRecipients = RecipientUiModelMapper.mapFromDraftRecipients(toRecipients).toImmutableList(),
+                ccRecipients = RecipientUiModelMapper.mapFromDraftRecipients(ccRecipients).toImmutableList(),
+                bccRecipients = RecipientUiModelMapper.mapFromDraftRecipients(bccRecipients).toImmutableList()
             )
         }
     }

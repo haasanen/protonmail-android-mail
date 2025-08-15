@@ -35,9 +35,9 @@ import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import ch.protonmail.android.testdata.composer.DraftRecipientTestData
 import ch.protonmail.android.testdata.composer.LocalComposerRecipientTestData
 import ch.protonmail.android.testdata.composer.LocalDraftTestData
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
@@ -141,9 +141,7 @@ class RustDraftDataSourceImplTest {
         val expectedWrapperWithSyncStatus = DraftWrapperWithSyncStatus(expectedDraftWrapper, expectedSyncStatus)
         coEvery { toRecipientsWrapperMock.recipients() } returns listOf(LocalComposerRecipientTestData.Alice)
         coEvery { ccRecipientsWrapperMock.recipients() } returns listOf(LocalComposerRecipientTestData.Bob)
-        coEvery { bccRecipientsWrapperMock.recipients() } returns listOf(
-            LocalComposerRecipientTestData.Billing, LocalComposerRecipientTestData.Doe
-        )
+        coEvery { bccRecipientsWrapperMock.recipients() } returns emptyList()
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { openRustDraft(mockUserSession, localMessageId) } returns expectedWrapperWithSyncStatus.right()
         every { draftCache.add(expectedDraftWrapper) } just Runs
@@ -152,7 +150,7 @@ class RustDraftDataSourceImplTest {
         val actual = dataSource.open(userId, messageId)
 
         // Then
-        assertEquals(actual, expected.right())
+        assertEquals(expected.right(), actual)
     }
 
     @Test
@@ -525,9 +523,9 @@ class RustDraftDataSourceImplTest {
     @Test
     fun `update To recipients adds and removes recipients as needed`() = runTest {
         // Given
-        val bob = RecipientSample.Bob // will be removed
-        val john = RecipientSample.John // will be added
-        val alice = RecipientSample.Alice // unchanged
+        val bob = DraftRecipientTestData.Bob // will be removed
+        val john = DraftRecipientTestData.John // will be added
+        val alice = DraftRecipientTestData.Alice // unchanged
         val updatedRecipients = listOf(john, alice)
         val currentRecipients = listOf(
             LocalComposerRecipientTestData.Alice, LocalComposerRecipientTestData.Bob
@@ -555,9 +553,9 @@ class RustDraftDataSourceImplTest {
     @Test
     fun `update Cc recipients adds and removes recipients as needed`() = runTest {
         // Given
-        val bob = RecipientSample.Bob // will be removed
-        val john = RecipientSample.John // will be added
-        val alice = RecipientSample.Alice // unchanged
+        val bob = DraftRecipientTestData.Bob // will be removed
+        val john = DraftRecipientTestData.John // will be added
+        val alice = DraftRecipientTestData.Alice // unchanged
         val updatedRecipients = listOf(john, alice)
         val currentRecipients = listOf(
             LocalComposerRecipientTestData.Alice, LocalComposerRecipientTestData.Bob
@@ -585,9 +583,9 @@ class RustDraftDataSourceImplTest {
     @Test
     fun `update Bcc recipients adds and removes recipients as needed`() = runTest {
         // Given
-        val bob = RecipientSample.Bob // will be removed
-        val john = RecipientSample.John // will be added
-        val alice = RecipientSample.Alice // unchanged
+        val bob = DraftRecipientTestData.Bob // will be removed
+        val john = DraftRecipientTestData.John // will be added
+        val alice = DraftRecipientTestData.Alice // unchanged
         val updatedRecipients = listOf(john, alice)
         val currentRecipients = listOf(
             LocalComposerRecipientTestData.Alice, LocalComposerRecipientTestData.Bob
@@ -607,6 +605,7 @@ class RustDraftDataSourceImplTest {
 
         // Then
         verifyOrder {
+            bccRecipientsWrapperMock.recipients()
             bccRecipientsWrapperMock.addSingleRecipient(john.toSingleRecipientEntry())
             bccRecipientsWrapperMock.removeSingleRecipient(bob.toSingleRecipientEntry())
         }
@@ -618,7 +617,7 @@ class RustDraftDataSourceImplTest {
         // Due to some contact-suggestions related features not done yet, it can happen that the contact
         // we pass from UI has a different name than the one that's saved in rust (ie. in reply case where
         // rust save the contact before UI passes it); To keep this working, we compare contacts by address.
-        val johnNameless = RecipientSample.John.copy(name = "") // won't be (re) added
+        val johnNameless = DraftRecipientTestData.John.copy(name = "") // won't be (re) added
         val updatedRecipients = listOf(johnNameless)
         val currentRecipients = listOf(
             LocalComposerRecipientTestData.John, LocalComposerRecipientTestData.Bob

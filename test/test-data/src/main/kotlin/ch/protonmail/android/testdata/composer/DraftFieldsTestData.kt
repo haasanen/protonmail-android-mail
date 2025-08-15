@@ -22,12 +22,13 @@ import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 
 object DraftFieldsTestData {
@@ -55,16 +56,16 @@ object DraftFieldsTestData {
         Subject(expectedSubject),
         DraftBody(expectedDraftBody),
         expectedMimeType,
-        RecipientsTo(recipientsToAddresses.toRecipient()),
-        RecipientsCc(recipientsCcAddresses.toRecipient()),
-        RecipientsBcc(recipientsBccAddresses.toRecipient())
+        RecipientsTo(recipientsToAddresses.toDraftRecipient()),
+        RecipientsCc(recipientsCcAddresses.toDraftRecipient()),
+        RecipientsBcc(recipientsBccAddresses.toDraftRecipient())
     )
 
-    private fun List<String>.toRecipient() = this.map {
-        Recipient(
-            address = it,
+    private fun List<String>.toDraftRecipient() = this.map {
+        DraftRecipient.SingleRecipient(
             name = "",
-            isProton = false
+            address = it,
+            validity = DraftRecipientValidity.Validating
         )
     }
 }

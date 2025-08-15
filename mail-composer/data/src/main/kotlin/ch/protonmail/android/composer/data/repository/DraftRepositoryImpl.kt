@@ -31,6 +31,7 @@ import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
@@ -42,7 +43,6 @@ import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
@@ -75,13 +75,13 @@ class DraftRepositoryImpl @Inject constructor(
 
     override suspend fun saveBody(body: DraftBody): Either<SaveDraftError, Unit> = draftDataSource.saveBody(body)
 
-    override suspend fun updateToRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit> =
+    override suspend fun updateToRecipient(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit> =
         draftDataSource.updateToRecipients(recipients)
 
-    override suspend fun updateCcRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit> =
+    override suspend fun updateCcRecipient(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit> =
         draftDataSource.updateCcRecipients(recipients)
 
-    override suspend fun updateBccRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit> =
+    override suspend fun updateBccRecipient(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit> =
         draftDataSource.updateBccRecipients(recipients)
 
     override suspend fun getScheduleSendOptions(): Either<DataError, ScheduleSendOptions> = withContext(ioDispatcher) {

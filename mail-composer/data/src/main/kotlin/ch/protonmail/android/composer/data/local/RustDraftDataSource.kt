@@ -25,10 +25,10 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
-import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
-import ch.protonmail.android.mailcomposer.domain.model.MessagePasswordError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
+import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
+import ch.protonmail.android.mailcomposer.domain.model.MessagePasswordError
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
@@ -36,7 +36,6 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.DraftExpirationTime
@@ -57,9 +56,9 @@ interface RustDraftDataSource {
     suspend fun scheduleSend(timestamp: Long): Either<SendDraftError, Unit>
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>
     suspend fun attachmentList(): Either<DataError, AttachmentsWrapper>
-    suspend fun updateToRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
-    suspend fun updateCcRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
-    suspend fun updateBccRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit>
+    suspend fun updateToRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit>
+    suspend fun updateCcRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit>
+    suspend fun updateBccRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit>
     suspend fun listSenderAddresses(): Either<DataError, LocalSenderAddresses>
     suspend fun changeSender(sender: SenderEmail): Either<ChangeSenderError, Unit>
     suspend fun body(): Either<DataError, String>

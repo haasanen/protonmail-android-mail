@@ -71,7 +71,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateRecipients
-import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
+import ch.protonmail.android.mailcomposer.presentation.mapper.toDraftRecipient
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerStates
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
@@ -87,7 +87,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.operations.Composer
 import ch.protonmail.android.mailcomposer.presentation.model.operations.CompositeEvent
 import ch.protonmail.android.mailcomposer.presentation.model.operations.EffectsEvent
 import ch.protonmail.android.mailcomposer.presentation.model.operations.MainEvent
-import ch.protonmail.android.mailcomposer.presentation.model.toParticipantFields
+import ch.protonmail.android.mailcomposer.presentation.model.toDraftRecipients
 import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerStateReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.ActiveComposerRegistry
@@ -148,7 +148,6 @@ class ComposerViewModel @AssistedInject constructor(
     private val storeDraftWithSubject: StoreDraftWithSubject,
     private val updateRecipients: UpdateRecipients,
     private val getContacts: GetContacts,
-    private val participantMapper: ParticipantMapper,
     private val composerStateReducer: ComposerStateReducer,
     private val isValidEmailAddress: IsValidEmailAddress,
     private val observeMessageAttachments: ObserveMessageAttachments,
@@ -277,9 +276,7 @@ class ComposerViewModel @AssistedInject constructor(
             pendingStoreDraftJob = viewModelScope.launch(defaultDispatcher) {
                 Timber.d("Saving draft..")
 
-                val (toParticipants, ccParticipants, bccParticipants) = it.recipients.toParticipantFields { recipient ->
-                    participantMapper.recipientUiModelToParticipant(recipient, contactsOrEmpty())
-                }
+                val (toParticipants, ccParticipants, bccParticipants) = it.recipients.toDraftRecipients()
 
                 val draftFields = DraftFields(
                     it.sender,
@@ -406,19 +403,19 @@ class ComposerViewModel @AssistedInject constructor(
         val subject = Subject(intentShareInfo.emailSubject ?: "")
         val recipientsTo = RecipientsTo(
             intentShareInfo.emailRecipientTo.takeIfNotEmpty()?.map {
-                participantMapper.recipientUiModelToParticipant(RecipientUiModel.Valid(it), contactsOrEmpty())
+                RecipientUiModel.Valid(it).toDraftRecipient()
             } ?: emptyList()
         )
 
         val recipientsCc = RecipientsCc(
             intentShareInfo.emailRecipientCc.takeIfNotEmpty()?.map {
-                participantMapper.recipientUiModelToParticipant(RecipientUiModel.Valid(it), contactsOrEmpty())
+                RecipientUiModel.Valid(it).toDraftRecipient()
             } ?: emptyList()
         )
 
         val recipientsBcc = RecipientsBcc(
             intentShareInfo.emailRecipientBcc.takeIfNotEmpty()?.map {
-                participantMapper.recipientUiModelToParticipant(RecipientUiModel.Valid(it), contactsOrEmpty())
+                RecipientUiModel.Valid(it).toDraftRecipient()
             } ?: emptyList()
         )
 
@@ -776,9 +773,7 @@ class ComposerViewModel @AssistedInject constructor(
 
     private suspend fun currentDraftFields() = withContext(defaultDispatcher) {
         val (toParticipants, ccParticipants, bccParticipants) =
-            recipientsStateManager.recipients.value.toParticipantFields { recipient ->
-                participantMapper.recipientUiModelToParticipant(recipient, contactsOrEmpty())
-            }
+            recipientsStateManager.recipients.value.toDraftRecipients()
 
         DraftFields(
             currentSenderEmail(),
@@ -840,7 +835,7 @@ class ComposerViewModel @AssistedInject constructor(
     private fun initComposerFields(draftFields: DraftFields) {
         subjectTextField.replaceText(draftFields.subject.value)
         bodyTextField.replaceText(draftFields.body.value)
-        recipientsStateManager.setFromParticipants(
+        recipientsStateManager.setFromDraftRecipients(
             toRecipients = draftFields.recipientsTo.value,
             ccRecipients = draftFields.recipientsCc.value,
             bccRecipients = draftFields.recipientsBcc.value

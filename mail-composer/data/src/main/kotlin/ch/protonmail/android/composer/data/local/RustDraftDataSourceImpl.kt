@@ -51,6 +51,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
@@ -64,7 +65,6 @@ import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -174,17 +174,17 @@ class RustDraftDataSourceImpl @Inject constructor(
             is VoidDraftSaveResult.Ok -> Unit.right()
         }
 
-    override suspend fun updateToRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit> {
+    override suspend fun updateToRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit> {
         val recipientsToWrapper = draftCache.get().recipientsTo()
         return updateRecipients(recipientsToWrapper, recipients)
     }
 
-    override suspend fun updateCcRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit> {
+    override suspend fun updateCcRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit> {
         val recipientsCcWrapper = draftCache.get().recipientsCc()
         return updateRecipients(recipientsCcWrapper, recipients)
     }
 
-    override suspend fun updateBccRecipients(recipients: List<Recipient>): Either<SaveDraftError, Unit> {
+    override suspend fun updateBccRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit> {
         val recipientsBccWrapper = draftCache.get().recipientsBcc()
         return updateRecipients(recipientsBccWrapper, recipients)
     }
@@ -306,14 +306,19 @@ class RustDraftDataSourceImpl @Inject constructor(
 
     private fun updateRecipients(
         recipientsWrapper: ComposerRecipientListWrapper,
-        updatedRecipients: List<Recipient>
+        updatedRecipients: List<DraftRecipient>
     ): Either<SaveDraftError, Unit> = either {
         val currentRecipients = recipientsWrapper.recipients().toSingleRecipients()
-        val recipientsToAdd = updatedRecipients.filterNot { updatedRecipient ->
+
+        val updatedValidRecipients = updatedRecipients
+            .filterIsInstance<DraftRecipient.SingleRecipient>()
+            .filter { it.validity !is DraftRecipientValidity.Invalid }
+
+        val recipientsToAdd = updatedValidRecipients.filterNot { updatedRecipient ->
             updatedRecipient.address in currentRecipients.map { it.address }
         }
         val recipientsToRemove = currentRecipients.filterNot { currentRecipient ->
-            currentRecipient.address in updatedRecipients.map { it.address }
+            currentRecipient.address in updatedValidRecipients.map { it.address }
         }
 
         recipientsToAdd.forEach {

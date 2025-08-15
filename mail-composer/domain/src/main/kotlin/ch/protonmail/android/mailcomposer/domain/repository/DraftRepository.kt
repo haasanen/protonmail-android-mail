@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
@@ -34,7 +35,6 @@ import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.domain.entity.UserId
 import kotlin.time.Instant
 
@@ -50,9 +50,9 @@ interface DraftRepository {
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>
     suspend fun saveSubject(subject: Subject): Either<SaveDraftError, Unit>
     suspend fun saveBody(body: DraftBody): Either<SaveDraftError, Unit>
-    suspend fun updateToRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
-    suspend fun updateCcRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
-    suspend fun updateBccRecipient(recipients: List<Recipient>): Either<SaveDraftError, Unit>
+    suspend fun updateToRecipient(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit>
+    suspend fun updateCcRecipient(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit>
+    suspend fun updateBccRecipient(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit>
     suspend fun getScheduleSendOptions(): Either<DataError, ScheduleSendOptions>
     suspend fun listSenderAddresses(): Either<DataError, SenderAddresses>
     suspend fun changeSender(sender: SenderEmail): Either<ChangeSenderError, Unit>

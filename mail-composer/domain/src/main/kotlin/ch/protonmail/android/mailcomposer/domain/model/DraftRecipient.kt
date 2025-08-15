@@ -24,7 +24,8 @@ sealed interface DraftRecipient {
         val recipients: List<SingleRecipient>
     ) : DraftRecipient
     data class SingleRecipient(
+        val name: String?,
         val address: String,
-        val validity: DraftRecipientValidity
+        val validity: DraftRecipientValidity = DraftRecipientValidity.Validating
     ) : DraftRecipient
 }

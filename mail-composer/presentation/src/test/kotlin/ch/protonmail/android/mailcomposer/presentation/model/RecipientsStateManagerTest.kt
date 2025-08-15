@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model
 
-import ch.protonmail.android.mailmessage.domain.model.Participant
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -105,18 +105,21 @@ internal class RecipientsStateManagerTest {
     }
 
     @Test
-    fun `should set recipients when updated from participants`() {
+    fun `should set recipients when updated from recipient state manager`() {
         // Given
         val recipientsStateManager = RecipientsStateManager()
 
-        val rawToList = listOf(generateParticipant("a@bb.cc"), generateParticipant("@@"))
+        val rawToList = listOf(
+            DraftRecipient.SingleRecipient(name = "", address = "a@bb.cc"),
+            DraftRecipient.SingleRecipient(name = "", address = "@@")
+        )
         val expectedToList = listOf(RecipientUiModel.Valid("a@bb.cc"), RecipientUiModel.Invalid("@@"))
 
         val rawCcList = listOf(
-            generateParticipant("one@two.three"),
-            generateParticipant("123"),
-            generateParticipant("two@three.four"),
-            generateParticipant("three@four.five")
+            DraftRecipient.SingleRecipient(name = "", address = "one@two.three"),
+            DraftRecipient.SingleRecipient(name = "", address = "123"),
+            DraftRecipient.SingleRecipient(name = "", address = "two@three.four"),
+            DraftRecipient.SingleRecipient(name = "", address = "three@four.five")
         )
         val expectedCcList = listOf(
             RecipientUiModel.Valid("one@two.three"),
@@ -126,9 +129,9 @@ internal class RecipientsStateManagerTest {
         )
 
         val rawBccList = listOf(
-            generateParticipant("aaa"),
-            generateParticipant("test@example.com"),
-            generateParticipant("com@example.test")
+            DraftRecipient.SingleRecipient(name = "", address = "aaa"),
+            DraftRecipient.SingleRecipient(name = "", address = "test@example.com"),
+            DraftRecipient.SingleRecipient(name = "", address = "com@example.test")
         )
         val expectedBccList = listOf(
             RecipientUiModel.Invalid("aaa"),
@@ -137,7 +140,7 @@ internal class RecipientsStateManagerTest {
         )
 
         // When
-        recipientsStateManager.setFromParticipants(
+        recipientsStateManager.setFromDraftRecipients(
             toRecipients = rawToList,
             ccRecipients = rawCcList,
             bccRecipients = rawBccList
@@ -155,17 +158,17 @@ internal class RecipientsStateManagerTest {
     fun `should update the recipients depending on the recipient type`() {
         // Given
         val recipientsStateManager = RecipientsStateManager()
-        val toRecipients = listOf<RecipientUiModel>(
+        val toRecipients = listOf(
             RecipientUiModel.Valid("valid@toaddress.com"),
             RecipientUiModel.Invalid("invalidtoaddress.com")
         )
 
-        val ccRecipients = listOf<RecipientUiModel>(
+        val ccRecipients = listOf(
             RecipientUiModel.Valid("valid@toaddress.com"),
             RecipientUiModel.Invalid("invalidcctoaddress.com")
         )
 
-        val bccRecipients = listOf<RecipientUiModel>(
+        val bccRecipients = listOf(
             RecipientUiModel.Valid("valid@bccaddress.com"),
             RecipientUiModel.Invalid("invalidbccaddress.com")
         )
@@ -183,5 +186,4 @@ internal class RecipientsStateManagerTest {
         assertEquals(bccRecipients, actualRecipients.bccRecipients)
     }
 
-    private fun generateParticipant(address: String) = Participant(name = address.reversed(), address = address)
 }
