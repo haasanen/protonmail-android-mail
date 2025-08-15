@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailsettings.domain.model
 
-data class MobileFooterPreference(
+data class MobileSignaturePreference(
     val value: String,
     val enabled: Boolean
 )

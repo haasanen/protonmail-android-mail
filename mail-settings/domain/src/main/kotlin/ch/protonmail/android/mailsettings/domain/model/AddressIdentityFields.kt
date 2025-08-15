@@ -25,5 +25,3 @@ value class DisplayName(val value: String)
 value class SignatureValue(val text: String)
 
 data class Signature(val enabled: Boolean, val value: SignatureValue)
-
-data class MobileFooter(val value: String, val enabled: Boolean)

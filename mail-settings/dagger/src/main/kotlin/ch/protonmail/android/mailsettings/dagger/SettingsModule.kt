@@ -30,14 +30,11 @@ import ch.protonmail.android.mailsettings.data.repository.AppLanguageRepositoryI
 import ch.protonmail.android.mailsettings.data.repository.BackgroundSyncSettingRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.CombinedContactsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.LocalStorageDataRepositoryImpl
-import ch.protonmail.android.mailsettings.data.repository.MobileFooterRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.NotificationsSettingsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.PreventScreenshotsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.RustMailSettingsRepository
 import ch.protonmail.android.mailsettings.data.repository.local.AlternativeRoutingLocalDataSource
 import ch.protonmail.android.mailsettings.data.repository.local.AlternativeRoutingLocalDataSourceImpl
-import ch.protonmail.android.mailsettings.data.repository.local.MobileFooterLocalDataSource
-import ch.protonmail.android.mailsettings.data.repository.local.MobileFooterLocalDataSourceImpl
 import ch.protonmail.android.mailsettings.domain.repository.AlternativeRoutingRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
@@ -45,7 +42,6 @@ import ch.protonmail.android.mailsettings.domain.repository.BackgroundSyncSettin
 import ch.protonmail.android.mailsettings.domain.repository.CombinedContactsRepository
 import ch.protonmail.android.mailsettings.domain.repository.LocalStorageDataRepository
 import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
-import ch.protonmail.android.mailsettings.domain.repository.MobileFooterRepository
 import ch.protonmail.android.mailsettings.domain.repository.NotificationsSettingsRepository
 import ch.protonmail.android.mailsettings.domain.repository.PreventScreenshotsRepository
 import ch.protonmail.android.mailsettings.domain.usecase.HandleCloseWebSettings
@@ -131,14 +127,6 @@ object SettingsModule {
         @Binds
         @Reusable
         fun provideBackgroundSyncRepository(impl: BackgroundSyncSettingRepositoryImpl): BackgroundSyncSettingRepository
-
-        @Binds
-        @Reusable
-        fun bindMobileFooterRepository(impl: MobileFooterRepositoryImpl): MobileFooterRepository
-
-        @Binds
-        @Singleton
-        fun bindMobileLocalFooterLocalDataSource(impl: MobileFooterLocalDataSourceImpl): MobileFooterLocalDataSource
 
         @Binds
         @Reusable
