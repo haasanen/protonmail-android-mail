@@ -21,15 +21,16 @@ package ch.protonmail.android.mailsettings.presentation.webspamsettings
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
 import ch.protonmail.android.mailsession.domain.usecase.ForkSession
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.usecase.HandleCloseWebSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
+import ch.protonmail.android.mailsettings.presentation.ObserveWebSettingsStateFlow
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -79,10 +80,12 @@ class WebSpamFilterSettingsViewModelTest {
     }
 
     private fun buildViewModel() = WebSpamFilterSettingsViewModel(
-        observePrimaryUserId = observePrimaryUserId,
-        forkSession = forkSession,
-        appSettingsRepository = appSettingsRepository,
-        observeWebSettingsConfig = observeWebSettingsConfig,
+        ObserveWebSettingsStateFlow(
+            observePrimaryUserId = observePrimaryUserId,
+            forkSession = forkSession,
+            appSettingsRepository = appSettingsRepository,
+            observeWebSettingsConfig = observeWebSettingsConfig
+        ),
         handleCloseWebSettings = handleCloseWebSettings
     )
 

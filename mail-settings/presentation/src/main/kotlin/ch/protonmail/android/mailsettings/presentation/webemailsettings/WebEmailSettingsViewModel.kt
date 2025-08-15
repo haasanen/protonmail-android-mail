@@ -20,62 +20,25 @@ package ch.protonmail.android.mailsettings.presentation.webemailsettings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.mailsession.domain.usecase.ForkSession
-import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.usecase.HandleCloseWebSettings
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
+import ch.protonmail.android.mailsettings.presentation.ObserveWebSettingsStateFlow
+import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsOperation
-import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import ch.protonmail.android.mailsettings.presentation.websettings.toEmailSettingsUrl
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class WebEmailSettingsViewModel @Inject constructor(
-    private val observePrimaryUserId: ObservePrimaryUserId,
-    private val forkSession: ForkSession,
-    private val appSettingsRepository: AppSettingsRepository,
-    private val observeWebSettingsConfig: ObserveWebSettingsConfig,
+    observeWebSettings: ObserveWebSettingsStateFlow,
     private val handleCloseWebSettings: HandleCloseWebSettings
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<WebSettingsState>(WebSettingsState.Loading)
-    val state: StateFlow<WebSettingsState> = _state.asStateFlow()
-
-    init {
-        combine(
-            observePrimaryUserId().filterNotNull(),
-            appSettingsRepository.observeTheme(),
-            observeWebSettingsConfig()
-        ) { userId, theme, webSettingsConfig ->
-
-            forkSession(userId).fold(
-                ifRight = { forkedSessionId ->
-                    WebSettingsState.Data(webSettingsConfig.toEmailSettingsUrl(forkedSessionId, theme), theme)
-                },
-                ifLeft = { sessionError ->
-                    Timber.e("web-email-settings: Forking session failed")
-                    WebSettingsState.Error("Forking session failed due to $sessionError")
-                }
-            )
-        }
-            .onEach { newState ->
-                _state.value = newState
-
-                Timber.d("web-email-settings: State changed: $newState")
-            }
-            .launchIn(viewModelScope)
+    val state: Flow<WebSettingsState> = observeWebSettings(viewModelScope) { sessionId, theme, config ->
+        config.toEmailSettingsUrl(sessionId, theme)
     }
 
     internal fun submit(action: WebSettingsOperation) {

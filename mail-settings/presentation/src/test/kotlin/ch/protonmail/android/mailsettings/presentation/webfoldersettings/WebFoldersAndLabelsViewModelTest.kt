@@ -30,6 +30,7 @@ import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.usecase.HandleCloseWebSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
+import ch.protonmail.android.mailsettings.presentation.ObserveWebSettingsStateFlow
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -79,10 +80,12 @@ class WebFoldersAndLabelsViewModelTest {
     }
 
     private fun buildViewModel() = WebFoldersAndLabelsViewModel(
-        observePrimaryUserId = observePrimaryUserId,
-        forkSession = forkSession,
-        appSettingsRepository = appSettingsRepository,
-        observeWebSettingsConfig = observeWebSettingsConfig,
+        ObserveWebSettingsStateFlow(
+            observePrimaryUserId = observePrimaryUserId,
+            forkSession = forkSession,
+            appSettingsRepository = appSettingsRepository,
+            observeWebSettingsConfig = observeWebSettingsConfig
+        ),
         handleCloseWebSettings = handleCloseWebSettings
     )
 
