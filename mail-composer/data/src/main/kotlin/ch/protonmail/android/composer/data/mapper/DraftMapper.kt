@@ -16,17 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("TooManyFunctions")
-
 package ch.protonmail.android.composer.data.mapper
 
 import ch.protonmail.android.composer.data.local.LocalDraft
 import ch.protonmail.android.composer.data.local.LocalDraftWithSyncStatus
-import ch.protonmail.android.composer.data.local.LocalSenderAddresses
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
-import ch.protonmail.android.mailcommon.data.mapper.LocalComposerRecipient
 import ch.protonmail.android.mailcommon.data.mapper.LocalDraftSendResult
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
@@ -50,7 +46,6 @@ import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
 import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
-import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
@@ -59,7 +54,6 @@ import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadError
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadErrorReason
 import uniffi.proton_mail_uniffi.DraftCreateMode
@@ -81,20 +75,11 @@ import uniffi.proton_mail_uniffi.DraftSendResultOrigin
 import uniffi.proton_mail_uniffi.DraftSendStatus
 import uniffi.proton_mail_uniffi.DraftSenderAddressChangeError
 import uniffi.proton_mail_uniffi.DraftSenderAddressChangeErrorReason
-import uniffi.proton_mail_uniffi.DraftSenderAddressList
 import uniffi.proton_mail_uniffi.DraftSyncStatus
 import uniffi.proton_mail_uniffi.MimeType
-import uniffi.proton_mail_uniffi.SingleRecipientEntry
 import kotlin.time.DurationUnit
 import kotlin.time.Instant
 import kotlin.time.toDuration
-
-fun LocalSenderAddresses.toSenderAddresses() = SenderAddresses(
-    this.addresses.map { SenderEmail(it) },
-    SenderEmail(this.selected)
-)
-
-fun DraftSenderAddressList.toLocalSenderAddresses() = LocalSenderAddresses(this.available, this.active)
 
 fun DraftScheduleSendOptions.toScheduleSendOptions() = ScheduleSendOptions(
     tomorrowTime = Instant.fromEpochSeconds(this.tomorrowTime.toLong()),
@@ -143,29 +128,6 @@ fun DraftAction.toDraftCreateMode(): DraftCreateMode? = when (this) {
         null
     }
 }
-
-fun List<LocalComposerRecipient>.toSingleRecipients(): List<Recipient> = this
-    .filterIsInstance<ComposerRecipient.Single>()
-    .map {
-        val localRecipient = it.v1
-        Recipient(
-            address = localRecipient.address,
-            name = localRecipient.displayName ?: localRecipient.address,
-            isProton = false
-        )
-    }
-
-private fun List<LocalComposerRecipient>.toComposerRecipients(): List<String> = this.map { localRecipient ->
-    when (localRecipient) {
-        is ComposerRecipient.Group -> localRecipient.v1.displayName
-        is ComposerRecipient.Single -> localRecipient.v1.address
-    }
-}
-
-fun Recipient.toSingleRecipientEntry() = SingleRecipientEntry(
-    this.name,
-    this.address
-)
 
 fun LocalDraftSendResult.toMessageSendingStatus(): MessageSendingStatus = when (val status = this.error) {
     is DraftSendStatus.Success -> this.toMessageSendingStatusForSuccess(status)
