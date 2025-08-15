@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,20 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.composer.data.local
+package ch.protonmail.android.mailcomposer.domain.model
 
-data class RecipientEntityWithValidation(
-    val recipientEntity: RecipientEntity,
-    val validationState: RecipientValidationState
-)
-
-sealed interface RecipientEntity {
-    data class Group(val name: String) : RecipientEntity
-    data class Single(val address: String) : RecipientEntity
-}
-
-sealed interface RecipientValidationState {
-    data object Valid : RecipientValidationState
-    data class Invalid(val reason: String) : RecipientValidationState
-    data object Validating : RecipientValidationState
+sealed interface DraftRecipient {
+    data class GroupRecipient(
+        val name: String,
+        val recipients: List<SingleRecipient>
+    ) : DraftRecipient
+    data class SingleRecipient(
+        val address: String,
+        val validity: DraftRecipientValidity
+    ) : DraftRecipient
 }

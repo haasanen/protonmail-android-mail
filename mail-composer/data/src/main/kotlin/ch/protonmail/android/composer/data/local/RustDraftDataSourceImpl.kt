@@ -50,6 +50,7 @@ import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
@@ -204,7 +205,7 @@ class RustDraftDataSourceImpl @Inject constructor(
     // Will emit based on a mutableFlow which is updated by the callback above;
     // Requests again the data from rust library, maps it to the new entity and exposes to the view
     // RecipientEntity will probably be used also in LocalDraft to follow (to convey groups + Validation info to UI)
-    override suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>> = flowOf(emptyList())
+    override suspend fun observeRecipientsValidation(): Flow<List<DraftRecipient>> = flowOf(emptyList())
 
 
     override suspend fun send(): Either<SendDraftError, Unit> = when (val result = draftCache.get().send()) {
