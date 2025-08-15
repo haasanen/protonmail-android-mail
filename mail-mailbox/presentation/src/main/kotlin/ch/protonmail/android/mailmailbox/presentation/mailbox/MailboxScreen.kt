@@ -60,7 +60,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -103,7 +102,6 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
-import ch.protonmail.android.design.compose.component.ProtonPullToRefreshIndicator
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
@@ -743,18 +741,11 @@ private fun MailboxSwipeRefresh(
         refreshing && (refreshRequested || loadingWithDataCount == 1)
     }
 
-    PullToRefreshBox(
+    MailboxPullToRefreshBox(
         modifier = modifier,
         state = pullToRefreshState,
         isRefreshing = isRefreshing,
-        onRefresh = onRefresh,
-        indicator = {
-            ProtonPullToRefreshIndicator(
-                state = pullToRefreshState,
-                isRefreshing = isRefreshing,
-                modifier = Modifier.align(Alignment.TopCenter)
-            )
-        }
+        onRefresh = onRefresh
     ) {
         when (currentViewState) {
             is MailboxScreenState.Loading ->
