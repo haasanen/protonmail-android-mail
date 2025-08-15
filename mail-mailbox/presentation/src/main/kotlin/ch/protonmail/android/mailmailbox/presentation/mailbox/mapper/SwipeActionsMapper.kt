@@ -66,32 +66,32 @@ class SwipeActionsMapper @Inject constructor() {
         SwipeAction.Spam -> ActionConfig(
             iconRes = R.drawable.ic_proton_fire,
             descriptionRes = R.string.mail_settings_swipe_action_spam_description,
-            color = { ProtonTheme.colors.notificationNorm }
+            color = { ProtonTheme.colors.notificationWarning }
         )
         SwipeAction.Star -> ActionConfig(
             iconRes = R.drawable.ic_proton_star,
             descriptionRes = R.string.mail_settings_swipe_action_star_description,
-            color = { ProtonTheme.colors.notificationWarning }
+            color = { ProtonTheme.colors.starSelected }
         )
         SwipeAction.Archive -> ActionConfig(
             iconRes = R.drawable.ic_proton_archive_box,
             descriptionRes = R.string.mail_settings_swipe_action_archive_description,
-            color = { ProtonTheme.colors.notificationNorm }
+            color = { ProtonTheme.colors.notificationSuccess }
         )
         SwipeAction.MarkRead -> ActionConfig(
             iconRes = R.drawable.ic_proton_envelope_dot,
             descriptionRes = R.string.mail_settings_swipe_action_read_description,
-            color = { ProtonTheme.colors.brandNorm }
+            color = { ProtonTheme.colors.brandMinus10 }
         )
         SwipeAction.LabelAs -> ActionConfig(
             iconRes = R.drawable.ic_proton_tag,
             descriptionRes = R.string.mail_settings_swipe_action_label_as_description,
-            color = { ProtonTheme.colors.notificationNorm }
+            color = { ProtonTheme.colors.brandMinus10 }
         )
         SwipeAction.MoveTo -> ActionConfig(
             iconRes = R.drawable.ic_proton_folder_arrow_in,
             descriptionRes = R.string.mail_settings_swipe_action_move_to_description,
-            color = { ProtonTheme.colors.notificationNorm }
+            color = { ProtonTheme.colors.brandMinus10 }
         )
     }
 
