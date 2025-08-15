@@ -36,9 +36,9 @@ fun PasswordException.getErrorMessage(context: Context): String = when (this) {
     is PasswordException.PasswordEmpty -> context.getString(R.string.settings_password_error_empty)
     is PasswordException.PasswordNotValidated,
     is PasswordException.PasswordValidationMismatch,
-    is PasswordException.PasswordsNotMatching -> context.getString(R.string.settings_password_error_match)
+    is PasswordException.PasswordsNotMatching -> context.getString(R.string.settings_password_error)
     is PasswordException.InvalidRecoveryCode -> context.getString(R.string.settings_password_error_invalid_recovery)
-    is PasswordException.Reused2FaCode -> context.getString(R.string.settings_password_general_error)
+    is PasswordException.Reused2FaCode -> context.getString(R.string.settings_password_error_2fa_reused)
 }
 
 fun PasswordException.mapToValidationError(): ValidationError? = when (this) {

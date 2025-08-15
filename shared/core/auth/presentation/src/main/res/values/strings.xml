@@ -176,7 +176,8 @@
     <string name="settings_password_management_2fa">Two FA is needed</string>
     <string name="settings_password_invalid_2fa">Invalid second factor code. Please try again.</string>
     <string name="settings_password_error_empty">Password cannot be empty.</string>
-    <string name="settings_password_error_match">Passwords do not match.</string>
-    <string name="settings_password_error_invalid_recovery">Invalid recovery code.</string>
+    <string name="settings_password_error">Incorrect username or password. Please try again.</string>
+    <string name="settings_password_error_invalid_recovery">Incorrect 2FA code. Please try again.</string>
+    <string name="settings_password_error_2fa_reused">Code has already been used. Please try a different code.</string>
     <string name="settings_password_general_error">An error occurred.</string>
 </resources>
