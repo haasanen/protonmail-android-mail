@@ -42,9 +42,9 @@ fun WebSettingsConfig.toAccountSettingsUrl(forkedSessionId: ForkedSessionId, the
     }
 
 private fun Theme.getUriParam(): String = when (this) {
-    Theme.SYSTEM_DEFAULT -> "0"
-    Theme.LIGHT -> "0"
-    Theme.DARK -> "1"
+    Theme.SYSTEM_DEFAULT -> SYSTEM_DEFAULT_THEME_PLACEHOLDER
+    Theme.LIGHT -> LIGHT_THEME_URI_PARAM
+    Theme.DARK -> DARK_THEME_URI_PARAM
 }
 
 @Suppress("MaxLineLength")
@@ -54,3 +54,8 @@ private fun WebSettingsConfig.toSettingsUrl(
     action: String
 ) =
     "$baseUrl?action=$action&theme=${theme.getUriParam()}&app-version=${BuildConfig.WEBVIEW_APP_VERSION}#selector=${forkedSessionId.id}"
+
+const val SYSTEM_DEFAULT_THEME_PLACEHOLDER = "{SYSTEM_DEFAULT_THEME}"
+const val LIGHT_THEME_URI_PARAM = "0"
+const val DARK_THEME_URI_PARAM = "1"
+

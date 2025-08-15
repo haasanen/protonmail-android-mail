@@ -35,9 +35,22 @@ import com.google.accompanist.web.AccompanistWebViewClient
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewState
 import timber.log.Timber
+import androidx.compose.foundation.isSystemInDarkTheme
 
 @Composable
 fun SettingWebView(modifier: Modifier = Modifier, state: WebSettingsState.Data) {
+
+    val isSystemInDarkTheme = isSystemInDarkTheme()
+
+    // Resolve system theme only if the URL contains the placeholder
+    val resolvedUrl = remember(state) {
+        if (state.webSettingsUrl.contains(SYSTEM_DEFAULT_THEME_PLACEHOLDER)) {
+            val systemParam = if (isSystemInDarkTheme) DARK_THEME_URI_PARAM else LIGHT_THEME_URI_PARAM
+            state.webSettingsUrl.replace(SYSTEM_DEFAULT_THEME_PLACEHOLDER, systemParam)
+        } else {
+            state.webSettingsUrl
+        }
+    }
 
     val client = remember(state) {
         object : AccompanistWebViewClient() {
@@ -82,9 +95,8 @@ fun SettingWebView(modifier: Modifier = Modifier, state: WebSettingsState.Data) 
         }
     }
 
-    val webViewState = rememberWebViewState(
-        url = state.webSettingsUrl
-    )
+    val webViewState = rememberWebViewState(url = resolvedUrl)
+
     Column(modifier = modifier.fillMaxSize()) {
         WebView(
             onCreated = {
