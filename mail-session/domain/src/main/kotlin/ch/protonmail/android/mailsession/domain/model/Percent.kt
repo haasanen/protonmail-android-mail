@@ -16,19 +16,14 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsession.data.mapper
+package ch.protonmail.android.mailsession.domain.model
 
-import ch.protonmail.android.mailcommon.data.mapper.LocalUser
-import ch.protonmail.android.mailsession.domain.model.User
-import me.proton.core.domain.entity.UserId
+import kotlin.math.roundToInt
 
-fun LocalUser.toUser(userId: UserId): User = User(
-    userId = userId,
-    displayName = displayName,
-    email = email,
-    name = name,
-    services = services.toInt(),
-    subscribed = subscribed.toInt(),
-    usedSpace = usedSpace,
-    maxSpace = maxSpace
-)
+@JvmInline
+value class Percent(val value: Double) : Comparable<Percent> {
+
+    fun roundToInt(): Int = value.roundToInt()
+
+    override operator fun compareTo(other: Percent): Int = value.compareTo(other.value)
+}

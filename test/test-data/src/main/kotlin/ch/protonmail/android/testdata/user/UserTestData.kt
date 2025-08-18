@@ -48,14 +48,18 @@ object UserTestData {
         displayName: String = USER_DISPLAY_NAME_RAW,
         name: String = USER_NAME_RAW,
         userId: UserId = UserIdTestData.Primary,
-        subscribed: Int = 1
+        subscribed: Int = 1,
+        usedSpace: Long = 1_000_000_000L,
+        maxSpace: Long = 15_000_000_000L
     ) = User(
         userId = userId,
         displayName = displayName,
         email = USER_EMAIL_RAW,
         name = name,
         services = 1,
-        subscribed = subscribed
+        subscribed = subscribed,
+        usedSpace = usedSpace,
+        maxSpace = maxSpace
     )
 }
 

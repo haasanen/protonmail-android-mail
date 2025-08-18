@@ -26,8 +26,19 @@ data class User(
     val email: String,
     val name: String?,
     val services: Int,
-    val subscribed: Int
-)
+    val subscribed: Int,
+    private val usedSpace: Long,
+    private val maxSpace: Long
+) {
+
+    val usagePercent: Percent = if (maxSpace > 0) {
+        Percent(usedSpace.toDouble() / maxSpace.toDouble() * 100.0)
+    } else {
+        Percent(0.0)
+    }
+
+    val maxStorage: Storage = Storage.fromBytes(maxSpace)
+}
 
 fun User.hasService(): Boolean = services > 0
 fun User.hasSubscription(): Boolean = subscribed > 0
@@ -43,6 +54,7 @@ fun User.hasSubscriptionForDrive(): Boolean = hasSubscriptionFor(USER_SERVICE_MA
 private const val USER_SERVICE_MASK_MAIL = 1 // 0001
 private const val USER_SERVICE_MASK_DRIVE = 2 // 0010
 private const val USER_SERVICE_MASK_VPN = 4 // 0100
+private const val BYTES_PER_GIB = 1024L * 1024L * 1024L
 
 private fun User.hasServiceFor(mask: Int): Boolean = mask.and(services) == mask
 private fun User.hasSubscriptionFor(mask: Int): Boolean = mask.and(subscribed) == mask

@@ -151,7 +151,9 @@ class UserSessionRepositoryImplTest {
             name = "username",
             email = "userEmail",
             services = 0,
-            subscribed = 0
+            subscribed = 0,
+            usedSpace = 0L,
+            maxSpace = 0L
         )
         val expectedMailUserSession = mockk<MailUserSessionWrapper>()
         val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)

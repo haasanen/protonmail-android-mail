@@ -16,19 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsession.data.mapper
+package ch.protonmail.android.mailsession.domain.model
 
-import ch.protonmail.android.mailcommon.data.mapper.LocalUser
-import ch.protonmail.android.mailsession.domain.model.User
-import me.proton.core.domain.entity.UserId
-
-fun LocalUser.toUser(userId: UserId): User = User(
-    userId = userId,
-    displayName = displayName,
-    email = email,
-    name = name,
-    services = services.toInt(),
-    subscribed = subscribed.toInt(),
-    usedSpace = usedSpace,
-    maxSpace = maxSpace
-)
+enum class StorageUnit(val displayName: String) {
+    BYTES("B"),
+    KiB("KB"),
+    MiB("MB"),
+    GiB("GB"),
+    TiB("TB")
+}
