@@ -92,7 +92,7 @@ kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.
 hilt-android-gradle = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
 google-services = { module = "com.google.gms:google-services", version.ref = "google-services-plugin" }
 sentry-gradle = { module = "io.sentry:sentry-android-gradle-plugin", version.ref = "sentry-gradle-plugin" }
-paparazzi = { module = "app.cash.paparazzi:paparazzi-gradle-plugin", version.ref = "paparazzi" }
+paparazzi-plugin = { module = "app.cash.paparazzi:paparazzi-gradle-plugin", version.ref = "paparazzi" }
 
 # Standard dependencies
 accompanist-webview = { module = "com.google.accompanist:accompanist-webview", version.ref = "accompanist-webview" }
@@ -194,6 +194,7 @@ sentry = { module = "io.sentry:sentry", version.ref = "sentry" }
 plumber = { module = "com.squareup.leakcanary:plumber-android", version.ref = "leakcanary" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 zxing-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxing-embedded" }
+paparazzi = { group = "app.cash.paparazzi", name = "paparazzi" , version.ref = "paparazzi" }
 
 # Proton Core libraries
 proton-core-auth-domain = { module = "me.proton.core:auth-domain", version.ref = "proton-core" }

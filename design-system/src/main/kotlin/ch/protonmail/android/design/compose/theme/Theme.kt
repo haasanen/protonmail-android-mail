@@ -24,10 +24,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalInspectionMode
 
 @Composable
 fun ProtonTheme(
     isDark: Boolean = isNightMode(),
+    localInspectionMode: Boolean = LocalInspectionMode.current,
     colors: ProtonColors = if (isDark) ProtonColors.Dark else ProtonColors.Light,
     typography: ProtonTypography = ProtonTypography.Default,
     shapes: ProtonShapes = ProtonShapes(),
@@ -39,7 +41,8 @@ fun ProtonTheme(
         LocalColors provides rememberedColors,
         LocalTypography provides typography,
         LocalShapes provides shapes,
-        LocalContentColor provides rememberedColors.textNorm
+        LocalContentColor provides rememberedColors.textNorm,
+        LocalInspectionMode provides localInspectionMode
     ) {
         androidx.compose.material3.MaterialTheme(
             typography = typography.toMaterial3ThemeTypography(),
@@ -102,6 +105,7 @@ fun isNightMode() = when (AppCompatDelegate.getDefaultNightMode()) {
 }
 
 object ProtonTheme {
+
     val colors: ProtonColors
         @Composable
         @ReadOnlyComposable

@@ -26,7 +26,7 @@ buildscript {
         classpath(libs.hilt.android.gradle)
         classpath(libs.google.services)
         classpath(libs.sentry.gradle)
-        classpath(libs.paparazzi)
+        classpath(libs.paparazzi.plugin)
     }
 }
 
