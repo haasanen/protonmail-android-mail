@@ -64,7 +64,7 @@ import io.mockk.verify
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
-import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
+import uniffi.proton_mail_uniffi.AllListActions
 import uniffi.proton_mail_uniffi.CustomFolderAction
 import uniffi.proton_mail_uniffi.DraftCancelScheduledSendInfo
 import uniffi.proton_mail_uniffi.Id
@@ -505,7 +505,7 @@ internal class RustMessageDataSourceImplTest {
             val labelId = LocalLabelId(1uL)
             val mailbox = mockk<MailboxWrapper>()
             val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
-            val expected = AllBottomBarMessageActions(emptyList(), emptyList())
+            val expected = AllListActions(emptyList(), emptyList())
 
             coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
             coEvery { getRustAllBottomBarActions(mailbox, messageIds) } returns expected.right()

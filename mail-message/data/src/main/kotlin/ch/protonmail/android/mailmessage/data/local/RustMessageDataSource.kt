@@ -31,7 +31,7 @@ import ch.protonmail.android.mailmessage.domain.model.PreviousScheduleSendTime
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
+import uniffi.proton_mail_uniffi.AllListActions
 import uniffi.proton_mail_uniffi.Message
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
@@ -86,7 +86,7 @@ interface RustMessageDataSource {
         userId: UserId,
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
-    ): Either<DataError, AllBottomBarMessageActions>
+    ): Either<DataError, AllListActions>
 
     suspend fun deleteMessages(userId: UserId, messageIds: List<LocalMessageId>): Either<DataError, Unit>
 

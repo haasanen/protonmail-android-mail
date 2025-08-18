@@ -25,9 +25,9 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
-import uniffi.proton_mail_uniffi.AllAvailableBottomBarActionsForMessagesResult
-import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
-import uniffi.proton_mail_uniffi.allAvailableBottomBarActionsForMessages
+import uniffi.proton_mail_uniffi.AllAvailableListActionsForMessagesResult
+import uniffi.proton_mail_uniffi.AllListActions
+import uniffi.proton_mail_uniffi.allAvailableListActionsForMessages
 import javax.inject.Inject
 
 class GetRustAllMessageBottomBarActions @Inject constructor() {
@@ -35,9 +35,9 @@ class GetRustAllMessageBottomBarActions @Inject constructor() {
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
         messageIds: List<LocalMessageId>
-    ): Either<DataError, AllBottomBarMessageActions> =
-        when (val result = allAvailableBottomBarActionsForMessages(mailbox.getRustMailbox(), messageIds)) {
-            is AllAvailableBottomBarActionsForMessagesResult.Error -> result.v1.toDataError().left()
-            is AllAvailableBottomBarActionsForMessagesResult.Ok -> result.v1.right()
+    ): Either<DataError, AllListActions> =
+        when (val result = allAvailableListActionsForMessages(mailbox.getRustMailbox(), messageIds)) {
+            is AllAvailableListActionsForMessagesResult.Error -> result.v1.toDataError().left()
+            is AllAvailableListActionsForMessagesResult.Ok -> result.v1.right()
         }
 }

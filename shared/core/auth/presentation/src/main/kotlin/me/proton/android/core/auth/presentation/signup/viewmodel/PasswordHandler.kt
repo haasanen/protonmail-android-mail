@@ -46,7 +46,8 @@ import uniffi.proton_account_uniffi.SignupFlowSubmitPasswordResult
  */
 class PasswordHandler private constructor(
     private val getFlow: suspend () -> SignupFlow,
-    private val getString: (resId: Int) -> String
+    private val getString: (resId: Int) -> String,
+    private val getQuantityString: (resId: Int, quantity: Int, args: Int) -> String
 ) : ErrorHandler {
 
     fun handleAction(action: CreatePasswordAction) = when (action) {
@@ -74,7 +75,7 @@ class PasswordHandler private constructor(
                     is SignupException.PasswordsNotMatching -> ConfirmPasswordMissMatch
                     is SignupException.PasswordNotValidated -> PasswordInvalid
                     is SignupException.PasswordValidationMismatch -> PasswordInvalid
-                    else -> Error(message = result.v1.getErrorMessage(getString))
+                    else -> Error(message = result.v1.getErrorMessage(getString, getQuantityString))
                 }
                 emit(state)
             }
@@ -96,8 +97,11 @@ class PasswordHandler private constructor(
 
     companion object {
 
-        fun create(getFlow: suspend () -> SignupFlow, getString: (resId: Int) -> String) =
-            PasswordHandler(getFlow, getString)
+        fun create(
+            getFlow: suspend () -> SignupFlow,
+            getString: (resId: Int) -> String,
+            getQuantityString: (resId: Int, quantity: Int, args: Int) -> String
+        ) = PasswordHandler(getFlow, getString, getQuantityString)
     }
 }
 

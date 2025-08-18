@@ -51,7 +51,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
-import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
+import uniffi.proton_mail_uniffi.AllListActions
 import uniffi.proton_mail_uniffi.ConversationAvailableActions
 import uniffi.proton_mail_uniffi.CustomFolderAction
 import uniffi.proton_mail_uniffi.Id
@@ -248,7 +248,7 @@ class RustConversationDataSourceImplTest {
         val labelId = LocalLabelId(1uL)
         val mailbox = mockk<MailboxWrapper>()
         val conversationIds = listOf(LocalConversationIdSample.OctConversation)
-        val expected = AllBottomBarMessageActions(emptyList(), emptyList())
+        val expected = AllListActions(emptyList(), emptyList())
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
         coEvery { getRustAllConversationBottomBarActions(mailbox, conversationIds) } returns expected.right()

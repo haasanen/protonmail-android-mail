@@ -29,6 +29,7 @@ import me.proton.android.core.humanverification.domain.entity.HumanVerificationS
 import uniffi.proton_mail_uniffi.ChallengeNotifier
 import uniffi.proton_mail_uniffi.ChallengePayload
 import uniffi.proton_mail_uniffi.ChallengeResponse
+import uniffi.proton_mail_uniffi.ChallengeServer
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -37,7 +38,7 @@ class ChallengeNotifierCallback @Inject constructor() : ChallengeNotifier {
 
     private val mutableHumanVerificationSharedFlow = MutableSharedFlow<HumanVerificationState>(extraBufferCapacity = 1)
 
-    override suspend fun onChallenge(payload: ChallengePayload): ChallengeResponse {
+    override suspend fun onChallenge(server: ChallengeServer, payload: ChallengePayload): ChallengeResponse {
         val baseUrl = payload.base()
         val pathUrl = payload.path()
         val queryUrl = payload.query()

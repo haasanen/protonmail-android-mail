@@ -60,7 +60,8 @@ import uniffi.proton_account_uniffi.Country as RustCountry
  */
 class RecoveryHandler private constructor(
     private val getFlow: suspend () -> SignupFlow,
-    private val getString: (resId: Int) -> String
+    private val getString: (resId: Int) -> String,
+    private val getQuantityString: (resId: Int, quantity: Int, args: Int) -> String
 ) : ErrorHandler {
 
     @Volatile
@@ -134,7 +135,7 @@ class RecoveryHandler private constructor(
 
         when (val result = getFlow().submitRecoveryEmail(email, recoveryFrameDetails.toUserBehavior())) {
             is SignupFlowSubmitRecoveryEmailResult.Error -> {
-                emit(Email(message = result.v1.getErrorMessage(getString)))
+                emit(Email(message = result.v1.getErrorMessage(getString, getQuantityString)))
             }
 
             is SignupFlowSubmitRecoveryEmailResult.Ok -> {
@@ -161,7 +162,7 @@ class RecoveryHandler private constructor(
         val fullPhoneNumber = "$callingCode$phoneNumber"
         when (val result = getFlow().submitRecoveryPhone(fullPhoneNumber, recoveryFrameDetails.toUserBehavior())) {
             is SignupFlowSubmitRecoveryPhoneResult.Error -> {
-                emit(Phone(message = result.v1.getErrorMessage(getString)))
+                emit(Phone(message = result.v1.getErrorMessage(getString, getQuantityString)))
             }
 
             is SignupFlowSubmitRecoveryPhoneResult.Ok -> {
@@ -191,7 +192,7 @@ class RecoveryHandler private constructor(
                 emit(
                     Error(
                         recoveryMethod = selectedRecoveryMethod,
-                        message = result.v1.getErrorMessage(getString)
+                        message = result.v1.getErrorMessage(getString, getQuantityString)
                     )
                 )
             }
@@ -228,8 +229,11 @@ class RecoveryHandler private constructor(
 
     companion object {
 
-        fun create(getFlow: suspend () -> SignupFlow, getString: (resId: Int) -> String): RecoveryHandler =
-            RecoveryHandler(getFlow, getString)
+        fun create(
+            getFlow: suspend () -> SignupFlow,
+            getString: (resId: Int) -> String,
+            getQuantityString: (resId: Int, quantity: Int, args: Int) -> String
+        ): RecoveryHandler = RecoveryHandler(getFlow, getString, getQuantityString)
     }
 }
 

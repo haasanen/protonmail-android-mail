@@ -30,10 +30,10 @@ import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
-import uniffi.proton_mail_uniffi.BottomBarActions
+import uniffi.proton_mail_uniffi.AllListActions
 import uniffi.proton_mail_uniffi.GeneralActions
 import uniffi.proton_mail_uniffi.IsSelected
+import uniffi.proton_mail_uniffi.ListActions
 import uniffi.proton_mail_uniffi.MessageAction
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MovableSystemFolder
@@ -138,26 +138,26 @@ private fun List<MessageAction>.messageActionsToActions() = this.map { messageAc
     }
 }
 
-fun AllBottomBarMessageActions.toAllBottomBarActions(): AllBottomBarActions {
+fun AllListActions.toAllBottomBarActions(): AllBottomBarActions {
     return AllBottomBarActions(
-        this.hiddenBottomBarActions.bottombarActionsToActions(),
-        this.visibleBottomBarActions.bottombarActionsToActions()
+        this.hiddenListActions.bottombarActionsToActions(),
+        this.visibleListActions.bottombarActionsToActions()
     )
 }
 
-private fun List<BottomBarActions>.bottombarActionsToActions() = this.map { bottombarAction ->
+private fun List<ListActions>.bottombarActionsToActions() = this.map { bottombarAction ->
     when (bottombarAction) {
-        BottomBarActions.LabelAs -> Action.Label
-        BottomBarActions.MarkRead -> Action.MarkRead
-        BottomBarActions.MarkUnread -> Action.MarkUnread
-        BottomBarActions.More -> Action.More
-        BottomBarActions.MoveTo -> Action.Move
-        is BottomBarActions.MoveToSystemFolder -> bottombarAction.v1.name.toAction()
-        BottomBarActions.PermanentDelete -> Action.Delete
-        BottomBarActions.Star -> Action.Star
-        BottomBarActions.Unstar -> Action.Unstar
-        is BottomBarActions.NotSpam -> Action.Inbox
-        BottomBarActions.Snooze -> Action.Snooze
+        ListActions.LabelAs -> Action.Label
+        ListActions.MarkRead -> Action.MarkRead
+        ListActions.MarkUnread -> Action.MarkUnread
+        ListActions.More -> Action.More
+        ListActions.MoveTo -> Action.Move
+        is ListActions.MoveToSystemFolder -> bottombarAction.v1.name.toAction()
+        ListActions.PermanentDelete -> Action.Delete
+        ListActions.Star -> Action.Star
+        ListActions.Unstar -> Action.Unstar
+        is ListActions.NotSpam -> Action.Inbox
+        ListActions.Snooze -> Action.Snooze
     }
 }
 

@@ -43,12 +43,12 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
-import uniffi.proton_mail_uniffi.BottomBarActions
+import uniffi.proton_mail_uniffi.AllListActions
 import uniffi.proton_mail_uniffi.ConversationAction
 import uniffi.proton_mail_uniffi.ConversationAvailableActions
 import uniffi.proton_mail_uniffi.GeneralActions
 import uniffi.proton_mail_uniffi.Id
+import uniffi.proton_mail_uniffi.ListActions
 import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
@@ -282,9 +282,9 @@ class RustConversationActionRepositoryTest {
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
         val conversationIds = listOf(ConversationId("1"))
-        val rustAvailableActions = AllBottomBarMessageActions(
-            listOf(BottomBarActions.Star),
-            listOf(BottomBarActions.MarkRead)
+        val rustAvailableActions = AllListActions(
+            listOf(ListActions.Star),
+            listOf(ListActions.MarkRead)
         )
 
         coEvery {
@@ -356,9 +356,9 @@ class RustConversationActionRepositoryTest {
             listOf(Action.MarkRead)
         ).right()
 
-        val rustAvailableActions = AllBottomBarMessageActions(
-            listOf(BottomBarActions.Star),
-            listOf(BottomBarActions.MarkRead)
+        val rustAvailableActions = AllListActions(
+            listOf(ListActions.Star),
+            listOf(ListActions.MarkRead)
         )
 
         coEvery {

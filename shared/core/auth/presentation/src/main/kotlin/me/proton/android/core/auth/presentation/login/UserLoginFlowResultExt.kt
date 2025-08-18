@@ -22,6 +22,7 @@ import me.proton.android.core.auth.presentation.LogTag
 import me.proton.android.core.auth.presentation.R
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_account_uniffi.LoginError
+import uniffi.proton_account_uniffi.PostLoginValidationError
 import uniffi.proton_mail_uniffi.OtherErrorReason
 import uniffi.proton_mail_uniffi.OtherErrorReason.InvalidParameter
 import uniffi.proton_mail_uniffi.OtherErrorReason.Other
@@ -73,13 +74,14 @@ fun LoginError.getErrorMessage(context: Context): String = when (this) {
     is LoginError.SettingsFetch -> "LoginError.SettingsFetch"
     is LoginError.DuplicateSession -> v1
     is LoginError.MissingSession -> context.getString(R.string.auth_login_error_invalid_action_cannot_unlock_keys)
-    is LoginError.DelinquentUser -> context.getString(R.string.auth_user_check_delinquent_error)
-    is LoginError.FreeAccountLimitExceeded -> context.resources.getQuantityString(
-        R.plurals.auth_user_check_max_free_error,
-        v1.toInt(),
-        v1.toInt()
-    )
 
+    is LoginError.PostLoginValidationFailed -> when (val loginError = this.v1) {
+        is PostLoginValidationError.DelinquentUser -> context.getString(R.string.auth_user_check_delinquent_error)
+        is PostLoginValidationError.FreeAccountLimitExceeded -> context.resources.getQuantityString(
+            R.plurals.auth_user_check_max_free_error,
+            loginError.v1.toInt()
+        )
+    }
 }
 
 fun UserApiServiceError.getErrorMessage() = when (this) {

@@ -53,6 +53,7 @@ import me.proton.core.presentation.savedstate.state
 import me.proton.core.util.kotlin.CoreLogger
 import me.proton.core.util.kotlin.CoroutineScopeProvider
 import uniffi.proton_account_uniffi.PasswordValidatorService
+import uniffi.proton_account_uniffi.PostLoginValidationError
 import uniffi.proton_account_uniffi.SignupException
 import uniffi.proton_account_uniffi.SignupFlow
 import uniffi.proton_account_uniffi.SignupFlowCompleteResult
@@ -90,17 +91,20 @@ class SignUpViewModel @Inject constructor(
         getFlow = { getSignUpFlow() },
         getCurrentAccountType = { currentAccountType },
         getString = context::getString,
+        getQuantityString = context.resources::getQuantityString,
         updateAccountType = { type -> currentAccountType = type }
     )
 
     private val passwordHandler = PasswordHandler.create(
         getFlow = { getSignUpFlow() },
-        getString = context::getString
+        getString = context::getString,
+        getQuantityString = context.resources::getQuantityString
     )
 
     private val recoveryHandler = RecoveryHandler.create(
         getFlow = { getSignUpFlow() },
-        getString = context::getString
+        getString = context::getString,
+        getQuantityString = context.resources::getQuantityString
     )
 
     @Inject
@@ -169,7 +173,16 @@ class SignUpViewModel @Inject constructor(
 
     private fun SignupException.onSignUpError() = flow {
         getSignUpFlow().stepBack()
-        emit(SignUpError(message = getErrorMessage(context::getString)))
+        emit(
+            SignUpError(
+                message = getErrorMessage(
+                    getString = context::getString,
+                    getQuantityString = { id, quantity, args ->
+                        context.resources.getQuantityString(id, quantity, args)
+                    }
+                )
+            )
+        )
     }
 
     private suspend fun getSession(account: StoredAccount?): List<StoredSession>? {
@@ -212,7 +225,10 @@ interface ErrorHandler {
 }
 
 @Suppress("MaxLineLength")
-fun SignupException.getErrorMessage(getString: (resId: Int) -> String): String = when (this) {
+fun SignupException.getErrorMessage(
+    getString: (resId: Int) -> String,
+    getQuantityString: (resId: Int, param: Int, args: Int) -> String
+): String = when (this) {
     is SignupException.PasswordEmpty -> getString(R.string.auth_signup_validation_password)
     is SignupException.PasswordValidationMismatch -> getString(R.string.auth_signup_createpassword_error_password_not_equal)
     is SignupException.PasswordsNotMatching -> getString(R.string.auth_signup_validation_passwords_do_not_match)
@@ -228,4 +244,13 @@ fun SignupException.getErrorMessage(getString: (resId: Int) -> String): String =
     is SignupException.KeySetupFailed,
     is SignupException.PasswordNotValidated,
     is SignupException.SignupBlockedByServer -> getString(R.string.common_error_something_went_wrong)
+
+    is SignupException.PostLoginValidationException -> when (val loginError = this.v1) {
+        is PostLoginValidationError.DelinquentUser -> getString(R.string.auth_user_check_delinquent_error)
+        is PostLoginValidationError.FreeAccountLimitExceeded -> getQuantityString(
+            R.plurals.auth_user_check_max_free_error,
+            loginError.v1.toInt(),
+            loginError.v1.toInt()
+        )
+    }
 }
