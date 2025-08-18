@@ -56,6 +56,9 @@ import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.Avatar
 import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
+import ch.protonmail.android.mailsession.presentation.model.StorageQuotaUiModel
+import ch.protonmail.android.mailsession.presentation.model.VisibilityUiModel
+import ch.protonmail.android.mailsession.presentation.model.isVisible
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
@@ -133,9 +136,11 @@ fun MainSettingsScreen(
             AccountSettingsItem(
                 modifier = Modifier.testTag(SettingsScreenTestTags.AccountSettingsItem),
                 accountInfo = state.accountInfoUiModel,
+                storageQuotaUiModel = state.storageQuotaUiModel,
                 onAccountClicked = actions.onAccountClick,
                 onSecurityKeysClicked = actions.onSecurityKeysClicked,
-                onPasswordManagementClicked = actions.onPasswordManagementClicked
+                onPasswordManagementClicked = actions.onPasswordManagementClicked,
+                onAccountStorageClicked = actions.onAccountStorageClicked
             )
 
             Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Medium))
@@ -218,9 +223,11 @@ fun SettingsItemDivider() {
 fun AccountSettingsItem(
     modifier: Modifier = Modifier,
     accountInfo: AccountInformationUiModel?,
+    storageQuotaUiModel: VisibilityUiModel<StorageQuotaUiModel>,
     onAccountClicked: () -> Unit,
     onSecurityKeysClicked: () -> Unit,
-    onPasswordManagementClicked: (UserId?) -> Unit
+    onPasswordManagementClicked: (UserId?) -> Unit,
+    onAccountStorageClicked: () -> Unit
 ) {
     val header = accountInfo?.name
         ?: stringResource(id = string.mail_settings_no_information_available)
@@ -280,6 +287,15 @@ fun AccountSettingsItem(
             name = stringResource(id = string.mail_settings_change_password),
             iconRes = R.drawable.ic_proton_lock,
             onClick = { onPasswordManagementClicked(accountInfo?.userId) }
+        )
+    }
+
+    if (storageQuotaUiModel.isVisible()) {
+        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Medium))
+
+        AccountStorageInfoCard(
+            storageQuotaUiModel = storageQuotaUiModel.data,
+            onClick = onAccountStorageClicked
         )
     }
 }
