@@ -21,14 +21,18 @@ package me.proton.android.core.humanverification.presentation
 sealed interface HumanVerificationOperation
 
 sealed interface HumanVerificationAction : HumanVerificationOperation {
+    data object NoOp : HumanVerificationAction
     data class Load(
         val url: String,
         val defaultCountry: String?,
         val recoveryPhone: String?,
         val locale: String?,
-        val headers: List<Pair<String, String>>?
-    ) :
-        HumanVerificationAction
+        val headers: List<Pair<String, String>>?,
+
+        // For legacy purpose only; if not null, then alt routing is active.
+        val originalHost: String?,
+        val alternativeHost: String?
+    ) : HumanVerificationAction
 
     data class Cancel(val unused: Long = System.currentTimeMillis()) : HumanVerificationAction
     data class Verify(val result: HV3ResponseMessage) : HumanVerificationAction

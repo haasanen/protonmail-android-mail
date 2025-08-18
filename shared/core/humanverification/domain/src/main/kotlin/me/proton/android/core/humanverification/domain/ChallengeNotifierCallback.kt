@@ -18,6 +18,7 @@
 
 package me.proton.android.core.humanverification.domain
 
+import java.net.URI
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -39,7 +40,10 @@ class ChallengeNotifierCallback @Inject constructor() : ChallengeNotifier {
     private val mutableHumanVerificationSharedFlow = MutableSharedFlow<HumanVerificationState>(extraBufferCapacity = 1)
 
     override suspend fun onChallenge(server: ChallengeServer, payload: ChallengePayload): ChallengeResponse {
-        val baseUrl = payload.base()
+        val baseUrl = when {
+            server.doh() -> "${server.scheme()}://${server.resolvedHost()}"
+            else -> payload.base()
+        }
         val pathUrl = payload.path()
         val queryUrl = payload.query()
         val verificationToken = payload.token()
@@ -56,7 +60,9 @@ class ChallengeNotifierCallback @Inject constructor() : ChallengeNotifier {
                         .filter { it.`val` != null }
                         .map {
                             Pair(it.key, it.`val`!!)
-                        }
+                        },
+                    alternativeHost = server.resolvedHost().takeIf { server.doh() },
+                    originalHost = URI(payload.base()).host.takeIf { server.doh() }
                 )
             )
         )

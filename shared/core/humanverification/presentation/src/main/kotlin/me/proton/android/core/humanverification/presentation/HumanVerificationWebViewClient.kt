@@ -25,7 +25,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import kotlinx.coroutines.runBlocking
-import me.proton.android.core.auth.presentation.webview.ProtonWebViewClient
+import me.proton.android.core.humanverification.presentation.webview.ProtonWebViewClient
 import me.proton.core.util.kotlin.CoreLogger
 import me.proton.core.util.kotlin.annotation.ExcludeFromCoverage
 import me.proton.core.util.kotlin.takeIfNotBlank

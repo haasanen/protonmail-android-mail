@@ -31,7 +31,11 @@ data class HumanVerificationInput(
     val verificationToken: String,
     val verificationMethods: List<String>,
     val defaultCountry: String? = null,
-    val recoveryPhone: String? = null
+    val recoveryPhone: String? = null,
+
+    // Legacy usage only. Present only if alternative routing is active.
+    val originalHost: String? = null,
+    val alternativeHost: String? = null
 ) : Parcelable {
 
     fun buildUrl(recoveryEmail: String? = null): String {

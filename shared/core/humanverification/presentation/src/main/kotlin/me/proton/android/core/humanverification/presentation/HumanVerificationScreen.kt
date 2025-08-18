@@ -21,19 +21,20 @@ package me.proton.android.core.humanverification.presentation
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.graphics.Color
-import android.view.ViewGroup
 import android.webkit.ConsoleMessage
-import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,11 +48,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.web.AccompanistWebChromeClient
+import com.google.accompanist.web.WebView
+import com.google.accompanist.web.rememberWebViewState
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import me.proton.android.core.humanverification.presentation.legacy.LegacyHVWebViewClient
+import me.proton.android.core.humanverification.presentation.legacy.LegacyNetworkRequestOverrider
 import me.proton.core.compose.component.DeferredCircularProgressIndicator
 import me.proton.core.compose.component.ProtonCloseButton
+import me.proton.core.compose.component.ProtonSnackbarHost
 import me.proton.core.compose.component.ProtonSnackbarHostState
 import me.proton.core.compose.component.ProtonSnackbarType
 import me.proton.core.compose.component.ProtonTextButton
@@ -60,8 +68,9 @@ import me.proton.core.compose.theme.LocalColors
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.defaultStrongNorm
 import me.proton.core.compose.util.LaunchOnScreenView
-import me.proton.core.presentation.ui.webview.ProtonWebView
+import me.proton.core.compose.util.LaunchResumeEffect
 import me.proton.core.util.kotlin.CoreLogger
+import okhttp3.OkHttpClient
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val JS_INTERFACE_NAME = "AndroidInterface"
@@ -75,6 +84,8 @@ fun HumanVerificationScreen(
     onHelpClicked: () -> Unit,
     onSuccess: (String) -> Unit = {},
     url: String,
+    originalHost: String?,
+    alternativeHost: String?,
     defaultCountry: String? = null,
     recoveryPhone: String? = null,
     locale: String? = null,
@@ -89,22 +100,32 @@ fun HumanVerificationScreen(
     HumanVerificationScreen(
         modifier = modifier,
         onCloseClicked = {
-            viewModel.submit(HumanVerificationAction.Cancel())
+            viewModel.perform(HumanVerificationAction.Cancel())
         },
         onCancel = onCancel,
         onIdle = {
-            viewModel.submit(HumanVerificationAction.Load(url, defaultCountry, recoveryPhone, locale, headers))
+            viewModel.perform(
+                HumanVerificationAction.Load(
+                    url = url,
+                    originalHost = originalHost,
+                    alternativeHost = alternativeHost,
+                    defaultCountry = defaultCountry,
+                    recoveryPhone = recoveryPhone,
+                    locale = locale,
+                    headers = headers
+                )
+            )
         },
         onBackClicked = {
-            viewModel.submit(HumanVerificationAction.Cancel())
+            viewModel.perform(HumanVerificationAction.Cancel())
         },
         onHelpClicked = onHelpClicked,
         onSuccess = onSuccess,
         onVerificationResult = {
-            viewModel.submit(HumanVerificationAction.Verify(it))
+            viewModel.perform(HumanVerificationAction.Verify(it))
         },
         onResourceLoadingError = {
-            viewModel.submit(
+            viewModel.perform(
                 HumanVerificationAction.Failure.ResourceLoadingError(
                     message = connectivityErrorMessage,
                     error = it
@@ -112,7 +133,8 @@ fun HumanVerificationScreen(
             )
         },
         headers = headers,
-        state = state
+        state = state,
+        events = viewModel.uiEvent
     )
 }
 
@@ -129,16 +151,45 @@ fun HumanVerificationScreen(
     onResourceLoadingError: (response: WebResponseError?) -> Unit = {},
     onSuccess: (String) -> Unit = {},
     headers: List<Pair<String, String>>?,
-    state: HumanVerificationViewState
+    state: HumanVerificationViewState,
+    events: Flow<HumanVerificationViewEvent>
 ) {
+    val generalErrorMessage = stringResource(R.string.human_verification_general_error)
+    val retryText = stringResource(R.string.presentation_retry)
+    val snackbarHostState = remember { ProtonSnackbarHostState() }
+
+    LaunchResumeEffect(events) {
+        events.collect { event ->
+            when (event) {
+                is HumanVerificationViewEvent.HvNotification -> snackbarHostState.showSnackbar(
+                    type = when (event.messageType) {
+                        HV3ResponseMessage.MessageType.Success -> ProtonSnackbarType.SUCCESS
+                        HV3ResponseMessage.MessageType.Error -> ProtonSnackbarType.ERROR
+                        else -> ProtonSnackbarType.NORM
+                    },
+                    message = event.message
+                )
+
+                is HumanVerificationViewEvent.Success -> onSuccess(event.token)
+            }
+        }
+    }
+
     LaunchedEffect(state) {
         when (state) {
-            is HumanVerificationViewState.Success -> onSuccess(state.token)
-            is HumanVerificationViewState.Cancel,
-            is HumanVerificationViewState.Error -> onCancel()
-
+            is HumanVerificationViewState.Load -> Unit
+            is HumanVerificationViewState.Cancel -> onCancel()
             is HumanVerificationViewState.Idle -> onIdle()
-            else -> Unit
+            is HumanVerificationViewState.GenericError -> snackbarHostState.showSnackbar(
+                type = ProtonSnackbarType.ERROR,
+                message = state.message ?: generalErrorMessage,
+                duration = SnackbarDuration.Indefinite,
+                actionLabel = retryText
+            ).let {
+                if (it == SnackbarResult.ActionPerformed) {
+                    onIdle()
+                }
+            }
         }
     }
 
@@ -150,7 +201,8 @@ fun HumanVerificationScreen(
         onVerificationResult = onVerificationResult,
         onResourceLoadingError = onResourceLoadingError,
         headers = headers,
-        state = state
+        state = state,
+        snackbarHostState = snackbarHostState
     )
 }
 
@@ -164,7 +216,8 @@ fun HumanVerificationScaffold(
     onVerificationResult: (HV3ResponseMessage) -> Unit,
     onResourceLoadingError: (response: WebResponseError?) -> Unit,
     headers: List<Pair<String, String>>?,
-    state: HumanVerificationViewState = HumanVerificationViewState.Idle
+    state: HumanVerificationViewState = HumanVerificationViewState.Idle,
+    snackbarHostState: ProtonSnackbarHostState = remember { ProtonSnackbarHostState() }
 ) {
     Scaffold(
         modifier = modifier,
@@ -189,6 +242,9 @@ fun HumanVerificationScaffold(
                 },
                 backgroundColor = LocalColors.current.backgroundNorm
             )
+        },
+        snackbarHost = {
+            ProtonSnackbarHost(snackbarHostState)
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
@@ -215,8 +271,6 @@ private fun HumanVerificationView(
     headers: List<Pair<String, String>>?,
     state: HumanVerificationViewState = HumanVerificationViewState.Idle
 ) {
-    val snackbarHostState = remember { ProtonSnackbarHostState() }
-
     when (state) {
         is HumanVerificationViewState.Load -> {
             HumanVerificationWebViewSetup(
@@ -235,32 +289,9 @@ private fun HumanVerificationView(
             defer = 0.milliseconds
         )
 
-        is HumanVerificationViewState.Error.General -> {
-            val generalErrorMessage = stringResource(R.string.human_verification_general_error)
-            LaunchedEffect(state.message) {
-                snackbarHostState.showSnackbar(
-                    type = ProtonSnackbarType.ERROR,
-                    message = state.message ?: generalErrorMessage
-                )
-            }
-        }
-
-        is HumanVerificationViewState.Notify -> {
-            LaunchedEffect(state.message) {
-                val snackBarType = when (state.messageType) {
-                    HV3ResponseMessage.MessageType.Success -> ProtonSnackbarType.SUCCESS
-                    HV3ResponseMessage.MessageType.Error -> ProtonSnackbarType.ERROR
-                    else -> ProtonSnackbarType.NORM
-                }
-                snackbarHostState.showSnackbar(
-                    type = snackBarType,
-                    message = state.message
-                )
-            }
-        }
-
         else -> Unit
     }
+
     BackHandler(true) {
         onBackClicked()
     }
@@ -280,57 +311,53 @@ private fun HumanVerificationWebViewSetup(
         targetValue = progress / 100.0f,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
     )
-
-    AndroidView(
-        modifier = modifier,
-        factory = {
-            ProtonWebView(it).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
+    val webViewState = rememberWebViewState(url = state.fullUrl, headers.orEmpty().toMap())
+    val webViewClient = remember {
+        LegacyHVWebViewClient(
+            originalHost = state.originalHost,
+            alternativeHost = state.alternativeHost,
+            extraHeaders = state.extraHeaders.orEmpty(),
+            networkRequestOverrider = LegacyNetworkRequestOverrider(OkHttpClient()),
+            onResourceLoadingError = onResourceLoadingError
+        )
+    }
+    val webChromeClient = remember {
+        object : AccompanistWebChromeClient() {
+            override fun onConsoleMessage(message: ConsoleMessage): Boolean {
+                CoreLogger.i(
+                    LogTag.DEFAULT,
+                    "Web console: ${message.message()} -- file ${message.sourceId()}(${message.lineNumber()})"
                 )
-
-                with(settings) {
-                    javaScriptEnabled = true
-                    domStorageEnabled = true
-                }
-                setBackgroundColor(
-                    Color.argb(
-                        1,
-                        WEB_VIEW_MAX_COLOR_COMPONENT,
-                        WEB_VIEW_MAX_COLOR_COMPONENT,
-                        WEB_VIEW_MAX_COLOR_COMPONENT
-                    )
-                )
-                addJavascriptInterface(VerificationJSInterface(scope, onVerificationResult), JS_INTERFACE_NAME)
-
-                webViewClient =
-                    HumanVerificationWebViewClient(
-                        headers = state.extraHeaders,
-                        loader = state.loader,
-                        onResourceLoadingError = onResourceLoadingError
-                    )
-
-                webChromeClient = object : WebChromeClient() {
-                    override fun onConsoleMessage(message: ConsoleMessage): Boolean {
-                        CoreLogger.i(
-                            LogTag.DEFAULT,
-                            "Web console: ${message.message()} -- file ${message.sourceId()}(${message.lineNumber()})"
-                        )
-                        return true
-                    }
-
-                    override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                        super.onProgressChanged(view, newProgress)
-                        progress = newProgress
-                    }
-                }
+                return true
             }
-        }, update = {
-            val extraHeaders = headers?.toMap()?.toMutableMap() ?: emptyMap()
-            WebView.setWebContentsDebuggingEnabled(state.isWebViewDebuggingEnabled)
-            it.loadUrl(state.fullUrl, extraHeaders)
+
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                super.onProgressChanged(view, newProgress)
+                progress = newProgress
+            }
         }
+    }
+    WebView(
+        state = webViewState,
+        onCreated = { webView ->
+            WebView.setWebContentsDebuggingEnabled(state.isWebViewDebuggingEnabled)
+
+            @SuppressLint("SetJavaScriptEnabled")
+            webView.settings.javaScriptEnabled = true
+            webView.settings.domStorageEnabled = true
+            webView.setBackgroundColor(
+                Color.argb(
+                    1,
+                    WEB_VIEW_MAX_COLOR_COMPONENT,
+                    WEB_VIEW_MAX_COLOR_COMPONENT,
+                    WEB_VIEW_MAX_COLOR_COMPONENT
+                )
+            )
+            webView.addJavascriptInterface(VerificationJSInterface(scope, onVerificationResult), JS_INTERFACE_NAME)
+        },
+        modifier = modifier.fillMaxSize(),
+        client = webViewClient,
+        chromeClient = webChromeClient
     )
 
     AnimatedVisibility(
@@ -350,6 +377,7 @@ internal fun HumanVerificationScreenPreview() {
     ProtonTheme {
         HumanVerificationScreen(
             state = HumanVerificationViewState.Idle,
+            events = emptyFlow(),
             headers = emptyList()
         )
     }
@@ -361,6 +389,7 @@ internal fun HumanVerificationScreenDarkPreview() {
     ProtonTheme {
         HumanVerificationScreen(
             state = HumanVerificationViewState.Idle,
+            events = emptyFlow(),
             headers = emptyList()
         )
     }

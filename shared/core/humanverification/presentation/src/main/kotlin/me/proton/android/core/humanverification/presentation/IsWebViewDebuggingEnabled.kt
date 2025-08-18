@@ -18,7 +18,6 @@
 
 package me.proton.android.core.humanverification.presentation
 
-import me.proton.core.presentation.BuildConfig
 import javax.inject.Inject
 
 class IsWebViewDebuggingEnabled @Inject constructor() {

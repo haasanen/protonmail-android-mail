@@ -48,6 +48,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 }
@@ -59,6 +60,7 @@ dependencies {
 
     compileOnly(libs.proton.rust.core)
 
+    implementation(libs.accompanist.webview)
     implementation(libs.dagger.hilt.android)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.compose.ui.tooling.preview)
@@ -67,9 +69,12 @@ dependencies {
     implementation(libs.proton.core.presentationCompose)
     implementation(libs.proton.core.utilKotlin)
     implementation(libs.lottie.compose)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
 
     implementation(project(":design-system"))
     implementation(project(":mail-session:domain"))
+    implementation(project(":presentation-compose"))
 
     implementation(libs.androidx.startup.runtime)
     debugImplementation(libs.androidx.compose.ui.tooling)

@@ -77,6 +77,7 @@ dependencies {
     implementation(project(":design-system"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-settings:domain"))
+    implementation(project(":presentation-compose"))
     implementation(project(":shared:core:account:domain"))
     implementation(project(":shared:core:auth:data"))
     implementation(project(":shared:core:device-migration:presentation"))

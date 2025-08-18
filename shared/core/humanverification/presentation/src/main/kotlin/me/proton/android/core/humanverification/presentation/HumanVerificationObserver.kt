@@ -48,17 +48,19 @@ class HumanVerificationObserver @Inject constructor(
             .flowWithLifecycle(lifecycle)
             .distinctUntilChanged()
             .filterIsInstance<HumanVerificationState.HumanVerificationNeeded>()
-            .onEach {
+            .onEach { state ->
                 activityProvider.lastResumed?.let { activity ->
                     startHumanVerification(
                         activity,
-                        with(it.payload) {
+                        with(state.payload) {
                             HumanVerificationInput(
                                 baseUrl = baseUrl,
                                 path = path,
                                 query = query,
                                 verificationToken = verificationToken,
-                                verificationMethods = verificationMethods
+                                verificationMethods = verificationMethods,
+                                originalHost = state.payload.originalHost,
+                                alternativeHost = state.payload.alternativeHost
                             )
                         }
                     )

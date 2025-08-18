@@ -46,6 +46,8 @@ class HumanVerificationActivity : ProtonActivity() {
                     onHelpClicked = { onHumanVerificationHelp() },
                     onSuccess = { onSuccess() },
                     url = input.buildUrl(),
+                    originalHost = input.originalHost,
+                    alternativeHost = input.alternativeHost,
                     defaultCountry = input.defaultCountry,
                     recoveryPhone = input.recoveryPhone,
                     locale = resources.configuration.locales.get(0).language,

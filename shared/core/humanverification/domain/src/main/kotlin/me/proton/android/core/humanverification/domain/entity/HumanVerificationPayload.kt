@@ -23,5 +23,9 @@ data class HumanVerificationPayload(
     val path: String,
     val query: List<Pair<String, String>>?,
     val verificationToken: String,
-    val verificationMethods: List<String>
+    val verificationMethods: List<String>,
+
+    // For legacy purpose only; if not null, then alt routing is active.
+    val alternativeHost: String?,
+    val originalHost: String?
 )

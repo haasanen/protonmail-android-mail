@@ -16,11 +16,11 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.auth.presentation.webview
+package me.proton.android.core.humanverification.presentation.webview
 
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
-import android.webkit.WebViewClient
+import com.google.accompanist.web.AccompanistWebViewClient
 import me.proton.core.presentation.utils.openBrowserLink
 
 /**
@@ -30,7 +30,7 @@ import me.proton.core.presentation.utils.openBrowserLink
 // See: https://commonsware.com/blog/2015/06/11/psa-webview-regression.html.
 open class ProtonWebViewClient(
     private val headers: List<Pair<String, String>>?
-) : WebViewClient() {
+) : AccompanistWebViewClient() {
 
     private var isFinished = false
 

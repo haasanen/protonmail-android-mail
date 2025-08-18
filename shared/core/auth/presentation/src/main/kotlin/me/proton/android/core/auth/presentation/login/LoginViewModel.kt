@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.proton.android.core.auth.presentation.IODispatcher
 import me.proton.android.core.auth.presentation.challenge.toUserBehavior
-import me.proton.android.core.auth.presentation.flow.UiEventFlow
+import ch.protonmail.android.design.compose.viewmodel.UiEventFlow
 import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
 import uniffi.proton_account_uniffi.LoginError
 import uniffi.proton_account_uniffi.LoginFlowLoginResult

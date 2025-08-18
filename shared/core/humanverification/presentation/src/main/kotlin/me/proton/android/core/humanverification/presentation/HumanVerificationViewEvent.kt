@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -18,21 +18,11 @@
 
 package me.proton.android.core.humanverification.presentation
 
-import uniffi.proton_mail_uniffi.ChallengeLoader
+sealed interface HumanVerificationViewEvent {
+    data class HvNotification(
+        val messageType: HV3ResponseMessage.MessageType,
+        val message: String
+    ) : HumanVerificationViewEvent
 
-sealed interface HumanVerificationViewState {
-    data object Idle : HumanVerificationViewState
-    data object Cancel : HumanVerificationViewState
-    data class Load(
-        val extraHeaders: List<Pair<String, String>>?,
-        val fullUrl: String,
-        val isWebViewDebuggingEnabled: Boolean,
-        val loader: ChallengeLoader,
-
-        // For legacy purposes only:
-        val originalHost: String?,
-        val alternativeHost: String?
-    ) : HumanVerificationViewState
-
-    data class GenericError(val message: String?) : HumanVerificationViewState
+    data class Success(val token: String, val type: String) : HumanVerificationViewEvent
 }
