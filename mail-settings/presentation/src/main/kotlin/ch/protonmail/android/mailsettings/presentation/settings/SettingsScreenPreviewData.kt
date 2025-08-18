@@ -19,15 +19,25 @@
 package ch.protonmail.android.mailsettings.presentation.settings
 
 import ch.protonmail.android.mailcommon.domain.AppInformation
+import ch.protonmail.android.mailsession.domain.model.Percent
 import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
+import ch.protonmail.android.mailsession.presentation.model.StorageQuotaUiModel
+import ch.protonmail.android.mailsession.presentation.model.VisibilityUiModel
 import me.proton.core.domain.entity.UserId
 
 object SettingsScreenPreviewData {
 
     val Data = SettingsState.Data(
-        UserId("123"),
-        AccountInformationUiModel("ProtonUser", "user@proton.ch", null, UserId("123")),
-        AppInformation(appVersionName = "6.0.0-alpha")
+        userId = UserId(id = "123"),
+        accountInfoUiModel = AccountInformationUiModel("ProtonUser", "user@proton.ch", null, UserId("123")),
+        storageQuotaUiModel = VisibilityUiModel.Visible(
+            StorageQuotaUiModel(
+                usagePercent = Percent(80.0),
+                maxStorage = "15 MB",
+                isAboveAlertThreshold = true
+            )
+        ),
+        appInformation = AppInformation(appVersionName = "6.0.0-alpha")
     )
 
     val Actions = MainSettingsScreen.Actions(

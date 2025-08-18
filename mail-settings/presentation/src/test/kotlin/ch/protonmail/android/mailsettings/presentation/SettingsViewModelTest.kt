@@ -26,16 +26,26 @@ import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountAvatarInfo
 import ch.protonmail.android.mailsession.domain.model.AccountState
+import ch.protonmail.android.mailsession.domain.model.Percent
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryAccount
 import ch.protonmail.android.mailsession.presentation.mapper.AccountInformationMapper
 import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
+import ch.protonmail.android.mailsession.presentation.model.StorageQuotaUiModel
+import ch.protonmail.android.mailsession.presentation.model.VisibilityUiModel
+import ch.protonmail.android.mailsettings.domain.model.StorageQuota
+import ch.protonmail.android.mailsettings.domain.model.StorageQuotaResult
+import ch.protonmail.android.mailsession.domain.model.Storage
+import ch.protonmail.android.mailsession.domain.model.StorageUnit
+import ch.protonmail.android.mailsettings.domain.usecase.ObserveStorageQuotaUseCase
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsViewModel
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Assert.assertEquals
@@ -45,6 +55,7 @@ import org.junit.Rule
 import org.junit.Test
 
 class SettingsViewModelTest {
+
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -52,6 +63,18 @@ class SettingsViewModelTest {
 
     private val observePrimaryAccount = mockk<ObservePrimaryAccount> {
         coEvery { this@mockk.invoke() } returns accountFlow
+    }
+
+    private val observeStorageQuotaUseCase = mockk<ObserveStorageQuotaUseCase> {
+        every { this@mockk.invoke() } returns flowOf(
+            StorageQuotaResult.Success(
+                quota = StorageQuota(
+                    usagePercent = Percent(30.0),
+                    maxStorage = Storage(1, StorageUnit.GiB),
+                    isAboveAlertThreshold = false
+                )
+            )
+        )
     }
 
     private val appInformation = AppInformation(appVersionName = "6.0.0-alpha")
@@ -66,6 +89,7 @@ class SettingsViewModelTest {
         viewModel = SettingsViewModel(
             appInformation = appInformation,
             observePrimaryAccount = observePrimaryAccount,
+            observeStorageQuotaUseCase = observeStorageQuotaUseCase,
             accountInformationMapper = accountInformationMapper
         )
     }
@@ -99,6 +123,13 @@ class SettingsViewModelTest {
                 color = Color(0xFFFF5733)
             )
         )
+        val storageQuotaUiModel: VisibilityUiModel<StorageQuotaUiModel> = VisibilityUiModel.Visible(
+            StorageQuotaUiModel(
+                usagePercent = Percent(30.0),
+                maxStorage = "1 GB",
+                isAboveAlertThreshold = false
+            )
+        )
 
         // When
         viewModel.state.test {
@@ -108,6 +139,7 @@ class SettingsViewModelTest {
             // Then
             val actual = awaitItem() as SettingsState.Data
             assertEquals(accountUiModel, actual.accountInfoUiModel)
+            assertEquals(storageQuotaUiModel, actual.storageQuotaUiModel)
             assertEquals(appInformation, actual.appInformation)
         }
     }

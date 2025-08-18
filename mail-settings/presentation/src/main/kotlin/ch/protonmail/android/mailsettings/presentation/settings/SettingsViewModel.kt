@@ -24,34 +24,38 @@ import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryAccount
 import ch.protonmail.android.mailsession.presentation.mapper.AccountInformationMapper
+import ch.protonmail.android.mailsession.presentation.model.VisibilityUiModel
+import ch.protonmail.android.mailsettings.domain.usecase.ObserveStorageQuotaUseCase
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
+import ch.protonmail.android.mailsettings.presentation.settings.converter.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val appInformation: AppInformation,
-    private val observePrimaryAccount: ObservePrimaryAccount,
+    observePrimaryAccount: ObservePrimaryAccount,
+    observeStorageQuotaUseCase: ObserveStorageQuotaUseCase,
     private val accountInformationMapper: AccountInformationMapper
 ) : ViewModel() {
 
-    val state = observePrimaryAccount()
-        .map { account ->
-            Data(
-                account?.userId,
-                account?.let { accountInformationMapper.toUiModel(it) },
-                appInformation
-            )
-        }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(stopTimeoutMillis),
-            Loading
+    val state = combine(observePrimaryAccount(), observeStorageQuotaUseCase()) { account, storageQuota ->
+        Data(
+            userId = account?.userId,
+            accountInfoUiModel = account?.let { accountInformationMapper.toUiModel(it) },
+            storageQuotaUiModel = storageQuota.getOrNull()?.let { quota ->
+                VisibilityUiModel.Visible(quota.toUiModel())
+            } ?: VisibilityUiModel.Hidden,
+            appInformation = appInformation
         )
-
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(stopTimeoutMillis),
+        Loading
+    )
 }
 
