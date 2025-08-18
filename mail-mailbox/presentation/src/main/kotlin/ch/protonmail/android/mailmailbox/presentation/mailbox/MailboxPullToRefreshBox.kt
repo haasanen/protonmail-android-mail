@@ -27,8 +27,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,11 +52,19 @@ fun MailboxPullToRefreshBox(
 
     // Haptic when refresh starts
     val haptics = LocalHapticFeedback.current
+
+    // Fire haptic only once per refresh cycle, and persist that across rotation.
+    var didHapticForThisCycle by rememberSaveable { mutableStateOf(false) }
+
     LaunchedEffect(isUiRefreshing) {
-        if (isUiRefreshing) {
+        if (isUiRefreshing && !didHapticForThisCycle) {
             withContext(Dispatchers.IO) {
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
             }
+            didHapticForThisCycle = true
+        }
+        if (!isUiRefreshing) {
+            didHapticForThisCycle = false
         }
     }
 
@@ -87,8 +95,8 @@ fun rememberWithMinRefreshingDuration(
     input: Boolean,
     minRefreshingDurationMs: Long = MIN_REFRESHING_DURATION_MS
 ): Boolean {
-    var isUiRefreshing by remember { mutableStateOf(false) }
-    var refreshingStartedAtMs by remember { mutableLongStateOf(0L) }
+    var isUiRefreshing by rememberSaveable { mutableStateOf(false) }
+    var refreshingStartedAtMs by rememberSaveable { mutableLongStateOf(0L) }
 
     LaunchedEffect(input) {
         if (input) {
