@@ -56,7 +56,7 @@ class MigrateLegacyApplication @Inject constructor(
     }
 
     private suspend fun Either<List<MigrationError>, Unit>.handleAccountMigration() {
-        onLeft { Timber.e("Legacy migration: Failed to migrate legacy accounts") }
+        onLeft { Timber.e("Legacy migration: Failed to migrate legacy accounts; errors: $it") }
         onRight {
             Timber.d("Legacy migration: Successfully migrated legacy accounts")
             destroyLegacyDatabases()
