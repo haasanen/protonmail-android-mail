@@ -107,7 +107,7 @@ private fun AppSettingsScreenContent(
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
 
                 NotificationSettingsItem(
-                    notificationStatus = "On",
+                    notificationStatus = state.settings.notificationsEnabledStatus.string(),
                     onNotificationClick = { launchNotificationSettingsIntent(context) }
                 )
 

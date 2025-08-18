@@ -32,13 +32,13 @@ import kotlin.test.assertEquals
 @RunWith(Parameterized::class)
 internal class AppSettingsUiModelMapperTest(
     @Suppress("unused") private val testName: String,
-    private val appSettings: AppSettings,
+    private val args: Arguments,
     private val expectedUiModel: AppSettingsUiModel
 ) {
 
     @Test
     fun `should map to ui model`() {
-        val uiModel = AppSettingsUiModelMapper.toUiModel(appSettings)
+        val uiModel = AppSettingsUiModelMapper.toUiModel(args.appSettings, args.notificationsEnabled)
         assertEquals(expectedUiModel, uiModel)
     }
 
@@ -51,7 +51,8 @@ internal class AppSettingsUiModelMapperTest(
             alternativeRoutingEnabled = true,
             customLanguage = null,
             deviceContactsEnabled = true,
-            theme = TextUiModel.TextRes(R.string.mail_settings_system_default)
+            theme = TextUiModel.TextRes(R.string.mail_settings_system_default),
+            notificationsEnabledStatus = TextUiModel(R.string.notifications_on)
         )
 
         @JvmStatic
@@ -59,49 +60,86 @@ internal class AppSettingsUiModelMapperTest(
         fun data(): Collection<Array<Any>> = listOf(
             arrayOf(
                 "to app settings with default values",
-                baseAppSettings,
+                Arguments(
+                    baseAppSettings,
+                    true
+                ),
                 baseUiModel
             ),
             arrayOf(
                 "to app settings with light theme",
-                baseAppSettings.copy(theme = Theme.LIGHT),
+                Arguments(
+                    baseAppSettings.copy(theme = Theme.LIGHT),
+                    true
+                ),
                 baseUiModel.copy(theme = TextUiModel.TextRes(R.string.mail_settings_theme_light))
             ),
             arrayOf(
                 "to app settings with dark theme",
-                baseAppSettings.copy(theme = Theme.DARK),
+                Arguments(
+                    baseAppSettings.copy(theme = Theme.DARK),
+                    true
+                ),
                 baseUiModel.copy(theme = TextUiModel.TextRes(R.string.mail_settings_theme_dark))
             ),
             arrayOf(
                 "to app settings with custom language",
-                baseAppSettings.copy(customAppLanguage = "Custom language"),
+                Arguments(
+                    baseAppSettings.copy(customAppLanguage = "Custom language"),
+                    true
+                ),
                 baseUiModel.copy(customLanguage = "Custom language")
             ),
             arrayOf(
                 "to app settings with pin lock enabled",
-                baseAppSettings.copy(autolockProtection = Protection.Pin),
+                Arguments(
+                    baseAppSettings.copy(autolockProtection = Protection.Pin),
+                    true
+                ),
                 baseUiModel.copy(autoLockEnabled = true)
             ),
             arrayOf(
                 "to app settings with biometrics lock enabled",
-                baseAppSettings.copy(autolockProtection = Protection.Biometrics),
+                Arguments(
+                    baseAppSettings.copy(autolockProtection = Protection.Biometrics),
+                    true
+                ),
                 baseUiModel.copy(autoLockEnabled = true)
             ),
             arrayOf(
                 "to app settings with no lock enabled",
-                baseAppSettings,
+                Arguments(
+                    baseAppSettings,
+                    true
+                ),
                 baseUiModel.copy(autoLockEnabled = false)
             ),
             arrayOf(
                 "to app settings with alternative routing enabled",
-                baseAppSettings.copy(hasAlternativeRouting = true),
+                Arguments(
+                    baseAppSettings.copy(hasAlternativeRouting = true),
+                    true
+                ),
                 baseUiModel.copy(alternativeRoutingEnabled = true)
             ),
             arrayOf(
                 "to app settings with device contacts enabled",
-                baseAppSettings.copy(hasCombinedContactsEnabled = true),
+                Arguments(
+                    baseAppSettings.copy(hasCombinedContactsEnabled = true),
+                    true
+                ),
                 baseUiModel.copy(deviceContactsEnabled = true)
+            ),
+            arrayOf(
+                "to app settings with notifications off",
+                Arguments(
+                    baseAppSettings,
+                    false
+                ),
+                baseUiModel.copy(notificationsEnabledStatus = TextUiModel(R.string.notifications_off))
             )
         )
+
+        data class Arguments(val appSettings: AppSettings, val notificationsEnabled: Boolean)
     }
 }

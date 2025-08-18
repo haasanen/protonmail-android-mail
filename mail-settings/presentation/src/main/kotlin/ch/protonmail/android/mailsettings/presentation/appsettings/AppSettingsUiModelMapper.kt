@@ -25,15 +25,19 @@ import ch.protonmail.android.mailsettings.presentation.R
 
 internal object AppSettingsUiModelMapper {
 
-    fun toUiModel(appSettings: AppSettings): AppSettingsUiModel {
+    fun toUiModel(appSettings: AppSettings, notificationsEnabled: Boolean): AppSettingsUiModel {
         return AppSettingsUiModel(
             autoLockEnabled = appSettings.hasAutoLock,
             alternativeRoutingEnabled = appSettings.hasAlternativeRouting,
             customLanguage = appSettings.customAppLanguage,
             theme = appSettings.theme.toTextUiModel(),
-            deviceContactsEnabled = appSettings.hasCombinedContactsEnabled
+            deviceContactsEnabled = appSettings.hasCombinedContactsEnabled,
+            notificationsEnabledStatus = getNotificationStatus(notificationsEnabled)
         )
     }
+
+    private fun getNotificationStatus(on: Boolean) =
+        TextUiModel(if (on) R.string.notifications_on else R.string.notifications_off)
 
     private fun Theme.toTextUiModel(): TextUiModel {
         val textRes = when (this) {

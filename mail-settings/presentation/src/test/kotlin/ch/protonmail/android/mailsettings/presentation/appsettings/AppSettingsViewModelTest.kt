@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.presentation.R
+import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetNotificationsEnabled
 import ch.protonmail.android.mailsettings.presentation.testdata.AppSettingsTestData
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
@@ -50,12 +51,16 @@ internal class AppSettingsViewModelTest {
         coEvery { this@mockk.updateUseCombineContacts(any()) } returns Unit.right()
     }
 
+    private val notificationSettingsUsecase = mockk<GetNotificationsEnabled> {
+        every { this@mockk.invoke() } returns true
+    }
+
     private lateinit var viewModel: AppSettingsViewModel
 
     @Before
     fun setUp() {
 
-        viewModel = AppSettingsViewModel(observeAppSettings)
+        viewModel = AppSettingsViewModel(observeAppSettings, notificationSettingsUsecase)
     }
 
     @Test
@@ -81,7 +86,8 @@ internal class AppSettingsViewModelTest {
                 alternativeRoutingEnabled = true,
                 customLanguage = null,
                 deviceContactsEnabled = true,
-                theme = TextUiModel.TextRes(R.string.mail_settings_system_default)
+                theme = TextUiModel.TextRes(R.string.mail_settings_system_default),
+                notificationsEnabledStatus = TextUiModel(R.string.notifications_on)
             )
             assertEquals(expected, actual.settings)
         }

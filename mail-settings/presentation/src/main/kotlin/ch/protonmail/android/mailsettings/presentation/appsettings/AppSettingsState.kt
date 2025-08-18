@@ -30,7 +30,8 @@ internal data class AppSettingsUiModel(
     val alternativeRoutingEnabled: Boolean,
     val customLanguage: String?,
     val theme: TextUiModel,
-    val deviceContactsEnabled: Boolean
+    val deviceContactsEnabled: Boolean,
+    val notificationsEnabledStatus: TextUiModel
 )
 
 internal sealed interface AppSettingsAction

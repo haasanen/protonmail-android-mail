@@ -20,8 +20,8 @@ package ch.protonmail.android.mailsettings.presentation.appsettings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
+import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetNotificationsEnabled
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -31,16 +31,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class AppSettingsViewModel @Inject constructor(
-    val appSettingsRepository: AppSettingsRepository
+    val appSettingsRepository: AppSettingsRepository,
+    val getNotificationsEnabledUsecase: GetNotificationsEnabled
 ) : ViewModel() {
 
     val state = appSettingsRepository
         .observeAppSettings()
         .map { appSettings ->
-            val uiModel = AppSettingsUiModelMapper.toUiModel(appSettings)
+            val notificationsEnabled = getNotificationsEnabledUsecase()
+            val uiModel = AppSettingsUiModelMapper.toUiModel(appSettings, notificationsEnabled)
             AppSettingsState.Data(uiModel)
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(stopTimeoutMillis), AppSettingsState.Loading)
+        .stateIn(
+            viewModelScope, SharingStarted.WhileSubscribed(stopTimeoutMs),
+            AppSettingsState.Loading
+        )
 
     internal fun submit(intent: AppSettingsAction) {
         viewModelScope.launch {
@@ -54,4 +59,11 @@ internal class AppSettingsViewModel @Inject constructor(
     private suspend fun updateAlternativeRouting(value: Boolean) = appSettingsRepository.updateAlternativeRouting(value)
     private suspend fun updateUseCombinedContacts(value: Boolean) =
         appSettingsRepository.updateUseCombineContacts(value)
+
+    companion object {
+
+        // needs a stop timeout MS much shorter than our standard because we can change the notification settings
+        // and return to the app in less than 2 seconds and our toggle value needs to update
+        const val stopTimeoutMs = 1500L
+    }
 }

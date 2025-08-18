@@ -119,6 +119,8 @@
     <string name="mail_settings_notifications_notifications_settings_hint">Navigate to system notification settings</string>
     <string name="mail_settings_notifications_update_error">Error updating settings</string>
     <string name="mail_settings_notifications_loading_error">Error loading settings</string>
+    <string name="notifications_on">On</string>
+    <string name="notifications_off">Off</string>
 
     <!-- Error messages -->
     <string name="mail_settings_generic_error_message">An error occurred. Try again.</string>

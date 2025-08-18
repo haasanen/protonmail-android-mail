@@ -29,7 +29,8 @@ internal object AppSettingsScreenPreviewData {
             alternativeRoutingEnabled = false,
             customLanguage = null,
             deviceContactsEnabled = false,
-            theme = TextUiModel.TextRes(R.string.mail_settings_system_default)
+            theme = TextUiModel.TextRes(R.string.mail_settings_system_default),
+            notificationsEnabledStatus = TextUiModel("On")
         )
     )
 
