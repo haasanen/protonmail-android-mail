@@ -223,6 +223,7 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController, activ
                     },
                     onSecurityKeysClicked = activityActions.openSecurityKeys,
                     onPasswordManagementClicked = activityActions.openPasswordManagement,
+                    onAccountStorageClicked = activityActions.openSubscription,
                     onBackClick = {
                         navController.navigateBack()
                     }

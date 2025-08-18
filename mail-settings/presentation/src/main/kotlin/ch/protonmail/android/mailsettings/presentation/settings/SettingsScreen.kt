@@ -295,6 +295,7 @@ object MainSettingsScreen {
         val onPrivacyAndSecuritySettingsClicked: () -> Unit,
         val onSecurityKeysClicked: () -> Unit,
         val onPasswordManagementClicked: (UserId?) -> Unit,
+        val onAccountStorageClicked: () -> Unit,
         val onBackClick: () -> Unit
     )
 }

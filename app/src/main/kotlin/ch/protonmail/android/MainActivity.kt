@@ -88,6 +88,9 @@ class MainActivity : AppCompatActivity() {
                             openSecurityKeys = {
                                 launcherViewModel.submit(LauncherViewModel.Action.OpenSecurityKeys)
                             },
+                            openSubscription = {
+                                launcherViewModel.submit(LauncherViewModel.Action.OpenSubscription)
+                            },
                             finishActivity = { finishAndRemoveTask() },
                             openPasswordManagement = {
                                 launcherViewModel.submit(LauncherViewModel.Action.OpenPasswordManagement(it))
@@ -180,6 +183,7 @@ class MainActivity : AppCompatActivity() {
         val onNavigateToLockScreen: () -> Unit,
         val openSecurityKeys: () -> Unit,
         val openPasswordManagement: (userId: UserId?) -> Unit,
+        val openSubscription: () -> Unit,
         val finishActivity: () -> Unit
     )
 }
