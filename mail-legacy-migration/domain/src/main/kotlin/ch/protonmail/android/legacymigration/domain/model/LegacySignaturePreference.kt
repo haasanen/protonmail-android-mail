@@ -24,6 +24,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 value class LegacySignaturePreference(val isEnabled: Boolean) {
     companion object {
-        val Default = LegacySignaturePreference(false)
+        val Default = LegacySignaturePreference(true)
     }
 }
