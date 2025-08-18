@@ -22,7 +22,11 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.R
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.presentation.ui.ProtonActivity
@@ -39,13 +43,22 @@ class PasswordManagementActivity : ProtonActivity() {
 
         passwordManagementViewModel.register(this)
 
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                passwordManagementViewModel.uiEvent.collect { uiEvent ->
+                    when (uiEvent) {
+                        PasswordManagementEvent.LoginPasswordSaved -> onLoginPasswordSaved()
+                        PasswordManagementEvent.MailboxPasswordSaved -> onMailboxPasswordSaved()
+                    }
+                }
+            }
+        }
+
         setContent {
             ProtonTheme {
                 PasswordManagementScreen(
                     onClose = this::onClose,
                     onError = this::onError,
-                    onLoginPasswordSaved = this::onLoginPasswordSaved,
-                    onMailboxPasswordSaved = this::onMailboxPasswordSaved,
                     viewModel = passwordManagementViewModel
                 )
             }

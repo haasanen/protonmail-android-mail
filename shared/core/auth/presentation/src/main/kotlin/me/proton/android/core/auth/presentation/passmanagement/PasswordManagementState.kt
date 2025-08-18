@@ -37,15 +37,11 @@ sealed interface PasswordManagementState {
         val token: PasswordValidatorToken?
     ) : PasswordManagementState
 
-    data object LoginPasswordSaved : PasswordManagementState
-
     data class Awaiting2faForMailbox(
         val userId: CoreUserId,
         val userInput: UserInput,
         val token: PasswordValidatorToken?
     ) : PasswordManagementState
-
-    data object MailboxPasswordSaved : PasswordManagementState
 
     sealed class Error(
         open val error: String?,

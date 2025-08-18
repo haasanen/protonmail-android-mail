@@ -18,6 +18,7 @@
 
 package me.proton.android.core.auth.presentation.passmanagement
 
+import ch.protonmail.android.design.compose.viewmodel.UiEventFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.emitAll
@@ -30,7 +31,6 @@ import me.proton.android.core.auth.presentation.passmanagement.PasswordManagemen
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.UpdateMailboxPassword.TwoFaComplete
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementState.Awaiting2faForMailbox
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementState.Error
-import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementState.MailboxPasswordSaved
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementState.UserInput
 import me.proton.core.passvalidator.domain.entity.PasswordValidatorToken
 import uniffi.proton_account_uniffi.PasswordFlow
@@ -39,8 +39,9 @@ import uniffi.proton_account_uniffi.SimplePasswordState.COMPLETE
 import uniffi.proton_account_uniffi.SimplePasswordState.WANT_PASS
 
 class MailboxPasswordHandler private constructor(
-    private val getUserId: () -> CoreUserId?,
-    private val getFlow: suspend () -> FlowManager.CurrentFlow
+    private val getUserId: () -> CoreUserId,
+    private val getFlow: suspend () -> FlowManager.CurrentFlow,
+    private val uiEventFlow: UiEventFlow<PasswordManagementEvent>
 ) : ErrorHandler {
 
     fun handleAction(action: UpdateMailboxPassword, currentState: UserInput): Flow<PasswordManagementState> = flow {
@@ -168,7 +169,7 @@ class MailboxPasswordHandler private constructor(
 
             is PasswordFlowChangeMboxPassResult.Ok -> {
                 when (changeResult.v1) {
-                    COMPLETE -> emit(MailboxPasswordSaved)
+                    COMPLETE -> uiEventFlow.emit(PasswordManagementEvent.MailboxPasswordSaved)
                     else -> emit(Error.InvalidState(currentState))
                 }
             }
@@ -198,8 +199,9 @@ class MailboxPasswordHandler private constructor(
 
         fun create(
             getFlow: suspend () -> FlowManager.CurrentFlow,
-            getUserId: () -> CoreUserId?
-        ): MailboxPasswordHandler = MailboxPasswordHandler(getUserId, getFlow)
+            getUserId: () -> CoreUserId,
+            uiEventFlow: UiEventFlow<PasswordManagementEvent>
+        ): MailboxPasswordHandler = MailboxPasswordHandler(getUserId, getFlow, uiEventFlow)
     }
 }
 

@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.design.compose.viewmodel.UiEventFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -31,15 +32,16 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.auth.data.passvalidator.PasswordValidatorServiceHolder
 import me.proton.android.core.auth.presentation.AuthOrchestrator
 import me.proton.android.core.auth.presentation.flow.FlowManager
 import me.proton.android.core.auth.presentation.passmanagement.PassManagementArg.getUserId
+import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.Close
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.ErrorShown
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.Load
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction
-import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.Close
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.SelectTab
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.UpdateLoginPassword
 import me.proton.android.core.auth.presentation.passmanagement.PasswordManagementAction.UserInputAction.UpdateMailboxPassword
@@ -72,15 +74,18 @@ class PasswordManagementViewModel @Inject constructor(
     private val passwordManagementFlowDeferred = viewModelScope.async {
         flowManager.getCurrentActiveFlow(userId, true)
     }
+    val uiEvent: UiEventFlow<PasswordManagementEvent> = UiEventFlow()
 
     private val loginPasswordHandler = LoginPasswordHandler.create(
         getPasswordFlow = ::getCurrentFlow,
-        getUserId = { userId }
+        getUserId = { userId },
+        uiEventFlow = uiEvent
     )
 
     private val mailboxPasswordHandler = MailboxPasswordHandler.create(
         getFlow = ::getCurrentFlow,
-        getUserId = { userId }
+        getUserId = { userId },
+        uiEventFlow = uiEvent
     )
 
     override fun onAction(action: PasswordManagementAction): Flow<PasswordManagementState> {
@@ -149,11 +154,6 @@ class PasswordManagementViewModel @Inject constructor(
                 emit(newState)
             }
 
-            PasswordManagementState.LoginPasswordSaved,
-            PasswordManagementState.MailboxPasswordSaved -> {
-                clearState()
-                emit(newState)
-            }
             else -> emit(newState)
         }
     }
@@ -184,12 +184,8 @@ class PasswordManagementViewModel @Inject constructor(
     private suspend fun getPasswordFlow() = (getCurrentFlow() as? FlowManager.CurrentFlow.ChangingPassword)?.flow
 
     private fun onClose(): Flow<PasswordManagementState> = flow {
-        clearState()
-        emit(PasswordManagementState.Closed)
-    }
-
-    private suspend fun clearState() {
         flowManager.clearCache(userId)
+        emit(PasswordManagementState.Closed)
     }
 
     private fun onLoad() = flow {
@@ -230,6 +226,13 @@ class PasswordManagementViewModel @Inject constructor(
             }
         )
     }
+
+    override fun onCleared() {
+        viewModelScope.launch {
+            flowManager.clearCache(userId)
+        }
+        super.onCleared()
+    }
 }
 
 @Suppress("LongParameterList")
@@ -255,6 +258,7 @@ suspend fun FlowCollector<PasswordManagementState>.handlePasswordSubmitResult(
                     token,
                     createAwaitingState
                 )
+
                 SimplePasswordState.WANT_CHANGE -> emitAll(submitChangeFunction(passwordFlow, currentState, token))
                 else -> emit(PasswordManagementState.Error.InvalidState(currentState))
             }

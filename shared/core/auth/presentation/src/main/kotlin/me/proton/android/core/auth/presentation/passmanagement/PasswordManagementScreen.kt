@@ -47,6 +47,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -96,8 +97,6 @@ fun PasswordManagementScreen(
     modifier: Modifier = Modifier,
     onClose: () -> Unit = {},
     onError: (String?) -> Unit,
-    onLoginPasswordSaved: () -> Unit,
-    onMailboxPasswordSaved: () -> Unit,
     viewModel: PasswordManagementViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -114,8 +113,6 @@ fun PasswordManagementScreen(
                 viewModel.perform(PasswordManagementAction.ErrorShown)
             }
 
-            is PasswordManagementState.LoginPasswordSaved -> onLoginPasswordSaved()
-            is PasswordManagementState.MailboxPasswordSaved -> onMailboxPasswordSaved()
             else -> Unit
         }
     }
@@ -422,6 +419,7 @@ private fun PasswordGroup(
     onAction: (UserInputAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     var passwordValidatorToken by remember { mutableStateOf<PasswordValidatorToken?>(null) }
     var currentPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
@@ -459,6 +457,7 @@ private fun PasswordGroup(
         PasswordSaveButton(
             loading = loading,
             onSaveClick = {
+                keyboardController?.hide()
                 onAction(
                     config.createSaveAction(currentPassword, newPassword, confirmNewPassword, passwordValidatorToken)
                 )
