@@ -22,6 +22,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,6 +59,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.R
 import ch.protonmail.android.design.compose.component.appbar.ProtonMediumTopAppBar
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
@@ -165,18 +167,23 @@ fun ProtonSettingsHeader(modifier: Modifier = Modifier, title: String) {
 fun ProtonMainSettingsItem(
     modifier: Modifier = Modifier,
     name: String,
+    nameColor: Color = ProtonTheme.colors.textNorm,
     @DrawableRes iconRes: Int,
+    iconColor: Color = ProtonTheme.colors.textNorm,
+    iconBackgroundColor: Color = ProtonTheme.colors.backgroundNorm,
     isClickable: Boolean = true,
     onClick: () -> Unit = {}
 ) {
     ProtonMainSettingsItem(
         modifier = modifier,
         name = name,
+        nameColor = nameColor,
         icon = {
             ProtonMainSettingsIcon(
                 iconRes = iconRes,
                 contentDescription = name,
-                tint = ProtonTheme.colors.textNorm
+                tint = iconColor,
+                backgroundColor = iconBackgroundColor
             )
         },
         isClickable = isClickable,
@@ -188,6 +195,7 @@ fun ProtonMainSettingsItem(
 fun ProtonMainSettingsItem(
     modifier: Modifier = Modifier,
     name: String,
+    nameColor: Color = ProtonTheme.colors.textWeak,
     icon: @Composable () -> Unit,
     hint: @Composable () -> Unit = {},
     isClickable: Boolean = true,
@@ -217,7 +225,7 @@ fun ProtonMainSettingsItem(
             Text(
                 modifier = Modifier,
                 text = name,
-                color = ProtonTheme.colors.textWeak,
+                color = nameColor,
                 style = ProtonTheme.typography.bodyLargeWeak
             )
             hint()
@@ -339,13 +347,21 @@ private fun ProtonAppSettingsItem(
 fun ProtonMainSettingsIcon(
     @DrawableRes iconRes: Int,
     contentDescription: String,
-    tint: Color = ProtonTheme.colors.textNorm
+    tint: Color = ProtonTheme.colors.textNorm,
+    backgroundColor: Color = ProtonTheme.colors.backgroundNorm
 ) {
-    Icon(
-        painter = painterResource(id = iconRes),
-        contentDescription = contentDescription,
-        tint = tint
-    )
+    Box(
+        modifier = Modifier
+            .size(32.dp)
+            .background(backgroundColor, shape = ProtonTheme.shapes.medium),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = contentDescription,
+            tint = tint
+        )
+    }
 }
 
 @Composable
@@ -489,6 +505,15 @@ fun SettingsTopBarPreview() {
 @Composable
 fun SettingsItemPreview() {
     ProtonSettingsItem(name = "Setting name", hint = "This settings does nothing")
+}
+
+@Preview(
+    name = "Proton main settings item with name and icon",
+    showBackground = true
+)
+@Composable
+fun MainSettingsItemPreview() {
+    ProtonMainSettingsItem(iconRes = R.drawable.ic_proton_storage, name = "Setting name")
 }
 
 @Preview(
