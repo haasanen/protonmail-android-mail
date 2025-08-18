@@ -23,6 +23,7 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.compose")
     id("app-config-plugin")
+    id("app.cash.paparazzi")
 }
 
 android {

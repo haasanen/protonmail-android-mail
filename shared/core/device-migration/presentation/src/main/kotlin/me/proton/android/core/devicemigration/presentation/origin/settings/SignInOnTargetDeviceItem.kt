@@ -19,9 +19,10 @@
 package me.proton.android.core.devicemigration.presentation.origin.settings
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -61,11 +62,15 @@ public fun SignInOnTargetDeviceItem(
     when (state) {
         is SignInOnTargetDeviceState.Hidden -> Unit
         is SignInOnTargetDeviceState.Visible -> {
-            val launcher = rememberLauncher(StartDeviceMigrationFromOrigin(), onResult = onResult)
+            val launcher = if (!LocalInspectionMode.current) {
+                rememberLauncher(StartDeviceMigrationFromOrigin(), onResult = onResult)
+            } else {
+                null
+            }
             content(
                 label = stringResource(R.string.intro_origin_sign_in_title),
                 onClick = {
-                    if (state.isEnabled) launcher.launch(Unit)
+                    if (state.isEnabled) launcher?.launch(Unit)
                 }
             )
         }
