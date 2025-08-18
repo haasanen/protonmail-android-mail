@@ -22,10 +22,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.layout.onGloballyPositioned
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
@@ -39,17 +41,23 @@ fun EditableMessageBodyPlainText(
 ) {
 
     val focusRequester = remember { FocusRequester() }
+    val shouldFocus = remember { mutableStateOf(false) }
 
     BasicTextField(
         modifier = modifier
             .fillMaxWidth()
+            .onGloballyPositioned {
+                if (shouldFocus.value) {
+                    focusRequester.requestFocus()
+                }
+            }
             .focusRequester(focusRequester),
         textStyle = ProtonTheme.typography.bodyMediumNorm,
         state = bodyTextFieldState
     )
 
     ConsumableLaunchedEffect(shouldRequestFocus) {
-        focusRequester.requestFocus()
+        shouldFocus.value = true
     }
 
 }
