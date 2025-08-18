@@ -21,40 +21,40 @@
   <string name="upselling_button_item_content_description">Päivitä-painike</string>
   <string name="upselling_close_button_content_description">Sulje-painike</string>
   <!-- Upselling: Mailbox -->
-  <string name="upselling_mailbox_plus_description_override">To unlock more storage and premium features.</string>
+  <string name="upselling_mailbox_plus_description_override">Avataksesi lisää tallennustilaa ja premium-ominaisuuksia.</string>
   <string name="upselling_mailbox_plus_title">Päivitä Mail Plussaan</string>
   <!-- Upselling: Social Proof -->
   <string name="upselling_mailbox_plus_title_social_proof">Aloita Mail Plus</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">Get the best of Mail with this limited time offer</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Hyödynnä Mailin parhaat puolet tällä rajoitetun ajan tarjouksella.</string>
   <string name="upselling_mailbox_plus_promo_title">Kokeile Mail Plussaa hintaan %s</string>
-  <string name="upselling_mailbox_plus_promo_cta">Get 1 month for %s</string>
-  <string name="upselling_mailbox_plus_promo_skip">Skip offer</string>
-  <string name="upselling_mailbox_plus_promo_renewal">%s for the 1st month, then %s per month</string>
+  <string name="upselling_mailbox_plus_promo_cta">Hanki yksi kuukausi %s hintaan</string>
+  <string name="upselling_mailbox_plus_promo_skip">Ohita tarjous</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s ensimmäisen kuukauden ajan, sitten %s kuukaudessa</string>
   <!-- Upselling: Contact Groups -->
-  <string name="upselling_contact_groups_plus_description_override">Send group emails with ease. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_contact_groups_plus_description_override">Lähetä ryhmäsähköpostiviestejä vaivattomasti. Nauti tästä ja muusta Mail Plus -palvelulla.</string>
   <string name="upselling_contact_groups_plus_title">Ryhmittele yhteystietojasi</string>
   <!-- Upselling: Labels -->
-  <string name="upselling_labels_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_labels_plus_description_override">Luo kaikki tarvitsemasi pysyäksesi järjestyksessä. Saat tämän ja paljon muuta Mail Plus -palvelun avulla. </string>
   <string name="upselling_labels_plus_title">Tarvitsetko enemmän tunnisteita tai kansioita?</string>
   <!-- Upselling: Folders -->
-  <string name="upselling_folders_plus_description_override">Create all you need to stay organized. Get this and more with Mail Plus. </string>
+  <string name="upselling_folders_plus_description_override">Luo kaikki tarvitsemasi pysyäksesi järjestyksessä. Hanki tämä ja paljon muuta Mail Plus -tilauksella. </string>
   <string name="upselling_folders_plus_title">Tarvitsetko enemmän tunnisteita tai kansioita?</string>
   <!-- Upselling: Mobile Signature -->
-  <string name="upselling_mobile_signature_plus_description_override">Make your mobile signature your own. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_mobile_signature_plus_title">Personalize your signature</string>
+  <string name="upselling_mobile_signature_plus_description_override">Mukauta mobiiliallekirjoituksesi. Nauti tästä ja muusta Mail Plus -palvelun avulla.</string>
+  <string name="upselling_mobile_signature_plus_title">Muokkaa allekirjoitustasi</string>
   <!-- Upselling: Auto Delete -->
-  <string name="upselling_auto_delete_plus_description_override">Deletes spam and trash after 30 days. Get this and more with Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_description_override">Poistaa roskapostin ja Roskakorin 30 päivän kuluttua. Saat tämän ja paljon muuta Mail Plus -tilauksella.</string>
   <string name="upselling_auto_delete_plus_title">Automaattinen roskien poisto</string>
   <!-- Upselling: Schedule Send -->
-  <string name="upselling_schedule_send_plus_description_override">Customize when an email will be sent. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_description_override">Mukauta, milloin sähköposti lähetetään. Nauti tästä ja muusta Mail Plus -palvelulla.</string>
   <string name="upselling_schedule_send_plus_title">Ajoita nyt, lähetä myöhemmin</string>
   <!-- Upselling: Snooze -->
-  <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>
-  <string name="upselling_snooze_plus_title">Bad time for this email?</string>
+  <string name="upselling_snooze_plus_description_override">Torkuta se – ja toimita se myöhemmin. Nauti tästä ja muusta Mail Plus -palvelulla.</string>
+  <string name="upselling_snooze_plus_title">Huono aika tälle sähköpostille?</string>
   <!-- Upselling - Misc buttons -->
-  <string name="upselling_button_hint">Upgrade for full flexibility</string>
-  <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature</string>
+  <string name="upselling_button_hint">Päivitä saadaksesi täyden joustavuuden</string>
+  <string name="upselling_upgrade_plan_generic">Tarvitset maksullisen Proton Mail -tilauksen käyttääksesi tätä ominaisuutta</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 Gt tallennustilaa</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 Gt tallennustilaa, 10 sähköpostiosoitetta</string>
@@ -102,12 +102,12 @@
   <string name="upselling_select_plan_year">12 kuukautta</string>
   <string name="upselling_select_plan_month">1 kuukausi</string>
   <!-- Other UI Items -->
-  <string name="upselling_auto_renew_text">Auto-renews at the same price and terms unless canceled</string>
-  <string name="upselling_auto_renew_text_promo">Welcome offer. Auto-renews at %s%s unless canceled</string>
-  <string name="upselling_auto_renew_text_promo_short">Welcome offer. Auto-renews at %s%s.</string>
-  <string name="upselling_auto_renew_text_standard">Auto-renews at %s%s unless canceled</string>
+  <string name="upselling_auto_renew_text">Uusiutuu automaattisesti samaan hintaan ja samoilla ehdoilla, ellei tilausta peruta</string>
+  <string name="upselling_auto_renew_text_promo">Tervetuliaistarjous. Jatkuu automaattisesti hintaan %s%s, ellei peruuteta.</string>
+  <string name="upselling_auto_renew_text_promo_short">Tervetuliaistarjous. Jatkuu automaattisesti hintaan %s%s.</string>
+  <string name="upselling_auto_renew_text_standard">Uusiutuu automaattisesti hintaan %s%s, ellei peruuteta</string>
   <string name="upselling_social_proof_reviews">2 000 + arvostelua</string>
-  <string name="upselling_description_social_proof">Upgrade to the experience that millions subscribers are raving about.</string>
+  <string name="upselling_description_social_proof">Päivitä kokemukseen, josta miljoonat tilaajat ovat innoissaan.</string>
   <string name="upselling_discount_tag">SÄÄSTÄ %s %%</string>
   <string name="upselling_month">/kuukausi</string>
   <string name="upselling_year">/vuosi</string>

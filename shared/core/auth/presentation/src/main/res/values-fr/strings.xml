@@ -140,4 +140,31 @@
     <item quantity="one">Au moins 1 caractère</item>
     <item quantity="other">Au moins %1$s caractères</item>
   </plurals>
+  <string name="settings_password_management_title">Modifier le mot de passe</string>
+  <string name="settings_save_second_password">Enregistrer le nouveau second mot de passe</string>
+  <string name="settings_save_main_password">Enregistrer le nouveau mot de passe principal</string>
+  <string name="settings_password_management_tab_main_password">Mot de passe principal</string>
+  <string name="settings_password_management_tab_second_password">Second mot de passe</string>
+  <string name="settings_password_management_change_password_note">Pour modifier l\'un de vos mots de passe, vous devez connaître votre mot de passe principal.\u0020</string>
+  <string name="settings_password_management_forgot_main_password">Avez-vous oublié votre mot de passe principal ?</string>
+  <string name="settings_password_management_header">Modifier le mot de passe</string>
+  <string name="settings_password_management_cannot_change_password">Vous ne pouvez pas modifier votre mot de passe de secours. Veuillez contacter votre administrateur.</string>
+  <string name="settings_main_password_hint_current">Mot de passe principal actuel</string>
+  <string name="settings_main_password_hint_new">Nouveau mot de passe principal</string>
+  <string name="settings_main_password_hint_new_confirm">Confirmer le nouveau mot de passe principal</string>
+  <string name="settings_second_password_hint_current_main_password">Mot de passe principal actuel</string>
+  <string name="settings_second_password_hint_new">Nouveau second mot de passe</string>
+  <string name="settings_second_password_hint_new_confirm">Confirmer le nouveau second mot de passe</string>
+  <string name="settings_change_password_error">Une erreur s\'est produite pendant le changement du mot de passe.</string>
+  <string name="settings_recovery_email_success">L\'adresse e-mail de récupération a été mise à jour.</string>
+  <string name="settings_password_management_login_success">Le mot de passe de connexion a été mis à jour.</string>
+  <string name="settings_password_management_second_success">Le second mot de passe a été mis à jour.</string>
+  <string name="settings_password_management_start_recovery">Vous ne connaissez pas votre mot de passe actuel ?</string>
+  <string name="settings_password_management_2fa">L\'A2F est nécessaire</string>
+  <string name="settings_password_invalid_2fa">Le code de deuxième facteur n\'est pas valide. Veuillez réessayer.</string>
+  <string name="settings_password_error_empty">Le mot de passe ne peut pas être vide.</string>
+  <string name="settings_password_error">Le nom d\'utilisateur ou le mot de passe n\'est pas correct. Veuillez réessayer.</string>
+  <string name="settings_password_error_invalid_recovery">Le code A2F n\'est pas correct. Nous vous invitons à réessayer.</string>
+  <string name="settings_password_error_2fa_reused">Le code a déjà été utilisé. Veuillez essayer un code différent.</string>
+  <string name="settings_password_general_error">Une erreur s’est produite.</string>
 </resources>

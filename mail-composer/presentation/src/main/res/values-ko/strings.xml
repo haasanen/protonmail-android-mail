@@ -86,20 +86,18 @@
   <string name="message_sending_error_dialog_text_error">다음 이유로 인해 입력한 주소로 이메일이 전송되지 못했습니다:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">신뢰 키가 없습니다: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">주소가 존재하지 않습니다: %s</string>
-  <string name="set_message_password_title">메시지 암호화</string>
-  <string name="set_message_password_info_message">Proton Mail을 사용하지 않는 사용자를 위해 이 메시지를 암호화하기 위한 비밀번호를 설정하십시오.</string>
+  <string name="set_message_password_title">Set Password</string>
+  <string name="set_message_password_info_message">Set a password to encrypt this message for non-Proton Mail recipients.</string>
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">더 알아보기</a></string>
   <string name="set_message_password_label">메시지 비밀번호</string>
-  <string name="set_message_password_label_repeat">비밀번호 확인</string>
   <string name="set_message_password_label_hint">비밀번호 힌트 (선택 사항)</string>
-  <string name="set_message_password_supporting_text">8 to 21 characters long</string>
-  <string name="set_message_password_supporting_error_text">The password must be between 8 and 21 characters</string>
+  <string name="set_message_password_supporting_text">Minimum 8 characters required.</string>
+  <string name="set_message_password_supporting_error_text">비밀번호는 8자에서 21자 여야 합니다.</string>
   <string name="set_message_password_supporting_text_repeat">비밀번호가 일치해야 합니다</string>
   <string name="set_message_password_supporting_error_text_repeat">비밀번호가 일치하지 않습니다</string>
   <string name="set_message_password_button_show">비밀번호 표시</string>
   <string name="set_message_password_button_hide">비밀번호 숨김</string>
-  <string name="set_message_password_button_apply">비밀번호 적용</string>
-  <string name="set_message_password_button_save_changes">변경 사항 저장</string>
+  <string name="set_message_password_button_save_changes">Save</string>
   <string name="set_message_password_button_remove_password">비밀번호 제거</string>
   <string name="respondInline">본문 포함 회신</string>
   <string name="subject_placeholder">제목</string>
@@ -123,7 +121,7 @@
   <string name="composer_schedule_send_tomorrow_title">내일</string>
   <string name="composer_schedule_send_monday_title">월요일</string>
   <string name="composer_schedule_send_custom_title">사용자 정의</string>
-  <string name="composer_schedule_send_custom_upsell_title">Custom date and time</string>
+  <string name="composer_schedule_send_custom_upsell_title">날짜 및 시간 선택</string>
   <string name="composer_schedule_send_custom_description">시간 및 날짜 선택</string>
   <string name="composer_error_send_message">메시지 전송 오류</string>
   <string name="composer_schedule_send_previously_set">이전에 설정됨</string>
@@ -138,5 +136,5 @@
   <string name="composer_change_sender_error_refreshing_body">보낸 사람 변경 후 본문 새로고침에 오류가 발생했습니다. 서명이 노후화되었을 수 있습니다.</string>
   <string name="composer_loading_attachments_error">첨부 파일 불러오기 실패</string>
   <string name="composer_attachment_upload_error_retry">일부 첨부 파일이 업로드에 실패했습니다. 다시 시도하십시오.</string>
-  <string name="composer_external_encryption_unexpected_error">Unexpected error %s. Try again.</string>
+  <string name="composer_external_encryption_unexpected_error">예기치 않은 오류, %s. 다시 시도하십시오.</string>
 </resources>

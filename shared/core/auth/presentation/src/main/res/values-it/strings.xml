@@ -140,4 +140,31 @@
     <item quantity="one">Almeno 1 carattere</item>
     <item quantity="other">Almeno %1$s caratteri</item>
   </plurals>
+  <string name="settings_password_management_title">Gestione delle password</string>
+  <string name="settings_save_second_password">Salva</string>
+  <string name="settings_save_main_password">Salva</string>
+  <string name="settings_password_management_tab_main_password">Password principale</string>
+  <string name="settings_password_management_tab_second_password">Password secondaria</string>
+  <string name="settings_password_management_change_password_note">Inserisci la password principale attuale per cambiare questa password.\u0020</string>
+  <string name="settings_password_management_forgot_main_password">Password principale dimenticata</string>
+  <string name="settings_password_management_header">Gestione delle password</string>
+  <string name="settings_password_management_cannot_change_password">Cambio della password di backup non disponibile. Contatta l\'amministratore.</string>
+  <string name="settings_main_password_hint_current">Password principale attuale</string>
+  <string name="settings_main_password_hint_new">Nuova password principale</string>
+  <string name="settings_main_password_hint_new_confirm">Conferma della nuova password</string>
+  <string name="settings_second_password_hint_current_main_password">Password principale attuale</string>
+  <string name="settings_second_password_hint_new">Nuova password secondaria</string>
+  <string name="settings_second_password_hint_new_confirm">Conferma della nuova password</string>
+  <string name="settings_change_password_error">Cambio della password non riuscito</string>
+  <string name="settings_recovery_email_success">Indirizzo email di recupero cambiato</string>
+  <string name="settings_password_management_login_success">Password principale cambiata</string>
+  <string name="settings_password_management_second_success">Password secondaria cambiata</string>
+  <string name="settings_password_management_start_recovery">Reimposta la password principale</string>
+  <string name="settings_password_management_2fa">Codice del secondo fattore necessario</string>
+  <string name="settings_password_invalid_2fa">Codice del secondo fattore non valido</string>
+  <string name="settings_password_error_empty">Password necessaria</string>
+  <string name="settings_password_error">Credenziali non valide</string>
+  <string name="settings_password_error_invalid_recovery">Codice del secondo fattore non valido</string>
+  <string name="settings_password_error_2fa_reused">Codice del secondo fattore già usato</string>
+  <string name="settings_password_general_error">Si è verificato un errore</string>
 </resources>

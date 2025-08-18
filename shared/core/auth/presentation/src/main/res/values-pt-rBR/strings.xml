@@ -140,4 +140,31 @@
     <item quantity="one">Pelo menos 1 caractere</item>
     <item quantity="other">Pelo menos %1$s caracteres</item>
   </plurals>
+  <string name="settings_password_management_title">Alterar senha</string>
+  <string name="settings_save_second_password">Salvar segunda senha nova</string>
+  <string name="settings_save_main_password">Salvar senha principal nova</string>
+  <string name="settings_password_management_tab_main_password">Senha principal</string>
+  <string name="settings_password_management_tab_second_password">Segunda senha</string>
+  <string name="settings_password_management_change_password_note">To change either of your passwords, you\'ll need to know your main password.\u0020</string>
+  <string name="settings_password_management_forgot_main_password">Forgot your main password?</string>
+  <string name="settings_password_management_header">Alterar senha</string>
+  <string name="settings_password_management_cannot_change_password">Você não pode alterar sua senha de backup. Entre em contato com o administrador.</string>
+  <string name="settings_main_password_hint_current">Senha principal atual</string>
+  <string name="settings_main_password_hint_new">Nova senha principal</string>
+  <string name="settings_main_password_hint_new_confirm">Confirmar nova senha principal</string>
+  <string name="settings_second_password_hint_current_main_password">Senha principal atual</string>
+  <string name="settings_second_password_hint_new">Nova segunda senha</string>
+  <string name="settings_second_password_hint_new_confirm">Confirmar segunda senha nova</string>
+  <string name="settings_change_password_error">Ocorreu um erro na troca da senha.</string>
+  <string name="settings_recovery_email_success">Endereço de e-mail de recuperação atualizado</string>
+  <string name="settings_password_management_login_success">Senha de início de sessão atualizada</string>
+  <string name="settings_password_management_second_success">Second password updated</string>
+  <string name="settings_password_management_start_recovery">Não sabe sua senha atual?</string>
+  <string name="settings_password_management_2fa">Two FA is needed</string>
+  <string name="settings_password_invalid_2fa">Invalid second factor code. Please try again.</string>
+  <string name="settings_password_error_empty">A senha não pode estar em branco.</string>
+  <string name="settings_password_error">Nome de usuário ou senha incorreta. Tente novamente.</string>
+  <string name="settings_password_error_invalid_recovery">Código A2F incorreto. Tente novamente.</string>
+  <string name="settings_password_error_2fa_reused">O código já foi usado. Tente outro código.</string>
+  <string name="settings_password_general_error">Ocorreu um erro.</string>
 </resources>

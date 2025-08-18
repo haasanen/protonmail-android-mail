@@ -157,21 +157,23 @@
     <item quantity="other">%1$d учасників</item>
   </plurals>
   <string name="rsvp_widget_happening_now">Відбувається <b>зараз</b></string>
-  <string name="rsvp_widget_event_ended">Event <b>ended</b></string>
-  <string name="rsvp_widget_event_cancelled">Event <b>cancelled</b></string>
+  <string name="rsvp_widget_event_ended">Подію <b>завершено</b></string>
+  <string name="rsvp_widget_event_cancelled">Подію <b>скасовано</b></string>
   <string name="rsvp_widget_invite_outdated">Це запрошення застаріло</string>
   <string name="rsvp_widget_event_cancelled_invite_outdated">Подію скасовано. Це запрошення застаріло.</string>
   <string name="rsvp_widget_offline_invite_outdated">Ви не в мережі. Показана інформація може бути застарілою.</string>
   <string name="rsvp_widget_address_is_incorrect">Вашу адресу не можна використати для відповіді. Оновіть інформацію свого облікового запису.</string>
   <string name="rsvp_widget_user_is_organizer">Ви є організатором.</string>
-  <string name="rsvp_widget_event_does_not_exist">This event isn\'t in your calendar so you can\'t reply to it.</string>
+  <string name="rsvp_widget_event_does_not_exist">Цієї події немає у вашому календарі, тому ви не можете на неї відповісти.</string>
   <string name="rsvp_widget_today">Сьогодні</string>
   <string name="rsvp_widget_tomorrow">Завтра</string>
-  <string name="rsvp_widget_invite_details_unavailable">Invite details unavailable</string>
-  <string name="rsvp_widget_could_not_load">We couldn\'t load the information.\nPlease try again.</string>
-  <string name="rsvp_widget_button_retry">Retry</string>
-  <string name="rsvp_widget_error_answering">An error occurred while answering this event</string>
-  <string name="rsvp_widget_open_in_proton_calendar">Open in Proton Calendar</string>
-  <string name="rsvp_widget_copy_address">Copy address</string>
-  <string name="rsvp_widget_message">Message</string>
+  <string name="rsvp_widget_invite_details_unavailable">Подробиці запрошення недоступні</string>
+  <string name="rsvp_widget_could_not_load">Не вдалося завантажити інформацію.\nСпробуйте ще раз.</string>
+  <string name="rsvp_widget_button_retry">Повторити</string>
+  <string name="rsvp_widget_error_answering">Виникла помилка під час відповіді на цю подію</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Відкрити в Proton Calendar</string>
+  <string name="rsvp_widget_copy_address">Скопіювати адресу</string>
+  <string name="rsvp_widget_message">Повідомлення</string>
+  <string name="snooze_message_snoozed_until_banner_title">Snoozed until</string>
+  <string name="snooze_message_unsnooze_banner_button">Unsnooze</string>
 </resources>

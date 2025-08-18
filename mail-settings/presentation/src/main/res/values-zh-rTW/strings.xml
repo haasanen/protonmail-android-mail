@@ -34,6 +34,7 @@
   <string name="mail_settings_spam_and_custom_filters_hint">自動動作與排序</string>
   <string name="mail_settings_privacy_and_security">隱私與安全性</string>
   <string name="mail_settings_fido_keys">Security keys</string>
+  <string name="mail_settings_change_password">Password management</string>
   <string name="mail_settings_privacy_and_security_hint">電子郵件追蹤保護</string>
   <string name="mail_settings_app_hint">行動裝置應用程式自訂</string>
   <string name="mail_settings_theme">布景主題</string>

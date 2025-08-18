@@ -168,4 +168,6 @@
   <string name="rsvp_widget_open_in_proton_calendar">Proton Calendar ile aç</string>
   <string name="rsvp_widget_copy_address">Adresi kopyala</string>
   <string name="rsvp_widget_message">İleti</string>
+  <string name="snooze_message_snoozed_until_banner_title">Şu zamana ertelendi</string>
+  <string name="snooze_message_unsnooze_banner_button">Ertelemeyi kaldır</string>
 </resources>

@@ -86,20 +86,18 @@
   <string name="message_sending_error_dialog_text_error">Mesajul nu poate fi trimis la adresa introdusă din următorul motiv:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Nu există chei de încredere: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Adresa nu există: %s</string>
-  <string name="set_message_password_title">Criptare mesaj</string>
-  <string name="set_message_password_info_message">Setați o parolă de criptare a acestui mesaj pentru cei ce nu folosesc Proton Mail.</string>
+  <string name="set_message_password_title">Setare parolă</string>
+  <string name="set_message_password_info_message">Setați o parolă pentru a cripta acest mesaj pentru destinatarii care nu folosesc Proton Mail.</string>
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">Aflați mai multe</a></string>
   <string name="set_message_password_label">Parolă mesaj</string>
-  <string name="set_message_password_label_repeat">Repetare parolă</string>
   <string name="set_message_password_label_hint">Indiciu parolă (opțional)</string>
-  <string name="set_message_password_supporting_text">Între 8 și 21 de caractere</string>
+  <string name="set_message_password_supporting_text">Sunt necesare minim 8 caractere.</string>
   <string name="set_message_password_supporting_error_text">Parola trebuie să aibă între 8 și 21 de caractere.</string>
   <string name="set_message_password_supporting_text_repeat">Parolele trebuie să corespundă.</string>
   <string name="set_message_password_supporting_error_text_repeat">Parolele nu coincid.</string>
   <string name="set_message_password_button_show">Afișare parolă</string>
   <string name="set_message_password_button_hide">Ascundere parolă</string>
-  <string name="set_message_password_button_apply">Aplicare parolă</string>
-  <string name="set_message_password_button_save_changes">Salvare modificări</string>
+  <string name="set_message_password_button_save_changes">Salvare</string>
   <string name="set_message_password_button_remove_password">Eliminare parolă</string>
   <string name="respondInline">Răspuns în mesaj</string>
   <string name="subject_placeholder">Subiect</string>

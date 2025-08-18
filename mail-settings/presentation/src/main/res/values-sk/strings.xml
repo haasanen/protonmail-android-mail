@@ -33,7 +33,8 @@
   <string name="mail_settings_spam_and_custom_filters">Spam a filtre</string>
   <string name="mail_settings_spam_and_custom_filters_hint">Automatické akcie a triedenie</string>
   <string name="mail_settings_privacy_and_security">Súkromie a bezpečnosť</string>
-  <string name="mail_settings_fido_keys">Security keys</string>
+  <string name="mail_settings_fido_keys">Bezpečnostné kľúče</string>
+  <string name="mail_settings_change_password">Správa hesiel</string>
   <string name="mail_settings_privacy_and_security_hint">Ochrana pred emailovými sledovačmi</string>
   <string name="mail_settings_app_hint">Prispôsobenie mobilnej aplikácie</string>
   <string name="mail_settings_theme">Motív</string>

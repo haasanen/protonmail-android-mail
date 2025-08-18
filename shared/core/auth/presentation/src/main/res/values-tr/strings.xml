@@ -140,4 +140,31 @@
     <item quantity="one">En az 1 karakter</item>
     <item quantity="other">En az %1$s karakter</item>
   </plurals>
+  <string name="settings_password_management_title">Parolayı değiştir</string>
+  <string name="settings_save_second_password">Yeni ikinci parolayı kaydet</string>
+  <string name="settings_save_main_password">Yeni ana parolayı kaydet</string>
+  <string name="settings_password_management_tab_main_password">Ana parola</string>
+  <string name="settings_password_management_tab_second_password">İkinci parola</string>
+  <string name="settings_password_management_change_password_note">Parolalarınızın birini değiştirebilmek için ana parolanızı bilmelisiniz.\u0020</string>
+  <string name="settings_password_management_forgot_main_password">Ana parolanızı mı unuttunuz?</string>
+  <string name="settings_password_management_header">Parolayı değiştir</string>
+  <string name="settings_password_management_cannot_change_password">Yedek parolanızı değiştiremezsiniz. Lütfen yöneticiniz ile görüşün.</string>
+  <string name="settings_main_password_hint_current">Geçerli ana parola</string>
+  <string name="settings_main_password_hint_new">Yeni ana parola</string>
+  <string name="settings_main_password_hint_new_confirm">Yeni ana parola onayı</string>
+  <string name="settings_second_password_hint_current_main_password">Geçerli ana parola</string>
+  <string name="settings_second_password_hint_new">Yeni ikinci parola</string>
+  <string name="settings_second_password_hint_new_confirm">Yeni ikinci parola onayı</string>
+  <string name="settings_change_password_error">Parola değiştirilirken bir sorun çıktı.</string>
+  <string name="settings_recovery_email_success">Kurtarma e-postası adresi güncellendi</string>
+  <string name="settings_password_management_login_success">Oturum açma parolası güncellendi</string>
+  <string name="settings_password_management_second_success">İkinci parola güncellendi</string>
+  <string name="settings_password_management_start_recovery">Geçerli parolanızı bilmiyor musunuz?</string>
+  <string name="settings_password_management_2fa">İki adımlı doğrulama gereklidir</string>
+  <string name="settings_password_invalid_2fa">İkinci adım kodu geçersiz. Lütfen yeniden deneyin.</string>
+  <string name="settings_password_error_empty">Parola boş olamaz.</string>
+  <string name="settings_password_error">Kullanıcı adı veya parola yanlış. Lütfen yeniden deneyin.</string>
+  <string name="settings_password_error_invalid_recovery">İki adımlı doğrulama kodu yanlış. Lütfen yeniden deneyin.</string>
+  <string name="settings_password_error_2fa_reused">Kod zaten kullanılmış. Lütfen başka bir kod deneyin.</string>
+  <string name="settings_password_general_error">Bir sorun çıktı.</string>
 </resources>

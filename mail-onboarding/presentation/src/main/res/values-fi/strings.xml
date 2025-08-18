@@ -29,15 +29,15 @@
   <!--  New Onboarding 1  -->
   <string name="onboarding_welcome_title">Tervetuloa uuteen\nProton Mail -sovellukseen!</string>
   <string name="onboarding_welcome_headline">Täysin uudistettu</string>
-  <string name="onboarding_welcome_description">Thank you for joining this limited group of early beta testers. Your feedback is critical for helping us build an even better Proton Mail ready for public release.</string>
+  <string name="onboarding_welcome_description">Kiitos, että liityitte tähän rajattuun varhaisten beeta-testaajien ryhmään. Palautteenne on kriittisen tärkeää, jotta voimme rakentaa entistäkin paremman Proton Mailin, joka on valmis julkiseen julkaisuun.</string>
   <!--  New Onboarding 2  -->
   <string name="onboarding_rebuilt_title">Uudelleenrakennettu entistä paremmaksi ja nopeammaksi</string>
   <string name="onboarding_rebuilt_headline">Uusi saapuneet-kansio avattu.</string>
-  <string name="onboarding_rebuilt_description">The new Proton Mail is faster with a vibrant design and highly-requested features, like offline mode.</string>
+  <string name="onboarding_rebuilt_description">Uusi Proton Mail on nopeampi pirteämmällä ulkoasulla ja erittäin toivotuilla ominaisuuksilla, kuten yhteydetön tila.</string>
   <!--  New Onboarding 3  -->
   <string name="onboarding_feedback_title">Kiitos osallistumisestasi!</string>
   <string name="onboarding_feedback_headline">Palautteesi on tärkeää</string>
-  <string name="onboarding_feedback_description">We\'ll be rolling out new features in the coming months. Please test the app and tap \"Report a problem\" to let us know how we can keep improving. Your input is invaluable!</string>
+  <string name="onboarding_feedback_description">Otamme käyttöön uusia ominaisuuksia tulevien kuukausien aikana. Testatkaa sovellusta ja napauttakaa \"Ilmoita ongelmasta\" kertoaksenne meille, miten voimme jatkuvasti parantaa. Palautteenne on korvaamatonta!</string>
   <!--  Onboarding actions  -->
   <string name="onboarding_next">Seuraava</string>
   <string name="onboarding_get_started">Aloita testaaminen</string>

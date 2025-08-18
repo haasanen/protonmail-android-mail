@@ -93,6 +93,16 @@
   <string name="mailbox_search_placeholder_text">Căutare mesaje</string>
   <string name="mailbox_search_no_results_title">Nicio potrivire</string>
   <string name="mailbox_search_no_results_explanation">Puteți actualiza interogarea de căutare sau să o goliți.</string>
+  <plurals name="mailbox_action_move_conversation">
+    <item quantity="one">Conversația a fost mutată în «%s».</item>
+    <item quantity="few">Conversațiile au fost mutate în «%s».</item>
+    <item quantity="other">Conversațiile au fost mutate în «%s».</item>
+  </plurals>
+  <plurals name="mailbox_action_move_message">
+    <item quantity="one">Mesajul a fost mutat în «%s».</item>
+    <item quantity="few">Mesajele au fost mutate în «%s».</item>
+    <item quantity="other">Mesajele au fost mutate în «%s».</item>
+  </plurals>
   <string name="mailbox_action_button_clear_trash">Golire gunoi</string>
   <string name="mailbox_action_button_clear_spam">Golire nedorite</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Modificați-vă planul pentru a putea șterge automat mesajele care au stat în folderul «Gunoi» și «Nedorite» mai mult de 30 de zile</string>
@@ -140,4 +150,20 @@
   <string name="expires_in_less_than_a_minute">Expiră în mai puțin de un minut</string>
   <string name="schedule_send_tomorrow">Mâine, %1$s</string>
   <string name="schedule_send_today">Astăzi, %1$s</string>
+  <!--    Snooze messages-->
+  <plurals name="snoozed_in_days">
+    <item quantity="one">Amânat până mâine</item>
+    <item quantity="few">Zile amânat: %d</item>
+    <item quantity="other">Zile amânat: %d</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="one">Ore amânat: %d</item>
+    <item quantity="few">Ore amânat: %d</item>
+    <item quantity="other">Ore amânat: %d</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="one">Minute amânat: %d</item>
+    <item quantity="few">Minute amânat: %d</item>
+    <item quantity="other">Minute amânat: %d</item>
+  </plurals>
 </resources>

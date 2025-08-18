@@ -127,4 +127,9 @@
   <string name="undo_success_message">Akcia vrátená</string>
   <string name="undo_failure_message">Vrátenie akcie zlyhalo</string>
   <string name="feature_coming_soon">Funkcia už čoskoro…</string>
+  <!-- date time picker -->
+  <string name="time_picker_custom_time_label">Čas</string>
+  <string name="time_picker_custom_date_label">Dátum</string>
+  <string name="time_picker_send_dialog_ok">OK</string>
+  <string name="time_picker_enter_time">Zadajte čas</string>
 </resources>

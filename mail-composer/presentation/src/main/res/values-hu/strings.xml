@@ -86,20 +86,18 @@
   <string name="message_sending_error_dialog_text_error">A megadott címre a következő ok miatt nem lehet elküldeni az e-mailt:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Nincs megbízható kulcs: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Cím nem létezik: %s</string>
-  <string name="set_message_password_title">Üzenet titkosítása</string>
-  <string name="set_message_password_info_message">Állítson be egy jelszót a nem Proton Mailes címzetteknek küldött üzenet titkosításához.</string>
+  <string name="set_message_password_title">Set Password</string>
+  <string name="set_message_password_info_message">Set a password to encrypt this message for non-Proton Mail recipients.</string>
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">További információk</a></string>
   <string name="set_message_password_label">Üzenet jelszó</string>
-  <string name="set_message_password_label_repeat">Jelszó ismét</string>
   <string name="set_message_password_label_hint">Jelszó emlékeztető (nem kötelező)</string>
-  <string name="set_message_password_supporting_text">8 to 21 characters long</string>
+  <string name="set_message_password_supporting_text">Minimum 8 characters required.</string>
   <string name="set_message_password_supporting_error_text">The password must be between 8 and 21 characters</string>
   <string name="set_message_password_supporting_text_repeat">A jelszavaknak egyezniük kell</string>
   <string name="set_message_password_supporting_error_text_repeat">A jelszavak nem egyeznek</string>
   <string name="set_message_password_button_show">Jelszó megjelenítése</string>
   <string name="set_message_password_button_hide">Jelszó elrejtése</string>
-  <string name="set_message_password_button_apply">Jelszó alkalmazása</string>
-  <string name="set_message_password_button_save_changes">Mentés</string>
+  <string name="set_message_password_button_save_changes">Save</string>
   <string name="set_message_password_button_remove_password">Jelszó eltávolítása</string>
   <string name="respondInline">Válaszolás az eredeti levélben</string>
   <string name="subject_placeholder">Tárgy</string>

@@ -140,4 +140,31 @@
     <item quantity="one">Al menos 1 carácter</item>
     <item quantity="other">Al menos %1$s caracteres</item>
   </plurals>
+  <string name="settings_password_management_title">Cambiar la contraseña</string>
+  <string name="settings_save_second_password">Guardar la segunda contraseña nueva</string>
+  <string name="settings_save_main_password">Guardar la contraseña principal nueva</string>
+  <string name="settings_password_management_tab_main_password">Contraseña principal</string>
+  <string name="settings_password_management_tab_second_password">Segunda contraseña</string>
+  <string name="settings_password_management_change_password_note">Para cambiar cualquiera de tus contraseñas, necesitas conocer tu contraseña principal.\u0020</string>
+  <string name="settings_password_management_forgot_main_password">¿Olvidaste tu contraseña principal?</string>
+  <string name="settings_password_management_header">Cambiar la contraseña</string>
+  <string name="settings_password_management_cannot_change_password">No puedes cambiar tu contraseña de respaldo. Comunícate con tu administrador.</string>
+  <string name="settings_main_password_hint_current">Contraseña principal actual</string>
+  <string name="settings_main_password_hint_new">Nueva contraseña principal</string>
+  <string name="settings_main_password_hint_new_confirm">Confirmar la nueva contraseña principal</string>
+  <string name="settings_second_password_hint_current_main_password">Contraseña principal actual</string>
+  <string name="settings_second_password_hint_new">Segunda contraseña nueva</string>
+  <string name="settings_second_password_hint_new_confirm">Confirmar la nueva segunda contraseña</string>
+  <string name="settings_change_password_error">Se ha producido un error al cambiar la contraseña.</string>
+  <string name="settings_recovery_email_success">La dirección de correo electrónico de recuperación ha sido actualizada.</string>
+  <string name="settings_password_management_login_success">Contraseña de inicio de sesión actualizada</string>
+  <string name="settings_password_management_second_success">Se ha actualizado la segunda contraseña</string>
+  <string name="settings_password_management_start_recovery">¿No recuerdas tu contraseña?</string>
+  <string name="settings_password_management_2fa">Se necesita 2FA</string>
+  <string name="settings_password_invalid_2fa">El código de segundo factor no es válido. Inténtalo de nuevo.</string>
+  <string name="settings_password_error_empty">La contraseña no puede estar vacía.</string>
+  <string name="settings_password_error">Usuario o contraseña incorrectos. Inténtalo de nuevo.</string>
+  <string name="settings_password_error_invalid_recovery">Código 2FA incorrecto. Inténtalo de nuevo.</string>
+  <string name="settings_password_error_2fa_reused">El código ya ha sido usado. Inténtalo con otro diferente.</string>
+  <string name="settings_password_general_error">Se ha producido un error.</string>
 </resources>

@@ -27,4 +27,32 @@
   <string name="snooze_sheet_option_upsell_detail">Placená funkce</string>
   <string name="snooze_sheet_snooze_title">Odložit až do</string>
   <string name="snooze_sheet_option_unsnooze">Zrušit odložení</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Omlouváme se, při odložení této konverzace došlo k neznámé chybě</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">Při zrušení odložení konverzace došlo k neznámé chybě</string>
+  <string name="snooze_sheet_error_in_the_past">Doba odložení již uplynula</string>
+  <string name="snooze_sheet_success">Odloženo až do %s</string>
+  <string name="unsnooze_sheet_success">Konverzace již není odložena</string>
+  <string name="snooze_picker_content_description">Odložit zprávu</string>
+  <string name="snooze_picker_button_title">Uložit</string>
+  <string name="snooze_custom_upsell_title">Vlastní datum a čas</string>
+  <string name="snooze_custom_upsell_title_short">Vlastní</string>
+  <string name="snooze_custom_upsell_hint_short">Pro přístup navyšte účet</string>
+  <plurals name="snoozed_in_days">
+    <item quantity="one">Odloženo do zítřka</item>
+    <item quantity="few">Odloženo na %d dny</item>
+    <item quantity="many">Odloženo na %d dnů</item>
+    <item quantity="other">Odloženo na %d dnů</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="one">Odloženo na %d hodinu</item>
+    <item quantity="few">Odloženo na %d hodiny</item>
+    <item quantity="many">Odloženo na %d hodin</item>
+    <item quantity="other">Odloženo na %d hodin</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="one">Odloženo na %d minutu</item>
+    <item quantity="few">Odloženo na %d minuty</item>
+    <item quantity="many">Odloženo na %d minut</item>
+    <item quantity="other">Odloženo na %d minut</item>
+  </plurals>
 </resources>

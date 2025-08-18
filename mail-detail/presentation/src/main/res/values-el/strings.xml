@@ -168,4 +168,6 @@
   <string name="rsvp_widget_open_in_proton_calendar">Άνοιγμα στο Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Αντιγραφή διεύθυνσης</string>
   <string name="rsvp_widget_message">Μήνυμα</string>
+  <string name="snooze_message_snoozed_until_banner_title">Αναβλήθηκε μέχρι</string>
+  <string name="snooze_message_unsnooze_banner_button">Αφαίρεση αναβολής</string>
 </resources>

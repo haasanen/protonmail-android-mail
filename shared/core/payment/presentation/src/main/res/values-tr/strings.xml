@@ -39,7 +39,7 @@
   <string name="payment_subscription_title">Abonelik</string>
   <string name="payment_subscription_upgrade_your_plan">Tarifenizi yükseltin</string>
   <string name="payment_subscription_renew_auto_renew_on">Tarifeniz %1$s tarihinde otomatik olarak yenilenecek.</string>
-  <string name="payment_subscription_managed_by_google">Aboneliğiniz Google Play tarafından yönetilmektedir.</string>
-  <string name="payment_subscription_managed_by_apple">Aboneliğiniz Apple Store tarafından yönetilmektedir.</string>
+  <string name="payment_subscription_managed_by_google">Aboneliğiniz Google Play tarafından yönetiliyor.</string>
+  <string name="payment_subscription_managed_by_apple">Aboneliğiniz Apple Store tarafından yönetiliyor.</string>
   <string name="payment_subscription_managed_by_other">Aboneliğiniz mobil uygulama içinden yönetilemez.</string>
 </resources>

@@ -133,7 +133,7 @@
   <string name="message_cancel_schedule_send_dialog_title">수정 및 예약 변경</string>
   <string name="message_cancel_schedule_send_dialog_message">수정할 수 있도록 메시지가 임시보관함으로 이동됩니다. 언제 보낼지 다시 예약해야 합니다.</string>
   <!-- RSVP widget -->
-  <string name="rsvp_widget_no_title">(no title)</string>
+  <string name="rsvp_widget_no_title">(제목 없음)</string>
   <string name="rsvp_widget_attendance_optional">(참석 선택사항)</string>
   <string name="rsvp_widget_attending">참석하시겠습니까?</string>
   <string name="rsvp_widget_yes">예</string>
@@ -147,22 +147,24 @@
   <plurals name="rsvp_widget_participants">
     <item quantity="other">참여자 %1$d명</item>
   </plurals>
-  <string name="rsvp_widget_happening_now">Happening <b>now</b></string>
-  <string name="rsvp_widget_event_ended">Event <b>ended</b></string>
-  <string name="rsvp_widget_event_cancelled">Event <b>cancelled</b></string>
-  <string name="rsvp_widget_invite_outdated">This invite is out of date</string>
+  <string name="rsvp_widget_happening_now"><b>지금</b> 진행 중</string>
+  <string name="rsvp_widget_event_ended">이벤트 <b>종료됨</b></string>
+  <string name="rsvp_widget_event_cancelled">이벤트 <b>취소됨</b></string>
+  <string name="rsvp_widget_invite_outdated">해당 초대는 기한이 지났습니다.</string>
   <string name="rsvp_widget_event_cancelled_invite_outdated">이벤트가 취소되었습니다. 이 초대는 기한이 만료되었습니다.</string>
-  <string name="rsvp_widget_offline_invite_outdated">You\'re offline. The displayed information may be out of date.</string>
+  <string name="rsvp_widget_offline_invite_outdated">오프라인 상태입니다. 표시된 정보가 더 이상 유효하지 않을 수 있습니다.</string>
   <string name="rsvp_widget_address_is_incorrect">주소를 답장에 사용할 수 없습니다. 계정 정보를 업데이트하십시오.</string>
   <string name="rsvp_widget_user_is_organizer">주최자입니다.</string>
-  <string name="rsvp_widget_event_does_not_exist">This event isn\'t in your calendar so you can\'t reply to it.</string>
+  <string name="rsvp_widget_event_does_not_exist">사용자의 캘린더에 등록되지 않은 이벤트에 회신할 수 없습니다.</string>
   <string name="rsvp_widget_today">오늘</string>
   <string name="rsvp_widget_tomorrow">내일</string>
-  <string name="rsvp_widget_invite_details_unavailable">Invite details unavailable</string>
-  <string name="rsvp_widget_could_not_load">We couldn\'t load the information.\nPlease try again.</string>
-  <string name="rsvp_widget_button_retry">Retry</string>
-  <string name="rsvp_widget_error_answering">An error occurred while answering this event</string>
-  <string name="rsvp_widget_open_in_proton_calendar">Open in Proton Calendar</string>
-  <string name="rsvp_widget_copy_address">Copy address</string>
-  <string name="rsvp_widget_message">Message</string>
+  <string name="rsvp_widget_invite_details_unavailable">초대 세부사항을 가져올 수 없습니다.</string>
+  <string name="rsvp_widget_could_not_load">정보를 불러올 수 없었습니다.\n다시 시도해 주십시오.</string>
+  <string name="rsvp_widget_button_retry">다시 시도</string>
+  <string name="rsvp_widget_error_answering">해당 이벤트에 회신하는 도중 오류가 발생했습니다.</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Proton Calendar에서 열기</string>
+  <string name="rsvp_widget_copy_address">주소 복사하기</string>
+  <string name="rsvp_widget_message">메시지</string>
+  <string name="snooze_message_snoozed_until_banner_title">Snoozed until</string>
+  <string name="snooze_message_unsnooze_banner_button">Unsnooze</string>
 </resources>

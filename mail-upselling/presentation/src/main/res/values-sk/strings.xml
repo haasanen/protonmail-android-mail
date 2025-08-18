@@ -26,11 +26,11 @@
   <!-- Upselling: Social Proof -->
   <string name="upselling_mailbox_plus_title_social_proof">Prejdite na Mail Plus</string>
   <!-- Upselling: Mailbox Promo -->
-  <string name="upselling_mailbox_plus_promo_description_override">Get the best of Mail with this limited time offer</string>
+  <string name="upselling_mailbox_plus_promo_description_override">Získajte najlepšie funkcie Mail s touto časovo obmedzenou ponukou</string>
   <string name="upselling_mailbox_plus_promo_title">Vyskúšajte Mail Plus za %s</string>
-  <string name="upselling_mailbox_plus_promo_cta">Get 1 month for %s</string>
-  <string name="upselling_mailbox_plus_promo_skip">Skip offer</string>
-  <string name="upselling_mailbox_plus_promo_renewal">%s for the 1st month, then %s per month</string>
+  <string name="upselling_mailbox_plus_promo_cta">Získajte 1 mesiac za %s</string>
+  <string name="upselling_mailbox_plus_promo_skip">Preskočiť ponuku</string>
+  <string name="upselling_mailbox_plus_promo_renewal">%s za 1. mesiac, potom %s za mesiac</string>
   <!-- Upselling: Contact Groups -->
   <string name="upselling_contact_groups_plus_description_override">Posielajte skupinové emails s ľahkosťou. Vychutnajte si toto a ešte viac s Mail Plus.</string>
   <string name="upselling_contact_groups_plus_title">Zoskupujte svoje kontakty</string>
@@ -44,10 +44,10 @@
   <string name="upselling_mobile_signature_plus_description_override">Vytvorte si vlastný mobilný podpis. Vychutnajte si toto a ešte viac s Mail Plus.</string>
   <string name="upselling_mobile_signature_plus_title">Prispôsobte si svoj podpis</string>
   <!-- Upselling: Auto Delete -->
-  <string name="upselling_auto_delete_plus_description_override">Deletes spam and trash after 30 days. Get this and more with Mail Plus.</string>
+  <string name="upselling_auto_delete_plus_description_override">Po 30 dňoch maže spam a kôš. To a ešte viac získate s aplikáciou Mail Plus.</string>
   <string name="upselling_auto_delete_plus_title">Automatizované vyprázdňovanie koša</string>
   <!-- Upselling: Schedule Send -->
-  <string name="upselling_schedule_send_plus_description_override">Customize when an email will be sent. Enjoy this and more with Mail Plus.</string>
+  <string name="upselling_schedule_send_plus_description_override">Prispôsobte si, kedy bude email odoslaný. To a oveľa viac si môžete užiť s aplikáciou Mail Plus.</string>
   <string name="upselling_schedule_send_plus_title">Schedule now, send later</string>
   <!-- Upselling: Snooze -->
   <string name="upselling_snooze_plus_description_override">Snooze it — and have it delivered later. Enjoy this and more with Mail Plus.</string>

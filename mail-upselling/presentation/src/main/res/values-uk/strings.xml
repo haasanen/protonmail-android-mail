@@ -54,7 +54,7 @@
   <string name="upselling_snooze_plus_title">Невдалий час для цього листа?</string>
   <!-- Upselling - Misc buttons -->
   <string name="upselling_button_hint">Покращте для повної гнучкості</string>
-  <string name="upselling_upgrade_plan_generic">You need a paid Proton Mail subscription to access this feature</string>
+  <string name="upselling_upgrade_plan_generic">Потрібна платна підписка Proton Mail, щоб отримати доступ до цієї функції</string>
   <!-- Mail Plus -->
   <string name="upselling_plus_feature_storage">15 ГБ сховища</string>
   <string name="upselling_plus_feature_storage_plus_mails">15 ГБ сховища, 10 поштових адрес</string>

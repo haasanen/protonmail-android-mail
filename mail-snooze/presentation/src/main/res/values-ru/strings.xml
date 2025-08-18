@@ -27,4 +27,32 @@
   <string name="snooze_sheet_option_upsell_detail">Paid feature</string>
   <string name="snooze_sheet_snooze_title">Snooze until</string>
   <string name="snooze_sheet_option_unsnooze">Unsnooze</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Sorry, we encountered an unknown error snoozing this conversation</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">An unknown error occurred when unsnoozing the conversation</string>
+  <string name="snooze_sheet_error_in_the_past">Snooze time is in the past</string>
+  <string name="snooze_sheet_success">Snoozed until %s</string>
+  <string name="unsnooze_sheet_success">Conversation is no longer snoozed</string>
+  <string name="snooze_picker_content_description">Snooze message</string>
+  <string name="snooze_picker_button_title">Save</string>
+  <string name="snooze_custom_upsell_title">Custom date and time</string>
+  <string name="snooze_custom_upsell_title_short">Custom</string>
+  <string name="snooze_custom_upsell_hint_short">Upgrade to access</string>
+  <plurals name="snoozed_in_days">
+    <item quantity="one">Snoozed until tomorrow</item>
+    <item quantity="few">Snoozed for %d days</item>
+    <item quantity="many">Snoozed for %d days</item>
+    <item quantity="other">Snoozed for %d days</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="one">Snoozed for %d hour</item>
+    <item quantity="few">Snoozed for %d hours</item>
+    <item quantity="many">Snoozed for %d hours</item>
+    <item quantity="other">Snoozed for %d hours</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="one">Snoozed for %d minute</item>
+    <item quantity="few">Snoozed for %d minutes</item>
+    <item quantity="many">Snoozed for %d minutes</item>
+    <item quantity="other">Snoozed for %d minutes</item>
+  </plurals>
 </resources>

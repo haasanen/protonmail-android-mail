@@ -166,6 +166,8 @@
   <string name="rsvp_widget_button_retry">Reintenteu</string>
   <string name="rsvp_widget_error_answering">S\'ha produït un error en respondre a aquest esdeveniment</string>
   <string name="rsvp_widget_open_in_proton_calendar">Obriu-lo a Proton Calendar</string>
-  <string name="rsvp_widget_copy_address">Copy address</string>
-  <string name="rsvp_widget_message">Message</string>
+  <string name="rsvp_widget_copy_address">Copieu l\'adreça</string>
+  <string name="rsvp_widget_message">Missatge</string>
+  <string name="snooze_message_snoozed_until_banner_title">Ajornat fins a</string>
+  <string name="snooze_message_unsnooze_banner_button">Deixa d\'ajornar</string>
 </resources>

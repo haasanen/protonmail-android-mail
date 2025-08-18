@@ -27,4 +27,26 @@
   <string name="snooze_sheet_option_upsell_detail">Λειτουργία επί πληρωμής</string>
   <string name="snooze_sheet_snooze_title">Αναβολή μέχρι</string>
   <string name="snooze_sheet_option_unsnooze">Αφαίρεση αναβολής</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Συγγνώμη, αντιμετωπίσαμε ένα άγνωστο σφάλμα κατά την αναβολή αυτής της συνομιλίας</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">Παρουσιάστηκε άγνωστο σφάλμα κατά την ακύρωση αναβολής της συνομιλίας.</string>
+  <string name="snooze_sheet_error_in_the_past">Ο χρόνος αναβολής βρίσκεται στο παρελθόν</string>
+  <string name="snooze_sheet_success">Αναβλήθηκε μέχρι %s</string>
+  <string name="unsnooze_sheet_success">Η συνομιλία δεν είναι πλέον σε αναβολή</string>
+  <string name="snooze_picker_content_description">Μήνυμα αναβολής</string>
+  <string name="snooze_picker_button_title">Αποθήκευση</string>
+  <string name="snooze_custom_upsell_title">Προσαρμοσμένη ημερομηνία και ώρα</string>
+  <string name="snooze_custom_upsell_title_short">Προσαρμοσμένο</string>
+  <string name="snooze_custom_upsell_hint_short">Αναβαθμίστε για πρόσβαση</string>
+  <plurals name="snoozed_in_days">
+    <item quantity="one">Αναβολή έως αύριο</item>
+    <item quantity="other">Αναβλήθηκε για %d ημέρες</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="one">Αναβλήθηκε για %d ώρα</item>
+    <item quantity="other">Αναβλήθηκε για %d ώρες</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="one">Αναβλήθηκε για %d λεπτό</item>
+    <item quantity="other">Αναβλήθηκε για %d λεπτά</item>
+  </plurals>
 </resources>

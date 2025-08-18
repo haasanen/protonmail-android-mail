@@ -165,4 +165,6 @@
   <string name="rsvp_widget_open_in_proton_calendar">在 Proton Calendar 中打开</string>
   <string name="rsvp_widget_copy_address">复制地址</string>
   <string name="rsvp_widget_message">消息</string>
+  <string name="snooze_message_snoozed_until_banner_title">Snoozed until</string>
+  <string name="snooze_message_unsnooze_banner_button">Unsnooze</string>
 </resources>

@@ -127,4 +127,9 @@
   <string name="undo_success_message">İşlem geri alındı</string>
   <string name="undo_failure_message">İşlem geri alınamadı</string>
   <string name="feature_coming_soon">Özellik yakında kullanılabilecek…</string>
+  <!-- date time picker -->
+  <string name="time_picker_custom_time_label">Saat</string>
+  <string name="time_picker_custom_date_label">Tarih</string>
+  <string name="time_picker_send_dialog_ok">Tamam</string>
+  <string name="time_picker_enter_time">Saati yazın</string>
 </resources>

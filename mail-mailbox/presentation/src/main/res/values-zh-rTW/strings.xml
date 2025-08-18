@@ -75,6 +75,12 @@
   <string name="mailbox_search_placeholder_text">搜尋訊息</string>
   <string name="mailbox_search_no_results_title">無相符項目</string>
   <string name="mailbox_search_no_results_explanation">您可以更新您的搜尋內容或清除。</string>
+  <plurals name="mailbox_action_move_conversation">
+    <item quantity="other">Conversations moved to %s</item>
+  </plurals>
+  <plurals name="mailbox_action_move_message">
+    <item quantity="other">Messages moved to %s</item>
+  </plurals>
   <string name="mailbox_action_button_clear_trash">清空垃圾桶</string>
   <string name="mailbox_action_button_clear_spam">清空垃圾郵件</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">升級以自動刪除在垃圾桶或垃圾郵件中存放超過 30 天的郵件</string>
@@ -116,4 +122,14 @@
   <string name="expires_in_less_than_a_minute">將於不到一分鐘內過期</string>
   <string name="schedule_send_tomorrow">明天，於 %1$s</string>
   <string name="schedule_send_today">今天, %1$s</string>
+  <!--    Snooze messages-->
+  <plurals name="snoozed_in_days">
+    <item quantity="other">Snoozed for %d days</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="other">Snoozed for %d hours</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="other">Snoozed for %d minutes</item>
+  </plurals>
 </resources>

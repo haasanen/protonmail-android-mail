@@ -174,4 +174,6 @@
   <string name="rsvp_widget_open_in_proton_calendar">Otevřít v Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Kopírovat adresu</string>
   <string name="rsvp_widget_message">Zpráva</string>
+  <string name="snooze_message_snoozed_until_banner_title">Odloženo až do</string>
+  <string name="snooze_message_unsnooze_banner_button">Zrušit odložení</string>
 </resources>

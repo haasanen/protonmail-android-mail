@@ -171,4 +171,6 @@
   <string name="rsvp_widget_open_in_proton_calendar">Deschidere în Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Copiere adresă</string>
   <string name="rsvp_widget_message">Mesaj</string>
+  <string name="snooze_message_snoozed_until_banner_title">Amânat până</string>
+  <string name="snooze_message_unsnooze_banner_button">Anulare amânare</string>
 </resources>

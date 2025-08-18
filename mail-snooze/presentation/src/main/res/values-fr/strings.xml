@@ -27,4 +27,26 @@
   <string name="snooze_sheet_option_upsell_detail">Fonctionnalité payante</string>
   <string name="snooze_sheet_snooze_title">Mise en attente jusqu\'à</string>
   <string name="snooze_sheet_option_unsnooze">Arrêter la mise en attente</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Désolé, nous avons rencontré une erreur inconnue lors de la mise en attente de cette conversation</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">Une erreur inconnue s\'est produite lors de l\'arrêt de la mise en attente de la conversation.</string>
+  <string name="snooze_sheet_error_in_the_past">L\'heure de mise en attente est passée</string>
+  <string name="snooze_sheet_success">Mise en attente jusqu\'au %s</string>
+  <string name="unsnooze_sheet_success">La conversation n\'est plus mise en attente.</string>
+  <string name="snooze_picker_content_description">Mise en attente d\'un message</string>
+  <string name="snooze_picker_button_title">Enregistrer</string>
+  <string name="snooze_custom_upsell_title">Sélectionner la date et l\'heure</string>
+  <string name="snooze_custom_upsell_title_short">Personnalisé</string>
+  <string name="snooze_custom_upsell_hint_short">Changer d\'abonnement pour y accéder</string>
+  <plurals name="snoozed_in_days">
+    <item quantity="one">En attente jusqu\'à demain</item>
+    <item quantity="other">En attente pendant %d jours</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="one">En attente pendant %d heure</item>
+    <item quantity="other">En attente pendant %d heures</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="one">En attente pendant %d minute</item>
+    <item quantity="other">En attente pendant %d minutes</item>
+  </plurals>
 </resources>

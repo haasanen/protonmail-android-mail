@@ -151,21 +151,23 @@
     <item quantity="other">%1$d deltakere</item>
   </plurals>
   <string name="rsvp_widget_happening_now">Pågår <b>nå</b></string>
-  <string name="rsvp_widget_event_ended">Event <b>ended</b></string>
-  <string name="rsvp_widget_event_cancelled">Event <b>cancelled</b></string>
+  <string name="rsvp_widget_event_ended">Hendelse <b>avsluttet</b></string>
+  <string name="rsvp_widget_event_cancelled">Hendelse <b>avbrutt</b></string>
   <string name="rsvp_widget_invite_outdated">Denne invitasjonen er utdatert.</string>
   <string name="rsvp_widget_event_cancelled_invite_outdated">Hendelse avbrutt. Denne invitasjonen er utdatert.</string>
   <string name="rsvp_widget_offline_invite_outdated">Du er frakoblet. Informasjonen som vises kan være utdatert.</string>
   <string name="rsvp_widget_address_is_incorrect">Din adresse kan ikke brukes til å svare. Oppdater kontoinformasjonen din.</string>
   <string name="rsvp_widget_user_is_organizer">Du er arrangøren.</string>
-  <string name="rsvp_widget_event_does_not_exist">This event isn\'t in your calendar so you can\'t reply to it.</string>
+  <string name="rsvp_widget_event_does_not_exist">Denne hendelsen er ikke i kalenderen din, så du kan ikke svare på den.</string>
   <string name="rsvp_widget_today">I dag</string>
   <string name="rsvp_widget_tomorrow">I morgen</string>
-  <string name="rsvp_widget_invite_details_unavailable">Invite details unavailable</string>
-  <string name="rsvp_widget_could_not_load">We couldn\'t load the information.\nPlease try again.</string>
-  <string name="rsvp_widget_button_retry">Retry</string>
-  <string name="rsvp_widget_error_answering">An error occurred while answering this event</string>
-  <string name="rsvp_widget_open_in_proton_calendar">Open in Proton Calendar</string>
-  <string name="rsvp_widget_copy_address">Copy address</string>
-  <string name="rsvp_widget_message">Message</string>
+  <string name="rsvp_widget_invite_details_unavailable">Invitasjonsdetaljer utilgjengelige</string>
+  <string name="rsvp_widget_could_not_load">Vi kunne ikke laste informasjonen.\nPrøv igjen.</string>
+  <string name="rsvp_widget_button_retry">Prøv på nytt</string>
+  <string name="rsvp_widget_error_answering">Det oppstod en feil under besvarelse av denne hendelsen</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Åpne i Proton Calendar</string>
+  <string name="rsvp_widget_copy_address">Kopier adresse</string>
+  <string name="rsvp_widget_message">Melding</string>
+  <string name="snooze_message_snoozed_until_banner_title">Slumret til</string>
+  <string name="snooze_message_unsnooze_banner_button">Slumring av</string>
 </resources>

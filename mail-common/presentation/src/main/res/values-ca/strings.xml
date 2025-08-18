@@ -127,4 +127,9 @@
   <string name="undo_success_message">S\'ha desfet l\'acció</string>
   <string name="undo_failure_message">No s\'ha pogut desfer l\'acció</string>
   <string name="feature_coming_soon">Aquesta característica arribarà aviat…</string>
+  <!-- date time picker -->
+  <string name="time_picker_custom_time_label">Hora</string>
+  <string name="time_picker_custom_date_label">Data</string>
+  <string name="time_picker_send_dialog_ok">D\'acord</string>
+  <string name="time_picker_enter_time">Introduïu l\'hora</string>
 </resources>

@@ -86,20 +86,18 @@
   <string name="message_sending_error_dialog_text_error">E-postanız şu nedenle yazılan adrese gönderilemedi:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Herhangi bir güvenilen anahtar yok: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Adres bulunamadı: %s</string>
-  <string name="set_message_password_title">İletiyi şifrele</string>
-  <string name="set_message_password_info_message">Proton Mail kullanmayan kişiler için bu iletiyi şifreleyecek bir parola ayarlayın.</string>
+  <string name="set_message_password_title">Parola ayarla</string>
+  <string name="set_message_password_info_message">Proton Mail kullanmayan alıcılar için bu iletiyi şifreleyecek bir parola ayarlayın.</string>
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">Ayrıntılı bilgi alın</a></string>
   <string name="set_message_password_label">İleti parolası</string>
-  <string name="set_message_password_label_repeat">Parola onayı</string>
   <string name="set_message_password_label_hint">Parola ipucu (isteğe bağlı)</string>
-  <string name="set_message_password_supporting_text">uzunluğu 8 ile 21 karakter arasında olmalıdır</string>
+  <string name="set_message_password_supporting_text">En az 8 karakter uzunluğunda olmalıdır.</string>
   <string name="set_message_password_supporting_error_text">Parola uzunluğu 8 ile 21 karakter arasında olmalıdır</string>
   <string name="set_message_password_supporting_text_repeat">Parola ile onayı aynı değil</string>
   <string name="set_message_password_supporting_error_text_repeat">Parola ile onayı aynı değil</string>
   <string name="set_message_password_button_show">Parolayı görüntüle</string>
   <string name="set_message_password_button_hide">Parolayı gizle</string>
-  <string name="set_message_password_button_apply">Parolayı uygula</string>
-  <string name="set_message_password_button_save_changes">Değişiklikleri kaydet</string>
+  <string name="set_message_password_button_save_changes">Kaydet</string>
   <string name="set_message_password_button_remove_password">Parolayı kaldır</string>
   <string name="respondInline">Satır arasında yanıtla</string>
   <string name="subject_placeholder">Konu</string>

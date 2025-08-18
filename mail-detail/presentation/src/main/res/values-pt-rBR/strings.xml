@@ -158,14 +158,16 @@
   <string name="rsvp_widget_offline_invite_outdated">Você está off-line. As informações exibidas podem estar desatualizadas.</string>
   <string name="rsvp_widget_address_is_incorrect">Seu endereço não pode ser usado para responder. Por favor, atualize as informações da sua conta.</string>
   <string name="rsvp_widget_user_is_organizer">Você é o organizador.</string>
-  <string name="rsvp_widget_event_does_not_exist">This event isn\'t in your calendar so you can\'t reply to it.</string>
+  <string name="rsvp_widget_event_does_not_exist">Este evento não está no seu calendário, então você não pode respondê-lo.</string>
   <string name="rsvp_widget_today">Hoje</string>
   <string name="rsvp_widget_tomorrow">Amanhã</string>
-  <string name="rsvp_widget_invite_details_unavailable">Invite details unavailable</string>
-  <string name="rsvp_widget_could_not_load">We couldn\'t load the information.\nPlease try again.</string>
+  <string name="rsvp_widget_invite_details_unavailable">Detalhes do convite indisponíveis</string>
+  <string name="rsvp_widget_could_not_load">Não foi possível carregar as informações.\nTente novamente.</string>
   <string name="rsvp_widget_button_retry">Tentar novamente</string>
-  <string name="rsvp_widget_error_answering">An error occurred while answering this event</string>
+  <string name="rsvp_widget_error_answering">Ocorreu um erro ao responder a este evento</string>
   <string name="rsvp_widget_open_in_proton_calendar">Abrir no Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Copiar endereço</string>
   <string name="rsvp_widget_message">Mensagem</string>
+  <string name="snooze_message_snoozed_until_banner_title">Adiado até</string>
+  <string name="snooze_message_unsnooze_banner_button">Retomar</string>
 </resources>

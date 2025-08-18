@@ -127,4 +127,9 @@
   <string name="undo_success_message">Дзеянне вернута</string>
   <string name="undo_failure_message">Збой вяртання дзеяння</string>
   <string name="feature_coming_soon">Функцыя неўзабаве з\'явіцца…</string>
+  <!-- date time picker -->
+  <string name="time_picker_custom_time_label">Час</string>
+  <string name="time_picker_custom_date_label">Дата</string>
+  <string name="time_picker_send_dialog_ok">OK</string>
+  <string name="time_picker_enter_time">Увядзіце час</string>
 </resources>

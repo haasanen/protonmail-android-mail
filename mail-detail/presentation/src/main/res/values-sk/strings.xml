@@ -139,7 +139,7 @@
   <string name="message_cancel_schedule_send_dialog_title">Upraviť a preplánovať</string>
   <string name="message_cancel_schedule_send_dialog_message">Táto správa sa presunie do Konceptov, aby ste ju mohli upraviť. Budete musieť preplánovať, kedy bude odoslaná.</string>
   <!-- RSVP widget -->
-  <string name="rsvp_widget_no_title">(no title)</string>
+  <string name="rsvp_widget_no_title">(bez názvu)</string>
   <string name="rsvp_widget_attendance_optional">(Účasť je voliteľná)</string>
   <string name="rsvp_widget_attending">Zúčastníte sa?</string>
   <string name="rsvp_widget_yes">Áno</string>
@@ -156,22 +156,24 @@
     <item quantity="many">%1$d účastníkov</item>
     <item quantity="other">%1$d účastníkov</item>
   </plurals>
-  <string name="rsvp_widget_happening_now">Happening <b>now</b></string>
-  <string name="rsvp_widget_event_ended">Event <b>ended</b></string>
-  <string name="rsvp_widget_event_cancelled">Event <b>cancelled</b></string>
-  <string name="rsvp_widget_invite_outdated">This invite is out of date</string>
+  <string name="rsvp_widget_happening_now">Prebieha <b>teraz</b></string>
+  <string name="rsvp_widget_event_ended">Udalosť <b>skončila</b></string>
+  <string name="rsvp_widget_event_cancelled">Udalosť <b>zrušená</b></string>
+  <string name="rsvp_widget_invite_outdated">Táto pozvánka je neaktuálna</string>
   <string name="rsvp_widget_event_cancelled_invite_outdated">Event cancelled. This invitation is out of date.</string>
   <string name="rsvp_widget_offline_invite_outdated">You\'re offline. The displayed information may be out of date.</string>
   <string name="rsvp_widget_address_is_incorrect">Your address can\'t be used to reply. Please update your account information.</string>
-  <string name="rsvp_widget_user_is_organizer">You are the organizer.</string>
-  <string name="rsvp_widget_event_does_not_exist">This event isn\'t in your calendar so you can\'t reply to it.</string>
-  <string name="rsvp_widget_today">Today</string>
-  <string name="rsvp_widget_tomorrow">Tomorrow</string>
-  <string name="rsvp_widget_invite_details_unavailable">Invite details unavailable</string>
-  <string name="rsvp_widget_could_not_load">We couldn\'t load the information.\nPlease try again.</string>
-  <string name="rsvp_widget_button_retry">Retry</string>
-  <string name="rsvp_widget_error_answering">An error occurred while answering this event</string>
-  <string name="rsvp_widget_open_in_proton_calendar">Open in Proton Calendar</string>
-  <string name="rsvp_widget_copy_address">Copy address</string>
-  <string name="rsvp_widget_message">Message</string>
+  <string name="rsvp_widget_user_is_organizer">Ste organizátor.</string>
+  <string name="rsvp_widget_event_does_not_exist">Táto udalosť nie je vo vašom kalendári, takže na ňu nemôžete odpovedať.</string>
+  <string name="rsvp_widget_today">Dnes</string>
+  <string name="rsvp_widget_tomorrow">Zajtra</string>
+  <string name="rsvp_widget_invite_details_unavailable">Detaily pozvánky nie sú dostupné</string>
+  <string name="rsvp_widget_could_not_load">Nemohli sme načítať informácie.\nSkúste to prosím znova.</string>
+  <string name="rsvp_widget_button_retry">Skúsiť znova</string>
+  <string name="rsvp_widget_error_answering">Pri odpovedi na túto udalosť došlo k chybe</string>
+  <string name="rsvp_widget_open_in_proton_calendar">Otvoriť v Proton Calendar</string>
+  <string name="rsvp_widget_copy_address">Kopírovať adresu</string>
+  <string name="rsvp_widget_message">Správa</string>
+  <string name="snooze_message_snoozed_until_banner_title">Odložené až do</string>
+  <string name="snooze_message_unsnooze_banner_button">Zrušiť odloženie</string>
 </resources>

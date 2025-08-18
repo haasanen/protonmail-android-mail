@@ -140,4 +140,31 @@
     <item quantity="one">Minst 1 tecken</item>
     <item quantity="other">Minst %1$s tecken</item>
   </plurals>
+  <string name="settings_password_management_title">Ändra lösenord</string>
+  <string name="settings_save_second_password">Spara nytt andra lösenord</string>
+  <string name="settings_save_main_password">Spara nytt huvudlösenord</string>
+  <string name="settings_password_management_tab_main_password">Huvudlösenord</string>
+  <string name="settings_password_management_tab_second_password">Andra lösenord</string>
+  <string name="settings_password_management_change_password_note">To change either of your passwords, you\'ll need to know your main password.\u0020</string>
+  <string name="settings_password_management_forgot_main_password">Glömt ditt huvudlösenord?</string>
+  <string name="settings_password_management_header">Ändra lösenord</string>
+  <string name="settings_password_management_cannot_change_password">Du kan inte ändra ditt reservlösenord. Kontakta din administratör.</string>
+  <string name="settings_main_password_hint_current">Nuvarande huvudlösenord</string>
+  <string name="settings_main_password_hint_new">Nytt huvudlösenord</string>
+  <string name="settings_main_password_hint_new_confirm">Bekräfta nytt huvudlösenord</string>
+  <string name="settings_second_password_hint_current_main_password">Nuvarande huvudlösenord</string>
+  <string name="settings_second_password_hint_new">Nytt andra lösenord</string>
+  <string name="settings_second_password_hint_new_confirm">Bekräfta nytt andra lösenord</string>
+  <string name="settings_change_password_error">Ett fel uppstod vid ändring av lösenord.</string>
+  <string name="settings_recovery_email_success">E-postadress för återställning uppdaterad</string>
+  <string name="settings_password_management_login_success">Inloggningslösenord uppdaterat</string>
+  <string name="settings_password_management_second_success">Andra lösenord uppdaterad</string>
+  <string name="settings_password_management_start_recovery">Vet du inte ditt nuvarande lösenord?</string>
+  <string name="settings_password_management_2fa">Two FA is needed</string>
+  <string name="settings_password_invalid_2fa">Invalid second factor code. Please try again.</string>
+  <string name="settings_password_error_empty">Lösenord kan inte vara tomt.</string>
+  <string name="settings_password_error">Felaktigt användarnamn eller lösenord. Försök igen.</string>
+  <string name="settings_password_error_invalid_recovery">Felaktig 2FA-kod. Försök igen.</string>
+  <string name="settings_password_error_2fa_reused">Kod har redan använts. Prova en annan kod.</string>
+  <string name="settings_password_general_error">Ett fel uppstod.</string>
 </resources>

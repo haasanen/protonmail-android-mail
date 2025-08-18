@@ -127,4 +127,9 @@
   <string name="undo_success_message">Se ha cancelado la acción.</string>
   <string name="undo_failure_message">Error al cancelar la acción</string>
   <string name="feature_coming_soon">Funcionalidad disponible próximamente…</string>
+  <!-- date time picker -->
+  <string name="time_picker_custom_time_label">Hora</string>
+  <string name="time_picker_custom_date_label">Fecha</string>
+  <string name="time_picker_send_dialog_ok">Aceptar</string>
+  <string name="time_picker_enter_time">Ingresar hora</string>
 </resources>

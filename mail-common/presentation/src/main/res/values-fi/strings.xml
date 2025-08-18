@@ -127,4 +127,9 @@
   <string name="undo_success_message">Toiminto peruttiin</string>
   <string name="undo_failure_message">Toiminnon peruminen epäonnistui</string>
   <string name="feature_coming_soon">Ominaisuus on tulossa pian…</string>
+  <!-- date time picker -->
+  <string name="time_picker_custom_time_label">Aika</string>
+  <string name="time_picker_custom_date_label">Päiväys</string>
+  <string name="time_picker_send_dialog_ok">Ok</string>
+  <string name="time_picker_enter_time">Syötä aika</string>
 </resources>

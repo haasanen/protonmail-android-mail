@@ -140,4 +140,31 @@
     <item quantity="one">Minstens 1 teken</item>
     <item quantity="other">Minstens %1$s tekens</item>
   </plurals>
+  <string name="settings_password_management_title">Wachtwoord wijzigen</string>
+  <string name="settings_save_second_password">Nieuw tweede wachtwoord opslaan</string>
+  <string name="settings_save_main_password">Nieuw hoofdwachtwoord opslaan</string>
+  <string name="settings_password_management_tab_main_password">Hoofdwachtwoord</string>
+  <string name="settings_password_management_tab_second_password">Tweede wachtwoord</string>
+  <string name="settings_password_management_change_password_note">Om een van uw wachtwoorden te veranderen, moet u uw hoofdwachtwoord weten.\u0020</string>
+  <string name="settings_password_management_forgot_main_password">Hoofdwachtwoord vergeten?</string>
+  <string name="settings_password_management_header">Wachtwoord wijzigen</string>
+  <string name="settings_password_management_cannot_change_password">U kunt uw back-up wachtwoord niet wijzigen. Neem contact op met uw beheerder.</string>
+  <string name="settings_main_password_hint_current">Huidig hoofdwachtwoord</string>
+  <string name="settings_main_password_hint_new">Nieuw hoofdwachtwoord</string>
+  <string name="settings_main_password_hint_new_confirm">Bevestig nieuw hoofdwachtwoord</string>
+  <string name="settings_second_password_hint_current_main_password">Huidig hoofdwachtwoord</string>
+  <string name="settings_second_password_hint_new">Nieuw tweede wachtwoord</string>
+  <string name="settings_second_password_hint_new_confirm">Bevestig nieuw tweede wachtwoord</string>
+  <string name="settings_change_password_error">Er is een fout opgetreden bij het wijzigen van het wachtwoord.</string>
+  <string name="settings_recovery_email_success">Herstel-e-mailadres bijgewerkt</string>
+  <string name="settings_password_management_login_success">Login wachtwoord bijgewerkt</string>
+  <string name="settings_password_management_second_success">Tweede wachtwoord bijgewerkt</string>
+  <string name="settings_password_management_start_recovery">Wachtwoord vergeten?</string>
+  <string name="settings_password_management_2fa">Twee-factorauthenticatie is nodig</string>
+  <string name="settings_password_invalid_2fa">Ongeldige tweefactorcode. Probeer het opnieuw.</string>
+  <string name="settings_password_error_empty">Wachtwoord kan niet leeg zijn.</string>
+  <string name="settings_password_error">Onjuiste gebruikersnaam of wachtwoord. Probeer het opnieuw.</string>
+  <string name="settings_password_error_invalid_recovery">Onjuiste 2FA code. Probeer het opnieuw.</string>
+  <string name="settings_password_error_2fa_reused">Code is al gebruikt. Probeer alstublieft een andere code.</string>
+  <string name="settings_password_general_error">Er is iets fout gegaan.</string>
 </resources>

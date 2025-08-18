@@ -168,4 +168,6 @@
   <string name="rsvp_widget_open_in_proton_calendar">Öppna i Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Kopiera adress</string>
   <string name="rsvp_widget_message">Meddelande</string>
+  <string name="snooze_message_snoozed_until_banner_title">Snoozad till</string>
+  <string name="snooze_message_unsnooze_banner_button">Stäng av snooze</string>
 </resources>

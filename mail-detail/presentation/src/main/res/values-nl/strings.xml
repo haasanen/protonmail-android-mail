@@ -168,4 +168,6 @@
   <string name="rsvp_widget_open_in_proton_calendar">Openen in Proton Calendar</string>
   <string name="rsvp_widget_copy_address">Adres kopiëren</string>
   <string name="rsvp_widget_message">Bericht</string>
+  <string name="snooze_message_snoozed_until_banner_title">Gesnoozed tot</string>
+  <string name="snooze_message_unsnooze_banner_button">Ontsnoozen</string>
 </resources>

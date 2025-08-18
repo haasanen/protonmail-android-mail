@@ -146,4 +146,31 @@
     <item quantity="many">Alespoň %1$s znaků</item>
     <item quantity="other">Alespoň %1$s znaků</item>
   </plurals>
+  <string name="settings_password_management_title">Změnit heslo</string>
+  <string name="settings_save_second_password">Uložit nové druhé heslo</string>
+  <string name="settings_save_main_password">Uložit nové hlavní heslo</string>
+  <string name="settings_password_management_tab_main_password">Hlavní heslo</string>
+  <string name="settings_password_management_tab_second_password">Druhé heslo</string>
+  <string name="settings_password_management_change_password_note">Pro změnu kteréhokoliv z vašich hesel potřebujete znát vaše hlavní heslo.\u0020</string>
+  <string name="settings_password_management_forgot_main_password">Zapomněli jste své hlavní heslo?</string>
+  <string name="settings_password_management_header">Změnit heslo</string>
+  <string name="settings_password_management_cannot_change_password">Záložní heslo nelze změnit. Obraťte se na vašeho správce.</string>
+  <string name="settings_main_password_hint_current">Aktuální hlavní heslo</string>
+  <string name="settings_main_password_hint_new">Nové hlavní heslo</string>
+  <string name="settings_main_password_hint_new_confirm">Potvrdit nové hlavní heslo</string>
+  <string name="settings_second_password_hint_current_main_password">Aktuální hlavní heslo</string>
+  <string name="settings_second_password_hint_new">Nové druhé heslo</string>
+  <string name="settings_second_password_hint_new_confirm">Potvrdit nové druhé heslo</string>
+  <string name="settings_change_password_error">Při změně hesla došlo k chybě.</string>
+  <string name="settings_recovery_email_success">E-mailová adresa pro obnovení aktualizována</string>
+  <string name="settings_password_management_login_success">Přihlašovací heslo bylo aktualizováno</string>
+  <string name="settings_password_management_second_success">Druhé heslo aktualizováno</string>
+  <string name="settings_password_management_start_recovery">Neznáte své aktuální heslo?</string>
+  <string name="settings_password_management_2fa">Je potřeba dvoufázového ověření</string>
+  <string name="settings_password_invalid_2fa">Neplatný kód dvoufázového ověření. Zkuste to prosím znovu.</string>
+  <string name="settings_password_error_empty">Heslo nemůže být prázdné.</string>
+  <string name="settings_password_error">Neplatné uživatelské jméno nebo heslo. Zkuste to prosím znovu.</string>
+  <string name="settings_password_error_invalid_recovery">Nesprávný kód dvoufázového ověření. Zkuste to prosím znovu.</string>
+  <string name="settings_password_error_2fa_reused">Kód již byl použit. Zkuste prosím zadat jiný kód.</string>
+  <string name="settings_password_general_error">Došlo k chybě.</string>
 </resources>

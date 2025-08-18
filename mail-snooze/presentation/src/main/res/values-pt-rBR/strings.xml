@@ -27,4 +27,26 @@
   <string name="snooze_sheet_option_upsell_detail">Recurso pago</string>
   <string name="snooze_sheet_snooze_title">Adiar até</string>
   <string name="snooze_sheet_option_unsnooze">Retomar</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Desculpe, encontramos um erro desconhecido ao adiar esta conversa</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">Ocorreu um erro desconhecido ao desativar o adiamento da conversa.</string>
+  <string name="snooze_sheet_error_in_the_past">O horário de adiamento já passou</string>
+  <string name="snooze_sheet_success">Adiado até %s</string>
+  <string name="unsnooze_sheet_success">Conversation is no longer snoozed</string>
+  <string name="snooze_picker_content_description">Adiar mensagem</string>
+  <string name="snooze_picker_button_title">Salvar</string>
+  <string name="snooze_custom_upsell_title">Data e hora personalizadas</string>
+  <string name="snooze_custom_upsell_title_short">Personalizar</string>
+  <string name="snooze_custom_upsell_hint_short">Fazer upgrade para acesar</string>
+  <plurals name="snoozed_in_days">
+    <item quantity="one">Adiado até amanhã</item>
+    <item quantity="other">Adiado até %d dias</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="one">Adiado até %d hora</item>
+    <item quantity="other">Adiado até %d horas</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="one">Adiado até %d minuto</item>
+    <item quantity="other">Adiado até %d minutos</item>
+  </plurals>
 </resources>

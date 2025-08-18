@@ -127,4 +127,9 @@
   <string name="undo_success_message">Vorgang wurde Rückgängig gemacht</string>
   <string name="undo_failure_message">Aktion konnte nicht rückgängig gemacht werden</string>
   <string name="feature_coming_soon">Funktion demnächst verfügbar…</string>
+  <!-- date time picker -->
+  <string name="time_picker_custom_time_label">Zeit</string>
+  <string name="time_picker_custom_date_label">Datum</string>
+  <string name="time_picker_send_dialog_ok">OK</string>
+  <string name="time_picker_enter_time">Zeit eingeben</string>
 </resources>

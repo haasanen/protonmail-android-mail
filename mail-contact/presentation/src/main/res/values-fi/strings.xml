@@ -80,7 +80,7 @@
   <string name="contact_gender_female">Nainen</string>
   <string name="contact_gender_male">Mies</string>
   <string name="contact_gender_none">Ei mitään</string>
-  <string name="contact_gender_not_applicable">Not applicable</string>
+  <string name="contact_gender_not_applicable">Ei sovellettavissa</string>
   <string name="contact_gender_other">Muu</string>
   <string name="contact_gender_unknown">Tuntematon</string>
   <string name="contact_details_missing_date">Puuttuva päivämäärä</string>

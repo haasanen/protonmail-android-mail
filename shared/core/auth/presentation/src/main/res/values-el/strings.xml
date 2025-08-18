@@ -140,4 +140,31 @@
     <item quantity="one">Τουλάχιστον 1 χαρακτήρα</item>
     <item quantity="other">Τουλάχιστον %1$s χαρακτήρες</item>
   </plurals>
+  <string name="settings_password_management_title">Αλλαγή κωδικού πρόσβασης</string>
+  <string name="settings_save_second_password">Αποθήκευση νέου δεύτερου κωδικού πρόσβασης</string>
+  <string name="settings_save_main_password">Αποθήκευση νέου κύριου κωδικού πρόσβασης</string>
+  <string name="settings_password_management_tab_main_password">Κύριος κωδικός πρόσβασης</string>
+  <string name="settings_password_management_tab_second_password">Δεύτερος κωδικός πρόσβασης</string>
+  <string name="settings_password_management_change_password_note">Για να αλλάξετε οποιονδήποτε από τους κωδικούς πρόσβασής σας, θα πρέπει να γνωρίζετε τον κύριο κωδικό πρόσβασής σας.\u0020</string>
+  <string name="settings_password_management_forgot_main_password">Ξεχάσατε τον κύριο κωδικό σας;</string>
+  <string name="settings_password_management_header">Αλλαγή κωδικού πρόσβασης</string>
+  <string name="settings_password_management_cannot_change_password">Δεν μπορείτε να αλλάξετε τον εφεδρικό κωδικό πρόσβασης. Παρακαλούμε επικοινωνήστε με το διαχειριστή σας.</string>
+  <string name="settings_main_password_hint_current">Τρέχων κύριος κωδικός πρόσβασης</string>
+  <string name="settings_main_password_hint_new">Νέος κύριος κωδικός πρόσβασης</string>
+  <string name="settings_main_password_hint_new_confirm">Επιβεβαίωση νέου κυρίου κωδικού πρόσβασης</string>
+  <string name="settings_second_password_hint_current_main_password">Τρέχων κύριος κωδικός πρόσβασης</string>
+  <string name="settings_second_password_hint_new">Νέος δεύτερος κωδικός πρόσβασης</string>
+  <string name="settings_second_password_hint_new_confirm">Επιβεβαίωση νέου δεύτερου κωδικού πρόσβασης</string>
+  <string name="settings_change_password_error">Παρουσιάστηκε σφάλμα στην αλλαγή κωδικού πρόσβασης.</string>
+  <string name="settings_recovery_email_success">Η διεύθυνση ηλεκτρονικού ταχυδρομείου ανάκτησης ενημερώθηκε</string>
+  <string name="settings_password_management_login_success">Ο κωδικός πρόσβασης σύνδεσης ενημερώθηκε</string>
+  <string name="settings_password_management_second_success">Ο δεύτερος κωδικός πρόσβασης ενημερώθηκε</string>
+  <string name="settings_password_management_start_recovery">Δεν γνωρίζετε τον τρέχοντα κωδικό πρόσβασής σας;</string>
+  <string name="settings_password_management_2fa">Απαιτείται έλεγχος ταυτότητας δύο παραγόντων (2FA)</string>
+  <string name="settings_password_invalid_2fa">Μη έγκυρος κωδικός δεύτερου παράγοντα. Παρακαλούμε προσπαθήστε ξανά.</string>
+  <string name="settings_password_error_empty">Ο κωδικός πρόσβασης δεν μπορεί να είναι κενός.</string>
+  <string name="settings_password_error">Λανθασμένο όνομα χρήστη ή κωδικός πρόσβασης. Παρακαλούμε προσπαθήστε ξανά.</string>
+  <string name="settings_password_error_invalid_recovery">Λανθασμένος κωδικός πιστοποίησης δύο παραγόντων (2FA). Παρακαλούμε προσπαθήστε ξανά.</string>
+  <string name="settings_password_error_2fa_reused">Ο κώδικας έχει ήδη χρησιμοποιηθεί. Παρακαλούμε δοκιμάστε έναν διαφορετικό κωδικό.</string>
+  <string name="settings_password_general_error">Παρουσιάστηκε σφάλμα.</string>
 </resources>

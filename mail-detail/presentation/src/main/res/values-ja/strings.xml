@@ -165,4 +165,6 @@
   <string name="rsvp_widget_open_in_proton_calendar">Proton Calendar で開く</string>
   <string name="rsvp_widget_copy_address">アドレスをコピー</string>
   <string name="rsvp_widget_message">メッセージ</string>
+  <string name="snooze_message_snoozed_until_banner_title">までスヌーズ</string>
+  <string name="snooze_message_unsnooze_banner_button">スヌーズを解除</string>
 </resources>

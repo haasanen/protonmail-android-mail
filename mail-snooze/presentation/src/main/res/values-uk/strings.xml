@@ -27,4 +27,32 @@
   <string name="snooze_sheet_option_upsell_detail">Платна функція</string>
   <string name="snooze_sheet_snooze_title">Відкласти до</string>
   <string name="snooze_sheet_option_unsnooze">Скасувати відкладення</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Sorry, we encountered an unknown error snoozing this conversation</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">An unknown error occurred when unsnoozing the conversation</string>
+  <string name="snooze_sheet_error_in_the_past">Snooze time is in the past</string>
+  <string name="snooze_sheet_success">Snoozed until %s</string>
+  <string name="unsnooze_sheet_success">Conversation is no longer snoozed</string>
+  <string name="snooze_picker_content_description">Snooze message</string>
+  <string name="snooze_picker_button_title">Save</string>
+  <string name="snooze_custom_upsell_title">Custom date and time</string>
+  <string name="snooze_custom_upsell_title_short">Custom</string>
+  <string name="snooze_custom_upsell_hint_short">Upgrade to access</string>
+  <plurals name="snoozed_in_days">
+    <item quantity="one">Відкладено до завтра</item>
+    <item quantity="few">Відкладено на %d дні</item>
+    <item quantity="many">Відкладено на %d днів</item>
+    <item quantity="other">Відкладено на %d днів</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="one">Відкладено на %d годину</item>
+    <item quantity="few">Відкладено на %d години</item>
+    <item quantity="many">Відкладено на %d годин</item>
+    <item quantity="other">Відкладено на %d годин</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="one">Відкладено на %d хвилину</item>
+    <item quantity="few">Відкладено на %d хвилини</item>
+    <item quantity="many">Відкладено на %d хвилин</item>
+    <item quantity="other">Відкладено на %d хвилин</item>
+  </plurals>
 </resources>

@@ -27,4 +27,26 @@
   <string name="snooze_sheet_option_upsell_detail">Betalt funksjon</string>
   <string name="snooze_sheet_snooze_title">Slumre til</string>
   <string name="snooze_sheet_option_unsnooze">Slumring av</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Beklager, vi støtte på en ukjent feil under slumring av denne samtalen.</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">En ukjent feil oppstod under avslumring av samtalen</string>
+  <string name="snooze_sheet_error_in_the_past">Slumretid har passert</string>
+  <string name="snooze_sheet_success">Slumret til %s</string>
+  <string name="unsnooze_sheet_success">Samtalen er ikke lenger slumret</string>
+  <string name="snooze_picker_content_description">Slumre melding</string>
+  <string name="snooze_picker_button_title">Lagre</string>
+  <string name="snooze_custom_upsell_title">Tilpasset dato og klokkeslett</string>
+  <string name="snooze_custom_upsell_title_short">Tilpasset</string>
+  <string name="snooze_custom_upsell_hint_short">Oppgrader for å få tilgang</string>
+  <plurals name="snoozed_in_days">
+    <item quantity="one">Slumret til i morgen</item>
+    <item quantity="other">Slumret i %d dager</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="one">Slumret i %d time</item>
+    <item quantity="other">Slumret i %d timer</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="one">Slumret i %d minutt</item>
+    <item quantity="other">Slumret i %d minutter</item>
+  </plurals>
 </resources>

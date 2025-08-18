@@ -34,6 +34,7 @@
   <string name="mail_settings_spam_and_custom_filters_hint">Автоматические действия и сортировка</string>
   <string name="mail_settings_privacy_and_security">Конфиденциальность и безопасность</string>
   <string name="mail_settings_fido_keys">Security keys</string>
+  <string name="mail_settings_change_password">Password management</string>
   <string name="mail_settings_privacy_and_security_hint">Защита от отслеживания электронной почты</string>
   <string name="mail_settings_app_hint">Настройки мобильного приложения</string>
   <string name="mail_settings_theme">Тема</string>

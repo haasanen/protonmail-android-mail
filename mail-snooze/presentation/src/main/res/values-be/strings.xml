@@ -27,4 +27,32 @@
   <string name="snooze_sheet_option_upsell_detail">Платная функцыя</string>
   <string name="snooze_sheet_snooze_title">Адкласці да</string>
   <string name="snooze_sheet_option_unsnooze">Скасаваць адкладанне</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Адбылася невядомая памылка пры адкладанні гэтай размовы</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">Адбылася невядомая памылка пры скасаванні адкладвання размовы</string>
+  <string name="snooze_sheet_error_in_the_past">Час адкладання ўжо мінуў</string>
+  <string name="snooze_sheet_success">Адкладзена да %s</string>
+  <string name="unsnooze_sheet_success">Размова больш не адкладзена</string>
+  <string name="snooze_picker_content_description">Адкладанне паведамлення</string>
+  <string name="snooze_picker_button_title">Захаваць</string>
+  <string name="snooze_custom_upsell_title">Карыстальніцкія дата і час</string>
+  <string name="snooze_custom_upsell_title_short">Карыстальніцкія</string>
+  <string name="snooze_custom_upsell_hint_short">Палепшыць для доступу</string>
+  <plurals name="snoozed_in_days">
+    <item quantity="one">Адкласці да заўтра</item>
+    <item quantity="few">Адкласці на %d дні</item>
+    <item quantity="many">Адкласці на %d дзён</item>
+    <item quantity="other">Адкласці на %d дзён</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="one">Адкласці на %d гадзіну</item>
+    <item quantity="few">Адкласці на %d гадзіны</item>
+    <item quantity="many">Адкласці на %d гадзін</item>
+    <item quantity="other">Адкласці на %d гадзін</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="one">Адкласці на %d хвіліну</item>
+    <item quantity="few">Адкласці на %d хвіліны</item>
+    <item quantity="many">Адкласці на %d хвілін</item>
+    <item quantity="other">Адкласці на %d хвілін</item>
+  </plurals>
 </resources>

@@ -140,4 +140,31 @@
     <item quantity="one">Mindestens 1 Zeichen</item>
     <item quantity="other">Mindestens %1$s Zeichen</item>
   </plurals>
+  <string name="settings_password_management_title">Passwort ändern</string>
+  <string name="settings_save_second_password">Neues zusätzliches Passwort speichern</string>
+  <string name="settings_save_main_password">Neues Hauptpasswort speichern</string>
+  <string name="settings_password_management_tab_main_password">Hauptpasswort</string>
+  <string name="settings_password_management_tab_second_password">Zusätzliches Passwort</string>
+  <string name="settings_password_management_change_password_note">Um eines deiner Passwörter ändern zu können, musst du dein Hauptpasswort kennen.\u0020</string>
+  <string name="settings_password_management_forgot_main_password">Dein Hauptpasswort vergessen?</string>
+  <string name="settings_password_management_header">Passwort ändern</string>
+  <string name="settings_password_management_cannot_change_password">Du kannst dein Backup-Passwort nicht ändern. Bitte wende dich an deinen Administrator.</string>
+  <string name="settings_main_password_hint_current">Aktuelles Hauptpasswort</string>
+  <string name="settings_main_password_hint_new">Neues Hauptpasswort</string>
+  <string name="settings_main_password_hint_new_confirm">Neues Hauptpasswort bestätigen</string>
+  <string name="settings_second_password_hint_current_main_password">Aktuelles Hauptpasswort</string>
+  <string name="settings_second_password_hint_new">Neues zusätzliches Passwort</string>
+  <string name="settings_second_password_hint_new_confirm">Neues zusätzliches Passwort bestätigen</string>
+  <string name="settings_change_password_error">Das Ändern des Passworts ist fehlgeschlagen.</string>
+  <string name="settings_recovery_email_success">E-Mail-Adresse für die Wiederherstellung aktualisiert</string>
+  <string name="settings_password_management_login_success">Hauptpasswort aktualisiert</string>
+  <string name="settings_password_management_second_success">Zusätzliches Passwort aktualisiert</string>
+  <string name="settings_password_management_start_recovery">Du kennst dein aktuelles Passwort nicht?</string>
+  <string name="settings_password_management_2fa">2FA wird benötigt</string>
+  <string name="settings_password_invalid_2fa">Ungültiger Code des zweiten Faktors. Bitte versuche es erneut.</string>
+  <string name="settings_password_error_empty">Passwort muss eingeben werden.</string>
+  <string name="settings_password_error">Benutzername oder Passwort ungültig. Bitte versuche es erneut.</string>
+  <string name="settings_password_error_invalid_recovery">Ungültiger 2FA-Code. Bitte versuche es erneut.</string>
+  <string name="settings_password_error_2fa_reused">Dieser Code wurde bereits verwendet. Bitte mit einem anderen Code versuchen.</string>
+  <string name="settings_password_general_error">Es ist ein Fehler aufgetreten.</string>
 </resources>

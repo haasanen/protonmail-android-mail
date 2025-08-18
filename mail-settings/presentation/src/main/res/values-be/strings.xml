@@ -34,6 +34,7 @@
   <string name="mail_settings_spam_and_custom_filters_hint">Аўтаматычныя дзеянні і сартаванне</string>
   <string name="mail_settings_privacy_and_security">Прыватнасць і бяспека</string>
   <string name="mail_settings_fido_keys">Ключы бяспекі</string>
+  <string name="mail_settings_change_password">Кіраванне паролямі</string>
   <string name="mail_settings_privacy_and_security_hint">Абарона ад праграм сачэння электроннай пошты</string>
   <string name="mail_settings_app_hint">Наладжванне мабільнай праграмы</string>
   <string name="mail_settings_theme">Тэма</string>

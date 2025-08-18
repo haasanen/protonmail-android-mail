@@ -86,20 +86,18 @@
   <string name="message_sending_error_dialog_text_error">Váš email nemôže byť odoslaný na zadanú adresu z nasledujúceho dôvodu:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Žiadne dôveryhodné kľúče: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Adresa neexistuje: %s</string>
-  <string name="set_message_password_title">Šifrovať správu</string>
-  <string name="set_message_password_info_message">Nastavte heslo na zašifrovanie tejto správy pre používateľov, ktorí nemajú Proton Mail.</string>
+  <string name="set_message_password_title">Nastaviť heslo</string>
+  <string name="set_message_password_info_message">Set a password to encrypt this message for non-Proton Mail recipients.</string>
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">Zistiť viac</a></string>
   <string name="set_message_password_label">Heslo správy</string>
-  <string name="set_message_password_label_repeat">Zopakovať heslo</string>
   <string name="set_message_password_label_hint">Nápoveda k heslu (voliteľné)</string>
-  <string name="set_message_password_supporting_text">8 to 21 characters long</string>
-  <string name="set_message_password_supporting_error_text">The password must be between 8 and 21 characters</string>
+  <string name="set_message_password_supporting_text">Vyžaduje sa minimálne 8 znakov.</string>
+  <string name="set_message_password_supporting_error_text">Heslo musí mať dĺžku 8 až 21 znakov</string>
   <string name="set_message_password_supporting_text_repeat">Heslá sa musia zhodovať</string>
   <string name="set_message_password_supporting_error_text_repeat">Heslá sa nezhodujú</string>
   <string name="set_message_password_button_show">Zobraziť heslo</string>
   <string name="set_message_password_button_hide">Skryť heslo</string>
-  <string name="set_message_password_button_apply">Použiť heslo</string>
-  <string name="set_message_password_button_save_changes">Uložiť zmeny</string>
+  <string name="set_message_password_button_save_changes">Uložiť</string>
   <string name="set_message_password_button_remove_password">Odstrániť heslo</string>
   <string name="respondInline">Odpovedať v riadku</string>
   <string name="subject_placeholder">Predmet</string>
@@ -126,7 +124,7 @@
   <string name="composer_schedule_send_tomorrow_title">Zajtra</string>
   <string name="composer_schedule_send_monday_title">Pondelok</string>
   <string name="composer_schedule_send_custom_title">Vlastné</string>
-  <string name="composer_schedule_send_custom_upsell_title">Custom date and time</string>
+  <string name="composer_schedule_send_custom_upsell_title">Vlastný dátum a čas</string>
   <string name="composer_schedule_send_custom_description">Vyberte čas a dátum</string>
   <string name="composer_error_send_message">Chyba pri odosielaní správy</string>
   <string name="composer_schedule_send_previously_set">Predtým nastavené</string>

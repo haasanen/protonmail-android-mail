@@ -27,4 +27,26 @@
   <string name="snooze_sheet_option_upsell_detail">Betald funktion</string>
   <string name="snooze_sheet_snooze_title">Snooza till</string>
   <string name="snooze_sheet_option_unsnooze">Stäng av snooze</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Sorry, we encountered an unknown error snoozing this conversation</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">An unknown error occurred when unsnoozing the conversation</string>
+  <string name="snooze_sheet_error_in_the_past">Snoozad tid är förbi</string>
+  <string name="snooze_sheet_success">Snoozad till %s</string>
+  <string name="unsnooze_sheet_success">Konversation är inte längre snoozad</string>
+  <string name="snooze_picker_content_description">Snooza meddelande</string>
+  <string name="snooze_picker_button_title">Spara</string>
+  <string name="snooze_custom_upsell_title">Anpassat datum och tid</string>
+  <string name="snooze_custom_upsell_title_short">Anpassad</string>
+  <string name="snooze_custom_upsell_hint_short">Uppgradera för åtkomst</string>
+  <plurals name="snoozed_in_days">
+    <item quantity="one">Snoozad till imorgon</item>
+    <item quantity="other">Snoozad i %d dagar</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="one">Snoozad i %d timme</item>
+    <item quantity="other">Snoozad i %d timmar</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="one">Snoozad i %d minut</item>
+    <item quantity="other">Snoozad i %d minuter</item>
+  </plurals>
 </resources>

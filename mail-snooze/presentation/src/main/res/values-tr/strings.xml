@@ -27,4 +27,26 @@
   <string name="snooze_sheet_option_upsell_detail">Ücretli özellik</string>
   <string name="snooze_sheet_snooze_title">Şu zamana ertele</string>
   <string name="snooze_sheet_option_unsnooze">Ertelemeyi kaldır</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Ne yazık ki, bu yazışma ertelenirken bilinmeyen bir sorun çıktı.</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">Yazışmanın ertelemesi kaldırılırken bilinmeyen bir sorun çıktı</string>
+  <string name="snooze_sheet_error_in_the_past">Erteleme zamanı geçmişte</string>
+  <string name="snooze_sheet_success">%s zamanına ertelendi</string>
+  <string name="unsnooze_sheet_success">Yazışmanın ertelemesi kaldırıldı</string>
+  <string name="snooze_picker_content_description">İletiyi ertele</string>
+  <string name="snooze_picker_button_title">Kaydet</string>
+  <string name="snooze_custom_upsell_title">Özel tarih ve saat</string>
+  <string name="snooze_custom_upsell_title_short">Özel</string>
+  <string name="snooze_custom_upsell_hint_short">Erişmek için tarifenizi yükseltin</string>
+  <plurals name="snoozed_in_days">
+    <item quantity="one">Yarına ertelendi</item>
+    <item quantity="other">%d günlüğüne ertelendi</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="one">%d saat sonraya ertelendi</item>
+    <item quantity="other">%d saat sonraya ertelendi</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="one">%d dakika sonraya ertelendi</item>
+    <item quantity="other">%d dakika sonraya ertelendi</item>
+  </plurals>
 </resources>

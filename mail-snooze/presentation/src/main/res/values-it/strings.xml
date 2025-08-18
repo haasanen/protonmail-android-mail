@@ -27,4 +27,26 @@
   <string name="snooze_sheet_option_upsell_detail">Funzionalità a pagamento</string>
   <string name="snooze_sheet_snooze_title">Posticipa a</string>
   <string name="snooze_sheet_option_unsnooze">Non posticipare</string>
+  <string name="snooze_sheet_error_unable_to_snooze">Posticipazione della conversazione non riuscita</string>
+  <string name="snooze_sheet_error_unable_to_unsnooze">Annullamento della posticipazione non riuscito</string>
+  <string name="snooze_sheet_error_in_the_past">Inserisci un momento nel futuro</string>
+  <string name="snooze_sheet_success">Posticipato a %s</string>
+  <string name="unsnooze_sheet_success">Posticipazione della conversazione annullata</string>
+  <string name="snooze_picker_content_description">Posticipa il messaggio</string>
+  <string name="snooze_picker_button_title">Salva</string>
+  <string name="snooze_custom_upsell_title">Personalizza la data e l\'orario</string>
+  <string name="snooze_custom_upsell_title_short">Personalizza</string>
+  <string name="snooze_custom_upsell_hint_short">Effettua l\'upgrade</string>
+  <plurals name="snoozed_in_days">
+    <item quantity="one">Posticipato a domani</item>
+    <item quantity="other">Posticipato per %d giorni</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="one">Posticipato per %d ora</item>
+    <item quantity="other">Posticipato per %d ore</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="one">Posticipato per %d minuto</item>
+    <item quantity="other">Posticipato per %d minuti</item>
+  </plurals>
 </resources>

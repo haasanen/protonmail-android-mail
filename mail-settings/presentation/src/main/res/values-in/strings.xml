@@ -34,6 +34,7 @@
   <string name="mail_settings_spam_and_custom_filters_hint">Tindakan dan penyortiran otomatis</string>
   <string name="mail_settings_privacy_and_security">Privasi dan keamanan</string>
   <string name="mail_settings_fido_keys">Security keys</string>
+  <string name="mail_settings_change_password">Password management</string>
   <string name="mail_settings_privacy_and_security_hint">Perlindungan pelacakan email</string>
   <string name="mail_settings_app_hint">Kustomisasi aplikasi seluler</string>
   <string name="mail_settings_theme">Tema</string>

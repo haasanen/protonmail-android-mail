@@ -84,6 +84,14 @@
   <string name="mailbox_search_placeholder_text">Etsi viestejä</string>
   <string name="mailbox_search_no_results_title">Ei tuloksia</string>
   <string name="mailbox_search_no_results_explanation">Voit joko päivittää hakusi tai tyhjentää sen.</string>
+  <plurals name="mailbox_action_move_conversation">
+    <item quantity="one">Conversation moved to %s</item>
+    <item quantity="other">Conversations moved to %s</item>
+  </plurals>
+  <plurals name="mailbox_action_move_message">
+    <item quantity="one">Message moved to %s</item>
+    <item quantity="other">Messages moved to %s</item>
+  </plurals>
   <string name="mailbox_action_button_clear_trash">Tyhjennä roskakori</string>
   <string name="mailbox_action_button_clear_spam">Tyhjennä roskaposti</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Päivitä poistaaksesi automaattisesti yli 30 päivää roskakorissa tai roskapostikansiossa olleet sähköpostit</string>
@@ -128,4 +136,17 @@
   <string name="expires_in_less_than_a_minute">Erääntyy alle minuutin kuluttua</string>
   <string name="schedule_send_tomorrow">Huomenna, %1$s</string>
   <string name="schedule_send_today">Tänään, %1$s</string>
+  <!--    Snooze messages-->
+  <plurals name="snoozed_in_days">
+    <item quantity="one">Snoozed until tomorrow</item>
+    <item quantity="other">Snoozed for %d days</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="one">Snoozed for %d hour</item>
+    <item quantity="other">Snoozed for %d hours</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="one">Snoozed for %d minute</item>
+    <item quantity="other">Snoozed for %d minutes</item>
+  </plurals>
 </resources>

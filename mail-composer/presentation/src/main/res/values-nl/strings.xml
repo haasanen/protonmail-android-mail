@@ -86,20 +86,18 @@
   <string name="message_sending_error_dialog_text_error">Uw e-mail kan niet worden verzonden naar het e-mailadres om de volgende reden:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Er zijn geen vertrouwde sleutels: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Adres bestaat niet: %s</string>
-  <string name="set_message_password_title">Bericht versleutelen</string>
-  <string name="set_message_password_info_message">Voer een wachtwoord in om dit bericht te versleutelen voor niet-Proton Mailgebruikers.</string>
+  <string name="set_message_password_title">Stel wachtwoord in</string>
+  <string name="set_message_password_info_message">Voer een wachtwoord in om dit bericht te versleutelen voor niet-Proton Mail-ontvangers.</string>
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">Meer informatie</a></string>
   <string name="set_message_password_label">Wachtwoord van bericht</string>
-  <string name="set_message_password_label_repeat">Wachtwoord herhalen</string>
   <string name="set_message_password_label_hint">Wachtwoordhint (Optioneel)</string>
-  <string name="set_message_password_supporting_text">8 tot 21 tekens lang</string>
+  <string name="set_message_password_supporting_text">Minimaal 8 tekens vereist.</string>
   <string name="set_message_password_supporting_error_text">Het wachtwoord moet tussen de 8 en 21 tekens lang zijn</string>
   <string name="set_message_password_supporting_text_repeat">Wachtwoorden moeten overeenkomen</string>
   <string name="set_message_password_supporting_error_text_repeat">De wachtwoorden komen niet overeen.</string>
   <string name="set_message_password_button_show">Toon wachtwoord</string>
   <string name="set_message_password_button_hide">Wachtwoord verbergen</string>
-  <string name="set_message_password_button_apply">Wachtwoord toepassen</string>
-  <string name="set_message_password_button_save_changes">Wijzigingen opslaan</string>
+  <string name="set_message_password_button_save_changes">Opslaan</string>
   <string name="set_message_password_button_remove_password">Verwijder wachtwoord</string>
   <string name="respondInline">Inline reageren</string>
   <string name="subject_placeholder">Onderwerp</string>

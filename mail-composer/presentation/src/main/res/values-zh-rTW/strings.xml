@@ -86,20 +86,18 @@
   <string name="message_sending_error_dialog_text_error">基於以下原因，您的電子郵件無法傳送至已輸入的電子郵件：</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">無信任金鑰 : %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">地址不存在 : %s</string>
-  <string name="set_message_password_title">加密郵件</string>
-  <string name="set_message_password_info_message">替沒有 Protonv Mail 使用者設定一組密碼以進行加密郵件.</string>
+  <string name="set_message_password_title">Set Password</string>
+  <string name="set_message_password_info_message">Set a password to encrypt this message for non-Proton Mail recipients.</string>
   <string name="set_message_password_info_link"><a href="https://proton.me/support/password-protected-emails">瞭解更多</a></string>
   <string name="set_message_password_label">郵件密碼</string>
-  <string name="set_message_password_label_repeat">重複輸入密碼</string>
   <string name="set_message_password_label_hint">密碼提示 (選用)</string>
-  <string name="set_message_password_supporting_text">8 to 21 characters long</string>
+  <string name="set_message_password_supporting_text">Minimum 8 characters required.</string>
   <string name="set_message_password_supporting_error_text">The password must be between 8 and 21 characters</string>
   <string name="set_message_password_supporting_text_repeat">密碼必須相符</string>
   <string name="set_message_password_supporting_error_text_repeat">密碼不一致</string>
   <string name="set_message_password_button_show">顯示密碼</string>
   <string name="set_message_password_button_hide">隱藏密碼</string>
-  <string name="set_message_password_button_apply">套用密碼</string>
-  <string name="set_message_password_button_save_changes">儲存變更</string>
+  <string name="set_message_password_button_save_changes">Save</string>
   <string name="set_message_password_button_remove_password">移除密碼</string>
   <string name="respondInline">在內文回覆</string>
   <string name="subject_placeholder">主旨</string>

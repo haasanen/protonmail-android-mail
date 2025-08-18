@@ -84,6 +84,14 @@
   <string name="mailbox_search_placeholder_text">İleti arama</string>
   <string name="mailbox_search_no_results_title">Herhangi bir eşleşme yok</string>
   <string name="mailbox_search_no_results_explanation">Arama sorgunuzu güncelleyebilir ya da temizleyebilirsiniz.</string>
+  <plurals name="mailbox_action_move_conversation">
+    <item quantity="one">Yazışma %s klasörüne taşındı</item>
+    <item quantity="other">Yazışmalar %s klasörüne taşındı</item>
+  </plurals>
+  <plurals name="mailbox_action_move_message">
+    <item quantity="one">İleti %s klasörüne taşındı</item>
+    <item quantity="other">İletiler %s klasörüne taşındı</item>
+  </plurals>
   <string name="mailbox_action_button_clear_trash">Çöp kutusunu boşalt</string>
   <string name="mailbox_action_button_clear_spam">İstenmeyen kutusunu boşalt</string>
   <string name="mailbox_action_clear_trash_spam_upsell_banner_text">Çöp veya istenmeyen kutularında 30 günden uzun süredir duran iletilerin otomatik olarak silinmesi için tarifenizi yükseltin</string>
@@ -128,4 +136,17 @@
   <string name="expires_in_less_than_a_minute">Bir dakika içinde geçerlilik süresi dolacak</string>
   <string name="schedule_send_tomorrow">Yarın, %1$s</string>
   <string name="schedule_send_today">Bugün, %1$s</string>
+  <!--    Snooze messages-->
+  <plurals name="snoozed_in_days">
+    <item quantity="one">Yarına ertelendi</item>
+    <item quantity="other">%d günlüğüne ertelendi</item>
+  </plurals>
+  <plurals name="snooze_in_hours">
+    <item quantity="one">%d saat sonraya ertelendi</item>
+    <item quantity="other">%d saat sonraya ertelendi</item>
+  </plurals>
+  <plurals name="snooze_in_minutes">
+    <item quantity="one">%d dakika sonraya ertelendi</item>
+    <item quantity="other">%d dakika sonraya ertelendi</item>
+  </plurals>
 </resources>
