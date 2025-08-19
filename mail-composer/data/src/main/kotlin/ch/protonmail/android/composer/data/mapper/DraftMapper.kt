@@ -23,7 +23,6 @@ import ch.protonmail.android.composer.data.local.LocalDraftWithSyncStatus
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapperWithSyncStatus
 import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
-import ch.protonmail.android.mailcommon.data.mapper.LocalDraftSendResult
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
@@ -37,19 +36,15 @@ import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 import ch.protonmail.android.mailcomposer.domain.model.MessagePasswordError
-import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
-import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
 import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
-import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
-import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.Recipient
@@ -65,21 +60,14 @@ import uniffi.proton_mail_uniffi.DraftOpenErrorReason
 import uniffi.proton_mail_uniffi.DraftPassword
 import uniffi.proton_mail_uniffi.DraftPasswordError
 import uniffi.proton_mail_uniffi.DraftPasswordErrorReason
-import uniffi.proton_mail_uniffi.DraftSaveError
-import uniffi.proton_mail_uniffi.DraftSaveErrorReason
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 import uniffi.proton_mail_uniffi.DraftSendError
 import uniffi.proton_mail_uniffi.DraftSendErrorReason
-import uniffi.proton_mail_uniffi.DraftSendFailure
-import uniffi.proton_mail_uniffi.DraftSendResultOrigin
-import uniffi.proton_mail_uniffi.DraftSendStatus
 import uniffi.proton_mail_uniffi.DraftSenderAddressChangeError
 import uniffi.proton_mail_uniffi.DraftSenderAddressChangeErrorReason
 import uniffi.proton_mail_uniffi.DraftSyncStatus
 import uniffi.proton_mail_uniffi.MimeType
-import kotlin.time.DurationUnit
 import kotlin.time.Instant
-import kotlin.time.toDuration
 
 fun DraftScheduleSendOptions.toScheduleSendOptions() = ScheduleSendOptions(
     tomorrowTime = Instant.fromEpochSeconds(this.tomorrowTime.toLong()),
@@ -126,144 +114,6 @@ fun DraftAction.toDraftCreateMode(): DraftCreateMode? = when (this) {
     is DraftAction.PrefillForShare -> {
         Timber.e("rust-draft: mapping draft action $this failed! Unsupported by rust DraftCreateMode type")
         null
-    }
-}
-
-fun LocalDraftSendResult.toMessageSendingStatus(): MessageSendingStatus = when (val status = this.error) {
-    is DraftSendStatus.Success -> this.toMessageSendingStatusForSuccess(status)
-    is DraftSendStatus.Failure -> this.toMessageSendingStatusForFailure(status.v1)
-}
-
-private fun LocalDraftSendResult.toMessageSendingStatusForSuccess(
-    status: DraftSendStatus.Success
-): MessageSendingStatus = when (this.origin) {
-    DraftSendResultOrigin.SAVE,
-    DraftSendResultOrigin.SAVE_BEFORE_SEND,
-    DraftSendResultOrigin.ATTACHMENT_UPLOAD -> MessageSendingStatus.NoStatus(this.messageId.toMessageId())
-
-    DraftSendResultOrigin.SEND -> {
-        val timeRemainingForUndo = status.secondsUntilCancel.toInt()
-        if (timeRemainingForUndo > 0) {
-            MessageSendingStatus.MessageSentUndoable(
-                messageId = this.messageId.toMessageId(),
-                timeRemainingForUndo = timeRemainingForUndo.toDuration(DurationUnit.SECONDS)
-            )
-        } else {
-            MessageSendingStatus.MessageSentFinal(this.messageId.toMessageId())
-        }
-    }
-
-    DraftSendResultOrigin.SCHEDULE_SEND -> {
-        val timeRemainingForUndo = status.secondsUntilCancel.toInt()
-        val deliveryTime = status.deliveryTime.toLong()
-        if (timeRemainingForUndo > 0) {
-            MessageSendingStatus.MessageScheduledUndoable(
-                messageId = this.messageId.toMessageId(),
-                deliveryTime = Instant.fromEpochSeconds(deliveryTime)
-            )
-        } else {
-            MessageSendingStatus.MessageSentFinal(this.messageId.toMessageId())
-        }
-    }
-}
-
-private fun LocalDraftSendResult.toMessageSendingStatusForFailure(error: DraftSendFailure): MessageSendingStatus {
-    return when (error) {
-        is DraftSendFailure.AttachmentUpload -> MessageSendingStatus.SendMessageError(
-            messageId = this.messageId.toMessageId(),
-            reason = error.v1.toSendErrorReason()
-        )
-
-        is DraftSendFailure.Other -> MessageSendingStatus.SendMessageError(
-            messageId = this.messageId.toMessageId(),
-            reason = SendErrorReason.OtherDataError(error.v1.toDataError())
-        )
-
-        is DraftSendFailure.Save -> MessageSendingStatus.SendMessageError(
-            messageId = this.messageId.toMessageId(),
-            reason = error.v1.toSendErrorReason()
-        )
-
-        is DraftSendFailure.Send -> MessageSendingStatus.SendMessageError(
-            messageId = this.messageId.toMessageId(),
-            reason = error.v1.toSendErrorReason()
-        )
-    }
-}
-
-fun DraftSaveErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
-    is DraftSaveErrorReason.MessageAlreadySent,
-    is DraftSaveErrorReason.MessageIsNotADraft -> SendErrorReason.ErrorNoMessage.AlreadySent
-
-    is DraftSaveErrorReason.AddressDisabled ->
-        SendErrorReason.ErrorWithMessage.AddressDisabled(v1)
-
-    is DraftSaveErrorReason.AddressDoesNotHavePrimaryKey ->
-        SendErrorReason.ErrorWithMessage.AddressDoesNotHavePrimaryKey(v1)
-
-    is DraftSaveErrorReason.RecipientEmailInvalid -> SendErrorReason.ErrorWithMessage.RecipientEmailInvalid(v1)
-
-    is DraftSaveErrorReason.ProtonRecipientDoesNotExist ->
-        SendErrorReason.ErrorWithMessage.ProtonRecipientDoesNotExist(v1)
-
-    is DraftSaveErrorReason.MessageDoesNotExist -> SendErrorReason.ErrorNoMessage.MessageDoesNotExist
-}
-
-fun DraftAttachmentUploadErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
-    DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST,
-    DraftAttachmentUploadErrorReason.MESSAGE_DOES_NOT_EXIST_ON_SERVER,
-    DraftAttachmentUploadErrorReason.MESSAGE_ALREADY_SENT -> SendErrorReason.ErrorNoMessage.AlreadySent
-
-    DraftAttachmentUploadErrorReason.CRYPTO -> SendErrorReason.ErrorNoMessage.AttachmentCryptoFailure
-    DraftAttachmentUploadErrorReason.ATTACHMENT_TOO_LARGE -> SendErrorReason.ErrorNoMessage.AttachmentTooLarge
-    DraftAttachmentUploadErrorReason.TOO_MANY_ATTACHMENTS -> SendErrorReason.ErrorNoMessage.TooManyAttachments
-    DraftAttachmentUploadErrorReason.RETRY_INVALID_STATE ->
-        SendErrorReason.ErrorNoMessage.AttachmentUploadFailureRetriable
-
-    DraftAttachmentUploadErrorReason.TOTAL_ATTACHMENT_SIZE_TOO_LARGE ->
-        SendErrorReason.ErrorNoMessage.AttachmentTooLarge
-}
-
-fun DraftSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
-    DraftSendErrorReason.NoRecipients -> SendErrorReason.ErrorNoMessage.NoRecipients
-    DraftSendErrorReason.AlreadySent -> SendErrorReason.ErrorNoMessage.AlreadySent
-    DraftSendErrorReason.MessageDoesNotExist -> SendErrorReason.ErrorNoMessage.MessageDoesNotExist
-    DraftSendErrorReason.MessageIsNotADraft -> SendErrorReason.ErrorNoMessage.MessageIsNotADraft
-    DraftSendErrorReason.MessageAlreadySent -> SendErrorReason.ErrorNoMessage.MessageAlreadySent
-    DraftSendErrorReason.MissingAttachmentUploads -> SendErrorReason.ErrorNoMessage.MissingAttachmentUploads
-    DraftSendErrorReason.ScheduleSendMessageLimitExceeded -> SendErrorReason.ErrorNoMessage.ScheduledSendMessagesLimit
-    DraftSendErrorReason.ScheduleSendExpired -> SendErrorReason.ErrorNoMessage.ScheduledSendExpired
-    DraftSendErrorReason.ExpirationTimeTooSoon -> SendErrorReason.ErrorNoMessage.ExpirationTimeTooSoon
-
-    is DraftSendErrorReason.AddressDoesNotHavePrimaryKey ->
-        SendErrorReason.ErrorWithMessage.AddressDoesNotHavePrimaryKey(v1)
-
-    is DraftSendErrorReason.RecipientEmailInvalid ->
-        SendErrorReason.ErrorWithMessage.RecipientEmailInvalid(v1)
-
-    is DraftSendErrorReason.ProtonRecipientDoesNotExist ->
-        SendErrorReason.ErrorWithMessage.ProtonRecipientDoesNotExist(v1)
-
-    is DraftSendErrorReason.AddressDisabled ->
-        SendErrorReason.ErrorWithMessage.AddressDisabled(v1)
-
-    is DraftSendErrorReason.PackageError ->
-        SendErrorReason.ErrorWithMessage.PackageError(v1)
-
-    is DraftSendErrorReason.EoPasswordDecrypt -> SendErrorReason.ErrorNoMessage.ExternalPasswordDecryptFailed
-}
-
-fun DraftSaveError.toSaveDraftError(): SaveDraftError = when (this) {
-    is DraftSaveError.Other -> SaveDraftError.Other(this.v1.toDataError())
-    is DraftSaveError.Reason -> when (val reason = this.v1) {
-        is DraftSaveErrorReason.MessageAlreadySent,
-        is DraftSaveErrorReason.MessageDoesNotExist,
-        is DraftSaveErrorReason.MessageIsNotADraft -> SaveDraftError.MessageIsNotADraft
-
-        is DraftSaveErrorReason.AddressDisabled -> SaveDraftError.AddressDisabled(reason.v1)
-        is DraftSaveErrorReason.AddressDoesNotHavePrimaryKey -> SaveDraftError.AddressDoesNotHavePrimaryKey(reason.v1)
-        is DraftSaveErrorReason.RecipientEmailInvalid -> SaveDraftError.InvalidRecipient(reason.v1)
-        is DraftSaveErrorReason.ProtonRecipientDoesNotExist -> SaveDraftError.InvalidRecipient(reason.v1)
     }
 }
 
