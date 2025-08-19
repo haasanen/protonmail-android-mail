@@ -21,7 +21,7 @@ package ch.protonmail.android.mailsettings.presentation.settings
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
 import ch.protonmail.android.mailsession.presentation.model.StorageQuotaUiModel
-import ch.protonmail.android.mailsession.presentation.model.VisibilityUiModel
+import ch.protonmail.android.design.compose.model.VisibilityUiModel
 import me.proton.core.domain.entity.UserId
 
 sealed class SettingsState {

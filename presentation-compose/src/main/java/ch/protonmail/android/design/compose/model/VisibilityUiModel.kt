@@ -16,10 +16,10 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsession.presentation.model
+package ch.protonmail.android.design.compose.model
 
-import ch.protonmail.android.mailsession.presentation.model.VisibilityUiModel.Hidden
-import ch.protonmail.android.mailsession.presentation.model.VisibilityUiModel.Visible
+import ch.protonmail.android.design.compose.model.VisibilityUiModel.Hidden
+import ch.protonmail.android.design.compose.model.VisibilityUiModel.Visible
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 

@@ -20,6 +20,7 @@ package ch.protonmail.android.mailsettings.presentation
 
 import androidx.compose.ui.graphics.Color
 import app.cash.turbine.test
+import ch.protonmail.android.design.compose.model.VisibilityUiModel
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
@@ -27,15 +28,14 @@ import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountAvatarInfo
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.model.Percent
+import ch.protonmail.android.mailsession.domain.model.Storage
+import ch.protonmail.android.mailsession.domain.model.StorageUnit
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryAccount
 import ch.protonmail.android.mailsession.presentation.mapper.AccountInformationMapper
 import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
 import ch.protonmail.android.mailsession.presentation.model.StorageQuotaUiModel
-import ch.protonmail.android.mailsession.presentation.model.VisibilityUiModel
 import ch.protonmail.android.mailsettings.domain.model.StorageQuota
 import ch.protonmail.android.mailsettings.domain.model.StorageQuotaResult
-import ch.protonmail.android.mailsession.domain.model.Storage
-import ch.protonmail.android.mailsession.domain.model.StorageUnit
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveStorageQuotaUseCase
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading

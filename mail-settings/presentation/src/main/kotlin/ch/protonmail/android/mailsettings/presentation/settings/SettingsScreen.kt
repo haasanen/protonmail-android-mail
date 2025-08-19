@@ -57,8 +57,8 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.Avatar
 import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
 import ch.protonmail.android.mailsession.presentation.model.StorageQuotaUiModel
-import ch.protonmail.android.mailsession.presentation.model.VisibilityUiModel
-import ch.protonmail.android.mailsession.presentation.model.isVisible
+import ch.protonmail.android.design.compose.model.VisibilityUiModel
+import ch.protonmail.android.design.compose.model.isVisible
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data

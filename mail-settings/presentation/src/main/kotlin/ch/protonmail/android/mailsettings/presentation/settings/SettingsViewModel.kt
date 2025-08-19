@@ -24,7 +24,7 @@ import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryAccount
 import ch.protonmail.android.mailsession.presentation.mapper.AccountInformationMapper
-import ch.protonmail.android.mailsession.presentation.model.VisibilityUiModel
+import ch.protonmail.android.design.compose.model.VisibilityUiModel
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveStorageQuotaUseCase
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
