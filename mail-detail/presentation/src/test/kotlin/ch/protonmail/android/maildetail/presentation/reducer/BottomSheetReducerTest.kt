@@ -25,8 +25,10 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomSheetState
 import ch.protonmail.android.mailcommon.presentation.model.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.SnoozeSheetState
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.ContactActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.DetailMoreActionsBottomSheetReducer
@@ -37,6 +39,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import me.proton.core.domain.entity.UserId
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -111,6 +114,21 @@ internal class BottomSheetReducerTest(
                 ),
                 operation = BottomSheetOperation.Dismiss,
                 expectedState = BottomSheetState(null, Effect.of(BottomSheetVisibilityEffect.Hide)),
+                reducesBottomSheetVisibilityEffects = true,
+                reducesMailboxMoreActions = false,
+                reducesDetailMoreActions = false
+            ),
+            TestInput(
+                currentState = null,
+                operation = SnoozeSheetState.SnoozeOptionsBottomSheetEvent.Ready(
+                    userId = UserId("testuser"),
+                    LabelId("testlabel"),
+                    listOf()
+                ),
+                expectedState = BottomSheetState(
+                    SnoozeSheetState.Requested(userId = UserId("testuser"), LabelId("testlabel"), listOf()),
+                    Effect.of(BottomSheetVisibilityEffect.Show)
+                ),
                 reducesBottomSheetVisibilityEffects = true,
                 reducesMailboxMoreActions = false,
                 reducesDetailMoreActions = false

@@ -83,7 +83,7 @@ class BottomSheetReducer @Inject constructor(
                         operation.labelId,
                         operation.itemIds
                     ),
-                    bottomSheetVisibilityEffect = currentState?.bottomSheetVisibilityEffect ?: Effect.empty()
+                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
                 )
 
             is BottomSheetOperation.Dismiss -> BottomSheetState(null, Effect.of(BottomSheetVisibilityEffect.Hide))

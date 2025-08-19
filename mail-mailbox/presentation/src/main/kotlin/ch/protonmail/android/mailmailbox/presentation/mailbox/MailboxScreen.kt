@@ -258,7 +258,8 @@ fun MailboxScreen(
         onAttachmentClicked = { viewModel.submit(MailboxViewAction.RequestAttachment(it)) },
         onClearAll = { viewModel.submit(MailboxViewAction.ClearAll) },
         onClearAllConfirmed = { viewModel.submit(MailboxViewAction.ClearAllConfirmed) },
-        onClearAllDismissed = { viewModel.submit(MailboxViewAction.ClearAllDismissed) }
+        onClearAllDismissed = { viewModel.submit(MailboxViewAction.ClearAllDismissed) },
+        onSnooze = { viewModel.submit(MailboxViewAction.RequestSnoozeBottomSheet) }
     )
 
     mailboxState.bottomSheetState?.let {
@@ -521,7 +522,7 @@ fun MailboxScreen(
                     onStar = { Timber.d("mailbox onStar clicked") },
                     onUnstar = { Timber.d("mailbox onUnstar clicked") },
                     onCustomizeToolbar = { Timber.d("mailbox onCustomizeToolbar clicked") },
-                    onSnooze = { actions.onSnooze }
+                    onSnooze = actions.onSnooze
                 )
             )
         }
