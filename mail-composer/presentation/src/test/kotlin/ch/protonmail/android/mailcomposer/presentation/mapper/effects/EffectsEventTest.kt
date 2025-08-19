@@ -98,6 +98,15 @@ internal class EffectsEventTest(
                 )
             ),
             arrayOf(
+                "AttachmentInlineEvent to modification",
+                EffectsEvent.AttachmentEvent.InlineAttachmentsAdded(listOf("id1", "id2", "id3")),
+                ComposerStateModifications(
+                    effectsModification = ContentEffectsStateModifications.OnInlineAttachmentsAdded(
+                        listOf("id1", "id2", "id3")
+                    )
+                )
+            ),
+            arrayOf(
                 "ComposerControlEvent OnCloseRequest (true) to modification",
                 EffectsEvent.ComposerControlEvent.OnCloseRequestWithDraft(MessageId("123")),
                 ComposerStateModifications(

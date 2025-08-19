@@ -393,7 +393,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                         attachments = attachmentsState.uiModel,
                         focusTextBody = effectsState.focusTextBody,
                         formHeightPx = formHeightPx,
-                        injectInlineAttachment = effectsState.injectInlineAttachment,
+                        injectInlineAttachments = effectsState.injectInlineAttachments,
                         stripInlineAttachment = effectsState.stripInlineAttachment,
                         refreshBody = effectsState.refreshBody
                     )

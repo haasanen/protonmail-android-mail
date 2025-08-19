@@ -56,6 +56,7 @@ import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.presentation.extension.isEmbeddedImage
 import ch.protonmail.android.mailmessage.presentation.ui.showInDarkMode
 import ch.protonmail.android.mailmessage.presentation.ui.showInLightMode
+import kotlinx.coroutines.delay
 import timber.log.Timber
 
 // Needed to allow "remember" on javascript interface
@@ -65,7 +66,7 @@ fun EditableMessageBodyWebView(
     modifier: Modifier = Modifier,
     messageBodyUiModel: DraftDisplayBodyUiModel,
     shouldRequestFocus: Effect<Unit>,
-    injectInlineAttachment: Effect<String>,
+    injectInlineAttachments: Effect<List<String>>,
     stripInlineAttachment: Effect<String>,
     refreshBody: Effect<DraftDisplayBodyUiModel>,
     webViewActions: EditableMessageBodyWebView.Actions
@@ -148,10 +149,13 @@ fun EditableMessageBodyWebView(
         }
 
         if (contentLoadingFinished.value) {
-            ConsumableLaunchedEffect(injectInlineAttachment) { contentId ->
-                Timber.d("editor-webview: requested injecting inline image into composer... $contentId")
-                wv.evaluateJavascript("injectInlineImage('$contentId');") {
-                    Timber.d("editor-webview: injected inline image with cid $contentId into webview")
+            ConsumableLaunchedEffect(injectInlineAttachments) { contentIds ->
+                contentIds.forEach { contentId ->
+                    wv.evaluateJavascript("injectInlineImage('$contentId');") {
+                        Timber.d("editor-webview: injected inline image with cid $contentId into webview")
+                    }
+                    @Suppress("MagicNumber")
+                    delay(100) // Small delay between injections
                 }
             }
 

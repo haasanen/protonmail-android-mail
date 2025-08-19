@@ -642,18 +642,24 @@ class ComposerViewModel @AssistedInject constructor(
     private fun validateEmailAddress(emailAddress: String): Boolean = isValidEmailAddress(emailAddress)
 
     private suspend fun onAttachmentsAdded(uriList: List<Uri>) {
+        val contentIds = mutableListOf<String>()
+
         uriList.forEach { uri ->
             addAttachment(uri).onLeft {
                 Timber.e("Failed to add attachment: $it")
                 emitNewStateFor(EffectsEvent.AttachmentEvent.AddAttachmentError(it))
             }.onRight {
                 when (it) {
-                    is AddAttachment.AddAttachmentResult.InlineAttachmentAdded ->
-                        emitNewStateFor(EffectsEvent.AttachmentEvent.InlineAttachmentAdded(it.cid))
-
+                    is AddAttachment.AddAttachmentResult.InlineAttachmentAdded -> {
+                        contentIds.add(it.cid)
+                    }
                     AddAttachment.AddAttachmentResult.StandardAttachmentAdded -> Unit
                 }
             }
+        }
+
+        if (contentIds.isNotEmpty()) {
+            emitNewStateFor(EffectsEvent.AttachmentEvent.InlineAttachmentsAdded(contentIds))
         }
     }
 

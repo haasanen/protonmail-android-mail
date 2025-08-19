@@ -68,7 +68,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
                 OnAddFileRequest -> ContentEffectsStateModifications.OnAddAttachmentFileRequested
                 OnAddFromCameraRequest -> ContentEffectsStateModifications.OnAddAttachmentCameraRequested
                 OnAddMediaRequest -> ContentEffectsStateModifications.OnAddAttachmentPhotosRequested
-                is InlineAttachmentAdded -> ContentEffectsStateModifications.OnInlineAttachmentAdded(contentId)
+                is InlineAttachmentsAdded -> ContentEffectsStateModifications.OnInlineAttachmentsAdded(contentIds)
                 is InlineAttachmentRemoved -> ContentEffectsStateModifications.OnInlineAttachmentRemoved(contentId)
                 is OnAttachFromOptionsRequest -> BottomSheetEffectsStateModification.ShowBottomSheet
                 is OnInlineImageActionsRequested -> BottomSheetEffectsStateModification.ShowBottomSheet
@@ -79,7 +79,7 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
 
         data class RemoveAttachmentError(val error: AttachmentDeleteError) : AttachmentEvent
         data class AddAttachmentError(val error: AttachmentAddError) : AttachmentEvent
-        data class InlineAttachmentAdded(val contentId: String) : AttachmentEvent
+        data class InlineAttachmentsAdded(val contentIds: List<String>) : AttachmentEvent
         data class InlineAttachmentRemoved(val contentId: String) : AttachmentEvent
 
         data object OnInlineImageActionsRequested : AttachmentEvent

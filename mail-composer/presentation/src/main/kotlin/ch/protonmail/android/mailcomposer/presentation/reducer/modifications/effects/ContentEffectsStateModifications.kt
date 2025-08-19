@@ -51,10 +51,10 @@ internal sealed interface ContentEffectsStateModifications : EffectsStateModific
         )
     }
 
-    data class OnInlineAttachmentAdded(val contentId: String) : EffectsStateModification {
+    data class OnInlineAttachmentsAdded(val contentIds: List<String>) : EffectsStateModification {
 
         override fun apply(state: ComposerState.Effects): ComposerState.Effects =
-            state.copy(injectInlineAttachment = Effect.of(contentId))
+            state.copy(injectInlineAttachments = Effect.of(contentIds))
     }
 
     data class OnInlineAttachmentRemoved(val contentId: String) : EffectsStateModification {

@@ -81,7 +81,7 @@ internal fun ComposerForm(
     focusTextBody: Effect<Unit>,
     actions: ComposerForm.Actions,
     formHeightPx: Float,
-    injectInlineAttachment: Effect<String>,
+    injectInlineAttachments: Effect<List<String>>,
     stripInlineAttachment: Effect<String>,
     modifier: Modifier = Modifier,
     refreshBody: Effect<DraftDisplayBodyUiModel>
@@ -190,7 +190,7 @@ internal fun ComposerForm(
                         EditableMessageBodyWebView(
                             messageBodyUiModel = bodyInitialValue,
                             shouldRequestFocus = focusTextBody,
-                            injectInlineAttachment = injectInlineAttachment,
+                            injectInlineAttachments = injectInlineAttachments,
                             stripInlineAttachment = stripInlineAttachment,
                             refreshBody = refreshBody,
                             webViewActions = EditableMessageBodyWebView.Actions(
