@@ -45,7 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonButton
 import ch.protonmail.android.design.compose.component.ProtonHorizontallyCenteredProgress
-import ch.protonmail.android.design.compose.component.protonSecondaryButtonColors
+import ch.protonmail.android.design.compose.component.protonButtonColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
@@ -222,7 +222,9 @@ fun UnsnoozeButton(modifier: Modifier = Modifier, onEvent: () -> Unit = {}) {
     ProtonButton(
         modifier = modifier.fillMaxWidth(),
         onClick = { onEvent() },
-        colors = ButtonDefaults.protonSecondaryButtonColors(false),
+        colors = ButtonDefaults.protonButtonColors(
+            backgroundColor = ProtonTheme.colors.backgroundInvertedSecondary
+        ),
         elevation = null,
         shape = ProtonTheme.shapes.extraLarge,
         border = null
@@ -255,7 +257,9 @@ fun CustomSnoozeButton(
         ProtonButton(
             modifier = modifier,
             onClick = { onEvent() },
-            colors = ButtonDefaults.protonSecondaryButtonColors(false),
+            colors = ButtonDefaults.protonButtonColors(
+                backgroundColor = ProtonTheme.colors.backgroundInvertedSecondary
+            ),
             elevation = null,
             shape = ProtonTheme.shapes.extraLarge,
             border = null
@@ -316,7 +320,9 @@ fun SnoozeUntilButton(
     ProtonButton(
         modifier = modifier,
         onClick = { onEvent() },
-        colors = ButtonDefaults.protonSecondaryButtonColors(false),
+        colors = ButtonDefaults.protonButtonColors(
+            backgroundColor = ProtonTheme.colors.backgroundInvertedSecondary
+        ),
         elevation = null,
         shape = ProtonTheme.shapes.extraLarge,
         border = null
@@ -332,6 +338,7 @@ fun SnoozeUntilButton(
                 modifier = Modifier
                     .defaultMinSize(minWidth = ProtonDimens.IconSize.MediumLarge)
                     .padding(bottom = ProtonDimens.Spacing.Tiny),
+                tint = ProtonTheme.colors.textNorm,
                 painter = painterResource(icon)
             )
             Text(
