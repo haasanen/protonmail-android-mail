@@ -50,12 +50,12 @@ class ComposerChipsListViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch { observe() }
     }
     private suspend fun observe() = snapshotFlow { textFieldState.text }
-        .collectLatest {
+        .collectLatest { text ->
             // This is not ideal, but it's due to how the existing Chips state works.
-            mutableState.value.listState.type(it.toString())
+            mutableState.value.listState.type(text.toString())
 
-            if (ChipsCreationRegex.containsMatchIn(textFieldState.text)) textFieldState.edit { delete(0, length) }
-            mutableState.update { it.copy(suggestionsTermTyped = Effect.of(textFieldState.text.toString())) }
+            if (ChipsCreationRegex.containsMatchIn(text)) textFieldState.edit { delete(0, length) }
+            mutableState.update { it.copy(suggestionsTermTyped = Effect.of(text.toString())) }
         }
 
     private fun onListChanged(list: List<ChipItem>) {

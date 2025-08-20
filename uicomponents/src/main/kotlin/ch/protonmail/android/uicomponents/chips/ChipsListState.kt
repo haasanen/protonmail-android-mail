@@ -26,6 +26,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
 import me.proton.core.util.kotlin.takeIfNotBlank
+import okhttp3.internal.toImmutableList
 
 @Stable
 class ChipsListState(
@@ -69,7 +70,7 @@ class ChipsListState(
                 if (words.isNotEmpty()) {
                     words.forEach { add(it) }
                     // added here so we only check for duplicates after pasting all the words
-                    onListChanged(items)
+                    onListChanged(items.toImmutableList())
                     clearTypedText()
                 } else typedText.value = newValue
             }
@@ -97,12 +98,12 @@ class ChipsListState(
         if (typedText.value.isEmpty()) {
             items.removeLastOrNull()
         }
-        onListChanged(items)
+        onListChanged(items.toImmutableList())
     }
 
     fun onDelete(chipItem: ChipItem) {
         items.remove(chipItem)
-        onListChanged(items)
+        onListChanged(items.toImmutableList())
     }
 
     fun setFocusState(focused: Boolean) {
