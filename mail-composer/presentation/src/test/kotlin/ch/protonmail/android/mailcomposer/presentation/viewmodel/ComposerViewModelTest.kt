@@ -41,6 +41,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftMimeType
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
+import ch.protonmail.android.mailcomposer.domain.model.RecipientValidityError
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
@@ -603,14 +604,14 @@ internal class ComposerViewModelTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val toRecipients = listOf(
-            buildSingleRecipient("", "valid@email.com")
+            buildSingleRecipient("", "valid@email.com"),
+            buildSingleRecipient("", "invalid email", DraftRecipientValidity.Invalid(RecipientValidityError.Format))
         )
         val recipientsUiModels = listOf(
             RecipientUiModel.Valid("valid@email.com"),
             RecipientUiModel.Invalid("invalid email")
         )
         expectStoreDraftSubjectSucceeds(Subject(""))
-//        ignoreRecipientsUpdates() // Ignore first emission due to RecipientsStateManager init
         expectUpdateRecipientsFails(toRecipients, emptyList(), emptyList()) {
             SaveDraftError.SaveFailed
         }
@@ -1408,8 +1409,11 @@ internal class ComposerViewModelTest {
             RecipientsBcc(emptyList())
         )
 
-        private fun buildSingleRecipient(name: String, address: String) =
-            DraftRecipient.SingleRecipient(name, address, DraftRecipientValidity.Validating)
+        private fun buildSingleRecipient(
+            name: String,
+            address: String,
+            validity: DraftRecipientValidity = DraftRecipientValidity.Validating
+        ) = DraftRecipient.SingleRecipient(name, address, validity)
 
     }
 }

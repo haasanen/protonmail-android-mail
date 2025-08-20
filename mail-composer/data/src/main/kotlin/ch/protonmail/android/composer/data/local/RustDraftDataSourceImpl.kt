@@ -52,7 +52,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.ChangeSenderError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
-import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
@@ -333,15 +332,14 @@ class RustDraftDataSourceImpl @Inject constructor(
     ): Either<SaveDraftError, Unit> = either {
         val currentRecipients = recipientsWrapper.recipients().toSingleRecipients()
 
-        val updatedValidRecipients = updatedRecipients
+        val updatedSingleRecipients = updatedRecipients
             .filterIsInstance<DraftRecipient.SingleRecipient>()
-            .filter { it.validity !is DraftRecipientValidity.Invalid }
 
-        val recipientsToAdd = updatedValidRecipients.filterNot { updatedRecipient ->
+        val recipientsToAdd = updatedSingleRecipients.filterNot { updatedRecipient ->
             updatedRecipient.address in currentRecipients.map { it.address }
         }
         val recipientsToRemove = currentRecipients.filterNot { currentRecipient ->
-            currentRecipient.address in updatedValidRecipients.map { it.address }
+            currentRecipient.address in updatedSingleRecipients.map { it.address }
         }
 
         recipientsToAdd.forEach {

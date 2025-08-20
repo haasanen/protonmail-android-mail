@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcomposer.presentation.model
 
 import androidx.compose.runtime.Stable
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
-import ch.protonmail.android.mailcomposer.domain.model.DraftRecipientValidity
 import ch.protonmail.android.mailcomposer.presentation.mapper.toDraftRecipient
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -49,17 +48,14 @@ internal suspend fun RecipientsState.toDraftRecipients():
     return coroutineScope {
         val toParticipants = async {
             toRecipients.map { it.toDraftRecipient() }
-                .filter { it.validity !is DraftRecipientValidity.Invalid }
         }
 
         val ccParticipants = async {
             ccRecipients.map { it.toDraftRecipient() }
-                .filter { it.validity !is DraftRecipientValidity.Invalid }
         }
 
         val bccParticipants = async {
             bccRecipients.map { it.toDraftRecipient() }
-                .filter { it.validity !is DraftRecipientValidity.Invalid }
         }
 
         Triple(
