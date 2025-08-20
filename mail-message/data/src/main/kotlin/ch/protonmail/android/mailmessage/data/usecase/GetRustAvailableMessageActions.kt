@@ -25,10 +25,10 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
+import uniffi.proton_mail_uniffi.AvailableMessageActionSheetResult
+import uniffi.proton_mail_uniffi.MessageActionSheet
 import uniffi.proton_mail_uniffi.ThemeOpts
-import uniffi.proton_mail_uniffi.AvailableActionsForMessageResult
-import uniffi.proton_mail_uniffi.MessageAvailableActions
-import uniffi.proton_mail_uniffi.availableActionsForMessage
+import uniffi.proton_mail_uniffi.availableMessageActionSheet
 import javax.inject.Inject
 
 class GetRustAvailableMessageActions @Inject constructor() {
@@ -37,10 +37,10 @@ class GetRustAvailableMessageActions @Inject constructor() {
         mailbox: MailboxWrapper,
         messageId: LocalMessageId,
         themeOpts: ThemeOpts
-    ): Either<DataError, MessageAvailableActions> {
-        return when (val result = availableActionsForMessage(mailbox.getRustMailbox(), themeOpts, messageId)) {
-            is AvailableActionsForMessageResult.Error -> result.v1.toDataError().left()
-            is AvailableActionsForMessageResult.Ok -> result.v1.right()
+    ): Either<DataError, MessageActionSheet> {
+        return when (val result = availableMessageActionSheet(mailbox.getRustMailbox(), themeOpts, messageId)) {
+            is AvailableMessageActionSheetResult.Error -> result.v1.toDataError().left()
+            is AvailableMessageActionSheetResult.Ok -> result.v1.right()
         }
     }
 }

@@ -61,7 +61,7 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllListActions
 import uniffi.proton_mail_uniffi.Message
-import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.MessageActionSheet
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ThemeOpts
 import javax.inject.Inject
@@ -221,7 +221,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         labelId: LocalLabelId,
         messageId: LocalMessageId,
         themeOpts: ThemeOpts
-    ): Either<DataError, MessageAvailableActions> = withContext(ioDispatcher) {
+    ): Either<DataError, MessageActionSheet> = withContext(ioDispatcher) {
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get available actions for null Mailbox! failing")

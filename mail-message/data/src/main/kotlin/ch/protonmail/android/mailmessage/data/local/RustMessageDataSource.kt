@@ -33,7 +33,7 @@ import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.AllListActions
 import uniffi.proton_mail_uniffi.Message
-import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.MessageActionSheet
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ThemeOpts
 
@@ -68,7 +68,7 @@ interface RustMessageDataSource {
         labelId: LocalLabelId,
         messageId: LocalMessageId,
         themeOpts: ThemeOpts
-    ): Either<DataError, MessageAvailableActions>
+    ): Either<DataError, MessageActionSheet>
 
     suspend fun getAvailableSystemMoveToActions(
         userId: UserId,

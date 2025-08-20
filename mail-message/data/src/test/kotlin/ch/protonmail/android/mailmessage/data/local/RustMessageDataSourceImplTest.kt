@@ -73,7 +73,7 @@ import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.LabelAsOutput
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MailTheme
-import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.MessageActionSheet
 import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
@@ -435,7 +435,7 @@ internal class RustMessageDataSourceImplTest {
         val labelId = LocalLabelId(1uL)
         val mailbox = mockk<MailboxWrapper>()
         val messageId = LocalMessageIdSample.AugWeatherForecast
-        val expected = MessageAvailableActions(emptyList(), emptyList(), emptyList(), emptyList())
+        val expected = MessageActionSheet(emptyList(), emptyList(), emptyList(), emptyList())
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
         coEvery { getRustAvailableMessageActions(mailbox, messageId, themeOptions) } returns expected.right()

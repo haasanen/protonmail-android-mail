@@ -35,11 +35,10 @@ import uniffi.proton_mail_uniffi.GeneralActions
 import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.ListActions
 import uniffi.proton_mail_uniffi.MessageAction
-import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.MessageActionSheet
 import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.MoveItemAction
-import uniffi.proton_mail_uniffi.ReplyAction
 
 fun List<LocalLabelAsAction>.toLabelAsActions(): LabelAsActions {
     val labels = this.map { it.toLabel() }
@@ -74,29 +73,46 @@ fun List<MoveAction.SystemFolder>.toMailLabels() = this.map { systemAction ->
     )
 }
 
-fun MessageAvailableActions.toAvailableActions(): AvailableActions {
+fun MessageActionSheet.toAvailableActions(): AvailableActions {
     return AvailableActions(
-        this.replyActions.replyActionsToActions(),
+        this.replyActions.replyMessageActionsToActions().filterNotNull(),
         this.messageActions.messageActionsToActions().filterNotNull(),
-        this.moveActions.systemFolderActionsToActions(),
-        this.generalActions.generalActionsToActions().filterNotNull()
+        this.moveActions.systemFolderMessageActionsToActions().filterNotNull(),
+        this.generalActions.generalMessageActionsToActions().filterNotNull()
     )
 }
 
-fun List<ReplyAction>.replyActionsToActions() = this.map { replyAction ->
-    when (replyAction) {
-        ReplyAction.REPLY -> Action.Reply
-        ReplyAction.REPLY_ALL -> Action.ReplyAll
-        ReplyAction.FORWARD -> Action.Forward
+fun List<MessageAction>.replyMessageActionsToActions() = this.map { action ->
+    when (action) {
+        MessageAction.Reply -> Action.Reply
+        MessageAction.ReplyAll -> Action.ReplyAll
+        MessageAction.Forward -> Action.Forward
+        else -> {
+            Timber.e("Unexpected action $action passed as ReplyAction")
+            null
+        }
     }
 }
 
-fun List<MoveItemAction>.systemFolderActionsToActions() = this.map {
-    when (it) {
+fun List<MoveItemAction>.systemFolderActionsToActions() = this.map { action ->
+    when (action) {
         MoveItemAction.MoveTo -> Action.Move
-        is MoveItemAction.MoveToSystemFolder -> it.v1.name.toAction()
+        is MoveItemAction.MoveToSystemFolder -> action.v1.name.toAction()
         is MoveItemAction.NotSpam -> Action.Inbox
         MoveItemAction.PermanentDelete -> Action.Delete
+    }
+}
+
+fun List<MessageAction>.systemFolderMessageActionsToActions() = this.map { action ->
+    when (action) {
+        MessageAction.MoveTo -> Action.Move
+        is MessageAction.MoveToSystemFolder -> action.v1.name.toAction()
+        is MessageAction.NotSpam -> Action.Inbox
+        MessageAction.PermanentDelete -> Action.Delete
+        else -> {
+            Timber.e("Unexpected action $action passed as SystemFolderAction")
+            null
+        }
     }
 }
 
@@ -122,17 +138,30 @@ fun List<GeneralActions>.generalActionsToActions() = this.map { generalAction ->
     }
 }
 
+fun List<MessageAction>.generalMessageActionsToActions() = this.map { generalAction ->
+    when (generalAction) {
+        MessageAction.ViewInLightMode -> Action.ViewInLightMode
+        MessageAction.ViewInDarkMode -> Action.ViewInDarkMode
+        MessageAction.SavePdf -> Action.SavePdf
+        MessageAction.Print -> Action.Print
+        MessageAction.ReportPhishing -> Action.ReportPhishing
+        else -> {
+            Timber.d("rust-actions-mapper: Skipping unhandled action mapping generalActions: $generalAction")
+            null
+        }
+    }
+}
+
 private fun List<MessageAction>.messageActionsToActions() = this.map { messageAction ->
     when (messageAction) {
-        MessageAction.STAR -> Action.Star
-        MessageAction.UNSTAR -> Action.Unstar
-        MessageAction.LABEL_AS -> Action.Label
-        MessageAction.MARK_READ -> Action.MarkRead
-        MessageAction.MARK_UNREAD -> Action.MarkUnread
-        MessageAction.DELETE -> Action.Delete
-        MessageAction.PIN,
-        MessageAction.UNPIN -> {
-            Timber.i("rust-actions-mapper: Skipping unhandled action mapping msgActions: $messageAction")
+        MessageAction.Star -> Action.Star
+        MessageAction.Unstar -> Action.Unstar
+        MessageAction.LabelAs -> Action.Label
+        MessageAction.MarkRead -> Action.MarkRead
+        MessageAction.MarkUnread -> Action.MarkUnread
+        MessageAction.PermanentDelete -> Action.Delete
+        else -> {
+            Timber.e("Unexpected action $messageAction passed as MessageAction")
             null
         }
     }
@@ -140,19 +169,19 @@ private fun List<MessageAction>.messageActionsToActions() = this.map { messageAc
 
 fun AllListActions.toAllBottomBarActions(): AllBottomBarActions {
     return AllBottomBarActions(
-        this.hiddenListActions.bottombarActionsToActions(),
-        this.visibleListActions.bottombarActionsToActions()
+        this.hiddenListActions.bottomBarActionsToActions(),
+        this.visibleListActions.bottomBarActionsToActions()
     )
 }
 
-private fun List<ListActions>.bottombarActionsToActions() = this.map { bottombarAction ->
-    when (bottombarAction) {
+private fun List<ListActions>.bottomBarActionsToActions() = this.map { bottomBarAction ->
+    when (bottomBarAction) {
         ListActions.LabelAs -> Action.Label
         ListActions.MarkRead -> Action.MarkRead
         ListActions.MarkUnread -> Action.MarkUnread
         ListActions.More -> Action.More
         ListActions.MoveTo -> Action.Move
-        is ListActions.MoveToSystemFolder -> bottombarAction.v1.name.toAction()
+        is ListActions.MoveToSystemFolder -> bottomBarAction.v1.name.toAction()
         ListActions.PermanentDelete -> Action.Delete
         ListActions.Star -> Action.Star
         ListActions.Unstar -> Action.Unstar

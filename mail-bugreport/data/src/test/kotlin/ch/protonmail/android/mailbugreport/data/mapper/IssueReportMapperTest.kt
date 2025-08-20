@@ -54,7 +54,8 @@ internal class IssueReportMapperTest {
             stepsToReproduce = issueReport.stepsToReproduce.value,
             expectedResult = issueReport.expectedResult.value,
             actualResult = issueReport.actualResult.value,
-            logs = issueReport.shouldIncludeLogs.value
+            logs = issueReport.shouldIncludeLogs.value,
+            additionalFiles = emptyList()
         )
 
         // When

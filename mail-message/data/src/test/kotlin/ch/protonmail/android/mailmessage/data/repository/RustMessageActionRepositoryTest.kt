@@ -42,16 +42,13 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import uniffi.proton_mail_uniffi.AllListActions
-import uniffi.proton_mail_uniffi.GeneralActions
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.ListActions
 import uniffi.proton_mail_uniffi.MessageAction
-import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.MessageActionSheet
 import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
-import uniffi.proton_mail_uniffi.MoveItemAction
-import uniffi.proton_mail_uniffi.ReplyAction
 import kotlin.test.assertEquals
 
 class RustMessageActionRepositoryTest {
@@ -68,16 +65,16 @@ class RustMessageActionRepositoryTest {
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
         val messageId = MessageId("1")
-        val rustAvailableActions = MessageAvailableActions(
-            listOf(ReplyAction.REPLY, ReplyAction.FORWARD),
-            listOf(MessageAction.STAR, MessageAction.LABEL_AS),
+        val rustAvailableActions = MessageActionSheet(
+            listOf(MessageAction.Reply, MessageAction.Forward),
+            listOf(MessageAction.Star, MessageAction.LabelAs),
             listOf(
-                MoveItemAction.MoveToSystemFolder(MovableSystemFolderAction(Id(5uL), MovableSystemFolder.SPAM)),
-                MoveItemAction.MoveToSystemFolder(
+                MessageAction.MoveToSystemFolder(MovableSystemFolderAction(Id(5uL), MovableSystemFolder.SPAM)),
+                MessageAction.MoveToSystemFolder(
                     MovableSystemFolderAction(Id(10uL), MovableSystemFolder.ARCHIVE)
                 )
             ),
-            listOf(GeneralActions.VIEW_MESSAGE_IN_DARK_MODE, GeneralActions.VIEW_MESSAGE_IN_LIGHT_MODE)
+            listOf(MessageAction.ViewInDarkMode, MessageAction.ViewInLightMode)
         )
 
         coEvery {
