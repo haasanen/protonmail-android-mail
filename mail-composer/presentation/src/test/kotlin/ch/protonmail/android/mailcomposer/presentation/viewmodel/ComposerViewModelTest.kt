@@ -83,8 +83,6 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.ActiveComposerReg
 import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
-import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
-import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -95,7 +93,6 @@ import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.composer.DraftFieldsTestData
 import ch.protonmail.android.testdata.composer.DraftRecipientTestData
-import ch.protonmail.android.testdata.contact.ContactSample
 import io.mockk.Called
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -141,7 +138,6 @@ internal class ComposerViewModelTest {
     private val updateRecipients = mockk<UpdateRecipients>()
     private val sendMessageMock = mockk<SendMessage>()
     private val networkManagerMock = mockk<NetworkManager>()
-    private val getContactsMock = mockk<GetContacts>()
     private val observePrimaryUserIdMock = mockk<ObservePrimaryUserId>()
     private val isValidEmailAddressMock = mockk<IsValidEmailAddress>()
     private val savedStateHandle = mockk<SavedStateHandle>(relaxed = true)
@@ -190,7 +186,6 @@ internal class ComposerViewModelTest {
         storeDraftWithBodyMock,
         storeDraftWithSubjectMock,
         updateRecipients,
-        getContactsMock,
         reducer,
         isValidEmailAddressMock,
         observeMessageAttachments,
@@ -488,7 +483,6 @@ internal class ComposerViewModelTest {
         expectNoObservedMessageAttachments()
         expectNoFileShareVia()
         expectNoRestoredState(savedStateHandle)
-        expectContacts()
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
         ignoreRecipientsUpdates()
         expectedNoDraftSaved()
@@ -941,7 +935,6 @@ internal class ComposerViewModelTest {
         val expectedAction = DraftAction.ComposeToAddresses(listOf(expectedRecipient.address))
 
         expectNoInputDraftMessageId()
-        expectContacts()
         expectInputDraftAction { expectedAction }
         expectStoreDraftSubjectSucceeds(Subject(""))
         expectStoreDraftBodySucceeds(DraftBody(""))
@@ -1196,8 +1189,6 @@ internal class ComposerViewModelTest {
     fun setUp() {
         mockkStatic(android.graphics.Color::parseColor)
         every { android.graphics.Color.parseColor(any()) } returns 0
-        // Drop this together with participant name resolution
-        coEvery { getContactsMock.invoke(UserIdSample.Primary) } returns emptyList<ContactMetadata.Contact>().right()
     }
 
     @AfterTest
@@ -1331,12 +1322,6 @@ internal class ComposerViewModelTest {
         error: () -> SaveDraftError
     ) = error().also {
         coEvery { updateRecipients(toRecipients, ccRecipients, bccRecipients) } returns it.left()
-    }
-
-    private fun expectContacts(): List<ContactMetadata.Contact> {
-        val expectedContacts = listOf(ContactSample.Doe, ContactSample.John)
-        coEvery { getContactsMock.invoke(UserIdSample.Primary) } returns expectedContacts.right()
-        return expectedContacts
     }
 
     private fun expectNoObservedMessageAttachments() {

@@ -27,7 +27,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
-import arrow.core.getOrElse
 import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
@@ -95,8 +94,6 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.ActiveComposerReg
 import ch.protonmail.android.mailcomposer.presentation.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.GetFormattedScheduleSendOptions
-import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
-import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessagePasswordEnabled
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -148,7 +145,6 @@ class ComposerViewModel @AssistedInject constructor(
     private val storeDraftWithBody: StoreDraftWithBody,
     private val storeDraftWithSubject: StoreDraftWithSubject,
     private val updateRecipients: UpdateRecipients,
-    private val getContacts: GetContacts,
     private val composerStateReducer: ComposerStateReducer,
     private val isValidEmailAddress: IsValidEmailAddress,
     private val observeMessageAttachments: ObserveMessageAttachments,
@@ -203,8 +199,6 @@ class ComposerViewModel @AssistedInject constructor(
     private val primaryUserId = observePrimaryUserId().filterNotNull()
     private val composerActionsChannel = Channel<ComposerAction>(Channel.BUFFERED)
     private val composerInstanceUuid = UUID.randomUUID()
-
-    private val contactsCache = MutableStateFlow<List<ContactMetadata.Contact>?>(null)
 
     private val mutableComposerStates = MutableStateFlow(
         ComposerStates(
@@ -831,18 +825,6 @@ class ComposerViewModel @AssistedInject constructor(
     private fun currentSenderEmail() = SenderEmail(composerStates.value.main.sender.email)
 
     private fun currentMimeType(): DraftMimeType = composerStates.value.main.draftType
-
-    private suspend fun ensureContactsLoaded() {
-        if (contactsCache.value == null) {
-            val contactsList = getContacts(primaryUserId()).getOrElse { emptyList() }
-            contactsCache.value = contactsList
-        }
-    }
-
-    suspend fun contactsOrEmpty(): List<ContactMetadata.Contact> {
-        ensureContactsLoaded()
-        return contactsCache.value ?: emptyList()
-    }
 
     private fun initComposerFields(draftFields: DraftFields) {
         subjectTextField.replaceText(draftFields.subject.value)
