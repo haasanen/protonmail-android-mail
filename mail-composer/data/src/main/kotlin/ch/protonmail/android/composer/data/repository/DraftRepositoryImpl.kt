@@ -39,11 +39,13 @@ import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailcomposer.domain.model.ValidatedRecipients
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
@@ -103,5 +105,8 @@ class DraftRepositoryImpl @Inject constructor(
         draftDataSource.undoSend(userId, messageId)
 
     override suspend fun getBody(): Either<DataError, DraftBody> = draftDataSource.body().map { DraftBody(it) }
+
+    override fun observeRecipientsValidationEvents(): Flow<ValidatedRecipients> =
+        draftDataSource.observeRecipientsValidationEvents()
 
 }

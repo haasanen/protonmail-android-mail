@@ -32,9 +32,11 @@ import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailcomposer.domain.model.ValidatedRecipients
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 import kotlin.time.Instant
 
@@ -57,4 +59,6 @@ interface DraftRepository {
     suspend fun listSenderAddresses(): Either<DataError, SenderAddresses>
     suspend fun changeSender(sender: SenderEmail): Either<ChangeSenderError, Unit>
     suspend fun getBody(): Either<DataError, DraftBody>
+
+    fun observeRecipientsValidationEvents(): Flow<ValidatedRecipients>
 }

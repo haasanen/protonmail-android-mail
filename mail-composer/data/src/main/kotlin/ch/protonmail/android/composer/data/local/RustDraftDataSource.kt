@@ -34,6 +34,7 @@ import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailcomposer.domain.model.ValidatedRecipients
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.flow.Flow
@@ -86,4 +87,6 @@ interface RustDraftDataSource {
      *
      */
     fun observePasswordUpdatedSignal(): Flow<Unit>
+
+    fun observeRecipientsValidationEvents(): Flow<ValidatedRecipients>
 }
