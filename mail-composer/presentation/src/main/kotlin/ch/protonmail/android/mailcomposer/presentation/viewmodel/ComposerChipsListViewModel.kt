@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerChipsFieldState
+import ch.protonmail.android.mailcomposer.presentation.model.InvalidRecipientsError
 import ch.protonmail.android.uicomponents.chips.ChipsListState
 import ch.protonmail.android.uicomponents.chips.ChipsListState.Companion.ChipsCreationRegex
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
@@ -49,6 +50,23 @@ class ComposerChipsListViewModel @Inject constructor() : ViewModel() {
     init {
         viewModelScope.launch { observe() }
     }
+
+    fun updateItems(chipsList: List<ChipItem>) {
+        val invalidItems = chipsList.filterIsInstance<ChipItem.Invalid>()
+        if (invalidItems.isNotEmpty()) {
+            mutableState.update {
+                it.copy(
+                    invalidRecipientsWarning = InvalidRecipientsError(
+                        invalidItems,
+                        TextUiModel.TextRes(R.string.composer_error_invalid_email)
+                    )
+                )
+            }
+        }
+
+        mutableState.value.listState.updateItems(chipsList)
+    }
+
     private suspend fun observe() = snapshotFlow { textFieldState.text }
         .collectLatest { text ->
             // This is not ideal, but it's due to how the existing Chips state works.

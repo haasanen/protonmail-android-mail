@@ -58,6 +58,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
+import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcomposer.presentation.ui.RecipientChipActionsBottomSheetContent
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionState
@@ -116,7 +117,7 @@ fun ComposerChipsListField(
 
     LaunchedEffect(chipsList) {
         Timber.tag("RecipientValidation").d("CompoChipListField got updated chips: $chipsList")
-        listState.updateItems(chipsList)
+        composerChipsListViewModel.updateItems(chipsList)
     }
 
     ProtonModalBottomSheetLayout(
@@ -174,6 +175,15 @@ fun ComposerChipsListField(
         Toast.makeText(context, it, Toast.LENGTH_LONG).apply {
             setGravity(Gravity.BOTTOM, 0, 0)
         }.show()
+    }
+
+    state.invalidRecipientsWarning?.let { invalidRecipients ->
+        val text = invalidRecipients.errorMessage.string()
+        LaunchedEffect(state.invalidRecipientsWarning) {
+            Toast.makeText(context, text, Toast.LENGTH_LONG).apply {
+                setGravity(Gravity.BOTTOM, 0, 0)
+            }.show()
+        }
     }
 }
 

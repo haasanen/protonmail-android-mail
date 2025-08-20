@@ -27,5 +27,11 @@ internal data class ComposerChipsFieldState(
     val listState: ChipsListState,
     val suggestionsTermTyped: Effect<String> = Effect.empty(),
     val listChanged: Effect<List<ChipItem>> = Effect.empty(),
-    val duplicateRemovalWarning: Effect<TextUiModel> = Effect.empty()
+    val duplicateRemovalWarning: Effect<TextUiModel> = Effect.empty(),
+    val invalidRecipientsWarning: InvalidRecipientsError? = null
+)
+
+data class InvalidRecipientsError(
+    val recipients: List<ChipItem.Invalid>,
+    val errorMessage: TextUiModel
 )

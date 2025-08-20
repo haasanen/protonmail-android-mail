@@ -22,6 +22,7 @@ import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.presentation.R
+import ch.protonmail.android.mailcomposer.presentation.model.InvalidRecipientsError
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
@@ -58,7 +59,7 @@ internal class ComposerChipsListViewModelTest {
             val newState = awaitItem()
             assertEquals(ChipItemsList.Unfocused.Single(newItem), newState.listState.getItems())
             assertEquals(Effect.empty(), newState.duplicateRemovalWarning)
-            assertEquals(Effect.empty(), newState.invalidEntryWarning)
+            assertEquals(null, newState.invalidRecipientsWarning)
         }
     }
 
@@ -80,7 +81,7 @@ internal class ComposerChipsListViewModelTest {
             val newState = awaitItem()
             assertEquals(ChipItemsList.Unfocused.Single(newItem), newState.listState.getItems())
             assertEquals(expectedDuplicatedEffect, newState.duplicateRemovalWarning)
-            assertEquals(Effect.empty(), newState.invalidEntryWarning)
+            assertEquals(null, newState.invalidRecipientsWarning)
         }
     }
 
@@ -88,19 +89,21 @@ internal class ComposerChipsListViewModelTest {
     fun `when adding an invalid item it emits the invalid entry warning`() = runTest {
         // Given
         val newItem = ChipItem.Invalid("__")
-        val expectedInvalidEffect = Effect.of(TextUiModel(R.string.composer_error_invalid_email))
+        val expectedInvalidEffect = InvalidRecipientsError(
+            listOf(newItem),
+            TextUiModel(R.string.composer_error_invalid_email)
+        )
 
         // When + Then
         viewModel.state.test {
-            viewModel.state.value.listState.type(newItem.value)
-            viewModel.state.value.listState.type("\n")
+            viewModel.updateItems(listOf(newItem))
 
             skipItems(1)
 
             val state = awaitItem()
             assertEquals(ChipItemsList.Unfocused.Single(newItem), state.listState.getItems())
             assertEquals(Effect.empty(), state.duplicateRemovalWarning)
-            assertEquals(expectedInvalidEffect, state.invalidEntryWarning)
+            assertEquals(expectedInvalidEffect, state.invalidRecipientsWarning)
 
             cancelAndConsumeRemainingEvents()
         }
