@@ -34,8 +34,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,6 +51,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.component.ProtonSolidButton
+import ch.protonmail.android.design.compose.component.ProtonSwitch
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
@@ -334,16 +333,8 @@ private fun AlsoArchiveRow(
                 overflow = TextOverflow.Ellipsis
             )
 
-            Switch(
+            ProtonSwitch(
                 modifier = Modifier.height(ProtonDimens.IconSize.Default),
-                colors = SwitchDefaults.colors(
-                    checkedTrackColor = ProtonTheme.colors.notificationSuccess,
-                    uncheckedTrackColor = ProtonTheme.colors.iconHint,
-                    checkedThumbColor = Color.White,
-                    uncheckedThumbColor = Color.White,
-                    checkedBorderColor = ProtonTheme.colors.notificationSuccess,
-                    uncheckedBorderColor = ProtonTheme.colors.iconHint
-                ),
                 checked = archiveSelectedState,
                 onCheckedChange = { onArchiveToggle(it) }
             )

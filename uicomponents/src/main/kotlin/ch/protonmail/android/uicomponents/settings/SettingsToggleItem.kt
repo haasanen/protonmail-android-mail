@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.component.ProtonRawListItem
+import ch.protonmail.android.design.compose.component.ProtonSwitch
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
@@ -77,9 +78,9 @@ fun SettingsToggleItem(
                 )
                 upsellingIcon()
             }
-            Switch(
+            ProtonSwitch(
                 checked = value,
-                onCheckedChange = null,
+                onCheckedChange = {},
                 enabled = isFieldEnabled
             )
         }
