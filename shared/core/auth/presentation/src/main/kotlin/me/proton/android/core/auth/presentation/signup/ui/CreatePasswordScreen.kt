@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -39,7 +40,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -223,8 +229,13 @@ private fun PasswordField(
         enabled = enabled,
         singleLine = true,
         label = { Text(text = stringResource(id = R.string.auth_signup_password)) },
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Password
+        ),
         errorText = errorText,
-        modifier = modifier,
+        modifier = modifier
+            .semantics { contentType = ContentType.NewPassword },
         errorContent = { errorMsg ->
             Column(
                 modifier = Modifier
@@ -263,6 +274,7 @@ private fun PasswordConfirmationField(
         label = { Text(text = stringResource(id = R.string.auth_signup_repeat_password)) },
         errorText = errorText,
         modifier = modifier
+            .semantics { contentType = ContentType.Password }
     )
 }
 

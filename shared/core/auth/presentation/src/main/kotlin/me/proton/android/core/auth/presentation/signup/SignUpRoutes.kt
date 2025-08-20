@@ -80,7 +80,6 @@ object SignUpRoutes {
             route = Route.CreateUsername.route
         ) {
             CreateUsernameScreen(
-                onCloseClicked = { onClose() },
                 onBackClicked = { onClose() },
                 onErrorMessage = { onErrorMessage(it) },
                 onSuccess = { route ->

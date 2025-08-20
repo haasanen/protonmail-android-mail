@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
@@ -45,11 +46,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -97,7 +102,6 @@ internal const val PHONE_FIELD_TAG = "PHONE_FIELD_TAG"
 @Composable
 fun CreateUsernameScreen(
     modifier: Modifier = Modifier,
-    onCloseClicked: () -> Unit = {},
     onBackClicked: () -> Unit = {},
     onErrorMessage: (String?) -> Unit = {},
     onSuccess: (String) -> Unit = {},
@@ -119,7 +123,7 @@ fun CreateUsernameScreen(
     CreateUsernameScreen(
         modifier = modifier,
         onScreenView = { viewModel.onScreenView(it) },
-        onCloseClicked = onCloseClicked,
+        onCloseClicked = { viewModel.perform(CreateUsernameClosed(back = true)) },
         onUsernameSubmitted = { viewModel.perform(it) },
         onCreateExternalClicked = { viewModel.perform(it) },
         onCreateInternalClicked = { viewModel.perform(it) },
@@ -515,7 +519,11 @@ private fun UsernameTextField(
         onValueChanged = onUsernameChanged,
         enabled = enabled,
         errorText = errorText,
-        label = { Text(text = stringResource(id = R.string.auth_signup_email_username)) },
+        label = { Text(text = stringResource(id = R.string.auth_signup_username)) },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Email,
+            autoCorrectEnabled = false
+        ),
         singleLine = true,
         modifier = Modifier
             .onFocusChanged(onFocusChanged)
@@ -529,6 +537,7 @@ private fun UsernameTextField(
                 onFrameUpdated = {},
                 payloadController = usernamePayloadController
             )
+            .semantics { contentType = ContentType.NewUsername }
             .testTag(USERNAME_FIELD_TAG)
     )
 }
@@ -549,6 +558,10 @@ private fun EmailTextField(
         onValueChanged = onEmailChanged,
         enabled = enabled,
         errorText = errorText,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Email,
+            autoCorrectEnabled = false
+        ),
         label = { Text(text = stringResource(id = R.string.auth_email)) },
         singleLine = true,
         modifier = Modifier
@@ -563,6 +576,7 @@ private fun EmailTextField(
                 onFrameUpdated = {},
                 payloadController = emailPayloadController
             )
+            .semantics { contentType = ContentType.EmailAddress }
             .testTag(EMAIL_FIELD_TAG)
     )
 }

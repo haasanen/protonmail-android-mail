@@ -33,7 +33,7 @@
     <string name="auth_login_close">Close</string>
     <string name="auth_login_help">Help</string>
     <string name="auth_sign_in">Sign In</string>
-    <string name="auth_username">Username</string>
+    <string name="auth_login_username">Username or email</string>
     <string name="auth_email">Email</string>
     <string name="auth_password">Password</string>
     <string name="auth_username_placeholder">Username or email</string>
@@ -72,7 +72,7 @@
     <string name="auth_signup_username_assistive_text">Username must not be blank.</string>
     <string name="auth_signup_email_assistive_text">Email must not be blank.</string>
     <string name="auth_signup_next">Next</string>
-    <string name="auth_signup_email_username">Username or email</string>
+    <string name="auth_signup_username">Username</string>
     <string name="auth_signup_create_password">Create your password</string>
     <string name="auth_signup_password">Password</string>
     <string name="auth_signup_repeat_password">Repeat password</string>

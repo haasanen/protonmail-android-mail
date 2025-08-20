@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Tab
@@ -59,6 +60,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -344,7 +346,9 @@ fun RecoveryMethodFormEmail(
             emailChanges.value = emailChanges.value.roll(it)
             email = it
         },
+        enabled = !loading,
         errorText = emailError,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         label = { Text(text = stringResource(id = R.string.auth_email)) },
         singleLine = true,
         modifier = Modifier
@@ -437,7 +441,9 @@ fun RecoveryMethodFormPhone(
                     phoneChanges.value = phoneChanges.value.roll(it)
                     phoneNumber = it
                 },
+                enabled = !loading,
                 errorText = emailError,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 label = { Text(text = stringResource(id = R.string.auth_signup_phone_placeholder)) },
                 singleLine = true,
                 modifier = Modifier

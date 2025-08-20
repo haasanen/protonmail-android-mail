@@ -285,7 +285,7 @@ private fun LoginForm(
             },
             enabled = enabled,
             errorText = usernameError,
-            label = { Text(text = stringResource(id = R.string.auth_username)) },
+            label = { Text(text = stringResource(id = R.string.auth_login_username)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 autoCorrectEnabled = false,
@@ -305,7 +305,7 @@ private fun LoginForm(
                     onFrameUpdated = {},
                     payloadController = usernamePayloadController
                 )
-                .semantics { contentType = ContentType.Username }
+                .semantics { contentType = ContentType.Username + ContentType.EmailAddress }
                 .testTag(USERNAME_FIELD_TAG)
         )
 
