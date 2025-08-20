@@ -33,10 +33,12 @@ import ch.protonmail.android.composer.data.repository.ContactsPermissionReposito
 import ch.protonmail.android.composer.data.repository.DraftRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessageExpirationTimeRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessagePasswordRepositoryImpl
+import ch.protonmail.android.composer.data.repository.RustComposerCspRepository
 import ch.protonmail.android.composer.data.repository.SendingStatusRepositoryImpl
 import ch.protonmail.android.mailcomposer.domain.repository.ActiveComposerRepository
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailcomposer.domain.repository.CameraTempImageRepository
+import ch.protonmail.android.mailcomposer.domain.repository.ComposerCspRepository
 import ch.protonmail.android.mailcomposer.domain.repository.ContactsPermissionRepository
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
@@ -81,6 +83,9 @@ abstract class MailComposerModule {
     @ViewModelScoped
     abstract fun bindsRustAttachmentDataSource(impl: RustAttachmentDataSourceImpl): RustAttachmentDataSource
 
+    @Binds
+    @Reusable
+    abstract fun bindsCspRepository(impl: RustComposerCspRepository): ComposerCspRepository
 }
 
 @Module

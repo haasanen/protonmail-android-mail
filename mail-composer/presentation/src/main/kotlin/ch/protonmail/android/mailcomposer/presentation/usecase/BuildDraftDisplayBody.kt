@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.usecase.GenerateCspNonce
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import javax.inject.Inject
 
@@ -26,7 +27,8 @@ internal const val EDITOR_ID = "EditorId"
 
 class BuildDraftDisplayBody @Inject constructor(
     private val getCustomCss: GetCustomCss,
-    private val getCustomJs: GetCustomJs
+    private val getCustomJs: GetCustomJs,
+    private val generateCspNonce: GenerateCspNonce
 ) {
 
     private val css: String by lazy { getCustomCss() }
@@ -34,13 +36,15 @@ class BuildDraftDisplayBody @Inject constructor(
 
     operator fun invoke(draftBody: DraftBody): DraftDisplayBodyUiModel {
         val bodyContent = draftBody.value
-        return buildHtmlTemplate(bodyContent, css, javascript)
+        val cspNonce = generateCspNonce()
+        return buildHtmlTemplate(bodyContent, css, javascript, cspNonce.value)
     }
 
     private fun buildHtmlTemplate(
         bodyContent: String,
         customCss: String,
-        javascript: String
+        javascript: String,
+        cspNonce: String
     ): DraftDisplayBodyUiModel {
         val html = """
             <!DOCTYPE html>
@@ -48,9 +52,9 @@ class BuildDraftDisplayBody @Inject constructor(
                 <head>
                     <title>Proton HTML Editor</title>
                     <meta id="myViewport" name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
-                    <meta id="myCSP" http-equiv="Content-Security-Policy">
+                    <meta id="myCSP" http-equiv="Content-Security-Policy" content="script-src 'nonce-$cspNonce'">
                     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                    <style>
+                    <style nonce="$cspNonce">
                         $customCss
                     </style>
 
@@ -62,7 +66,7 @@ class BuildDraftDisplayBody @Inject constructor(
                     </div>
                     <div id="editor_footer"></div>
 
-                    <script>
+                    <script nonce="$cspNonce">
                         $javascript
                     </script>
                 </body>
