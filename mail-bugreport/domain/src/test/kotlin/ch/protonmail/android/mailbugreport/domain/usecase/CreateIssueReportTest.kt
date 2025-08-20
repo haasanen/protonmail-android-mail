@@ -37,6 +37,7 @@ internal class CreateIssueReportTest {
         val expectedResult = IssueReportField.ExpectedResult("expect")
         val actualResult = IssueReportField.ActualResult("actual")
         val includeLogs = IssueReportField.ShouldIncludeLogs(true)
+        val additionalFilePaths = IssueReportField.AdditionalFilePaths(listOf("path1", "path2"))
 
         val expectedIssueReport = IssueReport(
             operatingSystem = IssueReportField.OperatingSystem("Android"),
@@ -48,14 +49,47 @@ internal class CreateIssueReportTest {
             stepsToReproduce = reproSteps,
             expectedResult = expectedResult,
             actualResult = actualResult,
-            shouldIncludeLogs = includeLogs
+            shouldIncludeLogs = includeLogs,
+            additionalLogFiles = additionalFilePaths
         )
 
         // When
-        val actual = createIssueReport(summary, reproSteps, expectedResult, actualResult, includeLogs)
+        val actual =
+            createIssueReport(summary, reproSteps, expectedResult, actualResult, includeLogs, additionalFilePaths)
 
         // Then
         assertEquals(expectedIssueReport, actual)
+    }
 
+    @Test
+    fun `should generate the issue report entity with no additional logs when includeLogs is false`() {
+        // Given
+        val summary = IssueReportField.Summary("summary")
+        val reproSteps = IssueReportField.StepsToReproduce("repro")
+        val expectedResult = IssueReportField.ExpectedResult("expect")
+        val actualResult = IssueReportField.ActualResult("actual")
+        val includeLogs = IssueReportField.ShouldIncludeLogs(false)
+        val additionalFilePaths = IssueReportField.AdditionalFilePaths(listOf("path1", "path2"))
+
+        val expectedIssueReport = IssueReport(
+            operatingSystem = IssueReportField.OperatingSystem("Android"),
+            operatingSystemVersion = IssueReportField.OperatingSystemVersion("0"),
+            client = IssueReportField.Client("Android Proton Mail"),
+            clientVersion = IssueReportField.ClientVersion("0.0.0 (0)"),
+            title = IssueReportField.Title("Proton Mail Android App - Bug report"),
+            summary = summary,
+            stepsToReproduce = reproSteps,
+            expectedResult = expectedResult,
+            actualResult = actualResult,
+            shouldIncludeLogs = includeLogs,
+            additionalLogFiles = IssueReportField.AdditionalFilePaths(emptyList())
+        )
+
+        // When
+        val actual =
+            createIssueReport(summary, reproSteps, expectedResult, actualResult, includeLogs, additionalFilePaths)
+
+        // Then
+        assertEquals(expectedIssueReport, actual)
     }
 }

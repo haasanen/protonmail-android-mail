@@ -18,9 +18,11 @@
 
 package ch.protonmail.android.mailbugreport.presentation
 
+import java.io.File
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.model.IssueReport
 import ch.protonmail.android.mailbugreport.domain.usecase.CreateIssueReport
 import ch.protonmail.android.mailbugreport.domain.usecase.SubmitIssueReport
@@ -60,12 +62,14 @@ internal class BugReportViewModelTest {
     private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
     private val createIssueReport = mockk<CreateIssueReport>()
     private val submitIssueReport = mockk<SubmitIssueReport>()
+    private val logsFileHandler = mockk<LogsFileHandler>()
     private val bugReportFormReducer = spyk<BugReportFormReducer>()
 
     fun viewModel() = BugReportViewModel(
         observePrimaryUserId,
         createIssueReport,
         submitIssueReport,
+        logsFileHandler,
         bugReportFormReducer
     )
 
@@ -242,8 +246,9 @@ internal class BugReportViewModelTest {
         val expectedIssueReport = mockk<IssueReport>()
 
         every { observePrimaryUserId() } returns flowOf(userId)
+        every { logsFileHandler.getParentPath() } returns File("")
         coEvery {
-            createIssueReport(any(), any(), any(), any(), any())
+            createIssueReport(any(), any(), any(), any(), any(), any())
         } returns expectedIssueReport
         coEvery { submitIssueReport(userId, expectedIssueReport) } returns DataError.Local.NoDataCached.left()
 
@@ -277,8 +282,9 @@ internal class BugReportViewModelTest {
         val expectedIssueReport = mockk<IssueReport>()
 
         every { observePrimaryUserId() } returns flowOf(userId)
+        every { logsFileHandler.getParentPath() } returns File("")
         coEvery {
-            createIssueReport(any(), any(), any(), any(), any())
+            createIssueReport(any(), any(), any(), any(), any(), any())
         } returns expectedIssueReport
         coEvery { submitIssueReport(userId, expectedIssueReport) } returns Unit.right()
 

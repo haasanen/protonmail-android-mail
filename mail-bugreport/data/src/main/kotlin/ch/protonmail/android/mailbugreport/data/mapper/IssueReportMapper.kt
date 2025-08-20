@@ -34,5 +34,5 @@ internal fun IssueReport.toLocalIssueReport() = LocalIssueReport(
     expectedResult = expectedResult.value,
     actualResult = actualResult.value,
     logs = shouldIncludeLogs.value,
-    additionalFiles = emptyList()
+    additionalFiles = additionalLogFiles.value
 )

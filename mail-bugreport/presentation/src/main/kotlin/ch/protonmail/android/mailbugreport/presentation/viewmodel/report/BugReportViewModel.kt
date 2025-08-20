@@ -21,6 +21,8 @@ package ch.protonmail.android.mailbugreport.presentation.viewmodel.report
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
+import ch.protonmail.android.mailbugreport.domain.annotations.AppLogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.model.IssueReport
 import ch.protonmail.android.mailbugreport.domain.model.IssueReportField
 import ch.protonmail.android.mailbugreport.domain.usecase.CreateIssueReport
@@ -50,6 +52,7 @@ internal class BugReportViewModel @Inject constructor(
     private val observePrimaryUserId: ObservePrimaryUserId,
     private val createIssueReport: CreateIssueReport,
     private val submitIssueReport: SubmitIssueReport,
+    @AppLogsFileHandler private val logsFileHandler: LogsFileHandler,
     private val bugReportFormReducer: BugReportFormReducer
 ) : ViewModel() {
 
@@ -95,7 +98,16 @@ internal class BugReportViewModel @Inject constructor(
             val userId = observePrimaryUserId().firstOrNull()
                 ?: return@launch emitNewStateFromOperation(EffectEvent.UserIdNotFound)
 
-            val report = extractIssueReport(includeLogs)
+            val appLogs = logsFileHandler
+                .getParentPath()
+                .listFiles()
+                ?.map { it.absolutePath }
+                ?.take(3) // App logs rotate and cap at 3, added as additional safeguard
+                ?: emptyList()
+
+            val paths = IssueReportField.AdditionalFilePaths(appLogs)
+
+            val report = extractIssueReport(includeLogs, paths)
 
             submitIssueReport(userId, report).onLeft {
                 emitNewStateFromOperation(EffectEvent.ErrorOnSubmission(it))
@@ -117,7 +129,10 @@ internal class BugReportViewModel @Inject constructor(
         emitNewStateFromOperation(event)
     }
 
-    private fun extractIssueReport(includeLogs: Boolean): IssueReport {
+    private fun extractIssueReport(
+        includeLogs: Boolean,
+        additionalFilePaths: IssueReportField.AdditionalFilePaths
+    ): IssueReport {
         val fields = mutableBugReportStates.value.main.fields
 
         return createIssueReport(
@@ -125,7 +140,8 @@ internal class BugReportViewModel @Inject constructor(
             stepsToReproduce = IssueReportField.StepsToReproduce(fields.reproStepsText.text.toString()),
             expectedResult = IssueReportField.ExpectedResult(fields.expectedResult.text.toString()),
             actualResult = IssueReportField.ActualResult(fields.actualResultSteps.text.toString()),
-            shouldIncludeLogs = IssueReportField.ShouldIncludeLogs(includeLogs)
+            shouldIncludeLogs = IssueReportField.ShouldIncludeLogs(includeLogs),
+            additionalFilePaths = additionalFilePaths
         )
     }
 

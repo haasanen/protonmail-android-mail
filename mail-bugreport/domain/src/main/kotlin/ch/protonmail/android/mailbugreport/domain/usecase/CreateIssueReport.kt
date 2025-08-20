@@ -28,21 +28,34 @@ class CreateIssueReport @Inject constructor(
     private val appInformation: AppInformation
 ) {
 
+    @Suppress("LongParameterList")
     operator fun invoke(
         summary: IssueReportField.Summary,
         stepsToReproduce: IssueReportField.StepsToReproduce,
         expectedResult: IssueReportField.ExpectedResult,
         actualResult: IssueReportField.ActualResult,
-        shouldIncludeLogs: IssueReportField.ShouldIncludeLogs
-    ) = IssueReport(
-        operatingSystemVersion = IssueReportField.OperatingSystemVersion(Build.VERSION.SDK_INT.toString()),
-        clientVersion = IssueReportField.ClientVersion(formatAppVersionName()),
-        summary = summary,
-        stepsToReproduce = stepsToReproduce,
-        expectedResult = expectedResult,
-        actualResult = actualResult,
-        shouldIncludeLogs = shouldIncludeLogs
-    )
+        shouldIncludeLogs: IssueReportField.ShouldIncludeLogs,
+        additionalFilePaths: IssueReportField.AdditionalFilePaths
+    ): IssueReport {
+        // This condition can be dropped later when Rust respects the value for additional logs as well.
+        val additionalFiles = if (shouldIncludeLogs.value) additionalFilePaths else NoAdditionalFilePaths
+
+        return IssueReport(
+            operatingSystemVersion = IssueReportField.OperatingSystemVersion(Build.VERSION.SDK_INT.toString()),
+            clientVersion = IssueReportField.ClientVersion(formatAppVersionName()),
+            summary = summary,
+            stepsToReproduce = stepsToReproduce,
+            expectedResult = expectedResult,
+            actualResult = actualResult,
+            shouldIncludeLogs = shouldIncludeLogs,
+            additionalLogFiles = additionalFiles
+        )
+    }
 
     private fun formatAppVersionName() = "${appInformation.appVersionName} (${appInformation.appVersionCode})"
+
+    private companion object {
+
+        val NoAdditionalFilePaths = IssueReportField.AdditionalFilePaths(emptyList())
+    }
 }

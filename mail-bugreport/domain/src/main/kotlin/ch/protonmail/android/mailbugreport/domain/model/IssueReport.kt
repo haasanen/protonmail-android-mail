@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailbugreport.domain.model
 
 import ch.protonmail.android.mailbugreport.domain.model.IssueReportField.ActualResult
+import ch.protonmail.android.mailbugreport.domain.model.IssueReportField.AdditionalFilePaths
 import ch.protonmail.android.mailbugreport.domain.model.IssueReportField.Client
 import ch.protonmail.android.mailbugreport.domain.model.IssueReportField.ClientVersion
 import ch.protonmail.android.mailbugreport.domain.model.IssueReportField.ExpectedResult
@@ -39,7 +40,8 @@ data class IssueReport(
     val stepsToReproduce: StepsToReproduce,
     val expectedResult: ExpectedResult,
     val actualResult: ActualResult,
-    val shouldIncludeLogs: ShouldIncludeLogs
+    val shouldIncludeLogs: ShouldIncludeLogs,
+    val additionalLogFiles: AdditionalFilePaths
 )
 
 object IssueReportField {
@@ -72,4 +74,7 @@ object IssueReportField {
 
     @JvmInline
     value class ShouldIncludeLogs(val value: Boolean)
+
+    @JvmInline
+    value class AdditionalFilePaths(val value: List<String>)
 }

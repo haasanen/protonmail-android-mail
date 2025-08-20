@@ -40,7 +40,8 @@ internal class IssueReportMapperTest {
             stepsToReproduce = IssueReportField.StepsToReproduce("steps"),
             expectedResult = IssueReportField.ExpectedResult("expected"),
             actualResult = IssueReportField.ActualResult("actual"),
-            shouldIncludeLogs = IssueReportField.ShouldIncludeLogs(true)
+            shouldIncludeLogs = IssueReportField.ShouldIncludeLogs(true),
+            additionalLogFiles = IssueReportField.AdditionalFilePaths(listOf("path1", "path2"))
         )
 
         val expectedRustType = LocalIssueReport(
@@ -55,7 +56,7 @@ internal class IssueReportMapperTest {
             expectedResult = issueReport.expectedResult.value,
             actualResult = issueReport.actualResult.value,
             logs = issueReport.shouldIncludeLogs.value,
-            additionalFiles = emptyList()
+            additionalFiles = issueReport.additionalLogFiles.value
         )
 
         // When
