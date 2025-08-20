@@ -61,6 +61,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.IsMessagePasswordSet
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePasswordChanged
+import ch.protonmail.android.mailcomposer.domain.usecase.ObserveRecipientsValidation
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.ScheduleSendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
@@ -166,6 +167,9 @@ internal class ComposerViewModelTest {
         every { this@mockk.invoke() } returns flowOf()
     }
     private val isMessagePasswordSet = mockk<IsMessagePasswordSet>()
+    private val observeRecipientsValidation = mockk<ObserveRecipientsValidation> {
+        every { this@mockk.invoke() } returns flowOf()
+    }
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<DraftBody>()
@@ -213,6 +217,7 @@ internal class ComposerViewModelTest {
         isMessageExpirationEnabled,
         observeMessagePasswordChanged,
         isMessagePasswordSet,
+        observeRecipientsValidation,
         observePrimaryUserIdMock
     )
 

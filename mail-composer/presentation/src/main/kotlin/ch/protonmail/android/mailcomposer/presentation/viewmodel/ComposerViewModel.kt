@@ -65,6 +65,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.IsMessagePasswordSet
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePasswordChanged
+import ch.protonmail.android.mailcomposer.domain.usecase.ObserveRecipientsValidation
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.ScheduleSendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
@@ -175,6 +176,7 @@ class ComposerViewModel @AssistedInject constructor(
     @IsMessageExpirationEnabled private val messageExpirationEnabled: Flow<Boolean>,
     private val observeMessagePasswordChanged: ObserveMessagePasswordChanged,
     private val isMessagePasswordSet: IsMessagePasswordSet,
+    private val observeRecipientsValidation: ObserveRecipientsValidation,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -238,6 +240,7 @@ class ComposerViewModel @AssistedInject constructor(
             observeAttachments()
             observeMessagePassword()
             observeComposerFields()
+            observeValidatedRecipients()
             processActions()
         }
     }
@@ -329,6 +332,15 @@ class ComposerViewModel @AssistedInject constructor(
             else -> prefillForNewDraft()
         }
         return true
+    }
+
+    private fun observeValidatedRecipients() {
+        observeRecipientsValidation()
+            .onEach {
+                Timber.tag("RecipientValidation").d("validated recipients: $it")
+                recipientsStateManager.setFromDraftRecipients(it.toRecipients, it.ccRecipients, it.bccRecipients)
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun observeMessagePassword() {

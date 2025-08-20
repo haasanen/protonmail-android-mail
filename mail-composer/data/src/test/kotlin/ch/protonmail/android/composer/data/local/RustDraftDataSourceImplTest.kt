@@ -535,6 +535,7 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             toRecipientsWrapper = toRecipientsWrapperMock
         )
+        coEvery { toRecipientsWrapperMock.registerCallback(any()) } just Runs
         coEvery { toRecipientsWrapperMock.recipients() } returns currentRecipients
         coEvery { toRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
         coEvery { toRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
@@ -565,6 +566,7 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             ccRecipientsWrapper = ccRecipientsWrapperMock
         )
+        coEvery { ccRecipientsWrapperMock.registerCallback(any()) } just Runs
         coEvery { ccRecipientsWrapperMock.recipients() } returns currentRecipients
         coEvery { ccRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
         coEvery { ccRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
@@ -595,6 +597,7 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             bccRecipientsWrapper = bccRecipientsWrapperMock
         )
+        coEvery { bccRecipientsWrapperMock.registerCallback(any()) } just Runs
         coEvery { bccRecipientsWrapperMock.recipients() } returns currentRecipients
         coEvery { bccRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
         coEvery { bccRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()
@@ -627,6 +630,7 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             bccRecipientsWrapper = bccRecipientsWrapperMock
         )
+        coEvery { bccRecipientsWrapperMock.registerCallback(any()) } just Runs
         coEvery { bccRecipientsWrapperMock.recipients() } returns currentRecipients
         coEvery { bccRecipientsWrapperMock.addSingleRecipient(any()) } returns Unit.right()
         coEvery { bccRecipientsWrapperMock.removeSingleRecipient(any()) } returns Unit.right()

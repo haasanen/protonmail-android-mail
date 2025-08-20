@@ -68,6 +68,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -109,18 +110,20 @@ class RustDraftDataSourceImpl @Inject constructor(
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val mutablePasswordChangedSignal = MutableSharedFlow<Unit>()
 
-    private val mutableRecipientsUpdatedFlow = MutableSharedFlow<ValidatedRecipients>()
+    private val mutableRecipientsUpdatedFlow = MutableSharedFlow<ValidatedRecipients>(
+        extraBufferCapacity = 2,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
 
     private val recipientsUpdatedCallback = object : ComposerRecipientValidationCallback {
         override fun onUpdate() {
-            Timber.d("rust-draft: recipients validation state updated...")
-
             val toRecipients = draftCache.get().recipientsTo().recipients().toComposerRecipients()
             val ccRecipients = draftCache.get().recipientsCc().recipients().toComposerRecipients()
             val bccRecipients = draftCache.get().recipientsBcc().recipients().toComposerRecipients()
             val updatedRecipients = ValidatedRecipients(toRecipients, ccRecipients, bccRecipients)
 
-            mutableRecipientsUpdatedFlow.tryEmit(updatedRecipients)
+            val emissionResult = mutableRecipientsUpdatedFlow.tryEmit(updatedRecipients)
+            Timber.tag("RecipientValidation").d("Emitting updated recipients validation state: $emissionResult")
         }
     }
 
@@ -194,11 +197,13 @@ class RustDraftDataSourceImpl @Inject constructor(
 
     override suspend fun updateCcRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit> {
         val recipientsCcWrapper = draftCache.get().recipientsCc()
+        recipientsCcWrapper.registerCallback(recipientsUpdatedCallback)
         return updateRecipients(recipientsCcWrapper, recipients)
     }
 
     override suspend fun updateBccRecipients(recipients: List<DraftRecipient>): Either<SaveDraftError, Unit> {
         val recipientsBccWrapper = draftCache.get().recipientsBcc()
+        recipientsBccWrapper.registerCallback(recipientsUpdatedCallback)
         return updateRecipients(recipientsBccWrapper, recipients)
     }
 
@@ -267,8 +272,10 @@ class RustDraftDataSourceImpl @Inject constructor(
 
     override fun observePasswordUpdatedSignal(): Flow<Unit> = mutablePasswordChangedSignal.filterNotNull()
 
-    override fun observeRecipientsValidationEvents(): Flow<ValidatedRecipients> =
-        mutableRecipientsUpdatedFlow.asSharedFlow()
+    override fun observeRecipientsValidationEvents(): Flow<ValidatedRecipients> {
+        Timber.tag("RecipientValidation").d("Registering recipients observer on data source...")
+        return mutableRecipientsUpdatedFlow.asSharedFlow()
+    }
 
     override suspend fun body(): Either<DataError, String> = draftCache.get().body().right()
 

@@ -70,6 +70,7 @@ import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.thenIf
 import kotlinx.coroutines.launch
 import me.proton.core.util.kotlin.takeIfNotBlank
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -114,6 +115,7 @@ fun ComposerChipsListField(
     }
 
     LaunchedEffect(chipsList) {
+        Timber.tag("RecipientValidation").d("CompoChipListField got updated chips: $chipsList")
         listState.updateItems(chipsList)
     }
 
