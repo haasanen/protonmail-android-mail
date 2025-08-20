@@ -127,7 +127,7 @@ fun ComposerChipsListField(
         sheetContent = {
             bottomSheetData?.let { data ->
                 RecipientChipActionsBottomSheetContent(
-                    chipItem = ChipItem.Valid(data.value),
+                    chipItem = data,
                     onCopy = { chipItem ->
                         coroutineScope.launch {
                             clipboardManager.setClipEntry(
