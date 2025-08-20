@@ -37,7 +37,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.mailattachments.domain.model.AttachmentId
 import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilitiesProvider
 import ch.protonmail.android.maildetail.presentation.R
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.ui.MessageBodyWebView
@@ -95,7 +95,7 @@ fun MessageBody(
                 onToggleAttachmentsExpandCollapseMode = actions.onToggleAttachmentsExpandCollapseMode,
                 onExpandCollapseButtonCLicked = actions.onExpandCollapseButtonClicked,
                 onAttachmentClicked = actions.onAttachmentClicked,
-                loadEmbeddedImage = actions.loadEmbeddedImage,
+                loadImage = actions.loadImage,
                 onPrint = actions.onPrint
             ),
             onBuildWebView = onBuildWebView(webViewCache),
@@ -168,7 +168,7 @@ object MessageBody {
         val onShowAllAttachments: () -> Unit,
         val onAttachmentClicked: (attachmentId: AttachmentId) -> Unit,
         val onToggleAttachmentsExpandCollapseMode: () -> Unit,
-        val loadEmbeddedImage: (messageId: MessageId, contentId: String) -> EmbeddedImage?,
+        val loadImage: (messageId: MessageId, url: String) -> MessageBodyImage?,
         val onReply: (MessageId) -> Unit,
         val onReplyAll: (MessageId) -> Unit,
         val onForward: (MessageId) -> Unit,

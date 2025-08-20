@@ -28,7 +28,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import ch.protonmail.android.maildetail.presentation.R
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.extension.getSecuredWebResourceResponse
 import ch.protonmail.android.mailmessage.presentation.extension.isEmbeddedImage
@@ -48,7 +48,7 @@ class PrintWebViewHandler @Inject constructor() {
 
     data class ResourceLoadingConfig(
         val messageId: MessageId,
-        val loadEmbeddedImage: (MessageId, String) -> EmbeddedImage?,
+        val loadEmbeddedImage: (MessageId, String) -> MessageBodyImage?,
         val showRemoteContent: Boolean,
         val showEmbeddedImages: Boolean
     )

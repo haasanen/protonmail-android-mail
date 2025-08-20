@@ -32,7 +32,7 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderAddresses
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.domain.entity.UserId
@@ -41,7 +41,7 @@ import kotlin.time.Instant
 interface DraftRepository {
 
     suspend fun getMessageId(): Either<DataError, MessageId>
-    fun getEmbeddedImage(contentId: String): Either<DataError, EmbeddedImage>
+    fun getEmbeddedImage(contentId: String): Either<DataError, MessageBodyImage>
     suspend fun openDraft(userId: UserId, messageId: MessageId): Either<OpenDraftError, DraftFieldsWithSyncStatus>
     suspend fun createDraft(userId: UserId, action: DraftAction): Either<OpenDraftError, DraftFields>
     suspend fun discardDraft(userId: UserId, messageId: MessageId): Either<DataError, Unit>

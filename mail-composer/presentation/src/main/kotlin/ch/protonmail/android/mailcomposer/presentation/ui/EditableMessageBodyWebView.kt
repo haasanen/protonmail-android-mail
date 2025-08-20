@@ -51,7 +51,7 @@ import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.presentation.extension.isEmbeddedImage
 import ch.protonmail.android.mailmessage.presentation.ui.showInDarkMode
@@ -231,7 +231,7 @@ private fun configureDarkLightMode(webView: WebView, isInDarkTheme: Boolean) {
 object EditableMessageBodyWebView {
 
     data class Actions(
-        val loadEmbeddedImage: (contentId: String) -> EmbeddedImage?,
+        val loadEmbeddedImage: (contentId: String) -> MessageBodyImage?,
         val onMessageBodyChanged: (body: String) -> Unit,
         val onWebViewParamsChanged: (params: WebViewMeasures) -> Unit,
         val onBuildWebView: (Context) -> WebView,

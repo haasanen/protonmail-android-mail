@@ -105,7 +105,7 @@ import ch.protonmail.android.mailmessage.domain.model.DraftAction.Forward
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.PrefillForShare
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.Reply
 import ch.protonmail.android.mailmessage.domain.model.DraftAction.ReplyAll
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import dagger.assisted.Assisted
@@ -618,7 +618,7 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    fun loadEmbeddedImage(contentId: String): EmbeddedImage? = getEmbeddedImage(contentId).getOrNull()
+    fun loadEmbeddedImage(contentId: String): MessageBodyImage? = getEmbeddedImage(contentId).getOrNull()
 
     private suspend fun onScheduleSendRequested() {
         getFormattedScheduleSendOptions()

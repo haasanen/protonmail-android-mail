@@ -40,10 +40,10 @@ class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
             is BodyOutputResult.Ok -> result.v1.right()
         }
 
-    suspend fun getEmbeddedAttachment(contentId: String): Either<DataError, LocalAttachmentData> =
-        when (val result = decryptedMessage.getEmbeddedAttachment(contentId)) {
+    suspend fun loadImage(url: String): Either<DataError, LocalAttachmentData> =
+        when (val result = decryptedMessage.loadImage(url)) {
             is AttachmentDataResult.Error -> {
-                Timber.d("DecryptedMessageWrapper: Failed to load image: $contentId: ${result.v1}")
+                Timber.d("DecryptedMessageWrapper: Failed to load image: $url: ${result.v1}")
                 result.v1.toDataError().left()
             }
             is AttachmentDataResult.Ok -> result.v1.right()

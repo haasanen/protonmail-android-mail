@@ -46,7 +46,7 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.DraftAttachmentUploadError
@@ -117,7 +117,7 @@ fun DraftAction.toDraftCreateMode(): DraftCreateMode? = when (this) {
     }
 }
 
-fun LocalAttachmentData.toEmbeddedImage() = EmbeddedImage(this.data, this.mime)
+fun LocalAttachmentData.toEmbeddedImage() = MessageBodyImage(this.data, this.mime)
 
 fun DraftSenderAddressChangeError.toChangeSenderError() = when (this) {
     is DraftSenderAddressChangeError.Other -> ChangeSenderError.Other(this.v1.toDataError())

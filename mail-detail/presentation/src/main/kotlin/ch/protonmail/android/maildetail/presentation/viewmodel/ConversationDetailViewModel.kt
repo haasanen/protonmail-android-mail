@@ -86,7 +86,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMe
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailReducer
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
-import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
+import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
@@ -187,7 +187,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val messageViewStateCache: MessageViewStateCache,
     private val observeConversationViewState: ObserveConversationViewState,
     private val getAttachmentIntentValues: GetAttachmentIntentValues,
-    private val getEmbeddedImageAvoidDuplicatedExecution: GetEmbeddedImageAvoidDuplicatedExecution,
+    private val loadImageAvoidDuplicatedExecution: LoadImageAvoidDuplicatedExecution,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
     private val observePrivacySettings: ObservePrivacySettings,
     private val updateLinkConfirmationSetting: UpdateLinkConfirmationSetting,
@@ -395,7 +395,7 @@ class ConversationDetailViewModel @Inject constructor(
                             subject = conversationState.conversationUiModel.subject,
                             messageHeader = it.messageDetailHeaderUiModel,
                             messageBody = it.messageBodyUiModel,
-                            loadEmbeddedImage = this@ConversationDetailViewModel::loadEmbeddedImage,
+                            loadEmbeddedImage = this@ConversationDetailViewModel::loadImage,
                             printConfiguration = PrintConfiguration(
                                 showRemoteContent = !it.messageBodyUiModel.shouldShowRemoteContentBanner,
                                 showEmbeddedImages = !it.messageBodyUiModel.shouldShowEmbeddedImagesBanner
@@ -460,12 +460,12 @@ class ConversationDetailViewModel @Inject constructor(
 
     }
 
-    fun loadEmbeddedImage(messageId: MessageId?, contentId: String) = messageId?.let {
+    fun loadImage(messageId: MessageId?, url: String) = messageId?.let {
         runBlocking {
-            getEmbeddedImageAvoidDuplicatedExecution(
+            loadImageAvoidDuplicatedExecution(
                 userId = primaryUserId.first(),
                 messageId = it,
-                contentId = contentId,
+                url = url,
                 coroutineContext = viewModelScope.coroutineContext
             )
         }

@@ -133,7 +133,7 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.FormatRsvpWidgetTime
 import ch.protonmail.android.maildetail.presentation.usecase.FormatScheduleSendTime
-import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
+import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
@@ -146,7 +146,7 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToIte
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.EventId
 import ch.protonmail.android.mailmessage.domain.model.GetMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -296,7 +296,7 @@ class ConversationDetailViewModelIntegrationTest {
 
     private val getDownloadingAttachmentsForMessages = mockk<GetDownloadingAttachmentsForMessages>()
     private val getAttachmentIntentValues = mockk<GetAttachmentIntentValues>()
-    private val getEmbeddedImageAvoidDuplicatedExecution = mockk<GetEmbeddedImageAvoidDuplicatedExecution>()
+    private val loadImageAvoidDuplicatedExecution = mockk<LoadImageAvoidDuplicatedExecution>()
     private val findContactByEmail: FindContactByEmail = mockk<FindContactByEmail> {
         coEvery { this@mockk.invoke(any(), any()) } returns ContactSample.Stefano
     }
@@ -1345,14 +1345,14 @@ class ConversationDetailViewModelIntegrationTest {
         val messageId = MessageId("rawMessageId")
         val contentId = "contentId"
         val byteArray = "I'm a byte array".toByteArray()
-        val expectedResult = EmbeddedImage(byteArray, "image/png")
-        coEvery { getEmbeddedImageAvoidDuplicatedExecution(userId, messageId, contentId, any()) } returns expectedResult
+        val expectedResult = MessageBodyImage(byteArray, "image/png")
+        coEvery { loadImageAvoidDuplicatedExecution(userId, messageId, contentId, any()) } returns expectedResult
 
         // When
         val viewModel = buildConversationDetailViewModel()
         advanceUntilIdle()
 
-        val actual = viewModel.loadEmbeddedImage(messageId, contentId)
+        val actual = viewModel.loadImage(messageId, contentId)
 
         // Then
         assertEquals(expectedResult, actual)
@@ -1363,13 +1363,13 @@ class ConversationDetailViewModelIntegrationTest {
         // Given
         val messageId = MessageId("rawMessageId")
         val contentId = "contentId"
-        coEvery { getEmbeddedImageAvoidDuplicatedExecution(userId, messageId, contentId, any()) } returns null
+        coEvery { loadImageAvoidDuplicatedExecution(userId, messageId, contentId, any()) } returns null
 
         // When
         val viewModel = buildConversationDetailViewModel()
         advanceUntilIdle()
 
-        val actual = viewModel.loadEmbeddedImage(messageId, contentId)
+        val actual = viewModel.loadImage(messageId, contentId)
 
         // Then
         assertNull(actual)
@@ -2503,7 +2503,7 @@ class ConversationDetailViewModelIntegrationTest {
         messageViewStateCache = messageViewStateCache,
         observeConversationViewState = observeConversationViewState,
         getAttachmentIntentValues = getIntentValues,
-        getEmbeddedImageAvoidDuplicatedExecution = getEmbeddedImageAvoidDuplicatedExecution,
+        loadImageAvoidDuplicatedExecution = loadImageAvoidDuplicatedExecution,
         ioDispatcher = ioDispatcher,
         observePrivacySettings = observePrivacySettings,
         updateLinkConfirmationSetting = updateLinkConfirmationSetting,

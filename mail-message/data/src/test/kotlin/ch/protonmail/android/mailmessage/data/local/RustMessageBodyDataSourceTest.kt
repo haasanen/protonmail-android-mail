@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmessage.data.local
 
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.local.RustMailboxFactory
@@ -112,4 +113,50 @@ class RustMessageBodyDataSourceTest {
         assertEquals(expectedError.left(), result)
     }
 
+    @Test
+    fun `load image should return attachment data`() = runTest(testDispatcher) {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSessionWrapper>()
+        val messageId = LocalMessageIdSample.AugWeatherForecast
+        val mailbox = mockk<MailboxWrapper>()
+        val attachmentData = LocalAttachmentData(
+            data = byteArrayOf(),
+            mime = ""
+        )
+
+        val decryptedMessageBodyWrapper = mockk<DecryptedMessageWrapper> {
+            coEvery { loadImage(any()) } returns attachmentData.right()
+        }
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
+        coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns decryptedMessageBodyWrapper.right()
+
+        // When
+        val result = dataSource.loadImage(userId, messageId, "url")
+
+        // Then
+        coVerify { rustMailboxFactory.createAllMail(userId) }
+        coVerify { createRustMessageBodyAccessor(mailbox, messageId) }
+        assertTrue(result.isRight())
+    }
+
+    @Test
+    fun `load image should handle error`() = runTest(testDispatcher) {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageId = LocalMessageIdSample.AugWeatherForecast
+        val mailbox = mockk<MailboxWrapper>()
+        val expectedError = DataError.Local.NoDataCached
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
+        coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns expectedError.left()
+
+        // When
+        val result = dataSource.loadImage(userId, messageId, "url")
+
+        // Then
+        coVerify { rustMailboxFactory.createAllMail(userId) }
+        assertEquals(expectedError.left(), result)
+    }
 }

@@ -34,9 +34,9 @@ interface MessageBodyDataSource {
         transformations: MessageBodyTransformations
     ): Either<DataError, MessageBody>
 
-    suspend fun getEmbeddedImage(
+    suspend fun loadImage(
         userId: UserId,
         messageId: LocalMessageId,
-        contentId: String
+        url: String
     ): Either<DataError, LocalAttachmentData>
 }

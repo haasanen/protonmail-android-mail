@@ -89,7 +89,7 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample.InvoiceWithLabelExpanding
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMetadataUiModelSample
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
-import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
+import ch.protonmail.android.maildetail.presentation.usecase.LoadImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
@@ -246,7 +246,7 @@ class ConversationDetailViewModelTest {
     }
     private val getAttachmentIntentValues = mockk<GetAttachmentIntentValues>()
     private val getAttachmentDownloadStatus = mockk<GetDownloadingAttachmentsForMessages>()
-    private val getEmbeddedImageAvoidDuplicatedExecution = mockk<GetEmbeddedImageAvoidDuplicatedExecution>()
+    private val loadImageAvoidDuplicatedExecution = mockk<LoadImageAvoidDuplicatedExecution>()
     private val reducer: ConversationDetailReducer = mockk {
         coEvery { newStateFrom(currentState = any(), operation = any()) } returns ConversationDetailState.Loading
     }
@@ -362,7 +362,7 @@ class ConversationDetailViewModelTest {
             messageViewStateCache = messageViewStateCache,
             observeConversationViewState = observeConversationViewState,
             getAttachmentIntentValues = getAttachmentIntentValues,
-            getEmbeddedImageAvoidDuplicatedExecution = getEmbeddedImageAvoidDuplicatedExecution,
+            loadImageAvoidDuplicatedExecution = loadImageAvoidDuplicatedExecution,
             ioDispatcher = Dispatchers.Unconfined,
             observePrivacySettings = observePrivacySettings,
             updateLinkConfirmationSetting = updateLinkConfirmationSetting,

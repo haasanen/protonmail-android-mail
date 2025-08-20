@@ -16,28 +16,24 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.domain.model
+package ch.protonmail.android.mailmessage.domain.usecase
 
-data class EmbeddedImage(
-    val data: ByteArray,
-    val mimeType: String
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
+import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.repository.MessageBodyRepository
+import me.proton.core.domain.entity.UserId
+import javax.inject.Inject
+
+class LoadMessageBodyImage @Inject constructor(
+    private val messageBodyRepository: MessageBodyRepository
 ) {
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+    suspend operator fun invoke(
+        userId: UserId,
+        messageId: MessageId,
+        url: String
+    ): Either<DataError, MessageBodyImage> = messageBodyRepository.loadImage(userId, messageId, url)
 
-        other as EmbeddedImage
-
-        if (!data.contentEquals(other.data)) return false
-        if (mimeType != other.mimeType) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = data.contentHashCode()
-        result = 31 * result + mimeType.hashCode()
-        return result
-    }
 }

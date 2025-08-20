@@ -40,7 +40,7 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import kotlinx.coroutines.CoroutineDispatcher
@@ -56,7 +56,7 @@ class DraftRepositoryImpl @Inject constructor(
 
     override suspend fun getMessageId(): Either<DataError, MessageId> = draftDataSource.getMessageId()
 
-    override fun getEmbeddedImage(contentId: String): Either<DataError, EmbeddedImage> =
+    override fun getEmbeddedImage(contentId: String): Either<DataError, MessageBodyImage> =
         draftDataSource.getEmbeddedImage(contentId).map { it.toEmbeddedImage() }
 
     override suspend fun openDraft(

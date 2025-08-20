@@ -39,7 +39,7 @@ internal class MessageDetailFooterActionsTest {
         val actions = ConversationDetailItem.Actions(
             onMessageBodyLinkClicked = { _, _ -> },
             onAttachmentClicked = { _, _ -> },
-            loadEmbeddedImage = { _, _ -> null },
+            loadImage = { _, _ -> null },
             onReply = replyLambda,
             onReplyAll = replyAllLambda,
             onForward = forwardLambda,

@@ -118,7 +118,7 @@ import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomShe
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetScreen
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheet
 import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetScreen
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageTheme
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
@@ -476,7 +476,7 @@ fun ConversationDetailScreen(
                 openAttachment = actions.openAttachment,
                 handleProtonCalendarRequest = actions.handleProtonCalendarRequest,
                 showFeatureMissingSnackbar = actions.showFeatureMissingSnackbar,
-                loadEmbeddedImage = { messageId, contentId -> viewModel.loadEmbeddedImage(messageId, contentId) },
+                loadImage = { messageId, url -> viewModel.loadImage(messageId, url) },
                 onReply = {
                     actions.onReply(it)
                 },
@@ -740,7 +740,7 @@ fun ConversationDetailScreen(
                     onAttachmentClicked = actions.onAttachmentClicked,
                     onToggleAttachmentsExpandCollapseMode = actions.onToggleAttachmentsExpandCollapseMode,
                     showFeatureMissingSnackbar = actions.showFeatureMissingSnackbar,
-                    loadEmbeddedImage = actions.loadEmbeddedImage,
+                    loadImage = actions.loadImage,
                     onReply = actions.onReply,
                     onReplyAll = actions.onReplyAll,
                     onForward = actions.onForward,
@@ -1108,7 +1108,7 @@ object ConversationDetailScreen {
         val openAttachment: (values: OpenAttachmentIntentValues) -> Unit,
         val handleProtonCalendarRequest: (values: OpenProtonCalendarIntentValues) -> Unit,
         val showFeatureMissingSnackbar: () -> Unit,
-        val loadEmbeddedImage: (messageId: MessageId?, contentId: String) -> EmbeddedImage?,
+        val loadImage: (messageId: MessageId?, url: String) -> MessageBodyImage?,
         val onReply: (MessageId) -> Unit,
         val onReplyAll: (MessageId) -> Unit,
         val onForward: (MessageId) -> Unit,
@@ -1164,7 +1164,7 @@ object ConversationDetailScreen {
                 openAttachment = {},
                 handleProtonCalendarRequest = {},
                 showFeatureMissingSnackbar = {},
-                loadEmbeddedImage = { _, _ -> null },
+                loadImage = { _, _ -> null },
                 onReply = {},
                 onReplyAll = {},
                 onForward = {},

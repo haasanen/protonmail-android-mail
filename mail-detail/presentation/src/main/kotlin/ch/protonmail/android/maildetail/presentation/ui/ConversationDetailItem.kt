@@ -70,7 +70,7 @@ import ch.protonmail.android.maildetail.presentation.ui.header.MessageDetailHead
 import ch.protonmail.android.maildetail.presentation.ui.rsvpwidget.RsvpWidget
 import ch.protonmail.android.maildetail.presentation.ui.rsvpwidget.RsvpWidgetError
 import ch.protonmail.android.maildetail.presentation.ui.rsvpwidget.RsvpWidgetLoading
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageThemeOptions
 import ch.protonmail.android.mailmessage.domain.model.RsvpAnswer
@@ -308,7 +308,7 @@ private fun ColumnScope.ConversationDetailExpandedItem(
                         actions.onBodyExpandCollapseButtonClicked(uiModel.messageId)
                         isExpanding.value = true
                     },
-                    loadEmbeddedImage = actions.loadEmbeddedImage,
+                    loadImage = actions.loadImage,
                     onReply = actions.onReply,
                     onReplyAll = actions.onReplyAll,
                     onForward = actions.onForward,
@@ -375,7 +375,7 @@ object ConversationDetailItem {
         val onAttachmentClicked: (MessageIdUiModel, AttachmentId) -> Unit,
         val onToggleAttachmentsExpandCollapseMode: (MessageIdUiModel) -> Unit,
         val showFeatureMissingSnackbar: () -> Unit,
-        val loadEmbeddedImage: (messageId: MessageId?, contentId: String) -> EmbeddedImage?,
+        val loadImage: (messageId: MessageId?, url: String) -> MessageBodyImage?,
         val onReply: (MessageId) -> Unit,
         val onReplyAll: (MessageId) -> Unit,
         val onForward: (MessageId) -> Unit,

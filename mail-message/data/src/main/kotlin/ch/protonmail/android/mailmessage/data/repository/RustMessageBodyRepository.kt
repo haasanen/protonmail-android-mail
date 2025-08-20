@@ -22,7 +22,7 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.local.MessageBodyDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -42,15 +42,13 @@ class RustMessageBodyRepository @Inject constructor(
     ): Either<DataError, MessageBody> =
         messageBodyDataSource.getMessageBody(userId, messageId.toLocalMessageId(), transformations)
 
-    override suspend fun getEmbeddedImage(
+    override suspend fun loadImage(
         userId: UserId,
         messageId: MessageId,
-        contentId: String
-    ): Either<DataError, EmbeddedImage> =
-        messageBodyDataSource.getEmbeddedImage(userId, messageId.toLocalMessageId(), contentId)
-            .map { localEmbeddedImage ->
-                Timber.d("RustMessage: Loaded embedded image: $contentId; mime ${localEmbeddedImage.mime};")
-                EmbeddedImage(localEmbeddedImage.data, localEmbeddedImage.mime)
-            }
-
+        url: String
+    ): Either<DataError, MessageBodyImage> = messageBodyDataSource.loadImage(userId, messageId.toLocalMessageId(), url)
+        .map { localAttachmentData ->
+            Timber.d("RustMessage: Loaded image: $url; mime ${localAttachmentData.mime};")
+            MessageBodyImage(localAttachmentData.data, localAttachmentData.mime)
+        }
 }

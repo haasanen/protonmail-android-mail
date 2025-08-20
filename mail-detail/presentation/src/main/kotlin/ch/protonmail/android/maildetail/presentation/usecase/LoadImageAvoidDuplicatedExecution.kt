@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.maildetail.presentation.usecase
 
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
-import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
+import ch.protonmail.android.mailmessage.domain.usecase.LoadMessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -28,24 +28,24 @@ import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class GetEmbeddedImageAvoidDuplicatedExecution @Inject constructor(
-    private val getEmbeddedImage: GetEmbeddedImage
+class LoadImageAvoidDuplicatedExecution @Inject constructor(
+    private val loadMessageBodyImage: LoadMessageBodyImage
 ) {
 
-    private val loadEmbeddedImageJobMap = mutableMapOf<String, Deferred<EmbeddedImage?>>()
+    private val loadMessageBodyImageJobMap = mutableMapOf<String, Deferred<MessageBodyImage?>>()
 
     suspend operator fun invoke(
         userId: UserId,
         messageId: MessageId,
-        contentId: String,
+        url: String,
         coroutineContext: CoroutineContext
-    ): EmbeddedImage? = runCatching {
+    ): MessageBodyImage? = runCatching {
         withContext(coroutineContext) {
-            if (loadEmbeddedImageJobMap[contentId]?.isActive == true) {
-                loadEmbeddedImageJobMap[contentId]
+            if (loadMessageBodyImageJobMap[url]?.isActive == true) {
+                loadMessageBodyImageJobMap[url]
             } else {
-                async { getEmbeddedImage(userId, messageId, contentId).getOrNull() }.apply {
-                    loadEmbeddedImageJobMap[contentId] = this
+                async { loadMessageBodyImage(userId, messageId, url).getOrNull() }.apply {
+                    loadMessageBodyImageJobMap[url] = this
                 }
             }?.await()
         }

@@ -20,7 +20,7 @@ package ch.protonmail.android.mailmessage.domain.repository
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyTransformations
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -34,9 +34,9 @@ interface MessageBodyRepository {
         transformations: MessageBodyTransformations
     ): Either<DataError, MessageBody>
 
-    suspend fun getEmbeddedImage(
+    suspend fun loadImage(
         userId: UserId,
         messageId: MessageId,
-        contentId: String
-    ): Either<DataError, EmbeddedImage>
+        url: String
+    ): Either<DataError, MessageBodyImage>
 }

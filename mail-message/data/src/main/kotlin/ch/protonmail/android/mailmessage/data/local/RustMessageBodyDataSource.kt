@@ -71,10 +71,10 @@ class RustMessageBodyDataSource @Inject constructor(
             }
     }
 
-    override suspend fun getEmbeddedImage(
+    override suspend fun loadImage(
         userId: UserId,
         messageId: LocalMessageId,
-        contentId: String
+        url: String
     ): Either<DataError, LocalAttachmentData> = withContext(ioDispatcher) {
         // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
         // the current labelId is not needed to get the body and is planned to be dropped on this API
@@ -84,7 +84,7 @@ class RustMessageBodyDataSource @Inject constructor(
         return@withContext createRustMessageBodyAccessor(mailbox, messageId)
             .onLeft { Timber.e("rust-message: Failed to build message body accessor $it") }
             .flatMap { decryptedMessage ->
-                decryptedMessage.getEmbeddedAttachment(contentId)
+                decryptedMessage.loadImage(url)
             }
     }
 

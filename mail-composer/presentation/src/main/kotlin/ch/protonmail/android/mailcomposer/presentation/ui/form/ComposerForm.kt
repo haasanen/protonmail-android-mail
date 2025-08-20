@@ -62,7 +62,7 @@ import ch.protonmail.android.mailcomposer.presentation.ui.EditableMessageBodyWeb
 import ch.protonmail.android.mailcomposer.presentation.ui.SenderEmailWithSelector
 import ch.protonmail.android.mailcomposer.presentation.ui.SubjectTextField
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.RecipientsViewModel
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.ui.AttachmentList
 import ch.protonmail.android.uicomponents.keyboardVisibilityAsState
@@ -260,7 +260,7 @@ internal object ComposerForm {
         val onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
         val onHeaderPositioned: (boundsInWindow: Rect, height: Float) -> Unit,
         val onWebViewPositioned: (boundsInWindow: Rect) -> Unit,
-        val loadEmbeddedImage: (String) -> EmbeddedImage?,
+        val loadEmbeddedImage: (String) -> MessageBodyImage?,
         val onAttachmentRemoveRequested: (AttachmentId) -> Unit,
         val onInlineImageRemoved: (String) -> Unit,
         val onInlineImageClicked: (String) -> Unit,

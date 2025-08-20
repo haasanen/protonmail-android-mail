@@ -20,7 +20,7 @@ package ch.protonmail.android.maildetail.presentation.usecase.print
 
 import android.content.Context
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import javax.inject.Inject
@@ -35,7 +35,7 @@ class PrintMessage @Inject constructor(
         subject: String,
         messageHeader: MessageDetailHeaderUiModel,
         messageBody: MessageBodyUiModel,
-        loadEmbeddedImage: (MessageId, String) -> EmbeddedImage?,
+        loadEmbeddedImage: (MessageId, String) -> MessageBodyImage?,
         printConfiguration: PrintConfiguration = PrintConfiguration()
     ) {
         val htmlDocument = documentBuilder.buildDocument(

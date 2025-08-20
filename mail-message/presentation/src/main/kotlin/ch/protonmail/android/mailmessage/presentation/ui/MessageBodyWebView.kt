@@ -74,12 +74,11 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
 import ch.protonmail.android.mailcommon.presentation.extension.openShareIntentForUri
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.extension.getSecuredWebResourceResponse
-import ch.protonmail.android.mailmessage.presentation.extension.isEmbeddedImage
 import ch.protonmail.android.mailmessage.presentation.extension.isRemoteUnsecuredContent
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
@@ -171,14 +170,14 @@ fun MessageBodyWebView(
             }
 
             override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
-                return if (request?.isEmbeddedImage() == true) {
-                    actions.loadEmbeddedImage(messageId, request.url.schemeSpecificPart)?.let {
-                        WebResourceResponse(it.mimeType, "", ByteArrayInputStream(it.data))
-                    }
-                } else if (request?.isRemoteUnsecuredContent() == true) {
+                return if (request?.isRemoteUnsecuredContent() == true) {
                     request.getSecuredWebResourceResponse()
                 } else {
-                    super.shouldInterceptRequest(view, request)
+                    request?.url?.toString()?.let { url ->
+                        actions.loadImage(messageId, url)?.let {
+                            WebResourceResponse(it.mimeType, "", ByteArrayInputStream(it.data))
+                        }
+                    } ?: super.shouldInterceptRequest(view, request)
                 }
             }
 
@@ -393,7 +392,7 @@ object MessageBodyWebView {
         val onExpandCollapseButtonCLicked: () -> Unit,
         val onAttachmentClicked: (attachmentId: AttachmentId) -> Unit,
         val onToggleAttachmentsExpandCollapseMode: () -> Unit,
-        val loadEmbeddedImage: (messageId: MessageId, contentId: String) -> EmbeddedImage?,
+        val loadImage: (messageId: MessageId, url: String) -> MessageBodyImage?,
         val onPrint: (MessageId) -> Unit
     )
 }
