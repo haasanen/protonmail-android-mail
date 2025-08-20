@@ -23,14 +23,12 @@ import ch.protonmail.android.mailonboarding.presentation.R
 internal data class OnboardingUiModel(
     val illustrationId: Int,
     val title: Int,
-    val headlineId: Int,
     val descriptionId: Int
 ) {
     companion object {
         val Empty = OnboardingUiModel(
             illustrationId = R.drawable.empty,
             title = R.string.empty,
-            headlineId = R.string.empty,
             descriptionId = R.string.empty
         )
     }

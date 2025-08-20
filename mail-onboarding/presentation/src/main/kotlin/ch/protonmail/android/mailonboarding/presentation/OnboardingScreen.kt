@@ -80,19 +80,16 @@ private fun OnboardingScreen(
         OnboardingUiModel(
             illustrationId = R.drawable.illustration_onboarding_welcome,
             title = R.string.onboarding_welcome_title,
-            headlineId = R.string.onboarding_welcome_headline,
             descriptionId = R.string.onboarding_welcome_description
         ),
         OnboardingUiModel(
             illustrationId = R.drawable.illustration_onboarding_rebuilt,
             title = R.string.onboarding_rebuilt_title,
-            headlineId = R.string.onboarding_rebuilt_headline,
             descriptionId = R.string.onboarding_rebuilt_description
         ),
         OnboardingUiModel(
             illustrationId = R.drawable.illustration_onboarding_feedback,
             title = R.string.onboarding_feedback_title,
-            headlineId = R.string.onboarding_feedback_headline,
             descriptionId = R.string.onboarding_feedback_description
         ),
         if (isEligibleForUpselling) OnboardingUiModel.Empty else null
