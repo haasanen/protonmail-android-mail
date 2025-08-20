@@ -18,29 +18,30 @@
 
 package ch.protonmail.android.mailsettings.domain.usecase.scenario
 
+import arrow.core.Either
 import ch.protonmail.android.mailsession.domain.model.Percent
 import ch.protonmail.android.mailsession.domain.model.Storage
 import ch.protonmail.android.mailsession.domain.model.StorageUnit
 import ch.protonmail.android.mailsession.domain.model.User
 import ch.protonmail.android.mailsettings.domain.model.StorageQuota
-import ch.protonmail.android.mailsettings.domain.model.StorageQuotaResult
+import ch.protonmail.android.mailsettings.domain.model.StorageQuotaError
 import ch.protonmail.android.testdata.user.UserTestData
 import me.proton.core.domain.entity.UserId
 
 internal enum class UserStorageQuotaScenario(
     val primaryUserId: UserId?,
     val userList: List<User> = emptyList(),
-    val expectedStorageQuota: StorageQuotaResult
+    val expectedStorageQuota: Either<StorageQuotaError, StorageQuota>
 ) {
 
     FAILED_TO_RETRIEVE_PRIMARY_USER_ID(
         primaryUserId = null,
-        expectedStorageQuota = StorageQuotaResult.Error.FailedToRetrievePrimaryUserId
+        expectedStorageQuota = Either.Left(StorageQuotaError.FailedToRetrievePrimaryUserId)
     ),
     FAILED_TO_RETRIEVE_USER(
         primaryUserId = UserId("some-user-id"),
         userList = emptyList(),
-        expectedStorageQuota = StorageQuotaResult.Error.FailedToRetrieveUser
+        expectedStorageQuota = Either.Left(StorageQuotaError.FailedToRetrieveUser)
     ),
     ZERO_USAGE(
         primaryUserId = UserId("user-zero"),
@@ -51,7 +52,7 @@ internal enum class UserStorageQuotaScenario(
                 maxSpace = 1_099_511_627_776L
             )
         ),
-        expectedStorageQuota = StorageQuotaResult.Success(
+        expectedStorageQuota = Either.Right(
             StorageQuota(
                 usagePercent = Percent(0.0),
                 maxStorage = Storage(1, StorageUnit.TiB),
@@ -68,7 +69,7 @@ internal enum class UserStorageQuotaScenario(
                 maxSpace = 1_500_000_000L
             )
         ),
-        expectedStorageQuota = StorageQuotaResult.Success(
+        expectedStorageQuota = Either.Right(
             StorageQuota(
                 usagePercent = Percent(60.0),
                 maxStorage = Storage(1, StorageUnit.GiB),
@@ -85,7 +86,7 @@ internal enum class UserStorageQuotaScenario(
                 maxSpace = 1_500_000L
             )
         ),
-        expectedStorageQuota = StorageQuotaResult.Success(
+        expectedStorageQuota = Either.Right(
             StorageQuota(
                 usagePercent = Percent(80.0),
                 maxStorage = Storage(1, StorageUnit.MiB),
@@ -102,7 +103,7 @@ internal enum class UserStorageQuotaScenario(
                 maxSpace = 1_500L
             )
         ),
-        expectedStorageQuota = StorageQuotaResult.Success(
+        expectedStorageQuota = Either.Right(
             StorageQuota(
                 usagePercent = Percent(90.0),
                 maxStorage = Storage(1, StorageUnit.KiB),
@@ -119,7 +120,7 @@ internal enum class UserStorageQuotaScenario(
                 maxSpace = 1L
             )
         ),
-        expectedStorageQuota = StorageQuotaResult.Success(
+        expectedStorageQuota = Either.Right(
             StorageQuota(
                 usagePercent = Percent(100.0),
                 maxStorage = Storage(1, StorageUnit.BYTES),

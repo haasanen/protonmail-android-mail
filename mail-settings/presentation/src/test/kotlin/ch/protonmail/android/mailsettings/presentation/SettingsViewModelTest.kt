@@ -20,6 +20,7 @@ package ch.protonmail.android.mailsettings.presentation
 
 import androidx.compose.ui.graphics.Color
 import app.cash.turbine.test
+import arrow.core.Either
 import ch.protonmail.android.design.compose.model.VisibilityUiModel
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
@@ -35,7 +36,6 @@ import ch.protonmail.android.mailsession.presentation.mapper.AccountInformationM
 import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
 import ch.protonmail.android.mailsession.presentation.model.StorageQuotaUiModel
 import ch.protonmail.android.mailsettings.domain.model.StorageQuota
-import ch.protonmail.android.mailsettings.domain.model.StorageQuotaResult
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveStorageQuotaUseCase
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
@@ -67,8 +67,8 @@ class SettingsViewModelTest {
 
     private val observeStorageQuotaUseCase = mockk<ObserveStorageQuotaUseCase> {
         every { this@mockk.invoke() } returns flowOf(
-            StorageQuotaResult.Success(
-                quota = StorageQuota(
+            Either.Right(
+                StorageQuota(
                     usagePercent = Percent(30.0),
                     maxStorage = Storage(1, StorageUnit.GiB),
                     isAboveAlertThreshold = false

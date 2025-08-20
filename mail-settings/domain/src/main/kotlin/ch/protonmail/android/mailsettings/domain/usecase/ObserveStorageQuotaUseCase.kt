@@ -18,10 +18,11 @@
 
 package ch.protonmail.android.mailsettings.domain.usecase
 
+import arrow.core.Either
 import ch.protonmail.android.mailsession.domain.model.Percent
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsettings.domain.model.StorageQuota
-import ch.protonmail.android.mailsettings.domain.model.StorageQuotaResult
+import ch.protonmail.android.mailsettings.domain.model.StorageQuotaError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -33,15 +34,15 @@ class ObserveStorageQuotaUseCase @Inject constructor(
     private val userSessionRepository: UserSessionRepository
 ) {
 
-    operator fun invoke(): Flow<StorageQuotaResult> =
+    operator fun invoke(): Flow<Either<StorageQuotaError, StorageQuota>> =
         userSessionRepository.observePrimaryUserId().flatMapLatest { userId: UserId? ->
-            userId ?: return@flatMapLatest flowOf(StorageQuotaResult.Error.FailedToRetrievePrimaryUserId)
+            userId ?: return@flatMapLatest flowOf(Either.Left(StorageQuotaError.FailedToRetrievePrimaryUserId))
 
             userSessionRepository.observeUser(userId).map { userResult ->
                 userResult.fold(
-                    ifLeft = { StorageQuotaResult.Error.FailedToRetrieveUser },
+                    ifLeft = { Either.Left(StorageQuotaError.FailedToRetrieveUser) },
                     ifRight = { user ->
-                        StorageQuotaResult.Success(
+                        Either.Right(
                             StorageQuota(
                                 usagePercent = user.usagePercent,
                                 maxStorage = user.maxStorage,

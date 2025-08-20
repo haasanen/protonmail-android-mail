@@ -18,15 +18,7 @@
 
 package ch.protonmail.android.mailsettings.domain.model
 
-sealed interface StorageQuotaResult {
-    data class Success(val quota: StorageQuota) : StorageQuotaResult
-    sealed interface Error : StorageQuotaResult {
-        data object FailedToRetrievePrimaryUserId : Error
-        data object FailedToRetrieveUser : Error
-    }
-
-    fun getOrNull(): StorageQuota? = when (this) {
-        is Success -> quota
-        is Error -> null
-    }
+sealed interface StorageQuotaError {
+    data object FailedToRetrievePrimaryUserId : StorageQuotaError
+    data object FailedToRetrieveUser : StorageQuotaError
 }
