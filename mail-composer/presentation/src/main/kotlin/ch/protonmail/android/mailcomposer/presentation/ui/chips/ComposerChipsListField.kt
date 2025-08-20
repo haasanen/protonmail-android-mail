@@ -175,12 +175,6 @@ fun ComposerChipsListField(
             setGravity(Gravity.BOTTOM, 0, 0)
         }.show()
     }
-
-    ConsumableTextEffect(state.invalidEntryWarning) {
-        Toast.makeText(context, it, Toast.LENGTH_LONG).apply {
-            setGravity(Gravity.BOTTOM, 0, 0)
-        }.show()
-    }
 }
 
 @Composable

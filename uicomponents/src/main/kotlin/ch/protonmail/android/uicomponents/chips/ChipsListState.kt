@@ -29,9 +29,7 @@ import me.proton.core.util.kotlin.takeIfNotBlank
 
 @Stable
 class ChipsListState(
-    private val isValid: (String) -> Boolean,
-    private val onListChanged: (List<ChipItem>) -> Unit,
-    private val onInvalidItem: () -> Unit = {}
+    private val onListChanged: (List<ChipItem>) -> Unit
 ) {
 
     private val items: SnapshotStateList<ChipItem> = mutableStateListOf()
@@ -92,14 +90,7 @@ class ChipsListState(
     fun isFocused(): Boolean = focusedState.value
 
     private fun add(item: String) {
-        val chipContent = if (isValid(item)) {
-            ChipItem.Valid(item)
-        } else {
-            onInvalidItem()
-            ChipItem.Invalid(item)
-        }
-
-        items.add(chipContent)
+        items.add(ChipItem.Valid(item))
     }
 
     fun onDelete() {

@@ -27,7 +27,6 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerChipsFieldState
-import ch.protonmail.android.mailcomposer.presentation.ui.form.EmailValidator
 import ch.protonmail.android.uicomponents.chips.ChipsListState
 import ch.protonmail.android.uicomponents.chips.ChipsListState.Companion.ChipsCreationRegex
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
@@ -76,17 +75,7 @@ class ComposerChipsListViewModel @Inject constructor() : ViewModel() {
         mutableState.value.listState.updateItems(deduplicatedList)
     }
 
-    private fun onInvalidItem() {
-        mutableState.update {
-            it.copy(invalidEntryWarning = Effect.of(TextUiModel.TextRes(R.string.composer_error_invalid_email)))
-        }
-    }
-
     private fun initialChipsListState() = ComposerChipsFieldState(
-        ChipsListState(
-            isValid = { it: String -> EmailValidator.isValidEmail(it) },
-            this::onListChanged,
-            this::onInvalidItem
-        )
+        ChipsListState(this::onListChanged)
     )
 }

@@ -47,37 +47,15 @@ internal class RecipientUiModelMapperTest {
     }
 
     @Test
-    fun `should map from raw values (invalid)`() {
+    fun `should map from raw values (invalid raw value to valid recipient)`() {
         // Given
         val expectedRecipientUiModel = listOf(
-            RecipientUiModel.Invalid(invalidAddress),
+            RecipientUiModel.Valid(invalidAddress),
             RecipientUiModel.Valid(validAddress2)
         )
 
         // When
         val actual = RecipientUiModelMapper.mapFromRawValue(listOf(invalidAddress, validAddress2))
-
-        // Then
-        assertEquals(expectedRecipientUiModel, actual)
-    }
-
-    @Test
-    fun `should map from raw values (mixed)`() {
-        // Given
-        val expectedRecipientUiModel = listOf(
-            RecipientUiModel.Valid(validAddress1),
-            RecipientUiModel.Invalid(invalidAddress),
-            RecipientUiModel.Valid(validAddress2)
-        )
-
-        // When
-        val actual = RecipientUiModelMapper.mapFromRawValue(
-            listOf(
-                validAddress1,
-                invalidAddress,
-                validAddress2
-            )
-        )
 
         // Then
         assertEquals(expectedRecipientUiModel, actual)
