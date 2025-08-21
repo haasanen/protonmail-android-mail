@@ -23,17 +23,14 @@ import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveAllConversationBottomBarActions
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsSnoozeEnabled
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class ObserveDetailBottomBarActions @Inject constructor(
-    private val observeAllConversationBottomBarActions: ObserveAllConversationBottomBarActions,
-    @IsSnoozeEnabled private val isSnoozeEnabled: Flow<Boolean>
+    private val observeAllConversationBottomBarActions: ObserveAllConversationBottomBarActions
 ) {
 
     operator fun invoke(
@@ -43,19 +40,7 @@ class ObserveDetailBottomBarActions @Inject constructor(
     ): Flow<Either<DataError, List<Action>>> = observeAllConversationBottomBarActions(userId, labelId, conversationId)
         .map { eitherResult ->
             eitherResult.map { allBottomBarActions ->
-                allBottomBarActions.visibleActions.removeSnoozeIfNecessary(isSnoozeEnabled.first())
+                allBottomBarActions.visibleActions
             }
         }
-
-    private fun List<Action>.removeSnoozeIfNecessary(snoozeEnabled: Boolean) = if (!snoozeEnabled) {
-        this.removeSnooze()
-    } else {
-        this
-    }
-
-    private fun List<Action>.removeSnooze(): List<Action> {
-        val mutableActions = this.toMutableList()
-        mutableActions.remove(Action.Snooze)
-        return mutableActions
-    }
 }

@@ -34,10 +34,6 @@ annotation class IsShareViaEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class IsSnoozeEnabled
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 annotation class IsUpsellEnabled
 
 @Qualifier

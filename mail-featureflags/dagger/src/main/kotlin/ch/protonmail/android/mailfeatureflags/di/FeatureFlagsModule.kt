@@ -21,20 +21,18 @@ package ch.protonmail.android.mailfeatureflags.di
 import ch.protonmail.android.mailfeatureflags.data.local.DataStoreFeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.data.local.DefaultFeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.DebugInspectDbEnabled
-import ch.protonmail.android.mailfeatureflags.domain.MessagePasswordEnabled
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
 import ch.protonmail.android.mailfeatureflags.domain.LinkifyUrlEnabled
 import ch.protonmail.android.mailfeatureflags.domain.MessageExpirationEnabled
+import ch.protonmail.android.mailfeatureflags.domain.MessagePasswordEnabled
 import ch.protonmail.android.mailfeatureflags.domain.ShareViaEnabled
-import ch.protonmail.android.mailfeatureflags.domain.SnoozeEnabled
 import ch.protonmail.android.mailfeatureflags.domain.UpsellingEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsDebugInspectDbEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessagePasswordEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsLinkifyUrlsEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessageExpirationEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.IsMessagePasswordEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsShareViaEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsSnoozeEnabled
 import ch.protonmail.android.mailfeatureflags.domain.annotation.IsUpsellEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import dagger.Module
@@ -71,11 +69,6 @@ object FeatureFlagsModule {
 
     @Provides
     @Singleton
-    @IsSnoozeEnabled
-    fun provideSnoozeEnabled(resolver: FeatureFlagResolver) = resolver.observeFeatureFlag(SnoozeEnabled.key)
-
-    @Provides
-    @Singleton
     @IsUpsellEnabled
     fun provideUpsellEnabled(resolver: FeatureFlagResolver) = resolver.observeFeatureFlag(UpsellingEnabled.key)
 
@@ -109,11 +102,6 @@ object FeatureFlagsModule {
     @IntoSet
     @Singleton
     fun provideDataStoreProvider(impl: DataStoreFeatureFlagValueProvider): FeatureFlagValueProvider = impl
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideSnoozeEnabledDefinitions(): FeatureFlagDefinition = SnoozeEnabled
 
     @Provides
     @IntoSet

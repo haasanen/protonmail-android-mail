@@ -356,13 +356,11 @@ class ConversationDetailViewModelIntegrationTest {
     private val messageIdUiModelMapper = MessageIdUiModelMapper()
     private val attachmentMetadataUiModelMapper = AttachmentMetadataUiModelMapper()
     private val attachmentGroupUiModelMapper = AttachmentGroupUiModelMapper(attachmentMetadataUiModelMapper)
-    private val isSnoozeEnabled = flowOf(false)
     private val getMoreActionsBottomSheetData = GetMoreActionsBottomSheetData(
         getMessageAvailableActions,
         getConversationAvailableActions,
         observeMessage,
-        observeConversationUseCase,
-        isSnoozeEnabled
+        observeConversationUseCase
     )
 
     private val getMessagesInSameExclusiveLocation = mockk<GetMessagesInSameExclusiveLocation>()

@@ -53,14 +53,6 @@ data object ShareViaEnabled : FeatureFlagDefinition(
     defaultValue = true
 )
 
-data object SnoozeEnabled : FeatureFlagDefinition(
-    key = "snooze_enabled",
-    name = "Snooze accessible from mail",
-    category = FeatureFlagCategory.Details,
-    description = "Makes the Snooze action available from mail screen",
-    defaultValue = false
-)
-
 data object UpsellingEnabled : FeatureFlagDefinition(
     key = "upsell_enabled",
     name = "Enable Feature Upsell",

@@ -24,21 +24,17 @@ import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.usecase.GetAllConversationBottomBarActions
-import ch.protonmail.android.mailfeatureflags.domain.annotation.IsSnoozeEnabled
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.ViewMode
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.GetAllMessageBottomBarActions
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class GetBottomSheetActions @Inject constructor(
     private val getAllMessageBottomBarActions: GetAllMessageBottomBarActions,
-    private val getAllConversationBottomBarActions: GetAllConversationBottomBarActions,
-    @IsSnoozeEnabled private val isSnoozeEnabled: Flow<Boolean>
+    private val getAllConversationBottomBarActions: GetAllConversationBottomBarActions
 ) {
 
     suspend operator fun invoke(
@@ -50,30 +46,14 @@ class GetBottomSheetActions @Inject constructor(
         ViewMode.ConversationGrouping -> {
             val conversationIds = mailboxItemIds.map { ConversationId(it.value) }
             getAllConversationBottomBarActions(userId, labelId, conversationIds).removeMoreAction()
-                // keep behind feature flag until ready
-                .removeSnoozeIfNecessary(isSnoozeEnabled.first())
         }
 
         ViewMode.NoConversationGrouping -> {
             val messageIds = mailboxItemIds.map { MessageId(it.value) }
             getAllMessageBottomBarActions(userId, labelId, messageIds).removeMoreAction()
-                // keep behind feature flag until ready
-                .removeSnoozeIfNecessary(isSnoozeEnabled.first())
         }
     }
 }
-
-private fun Either<DataError, AllBottomBarActions>.removeSnoozeIfNecessary(snoozeEnabled: Boolean) = this.map {
-    if (!snoozeEnabled) {
-        it.copy(
-            hiddenActions = it.hiddenActions.removeSnooze(),
-            visibleActions = it.visibleActions.removeSnooze()
-        )
-    } else {
-        it
-    }
-}
-
 
 private fun Either<DataError, AllBottomBarActions>.removeMoreAction() = this.map {
     it.copy(
@@ -85,12 +65,5 @@ private fun Either<DataError, AllBottomBarActions>.removeMoreAction() = this.map
 private fun List<Action>.removeMoreAction(): List<Action> {
     val mutableActions = this.toMutableList()
     mutableActions.remove(Action.More)
-    return mutableActions
-}
-
-
-private fun List<Action>.removeSnooze(): List<Action> {
-    val mutableActions = this.toMutableList()
-    mutableActions.remove(Action.Snooze)
     return mutableActions
 }
