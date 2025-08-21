@@ -138,4 +138,5 @@
     <string name="composer_loading_attachments_error">Failed loading attachments</string>
     <string name="composer_attachment_upload_error_retry">Some attachments failed uploading. Please, retry.</string>
     <string name="composer_external_encryption_unexpected_error">Unexpected error %s. Try again.</string>
+    <string name="composer_sender_changed_original_address_cannot_send">The selected address cannot be used to send. Your message will be sent from your default address.</string>
 </resources>

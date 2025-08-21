@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.model.operations
 
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentAddError
 import ch.protonmail.android.mailcomposer.domain.model.AttachmentDeleteError
+import ch.protonmail.android.mailcomposer.domain.model.DraftSenderValidationError
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ComposerStateModifications
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.BottomSheetEffectsStateModification
 import ch.protonmail.android.mailcomposer.presentation.reducer.modifications.effects.CompletionEffectsStateModification
@@ -40,11 +41,13 @@ internal sealed interface EffectsEvent : ComposerStateEvent {
             effectsModification = when (this) {
                 is OnDraftLoadingFailed -> UnrecoverableError.DraftContentUnavailable
                 is OnDiscardDraftRequested -> ConfirmationsEffectsStateModification.DiscardDraftConfirmationRequested
+                is OnSenderValidationError -> ContentEffectsStateModifications.OnDraftSenderValidationError(this.error)
             }
         )
 
         data object OnDraftLoadingFailed : DraftEvent
         data object OnDiscardDraftRequested : DraftEvent
+        data class OnSenderValidationError(val error: DraftSenderValidationError) : DraftEvent
     }
 
     sealed interface LoadingEvent : EffectsEvent {

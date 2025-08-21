@@ -58,6 +58,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
+import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftSenderValidationError
 import ch.protonmail.android.mailcomposer.domain.usecase.GetSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.IsMessagePasswordSet
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
@@ -173,6 +174,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val observeMessagePasswordChanged: ObserveMessagePasswordChanged,
     private val isMessagePasswordSet: IsMessagePasswordSet,
     private val observeRecipientsValidation: ObserveRecipientsValidation,
+    private val getDraftSenderValidationError: GetDraftSenderValidationError,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -235,6 +237,7 @@ class ComposerViewModel @AssistedInject constructor(
             observeMessagePassword()
             observeComposerFields()
             observeValidatedRecipients()
+            observeSenderValidationError()
             processActions()
         }
     }
@@ -341,6 +344,12 @@ class ComposerViewModel @AssistedInject constructor(
             .mapLatest { isMessagePasswordSet() }
             .onEach { emitNewStateFor(AccessoriesEvent.OnPasswordChanged(it)) }
             .launchIn(viewModelScope)
+    }
+
+    private suspend fun observeSenderValidationError() {
+        getDraftSenderValidationError()?.let {
+            emitNewStateFor(EffectsEvent.DraftEvent.OnSenderValidationError(it))
+        }
     }
 
     private fun onComposerRestored() {

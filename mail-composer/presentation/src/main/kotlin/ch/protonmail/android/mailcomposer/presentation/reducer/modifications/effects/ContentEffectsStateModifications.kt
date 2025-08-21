@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.reducer.modifications.ef
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcomposer.domain.model.DraftSenderValidationError
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerState
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
@@ -94,5 +95,22 @@ internal sealed interface ContentEffectsStateModifications : EffectsStateModific
         private fun createWarningIfNotRefreshed(isDataRefresh: Boolean): Effect<TextUiModel> =
             if (!isDataRefresh) Effect.of(TextUiModel(R.string.composer_warning_local_data_shown))
             else Effect.empty()
+    }
+
+    data class OnDraftSenderValidationError(val validationError: DraftSenderValidationError) :
+        EffectsStateModification {
+
+        override fun apply(state: ComposerState.Effects): ComposerState.Effects = state.copy(
+            senderChangedNotice = when (validationError) {
+                is DraftSenderValidationError.AddressCanNotSend ->
+                    Effect.of(TextUiModel(R.string.composer_sender_changed_original_address_cannot_send))
+
+                is DraftSenderValidationError.AddressDisabled ->
+                    Effect.of(TextUiModel(R.string.composer_sender_changed_original_address_disabled))
+
+                is DraftSenderValidationError.SubscriptionRequired ->
+                    Effect.of(TextUiModel(R.string.composer_sender_changed_pm_address_is_a_paid_feature))
+            }
+        )
     }
 }

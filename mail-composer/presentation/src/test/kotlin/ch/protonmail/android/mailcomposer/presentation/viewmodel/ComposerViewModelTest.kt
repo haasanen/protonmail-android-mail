@@ -57,6 +57,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DeleteInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.LoadMessageBodyImage
+import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftSenderValidationError
 import ch.protonmail.android.mailcomposer.domain.usecase.GetSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.IsMessagePasswordSet
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
@@ -167,6 +168,9 @@ internal class ComposerViewModelTest {
     private val observeRecipientsValidation = mockk<ObserveRecipientsValidation> {
         every { this@mockk.invoke() } returns flowOf()
     }
+    private val getDraftSenderValidationError = mockk<GetDraftSenderValidationError> {
+        coEvery { this@mockk.invoke() } returns null
+    }
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<DraftBody>()
@@ -214,6 +218,7 @@ internal class ComposerViewModelTest {
         observeMessagePasswordChanged,
         isMessagePasswordSet,
         observeRecipientsValidation,
+        getDraftSenderValidationError,
         observePrimaryUserIdMock
     )
 
