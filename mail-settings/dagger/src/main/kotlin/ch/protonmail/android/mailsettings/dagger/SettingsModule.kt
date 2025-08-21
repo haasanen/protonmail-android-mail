@@ -24,6 +24,8 @@ import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.data.MailSettingsDataStoreProvider
 import ch.protonmail.android.mailsettings.data.local.MailSettingsDataSource
+import ch.protonmail.android.mailsettings.data.local.MobileSignatureDataSource
+import ch.protonmail.android.mailsettings.data.local.MobileSignatureDataSourceImpl
 import ch.protonmail.android.mailsettings.data.local.RustMailSettingsDataSource
 import ch.protonmail.android.mailsettings.data.repository.AlternativeRoutingRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.AppLanguageRepositoryImpl
@@ -139,6 +141,9 @@ object SettingsModule {
         @Binds
         @Singleton
         fun bindAppSettingsRepository(impl: AppSettingsRepositoryImpl): AppSettingsRepository
+
+        @Binds
+        fun bindsMobileSignatureDataSource(impl: MobileSignatureDataSourceImpl): MobileSignatureDataSource
 
     }
 }
