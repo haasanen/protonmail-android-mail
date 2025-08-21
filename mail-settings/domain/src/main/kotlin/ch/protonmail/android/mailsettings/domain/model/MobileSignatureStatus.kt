@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -15,17 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
-
 package ch.protonmail.android.mailsettings.domain.model
 
-data class MobileSignaturePreference(
-    val value: String,
-    val status: MobileSignatureStatus
-) {
-    companion object {
-        val Empty = MobileSignaturePreference(
-            value = "",
-            status = MobileSignatureStatus.Enabled
-        )
-    }
+enum class MobileSignatureStatus {
+    Enabled,
+    Disabled,
+    NeedsPaidVersion
 }
+
+fun MobileSignatureStatus.isEnabled(): Boolean = this == MobileSignatureStatus.Enabled
