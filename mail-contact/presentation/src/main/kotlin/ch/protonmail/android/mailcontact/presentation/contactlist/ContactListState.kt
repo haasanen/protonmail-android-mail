@@ -47,11 +47,12 @@ sealed interface ContactListState {
         data class Empty(
             override val bottomSheetVisibilityEffect: Effect<BottomSheetVisibilityEffect> = Effect.empty(),
             override val openContactSearch: Effect<Boolean> = Effect.empty(),
-            override val bottomSheetType: BottomSheetType = BottomSheetType.Menu
+            override val bottomSheetType: BottomSheetType = BottomSheetType.RedirectToWeb
         ) : Loaded
     }
 
     sealed interface BottomSheetType {
+        data object RedirectToWeb : BottomSheetType
         data object Menu : BottomSheetType
         data object Upselling : BottomSheetType
     }

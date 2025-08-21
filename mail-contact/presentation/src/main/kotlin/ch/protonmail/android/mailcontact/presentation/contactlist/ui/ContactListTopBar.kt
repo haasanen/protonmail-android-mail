@@ -34,8 +34,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.appbar.ProtonMediumTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcontact.presentation.R
-import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactCreate
-import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactImport
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,10 +69,7 @@ internal fun ContactListTopBar(
                     contentDescription = stringResource(R.string.search_contacts_description)
                 )
             }
-
-            // hasOneCreateOption can be deleted once we get rid of ContactFeatureFlags
-            val hasOneCreateOption = ContactCreate.value || ContactImport.value
-            if (isAddButtonVisible && hasOneCreateOption) {
+            if (isAddButtonVisible) {
                 IconButton(onClick = actions.onAddClick) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_proton_plus),

@@ -1,6 +1,8 @@
 package ch.protonmail.android.mailcontact.presentation.contactlist.ui
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,9 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
@@ -37,6 +41,7 @@ import ch.protonmail.android.mailcontact.presentation.contactlist.ContactListVie
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen.DELAY_SHOWING
 import ch.protonmail.android.mailcontact.presentation.dialogs.ContactDeleteConfirmationDialog
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
+import ch.protonmail.android.mailcontact.presentation.ui.RedirectToWebBottomSheetContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.delay
 
@@ -52,6 +57,7 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
     val defaultColor = ProtonTheme.colors.backgroundNorm
     val backgroundColor = ProtonTheme.colors.backgroundSecondary
     val view = LocalView.current
+    val context = LocalContext.current
 
     val deleteDialogState = remember { mutableStateOf<ContactListItemUiModel.Contact?>(null) }
 
@@ -88,6 +94,15 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
         sheetContent = {
             if (state is ContactListState.Loaded) {
                 when (state.bottomSheetType) {
+                    ContactListState.BottomSheetType.RedirectToWeb -> {
+                        RedirectToWebBottomSheetContent(
+                            description = R.string.add_contact_bottom_sheet_redirect_to_web_descrption,
+                            buttonText = R.string.contact_bottom_sheet_redirect_to_web_button,
+                            onConfirm = { launchBrowser(context) },
+                            onDismiss = { showBottomSheet = false }
+                        )
+                    }
+
                     ContactListState.BottomSheetType.Menu -> {
                         ContactBottomSheetContent(
                             actions = ContactBottomSheet.Actions(
@@ -116,8 +131,7 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
                             viewModel.submit(ContactListViewAction.OnOpenContactSearch)
                         }
                     ),
-                    // Hide "add contact" button as feature isn't currently on the roadmap
-                    isAddButtonVisible = false
+                    isAddButtonVisible = true
                 )
             },
             content = { paddingValues ->
@@ -188,6 +202,12 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
         onDeleteConfirmed = { viewModel.submit(ContactListViewAction.OnDeleteContactConfirmed(it)) },
         onDismissRequest = { deleteDialogState.value = null }
     )
+}
+
+private fun launchBrowser(context: Context) {
+    val uri = "https://mail.proton.me/inbox#create-contact".toUri()
+    val intent = Intent(Intent.ACTION_VIEW, uri)
+    context.startActivity(intent)
 }
 
 object ContactListScreen {

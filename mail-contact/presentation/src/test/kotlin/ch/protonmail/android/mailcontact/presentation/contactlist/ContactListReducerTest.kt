@@ -198,7 +198,7 @@ internal class ContactListReducerTest(
                 event = ContactListEvent.OpenBottomSheet,
                 expectedState = dataLoadedState.copy(
                     bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
-                    bottomSheetType = ContactListState.BottomSheetType.Menu
+                    bottomSheetType = ContactListState.BottomSheetType.RedirectToWeb
                 )
             ),
             TestInput(

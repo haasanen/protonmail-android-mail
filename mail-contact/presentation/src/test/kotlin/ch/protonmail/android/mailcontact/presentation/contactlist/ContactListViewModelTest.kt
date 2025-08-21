@@ -202,7 +202,7 @@ class ContactListViewModelTest {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
-                bottomSheetType = ContactListState.BottomSheetType.Menu
+                bottomSheetType = ContactListState.BottomSheetType.RedirectToWeb
             )
 
             assertEquals(expected, actual)

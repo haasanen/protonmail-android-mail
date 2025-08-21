@@ -72,12 +72,12 @@ class ContactListReducer @Inject constructor() {
             is ContactListState.Loading -> currentState
             is ContactListState.Loaded.Data -> currentState.copy(
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
-                bottomSheetType = ContactListState.BottomSheetType.Menu
+                bottomSheetType = ContactListState.BottomSheetType.RedirectToWeb
             )
 
             is ContactListState.Loaded.Empty -> currentState.copy(
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
-                bottomSheetType = ContactListState.BottomSheetType.Menu
+                bottomSheetType = ContactListState.BottomSheetType.RedirectToWeb
             )
         }
     }
