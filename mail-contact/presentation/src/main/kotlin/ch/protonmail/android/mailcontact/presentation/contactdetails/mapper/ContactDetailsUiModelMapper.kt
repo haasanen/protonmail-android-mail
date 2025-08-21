@@ -51,6 +51,7 @@ class ContactDetailsUiModelMapper @Inject constructor(
 ) {
 
     fun toUiModel(contactDetailCard: ContactDetailCard) = ContactDetailsUiModel(
+        remoteId = contactDetailCard.remoteId,
         avatarUiModel = toAvatarUiModel(contactDetailCard.avatarInformation),
         headerUiModel = toHeaderUiModel(contactDetailCard.extendedName, contactDetailCard.fields.getPrimaryEmail()),
         quickActionUiModels = toQuickActionUiModels(contactDetailCard.fields),

@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
 data class ContactDetailsUiModel(
+    val remoteId: String?,
     val avatarUiModel: AvatarUiModel,
     val headerUiModel: HeaderUiModel,
     val quickActionUiModels: List<QuickActionUiModel>,

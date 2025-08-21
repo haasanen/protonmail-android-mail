@@ -35,6 +35,7 @@ object ContactDetailsPreviewData {
 
     val contactDetailsState = ContactDetailsState.Data(
         uiModel = ContactDetailsUiModel(
+            remoteId = "",
             avatarUiModel = AvatarUiModel.Initials(
                 value = "P",
                 color = Color.Blue

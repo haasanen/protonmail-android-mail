@@ -46,6 +46,7 @@ class ContactDetailsUiModelMapperTest {
         // Given
         val contactDetailCard = ContactDetailCard(
             id = ContactIdTestData.contactId1,
+            remoteId = "id",
             avatarInformation = AvatarInformation(
                 initials = "P",
                 color = "color"
@@ -121,6 +122,7 @@ class ContactDetailsUiModelMapperTest {
 
         // Then
         val expected = ContactDetailsUiModel(
+            remoteId = "id",
             avatarUiModel = AvatarUiModel.Initials(
                 value = "P",
                 color = Color.Blue

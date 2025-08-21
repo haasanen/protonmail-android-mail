@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 
 data class ContactDetailCard(
     val id: ContactId,
+    val remoteId: String?,
     val avatarInformation: AvatarInformation,
     val extendedName: ExtendedName,
     val fields: List<ContactField>

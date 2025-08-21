@@ -79,6 +79,7 @@ import uniffi.proton_mail_uniffi.VCardUrlValue
 
 fun LocalContactDetailCard.toContactDetailCard() = ContactDetailCard(
     id = id.toContactId(),
+    remoteId = remoteId,
     avatarInformation = avatarInformation.toAvatarInformation(),
     extendedName = extendedName.toExtendedName(),
     fields = fields.map { it.toContactField() }

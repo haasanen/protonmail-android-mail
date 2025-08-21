@@ -32,11 +32,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcontact.presentation.R
 
 @Composable
-fun ContactDetailsTopBar(
-    shouldShowActions: Boolean,
-    onBack: () -> Unit,
-    showFeatureMissingSnackbar: () -> Unit
-) {
+fun ContactDetailsTopBar(shouldShowActions: Boolean, actions: ContactDetailsTopBar.Actions) {
     ProtonTopAppBar(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,7 +40,7 @@ fun ContactDetailsTopBar(
         backgroundColor = ProtonTheme.colors.backgroundInvertedNorm,
         title = {},
         navigationIcon = {
-            IconButton(onClick = onBack) {
+            IconButton(onClick = actions.onBack) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_arrow_back),
                     tint = ProtonTheme.colors.iconNorm,
@@ -54,7 +50,7 @@ fun ContactDetailsTopBar(
         },
         actions = {
             if (shouldShowActions) {
-                IconButton(onClick = showFeatureMissingSnackbar) {
+                IconButton(onClick = actions.onEdit) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_proton_pen),
                         tint = ProtonTheme.colors.iconNorm,
@@ -63,7 +59,7 @@ fun ContactDetailsTopBar(
                         )
                     )
                 }
-                IconButton(onClick = showFeatureMissingSnackbar) {
+                IconButton(onClick = actions.onDelete) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_proton_trash),
                         tint = ProtonTheme.colors.iconNorm,
@@ -74,5 +70,14 @@ fun ContactDetailsTopBar(
                 }
             }
         }
+    )
+}
+
+object ContactDetailsTopBar {
+
+    data class Actions(
+        val onBack: () -> Unit,
+        val onEdit: () -> Unit,
+        val onDelete: () -> Unit
     )
 }

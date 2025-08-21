@@ -86,8 +86,11 @@ private fun ContactGroupDetailsScreen(
         topBar = {
             ContactDetailsTopBar(
                 shouldShowActions = state is ContactGroupDetailsState.Data,
-                onBack = actions.onBack,
-                showFeatureMissingSnackbar = actions.showFeatureMissingSnackbar
+                actions = ContactDetailsTopBar.Actions(
+                    onBack = actions.onBack,
+                    onEdit = actions.showFeatureMissingSnackbar,
+                    onDelete = actions.showFeatureMissingSnackbar
+                )
             )
         }
     ) {

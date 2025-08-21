@@ -61,6 +61,7 @@ class ContactDetailsViewModelTest {
         val contactId = ContactIdTestData.contactId1
         val contactDetailCard = ContactDetailCard(
             id = contactId,
+            remoteId = "id",
             avatarInformation = AvatarInformation(
                 initials = "P",
                 color = "color"
@@ -81,6 +82,7 @@ class ContactDetailsViewModelTest {
             // Then
             val expected = ContactDetailsState.Data(
                 uiModel = ContactDetailsUiModel(
+                    remoteId = "id",
                     avatarUiModel = AvatarUiModel.Initials(
                         value = "P",
                         color = Color.Blue

@@ -77,6 +77,7 @@ import ch.protonmail.android.mailcontact.presentation.contactdetails.model.Quick
 import ch.protonmail.android.mailcontact.presentation.contactdetails.model.QuickActionUiModel
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactDetailsPreviewData
 import ch.protonmail.android.mailcontact.presentation.ui.ContactDetailsTopBar
+import ch.protonmail.android.mailcontact.presentation.ui.RedirectToWebBottomSheetContent
 
 @Composable
 fun ContactDetailsScreen(
@@ -101,6 +102,7 @@ private fun ContactDetailsScreen(
     val context = LocalContext.current
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
+    var bottomSheetType by remember { mutableStateOf(BottomSheetType.PhoneNumbers) }
 
     ProtonModalBottomSheetLayout(
         showBottomSheet = showBottomSheet,
@@ -109,33 +111,17 @@ private fun ContactDetailsScreen(
         dismissOnBack = true,
         sheetContent = {
             if (state is ContactDetailsState.Data) {
-                Column(
-                    modifier = Modifier.verticalScroll(rememberScrollState())
-                ) {
-                    state.uiModel.contactDetailsItemGroupUiModels.findPhoneItems()?.forEach { uiModel ->
-                        val actionLabel = stringResource(id = R.string.contact_details_action_call_label)
-                        val phoneNumberType = uiModel.label.string()
-                        val phoneNumber = uiModel.value.string()
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = ProtonDimens.ListItemHeight)
-                                .clickable(
-                                    onClick = { launchPhoneApp(context, phoneNumber) }
-                                )
-                                .padding(horizontal = ProtonDimens.Spacing.Large),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = formatPhoneText(
-                                    actionLabel = actionLabel,
-                                    phoneNumberType = phoneNumberType,
-                                    phoneNumber = phoneNumber
-                                ),
-                                style = ProtonTheme.typography.bodyLargeNorm
-                            )
-                        }
+                when (bottomSheetType) {
+                    BottomSheetType.PhoneNumbers -> {
+                        PhoneNumbersBottomSheetContent(state)
+                    }
+                    BottomSheetType.RedirectToWeb -> {
+                        RedirectToWebBottomSheetContent(
+                            description = R.string.edit_contact_bottom_sheet_redirect_to_web_description,
+                            buttonText = R.string.contact_bottom_sheet_redirect_to_web_button,
+                            onConfirm = { launchBrowser(context, state.uiModel.remoteId) },
+                            onDismiss = { showBottomSheet = false }
+                        )
                     }
                 }
             }
@@ -147,8 +133,14 @@ private fun ContactDetailsScreen(
             topBar = {
                 ContactDetailsTopBar(
                     shouldShowActions = state is ContactDetailsState.Data,
-                    onBack = actions.onBack,
-                    showFeatureMissingSnackbar = actions.showFeatureMissingSnackbar
+                    actions = ContactDetailsTopBar.Actions(
+                        onBack = actions.onBack,
+                        onEdit = {
+                            bottomSheetType = BottomSheetType.RedirectToWeb
+                            showBottomSheet = true
+                        },
+                        onDelete = actions.showFeatureMissingSnackbar
+                    )
                 )
             }
         ) {
@@ -156,7 +148,10 @@ private fun ContactDetailsScreen(
                 is ContactDetailsState.Data -> ContactDetails(
                     uiModel = state.uiModel,
                     actions = actions,
-                    onCallQuickAction = { showBottomSheet = true },
+                    onCallQuickAction = {
+                        bottomSheetType = BottomSheetType.PhoneNumbers
+                        showBottomSheet = true
+                    },
                     modifier = Modifier.padding(it)
                 )
 
@@ -356,6 +351,49 @@ private fun ContactDetailsItemGroup(
     }
 }
 
+@Composable
+private fun PhoneNumbersBottomSheetContent(state: ContactDetailsState.Data) {
+    val context = LocalContext.current
+
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState())
+    ) {
+        state.uiModel.contactDetailsItemGroupUiModels.findPhoneItems()?.forEach { uiModel ->
+            val actionLabel = stringResource(id = R.string.contact_details_action_call_label)
+            val phoneNumberType = uiModel.label.string()
+            val phoneNumber = uiModel.value.string()
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = ProtonDimens.ListItemHeight)
+                    .clickable(
+                        onClick = { launchPhoneApp(context, phoneNumber) }
+                    )
+                    .padding(horizontal = ProtonDimens.Spacing.Large),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = formatPhoneText(
+                        actionLabel = actionLabel,
+                        phoneNumberType = phoneNumberType,
+                        phoneNumber = phoneNumber
+                    ),
+                    style = ProtonTheme.typography.bodyLargeNorm
+                )
+            }
+        }
+    }
+}
+
+private fun launchBrowser(context: Context, remoteId: String?) {
+    remoteId?.let {
+        val uri = "https://mail.proton.me/inbox#edit-contact=$remoteId".toUri()
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        context.startActivity(intent)
+    }
+}
+
 private fun launchPhoneApp(context: Context, phoneNumber: String) {
     val uri = "tel:$phoneNumber".toUri()
     val intent = Intent(Intent.ACTION_DIAL, uri)
@@ -373,6 +411,8 @@ private fun formatPhoneText(
     phoneNumberType: String,
     phoneNumber: String
 ) = "$actionLabel \"$phoneNumberType\" $phoneNumber"
+
+enum class BottomSheetType { PhoneNumbers, RedirectToWeb }
 
 @Preview
 @Composable
