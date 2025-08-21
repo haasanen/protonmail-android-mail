@@ -32,8 +32,9 @@ import kotlin.coroutines.resume
 
 class AndroidDnsResolver @Inject constructor() : Resolver {
 
-    private var resolverCache: DnsResolver? = null
-    private val executorService = Executors.newCachedThreadPool()
+    private val resolver: DnsResolver = DnsResolver.getInstance()
+
+    private val executorService = Executors.newFixedThreadPool(THREADS_LIMIT)
 
     override suspend fun resolve(host: String): List<IpAddr>? = suspendCancellableCoroutine { continuation ->
         Timber.tag("DnsResolution").d("required for host: $host")
@@ -53,8 +54,6 @@ class AndroidDnsResolver @Inject constructor() : Resolver {
             }
         }
 
-        val resolver: DnsResolver = resolverCache ?: buildCachedDnsResolver()
-
         resolver.query(
             null,
             host,
@@ -72,7 +71,6 @@ class AndroidDnsResolver @Inject constructor() : Resolver {
             else -> IpAddr.V4(address)
         }
     }
-
-    private fun buildCachedDnsResolver() = DnsResolver.getInstance()
-        .also { resolverCache = it }
 }
+
+private const val THREADS_LIMIT = 5
