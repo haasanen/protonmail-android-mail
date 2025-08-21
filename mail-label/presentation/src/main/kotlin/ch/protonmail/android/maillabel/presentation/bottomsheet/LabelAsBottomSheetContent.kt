@@ -20,8 +20,10 @@ package ch.protonmail.android.maillabel.presentation.bottomsheet
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,10 +32,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -50,17 +55,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import ch.protonmail.android.design.compose.component.ProtonSolidButton
 import ch.protonmail.android.design.compose.component.ProtonSwitch
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
-import ch.protonmail.android.design.compose.theme.bodyLargeWeak
-import ch.protonmail.android.design.compose.theme.titleLargeNorm
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.R
@@ -89,7 +91,13 @@ internal fun LabelAsBottomSheetContent(
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
-        LabelAsSheetTitle(modifier = Modifier.fillMaxWidth())
+
+        TopBar(
+            onClose = actions.onDismiss,
+            onSaveClicked = { actions.onDoneClick(archiveSelectedState) }
+        )
+
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
         Box(
             modifier = Modifier
@@ -121,36 +129,7 @@ internal fun LabelAsBottomSheetContent(
                 labelUiModelsWithSelectedState = labelAsDataState.labelUiModels,
                 actions = actions
             )
-
-            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
-
-            DoneButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = ProtonDimens.Spacing.Large,
-                        end = ProtonDimens.Spacing.Large,
-                        bottom = ProtonDimens.Spacing.Large,
-                        top = ProtonDimens.Spacing.Standard
-                    ),
-                onClick = { actions.onDoneClick(archiveSelectedState) }
-            )
         }
-    }
-}
-
-@Composable
-private fun DoneButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
-    ProtonSolidButton(
-        modifier = modifier.height(MailDimens.LabelAsDoneButtonHeight),
-        shape = ProtonTheme.shapes.huge,
-        onClick = onClick
-    ) {
-        Text(
-            text = stringResource(id = R.string.bottom_sheet_done_action),
-            style = ProtonTheme.typography.bodyLargeNorm,
-            color = ProtonTheme.colors.textInverted
-        )
     }
 }
 
@@ -171,22 +150,23 @@ private fun LabelGroupWithActionButton(
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
 
+            CreateLabelButton(
+                onClick = actions.onCreateNewLabelClick
+            )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(0.dp),
+                thickness = 1.dp,
+                color = ProtonTheme.colors.separatorNorm
+            )
+
             labelUiModelsWithSelectedState.forEachIndexed { _, labelUiModelWithSelectedState ->
                 SelectableLabelGroupItem(
                     labelUiModelWithSelectedState = labelUiModelWithSelectedState,
                     onClick = { actions.onLabelToggled(labelUiModelWithSelectedState.labelUiModel.id.labelId) }
                 )
 
-                HorizontalDivider(
-                    modifier = Modifier.padding(0.dp),
-                    thickness = 1.dp,
-                    color = ProtonTheme.colors.separatorNorm
-                )
             }
-
-            CreateLabelButton(
-                onClick = actions.onCreateNewLabelClick
-            )
         }
     }
 }
@@ -228,7 +208,7 @@ private fun SelectableLabelGroupItem(
             modifier = Modifier
                 .weight(1f),
             text = labelUiModelWithSelectedState.labelUiModel.text.string(),
-            style = ProtonTheme.typography.bodyLargeWeak,
+            style = ProtonTheme.typography.bodyLargeNorm,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -238,6 +218,66 @@ private fun SelectableLabelGroupItem(
         SelectedStateIcon(
             selectedState = labelUiModelWithSelectedState.selectedState
         )
+    }
+}
+
+@Composable
+private fun TopBar(
+    onClose: () -> Unit,
+    onSaveClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            onClick = onClose
+        ) {
+            Icon(
+                painter = painterResource(
+                    id =
+                    ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_cross
+                ),
+                contentDescription = null,
+                tint = ProtonTheme.colors.iconNorm
+
+            )
+        }
+
+        Text(
+            modifier = Modifier
+                .background(ProtonTheme.colors.backgroundInvertedNorm),
+            text = stringResource(R.string.bottom_sheet_label_as_title),
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = ProtonTheme.typography.titleMediumNorm,
+            fontWeight = FontWeight.SemiBold
+        )
+
+        Button(
+            onClick = onSaveClicked,
+            modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Standard),
+            shape = ProtonTheme.shapes.huge,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = ProtonTheme.colors.interactionBrandWeakNorm,
+                disabledContainerColor = ProtonTheme.colors.interactionBrandWeakDisabled,
+                contentColor = ProtonTheme.colors.textAccent,
+                disabledContentColor = ProtonTheme.colors.brandMinus20
+            ),
+            contentPadding = PaddingValues(
+                horizontal = ProtonDimens.Spacing.Large,
+                vertical = ProtonDimens.Spacing.Standard
+            )
+        ) {
+            Text(
+                text = stringResource(R.string.bottom_sheet_save_action),
+                style = ProtonTheme.typography.titleSmall
+            )
+        }
     }
 }
 
@@ -289,11 +329,10 @@ private fun CreateLabelButton(modifier: Modifier = Modifier, onClick: () -> Unit
         Text(
             modifier = Modifier.weight(1f),
             text = stringResource(id = R.string.label_title_create_label),
-            style = ProtonTheme.typography.bodyLargeWeak,
+            style = ProtonTheme.typography.bodyLargeNorm,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-
     }
 }
 
@@ -328,7 +367,7 @@ private fun AlsoArchiveRow(
             Text(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = R.string.bottom_sheet_archive_action),
-                style = ProtonTheme.typography.bodyLargeWeak,
+                style = ProtonTheme.typography.bodyLargeNorm,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -339,29 +378,6 @@ private fun AlsoArchiveRow(
                 onCheckedChange = { onArchiveToggle(it) }
             )
         }
-    }
-}
-
-@Composable
-private fun LabelAsSheetTitle(modifier: Modifier) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = ProtonDimens.Spacing.Small,
-                vertical = ProtonDimens.Spacing.Large
-            ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            modifier = Modifier.weight(1f),
-            text = stringResource(id = R.string.bottom_sheet_label_as_title),
-            style = ProtonTheme.typography.titleLargeNorm,
-            fontWeight = FontWeight.SemiBold,
-            maxLines = 1,
-            textAlign = TextAlign.Center,
-            overflow = TextOverflow.Ellipsis
-        )
     }
 }
 
