@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcommon.data.mapper
 import uniffi.proton_mail_uniffi.AlmostAllMail
 import uniffi.proton_mail_uniffi.AppProtection
 import uniffi.proton_mail_uniffi.AppSettings
+import uniffi.proton_mail_uniffi.AppSettingsDiff
 import uniffi.proton_mail_uniffi.AttachmentData
 import uniffi.proton_mail_uniffi.AttachmentMetadata
 import uniffi.proton_mail_uniffi.AttachmentMimeType
@@ -153,6 +154,7 @@ typealias LocalIssueReport = IssueReport
 typealias RemoteMessageId = RemoteId
 typealias LocalAttachmentData = AttachmentData
 typealias LocalAppSettings = AppSettings
+typealias LocalAppSettingsDiff = AppSettingsDiff
 typealias LocalAutoLock = AutoLock
 typealias LocalProtection = AppProtection
 typealias LocalAutoLockPin = List<UInt>

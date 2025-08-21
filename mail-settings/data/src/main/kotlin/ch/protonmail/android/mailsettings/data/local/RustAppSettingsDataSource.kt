@@ -21,18 +21,18 @@ package ch.protonmail.android.mailsettings.data.local
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalAppSettings
+import ch.protonmail.android.mailcommon.data.mapper.LocalAppSettingsDiff
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.data.wrapper.MailSessionWrapper
-import uniffi.proton_mail_uniffi.AppSettings
-import uniffi.proton_mail_uniffi.AppSettingsDiff
 import uniffi.proton_mail_uniffi.MailSessionChangeAppSettingsResult
 import uniffi.proton_mail_uniffi.MailSessionGetAppSettingsResult
 import javax.inject.Inject
 
 class RustAppSettingsDataSource @Inject constructor() : AppSettingsDataSource {
 
-    override suspend fun getAppSettings(mailSessionWrapper: MailSessionWrapper): Either<DataError, AppSettings> =
+    override suspend fun getAppSettings(mailSessionWrapper: MailSessionWrapper): Either<DataError, LocalAppSettings> =
         when (val result = mailSessionWrapper.getRustMailSession().getAppSettings()) {
             is MailSessionGetAppSettingsResult.Error -> result.v1.toDataError().left()
             is MailSessionGetAppSettingsResult.Ok -> result.v1.right()
@@ -40,7 +40,7 @@ class RustAppSettingsDataSource @Inject constructor() : AppSettingsDataSource {
 
     override suspend fun updateAppSettings(
         mailSessionWrapper: MailSessionWrapper,
-        appSettingsDiff: AppSettingsDiff
+        appSettingsDiff: LocalAppSettingsDiff
     ): Either<DataError, Unit> =
         when (val result = mailSessionWrapper.getRustMailSession().changeAppSettings(appSettingsDiff)) {
             is MailSessionChangeAppSettingsResult.Error -> result.v1.toDataError().left()
