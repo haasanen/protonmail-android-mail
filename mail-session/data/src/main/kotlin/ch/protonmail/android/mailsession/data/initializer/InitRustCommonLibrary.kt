@@ -22,6 +22,7 @@ import java.io.File
 import android.content.Context
 import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.annotations.RustLogsFileHandler
+import ch.protonmail.android.mailsession.data.network.AndroidDnsResolver
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.annotations.DatabasesBaseDirectory
 import ch.protonmail.android.mailsession.domain.model.RustApiConfig
@@ -47,7 +48,8 @@ class InitRustCommonLibrary @Inject constructor(
     private val challengeNotifierCallback: ChallengeNotifierCallback,
     private val deviceInfoProvider: DeviceInfoProvider,
     private val rustApiConfig: RustApiConfig,
-    private val keyChain: OsKeyChain
+    private val keyChain: OsKeyChain,
+    private val androidDnsResolver: AndroidDnsResolver
 ) {
 
     fun init() {
@@ -67,7 +69,7 @@ class InitRustCommonLibrary @Inject constructor(
                 userAgent = rustApiConfig.userAgent,
                 envId = rustApiConfig.envId,
                 proxy = rustApiConfig.proxy,
-                resolver = null
+                resolver = androidDnsResolver
             ),
             appDetails = AppDetails(
                 platform = rustApiConfig.platform,

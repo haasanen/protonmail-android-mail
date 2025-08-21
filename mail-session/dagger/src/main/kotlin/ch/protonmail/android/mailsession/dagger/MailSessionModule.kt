@@ -26,6 +26,7 @@ import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObser
 import ch.protonmail.android.mailsession.data.keychain.AndroidKeyChain
 import ch.protonmail.android.mailsession.data.keychain.KeyChainLocalDataSource
 import ch.protonmail.android.mailsession.data.keychain.KeyChainLocalDataSourceImpl
+import ch.protonmail.android.mailsession.data.network.AndroidDnsResolver
 import ch.protonmail.android.mailsession.data.repository.InMemoryMailSessionRepository
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.data.repository.RustEventLoopRepository
@@ -48,6 +49,7 @@ import kotlinx.coroutines.SupervisorJob
 import uniffi.proton_mail_uniffi.DeviceInfoProvider
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.OsKeyChain
+import uniffi.proton_mail_uniffi.Resolver
 import javax.inject.Singleton
 
 @Module(includes = [MailSessionModule.BindsModule::class])
@@ -68,6 +70,10 @@ object MailSessionModule {
     @Singleton
     @DatabasesBaseDirectory
     fun provideBaseDbDirectory(@ApplicationContext context: Context) = getDatabaseBaseDirectory(context)
+
+    @Provides
+    @Singleton
+    fun provideAndroidDnsResolver(): Resolver = AndroidDnsResolver()
 
     @Module
     @InstallIn(SingletonComponent::class)
