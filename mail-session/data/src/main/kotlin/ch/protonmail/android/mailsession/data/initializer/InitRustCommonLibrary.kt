@@ -66,7 +66,8 @@ class InitRustCommonLibrary @Inject constructor(
             apiEnvConfig = ApiConfig(
                 userAgent = rustApiConfig.userAgent,
                 envId = rustApiConfig.envId,
-                proxy = rustApiConfig.proxy
+                proxy = rustApiConfig.proxy,
+                resolver = null
             ),
             appDetails = AppDetails(
                 platform = rustApiConfig.platform,

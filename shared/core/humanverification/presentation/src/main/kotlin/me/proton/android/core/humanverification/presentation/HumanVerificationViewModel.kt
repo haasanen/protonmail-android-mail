@@ -103,7 +103,7 @@ class HumanVerificationViewModel @Inject constructor(
     ): Flow<HumanVerificationViewState> = flow {
         val loader = when (
             val result = newChallengeLoader(
-                ApiConfig(rustApiConfig.userAgent, rustApiConfig.envId, rustApiConfig.proxy),
+                ApiConfig(rustApiConfig.userAgent, rustApiConfig.envId, rustApiConfig.proxy, null),
                 AppDetails(rustApiConfig.platform, rustApiConfig.product, rustApiConfig.appVersion)
             )
         ) {
