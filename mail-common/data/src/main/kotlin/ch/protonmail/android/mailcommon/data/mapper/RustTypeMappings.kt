@@ -61,6 +61,8 @@ import uniffi.proton_mail_uniffi.MessageButtons
 import uniffi.proton_mail_uniffi.MimeType
 import uniffi.proton_mail_uniffi.MimeTypeCategory
 import uniffi.proton_mail_uniffi.MobileSettings
+import uniffi.proton_mail_uniffi.MobileSignature
+import uniffi.proton_mail_uniffi.MobileSignatureStatus
 import uniffi.proton_mail_uniffi.NonDefaultWeekStart
 import uniffi.proton_mail_uniffi.PartialDate
 import uniffi.proton_mail_uniffi.PgpScheme
@@ -222,3 +224,6 @@ typealias LocalRsvpProgress = RsvpProgress
 typealias LocalRsvpAttendance = RsvpAttendance
 typealias LocalRsvpUnanswerableReason = RsvpUnanswerableReason
 typealias LocalRsvpAnswer = RsvpAnswer
+typealias LocalMobileSignatureStatus = MobileSignatureStatus
+typealias LocalMobileSignature = MobileSignature
+
