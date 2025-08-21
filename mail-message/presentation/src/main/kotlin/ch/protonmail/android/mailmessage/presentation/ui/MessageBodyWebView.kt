@@ -78,6 +78,8 @@ import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.presentation.R
+import ch.protonmail.android.mailmessage.presentation.extension.isEmbeddedImage
+import ch.protonmail.android.mailmessage.presentation.extension.isRemoteContent
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.webview.MessageBodyWebViewOperation
@@ -168,11 +170,15 @@ fun MessageBodyWebView(
             }
 
             override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
-                return request?.url?.toString()?.let { url ->
-                    actions.loadImage(messageId, url)?.let {
-                        WebResourceResponse(it.mimeType, "", ByteArrayInputStream(it.data))
-                    }
-                } ?: super.shouldInterceptRequest(view, request)
+                return if (request?.isRemoteContent() == true || request?.isEmbeddedImage() == true) {
+                    request.url?.toString()?.let { url ->
+                        actions.loadImage(messageId, url)?.let {
+                            WebResourceResponse(it.mimeType, "", ByteArrayInputStream(it.data))
+                        }
+                    } ?: super.shouldInterceptRequest(view, request)
+                } else {
+                    super.shouldInterceptRequest(view, request)
+                }
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {

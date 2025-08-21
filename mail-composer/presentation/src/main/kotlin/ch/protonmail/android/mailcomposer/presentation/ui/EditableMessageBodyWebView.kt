@@ -53,6 +53,8 @@ import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiM
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.model.MimeType
+import ch.protonmail.android.mailmessage.presentation.extension.isEmbeddedImage
+import ch.protonmail.android.mailmessage.presentation.extension.isRemoteContent
 import ch.protonmail.android.mailmessage.presentation.ui.showInDarkMode
 import ch.protonmail.android.mailmessage.presentation.ui.showInLightMode
 import kotlinx.coroutines.delay
@@ -114,11 +116,15 @@ fun EditableMessageBodyWebView(
         }
 
         override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
-            return request?.url?.toString()?.let { url ->
-                webViewActions.loadImage(url)?.let {
-                    WebResourceResponse(it.mimeType, "", ByteArrayInputStream(it.data))
-                }
-            } ?: super.shouldInterceptRequest(view, request)
+            return if (request?.isRemoteContent() == true || request?.isEmbeddedImage() == true) {
+                request.url?.toString()?.let { url ->
+                    webViewActions.loadImage(url)?.let {
+                        WebResourceResponse(it.mimeType, "", ByteArrayInputStream(it.data))
+                    }
+                } ?: super.shouldInterceptRequest(view, request)
+            } else {
+                super.shouldInterceptRequest(view, request)
+            }
         }
     }
 
