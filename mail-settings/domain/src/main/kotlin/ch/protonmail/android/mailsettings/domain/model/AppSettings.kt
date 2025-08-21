@@ -27,7 +27,8 @@ data class AppSettings(
     val hasAlternativeRouting: Boolean,
     val customAppLanguage: String?,
     val hasCombinedContactsEnabled: Boolean,
-    val theme: Theme
+    val theme: Theme,
+    val mobileSignaturePreference: MobileSignaturePreference
 ) {
     val hasAutoLock = autolockProtection != Protection.None
 
@@ -44,7 +45,8 @@ data class AppSettings(
             DEFAULT_HAS_ALTERNATIVE_ROUTING,
             DEFAULT_CUSTOM_LANGUAGE,
             DEFAULT_HAS_DEVICE_CONTACTS_ENABLED,
-            DEFAULT_THEME
+            DEFAULT_THEME,
+            MobileSignaturePreference.Empty
         )
     }
 }

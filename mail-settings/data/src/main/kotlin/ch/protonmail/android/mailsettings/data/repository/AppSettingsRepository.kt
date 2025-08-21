@@ -22,6 +22,7 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailpinlock.model.AutoLockInterval
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsettings.data.local.RustAppSettingsDataSource
 import ch.protonmail.android.mailsettings.data.mapper.toAppDiff
 import ch.protonmail.android.mailsettings.data.mapper.toAppSettings
@@ -30,9 +31,11 @@ import ch.protonmail.android.mailsettings.domain.model.AppSettingsDiff
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
+import ch.protonmail.android.mailsettings.domain.repository.MobileSignatureRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -41,28 +44,36 @@ import javax.inject.Inject
 
 class AppSettingsRepository @Inject constructor(
     private val mailSessionRepository: MailSessionRepository,
+    private val userSessionRepository: UserSessionRepository,
     private val rustAppSettingsDataSource: RustAppSettingsDataSource,
-    private val appLanguageRepository: AppLanguageRepository
+    private val appLanguageRepository: AppLanguageRepository,
+    private val mobileSignatureRepository: MobileSignatureRepository
 ) : AppSettingsRepository {
 
     private val restartTrigger = MutableSharedFlow<Unit>(replay = 1)
 
     override fun observeAppSettings(): Flow<AppSettings> = restartTrigger.flatMapLatest {
-        combine(
-            getLatestRustAppSettings(),
-            appLanguageRepository.observe()
-        ) { appSettings, customLanguage ->
-            appSettings.fold(
-                {
-                    AppSettings.default().apply {
-                        Timber.e("Unable to get app settings $it, returning default settings: $this")
-                    }
-                },
-                {
-                    it.toAppSettings(customLanguage)
+        userSessionRepository.observePrimaryUserId()
+            .filterNotNull()
+            .flatMapLatest { userId ->
+                combine(
+                    getLatestRustAppSettings(),
+                    appLanguageRepository.observe(),
+                    mobileSignatureRepository.observeMobileSignature(userId)
+                ) { appSettingsEither, customLanguage, mobileSignature ->
+
+                    appSettingsEither.fold(
+                        {
+                            AppSettings.default().apply {
+                                Timber.e("Unable to get app settings $it, returning default settings: $this")
+                            }
+                        },
+                        {
+                            it.toAppSettings(customLanguage, mobileSignature)
+                        }
+                    )
                 }
-            )
-        }
+            }
     }.apply { restartTrigger.tryEmit(Unit) }
 
     override fun observeTheme(): Flow<Theme> = observeAppSettings().map { it.theme }

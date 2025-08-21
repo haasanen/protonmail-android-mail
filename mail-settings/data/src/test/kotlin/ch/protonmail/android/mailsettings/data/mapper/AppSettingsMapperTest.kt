@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailsettings.data.mapper
 
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
+import ch.protonmail.android.mailsettings.domain.model.MobileSignaturePreference
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -50,18 +51,23 @@ class AppSettingsMapperTest {
 
     @Test
     fun `when map LocalAppSettings then App Theme is mapped`() {
-        assertEquals(Theme.DARK, localAppSettings.toAppSettings().theme)
+        assertEquals(
+            Theme.DARK,
+            localAppSettings.toAppSettings(
+                null, MobileSignaturePreference.Empty
+            ).theme
+        )
         assertEquals(
             Theme.LIGHT,
             localAppSettings.copy(appearance = AppAppearance.LIGHT_MODE)
-                .toAppSettings()
+                .toAppSettings(null, MobileSignaturePreference.Empty)
                 .theme
         )
 
         assertEquals(
             Theme.SYSTEM_DEFAULT,
             localAppSettings.copy(appearance = AppAppearance.SYSTEM)
-                .toAppSettings()
+                .toAppSettings(null, MobileSignaturePreference.Empty)
                 .theme
         )
     }
@@ -70,18 +76,18 @@ class AppSettingsMapperTest {
     fun `when map LocalAppSettings then AutoLock is mapped`() {
         assertTrue(
             localAppSettings.copy(protection = AppProtection.PIN)
-                .toAppSettings()
+                .toAppSettings(null, MobileSignaturePreference.Empty)
                 .hasAutoLock
         )
 
         assertTrue(
             localAppSettings.copy(protection = AppProtection.BIOMETRICS)
-                .toAppSettings()
+                .toAppSettings(null, MobileSignaturePreference.Empty)
                 .hasAutoLock
         )
         assertFalse(
             localAppSettings.copy(protection = AppProtection.NONE)
-                .toAppSettings()
+                .toAppSettings(null, MobileSignaturePreference.Empty)
                 .hasAutoLock
         )
     }
@@ -90,7 +96,7 @@ class AppSettingsMapperTest {
     fun `when map LocalAppSettings AND no language set then language is null`() {
         assertNull(
             localAppSettings
-                .toAppSettings(customLanguage = null)
+                .toAppSettings(null, MobileSignaturePreference.Empty)
                 .customAppLanguage
         )
     }
@@ -100,7 +106,10 @@ class AppSettingsMapperTest {
         assertEquals(
             "Français",
             localAppSettings
-                .toAppSettings(customLanguage = AppLanguage.FRENCH)
+                .toAppSettings(
+                    customLanguage = AppLanguage.FRENCH,
+                    mobileSignature = MobileSignaturePreference.Empty
+                )
                 .customAppLanguage
         )
     }

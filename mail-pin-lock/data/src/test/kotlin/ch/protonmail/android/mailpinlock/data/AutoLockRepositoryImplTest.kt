@@ -37,9 +37,12 @@ import ch.protonmail.android.mailsettings.data.local.RustAppSettingsDataSource
 import ch.protonmail.android.mailsettings.data.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
+import ch.protonmail.android.mailsettings.domain.model.MobileSignaturePreference
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
+import ch.protonmail.android.mailsettings.domain.repository.MobileSignatureRepository
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified
@@ -50,6 +53,7 @@ import io.mockk.runs
 import io.mockk.spyk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import me.proton.core.domain.entity.UserId
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -85,12 +89,23 @@ class AutoLockRepositoryImplTest {
     private val biometricsStateRepository = mockk<BiometricsSystemStateRepository> {
         every { this@mockk.observe() } returns flowOf(BiometricsSystemState.BiometricEnrolled)
     }
+    private val userId = UserId("user-123")
+
+    private val userSessionRepository = mockk<UserSessionRepository> {
+        every { observePrimaryUserId() } returns flowOf(userId)
+    }
+    private val mobileSignatureRepository = mockk<MobileSignatureRepository> {
+        every { observeMobileSignature(userId) } returns flowOf(MobileSignaturePreference.Empty)
+    }
+
 
     private val appSettingsRepository: AppSettingsRepository = spyk(
         AppSettingsRepository(
             mailSessionRepository = mailSessionRepository,
+            userSessionRepository = userSessionRepository,
             rustAppSettingsDataSource = appSettingsDataSource,
-            appLanguageRepository = appLanguageRepository
+            appLanguageRepository = appLanguageRepository,
+            mobileSignatureRepository = mobileSignatureRepository
         )
     )
 
@@ -116,7 +131,8 @@ class AutoLockRepositoryImplTest {
         hasAlternativeRouting = true,
         customAppLanguage = AppLanguage.FRENCH.langName,
         hasCombinedContactsEnabled = true,
-        theme = Theme.LIGHT
+        theme = Theme.LIGHT,
+        mobileSignaturePreference = MobileSignaturePreference.Empty
     )
 
     @Test

@@ -28,6 +28,7 @@ import ch.protonmail.android.mailsettings.data.mapper.LocalMapperThemeConstants.
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.AppSettingsDiff
+import ch.protonmail.android.mailsettings.domain.model.MobileSignaturePreference
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AppAppearance
@@ -83,12 +84,14 @@ fun LocalProtection.toProtection() = when (this) {
     AppProtection.PIN -> Protection.Pin
 }
 
-fun LocalAppSettings.toAppSettings(customLanguage: AppLanguage? = null) = AppSettings(
-    autolockProtection = protection.toProtection(),
-    autolockInterval = autoLock.toAutoLockInterval(),
-    hasAlternativeRouting = useAlternativeRouting,
-    theme = appearance.toTheme(),
-    customAppLanguage = customLanguage?.langName,
-    hasCombinedContactsEnabled = useCombineContacts
-)
+fun LocalAppSettings.toAppSettings(customLanguage: AppLanguage? = null, mobileSignature: MobileSignaturePreference) =
+    AppSettings(
+        autolockProtection = protection.toProtection(),
+        autolockInterval = autoLock.toAutoLockInterval(),
+        hasAlternativeRouting = useAlternativeRouting,
+        theme = appearance.toTheme(),
+        customAppLanguage = customLanguage?.langName,
+        hasCombinedContactsEnabled = useCombineContacts,
+        mobileSignaturePreference = mobileSignature
+    )
 

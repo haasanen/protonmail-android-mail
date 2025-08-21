@@ -26,18 +26,22 @@ import ch.protonmail.android.mailpinlock.model.AutoLockInterval
 import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.data.wrapper.MailSessionWrapper
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsettings.data.local.RustAppSettingsDataSource
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
+import ch.protonmail.android.mailsettings.domain.model.MobileSignaturePreference
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
+import ch.protonmail.android.mailsettings.domain.repository.MobileSignatureRepository
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import me.proton.core.domain.entity.UserId
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -71,9 +75,18 @@ class AppSettingsRepositoryTest {
         hasAlternativeRouting = true,
         customAppLanguage = AppLanguage.FRENCH.langName,
         hasCombinedContactsEnabled = true,
-        theme = Theme.LIGHT
+        theme = Theme.LIGHT,
+        mobileSignaturePreference = MobileSignaturePreference.Empty
     )
 
+    private val userId = UserId("user-123")
+
+    private val userSessionRepository = mockk<UserSessionRepository> {
+        every { observePrimaryUserId() } returns flowOf(userId)
+    }
+    private val mobileSignatureRepository = mockk<MobileSignatureRepository> {
+        every { observeMobileSignature(userId) } returns flowOf(MobileSignaturePreference.Empty)
+    }
     private val mockMailSessionWrapper = mockk<MailSessionWrapper>()
 
     private val mailSessionRepository = mockk<MailSessionRepository> {
@@ -87,8 +100,13 @@ class AppSettingsRepositoryTest {
 
     @Before
     fun setUp() {
-        appSettingsRepository =
-            AppSettingsRepository(mailSessionRepository, appSettingsDataSource, appLanguageRepository)
+        appSettingsRepository = AppSettingsRepository(
+            mailSessionRepository = mailSessionRepository,
+            userSessionRepository = userSessionRepository,
+            rustAppSettingsDataSource = appSettingsDataSource,
+            appLanguageRepository = appLanguageRepository,
+            mobileSignatureRepository = mobileSignatureRepository
+        )
     }
 
 

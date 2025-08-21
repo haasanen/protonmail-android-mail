@@ -24,6 +24,7 @@ import ch.protonmail.android.mailpinlock.model.AutoLockInterval
 import ch.protonmail.android.mailpinlock.model.BiometricsSystemState
 import ch.protonmail.android.mailpinlock.model.Protection
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
+import ch.protonmail.android.mailsettings.domain.model.MobileSignaturePreference
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -36,7 +37,8 @@ class AutoLockMapperTest {
         autolockProtection = Protection.Biometrics,
         customAppLanguage = "en",
         hasCombinedContactsEnabled = true,
-        hasAlternativeRouting = false
+        hasAlternativeRouting = false,
+        mobileSignaturePreference = MobileSignaturePreference.Empty
     )
 
     private val biometricsSystemState = BiometricsSystemState.BiometricEnrolled

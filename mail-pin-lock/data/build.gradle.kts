@@ -61,5 +61,7 @@ dependencies {
     testImplementation(libs.proton.rust.core)
     testImplementation(project(":test:utils"))
     testImplementation(project(":test:test-data"))
+    testImplementation(project(":mail-session:domain"))
+
     testImplementation(libs.bundles.test)
 }
