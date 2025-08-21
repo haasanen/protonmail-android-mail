@@ -26,6 +26,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import me.proton.android.core.payment.domain.LogTag
+import me.proton.android.core.payment.domain.PaymentException
+import me.proton.android.core.payment.domain.PaymentErrorCode
 import me.proton.android.core.payment.domain.model.SubscriptionDetail
 import me.proton.android.core.payment.domain.usecase.GetCurrentSubscriptions
 import me.proton.android.core.payment.presentation.R
@@ -66,13 +68,17 @@ class SubscriptionListViewModel @Inject constructor(
         }
         emit(SubscriptionListState.Data(list))
     }.catch { exception ->
-        val exceptionMessage = exception.message ?: "Error occurred whilst fetching current subscriptions."
-        CoreLogger.e(LogTag.GET_SUBSCRIPTIONS, exceptionMessage)
-        emit(SubscriptionListState.Error(exceptionMessage))
+        if ((exception as? PaymentException)?.errorCode == PaymentErrorCode.FORBIDDEN.value) {
+            emit(SubscriptionListState.Failure.Forbidden)
+        } else {
+            val exceptionMessage = exception.message ?: "Error occurred whilst fetching current subscriptions."
+            CoreLogger.e(LogTag.GET_SUBSCRIPTIONS, exceptionMessage)
+            emit(SubscriptionListState.Failure.Error(exceptionMessage))
+        }
     }
 
     override suspend fun FlowCollector<SubscriptionListState>.onError(throwable: Throwable) {
-        emit(SubscriptionListState.Error(throwable.message ?: "Unknown error"))
+        emit(SubscriptionListState.Failure.Error(throwable.message ?: "Unknown error"))
     }
 
     private fun SubscriptionDetail.getRenewalText() = when {

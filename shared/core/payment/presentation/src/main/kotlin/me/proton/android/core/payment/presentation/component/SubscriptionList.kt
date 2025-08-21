@@ -54,7 +54,7 @@ fun SubscriptionList(
             list = state.list
         )
 
-        is SubscriptionListState.Error -> ProtonErrorRetryLayout(
+        is SubscriptionListState.Failure.Error -> ProtonErrorRetryLayout(
             modifier = modifier,
             description = state.message,
             onClick = { onRetryClicked() }
@@ -63,6 +63,8 @@ fun SubscriptionList(
         is SubscriptionListState.Loading -> ProtonCenteredProgress(
             modifier = modifier
         )
+
+        is SubscriptionListState.Failure.Forbidden -> Unit
     }
 }
 
@@ -96,7 +98,7 @@ internal fun SubscriptionListPreview() {
 private fun SubscriptionListErrorPreview() {
     ProtonTheme {
         SubscriptionList(
-            state = SubscriptionListState.Error("An error occurs. Please retry."),
+            state = SubscriptionListState.Failure.Error("An error occurs. Please retry."),
             modifier = Modifier.padding(Spacing.Medium)
         )
     }

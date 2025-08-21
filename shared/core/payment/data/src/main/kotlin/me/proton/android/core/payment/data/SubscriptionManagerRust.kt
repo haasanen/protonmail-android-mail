@@ -22,11 +22,12 @@ import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.getPrimarySession
 import dagger.hilt.android.qualifiers.ApplicationContext
 import me.proton.android.core.payment.data.extension.getErrorMessage
+import me.proton.android.core.payment.data.extension.isForbiddenError
 import me.proton.android.core.payment.data.extension.toObservabilityValue
 import me.proton.android.core.payment.data.model.toProductOfferDetail
 import me.proton.android.core.payment.data.model.toSubscriptionDetail
 import me.proton.android.core.payment.domain.PaymentException
-import me.proton.android.core.payment.domain.PaymentException.Companion.ErrorCode.DEVELOPER_ERROR
+import me.proton.android.core.payment.domain.PaymentErrorCode
 import me.proton.android.core.payment.domain.PaymentMetricsTracker
 import me.proton.android.core.payment.domain.SubscriptionManager
 import me.proton.android.core.payment.domain.model.PaymentObservabilityMetric.CREATE_SUBSCRIPTION
@@ -68,7 +69,10 @@ class SubscriptionManagerRust @Inject constructor(
 ) : SubscriptionManager {
 
     private fun UserSessionError.throwException(): Nothing {
-        throw PaymentException(DEVELOPER_ERROR, getErrorMessage(context))
+        throw PaymentException(
+            errorCode = PaymentErrorCode.DEVELOPER_ERROR.value,
+            message = getErrorMessage(context)
+        )
     }
 
     private suspend fun getProtonToken(
@@ -133,7 +137,17 @@ class SubscriptionManagerRust @Inject constructor(
 
         metricsTracker.track(GET_SUBSCRIPTION, result.toObservabilityValue())
         when (result) {
-            is MailUserSessionGetPaymentsSubscriptionResult.Error -> result.v1.throwException()
+            is MailUserSessionGetPaymentsSubscriptionResult.Error -> {
+                val error = result.v1
+
+                when (error.isForbiddenError()) {
+                    true -> throw PaymentException(
+                        errorCode = PaymentErrorCode.FORBIDDEN.value,
+                        message = error.getErrorMessage(context)
+                    )
+                    false -> error.throwException()
+                }
+            }
             is MailUserSessionGetPaymentsSubscriptionResult.Ok -> {
                 return result.v1.current.map { it.toSubscriptionDetail() }
             }

@@ -19,10 +19,11 @@
 
 package me.proton.android.core.payment.presentation.screen
 
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -30,12 +31,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.appbar.ProtonNavigationIcon
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
@@ -49,6 +50,7 @@ import me.proton.android.core.payment.presentation.component.ProductList
 import me.proton.android.core.payment.presentation.component.ProductListAction
 import me.proton.android.core.payment.presentation.component.ProductListState
 import me.proton.android.core.payment.presentation.component.ProductListViewModel
+import me.proton.android.core.payment.presentation.component.SubscriptionEmptyView
 import me.proton.android.core.payment.presentation.component.SubscriptionList
 import me.proton.android.core.payment.presentation.component.SubscriptionListAction
 import me.proton.android.core.payment.presentation.component.SubscriptionListState
@@ -94,9 +96,11 @@ fun SubscriptionScreen(
     subscriptionState: SubscriptionListState,
     productState: ProductListState
 ) {
-    val subscriptionList = remember(subscriptionState) { (subscriptionState as? SubscriptionListState.Data)?.list }
     val productList = remember(productState) { (productState as? ProductListState.Data)?.list }
-    val areUpgradeAvailable = remember(productList) { productList?.isNotEmpty() ?: false }
+    val upgradesAvailable = remember(productList) { productList?.isNotEmpty() ?: false }
+    val forbiddenToSubscribe = remember(subscriptionState) {
+        subscriptionState is SubscriptionListState.Failure.Forbidden
+    }
 
     Scaffold(
         topBar = {
@@ -111,46 +115,65 @@ fun SubscriptionScreen(
                 backgroundColor = ProtonTheme.colors.backgroundNorm
             )
         }
-    ) { paddingValues ->
-        BoxWithConstraints(modifier = Modifier.padding(paddingValues)) {
-
-            // Force SubscriptionList to fill maxHeight on loading/error.
-            val subscriptionHeight = when {
-                subscriptionList == null -> maxHeight
-                else -> Dp.Unspecified
+    ) { innerPadding ->
+        when {
+            forbiddenToSubscribe -> {
+                SubscriptionEmptyView(
+                    imageRes = R.drawable.illustration_restricted_access,
+                    title = stringResource(R.string.payment_subscription_restricted_access_title),
+                    description = stringResource(R.string.payment_subscription_restricted_access_description)
+                )
             }
 
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-
-                SubscriptionList(
+            subscriptionState is SubscriptionListState.Failure.Error -> {
+                Box(
                     modifier = Modifier
-                        .padding(Spacing.Medium)
-                        .height(subscriptionHeight),
-                    onRetryClicked = onRetryClicked,
-                    state = subscriptionState
-                )
-
-                if (areUpgradeAvailable) {
-                    Text(
-                        text = stringResource(R.string.payment_subscription_upgrade_your_plan),
-                        modifier = Modifier
-                            .padding(bottom = Spacing.Medium)
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        style = ProtonTheme.typography.titleLargeNorm
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    SubscriptionList(
+                        onRetryClicked = onRetryClicked,
+                        state = subscriptionState
                     )
                 }
+            }
 
-                ProductList(
-                    modifier = Modifier.padding(Spacing.Medium),
-                    onSuccess = {
-                        onRetryClicked()
-                        onSuccess(it)
-                    },
-                    onErrorMessage = { onErrorMessage(it) },
-                    onRetryClicked = onRetryClicked,
-                    state = productState
-                )
+            else -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState())
+                        .padding(innerPadding)
+                ) {
+                    SubscriptionList(
+                        modifier = Modifier.padding(Spacing.Medium),
+                        onRetryClicked = onRetryClicked,
+                        state = subscriptionState
+                    )
+
+                    if (upgradesAvailable) {
+                        Text(
+                            text = stringResource(R.string.payment_subscription_upgrade_your_plan),
+                            modifier = Modifier
+                                .padding(bottom = Spacing.Medium)
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            style = ProtonTheme.typography.titleLargeNorm
+                        )
+                    }
+
+                    ProductList(
+                        modifier = Modifier.padding(Spacing.Medium),
+                        onSuccess = {
+                            onRetryClicked()
+                            onSuccess(it)
+                        },
+                        onErrorMessage = { onErrorMessage(it) },
+                        onRetryClicked = onRetryClicked,
+                        state = productState
+                    )
+                }
             }
         }
     }
@@ -167,8 +190,19 @@ internal fun SubscriptionScreenPreview() {
 internal fun SubscriptionScreenErrorPreview() {
     ProtonTheme {
         SubscriptionScreen(
-            subscriptionState = SubscriptionListState.Error("An error occurs. Please retry."),
-            productState = ProductListState.Error("An error occurs. Please retry.")
+            subscriptionState = SubscriptionListState.Failure.Error("An error occurred, please retry."),
+            productState = ProductListState.Error("An error occurred, please retry.")
+        )
+    }
+}
+
+@Composable
+@PreviewLightDark
+internal fun SubscriptionScreenForbiddenPreview() {
+    ProtonTheme {
+        SubscriptionScreen(
+            subscriptionState = SubscriptionListState.Failure.Forbidden,
+            productState = ProductListState.Error("An Error occurred, please retry.")
         )
     }
 }

@@ -19,6 +19,7 @@
 <resources>
     <string name="payment_error_title">Something went wrong</string>
     <string name="payment_error_description">We couldn\'t load this page. Please refresh the page or check your internet connection.</string>
+    <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
 
     <string name="payment_purchase_button_get">Get %1$s</string>
     <string name="payment_purchase_button_subscribed">Subscribed to %1$s</string>
@@ -51,5 +52,6 @@
     <string name="payment_subscription_managed_by_apple">Your subscription is managed by Apple Store.</string>
     <string name="payment_subscription_managed_by_other">Your subscription can’t be managed inside the mobile app.</string>
 
-    <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
+    <string name="payment_subscription_restricted_access_title">Restricted access</string>
+    <string name="payment_subscription_restricted_access_description">Sorry, you don\'t have permission to access this page. Contact your administrator if this wasn\'t supposed to happen.</string>
 </resources>

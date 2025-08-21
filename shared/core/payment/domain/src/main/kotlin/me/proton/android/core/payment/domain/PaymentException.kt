@@ -17,21 +17,13 @@
 
 package me.proton.android.core.payment.domain
 
+enum class PaymentErrorCode(val value: Int) {
+    FORBIDDEN(-2),
+    BILLING_UNAVAILABLE(3),
+    DEVELOPER_ERROR(5)
+}
+
 data class PaymentException(
     val errorCode: Int?,
     override val message: String?
-) : Exception("errorCode: $errorCode message: $message") {
-
-    companion object {
-        object ErrorCode {
-
-            const val OK: Int = 0
-            const val USER_CANCELED: Int = 1
-            const val SERVICE_UNAVAILABLE: Int = 2
-            const val BILLING_UNAVAILABLE: Int = 3
-            const val ITEM_UNAVAILABLE: Int = 4
-            const val DEVELOPER_ERROR: Int = 5
-            const val NETWORK_ERROR: Int = 12
-        }
-    }
-}
+) : Exception("errorCode: $errorCode message: $message")

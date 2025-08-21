@@ -22,5 +22,8 @@ import me.proton.android.core.payment.presentation.model.Subscription
 sealed interface SubscriptionListState {
     data object Loading : SubscriptionListState
     data class Data(val list: List<Subscription>) : SubscriptionListState
-    data class Error(val message: String) : SubscriptionListState
+    sealed interface Failure : SubscriptionListState {
+        data class Error(val message: String) : Failure
+        data object Forbidden : Failure
+    }
 }

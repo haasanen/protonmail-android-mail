@@ -50,6 +50,12 @@ fun UserSessionError.getErrorMessage(context: Context) = when (this) {
     is UserSessionError.Reason -> this.v1.getErrorMessage()
 }
 
+fun UserSessionError.isForbiddenError(): Boolean {
+    val serverError = (this as? UserSessionError.Other)?.v1 as? ServerError
+    val forbiddenError = serverError?.v1 as? Forbidden
+    return forbiddenError != null
+}
+
 fun SessionReason.getErrorMessage() = when (this) {
     is SessionReason.DuplicateSession -> "DUPLICATE_SESSION"
     is SessionReason.MethodCalledInWrongOrigin -> "METHOD_CALLED_IN_WRONG_ORIGIN"

@@ -29,6 +29,7 @@ import me.proton.android.core.payment.domain.LogTag
 import me.proton.android.core.payment.domain.PaymentException
 import me.proton.android.core.payment.domain.model.ProductOfferDetail
 import me.proton.android.core.payment.domain.model.getBaseOffer
+import me.proton.android.core.payment.domain.PaymentErrorCode
 import me.proton.android.core.payment.domain.usecase.GetAvailableUpgrades
 import me.proton.android.core.payment.presentation.R
 import me.proton.android.core.payment.presentation.model.Product
@@ -79,7 +80,7 @@ class ProductListViewModel @Inject constructor(
         CoreLogger.e(LogTag.GET_PLANS, exceptionMessage)
 
         when ((exception as? PaymentException)?.errorCode) {
-            PaymentException.Companion.ErrorCode.BILLING_UNAVAILABLE -> {
+            PaymentErrorCode.BILLING_UNAVAILABLE.value -> {
                 emit(ProductListState.Data(emptyList()))
             }
 
