@@ -18,10 +18,13 @@
 
 package ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.mapper
 
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.model.MobileSignaturePreference
 import ch.protonmail.android.mailsettings.domain.model.MobileSignatureStatus
+import ch.protonmail.android.mailsettings.domain.model.isEnabled
 import ch.protonmail.android.mailsettings.presentation.R
+import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureSettingsUiModel
 import ch.protonmail.android.mailsettings.presentation.settings.mobilesignature.model.MobileSignatureUiModel
 
 internal object MobileSignatureUiModelMapper {
@@ -33,6 +36,13 @@ internal object MobileSignatureUiModelMapper {
             statusText = getStatusText(signaturePreference.status)
         )
     }
+
+    fun toSettingsUiModel(signaturePreference: MobileSignaturePreference): MobileSignatureSettingsUiModel =
+        MobileSignatureSettingsUiModel(
+            enabled = signaturePreference.status.isEnabled(),
+            signatureValue = signaturePreference.value,
+            editSignatureEffect = Effect.empty()
+        )
 
     private fun getStatusText(status: MobileSignatureStatus): TextUiModel = when (status) {
         MobileSignatureStatus.Enabled,
