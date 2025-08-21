@@ -72,6 +72,8 @@ dependencies {
     implementation(project(":mail-settings:domain"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-session:presentation"))
+    implementation(project(":mail-upselling:domain"))
+    implementation(project(":mail-upselling:presentation"))
 
     implementation(project(":shared:core:device-migration:presentation"))
 

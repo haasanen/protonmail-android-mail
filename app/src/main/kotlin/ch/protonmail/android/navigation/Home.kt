@@ -107,6 +107,7 @@ import ch.protonmail.android.navigation.route.addExportLogsSettings
 import ch.protonmail.android.navigation.route.addFeatureFlagsOverrides
 import ch.protonmail.android.navigation.route.addLanguageSettings
 import ch.protonmail.android.navigation.route.addMailbox
+import ch.protonmail.android.navigation.route.addMobileSignatureSettings
 import ch.protonmail.android.navigation.route.addNotificationsSettings
 import ch.protonmail.android.navigation.route.addPinDialog
 import ch.protonmail.android.navigation.route.addPrivacySettings
@@ -683,6 +684,7 @@ fun Home(
                         addLanguageSettings(navController)
                         addPrivacySettings(navController)
                         addAutoLockSettings(navController)
+                        addMobileSignatureSettings(navController)
                         addAutoLockPinScreen(
                             onClose = { navController.navigateBack() },
                             onShowSuccessSnackbar = { showNormalSnackbar(it) }

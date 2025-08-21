@@ -27,12 +27,16 @@ import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepositor
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetNotificationsEnabled
 import ch.protonmail.android.mailsettings.presentation.testdata.AppSettingsTestData
+import ch.protonmail.android.mailsettings.presentation.testdata.MobileSignatureTestData
+import ch.protonmail.android.mailupselling.presentation.model.UpsellingVisibility
+import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -45,7 +49,7 @@ internal class AppSettingsViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val appSettingsFlow = MutableSharedFlow<AppSettings>()
-    private val observeAppSettings = mockk<AppSettingsRepository> {
+    private val appSettingsRepository = mockk<AppSettingsRepository> {
         every { this@mockk.observeAppSettings() } returns appSettingsFlow
         coEvery { this@mockk.updateAlternativeRouting(any()) } returns Unit.right()
         coEvery { this@mockk.updateUseCombineContacts(any()) } returns Unit.right()
@@ -55,12 +59,21 @@ internal class AppSettingsViewModelTest {
         every { this@mockk.invoke() } returns true
     }
 
+    private val observeUpsellingVisibility = mockk<ObserveUpsellingVisibility> {
+        every {
+            this@mockk.invoke()
+        } returns flowOf(UpsellingVisibility.NORMAL)
+    }
+
     private lateinit var viewModel: AppSettingsViewModel
 
     @Before
     fun setUp() {
 
-        viewModel = AppSettingsViewModel(observeAppSettings, notificationSettingsUsecase)
+        viewModel = AppSettingsViewModel(
+            appSettingsRepository,
+            notificationSettingsUsecase, observeUpsellingVisibility
+        )
     }
 
     @Test
@@ -87,7 +100,8 @@ internal class AppSettingsViewModelTest {
                 customLanguage = null,
                 deviceContactsEnabled = true,
                 theme = TextUiModel.TextRes(R.string.mail_settings_system_default),
-                notificationsEnabledStatus = TextUiModel(R.string.notifications_on)
+                notificationsEnabledStatus = TextUiModel(R.string.notifications_on),
+                mobileSignature = MobileSignatureTestData.SignatureEmpty
             )
             assertEquals(expected, actual.settings)
         }
@@ -100,7 +114,7 @@ internal class AppSettingsViewModelTest {
             initialStateEmitted()
 
             viewModel.submit(ToggleAlternativeRouting(true))
-            coVerify { observeAppSettings.updateAlternativeRouting(true) }
+            coVerify { appSettingsRepository.updateAlternativeRouting(true) }
         }
     }
 
@@ -111,7 +125,7 @@ internal class AppSettingsViewModelTest {
             initialStateEmitted()
 
             viewModel.submit(ToggleUseCombinedContacts(true))
-            coVerify { observeAppSettings.updateUseCombineContacts(true) }
+            coVerify { appSettingsRepository.updateUseCombineContacts(true) }
         }
     }
 

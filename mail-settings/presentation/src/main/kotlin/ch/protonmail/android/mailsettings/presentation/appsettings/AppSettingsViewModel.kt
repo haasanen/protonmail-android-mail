@@ -22,9 +22,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailsettings.domain.repository.AppSettingsRepository
 import ch.protonmail.android.mailsettings.presentation.appsettings.usecase.GetNotificationsEnabled
+import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,19 +33,22 @@ import javax.inject.Inject
 @HiltViewModel
 internal class AppSettingsViewModel @Inject constructor(
     val appSettingsRepository: AppSettingsRepository,
-    val getNotificationsEnabledUsecase: GetNotificationsEnabled
+    val getNotificationsEnabledUsecase: GetNotificationsEnabled,
+    val observeUpsellingVisibility: ObserveUpsellingVisibility
 ) : ViewModel() {
 
-    val state = appSettingsRepository
-        .observeAppSettings()
-        .map { appSettings ->
-            val notificationsEnabled = getNotificationsEnabledUsecase()
-            val uiModel = AppSettingsUiModelMapper.toUiModel(appSettings, notificationsEnabled)
-            AppSettingsState.Data(uiModel)
-        }
+    val state = combine(
+        appSettingsRepository.observeAppSettings(),
+        observeUpsellingVisibility()
+    ) { appSettings, upsellVisibility ->
+        val notificationsEnabled = getNotificationsEnabledUsecase()
+        val uiModel = AppSettingsUiModelMapper.toUiModel(appSettings, notificationsEnabled)
+        AppSettingsState.Data(settings = uiModel, upsellingVisibility = upsellVisibility)
+    }
         .stateIn(
-            viewModelScope, SharingStarted.WhileSubscribed(stopTimeoutMs),
-            AppSettingsState.Loading
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMs),
+            initialValue = AppSettingsState.Loading
         )
 
     internal fun submit(intent: AppSettingsAction) {

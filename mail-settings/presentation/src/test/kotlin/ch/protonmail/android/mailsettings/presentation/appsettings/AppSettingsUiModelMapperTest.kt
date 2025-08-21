@@ -24,6 +24,7 @@ import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.testdata.AppSettingsTestData
+import ch.protonmail.android.mailsettings.presentation.testdata.MobileSignatureTestData
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import kotlin.test.Test
@@ -52,7 +53,8 @@ internal class AppSettingsUiModelMapperTest(
             customLanguage = null,
             deviceContactsEnabled = true,
             theme = TextUiModel.TextRes(R.string.mail_settings_system_default),
-            notificationsEnabledStatus = TextUiModel(R.string.notifications_on)
+            notificationsEnabledStatus = TextUiModel(R.string.notifications_on),
+            mobileSignature = MobileSignatureTestData.SignatureEmpty
         )
 
         @JvmStatic

@@ -250,6 +250,17 @@ internal fun NavGraphBuilder.addAppSettings(navController: NavHostController, sh
                     onAppLanguageClick = {
                         navController.navigate(Destination.Screen.LanguageSettings.route)
                     },
+                    onNavigateToMobileSignatureSettings = {
+                        navController.navigate(Destination.Screen.MobileSignatureSettings.route)
+                    },
+                    onNavigateToUpselling = { entryPoint, type ->
+                        navController.navigate(
+                            Destination.Screen.FeatureUpselling(
+                                entryPoint, type
+                            )
+                        )
+
+                    },
                     onSwipeToNextEmailClick = showFeatureMissingSnackbar,
                     onSwipeActionsClick = showFeatureMissingSnackbar,
                     onViewApplicationLogsClick = showFeatureMissingSnackbar,
