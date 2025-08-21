@@ -782,7 +782,9 @@ class ProtonColors(
             sidebarTextSelected = ProtonPalette.Platinum,
             sidebarIconNorm = ProtonPalette.SantasGray,
             sidebarIconWeak = ProtonPalette.SonicSilver,
-            sidebarIconSelected = ProtonPalette.BlueBell
+            sidebarIconSelected = ProtonPalette.BlueBell,
+            iconNorm = ProtonPalette.White,
+            textNorm = ProtonPalette.White
         ).let {
             it.copy(
                 interactionFabNorm = it.shade40,
