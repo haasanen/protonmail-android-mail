@@ -72,7 +72,7 @@ interface RustDraftDataSource {
     suspend fun validateSendWithExpiration(): Either<DataError, DraftRecipientExpirationFeatureReport>
 
 
-    fun getEmbeddedImage(contentId: String): Either<DataError, LocalAttachmentData>
+    fun loadImage(url: String): Either<DataError, LocalAttachmentData>
     fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions>
 
     /**

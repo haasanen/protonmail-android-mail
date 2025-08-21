@@ -59,7 +59,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
-import ch.protonmail.android.mailcomposer.domain.usecase.GetEmbeddedImage
+import ch.protonmail.android.mailcomposer.domain.usecase.LoadMessageBodyImage
 import ch.protonmail.android.mailcomposer.domain.usecase.GetSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.IsMessagePasswordSet
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
@@ -165,7 +165,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val discardDraft: DiscardDraft,
     private val getDraftId: GetDraftId,
     private val savedStateHandle: SavedStateHandle,
-    private val getEmbeddedImage: GetEmbeddedImage,
+    private val loadMessageBodyImage: LoadMessageBodyImage,
     private val getFormattedScheduleSendOptions: GetFormattedScheduleSendOptions,
     private val scheduleSend: ScheduleSendMessage,
     private val getSenderAddresses: GetSenderAddresses,
@@ -618,7 +618,7 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    fun loadEmbeddedImage(contentId: String): MessageBodyImage? = getEmbeddedImage(contentId).getOrNull()
+    fun loadImage(url: String): MessageBodyImage? = loadMessageBodyImage(url).getOrNull()
 
     private suspend fun onScheduleSendRequested() {
         getFormattedScheduleSendOptions()

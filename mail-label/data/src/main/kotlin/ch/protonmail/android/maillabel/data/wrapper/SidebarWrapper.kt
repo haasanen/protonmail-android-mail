@@ -23,7 +23,6 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import uniffi.proton_mail_uniffi.LabelType
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.Sidebar
 import uniffi.proton_mail_uniffi.SidebarAllCustomFoldersResult
@@ -37,8 +36,8 @@ import uniffi.proton_mail_uniffi.WatchHandle
 
 class SidebarWrapper(private val sidebar: Sidebar) {
 
-    suspend fun watchLabels(system: LabelType, callback: LiveQueryCallback): Either<DataError, WatchHandle> =
-        when (val result = sidebar.watchLabels(system, callback)) {
+    suspend fun watchLabels(callback: LiveQueryCallback): Either<DataError, WatchHandle> =
+        when (val result = sidebar.watchLabels(callback)) {
             is SidebarWatchLabelsResult.Error -> result.v1.toDataError().left()
             is SidebarWatchLabelsResult.Ok -> result.v1.right()
         }

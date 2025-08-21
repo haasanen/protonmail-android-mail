@@ -24,12 +24,9 @@ import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import javax.inject.Inject
 
-class GetEmbeddedImage @Inject constructor(
+class LoadMessageBodyImage @Inject constructor(
     private val draftRepository: DraftRepository
 ) {
 
-    operator fun invoke(contentId: String): Either<DataError, MessageBodyImage> =
-        draftRepository.getEmbeddedImage(contentId)
-
-
+    operator fun invoke(url: String): Either<DataError, MessageBodyImage> = draftRepository.loadImage(url)
 }

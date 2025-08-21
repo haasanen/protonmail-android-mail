@@ -375,7 +375,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
                                 val visibleBounds = boundsInWindow.intersect(columnBounds)
                                 visibleWebViewHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
                             },
-                            loadEmbeddedImage = { viewModel.loadEmbeddedImage(it) },
+                            loadImage = { viewModel.loadImage(it) },
                             onAttachmentRemoveRequested = { viewModel.submit(ComposerAction.RemoveAttachment(it)) },
                             onInlineImageRemoved = { viewModel.submit(ComposerAction.RemoveInlineAttachment(it)) },
                             onInlineImageClicked = { contentId ->

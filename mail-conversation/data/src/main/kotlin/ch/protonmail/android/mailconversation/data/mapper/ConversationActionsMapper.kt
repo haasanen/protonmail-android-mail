@@ -23,8 +23,8 @@ import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailmessage.data.mapper.generalActionsToActions
 import ch.protonmail.android.mailmessage.data.mapper.systemFolderActionsToActions
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.ConversationAction
 import uniffi.proton_mail_uniffi.ConversationAvailableActions
+import uniffi.proton_mail_uniffi.OldConversationAction
 
 
 fun ConversationAvailableActions.toAvailableActions(): AvailableActions {
@@ -36,17 +36,17 @@ fun ConversationAvailableActions.toAvailableActions(): AvailableActions {
     )
 }
 
-private fun List<ConversationAction>.conversationActionsToActions() = this.map { messageAction ->
+private fun List<OldConversationAction>.conversationActionsToActions() = this.map { messageAction ->
     when (messageAction) {
-        ConversationAction.STAR -> Action.Star
-        ConversationAction.UNSTAR -> Action.Unstar
-        ConversationAction.LABEL_AS -> Action.Label
-        ConversationAction.MARK_READ -> Action.MarkRead
-        ConversationAction.MARK_UNREAD -> Action.MarkUnread
-        ConversationAction.DELETE -> Action.Delete
-        ConversationAction.SNOOZE -> Action.Snooze
-        ConversationAction.PIN,
-        ConversationAction.UNPIN -> {
+        OldConversationAction.STAR -> Action.Star
+        OldConversationAction.UNSTAR -> Action.Unstar
+        OldConversationAction.LABEL_AS -> Action.Label
+        OldConversationAction.MARK_READ -> Action.MarkRead
+        OldConversationAction.MARK_UNREAD -> Action.MarkUnread
+        OldConversationAction.DELETE -> Action.Delete
+        OldConversationAction.SNOOZE -> Action.Snooze
+        OldConversationAction.PIN,
+        OldConversationAction.UNPIN -> {
             Timber.i("rust-message: Found unhandled action while mapping: $messageAction")
             null
         }

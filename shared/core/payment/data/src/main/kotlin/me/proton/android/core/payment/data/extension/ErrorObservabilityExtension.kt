@@ -57,7 +57,8 @@ fun ProtonError.toObservabilityValue(): PaymentObservabilityValue {
         is ProtonError.OtherReason -> v1.toObservabilityValue()
         is ProtonError.ServerError -> v1.toObservabilityValue()
         is ProtonError.Network,
-        is ProtonError.Unexpected -> PaymentObservabilityValue.UNKNOWN
+        is ProtonError.Unexpected,
+        is ProtonError.NonProcessableActions -> PaymentObservabilityValue.UNKNOWN
     }
 }
 

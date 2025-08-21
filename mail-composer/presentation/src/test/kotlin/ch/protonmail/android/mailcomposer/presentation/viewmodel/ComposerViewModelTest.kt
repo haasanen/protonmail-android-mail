@@ -53,7 +53,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteInlineAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDraftId
-import ch.protonmail.android.mailcomposer.domain.usecase.GetEmbeddedImage
+import ch.protonmail.android.mailcomposer.domain.usecase.LoadMessageBodyImage
 import ch.protonmail.android.mailcomposer.domain.usecase.GetSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.IsMessagePasswordSet
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
@@ -154,7 +154,7 @@ internal class ComposerViewModelTest {
     private val recipientsStateManager = spyk<RecipientsStateManager>()
     private val discardDraft = mockk<DiscardDraft>()
     private val getDraftId = mockk<GetDraftId>()
-    private val getEmbeddedImage = mockk<GetEmbeddedImage>()
+    private val loadMessageBodyImage = mockk<LoadMessageBodyImage>()
     private val getFormattedScheduleSendOptions = mockk<GetFormattedScheduleSendOptions>()
     private val scheduleSendMessage = mockk<ScheduleSendMessage>()
     private val getSenderAddresses = mockk<GetSenderAddresses>()
@@ -204,7 +204,7 @@ internal class ComposerViewModelTest {
         discardDraft,
         getDraftId,
         savedStateHandle,
-        getEmbeddedImage,
+        loadMessageBodyImage,
         getFormattedScheduleSendOptions,
         scheduleSendMessage,
         getSenderAddresses,

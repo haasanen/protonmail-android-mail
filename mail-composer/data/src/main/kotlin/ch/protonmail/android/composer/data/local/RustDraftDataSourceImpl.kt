@@ -239,8 +239,8 @@ class RustDraftDataSourceImpl @Inject constructor(
         return wrapper.attachmentList().right()
     }
 
-    override fun getEmbeddedImage(contentId: String): Either<DataError, LocalAttachmentData> =
-        when (val result = draftCache.get().embeddedImage(contentId)) {
+    override fun loadImage(url: String): Either<DataError, LocalAttachmentData> =
+        when (val result = draftCache.get().loadImage(url)) {
             is AttachmentDataResult.Error -> result.v1.toDataError().left()
             is AttachmentDataResult.Ok -> result.v1.right()
         }

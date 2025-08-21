@@ -24,6 +24,7 @@ import uniffi.proton_mail_uniffi.OtherErrorReason.InvalidParameter
 import uniffi.proton_mail_uniffi.OtherErrorReason.Other
 import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.ProtonError.Network
+import uniffi.proton_mail_uniffi.ProtonError.NonProcessableActions
 import uniffi.proton_mail_uniffi.ProtonError.OtherReason
 import uniffi.proton_mail_uniffi.ProtonError.ServerError
 import uniffi.proton_mail_uniffi.ProtonError.Unexpected
@@ -60,6 +61,7 @@ fun ProtonError.getErrorMessage(context: Context) = when (this) {
     is ServerError -> v1.getErrorMessage()
     is Unexpected -> v1.getErrorMessage()
     is Network -> context.getString(R.string.presentation_general_connection_error)
+    is NonProcessableActions -> context.getString(R.string.proton_error_non_processable_actions)
 }
 
 fun UserApiServiceError.getErrorMessage() = when (this) {

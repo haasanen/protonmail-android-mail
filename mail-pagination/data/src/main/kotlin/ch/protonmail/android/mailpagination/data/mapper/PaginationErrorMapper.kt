@@ -28,6 +28,7 @@ import uniffi.proton_mail_uniffi.ProtonError
 fun LocalMailScrollerError.toPaginationError(): PaginationError = when (this) {
     is MailScrollerError.Other -> when (this.v1) {
         is ProtonError.Network -> PaginationError.Offline
+        is ProtonError.NonProcessableActions -> PaginationError.NonProcessableActions
         is ProtonError.OtherReason,
         is ProtonError.ServerError,
         is ProtonError.Unexpected -> PaginationError.Other(this.v1.toDataError())

@@ -41,7 +41,7 @@ import kotlin.time.Instant
 interface DraftRepository {
 
     suspend fun getMessageId(): Either<DataError, MessageId>
-    fun getEmbeddedImage(contentId: String): Either<DataError, MessageBodyImage>
+    fun loadImage(url: String): Either<DataError, MessageBodyImage>
     suspend fun openDraft(userId: UserId, messageId: MessageId): Either<OpenDraftError, DraftFieldsWithSyncStatus>
     suspend fun createDraft(userId: UserId, action: DraftAction): Either<OpenDraftError, DraftFields>
     suspend fun discardDraft(userId: UserId, messageId: MessageId): Either<DataError, Unit>

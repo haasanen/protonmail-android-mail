@@ -117,7 +117,7 @@ fun DraftAction.toDraftCreateMode(): DraftCreateMode? = when (this) {
     }
 }
 
-fun LocalAttachmentData.toEmbeddedImage() = MessageBodyImage(this.data, this.mime)
+fun LocalAttachmentData.toMessageBodyImage() = MessageBodyImage(this.data, this.mime)
 
 fun DraftSenderAddressChangeError.toChangeSenderError() = when (this) {
     is DraftSenderAddressChangeError.Other -> ChangeSenderError.Other(this.v1.toDataError())

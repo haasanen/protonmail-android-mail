@@ -44,7 +44,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import uniffi.proton_mail_uniffi.AllListActions
-import uniffi.proton_mail_uniffi.ConversationAction
 import uniffi.proton_mail_uniffi.ConversationAvailableActions
 import uniffi.proton_mail_uniffi.GeneralActions
 import uniffi.proton_mail_uniffi.Id
@@ -53,6 +52,7 @@ import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.MoveItemAction
+import uniffi.proton_mail_uniffi.OldConversationAction
 import kotlin.test.assertEquals
 
 class RustConversationActionRepositoryTest {
@@ -70,7 +70,7 @@ class RustConversationActionRepositoryTest {
         val labelId = SystemLabelId.Inbox.labelId
         val conversationIds = listOf(ConversationId("1"))
         val rustAvailableActions = ConversationAvailableActions(
-            listOf(ConversationAction.STAR, ConversationAction.LABEL_AS),
+            listOf(OldConversationAction.STAR, OldConversationAction.LABEL_AS),
             listOf(
                 MoveItemAction.MoveToSystemFolder(
                     MovableSystemFolderAction(Id(5uL), MovableSystemFolder.SPAM)
@@ -133,7 +133,9 @@ class RustConversationActionRepositoryTest {
         val labelId = SystemLabelId.Inbox.labelId
         val conversationIds = listOf(ConversationId("1"))
         val rustAvailableActions = ConversationAvailableActions(
-            conversationActions = listOf(ConversationAction.PIN, ConversationAction.UNPIN, ConversationAction.STAR),
+            conversationActions = listOf(
+                OldConversationAction.PIN, OldConversationAction.UNPIN, OldConversationAction.STAR
+            ),
             moveActions = listOf(
                 MoveItemAction.MoveToSystemFolder(
                     MovableSystemFolderAction(Id(10uL), MovableSystemFolder.INBOX)

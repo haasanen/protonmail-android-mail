@@ -643,7 +643,7 @@ class RustDraftDataSourceImplTest {
     }
 
     @Test
-    fun `get embedded image returns the image info when successful`() = runTest {
+    fun `load image returns the image info when successful`() = runTest {
         // Given
         val localEmbeddedImage = LocalAttachmentData(
             "data".toByteArray(),
@@ -652,30 +652,30 @@ class RustDraftDataSourceImplTest {
         val cid = "image-content-id"
         val expectedDraftWrapper = expectDraftWrapperReturns()
         every { draftCache.get() } returns expectedDraftWrapper
-        coEvery { expectedDraftWrapper.embeddedImage(cid) } returns AttachmentDataResult.Ok(
+        coEvery { expectedDraftWrapper.loadImage(cid) } returns AttachmentDataResult.Ok(
             localEmbeddedImage
         )
 
         // When
-        val actual = dataSource.getEmbeddedImage(contentId = cid)
+        val actual = dataSource.loadImage(url = cid)
 
         // Then
         assertEquals(localEmbeddedImage.right(), actual)
     }
 
     @Test
-    fun `get embedded image returns DataError when unsuccessful`() = runTest {
+    fun `load image returns DataError when unsuccessful`() = runTest {
         // Given
         val expected = DataError.Remote.Http(NetworkError.NoNetwork)
         val cid = "image-content-id"
         val expectedDraftWrapper = expectDraftWrapperReturns()
         every { draftCache.get() } returns expectedDraftWrapper
-        coEvery { expectedDraftWrapper.embeddedImage(cid) } returns AttachmentDataResult.Error(
+        coEvery { expectedDraftWrapper.loadImage(cid) } returns AttachmentDataResult.Error(
             ProtonError.Network
         )
 
         // When
-        val actual = dataSource.getEmbeddedImage(contentId = cid)
+        val actual = dataSource.loadImage(url = cid)
 
         // Then
         assertEquals(expected.left(), actual)

@@ -40,7 +40,6 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.LabelType
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.SidebarCustomFolder
 import uniffi.proton_mail_uniffi.SidebarCustomLabel
@@ -65,87 +64,81 @@ class RustLabelDataSource @Inject constructor(
         return createRustSidebar(session)
     }
 
-    private fun <T> observeLabels(
-        userId: UserId,
-        labelType: LabelType,
-        fetchLabels: suspend (SidebarWrapper) -> List<T>?
-    ): Flow<List<T>> = callbackFlow {
-        Timber.d("rust-label: initializing ${labelType.name} labels live query")
+    private fun <T> observeLabels(userId: UserId, fetchLabels: suspend (SidebarWrapper) -> List<T>?): Flow<List<T>> =
+        callbackFlow {
+            Timber.d("rust-label: initializing labels live query")
 
-        var sidebar = getRustSidebarInstance(userId)
-        if (sidebar == null) {
-            close()
-            return@callbackFlow
-        }
-
-        val mutex = Mutex()
-        var labelsWatchHandle: WatchHandle? = null
-
-        suspend fun withSidebar(action: suspend (SidebarWrapper) -> Unit) {
-            mutex.withLock {
-                sidebar?.let { action(it) }
-            }
-        }
-
-        val labelsUpdatedCallback = object : LiveQueryCallback {
-            override fun onUpdate() {
-                coroutineScope.launch {
-                    withSidebar { safeSidebar ->
-                        fetchLabels(safeSidebar)?.let {
-                            send(it)
-                        }
-                    }
-                }
-            }
-        }
-
-        sidebar.watchLabels(labelType, labelsUpdatedCallback)
-            .onLeft {
+            var sidebar = getRustSidebarInstance(userId)
+            if (sidebar == null) {
                 close()
-                Timber.e("rust-label: failed to watch ${labelType.name} type labels! $it")
+                return@callbackFlow
             }
-            .onRight { watcher ->
-                labelsWatchHandle = watcher
-                coroutineScope.launch {
-                    withSidebar { safeSidebar ->
-                        fetchLabels(safeSidebar)?.let {
-                            send(it)
-                            Timber.d("rust-label: Setting initial value for ${labelType.name} type labels")
+
+            val mutex = Mutex()
+            var labelsWatchHandle: WatchHandle? = null
+
+            suspend fun withSidebar(action: suspend (SidebarWrapper) -> Unit) {
+                mutex.withLock {
+                    sidebar?.let { action(it) }
+                }
+            }
+
+            val labelsUpdatedCallback = object : LiveQueryCallback {
+                override fun onUpdate() {
+                    coroutineScope.launch {
+                        withSidebar { safeSidebar ->
+                            fetchLabels(safeSidebar)?.let {
+                                send(it)
+                            }
                         }
                     }
                 }
             }
 
-        awaitClose {
-            coroutineScope.launch {
-                mutex.withLock {
-                    labelsWatchHandle?.destroy()
-                    sidebar?.destroy()
-                    sidebar = null
-                    Timber.d("rust-label: watcher for ${labelType.name} type labels destroyed")
+            sidebar.watchLabels(labelsUpdatedCallback)
+                .onLeft {
+                    close()
+                    Timber.e("rust-label: failed to watch labels! $it")
+                }
+                .onRight { watcher ->
+                    labelsWatchHandle = watcher
+                    coroutineScope.launch {
+                        withSidebar { safeSidebar ->
+                            fetchLabels(safeSidebar)?.let {
+                                send(it)
+                                Timber.d("rust-label: Setting initial value for labels")
+                            }
+                        }
+                    }
+                }
 
+            awaitClose {
+                coroutineScope.launch {
+                    mutex.withLock {
+                        labelsWatchHandle?.destroy()
+                        sidebar?.destroy()
+                        sidebar = null
+                        Timber.d("rust-label: watcher for labels destroyed")
+
+                    }
                 }
             }
-        }
-    }.flowOn(ioDispatcher)
+        }.flowOn(ioDispatcher)
 
     override fun observeSystemLabels(userId: UserId): Flow<List<SidebarSystemLabel>> = observeLabels(
-        userId = userId,
-        labelType = LabelType.SYSTEM
+        userId = userId
     ) { sidebar ->
         sidebar.systemLabels().getOrNull()
     }.flowOn(ioDispatcher)
 
     override fun observeMessageLabels(userId: UserId): Flow<List<SidebarCustomLabel>> = observeLabels(
-        userId = userId,
-        labelType = LabelType.LABEL
+        userId = userId
     ) { sidebar ->
         sidebar.customLabels().getOrNull()
     }.flowOn(ioDispatcher)
 
     override fun observeMessageFolders(userId: UserId): Flow<List<SidebarCustomFolder>> = observeLabels(
-        userId = userId,
-        labelType = LabelType.FOLDER
+        userId = userId
     ) { sidebar ->
         sidebar.allCustomFolders().getOrNull()
     }.flowOn(ioDispatcher)

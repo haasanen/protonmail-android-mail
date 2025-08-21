@@ -22,7 +22,7 @@ import arrow.core.Either
 import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.composer.data.mapper.toDraftFields
 import ch.protonmail.android.composer.data.mapper.toDraftFieldsWithSyncStatus
-import ch.protonmail.android.composer.data.mapper.toEmbeddedImage
+import ch.protonmail.android.composer.data.mapper.toMessageBodyImage
 import ch.protonmail.android.composer.data.mapper.toScheduleSendOptions
 import ch.protonmail.android.composer.data.mapper.toSenderAddresses
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
@@ -56,8 +56,8 @@ class DraftRepositoryImpl @Inject constructor(
 
     override suspend fun getMessageId(): Either<DataError, MessageId> = draftDataSource.getMessageId()
 
-    override fun getEmbeddedImage(contentId: String): Either<DataError, MessageBodyImage> =
-        draftDataSource.getEmbeddedImage(contentId).map { it.toEmbeddedImage() }
+    override fun loadImage(url: String): Either<DataError, MessageBodyImage> =
+        draftDataSource.loadImage(url).map { it.toMessageBodyImage() }
 
     override suspend fun openDraft(
         userId: UserId,

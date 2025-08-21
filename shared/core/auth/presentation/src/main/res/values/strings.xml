@@ -180,4 +180,6 @@
     <string name="settings_password_error_invalid_recovery">Incorrect 2FA code. Please try again.</string>
     <string name="settings_password_error_2fa_reused">Code has already been used. Please try a different code.</string>
     <string name="settings_password_general_error">An error occurred.</string>
+
+    <string name="proton_error_non_processable_actions">One or more actions cannot be processed. Please log out and log back in to your account.</string>
 </resources>

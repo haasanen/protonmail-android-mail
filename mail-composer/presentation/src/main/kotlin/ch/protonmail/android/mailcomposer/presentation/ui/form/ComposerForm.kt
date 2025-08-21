@@ -194,7 +194,7 @@ internal fun ComposerForm(
                             stripInlineAttachment = stripInlineAttachment,
                             refreshBody = refreshBody,
                             webViewActions = EditableMessageBodyWebView.Actions(
-                                loadEmbeddedImage = actions.loadEmbeddedImage,
+                                loadImage = actions.loadImage,
                                 onMessageBodyChanged = actions.onBodyChanged,
                                 onWebViewParamsChanged = actions.onWebViewMeasuresChanged,
                                 onBuildWebView = onBuildWebView(webViewCache, actions.onInlineImageAdded),
@@ -260,7 +260,7 @@ internal object ComposerForm {
         val onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
         val onHeaderPositioned: (boundsInWindow: Rect, height: Float) -> Unit,
         val onWebViewPositioned: (boundsInWindow: Rect) -> Unit,
-        val loadEmbeddedImage: (String) -> MessageBodyImage?,
+        val loadImage: (String) -> MessageBodyImage?,
         val onAttachmentRemoveRequested: (AttachmentId) -> Unit,
         val onInlineImageRemoved: (String) -> Unit,
         val onInlineImageClicked: (String) -> Unit,

@@ -4,6 +4,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.composer.data.local.LocalDraftWithSyncStatus
 import ch.protonmail.android.composer.data.local.RustDraftDataSource
+import ch.protonmail.android.mailcommon.data.mapper.LocalAttachmentData
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
@@ -14,10 +15,12 @@ import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
 import ch.protonmail.android.mailcomposer.domain.model.SendDraftError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
+import ch.protonmail.android.mailmessage.domain.model.MessageBodyImage
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.testdata.composer.DraftFieldsTestData
 import ch.protonmail.android.testdata.composer.LocalDraftTestData
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -264,4 +267,29 @@ class DraftRepositoryImplTest {
         assertEquals(expected.left(), actual)
     }
 
+    @Test
+    fun `returns image data when load image was successful`() = runTest {
+        // Given
+        val url = "url"
+        every { draftDataSource.loadImage(url) } returns LocalAttachmentData(byteArrayOf(), "").right()
+
+        // When
+        val actual = draftRepository.loadImage(url)
+
+        // Then
+        assertEquals(MessageBodyImage(byteArrayOf(), "").right(), actual)
+    }
+
+    @Test
+    fun `returns error when load image failed`() = runTest {
+        // Given
+        val url = "url"
+        every { draftDataSource.loadImage(url) } returns DataError.Local.Unknown.left()
+
+        // When
+        val actual = draftRepository.loadImage(url)
+
+        // Then
+        assertEquals(DataError.Local.Unknown.left(), actual)
+    }
 }
