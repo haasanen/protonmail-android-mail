@@ -59,6 +59,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.DpSize
 import ch.protonmail.android.design.R
 import ch.protonmail.android.design.compose.component.appbar.ProtonMediumTopAppBar
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
@@ -247,20 +248,29 @@ fun ProtonAppSettingsItemInvert(
     name: String,
     icon: @Composable () -> Unit,
     hint: String? = null,
+    enabled: Boolean = true,
     isClickable: Boolean = true,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    iconContainerSize: DpSize = DpSize(ProtonDimens.IconSize.Default, ProtonDimens.IconSize.Default)
 ) {
+    val nameColor =
+        if (enabled) ProtonTheme.colors.textWeak else ProtonTheme.colors.textHint
+    val hintColor =
+        if (enabled) ProtonTheme.colors.textNorm else ProtonTheme.colors.textHint
+
     ProtonAppSettingsItem(
         modifier = modifier,
         name = name,
         icon = icon,
         hint = hint,
+        enabled = enabled,
         isClickable = isClickable,
         onClick = onClick,
         nameTextStyle = ProtonTheme.typography.bodyMediumWeak,
-        nameTextColor = ProtonTheme.colors.textWeak,
+        nameTextColor = nameColor,
         hintTextStyle = ProtonTheme.typography.bodyLargeNorm,
-        hintTextColor = ProtonTheme.colors.textNorm
+        hintTextColor = hintColor,
+        iconContainerSize = iconContainerSize
     )
 }
 
@@ -270,20 +280,27 @@ fun ProtonAppSettingsItemNorm(
     name: String,
     icon: @Composable () -> Unit,
     hint: String? = null,
+    enabled: Boolean = true,
     isClickable: Boolean = true,
     onClick: () -> Unit = {}
 ) {
+    val nameColor =
+        if (enabled) ProtonTheme.colors.textNorm else ProtonTheme.colors.textHint
+    val hintColor =
+        if (enabled) ProtonTheme.colors.textWeak else ProtonTheme.colors.textHint
+
     ProtonAppSettingsItem(
         modifier = modifier,
         name = name,
         icon = icon,
         hint = hint,
+        enabled = enabled,
         isClickable = isClickable,
         onClick = onClick,
         nameTextStyle = ProtonTheme.typography.bodyLargeNorm,
-        nameTextColor = ProtonTheme.colors.textNorm,
+        nameTextColor = nameColor,
         hintTextStyle = ProtonTheme.typography.bodyMediumWeak,
-        hintTextColor = ProtonTheme.colors.textWeak
+        hintTextColor = hintColor
     )
 }
 
@@ -293,18 +310,23 @@ private fun ProtonAppSettingsItem(
     name: String,
     icon: @Composable () -> Unit,
     hint: String? = null,
+    enabled: Boolean = true,
     isClickable: Boolean = true,
     onClick: () -> Unit = {},
     nameTextStyle: TextStyle,
     nameTextColor: Color,
     hintTextStyle: TextStyle,
-    hintTextColor: Color
+    hintTextColor: Color,
+    iconContainerSize: DpSize = DpSize(ProtonDimens.IconSize.Default, ProtonDimens.IconSize.Default)
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(isClickable, onClick = onClick)
-            .padding(horizontal = ProtonDimens.Spacing.Large, vertical = ProtonDimens.Spacing.Standard),
+            .then(if (isClickable) Modifier.clickable(onClick = onClick) else Modifier)
+            .padding(
+                horizontal = ProtonDimens.Spacing.Large,
+                vertical = ProtonDimens.Spacing.Standard
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -323,7 +345,7 @@ private fun ProtonAppSettingsItem(
             hint?.let {
                 Text(
                     modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
-                    text = hint,
+                    text = it,
                     color = hintTextColor,
                     style = hintTextStyle
                 )
@@ -334,7 +356,7 @@ private fun ProtonAppSettingsItem(
         Box(
             modifier = Modifier
                 .padding(start = ProtonDimens.Spacing.Large)
-                .size(ProtonDimens.IconSize.Default),
+                .size(iconContainerSize),
             contentAlignment = Alignment.Center
         ) {
             icon()
