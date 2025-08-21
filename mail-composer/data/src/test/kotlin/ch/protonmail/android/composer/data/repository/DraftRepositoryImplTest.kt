@@ -9,6 +9,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
+import ch.protonmail.android.mailcomposer.domain.model.DraftSenderValidationError
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
@@ -24,9 +25,12 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
+import uniffi.proton_mail_uniffi.DraftAddressValidationError
+import uniffi.proton_mail_uniffi.DraftAddressValidationResult
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.time.Instant
 
 class DraftRepositoryImplTest {
@@ -292,4 +296,32 @@ class DraftRepositoryImplTest {
         // Then
         assertEquals(DataError.Local.Unknown.left(), actual)
     }
+
+    @Test
+    fun `returns change sender result when validate change sender returns it`() = runTest {
+        // Given
+        val email = "address@pm.me"
+        coEvery { draftDataSource.validateDraftSenderAddress() } returns DraftAddressValidationResult(
+            email,
+            DraftAddressValidationError.DISABLED
+        )
+
+        // When
+        val actual = draftRepository.getDraftSenderValidationError()
+
+        // Then
+        assertEquals(DraftSenderValidationError.AddressDisabled(email), actual)
+    }
+
+    @Test
+    fun `returns null when validate change sender returns nothing`() = runTest {
+        coEvery { draftDataSource.validateDraftSenderAddress() } returns null
+
+        // When
+        val actual = draftRepository.getDraftSenderValidationError()
+
+        // Then
+        assertNull(actual)
+    }
+
 }

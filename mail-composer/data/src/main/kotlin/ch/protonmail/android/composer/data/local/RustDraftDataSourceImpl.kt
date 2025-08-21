@@ -78,6 +78,7 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AttachmentDataResult
 import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
+import uniffi.proton_mail_uniffi.DraftAddressValidationResult
 import uniffi.proton_mail_uniffi.DraftChangeSenderAddressResult
 import uniffi.proton_mail_uniffi.DraftExpirationTime
 import uniffi.proton_mail_uniffi.DraftExpirationTimeResult
@@ -324,6 +325,9 @@ class RustDraftDataSourceImpl @Inject constructor(
             is DraftValidateRecipientsExpirationFeatureResult.Error -> result.v1.toDataError().left()
             is DraftValidateRecipientsExpirationFeatureResult.Ok -> result.v1.right()
         }
+
+    override suspend fun validateDraftSenderAddress(): DraftAddressValidationResult? =
+        draftCache.get().getAddressValidationResult()
 
     private fun updateRecipients(
         recipientsWrapper: ComposerRecipientListWrapper,

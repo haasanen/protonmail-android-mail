@@ -39,6 +39,7 @@ import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.DraftAddressValidationResult
 import uniffi.proton_mail_uniffi.DraftExpirationTime
 import uniffi.proton_mail_uniffi.DraftRecipientExpirationFeatureReport
 import uniffi.proton_mail_uniffi.DraftScheduleSendOptions
@@ -71,7 +72,7 @@ interface RustDraftDataSource {
     suspend fun getMessageExpiration(): Either<DataError, DraftExpirationTime>
     suspend fun setMessageExpiration(expirationTime: MessageExpirationTime): Either<MessageExpirationError, Unit>
     suspend fun validateSendWithExpiration(): Either<DataError, DraftRecipientExpirationFeatureReport>
-
+    suspend fun validateDraftSenderAddress(): DraftAddressValidationResult?
 
     fun loadImage(url: String): Either<DataError, LocalAttachmentData>
     fun getScheduleSendOptions(): Either<DataError, DraftScheduleSendOptions>

@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
+import ch.protonmail.android.mailcomposer.domain.model.DraftSenderValidationError
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
@@ -61,4 +62,5 @@ interface DraftRepository {
     suspend fun getBody(): Either<DataError, DraftBody>
 
     fun observeRecipientsValidationEvents(): Flow<ValidatedRecipients>
+    suspend fun getDraftSenderValidationError(): DraftSenderValidationError?
 }

@@ -26,6 +26,7 @@ import uniffi.proton_mail_uniffi.UnixTimestamp
 import uniffi.proton_mail_uniffi.VoidDraftSaveResult
 import uniffi.proton_mail_uniffi.VoidDraftSendResult
 
+@Suppress("TooManyFunctions")
 class DraftWrapper(private val rustDraft: Draft) {
 
     fun attachmentList(): AttachmentsWrapper = AttachmentsWrapper(rustDraft.attachmentList())
@@ -77,4 +78,6 @@ class DraftWrapper(private val rustDraft: Draft) {
     fun validateRecipientsExpirationFeature() = rustDraft.validateRecipientsExpirationFeature()
 
     fun mimeType(): LocalMimeType = rustDraft.mimeType()
+
+    fun getAddressValidationResult() = rustDraft.addressValidationResult()
 }

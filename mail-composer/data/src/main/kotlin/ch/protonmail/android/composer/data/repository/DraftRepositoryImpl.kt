@@ -32,6 +32,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftFieldsWithSyncStatus
 import ch.protonmail.android.mailcomposer.domain.model.DraftRecipient
+import ch.protonmail.android.mailcomposer.domain.model.DraftSenderValidationError
 import ch.protonmail.android.mailcomposer.domain.model.OpenDraftError
 import ch.protonmail.android.mailcomposer.domain.model.SaveDraftError
 import ch.protonmail.android.mailcomposer.domain.model.ScheduleSendOptions
@@ -48,6 +49,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.DraftAddressValidationError
 import javax.inject.Inject
 import kotlin.time.Instant
 
@@ -108,5 +110,16 @@ class DraftRepositoryImpl @Inject constructor(
 
     override fun observeRecipientsValidationEvents(): Flow<ValidatedRecipients> =
         draftDataSource.observeRecipientsValidationEvents()
+
+    override suspend fun getDraftSenderValidationError(): DraftSenderValidationError? =
+        draftDataSource.validateDraftSenderAddress()?.let {
+            when (it.error) {
+                DraftAddressValidationError.SUBSCRIPTION_REQUIRED ->
+                    DraftSenderValidationError.SubscriptionRequired(it.email)
+                DraftAddressValidationError.DISABLED -> DraftSenderValidationError.AddressDisabled(it.email)
+                DraftAddressValidationError.CAN_NOT_SEND,
+                DraftAddressValidationError.CAN_NOT_RECEIVE -> DraftSenderValidationError.AddressCanNotSend(it.email)
+            }
+        }
 
 }
