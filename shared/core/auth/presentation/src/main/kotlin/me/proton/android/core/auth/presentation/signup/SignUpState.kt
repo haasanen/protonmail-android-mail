@@ -27,6 +27,9 @@ sealed interface SignUpState {
     sealed interface DataInput : SignUpState
     data object SigningUp : SignUpState
     data class SignUpError(val message: String?) : SignUpState
+
+    /** Unrecoverable error: could not get the SignupFlow from Rust. */
+    data class SignupFlowFailure(val message: String?) : SignUpState
     data object SignUpSuccess : SignUpState
     data class LoginSuccess(val userId: String) : SignUpState
 }
@@ -40,11 +43,6 @@ sealed interface CreateUsernameState : DataInput {
     data class Idle(
         override val accountType: AccountType,
         override val isLoading: Boolean = false
-    ) : CreateUsernameState
-
-    data class Load(
-        override val accountType: AccountType,
-        override val isLoading: Boolean = true
     ) : CreateUsernameState
 
     data class LoadingComplete(

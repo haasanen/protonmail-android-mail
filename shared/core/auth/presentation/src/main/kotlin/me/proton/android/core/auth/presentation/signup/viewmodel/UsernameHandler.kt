@@ -20,6 +20,7 @@ package me.proton.android.core.auth.presentation.signup.viewmodel
 
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.challenge.toUserBehavior
 import me.proton.android.core.auth.presentation.signup.CreateUsernameAction
 import me.proton.android.core.auth.presentation.signup.CreateUsernameAction.CreateExternalAccount
@@ -31,7 +32,6 @@ import me.proton.android.core.auth.presentation.signup.CreateUsernameState
 import me.proton.android.core.auth.presentation.signup.CreateUsernameState.Closed
 import me.proton.android.core.auth.presentation.signup.CreateUsernameState.Creating
 import me.proton.android.core.auth.presentation.signup.CreateUsernameState.Error
-import me.proton.android.core.auth.presentation.signup.CreateUsernameState.Load
 import me.proton.android.core.auth.presentation.signup.CreateUsernameState.LoadingComplete
 import me.proton.android.core.auth.presentation.signup.CreateUsernameState.Success
 import me.proton.android.core.auth.presentation.signup.CreateUsernameState.ValidationError.EmailEmpty
@@ -75,7 +75,7 @@ class UsernameHandler private constructor(
     }
 
     private fun handleUsernameLoad(accountType: AccountType) = flow {
-        emit(Load(accountType = accountType, isLoading = true))
+        emit(CreateUsernameState.Idle(accountType = accountType, isLoading = true))
         emitAll(
             when (accountType) {
                 AccountType.Internal -> handleCreateInternalAccount()
@@ -153,18 +153,27 @@ class UsernameHandler private constructor(
             )
         ) {
             is SignupFlowSubmitInternalUsernameResult.Error -> {
-                when (result.v1) {
-                    is SignupException.UsernameUnavailable ->
-                        Other(
-                            accountType = accountType,
-                            field = ValidationField.USERNAME,
-                            message = result.v1.getErrorMessage(getString, getQuantityString)
-                        )
+                when (val signupException = result.v1) {
+                    is SignupException.UsernameUnavailable -> {
+                        if (signupException.v1 != null) {
+                            Other(
+                                accountType = accountType,
+                                field = ValidationField.USERNAME,
+                                message = signupException.getErrorMessage(getString, getQuantityString)
+                            )
+                        } else {
+                            Error(
+                                accountType = accountType,
+                                isLoading = false,
+                                message = getString(R.string.common_error_something_went_wrong)
+                            )
+                        }
+                    }
 
                     else -> Error(
                         accountType = accountType,
                         isLoading = false,
-                        message = result.v1.getErrorMessage(getString, getQuantityString)
+                        message = signupException.getErrorMessage(getString, getQuantityString)
                     )
                 }
             }

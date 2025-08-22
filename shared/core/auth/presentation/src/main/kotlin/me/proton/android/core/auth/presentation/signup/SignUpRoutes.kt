@@ -81,7 +81,10 @@ object SignUpRoutes {
         ) {
             CreateUsernameScreen(
                 onBackClicked = { onClose() },
-                onErrorMessage = { onErrorMessage(it) },
+                onErrorMessage = { msg, shouldClose ->
+                    onErrorMessage(msg)
+                    if (shouldClose) onClose()
+                },
                 onSuccess = { route ->
                     navController.navigate(route) {
                         launchSingleTop = true

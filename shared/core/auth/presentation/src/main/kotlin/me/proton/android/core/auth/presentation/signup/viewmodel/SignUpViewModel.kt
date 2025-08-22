@@ -47,6 +47,7 @@ import me.proton.android.core.auth.presentation.signup.SignUpState.LoginSuccess
 import me.proton.android.core.auth.presentation.signup.SignUpState.SignUpError
 import me.proton.android.core.auth.presentation.signup.SignUpState.SignUpSuccess
 import me.proton.android.core.auth.presentation.signup.SignUpState.SigningUp
+import me.proton.android.core.auth.presentation.signup.SignUpState.SignupFlowFailure
 import me.proton.core.account.domain.entity.AccountType
 import me.proton.core.compose.viewmodel.BaseViewModel
 import me.proton.core.presentation.savedstate.state
@@ -72,14 +73,15 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    savedStateHandle: SavedStateHandle,
-    requiredAccountType: AccountType,
+    private val savedStateHandle: SavedStateHandle,
+    private val requiredAccountType: AccountType,
     private val sessionInterface: MailSession
 ) : BaseViewModel<SignUpAction, SignUpState>(
-    initialAction = CreateUsernameAction.LoadData(
-        savedStateHandle.get<AccountType>("accountType") ?: requiredAccountType
+    initialAction = SignUpAction.InitSignUpFlow,
+    initialState = CreateUsernameState.Idle(
+        savedStateHandle.get<AccountType>("accountType") ?: requiredAccountType,
+        isLoading = true
     ),
-    initialState = CreateUsernameState.Load(savedStateHandle.get<AccountType>("accountType") ?: requiredAccountType),
     sharingStarted = SharingStarted.Lazily
 ) {
 
@@ -87,6 +89,7 @@ class SignUpViewModel @Inject constructor(
     private val signUpFlowDeferred = viewModelScope.async {
         sessionInterface.newSignupFlow()
     }
+
     private val usernameHandler = UsernameHandler.create(
         getFlow = { getSignUpFlow() },
         getCurrentAccountType = { currentAccountType },
@@ -118,12 +121,13 @@ class SignUpViewModel @Inject constructor(
     }
 
     override fun onAction(action: SignUpAction) = when (action) {
+        is SignUpAction.CreatePlan -> emptyFlow()
+        is SignUpAction.InitSignUpFlow -> onInitSignUpFlow()
         is CreateUsernameAction -> usernameHandler.handleAction(action)
         is CreatePasswordAction -> passwordHandler.handleAction(action)
         is CreateRecoveryAction -> recoveryHandler.handleAction(action)
         is CreateUser -> handleCreateUser()
         is FinalizeSignup -> finalizeSignUp()
-        else -> emptyFlow()
     }
 
     override suspend fun FlowCollector<SignUpState>.onError(throwable: Throwable) {
@@ -145,6 +149,17 @@ class SignUpViewModel @Inject constructor(
     fun onScreenView(screenId: SignupScreenId) {
         viewModelScope.launch {
             recordSignupScreenView(screenId = screenId)
+        }
+    }
+
+    private fun onInitSignUpFlow() = flow<SignUpState> {
+        runCatching {
+            getSignUpFlow()
+        }.onFailure {
+            emit(SignupFlowFailure(it.message))
+        }.onSuccess {
+            val accountType = savedStateHandle.get<AccountType>("accountType") ?: requiredAccountType
+            perform(CreateUsernameAction.LoadData(accountType))
         }
     }
 

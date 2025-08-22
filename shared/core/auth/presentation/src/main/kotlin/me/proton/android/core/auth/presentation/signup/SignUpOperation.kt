@@ -26,6 +26,7 @@ import me.proton.core.passvalidator.domain.entity.PasswordValidatorToken
 sealed interface SignUpOperation
 
 sealed interface SignUpAction : SignUpOperation {
+    data object InitSignUpFlow : SignUpAction
     data object CreatePlan : SignUpAction // add in the future
     data object CreateUser : SignUpAction
     data object FinalizeSignup : SignUpAction

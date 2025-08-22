@@ -74,7 +74,6 @@ import me.proton.android.core.auth.presentation.challenge.TextChange
 import me.proton.android.core.auth.presentation.signup.CreateUsernameAction.CreateExternalAccount
 import me.proton.android.core.auth.presentation.signup.CreateUsernameAction.CreateInternalAccount
 import me.proton.android.core.auth.presentation.signup.CreateUsernameAction.CreateUsernameClosed
-import me.proton.android.core.auth.presentation.signup.CreateUsernameAction.LoadData
 import me.proton.android.core.auth.presentation.signup.CreateUsernameAction.Perform
 import me.proton.android.core.auth.presentation.signup.CreateUsernameState
 import me.proton.android.core.auth.presentation.signup.SignUpState
@@ -103,7 +102,7 @@ internal const val PHONE_FIELD_TAG = "PHONE_FIELD_TAG"
 fun CreateUsernameScreen(
     modifier: Modifier = Modifier,
     onBackClicked: () -> Unit = {},
-    onErrorMessage: (String?) -> Unit = {},
+    onErrorMessage: (String?, shouldClose: Boolean) -> Unit = { _, _ -> },
     onSuccess: (String) -> Unit = {},
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
@@ -114,8 +113,10 @@ fun CreateUsernameScreen(
     }
 
     LaunchedEffect(state) {
-        when (state) {
+        when (val s = state) {
             is CreateUsernameState.Closed -> onBackClicked()
+            is SignUpState.SignUpError -> onErrorMessage(s.message, false)
+            is SignUpState.SignupFlowFailure -> onErrorMessage(s.message, true)
             else -> Unit
         }
     }
@@ -127,9 +128,8 @@ fun CreateUsernameScreen(
         onUsernameSubmitted = { viewModel.perform(it) },
         onCreateExternalClicked = { viewModel.perform(it) },
         onCreateInternalClicked = { viewModel.perform(it) },
-        onErrorMessage = onErrorMessage,
+        onErrorMessage = { onErrorMessage(it, false) },
         onSuccess = { signupState -> onSuccess(signupState) },
-        onLoad = { viewModel.perform(LoadData(it)) },
         state = state
     )
 }
@@ -144,7 +144,6 @@ fun CreateUsernameScreen(
     onCreateInternalClicked: (CreateInternalAccount) -> Unit = {},
     onErrorMessage: (String?) -> Unit = {},
     onSuccess: (String) -> Unit = {},
-    onLoad: (AccountType) -> Unit = { },
     state: SignUpState
 ) {
     LaunchedEffect(state) {
@@ -152,7 +151,6 @@ fun CreateUsernameScreen(
             is CreateUsernameState.Idle -> {}
             is CreateUsernameState.Error -> onErrorMessage(state.message)
             is CreateUsernameState.Success -> onSuccess(state.route)
-            is CreateUsernameState.Load -> onLoad(state.accountType)
             else -> Unit
         }
     }
@@ -661,8 +659,8 @@ private fun AccountType.toSignupScreenId() = when (this) {
 internal fun CreateUsernameScreenPreview() {
     ProtonTheme {
         CreateUsernameScreen(
-            state = CreateUsernameState.Load(AccountType.Internal),
-            onScreenView = {}
+            onScreenView = {},
+            state = CreateUsernameState.Idle(AccountType.Internal)
         )
     }
 }

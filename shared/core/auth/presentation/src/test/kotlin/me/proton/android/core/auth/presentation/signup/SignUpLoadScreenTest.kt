@@ -24,7 +24,7 @@ class SignUpLoadScreenTest(
     fun signUpLoadingScreen() {
         paparazzi.snapshot {
             SignUpLoadingScreen(
-                state = CreateUsernameState.Load(
+                state = CreateUsernameState.Idle(
                     accountType = AccountType.Internal,
                     isLoading = false
                 )
