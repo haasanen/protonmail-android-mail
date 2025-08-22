@@ -51,4 +51,5 @@ dependencies {
 
     implementation(project(":mail-session:data"))
     implementation(project(":mail-session:domain"))
+    implementation(project(":mail-common:domain"))
 }

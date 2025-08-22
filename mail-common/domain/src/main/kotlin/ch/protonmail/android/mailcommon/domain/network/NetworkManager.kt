@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcommon.domain.network
 
+import android.net.Network
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -33,6 +34,9 @@ abstract class NetworkManager {
 
     /** @return current [NetworkStatus] **/
     abstract val networkStatus: NetworkStatus
+
+    /** @return current active [Network] **/
+    abstract val activeNetwork: Network?
 
     /** @return `true` if network connectivity is available */
     fun isConnectedToNetwork() = networkStatus != NetworkStatus.Disconnected

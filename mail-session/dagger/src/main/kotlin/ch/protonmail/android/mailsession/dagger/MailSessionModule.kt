@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailsession.dagger
 
 import android.content.Context
+import ch.protonmail.android.mailcommon.domain.network.NetworkManager
 import ch.protonmail.android.mailsession.data.database.getDatabaseBaseDirectory
 import ch.protonmail.android.mailsession.data.deviceinfo.AndroidDeviceInfoProvider
 import ch.protonmail.android.mailsession.data.initializer.DatabaseLifecycleObserver
@@ -73,7 +74,7 @@ object MailSessionModule {
 
     @Provides
     @Singleton
-    fun provideAndroidDnsResolver(): Resolver = AndroidDnsResolver()
+    fun provideAndroidDnsResolver(networkManager: NetworkManager): Resolver = AndroidDnsResolver(networkManager)
 
     @Module
     @InstallIn(SingletonComponent::class)

@@ -74,6 +74,10 @@ class NetworkManagerImpl @Inject constructor(
             }
         }
 
+    override val activeNetwork: Network?
+        @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+        get() = connectivityManager.activeNetwork
+
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     override fun register() {
         if (!registered) {

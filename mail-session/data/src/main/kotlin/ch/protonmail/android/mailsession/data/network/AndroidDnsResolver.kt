@@ -23,6 +23,7 @@ import java.net.InetAddress
 import java.util.concurrent.Executors
 import android.net.DnsResolver
 import android.os.CancellationSignal
+import ch.protonmail.android.mailcommon.domain.network.NetworkManager
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.IpAddr
@@ -30,7 +31,9 @@ import uniffi.proton_mail_uniffi.Resolver
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
-class AndroidDnsResolver @Inject constructor() : Resolver {
+class AndroidDnsResolver @Inject constructor(
+    private val networkManager: NetworkManager
+) : Resolver {
 
     private val resolver: DnsResolver = DnsResolver.getInstance()
 
@@ -55,7 +58,7 @@ class AndroidDnsResolver @Inject constructor() : Resolver {
         }
 
         resolver.query(
-            null,
+            networkManager.activeNetwork,
             host,
             DnsResolver.FLAG_EMPTY,
             executorService,
