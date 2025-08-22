@@ -37,7 +37,7 @@ class AndroidDnsResolver @Inject constructor(
 
     private val resolver: DnsResolver = DnsResolver.getInstance()
 
-    private val executorService = Executors.newFixedThreadPool(THREADS_LIMIT)
+    private val executorService = Executors.newSingleThreadExecutor()
 
     override suspend fun resolve(host: String): List<IpAddr>? = suspendCancellableCoroutine { continuation ->
         Timber.tag("DnsResolution").d("required for host: $host")
@@ -47,18 +47,21 @@ class AndroidDnsResolver @Inject constructor(
         val callback = object : DnsResolver.Callback<List<InetAddress>> {
 
             override fun onAnswer(answer: List<InetAddress>, rcode: Int) {
-                Timber.tag("DnsResolution").d("DNS resolved to $answer")
+                Timber.tag("DnsResolution").d("DNS host for '$host' resolved to $answer")
                 continuation.resume(answer.mapNotNull { it.toRustIpAddress() })
             }
 
             override fun onError(error: DnsResolver.DnsException) {
-                Timber.tag("DnsResolution").d("DNS resolution error: $error")
+                Timber.tag("DnsResolution").d("DNS resolution for '$host' errored: $error")
                 continuation.resume(null)
             }
         }
 
+        val network = networkManager.activeNetwork
+        Timber.tag("DnsResolution").d("Resolving via ${network?.networkHandle}")
+
         resolver.query(
-            networkManager.activeNetwork,
+            network,
             host,
             DnsResolver.FLAG_EMPTY,
             executorService,
@@ -68,12 +71,16 @@ class AndroidDnsResolver @Inject constructor(
     }
 
     private fun InetAddress.toRustIpAddress(): IpAddr? {
-        val address = this.hostAddress ?: return null
+        val address = this.hostAddress
+
+        if (address == null) {
+            Timber.tag("DnsResolution").d("Null address on DNS resolution: ${this::class.java} - ${this.hostAddress}")
+            return null
+        }
+
         return when (this) {
             is Inet6Address -> IpAddr.V6(address)
             else -> IpAddr.V4(address)
         }
     }
 }
-
-private const val THREADS_LIMIT = 5
