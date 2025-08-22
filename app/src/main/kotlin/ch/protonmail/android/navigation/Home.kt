@@ -46,6 +46,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -156,6 +157,8 @@ fun Home(
             navBackStackEntry?.destination?.route == Screen.Mailbox.route
         }
     }
+    val actionBarIsVisible = remember { mutableStateOf(false) }
+    val onActionBarVisibilityChangedCallback = { visible: Boolean -> actionBarIsVisible.value = visible }
     val fabHostState = remember { ProtonFabHostState() }
     val snackbarHostSuccessState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.SUCCESS) }
     val snackbarHostWarningState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.WARNING) }
@@ -508,20 +511,29 @@ fun Home(
                     }
                 },
                 snackbarHost = {
+                    val bottomOffset = if (actionBarIsVisible.value) ProtonDimens.Spacing.ExtraLarge else 0.dp
                     DismissableSnackbarHost(
-                        modifier = Modifier.testTag(CommonTestTags.SnackbarHostSuccess),
+                        modifier = Modifier
+                            .testTag(CommonTestTags.SnackbarHostSuccess)
+                            .padding(bottom = bottomOffset),
                         protonSnackbarHostState = snackbarHostSuccessState
                     )
                     DismissableSnackbarHost(
-                        modifier = Modifier.testTag(CommonTestTags.SnackbarHostWarning),
+                        modifier = Modifier
+                            .testTag(CommonTestTags.SnackbarHostWarning)
+                            .padding(bottom = bottomOffset),
                         protonSnackbarHostState = snackbarHostWarningState
                     )
                     DismissableSnackbarHost(
-                        modifier = Modifier.testTag(CommonTestTags.SnackbarHostNormal),
+                        modifier = Modifier
+                            .testTag(CommonTestTags.SnackbarHostNormal)
+                            .padding(bottom = bottomOffset),
                         protonSnackbarHostState = snackbarHostNormState
                     )
                     DismissableSnackbarHost(
-                        modifier = Modifier.testTag(CommonTestTags.SnackbarHostError),
+                        modifier = Modifier
+                            .testTag(CommonTestTags.SnackbarHostError)
+                            .padding(bottom = bottomOffset),
                         protonSnackbarHostState = snackbarHostErrorState
                     )
                 }
@@ -599,6 +611,7 @@ fun Home(
                                 onNavigateToUpselling = { entryPoint, type ->
                                     navController.navigate(Screen.FeatureUpselling(entryPoint, type))
                                 },
+                                onActionBarVisibilityChanged = onActionBarVisibilityChangedCallback,
                                 onCustomizeToolbar = {
                                     navController.navigate(Screen.EditToolbarScreen(ToolbarType.Conversation))
                                 }
@@ -612,7 +625,8 @@ fun Home(
                             showSnackbar = { showSnackbar(it) },
                             onEvent = eventHandler,
                             showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
-                            onAttachmentReady = activityActions.openIntentChooser
+                            onAttachmentReady = activityActions.openIntentChooser,
+                            onActionBarVisibilityChanged = onActionBarVisibilityChangedCallback
                         )
                         addAccountsManager(
                             navController,

@@ -67,7 +67,8 @@ internal fun NavGraphBuilder.addMailbox(
     onEvent: (AccountSwitchEvent) -> Unit,
     onAttachmentReady: (OpenAttachmentIntentValues) -> Unit,
     showSnackbar: (type: SnackbarType) -> Unit,
-    showFeatureMissingSnackbar: () -> Unit
+    showFeatureMissingSnackbar: () -> Unit,
+    onActionBarVisibilityChanged: (Boolean) -> Unit
 ) {
     composable(route = Destination.Screen.Mailbox.route) {
         MailboxScreen(
@@ -103,7 +104,8 @@ internal fun NavGraphBuilder.addMailbox(
                 onExitSearchMode = {
                     setDrawerEnabled(true)
                 },
-                onAttachmentReady = onAttachmentReady
+                onAttachmentReady = onAttachmentReady,
+                onActionBarVisibilityChanged = onActionBarVisibilityChanged
             ),
             onEvent = onEvent,
             fabHostState = fabHostState

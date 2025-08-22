@@ -522,7 +522,8 @@ fun MailboxScreen(
                     onStar = { Timber.d("mailbox onStar clicked") },
                     onUnstar = { Timber.d("mailbox onUnstar clicked") },
                     onCustomizeToolbar = { Timber.d("mailbox onCustomizeToolbar clicked") },
-                    onSnooze = actions.onSnooze
+                    onSnooze = actions.onSnooze,
+                    onActionBarVisibilityChanged = actions.onActionBarVisibilityChanged
                 )
             )
         }
@@ -1182,7 +1183,8 @@ object MailboxScreen {
         val onClearAll: () -> Unit,
         val onClearAllConfirmed: () -> Unit,
         val onClearAllDismissed: () -> Unit,
-        val onSnooze: () -> Unit
+        val onSnooze: () -> Unit,
+        val onActionBarVisibilityChanged: (visible: Boolean) -> Unit
     ) {
 
         companion object {
@@ -1241,7 +1243,8 @@ object MailboxScreen {
                 onClearAllConfirmed = {},
                 onClearAllDismissed = {},
                 onNavigateToUpselling = { _, _ -> },
-                onSnooze = {}
+                onSnooze = {},
+                onActionBarVisibilityChanged = {}
             )
         }
     }

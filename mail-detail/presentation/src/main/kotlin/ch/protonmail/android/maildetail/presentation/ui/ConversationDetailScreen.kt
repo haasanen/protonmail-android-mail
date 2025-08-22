@@ -561,6 +561,7 @@ fun ConversationDetailScreen(
                     viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested)
                 },
                 onSnooze = { viewModel.submit(ConversationDetailViewAction.RequestSnoozeBottomSheet) },
+                onActionBarVisibilityChanged = actions.onActionBarVisibilityChanged,
                 onUnsubscribeFromNewsletter = {
                     viewModel.submit(ConversationDetailViewAction.UnsubscribeFromNewsletter(MessageId(it.id)))
                 }
@@ -725,7 +726,8 @@ fun ConversationDetailScreen(
                     onSaveAttachments = { Timber.d("conversation onSaveAttachments clicked") },
                     onMore = actions.onMoreActionsClick,
                     onCustomizeToolbar = { Timber.d("conversation onCustomizeToolbar clicked") },
-                    onSnooze = actions.onSnooze
+                    onSnooze = actions.onSnooze,
+                    onActionBarVisibilityChanged = actions.onActionBarVisibilityChanged
                 )
             )
         }
@@ -1074,7 +1076,8 @@ object ConversationDetail {
         val showSnackbar: (message: String, type: ProtonSnackbarType) -> Unit,
         val recordMailboxScreenView: () -> Unit,
         val onExitWithOpenInComposer: (MessageId) -> Unit,
-        val onNavigateToUpselling: (entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) -> Unit
+        val onNavigateToUpselling: (entryPoint: UpsellingEntryPoint.Feature, type: UpsellingVisibility) -> Unit,
+        val onActionBarVisibilityChanged: (Boolean) -> Unit
     )
 }
 
@@ -1137,6 +1140,7 @@ object ConversationDetailScreen {
         val onMessage: (String) -> Unit,
         val onUnsnoozeMessage: () -> Unit,
         val onSnooze: () -> Unit,
+        val onActionBarVisibilityChanged: (Boolean) -> Unit,
         val onUnsubscribeFromNewsletter: (MessageIdUiModel) -> Unit
     ) {
 
@@ -1194,6 +1198,7 @@ object ConversationDetailScreen {
                 onMessage = {},
                 onUnsnoozeMessage = {},
                 onSnooze = {},
+                onActionBarVisibilityChanged = {},
                 onUnsubscribeFromNewsletter = {}
             )
         }

@@ -59,7 +59,11 @@ fun BottomActionBar(
     viewActionCallbacks: BottomActionBar.Actions,
     modifier: Modifier = Modifier
 ) {
-    if (state is BottomBarState.Data.Hidden) return
+    if (state is BottomBarState.Data.Hidden) {
+        viewActionCallbacks.onActionBarVisibilityChanged(false)
+        return
+    }
+    viewActionCallbacks.onActionBarVisibilityChanged(true)
     Column(
         modifier = modifier
             .shadow(
@@ -207,7 +211,8 @@ object BottomActionBar {
         val onSaveAttachments: () -> Unit,
         val onMore: () -> Unit,
         val onCustomizeToolbar: () -> Unit,
-        val onSnooze: () -> Unit
+        val onSnooze: () -> Unit,
+        val onActionBarVisibilityChanged: (visible: Boolean) -> Unit
     ) {
 
         companion object {
@@ -236,7 +241,8 @@ object BottomActionBar {
                 onSaveAttachments = {},
                 onMore = {},
                 onCustomizeToolbar = {},
-                onSnooze = {}
+                onSnooze = {},
+                onActionBarVisibilityChanged = {}
             )
         }
     }
