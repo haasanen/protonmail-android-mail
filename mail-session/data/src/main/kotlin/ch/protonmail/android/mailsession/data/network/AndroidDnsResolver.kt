@@ -41,6 +41,16 @@ class AndroidDnsResolver @Inject constructor(
 
     override suspend fun resolve(host: String): List<IpAddr>? = suspendCancellableCoroutine { continuation ->
         Timber.tag("DnsResolution").d("required for host: $host")
+
+        val network = networkManager.activeNetwork
+        if (network == null) {
+            Timber.tag("DnsResolution").d("Network is unavailable! Returning null.")
+            continuation.resume(null)
+            return@suspendCancellableCoroutine
+        }
+
+        Timber.tag("DnsResolution").d("Resolving via ${network.networkHandle}")
+
         val cancelSignal = CancellationSignal()
         continuation.invokeOnCancellation { cancelSignal.cancel() }
 
@@ -56,9 +66,6 @@ class AndroidDnsResolver @Inject constructor(
                 continuation.resume(null)
             }
         }
-
-        val network = networkManager.activeNetwork
-        Timber.tag("DnsResolution").d("Resolving via ${network?.networkHandle}")
 
         resolver.query(
             network,
