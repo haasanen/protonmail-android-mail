@@ -83,12 +83,12 @@ private fun OnboardingScreen(
             descriptionId = R.string.onboarding_welcome_description
         ),
         OnboardingUiModel(
-            illustrationId = R.drawable.illustration_onboarding_rebuilt,
+            illustrationId = R.drawable.illustration_onboarding_focus,
             title = R.string.onboarding_rebuilt_title,
             descriptionId = R.string.onboarding_rebuilt_description
         ),
         OnboardingUiModel(
-            illustrationId = R.drawable.illustration_onboarding_feedback,
+            illustrationId = R.drawable.illustration_onboarding_offline,
             title = R.string.onboarding_feedback_title,
             descriptionId = R.string.onboarding_feedback_description
         ),
