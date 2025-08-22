@@ -38,6 +38,7 @@ import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 internal fun ApplicationLogsScreenList(
     modifier: Modifier = Modifier,
     appVersion: String,
+    isStandalone: Boolean,
     actions: ApplicationLogsScreenList.Actions
 ) {
 
@@ -90,19 +91,22 @@ internal fun ApplicationLogsScreenList(
                 onClick = actions.onExport
             )
         }
-        item { HorizontalDivider(color = ProtonTheme.colors.separatorNorm) }
 
-        item {
-            ProtonSettingsHeader(
-                title = stringResource(R.string.application_events_feature_flags_title),
-                modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Small)
-            )
-        }
-        item {
-            ProtonSettingsItem(
-                name = stringResource(R.string.application_events_feature_flags_subtitle),
-                onClick = actions.onFeatureFlagNavigation
-            )
+        if (isStandalone) {
+            item { HorizontalDivider(color = ProtonTheme.colors.separatorNorm) }
+
+            item {
+                ProtonSettingsHeader(
+                    title = stringResource(R.string.application_events_feature_flags_title),
+                    modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Small)
+                )
+            }
+            item {
+                ProtonSettingsItem(
+                    name = stringResource(R.string.application_events_feature_flags_subtitle),
+                    onClick = actions.onFeatureFlagNavigation
+                )
+            }
         }
 
         item { AppVersion(appVersion) }
@@ -154,7 +158,8 @@ private fun ApplicationLogsScreenPreview() {
     ProtonTheme {
         ApplicationLogsScreenList(
             appVersion = "Proton Mail (0) - 0.7.0",
-            actions = ApplicationLogsScreenList.Actions.Empty
+            actions = ApplicationLogsScreenList.Actions.Empty,
+            isStandalone = false
         )
     }
 }

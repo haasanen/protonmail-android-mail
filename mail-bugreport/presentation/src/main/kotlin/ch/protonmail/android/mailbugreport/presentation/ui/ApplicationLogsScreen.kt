@@ -115,7 +115,8 @@ fun ApplicationLogsScreen(
             ApplicationLogsScreenList(
                 modifier = Modifier.padding(paddingValues),
                 appVersion = state.appVersion,
-                actions = screenListActions
+                actions = screenListActions,
+                isStandalone = isStandalone
             )
         }
     )
