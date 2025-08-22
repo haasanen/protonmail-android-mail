@@ -67,7 +67,7 @@ fun LoginError.getErrorMessage(context: Context): String = when (this) {
     is LoginError.InvalidCredentials -> context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
     is LoginError.QrLoginEncoding -> "LoginError.QrLoginEncoding"
     is LoginError.WithCodePollFlowFailed -> v1
-    is LoginError.Incorrect2FaCode -> "LoginError.Incorrect2FaCode"
+    is LoginError.Incorrect2FaCode -> context.getString(R.string.auth_second_factor_incorrect_code)
     is LoginError.AddressKeySetupAborted -> "LoginError.AddressKeySetupAborted"
     is LoginError.NoAddress -> "LoginError.NoAddress"
     is LoginError.NoLogin -> "LoginError.NoLogin"
