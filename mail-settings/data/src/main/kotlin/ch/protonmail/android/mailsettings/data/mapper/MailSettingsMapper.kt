@@ -151,7 +151,7 @@ object MailSettingsMapper {
 
     private fun LocalMobileSettings.toMobileSettings(): MobileSettings {
         fun MobileSetting.toMobileSetting(): ActionsToolbarSetting {
-            val actions = this.actions.map { ToolbarAction.enumOf(it) }
+            val actions = this.actions.map { ToolbarAction.enumOf(it.toString()) } // ET-4237
             return ActionsToolbarSetting(this.isCustom, actions)
         }
 

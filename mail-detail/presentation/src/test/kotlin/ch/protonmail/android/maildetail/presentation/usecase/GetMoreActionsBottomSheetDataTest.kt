@@ -97,7 +97,7 @@ class GetMoreActionsBottomSheetDataTest {
         val conversation = ConversationSample.WeatherForecast
         val availableActions = AvailableActionsTestData.replyActionsOnly
         coEvery {
-            getConversationAvailableActions(userId, labelId, listOf(conversationId))
+            getConversationAvailableActions(userId, labelId, conversationId)
         } returns availableActions.right()
         coEvery { observeConversation(userId, conversationId, labelId) } returns flowOf(conversation.right())
 
@@ -122,7 +122,7 @@ class GetMoreActionsBottomSheetDataTest {
         val labelId = SystemLabelId.Archive.labelId
         val conversationId = ConversationIdSample.WeatherForecast
         coEvery {
-            getConversationAvailableActions(userId, labelId, listOf(conversationId))
+            getConversationAvailableActions(userId, labelId, conversationId)
         } returns DataError.Local.NoDataCached.left()
         coEvery { observeConversation(userId, conversationId, labelId) } returns flowOf(conversation.right())
 

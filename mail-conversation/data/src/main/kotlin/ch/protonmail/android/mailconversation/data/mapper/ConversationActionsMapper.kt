@@ -20,35 +20,31 @@ package ch.protonmail.android.mailconversation.data.mapper
 
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
-import ch.protonmail.android.mailmessage.data.mapper.generalActionsToActions
-import ch.protonmail.android.mailmessage.data.mapper.systemFolderActionsToActions
-import timber.log.Timber
-import uniffi.proton_mail_uniffi.ConversationAvailableActions
-import uniffi.proton_mail_uniffi.OldConversationAction
+import ch.protonmail.android.mailmessage.data.mapper.toAction
+import uniffi.proton_mail_uniffi.ConversationAction
+import uniffi.proton_mail_uniffi.ConversationActionSheet
 
-
-fun ConversationAvailableActions.toAvailableActions(): AvailableActions {
+fun ConversationActionSheet.toAvailableActions(): AvailableActions {
     return AvailableActions(
         emptyList(),
-        this.conversationActions.conversationActionsToActions().filterNotNull(),
-        this.moveActions.systemFolderActionsToActions(),
-        this.generalActions.generalActionsToActions().filterNotNull()
+        this.conversationActions.toActions(),
+        this.moveActions.toActions(),
+        emptyList()
     )
 }
 
-private fun List<OldConversationAction>.conversationActionsToActions() = this.map { messageAction ->
+private fun List<ConversationAction>.toActions() = this.map { messageAction ->
     when (messageAction) {
-        OldConversationAction.STAR -> Action.Star
-        OldConversationAction.UNSTAR -> Action.Unstar
-        OldConversationAction.LABEL_AS -> Action.Label
-        OldConversationAction.MARK_READ -> Action.MarkRead
-        OldConversationAction.MARK_UNREAD -> Action.MarkUnread
-        OldConversationAction.DELETE -> Action.Delete
-        OldConversationAction.SNOOZE -> Action.Snooze
-        OldConversationAction.PIN,
-        OldConversationAction.UNPIN -> {
-            Timber.i("rust-message: Found unhandled action while mapping: $messageAction")
-            null
-        }
+        ConversationAction.LabelAs -> Action.Label
+        ConversationAction.MarkRead -> Action.MarkRead
+        ConversationAction.MarkUnread -> Action.MarkUnread
+        ConversationAction.More -> Action.More
+        ConversationAction.MoveTo -> Action.Move
+        is ConversationAction.MoveToSystemFolder -> messageAction.v1.name.toAction()
+        is ConversationAction.NotSpam -> Action.Inbox
+        ConversationAction.PermanentDelete -> Action.Delete
+        ConversationAction.Snooze -> Action.Snooze
+        ConversationAction.Star -> Action.Star
+        ConversationAction.Unstar -> Action.Unstar
     }
 }

@@ -52,7 +52,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import uniffi.proton_mail_uniffi.AllListActions
-import uniffi.proton_mail_uniffi.ConversationAvailableActions
+import uniffi.proton_mail_uniffi.ConversationActionSheet
 import uniffi.proton_mail_uniffi.CustomFolderAction
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
@@ -179,14 +179,14 @@ class RustConversationDataSourceImplTest {
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
         val mailbox = mockk<MailboxWrapper>()
-        val conversationIds = listOf(LocalConversationIdSample.OctConversation)
-        val expected = ConversationAvailableActions(emptyList(), emptyList(), emptyList())
+        val conversationId = LocalConversationIdSample.OctConversation
+        val expected = ConversationActionSheet(emptyList(), emptyList())
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustAvailableConversationActions(mailbox, conversationIds) } returns expected.right()
+        coEvery { getRustAvailableConversationActions(mailbox, conversationId) } returns expected.right()
 
         // When
-        val result = dataSource.getAvailableActions(userId, labelId, conversationIds)
+        val result = dataSource.getAvailableActions(userId, labelId, conversationId)
 
         // Then
         assertEquals(expected.right(), result)

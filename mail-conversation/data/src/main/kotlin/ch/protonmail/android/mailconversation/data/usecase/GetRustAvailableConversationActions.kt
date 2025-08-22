@@ -25,19 +25,19 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.data.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.wrapper.MailboxWrapper
-import uniffi.proton_mail_uniffi.AvailableActionsForConversationsResult
-import uniffi.proton_mail_uniffi.ConversationAvailableActions
-import uniffi.proton_mail_uniffi.availableActionsForConversations
+import uniffi.proton_mail_uniffi.AllAvailableConversationActionsForActionSheetResult
+import uniffi.proton_mail_uniffi.ConversationActionSheet
+import uniffi.proton_mail_uniffi.allAvailableConversationActionsForActionSheet
 import javax.inject.Inject
 
 class GetRustAvailableConversationActions @Inject constructor() {
 
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
-        messageIds: List<LocalConversationId>
-    ): Either<DataError, ConversationAvailableActions> =
-        when (val result = availableActionsForConversations(mailbox.getRustMailbox(), messageIds)) {
-            is AvailableActionsForConversationsResult.Error -> result.v1.toDataError().left()
-            is AvailableActionsForConversationsResult.Ok -> result.v1.right()
+        messageIds: LocalConversationId
+    ): Either<DataError, ConversationActionSheet> =
+        when (val result = allAvailableConversationActionsForActionSheet(mailbox.getRustMailbox(), messageIds)) {
+            is AllAvailableConversationActionsForActionSheetResult.Error -> result.v1.toDataError().left()
+            is AllAvailableConversationActionsForActionSheetResult.Ok -> result.v1.right()
         }
 }

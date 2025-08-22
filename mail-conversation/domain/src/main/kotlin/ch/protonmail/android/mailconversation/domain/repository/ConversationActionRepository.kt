@@ -34,7 +34,7 @@ interface ConversationActionRepository {
     suspend fun getAvailableActions(
         userId: UserId,
         labelId: LabelId,
-        conversationIds: List<ConversationId>
+        conversationId: ConversationId
     ): Either<DataError, AvailableActions>
 
     suspend fun getSystemMoveToLocations(

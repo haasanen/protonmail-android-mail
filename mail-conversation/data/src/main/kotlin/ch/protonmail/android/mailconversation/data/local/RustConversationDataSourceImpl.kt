@@ -45,7 +45,7 @@ import kotlinx.coroutines.withContext
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllListActions
-import uniffi.proton_mail_uniffi.ConversationAvailableActions
+import uniffi.proton_mail_uniffi.ConversationActionSheet
 import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.MoveAction
 import javax.inject.Inject
@@ -161,15 +161,15 @@ class RustConversationDataSourceImpl @Inject constructor(
     override suspend fun getAvailableActions(
         userId: UserId,
         labelId: LocalLabelId,
-        conversationIds: List<LocalConversationId>
-    ): Either<DataError, ConversationAvailableActions> = withContext(ioDispatcher) {
+        conversationId: LocalConversationId
+    ): Either<DataError, ConversationActionSheet> = withContext(ioDispatcher) {
         val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
             return@withContext DataError.Local.NoDataCached.left()
         }
 
-        return@withContext getRustAvailableConversationActions(mailbox, conversationIds)
+        return@withContext getRustAvailableConversationActions(mailbox, conversationId)
     }
 
     override suspend fun getAllAvailableBottomBarActions(

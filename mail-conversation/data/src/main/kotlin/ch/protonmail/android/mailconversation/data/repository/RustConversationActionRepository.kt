@@ -47,12 +47,12 @@ class RustConversationActionRepository @Inject constructor(
     override suspend fun getAvailableActions(
         userId: UserId,
         labelId: LabelId,
-        conversationIds: List<ConversationId>
+        conversationId: ConversationId
     ): Either<DataError, AvailableActions> {
         val availableActions = rustConversationDataSource.getAvailableActions(
             userId,
             labelId.toLocalLabelId(),
-            conversationIds.map { it.toLocalConversationId() }
+            conversationId.toLocalConversationId()
         )
 
         return availableActions.map { it.toAvailableActions() }

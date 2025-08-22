@@ -44,15 +44,13 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import uniffi.proton_mail_uniffi.AllListActions
-import uniffi.proton_mail_uniffi.ConversationAvailableActions
-import uniffi.proton_mail_uniffi.GeneralActions
+import uniffi.proton_mail_uniffi.ConversationAction
+import uniffi.proton_mail_uniffi.ConversationActionSheet
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.ListActions
 import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
-import uniffi.proton_mail_uniffi.MoveItemAction
-import uniffi.proton_mail_uniffi.OldConversationAction
 import kotlin.test.assertEquals
 
 class RustConversationActionRepositoryTest {
@@ -68,30 +66,29 @@ class RustConversationActionRepositoryTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
-        val conversationIds = listOf(ConversationId("1"))
-        val rustAvailableActions = ConversationAvailableActions(
-            listOf(OldConversationAction.STAR, OldConversationAction.LABEL_AS),
+        val conversationId = ConversationId("1")
+        val rustAvailableActions = ConversationActionSheet(
+            listOf(ConversationAction.Star, ConversationAction.LabelAs),
             listOf(
-                MoveItemAction.MoveToSystemFolder(
+                ConversationAction.MoveToSystemFolder(
                     MovableSystemFolderAction(Id(5uL), MovableSystemFolder.SPAM)
                 ),
-                MoveItemAction.MoveToSystemFolder(
+                ConversationAction.MoveToSystemFolder(
                     MovableSystemFolderAction(Id(10uL), MovableSystemFolder.ARCHIVE)
                 )
-            ),
-            emptyList()
+            )
         )
 
         coEvery {
             rustConversationDataSource.getAvailableActions(
                 userId,
                 labelId.toLocalLabelId(),
-                conversationIds.map { it.toLocalConversationId() }
+                conversationId.toLocalConversationId()
             )
         } returns rustAvailableActions.right()
 
         // When
-        val result = rustConversationRepository.getAvailableActions(userId, labelId, conversationIds)
+        val result = rustConversationRepository.getAvailableActions(userId, labelId, conversationId)
 
         // Then
         val expected = AvailableActions(
@@ -108,19 +105,19 @@ class RustConversationActionRepositoryTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
-        val conversationIds = listOf(ConversationId("1"))
+        val conversationId = ConversationId("1")
         val expectedError = DataError.Local.NoDataCached
 
         coEvery {
             rustConversationDataSource.getAvailableActions(
                 userId,
                 labelId.toLocalLabelId(),
-                conversationIds.map { it.toLocalConversationId() }
+                conversationId.toLocalConversationId()
             )
         } returns expectedError.left()
 
         // When
-        val result = rustConversationRepository.getAvailableActions(userId, labelId, conversationIds)
+        val result = rustConversationRepository.getAvailableActions(userId, labelId, conversationId)
 
         // Then
         assertEquals(expectedError.left(), result)
@@ -131,21 +128,13 @@ class RustConversationActionRepositoryTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
-        val conversationIds = listOf(ConversationId("1"))
-        val rustAvailableActions = ConversationAvailableActions(
-            conversationActions = listOf(
-                OldConversationAction.PIN, OldConversationAction.UNPIN, OldConversationAction.STAR
-            ),
+        val conversationId = ConversationId("1")
+        val rustAvailableActions = ConversationActionSheet(
+            conversationActions = listOf(ConversationAction.Star),
             moveActions = listOf(
-                MoveItemAction.MoveToSystemFolder(
+                ConversationAction.MoveToSystemFolder(
                     MovableSystemFolderAction(Id(10uL), MovableSystemFolder.INBOX)
                 )
-            ),
-            generalActions = listOf(
-                GeneralActions.PRINT,
-                GeneralActions.REPORT_PHISHING,
-                GeneralActions.SAVE_AS_PDF,
-                GeneralActions.VIEW_HEADERS
             )
         )
 
@@ -153,19 +142,19 @@ class RustConversationActionRepositoryTest {
             rustConversationDataSource.getAvailableActions(
                 userId,
                 labelId.toLocalLabelId(),
-                conversationIds.map { it.toLocalConversationId() }
+                conversationId.toLocalConversationId()
             )
         } returns rustAvailableActions.right()
 
         // When
-        val result = rustConversationRepository.getAvailableActions(userId, labelId, conversationIds)
+        val result = rustConversationRepository.getAvailableActions(userId, labelId, conversationId)
 
         // Then
         val expected = AvailableActions(
             emptyList(),
             listOf(Action.Star),
             listOf(Action.Inbox),
-            listOf(Action.Print, Action.ReportPhishing, Action.SavePdf)
+            emptyList()
         )
         assertEquals(expected.right(), result)
     }

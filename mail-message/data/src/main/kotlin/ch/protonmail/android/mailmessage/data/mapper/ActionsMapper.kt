@@ -31,14 +31,11 @@ import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllListActions
-import uniffi.proton_mail_uniffi.GeneralActions
 import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.ListActions
 import uniffi.proton_mail_uniffi.MessageAction
 import uniffi.proton_mail_uniffi.MessageActionSheet
-import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MoveAction
-import uniffi.proton_mail_uniffi.MoveItemAction
 
 fun List<LocalLabelAsAction>.toLabelAsActions(): LabelAsActions {
     val labels = this.map { it.toLabel() }
@@ -94,15 +91,6 @@ fun List<MessageAction>.replyMessageActionsToActions() = this.map { action ->
     }
 }
 
-fun List<MoveItemAction>.systemFolderActionsToActions() = this.map { action ->
-    when (action) {
-        MoveItemAction.MoveTo -> Action.Move
-        is MoveItemAction.MoveToSystemFolder -> action.v1.name.toAction()
-        is MoveItemAction.NotSpam -> Action.Inbox
-        MoveItemAction.PermanentDelete -> Action.Delete
-    }
-}
-
 fun List<MessageAction>.systemFolderMessageActionsToActions() = this.map { action ->
     when (action) {
         MessageAction.MoveTo -> Action.Move
@@ -116,33 +104,10 @@ fun List<MessageAction>.systemFolderMessageActionsToActions() = this.map { actio
     }
 }
 
-private fun MovableSystemFolder.toAction() = when (this) {
-    MovableSystemFolder.TRASH -> Action.Trash
-    MovableSystemFolder.SPAM -> Action.Spam
-    MovableSystemFolder.ARCHIVE -> Action.Archive
-    MovableSystemFolder.INBOX -> Action.Inbox
-}
-
-fun List<GeneralActions>.generalActionsToActions() = this.map { generalAction ->
-    when (generalAction) {
-        GeneralActions.VIEW_MESSAGE_IN_LIGHT_MODE -> Action.ViewInLightMode
-        GeneralActions.VIEW_MESSAGE_IN_DARK_MODE -> Action.ViewInDarkMode
-        GeneralActions.SAVE_AS_PDF -> Action.SavePdf
-        GeneralActions.PRINT -> Action.Print
-        GeneralActions.REPORT_PHISHING -> Action.ReportPhishing
-        GeneralActions.VIEW_HEADERS,
-        GeneralActions.VIEW_HTML -> {
-            Timber.i("rust-actions-mapper: Skipping unhandled action mapping generalActions: $generalAction")
-            null
-        }
-    }
-}
-
 fun List<MessageAction>.generalMessageActionsToActions() = this.map { generalAction ->
     when (generalAction) {
         MessageAction.ViewInLightMode -> Action.ViewInLightMode
         MessageAction.ViewInDarkMode -> Action.ViewInDarkMode
-        MessageAction.SavePdf -> Action.SavePdf
         MessageAction.Print -> Action.Print
         MessageAction.ReportPhishing -> Action.ReportPhishing
         else -> {
