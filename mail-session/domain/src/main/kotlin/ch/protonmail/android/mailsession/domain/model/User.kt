@@ -27,6 +27,7 @@ data class User(
     val name: String?,
     val services: Int,
     val subscribed: Int,
+    val createTimeUtc: Long,
     private val usedSpace: Long,
     private val maxSpace: Long
 ) {

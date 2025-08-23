@@ -152,6 +152,7 @@ class UserSessionRepositoryImplTest {
             email = "userEmail",
             services = 0,
             subscribed = 0,
+            createTimeUtc = 0L,
             usedSpace = 0L,
             maxSpace = 0L
         )
@@ -226,5 +227,4 @@ class UserSessionRepositoryImplTest {
             coEvery { getAccounts() } returns listOf(storedAccount).right()
             coEvery { getAccountSessions(storedAccount) } returns listOf(storedSession).right()
         }
-
 }

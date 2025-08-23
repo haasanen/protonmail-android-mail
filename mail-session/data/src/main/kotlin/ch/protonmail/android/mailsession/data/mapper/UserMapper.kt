@@ -29,6 +29,7 @@ fun LocalUser.toUser(userId: UserId): User = User(
     name = name,
     services = services.toInt(),
     subscribed = subscribed.toInt(),
+    createTimeUtc = createTime.toLong(),
     usedSpace = usedSpace,
     maxSpace = maxSpace
 )
