@@ -107,17 +107,35 @@ internal object UpsellingLayoutValues {
         val outlinedCardSelectedBorderStroke = BorderStroke(2.dp, coloredBorderBrush)
     }
 
+    object UpsellOnboarding {
+        val bestValueShape = RoundedCornerShape(10.dp)
+        val tabIndicatorWidth = 36.dp
+        val tabIndicatorHeight = 3.dp
+
+        val tabIndicatorHeightOffset = 1.dp
+    }
+
     object UpsellCards {
 
         val outlineBorderStoke = BorderStroke(1.dp, coloredBorderBrush)
+        val outlineUpsellingBorderStoke = BorderStroke(2.dp, onboardingColoredBrush)
     }
-
     val coloredBorderBrush = Brush.linearGradient(
         colors = listOf(
             Color(0xFF00FF88),
             Color(0xFF0088FF),
             Color(0xFF8800FF),
             Color(0xFFFF0088)
+        )
+    )
+
+    private val onboardingColoredBrush = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFF00FF96),
+            Color(0xFF00D9FF),
+            Color(0xFF2A7FFF),
+            Color(0xFFB114F8),
+            Color(0xFFFF4FD8)
         )
     )
 }

@@ -42,8 +42,13 @@ import ch.protonmail.android.navigation.Launcher
 import ch.protonmail.android.navigation.LauncherViewModel
 import ch.protonmail.android.navigation.model.LauncherState
 import ch.protonmail.android.navigation.share.NewIntentObserver
+import coil.Coil
+import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import me.proton.android.core.payment.domain.IconResourceManager
+import me.proton.android.core.payment.presentation.IconResourceFetcher
+import me.proton.android.core.payment.presentation.IconResourceKeyer
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
@@ -56,6 +61,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var newIntentObserver: NewIntentObserver
+
+    @Inject
+    lateinit var iconResourceManager: IconResourceManager
 
     private val launcherViewModel: LauncherViewModel by viewModels()
 
@@ -74,6 +82,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         disableRecentAppsScreenshotPreview()
+
+        configureCoil()
 
         setContent {
             ProtonTheme {
@@ -112,6 +122,18 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         handleIncomingIntent(intent)
+    }
+
+    private fun configureCoil() {
+        Coil.setImageLoader(
+            ImageLoader.Builder(applicationContext)
+                .components {
+                    add(IconResourceKeyer())
+                    add(IconResourceFetcher.Factory(applicationContext, iconResourceManager))
+                }
+                .crossfade(true)
+                .build()
+        )
     }
 
     private fun handleIncomingIntent(intent: Intent) {

@@ -249,6 +249,7 @@ class ProtonColors(
     shadowSoft: Color,
     shadowRaised: Color,
     shadowLifted: Color,
+    shadowMedium: Color,
 
     starDefault: Color = shade50,
     starSelected: Color = ProtonPalette.TexasRose,
@@ -439,11 +440,12 @@ class ProtonColors(
 
     var shadowSoft: Color by mutableStateOf(shadowSoft, structuralEqualityPolicy())
         internal set
+    var shadowMedium: Color by mutableStateOf(shadowMedium, structuralEqualityPolicy())
+        internal set
     var shadowRaised: Color by mutableStateOf(shadowRaised, structuralEqualityPolicy())
         internal set
     var shadowLifted: Color by mutableStateOf(shadowLifted, structuralEqualityPolicy())
         internal set
-
     var starDefault: Color by mutableStateOf(starDefault, structuralEqualityPolicy())
         internal set
     var starSelected: Color by mutableStateOf(starSelected, structuralEqualityPolicy())
@@ -548,6 +550,7 @@ class ProtonColors(
         shadowRaised: Color = this.shadowRaised,
         shadowLifted: Color = this.shadowLifted,
         shadowSoft: Color = this.shadowSoft,
+        shadowMedium: Color = this.shadowMedium,
         sidebarBackground: Color = this.sidebarBackground,
         sidebarInteractionPressed: Color = this.sidebarInteractionPressed,
         sidebarSeparator: Color = this.sidebarSeparator,
@@ -654,6 +657,7 @@ class ProtonColors(
         shadowRaised = shadowRaised,
         shadowLifted = shadowLifted,
         shadowSoft = shadowSoft,
+        shadowMedium = shadowMedium,
 
         starDefault = starDefault,
         starSelected = starSelected,
@@ -715,6 +719,7 @@ class ProtonColors(
             shadowSoft = ProtonPalette.Charade.copy(alpha = 0.6f),
             shadowRaised = ProtonPalette.Charade.copy(alpha = 0.8f),
             shadowLifted = ProtonPalette.Charade.copy(alpha = 0.8f),
+            shadowMedium = ProtonPalette.Charade.copy(alpha = 0.16f),
             blenderNorm = ProtonPalette.EerieBlack.copy(alpha = 0.48f),
             textAccent = brandPlus10,
             iconAccent = brandPlus10,
@@ -769,6 +774,7 @@ class ProtonColors(
             shade10 = ProtonPalette.Swamp,
             shade0 = ProtonPalette.EerieBlack,
             shadowSoft = Color.Black.copy(alpha = 0.8f),
+            shadowMedium = Color.Black.copy(alpha = 0.16f),
             shadowRaised = Color.Black.copy(alpha = 0.8f),
             shadowLifted = Color.Black.copy(alpha = 0.86f),
             blenderNorm = Color.Black.copy(alpha = 0.52f),

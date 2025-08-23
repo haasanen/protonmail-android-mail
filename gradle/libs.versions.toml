@@ -254,6 +254,7 @@ appLibs = [
     "androidx-compose-material3",
     "android-material-icons-core",
     "arrow-core",
+    "coil-compose",
     "timber",
     "kotlinx-immutableCollections",
     "okhttp",
