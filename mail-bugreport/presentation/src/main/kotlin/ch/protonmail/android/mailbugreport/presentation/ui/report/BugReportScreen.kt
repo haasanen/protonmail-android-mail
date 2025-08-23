@@ -68,7 +68,7 @@ private fun BugReportScreenImpl(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val states by viewModel.states.collectAsStateWithLifecycle()
-    var shouldIncludeLogs by remember { mutableStateOf(false) }
+    var shouldIncludeLogs by remember { mutableStateOf(true) }
     var shouldShowExitDialog by remember { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
