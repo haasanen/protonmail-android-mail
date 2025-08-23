@@ -60,6 +60,7 @@ fun MailPurchaseButton(
     product: Product,
     modifier: Modifier = Modifier,
     ctaText: String = stringResource(R.string.payment_purchase_button_get, product.header.title),
+    variant: MailPurchaseButtonVariant = MailPurchaseButtonVariant.Default,
     onSuccess: (Product) -> Unit = {},
     onErrorMessage: (String) -> Unit = {},
     viewModel: PurchaseButtonViewModel? = hiltViewModelOrNull<PurchaseButtonViewModel>(product.productId)
@@ -82,6 +83,7 @@ fun MailPurchaseButton(
         product = product,
         ctaText = ctaText,
         state = state ?: Idle,
+        variant = variant,
         modifier = modifier,
         onClick = { viewModel?.perform(PurchaseButtonAction.Purchase(product)) }
     )
@@ -92,6 +94,7 @@ private fun MailPurchaseButton(
     product: Product,
     ctaText: String,
     state: PurchaseButtonState,
+    variant: MailPurchaseButtonVariant,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
@@ -99,23 +102,32 @@ private fun MailPurchaseButton(
         is Success -> stringResource(R.string.payment_purchase_button_subscribed, product.header.title)
         else -> ctaText
     }
+
     MailPurchaseButton(
-        onClick,
-        state is Pending,
-        state !is Loading && state !is Success && (state as? PurchaseButtonState.Error)?.enabled != false,
-        modifier
+        onClick = onClick,
+        loading = state is Pending,
+        enabled = state !is Loading && state !is Success && (state as? PurchaseButtonState.Error)?.enabled != false,
+        variant = variant,
+        modifier = modifier
     ) {
+        val textColor = when (variant) {
+            MailPurchaseButtonVariant.Default -> ProtonTheme.colors.textNorm
+            MailPurchaseButtonVariant.Inverted -> ProtonTheme.colors.textInverted
+        }
+
         Column {
             Text(
                 text = text,
                 style = ProtonTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                color = textColor
             )
             (state as? PurchaseButtonState.Error)?.message?.let {
                 Text(
                     text = it,
                     style = ProtonTheme.typography.labelSmall,
                     maxLines = 3,
+                    color = textColor,
                     modifier = Modifier.padding(top = ProtonDimens.Spacing.MediumLight)
                 )
             }
@@ -128,11 +140,22 @@ private fun MailPurchaseButton(
     onClick: () -> Unit,
     loading: Boolean,
     enabled: Boolean,
+    variant: MailPurchaseButtonVariant,
     modifier: Modifier,
     content: @Composable () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
+
+    val backgroundColor = when (variant) {
+        MailPurchaseButtonVariant.Default -> Color.White
+        MailPurchaseButtonVariant.Inverted -> ProtonTheme.colors.interactionBrandDefaultNorm
+    }
+
+    val progressIndicatorColor = when (variant) {
+        MailPurchaseButtonVariant.Default -> Color.Black
+        MailPurchaseButtonVariant.Inverted -> Color.White
+    }
 
     Box(
         modifier = modifier
@@ -140,9 +163,9 @@ private fun MailPurchaseButton(
             .height(ProtonDimens.Spacing.Massive)
             .background(
                 color = if (enabled) {
-                    if (isPressed) Color.White.copy(alpha = 0.95f) else Color.White
+                    if (isPressed) backgroundColor.copy(alpha = 0.95f) else backgroundColor
                 } else {
-                    Color.White.copy(alpha = 0.7f)
+                    backgroundColor.copy(alpha = 0.7f)
                 },
                 shape = RoundedCornerShape(ProtonDimens.CornerRadius.Huge)
             )
@@ -155,9 +178,17 @@ private fun MailPurchaseButton(
         contentAlignment = Alignment.Center
     ) {
         if (loading) {
-            CircularProgressIndicator(modifier = Modifier.size(ProtonDimens.IconSize.Default))
+            CircularProgressIndicator(
+                modifier = Modifier.size(ProtonDimens.IconSize.Default),
+                color = progressIndicatorColor
+            )
         } else {
             Box { content() }
         }
     }
+}
+
+enum class MailPurchaseButtonVariant {
+    Default,
+    Inverted
 }
