@@ -33,9 +33,9 @@ sealed interface PlanUpgradeEntitlementsListUiModel {
 
 sealed class PlanUpgradeEntitlementListUiModel(open val text: TextUiModel) {
 
-    data class Default(override val text: TextUiModel, val remoteResource: String) :
+    data class Remote(override val text: TextUiModel, val remoteResource: String) :
         PlanUpgradeEntitlementListUiModel(text)
 
-    data class Overridden(override val text: TextUiModel, @DrawableRes val localResource: Int) :
+    data class Local(override val text: TextUiModel, @DrawableRes val localResource: Int) :
         PlanUpgradeEntitlementListUiModel(text)
 }

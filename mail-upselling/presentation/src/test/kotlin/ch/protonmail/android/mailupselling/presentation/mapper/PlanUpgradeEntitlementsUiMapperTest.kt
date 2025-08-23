@@ -19,13 +19,11 @@
 package ch.protonmail.android.mailupselling.presentation.mapper
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlement.Free
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlement.Plus
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlementItemUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeEntitlementsListUiModel
-import ch.protonmail.android.testdata.upselling.UpsellingTestData
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -76,10 +74,7 @@ internal class PlanUpgradeEntitlementsUiMapperTest {
         )
 
         // When
-        val actual = mapper.toUiModel(
-            plan = UpsellingTestData.MailPlusProducts.MonthlyProductDetail,
-            upsellingEntryPoint = UpsellingEntryPoint.Feature.Navbar
-        )
+        val actual = mapper.toTableUiModel()
 
         // Then
         assertEquals(expected, actual)

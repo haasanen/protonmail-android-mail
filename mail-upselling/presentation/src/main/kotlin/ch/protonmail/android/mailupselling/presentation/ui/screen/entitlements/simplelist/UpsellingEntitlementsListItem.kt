@@ -53,8 +53,8 @@ internal fun UpsellingEntitlementsListItem(
     ) {
 
         val imageModel = when (entitlementUiModel) {
-            is PlanUpgradeEntitlementListUiModel.Default -> entitlementUiModel.remoteResource
-            is PlanUpgradeEntitlementListUiModel.Overridden -> entitlementUiModel.localResource
+            is PlanUpgradeEntitlementListUiModel.Remote -> entitlementUiModel.remoteResource
+            is PlanUpgradeEntitlementListUiModel.Local -> entitlementUiModel.localResource
         }
 
         AsyncImage(
