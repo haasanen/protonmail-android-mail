@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,15 +16,9 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailupselling.presentation.model.planupgrades
+package ch.protonmail.android.mailupselling.domain.model
 
-import androidx.annotation.DrawableRes
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-
-sealed class PlanUpgradeEntitlementUiModel(open val text: TextUiModel) {
-
-    data class Default(override val text: TextUiModel, val remoteResource: String) : PlanUpgradeEntitlementUiModel(text)
-
-    data class Overridden(override val text: TextUiModel, @DrawableRes val localResource: Int) :
-        PlanUpgradeEntitlementUiModel(text)
-}
+data class ProductPriceWithCurrency(
+    val amount: Float,
+    val currencyCode: String
+)

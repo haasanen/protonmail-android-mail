@@ -18,11 +18,14 @@
 
 package ch.protonmail.android.mailupselling.presentation.model.planupgrades
 
+import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle
+import ch.protonmail.android.mailupselling.domain.model.YearlySaving
 import me.proton.android.core.payment.presentation.model.Product
 
 sealed class PlanUpgradeInstanceUiModel(
     open val name: String,
     open val discountRate: Int?,
+    open val yearlySaving: YearlySaving?,
     open val cycle: PlanUpgradeCycle,
     open val product: Product
 ) {
@@ -33,12 +36,14 @@ sealed class PlanUpgradeInstanceUiModel(
         override val name: String,
         private val pricePerCycle: PlanUpgradePriceUiModel,
         private val totalPrice: PlanUpgradePriceUiModel,
+        override val yearlySaving: YearlySaving?,
         override val discountRate: Int?,
         override val cycle: PlanUpgradeCycle,
         override val product: Product
     ) : PlanUpgradeInstanceUiModel(
         name,
         discountRate,
+        yearlySaving,
         cycle,
         product
     ) {
@@ -63,12 +68,14 @@ sealed class PlanUpgradeInstanceUiModel(
         private val pricePerCycle: PlanUpgradePriceUiModel,
         private val promotionalPrice: PlanUpgradePriceUiModel,
         private val renewalPrice: PlanUpgradePriceUiModel,
+        override val yearlySaving: YearlySaving?,
         override val discountRate: Int?,
         override val cycle: PlanUpgradeCycle,
         override val product: Product
     ) : PlanUpgradeInstanceUiModel(
         name,
         discountRate,
+        yearlySaving,
         cycle,
         product
     ) {

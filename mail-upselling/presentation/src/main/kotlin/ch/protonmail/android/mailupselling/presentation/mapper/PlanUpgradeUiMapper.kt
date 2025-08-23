@@ -22,12 +22,8 @@ import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.right
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
-import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceListUiModel
-import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeUiModel
-import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeVariant
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.ProductInstances
-import me.proton.android.core.payment.domain.model.ProductDetail
 import javax.inject.Inject
 
 internal class PlanUpgradeUiMapper @Inject constructor(
@@ -49,7 +45,7 @@ internal class PlanUpgradeUiMapper @Inject constructor(
 
         if (monthlyPlan == yearlyPlan) raise(PlanMappingError.InvalidList)
 
-        val variant = resolveVariant(
+        val variant = PlanUpgradeMapper.resolveVariant(
             monthlyPlan,
             yearlyPlan,
             upsellingEntryPoint
@@ -64,65 +60,10 @@ internal class PlanUpgradeUiMapper @Inject constructor(
             icon = iconUiMapper.toUiModel(upsellingEntryPoint, variant),
             title = titleUiMapper.toUiModel(shorterCycleUiModel.primaryPrice, upsellingEntryPoint, variant),
             description = descriptionUiMapper.toUiModel(monthlyPlan, upsellingEntryPoint, variant),
-            entitlements = entitlementsUiMapper.toUiModel(monthlyPlan, upsellingEntryPoint),
+            entitlements = entitlementsUiMapper.toTableUiModel(),
             variant = variant,
-            list = resolveListUiModel(shorterCycleUiModel, longerCycleUiModel, variant)
+            list = PlanUpgradeMapper.resolveListUiModel(shorterCycleUiModel, longerCycleUiModel, variant)
         ).right()
-    }
-
-    private fun resolveListUiModel(
-        shorterCycleUiModel: PlanUpgradeInstanceUiModel,
-        longerCycleUiModel: PlanUpgradeInstanceUiModel,
-        variant: PlanUpgradeVariant
-    ): PlanUpgradeInstanceListUiModel.Data {
-        return when {
-            variant == PlanUpgradeVariant.SocialProof -> {
-                PlanUpgradeInstanceListUiModel.Data.SocialProof(shorterCycleUiModel, longerCycleUiModel)
-            }
-
-            shorterCycleUiModel is PlanUpgradeInstanceUiModel.Promotional ||
-                longerCycleUiModel is PlanUpgradeInstanceUiModel.Promotional -> {
-                PlanUpgradeInstanceListUiModel.Data.IntroPrice(shorterCycleUiModel, longerCycleUiModel)
-            }
-
-            else -> PlanUpgradeInstanceListUiModel.Data.Standard(
-                shorterCycleUiModel as PlanUpgradeInstanceUiModel.Standard,
-                longerCycleUiModel as PlanUpgradeInstanceUiModel.Standard
-            )
-        }
-    }
-
-    private fun resolveVariant(
-        monthlyInstance: ProductDetail?,
-        yearlyInstance: ProductDetail?,
-        entryPoint: UpsellingEntryPoint
-    ): PlanUpgradeVariant {
-        val isPromotional = listOfNotNull(monthlyInstance, yearlyInstance).any { instance ->
-            val currentPrice = instance.price.amount
-            val defaultPrice = instance.renew.amount
-            val isPromotional = currentPrice < defaultPrice
-            isPromotional
-        }
-
-        val supportsHeaderVariants = entryPoint.supportsHeaderVariants()
-        return when {
-            isPromotional -> PlanUpgradeVariant.IntroductoryPrice
-            supportsHeaderVariants -> PlanUpgradeVariant.SocialProof
-            else -> PlanUpgradeVariant.Normal
-        }
-    }
-
-    private fun UpsellingEntryPoint.supportsHeaderVariants() = when (this) {
-        UpsellingEntryPoint.Feature.Sidebar,
-        UpsellingEntryPoint.Feature.Navbar -> false // Keep social proof off for the time being
-
-        UpsellingEntryPoint.Feature.AutoDelete,
-        UpsellingEntryPoint.Feature.ContactGroups,
-        UpsellingEntryPoint.Feature.Folders,
-        UpsellingEntryPoint.Feature.Labels,
-        UpsellingEntryPoint.Feature.MobileSignature,
-        UpsellingEntryPoint.Feature.ScheduleSend,
-        UpsellingEntryPoint.Feature.Snooze -> false
     }
 }
 

@@ -53,4 +53,6 @@ sealed interface UpsellingEntryPoint {
         @Serializable
         data object ScheduleSend : Feature
     }
+
+    object PostOnboarding : UpsellingEntryPoint
 }

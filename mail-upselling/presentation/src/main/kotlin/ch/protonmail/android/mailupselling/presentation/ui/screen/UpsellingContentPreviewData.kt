@@ -19,9 +19,9 @@
 package ch.protonmail.android.mailupselling.presentation.ui.screen
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle
 import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingScreenContentState
-import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeCycle
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeDescriptionUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeEntitlementListUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeEntitlementsListUiModel
@@ -43,6 +43,7 @@ internal object UpsellingContentPreviewData {
         totalPrice = PlanUpgradePriceUiModel(amount = 4.99f, currencyCode = "EUR"),
         discountRate = null,
         cycle = PlanUpgradeCycle.Monthly,
+        yearlySaving = null,
         product = Product(
             planName = "Plan name",
             productId = "123",
@@ -61,6 +62,7 @@ internal object UpsellingContentPreviewData {
         renewalPrice = PlanUpgradePriceUiModel(amount = 5.99f, currencyCode = "EUR"),
         discountRate = null,
         cycle = PlanUpgradeCycle.Monthly,
+        yearlySaving = null,
         product = Product(
             planName = "Plan name",
             productId = "123",
@@ -72,12 +74,13 @@ internal object UpsellingContentPreviewData {
         )
     )
 
-    private val MailPusPlanModelYearly = PlanUpgradeInstanceUiModel.Standard(
+    private val MailPlusPlanModelYearly = PlanUpgradeInstanceUiModel.Standard(
         name = "Mail Plus",
         pricePerCycle = PlanUpgradePriceUiModel(amount = 4.99f, currencyCode = "EUR"),
         totalPrice = PlanUpgradePriceUiModel(amount = 49.99f, currencyCode = "EUR"),
         discountRate = null,
         cycle = PlanUpgradeCycle.Yearly,
+        yearlySaving = null,
         product = Product(
             planName = "Plan name",
             productId = "123",
@@ -89,18 +92,54 @@ internal object UpsellingContentPreviewData {
         )
     )
 
-    private val MailPusPlanModelYearlyPromo = PlanUpgradeInstanceUiModel.Promotional(
+    private val MailPlusPlanModelYearlyPromo = PlanUpgradeInstanceUiModel.Promotional(
         name = "Mail Plus",
         pricePerCycle = PlanUpgradePriceUiModel(amount = 49.99f, currencyCode = "EUR"),
         promotionalPrice = PlanUpgradePriceUiModel(amount = 39.99f, currencyCode = "EUR"),
         renewalPrice = PlanUpgradePriceUiModel(amount = 49.99f, currencyCode = "EUR"),
         discountRate = 20,
         cycle = PlanUpgradeCycle.Monthly,
+        yearlySaving = null,
         product = Product(
             planName = "Plan name",
             productId = "123",
             accountId = "456",
             cycle = 1,
+            header = ProductHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
+            entitlements = emptyList(),
+            renewalText = null
+        )
+    )
+
+    private val UnlimitedPlanModelMonthly = PlanUpgradeInstanceUiModel.Standard(
+        name = "Proton Unlimited",
+        pricePerCycle = PlanUpgradePriceUiModel(amount = 4.99f, currencyCode = "EUR"),
+        totalPrice = PlanUpgradePriceUiModel(amount = 4.99f, currencyCode = "EUR"),
+        discountRate = null,
+        cycle = PlanUpgradeCycle.Monthly,
+        yearlySaving = null,
+        product = Product(
+            planName = "Plan name",
+            productId = "123",
+            accountId = "456",
+            cycle = 1,
+            header = ProductHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
+            entitlements = emptyList(),
+            renewalText = null
+        )
+    )
+    private val UnlimitedPlanModelYearly = PlanUpgradeInstanceUiModel.Standard(
+        name = "Proton Unlimited",
+        pricePerCycle = PlanUpgradePriceUiModel(amount = 4.99f, currencyCode = "EUR"),
+        totalPrice = PlanUpgradePriceUiModel(amount = 4.99f, currencyCode = "EUR"),
+        discountRate = null,
+        cycle = PlanUpgradeCycle.Monthly,
+        yearlySaving = null,
+        product = Product(
+            planName = "Plan name",
+            productId = "123",
+            accountId = "456",
+            cycle = 12,
             header = ProductHeader("Title", "Description", "EUR 12.99", "Cycle text", false),
             entitlements = emptyList(),
             renewalText = null
@@ -109,30 +148,35 @@ internal object UpsellingContentPreviewData {
 
     val NormalList = PlanUpgradeInstanceListUiModel.Data.Standard(
         MailPlusPlanModelMonthly,
-        MailPusPlanModelYearly
+        MailPlusPlanModelYearly
     )
 
     val SocialProofList = PlanUpgradeInstanceListUiModel.Data.SocialProof(
         MailPlusPlanModelMonthly,
-        MailPusPlanModelYearly
+        MailPlusPlanModelYearly
     )
 
     val PromoList = PlanUpgradeInstanceListUiModel.Data.IntroPrice(
         MailPlusPlanModelMonthlyPromo,
-        MailPusPlanModelYearlyPromo
+        MailPlusPlanModelYearlyPromo
+    )
+
+    val UnlimitedNormalList = PlanUpgradeInstanceListUiModel.Data.Standard(
+        UnlimitedPlanModelMonthly,
+        UnlimitedPlanModelYearly
     )
 
     val SimpleListEntitlements = PlanUpgradeEntitlementsListUiModel.SimpleList(
         listOf(
-            PlanUpgradeEntitlementListUiModel.Overridden(
+            PlanUpgradeEntitlementListUiModel.Local(
                 text = TextUiModel.Text("Entitlement 1"),
                 localResource = R.drawable.ic_upselling_pass
             ),
-            PlanUpgradeEntitlementListUiModel.Overridden(
+            PlanUpgradeEntitlementListUiModel.Local(
                 text = TextUiModel.Text("Entitlement 2"),
                 localResource = R.drawable.ic_upselling_mail
             ),
-            PlanUpgradeEntitlementListUiModel.Overridden(
+            PlanUpgradeEntitlementListUiModel.Local(
                 text = TextUiModel.Text("Entitlement 3"),
                 localResource = R.drawable.ic_upselling_gift
             )

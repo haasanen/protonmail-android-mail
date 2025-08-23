@@ -47,8 +47,10 @@ import ch.protonmail.android.design.compose.theme.labelMediumNorm
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
+import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle
 import ch.protonmail.android.mailupselling.presentation.R
-import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeCycle
+import ch.protonmail.android.mailupselling.presentation.extension.cyclePlanName
+import ch.protonmail.android.mailupselling.presentation.extension.cycleStringValue
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
 import ch.protonmail.android.mailupselling.presentation.ui.screen.UpsellingCheckmark

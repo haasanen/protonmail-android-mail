@@ -167,7 +167,7 @@ object UpsellingTestData {
                 productId = "productId",
                 customerId = "customerId",
                 cycle = 1,
-                amount = 12 * 1024 * 1024,
+                amount = 12 * 1000 * 1000,
                 currency = "EUR",
                 formatted = "EUR 12.00"
             ),

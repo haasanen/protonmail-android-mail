@@ -16,9 +16,9 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailupselling.presentation.extension
+package ch.protonmail.android.mailupselling.domain.model
 
-import ch.protonmail.android.mailupselling.domain.model.ProductPriceWithCurrency
-import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceUiModel
-
-internal fun ProductPriceWithCurrency.toUiModel() = PlanUpgradePriceUiModel(amount, currencyCode)
+enum class PlanUpgradeCycle(val months: Int) {
+    Monthly(1),
+    Yearly(12)
+}

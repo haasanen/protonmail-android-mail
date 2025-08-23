@@ -22,11 +22,11 @@ import android.content.Context
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlement
 import ch.protonmail.android.mailupselling.presentation.model.comparisontable.ComparisonTableEntitlementItemUiModel
-import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeCycle
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeDescriptionUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeEntitlementsListUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeIconUiModel
@@ -126,7 +126,8 @@ internal class PlanUpgradeUiMapperTest {
             totalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
             discountRate = null,
             cycle = PlanUpgradeCycle.Monthly,
-            product = shorterInstance.toProduct(context)
+            product = shorterInstance.toProduct(context),
+            yearlySaving = null
         )
 
         val yearlyExpected = PlanUpgradeInstanceUiModel.Standard(
@@ -135,7 +136,8 @@ internal class PlanUpgradeUiMapperTest {
             totalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
             discountRate = null,
             cycle = PlanUpgradeCycle.Yearly,
-            product = longerInstance.toProduct(context)
+            product = longerInstance.toProduct(context),
+            yearlySaving = null
         )
 
         expectInstanceUiModel(
@@ -181,7 +183,8 @@ internal class PlanUpgradeUiMapperTest {
             totalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
             discountRate = null,
             cycle = PlanUpgradeCycle.Monthly,
-            product = shorterInstance.toProduct(context)
+            product = shorterInstance.toProduct(context),
+            yearlySaving = null
         )
 
         val yearlyExpected = PlanUpgradeInstanceUiModel.Standard(
@@ -190,7 +193,8 @@ internal class PlanUpgradeUiMapperTest {
             totalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
             discountRate = null,
             cycle = PlanUpgradeCycle.Yearly,
-            product = longerInstance.toProduct(context)
+            product = longerInstance.toProduct(context),
+            yearlySaving = null
         )
 
         expectInstanceUiModel(
@@ -246,7 +250,7 @@ internal class PlanUpgradeUiMapperTest {
     }
 
     private fun expectEntitlementsUiModel() {
-        every { entitlementsUiMapper.toUiModel(any(), any()) } returns
+        every { entitlementsUiMapper.toTableUiModel() } returns
             PlanUpgradeEntitlementsListUiModel.ComparisonTableList(ExpectedEntitlementsUiModel.items)
     }
 

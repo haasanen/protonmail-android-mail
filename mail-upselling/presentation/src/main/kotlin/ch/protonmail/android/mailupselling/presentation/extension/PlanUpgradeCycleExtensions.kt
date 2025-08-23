@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Proton Technologies AG
+ * Copyright (c) 2025 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,22 +16,20 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailupselling.presentation.model.planupgrades
+package ch.protonmail.android.mailupselling.presentation.extension
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle
+import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle.Monthly
+import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle.Yearly
 import ch.protonmail.android.mailupselling.presentation.R
 
-enum class PlanUpgradeCycle(val months: Int) {
-    Monthly(1),
-    Yearly(12);
+fun PlanUpgradeCycle.cycleStringValue(): TextUiModel = when (this) {
+    Monthly -> TextUiModel.TextRes(R.string.upselling_month)
+    Yearly -> TextUiModel.TextRes(R.string.upselling_year)
+}
 
-    fun cycleStringValue(): TextUiModel = when (this) {
-        Monthly -> TextUiModel.TextRes(R.string.upselling_month)
-        Yearly -> TextUiModel.TextRes(R.string.upselling_year)
-    }
-
-    fun cyclePlanName(): TextUiModel = when (this) {
-        Monthly -> TextUiModel.TextRes(R.string.upselling_select_plan_month)
-        Yearly -> TextUiModel.TextRes(R.string.upselling_select_plan_year)
-    }
+fun PlanUpgradeCycle.cyclePlanName(): TextUiModel = when (this) {
+    Monthly -> TextUiModel.TextRes(R.string.upselling_select_plan_month)
+    Yearly -> TextUiModel.TextRes(R.string.upselling_select_plan_year)
 }

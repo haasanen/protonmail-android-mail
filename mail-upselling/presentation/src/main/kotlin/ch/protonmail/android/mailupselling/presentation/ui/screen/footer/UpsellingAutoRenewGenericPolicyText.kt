@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.TextUnit
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailupselling.presentation.R
+import ch.protonmail.android.mailupselling.presentation.extension.cycleStringValue
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingLayoutValues
 

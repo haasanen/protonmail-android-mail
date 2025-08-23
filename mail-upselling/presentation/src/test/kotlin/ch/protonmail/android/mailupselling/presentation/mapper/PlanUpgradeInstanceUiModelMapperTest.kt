@@ -19,8 +19,10 @@
 package ch.protonmail.android.mailupselling.presentation.mapper
 
 import android.content.Context
+import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle
+import ch.protonmail.android.mailupselling.domain.model.YearlySaving
 import ch.protonmail.android.mailupselling.domain.usecase.GetDiscountRate
-import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeCycle
+import ch.protonmail.android.mailupselling.domain.usecase.GetYearlySaving
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceUiModel
 import ch.protonmail.android.testdata.upselling.UpsellingTestData
@@ -35,13 +37,14 @@ import kotlin.test.assertEquals
 internal class PlanUpgradeInstanceUiModelMapperTest {
 
     private val getDiscountRate = GetDiscountRate()
+    private val getYearlySaving = GetYearlySaving()
     private lateinit var mapper: PlanUpgradeInstanceUiModelMapper
     private lateinit var context: Context
 
     @BeforeTest
     fun setup() {
         context = RuntimeEnvironment.getApplication().applicationContext
-        mapper = PlanUpgradeInstanceUiModelMapper(context, getDiscountRate)
+        mapper = PlanUpgradeInstanceUiModelMapper(context, getDiscountRate, getYearlySaving)
     }
 
     @Test
@@ -56,7 +59,8 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
             totalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
             discountRate = null,
             cycle = PlanUpgradeCycle.Monthly,
-            product = monthlyPlan.toProduct(context)
+            product = monthlyPlan.toProduct(context),
+            yearlySaving = null
         )
 
         val yearlyExpected = PlanUpgradeInstanceUiModel.Standard(
@@ -65,7 +69,8 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
             totalPrice = PlanUpgradePriceUiModel(amount = 108f, currencyCode = "EUR"),
             discountRate = 25,
             cycle = PlanUpgradeCycle.Yearly,
-            product = yearlyPlan.toProduct(context)
+            product = yearlyPlan.toProduct(context),
+            yearlySaving = YearlySaving("EUR", 36.0f)
         )
 
         // When
@@ -91,7 +96,8 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
             renewalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
             discountRate = 25,
             cycle = PlanUpgradeCycle.Monthly,
-            product = monthlyPlan.toProduct(context)
+            product = monthlyPlan.toProduct(context),
+            yearlySaving = null
         )
 
         val yearlyExpected = PlanUpgradeInstanceUiModel.Standard(
@@ -100,7 +106,8 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
             totalPrice = PlanUpgradePriceUiModel(amount = 108f, currencyCode = "EUR"),
             discountRate = null,
             cycle = PlanUpgradeCycle.Yearly,
-            product = yearlyPlan.toProduct(context)
+            product = yearlyPlan.toProduct(context),
+            yearlySaving = YearlySaving("EUR", 36.0f)
         )
 
         // When
@@ -125,7 +132,8 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
             totalPrice = PlanUpgradePriceUiModel(amount = 12f, currencyCode = "EUR"),
             discountRate = null,
             cycle = PlanUpgradeCycle.Monthly,
-            product = monthlyPlan.toProduct(context)
+            product = monthlyPlan.toProduct(context),
+            yearlySaving = null
         )
 
         val yearlyExpected = PlanUpgradeInstanceUiModel.Promotional(
@@ -135,7 +143,8 @@ internal class PlanUpgradeInstanceUiModelMapperTest {
             renewalPrice = PlanUpgradePriceUiModel(amount = 108f, currencyCode = "EUR"),
             discountRate = 50,
             cycle = PlanUpgradeCycle.Yearly,
-            product = yearlyPlan.toProduct(context)
+            product = yearlyPlan.toProduct(context),
+            yearlySaving = YearlySaving("EUR", 90.0f)
         )
 
         // When

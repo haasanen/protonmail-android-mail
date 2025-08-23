@@ -19,14 +19,16 @@
 package ch.protonmail.android.mailupselling.presentation.mapper
 
 import android.content.Context
+import ch.protonmail.android.mailupselling.domain.extensions.normalizedPrice
+import ch.protonmail.android.mailupselling.domain.extensions.normalizedPriceWithCurrency
+import ch.protonmail.android.mailupselling.domain.extensions.totalPriceWithCurrency
+import ch.protonmail.android.mailupselling.domain.model.PlanUpgradeCycle
 import ch.protonmail.android.mailupselling.domain.usecase.GetDiscountRate
-import ch.protonmail.android.mailupselling.presentation.extension.normalized
-import ch.protonmail.android.mailupselling.presentation.extension.normalizedPrice
-import ch.protonmail.android.mailupselling.presentation.extension.totalPrice
+import ch.protonmail.android.mailupselling.domain.usecase.GetYearlySaving
+import ch.protonmail.android.mailupselling.presentation.extension.toUiModel
 import ch.protonmail.android.mailupselling.presentation.mapper.RenewalCycle.BiYearly
 import ch.protonmail.android.mailupselling.presentation.mapper.RenewalCycle.Monthly
 import ch.protonmail.android.mailupselling.presentation.mapper.RenewalCycle.Yearly
-import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeCycle
 import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradeInstanceUiModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import me.proton.android.core.payment.domain.model.ProductDetail
@@ -36,7 +38,8 @@ import javax.inject.Inject
 
 class PlanUpgradeInstanceUiModelMapper @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val getDiscountRate: GetDiscountRate
+    private val getDiscountRate: GetDiscountRate,
+    private val getYearlySaving: GetYearlySaving
 ) {
 
     fun toUiModel(
@@ -63,20 +66,21 @@ class PlanUpgradeInstanceUiModelMapper @Inject constructor(
         cycle: PlanUpgradeCycle,
         comparisonPriceInstance: ProductDetail? = null
     ): PlanUpgradeInstanceUiModel {
-        val currentPrice = productDetail.price.amount
-        val defaultPrice = productDetail.renew.amount
+        val currentPrice = productDetail.price
+        val defaultPrice = productDetail.renew
 
-        val isPromotional = currentPrice < defaultPrice
+        val isPromotional = currentPrice.amount < defaultPrice.amount
         val currency = productDetail.price.currency
 
         return if (isPromotional) {
-            val promotionalPrice = currentPrice.normalized(cycle.months)
-            val renewalPrice = defaultPrice.normalized(cycle.months)
+            val promotionalPrice = currentPrice.normalizedPrice(cycle.months)
+            val renewalPrice = defaultPrice.normalizedPrice(cycle.months)
             PlanUpgradeInstanceUiModel.Promotional(
                 name = productDetail.header.title,
-                pricePerCycle = productDetail.price.normalizedPrice(currency, cycle.months),
-                promotionalPrice = productDetail.price.totalPrice(currency),
-                renewalPrice = productDetail.renew.totalPrice(currency),
+                pricePerCycle = productDetail.price.normalizedPriceWithCurrency(currency, cycle.months).toUiModel(),
+                promotionalPrice = productDetail.price.totalPriceWithCurrency(currency).toUiModel(),
+                renewalPrice = productDetail.renew.totalPriceWithCurrency(currency).toUiModel(),
+                yearlySaving = comparisonPriceInstance?.let { getYearlySaving(it, productDetail) },
                 discountRate = getDiscountRate(promotionalPrice, renewalPrice),
                 cycle = cycle,
                 product = productDetail.toProduct(context)
@@ -84,8 +88,9 @@ class PlanUpgradeInstanceUiModelMapper @Inject constructor(
         } else {
             PlanUpgradeInstanceUiModel.Standard(
                 name = productDetail.header.title,
-                pricePerCycle = productDetail.price.normalizedPrice(currency, cycle.months),
-                totalPrice = productDetail.price.totalPrice(currency),
+                pricePerCycle = productDetail.price.normalizedPriceWithCurrency(currency, cycle.months).toUiModel(),
+                totalPrice = productDetail.price.totalPriceWithCurrency(currency).toUiModel(),
+                yearlySaving = comparisonPriceInstance?.let { getYearlySaving(it, productDetail) },
                 discountRate = comparisonPriceInstance?.let { getDiscountRate(it, productDetail) },
                 cycle = cycle,
                 product = productDetail.toProduct(context)

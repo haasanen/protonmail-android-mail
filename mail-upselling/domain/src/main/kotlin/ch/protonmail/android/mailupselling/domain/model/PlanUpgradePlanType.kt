@@ -16,9 +16,24 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailupselling.presentation.extension
+package ch.protonmail.android.mailupselling.domain.model
 
-import ch.protonmail.android.mailupselling.domain.model.ProductPriceWithCurrency
-import ch.protonmail.android.mailupselling.presentation.model.planupgrades.PlanUpgradePriceUiModel
+sealed class PlanUpgradePlanType {
+    object MailPlus : PlanUpgradePlanType()
+    object Unlimited : PlanUpgradePlanType()
+    object Free : PlanUpgradePlanType()
 
-internal fun ProductPriceWithCurrency.toUiModel() = PlanUpgradePriceUiModel(amount, currencyCode)
+    companion object {
+
+        const val MailPlusId = "mail2022"
+        const val UnlimitedId = "bundle2022"
+
+        operator fun invoke(planName: String): PlanUpgradePlanType? {
+            return when (planName) {
+                MailPlusId -> MailPlus
+                UnlimitedId -> Unlimited
+                else -> null
+            }
+        }
+    }
+}
