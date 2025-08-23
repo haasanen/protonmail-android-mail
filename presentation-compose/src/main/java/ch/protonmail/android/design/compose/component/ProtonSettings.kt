@@ -438,7 +438,7 @@ fun ProtonSettingsToggleItem(
                 checked = isSwitchChecked,
                 onCheckedChange = {
                     if (isViewEnabled) {
-                        { onToggle(it) }
+                        onToggle(it)
                     } else {
                         null
                     }

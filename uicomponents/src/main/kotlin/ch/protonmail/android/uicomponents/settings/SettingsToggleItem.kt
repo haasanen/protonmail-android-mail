@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -80,7 +79,7 @@ fun SettingsToggleItem(
             }
             ProtonSwitch(
                 checked = value,
-                onCheckedChange = {},
+                onCheckedChange = onToggle,
                 enabled = isFieldEnabled
             )
         }
