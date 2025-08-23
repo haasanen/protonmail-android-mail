@@ -359,7 +359,11 @@ fun Home(
         }
     }
 
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var preventBottomSheetDismissal by remember { mutableStateOf(false) }
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { !preventBottomSheetDismissal }
+    )
 
     val onBottomSheetDismissed: () -> Unit = {
         scope.launch { bottomSheetState.hide() }
@@ -452,9 +456,18 @@ fun Home(
                     onRequest = launcherActions.onRequestNotificationPermission,
                     uiModel = type.permissionsState.uiModel,
                     onDismiss = onBottomSheetDismissed
-                )
+                ).also {
+                    preventBottomSheetDismissal = false
+                }
 
-                is BottomSheetType.Onboarding -> Onboarding(onExitOnboarding = onBottomSheetDismissed)
+                is BottomSheetType.Onboarding -> Onboarding(
+                    onExitOnboarding = {
+                        onBottomSheetDismissed()
+                        preventBottomSheetDismissal = false
+                    }
+                ).also {
+                    preventBottomSheetDismissal = true
+                }
             }
         },
         dismissOnBack = false,
