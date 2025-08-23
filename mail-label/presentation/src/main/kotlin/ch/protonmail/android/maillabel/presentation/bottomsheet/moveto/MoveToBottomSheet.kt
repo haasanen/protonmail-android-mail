@@ -31,8 +31,8 @@ import ch.protonmail.android.design.compose.component.ProtonHorizontallyCentered
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.R
-import ch.protonmail.android.maillabel.presentation.bottomsheet.BottomSheetAnimatedContent
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
+import ch.protonmail.android.uicomponents.bottomsheet.BottomSheetAnimatedContent
 import me.proton.core.domain.entity.UserId
 
 @Composable
