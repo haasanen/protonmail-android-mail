@@ -464,6 +464,9 @@ fun Home(
                     onExitOnboarding = {
                         onBottomSheetDismissed()
                         preventBottomSheetDismissal = false
+                    },
+                    onUpsellingError = {
+                        showErrorSnackbar(it)
                     }
                 ).also {
                     preventBottomSheetDismissal = true

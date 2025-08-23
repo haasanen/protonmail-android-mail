@@ -46,19 +46,25 @@ import ch.protonmail.android.mailonboarding.presentation.ui.OnboardingButton
 import ch.protonmail.android.mailonboarding.presentation.ui.OnboardingContent
 import ch.protonmail.android.mailonboarding.presentation.ui.OnboardingIndexDots
 import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingViewModel
+import ch.protonmail.android.mailupselling.presentation.ui.onboarding.OnboardingUpsellScreen
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 @Composable
 fun OnboardingScreen(
     exitAction: () -> Unit,
-    onUpsellingNavigation: () -> Unit,
+    onUpsellingError: (String) -> Unit,
     viewModel: OnboardingViewModel = hiltViewModel()
 ) {
-
     val state by viewModel.state.collectAsStateWithLifecycle()
+    var hasCompletedOnboarding by remember { mutableStateOf(false) }
 
-    OnboardingScreen(state, onUpsellingNavigation, exitAction)
+    when {
+        state is OnboardingState.ToUpsell && hasCompletedOnboarding ->
+            OnboardingUpsellScreen(exitAction, onUpsellingError)
+
+        else -> OnboardingScreen(state, { hasCompletedOnboarding = true }, exitAction)
+    }
 }
 
 @Composable

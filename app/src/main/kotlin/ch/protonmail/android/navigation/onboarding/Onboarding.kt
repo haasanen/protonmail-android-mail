@@ -28,7 +28,11 @@ import ch.protonmail.android.navigation.route.addOnboarding
 import io.sentry.compose.withSentryObservableEffect
 
 @Composable
-fun Onboarding(onExitOnboarding: () -> Unit, modifier: Modifier = Modifier) {
+fun Onboarding(
+    onExitOnboarding: () -> Unit,
+    onUpsellingError: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val navController = rememberNavController().withSentryObservableEffect()
 
     val exitAction = remember {
@@ -42,6 +46,6 @@ fun Onboarding(onExitOnboarding: () -> Unit, modifier: Modifier = Modifier) {
         navController = navController,
         startDestination = Destination.Screen.Onboarding.MainScreen.route
     ) {
-        addOnboarding(navController, exitAction)
+        addOnboarding(exitAction, onUpsellingError)
     }
 }

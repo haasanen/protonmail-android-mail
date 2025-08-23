@@ -65,10 +65,14 @@ dependencies {
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
     implementation(project(":mail-onboarding:domain"))
+    implementation(project(":mail-session:domain"))
+    implementation(project(":mail-upselling:domain"))
+    implementation(project(":mail-upselling:presentation"))
     implementation(project(":uicomponents"))
 
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
+    testImplementation(project(":test:utils"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
 }
