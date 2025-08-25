@@ -41,6 +41,7 @@ class AndroidDnsResolver @Inject constructor(
 
     private val executorService = Executors.newSingleThreadExecutor()
 
+    @Throws(ResolverException::class)
     override suspend fun resolve(host: String): List<IpAddr>? = suspendCancellableCoroutine { continuation ->
         Timber.tag("DnsResolution").d("required for host: $host")
 
