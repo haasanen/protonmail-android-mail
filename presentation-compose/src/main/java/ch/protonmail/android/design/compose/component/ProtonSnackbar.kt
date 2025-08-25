@@ -33,9 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
 fun ProtonSnackbarHost(
@@ -69,10 +69,12 @@ class ProtonSnackbarHostState(
         actionLabel: String? = null,
         duration: SnackbarDuration = SnackbarDuration.Short,
         withDismissAction: Boolean = false
-    ): SnackbarResult = mutex.withLock {
-        this.type = type
+    ): SnackbarResult {
         dismissAll()
-        snackbarHostState.showSnackbar(message, actionLabel, withDismissAction, duration)
+        return mutex.withLock {
+            this.type = type
+            snackbarHostState.showSnackbar(message, actionLabel, withDismissAction, duration)
+        }
     }
 
     fun dismissAll() {
