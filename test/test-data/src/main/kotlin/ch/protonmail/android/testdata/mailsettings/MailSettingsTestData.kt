@@ -44,7 +44,7 @@ object MailSettingsTestData {
 
     val mailSettingsFromRust = buildMailSettings(
         userId = DeprecatedId.UserId,
-        showImages = IntEnum(0, ShowImage.None),
+        showImages = IntEnum(3, ShowImage.Both),
         showMoved = IntEnum(3, ShowMoved.Both),
         swipeRight = SwipeAction.Archive,
         swipeLeft = SwipeAction.Trash,

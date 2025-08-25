@@ -27,7 +27,6 @@ import ch.protonmail.android.mailcommon.data.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.data.mapper.LocalMobileSettings
 import ch.protonmail.android.mailcommon.data.mapper.LocalPgpScheme
 import ch.protonmail.android.mailcommon.data.mapper.LocalPmSignature
-import ch.protonmail.android.mailcommon.data.mapper.LocalShowImages
 import ch.protonmail.android.mailcommon.data.mapper.LocalShowMoved
 import ch.protonmail.android.mailcommon.data.mapper.LocalSwipeAction
 import ch.protonmail.android.mailcommon.data.mapper.LocalViewLayout
@@ -63,7 +62,7 @@ object MailSettingsMapper {
             autoSaveContacts = autoSaveContacts,
             composerMode = composerMode.toComposerMode(),
             messageButtons = messageButtons.toMessageButtons(),
-            showImages = showImages.toShowImage(),
+            showImages = this.toShowImage(),
             showMoved = showMoved.toShowMoved(),
             viewMode = viewMode.toViewMode(),
             viewLayout = viewLayout.toViewLayout(),
@@ -95,7 +94,15 @@ object MailSettingsMapper {
     private fun LocalMessageButtons.toMessageButtons(): IntEnum<MessageButtons>? =
         MessageButtons.enumOf(this.value.toInt())
 
-    private fun LocalShowImages.toShowImage(): IntEnum<ShowImage>? = ShowImage.enumOf(this.value.toInt())
+    private fun LocalMailSettings.toShowImage(): IntEnum<ShowImage>? {
+        val show = when {
+            hideRemoteImages && hideEmbeddedImages -> ShowImage.None
+            !hideRemoteImages && hideEmbeddedImages -> ShowImage.Remote
+            hideRemoteImages && !hideEmbeddedImages -> ShowImage.Embedded
+            else -> ShowImage.Both
+        }
+        return ShowImage.enumOf(show.value)
+    }
 
     private fun LocalShowMoved.toShowMoved(): IntEnum<ShowMoved>? = ShowMoved.enumOf(this.value.toInt())
 
