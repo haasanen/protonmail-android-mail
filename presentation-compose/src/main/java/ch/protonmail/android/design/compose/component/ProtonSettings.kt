@@ -22,7 +22,6 @@ import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,7 +57,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.DpSize
 import ch.protonmail.android.design.R
 import ch.protonmail.android.design.compose.component.appbar.ProtonMediumTopAppBar
@@ -170,7 +168,6 @@ fun ProtonMainSettingsItem(
     nameColor: Color = ProtonTheme.colors.textNorm,
     @DrawableRes iconRes: Int,
     iconColor: Color = ProtonTheme.colors.textNorm,
-    iconBackgroundColor: Color = ProtonTheme.colors.backgroundNorm,
     isClickable: Boolean = true,
     onClick: () -> Unit = {}
 ) {
@@ -182,8 +179,7 @@ fun ProtonMainSettingsItem(
             ProtonMainSettingsIcon(
                 iconRes = iconRes,
                 contentDescription = name,
-                tint = iconColor,
-                backgroundColor = iconBackgroundColor
+                tint = iconColor
             )
         },
         isClickable = isClickable,
@@ -368,13 +364,11 @@ private fun ProtonAppSettingsItem(
 fun ProtonMainSettingsIcon(
     @DrawableRes iconRes: Int,
     contentDescription: String,
-    tint: Color = ProtonTheme.colors.textNorm,
-    backgroundColor: Color = ProtonTheme.colors.backgroundNorm
+    tint: Color = ProtonTheme.colors.textNorm
 ) {
     Box(
         modifier = Modifier
-            .size(32.dp)
-            .background(backgroundColor, shape = ProtonTheme.shapes.medium),
+            .size(ProtonDimens.Spacing.Huge),
         contentAlignment = Alignment.Center
     ) {
         Icon(

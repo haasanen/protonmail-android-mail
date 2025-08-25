@@ -197,6 +197,7 @@ fun MainSettingsScreen(
                     SettingsItemDivider()
                 }
             }
+            Spacer(Modifier.padding(vertical = ProtonDimens.Spacing.Large))
         }
     }
 }

@@ -71,7 +71,6 @@ fun AccountStorageInfoCard(
                 nameColor = nameColor,
                 iconRes = R.drawable.ic_proton_storage,
                 iconColor = storageIndicatorColor,
-                iconBackgroundColor = storageIndicatorColor.copy(alpha = 0.1f),
                 onClick = onClick
             )
         }
