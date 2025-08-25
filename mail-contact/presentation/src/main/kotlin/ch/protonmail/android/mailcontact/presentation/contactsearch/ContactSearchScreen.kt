@@ -23,13 +23,11 @@ package ch.protonmail.android.mailcontact.presentation.contactsearch
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -56,10 +54,8 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.R
-import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListGroupItem
-import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListItem
+import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListItemCard
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
-import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData
 import ch.protonmail.android.uicomponents.SearchView
 import ch.protonmail.android.uicomponents.dismissKeyboard
@@ -71,10 +67,13 @@ fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: Contact
     val keyboardController = LocalSoftwareKeyboardController.current
     val state = viewModel.state.collectAsStateWithLifecycle().value
 
+    val backgroundColor = ProtonTheme.colors.backgroundSecondary
+
     Scaffold(
+        containerColor = backgroundColor,
         topBar = {
             ContactSearchTopBar(
-                Modifier,
+                modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
                 actions = actions,
                 state = state,
                 onSearchValueChange = {
@@ -91,6 +90,7 @@ fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: Contact
         ),
         content = { paddingValues ->
             ContactSearchContent(
+                modifier = Modifier.padding(paddingValues),
                 state = state,
                 actions = ContactSearchContent.Actions(
                     onContactClick = {
@@ -99,8 +99,7 @@ fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: Contact
                     onContactGroupClick = {
                         actions.onContactGroupSelected(it)
                     }
-                ),
-                paddingValues = paddingValues
+                )
             )
         }
     )
@@ -115,8 +114,7 @@ fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: Contact
 fun ContactSearchContent(
     modifier: Modifier = Modifier,
     state: ContactSearchState,
-    actions: ContactSearchContent.Actions,
-    paddingValues: PaddingValues
+    actions: ContactSearchContent.Actions
 ) {
 
     if (state.contactUiModels?.isEmpty() == true) {
@@ -124,33 +122,25 @@ fun ContactSearchContent(
     }
 
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = paddingValues
+        modifier = modifier.fillMaxSize()
     ) {
-        state.contactUiModels?.let {
-            items(state.contactUiModels) { contact ->
-                when (contact) {
-                    is ContactListItemUiModel.Contact -> {
-                        ContactListItem(
-                            modifier = Modifier.animateItem(),
-                            contact = contact,
-                            actions = ContactListScreen.Actions.fromContactSearchActions(
-                                onContactClick = actions.onContactClick
-                            )
-                        )
-                    }
+        val contacts = state.contactUiModels
+        contacts?.forEachIndexed { index, contact ->
+            val isFirst = index == 0
+            val isLast = index == contacts.lastIndex
 
-                    is ContactListItemUiModel.ContactGroup -> {
-                        ContactListGroupItem(
-                            modifier = Modifier.animateItem(),
-                            contactGroup = contact,
-                            actions = ContactListScreen.Actions.fromContactSearchActions(
-                                onContactGroupClick = actions.onContactGroupClick
-                            )
-                        )
-                    }
-                }
-
+            item {
+                ContactListItemCard(
+                    contact = contact,
+                    isFirstInGroup = isFirst,
+                    isLastInGroup = isLast,
+                    showDivider = !isLast,
+                    isSwipable = false,
+                    actions = ContactListScreen.Actions.Empty.copy(
+                        onContactSelected = { actions.onContactClick(it) },
+                        onContactGroupSelected = { actions.onContactGroupClick(it) }
+                    )
+                )
             }
         }
     }
@@ -260,8 +250,7 @@ private fun ManageMembersContentPreview() {
         state = ContactSearchState(
             contactUiModels = emptyList()
         ),
-        actions = ContactSearchContent.Actions.Empty,
-        paddingValues = PaddingValues()
+        actions = ContactSearchContent.Actions.Empty
     )
 }
 
@@ -279,8 +268,7 @@ private fun ContactSearchContentPreview() {
                 ContactListPreviewData.contactSampleData
             )
         ),
-        actions = ContactSearchContent.Actions.Empty,
-        paddingValues = PaddingValues()
+        actions = ContactSearchContent.Actions.Empty
     )
 }
 

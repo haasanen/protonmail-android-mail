@@ -19,18 +19,25 @@
 package ch.protonmail.android.mailcontact.presentation.contactlist.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcommon.presentation.compose.Avatar
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
@@ -41,6 +48,75 @@ import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData
+
+
+@Composable
+fun ContactListItemCard(
+    contact: ContactListItemUiModel,
+    isFirstInGroup: Boolean,
+    isLastInGroup: Boolean,
+    showDivider: Boolean,
+    isSwipable: Boolean,
+    actions: ContactListScreen.Actions
+) {
+    // Define the shape based on position in group
+    val shape = when {
+        isFirstInGroup && isLastInGroup -> ProtonTheme.shapes.large
+        isFirstInGroup -> ProtonTheme.shapes.large.copy(
+            bottomStart = CornerSize(0.dp),
+            bottomEnd = CornerSize(0.dp)
+        )
+
+        isLastInGroup -> ProtonTheme.shapes.large.copy(
+            topStart = CornerSize(0.dp),
+            topEnd = CornerSize(0.dp)
+        )
+
+        else -> RectangleShape
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = shape,
+        elevation = CardDefaults.cardElevation(),
+        colors = CardDefaults.cardColors().copy(
+            containerColor = ProtonTheme.colors.backgroundNorm
+        )
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Box(modifier = Modifier.padding(ProtonDimens.Spacing.Standard)) {
+                when (contact) {
+                    is ContactListItemUiModel.ContactGroup -> ContactListGroupItem(
+                        contactGroup = contact,
+                        actions = actions
+                    )
+
+                    is ContactListItemUiModel.Contact -> {
+                        if (isSwipable) {
+                            SwipeableContactListItem(
+                                contact = contact,
+                                actions = actions
+                            )
+                        } else {
+                            ContactListItem(
+                                contact = contact,
+                                actions = actions
+                            )
+                        }
+                    }
+                }
+            }
+
+            if (showDivider) {
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = ProtonDimens.BorderSize.Default,
+                    color = ProtonTheme.colors.separatorNorm
+                )
+            }
+        }
+    }
+}
 
 @Composable
 internal fun ContactListItem(
