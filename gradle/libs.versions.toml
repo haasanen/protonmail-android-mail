@@ -156,6 +156,7 @@ androidx-tracing-perfetto-binary = { module = "androidx.tracing:tracing-perfetto
 androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "androidx-webkit" }
 androidx-work-runtimeKtx = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow-core" }
+arrow-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow-core" }
 cash-turbine = { module = "app.cash.turbine:turbine", version.ref = "cash-turbine" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }

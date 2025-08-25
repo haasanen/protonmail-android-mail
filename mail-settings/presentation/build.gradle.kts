@@ -64,6 +64,7 @@ dependencies {
 
     implementation(libs.bundles.module.presentation)
     implementation(libs.accompanist.webview)
+    implementation(libs.arrow.coroutines)
 
     implementation(libs.proton.core.mailSettings.domain)
 
