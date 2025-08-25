@@ -45,38 +45,43 @@ class AndroidDnsResolver @Inject constructor(
         Timber.tag("DnsResolution").d("required for host: $host")
 
         val network = networkManager.activeNetwork
-        if (network == null) {
-            val exception = ResolverException.Network("Network is unavailable! Throwing")
-            Timber.tag("DnsResolution").d("Network is unavailable! Throwing $exception.")
-            continuation.resumeWithException(exception)
-        }
-
-        Timber.tag("DnsResolution").d("Resolving via ${network?.networkHandle}")
-
-        val cancelSignal = CancellationSignal()
-        continuation.invokeOnCancellation { cancelSignal.cancel() }
-
-        val callback = object : DnsResolver.Callback<List<InetAddress>> {
-
-            override fun onAnswer(answer: List<InetAddress>, rcode: Int) {
-                Timber.tag("DnsResolution").d("DNS host for '$host' resolved to $answer")
-                continuation.resume(answer.mapNotNull { it.toRustIpAddress() })
+        when {
+            network == null -> {
+                val exception = ResolverException.Network("Network is unavailable! Throwing")
+                Timber.tag("DnsResolution").d("DNS resolution error: $exception.")
+                continuation.resumeWithException(exception)
             }
 
-            override fun onError(error: DnsResolver.DnsException) {
-                Timber.tag("DnsResolution").d("DNS resolution for '$host' errored: $error")
-                continuation.resumeWithException(ResolverException.Other("DNS resolution for '$host' errored: $error"))
+            else -> {
+                Timber.tag("DnsResolution").d("Resolving via ${network.networkHandle}")
+
+                val cancelSignal = CancellationSignal()
+                continuation.invokeOnCancellation { cancelSignal.cancel() }
+
+                val callback = object : DnsResolver.Callback<List<InetAddress>> {
+
+                    override fun onAnswer(answer: List<InetAddress>, rcode: Int) {
+                        Timber.tag("DnsResolution").d("DNS host for '$host' resolved to $answer")
+                        continuation.resume(answer.mapNotNull { it.toRustIpAddress() })
+                    }
+
+                    override fun onError(error: DnsResolver.DnsException) {
+                        val exception = ResolverException.Other("DNS resolution for '$host' errored: $error")
+                        Timber.tag("DnsResolution").d("DNS resolution error: $exception")
+                        continuation.resumeWithException(exception)
+                    }
+                }
+
+                resolver.query(
+                    network,
+                    host,
+                    DnsResolver.FLAG_EMPTY,
+                    executorService,
+                    cancelSignal,
+                    callback
+                )
             }
         }
-
-        resolver.query(
-            network,
-            host,
-            DnsResolver.FLAG_EMPTY,
-            executorService,
-            cancelSignal,
-            callback
-        )
     }
 
     private fun InetAddress.toRustIpAddress(): IpAddr? {
