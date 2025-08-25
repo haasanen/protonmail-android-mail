@@ -24,6 +24,7 @@ import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiMod
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.SnoozeBannerUiModel
+import ch.protonmail.android.maildetail.presentation.model.UnsubscribeFromNewsletterBannerUiModel
 import ch.protonmail.android.maildetail.presentation.usecase.FormatScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -41,7 +42,8 @@ class MessageBannersUiModelMapper @Inject constructor(
         expirationBannerUiModel = toExpirationBannerUiModel(messageBanners),
         autoDeleteBannerUiModel = toAutoDeleteBannerUiModel(messageBanners),
         scheduleSendBannerUiModel = toScheduleSendBannerUiModel(messageBanners),
-        snoozeBannerUiModel = toSnoozeBannerUiModel(messageBanners)
+        snoozeBannerUiModel = toSnoozeBannerUiModel(messageBanners),
+        unsubscribeFromNewsletterBannerUiModel = toUnsubscribeNewsletterBannerUiModel(messageBanners)
     )
 
     private fun toExpirationBannerUiModel(messageBanners: List<MessageBanner>): ExpirationBannerUiModel {
@@ -71,5 +73,17 @@ class MessageBannersUiModelMapper @Inject constructor(
                 snoozedUntil = formatScheduleSendTime(it.snoozedUntil)
             )
         } ?: SnoozeBannerUiModel.NotSnoozed
+    }
+
+    private fun toUnsubscribeNewsletterBannerUiModel(
+        messageBanners: List<MessageBanner>
+    ): UnsubscribeFromNewsletterBannerUiModel {
+        return messageBanners.filterIsInstance<MessageBanner.UnsubscribeNewsletter>().firstOrNull()?.let {
+            if (it.alreadyUnsubscribed) {
+                UnsubscribeFromNewsletterBannerUiModel.AlreadyUnsubscribed
+            } else {
+                UnsubscribeFromNewsletterBannerUiModel.UnsubscribeNewsletter
+            }
+        } ?: UnsubscribeFromNewsletterBannerUiModel.NoUnsubscribe
     }
 }

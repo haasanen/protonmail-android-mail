@@ -25,6 +25,7 @@ import ch.protonmail.android.maildetail.presentation.model.AutoDeleteBannerUiMod
 import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.SnoozeBannerUiModel
+import ch.protonmail.android.maildetail.presentation.model.UnsubscribeFromNewsletterBannerUiModel
 import ch.protonmail.android.maildetail.presentation.usecase.FormatScheduleSendTime
 import ch.protonmail.android.mailmessage.domain.model.MessageBanner
 import io.mockk.every
@@ -219,5 +220,48 @@ class MessageBannersUiModelMapperTest {
 
         // Then
         assertEquals(SnoozeBannerUiModel.NotSnoozed, result.snoozeBannerUiModel)
+    }
+
+    @Test
+    fun `should map to ui model with unsubscribe from newsletter banner when banners list contains it`() {
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            listOf(MessageBanner.UnsubscribeNewsletter(alreadyUnsubscribed = false))
+        )
+
+        // Then
+        assertEquals(
+            UnsubscribeFromNewsletterBannerUiModel.UnsubscribeNewsletter,
+            result.unsubscribeFromNewsletterBannerUiModel
+        )
+    }
+
+    @Test
+    fun `should map to ui model with already unsubscribed banner when banners list contains it`() {
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            listOf(MessageBanner.UnsubscribeNewsletter(alreadyUnsubscribed = true))
+        )
+
+        // Then
+        assertEquals(
+            UnsubscribeFromNewsletterBannerUiModel.AlreadyUnsubscribed,
+            result.unsubscribeFromNewsletterBannerUiModel
+        )
+    }
+
+
+    @Test
+    fun `should map to ui model with no unsubscribe from newsletter banner when banners list does not contain it`() {
+        // When
+        val result = messageBannersUiModelMapper.toUiModel(
+            emptyList()
+        )
+
+        // Then
+        assertEquals(
+            UnsubscribeFromNewsletterBannerUiModel.NoUnsubscribe,
+            result.unsubscribeFromNewsletterBannerUiModel
+        )
     }
 }

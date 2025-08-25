@@ -67,7 +67,8 @@ internal class MessageDetailFooterActionsTest {
             onRetryRsvpEventLoading = {},
             onAnswerRsvpEvent = { _, _ -> },
             onMessage = {},
-            onUnsnoozeMessage = {}
+            onUnsnoozeMessage = {},
+            onUnsubscribeFromNewsletter = {}
         )
 
         // When

@@ -30,6 +30,7 @@ import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiMod
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.SnoozeBannerUiModel
+import ch.protonmail.android.maildetail.presentation.model.UnsubscribeFromNewsletterBannerUiModel
 import ch.protonmail.android.maildetail.presentation.util.toFormattedAutoDeleteTime
 import ch.protonmail.android.maildetail.presentation.util.toFormattedExpirationTime
 import kotlinx.coroutines.delay
@@ -44,7 +45,8 @@ fun MessageBanners(
     onMarkMessageAsLegitimate: (Boolean) -> Unit,
     onUnblockSender: () -> Unit,
     onCancelScheduleMessage: () -> Unit,
-    onUnsnoozeMessage: () -> Unit
+    onUnsnoozeMessage: () -> Unit,
+    onUnsubscribeFromNewsletter: () -> Unit
 ) {
     Column {
         if (messageBannersUiModel.shouldShowPhishingBanner) {
@@ -82,6 +84,12 @@ fun MessageBanners(
         when (val uiModel = messageBannersUiModel.autoDeleteBannerUiModel) {
             is AutoDeleteBannerUiModel.NoAutoDelete -> Unit
             is AutoDeleteBannerUiModel.AutoDelete -> AutoDeleteBanner(uiModel)
+        }
+        when (messageBannersUiModel.unsubscribeFromNewsletterBannerUiModel) {
+            UnsubscribeFromNewsletterBannerUiModel.NoUnsubscribe -> Unit
+            UnsubscribeFromNewsletterBannerUiModel.AlreadyUnsubscribed -> AlreadyUnsubscribedFromNewsletterBanner()
+            UnsubscribeFromNewsletterBannerUiModel.UnsubscribeNewsletter ->
+                UnsubscribeFromNewsletterBanner(onButtonClick = onUnsubscribeFromNewsletter)
         }
         when (val uiModel = messageBannersUiModel.scheduleSendBannerUiModel) {
             ScheduleSendBannerUiModel.NoScheduleSend -> Unit
@@ -220,6 +228,28 @@ private fun ExpirationBanner(uiModel: ExpirationBannerUiModel.Expiration) {
     )
 }
 
+@Composable
+private fun UnsubscribeFromNewsletterBanner(onButtonClick: () -> Unit) {
+    ProtonBannerWithButton(
+        bannerText = stringResource(id = R.string.unsubscribe_newsletter_banner_message),
+        buttonText = stringResource(R.string.unsubscribe_newsletter_banner_button),
+        icon = R.drawable.ic_proton_envelopes,
+        onButtonClicked = onButtonClick
+    )
+}
+
+@Composable
+private fun AlreadyUnsubscribedFromNewsletterBanner() {
+    ProtonBanner(
+        icon = R.drawable.ic_proton_envelope_cross,
+        iconTint = ProtonTheme.colors.iconWeak,
+        iconSize = ProtonDimens.IconSize.Medium,
+        text = stringResource(id = R.string.already_unsubscribed_banner_message),
+        textStyle = ProtonTheme.typography.bodyMediumWeak,
+        backgroundColor = ProtonTheme.colors.backgroundNorm
+    )
+}
+
 private const val PHISHING_BANNER_BUTTON_BACKGROUND = 0x33FFFFFF
 
 @Preview(
@@ -247,12 +277,14 @@ fun PreviewMessageBanners() {
                 ),
                 snoozeBannerUiModel = SnoozeBannerUiModel.SnoozeScheduled(
                     snoozedUntil = TextUiModel.Text("tomorrow at 08:00")
-                )
+                ),
+                unsubscribeFromNewsletterBannerUiModel = UnsubscribeFromNewsletterBannerUiModel.UnsubscribeNewsletter
             ),
             onMarkMessageAsLegitimate = {},
             onUnblockSender = {},
             onCancelScheduleMessage = {},
-            onUnsnoozeMessage = {}
+            onUnsnoozeMessage = {},
+            onUnsubscribeFromNewsletter = {}
         )
     }
 }

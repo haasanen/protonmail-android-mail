@@ -23,6 +23,7 @@ import ch.protonmail.android.maildetail.presentation.model.ExpirationBannerUiMod
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 import ch.protonmail.android.maildetail.presentation.model.ScheduleSendBannerUiModel
 import ch.protonmail.android.maildetail.presentation.model.SnoozeBannerUiModel
+import ch.protonmail.android.maildetail.presentation.model.UnsubscribeFromNewsletterBannerUiModel
 import kotlin.time.Instant
 
 @Suppress("LongParameterList")
@@ -35,7 +36,8 @@ object MessageBannersUiModelTestData {
         expirationBannerUiModel = ExpirationBannerUiModel.Expiration(Instant.DISTANT_FUTURE),
         autoDeleteBannerUiModel = AutoDeleteBannerUiModel.AutoDelete(Instant.DISTANT_FUTURE),
         scheduleSendUiModel = ScheduleSendBannerUiModel.NoScheduleSend,
-        snoozeBannerUiModel = SnoozeBannerUiModel.NotSnoozed
+        snoozeBannerUiModel = SnoozeBannerUiModel.NotSnoozed,
+        unsubscribeFromNewsletterBannerUiModel = UnsubscribeFromNewsletterBannerUiModel.NoUnsubscribe
     )
 
     fun build(
@@ -45,7 +47,8 @@ object MessageBannersUiModelTestData {
         expirationBannerUiModel: ExpirationBannerUiModel,
         autoDeleteBannerUiModel: AutoDeleteBannerUiModel,
         scheduleSendUiModel: ScheduleSendBannerUiModel,
-        snoozeBannerUiModel: SnoozeBannerUiModel
+        snoozeBannerUiModel: SnoozeBannerUiModel,
+        unsubscribeFromNewsletterBannerUiModel: UnsubscribeFromNewsletterBannerUiModel
     ) = MessageBannersUiModel(
         shouldShowPhishingBanner = shouldShowPhishingBanner,
         shouldShowSpamBanner = shouldShowSpamBanner,
@@ -53,6 +56,7 @@ object MessageBannersUiModelTestData {
         expirationBannerUiModel = expirationBannerUiModel,
         autoDeleteBannerUiModel = autoDeleteBannerUiModel,
         scheduleSendBannerUiModel = scheduleSendUiModel,
-        snoozeBannerUiModel = snoozeBannerUiModel
+        snoozeBannerUiModel = snoozeBannerUiModel,
+        unsubscribeFromNewsletterBannerUiModel = unsubscribeFromNewsletterBannerUiModel
     )
 }

@@ -561,7 +561,8 @@ fun ConversationDetailScreen(
                 onUnsnoozeMessage = {
                     viewModel.submit(ConversationDetailViewAction.OnUnsnoozeConversationRequested)
                 },
-                onSnooze = { viewModel.submit(ConversationDetailViewAction.RequestSnoozeBottomSheet) }
+                onSnooze = { viewModel.submit(ConversationDetailViewAction.RequestSnoozeBottomSheet) },
+                onUnsubscribeFromNewsletter = {}
             ),
             scrollToMessageId = state.scrollToMessage?.id
         )
@@ -761,7 +762,8 @@ fun ConversationDetailScreen(
                     onRetryRsvpEventLoading = actions.onRetryRsvpEventLoading,
                     onAnswerRsvpEvent = actions.onAnswerRsvpEvent,
                     onMessage = actions.onMessage,
-                    onUnsnoozeMessage = actions.onUnsnoozeMessage
+                    onUnsnoozeMessage = actions.onUnsnoozeMessage,
+                    onUnsubscribeFromNewsletter = actions.onUnsubscribeFromNewsletter
                 )
                 MessagesContentWithHiddenEdges(
                     uiModels = state.messagesState.messages,
@@ -1133,7 +1135,8 @@ object ConversationDetailScreen {
         val onAnswerRsvpEvent: (MessageIdUiModel, RsvpAnswer) -> Unit,
         val onMessage: (String) -> Unit,
         val onUnsnoozeMessage: () -> Unit,
-        val onSnooze: () -> Unit
+        val onSnooze: () -> Unit,
+        val onUnsubscribeFromNewsletter: (MessageIdUiModel) -> Unit
     ) {
 
         companion object {
@@ -1189,7 +1192,8 @@ object ConversationDetailScreen {
                 onAnswerRsvpEvent = { _, _ -> },
                 onMessage = {},
                 onUnsnoozeMessage = {},
-                onSnooze = {}
+                onSnooze = {},
+                onUnsubscribeFromNewsletter = {}
             )
         }
     }

@@ -28,7 +28,8 @@ data class MessageBannersUiModel(
     val expirationBannerUiModel: ExpirationBannerUiModel,
     val autoDeleteBannerUiModel: AutoDeleteBannerUiModel,
     val scheduleSendBannerUiModel: ScheduleSendBannerUiModel,
-    val snoozeBannerUiModel: SnoozeBannerUiModel
+    val snoozeBannerUiModel: SnoozeBannerUiModel,
+    val unsubscribeFromNewsletterBannerUiModel: UnsubscribeFromNewsletterBannerUiModel
 )
 
 sealed class ExpirationBannerUiModel {
@@ -58,4 +59,10 @@ sealed class SnoozeBannerUiModel {
     data class SnoozeScheduled(
         val snoozedUntil: TextUiModel
     ) : SnoozeBannerUiModel()
+}
+
+sealed class UnsubscribeFromNewsletterBannerUiModel {
+    data object NoUnsubscribe : UnsubscribeFromNewsletterBannerUiModel()
+    data object AlreadyUnsubscribed : UnsubscribeFromNewsletterBannerUiModel()
+    data object UnsubscribeNewsletter : UnsubscribeFromNewsletterBannerUiModel()
 }
