@@ -26,7 +26,7 @@ import ch.protonmail.android.mailpagination.data.mapper.toPaginationError
 import ch.protonmail.android.mailpagination.domain.model.PaginationError
 import uniffi.proton_mail_uniffi.MessageScroller
 import uniffi.proton_mail_uniffi.MessageScrollerFetchMoreResult
-import uniffi.proton_mail_uniffi.MessageScrollerForceRefreshResult
+import uniffi.proton_mail_uniffi.MessageScrollerGetItemsResult
 
 class MailboxMessagePaginatorWrapper(
     private val rustPaginator: MessageScroller,
@@ -38,9 +38,9 @@ class MailboxMessagePaginatorWrapper(
         is MessageScrollerFetchMoreResult.Ok -> Unit.right()
     }
 
-    override suspend fun reload(): Either<PaginationError, Unit> = when (val result = rustPaginator.forceRefresh()) {
-        is MessageScrollerForceRefreshResult.Error -> result.v1.toPaginationError().left()
-        is MessageScrollerForceRefreshResult.Ok -> Unit.right()
+    override suspend fun reload(): Either<PaginationError, Unit> = when (val result = rustPaginator.getItems()) {
+        is MessageScrollerGetItemsResult.Error -> result.v1.toPaginationError().left()
+        is MessageScrollerGetItemsResult.Ok -> Unit.right()
     }
 
     override fun destroy() {
