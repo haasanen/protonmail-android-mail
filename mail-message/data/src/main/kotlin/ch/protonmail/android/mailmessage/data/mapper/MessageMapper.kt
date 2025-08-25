@@ -238,7 +238,7 @@ private fun LocalMessageBanner.toMessageBanner(): MessageBanner {
         is LocalMessageBannerScheduledSend -> MessageBanner.ScheduledSend(timestamp.toInstant())
         is LocalMessageBannerSnoozed -> MessageBanner.Snoozed(timestamp.toInstant())
         is LocalMessageBannerSpam -> MessageBanner.Spam
-        is LocalMessageBannerUnsubscribeNewsletter -> MessageBanner.UnsubscribeNewsletter
+        is LocalMessageBannerUnsubscribeNewsletter -> MessageBanner.UnsubscribeNewsletter(alreadyUnsubscribed)
         is LocalMessageBannerUnableToDecrypt -> MessageBanner.DecryptionFailed
     }
 }

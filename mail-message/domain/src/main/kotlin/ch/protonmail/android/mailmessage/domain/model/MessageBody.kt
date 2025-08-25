@@ -48,7 +48,7 @@ sealed interface MessageBanner {
     data class Expiry(val expiresAt: Instant) : MessageBanner
     data class AutoDelete(val deletesAt: Instant) : MessageBanner
 
-    data object UnsubscribeNewsletter : MessageBanner
+    data class UnsubscribeNewsletter(val alreadyUnsubscribed: Boolean) : MessageBanner
 
     data class ScheduledSend(val scheduledAt: Instant) : MessageBanner
     data class Snoozed(val snoozedUntil: Instant) : MessageBanner
